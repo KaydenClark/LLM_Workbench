@@ -135,7 +135,7 @@ function driftResistanceCategory(files, today) {
       'no contradictory task status',
       5,
       !hasContradictoryTaskStatus(taskboard) && !hasContradictorySpecState(files),
-      'A legacy task cannot be active and Done; a complete spec cannot remain hot or contain unfinished tickets.',
+      'A legacy task cannot be active and Done; a complete spec cannot remain hot or contain unfinished tasks.',
       'Resolve contradictory task status or spec lifecycle state and preserve completion evidence in the stable spec.'
     ),
     booleanCheck(

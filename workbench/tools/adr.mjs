@@ -6,14 +6,23 @@
 // an untracked session collection is not evidence and is reported.
 import fs from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { finding } from './diagnostics.mjs';
-import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
-import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule, IGNORED_COLLECTIONS } from './workbench-paths.mjs';
+import { allocateArtifactId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
+import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule, isSafeRelative, IGNORED_COLLECTIONS, liveRecordPath, markdownLinkTargets } from './workbench-paths.mjs';
 
 export const STATUSES = Object.freeze(['proposed', 'accepted', 'superseded', 'deprecated', 'rejected']);
 export const REGISTER_NAME = 'REGISTER.md';
 export const HISTORY_NAME = 'HISTORY.md';
-const ID_PATTERN = /^([0-9A-Za-z]{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/;
+export const ID_PATTERN = /^([0-9A-Za-z]{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/;
+// S-00I: the closed set of lifecycle subfolders `listAdrs` also enumerates,
+// alongside the top-level directory. Folder is lifecycle only, never
+// identity - a bare filename in `superseded_by` or a link resolves against
+// this whole set, not against the folder the referring record happens to sit
+// in. `retired` is deliberately excluded here: ADR-000I reserves it for
+// Specs and Tasks and keeps ADR history in permanent `archive` instead. TK-002
+// reuses this exact constant when it migrates lifecycle out of frontmatter.
+export const ADR_LIFECYCLE_FOLDERS = Object.freeze(['proposed', 'archive']);
 
 // A record is authored once and checked out on many hosts. Git for Windows
 // rewrites Markdown to CRLF by default, so anchoring on a bare LF would report
@@ -82,30 +91,161 @@ export function insertFrontmatterKeys(content, fields, label) {
   return { content: `${content.slice(0, fence.index)}${fence.eol}${lines.join(fence.eol)}${content.slice(fence.index)}`, inserted: missing.map(([name]) => name) };
 }
 
+// S-00I TK-002: the inverse of `insertFrontmatterKeys` for a single scalar
+// key - remove it if present, touch nothing else. Line-based, like the rest
+// of this file's terminator handling, so a CRLF record loses only its
+// `key: value` line and gains no LF-terminated one. `status` is always a
+// plain scalar line in every record this migration ever writes to, never a
+// YAML list, so a single matching line is exactly what must go.
+export function stripFrontmatterKey(content, key) {
+  const eol = nativeEol(content);
+  const lines = content.split(eol);
+  if (lines[0] !== '---') return { content, removed: false };
+  let closeIndex = -1;
+  for (let index = 1; index < lines.length; index += 1) { if (lines[index] === '---') { closeIndex = index; break; } }
+  if (closeIndex === -1) return { content, removed: false };
+  const pattern = new RegExp(`^${key}:`);
+  let removedIndex = -1;
+  for (let index = 1; index < closeIndex; index += 1) { if (pattern.test(lines[index])) { removedIndex = index; break; } }
+  if (removedIndex === -1) return { content, removed: false };
+  lines.splice(removedIndex, 1);
+  return { content: lines.join(eol), removed: true };
+}
+
+// S-00I TK-003 corrective: `canonicalized_in` names a repository-relative
+// path directly from the project root - unlike a body Markdown link, it is
+// never relative to the record's own directory, so it needs no `oldDir`/
+// `newDir` recomputation, only a literal lookup in `locations` (old absolute
+// path -> current absolute path) and a rewrite to the new root-relative
+// value when that differs. Handles both the ordinary list form
+// (`canonicalized_in:\n  - path`) and a same-line scalar
+// (`canonicalized_in: path`), line-based and terminator-preserving like the
+// rest of this file. A record whose `canonicalized_in` names nothing this
+// caller's `locations` map covers is returned unchanged.
+export function rewriteCanonicalizedIn(content, root, locations) {
+  const eol = nativeEol(content);
+  const lines = content.split(eol);
+  if (lines[0] !== '---') return { content, count: 0 };
+  let closeIndex = -1;
+  for (let index = 1; index < lines.length; index += 1) { if (lines[index] === '---') { closeIndex = index; break; } }
+  if (closeIndex === -1) return { content, count: 0 };
+  let count = 0;
+  let inBlock = false;
+  const rewriteTarget = (raw) => {
+    const oldAbsolute = path.resolve(root, raw);
+    if (!locations.has(oldAbsolute)) return null;
+    const newAbsolute = locations.get(oldAbsolute);
+    const relative = path.relative(root, newAbsolute).split(path.sep).join('/');
+    return relative === raw ? null : relative;
+  };
+  for (let index = 1; index < closeIndex; index += 1) {
+    const line = lines[index];
+    const keyMatch = line.match(/^canonicalized_in:\s*(.*)$/);
+    if (keyMatch) {
+      const scalar = keyMatch[1].trim();
+      if (scalar) {
+        const rewritten = rewriteTarget(scalar);
+        if (rewritten) { lines[index] = `canonicalized_in: ${rewritten}`; count += 1; }
+        inBlock = false;
+      } else {
+        inBlock = true;
+      }
+      continue;
+    }
+    if (inBlock) {
+      const item = line.match(/^(\s*-\s*)(.+)$/);
+      if (!item) { inBlock = false; continue; }
+      const rewritten = rewriteTarget(item[2].trim());
+      if (rewritten) { lines[index] = `${item[1]}${rewritten}`; count += 1; }
+    }
+  }
+  return { content: count > 0 ? lines.join(eol) : content, count };
+}
+
+// Enumerates the top-level directory and, when present, each lifecycle
+// subfolder in `ADR_LIFECYCLE_FOLDERS`. A flat collection with no subfolders
+// produces exactly the same list, in the same order, as before this change -
+// the top-level listing semantics `REGISTER.md`, `HISTORY.md` and `doctor`
+// depend on stay byte-stable. Every record carries the folder it was actually
+// read from, so a successor or a link can be resolved by identity across the
+// whole set instead of by the location a caller assumed.
 export function listAdrs(root, options = {}) {
   const directory = collectionPath(root, 'adr');
   assertSafeReadPath(root, directory);
   if (!fs.existsSync(directory)) return [];
-  return fs.readdirSync(directory, { withFileTypes: true })
-    .filter((entry) => ID_PATTERN.test(entry.name))
-    .map((entry) => {
-      const stat = fs.lstatSync(path.join(directory, entry.name));
-      if (!stat.isFile() || stat.isSymbolicLink() || stat.nlink > 1) {
-        throw new Error(`${entry.name} must be an ordinary, singly linked ADR file; allocation cannot ignore an occupied identity`);
-      }
-      return entry;
-    })
-    .map((entry) => entry.name)
-    .map((name) => readAdr(root, path.join(directory, name), options.contentOverrides?.get(path.join(directory, name))))
+  const locations = [{ folder: null, directory }];
+  for (const folder of ADR_LIFECYCLE_FOLDERS) {
+    const subdirectory = path.join(directory, folder);
+    if (!fs.existsSync(subdirectory)) continue;
+    assertSafeReadPath(root, subdirectory);
+    locations.push({ folder, directory: subdirectory });
+  }
+  return locations
+    .flatMap(({ folder, directory: location }) => fs.readdirSync(location, { withFileTypes: true })
+      .filter((entry) => ID_PATTERN.test(entry.name))
+      .map((entry) => {
+        const stat = fs.lstatSync(path.join(location, entry.name));
+        if (!stat.isFile() || stat.isSymbolicLink() || stat.nlink > 1) {
+          throw new Error(`${entry.name} must be an ordinary, singly linked ADR file; allocation cannot ignore an occupied identity`);
+        }
+        return entry;
+      })
+      .map((entry) => entry.name)
+      .map((name) => readAdr(root, path.join(location, name), options.contentOverrides?.get(path.join(location, name)), folder)))
     .sort((a, b) => compareVisibleIds(`ADR-${a.number}`, `ADR-${b.number}`) || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 }
 
-function readAdr(root, filePath, content = fs.readFileSync(filePath, 'utf8')) {
+// S-00I TK-002: a record's lifecycle is its folder, not frontmatter `status`.
+// `proposed/` always implies `proposed`; `archive/` implies `superseded` or
+// `deprecated`, told apart by the fact each already carries (`superseded_by`
+// or `deprecation_reason`) - never by a bare "trust me" status label. Neither
+// folder has a determinable implied status when it lacks that fact, and
+// nothing outside those two folders (the ordinary top level, or any other
+// location) carries a folder-mandated status at all: a record there keeps
+// whatever it declares, or is `accepted` by default when it declares nothing.
+// This is why a pre-existing flat corpus with mixed explicit statuses at the
+// top level - the ordinary case before a room ever migrates - validates with
+// no disagreement finding: only `proposed/` and `archive/` assert a specific
+// lifecycle a leftover `status` key can disagree with.
+function folderImpliedStatus(folder, data) {
+  if (folder === 'proposed') return 'proposed';
+  if (folder === 'archive') {
+    if (typeof data?.superseded_by === 'string' && data.superseded_by.trim()) return 'superseded';
+    if (typeof data?.deprecation_reason === 'string' && data.deprecation_reason.trim()) return 'deprecated';
+    return null;
+  }
+  return null;
+}
+
+// The effective lifecycle a record carries once folder and frontmatter are
+// reconciled. An explicit `status` key, when present, is never silently
+// overridden by folder location - the frontmatter is what a half-migrated
+// room shows a reader, so it stays the effective value even while it is
+// flagged. Only its absence lets the folder speak: `proposed/` and `archive/`
+// (with a determinable fact) supply their lifecycle; anywhere else defaults
+// to `accepted`, the historical behavior for a record with no status key.
+function deriveStatus(folder, data) {
+  const implied = folderImpliedStatus(folder, data);
+  const explicit = typeof data?.status === 'string' && data.status.trim() ? data.status.trim() : undefined;
+  if (explicit !== undefined) {
+    const disagreement = (folder === 'proposed' || folder === 'archive') && implied !== null && implied !== explicit;
+    return { status: explicit, disagreement, implied };
+  }
+  if (folder === 'proposed' || folder === 'archive') return { status: implied, disagreement: false, implied };
+  return { status: 'accepted', disagreement: false, implied };
+}
+
+function readAdr(root, filePath, content = fs.readFileSync(filePath, 'utf8'), folder = null) {
   const { data, body } = parseFrontmatter(content);
   const name = path.basename(filePath);
   const [, number, slug] = name.match(ID_PATTERN);
   const title = body.match(/^#\s+(.+)$/m)?.[1]?.trim() ?? null;
-  return { root, filePath, relativePath: path.relative(root, filePath).split(path.sep).join('/'), name, number, slug, title, data, body };
+  // `href` is the path a register/history row must link through, relative to
+  // the collection root where those projections live. It equals `name` for a
+  // top-level record, so a flat collection's rendered link text is unchanged.
+  const href = folder ? `${folder}/${name}` : name;
+  const { status, disagreement, implied } = deriveStatus(folder, data);
+  return { root, filePath, relativePath: path.relative(root, filePath).split(path.sep).join('/'), name, number, slug, title, data, body, folder, href, status, statusDisagreement: disagreement, impliedStatus: implied };
 }
 
 export function validateAdrs(root, options = {}) {
@@ -113,6 +253,7 @@ export function validateAdrs(root, options = {}) {
   let adrs;
   try { adrs = listAdrs(root, options); }
   catch (error) { return [finding('invalid-adr', error.message)]; }
+  const adrCollectionRelative = collectionRelative(root, 'adr');
   const numbers = new Map();
   for (const adr of adrs) {
     const key = visibleIdKey(`ADR-${adr.number}`);
@@ -124,10 +265,13 @@ export function validateAdrs(root, options = {}) {
       findings.push(finding('invalid-adr', `${adr.relativePath} has no frontmatter`, { adr: adr.name }));
       continue;
     }
-    if (!STATUSES.includes(data.status)) findings.push(finding('invalid-adr', `${adr.relativePath} status must be one of ${STATUSES.join(', ')}`, { adr: adr.name }));
+    if (adr.statusDisagreement) {
+      findings.push(finding('disagreeing-status', `${adr.relativePath} frontmatter status '${data.status}' disagrees with its ${adr.folder}/ folder, which implies '${adr.impliedStatus}'`, { adr: adr.name }));
+    }
+    if (!STATUSES.includes(adr.status)) findings.push(finding('invalid-adr', `${adr.relativePath} status must be one of ${STATUSES.join(', ')}`, { adr: adr.name }));
     if (!/^\d{4}-\d{2}-\d{2}$/.test(String(data.date ?? ''))) findings.push(finding('invalid-adr', `${adr.relativePath} needs a YYYY-MM-DD date`, { adr: adr.name }));
     if (!adr.title) findings.push(finding('invalid-adr', `${adr.relativePath} needs a title heading`, { adr: adr.name }));
-    if (data.status === 'accepted') {
+    if (adr.status === 'accepted') {
       const owners = Array.isArray(data.canonicalized_in) ? data.canonicalized_in : (data.canonicalized_in ? [data.canonicalized_in] : []);
       if (owners.length === 0) findings.push(finding('invalid-adr', `${adr.relativePath} is accepted but names no canonicalized_in owner`, { adr: adr.name }));
       for (const owner of owners) {
@@ -138,13 +282,13 @@ export function validateAdrs(root, options = {}) {
       }
     }
     const lifecycleError = message => findings.push(finding('invalid-adr', `${adr.relativePath} ${message}`, { adr: adr.name }));
-    if (data.status === 'deprecated' && (typeof data.deprecation_reason !== 'string' || !data.deprecation_reason.trim())) lifecycleError('needs a durable deprecation_reason');
-    if (data.status !== 'superseded' && data.superseded_by) lifecycleError('names a successor without superseded status');
-    if (data.status === 'superseded') {
+    if (adr.status === 'deprecated' && (typeof data.deprecation_reason !== 'string' || !data.deprecation_reason.trim())) lifecycleError('needs a durable deprecation_reason');
+    if (adr.status !== 'superseded' && data.superseded_by) lifecycleError('names a successor without superseded status');
+    if (adr.status === 'superseded') {
       const seen = new Set([adr.name]);
       let current = adr;
-      while (current?.data?.status === 'superseded') {
-        const successor = current.data.superseded_by;
+      while (current?.status === 'superseded') {
+        const successor = current.data?.superseded_by;
         if (typeof successor !== 'string' || !ID_PATTERN.test(successor) || successor.includes('/') || successor.includes('\\')) {
           lifecycleError('needs one whole-record superseded_by filename without a fragment or path'); break;
         }
@@ -152,8 +296,17 @@ export function validateAdrs(root, options = {}) {
         seen.add(successor);
         current = adrs.find(record => record.name === successor);
         if (!current) { lifecycleError(`has missing superseded_by target ${successor}`); break; }
-        if (!['accepted', 'superseded', 'deprecated'].includes(current.data?.status)) { lifecycleError('successor must be an accepted decision or its historical successor'); break; }
+        if (!['accepted', 'superseded', 'deprecated'].includes(current.status)) { lifecycleError('successor must be an accepted decision or its historical successor'); break; }
       }
+    }
+    // Reference-style and angle-bracket links are not in localLinks (it keeps
+    // the literal inline form the broken-link check below needs), so live
+    // records named that way are caught here (S-00V TK-02E).
+    const inline = new Set(localLinks(adr.body));
+    for (const link of markdownLinkTargets(adr.body)) {
+      if (inline.has(link)) continue;
+      const live = liveRecordPath(root, path.resolve(path.dirname(adr.filePath), link));
+      if (live) findings.push(finding('untracked-provenance', `${adr.relativePath} references live record ${live}; a notepad or handoff is working context even when committed, so reconcile selected claims into a durable owner first`, { adr: adr.name, target: live }));
     }
     for (const link of localLinks(adr.body)) {
       const target = path.resolve(path.dirname(adr.filePath), link);
@@ -161,8 +314,19 @@ export function validateAdrs(root, options = {}) {
       if (relative.startsWith(`${collectionRelative(root, 'notepad-templates')}/`)) continue;
       for (const collection of IGNORED_COLLECTIONS) {
         if (relative.startsWith(`${collectionRelative(root, collection)}/`)) {
-          findings.push(finding('untracked-provenance', `${adr.relativePath} references untracked ${relative}; reconcile selected claims into a durable owner first`, { adr: adr.name, target: relative }));
+          findings.push(finding('untracked-provenance', `${adr.relativePath} references live record ${relative}; a notepad or handoff is working context even when committed, so reconcile selected claims into a durable owner first`, { adr: adr.name, target: relative }));
         }
+      }
+      // A body link is for a reader, so it is checked literally: identity
+      // resolves `superseded_by` (a bare filename with no path component),
+      // never a Markdown link. A record in `archive/` may correctly link
+      // `../000A-...md` back to the top level, so this walks the literal
+      // relative path from the record's own directory - folder-aware because
+      // that directory is wherever `listAdrs` actually found the record -
+      // and only within the ADR collection itself, where a moved target's
+      // stale incoming link is exactly what would otherwise go unnoticed.
+      if ((relative === adrCollectionRelative || relative.startsWith(`${adrCollectionRelative}/`)) && !fs.existsSync(target)) {
+        findings.push(finding('invalid-adr', `${adr.relativePath} links to missing ${relative}`, { adr: adr.name, target: relative }));
       }
     }
   }
@@ -185,15 +349,19 @@ export function validateAdrs(root, options = {}) {
   return findings;
 }
 
-// Bring existing records into shape without editing a body. `status` defaults
-// to `proposed` because an inserted `accepted` would assert an acceptance
-// nobody made, and an accepted record still needs a `canonicalized_in` owner
-// only its author can name - normalize reports that record as unchanged and
-// `validate` keeps failing it.
+// Bring existing records into shape without editing a body. S-00I TK-002 made
+// folder the source of lifecycle truth: a record with no `status` key is not
+// an incomplete record any more, it is an ordinary migrated one (accepted at
+// the top level, or whatever its `proposed`/`archive` folder implies), so
+// inserting `status: proposed` here would re-add a stale, wrong key to the
+// whole collection the very first time normalize ran after that migration.
+// `date` is the only key this still inserts; an accepted record still needs a
+// `canonicalized_in` owner only its author can name, which normalize never
+// invents, so `validate` keeps failing a record that lacks one.
 export function normalizeAdrs(root, options = {}) {
   const date = options.date ?? new Date().toISOString().slice(0, 10);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error('--date must be YYYY-MM-DD');
-  const fields = [['status', ['status: proposed']], ['date', [`date: ${date}`]]];
+  const fields = [['date', [`date: ${date}`]]];
   const changed = [];
   for (const adr of listAdrs(root)) {
     const content = fs.readFileSync(adr.filePath, 'utf8');
@@ -217,9 +385,9 @@ export function renderRegister(adrs, { history = false } = {}) {
     '| ADR | Title | Status | Date | Canonicalized in |',
     '|---|---|---|---|---|'
   ];
-  for (const adr of adrs.filter(record => history || record.data?.status === 'accepted')) {
+  for (const adr of adrs.filter(record => history || record.status === 'accepted')) {
     const owners = Array.isArray(adr.data?.canonicalized_in) ? adr.data.canonicalized_in : (adr.data?.canonicalized_in ? [adr.data.canonicalized_in] : []);
-    lines.push(`| [${adr.number}](${adr.name}) | ${cell(adr.title ?? '')} | ${cell(adr.data?.status ?? '')} | ${cell(adr.data?.date ?? '')} | ${cell(owners.join(', ') || 'none')} |`);
+    lines.push(`| [${adr.number}](${adr.href ?? adr.name}) | ${cell(adr.title ?? '')} | ${cell(adr.status ?? '')} | ${cell(adr.data?.date ?? '')} | ${cell(owners.join(', ') || 'none')} |`);
   }
   return `${lines.join('\n')}\n`;
 }
@@ -236,20 +404,81 @@ export function writeRegister(root) {
   return { registerPath, historyPath, count: adrs.length };
 }
 
+// S-01W TK-002Q: the ADR reservation inventory the artifact policy
+// allocates against. Local records that alias one identity (`000A` beside
+// `000a`) are refused rather than choosing a winner. Like `next-id`
+// (ADR-000O), every remote-tracking tip is read too, so a label another
+// pushed branch already holds is never proposed again; repeated spellings
+// across tips reserve one identity. A room outside Git has no tips to read.
+export function occupiedAdrLabels(root) {
+  const labels = [];
+  const local = new Map();
+  for (const adr of listAdrs(root)) {
+    const label = `ADR-${adr.number}`;
+    const key = visibleIdKey(label);
+    if (local.has(key)) throw new Error(`Visible identifier collision: ${label} and ${local.get(key)} alias one ADR identity`);
+    local.set(key, label);
+    labels.push(label);
+  }
+  const git = (...args) => spawnSync('git', ['-C', root, ...args], { encoding: 'utf8' });
+  const refs = git('for-each-ref', '--format=%(refname)', 'refs/remotes');
+  if (refs.status !== 0) return labels;
+  const fallback = collectionRelative(root, 'adr');
+  for (const ref of refs.stdout.split('\n').filter(Boolean)) {
+    let collection = fallback;
+    const manifest = git('show', `${ref}:./workbench/manifest.json`);
+    if (manifest.status === 0) {
+      let declared;
+      try { declared = JSON.parse(manifest.stdout).collections?.adr; }
+      catch { throw new Error(`Cannot reserve ADR labels from malformed manifest at ${ref}`); }
+      // The same rule `collectionRelative` applies to the local manifest;
+      // only the source differs, so a tip can never widen or redirect the scan.
+      if (declared !== undefined) {
+        if (!isSafeRelative(declared)) {
+          const failure = new Error(`Cannot reserve ADR labels from unsafe adr collection at ${ref}: ${JSON.stringify(declared)}`);
+          failure.code = 'invalid-collection';
+          throw failure;
+        }
+        collection = declared;
+      }
+    }
+    const listing = git('ls-tree', '-r', '-z', '--name-only', ref, '--', `${collection}/`);
+    if (listing.status !== 0) throw new Error(`Cannot reserve ADR labels from ${ref}: ${listing.stderr.trim()}`);
+    for (const file of listing.stdout.split('\0').filter(Boolean)) {
+      const parts = path.posix.relative(collection, file).split('/');
+      const name = parts.at(-1);
+      if (parts.length > 2 || (parts.length === 2 && !ADR_LIFECYCLE_FOLDERS.includes(parts[0]))) continue;
+      const match = name.match(ID_PATTERN);
+      if (match) labels.push(`ADR-${match[1]}`);
+    }
+  }
+  return [...new Set(labels)];
+}
+
 export function newAdr(root, options) {
   const title = requireValue(options.title, '--title is required');
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   if (!slug) throw new Error('title must contain letters or digits');
   const directory = collectionPath(root, 'adr');
   assertSafeWritePath(root, path.join(directory, REGISTER_NAME));
-  const occupied = listAdrs(root).map(adr => `ADR-${adr.number}`);
-  const next = allocateVisibleId('ADR', occupied, { width: 4, requireLetter: true }).slice(4);
-  const filePath = path.join(directory, `${next}-${slug}.md`);
+  const next = allocateArtifactId('ADR', occupiedAdrLabels(root)).slice(4);
+  // S-00I TK-002: a new record is always `proposed`, so it is created inside
+  // the `proposed/` lifecycle folder its own status implies - folder is
+  // lifecycle, so an unreviewed decision never starts out looking active. It
+  // carries no `status` key at all: the folder already carries that fact, and
+  // writing the key back in would let one record at a time drift the corpus
+  // back toward the mixed frontmatter/folder state the one-shot
+  // `migrate-folders` command does not repeatedly correct. `superseded_by`
+  // and `deprecation_reason` are untouched by this - they stay frontmatter
+  // facts for whichever record later needs them. (Reviewer's observation,
+  // not solved here: `rejected` has no dedicated lifecycle folder yet, so a
+  // record that reaches that lifecycle still needs its `status` key kept at
+  // the top level - `newAdr` never creates one directly, only `proposed`.)
+  const filePath = path.join(directory, 'proposed', `${next}-${slug}.md`);
   if (fs.existsSync(filePath)) throw new Error(`${filePath} already exists`);
   const date = options.date ?? new Date().toISOString().slice(0, 10);
   const content = [
     '---',
-    'status: proposed',
     `date: ${date}`,
     'canonicalized_in:',
     '  - AGENTS.md',
@@ -270,7 +499,7 @@ export function newAdr(root, options) {
   return { filePath, number: next };
 }
 
-function localLinks(content) {
+export function localLinks(content) {
   const links = [];
   for (const match of content.matchAll(/\[[^\]]*\]\(([^)]+)\)/g)) {
     const value = match[1].split('#')[0];
@@ -278,6 +507,211 @@ function localLinks(content) {
     links.push(decodeURIComponent(value));
   }
   return links;
+}
+
+// S-00I TK-002: the one-shot migration that moves lifecycle out of
+// frontmatter and into folder location. It refuses a dirty tree (the moved
+// candidate must be reviewable as the git-mv renames it produces) and
+// refuses a second run (once every record's lifecycle already agrees with
+// its folder and no leftover `status` key remains to strip, there is nothing
+// left to do). `status` is stripped only for the folder-mappable lifecycles
+// (`accepted`, `proposed`, `superseded`, `deprecated`); `rejected` has no
+// dedicated folder in ADR_LIFECYCLE_FOLDERS and keeps its frontmatter, since
+// folder cannot express what location does not distinguish.
+const STATUS_TO_FOLDER = Object.freeze({ proposed: 'proposed', superseded: 'archive', deprecated: 'archive', accepted: null });
+
+function splitLinkFragment(target) {
+  const index = target.indexOf('#');
+  return index === -1 ? [target, undefined] : [target.slice(0, index), target.slice(index + 1)];
+}
+
+// Rewrites every Markdown link in `content` - a file read from `oldDir`
+// before this migration, now living at `newDir` - that resolves (via
+// `oldDir`, so a moved referencing file's own stale relative text is
+// interpreted correctly) to a path this migration tracks in `locations`
+// (old absolute path -> current absolute path, including every entry that
+// did not move, mapped to itself). A link to anything else - another spec, a
+// wiki note, a target this migration never touched - is never matched and
+// never rewritten. Exported for reuse: the logic is folder-move-generic (it
+// carries no ADR-specific assumption), and S-00I TK-003 reuses this exact
+// function for Spec directory moves rather than writing a second one.
+export function rewriteAdrLinks(content, oldDir, newDir, locations, { directoryTargets = new Set() } = {}) {
+  let count = 0;
+  const updated = content.replace(/(\[[^\]]*\]\()([^)]+)(\))/g, (whole, open, target, close) => {
+    if (/^(?:https?:|mailto:)/.test(target)) return whole;
+    const [rawPath, fragment] = splitLinkFragment(target);
+    if (!rawPath) return whole;
+    let decoded;
+    try { decoded = decodeURIComponent(rawPath); } catch { return whole; }
+    const oldAbsolute = path.resolve(oldDir, decoded);
+    if (!locations.has(oldAbsolute)) return whole;
+    const newAbsolute = locations.get(oldAbsolute);
+    // S-00I TK-003 corrective (round 2): a link needs recomputing only when
+    // something in its own resolution actually changed - the target's
+    // absolute location (`newAbsolute !== oldAbsolute`, a moved entry) or the
+    // referencing file's own directory (`newDir !== oldDir`, a moved
+    // referrer, whose unmoved target still needs its relative depth
+    // recomputed). When neither changed, this call is scanning a file the
+    // move has no reason to touch at all; recomputing anyway would still
+    // "succeed" by producing a resolvable path, but a shorter or otherwise
+    // differently-spelled one than the author wrote - a real-room dry run
+    // renormalized an active Spec's own untouched `../S-050-.../SPEC.md`
+    // self-link down to `SPEC.md` this way. Leave it exactly as written.
+    if (newAbsolute === oldAbsolute && newDir === oldDir) return whole;
+    const relative = path.relative(newDir, newAbsolute).split(path.sep).join('/');
+    // Preserve directory-route syntax and URI encoding when recomputing a
+    // moved target or referrer. In particular ./ names a directory; # alone
+    // would instead name a fragment in the referencing document.
+    // The option is supplied only by lifecycle moves: ADR migration and
+    // identity widening retain their existing file-link formatting.
+    const directory = directoryTargets.has(oldAbsolute);
+    const directoryRelative = relative || '.';
+    const encoded = /%[0-9a-f]{2}/i.test(rawPath)
+      ? directoryRelative.split('/').map(part => encodeURIComponent(part)
+        // encodeURIComponent leaves parentheses raw; Markdown uses them as delimiters.
+        .replaceAll('(', '%28').replaceAll(')', '%29')).join('/') : directoryRelative;
+    const route = directory ? `${encoded}${rawPath.endsWith('/') ? '/' : ''}` : relative;
+    const rebuilt = fragment !== undefined ? `${route}#${fragment}` : route;
+    if (rebuilt === target) return whole;
+    count += 1;
+    return `${open}${rebuilt}${close}`;
+  });
+  return { content: updated, count };
+}
+
+// Every live Markdown surface this migration must repair a moved reference
+// in, outside the ADR collection itself (handled separately, since its own
+// records' directories change): root controls, the Wiki, every Spec's
+// `SPEC.md`, `skills/`, and `team templates/`. `templates/` (the blank
+// product mirror) is deliberately excluded.
+function collectExternalMarkdownFiles(root) {
+  const files = [];
+  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md']) {
+    const file = path.join(root, name);
+    if (fs.existsSync(file) && fs.statSync(file).isFile()) files.push(file);
+  }
+  const walk = (dir, match) => {
+    if (!fs.existsSync(dir)) return;
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.isSymbolicLink()) continue;
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(full, match);
+      else if (entry.isFile() && match(entry.name)) files.push(full);
+    }
+  };
+  walk(path.join(root, 'workbench', 'wiki'), (name) => name.endsWith('.md'));
+  walk(path.join(root, 'skills'), (name) => name.endsWith('.md'));
+  walk(path.join(root, 'team templates'), (name) => name.endsWith('.md'));
+  walk(path.join(root, 'workbench', 'specs'), (name) => name === 'SPEC.md');
+  return files;
+}
+
+// A `SPEC.md`'s Append-Only Evidence And Execution Log is frozen history:
+// `tools/check-append-only.py` pins each row's first-published text, and this
+// migration must never rewrite a link inside one, even a stale one pointing
+// at a record's pre-migration path. Split the file into the part before that
+// section, the section itself (untouched), and the part after, so rewriting
+// can apply to live prose on both sides without ever touching the table.
+// Exported so S-00I TK-003 protects the same heading when a Spec directory
+// moves, rather than a second split implementation.
+export function splitEvidenceSection(content) {
+  const heading = '## Append-Only Evidence And Execution Log';
+  const headingIndex = content.indexOf(`\n${heading}`);
+  if (headingIndex === -1) return { prefix: content, evidence: '', suffix: '' };
+  const startOfHeading = headingIndex + 1;
+  const rest = content.slice(startOfHeading);
+  const nextHeading = rest.slice(heading.length).match(/\n## /);
+  const sectionEnd = nextHeading ? heading.length + nextHeading.index + 1 : rest.length;
+  return { prefix: content.slice(0, startOfHeading), evidence: rest.slice(0, sectionEnd), suffix: rest.slice(sectionEnd) };
+}
+
+export function migrateLifecycleFolders(root) {
+  const directory = collectionPath(root, 'adr');
+  assertSafeReadPath(root, directory);
+
+  const gitStatus = spawnSync('git', ['-C', root, 'status', '--porcelain'], { encoding: 'utf8' });
+  const usesGit = gitStatus.status === 0;
+  if (usesGit && gitStatus.stdout.trim() !== '') {
+    throw new Error('adr migrate-folders refuses a dirty working tree; commit or stash first so the candidate shows only this migration');
+  }
+
+  const adrs = listAdrs(root);
+  const moves = [];
+  const strips = [];
+  for (const adr of adrs) {
+    const explicit = typeof adr.data?.status === 'string' ? adr.data.status.trim() : '';
+    if (!explicit || !Object.hasOwn(STATUS_TO_FOLDER, explicit)) continue;
+    const impliedFolder = STATUS_TO_FOLDER[explicit];
+    if (impliedFolder !== adr.folder) moves.push({ adr, toFolder: impliedFolder });
+    strips.push(adr);
+  }
+  if (moves.length === 0 && strips.length === 0) {
+    throw new Error('adr migrate-folders found nothing to migrate; the collection already reflects folder lifecycle');
+  }
+
+  // `locations` tracks every record's current absolute path, moved or not,
+  // so link rewriting (inside the collection and outside it) can resolve any
+  // reference against where a record actually lives right now.
+  const locations = new Map(adrs.map((adr) => [adr.filePath, adr.filePath]));
+  const oldDirOf = new Map(adrs.map((adr) => [adr.filePath, path.dirname(adr.filePath)]));
+  const movedByFolder = {};
+
+  for (const { adr, toFolder } of moves) {
+    const destinationDir = toFolder ? path.join(directory, toFolder) : directory;
+    fs.mkdirSync(destinationDir, { recursive: true });
+    const destination = path.join(destinationDir, adr.name);
+    assertSafeWritePath(root, destination);
+    if (fs.existsSync(destination)) throw new Error(`adr migrate-folders destination already exists: ${path.relative(root, destination)}`);
+    if (usesGit) {
+      const result = spawnSync('git', ['-C', root, 'mv', path.relative(root, adr.filePath), path.relative(root, destination)], { encoding: 'utf8' });
+      if (result.status !== 0) throw new Error(`git mv failed for ${adr.relativePath}: ${(result.stderr || result.stdout || '').trim()}`);
+    } else {
+      fs.renameSync(adr.filePath, destination);
+    }
+    locations.set(adr.filePath, destination);
+    (movedByFolder[toFolder] ??= []).push(adr.relativePath);
+  }
+
+  const stripped = [];
+  const referencesRewritten = {};
+  for (const adr of adrs) {
+    const currentPath = locations.get(adr.filePath);
+    let content = fs.readFileSync(currentPath, 'utf8');
+    let changed = false;
+    if (strips.includes(adr)) {
+      const result = stripFrontmatterKey(content, 'status');
+      if (result.removed) { content = result.content; changed = true; stripped.push(adr.relativePath); }
+    }
+    const rewritten = rewriteAdrLinks(content, oldDirOf.get(adr.filePath), path.dirname(currentPath), locations);
+    if (rewritten.count > 0) {
+      content = rewritten.content;
+      changed = true;
+      referencesRewritten[path.relative(root, currentPath).split(path.sep).join('/')] = rewritten.count;
+    }
+    if (changed) { assertSafeWritePath(root, currentPath); writeSafeFile(root, currentPath, content); }
+  }
+
+  const historicalReferencesLeft = {};
+  for (const file of collectExternalMarkdownFiles(root)) {
+    const original = fs.readFileSync(file, 'utf8');
+    const { prefix, evidence, suffix } = splitEvidenceSection(original);
+    const fileDir = path.dirname(file);
+    const rewrittenPrefix = rewriteAdrLinks(prefix, fileDir, fileDir, locations);
+    const rewrittenSuffix = rewriteAdrLinks(suffix, fileDir, fileDir, locations);
+    const skippedInEvidence = rewriteAdrLinks(evidence, fileDir, fileDir, locations).count;
+    const relative = path.relative(root, file).split(path.sep).join('/');
+    if (skippedInEvidence > 0) historicalReferencesLeft[relative] = skippedInEvidence;
+    const totalRewritten = rewrittenPrefix.count + rewrittenSuffix.count;
+    if (totalRewritten > 0) {
+      const finalContent = rewrittenPrefix.content + evidence + rewrittenSuffix.content;
+      assertSafeWritePath(root, file);
+      writeSafeFile(root, file, finalContent);
+      referencesRewritten[relative] = totalRewritten;
+    }
+  }
+
+  const register = writeRegister(root);
+  return { usesGit, moved: movedByFolder, stripped, referencesRewritten, historicalReferencesLeft, register };
 }
 
 function cell(value) {
@@ -315,8 +749,10 @@ if (isMainModule(import.meta.url)) {
       console.log(JSON.stringify(normalizeAdrs(root, { date: options.date })));
     } else if (command === 'new') {
       console.log(JSON.stringify(newAdr(root, options)));
+    } else if (command === 'migrate-folders') {
+      console.log(JSON.stringify(migrateLifecycleFolders(root), null, 2));
     } else {
-      throw new Error('Usage: adr.mjs validate [--json] | normalize [--date YYYY-MM-DD] [--json] | register | new --title "Decision title" [--date YYYY-MM-DD]');
+      throw new Error('Usage: adr.mjs validate [--json] | normalize [--date YYYY-MM-DD] [--json] | register | new --title "Decision title" [--date YYYY-MM-DD] | migrate-folders');
     }
   } catch (error) {
     console.error(`error: ${error.message}`);

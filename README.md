@@ -83,9 +83,14 @@ docs look like. Copy from `templates/`, not from the root.
 
 ## Supporting Files
 
-- `skills/` - the closed 21-skill public source bundle. Missing-only setup installs canonical
-  source under `.agents/skills` and Claude adapters to that source; this
-  repository does not use it as a project-local discovery tree.
+- `workbench/skills/` - the closed 26-skill core bundle, shipped inside every
+  room as the manifest's `skills` lane. The tracked `.agents/skills` (Codex)
+  and `.claude/skills` (Claude Code) links resolve into it, so a fresh clone
+  discovers the skills with no provider home or personal catalog. Genesis and
+  Adoption lay the lane down from the release; the Workbench update refreshes
+  it (`tools/workbench-skills.mjs`). The two links are Git symlinks: a host
+  that checks them out as plain files (Windows without symlink support)
+  reports `skill-adapter-broken` in `doctor` until they are restored.
 - `skills-pending/` - preserved selected baselines that remain non-invocable
   until their Workbench rewrites pass review.
 - `team templates/` - optional manager/subagent coordination templates for
@@ -228,7 +233,14 @@ from it. This assignment explicitly updates the Workbench Template only.
 
 The portable layout and skill-install contract is implemented in
 [`S-021`](workbench/specs/S-021-portable-workbench-v3/SPEC.md). The separate
-exact-head `integration` to `main` release gate remains owned by S-014.
+current release-readiness owner is
+[`S-00O`](workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md); only the owner
+may promote `integration` to `main`. S-014 and S-022 preserve historical release
+packets whose current obligations are routed to these owners; their blocked
+status retains unexecuted historical tasks without presenting a new assignment. The earlier v3.2 delivery receipt and its
+remaining cross-device/private-service acceptance stay with
+[`S-050`](workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md) and
+[`S-052`](workbench/specs/S-052-private-session-transport/SPEC.md).
 
 To pull later harness improvements into a downstream project, follow that
 project's `RUNBOOK.md` -> Upgrading The Harness: re-copy only changed template

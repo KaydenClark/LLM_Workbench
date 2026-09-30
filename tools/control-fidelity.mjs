@@ -16,7 +16,9 @@ export const CLAUDE_CONTROL = '@AGENTS.md';
 export const KINDS = ['filled', 'unchanged', 'dropped', 'changed', 'added'];
 // Two lines are the same line when their word tokens overlap at least this much.
 const SIMILARITY_THRESHOLD = 0.5;
-const wikiContractFiles = ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md'];
+// Mirrors workbench-layout.mjs `wikiContractFiles` (S-00I TK-01U added the
+// features collection README).
+const wikiContractFiles = ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md', 'features/README.md'];
 const memoryTemplates = { project: 'MEMORY.project.md', deployment: 'MEMORY.root.md' };
 // Beside the declared vocabulary, an all-uppercase bracket token or an
 // `[OPTIONAL: ...]` note marks a line the room was expected to fill.

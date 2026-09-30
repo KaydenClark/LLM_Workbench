@@ -2,7 +2,7 @@
 
 > **Disposable coordination notes for one run. Not a Taskboard, not a queue,
 > not a proof store.** The coordinator is the only writer of this sheet.
-> Tickets and proof live only in the owning stable spec; the project
+> Tasks and proof live only in the owning stable spec; the project
 > `TASKBOARD.md` stays a generated read-only projection. Delete this file when
 > the run ends — it must never survive as a parallel project tracker.
 

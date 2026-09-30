@@ -1,5 +1,4 @@
 ---
-status: proposed
 date: 2026-09-12
 canonicalized_in:
   - LEXICON.md
@@ -8,57 +7,37 @@ canonicalized_in:
 
 # The ownership map is an exhaustive type-level framework answered by structured query
 
-`OWNERSHIP.json` holds the maintained record of artifact classes, their
-responsibilities, scopes, routes and relations. It answers one question: where
-does this truth belong. It must be exhaustive at the **type** level — every Core
-artifact type, its relationships, its ownership interactions and how an agent
-uses it — complete enough that a fresh agent with no prior context can traverse
-it and use the Workbench. Completeness is satisfied through structured query,
-not by requiring every agent to read the whole schema at entry.
+`OWNERSHIP.json` holds maintained artifact classes, responsibilities, scopes,
+routes, and relations. It is exhaustive at the **type** level and answered by
+structured query, so an agent can find the owner without loading the full map
+at entry. It does not enumerate live Spec, Task, or ADR instances.
 
-The guardrail is load-bearing: **a query returns which artifacts to read, never
-the claims themselves.** A map that answers with content rather than with
-routes becomes a second truth store, and the first thing a second truth store
-does is drift from the first. The map maps relationships and routes; it does not
-duplicate the claims its mapped artifacts own, and it must not accumulate
-per-record work state, which would make it a duplicate work tracker.
+A query returns **routes to owning artifacts, never their claim text**. A first
+violation is a map row or query result copying a definition from LEXICON or
+carrying an instance identifier or status-shaped field. S-00G TK-004 owns a
+red query-output test for routes rather than claims and schema validation that
+rejects instance IDs and status-shaped fields. This decision sets the check;
+it does not claim that the test or schema exists yet.
 
-Considered and rejected: keeping the schema inside `LEXICON.md`, where it lives
-today. Exhaustive type-level coverage of every artifact class makes the Lexicon
-large enough that entry cost rises for every agent, including those with no
-ownership question. Query-shaped access is the property that makes exhaustive
-coverage affordable, and a prose table inside a control an agent loads whole
-cannot provide it.
+Considered and rejected: keeping the exhaustive schema inside LEXICON. That
+would raise ordinary-entry cost for agents without an ownership question.
+Also rejected: an instance-level map, which would duplicate live work state
+and require updates on every record transition.
 
-Considered and rejected: an exhaustive *instance*-level map naming every live
-Spec, Task and ADR. That is the duplicate work tracker the guardrail forbids,
-and it would need updating on every record transition.
+Consequences: LEXICON keeps shared language and the Context Map. It routes
+ownership questions to the map once queryable. Its current Artifact Ownership
+Schema stays in place until S-00G TK-004 supplies the query and migration.
+[ADR-000B](000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md)
+owns root placement. The map's complete contents and runtime query surface
+remain S-00G implementation work.
 
-Consequences: `LEXICON.md` keeps shared language and the Context Map, and routes
-ownership questions to `OWNERSHIP.json` rather than answering them; the Artifact
-Ownership Schema currently at `LEXICON.md` leaves that file once the map is
-populated and queryable, not at acceptance alone — acceptance authorizes the
-migration, but its scoped Spec gates the container (TK-001-TK-003) ahead of
-the schema's removal, so the existing route stays usable throughout. The
-map's own placement is decided by
-[ADR-000B](000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md);
-its query surface, entry lifecycle and portability boundary are not decided
-here. This record fixes the container and its guardrail only.
+FND-Q21's 28 responsibilities, FND-Q23's accepted-row/no-instance/no-status
+limits, and FND-Q24's origins and classifications are settled in S-00G and
+the tracked destination ledger. FND-Q24B's undeclared legacy difference is
+also settled as a conflict until intent is declared. Its field shape and
+disposition placement remain S-00G implementation decisions within those
+limits; no owner answer is inferred for them here.
 
-**This decision does not supply the map's contents.** The allocation of
-responsibilities across artifact types (FND-Q21), how accepted assignments enter
-and leave the record (FND-Q23), and which assignments are portable Core versus
-project-specific extension (FND-Q24) are open owner questions. A future agent
-must not treat transcription of the existing Lexicon schema into JSON as an
-answer to any of the three.
-
-Provenance: owner-approved foundation answers FND-Q21A and FND-Q22A, 2026-09-11,
-recorded as approved answers in the live grilling note
-`workbench-foundation-rework-2026-09-11`. That note is untracked working
-material named here as origin, not as durable evidence.
-
-## Promotion status
-
-This record is `proposed`. `LEXICON.md` and `AGENTS.md` remain live Canon as
-written, and the Artifact Ownership Schema stays in the Lexicon, until the owner
-accepts this decision.
+Provenance: foundation answers FND-Q21A and FND-Q22A, later locked FND-Q21,
+Q23, Q24, and 2026-09-29 confirmation of ACC-4. The owner confirmed the
+Question / Answer / Why / Impact readback for the violation and check.

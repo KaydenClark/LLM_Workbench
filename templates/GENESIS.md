@@ -289,14 +289,17 @@ After the Scaffold's running path is verified, create one stable
 Derive it from locked owner decisions, active ADRs, verified Actuality from the
 target, and bounded choices explicitly supplied in the founding prompt; link
 those sources and keep unresolved questions open. Put 1-3 one-context
-tracer-bullet tickets in its implementation table and record the Genesis result
+tracer-bullet tasks in its implementation table and record the Genesis result
 in its evidence log. The
-manifest declares the six lanes (`docs`, `specs`, `wiki`, `sessions`,
-`feedback`, `tools`) and their collections; live grilling and handoff records
+manifest declares the seven lanes (`docs`, `specs`, `wiki`, `sessions`,
+`feedback`, `tools`, `skills`) and their collections; live grilling and handoff records
 under `workbench/sessions/` stay untracked. Reusable schema/examples in
 `sessions/notepads/templates/` are tracked; `sessions/checkpoints/`
 retains frozen history. Operational `sessions/recovery/` stays ignored and is
-excluded from notepad discovery. Do not create a project-local `skills/` discovery directory.
+excluded from notepad discovery. The release lays the core skills down in
+`workbench/skills` with its receipt and the tracked `.agents/skills` and
+`.claude/skills` links into it (`tools/workbench-skills.mjs install`); do not
+create a root `skills/` directory, which shadows the lane.
 
 The readiness gate (`validate --genesis`) accepts only an actionable first
 packet, so shape it exactly like this before running the gate:
@@ -304,7 +307,7 @@ packet, so shape it exactly like this before running the gate:
 - `**Status:** active` (the copied `templates/SPEC.md` default is `planned`;
   Genesis activates the first spec because it is the work the loop picks up);
 - `**Priority:**` a single digit `0`-`9`;
-- at least one ticket row whose status is `ready` and whose blockers are
+- at least one task row whose status is `ready` and whose blockers are
   `none`; do not claim it before the gate runs;
 - at least one unchecked `- [ ]` acceptance box;
 - the `## Outcome`, `## Vertical Implementation Slices`,
@@ -369,7 +372,7 @@ Do not call bootstrap done on vibes. All of the following must hold:
       result.
 - [ ] One end-to-end path runs from a single command (the demo artifact).
 - [ ] `workbench/manifest.json` is schema 2 and declares the six support
-      lanes, ten collections, wiki profile, exact 21-skill policy, version,
+      lanes, ten collections, wiki profile, exact 26-skill policy, version,
       the `git` block, and Genesis provenance with its source commit; the layout validator
       passes with `--genesis`. When it fails, its JSON `message` names the
       failing control or predicate, and first-spec and generated-region
@@ -380,7 +383,7 @@ Do not call bootstrap done on vibes. All of the following must hold:
       `workbench/sessions/.gitignore` keeps live records untracked; and
       `workbench/wiki/design-concepts/` exists even if empty.
 - [ ] A stable first spec under `workbench/specs/` is `active`, carries at
-      least one unclaimed `ready` ticket with no blockers and proof
+      least one unclaimed `ready` task with no blockers and proof
       requirements, keeps at least one unchecked acceptance box, and `render`
       plus `doctor` pass on the result.
 - [ ] A `workbench/wiki/MEMORY.md` room brain exists (from `templates/wiki/`),

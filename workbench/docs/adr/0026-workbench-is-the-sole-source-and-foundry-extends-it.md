@@ -1,5 +1,4 @@
 ---
-status: accepted
 date: 2026-09-04
 ported_from: GPT_OS ADR-0022 boot boundaries, with its producer conflict resolved rather than repeated
 canonicalized_in:

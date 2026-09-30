@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
-import { REGISTER_NAME, listAdrs, newAdr, normalizeAdrs, renderRegister, validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
+import { ADR_LIFECYCLE_FOLDERS, ID_PATTERN, REGISTER_NAME, listAdrs, localLinks, migrateLifecycleFolders, newAdr, normalizeAdrs, renderRegister, stripFrontmatterKey, validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
 import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -27,6 +27,27 @@ function fixture() {
 
 function adr(status, extraFront = '', body = '') {
   return `---\nstatus: ${status}\ndate: 2026-09-04\n${extraFront}---\n\n# A decision\n\nThe decision.\n\n${body}Provenance: owner decision.\n`;
+}
+
+// S-00I TK-002: `migrate-folders` must show the reviewer renames, not
+// delete-plus-add, and must refuse a dirty tree - both only observable
+// against a real Git working tree, not the plain fixture() above.
+function gitFixture() {
+  const dir = fixture();
+  spawnSync('git', ['init', '--quiet', dir]);
+  spawnSync('git', ['-C', dir, 'config', 'user.email', 'fixture@example.com']);
+  spawnSync('git', ['-C', dir, 'config', 'user.name', 'Fixture']);
+  return dir;
+}
+
+function gitCommitAll(dir, message) {
+  spawnSync('git', ['-C', dir, 'add', '-A']);
+  const result = spawnSync('git', ['-C', dir, 'commit', '--quiet', '-m', message], { encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr);
+}
+
+function gitStatus(dir) {
+  return spawnSync('git', ['-C', dir, 'status', '--porcelain'], { encoding: 'utf8' }).stdout;
 }
 
 test('a valid corpus validates, registers deterministically, and reports a stale register as attention', () => {
@@ -100,22 +121,183 @@ test('validation rejects unknown canonicalization targets, untracked provenance,
   }
 });
 
-test('new allocates an unused letter-bearing label as a proposed record with a canonicalization slot', () => {
+// S-00I TK-002 corrective: folder is lifecycle, so a newly created record
+// must land in the folder its status implies (`proposed/`) and must not
+// carry a `status` key at all - a fresh `adr new` re-introducing that key
+// is exactly the one-record-at-a-time drift back toward mixed state that
+// `migrate-folders` (a one-shot command) does not repeatedly correct.
+test('new allocates an unused letter-bearing label, lands in the folder its status implies, and carries no status key', () => {
   const dir = fixture();
   try {
     fs.writeFileSync(path.join(dir, 'workbench', 'docs', 'adr', '0007-gap.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
     const created = newAdr(dir, { title: 'Checkpoints are the durable session record', date: '2026-09-04' });
     assert.equal(created.number, '000A');
     assert.equal(path.basename(created.filePath), '000A-checkpoints-are-the-durable-session-record.md');
+    assert.equal(path.dirname(created.filePath), path.join(dir, 'workbench', 'docs', 'adr', 'proposed'), 'a new record must be created inside the proposed/ folder its own default status implies');
     const content = fs.readFileSync(created.filePath, 'utf8');
-    assert.match(content, /^---\nstatus: proposed\ndate: 2026-09-04\ncanonicalized_in:\n  - AGENTS\.md\n---/);
+    assert.match(content, /^---\ndate: 2026-09-04\ncanonicalized_in:\n  - AGENTS\.md\n---/);
+    assert.doesNotMatch(content, /^status:/m, 'the folder already carries the lifecycle a status key would only duplicate');
     assert.match(content, /^# Checkpoints are the durable session record$/m);
+    const record = listAdrs(dir).find((item) => item.name === '000A-checkpoints-are-the-durable-session-record.md');
+    assert.equal(record.status, 'proposed', 'the folder alone must still resolve the correct effective lifecycle');
+    assert.deepEqual(validateAdrs(dir).filter((item) => item.adr === record.name), [], 'a freshly created record must validate clean with no status key');
     const cli = spawnSync(process.execPath, [adrTool, 'new', '--path', dir, '--title', 'Another decision'], { cwd: dir, encoding: 'utf8' });
     assert.equal(cli.status, 0, cli.stderr);
-    assert.equal(JSON.parse(cli.stdout).number, '000B');
+    const cliCreated = JSON.parse(cli.stdout);
+    assert.equal(cliCreated.number, '000B');
+    assert.equal(path.dirname(cliCreated.filePath), path.join(dir, 'workbench', 'docs', 'adr', 'proposed'));
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
+});
+
+// S-01W TK-002Q: ADR labels follow the one artifact policy (uppercase
+// `0-9A-Z`, minimum width four, letter-bearing). The case-folded base62
+// allocator ADRs used before could never emit a lowercase label - every
+// lowercase candidate shares its collision key with an earlier uppercase
+// one - so this is a characterization of the delivered sequence past `000Z`,
+// not a red case: legacy files keep their names and bytes and still reserve
+// their identities.
+test('new continues past 000Z to an uppercase width-four label and leaves legacy files byte-identical', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench', 'docs', 'adr');
+    const body = adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n');
+    const legacy = [];
+    for (const ordinal of '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ') legacy.push(ordinal === 'Q' ? '00Q' : `000${ordinal}`);
+    for (const label of legacy) fs.writeFileSync(path.join(collection, `${label}-legacy.md`), body);
+    const before = new Map(legacy.map((label) => [label, fs.readFileSync(path.join(collection, `${label}-legacy.md`))]));
+    const created = newAdr(dir, { title: 'Past the single letters', date: '2026-09-26' });
+    assert.equal(created.number, '001A', 'the next letter-bearing uppercase label after 000Z; the short 00Q reserves 000Q');
+    assert.match(created.number, /^[0-9A-Z]{4,}$/);
+    for (const [label, bytes] of before) assert.deepEqual(fs.readFileSync(path.join(collection, `${label}-legacy.md`)), bytes, `${label} keeps its name and bytes`);
+    writeRegister(dir);
+    assert.match(fs.readFileSync(path.join(collection, 'HISTORY.md'), 'utf8'), /\[00Q\]\(00Q-legacy\.md\)/, 'the register still lists a short legacy label as written');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// Lane F observed `adr new` proposing a label another pushed branch already
+// held, because ADR allocation read only the local tree. `next-id` reads every
+// remote tip (ADR-000O); ADR allocation now reserves the same way.
+test('new reserves ADR labels held only at a remote tip, in every spelling, without touching the local tree', () => {
+  const dir = gitFixture();
+  const remote = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-adr-remote-'));
+  const git = (...args) => {
+    const result = spawnSync('git', ['-C', dir, ...args], { encoding: 'utf8' });
+    assert.equal(result.status, 0, `git ${args.join(' ')}: ${result.stderr}`);
+    return result.stdout;
+  };
+  try {
+    const collection = path.join(dir, 'workbench', 'docs', 'adr');
+    fs.writeFileSync(path.join(collection, '0001-local.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+    git('checkout', '--quiet', '-b', 'main');
+    gitCommitAll(dir, 'Seed the room');
+    assert.equal(spawnSync('git', ['init', '--quiet', '--bare', remote]).status, 0);
+    git('remote', 'add', 'origin', remote);
+    git('push', '--quiet', 'origin', 'main');
+    git('checkout', '--quiet', '-b', 'claude/other-lane');
+    for (const folder of ['proposed', 'archive']) fs.mkdirSync(path.join(collection, folder), { recursive: true });
+    fs.writeFileSync(path.join(collection, 'proposed', '000A-held-on-another-branch.md'), adr('proposed'));
+    fs.writeFileSync(path.join(collection, 'archive', '00b-short-lowercase-legacy.md'), adr('deprecated', 'deprecation_reason: fixture\n'));
+    gitCommitAll(dir, 'Another lane adds two ADRs');
+    git('push', '--quiet', 'origin', 'claude/other-lane');
+    git('checkout', '--quiet', 'main');
+    git('branch', '--quiet', '-D', 'claude/other-lane');
+    git('fetch', '--quiet', 'origin');
+    assert.equal(fs.existsSync(path.join(collection, 'proposed', '000A-held-on-another-branch.md')), false, 'the local tree lacks the remote-only record');
+    const created = newAdr(dir, { title: 'Local decision', date: '2026-09-26' });
+    assert.equal(created.number, '000C', 'ADR-000A and the short lowercase ADR-00b at origin/claude/other-lane are occupied');
+    const cli = spawnSync(process.execPath, [adrTool, 'new', '--path', dir, '--title', 'Second local decision'], { cwd: dir, encoding: 'utf8' });
+    assert.equal(cli.status, 0, cli.stderr);
+    assert.equal(JSON.parse(cli.stdout).number, '000D');
+    assert.deepEqual(fs.readdirSync(path.join(collection, 'proposed')).sort(), ['000C-local-decision.md', '000D-second-local-decision.md'], 'nothing from the remote tip is written locally');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+    fs.rmSync(remote, { recursive: true, force: true });
+  }
+});
+
+// TK-002Q review corrective: a remote tip's declared `adr` collection is
+// held to the same `isSafeRelative` rule the local manifest uses, and an
+// unreadable tip refuses, so allocation never scans the wrong tree or
+// under-reserves. Each refusal writes nothing.
+function remoteRoom() {
+  const dir = gitFixture();
+  const remote = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-adr-remote-'));
+  const git = (...args) => {
+    const result = spawnSync('git', ['-C', dir, ...args], { encoding: 'utf8' });
+    assert.equal(result.status, 0, `git ${args.join(' ')}: ${result.stderr}`);
+    return result.stdout.trim();
+  };
+  fs.writeFileSync(path.join(dir, 'workbench', 'docs', 'adr', '0001-local.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+  git('checkout', '--quiet', '-b', 'main');
+  gitCommitAll(dir, 'Seed the room');
+  assert.equal(spawnSync('git', ['init', '--quiet', '--bare', remote]).status, 0);
+  git('remote', 'add', 'origin', remote);
+  git('push', '--quiet', 'origin', 'main');
+  const cleanup = () => { fs.rmSync(dir, { recursive: true, force: true }); fs.rmSync(remote, { recursive: true, force: true }); };
+  return { dir, git, cleanup };
+}
+
+function publishRemoteBranch({ dir, git }, change) {
+  git('checkout', '--quiet', '-b', 'claude/other-lane');
+  change();
+  gitCommitAll(dir, 'Another lane changes its tree');
+  git('push', '--quiet', 'origin', 'claude/other-lane');
+  git('checkout', '--quiet', 'main');
+  git('branch', '--quiet', '-D', 'claude/other-lane');
+  git('fetch', '--quiet', 'origin');
+}
+
+function assertAdrNewRefuses(dir, pattern) {
+  const collection = path.join(dir, 'workbench', 'docs', 'adr');
+  const before = fs.readdirSync(collection, { recursive: true }).sort();
+  assert.throws(() => newAdr(dir, { title: 'Must refuse', date: '2026-09-26' }), pattern);
+  const cli = spawnSync(process.execPath, [adrTool, 'new', '--path', dir, '--title', 'Must refuse'], { cwd: dir, encoding: 'utf8' });
+  assert.notEqual(cli.status, 0, cli.stdout);
+  assert.match(cli.stderr + cli.stdout, pattern);
+  assert.deepEqual(fs.readdirSync(collection, { recursive: true }).sort(), before, 'a refusal writes nothing');
+  assert.equal(gitStatus(dir), '', 'the working tree stays clean');
+}
+
+for (const [label, declared] of [['dot', '.'], ['dot-prefixed', './workbench/docs/adr'], ['backslash', 'workbench\\docs\\adr'], ['whitespace', 'workbench/docs/my adr'], ['non-workbench', 'docs/adr']]) {
+  test(`new refuses a remote tip whose manifest declares an unsafe adr collection (${label})`, () => {
+    const room = remoteRoom();
+    try {
+      publishRemoteBranch(room, () => {
+        const manifestFile = path.join(room.dir, 'workbench', 'manifest.json');
+        const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+        manifest.collections.adr = declared;
+        fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
+      });
+      assertAdrNewRefuses(room.dir, /unsafe adr collection at refs\/remotes\/origin\/claude\/other-lane/);
+    } finally { room.cleanup(); }
+  });
+}
+
+test('new refuses a remote tip whose manifest is malformed JSON', () => {
+  const room = remoteRoom();
+  try {
+    publishRemoteBranch(room, () => fs.writeFileSync(path.join(room.dir, 'workbench', 'manifest.json'), '{ "collections": '));
+    assertAdrNewRefuses(room.dir, /malformed manifest at refs\/remotes\/origin\/claude\/other-lane/);
+  } finally { room.cleanup(); }
+});
+
+test('new refuses an unreadable remote tip: a tip that is not a commit and a commit whose tree is missing', () => {
+  const room = remoteRoom();
+  try {
+    const blob = spawnSync('git', ['-C', room.dir, 'hash-object', '-w', '--stdin'], { input: 'not a tree\n', encoding: 'utf8' }).stdout.trim();
+    room.git('update-ref', 'refs/remotes/origin/blob-tip', blob);
+    assertAdrNewRefuses(room.dir, /Cannot reserve ADR labels from refs\/remotes\/origin\/blob-tip/);
+    room.git('update-ref', '-d', 'refs/remotes/origin/blob-tip');
+    const tree = spawnSync('git', ['-C', room.dir, 'mktree'], { input: `100644 blob ${blob}\tstray.md\n`, encoding: 'utf8' }).stdout.trim();
+    const commit = room.git('commit-tree', tree, '-m', 'Tip with a missing tree');
+    room.git('update-ref', 'refs/remotes/origin/missing-tree', commit);
+    fs.rmSync(path.join(room.dir, '.git', 'objects', tree.slice(0, 2), tree.slice(2)));
+    assertAdrNewRefuses(room.dir, /Cannot reserve ADR labels from refs\/remotes\/origin\/missing-tree/);
+  } finally { room.cleanup(); }
 });
 
 test('the product corpus validates with a current register and no error findings', () => {
@@ -169,19 +351,26 @@ test('normalize inserts only the missing required frontmatter keys and leaves ev
 
     const result = normalizeAdrs(dir, { date: '2026-09-06' });
     assert.deepEqual(result.changed.map((entry) => `${path.basename(entry.record)}:${entry.inserted.join(',')}`).sort(), [
-      '0001-bare.md:status,date',
+      '0001-bare.md:date',
       '0002-partial.md:date',
       '0003-crlf.md:date'
-    ], 'normalize reports every file it changed and the keys it inserted');
+    ], 'S-00I TK-003: normalize inserts only date now - status is folder-derived (ADR-000I) and a status key normalize invented would silently drift a migrated corpus');
 
-    assert.equal(fs.readFileSync(path.join(collection, '0001-bare.md'), 'utf8'), `---\nstatus: proposed\ndate: 2026-09-06\n---\n\n${bare}`);
+    assert.equal(fs.readFileSync(path.join(collection, '0001-bare.md'), 'utf8'), `---\ndate: 2026-09-06\n---\n\n${bare}`);
     assert.equal(fs.readFileSync(path.join(collection, '0002-partial.md'), 'utf8'), '---\nstatus: accepted\ncanonicalized_in:\n  - AGENTS.md\ndate: 2026-09-06\n---\n\n# A partial decision\n\nThe decision.\n');
     const normalizedCrlf = fs.readFileSync(path.join(collection, '0003-crlf.md'), 'utf8');
     assert.equal(normalizedCrlf, '---\r\nstatus: proposed\r\ndate: 2026-09-06\r\n---\r\n\r\n# A CRLF decision\r\n\r\nThe decision.\r\n');
     assert.doesNotMatch(normalizedCrlf, /(?<!\r)\n/, 'a CRLF record must not gain an LF-terminated key');
 
     writeRegister(dir);
-    assert.deepEqual(validateAdrs(dir), [], 'every normalized record validates');
+    // 0001-bare never declared a status and lives at the top level, so it is
+    // now an ordinary implicitly-`accepted` record (folder-derived, ADR-000I)
+    // with no canonicalized_in owner - a decision only its author can make,
+    // which normalize must never invent. 0002 and 0003 already declared their
+    // own status and validate cleanly.
+    const remaining = validateAdrs(dir);
+    assert.deepEqual(remaining.map((item) => item.code), ['invalid-adr']);
+    assert.match(remaining[0].message, /0001-bare\.md is accepted but names no canonicalized_in owner/);
     assert.deepEqual(normalizeAdrs(dir, { date: '2026-09-06' }).changed, [], 'normalize is idempotent');
 
     const cli = spawnSync(process.execPath, [adrTool, 'normalize', '--path', dir, '--date', '2026-09-06', '--json'], { cwd: dir, encoding: 'utf8' });
@@ -190,6 +379,59 @@ test('normalize inserts only the missing required frontmatter keys and leaves ev
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
+});
+
+// S-00I TK-003, in passing: red before the fix above - a record already
+// migrated to folder lifecycle (S-00I TK-002) declares no `status` key at
+// all, by design (the folder, or the top-level default, carries it). The old
+// `normalizeAdrs` treated that absence as "missing" and would have inserted
+// `status: proposed` into it, silently asserting a lifecycle the folder
+// already contradicts. The fixed version inserts only `date`, so running
+// normalize on an already-migrated corpus changes nothing.
+test('normalize on an already folder-migrated corpus inserts no status key and changes nothing once dated', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    // Top-level, implicitly accepted (ADR-000I default), already dated, no
+    // status key - exactly the shape TK-002's migration leaves behind.
+    fs.writeFileSync(path.join(collection, '0001-migrated.md'), '---\ndate: 2026-09-04\ncanonicalized_in:\n  - AGENTS.md\n---\n\n# A migrated decision\n\nThe decision.\n\nProvenance: owner decision.\n');
+    fs.mkdirSync(path.join(collection, 'proposed'), { recursive: true });
+    fs.writeFileSync(path.join(collection, 'proposed', '0002-migrated-proposed.md'), '---\ndate: 2026-09-04\n---\n\n# A migrated proposal\n\nThe decision.\n\nProvenance: owner decision.\n');
+    writeRegister(dir);
+    assert.deepEqual(validateAdrs(dir), [], 'a folder-migrated corpus with dates already present validates with nothing to repair');
+
+    assert.deepEqual(normalizeAdrs(dir, { date: '2026-09-06' }).changed, [], 'normalize must change nothing: both records already carry a date and neither is missing a status key any more, because folder is lifecycle now');
+    assert.doesNotMatch(fs.readFileSync(path.join(collection, '0001-migrated.md'), 'utf8'), /^status:/m, 'normalize must never reintroduce a status key into a folder-migrated record');
+    assert.doesNotMatch(fs.readFileSync(path.join(collection, 'proposed', '0002-migrated-proposed.md'), 'utf8'), /^status:/m);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+// S-00I TK-003: every accepted ADR naming a live Spec path (the Decisions
+// And Contracts direction of ADR-to-spec reference) must still resolve once
+// Spec directories can move between lifecycle folders. The Spec's own text
+// names 19 accepted records at an earlier anchor; re-counted here at the
+// candidate under test so a silently broken reference is caught rather than
+// trusted to stale prose - the same discipline the intra-ADR link corpus
+// test above already applies.
+test('every accepted-ADR-to-spec reference in the real corpus resolves literally, and the re-counted totals are asserted', () => {
+  const records = listAdrs(root).filter((record) => record.status === 'accepted');
+  let totalLinks = 0;
+  let filesWithLink = 0;
+  for (const record of records) {
+    let countForRecord = 0;
+    for (const link of localLinks(record.body)) {
+      const literal = path.resolve(path.dirname(record.filePath), link.split('#')[0]);
+      const relative = path.relative(root, literal).split(path.sep).join('/');
+      if (!relative.startsWith('workbench/specs/')) continue;
+      countForRecord += 1;
+      assert.ok(fs.existsSync(literal), `${record.relativePath} links to unresolved Spec path ${link}`);
+    }
+    totalLinks += countForRecord;
+    if (countForRecord > 0) filesWithLink += 1;
+  }
+  // S-00V TK-01L: ADR-000O adds one file and one link to S-00V.
+  assert.equal(filesWithLink, 23, 're-count of accepted ADR files carrying a live Spec-path reference at this candidate');
+  assert.equal(totalLinks, 27, 're-count of total accepted-ADR-to-spec link edges at this candidate');
 });
 
 test('durable references distinguish tracked notepad templates from ignored live records', () => {
@@ -253,6 +495,119 @@ test('lifecycle rejects missing, cyclic, partial and nonaccepted successor targe
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
+// S-00I TK-001: a successor is named by identity (a bare record filename),
+// never by location, so it must resolve wherever the record actually lives.
+// `listAdrs` becomes folder-aware over the closed `ADR_LIFECYCLE_FOLDERS` set,
+// and a record's own register/history row must link to its real relative path.
+test('a superseded record resolves a successor that lives in a lifecycle subfolder, and its row links to the real relative path', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    fs.mkdirSync(path.join(collection, 'archive'), { recursive: true });
+    fs.writeFileSync(path.join(collection, 'archive', '0002-next.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+    fs.writeFileSync(path.join(collection, '0001-old.md'), adr('superseded', 'superseded_by: 0002-next.md\n'));
+    const records = listAdrs(dir);
+    assert.equal(records.length, 2, 'listAdrs must enumerate the top level and its lifecycle subfolders');
+    const successor = records.find((record) => record.name === '0002-next.md');
+    assert.equal(successor.folder, 'archive', 'a record read from a lifecycle subfolder must be tagged with that folder');
+    assert.deepEqual(validateAdrs(dir).filter((item) => item.code === 'invalid-adr'), [], 'a cross-folder successor must resolve without an invalid-adr finding');
+    writeRegister(dir);
+    const register = fs.readFileSync(path.join(collection, REGISTER_NAME), 'utf8');
+    const history = fs.readFileSync(path.join(collection, 'HISTORY.md'), 'utf8');
+    assert.match(register, /\[0002\]\(archive\/0002-next\.md\)/, 'REGISTER.md must link to the successor by its real relative path, not its bare name');
+    assert.match(history, /\[0002\]\(archive\/0002-next\.md\)/, 'HISTORY.md must link to the successor by its real relative path, not its bare name');
+    assert.deepEqual(validateAdrs(dir), [], 'the register and history projections must not be stale after writeRegister');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('a successor named by a path or a fragment is still refused, never resolved', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    fs.mkdirSync(path.join(collection, 'archive'), { recursive: true });
+    fs.writeFileSync(path.join(collection, 'archive', '0002-next.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+    fs.writeFileSync(path.join(collection, '0001-old.md'), adr('superseded', 'superseded_by: archive/0002-next.md\n'));
+    assert.ok(validateAdrs(dir).some((item) => item.code === 'invalid-adr' && item.adr === '0001-old.md' && /whole-record superseded_by filename/.test(item.message)));
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('flat collections list identically to before: every record is untagged and listing order is unchanged', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    fs.writeFileSync(path.join(collection, '0001-first.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+    fs.writeFileSync(path.join(collection, '0002-second.md'), adr('proposed'));
+    const records = listAdrs(dir);
+    assert.deepEqual(records.map((record) => record.name), ['0001-first.md', '0002-second.md']);
+    assert.ok(records.every((record) => record.folder === null), 'a flat collection tags nothing, so nothing here changes shape');
+    assert.deepEqual(ADR_LIFECYCLE_FOLDERS, ['proposed', 'archive'], 'TK-002 reuses this exact closed set');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+// The Spec's own count (30 files at an earlier anchor) is a floor, not a
+// pin: the build re-counts the real corpus at the candidate under test so a
+// silently dropped link is visible instead of trusting a stale prose number.
+// A Markdown link is for a reader, so it is checked literally: identity-based
+// fallback belongs to `superseded_by` only, never to a body link. Falling
+// back to identity here would let a genuinely wrong relative path pass as
+// long as some record with that basename exists anywhere in the collection.
+test('every intra-ADR link in the real corpus resolves literally, and the re-counted totals are asserted', () => {
+  const records = listAdrs(root);
+  let totalLinks = 0;
+  let filesWithLink = 0;
+  for (const record of records) {
+    let countForRecord = 0;
+    for (const link of localLinks(record.body)) {
+      const base = path.basename(link.split('?')[0]);
+      if (!ID_PATTERN.test(base)) continue;
+      countForRecord += 1;
+      const literal = path.resolve(path.dirname(record.filePath), link);
+      assert.ok(fs.existsSync(literal), `${record.relativePath} links to unresolved ${link}`);
+    }
+    totalLinks += countForRecord;
+    if (countForRecord > 0) filesWithLink += 1;
+  }
+  // ADR-000P adds one file and one link (to ADR-0036) to the prior 36/65 corpus.
+  assert.equal(filesWithLink, 37, 're-count of ADR files carrying an intra-ADR link at this candidate');
+  assert.equal(totalLinks, 66, 're-count of total intra-ADR link edges at this candidate');
+});
+
+// S-00I TK-001 review correction: a link is validated literally, never
+// resolved by identity. A record moving into a lifecycle subfolder without
+// its incoming links being rewritten is exactly the case `validateAdrs` must
+// now catch as `invalid-adr`, not silently accept.
+test('an intra-ADR link whose literal relative path does not match where the target lives is reported unresolved, not accepted by identity', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    fs.mkdirSync(path.join(collection, 'proposed'), { recursive: true });
+    fs.writeFileSync(path.join(collection, 'proposed', '0002-second.md'), adr('proposed'));
+    fs.writeFileSync(path.join(collection, '0001-first.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n', 'See [the follow-up](0002-second.md).\n\n'));
+    const records = listAdrs(dir);
+    const record = records.find((item) => item.name === '0001-first.md');
+    const [link] = localLinks(record.body);
+    const literal = path.resolve(path.dirname(record.filePath), link);
+    assert.ok(!fs.existsSync(literal), 'the literal relative path must not exist once the target lives in a subfolder');
+    const findings = validateAdrs(dir).filter((item) => item.code === 'invalid-adr');
+    assert.ok(findings.some((item) => item.adr === '0001-first.md' && /0002-second\.md/.test(item.message)), 'a link that does not literally resolve must be reported, never silently accepted because a same-named record exists elsewhere');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+// Red at the pre anchor 956c6a4: this exact fixture (a record whose link
+// points at a wrong relative path) produced no invalid-adr finding there,
+// proven separately in a throwaway detached worktree. At this candidate it
+// must, and it must not be confused with a link into an ignored collection.
+test('a link across lifecycle folders (archive linking up to the top level) still resolves literally when it is correct', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    fs.mkdirSync(path.join(collection, 'archive'), { recursive: true });
+    fs.writeFileSync(path.join(collection, '0001-top.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+    fs.writeFileSync(path.join(collection, 'archive', '0002-archived.md'), adr('deprecated', 'deprecation_reason: superseded content.\n', 'See [0001-top.md](../0001-top.md).\n\n'));
+    assert.deepEqual(validateAdrs(dir).filter((item) => item.code === 'invalid-adr'), [], 'a correct cross-folder relative link must not be reported');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
 test('history output safety is preflighted before either projection changes', () => {
   const dir = fixture(); const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'adr-history-'));
   try {
@@ -264,6 +619,210 @@ test('history output safety is preflighted before either projection changes', ()
     assert.equal(fs.readFileSync(path.join(collection, REGISTER_NAME), 'utf8'), 'old register');
     assert.equal(fs.readFileSync(target, 'utf8'), 'retain');
   } finally { fs.rmSync(dir, { recursive: true, force: true }); fs.rmSync(outside, { recursive: true, force: true }); }
+});
+
+// S-00I TK-002: lifecycle moves from frontmatter `status` to folder location.
+// An accepted record stays at the top level, a proposed record lives in
+// `proposed/`, and a superseded/deprecated record lives in `archive/` - all
+// with their `status` key removed, since the folder now carries it. Register
+// and History are rendered purely from location (and, inside `archive/`,
+// from the `superseded_by`/`deprecation_reason` facts that distinguish
+// superseded from deprecated), so a migrated collection must render
+// identically to the flat, frontmatter-carrying collection it replaces, and
+// `validateAdrs`/`doctor` must report nothing for it.
+test('a collection with lifecycle expressed by folder location, not frontmatter status, renders the same register and history as the flat frontmatter collection, and validates clean', () => {
+  const flat = fixture();
+  const foldered = fixture();
+  try {
+    const flatCollection = path.join(flat, 'workbench/docs/adr');
+    fs.writeFileSync(path.join(flatCollection, '0001-active.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+    fs.writeFileSync(path.join(flatCollection, '0002-draft.md'), adr('proposed'));
+    fs.writeFileSync(path.join(flatCollection, '0003-old.md'), adr('superseded', 'superseded_by: 0001-active.md\n'));
+    writeRegister(flat);
+    assert.deepEqual(validateAdrs(flat), []);
+    const flatRegister = fs.readFileSync(path.join(flatCollection, REGISTER_NAME), 'utf8');
+    const flatHistory = fs.readFileSync(path.join(flatCollection, 'HISTORY.md'), 'utf8');
+
+    const folderedCollection = path.join(foldered, 'workbench/docs/adr');
+    fs.mkdirSync(path.join(folderedCollection, 'proposed'), { recursive: true });
+    fs.mkdirSync(path.join(folderedCollection, 'archive'), { recursive: true });
+    // Same three records, same content minus the now folder-carried `status`
+    // key: an accepted record needs no frontmatter beyond date and title.
+    fs.writeFileSync(path.join(folderedCollection, '0001-active.md'), '---\ndate: 2026-09-04\ncanonicalized_in:\n  - AGENTS.md\n---\n\n# A decision\n\nThe decision.\n\nProvenance: owner decision.\n');
+    fs.writeFileSync(path.join(folderedCollection, 'proposed', '0002-draft.md'), '---\ndate: 2026-09-04\n---\n\n# A decision\n\nThe decision.\n\nProvenance: owner decision.\n');
+    fs.writeFileSync(path.join(folderedCollection, 'archive', '0003-old.md'), '---\ndate: 2026-09-04\nsuperseded_by: 0001-active.md\n---\n\n# A decision\n\nThe decision.\n\nProvenance: owner decision.\n');
+    writeRegister(foldered);
+    assert.deepEqual(validateAdrs(foldered), [], 'a fully folder-migrated collection must validate with no findings at all, not even attention');
+
+    const folderedRegister = fs.readFileSync(path.join(folderedCollection, REGISTER_NAME), 'utf8');
+    const folderedHistory = fs.readFileSync(path.join(folderedCollection, 'HISTORY.md'), 'utf8');
+    // REGISTER.md holds only the accepted record, which never moves, so it is
+    // fully byte-identical - the proof that the projection reads location,
+    // not coincidence, for every record whose lifecycle does not change.
+    assert.equal(folderedRegister, flatRegister, 'REGISTER.md must be byte-identical for every record whose lifecycle does not change');
+    // HISTORY.md carries the two moved records too. Their status/title/date/
+    // owner cells stay identical either way; only their link legitimately
+    // gains the folder prefix a reader now needs to actually reach them -
+    // the opposite would mean the projection ships a link that 404s.
+    assert.equal(folderedHistory, flatHistory.replace('(0002-draft.md)', '(proposed/0002-draft.md)').replace('(0003-old.md)', '(archive/0003-old.md)'), 'HISTORY.md must be identical apart from the moved records\' hrefs gaining their real folder prefix');
+  } finally {
+    fs.rmSync(flat, { recursive: true, force: true });
+    fs.rmSync(foldered, { recursive: true, force: true });
+  }
+});
+
+// A record inside a lifecycle folder that still carries a leftover `status`
+// key is a half-migrated room: visible as a new, non-blocking finding, never
+// silently reinterpreted in either direction.
+test('a leftover status frontmatter that disagrees with its lifecycle folder is a visible, non-blocking finding', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    fs.mkdirSync(path.join(collection, 'proposed'), { recursive: true });
+    fs.writeFileSync(path.join(collection, 'proposed', '0001-half-migrated.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+    writeRegister(dir);
+    const findings = validateAdrs(dir);
+    assert.ok(findings.some((item) => item.code === 'disagreeing-status' && item.adr === '0001-half-migrated.md'), 'a record physically moved to proposed/ that still says accepted must be flagged');
+    assert.ok(findings.every((item) => item.code !== 'disagreeing-status' || item.severity === 'attention'), 'a disagreeing status never blocks');
+    assert.equal(doctor(dir).some((item) => item.blocks !== 'none'), false, 'doctor is not blocked by a disagreeing status');
+
+    // A record at the top level carries no folder-mandated status, so an
+    // explicit non-accepted status there is not itself a disagreement - a
+    // flat, unmigrated corpus (or one that keeps `rejected`, which has no
+    // dedicated folder) must not be flagged just for sitting at top level.
+    fs.writeFileSync(path.join(collection, '0002-flat.md'), adr('proposed'));
+    writeRegister(dir);
+    assert.deepEqual(validateAdrs(dir).filter((item) => item.code === 'disagreeing-status' && item.adr === '0002-flat.md'), []);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+// S-00I TK-002: the one-shot migration itself. It must show the reviewer
+// renames (git mv), strip the now folder-carried `status` key, rewrite every
+// live intra-collection and external Markdown link a move invalidates, and
+// leave an append-only evidence-table reference alone as counted history.
+test('migrate-folders moves records by git mv, strips status, rewrites intra-collection and external references, and leaves an append-only evidence reference as counted history', () => {
+  const dir = gitFixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    fs.writeFileSync(path.join(collection, '0001-active.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+    // 0002 links to 0001 (unmoved) - once 0002 itself moves into proposed/,
+    // that link must gain a `../` prefix even though 0001 never moves.
+    fs.writeFileSync(path.join(collection, '0002-draft.md'), adr('proposed', '', 'See [ADR-0001](0001-active.md).\n\n'));
+    fs.writeFileSync(path.join(collection, '0003-old.md'), adr('superseded', 'superseded_by: 0001-active.md\n'));
+    writeRegister(dir);
+
+    const specDir = path.join(dir, 'workbench/specs/S-901-demo');
+    fs.mkdirSync(specDir, { recursive: true });
+    const specFile = path.join(specDir, 'SPEC.md');
+    fs.writeFileSync(specFile, [
+      '# S-901 - Demo',
+      '',
+      '## Decisions And Contracts',
+      '',
+      '- See [ADR-0002](../../docs/adr/0002-draft.md).',
+      '',
+      '## Append-Only Evidence And Execution Log',
+      '',
+      '| Date | Commit | Claim | Method | Result |',
+      '|---|---|---|---|---|',
+      '| 2026-01-01 | abc123 | mentions [ADR-0002](../../docs/adr/0002-draft.md) | test | historical |',
+      '',
+      '## Completion Result',
+      '',
+      'Not started.',
+      ''
+    ].join('\n'));
+    gitCommitAll(dir, 'initial corpus');
+
+    const result = migrateLifecycleFolders(dir);
+    assert.equal(result.usesGit, true);
+    assert.deepEqual(result.moved.proposed, ['workbench/docs/adr/0002-draft.md']);
+    assert.deepEqual(result.moved.archive, ['workbench/docs/adr/0003-old.md']);
+    assert.deepEqual(result.stripped.sort(), ['workbench/docs/adr/0001-active.md', 'workbench/docs/adr/0002-draft.md', 'workbench/docs/adr/0003-old.md'].sort());
+
+    // git mv, not delete-plus-add: the candidate must show renames (status
+    // `R`, with a trailing `M` since the move also stripped `status` and
+    // rewrote a link, so the working tree differs from the staged rename too).
+    const status = gitStatus(dir);
+    assert.match(status, /^R. workbench\/docs\/adr\/0002-draft\.md -> workbench\/docs\/adr\/proposed\/0002-draft\.md$/m);
+    assert.match(status, /^R. workbench\/docs\/adr\/0003-old\.md -> workbench\/docs\/adr\/archive\/0003-old\.md$/m);
+
+    const movedDraft = fs.readFileSync(path.join(collection, 'proposed', '0002-draft.md'), 'utf8');
+    assert.doesNotMatch(movedDraft, /^status:/m, 'the folder-carried status key must be stripped');
+    assert.match(movedDraft, /\[ADR-0001\]\(\.\.\/0001-active\.md\)/, 'an outgoing link must gain the ../ its mover needs, even though the target itself never moved');
+
+    const movedOld = fs.readFileSync(path.join(collection, 'archive', '0003-old.md'), 'utf8');
+    assert.doesNotMatch(movedOld, /^status:/m);
+    assert.match(movedOld, /superseded_by: 0001-active\.md/, 'superseded_by is a fact, not lifecycle, and stays');
+
+    const active = fs.readFileSync(path.join(collection, '0001-active.md'), 'utf8');
+    assert.doesNotMatch(active, /^status:/m, 'an unmoved accepted record is also stripped');
+
+    assert.deepEqual(validateAdrs(dir), [], 'a fully migrated collection must validate with no findings at all');
+
+    const specContent = fs.readFileSync(specFile, 'utf8');
+    assert.match(specContent, /## Decisions And Contracts\n\n- See \[ADR-0002\]\(\.\.\/\.\.\/docs\/adr\/proposed\/0002-draft\.md\)\./, 'a live reference outside the collection must be rewritten to the moved record\'s real path');
+    assert.match(specContent, /mentions \[ADR-0002\]\(\.\.\/\.\.\/docs\/adr\/0002-draft\.md\)/, 'the append-only evidence row must keep its historical, now-stale path untouched');
+
+    const specRelative = 'workbench/specs/S-901-demo/SPEC.md';
+    assert.equal(result.referencesRewritten[specRelative], 1);
+    assert.equal(result.historicalReferencesLeft[specRelative], 1);
+    assert.ok(result.referencesRewritten['workbench/docs/adr/proposed/0002-draft.md'] >= 1);
+
+    assert.equal(fs.readFileSync(path.join(collection, REGISTER_NAME), 'utf8'), renderRegister(listAdrs(dir)), 'register must be regenerated by the migration itself');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('migrate-folders refuses a dirty working tree', () => {
+  const dir = gitFixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    fs.writeFileSync(path.join(collection, '0001-draft.md'), adr('proposed'));
+    writeRegister(dir);
+    gitCommitAll(dir, 'initial corpus');
+    fs.appendFileSync(path.join(collection, '0001-draft.md'), '\n');
+    assert.throws(() => migrateLifecycleFolders(dir), /dirty working tree/);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('migrate-folders refuses a second run once the collection already reflects folder lifecycle', () => {
+  const dir = gitFixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    fs.writeFileSync(path.join(collection, '0001-draft.md'), adr('proposed'));
+    writeRegister(dir);
+    gitCommitAll(dir, 'initial corpus');
+    migrateLifecycleFolders(dir);
+    gitCommitAll(dir, 'migrate');
+    assert.throws(() => migrateLifecycleFolders(dir), /nothing to migrate/);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+// The command must still work by ordinary file move outside a Git checkout -
+// a fixture with no `.git` at all, as opposed to every test above.
+test('migrate-folders moves records without git when the collection is not inside a Git working tree', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    fs.writeFileSync(path.join(collection, '0001-draft.md'), adr('proposed'));
+    writeRegister(dir);
+    const result = migrateLifecycleFolders(dir);
+    assert.equal(result.usesGit, false);
+    assert.deepEqual(result.moved.proposed, ['workbench/docs/adr/0001-draft.md']);
+    assert.ok(fs.existsSync(path.join(collection, 'proposed', '0001-draft.md')));
+    assert.ok(!fs.existsSync(path.join(collection, '0001-draft.md')));
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('stripFrontmatterKey removes only the named scalar key and preserves a CRLF record\'s terminator', () => {
+  const crlf = '---\r\nstatus: proposed\r\ndate: 2026-09-04\r\n---\r\n\r\n# A decision\r\n';
+  const result = stripFrontmatterKey(crlf, 'status');
+  assert.equal(result.removed, true);
+  assert.equal(result.content, '---\r\ndate: 2026-09-04\r\n---\r\n\r\n# A decision\r\n');
+  assert.doesNotMatch(result.content, /(?<!\r)\n/);
+  const again = stripFrontmatterKey(result.content, 'status');
+  assert.equal(again.removed, false);
+  assert.equal(again.content, result.content);
 });
 
 test('missing and stale history are reported without rewriting history',()=>{

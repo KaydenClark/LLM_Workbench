@@ -16,7 +16,7 @@ should be boring, exact, and executable.
 Follow `AGENTS.md` -> this section -> `LEXICON.md` -> Task Routing. Inspect the
 root, branch, upstream and dirty state; run the project-local spec doctor and
 load the explicitly assigned spec. For owner-directed pickup, use `next --json`
-and `show` to resolve that assignment. The spec and ticket set the normal
+and `show` to resolve that assignment. The spec and task set the normal
 stance. Investigate within the task; do not invent a next task when blocked.
 Load remaining Runbook sections only for the operation being performed.
 
@@ -51,6 +51,28 @@ it does not redefine acceptance. After interruption, the Runbook supplies the
 recovery procedure while the Spec, source and saved context supply what to
 recover. Execution and recovery therefore remain separate jobs.
 
+### Role And Stance Coordination
+
+Roles scope assignments; stances supply their job. Follow the Lexicon before
+assigning Director (project/integration), Dispatcher (one Spec/branch) or Worker
+(one Task). At flight launch, assign Spec Planner to plan small Tasks and safe
+parallel groups from current Actuality; planning Workers may assist. Assign
+Spec Manager to dispatch and monitor execution. Keep one writer for shared
+Spec/projection state and route cross-Spec dependencies to the Director.
+
+Use Reviewer or Auditor stance for the named verification job. Apply the
+existing independent-review eligibility rules to the actual agent/context;
+changing stance does not clear prior involvement. Normally Workers hand back
+merge requests to the Dispatcher branch and the Dispatcher presents the
+assembled candidate for review and merge into integration. Inspect the current
+release owner for any bootstrap exception before selecting a target.
+
+Reconcile accepted decisions, current progress, off-integration candidate
+references and remaining gates into their existing tracked owners through
+reviewed changes. Distinguish a documented decision, an unmerged candidate and
+a delivered capability. Create no Tasks for a newly planned Spec until launch;
+preserve already-authored Tasks and their evidence.
+
 ### Behavior Selection
 
 After resolving the requested scope, compose the smallest behavior already
@@ -58,10 +80,10 @@ authorized by ordinary language; do not wait for a second skill invocation.
 
 | User intent | Behavior and endpoint |
 |---|---|
-| Decide or stress-test an idea | `grilling` with `notepad`; save answers/corrections before continuing |
+| Decide or stress-test an idea | `grill-me`, the entry composing `grilling` with `notepad`; save answers/corrections before continuing |
 | Preserve or resume meaningful work | `notepad`; verify live state and returned revision |
 | Reconcile agreed claims | `promote` with `to-docs` and `save`; no implied implementation |
-| Write specifications only | `to-spec` and needed `to-tickets`; stop at the specified endpoint |
+| Write specifications only | `to-spec` and needed `to-tasks`; stop at the specified endpoint |
 | Deliver assigned work | `carry` with `implement`, verification, independent integration review and `save` |
 | Prepare another agent's continuation | core `handoff`; readable Markdown with inherited scope |
 | Review a candidate or readiness | `code-review`; report only, no implementation or main merge |
@@ -199,17 +221,17 @@ node workbench/tools/adr.mjs register
 `doctor` prints every registered finding with its severity and blocking
 effect and exits non-zero only for `all` or `selection` findings; a
 `selected-slice` finding is excluded by `next` and refused by `claim`, and an
-`attention` finding stays visible without blocking. `doctor --home USER_HOME`
-(default: the user home, only ever read) also checks each installed core skill's
-managed marker `.workbench-skill.json` (schema 2: `source`, `release`,
-`commit`, `contentHash`, and current `compatibleRooms.minimum`/`.maximum`).
-A room inside the declared inclusive range may differ from the global release.
-Missing, broken, modified, unknown generation/range, incompatible, conflicting
-source, duplicate Codex discovery and mixed global generations are attention
-findings with effect `none`. Older markers without a range remain unknown;
-version equality does not establish compatibility. Normal setup preserves
-existing names and explicit update owns repair. Filesystem discovery is distinct
-from configured-host invocation. `doctor` also reports
+`attention` finding stays visible without blocking. `doctor` also reads this
+room's `workbench/skills` lane and its `.agents/skills` and `.claude/skills`
+adapters, never a provider home: `skill-lane-missing` and
+`skill-lane-unreadable` are errors with effect `none` (repair them with the
+release checkout's `workbench-skills.mjs install` or `update
+--explicit-update`; the Genesis readiness gate fails closed on them),
+`skill-adapter-missing` and `skill-adapter-broken` are attention findings
+(a host that checked an adapter out as a plain file instead of a link reports
+`skill-adapter-broken`), and a root `skills/` directory is
+`project-local-skills`, which blocks everything because it shadows the lane.
+Filesystem discovery is distinct from configured-host invocation. `doctor` also reports
 `integration-branch-undeclared` and `integration-branch-missing` (scope
 `git`, effect `none`) until `workbench/manifest.json` `git.integrationBranch`
 names a branch that resolves locally or on a remote; the Genesis readiness
@@ -253,18 +275,18 @@ node workbench/tools/adr.mjs new --title "Decision title"
 ```
 
 `next-id` is a read-only proposal, not a reservation or permission to create work.
-Ticket proposals require the assigned spec and reserve labels from all specs in
+Task proposals require the assigned spec and reserve labels from all specs in
 the Workbench. Write the returned label only during authorized planning, then
 render and run doctor before requesting another. ADR `new` writes a proposed
 record through the existing exclusive-publication path. Existing paths stay fixed.
 
 New durable labels contain at least one letter, so they cannot reuse historical
-decimal IDs that are no longer present. Spec/ticket minimum width is three;
+decimal IDs that are no longer present. Spec/task minimum width is three;
 ADR allocation keeps width four. Width grows without truncation using alphabet
 `0-9 A-Z a-z`. Sorting uses suffix length then that alphabet, independent of
 locale; it is label ordering, not creation chronology. Case-folded and leading-zero
-collisions are refused. Letter-bearing ticket labels are unique across the room;
-legacy numeric ticket references retain their existing spec-qualified scope and
+collisions are refused. Letter-bearing task labels are unique across the room;
+legacy numeric task references retain their existing spec-qualified scope and
 are not claimed globally unique. Their bytes and lookup routes are preserved.
 
 Spec parsing, selection, blockers, claim/close, rendering, Genesis readiness,
@@ -272,6 +294,35 @@ ADR registers, Wiki copied-task-state checks, guardrail contradiction checks and
 citation-anchor coverage accept the new syntax. Existing numeric syntax remains
 readable. Socket/team registry IDs and internal entry sequence IDs keep their
 existing formats; these commands do not allocate those artifact types.
+
+### Landmark Tracker: accepted design and available operations
+
+The Landmark Tracker distinguishes evolving concept understanding from delivery
+state. DQCs and landmarks maintain the former; the generated Tracker displays
+it; Specs and Tasks carry implementation and Taskboard projects their state.
+The intended root is `workbench/landmark-tracker/`, containing generated
+`TRACKER.json` and flat `destination-questions/` and `landmarks/` JSON records.
+These paths are a delivery contract, not evidence of installed collections or
+commands. Resolve availability from the actual manifest and verified runtime;
+do not invent a Tracker invocation or use an existing command as its substitute.
+
+Once implemented, workflow transitions and ongoing alignment maintain source
+records with what changed, why and evidence. Keep original grilling questions
+and corrections reachable. DQCs may precede a landmark, Spec, Task or known Wiki
+destination; an answered question records Expected result, while Result records
+achieved delivery. Assess the actual durable content before claiming Verified;
+Task completion, article existence and structural validation alone are insufficient.
+Keep live links current through supported move operations and retain immutable
+citations for historical proof. Ignored notes require their own retention or
+safe transfer until reconciliation; tracked Git history does not recover them.
+
+A Landmark Wiki page contains no WBIDs, including metadata and link targets.
+Keep identity-bearing provenance in the structured records and delivery evidence;
+use readable control or other identifier-free source routes in the article.
+Ordinary feature explanations and cross-cutting design models retain their
+respective Wiki purposes. Collection/schema support must be delivered and
+verified before claiming those article types are available. Routine Wiki work
+within an authorized assignment adds no independent publishing ceremony.
 
 ### JSON Notepads
 
@@ -302,7 +353,7 @@ inventory is reconciled; they are preserved. Ordinary `create --note NAME`
 remains available for legacy named context. Allocation assumes one writer and
 checks current records; it supplies neither a distributed lock nor an eternal
 registry of deleted local notes. Active handoff retention still prevents source
-cleanup. Durable spec/ticket/ADR behavior is described above.
+cleanup. Durable spec/task/ADR behavior is described above.
 
 New notepads are JSON. `workbench/tools/notepads.mjs` owns structural checks
 and updates. A new layout declares `sessions/notepads/`: bare names create
@@ -533,24 +584,30 @@ save/promote while preserving checkpoint as a no-write compatibility notice.
 The v3.1.4 eighteen-skill manifest policy remains readable as a frozen legacy
 row; adding candidate source does not publish or stamp v3.2.0.
 
-For an authorized room-specific extension, keep its sole source at the project
-path `.agents/skills/NAME/SKILL.md`. Choose a name absent from required core and
-both global and project discovery roots; preserve any collision for explicit
-reconciliation. Track that source under the room's own Git policy. Create only
-a missing project `.claude/skills/NAME` directory symlink resolving to the same
-source, and ignore this generated adapter in project Git. On Windows, use a
-supported directory adapter only after checking the actual host; inability to
-create it leaves that discovery gate open. Do not duplicate implementation bytes
-or add `.codex/skills`. Compare resolved paths and then invoke the extension in
-the actual configured application. File presence and a valid alias alone do
-not prove native discovery or callability.
+The core skills live in this room's `workbench/skills` lane, laid down from
+the LLM Workbench release with a receipt (`.workbench-skills.json`) naming the
+source release, commit and a hash per skill. The tracked `.agents/skills`
+(Codex) and `.claude/skills` (Claude Code) links resolve into the lane, so a
+fresh clone discovers every core skill with no provider home. Check the lane
+from the release checkout with `node tools/workbench-skills.mjs verify
+--project PATH`; `doctor` reports `skill-lane-missing`, `skill-lane-unreadable`,
+`skill-adapter-missing`, `skill-adapter-broken` and `project-local-skills`
+without repairing them.
 
-Global installation does not publish room-local source into a personal catalog.
-That acceptance is a separately authorized operation. The global doctor
-`--home` inspection covers the declared global core; inspect project extension
-names and adapters separately. A new room needs no local extension and no
-personal catalog for core save/promote/notepad operation. Genesis's prohibition
-on a root `skills/` core shadow does not prohibit this room-owned source route.
+For an authorized room-specific extension, keep its sole source in the lane at
+`workbench/skills/NAME/SKILL.md`. Choose a name absent from required core;
+preserve any collision for explicit reconciliation. Both hosts discover it
+through the existing adapters, and `verify` lists it under `roomLocal` and
+never replaces or removes it. On Windows, confirm the host checked the adapter
+links out as links; inability to do so leaves that discovery gate open. Do not
+duplicate implementation bytes, add a root `skills/`, or add `.codex/skills`.
+Invoke the extension in the actual configured application: file presence and
+a resolving adapter alone do not prove native discovery or callability.
+
+Laying the lane down does not publish room-local source into a personal
+catalog. That is a separately authorized operation, and a personal catalog is
+never on this room's critical path. A new room needs no local extension and no
+personal catalog for core save/promote/notepad operation.
 
 ### Direct Owner Promotion
 
@@ -762,6 +819,12 @@ Expected result: [clean scope, verified base/target, reviewable PR].
 Closeout, once the integration review has passed. A pushed branch is
 recoverable, not delivered; finish the merge and clean up after yourself:
 
+For the Spec QA runtime, run the assembled review gate before merging. Record
+owner Human QA after integration, naming the inspected commit whose Spec and
+live/retired Task content matches the local assembled digest. Completion still
+requires that approval; administrative completion preserves it for retirement,
+while substantive changes require fresh review and approval.
+
 Run merge and containment verification as a fail-fast sequence. Pin the reviewed
 commit and reject a changed candidate. Merge must not delete branches before
 containment is verified. A linked worktree holding the target must not block
@@ -807,8 +870,10 @@ To upgrade:
 2. Re-copy only the changed template sections; keep this project's filled-in
    specifics. Never let `[BRACKETED]` placeholders leak back into filled docs.
 3. Update managed runtime tools only with that checkout's
-   `node tools/workbench-tools.mjs update --project PATH --home HOME --explicit-update`;
-   keep its receipt and backup as the component recovery point.
+   `node tools/workbench-tools.mjs update --project PATH --home HOME --explicit-update`
+   and the managed core skills only with
+   `node tools/workbench-skills.mjs update --project PATH --home HOME --explicit-update`;
+   keep each receipt and backup as that component's recovery point.
 4. Update each doc's version stamp to the new version. Do not rewrite the room
    manifest's historical adoption source to impersonate the newly installed
    component generation.
@@ -819,9 +884,11 @@ Workbench self-drift check before and after the change. Inspect the source
 controls, Specs and projections, manifest, ADR/Wiki routes, procedures,
 templates, managed artifacts and readable continuity metadata for stale
 current-facing statuses, blockers, versions, paths and owners. A target-project
-drift report, render, doctor or passing tests do not replace this check. Until
-the source Workbench provides its public self-drift seam, record the bounded
-manual check and do not call the source update clean while known current-facing
+drift report, render, doctor or passing tests do not replace this check. In the
+source Workbench, run `node workbench/tools/self-drift.mjs --phase pre --json`
+and `--phase post --json` around the change, then record the bounded semantic
+check. Machine output alone does not certify freshness; do not call the source
+update clean while known current-facing
 drift remains. Preserve explicitly bounded historical evidence.
 
 The runtime tools in `workbench/tools/` are Workbench-managed: their receipt
@@ -893,7 +960,9 @@ assigned target; it never authorizes a repair or invokes automated repair.
 3. Write `REPORT-topic-date.md` in the declared feedback lane using its
    `REPORT_FORMAT.md`. Include Target And Scope, Evidence And Limitations,
    Findings, Challenged Or Rejected Findings, Next Action And Open Questions,
-   and Review Boundary. No findings is valid. Reports never live loose or in
+   and Review Boundary. Every finding requires exactly one Lexicon disposition,
+   recorded in its owning Spec with an evidence route; missing ownership stays
+   an explicit gap. No findings is valid. Reports never live loose or in
    the Wiki. If the format is absent in an older installation, these sections
    are sufficient; explicit upgrades may copy it from the source templates.
 4. Put accepted follow-up work in its existing linked spec; proposed repairs
@@ -929,7 +998,7 @@ For routine read-only runs, a final response note is enough.
 
 ## Evidence And Continuation Practices
 
-Size a ticket so a fresh context can recover its inputs, exercise one useful
+Size a task so a fresh context can recover its inputs, exercise one useful
 behavior at its public seam and finish named verification. There is no accepted
 universal byte or token threshold. Unknown consequential product choices belong
 in a decision slice of the already assigned spec before dependent implementation;

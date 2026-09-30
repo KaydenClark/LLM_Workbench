@@ -50,7 +50,7 @@ const contradictorySpec = [
   '',
   '## Vertical Implementation Slices',
   '',
-  '| Ticket | Slice | Status | Blockers | Proof |',
+  '| Task | Slice | Status | Blockers | Proof |',
   '|---|---|---|---|---|',
   '| TK-001 | Still open | ready | none | pending |'
 ].join('\n');
@@ -85,7 +85,7 @@ const freshSpec = [
   '',
   '## Append-Only Evidence And Execution Log',
   '',
-  '| Date | Ticket | Event | Verification | Docs | Remaining gap |',
+  '| Date | Task | Event | Verification | Docs | Remaining gap |',
   '|---|---|---|---|---|---|',
   '| 2026-07-12 | TK-001 | Verified | focused check passed | none | none |'
 ].join('\n');
@@ -153,7 +153,7 @@ console.log(`ok - guardrail audit self-test passed; local north-star score ${loc
 assert.equal(taskStatePasses({
   'workbench/manifest.json': JSON.stringify({ schemaVersion: 2, lanes: { specs: 'workbench/specs' } }),
   'workbench/specs/S-00A-contradictory/SPEC.md': contradictorySpec.replaceAll('S-101', 'S-00A').replaceAll('TK-001', 'TK-00A')
-}), false, 'alphanumeric spec/ticket IDs cannot hide contradictory task state');
+}), false, 'alphanumeric spec/task IDs cannot hide contradictory task state');
 
 const modern = {
   'BLUEPRINT.md':'# Blueprint\n\n## Product Destination\n\nA portable product.\n',

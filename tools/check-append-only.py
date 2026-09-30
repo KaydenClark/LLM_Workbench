@@ -1,4 +1,6 @@
-# A row's identity is its Date+Ticket+Event columns. Append-only means: for each
+# A row's identity is its Date+Task+Event columns (the second cell is read by
+# position, not by the column's header word, so an older or newer header
+# spelling for that column reads the same way). Append-only means: for each
 # identity, the text FIRST published for it must still be present verbatim.
 #
 # "Published" means: appeared in any commit on this branch. It does NOT mean
@@ -8,14 +10,34 @@
 # append-only evidence log in its own header and is checked on the same terms.
 # Later variants of the same identity are rewrites - violations - so the repair
 # is to restore the earliest text, not to preserve every variant.
-import os, subprocess, sys
+import atexit, io, os, subprocess, sys
 # Derived, not hardcoded. A hardcoded list silently stops covering a spec the
 # moment one is added, and that happened: S-036, S-037 and S-045 all carry rows
 # this branch wrote while sitting outside the enumeration that claimed to
 # enforce the rule.
 SPEC_ROOT="workbench/specs"
-SPECS=sorted(d for d in os.listdir(SPEC_ROOT)
-             if os.path.isfile(os.path.join(SPEC_ROOT,d,"SPEC.md")))
+# S-00I TK-006: `os.listdir(SPEC_ROOT)` alone only ever sees a direct child
+# carrying `SPEC.md` - the active roster. S-00I TK-005 started retiring a
+# completed Spec one level deeper (`workbench/specs/retired/<id>/SPEC.md`),
+# and this enumeration never followed it there, so S-00H's own evidence log -
+# with its own retirement row - silently left append-only enforcement the
+# moment it retired. `SPEC_LIFECYCLE_FOLDERS` mirrors the one list
+# `workbench/tools/spec-workbench.mjs` exports under that name (`['retired']`
+# today; `archive` is ADR-only, never a Spec folder, per ADR-000I).
+SPEC_LIFECYCLE_FOLDERS=["retired"]
+def discover_specs(spec_root):
+    specs=[]
+    for name in sorted(os.listdir(spec_root)):
+        full=os.path.join(spec_root,name)
+        if not os.path.isdir(full): continue
+        if os.path.isfile(os.path.join(full,"SPEC.md")):
+            specs.append(name)
+        elif name in SPEC_LIFECYCLE_FOLDERS:
+            for sub in sorted(os.listdir(full)):
+                if os.path.isfile(os.path.join(full,sub,"SPEC.md")):
+                    specs.append(f"{name}/{sub}")
+    return specs
+SPECS=discover_specs(SPEC_ROOT)
 def sh(*a): return subprocess.run(a,capture_output=True,text=True)
 commits=[c for c in ("288c821","d31bf2c","a5e7fe0") if sh("git","cat-file","-e",c+"^{commit}").returncode==0]
 commits+=sh("git","rev-list","--reverse","5561906..HEAD").stdout.split()
@@ -23,14 +45,52 @@ def rows(t): return [l for l in t.split("\n") if l.startswith("| 20")]
 def ident(r):
     p=[x.strip() for x in r.split("|")]
     return tuple(p[1:4]) if len(p)>4 else (r[:80],)
+class GitBlobs:
+    """Read the same revision:path blobs without launching Git for each one."""
+    def __init__(self):
+        # Inherit stderr so a Git failure stays visible and cannot fill a pipe.
+        self.process = subprocess.Popen(
+            ["git", "cat-file", "--batch"], stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE)
+        atexit.register(self.close)
+
+    def read(self, revision, path):
+        request = f"{revision}:{path}".encode("utf-8")
+        if b"\n" in request or b"\r" in request:
+            raise ValueError("Git batch request contains a newline")
+        self.process.stdin.write(request + b"\n")
+        self.process.stdin.flush()
+        header = self.process.stdout.readline()
+        if header == request + b" missing\n":
+            return None  # The path did not exist at this revision.
+        fields = header.split()
+        if len(fields) != 3 or fields[1] != b"blob" or not fields[2].isdigit():
+            raise RuntimeError(f"Invalid git cat-file response: {header!r}")
+        size = int(fields[2])
+        payload = self.process.stdout.read(size)
+        if len(payload) != size or self.process.stdout.read(1) != b"\n":
+            raise RuntimeError("Truncated git cat-file blob response")
+        # Match subprocess text=True decoding and universal-newline behavior.
+        return io.TextIOWrapper(io.BytesIO(payload)).read()
+
+    def close(self):
+        if self.process.stdin.closed:
+            return
+        self.process.stdin.close()
+        self.process.stdout.close()
+        code = self.process.wait()
+        if code:
+            raise RuntimeError(f"git cat-file exited {code}")
+
+blobs = GitBlobs()
 bad=0
 for spec in SPECS:
     first={}      # identity -> (text, commit) first published
     variants={}   # identity -> set of texts ever seen
     for c in commits:
-        r=sh("git","show",f"{c}:workbench/specs/{spec}/SPEC.md")
-        if r.returncode: continue
-        for row in rows(r.stdout):
+        text=blobs.read(c,f"workbench/specs/{spec}/SPEC.md")
+        if text is None: continue
+        for row in rows(text):
             k=ident(row)
             first.setdefault(k,(row,c[:7]))
             variants.setdefault(k,set()).add(row)
@@ -51,9 +111,10 @@ for spec in SPECS:
 LEDGER="benchmarks/RESULTS.md"
 first={}
 for c in commits:
-    r=sh("git","show",f"{c}:{LEDGER}")
-    if r.returncode: continue
-    for row in rows(r.stdout): first.setdefault(ident(row),(row,c[:7]))
+    text=blobs.read(c,LEDGER)
+    if text is None: continue
+    for row in rows(text): first.setdefault(ident(row),(row,c[:7]))
+blobs.close()
 cur={ident(r):r for r in rows(open(LEDGER,encoding="utf-8").read())}
 led=[(k,c,t) for k,(t,c) in first.items() if k not in cur or cur[k]!=t]
 if led:

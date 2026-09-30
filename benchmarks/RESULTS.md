@@ -37,3 +37,46 @@ benchmark discipline25, outcome evidence8. Remaining recommendations are real
 repeated outcome trials, controls/prior/candidate comparison, recent candidate
 evidence, and uncertainty estimates. Deterministic safety checks and one native
 fresh-project continuation do not establish a general agent-reliability gain.
+
+| 2026-09-19 | S-00U approval and lifecycle repair, baseline bc370fe and candidate f47d57f | Root guardrail audit before/after; targeted report and branch-closeout regressions | 78/100 before and after, unchanged criteria | Repeated real outcomes, controls/prior/candidate comparison, recent outcome evidence and uncertainty remain missing; no reliability claim; full assembled verification separately recorded |
+## 2026-09-19 S-00T lifecycle repair baseline
+
+Guardrail audit is **78/100 before and after** (baseline f9f77a8; runtime
+candidate9611b59). Static20, drift25, discipline25, outcomes8. Remaining
+recommendations are repeated real trials, control/prior/candidate comparison,
+recent candidate evidence and uncertainty estimates. Disposable lifecycle
+regressions and static score preservation do not prove agent reliability.
+
+## 2026-09-24 S-00P owner workflow map
+
+Guardrail audit using `node tools/audit-guardrails.mjs --path .` measured
+**78/100 before** at `6ae38b9` and **78/100 after** at `cb8ff78`, with no
+criteria change (static 20/20, drift 25/25, discipline 25/25, outcome evidence
+8/30). The corrected candidate passed all 48 AGENTS suite commands and a
+separate-context full-branch review found no actionable issue. The audit still
+recommends repeated real outcome trials, controls/prior/candidate comparison,
+recent outcome evidence and uncertainty estimates. This documentation and
+contract check does not establish improved agent outcomes.
+
+## 2026-09-27 v4 role groundwork
+
+Guardrail audit using `node tools/audit-guardrails.mjs --path .` measured
+**78/100 before** at `b00a2e338436ef7b281b0cc53e74f891af32f18c` and
+**78/100 after** at `950cf1bd988da8ee622fd3cbe4fb7a031c19ed16`, with
+unchanged criteria (static20, drift25, discipline25, outcome evidence8).
+Repeated real outcome trials, controls/prior/candidate comparison, recent
+outcome evidence and uncertainty estimates remain missing. These documentation
+and planning changes establish no improvement in agent outcomes. Final
+verification is recorded in S-00O's integration reconciliation receipt.
+
+## 2026-09-29 ADR-000B/C/D acceptance documentation
+
+Guardrail audit using `node tools/audit-guardrails.mjs --path .` measured
+**78/100 before** on clean S-00G parent `ef2b129692ba051b65214331b67b44a8542f27a3`
+and **78/100 after** on the ADR acceptance candidate tree. Criteria were
+unchanged: static contract 20/20, drift resistance 25/25, benchmark discipline
+25/25, outcome evidence 8/30. Remaining recommendations are repeated real
+outcome trials, controls/prior/candidate comparison, recent real outcome
+evidence, and uncertainty estimates. This documentation change adds no agent
+outcome evidence and makes no reliability claim. The S-00G evidence log names
+the verified candidate commit and checks after save.

@@ -7,7 +7,10 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const sourceRoot = path.join(root, 'skills');
+// S-00V: the authoring source is the producer's own skills lane. This
+// installer publishes it into a provider home (the owner's personal catalog,
+// a backup and publication target); it is never on a room's critical path.
+const sourceRoot = path.join(root, 'workbench', 'skills');
 import { coreSkills } from '../workbench/tools/workbench-layout.mjs';
 import { markerSourceIdentity, writeManagedMarker, readManagedMarker, skillContentHash } from './skill-marker.mjs';
 import { lstatOrNull, presentSkillPath, resolveSkillLink } from './skill-presence.mjs';
@@ -80,7 +83,22 @@ function resolveDestinationRoot(destination) {
 
 function gitOwner(directory) {
   for (let current = directory; ; current = path.dirname(current)) {
-    if (lstatOrNull(path.join(current, '.git'))) return current;
+    const marker = path.join(current, '.git');
+    const entry = lstatOrNull(marker);
+    // Some cloud hosts reserve an empty, read-only .git directory outside
+    // repositories. It owns no Git state and must never receive exclusions.
+    // Keep walking: an empty nested marker must not hide a real outer owner.
+    if (entry && !(entry.isDirectory() && !entry.isSymbolicLink() && fs.readdirSync(marker).length === 0)) {
+      const result = spawnSync('git', ['rev-parse', '--show-toplevel'], { cwd: current, encoding: 'utf8' });
+      const top = result.stdout?.replace(/\r?\n$/, '');
+      // Nonempty metadata, gitfiles and links are not disposable sentinels.
+      // Refuse an invalid or misresolved owner rather than treating its data
+      // as unversioned and bypassing tracked-core/backup protections.
+      if (result.status !== 0 || !top || fs.realpathSync.native(top) !== fs.realpathSync.native(current)) {
+        throw new Error(`Git ownership could not be verified at ${marker}: ${result.stderr?.trim() || 'repository root does not match its metadata'}`);
+      }
+      return current;
+    }
     const parent = path.dirname(current);
     if (parent === current) return null;
   }
@@ -92,7 +110,9 @@ function validateDestinations(destinations) {
   for (const { engine, root: destinationRoot } of destinations) {
     const outcome = resolveDestinationRoot(destinationRoot);
     if (outcome.error) return { error: outcome.error };
-    const owner = gitOwner(outcome.root);
+    let owner;
+    try { owner = gitOwner(outcome.root); }
+    catch (error) { return { error: fail('skill-exclusion-conflict', error.message) }; }
     if (owner && !gitOwnedRoots.includes(owner)) gitOwnedRoots.push(owner);
     resolved.push({ engine, root: outcome.root, declared: destinationRoot });
     for (const skill of coreSkills) {

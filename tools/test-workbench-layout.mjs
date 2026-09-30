@@ -8,9 +8,9 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import test from 'node:test';
 import { doctor, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
-import { coreSkills, validateManifest } from '../workbench/tools/workbench-layout.mjs';
+import { coordinationSkills, coreSkills, legacyCoreSkills, validateManifest, readContextUnit, ContextUnitUndeclaredError } from '../workbench/tools/workbench-layout.mjs';
 import { genesisTemplateFiles, templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
-import { COLLECTIONS, LANES } from '../workbench/tools/workbench-paths.mjs';
+import { COLLECTIONS, LANES, collectionRelative } from '../workbench/tools/workbench-paths.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
@@ -18,6 +18,13 @@ const runtime = path.join(root, 'workbench', 'tools');
 const tool = path.join(runtime, 'workbench-layout.mjs');
 const installer = path.join(root, 'tools', 'workbench-tools.mjs');
 const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
+
+// S-00M TK-002: doctor reports untracked files under the root controls, the
+// ADR collection and the spec lane. These Genesis rooms are never committed, so
+// that one attention finding is correctly present in their clean state, and the
+// clean expectation is that finding and nothing else.
+const UNCOMMITTED_ROOM = ['untracked-controls'];
+const codesOf = (findings) => (findings ?? []).map((item) => item.code);
 
 function fixture() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-layout-'));
@@ -66,8 +73,14 @@ function installTools(project) {
   assert.equal(result.status, 0, `${result.stdout}${result.stderr}`);
 }
 
+function installSkills(project) {
+  const result = spawnSync(process.execPath, [path.join(root, 'tools', 'workbench-skills.mjs'), 'install', '--project', project], { cwd: root, encoding: 'utf8' });
+  assert.equal(result.status, 0, `${result.stdout}${result.stderr}`);
+}
+
 function completeGenesis(project, options = {}) {
   if (options.tools !== false) installTools(project);
+  if (options.skills !== false) installSkills(project);
   if (options.git !== false) gitRoom(project);
   const router = fs.readFileSync(path.join(root, 'templates', 'wiki', 'MEMORY.project.md'), 'utf8')
     .replaceAll('[PROJECT_NAME]', 'Fixture').replaceAll('[HARNESS_VERSION]', VERSION.slice(1)).replaceAll('[YYYY-MM-DD]', '2026-09-01')
@@ -100,17 +113,17 @@ function completeGenesis(project, options = {}) {
 
 ## Outcome
 
-One cold agent can select and claim the first ticket.
+One cold agent can select and claim the first task.
 
 ## Vertical Implementation Slices
 
-| Ticket | Slice | Status | Blockers | Proof |
+| Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Prove one cold selection | ready | none | pending |
 
 ## Acceptance Criteria
 
-- [ ] The first ticket is selectable.
+- [ ] The first task is selectable.
 
 ## Completion Result
 
@@ -164,7 +177,7 @@ test('a fresh Genesis fixture has the seven controls, manifest lanes, first spec
     assert.deepEqual(nextWork(project), {
       specId: 'S-001',
       title: 'First Capability',
-      ticketId: 'TK-001',
+      taskId: 'TK-001',
       slice: 'Prove one cold selection',
       status: 'ready',
       priority: 0,
@@ -173,6 +186,9 @@ test('a fresh Genesis fixture has the seven controls, manifest lanes, first spec
       nextGate: 'Claim TK-001.'
     });
     assert.equal(fs.existsSync(path.join(project, 'skills')), false);
+    for (const discoveryRoot of ['.agents/skills', '.claude/skills']) {
+      assert.equal(fs.realpathSync(path.join(project, discoveryRoot, 'genesis')), fs.realpathSync(path.join(project, 'workbench', 'skills', 'genesis')), `${discoveryRoot} resolves into the lane`);
+    }
     const manifest = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'manifest.json'), 'utf8'));
     assert.equal(manifest.schemaVersion, 2);
     assert.deepEqual(manifest.lanes, LANES);
@@ -187,7 +203,7 @@ test('a fresh Genesis fixture has the seven controls, manifest lanes, first spec
     assert.match(ignore, /^handoffs\/\*$/m);
     assert.doesNotMatch(ignore, /^checkpoints/m, 'checkpoints must never be ignored');
     render(project);
-    assert.deepEqual(doctor(project, { home: quietHome }), [], 'an operable Genesis fixture must satisfy doctor once rendered');
+    assert.deepEqual(codesOf(doctor(project, { home: quietHome })), UNCOMMITTED_ROOM, 'an operable Genesis fixture must satisfy doctor once rendered');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
     fs.rmSync(quietHome, { recursive: true, force: true });
@@ -233,9 +249,59 @@ function schemaOneFixture(project) {
     workbenchVersion: VERSION,
     provenance: { lifecycle: 'genesis' },
     lanes: { specs: 'workbench/specs', wiki: 'workbench/wiki', grilling: 'workbench/grilling', handoffs: 'workbench/handoffs', feedback: 'workbench/feedback' },
-    skillPolicy: { required: ['adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement', 'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness'], discovery: ['.agents/skills', '.claude/skills'], normalSetup: 'presence-only', updates: 'explicit-only' }
+    skillPolicy: { required: ['adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement', 'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'update-harness'], discovery: ['.agents/skills', '.claude/skills'], normalSetup: 'presence-only', updates: 'explicit-only' }
   }, null, 2)}\n`);
 }
+
+// S-00V: a room stamped before the skills lane declares six lanes and the
+// provider-home skill policy. `migrate` declares the seventh lane and the
+// lane policy, creates the empty lane, and then `workbench-skills.mjs
+// install` lays the skills down - the route every existing room takes.
+test('a six-lane schema 2 manifest gains the skills lane through migrate, after which the lane installs and migrate reports current', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    delete manifest.lanes.skills;
+    // A room stamped before the lane holds the bundle its release stamped:
+    // v3.2.1's frozen twenty-one, without the `grill-me` S-00Z grew the live
+    // bundle with or the coordination entries that grew it after. The
+    // provider-home shape validates only with a stamped row.
+    manifest.skillPolicy = { ...manifest.skillPolicy, required: manifest.skillPolicy.required.filter((name) => name !== 'grill-me' && !coordinationSkills.includes(name)), normalSetup: 'presence-only', updates: 'explicit-only' };
+    fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
+    // The undeclared directory may already exist, empty (init's .gitkeep) or
+    // holding a room-local skill; migrate must accept both, not refuse them.
+    fs.mkdirSync(path.join(project, 'workbench', 'skills', 'room-demo'), { recursive: true });
+    fs.writeFileSync(path.join(project, 'workbench', 'skills', 'room-demo', 'SKILL.md'), '# room demo\n');
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'a pre-lane room still validates');
+    const skillsTool = path.join(root, 'tools', 'workbench-skills.mjs');
+    const refused = spawnSync(process.execPath, [skillsTool, 'install', '--project', project], { cwd: root, encoding: 'utf8' });
+    assert.equal(JSON.parse(refused.stdout).error.code, 'invalid-lane', 'install needs the lane declared first');
+
+    const migrated = run('migrate', '--project', project);
+    assert.equal(migrated.status, 0, `${migrated.stdout}\n${migrated.stderr}`);
+    assert.equal(migrated.report.status, 'migrated');
+    assert.deepEqual(migrated.report.added, ['lanes.skills']);
+    const after = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    assert.equal(after.lanes.skills, 'workbench/skills');
+    assert.equal(after.skillPolicy.normalSetup, 'lane-install');
+    assert.equal(after.skillPolicy.updates, 'workbench-update');
+    assert.deepEqual(after.skillPolicy.required, manifest.skillPolicy.required, 'the required list is untouched');
+    assert.equal(fs.statSync(path.join(project, 'workbench', 'skills')).isDirectory(), true);
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+
+    const installed = spawnSync(process.execPath, [skillsTool, 'install', '--project', project], { cwd: root, encoding: 'utf8' });
+    assert.equal(JSON.parse(installed.stdout).status, 'installed', installed.stdout);
+    for (const discoveryRoot of ['.agents/skills', '.claude/skills']) {
+      assert.equal(fs.realpathSync(path.join(project, discoveryRoot, 'genesis')), fs.realpathSync(path.join(project, 'workbench', 'skills', 'genesis')));
+    }
+    const verified = JSON.parse(spawnSync(process.execPath, [skillsTool, 'verify', '--project', project], { cwd: root, encoding: 'utf8' }).stdout);
+    assert.equal(verified.status, 'valid');
+    assert.deepEqual(verified.roomLocal, ['room-demo'], 'the room-local skill that predated the lane survives migrate and install');
+    assert.equal(run('migrate', '--project', project).report.status, 'current');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
 
 test('a schema 1 manifest reports upgrade-required and migrates losslessly once', () => {
   const project = fixture();
@@ -302,6 +368,55 @@ test('the validator requires every declared collection, the sessions ignore file
       fs.rmSync(project, { recursive: true, force: true });
     }
   }
+});
+
+// S-00I TK-01U: `features` is an additive Wiki collection, not an eighth
+// lane. A new room resolves, creates and seeds it; every pre-feature
+// collection shape a room was stamped with - including the current
+// seven-lane, ten-collection room - still validates, and migrate adds the
+// collection without touching anything else. Replacing the allowed shape
+// instead of adding one fails the pre-feature assertion below.
+test('the additive features collection resolves, is created and seeded by init, and every pre-feature collection shape still validates and migrates additively', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    assert.equal(manifest.collections.features, 'workbench/wiki/features', 'init declares the features collection');
+    assert.deepEqual(manifest.lanes, LANES, 'features is a collection, never an eighth lane');
+    assert.equal(Object.keys(manifest.lanes).length, 7);
+    assert.equal(collectionRelative(project, 'features'), 'workbench/wiki/features', 'the resolver answers the declared collection');
+    assert.equal(fs.statSync(path.join(project, 'workbench', 'wiki', 'features')).isDirectory(), true);
+    assert.equal(fs.existsSync(path.join(project, 'workbench', 'wiki', 'features', 'README.md')), true, 'the collection README is seeded from templates/wiki');
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+
+    const { features, ...preFeature } = manifest.collections;
+    assert.equal(features, 'workbench/wiki/features');
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: preFeature }, null, 2)}\n`);
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'the current seven-lane room declared before features still validates');
+    assert.equal(collectionRelative(project, 'features'), 'workbench/wiki/features', 'an undeclared room resolves the default path');
+
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: { ...preFeature, features: 'workbench/wiki/feature-articles' } }, null, 2)}\n`);
+    assert.equal(run('validate', '--project', project).report.error.code, 'invalid-collection', 'a relocated features declaration is not the contract');
+
+    const legacy = { ...preFeature };
+    delete legacy.recovery; delete legacy.notepads; delete legacy['notepad-templates'];
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: { ...legacy, features } }, null, 2)}\n`);
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'the preserved v3.1 collection set with features appended still validates');
+
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: preFeature }, null, 2)}\n`);
+    fs.rmSync(path.join(project, 'workbench', 'wiki', 'features'), { recursive: true });
+    const migrated = run('migrate', '--project', project);
+    assert.equal(migrated.status, 0, `${migrated.stdout}\n${migrated.stderr}`);
+    assert.equal(migrated.report.status, 'migrated');
+    assert.deepEqual(migrated.report.added, ['collections.features']);
+    const after = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    assert.deepEqual(after.collections, COLLECTIONS, 'migrate appends exactly the features collection');
+    assert.deepEqual({ ...after, collections: preFeature }, { ...manifest, collections: preFeature }, 'nothing else in the manifest changes');
+    assert.equal(fs.statSync(path.join(project, 'workbench', 'wiki', 'features')).isDirectory(), true);
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+    assert.equal(run('migrate', '--project', project).report.status, 'current');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });
 
 test('the validator rejects a traversing manifest lane', () => {
@@ -536,7 +651,7 @@ test('a room whose managed runtime drifts from its receipt fails the doctor it c
     render(project);
     const clean = roomDoctor();
     assert.equal(clean.status, 0, `${clean.stderr}`);
-    assert.deepEqual(clean.findings, [], 'an installed room whose runtime matches its receipt reports nothing');
+    assert.deepEqual(codesOf(clean.findings), UNCOMMITTED_ROOM, 'an installed room whose runtime matches its receipt reports nothing');
 
     // An appended comment still parses, so the room's doctor runs; only the
     // hash the receipt recorded has changed.
@@ -597,7 +712,7 @@ test('a room names a managed file deleted together with its receipt key', () => 
     assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     completeGenesis(project);
     render(project);
-    assert.deepEqual(roomDoctor().findings, [], 'an installed room whose runtime matches its receipt reports nothing');
+    assert.deepEqual(codesOf(roomDoctor().findings), UNCOMMITTED_ROOM, 'an installed room whose runtime matches its receipt reports nothing');
 
     // `sessions.mjs` is the managed tool no doctor import reaches, so this is
     // the deletion that used to be invisible from inside the room.
@@ -642,7 +757,7 @@ test('a room tells a foreign lane file apart from a receipt key it lost', () => 
     assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     completeGenesis(project);
     render(project);
-    assert.deepEqual(roomDoctor().findings, [], 'an installed room whose runtime matches its receipt reports nothing');
+    assert.deepEqual(codesOf(roomDoctor().findings), UNCOMMITTED_ROOM, 'an installed room whose runtime matches its receipt reports nothing');
 
     const smuggled = path.join(project, 'workbench', 'tools', 'smuggled.mjs');
     fs.writeFileSync(smuggled, 'export const smuggled = true;\n');
@@ -652,7 +767,7 @@ test('a room tells a foreign lane file apart from a receipt key it lost', () => 
     assert.match(foreign.message, /move it out of/, 'the only repair for a foreign file is removing it from the lane');
     assert.doesNotMatch(foreign.message, /--explicit-update/, 'update cannot adopt a foreign file, so it must not be named here');
     fs.rmSync(smuggled);
-    assert.deepEqual(roomDoctor().findings, [], 'removing the foreign file clears the finding');
+    assert.deepEqual(codesOf(roomDoctor().findings), UNCOMMITTED_ROOM, 'removing the foreign file clears the finding');
 
     // The other half of the same message: a key the receipt lost for a file
     // the lane still holds is repaired by refreshing the receipt.
@@ -689,7 +804,7 @@ test('Genesis validation names the failing first-spec predicate and the stray la
     const priority = run('validate', '--project', project, '--genesis');
     assert.match(priority.report.error.reason, /Priority/);
 
-    fs.writeFileSync(specFile, original.replace('- [ ] The first ticket is selectable.', '- [x] The first ticket is selectable.'));
+    fs.writeFileSync(specFile, original.replace('- [ ] The first task is selectable.', '- [x] The first task is selectable.'));
     const checked = run('validate', '--project', project, '--genesis');
     assert.match(checked.report.error.reason, /acceptance/i);
     fs.writeFileSync(specFile, original);
@@ -785,7 +900,10 @@ test('legacy twelve-skill manifests remain readable but v3.1.1 requires all four
     assert.deepEqual(manifest.skillPolicy.required.slice(-4), ['builder', 'auditor', 'reviewer', 'reconciler']);
     manifest.workbenchVersion = 'v3.1.0';
     manifest.provenance.source.release = 'v3.1.0';
-    manifest.skillPolicy.required = manifest.skillPolicy.required.slice(0, 12);
+    // The frozen v3.0.0/v3.1.0 row is `legacyCoreSkills` itself, not the live
+    // policy's first twelve names: S-00H TK-004 renamed one live skill in the
+    // current bundle without touching this frozen historical row.
+    manifest.skillPolicy.required = [...legacyCoreSkills];
     fs.writeFileSync(manifestPath, JSON.stringify(manifest));
     assert.equal(run('validate', '--project', project).report.status, 'valid');
     manifest.workbenchVersion = 'v3.1.1';
@@ -805,7 +923,10 @@ test('each listed legacy version validates only at the policy its release declar
     const manifestPath = path.join(project, 'workbench', 'manifest.json');
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
     const current = manifest.skillPolicy.required;
-    const twelve = current.slice(0, 12);
+    // The frozen legacy rows below are built from `legacyCoreSkills` itself,
+    // not by slicing the live `current` policy: S-00H TK-004 renamed one live
+    // skill in the current bundle without touching this frozen historical row.
+    const twelve = [...legacyCoreSkills];
     // v3.1.1's frozen row is the twelve workflow skills plus the four stances.
     // The current bundle also carries `carry` and `notepad`, so neither frozen
     // row is the same list as the live policy.
@@ -837,9 +958,23 @@ test('each listed legacy version validates only at the policy its release declar
     assert.equal(outcome('v3.1.3', twelve), 'invalid-skill-policy');
     assert.equal(outcome('v3.1.0', twelve), 'valid');
     assert.equal(outcome('v3.0.0', twelve), 'valid');
-    // The owner-authorized v3.2.0 repair retains the earlier stamped twenty.
-    assert.equal(outcome('v3.2.0', current.filter(name => name !== 'handoff')), 'valid');
+    // The owner-authorized v3.2.0 repair retains the earlier stamped twenty,
+    // built from `legacyCoreSkills` rather than by filtering `current`: S-00H
+    // TK-004 renamed one live skill in the current bundle that this frozen
+    // row must keep exactly as it was released.
+    assert.equal(outcome('v3.2.0', [...legacyCoreSkills, 'carry', 'notepad', 'save', 'promote', ...current.slice(-4)]), 'valid');
     assert.equal(outcome('v3.2.0', [...twelve, 'carry', 'notepad', ...current.slice(-4)]), 'invalid-skill-policy');
+    // v3.2.1 stamped the twenty-one-skill bundle with `handoff`; S-00Z grew the
+    // live bundle with `grill-me` and the coordination entries grew it again,
+    // so the v3.2.1 row freezes at twenty-one and a room stamped v3.2.1
+    // validates with either the frozen row or the current policy the
+    // Workbench update writes before restamping.
+    const twentyOne = current.filter((name) => name !== 'grill-me' && !coordinationSkills.includes(name));
+    assert.equal(twentyOne.length, 21);
+    assert.equal(outcome('v3.2.1', twentyOne), 'valid');
+    assert.equal(outcome('v3.2.1', current), 'valid');
+    assert.equal(outcome('v3.2.1', sixteen), 'invalid-skill-policy');
+    assert.equal(outcome('v9.9.9', twentyOne), 'invalid-skill-policy');
     assert.equal(outcome(VERSION, current), 'valid');
     assert.equal(outcome(VERSION, sixteen), 'invalid-skill-policy');
     assert.equal(outcome(VERSION, twelve), 'invalid-skill-policy');
@@ -856,7 +991,10 @@ test('each listed legacy version validates only at the policy its release declar
 test('the v3.1.1 legacy row is the frozen sixteen-skill bundle, not the live current policy', () => {
   const project = fixture();
   const current = [...coreSkills];
-  const sixteen = [...current.slice(0, 12), ...current.slice(-4)];
+  // The frozen v3.1.1 row is `legacyCoreSkills` itself, not the live policy's
+  // first twelve names: S-00H TK-004 renamed one live skill in the current
+  // bundle without touching this frozen historical row.
+  const sixteen = [...legacyCoreSkills, ...current.slice(-4)];
   try {
     assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     const manifestPath = path.join(project, 'workbench', 'manifest.json');
@@ -1113,7 +1251,7 @@ test('Genesis readiness fails closed on a permission file that withholds a decla
     assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     completeGenesis(project);
     const settings = path.join(project, '.claude', 'settings.json');
-    fs.mkdirSync(path.dirname(settings));
+    fs.mkdirSync(path.dirname(settings), { recursive: true });
     fs.writeFileSync(settings, JSON.stringify({ permissions: { deny: ['Write(./secrets/**)'], ask: ['Bash(git push:*)'], allow: ['Edit(./src/**)', 'Edit(./AGENTS.md)'] } }));
 
     const drifted = run('validate', '--project', project, '--genesis');
@@ -1129,7 +1267,9 @@ test('Genesis readiness fails closed on a permission file that withholds a decla
     assert.equal(granted.status, 0, granted.stdout);
     assert.equal(granted.report.status, 'valid');
 
-    fs.rmSync(path.dirname(settings), { recursive: true, force: true });
+    // Only the permission file goes: `.claude/` also holds the tracked skills
+    // discovery adapter (S-00V), which a room without the file still needs.
+    fs.rmSync(settings, { force: true });
     const absent = run('validate', '--project', project, '--genesis');
     assert.equal(absent.status, 0, absent.stdout);
     assert.equal(absent.report.status, 'valid', 'a room without the file is unaffected');
@@ -1200,6 +1340,38 @@ test('init declares the integration branch, the Genesis gate fails closed until 
     assert.equal(rejected.report.error.code, 'invalid-branch');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+// S-01T TK-01X: the Landmark Tracker root is an additive manifest block, like
+// `git`, never an eighth lane or a change to the exact collection sets. A room
+// without it validates exactly as before; a declared root must be safe, flat
+// and present on disk, and a Genesis-complete room may carry it.
+test('a Genesis room may declare the Landmark Tracker root additively; its directories are required and its shape is closed', () => {
+  const project = fixture();
+  const quietHome = healthySkillHome();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    completeGenesis(project);
+    const before = run('validate', '--project', project, '--genesis');
+    assert.equal(before.report.status, 'valid', before.stdout);
+    assert.equal(Object.hasOwn(before.report, 'tracker'), false, 'an undeclared room reports no Tracker');
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    const declaration = { root: 'workbench/landmark-tracker', collections: { 'destination-questions': 'workbench/landmark-tracker/destination-questions', landmarks: 'workbench/landmark-tracker/landmarks' } };
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, landmarkTracker: declaration }, null, 2)}\n`);
+    assert.equal(run('validate', '--project', project).report.error.code, 'missing-collection', 'declared Tracker collections must exist');
+    for (const relative of Object.values(declaration.collections)) fs.mkdirSync(path.join(project, relative), { recursive: true });
+    const declared = run('validate', '--project', project, '--genesis');
+    assert.equal(declared.status, 0, declared.stdout);
+    assert.deepEqual(declared.report.tracker, { root: declaration.root, projection: 'workbench/landmark-tracker/TRACKER.json', collections: declaration.collections });
+    render(project);
+    assert.deepEqual(doctor(project, { home: quietHome }).filter((item) => ['all', 'selection'].includes(item.blocks)), [], 'doctor accepts a declared Tracker root');
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, landmarkTracker: { ...declaration, lane: 'workbench/landmark-tracker' } }, null, 2)}\n`);
+    assert.equal(run('validate', '--project', project).report.error.code, 'invalid-collection', 'the declaration shape is closed');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(quietHome, { recursive: true, force: true });
   }
 });
 
@@ -2224,8 +2396,91 @@ for (const failure of ['ignored-template', 'trackable-live']) {
   });
 }
 
+// ADR-000H "One Task, one context": the context unit is a declared host fact
+// in workbench/manifest.json with provenance, never a number restated in
+// portable control prose. The reader is a goalpost only - nothing in doctor,
+// next, claim or close may consult it - so this test exercises the reader
+// directly rather than through validate/doctor.
+test('readContextUnit returns the declared value with its provenance and fails explicitly when the manifest declares none', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    assert.throws(() => readContextUnit(project), ContextUnitUndeclaredError,
+      'a manifest with no contextUnit field must fail explicitly, never default silently');
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    fs.writeFileSync(manifestPath, JSON.stringify({
+      ...manifest,
+      contextUnit: {
+        value: 200000,
+        unit: 'tokens',
+        decisionDate: '2026-09-12',
+        source: 'owner',
+        consideredAlternatives: [150000, 250000],
+        reason: '250k is where a context is compacted or gone while roughly 200k is where answer quality begins to degrade, and planning to the ceiling plans work into the degraded tail.'
+      }
+    }));
+    const unit = readContextUnit(project);
+    assert.equal(unit.value, 200000);
+    assert.equal(unit.unit, 'tokens');
+    assert.equal(unit.decisionDate, '2026-09-12');
+    assert.equal(unit.source, 'owner');
+    assert.deepEqual(unit.consideredAlternatives, [150000, 250000]);
+    assert.match(unit.reason, /degraded tail/);
+
+    // ADR-000H requires the unit recorded "with provenance": a contextUnit
+    // missing or malformed in any one provenance field must fail the same
+    // way an absent one does, never pass through with a bad value.
+    const validManifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    const validUnit = validManifest.contextUnit;
+    const malformedByField = {
+      value: { ...validUnit, value: '200000' },
+      unit: { ...validUnit, unit: 5 },
+      decisionDate: { ...validUnit, decisionDate: 'not-a-date' },
+      source: { ...validUnit, source: '' },
+      consideredAlternatives: { ...validUnit, consideredAlternatives: 'nope' },
+      reason: { ...validUnit, reason: '   ' }
+    };
+    for (const [field, contextUnit] of Object.entries(malformedByField)) {
+      fs.writeFileSync(manifestPath, JSON.stringify({ ...validManifest, contextUnit }));
+      assert.throws(() => readContextUnit(project), ContextUnitUndeclaredError,
+        `a contextUnit.${field} of the wrong shape must fail explicitly, not pass through as declared`);
+    }
+    fs.writeFileSync(manifestPath, JSON.stringify(validManifest));
+    assert.deepEqual(readContextUnit(project), validUnit, 'the manifest is restored to the valid shape after the malformed probes');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+// The fixture-based test above proves the reader's own contract; it says
+// nothing about whether the shipped root manifest.json actually carries a
+// well-formed declaration. Read the real root manifest directly, and prove
+// the assertion is not vacuous by removing the block and watching the reader
+// go red before restoring the file byte-identical.
+test('readContextUnit(root) reads the shipped manifest.json declaration, proven non-vacuous by a red/green probe', () => {
+  const manifestPath = path.join(root, 'workbench', 'manifest.json');
+  const original = fs.readFileSync(manifestPath, 'utf8');
+  try {
+    const unit = readContextUnit(root);
+    assert.equal(unit.value, 200000);
+    assert.equal(unit.unit, 'tokens');
+    assert.equal(unit.decisionDate, '2026-09-12');
+    assert.equal(unit.source, 'owner');
+    assert.deepEqual(unit.consideredAlternatives, [150000, 250000]);
+    assert.ok(typeof unit.reason === 'string' && unit.reason.trim().length > 0);
+
+    const withoutContextUnit = JSON.parse(original);
+    delete withoutContextUnit.contextUnit;
+    fs.writeFileSync(manifestPath, JSON.stringify(withoutContextUnit, null, 2));
+    assert.throws(() => readContextUnit(root), ContextUnitUndeclaredError,
+      'removing the shipped contextUnit block must make the reader fail, proving the passing assertions above are not vacuous');
+  } finally {
+    fs.writeFileSync(manifestPath, original);
+    assert.equal(fs.readFileSync(manifestPath, 'utf8'), original, 'the shipped manifest.json must be restored byte-identical');
+  }
+});
+
 for (const suffix of ['00A', '100A', '1000']) {
-test(`Genesis accepts first spec and ticket suffix ${suffix} without truncation or path changes`, () => {
+test(`Genesis accepts first spec and task suffix ${suffix} without truncation or path changes`, () => {
   const project = fixture();
   try {
     assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);

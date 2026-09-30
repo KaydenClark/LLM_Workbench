@@ -64,7 +64,7 @@ For **Claude Code**, keep the one-line `CLAUDE.md` containing exactly
 generated `/init` file. Other agents should be pointed at `AGENTS.md` as their
 entry point.
 
-Every completed ticket must leave proof in its final response and owning spec's
+Every completed task must leave proof in its final response and owning spec's
 append-only evidence log. Milestone specs additionally require a short demo
 artifact (screenshot, recording, preview URL, or one-command demo) so work is
 accepted on product truth, not passing tests alone.

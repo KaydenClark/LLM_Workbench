@@ -4,12 +4,13 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { collections, coreSkills, validateManifest } from '../workbench/tools/workbench-layout.mjs';
-import { updateCoreSkills } from './core-skill-installer.mjs';
-import { missingSkills } from './skill-presence.mjs';
 import { sourceIdentity } from './workbench-tools.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const sourceRoot = path.join(root, 'skills');
+// S-00V: the core skills ship in the room. The one-time upgrade lays the
+// skills lane down through Adoption's migration from this release's own lane
+// and never reads or replaces skills in the provider home.
+const sourceRoot = path.join(root, 'workbench', 'skills');
 const adoptionTool = path.join(root, 'tools', 'workbench-adoption.mjs');
 
 function lstatOrNull(target) {
@@ -49,15 +50,6 @@ function parseOptions(args) {
   return options;
 }
 
-// The layout-only mode reads skill presence exactly as Adoption does, and now
-// exactly as the installer does: every required core skill must be reachable in
-// a discovery root, and nothing there is compared, marked, backed up, or
-// replaced. S-045 TK-001 moved the judgment into `skill-presence.mjs` so the
-// gate and the installer cannot drift apart again - `lstat` does not follow a
-// link, so judging with it alone refused a host the installer accepted.
-function missingUserSkills(home) {
-  return missingSkills(home, coreSkills);
-}
 
 function validateSource() {
   const names = fs.readdirSync(sourceRoot, { withFileTypes: true }).filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
@@ -70,13 +62,11 @@ function validateSource() {
   return null;
 }
 
-// A correct refusal that withholds its exit transfers its whole cost onto the
-// agent that meets it, so both shared-skill gates name the route that clears
-// them and why that route is not blocked by the same condition.
-const layoutOnlyRoute = 'The support-root-only route --layout-only clears this gate: it migrates the support root and never installs, compares, marks, backs up, or replaces a skill.';
-
+// Both modes lay the skills lane down inside the room from this release; the
+// provider home is never read, compared, marked, backed up, or replaced. The
+// two flags remain the explicit opt-in every one-time upgrade requires.
 function preflight(project, home, explicit, layoutOnly = false) {
-  if (!explicit && !layoutOnly) return fail('explicit-update-required', 'Skill replacement requires --explicit-update; the support-root-only route requires --layout-only.');
+  if (!explicit && !layoutOnly) return fail('explicit-update-required', 'The one-time upgrade requires --explicit-update or --layout-only.');
   if (!lstatOrNull(project)?.isDirectory() || lstatOrNull(project)?.isSymbolicLink()) return fail('invalid-project', `${project} must be an existing ordinary project directory.`);
   if (lstatOrNull(path.join(project, 'workbench'))) return fail('support-root-exists', `${path.join(project, 'workbench')} already exists; use normal v3 maintenance instead of the one-time upgrade.`);
   const git = spawnSync('git', ['rev-parse', '--verify', 'HEAD'], { cwd: project, encoding: 'utf8' });
@@ -86,11 +76,6 @@ function preflight(project, home, explicit, layoutOnly = false) {
   if (status.stdout) return fail('dirty-project', 'Upgrade requires a clean project worktree so the recorded Git SHA is a complete recovery point.');
   const inventoryResult = spawnSync('git', ['ls-files', '-z'], { cwd: project, encoding: 'utf8' });
   if (inventoryResult.status !== 0) return fail('inventory-failed', 'Could not record the pre-migration tracked path inventory.');
-  if (layoutOnly) {
-    const missingSkills = missingUserSkills(home);
-    if (missingSkills.length) return fail('missing-user-skills', 'Layout-only upgrade requires every core skill to be present in a user-scoped Codex or Claude discovery root; it never installs or replaces one.', { missingSkills });
-    return { gitSha: git.stdout.trim(), inventory: inventoryResult.stdout.split('\0').filter(Boolean), destinations: [] };
-  }
   return { gitSha: git.stdout.trim(), inventory: inventoryResult.stdout.split('\0').filter(Boolean) };
 }
 
@@ -100,20 +85,14 @@ function upgrade(options) {
   const sourceFailure = validateSource();
   if (sourceFailure) return sourceFailure;
   try {
-    sourceIdentity({ managedPaths: options.layoutOnly ? ['workbench/tools', 'templates'] : ['skills', 'workbench/tools', 'templates'] });
+    sourceIdentity({ managedPaths: ['workbench/skills', 'workbench/tools', 'templates'] });
   } catch (error) { return fail('invalid-source-identity', error.message); }
   const readiness = preflight(project, home, options.explicit, options.layoutOnly);
   if (readiness.status === 'blocked') return readiness;
-  const skills = options.layoutOnly ? 'presence-only' : 'explicit-update';
-  let skillBackups = [];
-  let coreRecovery = null;
+  const skills = 'lane-install';
+  const skillBackups = [];
+  const coreRecovery = null;
   try {
-    if (!options.layoutOnly) {
-      const updated = updateCoreSkills(home, { explicit: true });
-      if (updated.status !== 'updated') return { ...updated, skillBackups: updated.skillBackups ?? [], error: { ...updated.error, message: `${updated.error.message} ${layoutOnlyRoute}` } };
-      skillBackups = updated.skillBackups;
-      coreRecovery = updated.backup;
-    }
     const adoption = spawnSync(process.execPath, [adoptionTool, 'migrate', '--project', project, '--home', home, '--version', options['--version']], { cwd: root, encoding: 'utf8' });
     const adoptionReport = adoption.stdout ? JSON.parse(adoption.stdout) : null;
     if (adoption.status !== 0 || adoptionReport?.status !== 'complete') {
@@ -128,8 +107,10 @@ function upgrade(options) {
     const recoveryPath = path.join(collections.recovery, 'upgrade-recovery.json');
     const receipt = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'tools', '.workbench-tools.json'), 'utf8'));
     const tools = { status: 'installed', receipt: `${validation.manifest.lanes.tools}/.workbench-tools.json`, source: receipt.source };
-    fs.writeFileSync(path.join(project, recoveryPath), `${JSON.stringify({ schemaVersion: 1, lifecycle: 'upgrade', skills, preMigration: { gitSha: readiness.gitSha, inventory: readiness.inventory }, skillBackups, coreRecovery, tools }, null, 2)}\n`);
-    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), recoveryPath, skills, skillBackups, coreRecovery, tools, migration: adoptionReport };
+    const skillsReceipt = JSON.parse(fs.readFileSync(path.join(project, validation.manifest.lanes.skills, '.workbench-skills.json'), 'utf8'));
+    const skillsLane = { status: 'installed', receipt: `${validation.manifest.lanes.skills}/.workbench-skills.json`, source: skillsReceipt.source };
+    fs.writeFileSync(path.join(project, recoveryPath), `${JSON.stringify({ schemaVersion: 1, lifecycle: 'upgrade', skills, preMigration: { gitSha: readiness.gitSha, inventory: readiness.inventory }, skillBackups, coreRecovery, tools, skillsLane }, null, 2)}\n`);
+    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), recoveryPath, skills, skillBackups, coreRecovery, tools, skillsLane, migration: adoptionReport };
   } catch (error) {
     return { status: 'partial', skillBackups, coreRecovery, error: { code: 'upgrade-failed', message: error.message } };
   }

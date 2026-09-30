@@ -1,5 +1,4 @@
 ---
-status: accepted
 date: 2026-09-05
 canonicalized_in:
   - AGENTS.md

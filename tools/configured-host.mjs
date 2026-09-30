@@ -98,7 +98,11 @@ export function probeConfiguredHost(options) {
       if (!fs.lstatSync(record).isFile()) throw new Error('record must be an ordinary file');
       const content = fs.readFileSync(record, 'utf8');
       const parsed = parseFrontmatter(content);
-      if (!parsed.data?.status) throw new Error('invalid checkout record');
+      // S-00I TK-002: lifecycle is the record's folder, so `status` is no
+      // longer a required frontmatter key for a record whose folder already
+      // carries it. `date` stays mandatory regardless of lifecycle, so it is
+      // what this structural syntax probe checks for instead.
+      if (!parsed.data || !/^\d{4}-\d{2}-\d{2}$/.test(String(parsed.data.date ?? ''))) throw new Error('invalid checkout record');
       for (const eol of ['\n', '\r\n', '\r']) {
         const variant = parseFrontmatter(content.replace(/\r\n?/g, '\n').replaceAll('\n', eol));
         if (JSON.stringify(variant) !== JSON.stringify(parsed)) throw new Error('line-ending mismatch');

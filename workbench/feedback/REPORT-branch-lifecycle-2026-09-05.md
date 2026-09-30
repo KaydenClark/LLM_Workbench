@@ -68,6 +68,17 @@ across this repair. Whether "work reaches its finished state and cleans up
 after itself" deserves a scored criterion is an owner decision, not one this
 report may take.
 
+## Disposition Reconciliation (2026-09-19)
+
+This addendum records the supported disposition at source `3a0d817`. Original
+observations, proposed actions and evidence above remain historical; no new
+agent-outcome or installed-environment claim follows.
+
+| Finding | Disposition | Owning Spec and named evidence |
+|---|---|---|
+| F-002 | `test` | [S-027](../specs/S-027-workbench-v3-1-1-boundaries/SPEC.md): Branch Completion and passed-review delivery assertions; `git show 3a0d817:tools/test-governance-core.mjs` |
+| F-003 | `test` | [S-027](../specs/S-027-workbench-v3-1-1-boundaries/SPEC.md): merged/unmerged branch-removal assertions; `git show 3a0d817:tools/test-governance-core.mjs` |
+
 ## Review Boundary
 
 This report assesses; it does not authorize repair of its target. The repair it

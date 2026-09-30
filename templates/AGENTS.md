@@ -78,7 +78,19 @@ project evidence. Resolve supported decisions within scope. If no confident
 next action can be established, record the blocker in the existing work owner
 and stop; do not create a next task for yourself or manufacture a queue item.
 
-Normal stance is set in the assigned SPEC and TASK (the ticket in that spec),
+A role defines the assigned scope of responsibility: Director covers the
+project and integration, Dispatcher one Spec and its branch, Worker one Task.
+A stance defines the job within that scope. Coordination assignments name the
+applicable stance; Spec Planner plans small parallel vertical slices at flight
+launch and may dispatch Workers to help write Tasks, while Spec Manager
+dispatches and monitors execution within the Spec. Reviewer and Auditor are
+stances a Dispatcher may use for verification. Prior involvement still controls
+independent-review eligibility; changing stance never makes a participant
+independent. Director coordinates cross-Spec dependencies and shared writers.
+The role and stance operating capabilities have separate delivery owners; their
+definitions do not imply a new scheduler or a shipped agent entry.
+
+For Task execution, normal stance is set in the assigned SPEC and its TASK,
 not selected or recorded by the arriving agent. Builder, Auditor, Reviewer and
 Reconciler are portable behavior skills. A stance never grants, removes, or
 transfers authority; loading it never spawns an agent. Each defines Purpose,
@@ -110,8 +122,12 @@ Stop and surface committed secrets, credentials, or tokens.
 - Forbidden: `[FORBIDDEN_PATHS]`
 - Review required: `[REQUIRES_REVIEW_FOR]`
 
-Keep `templates/` generic when this project ships templates. Spec paths are
-stable; never move them between status folders.
+Keep `templates/` generic when this project ships templates.
+
+Lifecycle is folder location: a record moves between lifecycle folders only
+through a move operation that rewrites every live reference and counts
+historical ones; reachability comes from those maintained links, not from a
+path that never moves.
 
 Any update to the canonical Workbench itself has a separate self-drift
 boundary from a target-project drift check. Inspect the Workbench's own
@@ -129,13 +145,13 @@ explicitly bounded historical evidence.
 2. Run `[SPEC_DOCTOR_COMMAND]`.
 3. Run `[SPEC_NEXT_COMMAND]` and load only its assigned spec.
 4. Claim before editing.
-5. Implement one eligible vertical ticket with red/green TDD.
+5. Implement one eligible vertical task with red/green TDD.
 6. Close it with verification, docs status, and remaining gap.
 7. Complete only after acceptance/owner gates pass; render and doctor must remove
    completed specs from the hot Taskboard immediately.
 
 Do not read the full Blueprint, Taskboard, completed specs, or proof archive for
-normal selection. Use the Lexicon routing section to find task-relevant owners. A spec is a durable capability; a ticket is a temporary slice.
+normal selection. Use the Lexicon routing section to find task-relevant owners. A spec is a durable capability; a task is a temporary slice.
 Later change creates a linked superseding spec rather than rewriting history.
 
 ## Engineering And Verification
@@ -213,7 +229,17 @@ Evidence rows read at the commit each row names and are never re-anchored.
 
 ## Git Rules
 
-- Branch per spec/ticket from `[DEFAULT_BRANCH]`; never commit to protected
+For coordinated Spec delivery, the normal route is a Worker Task-branch merge
+request into the Dispatcher Spec branch, then an independently reviewed Spec
+merge request into integration under Director coordination. A Task merge is
+containment; its Worker supplies self-check and proof. A release-specific
+bootstrap exception may name a different route and its gate explicitly; read
+that owner rather than silently applying the intended route to unsupported
+current tooling. Accepted decisions and current progress are reconciled into
+tracked owners on integration through reviewed changes; local notes and
+unmerged branches must not be their only discovery route.
+
+- Branch per spec/task from `[DEFAULT_BRANCH]`; never commit to protected
   branches.
 - Default PR target: `[INTEGRATION_BRANCH_OR_DEFAULT]`; owner-only final merge:
   `[OWNER_ONLY_MERGE]`.
@@ -231,8 +257,18 @@ Before branches combine into the declared integration branch, a
 separate-context reviewer must check the immutable candidate against its
 controls, assigned spec, and named evidence. This gate challenges code,
 consequential report claims, and recommendations. Earlier review and audit are
-supports, not mandatory independent ceremonies per ticket. A new candidate
+supports, not mandatory independent ceremonies per task. A new candidate
 requires a fresh review; self-review alone cannot satisfy the integration gate.
+
+Owner Human QA is an owner-led evaluation process, not the approval command. It
+can be underway through audits and corrective cycles before the eventual
+approval on the declared integration branch. An ongoing or failed Human QA
+review has findings to reconcile; it is not a request for the owner to start
+QA or an ordinary dependency blocker. Record that state and the next
+corrective action in the owning Spec, then refresh the Taskboard projection.
+Passing tests or a separate-context source review does not reset a failed
+Human QA gate to "awaiting approval"; only the owner's actual approval records
+approval.
 
 ### Branch Completion
 
@@ -267,6 +303,19 @@ an owner pressing Stop can interrupt the conversation. Do not defer capture to
 closeout or rely on a final write after Stop. This obligation covers saved local
 context for conversation continuation, not computer crashes or device loss;
 an interruption can still preempt an unsaved write.
+
+When the Landmark Tracker capability is available, workflow activity maintains
+current pre-delivery understanding in DQCs and landmark records, preserving
+what changed, why, affected claims and evidence. The generated Tracker reflects
+those sources. Grilling notepads remain useful historical and handoff-like
+context; do not discard needed origins or corrections merely because a card
+exists. Until that capability is delivered, preserve working context through
+the existing notepad runtime. Confirmation of understanding never grants
+implementation or promotion authority. The grilling primitive remains unaware
+of Tracker machinery; workflow composition performs the record maintenance.
+Wiki creation and updates are ordinary authorized delivery and reconciliation,
+not a separate publishing ceremony. Apply claim-level ownership and the current
+request throughout; no record or projection can manufacture authority.
 
 Notepads, including grilling records, use JSON, including when older workflow
 examples say Markdown. Handoffs are separate human-readable Markdown (`.md`)

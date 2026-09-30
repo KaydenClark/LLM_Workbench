@@ -24,7 +24,7 @@ assert.deepEqual(
     'manager must require exactly one role contract per task',
     'manager must require disjoint durable write lanes',
     'manager must reserve one primary durable writer',
-    'README must make the stable spec the only ticket and proof store',
+    'README must make the stable spec the only task and proof store',
     'README must describe the project TASKBOARD.md as a generated read-only projection',
     'SUBAGENT must keep Scout and Auditor read-only',
     'SUBAGENT must prohibit combined role authority',

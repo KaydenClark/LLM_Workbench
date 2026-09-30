@@ -51,9 +51,9 @@
 
 ## Vertical Implementation Slices
 
-Tickets are temporary tracer bullets within this stable capability record.
+Tasks are temporary tracer bullets within this stable capability record.
 
-| Ticket | Slice | Status | Blockers | Proof |
+| Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | [Small end-to-end slice] | ready | none | pending |
 
@@ -84,7 +84,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 
 ## Append-Only Evidence And Execution Log
 
-| Date | Ticket | Event | Verification | Docs | Remaining gap |
+| Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 
 ## Completion Result

@@ -1,5 +1,4 @@
 ---
-status: accepted
 date: 2026-09-08
 canonicalized_in:
   - BLUEPRINT.md

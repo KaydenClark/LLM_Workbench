@@ -134,6 +134,8 @@ format. Existing reports and append-only evidence remain unchanged.
 | 2026-09-05 | TK-001 | Separate-context review rejected candidate `473ee31ec7d3a1bb16b0572099e5a17aa69b1e85` for two untested acceptance violations | Unsupported schema 999 and incomplete existing Wiki frontmatter reproduced RED; focused guardrail and Adoption tests GREEN after supported-schema validation and missing-field merge | S-028 evidence updated; no public contract change | Re-run the full suite and obtain a fresh review on the amended SHA |
 | 2026-09-05 | TK-001 | Amended candidate passed fresh separate-context review and landed on `integration` through PR #51 | Reviewed `3934c8740165e5a45da7d0f412db162fee46612e`; all 30 Runbook commands PASS; merge commit `3e4f828a8ec15972040a14eb95db9829d97e1010` contains it | S-028 completion record and generated projections reconciled | none |
 
+| 2026-09-19 | S-00N TK-004 | Recorded `test` disposition for report-scoped F-001 in REPORT-boundaries-2026-09-05.md | Existing accepted implementation and stable-seam assertions at `git show 3a0d817:tools/test-guardrail-audit.mjs`; focused check rerun for this reconciliation | Report addendum links this existing owner; original evidence and completed acceptance preserved | No broader report reconciliation or agent-outcome claim; remaining S-00N feedback inventory stays open |
+
 ## Completion Result
 
 Complete. The accepted subset of the harness feedback is implemented and
