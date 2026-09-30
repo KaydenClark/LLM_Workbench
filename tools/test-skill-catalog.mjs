@@ -707,8 +707,6 @@ assert.deepEqual(runtimeCoreSkills.slice(-4), ['builder', 'auditor', 'reviewer',
 // records the behavior.
 assert.ok(coreSkills.includes('spec-planner'), 'spec-planner must be a declared core skill');
 assert.ok(coordinationSkills.includes('spec-planner'), 'spec-planner is counted as a coordination entry');
-assert.equal(runtimeCoreSkills.indexOf('spec-planner'), runtimeCoreSkills.indexOf('builder') - 1,
-  'spec-planner sits immediately before builder, after dispatcher, in the live bundle');
 const specPlanner = read('workbench/skills/spec-planner/SKILL.md');
 assert.match(specPlanner, /^name: spec-planner$/m, 'spec-planner must declare its skill name');
 for (const section of ['Purpose', 'Method / Posture', 'Obligations', 'Completion / Exit Condition']) {
@@ -732,8 +730,6 @@ assert.match(specPlanner, /node workbench\/tools\/spec-workbench\.mjs next-id S-
   'spec-planner allocates ids with next-id, never by hand');
 assert.match(specPlanner, /convert-tasks S-### --activate/, 'spec-planner activates once with convert-tasks --activate');
 assert.match(specPlanner, /Spec Manager/, 'spec-planner hands the plan to Spec Manager');
-assert.match(specPlanner, /workbench\/specs\/S-002G-spec-manager-stance\/SPEC\.md/);
-assert.match(specPlanner, /workbench\/specs\/S-002D-dispatcher-role\/SPEC\.md/);
 assert.match(specPlanner, /to the Director/, 'spec-planner escalates cross-Spec dependencies to the Director');
 assert.match(specPlanner, /workbench\/manifest\.json/);
 assert.ok(specPlanner.indexOf('Never enumerate execution Tasks') < specPlanner.indexOf('## Obligations'),
@@ -741,6 +737,68 @@ assert.ok(specPlanner.indexOf('Never enumerate execution Tasks') < specPlanner.i
 assert.ok(specPlanner.indexOf('Spec Manager') > specPlanner.indexOf('## Completion / Exit Condition')
   || specPlanner.lastIndexOf('Spec Manager') > specPlanner.indexOf('## Completion / Exit Condition'),
   'the hand-off to Spec Manager belongs to the exit condition');
+
+// S-002G TK-003G: the Spec Manager stance is the coordination entry a
+// Dispatcher adopts during Task execution. It composes with the assigned
+// Dispatcher role, consumes the Spec Planner result with no second queue,
+// dispatches Workers only to ready non-conflicting Tasks and releases later
+// work when dependencies are actually satisfied, keeps one durable writer,
+// assesses each hand-back against its named commit, routes failing work to a
+// new attempt of the same Task, integrates through Task-branch merge requests
+// into the Spec branch, arranges Reviewer or Auditor verification of the
+// assembled Spec and reports to the Director without approving its own work.
+// These pin the source contract; the fresh-context run in S-002G TK-003I
+// records the behavior. Portable wording only.
+assert.ok(coreSkills.includes('spec-manager'), 'spec-manager must be a declared core skill');
+assert.ok(coordinationSkills.includes('spec-manager'), 'spec-manager is counted as a coordination entry');
+assert.equal(runtimeCoreSkills.indexOf('spec-manager'), runtimeCoreSkills.indexOf('builder') - 1,
+  'spec-manager sits immediately before builder, after spec-planner, in the live bundle');
+assert.equal(runtimeCoreSkills.indexOf('spec-planner'), runtimeCoreSkills.indexOf('spec-manager') - 1,
+  'spec-planner plans, then spec-manager manages');
+const specManager = read('workbench/skills/spec-manager/SKILL.md');
+assert.match(specManager, /^name: spec-manager$/m, 'spec-manager must declare its skill name');
+assert.match(specManager, /^description: Adopt the assigned Spec Manager stance for one Workbench Spec during Task execution within existing authority\.$/m,
+  'spec-manager description takes the stance form');
+const specManagerSections = ['## Purpose', '## Method / Posture', '## Obligations', '## Completion / Exit Condition']
+  .map((heading) => specManager.indexOf(heading));
+assert.ok(specManagerSections.every((index) => index >= 0), 'spec-manager must carry the four stance sections');
+assert.deepEqual(specManagerSections, [...specManagerSections].sort((a, b) => a - b),
+  'spec-manager sections must follow Purpose, Method / Posture, Obligations, Completion / Exit Condition');
+assertIncludesAll(specManager, [
+  'A stance never grants, removes, or transfers authority',
+  'Loading this skill never spawns an agent',
+  'Adopt only the stance already set in the assigned SPEC and TASK'
+], 'spec-manager authority sentences');
+assertIncludesAll(specManager, [
+  'composed with an already assigned Dispatcher role',
+  'Spec Planner result',
+  'no second queue',
+  'ready Tasks whose files do not conflict',
+  'dependencies are actually satisfied',
+  'one durable writer',
+  'Serialize conflicting edits',
+  'against the named commit',
+  'new attempt of the same Task',
+  'Task-branch merge request into the Spec branch',
+  'Reviewer or Auditor',
+  '`report S-### --candidate <sha>`',
+  'content digest',
+  '`verdict`',
+  '`gate --task TK-### --spec S-###`',
+  'to the Director',
+  'never approves its own'
+], 'spec-manager operating contract (S-002G Desired Behavior 1-5)');
+assert.ok(specManager.indexOf('one durable writer') > specManager.indexOf('## Obligations')
+  && specManager.indexOf('one durable writer') < specManager.indexOf('## Completion / Exit Condition'),
+  'the single-writer rule belongs to the spec-manager obligations');
+assert.doesNotMatch(specManager, /\/Users\/|GPT_OS|\bgpt-|\bopus\b|\bsonnet\b|\bcodex\b|\bclaude\b/i,
+  'spec-manager must stay portable: no private path, provider or model name');
+for (const skill of coordinationSkills) {
+  assert.doesNotMatch(read(`workbench/skills/${skill}/SKILL.md`), /workbench\/specs\//,
+    `${skill}: installed rooms carry no repository Spec paths; name a sibling by its skill name`);
+}
+assert.match(specPlanner, /`spec-manager`/, 'spec-planner names the Spec Manager sibling by its skill name');
+assert.match(specPlanner, /`dispatcher`/, 'spec-planner names the Dispatcher sibling by its skill name');
 
 // S-00J TK-006: the reviewed unit at integration is the assembled Spec bound
 // to a content digest - obtained with `report S-### --candidate <sha>` and
