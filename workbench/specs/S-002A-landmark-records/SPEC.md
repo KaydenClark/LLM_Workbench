@@ -5,11 +5,11 @@
 **Priority:** 1
 **Owner:** codex-v4-carry
 **Stance:** Builder
-**Updated:** 2026-09-29
+**Updated:** 2026-09-30
 **Catalog description:** Maintain evolving landmark relationships and readable durable knowledge with recoverable provenance.
 **Blockers:** none
-**Latest event:** 2026-09-29 owner-directed carry resumes TK-002T from worker source `90885bde8c67c8690e1a70371d39c227da65f751` on integration base `ac6fadbcd97abf8a9d502e0b724bfba7d98b6c6f`; installed runtime registration, fresh full verification and separate-context Task review remain.
-**Next gate:** Finish the released TK-002T runtime registration, verify a clean immutable candidate, obtain fresh separate-context Task review and land it in integration. Shared Wiki wiring, assessment and TK-002W lifecycle work remain separate.
+**Latest event:** TK-002T closed with receipt-backed installed CLI/API proof and all 53 current required/Task-focused commands passing on clean immutable `edd229dfa88f2c79f009a4d53d1305df1ca13d9a`. Shared Wiki, assessment and lifecycle work remain; no whole-Spec or owner Human QA completion is claimed.
+**Next gate:** TK-002W stays deferred until its shared lifecycle file slot is explicitly released against an immutable seam. Shared Wiki wiring and expected-claim assessment still need scoped delivery, followed by whole-Spec QA, separate-context Spec review and actual owner gates.
 
 ## Integration Visibility
 
@@ -23,6 +23,15 @@ integration verification and independent review remain open. Existing Task
 states preserve the actual hand-back rather than inventing new execution.
 The Dispatcher retains its lane and pending gates. Do not reimplement completed
 branch work or infer permission to bypass a pending approval/review.
+
+### TK-002T current tree — 2026-09-29
+
+This tree now includes the standalone validator, its managed-runtime registration,
+installed CLI/API proof, real Git-index preservation tests and usage. The
+2026-09-27 reconciliation above describes its historical planning import.
+Only TK-002T is closed in this run; remaining candidate-only and incomplete
+capabilities retain their existing gates. Integration containment is established
+by the reviewed Task PR, separately from these source/fixture results.
 
 ## Outcome
 
@@ -158,7 +167,7 @@ coordination slot reserved; do not create broad lifecycle or whole-Spec barriers
 
 - [ ] Existing landmark creation/read/retitle/overlap/connection and origin history
       remain verified at the retained public seams.
-- [ ] Explicit Landmark article validation rejects WBIDs in complete bytes,
+- [x] Explicit Landmark article validation rejects WBIDs in complete bytes,
       accepts readable valid content, and preserves files/index on every refusal.
 - [ ] Ordinary feature provenance and existing Wiki contracts remain compatible;
       shared collection/schema/retirement work is consumed without duplication.
@@ -188,8 +197,8 @@ checks on its committed candidate and reports named red/green proof and demo.
 
 ## Documentation Impact
 
-First module's public command is explained in its own narrowly scoped usage
-README; shared Runbook/controls/managed receipt changes coordinate with their
+The [standalone validator usage](../../landmark-tracker/LANDMARK-WIKI.md)
+explains its public command, installed distribution and detection limits; shared Runbook/controls/managed receipt changes coordinate with their
 writer. Later Wiki schema/router and generic mirrors update only on released
 file slots. Keep generic templates copy-ready. No historical evidence copied
 into Taskboard; Tracker owns final generated projection. Known baseline drift
@@ -212,3 +221,6 @@ self-drift cleanUpdate=false. Passing checks do not prove clean update or QA.
 | 2026-09-27 | none | Integration visibility reconciliation | Imported requirements and existing Task receipts from `92ba4e61356389effc54d3ceebd79f9f6ff49c7a`; no runtime files merged and no new Tasks cut | This owner and release reconciliation report | Implementing candidate review, integration delivery and applicable owner gates remain |
 
 | 2026-09-29 | TK-002T | Owner-directed carry resumes the existing in-progress slice on current integration, preserving historical attempts and pending whole-Spec gates; zero coordination hand-backs | Fresh fetch and next select TK-002T; original worker and Dispatcher tips last changed 2026-09-26, Dispatcher checkout clean, no worker worktree registered. claim refuses because no ready Task exists and restores the tree; this run resumes the existing in-progress Task rather than resetting it. Prior automatic registry commit rejection remains history; current user requests the smallest v4 slice to completion and its Task explicitly releases the one-line registry hunk | Existing source/test/usage bytes recovered from worker 90885bde; no unrelated branch changes imported | Reproduce installed red, permitted registry commit, green full checks and fresh review pending |
+| 2026-09-30 | TK-002T | Task closed | Clean immutable edd229dfa88f2c79f009a4d53d1305df1ca13d9a: all 53 commands passed (48 AGENTS, 3 additional RUNBOOK, validator and Tracker); validator 18/18, Wiki 13/13, Tracker 23/23. Observed installed red at 8faf09ad was 16/17, missing managed validator; released registration at 0b04f923 made installed CLI/API and receipt-hash checks green. Public 3-case demo passed in 0.50s. No source or index writes on validation; real staged-index fixture passes. | Updated workbench/landmark-tracker/LANDMARK-WIKI.md public command/API, syntactic ambiguity and encoding limits, installed distribution; Spec and Task progress updated, projections rendered. Root/template controls checked: isolated command addition needs no contract mirror. | Shared Wiki integration, expected-claim assessment, deferred TK-002W lifecycle seam and whole-Spec QA remain. Owner Human QA is not approved. Task candidate separate-context review and integration landing follow; known S-00Q stale claim and historical provenance/seeds keep cleanUpdate false, guardrail remains 78/100. |
+
+| 2026-09-29 | TK-002T | Fresh carry proof and bounded self-drift reconciliation; zero coordination hand-backs, no slices skipped within this Task | Immutable edd229d clean and remotely accepted on codex/v4-next-slice; 53/53 commands at the exact source. Pre ac6fadb: 8 attention findings; post edd229d: 7, with resumed S-002A stale claim removed. Remaining S-00Q stale claim blocks a clean-update claim; five historical seed findings and historical adoption provenance retain limits. Guardrail pre/post 78/100; missing repeated real outcomes, control/prior comparisons, current evidence and uncertainty remain. Manual readback covered root controls, manifest, generated board/catalog, current Task/Spec, referenced ADR/Wiki, registry/distribution and usage; other rooms untouched | Public usage and current owner/projection reconciled, historical records preserved | Final immutable Task review/landing; broader Spec gaps stay above. TK-002W deferred shared slot is not selected or implemented |
