@@ -1,8 +1,8 @@
 # Workbench Core Skills
 
 This directory is the self-contained, versioned LLM Workbench skill source. It
-is a closed 22-skill bundle (eighteen workflow skills and four stances),
-counted from the manifest and catalog below, for a
+is a closed 23-skill bundle (eighteen workflow skills, one coordination skill and
+four portable stances), counted from the manifest and catalog below, for a
 brand-new installation, not a general catalog or a project-local discovery tree.
 The checked-out LLM Workbench release owns the exact source versions.
 
@@ -27,6 +27,7 @@ The checked-out LLM Workbench release owns the exact source versions.
 | `handoff` | Author readable, scope-preserving Markdown continuation for the requested destination. |
 | `grill-me` | Start a saved design inquiry: compose grilling with objective-scoped notepad continuity, keeping pending answers pending. |
 | `notepad` | Keep one objective's local JSON working context: save it as it appears, retrieve a topic with its corrections, trim only what is reconciled. |
+| `dispatcher` | Operate as the assigned Dispatcher for one Spec and its branch: plan its Tasks, dispatch and monitor Workers, own assembled verification and hand the candidate to the Director. |
 | `builder` | Deliver the assigned result with useful verification and truthful documentation. |
 | `auditor` | Determine whether named claims hold on the assigned target and evidence. |
 | `reviewer` | Challenge candidate correctness, downstream impact and consequential claims. |
