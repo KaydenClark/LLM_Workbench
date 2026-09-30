@@ -55,7 +55,7 @@ export function buildTaskboard(specs, { resolveTask = () => ({}) } = {}) {
       const card = makeCard({
         title: child.slice, priority: entry.priority, content: child.content,
         dependencies: child.blockers, sourceLinks: [child.relativePath, spec.relativePath],
-        progress: null, nextAction: taskAction(child, retired),
+        progress: null, nextAction: taskAction({ ...child, status: entry.status }, retired),
         cleanupState: lane === 'complete' ? (retired ? 'readyToDelete' : 'readyToCapture') : null
       });
       card.specId = child.specId;

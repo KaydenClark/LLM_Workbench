@@ -155,7 +155,8 @@ if (process.argv.includes('--demo')) {
     task(root, a, { id: 'TK-00AA', status: 'done', extra: '**Proof:** Fixture dependency delivered' });
     const file = task(root, a, { id: 'TK-00AB', status: 'blocked', blockers: 'TK-00AA' });
     const before = fs.readFileSync(path.join(root, file), 'utf8');
-    assert.ok(preview(root).lanes.toDo['TK-00AB']);
+    const derived = preview(root).lanes.toDo['TK-00AB'];
+    assert.ok(derived); assert.match(derived.nextAction, /Claim the slice/, 'a cleared dependency has a To-do continuation action');
     assert.equal(selected(root, '--local').taskId, 'TK-00AB');
     assert.deepEqual(dependencyFindings(root), []);
     assert.equal(fs.readFileSync(path.join(root, file), 'utf8'), before);
