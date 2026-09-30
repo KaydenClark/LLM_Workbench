@@ -349,3 +349,7 @@ third time.
 
 - Supersedes: none
 - Superseded by: none
+
+## Linked Late-Review Follow-Up
+
+[S-002K](../S-002K-citation-resolution-correction/SPEC.md) owns the three independently reproduced PR77 citation-checker defects and truthful historical post-anchor correction. This completed Spec, its Tasks, evidence and prior approval state remain preserved.
