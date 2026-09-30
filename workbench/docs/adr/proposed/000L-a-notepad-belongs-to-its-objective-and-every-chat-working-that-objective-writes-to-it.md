@@ -48,8 +48,13 @@ unless the optional private transport
 ([ADR-0051](../0051-optional-private-git-transport-for-session-continuity.md)) is
 configured for it, and that transport keeps one active writer per note and
 preserves competing revisions. Where the record is unreachable, the Markdown
-handoff carries continuation and the objective's note stays local; a chat must
-not invent a duplicate note to stand in for one it cannot read.
+handoff carries the accessible prior context and the original note stays local.
+The new context creates a host-local note for its own meaningful work, records
+the original note's identity and handoff provenance when known, and later
+relates or reconciles the records when access becomes available. It must not
+pretend that the local note contains unread original entries or duplicate an
+accessible same-purpose note. Unreachable shared context does not suspend the
+Contract's ongoing capture obligation.
 
 Considered and rejected: one note per chat. It fragments one objective's
 context across several files, so a resuming agent must discover and merge them,
@@ -69,19 +74,28 @@ Consequences: this narrows the "concurrent writers" alternative that
 unselected, taking its objective-scoped *ownership* and explicitly leaving
 simultaneous writing unselected; ADR-0040 stays accepted and unchanged. No tool
 change is required by this record, and none is claimed to make overlapping
-writes safe. At acceptance, a Task applies three edits; the skill edit is
+writes safe. At acceptance, a Task applies the following edits; the skill edit is
 carried under `AGENTS.md`, which names the `notepad` skill as the owner of
 notepad judgment, because a skill file is not itself a `canonicalized_in`
 owner. The `notepad` skill **keeps** its accurate "check, not a lock" paragraph
 and its one-writer rule; only the ambiguity is repaired, by saying that the
 rule bounds overlapping *writes*, not which chat may own the note, and its
 resume step says to read the current view and the relevant topic before
-writing, to expect entries from other contexts, and to treat a stale-revision
-refusal as "someone else wrote" rather than damage. `AGENTS.md` Session Records
+writing and to expect entries from other contexts. Its creation rule permits
+purpose-distinct linked notes and host-local capture when the original is
+unreachable, while refusing redundant accessible same-purpose notes. A
+`stale-revision` refusal means the supplied revision is absent or does not match
+the current note: reread the note and verify the caller's revision, without
+inferring who wrote or whether another context was involved. `AGENTS.md` Session Records
 gains the sentence that a note belongs to its objective and is shared, one
 writer at a time, by every context that can reach it. The `LEXICON.md` Notepad
 row gains the same ownership clause beside its existing several-linked-notes
-sentence. Until then, the current skill wording remains live and its reading as
+sentence. Mirror these root ownership and capture rules into
+`templates/AGENTS.md` and `templates/LEXICON.md` so generated and upgraded rooms
+receive the same contract. At acceptance, reconcile TT-Q9 in its existing
+question owner: retire its Explore-only option where it contradicts the
+accepted objective-wide capture requirement, while preserving the still-open
+Spec/Task/handoff relationships and all historical proposals. Until then, the current skill wording remains live and its reading as
 one chat per note is the drift this record exists to correct.
 
 Provenance: owner direction in the FND-Q23 deep-dive chat, 2026-09-15, on
@@ -91,9 +105,9 @@ observing that a second chat's appends to the live grilling note
 current skill as one chat per note, while agents that read the objective-scoped
 intent appended correctly. That note is untracked working material named as
 origin, not as durable evidence. The write-loss reproduction above was run in
-separate-context review of this record on 2026-09-15. It partially informs the
-open question TT-Q9 on the relationship between a chat and its notepad without
-closing it.
+separate-context review of this record on 2026-09-15. While this record remains proposed, TT-Q9 remains open. Acceptance must narrow
+its conflicting option through the question owner as described above, without
+claiming that the unresolved Spec/Task/handoff relationships are decided.
 
 ## Promotion status
 
