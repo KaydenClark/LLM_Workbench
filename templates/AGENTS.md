@@ -46,6 +46,12 @@ manufacturing authority. Diagnostics block only by their registered effect:
 work, `claim` refuses a slice blocker, and `attention` findings stay visible
 without blocking.
 
+Accepted active ADR decision claims are architectural Canon, without enlarging
+instruction authority. Rationale and historical alternatives remain evidence.
+Follow active decisions through the Lexicon; superseded/deprecated records stay
+reachable as history. The Blueprint describes the desired finished product;
+it carries no current status, release chronology or generated capability catalog.
+
 ## Traverse, Don't Search
 
 Start from the ordinary entry route and follow the smallest relevant links to
@@ -58,7 +64,9 @@ When a route is missing, stale, or insufficient, use a bounded search to find
 the owner. Search within the selected source area as needed for implementation,
 debugging, or verification; explicit search and navigation audits remain valid.
 Repair a missing or stale durable link in its existing owner when in scope;
-otherwise report the gap. Link new durable context from its relevant router
+otherwise report the gap. Keep accepted unfinished obligations reachable in their existing assigned owner
+or an explicitly authorized successor; preserve completed evidence. A finding
+does not itself authorize new work. Link new durable context from its relevant router
 and back to its sources so the next agent can traverse the same path. Links
 are navigation, never instruction authority or permission to expand scope.
 
@@ -70,7 +78,19 @@ project evidence. Resolve supported decisions within scope. If no confident
 next action can be established, record the blocker in the existing work owner
 and stop; do not create a next task for yourself or manufacture a queue item.
 
-Normal stance is set in the assigned SPEC and TASK (the ticket in that spec),
+A role defines the assigned scope of responsibility: Director covers the
+project and integration, Dispatcher one Spec and its branch, Worker one Task.
+A stance defines the job within that scope. Coordination assignments name the
+applicable stance; Spec Planner plans small parallel vertical slices at flight
+launch and may dispatch Workers to help write Tasks, while Spec Manager
+dispatches and monitors execution within the Spec. Reviewer and Auditor are
+stances a Dispatcher may use for verification. Prior involvement still controls
+independent-review eligibility; changing stance never makes a participant
+independent. Director coordinates cross-Spec dependencies and shared writers.
+The role and stance operating capabilities have separate delivery owners; their
+definitions do not imply a new scheduler or a shipped agent entry.
+
+For Task execution, normal stance is set in the assigned SPEC and its TASK,
 not selected or recorded by the arriving agent. Builder, Auditor, Reviewer and
 Reconciler are portable behavior skills. A stance never grants, removes, or
 transfers authority; loading it never spawns an agent. Each defines Purpose,
@@ -85,7 +105,7 @@ silently discard it. Verification and safety still apply to the work they check.
 Cold continuation uses existing owners: the Contract, assigned packet and linked
 context, exact achieved output or commit, current state, named verification,
 and next executable action or blocker. Update those owners as work proceeds;
-promote a checkpoint only when session reasoning is material. No universal
+reconcile material session reasoning into its named durable owner. No universal
 handoff artifact is required. A read-only setup check may return only in chat.
 
 ## Read Scope
@@ -102,8 +122,22 @@ Stop and surface committed secrets, credentials, or tokens.
 - Forbidden: `[FORBIDDEN_PATHS]`
 - Review required: `[REQUIRES_REVIEW_FOR]`
 
-Keep `templates/` generic when this project ships templates. Spec paths are
-stable; never move them between status folders.
+Keep `templates/` generic when this project ships templates.
+
+Lifecycle is folder location: a record moves between lifecycle folders only
+through a move operation that rewrites every live reference and counts
+historical ones; reachability comes from those maintained links, not from a
+path that never moves.
+
+Any update to the canonical Workbench itself has a separate self-drift
+boundary from a target-project drift check. Inspect the Workbench's own
+current-facing controls, Specs, projections, manifest, procedures, templates
+and managed artifacts before and after the update. A passing render, doctor or
+test suite does not prove that a fresh agent will receive current guidance.
+Do not call the Workbench update complete while an artifact still presents
+completed work as pending, carries a resolved blocker, or has stale
+version/provenance information that can misroute a cold start. Preserve
+explicitly bounded historical evidence.
 
 ## Work Selection And Lifecycle
 
@@ -111,13 +145,13 @@ stable; never move them between status folders.
 2. Run `[SPEC_DOCTOR_COMMAND]`.
 3. Run `[SPEC_NEXT_COMMAND]` and load only its assigned spec.
 4. Claim before editing.
-5. Implement one eligible vertical ticket with red/green TDD.
+5. Implement one eligible vertical task with red/green TDD.
 6. Close it with verification, docs status, and remaining gap.
 7. Complete only after acceptance/owner gates pass; render and doctor must remove
    completed specs from the hot Taskboard immediately.
 
 Do not read the full Blueprint, Taskboard, completed specs, or proof archive for
-normal selection. Use the Lexicon routing section to find task-relevant owners. A spec is a durable capability; a ticket is a temporary slice.
+normal selection. Use the Lexicon routing section to find task-relevant owners. A spec is a durable capability; a task is a temporary slice.
 Later change creates a linked superseding spec rather than rewriting history.
 
 ## Engineering And Verification
@@ -144,17 +178,35 @@ afterward. Static coverage or token reduction is not agent-outcome evidence.
 
 Documentation is part of done; the implementing agent is documentation owner.
 
+This authoring summary assigns documentation maintenance. The
+[Lexicon ownership schema](LEXICON.md#artifact-ownership-schema) defines the
+jobs and provides the question-to-owner routes and artifact boundaries. Keep
+those routes consistent with these assignments when ownership changes.
+
 | Truth | Owner |
 |---|---|
 | agent rules, safety, Git, verification | `AGENTS.md` |
 | product direction and invariants | `BLUEPRINT.md` |
 | shared project terms and accepted definitions | `LEXICON.md` |
-| active assignment/blocker/event/gate | `TASKBOARD.md` projection |
+| active assignment/blocker/event/gate | assigned `SPEC.md`; `TASKBOARD.md` is its generated projection |
 | requirements, acceptance, decisions, evidence, completion | assigned `SPEC.md` |
 | commands and troubleshooting | `RUNBOOK.md` |
 | public usage | `README.md` |
-| decision rationale, alternatives, supersession | `workbench/docs/adr/` (rule binds only where `canonicalized_in` points) |
+| active architectural decisions, rationale, alternatives, supersession | `workbench/docs/adr/` (`canonicalized_in` names operational owners) |
 | durable room memory, design-concept articles, and routing to them | `workbench/wiki/` (`MEMORY.md` router, `SCHEMA.md` rules) |
+
+The agent changing a truth maintains its existing owner within the authorized
+scope: update definitions when meaning changes, procedures when operations
+change, and Spec state/evidence at meaningful work transitions. A document's
+information ownership is distinct from the person responsible for maintaining
+it and from authority to approve a change. Project-wide approval stays with the
+user under this file's rules; Spec/TASK assignments identify delivery ownership.
+
+Work state is authored in the owning Spec and projected into TASKBOARD. Route
+accepted requirements to the Spec, architectural decisions to the ADR owner,
+and durable explanations to the Wiki. A mixed finding may need linked updates
+to several owners; preserve each claim once rather than copying the whole
+finding into every document.
 
 Use `Docs checked; no update needed` with a reason when appropriate. The final response proof states what changed, why, risks, and verification. Append spec
 evidence; never duplicate completed proof in the Taskboard.
@@ -184,7 +236,17 @@ never re-anchored.
 
 ## Git Rules
 
-- Branch per spec/ticket from `[DEFAULT_BRANCH]`; never commit to protected
+For coordinated Spec delivery, the normal route is a Worker Task-branch merge
+request into the Dispatcher Spec branch, then an independently reviewed Spec
+merge request into integration under Director coordination. A Task merge is
+containment; its Worker supplies self-check and proof. A release-specific
+bootstrap exception may name a different route and its gate explicitly; read
+that owner rather than silently applying the intended route to unsupported
+current tooling. Accepted decisions and current progress are reconciled into
+tracked owners on integration through reviewed changes; local notes and
+unmerged branches must not be their only discovery route.
+
+- Branch per spec/task from `[DEFAULT_BRANCH]`; never commit to protected
   branches.
 - Default PR target: `[INTEGRATION_BRANCH_OR_DEFAULT]`; owner-only final merge:
   `[OWNER_ONLY_MERGE]`.
@@ -202,8 +264,18 @@ Before branches combine into the declared integration branch, a
 separate-context reviewer must check the immutable candidate against its
 controls, assigned spec, and named evidence. This gate challenges code,
 consequential report claims, and recommendations. Earlier review and audit are
-supports, not mandatory independent ceremonies per ticket. A new candidate
+supports, not mandatory independent ceremonies per task. A new candidate
 requires a fresh review; self-review alone cannot satisfy the integration gate.
+
+Owner Human QA is an owner-led evaluation process, not the approval command. It
+can be underway through audits and corrective cycles before the eventual
+approval on the declared integration branch. An ongoing or failed Human QA
+review has findings to reconcile; it is not a request for the owner to start
+QA or an ordinary dependency blocker. Record that state and the next
+corrective action in the owning Spec, then refresh the Taskboard projection.
+Passing tests or a separate-context source review does not reset a failed
+Human QA gate to "awaiting approval"; only the owner's actual approval records
+approval.
 
 ### Branch Completion
 
@@ -239,10 +311,31 @@ closeout or rely on a final write after Stop. This obligation covers saved local
 context for conversation continuation, not computer crashes or device loss;
 an interruption can still preempt an unsaved write.
 
-New notepads use JSON, including when older workflow examples say Markdown.
-Use existing manifest-declared live collections until the shared schema, tooling,
-and notepads layout are implemented. Preserve legacy Markdown sources. Live
-notes and handoffs stay local-only and untracked. Do not record secrets,
+When the Landmark Tracker capability is available, workflow activity maintains
+current pre-delivery understanding in DQCs and landmark records, preserving
+what changed, why, affected claims and evidence. The generated Tracker reflects
+those sources. Grilling notepads remain useful historical and handoff-like
+context; do not discard needed origins or corrections merely because a card
+exists. Until that capability is delivered, preserve working context through
+the existing notepad runtime. Confirmation of understanding never grants
+implementation or promotion authority. The grilling primitive remains unaware
+of Tracker machinery; workflow composition performs the record maintenance.
+Wiki creation and updates are ordinary authorized delivery and reconciliation,
+not a separate publishing ceremony. Apply claim-level ownership and the current
+request throughout; no record or projection can manufacture authority.
+
+Notepads, including grilling records, use JSON, including when older workflow
+examples say Markdown. Handoffs are separate human-readable Markdown (`.md`)
+files: they give a receiving agent or a new chat plain-language instructions
+for continuing one objective. Do not serialize a handoff as a JSON notepad.
+The shared runtime is `workbench/tools/notepads.mjs`; its interchange schema
+and reusable examples live in the manifest-declared `notepad-templates`
+collection. The `notepad` skill owns judgment. New live records use typed
+folders in the `notepads` collection; Markdown handoffs use `handoffs`.
+Preserve legacy Markdown and JSON paths, but create no new JSON handoffs. Live
+notes and handoffs stay untracked in project Git; explicitly configured private
+synchronization may transport selected live collections under the accepted
+continuity contract. Local operation remains independent of transport. Do not record secrets,
 credentials, authentication/recovery material, raw private financial, medical,
 or personal data, or unsafe tool output; retain only safe recovery references.
 
@@ -255,11 +348,12 @@ may instead be trimmed of promoted material, preserving any context and
 correction links still needed by its remaining work. No routine archive is
 required. No autonomous task or handoff creation follows.
 
-Existing privacy-checked checkpoints and their references remain available
-until deliberate retirement reconciles them; the legacy command is
-`node workbench/tools/sessions.mjs checkpoint --from PATH --topic slug`.
-It refuses secret-like content, absolute home paths, and email addresses before
-writing. A copied record is preservation, not blanket promotion of its claims.
+Existing privacy-checked checkpoints and their citations are frozen history.
+The legacy `sessions.mjs checkpoint` command refuses new copies without writing.
+Reconcile selected claims into their durable owners with `sessions.mjs promote`;
+retain local notes for unresolved context. Operational receipts and backups live
+in the separate ignored `sessions/recovery/` collection, outside note discovery.
+A preserved historical copy is not blanket promotion of its claims.
 
 ## Long Session Control
 

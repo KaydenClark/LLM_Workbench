@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Workbench objective notepad",
+  "description": "Structural interchange contract. Labels are not authority or evidence of truth. Runtime additionally checks duplicate entry IDs and update/dependency safety.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "revision",
+    "id",
+    "type",
+    "status",
+    "title",
+    "created_at",
+    "updated_at",
+    "objective",
+    "current",
+    "entries",
+    "extensions"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "notepad-1"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "type": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "status": {
+      "enum": [
+        "PROVISIONAL",
+        "ACTIVE",
+        "BLOCKED",
+        "RECONCILED"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "created_at": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "updated_at": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "objective": {
+      "type": "object",
+      "required": [
+        "key"
+      ],
+      "properties": {
+        "key": {
+          "type": "string"
+        }
+      }
+    },
+    "current": {
+      "type": "object",
+      "required": [
+        "state"
+      ],
+      "properties": {
+        "state": {
+          "type": "string"
+        }
+      }
+    },
+    "relationships": {
+      "description": "Optional workflow relationships; the runtime preserves their supplied shape."
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "content"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9]+(?:[-_][A-Za-z0-9]+)*$"
+          },
+          "kind": {
+            "enum": [
+              "directive",
+              "source_record",
+              "finding",
+              "proposal",
+              "decision",
+              "correction",
+              "verification",
+              "blocker"
+            ]
+          },
+          "topic": {
+            "description": "Optional classification preserved from existing records."
+          },
+          "content": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "extensions": {
+      "type": "object"
+    }
+  }
+}

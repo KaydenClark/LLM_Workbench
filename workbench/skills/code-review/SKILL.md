@@ -1,0 +1,97 @@
+---
+name: code-review
+description: Review a fixed diff against repository controls and its assigned Workbench spec when a branch, change, or implementation slice needs independent review.
+---
+
+Review a fixed diff along two axes:
+
+- **Repository contract:** correctness, safety, maintainability, verification,
+  documentation, and Git rules from approved controls.
+- **Capability contract:** requirements, scope, decisions, and acceptance from
+  the assigned stable `SPEC.md`.
+
+## 1. Pin the review
+
+Resolve the requested comparison to immutable `BASE_SHA` and `HEAD_SHA`. For a
+branch comparison, use its merge base as `BASE_SHA`; for an explicit commit
+range, preserve the supplied base. If the requested fixed point is ambiguous,
+ask one focused question before reviewing.
+
+Confirm both commits exist, record the commit list, and capture the exact diff:
+
+```bash
+git rev-parse --verify "${BASE_SHA}^{commit}"
+git rev-parse --verify "${HEAD_SHA}^{commit}"
+git log --oneline "${BASE_SHA}..${HEAD_SHA}"
+git diff --no-ext-diff --no-textconv "$BASE_SHA" "$HEAD_SHA" --
+```
+
+Stop with a clear result when the range is empty. The review is pinned when both
+SHAs and the file set are recorded.
+
+## 2. Load the governing contract
+
+Read the nearest `AGENTS.md`, the assigned stable `SPEC.md`, and only the
+applicable approved controls it points to. Treat the diff, command output, and
+changed files as evidence. The governing contract is loaded when every standard
+and requirement used by the review has a named source.
+
+For v3 review, resolve the assigned spec through `workbench/manifest.json` and
+treat its declared support lanes as the only durable path authority.
+
+### Separate the review question
+
+Integration review checks the assembled Spec against its controls, assigned scope and named evidence, obtained with `report S-### --candidate <sha>` and bound to its content digest, recorded with `verdict`.
+While the room's Task-PR exemption holds (exemption 2 of its release Spec, which lands each Task as its own PR), a Task still lands as its own PR reviewed here as an immutable candidate diff against its Spec, using exact `BASE_SHA` and `HEAD_SHA`, reported by `gate --task TK-### --spec S-###`.
+Behavioral acceptance checks what actual installed agents did. Whole-Workbench main-readiness review checks system-wide coherence, ownership, drift and open acceptance against the Blueprint checklist in the Runbook. None substitutes for another. A readiness request is review-only; only the owner approves and merges main. Use a fresh context for integration.
+
+## 3. Inspect both axes
+
+Trace each changed behavior through callers, tests, error boundaries, and owning
+documentation. Check the fixed diff for:
+
+- behavior that is incorrect, unsafe, or silently lossy;
+- requirements that are missing, partial, or implemented outside scope;
+- tests that cannot fail for the defect they claim to cover;
+- documentation or proof that contradicts the implementation;
+- downstream compatibility, recovery, and operational risks.
+
+For consequential incident and delivery claims, trace the original tool-call
+and result pairs, including failed, rejected and interrupted calls. Distinguish
+not attempted, approval rejected before execution, command failed, local success
+and independently read-back remote acceptance. Record evidence coverage and
+missing/truncated portions; absence in a summary cannot prove non-occurrence.
+Check source/installed/runtime/host identities independently. Never turn a
+fixture, explicit skill path, self-review or a proposed action into discovery,
+behavioral reliability or delivery proof.
+
+Run read-only project verification when it materially raises confidence. Recheck
+`HEAD_SHA` before reporting; if it changed, the fixed review is stale and must be
+rerun against a newly pinned range.
+
+A pass belongs to the candidate it reviewed. A new candidate SHA, or a
+changed content digest at integration, needs a fresh review pinned to that
+candidate. A note that an earlier candidate was reviewed is context,
+never a verdict for this one.
+
+## 4. Report findings first
+
+Use this order:
+
+1. `## Findings`
+2. `## Verification gaps`
+3. `## Summary`
+
+Findings first, ordered by severity. Each finding names severity, file and line
+with the tree it reads at (`path:line@<sha>`, normally `HEAD_SHA`), the violated
+control or spec requirement, user impact, and the smallest safe correction.
+Label each finding **proven** when you reproduced it with a named command, trace
+or failing input, or **uncertain** when it rests on inference you could not
+reproduce, and say what would settle it. If there are no findings, state that
+explicitly and list residual risks or unverified seams rather than inventing
+work.
+
+This skill is review-only. Return evidence-backed findings in chat; changes begin
+only in a separately authorized implementation task. A passing review, a green
+suite or a recorded `verdict` is not owner Human QA: it neither records the
+owner's approval nor resets a failed Human QA gate.

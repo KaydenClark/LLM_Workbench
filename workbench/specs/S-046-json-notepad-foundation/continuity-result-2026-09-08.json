@@ -1,0 +1,201 @@
+{
+  "trial": "S-046 TK-005 same-provider fresh-context recovery",
+  "completed_at": "2026-09-08T08:29:59.294665+00:00",
+  "objective": "Verify five retained checkpoint records and classify concrete consumers from an authored S-048 handoff.",
+  "host": {
+    "application": "Codex desktop subagent",
+    "os": "Darwin",
+    "kernel": "25.5.0",
+    "architecture": "arm64",
+    "model": "unknown; no exact runtime model identifier exposed"
+  },
+  "workspace_commit": "2da258764332a880e82aafd2cbd66b74f96fc990",
+  "branch": "codex/v3.2.0-release",
+  "dirty_state": "",
+  "doctor": "exit 0; unrelated S-053/TK-002 selected-slice blocker and unverified-provenance attention",
+  "installed_skill": {
+    "invocation": "Explicit installed SKILL.md path; not native automatic discovery",
+    "marker": {
+      "schemaVersion": 2,
+      "source": "LLM Workbench core",
+      "release": "v3.1.4",
+      "commit": "2da258764332a880e82aafd2cbd66b74f96fc990",
+      "contentHash": "086228e4bea2618501043594bfd97f83f5194ddcef87f637189441348ff8d26f"
+    },
+    "file_sha256": "c69d513691080ce7fa066a3f425595bc9927710523ce504b8196b374e7bf35df"
+  },
+  "recovered_context": {
+    "source_revision": 7,
+    "disposition_matches": [
+      "correction-001"
+    ],
+    "disposition_context": [
+      "finding-001"
+    ],
+    "inventory_matches": [
+      "finding-002"
+    ],
+    "inventory_context": [
+      "finding-001",
+      "correction-001"
+    ],
+    "pagination": "Both scoped reads has_more=false",
+    "correction": "Later accepted v3.2.0 frozen historical remnant supersedes earlier ask-before-literal-folder-removal direction. No deletion decision remains to re-ask. Preserve all bytes and citations.",
+    "dependencies": "Handoff retained_sources point to finding-001, correction-001, finding-002; inventory depends on correction-001, which corrects finding-001."
+  },
+  "checkpoint_inventory": [
+    {
+      "path": "workbench/sessions/checkpoints/.gitkeep",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches_head": true
+    },
+    {
+      "path": "workbench/sessions/checkpoints/llm-workbench-v3-1-plan-2026-09-04.md",
+      "bytes": 8895,
+      "sha256": "6a582fc9da59c72b23b9d02909eba130dc434b24578bf11ee09b535e61d0ee55",
+      "matches_head": true
+    },
+    {
+      "path": "workbench/sessions/checkpoints/s022-cross-provider-resume-2026-09-04.md",
+      "bytes": 5173,
+      "sha256": "41ea2c2ea68e430819ebbf1c299dc1827cb1a6fadaaf1d36867a495542eef08a",
+      "matches_head": true
+    },
+    {
+      "path": "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md",
+      "bytes": 31442,
+      "sha256": "a39c3198b224002fb6eafd85e9789c79b967e4bf1c367a6688009b880519c955",
+      "matches_head": true
+    },
+    {
+      "path": "workbench/sessions/checkpoints/workbench-boundaries-redesign-2026-09-04.md",
+      "bytes": 22654,
+      "sha256": "7afe1075bdb49c594fdfe444a165092de893813199e2d58531ede6d57bf33c6c",
+      "matches_head": true
+    },
+    {
+      "path": "workbench/sessions/checkpoints/workbench-pivot-stability-2026-09-04.md",
+      "bytes": 1587,
+      "sha256": "4e0b7cbc13802ea833a0b9955d88b95b8623a57244f8dd424ebb4305e364639c",
+      "matches_head": true
+    }
+  ],
+  "source_sha256": {
+    "AGENTS.md": "508c362300a7ff0349505a0fcc0ac24adb516a3c172697a38b707f8d3baec6a6",
+    "RUNBOOK.md": "5480beb14984054d0ec98c4db10f11b24439d1f1f337763cd96ca7b7fca6e1c7",
+    "LEXICON.md": "d34c0337ac73acad0ee9744938362657d1b22ea69248a7a2d7c18626666c29b3",
+    "workbench/manifest.json": "7f1758807afd198bad5a6b5e7126dd2e66eb1719d4f0e8f4023a7dcbc16cb2e9",
+    "workbench/specs/S-046-json-notepad-foundation/SPEC.md": "ab95f137a1abbf4425805237b196a8d4d0b493227268fcf8008a03bc303efe0c",
+    "workbench/specs/S-048-checkpoint-retirement/SPEC.md": "7dc2f167b50216c06110dc4f1700d3d779d7603d051e5a79b2755b266924c221",
+    "workbench/docs/adr/0028-live-session-records-stay-untracked-and-checkpoints-are-durable.md": "5d3536e96a417f4e408def9d04980bc85672a528aef074fb3196029070363795",
+    "workbench/specs/S-026-workflow-composition-and-cold-resume/SPEC.md": "a61f26fc9451e0420d3f7de781c1eb059a908d94c3cef5b6bcd6dd72a5a0d5e2",
+    "workbench/tools/notepads.mjs": "46cd03874ad047c44527b55045e724215e3d933de414cd6e2a602cad06b38d32"
+  },
+  "consumer_classification": [
+    {
+      "classification": "active session-copy producer",
+      "references": [
+        "workbench/tools/sessions.mjs:21",
+        "workbench/tools/sessions.mjs:42",
+        "workbench/tools/sessions.mjs:80",
+        "skills/checkpoint/SKILL.md:32"
+      ],
+      "behavior": "Privacy-check and write new promoted copies; skill directs creation and resume."
+    },
+    {
+      "classification": "active operational recovery producer and compatibility dependency",
+      "references": [
+        "tools/workbench-adoption.mjs:30",
+        "tools/workbench-adoption.mjs:32",
+        "tools/workbench-adoption.mjs:338",
+        "tools/workbench-adoption.mjs:343",
+        "tools/workbench-upgrade.mjs:195",
+        "tools/workbench-upgrade.mjs:198"
+      ],
+      "behavior": "Adoption moves legacy handoffs and skill backups into checkpoints and writes recovery JSON; upgrade writes preMigration Git SHA, inventory, skill backups and tools recovery references. Preserve existing references while separating operational recovery."
+    },
+    {
+      "classification": "active layout and installation declaration",
+      "references": [
+        "workbench/manifest.json:39",
+        "workbench/manifest.json:49",
+        "workbench/tools/workbench-paths.mjs:24",
+        "workbench/tools/workbench-layout.mjs:18",
+        "workbench/tools/workbench-layout.mjs:32",
+        "workbench/tools/workbench-layout.mjs:685"
+      ],
+      "behavior": "Declare collection, include checkpoint in core skills, retain ignore policy, migrate legacy tracked handoffs."
+    },
+    {
+      "classification": "active test and rehearsal consumer",
+      "references": [
+        "tools/test-sessions.mjs:26",
+        "tools/test-workbench-round-trip.mjs:97",
+        "tools/test-workbench-adoption.mjs:155",
+        "tools/test-workbench-upgrade.mjs:85",
+        "tools/cross-provider-resume.mjs:80"
+      ],
+      "behavior": "Executable tests and rehearsal still call checkpoint promotion or assert checkpoint recovery paths; source inspected, these tests were not run by this read-only trial."
+    },
+    {
+      "classification": "active procedural documentation",
+      "references": [
+        "AGENTS.md:327",
+        "RUNBOOK.md:464",
+        "RUNBOOK.md:517",
+        "RUNBOOK.md:817",
+        "skills/make-it-so/SKILL.md:21",
+        "templates/AGENTS.md:258"
+      ],
+      "behavior": "Legacy creation, recovery and retained-record guidance must be reconciled when implementation changes."
+    },
+    {
+      "classification": "historical citation and rationale preservation dependency",
+      "references": [
+        "workbench/docs/adr/0028-live-session-records-stay-untracked-and-checkpoints-are-durable.md:18",
+        "workbench/docs/adr/0034-required-steps-must-enable-delivery.md:17",
+        "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md:69",
+        "workbench/specs/S-022-llm-workbench-v3-1-release/SPEC.md:176"
+      ],
+      "behavior": "Retain cited bytes and append-only evidence. S-026 proves deterministic provider-free file-copy recovery; historical S-022 real-provider evidence does not validate this release."
+    },
+    {
+      "classification": "generic Git wording, not by itself a collection dependency",
+      "references": [
+        "skills/make-it-so/SKILL.md:67",
+        "skills/make-it-so/SKILL.md:72"
+      ],
+      "behavior": "Checkpoint commit wording alone does not mean sessions/checkpoints is consumed."
+    }
+  ],
+  "result": "PASS bounded useful recovery: recovered correction and dependencies, independently verified assigned source, completed inventory and consumer classification, saved results during work. Five Markdown records and .gitkeep match HEAD; tracked tree remains clean.",
+  "limits": [
+    "One local same-provider fresh-context trial.",
+    "Exact model is unknown.",
+    "Installed skill explicitly invoked; native discovery untested.",
+    "No cross-provider, Stop-button, token-exhaustion, crash, transport, or rollback rehearsal performed.",
+    "Concrete verified consumer classification is not claimed to be an exhaustive repository-wide inbound-reference audit or completed S-048.",
+    "No deletion, tracked editing, Git mutation, ticket closure, or release validation."
+  ],
+  "last_confirmed_saved_boundary": {
+    "revision": 4,
+    "updated_at": "2026-09-08T08:29:04.735Z",
+    "read_back": "CLI current view confirmed after append and current update",
+    "sha256": "a16f1b8c1e0f4460e394eb7feec6f20aca5fb8f56cb5a37e07d9f8c64e9b7ff0",
+    "role": "authored destination handoff, retained locally"
+  },
+  "verification_boundary": "Every source citation in this record reads at workspace_commit. This is a curated result, not a committed live note or handoff.",
+  "author_demonstration": {
+    "candidate": "2da258764332a880e82aafd2cbd66b74f96fc990",
+    "source_saved_revision": 7,
+    "handoff_initial_revision": 1,
+    "partial_cleanup": "Removed finding-003 after checking S-046 TK-004 durable evidence; retained source correction/dependency chain remained.",
+    "refusals": [
+      "Trimming the handoff-retained source slice refused as retained-dependency.",
+      "Whole cleanup of unfinished source refused as retained-dependency."
+    ],
+    "review_limit": "Independent review of this candidate found case-alias retention/template defects despite 32 targeted and 34 full-suite passes. Recovery outcome does not waive those defects."
+  },
+  "coordinator_read_back": "All six checkpoint paths independently hashed in the source room and match this inventory; destination handoff revision 4 read back and disposable tracked tree remained clean."
+}

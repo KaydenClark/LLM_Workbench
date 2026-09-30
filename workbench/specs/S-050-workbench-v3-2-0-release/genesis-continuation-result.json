@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "kind": "development-genesis-and-native-continuation-rehearsal",
+  "sourceCommit": "157d54734538f9703ac7f4eba95b004b7d35332c",
+  "sourceRelease": "v3.1.4 development candidate",
+  "project": "Queue Summary",
+  "foundingPrompt": "Build Queue Summary, a dependency-free Node CLI that reads a JSON array of tasks and reports counts by todo, doing and done; reject unknown statuses and malformed input with a nonzero exit. Include a useful sample, tests, filled Workbench controls and a saved objective with a correction and next action.",
+  "promptStatus": "assistant-selected bounded rehearsal",
+  "roomIdentity": "WB-33bygSWGW8XDvIL6JsKkjI",
+  "bootstrapCommit": "429fb1c45edae4a40c42fd04686bda9341f2e814",
+  "implementationCommit": "2f32f51a160b59fda130f82b2b3bda83e7046cbf",
+  "recoveryCommit": "85ac45b8cef9c302f39ada3e9aee100d82211983",
+  "localRemoteReadBack": true,
+  "branch": "codex/rehearsal",
+  "integrationPromoted": false,
+  "bootstrapReadiness": "independently passed at exact bootstrap commit",
+  "implementationReadiness": "bootstrap-only gate correctly refused: ready continuation retained TK-001 dependency; earlier contrary report withdrawn",
+  "tests": {
+    "redUsefulCases": 13,
+    "greenFullCases": 14,
+    "freshCloneFullCases": 14,
+    "nativeFullCases": 14,
+    "parentAfterNativeFullCases": 14,
+    "sample": {
+      "todo": 2,
+      "doing": 1,
+      "done": 1
+    },
+    "nativeEmpty": {
+      "todo": 0,
+      "doing": 0,
+      "done": 0
+    },
+    "nativeMixed": {
+      "todo": 1,
+      "doing": 1,
+      "done": 2
+    }
+  },
+  "host": {
+    "bootstrap": "Codex desktop subagent",
+    "continuation": "Codex CLI 0.144.3",
+    "system": "Darwin",
+    "release": "25.5.0",
+    "architecture": "arm64",
+    "model": "not reported by captured native events",
+    "configuration": "isolated HOME; existing authentication through CODEX_HOME; ignore-user-config; ephemeral; workspace-write; no security bypass or credential copying",
+    "configurationEvidence": "Parent-observed launch arguments and environment; these settings are not emitted in the hashed native JSON events and were not independently reconstructed.",
+    "cliVersionEvidence": "Parent-observed at invocation; independent current binary recheck reports 0.144.3 but is not a historical launcher record."
+  },
+  "runtime": {
+    "installedFiles": 15,
+    "sourceCommit": "157d54734538f9703ac7f4eba95b004b7d35332c",
+    "sourceRelease": "v3.1.4"
+  },
+  "savedBoundary": {
+    "beforeRevision": 6,
+    "nativeAfterRevision": 8,
+    "parentCorrectedRevision": 10,
+    "path": "workbench/sessions/notepads/work/queue-summary.json",
+    "sha256": "0018fb0feded29c7f0177f25f130314af72da02b2f43d10b4abddd209ba6bf75",
+    "originalEntry": "finding-001",
+    "implementationCorrection": "correction-001",
+    "reportCorrection": "correction-002",
+    "originalAndCorrectionsRetained": true,
+    "ignoredInProjectGit": true
+  },
+  "nativeEvidence": {
+    "promptHash": "0bea3562b001d30e643fe73d7693cdeb3086d5621e8fa0f7970d335d224e74ec",
+    "eventsHash": "7cdad428b49ee65db92f7e14c0d3a708165e23fc2e23702a0423ad1609ac5162",
+    "resultHash": "cfa3a522ccc2383e17082ce958ff63c48f9c620627b22288592e06feeaa53729",
+    "completedCommands": 36,
+    "result": "independent useful checks and revision-checked save completed; supervising process subsequently committed/pushed only to local bare remote"
+  },
+  "independentReview": "The immutable receipt review and verdict belong to the S-050 append-only evidence log.",
+  "limits": [
+    "Local bare remote only; no private service or transport verification.",
+    "Explicit installed-skill invocation; no automatic discovery claim.",
+    "Single Mac with Codex desktop and CLI; no Claude or Windows proof.",
+    "No Example upgrade/integration or final v3.2.0 stamp/readiness.",
+    "No repeated controlled agent-outcome or crash-recovery claim."
+  ]
+}

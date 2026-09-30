@@ -15,7 +15,7 @@ The blank, copyable templates live in `templates/`:
 - `templates/AGENTS.md` - agent behavior, authority order, read/edit scope,
   task-selection loop, documentation ownership, and proof rules.
 - `templates/BLUEPRINT.md` - compact product map, cross-cutting architecture and
-  invariants, non-goals, and generated spec catalog.
+  desired integrated design and non-goals. The manifest specs lane holds the generated complete catalog.
 - `templates/LEXICON.md` - on-demand shared vocabulary: accepted project terms,
   concise definitions, and distinctions that prevent agents and humans from
   silently using the same word differently.
@@ -57,6 +57,23 @@ The blank, copyable templates live in `templates/`:
 `BLUEPRINT.md`, capability truth in specs, and only active execution state in
 `TASKBOARD.md`.
 
+## From Project Evidence To A Fresh Workbench
+
+Prepare a named project's source evidence and unanswered Blueprint questions
+with the installed `project-evidence.mjs` tool. Once the relevant decisions are
+recorded, the release-side `genesis-from-decisions.mjs` command can assemble a
+new independent room from reviewed control drafts, selected active ADRs and
+scoped capability inputs. It preserves source lineage and validates the room;
+it does not invent owner answers or prove a product works.
+
+Follow [the Runbook](RUNBOOK.md#prepare-project-evidence-and-blueprint-questions)
+for the commands and input boundary, then [Genesis](templates/GENESIS.md) for
+implementation, project checks and remote recovery. An existing project follows
+[Adoption](templates/ADOPTION.md). The source capabilities are
+[S-00C](workbench/specs/S-00C-project-evidence-and-blueprint-grilling/SPEC.md),
+[S-00D](workbench/specs/S-00D-genesis-from-blueprint-and-adrs/SPEC.md) and the
+[S-00E fresh-project proof](workbench/specs/S-00E-fresh-template-project-proof/SPEC.md).
+
 ## This Repo Dogfoods Its Own Harness
 
 The root-level `AGENTS.md`, `BLUEPRINT.md`, `LEXICON.md`, `TASKBOARD.md`, and `RUNBOOK.md`
@@ -66,9 +83,14 @@ docs look like. Copy from `templates/`, not from the root.
 
 ## Supporting Files
 
-- `skills/` - the closed 16-skill public source bundle. It is copied only into
-  user-scoped discovery roots during a missing-only brand-new install; this
-  repository does not use it as a project-local discovery tree.
+- `workbench/skills/` - the closed 26-skill core bundle, shipped inside every
+  room as the manifest's `skills` lane. The tracked `.agents/skills` (Codex)
+  and `.claude/skills` (Claude Code) links resolve into it, so a fresh clone
+  discovers the skills with no provider home or personal catalog. Genesis and
+  Adoption lay the lane down from the release; the Workbench update refreshes
+  it (`tools/workbench-skills.mjs`). The two links are Git symlinks: a host
+  that checks them out as plain files (Windows without symlink support)
+  reports `skill-adapter-broken` in `doctor` until they are restored.
 - `skills-pending/` - preserved selected baselines that remain non-invocable
   until their Workbench rewrites pass review.
 - `team templates/` - optional manager/subagent coordination templates for
@@ -164,26 +186,61 @@ so a cold reviewer can reproduce the proof without the original checkout or chat
 
 Each copied control doc carries a `Generated from LLM Workbench v[HARNESS_VERSION]`
 stamp so a downstream project can tell which harness version it is running. The
-current harness version is **v3.1.2**, a local candidate (recorded in
-`BLUEPRINT.md` and `workbench/manifest.json`). v3.0.0 and v3.1.0 were unreleased.
+current harness version is **v3.2.1** (recorded in
+`workbench/manifest.json`). v3.0.0 and v3.1.0 were unreleased.
 [`S-027`](workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md) continued
 that baseline as v3.1.1 and
 [`S-035`](workbench/specs/S-035-workbench-v3-1-2-candidate/SPEC.md) stamps the
-v3.1.2 patch candidate; [`S-036`](workbench/specs/S-036-v3-1-2-evidence-corrections/SPEC.md)
-owns its evidence-integrity corrections. Publication remains separately
-owner-controlled. This repo is the source, so its own docs are not stamped.
+v3.1.2 patch; [`S-036`](workbench/specs/S-036-v3-1-2-evidence-corrections/SPEC.md)
+owns its evidence-integrity corrections.
+[`S-049`](workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md)
+opens v3.1.3, because it grows the core skill bundle from sixteen to
+seventeen and v3.1.2 had already reached `main` and downstream rooms at
+sixteen. A bundle change is a release-surface change: v3.1.2 stays frozen at
+its own policy rather than being redefined.
+[`S-046`](workbench/specs/S-046-json-notepad-foundation/SPEC.md) stamps v3.1.4
+under the same rule, adding the shared JSON notepad runtime as a managed tool
+and the `notepad` skill as the eighteenth in the bundle; v3.1.3 freezes at
+seventeen. Publication remains separately
+owner-controlled. S-050 consolidates the reconciled v3.2.0 update: shared JSON
+notepads, visible identities, direct promotion with frozen checkpoint history,
+twenty-one core skills, optional private session transport and scoped host checks.
+The owner explicitly waived the frozen-label rule for this repair only; original
+twenty-skill v3.2.0 manifests remain readable, and commit/content identities
+distinguish the repaired bundle.
+Actual cross-device acceptance and rollout readiness remain explicitly separate.
+This repo is the source, so its own docs are not stamped.
 
-Portfolio responsibilities stay separate: LLM_Workbench produces the canonical
-harness and exact upgrade handoff; GPT_OS selects authorized targets and owns
-deployment, rollout tracking, and recovery; Audit_Workbench audits project HFRs
-and compiles upstream reports; each project owns its product, filled controls,
-local evidence, and truthful feedback. A fix landing here is upstream
-implementation evidence, not proof that a downstream project has deployed or
-benefited from it.
+Updating a downstream project requires checking that project's own drift. Any
+update to this canonical Workbench also requires a separate Workbench self-drift
+check over the controls, Specs, projections, procedures, manifest, templates
+and managed artifacts that a cold-start agent would read. A passing render,
+doctor or test suite does not prove that current-facing guidance is fresh.
+
+Every new version must also upgrade and verify the existing
+[Workbench_Template](https://github.com/KaydenClark/Workbench_Template)
+reference repository before release readiness is approved. Its installed update,
+independent integration review and fresh-clone checks are the
+[Template upgrade release gate](RUNBOOK.md#template-upgrade-release-gate).
+Passing source tests or creating a new project does not satisfy this gate.
+
+LLM_Workbench produces the canonical harness and scoped update instructions.
+Named project owners authorize installation, recovery and local verification.
+Historical GPT_OS/Audit_Workbench examples in ADR-0026 explain earlier roles;
+they do not authorize a new portfolio rollout. A fix landing here proves
+upstream implementation, not that a downstream project has deployed or benefited
+from it. This assignment explicitly updates the Workbench Template only.
 
 The portable layout and skill-install contract is implemented in
 [`S-021`](workbench/specs/S-021-portable-workbench-v3/SPEC.md). The separate
-exact-head `integration` to `main` release gate remains owned by S-014.
+current release-readiness owner is
+[`S-00O`](workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md); only the owner
+may promote `integration` to `main`. S-014 and S-022 preserve historical release
+packets whose current obligations are routed to these owners; their blocked
+status retains unexecuted historical tasks without presenting a new assignment. The earlier v3.2 delivery receipt and its
+remaining cross-device/private-service acceptance stay with
+[`S-050`](workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md) and
+[`S-052`](workbench/specs/S-052-private-session-transport/SPEC.md).
 
 To pull later harness improvements into a downstream project, follow that
 project's `RUNBOOK.md` -> Upgrading The Harness: re-copy only changed template
@@ -300,3 +357,7 @@ its relevant owners. Builder, Auditor, Reviewer and Reconciler are assigned
 stances within existing authority. Work autonomously inside the assigned task;
 independent review is required before integration. The setup-only Round One
 proof returns in chat; feedback reporting follows it in the declared lane.
+
+Version 3.2.1 adds project-evidence preparation and source-linked Genesis.
+The [fresh Puffer Pond proof](workbench/specs/S-00E-fresh-template-project-proof/PROOF.md)
+records the native continuation and its one-host limitations.

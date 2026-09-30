@@ -1,0 +1,107 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000A",
+  "revision": 2,
+  "title": "Role scope and stance jobs for Spec delivery",
+  "question": "How do scoped roles and composable stances coordinate parallel Spec and Task delivery?",
+  "answer": "Role defines scope: Director covers project and integration, Dispatcher one Spec and its branch, Worker one Task. Spec Planner and Spec Manager are separate Dispatcher-usable stances with separate Specs. Planner prepares small parallel vertical slices and may use Workers to author Tasks; Manager dispatches and monitors execution. Reviewer and Auditor remain stances. Director coordinates cross-Spec work.",
+  "confirmation": {
+    "basis": "Owner explicitly confirmed ROLE-1 through ROLE-4 and the documentation/specification/integration endpoint on 2026-09-27.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "Keep accepted decisions and progress reachable on integration, separately specify the three roles and two missing stances, reuse Reviewer and Auditor owners, and defer new Tasks until flight launch.",
+    "home": "LEXICON.md; AGENTS.md; BLUEPRINT.md; RUNBOOK.md; workbench/wiki/design-concepts/roles-and-stances.md; workbench/specs/S-002C-director-role/SPEC.md through S-002G-spec-manager-stance/SPEC.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "ROLE-1",
+      "revision": null
+    },
+    {
+      "id": "ROLE-2",
+      "revision": null
+    },
+    {
+      "id": "ROLE-3",
+      "revision": null
+    },
+    {
+      "id": "ROLE-4",
+      "revision": null
+    }
+  ],
+  "landmarks": [],
+  "assessment": null,
+  "related": [],
+  "claims": [],
+  "origin": {
+    "title": "Role scope and stance jobs for Spec delivery",
+    "question": "How do scoped roles and composable stances coordinate parallel Spec and Task delivery?",
+    "sources": [
+      {
+        "id": "ROLE-1",
+        "revision": null
+      },
+      {
+        "id": "ROLE-2",
+        "revision": null
+      },
+      {
+        "id": "ROLE-3",
+        "revision": null
+      },
+      {
+        "id": "ROLE-4",
+        "revision": null
+      }
+    ],
+    "revision": 1,
+    "at": "2026-09-27T03:31:37.558Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-09-27T03:31:37.558Z",
+      "reason": "Owner confirmed minimum buildout and integration reconciliation; preserve current understanding in the available concept runtime",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-09-27T03:32:09.760Z",
+      "reason": "Confirmed design promoted to durable owners; implementation and independent delivery proof remain with the capability Specs",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "Role defines scope: Director covers project and integration, Dispatcher one Spec and its branch, Worker one Task. Spec Planner and Spec Manager are separate Dispatcher-usable stances with separate Specs. Planner prepares small parallel vertical slices and may use Workers to author Tasks; Manager dispatches and monitors execution. Reviewer and Auditor remain stances. Director coordinates cross-Spec work."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Owner explicitly confirmed ROLE-1 through ROLE-4 and the documentation/specification/integration endpoint on 2026-09-27."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "Keep accepted decisions and progress reachable on integration, separately specify the three roles and two missing stances, reuse Reviewer and Auditor owners, and defer new Tasks until flight launch.",
+            "home": "LEXICON.md; AGENTS.md; BLUEPRINT.md; RUNBOOK.md; workbench/wiki/design-concepts/roles-and-stances.md; workbench/specs/S-002C-director-role/SPEC.md through S-002G-spec-manager-stance/SPEC.md",
+            "revision": 2
+          }
+        },
+        {
+          "field": "correction",
+          "to": "The initial Reviewer role proposal and generalized multi-Spec Dispatcher lane were replaced by Reviewer stance and a one-Spec Dispatcher boundary."
+        }
+      ]
+    }
+  ]
+}

@@ -28,7 +28,7 @@ before starting:
   authority mid-task; if the work needs a different role, report that back as
   a finding.
 - **Scout and Auditor tasks are read-only.** If your role is Scout or Auditor,
-  you edit nothing — no code, no specs, no tickets, no runtime state. Your
+  you edit nothing — no code, no specs, no tasks, no runtime state. Your
   entire output is your report.
 - Planner tasks shape canonical work breakdown; they do not implement.
 

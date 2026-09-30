@@ -4,13 +4,14 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { collections, coreSkills, validateManifest } from '../workbench/tools/workbench-layout.mjs';
-import { MANAGED_MARKER, readManagedMarker, writeManagedMarker } from './skill-marker.mjs';
 import { sourceIdentity } from './workbench-tools.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const sourceRoot = path.join(root, 'skills');
+// S-00V: the core skills ship in the room. The one-time upgrade lays the
+// skills lane down through Adoption's migration from this release's own lane
+// and never reads or replaces skills in the provider home.
+const sourceRoot = path.join(root, 'workbench', 'skills');
 const adoptionTool = path.join(root, 'tools', 'workbench-adoption.mjs');
-const managedMarker = MANAGED_MARKER;
 
 function lstatOrNull(target) {
   try { return fs.lstatSync(target); } catch (error) {
@@ -49,32 +50,6 @@ function parseOptions(args) {
   return options;
 }
 
-// The layout-only mode reads skill presence exactly as Adoption does: every
-// required core skill must exist in a discovery root, and nothing there is
-// compared, marked, backed up, or replaced.
-function missingUserSkills(home) {
-  const roots = [path.join(home, '.agents', 'skills'), path.join(home, '.claude', 'skills')];
-  return coreSkills.filter((skill) => !roots.some((root) => lstatOrNull(path.join(root, skill))?.isDirectory()));
-}
-
-function hashTree(directory, relative = '', entries = []) {
-  for (const entry of fs.readdirSync(directory, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
-    if (entry.name === managedMarker) continue;
-    const target = path.join(directory, entry.name);
-    const child = path.posix.join(relative, entry.name);
-    const stat = fs.lstatSync(target);
-    if (stat.isSymbolicLink()) throw new Error(`Skill content ${target} must not contain a symlink.`);
-    if (stat.isDirectory()) hashTree(target, child, entries);
-    else if (stat.isFile()) entries.push(`${child}:${fs.readFileSync(target).toString('base64')}`);
-    else throw new Error(`Skill content ${target} must be a regular file or directory.`);
-  }
-  return entries;
-}
-
-// A schema 1 marker (no generation) still proves Workbench management.
-function managed(destination) {
-  return readManagedMarker(destination) !== null;
-}
 
 function validateSource() {
   const names = fs.readdirSync(sourceRoot, { withFileTypes: true }).filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
@@ -87,24 +62,11 @@ function validateSource() {
   return null;
 }
 
-function validateDestinationRoot(destination, home) {
-  const homePath = path.resolve(home);
-  for (let current = path.resolve(destination); ; current = path.dirname(current)) {
-    const entry = lstatOrNull(current);
-    if (entry?.isSymbolicLink() || (entry && !entry.isDirectory())) return fail('discovery-root-collision', `${current} must be an ordinary directory or absent.`);
-    if (entry && lstatOrNull(path.join(current, '.git'))) return fail('foreign-git-root', `${destination} is inside Git-owned directory ${current}.`);
-    if (current === homePath) break;
-  }
-  return null;
-}
-
-// A correct refusal that withholds its exit transfers its whole cost onto the
-// agent that meets it, so both shared-skill gates name the route that clears
-// them and why that route is not blocked by the same condition.
-const layoutOnlyRoute = 'The support-root-only route --layout-only clears this gate: it migrates the support root and never installs, compares, marks, backs up, or replaces a skill.';
-
+// Both modes lay the skills lane down inside the room from this release; the
+// provider home is never read, compared, marked, backed up, or replaced. The
+// two flags remain the explicit opt-in every one-time upgrade requires.
 function preflight(project, home, explicit, layoutOnly = false) {
-  if (!explicit && !layoutOnly) return fail('explicit-update-required', 'Skill replacement requires --explicit-update; the support-root-only route requires --layout-only.');
+  if (!explicit && !layoutOnly) return fail('explicit-update-required', 'The one-time upgrade requires --explicit-update or --layout-only.');
   if (!lstatOrNull(project)?.isDirectory() || lstatOrNull(project)?.isSymbolicLink()) return fail('invalid-project', `${project} must be an existing ordinary project directory.`);
   if (lstatOrNull(path.join(project, 'workbench'))) return fail('support-root-exists', `${path.join(project, 'workbench')} already exists; use normal v3 maintenance instead of the one-time upgrade.`);
   const git = spawnSync('git', ['rev-parse', '--verify', 'HEAD'], { cwd: project, encoding: 'utf8' });
@@ -114,52 +76,7 @@ function preflight(project, home, explicit, layoutOnly = false) {
   if (status.stdout) return fail('dirty-project', 'Upgrade requires a clean project worktree so the recorded Git SHA is a complete recovery point.');
   const inventoryResult = spawnSync('git', ['ls-files', '-z'], { cwd: project, encoding: 'utf8' });
   if (inventoryResult.status !== 0) return fail('inventory-failed', 'Could not record the pre-migration tracked path inventory.');
-  if (layoutOnly) {
-    const missingSkills = missingUserSkills(home);
-    if (missingSkills.length) return fail('missing-user-skills', 'Layout-only upgrade requires every core skill to be present in a user-scoped Codex or Claude discovery root; it never installs or replaces one.', { missingSkills });
-    return { gitSha: git.stdout.trim(), inventory: inventoryResult.stdout.split('\0').filter(Boolean), destinations: [] };
-  }
-  const destinations = [
-    { engine: 'codex', root: path.join(home, '.agents', 'skills') },
-    { engine: 'claude', root: path.join(home, '.claude', 'skills') }
-  ];
-  for (const destination of destinations) {
-    const rootFailure = validateDestinationRoot(destination.root, home);
-    if (rootFailure) return rootFailure;
-    for (const skill of coreSkills) {
-      const target = path.join(destination.root, skill);
-      const entry = lstatOrNull(target);
-      if (entry && (entry.isSymbolicLink() || !entry.isDirectory())) return fail('skill-path-collision', `${target} is not an ordinary directory. ${layoutOnlyRoute}`);
-      if (entry && !managed(target)) return fail('unmanaged-skill', `${target} is not marked as a Workbench-managed skill and will not be replaced. ${layoutOnlyRoute}`);
-    }
-  }
-  return { gitSha: git.stdout.trim(), inventory: inventoryResult.stdout.split('\0').filter(Boolean), destinations };
-}
-
-function updateSkills(destinations, home, identity) {
-  const backupRoot = fs.mkdtempSync(path.join(home, '.workbench-upgrade-backup-'));
-  const skillBackups = [];
-  for (const { engine, root: destinationRoot } of destinations) {
-    fs.mkdirSync(destinationRoot, { recursive: true });
-    for (const skill of coreSkills) {
-      const destination = path.join(destinationRoot, skill);
-      const changed = lstatOrNull(destination) && JSON.stringify(hashTree(destination)) !== JSON.stringify(hashTree(path.join(sourceRoot, skill)));
-      if (changed) {
-        const backup = path.join(backupRoot, engine, skill);
-        fs.mkdirSync(path.dirname(backup), { recursive: true });
-        fs.cpSync(destination, backup, { recursive: true, force: false, errorOnExist: true, verbatimSymlinks: true });
-        fs.rmSync(destination, { recursive: true, force: false });
-        skillBackups.push({ engine, skill, path: backup });
-      }
-      if (!lstatOrNull(destination)) {
-        fs.cpSync(path.join(sourceRoot, skill), destination, { recursive: true, force: false, errorOnExist: true, verbatimSymlinks: true });
-      }
-      // Every managed skill leaves the explicit upgrade with this release's
-      // generation recorded, whether or not its content had to change.
-      writeManagedMarker(destination, identity);
-    }
-  }
-  return skillBackups;
+  return { gitSha: git.stdout.trim(), inventory: inventoryResult.stdout.split('\0').filter(Boolean) };
 }
 
 function upgrade(options) {
@@ -167,17 +84,15 @@ function upgrade(options) {
   const home = path.resolve(options['--home']);
   const sourceFailure = validateSource();
   if (sourceFailure) return sourceFailure;
-  let skillIdentity;
   try {
-    const identity = sourceIdentity({ managedPaths: options.layoutOnly ? ['workbench/tools', 'templates'] : ['skills', 'workbench/tools', 'templates'] });
-    if (!options.layoutOnly) skillIdentity = { release: identity.release, commit: identity.commit };
+    sourceIdentity({ managedPaths: ['workbench/skills', 'workbench/tools', 'templates'] });
   } catch (error) { return fail('invalid-source-identity', error.message); }
   const readiness = preflight(project, home, options.explicit, options.layoutOnly);
   if (readiness.status === 'blocked') return readiness;
-  const skills = options.layoutOnly ? 'presence-only' : 'explicit-update';
-  let skillBackups = [];
+  const skills = 'lane-install';
+  const skillBackups = [];
+  const coreRecovery = null;
   try {
-    if (!options.layoutOnly) skillBackups = updateSkills(readiness.destinations, home, skillIdentity);
     const adoption = spawnSync(process.execPath, [adoptionTool, 'migrate', '--project', project, '--home', home, '--version', options['--version']], { cwd: root, encoding: 'utf8' });
     const adoptionReport = adoption.stdout ? JSON.parse(adoption.stdout) : null;
     if (adoption.status !== 0 || adoptionReport?.status !== 'complete') {
@@ -189,19 +104,21 @@ function upgrade(options) {
     fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
     const validation = validateManifest(project);
     if (validation.status !== 'valid') throw new Error(validation.error.message);
-    const recoveryPath = path.join(collections.checkpoints, 'upgrade-recovery.json');
+    const recoveryPath = path.join(collections.recovery, 'upgrade-recovery.json');
     const receipt = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'tools', '.workbench-tools.json'), 'utf8'));
     const tools = { status: 'installed', receipt: `${validation.manifest.lanes.tools}/.workbench-tools.json`, source: receipt.source };
-    fs.writeFileSync(path.join(project, recoveryPath), `${JSON.stringify({ schemaVersion: 1, lifecycle: 'upgrade', skills, preMigration: { gitSha: readiness.gitSha, inventory: readiness.inventory }, skillBackups, tools }, null, 2)}\n`);
-    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), recoveryPath, skills, skillBackups, tools, migration: adoptionReport };
+    const skillsReceipt = JSON.parse(fs.readFileSync(path.join(project, validation.manifest.lanes.skills, '.workbench-skills.json'), 'utf8'));
+    const skillsLane = { status: 'installed', receipt: `${validation.manifest.lanes.skills}/.workbench-skills.json`, source: skillsReceipt.source };
+    fs.writeFileSync(path.join(project, recoveryPath), `${JSON.stringify({ schemaVersion: 1, lifecycle: 'upgrade', skills, preMigration: { gitSha: readiness.gitSha, inventory: readiness.inventory }, skillBackups, coreRecovery, tools, skillsLane }, null, 2)}\n`);
+    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), recoveryPath, skills, skillBackups, coreRecovery, tools, skillsLane, migration: adoptionReport };
   } catch (error) {
-    return { status: 'partial', skillBackups, error: { code: 'upgrade-failed', message: error.message } };
+    return { status: 'partial', skillBackups, coreRecovery, error: { code: 'upgrade-failed', message: error.message } };
   }
 }
 
 try {
   const [command, ...args] = process.argv.slice(2);
-  if (command !== 'upgrade') throw new Error('Usage: workbench-upgrade.mjs upgrade --project PROJECT --home USER_HOME --version v3.1.2 (--explicit-update | --layout-only)');
+  if (command !== 'upgrade') throw new Error('Usage: workbench-upgrade.mjs upgrade --project PROJECT --home USER_HOME --version v3.2.1 (--explicit-update | --layout-only)');
   const result = upgrade(parseOptions(args));
   process.stdout.write(`${JSON.stringify(result)}\n`);
   if (result.status !== 'complete') process.exitCode = 1;

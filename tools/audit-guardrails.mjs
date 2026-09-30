@@ -119,7 +119,7 @@ function driftResistanceCategory(files, today) {
       'fresh root control documents',
       5,
       controlDocsAreFresh(files, today, 45),
-      'Last reviewed or updated dates in BLUEPRINT.md, TASKBOARD.md, and RUNBOOK.md are present and no more than 45 days old.',
+      'Control review dates remain within 45 days; destination Blueprint review is recorded in RUNBOOK, not embedded as product status.',
       'Review stale root control docs against live code and update their dates only after resolving any drift.'
     ),
     booleanCheck(
@@ -127,7 +127,7 @@ function driftResistanceCategory(files, today) {
       'consistent harness version contract',
       5,
       versionContractIsConsistent(files),
-      'Root blueprint declares a harness version and the five copyable control docs carry the generic version stamp.',
+      'The declared version owner and all version-bearing copyable controls agree with their contract; destination Blueprints intentionally carry no version stamp.',
       'Align the root harness version with version placeholders across all copyable control docs.'
     ),
     booleanCheck(
@@ -135,7 +135,7 @@ function driftResistanceCategory(files, today) {
       'no contradictory task status',
       5,
       !hasContradictoryTaskStatus(taskboard) && !hasContradictorySpecState(files),
-      'A legacy task cannot be active and Done; a complete spec cannot remain hot or contain unfinished tickets.',
+      'A legacy task cannot be active and Done; a complete spec cannot remain hot or contain unfinished tasks.',
       'Resolve contradictory task status or spec lifecycle state and preserve completion evidence in the stable spec.'
     ),
     booleanCheck(
@@ -152,7 +152,7 @@ function driftResistanceCategory(files, today) {
       5,
       !Object.hasOwn(files, 'ROADMAP.md') && !Object.hasOwn(files, 'GAMEPLAN.md'),
       'ROADMAP.md and GAMEPLAN.md are absent from the root control layer.',
-      'Move unique live work into BLUEPRINT.md or TASKBOARD.md, then retire duplicate root planning files.'
+      'Move unique live work into its assigned spec and generated Taskboard, then reconcile duplicate root planning files.'
     )
   ];
   return scoredCategory('drift_resistance', 'Drift resistance', 25, checks);
@@ -293,7 +293,12 @@ function patternCheck(id, label, weight, haystack, pattern, evidence, action) {
 }
 
 function controlDocsAreFresh(files, today, maxAgeDays) {
-  const docs = ['BLUEPRINT.md', 'TASKBOARD.md', 'RUNBOOK.md'];
+  const destination = /^## Product Destination$/m.test(files['BLUEPRINT.md'] ?? '');
+  const docs = destination ? ['TASKBOARD.md', 'RUNBOOK.md'] : ['BLUEPRINT.md', 'TASKBOARD.md', 'RUNBOOK.md'];
+  if (destination) {
+    const date = parseDate((files['RUNBOOK.md'] ?? '').match(/\*\*Blueprint reviewed:\*\*\s*(\d{4}-\d{2}-\d{2})/i)?.[1]);
+    if (!date || daysBetween(date,today)<0 || daysBetween(date,today)>maxAgeDays) return false;
+  }
   return docs.every((name) => {
     const match = (files[name] ?? '').match(/\*\*(?:Last reviewed|Last updated):\*\*\s*(\d{4}-\d{2}-\d{2})/i);
     const date = parseDate(match?.[1]);
@@ -302,8 +307,11 @@ function controlDocsAreFresh(files, today, maxAgeDays) {
 }
 
 function versionContractIsConsistent(files) {
-  const hasRootVersion = /\*\*Harness version:\*\*\s*v\d+(?:\.\d+)*/i.test(files['BLUEPRINT.md'] ?? '');
-  const templateFiles = ['AGENTS.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'RUNBOOK.md', 'README.md'];
+  const destination = /^## Product Destination$/m.test(files['BLUEPRINT.md'] ?? '');
+  let manifest;
+  try { manifest = JSON.parse(files['workbench/manifest.json'] ?? '{}'); } catch { return false; }
+  const hasRootVersion = destination ? /^v\d+\.\d+\.\d+$/.test(manifest.workbenchVersion ?? '') : /\*\*Harness version:\*\*\s*v\d+(?:\.\d+)*/i.test(files['BLUEPRINT.md'] ?? '');
+  const templateFiles = destination ? ['AGENTS.md', 'TASKBOARD.md', 'RUNBOOK.md', 'README.md'] : ['AGENTS.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'RUNBOOK.md', 'README.md'];
   const stamped = templateFiles.every((name) => /Generated from LLM Workbench v\[HARNESS_VERSION\]/i.test(files[`templates/${name}`] ?? ''));
   return hasRootVersion && stamped;
 }
@@ -352,11 +360,11 @@ function hasContradictorySpecState(files) {
   if (!specPattern) return true;
   for (const [name, content] of Object.entries(files)) {
     if (!specPattern.test(name)) continue;
-    const id = content.match(/^\*\*Spec ID:\*\*\s*(S-\d{3})/m)?.[1];
+    const id = content.match(/^\*\*Spec ID:\*\*\s*(S-[0-9A-Za-z]{3,})/m)?.[1];
     const status = content.match(/^\*\*Status:\*\*\s*([^\n]+)/m)?.[1]?.trim();
     if (!id || !status) return true;
     if (['complete', 'superseded'].includes(status)) {
-      if (/^\|\s*TK-\d+\s*\|.*\|\s*(?:ready|in-progress|blocked|deferred)\s*\|/m.test(content)) return true;
+      if (/^\|\s*TK-[0-9A-Za-z]+\s*\|.*\|\s*(?:ready|in-progress|blocked|deferred)\s*\|/m.test(content)) return true;
       if ((files['TASKBOARD.md'] ?? '').includes(`| [${id}](`)) return true;
     }
   }
@@ -365,12 +373,12 @@ function hasContradictorySpecState(files) {
 
 function specFilePattern(files) {
   const raw = files['workbench/manifest.json'];
-  if (raw === undefined) return /^specs\/S-\d{3}-[^/]+\/SPEC\.md$/;
+  if (raw === undefined) return /^specs\/S-[0-9A-Za-z]{3,}-[^/]+\/SPEC\.md$/;
   const manifest = safeJson(raw);
   if (![1, SCHEMA_VERSION].includes(manifest?.schemaVersion)) return null;
   const lane = manifest?.lanes?.specs;
   if (!isSafeRelative(lane)) return null;
-  return new RegExp(`^${escapeRegExp(lane)}\/S-\\d{3}-[^/]+\/SPEC\\.md$`);
+  return new RegExp(`^${escapeRegExp(lane)}\/S-[0-9A-Za-z]{3,}-[^/]+\/SPEC\\.md$`);
 }
 
 function escapeRegExp(value) {

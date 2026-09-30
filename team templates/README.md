@@ -46,7 +46,7 @@ the loaded role contract win. Role contracts are linked, never copied.
 
 ## One durable record, one writer
 
-The owning stable spec is the only ticket and proof store; the project
+The owning stable spec is the only task and proof store; the project
 `TASKBOARD.md` stays a generated read-only projection. Role tasks return
 evidence in chat or an explicitly disposable run artifact — they never append
 to a shared ledger. The coordinator is the single durable writer for the owning

@@ -1,0 +1,66 @@
+{
+  "evidence": "local-runner-capability-probe",
+  "host": {
+    "platform": "darwin",
+    "release": "25.5.0",
+    "architecture": "arm64",
+    "runnerNode": "v26.3.0"
+  },
+  "checks": [
+    {
+      "capability": "writable-lanes",
+      "status": "pass",
+      "results": [
+        {
+          "form": "relative",
+          "status": "pass"
+        },
+        {
+          "form": "home",
+          "status": "pass"
+        },
+        {
+          "form": "absolute",
+          "status": "pass"
+        }
+      ],
+      "scope": "declared lanes under this runner only"
+    },
+    {
+      "capability": "native-skill-discovery-and-invocation",
+      "status": "unverified",
+      "readable": true,
+      "reason": "Requires a native provider discovery and invocation trace; readable bytes are insufficient."
+    },
+    {
+      "capability": "node-managed-tools",
+      "status": "pass",
+      "exit": 0,
+      "reason": null,
+      "scope": "managed doctor execution; diagnostics retain their own effects"
+    },
+    {
+      "capability": "directory-adapter",
+      "status": "pass",
+      "mechanism": "symlink",
+      "scope": "temporary directory under declared cwd only"
+    },
+    {
+      "capability": "checkout-record-syntax",
+      "status": "pass",
+      "records": 40,
+      "scope": "actual local ADR checkout; LF/CRLF/CR variants are structural checks only"
+    }
+  ],
+  "enforcement": "unverified",
+  "reliability": "unverified",
+  "sourceCommit": "2320164a5a704b1d3659b3228fa0af12644054b9",
+  "application": "Codex desktop configured local shell",
+  "model": "not reported by probe",
+  "configuration": "workspace-write; disposable declared cwd and home; no host permission configuration changed",
+  "limitations": [
+    "This current local runner only; no Windows or native Claude evidence.",
+    "Skill bytes readable, native discovery/invocation unverified by this probe.",
+    "No machine enforcement, reliability or cross-device claim."
+  ]
+}

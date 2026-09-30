@@ -1,5 +1,4 @@
 ---
-status: accepted
 date: 2026-09-04
 ported_from: GPT_OS ADR-0022 boot boundaries, with its producer conflict resolved rather than repeated
 canonicalized_in:
@@ -16,3 +15,23 @@ Considered and rejected: converging the newer Workbench source into an embedded 
 Consequences: a nested Workbench inherits only the outer room's declared safety boundaries and then applies the nearest local contract; connected coordination systems are peers, not parents. Any downstream Canon that still names an embedded producer must be amended by that downstream as a visible change of its own.
 
 Provenance: owner-reviewed v3.1 greenlight decision, promoted 2026-09-04; see the tracked checkpoint `llm-workbench-v3-1-plan-2026-09-04.md` in the manifest-declared checkpoint collection.
+
+## v3.2.0 reconciliation (2026-09-08)
+
+Public source excludes private instance state. Source development, downstream deployment and independent audit have distinct roles; deployment names are local examples, not mandatory base machinery. See [ADR-0047](0047-preservation-contracts-for-genesis-adoption-and-upgrade.md).
+
+## Preserved illustrative responsibility boundaries
+
+The former Blueprint used these named examples to explain separated ownership.
+They are retained here as design context; these names are not required machinery
+and this record assigns no portfolio work or permission to another repository.
+
+| Participant example | Responsibility | Boundary |
+|---|---|---|
+| LLM_Workbench | Canonical templates, portable tools and skills, upgrade procedure, verified version candidates | No portfolio target selection or downstream deployment |
+| GPT_OS | Authorized target selection, deployment, rollout tracking and recovery | No canonical harness source or project product decisions |
+| Audit_Workbench | HFR audit, cross-project evidence and upstream summary reports | No harness implementation or deployment |
+| Each project | Its product, filled controls, local work/evidence and truthful HFR | No upstream template policy or portfolio orchestration |
+
+Source: the source-pinned [Blueprint claim disposition](../../specs/S-00A-blueprint-active-adr-and-context-map/blueprint-claim-disposition.json),
+root-029. The v3.2 assignment excludes portfolio automation and unnamed room updates.

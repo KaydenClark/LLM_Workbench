@@ -14,8 +14,9 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
 const installer = path.join(root, 'tools', 'workbench-tools.mjs');
+const skillsInstaller = path.join(root, 'tools', 'workbench-skills.mjs');
 const vocabulary = new Set(templatePlaceholders);
-const WIKI_TEMPLATES = ['README.md', 'MEMORY.project.md', 'MEMORY.root.md', 'SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md'];
+const WIKI_TEMPLATES = ['README.md', 'MEMORY.project.md', 'MEMORY.root.md', 'SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md', 'features/README.md'];
 
 function fixture() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-wiki-'));
@@ -37,7 +38,7 @@ test('the wiki template set is lowercase and complete, and the retired capitalis
   for (const relative of WIKI_TEMPLATES) {
     assert.equal(fs.existsSync(path.join(root, 'templates', 'wiki', relative)), true, `templates/wiki/${relative} must ship`);
   }
-  for (const relative of ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md', 'MEMORY.project.md', 'MEMORY.root.md']) {
+  for (const relative of ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md', 'features/README.md', 'MEMORY.project.md', 'MEMORY.root.md']) {
     const content = fs.readFileSync(path.join(root, 'templates', 'wiki', relative), 'utf8');
     assert.match(content, /^---\n/, `${relative} carries frontmatter`);
     assert.match(content, /knowledge_role:/, `${relative} uses knowledge_role`);
@@ -56,8 +57,8 @@ test('init seeds the wiki contract files with placeholders filled and reports th
     const initialized = run(layout, 'init', '--project', project, '--provenance', 'genesis', '--version', VERSION, '--name', 'Puffer Pond', '--date', '2026-09-04');
     assert.equal(initialized.status, 0, initialized.stdout);
     assert.equal(initialized.report.seeded.wiki, true);
-    assert.deepEqual(initialized.report.seeded.written.sort(), ['workbench/wiki/AGENTS.md', 'workbench/wiki/SCHEMA.md', 'workbench/wiki/design-concepts/README.md']);
-    for (const relative of ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md']) {
+    assert.deepEqual(initialized.report.seeded.written.sort(), ['workbench/wiki/AGENTS.md', 'workbench/wiki/SCHEMA.md', 'workbench/wiki/design-concepts/README.md', 'workbench/wiki/features/README.md']);
+    for (const relative of ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md', 'features/README.md']) {
       const content = fs.readFileSync(path.join(project, 'workbench', 'wiki', relative), 'utf8');
       assert.deepEqual(placeholders(content), [], `${relative} must be seeded without placeholders`);
       assert.match(content, /last_verified: 2026-09-04/, `${relative} carries the seeding date`);
@@ -85,6 +86,7 @@ test('Genesis readiness requires the filled router and wiki contract files', () 
   try {
     assert.equal(run(layout, 'init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     assert.equal(run(installer, 'install', '--project', project).status, 0);
+    assert.equal(run(skillsInstaller, 'install', '--project', project).status, 0);
     // Readiness also needs the declared integration branch to resolve.
     for (const args of [['init', '-q', '-b', 'main'], ['commit', '-q', '--allow-empty', '-m', 'fixture'], ['branch', 'integration']]) {
       assert.equal(spawnSync('git', ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid', ...args], { cwd: project, encoding: 'utf8' }).status, 0, args.join(' '));
@@ -96,7 +98,7 @@ test('Genesis readiness requires the filled router and wiki contract files', () 
     fs.writeFileSync(path.join(project, 'CLAUDE.md'), '@AGENTS.md\n');
     const specDir = path.join(project, 'workbench', 'specs', 'S-001-first');
     fs.mkdirSync(specDir);
-    fs.writeFileSync(path.join(specDir, 'SPEC.md'), `# S-001 - First\n\n> Generated from LLM Workbench ${VERSION}.\n\n**Spec ID:** S-001\n**Status:** active\n**Priority:** 0\n**Owner:** fixture\n**Updated:** 2026-09-04\n**Catalog description:** First.\n**Blockers:** none\n**Latest event:** Captured.\n**Next gate:** Claim TK-001.\n\n## Outcome\n\nOne.\n\n## Vertical Implementation Slices\n\n| Ticket | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-001 | First | ready | none | pending |\n\n## Acceptance Criteria\n\n- [ ] Done.\n\n## Completion Result\n\nPending.\n`);
+    fs.writeFileSync(path.join(specDir, 'SPEC.md'), `# S-001 - First\n\n> Generated from LLM Workbench ${VERSION}.\n\n**Spec ID:** S-001\n**Status:** active\n**Priority:** 0\n**Owner:** fixture\n**Updated:** 2026-09-04\n**Catalog description:** First.\n**Blockers:** none\n**Latest event:** Captured.\n**Next gate:** Claim TK-001.\n\n## Outcome\n\nOne.\n\n## Vertical Implementation Slices\n\n| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-001 | First | ready | none | pending |\n\n## Acceptance Criteria\n\n- [ ] Done.\n\n## Completion Result\n\nPending.\n`);
     const missingRouter = run(layout, 'validate', '--project', project, '--genesis');
     assert.equal(missingRouter.report.error.code, 'unfilled-control');
     assert.match(missingRouter.report.error.message, /MEMORY\.md/);
@@ -173,7 +175,7 @@ test('the validator rejects retired metadata, absolute sources, bad enums, copie
     fs.writeFileSync(path.join(wiki, 'Absolute.md'), note({ source_paths: ['/Users/someone/project/BLUEPRINT.md'] }));
     fs.writeFileSync(path.join(wiki, 'Enum.md'), note({ knowledge_role: 'authoritative', sensitivity: 'secret' }));
     fs.writeFileSync(path.join(wiki, 'Missing.md'), '---\ntype: project\n---\n\n# Missing\n');
-    fs.writeFileSync(path.join(wiki, 'Copied.md'), note({}, '# Copied\n\n| Ticket | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-001 | Slice | ready | none | pending |\n'));
+    fs.writeFileSync(path.join(wiki, 'Copied.md'), note({}, '# Copied\n\n| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-001 | Slice | ready | none | pending |\n'));
     fs.writeFileSync(path.join(wiki, 'Leak.md'), note({}, '# Leak\n\nToken: ghp_' + 'A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0\n'));
     fs.writeFileSync(path.join(wiki, 'guidebooks', 'Copied.md'), note({ type: 'guidebook' }));
     const findings = validateWiki(project);
@@ -185,7 +187,7 @@ test('the validator rejects retired metadata, absolute sources, bad enums, copie
     assert.ok(has('Absolute.md', 'secret-like-content'), 'an absolute home path is also secret-like material');
     assert.ok(has('Enum.md', 'invalid-note'), 'enum outside the schema');
     assert.ok(has('Missing.md', 'invalid-note'), 'missing required properties');
-    assert.ok(has('Copied.md', 'copied-task-state'), 'copied ticket rows');
+    assert.ok(has('Copied.md', 'copied-task-state'), 'copied task rows');
     assert.ok(has('Leak.md', 'secret-like-content'), 'token-like content');
     assert.ok(findings.some((item) => item.code === 'invalid-note' && /basename Copied is not unique/.test(item.message)));
     assert.ok(findings.every((item) => item.blocks === 'none'), 'wiki findings never block selection');
@@ -225,7 +227,7 @@ test('design-concept articles need the owner-directed shape and stale notes are 
 });
 
 test('the product wiki adopts the contract and both Lexicons route design questions to the collection', () => {
-  for (const relative of ['MEMORY.md', 'SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md']) {
+  for (const relative of ['MEMORY.md', 'SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md', 'features/README.md']) {
     const file = path.join(root, 'workbench', 'wiki', relative);
     assert.equal(fs.existsSync(file), true, `workbench/wiki/${relative} must exist in the product`);
     assert.deepEqual(placeholders(fs.readFileSync(file, 'utf8')), [], `workbench/wiki/${relative} must carry no template placeholder`);
@@ -235,7 +237,18 @@ test('the product wiki adopts the contract and both Lexicons route design questi
   assert.match(router, /design-concepts/, 'the product router routes to the collection');
   const findings = validateWiki(root);
   assert.deepEqual(findings.filter((item) => item.severity === 'error'), [], 'the product wiki validates without error findings');
-  assert.equal(fs.readdirSync(path.join(root, 'workbench', 'wiki', 'design-concepts')).filter((name) => !name.startsWith('.') && name !== 'README.md').length, 0, 'the product ships an empty design-concepts collection: agents do not author articles');
+  // S-00I TK-005: the collection is no longer empty - it carries S-00H's
+  // reconciled durable-owner article, authored on the owner's own explicit
+  // direction (the assigned Spec's lane handoff) as that retirement's
+  // required precondition, never authored un-directed by an agent. Every
+  // entry in the collection besides its README must still be a validated
+  // design-concept article, not an arbitrary file an agent slipped in.
+  const designConceptEntries = fs.readdirSync(path.join(root, 'workbench', 'wiki', 'design-concepts')).filter((name) => !name.startsWith('.') && name !== 'README.md');
+  for (const name of designConceptEntries) {
+    const content = fs.readFileSync(path.join(root, 'workbench', 'wiki', 'design-concepts', name), 'utf8');
+    assert.match(content, /^---\ntype: design-concept\n/, `${name} must be a design-concept article, not an un-directed file`);
+    assert.match(content, /\nauthorized_by: /, `${name} must record who authorized it`);
+  }
   for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
     assert.match(fs.readFileSync(path.join(root, relative), 'utf8'), /workbench\/wiki\/design-concepts\//, `${relative} routes design questions to the collection`);
   }
@@ -267,7 +280,7 @@ test('a wiki stamp naming a version other than the manifest is attention only, a
 });
 
 test('this repository stamps its wiki contract files with its manifest version and routes to its room brain', () => {
-  for (const relative of ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md']) {
+  for (const relative of ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md', 'features/README.md']) {
     const content = fs.readFileSync(path.join(root, 'workbench', 'wiki', relative), 'utf8');
     assert.equal(content.match(/Generated from LLM Workbench (v\d+\.\d+\.\d+)/)?.[1], VERSION, `${relative} stamp`);
   }
@@ -328,6 +341,111 @@ test('normalize inserts only the missing required properties and leaves every no
     const cli = spawnSync(process.execPath, [wikiTool, 'normalize', '--path', project, '--date', '2026-09-06', '--json'], { cwd: project, encoding: 'utf8' });
     assert.equal(cli.status, 0, cli.stderr);
     assert.deepEqual(JSON.parse(cli.stdout).changed, []);
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('alphanumeric task tables remain forbidden copied live task state', () => {
+  const project = seededWiki();
+  try {
+    const target = path.join(project, 'workbench/wiki/Copied ID.md');
+    fs.writeFileSync(target, note({}, '# Copied\n\n| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-00A | Slice | ready | none | pending |\n'));
+    assert.ok(validateWiki(project).some(item => item.code === 'copied-task-state' && /task state|live state/i.test(item.message)));
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+// S-00I TK-005: SCHEMA.md's Update section already says "Never copy live
+// task rows, spec evidence, or generated Taskboard state into a note", but
+// the pre-anchor LIVE_STATE_MARKERS only ever matched a slice-table row
+// (starting with a bare `TK-...` cell) or the two literal region markers -
+// never a Spec's own Append-Only Evidence And Execution Log row, whose first
+// cell is a date and whose second cell is a Task id or the literal `spec` /
+// `review` (closeTask/completeSpec/recordReviewVerdict's own vocabulary in
+// spec-workbench.mjs and spec-report.mjs). A reconciliation that pastes a
+// Spec's evidence log into a Wiki note - "transform, never copy" - is
+// exactly the copied "spec evidence" SCHEMA.md already names, so it must
+// fail the same copied-task-state check a copied slice table already does.
+test('a Spec\'s own Append-Only Evidence And Execution Log row pasted into a wiki note is copied task state', () => {
+  const project = seededWiki();
+  try {
+    const pastedTaskRow = path.join(project, 'workbench/wiki/Pasted Task Evidence.md');
+    fs.writeFileSync(pastedTaskRow, note({}, '# Pasted\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| 2026-09-18 | TK-005 | Task closed | proof text | docs checked | none |\n'));
+    const pastedSpecRow = path.join(project, 'workbench/wiki/Pasted Spec Evidence.md');
+    fs.writeFileSync(pastedSpecRow, note({}, '# Pasted\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| 2026-09-18 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |\n'));
+    const pastedReviewRow = path.join(project, 'workbench/wiki/Pasted Review Evidence.md');
+    fs.writeFileSync(pastedReviewRow, note({}, '# Pasted\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| 2026-09-18 | review | Review verdict: pass at abc1234 [deadbeefcafe] #1 | none | Claude Opus 5 | none |\n'));
+    const findings = validateWiki(project);
+    for (const [file, label] of [[pastedTaskRow, 'Pasted Task Evidence.md'], [pastedSpecRow, 'Pasted Spec Evidence.md'], [pastedReviewRow, 'Pasted Review Evidence.md']]) {
+      assert.ok(findings.some((item) => item.note === `workbench/wiki/${label}` && item.code === 'copied-task-state'),
+        `${label} must be reported as copied-task-state; SCHEMA.md forbids copying spec evidence into a note`);
+    }
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+// S-00I TK-01U: a features article is the readable knowledge a completed Spec
+// is captured into at its closure point (S-00J closure-capture contract T4):
+// what the delivered capability does, why it matters, its limits and its
+// named evidence. It lives in the additive `features` collection, declares
+// `type: feature`, and is refused when misplaced, malformed or a copy of
+// delivery state. Design-concept and guidebook rules are unchanged.
+function featureArticle(overrides = {}, sections = {}) {
+  const body = {
+    title: '# Fixture Capability\n\nA fixture room can retire a completed Spec into a readable article.\n',
+    what: '## What It Does\n\nRetirement accepts a routed features article as the Spec\'s durable owner.\n',
+    why: '## Why It Matters\n\nA cold reader learns what shipped without opening transient Task records.\n',
+    limits: '## Limits\n\nFixture-only; no production record is retired by this proof.\n',
+    evidence: '## Evidence and Sources\n\n- `tools/test-spec-workbench.mjs` exercises the eligibility seam.\n',
+    ...sections
+  };
+  return note({
+    type: 'feature',
+    knowledge_role: 'curated',
+    provenance: ['features capture at the closure point, 2026-09-26'],
+    source_paths: ['workbench/specs/retired/S-700-fixture/SPEC.md', 'tools/test-spec-workbench.mjs'],
+    last_verified: '2026-09-26',
+    ...overrides
+  }, [body.title, body.what, body.why, body.limits, body.evidence].filter(Boolean).join('\n'));
+}
+
+test('a feature article validates in the features collection, normalize infers its type, and a misplaced, malformed or copied one is refused', () => {
+  const project = seededWiki();
+  try {
+    const wiki = path.join(project, 'workbench', 'wiki');
+    const features = path.join(wiki, 'features');
+    fs.mkdirSync(features, { recursive: true });
+    fs.writeFileSync(path.join(features, 'fixture-capability.md'), featureArticle());
+    assert.deepEqual(validateWiki(project), [], 'a complete, placed feature article validates with no finding');
+
+    const noteFindings = (relative) => validateWiki(project).filter((item) => item.note === `workbench/wiki/${relative}`);
+
+    fs.writeFileSync(path.join(wiki, 'misplaced-feature.md'), featureArticle());
+    assert.ok(noteFindings('misplaced-feature.md').some((item) => item.code === 'invalid-note' && /type feature belongs in workbench\/wiki\/features/.test(item.message)),
+      'a feature article outside the features collection is refused by name');
+    fs.rmSync(path.join(wiki, 'misplaced-feature.md'));
+
+    fs.writeFileSync(path.join(features, 'wrong-type.md'), featureArticle({ type: 'guidebook' }));
+    assert.ok(noteFindings('features/wrong-type.md').some((item) => item.code === 'invalid-note' && /must declare type feature/.test(item.message)),
+      'a note in the features collection must declare type feature');
+    fs.rmSync(path.join(features, 'wrong-type.md'));
+
+    fs.writeFileSync(path.join(features, 'no-limits.md'), featureArticle({}, { limits: '', why: '' }));
+    const missing = noteFindings('features/no-limits.md').map((item) => item.message);
+    assert.ok(missing.some((message) => /Limits section/.test(message)), 'a feature article states its limits');
+    assert.ok(missing.some((message) => /Why It Matters section/.test(message)), 'a feature article says why it matters');
+    fs.rmSync(path.join(features, 'no-limits.md'));
+
+    fs.writeFileSync(path.join(features, 'pasted-state.md'), featureArticle({}, {
+      evidence: '## Evidence and Sources\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| 2026-09-26 | TK-001 | Task closed | proof | docs | none |\n'
+    }));
+    assert.ok(noteFindings('features/pasted-state.md').some((item) => item.code === 'copied-task-state'), 'copied delivery state is refused, never captured');
+    fs.rmSync(path.join(features, 'pasted-state.md'));
+
+    fs.writeFileSync(path.join(features, 'Bare Feature.md'), '# Bare Feature\n\nNo metadata yet.\n');
+    const result = normalizeWiki(project, { date: '2026-09-26' });
+    assert.deepEqual(result.changed.map((entry) => entry.note), ['workbench/wiki/features/Bare Feature.md']);
+    assert.match(fs.readFileSync(path.join(features, 'Bare Feature.md'), 'utf8'), /^---\ntype: feature\nstatus: partial\n/, 'normalize infers type feature from the collection');
+    assert.ok(noteFindings('features/Bare Feature.md').some((item) => /What It Does section/.test(item.message)), 'normalize adds no article sections; validate keeps reporting them');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
   }

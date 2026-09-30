@@ -1,0 +1,208 @@
+{
+  "schema_version": "genesis-derivation-1",
+  "semantic_boundary": "This receipt proves copied bytes and declared lineage; it does not certify semantic derivation or create owner authority.",
+  "template": {
+    "repository": "https://github.com/KaydenClark/Example_Workbench.git",
+    "release": "v3.2.0",
+    "commit": "40100037562f1327f17afcba4cd6ff784321e35e",
+    "workbench_id": "WB-1RX8E0KgeMDxKV6Z3l9AEC"
+  },
+  "source_project": {
+    "repository": "https://github.com/KaydenClark/Example_Workbench.git",
+    "commit": "55a3fba9816438fbbc78bbd02c2d8da26fb71c63",
+    "observation": "local checkout identity only; remote availability was not established"
+  },
+  "plan": {
+    "source_file": "workbench/docs/project-inputs/genesis-plan.json",
+    "sha256": "4e710fe013dd43b3e47de5748da72c9107bd7cf2625694e094f22a5f9d539365"
+  },
+  "intake": {
+    "id": "puffer-pond-blueprint",
+    "revision": 4,
+    "source_file": "workbench/sessions/notepads/grilling/puffer-pond-blueprint.json",
+    "sha256": "21767a9f93280e20340385a65719a000fcae09fee2f71c33a18fcdbe53f12fc8",
+    "evidence_schema": "project-evidence-1"
+  },
+  "controls": {
+    "AGENTS.md": {
+      "template": {
+        "source_file": "AGENTS.md",
+        "sha256": "b8d78fc314c6a996b72613e72ebfd68ea5536485ac72b6db7b2bdb5129aad36f",
+        "preserved_file": "workbench/docs/intake/template-controls/AGENTS.md"
+      },
+      "draft": {
+        "source_file": "workbench/docs/puffer-drafts/AGENTS.md",
+        "sha256": "f78a217b9d238ac2414848501475add62a6843625ab5aa82993b5dae0aad8665"
+      },
+      "disposition": "replaced by caller-authored project control"
+    },
+    "BLUEPRINT.md": {
+      "template": {
+        "source_file": "BLUEPRINT.md",
+        "sha256": "f1346f0cccddbac2d4fd266afadefed429449e7af8c25656b6719e4957f999bf",
+        "preserved_file": "workbench/docs/intake/template-controls/BLUEPRINT.md"
+      },
+      "draft": {
+        "source_file": "workbench/docs/puffer-drafts/BLUEPRINT.md",
+        "sha256": "616a8799741d65200a08acaf0444f9d88af49a2e01695c6dbd43ee15fbbeeac2"
+      },
+      "disposition": "replaced by caller-authored project control"
+    },
+    "LEXICON.md": {
+      "template": {
+        "source_file": "LEXICON.md",
+        "sha256": "9518f7c8394b899c62731cd48c4f91686175670a27d16b9a0771aa689b5b3231",
+        "preserved_file": "workbench/docs/intake/template-controls/LEXICON.md"
+      },
+      "draft": {
+        "source_file": "workbench/docs/puffer-drafts/LEXICON.md",
+        "sha256": "a4fe2625be9e272b982b0d563ebb7c840b9c6f231fcbe371e53bfc048ebb9bf8"
+      },
+      "disposition": "replaced by caller-authored project control"
+    },
+    "RUNBOOK.md": {
+      "template": {
+        "source_file": "RUNBOOK.md",
+        "sha256": "34b56106f03b3b172624713e50c43c0699e066ae7ac24909f6e5d33a1d446573",
+        "preserved_file": "workbench/docs/intake/template-controls/RUNBOOK.md"
+      },
+      "draft": {
+        "source_file": "workbench/docs/puffer-drafts/RUNBOOK.md",
+        "sha256": "67cd9e59374056fc658498303668b52d7e6de99e1aad2e1064e36efe3f8770f8"
+      },
+      "disposition": "replaced by caller-authored project control"
+    },
+    "TASKBOARD.md": {
+      "template": {
+        "source_file": "TASKBOARD.md",
+        "sha256": "e91daa31d59b3e93217803d60704f977011667f427f28798cdd41fe25e814aa0",
+        "preserved_file": "workbench/docs/intake/template-controls/TASKBOARD.md"
+      },
+      "draft": {
+        "source_file": "workbench/docs/puffer-drafts/TASKBOARD.md",
+        "sha256": "1525fce4d05f46b2711051cb8de75893c93e07f31b94a919ef36a5c26a7a0677"
+      },
+      "disposition": "replaced by caller-authored project control"
+    },
+    "CLAUDE.md": {
+      "template": {
+        "source_file": "CLAUDE.md",
+        "sha256": "336cc4fbf19beaada7ccf9986414fa91851a8d7a07dfb3ccbe800a69eed0ab49",
+        "preserved_file": "workbench/docs/intake/template-controls/CLAUDE.md"
+      },
+      "draft": {
+        "source_file": "workbench/docs/puffer-drafts/CLAUDE.md",
+        "sha256": "336cc4fbf19beaada7ccf9986414fa91851a8d7a07dfb3ccbe800a69eed0ab49"
+      },
+      "disposition": "replaced by caller-authored project control"
+    },
+    "README.md": {
+      "template": {
+        "source_file": "README.md",
+        "sha256": "ca80e7b317e0bd627d96d38fe0795cded29a980351128605437cd4d5b934f698",
+        "preserved_file": "workbench/docs/intake/template-controls/README.md"
+      },
+      "draft": {
+        "source_file": "workbench/docs/puffer-drafts/README.md",
+        "sha256": "55dd55da0dc23dd25f687a3a71da10cfba4c4c2135a168778640e5bf777d0217"
+      },
+      "disposition": "replaced by caller-authored project control"
+    }
+  },
+  "memory": {
+    "source_file": "workbench/docs/puffer-drafts/MEMORY.md",
+    "sha256": "aa0f368387a5017d368e9ea19498be2725eac7d4d146d625ce7fa7ad76a2baca"
+  },
+  "evidence": [
+    {
+      "id": "E1",
+      "kind": "fact",
+      "statement": "The historical project owner requested a responsive full-screen pond with a pea-puffer family; above-water visitors are part of the larger destination.",
+      "source": {
+        "file": "workbench/docs/project-inputs/BLUEPRINT.md",
+        "sha256": "afa48f4bc5d1db9fb4e4330020bc22a478cf332a5a64e8095293ee14ee9b0afc"
+      },
+      "preserved_file": "workbench/docs/intake/evidence/01-afa48f4bc5d1-BLUEPRINT.md"
+    },
+    {
+      "id": "E2",
+      "kind": "fact",
+      "statement": "The public source snapshot is pinned to commit93c3d2cf9bb4fba5f3e501f7ebc0670b9435ed11.",
+      "source": {
+        "file": "workbench/docs/project-inputs/source.json",
+        "sha256": "f8f06465191a400b301a7c971112c31a406abd4b98942284aca98501ee07c25a"
+      },
+      "preserved_file": "workbench/docs/intake/evidence/02-f8f06465191a-source.json"
+    },
+    {
+      "id": "E3",
+      "kind": "fact",
+      "statement": "The source project supplies an MIT license notice for reuse.",
+      "source": {
+        "file": "workbench/docs/project-inputs/LICENSE",
+        "sha256": "dd77339207666288e00add34373189209c213719b7a33358eeb98222c97f26c8"
+      },
+      "preserved_file": "workbench/docs/intake/evidence/03-dd7733920766-LICENSE"
+    },
+    {
+      "id": "E4",
+      "kind": "uncertainty",
+      "statement": "Existing project claims are historical evidence; the fresh generated project has not yet passed its own tests or browser checks.",
+      "source": {
+        "file": "workbench/docs/project-inputs/README.md",
+        "sha256": "28baeabcee2e720b7e0f21d3c243c1b3c23755bb9ae7a5d9586e70ffb83c3cc3"
+      },
+      "preserved_file": "workbench/docs/intake/evidence/04-28baeabcee2e-README.md"
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "status": "locked",
+      "question": "What useful bounded first slice should demonstrate the fresh project path?",
+      "recommendation": "A single viewport with five gently moving puffers and snails, respecting reduced motion; defer the larger habitat features.",
+      "evidence": [
+        "E1",
+        "E4"
+      ],
+      "selected": true,
+      "decision": {
+        "entry_id": "decision-001",
+        "content": "For the authorized disposable S-00E proof, deliver one full-screen Puffer Pond with five gently moving puffers and snails below the waterline, respecting reduced motion. Larger habitat features remain outside this bounded first slice.",
+        "interpretation": "Manager-selected demonstration input under the owner assignment to prove a useful fresh project; not a new personal product answer from Kayden."
+      }
+    },
+    {
+      "id": "Q2",
+      "status": "locked",
+      "question": "What reuse and service boundaries apply to this demonstration?",
+      "recommendation": "Reuse the three MIT-licensed pond, puffer and snail assets with attribution; use static HTML CSS JavaScript and local Node checks, with no backend or analytics.",
+      "evidence": [
+        "E1",
+        "E2",
+        "E3"
+      ],
+      "selected": true,
+      "decision": {
+        "entry_id": "decision-002",
+        "content": "Use the named public Puffer-Pond snapshot and its MIT pond, puffer and snail assets with attribution. Use static HTML, CSS, JavaScript and local Node verification, with no backend, analytics or automatic deployment. Preserve the existing remote main and publish proof only on a new task branch.",
+        "interpretation": "Manager-selected bounded implementation and preservation choices for the authorized demonstration, grounded in historical product evidence; not a newly invented owner interview."
+      }
+    }
+  ],
+  "active_adrs": [
+    {
+      "id": "ADR-0002",
+      "source_file": "workbench/docs/adr/0002-puffer-proof-runtime.md",
+      "sha256": "dc7c707b9eb6b0691705c571045394a3677f29a90edc365ec8a5a83846e3ee5e",
+      "preserved_file": "workbench/docs/adr/0002-puffer-proof-runtime.md"
+    }
+  ],
+  "capability": {
+    "id": "S-001",
+    "derived_from": [
+      "Q1",
+      "Q2"
+    ]
+  }
+}

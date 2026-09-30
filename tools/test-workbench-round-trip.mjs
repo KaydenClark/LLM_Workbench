@@ -1,23 +1,28 @@
 #!/usr/bin/env node
 // The composed Workbench round trip, mechanically and provider-free:
 // Genesis from this candidate -> planning checkpoint pushed (spec, claim,
-// promoted checkpoint) -> forced interruption -> fresh clone resumes from
+// reconciled owner) -> forced interruption -> fresh clone resumes from
 // repository state only -> red/green slice -> close -> render -> doctor ->
 // push -> remote read-back, with Foundry absent throughout.
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
 
 const sourceProduct = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(fs.readFileSync(path.join(sourceProduct, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const DATE = '2026-09-04';
 const transcript = [];
 // A scrubbed environment: no Foundry, deployment, or host lane variables reach
-// any child process, and PATH is the only inherited value.
-const env = { PATH: process.env.PATH, HOME: os.tmpdir(), LANG: 'C', LC_ALL: 'C' };
+// any child process, and PATH is the only inherited value. HOME is a fresh
+// empty directory of its own rather than the shared system temp directory,
+// which can hold anything another process left there.
+const home = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-round-trip-home-'));
+const env = { PATH: process.env.PATH, HOME: home, LANG: 'C', LC_ALL: 'C' };
 const FOUNDRY_SIGNS = /Foundry|\.foundry|Job Order|Captain|CAS\/Journal|GPT_OS/;
 
 function run(cwd, command, args, expectStatus = 0) {
@@ -41,6 +46,26 @@ function write(root, relative, content) {
   fs.writeFileSync(target, content);
 }
 
+// S-00H TK-004 follow-up: fills every known bracket placeholder with a plain
+// non-placeholder token, mirroring tools/test-genesis-from-decisions.mjs, so
+// a real template body can be embedded beneath the Round Trip project's own
+// filled section without genesis readiness reading it as an unfilled control.
+function fillPlaceholders(content) {
+  let filled = content;
+  for (const placeholder of templatePlaceholders) filled = filled.split(placeholder).join('FILLED');
+  return filled;
+}
+
+function withTemplateBody(name, templatesRoot, header) {
+  const templateBody = fillPlaceholders(fs.readFileSync(path.join(templatesRoot, name), 'utf8'));
+  return `${header}\n\n## Template source (swept for retired vocabulary)\n\n${templateBody}`;
+}
+
+// S-00V TK-00I: host memory (a provider's per-project auto-memory under
+// HOME, such as `.claude/projects/*/memory`, or a `.codex` home) is a
+// per-machine convenience the Workbench never depends on. The run starts with
+// a HOME that holds nothing at all and must leave no provider memory behind.
+assert.equal(fs.readdirSync(env.HOME).length, 0, 'the scrubbed HOME starts empty, so no host memory directory exists for any step to read');
 const workspace = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-round-trip-'));
 const product = path.join(workspace, 'candidate');
 const remote = path.join(workspace, 'origin.git');
@@ -50,7 +75,11 @@ try {
   // Snapshot current source bytes, including uncommitted changes. A local clone
   // would leak its source path through Git's origin and installer receipts.
   // Keep raw stdout/stderr untouched: unexpected private paths must still fail.
-  for (const relative of ['templates', 'workbench/tools', 'workbench/manifest.json', 'tools/workbench-tools.mjs']) {
+  // S-00V: the skills lane and its installer ride along too, so Genesis below
+  // lays this candidate's real skills into the room and the post-Genesis
+  // sweep reads them from the clone, never from a provider home.
+  for (const relative of ['templates', 'workbench/tools', 'workbench/manifest.json', 'tools/workbench-tools.mjs', 'workbench/skills',
+    'tools/workbench-skills.mjs']) {
     const target = path.join(product, relative);
     fs.mkdirSync(path.dirname(target), { recursive: true });
     fs.cpSync(path.join(sourceProduct, relative), target, { recursive: true });
@@ -72,35 +101,86 @@ try {
   git(first, 'push', '-q', 'origin', 'main', 'integration');
   node(product, path.join(product, 'workbench', 'tools', 'workbench-layout.mjs'), 'init', '--project', first, '--provenance', 'genesis', '--version', VERSION, '--name', 'Round Trip', '--date', DATE);
   node(product, path.join(product, 'tools', 'workbench-tools.mjs'), 'install', '--project', first);
+  node(product, path.join(product, 'tools', 'workbench-skills.mjs'), 'install', '--project', first);
   const stamp = `> Generated from LLM Workbench ${VERSION}.`;
-  write(first, 'AGENTS.md', `# Round Trip - Agent Operating System\n\n${stamp}\n\n## Authority Order\n\n1. The current user request.\n2. This file.\n3. The assigned spec.\n\n## Work Selection And Lifecycle\n\nRun \`node workbench/tools/spec-workbench.mjs doctor\`, then \`next --json\`, then \`show\`, claim, implement red/green, close, render, doctor, push.\n`);
+  const productTemplates = path.join(product, 'templates');
+  write(first, 'AGENTS.md', withTemplateBody('AGENTS.md', productTemplates, `# Round Trip - Agent Operating System\n\n${stamp}\n\n## Authority Order\n\n1. The current user request.\n2. This file.\n3. The assigned spec.\n\n## Work Selection And Lifecycle\n\nRun \`node workbench/tools/spec-workbench.mjs doctor\`, then \`next --json\`, then \`show\`, claim, implement red/green, close, render, doctor, push.`));
   write(first, 'BLUEPRINT.md', `# Round Trip - Blueprint\n\n${stamp}\n\n## Product Map\n\nA tiny CLI that greets.\n\n## Spec Catalog\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n`);
-  write(first, 'LEXICON.md', `# Round Trip - Lexicon\n\n${stamp}\n\n## Terms\n\nNone yet.\n`);
-  write(first, 'RUNBOOK.md', `# Round Trip - Runbook\n\n${stamp}\n\n## Test And Build\n\n\`\`\`bash\nnode --test tests/hello.test.mjs\nnode workbench/tools/spec-workbench.mjs doctor\n\`\`\`\n`);
+  write(first, 'LEXICON.md', withTemplateBody('LEXICON.md', productTemplates, `# Round Trip - Lexicon\n\n${stamp}\n\n## Terms\n\nNone yet.`));
+  write(first, 'RUNBOOK.md', withTemplateBody('RUNBOOK.md', productTemplates, `# Round Trip - Runbook\n\n${stamp}\n\n## Test And Build\n\n\`\`\`bash\nnode --test tests/hello.test.mjs\nnode workbench/tools/spec-workbench.mjs doctor\n\`\`\``));
   write(first, 'TASKBOARD.md', `# Round Trip - Hot Taskboard\n\n${stamp}\n\n## Active Specs\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n`);
-  write(first, 'README.md', `# Round Trip\n\n${stamp}\n\n## Usage\n\nRun \`node src/hello.mjs\`.\n`);
+  write(first, 'README.md', withTemplateBody('README.md', productTemplates, `# Round Trip\n\n${stamp}\n\n## Usage\n\nRun \`node src/hello.mjs\`.`));
   write(first, 'CLAUDE.md', '@AGENTS.md\n');
   const router = fs.readFileSync(path.join(product, 'templates', 'wiki', 'MEMORY.project.md'), 'utf8')
     .replaceAll('[PROJECT_NAME]', 'Round Trip').replaceAll('[HARNESS_VERSION]', VERSION.slice(1)).replaceAll('[YYYY-MM-DD]', DATE)
     .replace(/^\| \[QUESTION THIS ROOM'S MEMORY ANSWERS\].*\n/m, '').replace(/^\| \[ANOTHER DURABLE QUESTION\].*\n/m, '');
   write(first, 'workbench/wiki/MEMORY.md', router);
   write(first, 'workbench/feedback/WORKBENCH_FEEDBACK.md', fs.readFileSync(path.join(product, 'templates', 'WORKBENCH_FEEDBACK.md'), 'utf8').replaceAll('[PROJECT_NAME]', 'Round Trip').replaceAll('[HARNESS_VERSION]', VERSION.slice(1)));
-  write(first, 'workbench/specs/S-001-greeting/SPEC.md', `# S-001 - Greeting\n\n${stamp}\n\n**Spec ID:** S-001\n**Status:** active\n**Priority:** 0\n**Owner:** unassigned\n**Updated:** ${DATE}\n**Catalog description:** Greet by name from the command line.\n**Blockers:** none\n**Latest event:** Spec captured by Genesis.\n**Next gate:** Claim TK-001.\n\n## Outcome\n\nA caller runs the CLI and receives a greeting.\n\n## Vertical Implementation Slices\n\n| Ticket | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-001 | The CLI greets a named caller and a test proves it | ready | none | pending |\n\n## Acceptance Criteria\n\n- [ ] \`node src/hello.mjs World\` prints a greeting.\n\n## Append-Only Evidence And Execution Log\n\n| Date | Ticket | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| ${DATE} | genesis | Genesis ran with the v3.1 candidate | validate --genesis valid | Controls filled | TK-001 |\n\n## Completion Result\n\nPending.\n\n## Supersession\n\n- Supersedes: none\n- Superseded by: none\n`);
+  write(first, 'workbench/specs/S-001-greeting/SPEC.md', `# S-001 - Greeting\n\n${stamp}\n\n**Spec ID:** S-001\n**Status:** active\n**Priority:** 0\n**Owner:** unassigned\n**Updated:** ${DATE}\n**Catalog description:** Greet by name from the command line.\n**Blockers:** none\n**Latest event:** Spec captured by Genesis.\n**Next gate:** Claim TK-001.\n\n## Outcome\n\nA caller runs the CLI and receives a greeting.\n\n## Vertical Implementation Slices\n\n| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-001 | The CLI greets a named caller and a test proves it | ready | none | pending |\n\n## Acceptance Criteria\n\n- [ ] \`node src/hello.mjs World\` prints a greeting.\n\n## Append-Only Evidence And Execution Log\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| ${DATE} | genesis | Genesis ran with the v3.1 candidate | validate --genesis valid | Controls filled | TK-001 |\n\n## Completion Result\n\nPending.\n\n## Supersession\n\n- Supersedes: none\n- Superseded by: none\n`);
   const tool = (clone) => path.join(clone, 'workbench', 'tools', 'spec-workbench.mjs');
   node(first, tool(first), 'render');
   const readiness = JSON.parse(node(first, path.join(first, 'workbench', 'tools', 'workbench-layout.mjs'), 'validate', '--project', first, '--genesis'));
   assert.equal(readiness.status, 'valid', JSON.stringify(readiness));
   node(first, tool(first), 'doctor');
 
-  // ---- Planning checkpoint: notepad, promotion, claim, push ----------------
-  write(first, 'workbench/sessions/grilling/greeting-2026-09-04.md', '# Grilling — greeting\nSTATUS: PROMOTED — 2026-09-04\n\n1. [locked] Greet by name; default to World.\n');
-  const promoted = JSON.parse(node(first, path.join(first, 'workbench', 'tools', 'sessions.mjs'), 'checkpoint', '--from', 'workbench/sessions/grilling/greeting-2026-09-04.md', '--topic', 'greeting', '--date', DATE));
+  // ---- S-00H TK-004 follow-up: the finished room speaks Task, not Ticket --
+  // Sweep the generated room's own controls (embedded with this candidate's
+  // real templates/ body above) and the skills a fresh agent installs from
+  // this candidate, the same two checks tools/test-genesis-from-decisions.mjs
+  // runs after its own derive().
+  {
+    const controlHits = [];
+    for (const name of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'README.md']) {
+      fs.readFileSync(path.join(first, name), 'utf8').split('\n').forEach((line, index) => {
+        if (name === 'LEXICON.md' && line.includes('**Ticket** | Retired as a live term.')) return;
+        if (/ticket/i.test(line)) controlHits.push(`${name}:${index + 1}: ${line.trim()}`);
+      });
+    }
+    assert.deepEqual(controlHits, [],
+      `the generated room's own controls must not say Ticket outside the documented retired-term row:\n${controlHits.join('\n')}`);
+
+    // The skills a fresh agent reads are the ones the room carries in its
+    // lane, reached through both discovery adapters inside the clone.
+    const skillHits = [];
+    for (const engineRoot of [path.join(first, '.agents', 'skills'), path.join(first, '.claude', 'skills')]) {
+      assert.ok(fs.realpathSync(engineRoot).startsWith(fs.realpathSync(first)), `${engineRoot} resolves inside the room`);
+      (function walk(dir) {
+        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+          const full = path.join(dir, entry.name);
+          if (entry.isDirectory()) { walk(full); continue; }
+          if (entry.name !== 'SKILL.md') continue;
+          const relative = path.relative(first, full).split(path.sep).join('/');
+          fs.readFileSync(full, 'utf8').split('\n').forEach((line, index) => {
+            if (/ticket/i.test(line)) skillHits.push(`${relative}:${index + 1}: ${line.trim()}`);
+          });
+        }
+      })(engineRoot);
+    }
+    assert.deepEqual(skillHits, [],
+      `the skills a fresh room carries from this candidate must not say Ticket:\n${skillHits.join('\n')}`);
+  }
+
+  // ---- Selected claim reconciliation, claim, push -------------------------
+  const notes = path.join(first, 'workbench/tools/notepads.mjs');
+  const note = JSON.parse(node(first, notes, 'create', '--note', 'greeting', '--objective', 'greeting', '--title', 'Greeting decisions'));
+  node(first, notes, 'append', '--note', note.note, '--revision', '1', '--kind', 'decision', '--topic', 'greeting', '--content', 'Greet by name; default to World.');
+  const owner = 'workbench/specs/S-001-greeting/SPEC.md';
+  const beforeOwner = fs.readFileSync(path.join(first, owner));
+  const authored = beforeOwner.toString('utf8') + '\n## Reconciled Decision\n\nGreet by name; default to World.\n';
+  write(first, 'workbench/sessions/handoffs/greeting-draft.md', authored);
+  const promoted = JSON.parse(node(first, path.join(first, 'workbench/tools/sessions.mjs'), 'promote', '--from', note.note, '--revision', '2', '--entries', 'decision-001', '--to', owner, '--expected', createHash('sha256').update(beforeOwner).digest('hex'), '--content', 'workbench/sessions/handoffs/greeting-draft.md'));
   assert.equal(promoted.status, 'promoted');
-  node(first, tool(first), 'claim', 'S-001', '--agent', 'planner');
+  assert.equal(promoted.destination.sha256, createHash('sha256').update(authored).digest('hex'));
+  // S-00V TK-01L: this room coordinates through origin, where claim would cut
+  // and push a task branch. This proof resumes a checkpoint committed on main,
+  // so the planner claims locally (said so on stderr); converting the round
+  // trip to claim by pushing is TK-01N's ends-clean gate.
+  node(first, tool(first), 'claim', 'S-001', '--agent', 'planner', '--local');
   node(first, tool(first), 'render');
   git(first, 'add', '-A');
   const tracked = git(first, 'ls-files');
-  assert.match(tracked, /workbench\/sessions\/checkpoints\/greeting-2026-09-04\.md/, 'the promoted checkpoint is tracked');
+  assert.match(tracked, /workbench\/specs\/S-001-greeting\/SPEC\.md/, 'the reconciled owner is tracked');
+  assert.doesNotMatch(tracked, /workbench\/sessions\/(?:notepads\/work|handoffs)\/greeting/, 'source and draft stay local');
   assert.doesNotMatch(tracked, /workbench\/sessions\/grilling\/greeting/, 'the live notepad never enters the commit');
   git(first, 'commit', '-q', '-m', 'Planning checkpoint: S-001 claimed');
   git(first, 'push', '-q', 'origin', 'main');
@@ -115,13 +195,14 @@ try {
   git(workspace, 'clone', '-q', remote, second);
   assert.equal(git(second, 'rev-parse', 'HEAD'), planningSha);
   assert.equal(fs.existsSync(path.join(second, 'workbench', 'sessions', 'grilling', 'greeting-2026-09-04.md')), false, 'the untracked notepad did not travel');
-  assert.equal(fs.existsSync(path.join(second, 'workbench', 'sessions', 'checkpoints', 'greeting-2026-09-04.md')), true, 'the promoted checkpoint did');
+  assert.match(fs.readFileSync(path.join(second, owner), 'utf8'), /Greet by name; default to World/, 'the reconciled claim travels in its owner');
+  assert.equal(fs.existsSync(path.join(second, note.note)), false, 'the local JSON note did not travel');
   const receipt = JSON.parse(fs.readFileSync(path.join(second, 'workbench', 'tools', '.workbench-tools.json'), 'utf8'));
   assert.equal(receipt.source.release, VERSION, 'the resumer runs the exact receipt-backed candidate tools');
   node(second, tool(second), 'doctor');
   const next = JSON.parse(node(second, tool(second), 'next', '--json'));
   assert.equal(next.specId, 'S-001');
-  assert.equal(next.ticketId, 'TK-001');
+  assert.equal(next.taskId, 'TK-001');
   assert.equal(next.status, 'in-progress', 'the claimed slice resumes without the original chat');
   assert.match(node(second, tool(second), 'show', 'S-001'), /Greet by name; default to World|Greet by name from the command line/);
 
@@ -135,12 +216,17 @@ try {
   run(second, process.execPath, ['--test', 'tests/hello.test.mjs']);
   assert.equal(run(second, process.execPath, ['src/hello.mjs', 'World']).trim(), 'Hello, World!');
 
-  // ---- Close, render, doctor, push, read back ----------------------------
+  // ---- Commit and push, close, render, doctor, push, read back -----------
+  // S-00M TK-003: close refuses a dirty or unpushed tree, so the slice is
+  // committed and pushed before its completion is claimed.
+  git(second, 'add', '-A');
+  git(second, 'commit', '-q', '-m', 'S-001/TK-001: greet by name');
+  git(second, 'push', '-q', 'origin', 'main');
   node(second, tool(second), 'close', 'S-001', '--proof', 'node --test tests/hello.test.mjs red then green; node src/hello.mjs World prints Hello, World!', '--docs', 'README.md usage retained; RUNBOOK.md commands executed', '--remaining-gap', 'none');
   node(second, tool(second), 'render');
   node(second, tool(second), 'doctor');
   git(second, 'add', '-A');
-  git(second, 'commit', '-q', '-m', 'S-001/TK-001: greet by name');
+  git(second, 'commit', '-q', '-m', 'Close S-001/TK-001 with proof');
   git(second, 'push', '-q', 'origin', 'main');
   const finalSha = git(second, 'rev-parse', 'HEAD');
   assert.equal(git(second, 'ls-remote', 'origin', 'main').split('\t')[0], finalSha, 'the proof is remotely recoverable');
@@ -152,7 +238,11 @@ try {
   assert.doesNotMatch(clonePaths, FOUNDRY_SIGNS, 'no Foundry path exists in the resumed repository');
   assert.doesNotMatch(transcript.join('\n'), FOUNDRY_SIGNS, 'no Foundry mechanism was named or required');
   assert.doesNotMatch(transcript.join('\n'), /\/Users\/|\/home\//, 'no private home path leaked into the transcript');
+  for (const memory of ['.claude', '.codex']) {
+    assert.equal(fs.existsSync(path.join(env.HOME, memory)), false, `the round trip neither read nor created host memory under HOME/${memory}`);
+  }
   console.log(`ok - mechanical round trip: planning ${planningSha.slice(0, 7)} interrupted, resumed from a clean clone, proof ${finalSha.slice(0, 7)} read back with Foundry absent`);
 } finally {
   fs.rmSync(workspace, { recursive: true, force: true });
+  fs.rmSync(home, { recursive: true, force: true });
 }

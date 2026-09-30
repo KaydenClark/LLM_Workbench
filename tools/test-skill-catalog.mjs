@@ -5,12 +5,10 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const skillsRoot = path.join(root, 'skills');
+const skillsRoot = path.join(root, 'workbench', 'skills');
 const archivedSkillsRoot = path.join(root, 'skills-archive', 'optional-active-2026-09-01');
-const coreSkills = [
-  'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
-  'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness', 'builder', 'auditor', 'reviewer', 'reconciler'
-].sort();
+import { coordinationSkills, coreSkills as runtimeCoreSkills } from '../workbench/tools/workbench-layout.mjs';
+const coreSkills = [...runtimeCoreSkills].sort();
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
 const assertIncludesAll = (content, requiredTerms, label) => {
   for (const term of requiredTerms) {
@@ -22,11 +20,11 @@ const directoryNames = (directory) => fs.readdirSync(directory, { withFileTypes:
   .map((entry) => entry.name)
   .sort();
 
-const catalog = read('skills/README.md');
+const catalog = read('workbench/skills/README.md');
 const catalogRegion = catalog.match(
   /<!-- core-skills:start -->([\s\S]*?)<!-- core-skills:end -->/
 );
-assert.ok(catalogRegion, 'skills/README.md must declare the closed core-skill bundle');
+assert.ok(catalogRegion, 'workbench/skills/README.md must declare the closed core-skill bundle');
 const catalogNames = catalogRegion[1]
   .split('\n')
   .filter((line) => /^\| `[^`]+` \|/.test(line))
@@ -34,19 +32,43 @@ const catalogNames = catalogRegion[1]
   .sort();
 
 assert.deepEqual(catalogNames, coreSkills,
-  'the documented source bundle must contain exactly the locked 16 skills');
+  `the documented source bundle must contain exactly the locked ${coreSkills.length} skills`);
 assert.deepEqual(directoryNames(skillsRoot), coreSkills,
-  'live discovery source must contain exactly the locked 16 skills');
+  `live discovery source must contain exactly the locked ${coreSkills.length} skills`);
 for (const skill of coreSkills) {
   const source = path.join(skillsRoot, skill, 'SKILL.md');
   assert.ok(fs.statSync(source).isFile(), `${skill} must contain SKILL.md`);
-  assert.match(read(`skills/${skill}/SKILL.md`), /^---\nname: /,
+  assert.match(read(`workbench/skills/${skill}/SKILL.md`), /^---\nname: /,
     `${skill} must retain skill frontmatter`);
 }
 
 assert.deepEqual(directoryNames(archivedSkillsRoot), [
   'ask-workbench', 'brainstorm', 'grill-me', 'sitrep', 'writing-great-skills'
 ], 'optional active skills must be retained outside the live discovery source');
+// Optional source is outside discovery but still needs an accountable catalog.
+// Inventory coverage is derived from directories so adding an item cannot silently
+// skip provenance and disposition review.
+const optionalRoots = ['skills-archive/optional-active-2026-09-01', 'skills-pending'];
+const optionalPaths = optionalRoots.flatMap((relative) =>
+  directoryNames(path.join(root, relative)).map((name) => `${relative}/${name}`)).sort();
+const optionalRegion = catalog.match(
+  /<!-- optional-source:start -->([\s\S]*?)<!-- optional-source:end -->/);
+assert.ok(optionalRegion, 'optional source needs a per-item inventory and disposition');
+const optionalRows = optionalRegion[1].split('\n')
+  .filter((line) => /^\| `skills-(?:archive|pending)\//.test(line))
+  .map((line) => line.split('|').slice(1, -1).map((cell) => cell.trim()));
+assert.deepEqual(optionalRows.map((row) => row[0].replaceAll('`', '')).sort(), optionalPaths,
+  'every optional item must have exactly one catalog row');
+for (const row of optionalRows) {
+  const [source, consumer, provenance, reviewed, disposition] = row;
+  assert.equal(row.length, 5, `${source}: inventory fields must stay explicit`);
+  assert.ok(consumer.length > 0, `${source}: name a consumer or recovery route`);
+  assert.match(provenance, /[0-9a-f]{40}/, `${source}: pin source provenance`);
+  assert.match(provenance, /THIRD_PARTY_NOTICES\.md/, `${source}: retain the notice owner`);
+  assert.match(reviewed, /^\d{4}-\d{2}-\d{2}$/, `${source}: date the bounded review`);
+  assert.match(disposition, /^(?:retained: .+|owner decision required: .+)$/,
+    `${source}: require a retention reason or explicit owner gate`);
+}
 assert.doesNotMatch(catalog, /KaydenClark\/skills/,
   'the portable bundle must not depend on Kayden private skills');
 assert.match(catalog, /presence-only/i,
@@ -55,6 +77,43 @@ assert.match(catalog, /\.agents\/skills/,
   'the catalog must document the Codex user-scoped discovery root');
 assert.match(catalog, /\.claude\/skills/,
   'the catalog must document the Claude user-scoped discovery root');
+
+// S-049: six documents state the bundle's size in prose, and nothing held them
+// to it - `README.md` and `BLUEPRINT.md` both went stale when the bundle grew
+// and an independent review, not a test, caught them. Derive the numbers so a
+// future bundle change fails here instead of shipping a wrong count.
+const bundleSize = coreSkills.length;
+const stanceCount = 4;
+const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
+  'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen'];
+const workflowWord = words[bundleSize - stanceCount - coordinationSkills.length];
+for (const [relative, expected] of [
+  ['workbench/skills/README.md', [`closed ${bundleSize}-skill bundle`, `${workflowWord} workflow skills`,
+    `${words[coordinationSkills.length]} coordination skills`, 'four portable stances']],
+  ['README.md', [`closed ${bundleSize}-skill core bundle`]],
+  ['RUNBOOK.md', [`the ${bundleSize} core skills`]],
+  ['LEXICON.md', [`closed set of ${workflowWord} workflow skills`]],
+  ['templates/GENESIS.md', [`exact ${bundleSize}-skill policy`]]
+]) {
+  assertIncludesAll(read(relative), expected,
+    `${relative} states the core bundle size and must match the ${bundleSize} skills in workbench/skills/`);
+}
+
+// S-049: `RUNBOOK.md`'s documented Genesis command carried `--version v3.1.2`
+// after the checkout moved to v3.1.3, and `workbench-layout.mjs init` refuses
+// a mismatch with `invalid-source-identity` - a root control shipping a command
+// that cannot run. Every documented `--version` literal must be this release.
+const VERSION = JSON.parse(read('workbench/manifest.json')).workbenchVersion;
+for (const relative of ['RUNBOOK.md', 'templates/ADOPTION.md', 'workbench/skills/adoption/SKILL.md',
+  'workbench/skills/update-harness/SKILL.md', 'tools/workbench-upgrade.mjs', 'tools/workbench-adoption.mjs',
+  'workbench/tools/workbench-layout.mjs']) {
+  const stale = [...read(relative).matchAll(/--version (v\d+\.\d+\.\d+)/g)]
+    .map((match) => match[1])
+    .filter((version) => version !== VERSION);
+  assert.deepEqual(stale, [],
+    `${relative} documents a --version literal that is not the checkout release ${VERSION}; ` +
+    'workbench-layout.mjs init refuses a mismatch with invalid-source-identity');
+}
 
 const importedNotice = read('THIRD_PARTY_NOTICES.md');
 assertIncludesAll(importedNotice, [
@@ -76,7 +135,7 @@ const forbiddenLivePatterns = [
   /workbench\/handoffs\b/
 ];
 for (const name of coreSkills) {
-  const skill = read(`skills/${name}/SKILL.md`);
+  const skill = read(`workbench/skills/${name}/SKILL.md`);
   for (const pattern of forbiddenLivePatterns) {
     assert.doesNotMatch(skill, pattern,
       `${name} must not expose retired paths or parallel truth-routing instructions`);
@@ -96,7 +155,7 @@ for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
   );
 }
 
-const toTickets = read('skills/to-tickets/SKILL.md');
+const slicingSkill = read('workbench/skills/to-tasks/SKILL.md');
 for (const forbidden of [
   '.scratch/',
   'configured tracker',
@@ -104,20 +163,59 @@ for (const forbidden of [
   'GitHub, Linear',
   'local-ticket-template'
 ]) {
-  assert.ok(!toTickets.includes(forbidden),
-    `to-tickets must not retain the imported ${forbidden} workflow`);
+  assert.ok(!slicingSkill.includes(forbidden),
+    `to-tasks must not retain the imported ${forbidden} workflow`);
 }
-assertIncludesAll(toTickets, [
+assertIncludesAll(slicingSkill, [
   'assigned `SPEC.md`',
   '`Vertical Implementation Slices`',
   '`RUNBOOK.md`',
   'node workbench/tools/spec-workbench.mjs render',
   'node workbench/tools/spec-workbench.mjs doctor'
-], 'to-tickets');
-assert.match(toTickets, /`TASKBOARD\.md` is a generated\s+projection/,
-  'to-tickets must treat TASKBOARD.md as a generated projection');
+], 'to-tasks');
+assert.match(slicingSkill, /`TASKBOARD\.md` is a generated\s+projection/,
+  'to-tasks must treat TASKBOARD.md as a generated projection');
+// S-01L: a Task record carries its stance and the title line its parser
+// requires; Tasks are cut at activation, never into a planned Spec; approval is
+// asked only when planning authority is missing (ADR-0045); and a slice gated
+// on an unanswered owner decision stays uncut, because a record's Blockers
+// field holds only S-/TK- ids and `next` would hand out a prose-blocked record.
+// These pin the source contract; the fresh-context run in S-01L records the behavior.
+// S-01L TK-02D: a planned Spec is cut only when the same request activates it,
+// through `convert-tasks S-### --activate` (tools/test-spec-workbench.mjs
+// proves the runtime), replacing the earlier "do not run convert-tasks on it".
+assertIncludesAll(slicingSkill, [
+  '**Stance:**',
+  '# TK-### - <slice>',
+  'Cut Tasks when the Spec is activated',
+  'a planned Spec gets no Tasks',
+  'the same request activates it',
+  'convert-tasks S-### --activate',
+  'workbench/docs/adr/0045-skill-composition-within-inherited-scope.md',
+  'Leave a slice that waits on an unanswered owner decision uncut',
+  'record the open decision in the Spec'
+], 'to-tasks record, activation, approval and owner-gate contract');
+// S-01L TK-002P: to-spec leaves a new planned Spec record-backed with an empty
+// tracked `tasks/` directory and no Task row, so its activation route is:
+// write the first record(s) with next-id, then `convert-tasks S-### --activate`
+// once, which converts no row and sets only Status (tools/test-spec-workbench.mjs
+// proves the runtime). This replaces "has no activation command yet".
+assertIncludesAll(slicingSkill, [
+  'planned record-backed Spec',
+  'write its first `TASK.md` record(s)',
+  'then run the command once',
+  'converts no row'
+], 'to-tasks record-backed activation route');
+assert.doesNotMatch(slicingSkill, /has no\s+activation command yet/,
+  'to-tasks must not say a planned record-backed Spec has no activation command');
+assert.doesNotMatch(slicingSkill, /Keep unresolved owner decisions visible as blockers/,
+  'to-tasks must not route an owner decision into a Task Blockers field the runtime cannot hold');
+// S-01L review correction: a new slice always becomes a TASK.md record; a
+// table-only Spec is converted first, so no route may still add a table row.
+assert.doesNotMatch(slicingSkill, /a row in the Spec's own table|Task record or row/,
+  'to-tasks must not offer a legacy table row as a destination for a new slice');
 
-const grilling = read('skills/grilling/SKILL.md');
+const grilling = read('workbench/skills/grilling/SKILL.md');
 for (const [pattern, label] of [
   [/\/domain-modeling/, 'imported domain-modeling invocation'],
   [/CONTEXT\.md/, 'parallel context file'],
@@ -138,32 +236,167 @@ assertIncludesAll(grilling, [
   'decisions, though, are mine',
   'Do not act on it until I confirm',
   'notepad',
-  '/make-it-so',
-  '/checkpoint'
+  '`make-it-so`',
+  '`promote`',
+  '`handoff`',
+  'Before a voluntary'
 ], 'grilling');
+// S-00W's owner-accepted interaction order: recommendation -> owner answer ->
+// pending readback -> confirmation or corrected readback -> lock -> map update
+// -> next question. These pin the contract the source must state; they cannot
+// prove a fresh conversation follows it, which S-00X records separately.
+assertIncludesAll(grilling, [
+  'Question / Recommended answer / Why / Impact',
+  'Question / Answer / Why / Impact',
+  'pending',
+  'Silence never confirms',
+  'no special command',
+  'ready frontier',
+  'named changed premise',
+  'only the dependent',
+  'An empty frontier is not proof',
+  'final concept readback',
+  'works without a notepad'
+], 'grilling interaction contract');
+assert.doesNotMatch(grilling, /FULL planned question list/,
+  'grilling must keep a dynamic decision map, not a full questionnaire up front');
+assert.doesNotMatch(grilling, /Ask the next `\[open\]` question/,
+  'grilling must ask the most consequential ready question, not the next open one');
+assert.ok(grilling.indexOf('Question / Answer / Why / Impact') < grilling.indexOf('## Exits'),
+  'the pending readback belongs to the interview, before its exits');
 
-const makeItSo = read('skills/make-it-so/SKILL.md');
+// S-00Y: the notepad primitive keeps pending and confirmed meaning apart when a
+// design inquiry uses it, and a resume reads a correction together with its
+// original, then rechecks live state before relying on either. These pin the
+// source contract; the fresh-context run in S-00Y records the behavior.
+const notepadSkill = read('workbench/skills/notepad/SKILL.md');
+assertIncludesAll(notepadSkill, [
+  '--kind source_record',
+  '`current.unresolved`',
+  'Saving is not acceptance',
+  'only a `decision` entry',
+  'The current view carries no entries',
+  'the correction holds',
+  'recheck live state before relying on either'
+], 'notepad pending and correction contract');
+assert.ok(notepadSkill.indexOf('recheck live state before relying on either') < notepadSkill.indexOf('## 4.'),
+  'rechecking a corrected claim belongs to saving and resuming, before cleanup');
+
+// S-01B: promote reads pending meaning the way notepad and grilling record it,
+// selects only the confirmed claim, routes each accepted claim to one owner,
+// keeps its authored draft inside the project but out of Git, and leaves the
+// pending item in the note. These pin the source contract; the fresh-context
+// run in S-01B records the behavior.
+const promoteSkill = read('workbench/skills/promote/SKILL.md');
+assertIncludesAll(promoteSkill, [
+  '`source_record`',
+  '`current.unresolved`',
+  'is pending, not supported',
+  'only a `decision` entry',
+  'exactly one durable owner',
+  'link to it rather than copy it',
+  '`workbench/sessions/recovery/`',
+  'Leave each pending entry and its `current.unresolved` item in place'
+], 'promote pending, single-owner and draft contract');
+assert.ok(promoteSkill.indexOf('is pending, not supported') < promoteSkill.indexOf('\n2. '),
+  'recognizing pending meaning belongs to selection, before routing');
+assert.ok(promoteSkill.indexOf('Leave each pending entry') > promoteSkill.indexOf('\n5. '),
+  'retaining the pending item belongs to the note update after promotion');
+// S-00Z: grill-me is the repository-owned entry that composes grilling with
+// objective-scoped notepad continuity. It is declared in the live core bundle
+// and its source names both composed skills and the pending convention they
+// share, so a fresh start and a paused resume keep a pending readback pending.
+// The archived wrapper stays historical under S-00R (asserted above).
+assert.ok(coreSkills.includes('grill-me'), 'grill-me must be a declared core skill');
+const grillMe = read('workbench/skills/grill-me/SKILL.md');
+assert.match(grillMe, /^name: grill-me$/m, 'grill-me must declare its skill name');
+assert.match(grillMe, /^disable-model-invocation: true$/m,
+  'grill-me stays owner-invoked; grilling already answers the trigger phrases');
+assertIncludesAll(grillMe, [
+  'workbench/skills/grilling/SKILL.md',
+  'workbench/skills/notepad/SKILL.md',
+  'workbench/manifest.json',
+  '--type grilling',
+  '--objective',
+  '--kind source_record',
+  '`current.unresolved`',
+  'only a `decision` entry',
+  'Saving is not acceptance',
+  'pending readback',
+  'separate objective',
+  'does not itself create a Spec'
+], 'grill-me composition contract');
+assert.doesNotMatch(grillMe, /^Run a `\/grilling` session\.$/m,
+  'grill-me must state the composition, not only forward to grilling');
+// S-01O: save proves the recovery boundary it claims. A finished Task names
+// the exact commit and the freshly fetched remote ref that contains it, cites
+// durable owners rather than ignored live paths, and keeps unresolved notes
+// local: finishing work is not reconciliation. These pin the source contract;
+// the fresh-context run in S-01O records the behavior.
+// Whitespace is normalized so a rewrap of the prose cannot hide or fake a term.
+const saveSkill = read('workbench/skills/save/SKILL.md').replace(/\s+/g, ' ');
+assertIncludesAll(saveSkill, [
+  'remote containment',
+  'git merge-base --is-ancestor',
+  'freshly fetched',
+  'exact full commit SHA',
+  'never an ignored live path',
+  'Finishing a Task is not reconciliation',
+  'pending recovery, never confirmation',
+  'Local bytes alone never prove remote or cross-device recovery',
+  'publication permission'
+], 'save recovery-boundary contract');
+assert.ok(saveSkill.indexOf('git merge-base --is-ancestor') < saveSkill.indexOf(' 5. Keep local context'),
+  'remote containment is proved in the Git step, before optional session transport');
+assert.doesNotMatch(saveSkill, /Verify the remote branch resolves to the intended commit/,
+  'tip equality is not containment: a remote that advanced past the commit still contains it');
+
+// S-01A: the handoff source and its bundled Markdown shape must agree. The
+// shape (byte-equal to templates/HANDOFF.md, see test-core-composition) has no
+// heading of its own for the destination, corrections, access limits,
+// inherited authorization or blockers the source requires, so the source maps
+// every obligation onto a heading the shape actually has, and every heading is
+// mapped. An untracked live note is a dead pointer outside its own checkout.
+// These pin the source contract; the S-01A fresh-context run records behavior.
+const handoffSkill = read('workbench/skills/handoff/SKILL.md');
+const handoffShape = read('workbench/skills/handoff/assets/HANDOFF.md');
+const handoffShapeSections = [...handoffShape.matchAll(/^## (.+)$/gm)].map((match) => match[1]).sort();
+const handoffMappedSections = [...handoffSkill.matchAll(/^ {3}- `([^`]+)`:/gm)].map((match) => match[1]).sort();
+assert.ok(handoffShapeSections.length > 0, 'the bundled handoff shape must declare its sections');
+assert.deepEqual(handoffMappedSections, handoffShapeSections,
+  'the handoff source must place its obligations on exactly the sections its bundled shape has');
+assertIncludesAll(handoffSkill, [
+  'named destination',
+  'inherited authorization',
+  'the claim it corrects',
+  'access limit',
+  'exactly one next executable action',
+  'exists only in this checkout',
+  'When the handoff draws on a notepad',
+  'authorizes authorship, not implementation, promotion, sending it to others or creating a new task'
+], 'handoff source and shape contract');
+
+const makeItSo = read('workbench/skills/make-it-so/SKILL.md');
 assertIncludesAll(makeItSo, [
-  'workbench/sessions/grilling',
-  'workbench/sessions/checkpoints',
-  'workbench/docs/adr',
-  'only when warranted',
-  'notepad',
-  '`to-docs`',
-  '`to-spec`',
-  '`to-tickets`',
-  '`TASKBOARD.md`',
-  '`/implement`',
-  'Trim only reconciled material'
+  'notepad', '`promote`', '`to-docs`', '`to-spec`', '`to-tasks`',
+  '`save`', '`carry`', '`implement`', 'specification-only',
+  'current request controls every step', 'Stop here', 'main publication'
 ], 'make-it-so');
-assert.match(makeItSo, /Before voluntarily yielding[\s\S]*push the authorized durable changes/,
-  'make-it-so must save authorized durable changes before voluntarily yielding');
+assert.doesNotMatch(makeItSo, /every pending approval|universal execution authorization/i,
+  'composition must never replace the narrower user endpoint');
+// S-01I: the catalog row is the discovery summary, so it must carry the same
+// endpoint bound as the source rather than promising execution.
+const makeItSoRow = catalogRegion[1].split('\n').find((line) => line.startsWith('| `make-it-so` |'));
+assert.match(makeItSoRow, /endpoint/, 'the make-it-so catalog row must name the authorized endpoint');
+assert.doesNotMatch(makeItSoRow, /\bexecute\b/i,
+  'the make-it-so catalog row must not promise execution the request did not authorize');
 
-const checkpoint = read('skills/checkpoint/SKILL.md');
+const checkpoint = read('workbench/skills/checkpoint/SKILL.md');
 assertIncludesAll(checkpoint, ['notepad', 'resume', '`/make-it-so`', 'node workbench/tools/sessions.mjs checkpoint', 'workbench/sessions/checkpoints', 'privacy'], 'checkpoint');
-assert.match(checkpoint, /PAUSED/, 'checkpoint must mark the notepad paused for resume');
+assert.match(checkpoint, /copying is retired/i, 'checkpoint must retire copy creation');
+assert.match(checkpoint, /writes nothing/, 'legacy invocation must explain its no-write refusal');
 
-const toDocs = read('skills/to-docs/SKILL.md');
+const toDocs = read('workbench/skills/to-docs/SKILL.md');
 assertIncludesAll(toDocs, [
   'settled conversation',
   '`LEXICON.md`',
@@ -179,7 +412,34 @@ assertIncludesAll(toDocs, [
 assert.doesNotMatch(toDocs, /ask (the )?user|interview the user|create a second|issue tracker/i,
   'to-docs must persist settled truth without restarting discovery or adding stores');
 
-const toSpec = read('skills/to-spec/SKILL.md');
+// S-01J: to-docs lands each supported claim once. A mixed finding is split so
+// each claim reaches the one owner for its job, and other owners (a Wiki
+// reference article included) link to it instead of copying it. Pending meaning
+// stays in its note the way notepad records it, evidence cites durable owners,
+// transient working history stays out of the Spec, and each changed owner is
+// read back. These pin the source contract; the fresh-context run in S-01J
+// records the behavior. Whitespace is normalized so a rewrap cannot hide a term.
+const toDocsFlat = toDocs.replace(/\s+/g, ' ');
+assertIncludesAll(toDocsFlat, [
+  'Route each claim once',
+  'Split a mixed finding into its claims',
+  'exactly one owner',
+  'link to the owner that holds it rather than copy it',
+  'instead of restating its steps',
+  '`source_record`',
+  '`current.unresolved`',
+  'only a `decision` entry',
+  'never an ignored live path',
+  'permanent Spec history',
+  '`workbench/wiki/MEMORY.md`',
+  'Read each changed owner back'
+], 'to-docs single-owner, pending and read-back contract');
+assert.ok(toDocsFlat.indexOf('Route each claim once') > toDocsFlat.indexOf('`canonicalized_in`'),
+  'the once-per-claim rule applies to every destination in the routing list, so it follows it');
+assert.ok(toDocsFlat.indexOf('Read each changed owner back') > toDocsFlat.indexOf('Route each claim once'),
+  'read-back checks the routed result, after routing');
+
+const toSpec = read('workbench/skills/to-spec/SKILL.md');
 assertIncludesAll(toSpec, [
   'already-settled conversation',
   '`workbench/manifest.json`',
@@ -190,35 +450,396 @@ assertIncludesAll(toSpec, [
 for (const forbidden of ['issue tracker', 'setup-matt-pocock-skills', 'ready-for-agent']) {
   assert.ok(!toSpec.includes(forbidden), `to-spec must not retain ${forbidden}`);
 }
+// S-01K: one Spec owns one capability. A settled conversation that spans
+// several capabilities (for example a per-skill rebuild) yields one Spec per
+// capability rather than one bundled delivery owner. A new Spec is authored at
+// `planned` and is never claimed or activated by the specifying agent, so the
+// record carries no implementation claim. Paths move only through
+// `move-spec` (AGENTS lifecycle, ADR-000I); the retired stable-path rule is gone.
+assertIncludesAll(toSpec, [
+  'one Spec per capability',
+  'never bundle',
+  'status `planned`',
+  'do not `claim`',
+  '`move-spec`'
+], 'to-spec one-capability and planned-entry contract');
+assert.doesNotMatch(toSpec, /into one\s+stable capability record/,
+  'to-spec must not fold a multi-capability conversation into one record');
+assert.doesNotMatch(toSpec, /Existing stable paths never change/,
+  'to-spec must not restate the retired stable-path rule');
+// S-01K TK-002L, owner answer E-4B: `planned` is the Backlog separator. A new
+// Spec enters Backlog as `planned` with no Task cut; its Tasks are cut from
+// live Actuality when it is activated, by to-tasks with the tracer-bullet
+// discipline. The correction limits this to new Specs: a reused Spec keeps
+// the Tasks it already has.
+// The portable source states the rule without citing this repository's
+// ledger ID, which a target room cannot resolve.
+assertIncludesAll(toSpec, [
+  'no Task cut',
+  'no Task row',
+  '(`planned` -> `active`)',
+  '`/to-tasks`',
+  'keep the Tasks it already has'
+], 'to-spec planned-without-Tasks contract');
+// The runtime refuses a Spec with neither a slice row nor a `tasks/`
+// directory (`malformed-spec`, and `next`/`render`/`show` fail for the whole
+// room), so the Task-less Spec is written record-backed with an empty,
+// tracked `tasks/` directory.
+assertIncludesAll(toSpec, [
+  'empty `tasks/` directory',
+  '`.gitkeep`',
+  'malformed'
+], 'to-spec runtime-valid Task-less Spec');
+assert.doesNotMatch(toSpec, /E-4B/,
+  'to-spec is portable and must not cite a Workbench-local owner-answer ID');
+assert.doesNotMatch(toSpec, /Seed `Vertical Implementation Slices`/,
+  'to-spec must not seed a Task row into a new planned Spec');
+assert.doesNotMatch(toSpec, /each TASK during authorized planning/,
+  'to-spec cuts no Task, so it must not set a stance on one');
+const toSpecRow = catalogRegion[1].split('\n').find((line) => line.startsWith('| `to-spec` |'));
+assert.match(toSpecRow, /no Task cut/,
+  'the to-spec catalog row must carry the planned-without-Tasks entry');
 
-const genesis = read('skills/genesis/SKILL.md');
+const genesis = read('workbench/skills/genesis/SKILL.md');
 assertIncludesAll(genesis, [
   '`templates/GENESIS.md`', 'greenfield', 'founding prompt', 'private remote', '`git.integrationBranch`', 'commit and push',
   'workbench/tools/workbench-layout.mjs init', 'tools/workbench-tools.mjs install'
 ], 'genesis');
+// S-01G TK-00X: `init` accepts any directory without a manifest, so the skill
+// itself must route an existing-code target before writing, through the
+// read-only classifier, and must lay down the skills lane the readiness gate
+// requires (`skill-lane-missing` otherwise).
+assertIncludesAll(genesis, [
+  'node tools/workbench-classify.mjs classify --project', 'verdict is `genesis`', '`adoption`', '`/update-harness`',
+  '`unclassifiable`', 'node tools/workbench-skills.mjs install', 'validate --project PATH --genesis'
+], 'genesis routing and managed-lane contract');
 
-const adoption = read('skills/adoption/SKILL.md');
+const adoption = read('workbench/skills/adoption/SKILL.md');
 assertIncludesAll(adoption, [
   '`templates/ADOPTION.md`', 'one-time', 'existing project', '`/update-harness`', 'private remote', 'commit and push',
   'workbench-adoption.mjs', 'migrate', 'manifest-declared', 'project-local `skills/`', '`git.integrationBranch`'
 ], 'adoption');
 
-const implement = read('skills/implement/SKILL.md');
+// S-01D: the first adoption inventories the room's route, code, controls,
+// provenance and recovery before the migration installs the managed layout,
+// and the migration lays the core skills into the room's own lane from the
+// release rather than from a provider home. These pin the source order; the
+// fresh-context run in S-01D records the behavior.
+const adoptionMigrate = adoption.indexOf('workbench-adoption.mjs migrate');
+for (const inventory of ['workbench-classify.mjs classify', 'baseline', 'source remote, ref, and resolved commit', 'recovery point']) {
+  const at = adoption.indexOf(inventory);
+  assert.ok(at !== -1 && at < adoptionMigrate,
+    `adoption must inventory ${inventory} before the migration installs the managed layout`);
+}
+assert.match(adoption, /core skills into the room's own\s+`workbench\/skills` lane/,
+  'adoption must say the migration lays the core skills into the room lane');
+assert.doesNotMatch(adoption, /core bundle in the intended disposable or user-scoped home|missing core skill/,
+  'adoption must not send the agent to a provider home the migration no longer reads');
+assert.doesNotMatch(adoption, /checkpoint owned work/,
+  'adoption must not route dirty state through the retired checkpoint copy');
+
+const implement = read('workbench/skills/implement/SKILL.md');
 assertIncludesAll(implement, [
-  'assigned stable `SPEC.md`', 'one eligible ticket', 'node workbench/tools/spec-workbench.mjs next --json',
+  'assigned stable `SPEC.md`', 'one eligible task', 'node workbench/tools/spec-workbench.mjs next --json',
   'node workbench/tools/spec-workbench.mjs show S-###', 'node workbench/tools/spec-workbench.mjs claim S-### --agent NAME',
   'red/green/refactor', 'project-owned verification', 'owning documentation',
   'node workbench/tools/spec-workbench.mjs close S-###', 'truthful checkpoint', 'commit and push', '`git.integrationBranch`'
 ], 'implement');
 
-const codeReview = read('skills/code-review/SKILL.md');
+// S-049: carry owns an assigned unit of work to its authorized endpoint and
+// records what the owner still had to supply. Both halves are load-bearing: a
+// carry that delivers without the coordination record measures nothing.
+const carry = read('workbench/skills/carry/SKILL.md');
+assertIncludesAll(carry, [
+  'already-assigned',
+  'assigned `SPEC.md`',
+  'node workbench/tools/spec-workbench.mjs show S-###',
+  'node workbench/tools/spec-workbench.mjs close S-###',
+  '`git.integrationBranch`',
+  'Append-Only Evidence And Execution Log',
+  'workbench/feedback/REPORT_FORMAT.md'
+], 'carry');
+assert.match(carry, /`carry` grants nothing/,
+  'carry must state that it adds no authority');
+for (const reason of ['Preference', 'Tradeoff', 'Authorization', 'Unavailable resource']) {
+  assert.ok(carry.includes(`**${reason}**`),
+    `carry must name ${reason} as a reason the owner is asked`);
+}
+for (const cause of ['missing', 'inaccessible', 'incorrect', 'simply not followed']) {
+  assert.ok(carry.includes(`*${cause}*`),
+    `carry must classify a hand-back cause as ${cause}`);
+}
+assertIncludesAll(carry, [
+  'self-review alone never satisfies it',
+  'never a reason to merge'
+], 'carry section 2 must forbid self-review at the integration gate');
+assert.match(carry, /Do not answer one with a new framework/,
+  'carry must forbid answering a hand-back with a new framework');
+assert.match(carry, /Stopping\s+before an already-authorized step/,
+  'carry must name stopping short of the authorized endpoint as the failure it removes');
+
+const codeReview = read('workbench/skills/code-review/SKILL.md');
 assertIncludesAll(codeReview, [
   'fixed diff', '`BASE_SHA`', '`HEAD_SHA`',
   'git diff --no-ext-diff --no-textconv "$BASE_SHA" "$HEAD_SHA" --',
   'nearest `AGENTS.md`', 'assigned stable `SPEC.md`', 'Findings first', 'review-only', 'separately authorized'
 ], 'code-review');
+// S-01F TK-00W: a finding says which tree its citation reads at and whether it
+// was reproduced; a pass belongs only to the candidate it reviewed; and no
+// review result stands in for owner Human QA.
+assertIncludesAll(codeReview, [
+  '`path:line@<sha>`', '**proven**', '**uncertain**',
+  'A pass belongs to the candidate it reviewed', 'changed content digest', 'needs a fresh review',
+  'never a verdict for this one',
+  'is not owner Human QA', 'resets a failed Human QA gate'
+], 'code-review finding, fresh-candidate and Human QA contract');
 
-const updateHarness = read('skills/update-harness/SKILL.md');
+// S-01Q: the Auditor stance reports one classified finding per named claim,
+// each traceable to its pinned evidence, check and limit, and stays inside the
+// assigned target. These pin the source contract; the fresh-context run in
+// S-01Q records the behavior. "bounded verdict" stays the LEXICON wrapper.
+const auditorSkill = read('workbench/skills/auditor/SKILL.md');
+assertIncludesAll(auditorSkill, [
+  'bounded verdict',
+  'supported, unsupported or uncertain',
+  'Each finding cites',
+  'the check it ran and its limit',
+  'Stay inside the assigned target and project',
+  'not examined',
+  'silently repair'
+], 'auditor finding and scope contract');
+assert.ok(auditorSkill.indexOf('supported, unsupported or uncertain') > auditorSkill.indexOf('## Completion / Exit Condition'),
+  'the three result classes belong to the auditor exit report');
+assert.ok(auditorSkill.indexOf('Stay inside the assigned target and project') < auditorSkill.indexOf('## Obligations'),
+  'the no-widening boundary belongs to the auditor method, before its obligations');
+
+// S-002C TK-002X: the Director is a role, not a stance - it scopes the whole
+// project and its integration branch - but it ships in the same four-section
+// shape with the same authority sentences, so the existing skill contract
+// holds without a new shape. These pin the source contract: the role never
+// executes a Task, never approves a candidate it built, keeps one durable
+// writer per shared artifact across Specs, and leaves owner Human QA and
+// main promotion to the owner. The fresh-context scenario in S-002C records
+// the behavior. Portable wording only: the bundle installs into every room.
+// It is counted as a coordination entry and leads that group, pinned below.
+assert.ok(coordinationSkills.includes('director'), 'director is counted as a coordination entry');
+const directorSkill = read('workbench/skills/director/SKILL.md');
+assert.match(directorSkill, /^name: director$/m, 'director frontmatter name');
+assert.match(directorSkill, /^description: Adopt the assigned Director role for one project and its integration branch within existing authority\.$/m,
+  'director description takes the stance form');
+const directorSections = ['## Purpose', '## Method / Posture', '## Obligations', '## Completion / Exit Condition']
+  .map((heading) => directorSkill.indexOf(heading));
+assert.ok(directorSections.every((index) => index >= 0), 'director must carry the four stance sections');
+assert.deepEqual(directorSections, [...directorSections].sort((a, b) => a - b),
+  'director sections must follow Purpose, Method / Posture, Obligations, Completion / Exit Condition');
+assertIncludesAll(directorSkill, [
+  'never grants, removes, or transfers authority',
+  'Loading this skill never spawns an agent'
+], 'director authority sentences');
+assertIncludesAll(directorSkill, [
+  'never executes a Task',
+  'never approves a candidate it built',
+  'Neither a Dispatcher nor an implementing Worker supplies independent approval of its own candidate',
+  'never merges integration into main',
+  'never merges a PR whose review has not passed',
+  'remain owner acts',
+  'reported, not performed'
+], 'director boundaries');
+assertIncludesAll(directorSkill, [
+  'one Spec and its branch to each Dispatcher',
+  'single durable writer',
+  'cross-Spec',
+  'separate-context review',
+  'new candidate',
+  'options, a recommendation and its cost',
+  'never re-ask',
+  'permission refusal',
+  'workbench/manifest.json',
+  'workbench/docs/adr'
+], 'director coordination obligations');
+assert.ok(directorSkill.indexOf('single durable writer') > directorSkill.indexOf('## Obligations')
+  && directorSkill.indexOf('single durable writer') < directorSkill.indexOf('## Completion / Exit Condition'),
+  'the shared-writer rule belongs to the director obligations');
+assert.doesNotMatch(directorSkill, /\/Users\/|GPT_OS|\bgpt-|\bopus\b|\bsonnet\b|\bcodex\b|\bclaude\b|scheduler|\b(?:two|three|four|five|six)\s+Dispatchers/i,
+  'director must stay portable: no private path, provider, model, scheduler or Dispatcher count');
+// The S-002C fresh-context scenario surfaced a conflict: the entry told the
+// Director to record coordination in the owning Spec, whose records already
+// have a single writer. The Director routes Spec records through that writer.
+assertIncludesAll(directorSkill, [
+  "route what belongs in a Spec to that Spec's writer",
+  "never edit another writer's Spec state concurrently"
+], 'director keeps each Spec\'s single writer');
+
+// S-002D: the Dispatcher role entry is Spec-bound - one assigned Spec and its
+// branch, one durable writer for shared Spec state, Workers returning proof to
+// that writer, Task-branch merge requests into the Spec branch and never
+// approving its own candidate - obeys the shared skill contract and imports no
+// GPT_OS policy. It joins the live bundle as a coordination entry immediately
+// before the four portable stances, which stay the last four. The adjacency
+// reads the runtime order, not the sorted copy above.
+const dispatcherSkill = read('workbench/skills/dispatcher/SKILL.md');
+assertIncludesAll(dispatcherSkill, [
+  '## Purpose', '## Method / Posture', '## Obligations', '## Completion / Exit Condition',
+  'never grants, removes, or transfers authority', 'never spawns an agent',
+  'one assigned Spec', 'one durable writer', 'never approves its own',
+  'Task-branch merge request into the Spec branch', 'Director'
+], 'dispatcher role contract');
+assert.doesNotMatch(dispatcherSkill, /GPT_OS/, 'the dispatcher entry imports no GPT_OS policy');
+// S-002F appended `spec-planner` to the coordination group and S-002C put
+// `director`, the top role, at its head, so the group, in its declared order -
+// director, dispatcher, spec-planner - is what sits immediately before the four
+// stances.
+assert.deepEqual(runtimeCoreSkills.slice(-4 - coordinationSkills.length, -4), coordinationSkills,
+  'the coordination entries sit together, in declared order, immediately before the four portable stances');
+assert.equal(coordinationSkills[0], 'director', 'director leads the coordination entries');
+assert.equal(coordinationSkills[1], 'dispatcher', 'dispatcher follows the director');
+assert.deepEqual(runtimeCoreSkills.slice(-4), ['builder', 'auditor', 'reviewer', 'reconciler'],
+  'the four portable stances stay the last four of the live bundle');
+
+// S-002F TK-003D: the Spec Planner stance is the coordination entry a
+// Dispatcher adopts at flight launch. It composes with the assigned Dispatcher
+// role, plans only the one assigned Spec from live Actuality, cuts
+// complete-path slices with one named writer per shared file, keeps a
+// proposed Task distinct from an executable assignment, allocates ids with
+// `next-id` and activates once with `convert-tasks --activate`, hands the plan
+// to Spec Manager and escalates cross-Spec dependencies to the Director.
+// These pin the source contract; the fresh-context run in S-002F TK-003F
+// records the behavior.
+assert.ok(coreSkills.includes('spec-planner'), 'spec-planner must be a declared core skill');
+assert.ok(coordinationSkills.includes('spec-planner'), 'spec-planner is counted as a coordination entry');
+const specPlanner = read('workbench/skills/spec-planner/SKILL.md');
+assert.match(specPlanner, /^name: spec-planner$/m, 'spec-planner must declare its skill name');
+for (const section of ['Purpose', 'Method / Posture', 'Obligations', 'Completion / Exit Condition']) {
+  assert.ok(specPlanner.includes(`## ${section}`), `spec-planner: ${section}`);
+}
+assert.match(specPlanner, /never grants, removes, or transfers authority/);
+assert.match(specPlanner, /never spawns/);
+assert.match(specPlanner, /assigned SPEC and TASK/);
+assert.match(specPlanner, /composed with an already assigned Dispatcher role/,
+  'spec-planner composes with the Dispatcher role rather than replacing it');
+assert.match(specPlanner, /Never enumerate execution Tasks when merely authoring a planned Spec/,
+  'spec-planner plans at flight launch, never into a planned Spec');
+assert.match(specPlanner, /complete-path/, 'spec-planner cuts complete-path vertical slices');
+assert.match(specPlanner, /one named writer per shared file/, 'spec-planner names one writer per shared file');
+assert.match(specPlanner, /which groups may run concurrently/, 'spec-planner exposes concurrency within the Spec');
+assert.match(specPlanner, /a proposed Task distinct from an executable assignment/,
+  'spec-planner keeps a Worker draft distinct from an executable assignment');
+assert.match(specPlanner, /single Spec writer/, 'the Dispatcher reconciles Worker drafts as the single Spec writer');
+assert.match(specPlanner, /never approves its own candidate/);
+assert.match(specPlanner, /node workbench\/tools\/spec-workbench\.mjs next-id S-### --prefix TK/,
+  'spec-planner allocates ids with next-id, never by hand');
+assert.match(specPlanner, /convert-tasks S-### --activate/, 'spec-planner activates once with convert-tasks --activate');
+assert.match(specPlanner, /Spec Manager/, 'spec-planner hands the plan to Spec Manager');
+assert.match(specPlanner, /to the Director/, 'spec-planner escalates cross-Spec dependencies to the Director');
+assert.match(specPlanner, /workbench\/manifest\.json/);
+assert.ok(specPlanner.indexOf('Never enumerate execution Tasks') < specPlanner.indexOf('## Obligations'),
+  'the no-Tasks-into-a-planned-Spec rule belongs to the planning method');
+assert.ok(specPlanner.indexOf('Spec Manager') > specPlanner.indexOf('## Completion / Exit Condition')
+  || specPlanner.lastIndexOf('Spec Manager') > specPlanner.indexOf('## Completion / Exit Condition'),
+  'the hand-off to Spec Manager belongs to the exit condition');
+
+// S-002G TK-003G: the Spec Manager stance is the coordination entry a
+// Dispatcher adopts during Task execution. It composes with the assigned
+// Dispatcher role, consumes the Spec Planner result with no second queue,
+// dispatches Workers only to ready non-conflicting Tasks and releases later
+// work when dependencies are actually satisfied, keeps one durable writer,
+// assesses each hand-back against its named commit, routes failing work to a
+// new attempt of the same Task, integrates through Task-branch merge requests
+// into the Spec branch, arranges Reviewer or Auditor verification of the
+// assembled Spec and reports to the Director without approving its own work.
+// These pin the source contract; the fresh-context run in S-002G TK-003I
+// records the behavior. Portable wording only.
+assert.ok(coreSkills.includes('spec-manager'), 'spec-manager must be a declared core skill');
+assert.ok(coordinationSkills.includes('spec-manager'), 'spec-manager is counted as a coordination entry');
+assert.equal(runtimeCoreSkills.indexOf('spec-manager'), runtimeCoreSkills.indexOf('builder') - 1,
+  'spec-manager sits immediately before builder, after spec-planner, in the live bundle');
+assert.equal(runtimeCoreSkills.indexOf('spec-planner'), runtimeCoreSkills.indexOf('spec-manager') - 1,
+  'spec-planner plans, then spec-manager manages');
+const specManager = read('workbench/skills/spec-manager/SKILL.md');
+assert.match(specManager, /^name: spec-manager$/m, 'spec-manager must declare its skill name');
+assert.match(specManager, /^description: Adopt the assigned Spec Manager stance for one Workbench Spec during Task execution within existing authority\.$/m,
+  'spec-manager description takes the stance form');
+const specManagerSections = ['## Purpose', '## Method / Posture', '## Obligations', '## Completion / Exit Condition']
+  .map((heading) => specManager.indexOf(heading));
+assert.ok(specManagerSections.every((index) => index >= 0), 'spec-manager must carry the four stance sections');
+assert.deepEqual(specManagerSections, [...specManagerSections].sort((a, b) => a - b),
+  'spec-manager sections must follow Purpose, Method / Posture, Obligations, Completion / Exit Condition');
+assertIncludesAll(specManager, [
+  'A stance never grants, removes, or transfers authority',
+  'Loading this skill never spawns an agent',
+  'Adopt only the stance already set in the assigned SPEC and TASK'
+], 'spec-manager authority sentences');
+assertIncludesAll(specManager, [
+  'composed with an already assigned Dispatcher role',
+  'Spec Planner result',
+  'no second queue',
+  'ready Tasks whose files do not conflict',
+  'dependencies are actually satisfied',
+  'one durable writer',
+  'Serialize conflicting edits',
+  'against the named commit',
+  'new attempt of the same Task',
+  'Task-branch merge request into the Spec branch',
+  'Reviewer or Auditor',
+  '`report S-### --candidate <sha>`',
+  'content digest',
+  '`verdict`',
+  '`gate --task TK-### --spec S-###`',
+  'to the Director',
+  'never approves its own'
+], 'spec-manager operating contract (S-002G Desired Behavior 1-5)');
+assert.ok(specManager.indexOf('one durable writer') > specManager.indexOf('## Obligations')
+  && specManager.indexOf('one durable writer') < specManager.indexOf('## Completion / Exit Condition'),
+  'the single-writer rule belongs to the spec-manager obligations');
+assert.doesNotMatch(specManager, /\/Users\/|GPT_OS|\bgpt-|\bopus\b|\bsonnet\b|\bcodex\b|\bclaude\b/i,
+  'spec-manager must stay portable: no private path, provider or model name');
+for (const skill of coordinationSkills) {
+  assert.doesNotMatch(read(`workbench/skills/${skill}/SKILL.md`), /workbench\/specs\//,
+    `${skill}: installed rooms carry no repository Spec paths; name a sibling by its skill name`);
+}
+assert.match(specPlanner, /`spec-manager`/, 'spec-planner names the Spec Manager sibling by its skill name');
+assert.match(specPlanner, /`dispatcher`/, 'spec-planner names the Dispatcher sibling by its skill name');
+
+// S-00J TK-006: the reviewed unit at integration is the assembled Spec bound
+// to a content digest - obtained with `report S-### --candidate <sha>` and
+// recorded with `verdict` - while a Task PR under the room's Task-PR
+// exemption (exemption 2 of its release Spec) remains an immutable-candidate
+// diff reviewed against its Spec and reported by a runnable
+// `gate --task TK-### --spec S-###`, without weakening ADR-0037's
+// immutable-candidate requirement or the exact BASE_SHA/HEAD_SHA comparison.
+// `skills/` is the bundled core installed into every room, so no core skill
+// may name the room-specific S-00O id; the condition is stated generically.
+for (const skill of coreSkills) {
+  assert.doesNotMatch(read(`workbench/skills/${skill}/SKILL.md`), /S-00O/,
+    `${skill} must not name the room-specific S-00O id; state the Task-PR exemption generically`);
+}
+for (const [name, relativePath] of [
+  ['code-review', 'workbench/skills/code-review/SKILL.md'],
+  ['reviewer', 'workbench/skills/reviewer/SKILL.md'],
+  ['carry', 'workbench/skills/carry/SKILL.md'],
+  ['implement', 'workbench/skills/implement/SKILL.md']
+]) {
+  const content = read(relativePath);
+  assertIncludesAll(content, [
+    'assembled Spec',
+    'content digest',
+    '`report S-### --candidate <sha>`',
+    '`verdict`',
+    'exemption 2',
+    'immutable candidate',
+    '`gate --task TK-### --spec S-###`',
+    '`BASE_SHA`',
+    '`HEAD_SHA`'
+  ], `${name} reviewed-unit language`);
+}
+assert.ok(
+  read('workbench/skills/implement/SKILL.md').includes(
+    'a separate-context review of the assembled Spec is required'
+  ),
+  'implement must state the integration-branch review of the assembled Spec as separate-context, matching carry and code-review'
+);
+
+const updateHarness = read('workbench/skills/update-harness/SKILL.md');
 assert.match(updateHarness, /checked-out LLM Workbench repository/,
   'update-harness must identify the product-local source');
 assert.doesNotMatch(updateHarness, /\/Users\/kayden\/GPT_OS\//,
@@ -246,13 +867,13 @@ assert.match(read('templates/ADOPTION.md'), /already-adopted[^.]*`tools\/workben
 assert.match(read('RUNBOOK.md'), /--layout-only/, 'the Runbook must document the layout-only mode');
 assert.match(read('LEXICON.md'), /--layout-only/, 'the Lexicon distinction must gain the layout-only mode');
 
-for (const name of ['grilling', 'checkpoint', 'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'implement', 'code-review']) {
-  const skill = read(`skills/${name}/SKILL.md`);
+for (const name of ['grilling', 'checkpoint', 'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'implement', 'code-review', 'carry', 'notepad']) {
+  const skill = read(`workbench/skills/${name}/SKILL.md`);
   assert.match(skill, /workbench\/manifest\.json/,
     `${name} must route durable v3 workflow records through the manifest`);
 }
 assert.doesNotMatch(toSpec, /stable `specs\/S-###-slug\/SPEC\.md`/,
   'to-spec must not direct v3 projects to the retired root specs path');
 
-console.log('ok - the portable 16-skill source bundle and retired discovery boundary are aligned');
+console.log(`ok - the portable ${bundleSize}-skill source bundle and retired discovery boundary are aligned`);
 await import('./test-delivery-skills.mjs');

@@ -1,5 +1,4 @@
 ---
-status: accepted
 date: 2026-09-06
 canonicalized_in:
   - AGENTS.md
@@ -11,7 +10,7 @@ canonicalized_in:
 
 # JSON notepads preserve objective continuity
 
-New live notepads use JSON. A shared versioned schema and deterministic tooling
+New live notepads, including grilling records, use JSON. A shared versioned schema and deterministic tooling
 support safe updates and selective retrieval while a shared skill guides what
 to preserve. Notes typically contain claims preserving active Intent and working
 understanding; no whole artifact is assigned a Governance Plane. Notes remain
@@ -21,7 +20,8 @@ The editable resumption view and append-oriented work record retain meaningful
 sources, uncertainty, and corrections. Retrieve a bounded topic with necessary
 context rather than making agents reread an entire history. JSON is a storage
 format, not unlimited storage or proof of capture quality. A requested handoff
-is separately authored from the relevant slice. Reconcile important material
+is separately authored as a human-readable Markdown file from the relevant
+slice. Reconcile important material
 into its proper owner before deleting resolved notes; partial promotion never
 permits loss of remaining work.
 
@@ -45,3 +45,7 @@ Provenance: current owner's 2026-09-06 scoping and promotion instruction, reconc
 against the corrected grilling answers and all three turns of the referenced
 conversation in [S-046](../../specs/S-046-json-notepad-foundation/SPEC.md).
 The assistant's example field names and CLI are proposals, not accepted APIs.
+
+## v3.2.0 reconciliation (2026-09-08)
+
+The whole-Workbench continuity promise is separately owned; optional private transport is now selected and direct promotion replaces checkpoint-only destinations. Local JSON capture stays independent and historical source inventories remain intact. See [ADR-0043](0043-workbench-continuity-through-maintained-owners.md), [ADR-0051](0051-optional-private-git-transport-for-session-continuity.md), [ADR-0054](0054-direct-promotion-into-durable-owners.md).

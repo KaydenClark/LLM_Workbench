@@ -1,18 +1,68 @@
 # LLM Workbench - Runbook
 
 **Last reviewed:** 2026-09-04
+**Blueprint reviewed:** 2026-09-09
 **Runtime owner:** Kayden
 **Environment:** local (macOS); public repo `github.com/KaydenClark/LLM_Workbench`
 
 This file explains how to operate, verify, and evaluate the workbench repo
 itself. It should be boring, exact, and executable.
 
+## Release Identity
+
+A version label freezes when stamped, even before publication. A changed core
+bundle requires a new version label; preserve the prior manifest policy as an
+exact readable legacy row. Never redefine a stamped label silently. Only the
+owner publishes integration to main after applicable review.
+
+## Template Upgrade Release Gate
+
+Before claiming a new version release-ready, apply the AGENTS Template Upgrade
+Release Gate to [Workbench_Template](https://github.com/KaydenClark/Workbench_Template),
+the example reference installation. Resolve the live repository identity even
+when a local checkout or old remote is named Example_Workbench.
+
+1. Pin the clean source version/commit and the Template's current integration
+   commit. Preserve unrelated work in separate checkouts. Read the target
+   controls, create the dedicated upgrade spec, inventory all tracked files,
+   and run its full baseline suite.
+2. Follow `workbench/skills/update-harness/SKILL.md` for that installed layout. For an
+   already-v3 room, run the source's additive layout migration, reconcile the
+   manifest version and changed control sections, and run the source's
+   `tools/workbench-tools.mjs update --project TEMPLATE_ROOT --home BACKUP_HOME
+   --explicit-update` and `tools/workbench-skills.mjs update --project
+   TEMPLATE_ROOT --home BACKUP_HOME --explicit-update`. Refresh eligible seeded
+   documents. Keep original adoption/genesis provenance and room identity.
+   Record backup/rollback limits; runtime and skills backups alone must not be
+   described as whole-room recovery. Publishing skills to the personal catalog
+   is a separate operation with its own authorization.
+3. Verify the target manifest, applicable control stamps and runtime receipt
+   name the new version. From the pinned source run
+   `node tools/workbench-tools.mjs verify --project TEMPLATE_ROOT` and compare
+   every installed managed hash. Run the Template's full documented suite,
+   layout validation and doctor plus a smoke check of changed installed behavior.
+   Compare the complete before/after inventory and account for every change.
+4. Obtain separate-context review of the immutable Template candidate, merge
+   into its declared integration branch, and prove the reviewed commit is
+   contained remotely. Clone that remote result afresh and repeat the full
+   Template suite and installed-runtime checks.
+5. Record source version/SHA, prior and reviewed Template SHAs, commands/results,
+   preservation and recovery evidence, review verdict, merged integration SHA
+   and fresh-clone result in the current release owner. If any is missing or
+   the Template remains on an older version, the gate stays open. Recheck affected
+   proof when the release's consumed source changes. This does not approve main.
+
+The initial v3.2.1 correction is owned by
+[S-00F](workbench/specs/S-00F-template-upgrade-release-gate/SPEC.md).
+This is a procedural release gate checked by the reviewer, not an automated
+remote check or a claim about agent reliability.
+
 ## Ordinary Entry
 
 Follow `AGENTS.md` -> this section -> `LEXICON.md` -> Task Routing. Inspect the
 root, branch, upstream and dirty state; run the project-local spec doctor and
 load the explicitly assigned spec. For owner-directed pickup, use `next --json`
-and `show` to resolve that assignment. The spec and ticket set the normal
+and `show` to resolve that assignment. The spec and task set the normal
 stance. Investigate within the task; do not invent a next task when blocked.
 Load remaining Runbook sections only for the operation being performed.
 
@@ -23,6 +73,79 @@ self-created task, or other delivered prose artifact. Internal JSON capture
 follows the meaningful-work rule and is reconciled at closeout; it does not
 turn a chat-only setup check into a reporting assignment. Round One precedes
 feedback testing.
+
+### Finding The Owner Of A Question
+
+1. Use [LEXICON -> Artifact Ownership Schema](LEXICON.md#artifact-ownership-schema)
+   to identify the job: permission, meaning, destination, work state, proof,
+   procedure, recovery or another listed responsibility.
+2. Follow the named owner and resolve installed paths through the manifest.
+   Consult only the relevant section and its linked sources. For a work-state
+   question, follow the Taskboard row to the owning Spec before editing.
+3. Separate the answer's status: accepted requirement, verified observation,
+   proposal, unresolved question or historical claim. Apply AGENTS State
+   Resolution if sources disagree; file location alone does not settle it.
+4. When authorized work changes the answer, update its owner and refresh any
+   derived view. If the route is missing, use bounded search and repair that
+   route in scope. An unresolved decision stays in the existing work owner or
+   objective note; a missing answer does not authorize a new task.
+
+For example, a failed test has several owners: the Spec defines the expected
+behavior, the source implements it, the result records the failure, and the
+Spec records any resulting blocker. A Wiki explanation may clarify the cause;
+it does not redefine acceptance. After interruption, the Runbook supplies the
+recovery procedure while the Spec, source and saved context supply what to
+recover. Execution and recovery therefore remain separate jobs.
+
+### Role And Stance Coordination
+
+[Role model and capability owners](workbench/wiki/design-concepts/roles-and-stances.md).
+The current Task-PR bootstrap exception remains in
+[Workbench v4.0.0 Release](workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md#bootstrap-exemptions).
+
+Roles scope assignments; stances supply their job. Follow the Lexicon before
+assigning Director (project/integration), Dispatcher (one Spec/branch) or Worker
+(one Task). At flight launch, assign Spec Planner to plan small Tasks and safe
+parallel groups from current Actuality; planning Workers may assist. Assign
+Spec Manager to dispatch and monitor execution. Keep one writer for shared
+Spec/projection state and route cross-Spec dependencies to the Director.
+
+Use Reviewer or Auditor stance for the named verification job. Apply the
+existing independent-review eligibility rules to the actual agent/context;
+changing stance does not clear prior involvement. Normally Workers hand back
+merge requests to the Dispatcher branch and the Dispatcher presents the
+assembled candidate for review and merge into integration. Inspect the current
+release owner for any bootstrap exception before selecting a target.
+
+Reconcile accepted decisions, current progress, off-integration candidate
+references and remaining gates into their existing tracked owners through
+reviewed changes. Distinguish a documented decision, an unmerged candidate and
+a delivered capability. Create no Tasks for a newly planned Spec until launch;
+preserve already-authored Tasks and their evidence.
+
+### Behavior Selection
+
+After resolving the requested scope, compose the smallest behavior already
+authorized by ordinary language; do not wait for a second skill invocation.
+
+| User intent | Behavior and endpoint |
+|---|---|
+| Decide or stress-test an idea | `grill-me`, the entry composing `grilling` with `notepad`; save answers/corrections before continuing |
+| Preserve or resume meaningful work | `notepad`; verify live state and returned revision |
+| Reconcile agreed claims | `promote` with `to-docs` and `save`; no implied implementation |
+| Write specifications only | `to-spec` and needed `to-tasks`; stop at the specified endpoint |
+| Deliver assigned work | `carry` with `implement`, verification, independent integration review and `save` |
+| Prepare another agent's continuation | core `handoff`; readable Markdown with inherited scope |
+| Review a candidate or readiness | `code-review`; report only, no implementation or main merge |
+
+Every helper inherits the caller's narrower endpoint. Mention is not invocation
+and invocation is not new authority. Optional routers and historical extension
+skills are not prerequisites. For meaningful work, create/resume a JSON note,
+read its revision, verify Actuality and correct stale state before dependent
+work. Confirm successful append/current results after material changes and
+validate/read back before voluntary pause or handoff. Runtime revision, privacy
+and dependency checks enforce those operations; host-native interception of
+arbitrary agent actions is not claimed.
 
 ## Prerequisites
 
@@ -76,6 +199,14 @@ node tools/test-spec-workbench.mjs
 node tools/test-team-coordination.mjs
 node tools/test-team-coordination-demo.mjs
 node tools/test-skill-catalog.mjs
+node tools/test-skill-inspection.mjs
+node tools/test-skills-lane.mjs
+node tools/test-core-composition.mjs
+node tools/test-project-evidence.mjs
+node tools/test-genesis-from-decisions.mjs
+node tools/test-blueprint-contract.mjs
+node tools/test-session-transport.mjs
+node tools/test-configured-host.mjs
 node tools/test-core-skill-installer.mjs
 node tools/test-workbench-layout.mjs
 node tools/test-workbench-adoption.mjs
@@ -87,6 +218,11 @@ node tools/test-governance-core.mjs
 node tools/test-branch-closeout.mjs
 node tools/test-wiki.mjs
 node tools/test-sessions.mjs
+node tools/test-notepads.mjs
+node tools/test-visible-ids.mjs
+node tools/test-workbench-identity.mjs
+node tools/test-visible-id-consumers.mjs
+node tools/test-direct-promotion.mjs
 node tools/test-workbench-round-trip.mjs
 node tools/test-cross-provider-fixture.mjs
 node tools/test-portability-matrix.mjs
@@ -101,6 +237,11 @@ node tools/test-socket-contract.mjs
 node tools/test-symlink-invocation.mjs
 node tools/test-control-fidelity.mjs
 node tools/test-spec-citation-anchors.mjs
+node tools/test-controls-vocabulary-sweep.mjs
+node tools/test-spec-report.mjs
+node tools/test-self-drift.mjs
+node tools/test-feedback-inventory.mjs
+node tools/test-grilling-ledger.mjs
 python3 tools/test-check-append-only.py
 python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls
@@ -116,57 +257,193 @@ Expected result:
 - spec doctor reports no duplicate IDs, invalid/contradictory states, stale
   claims, missing evidence, broken links, or generated-region drift.
 
-### Core-skill setup check
+### Prepare project evidence and Blueprint questions
 
-The public source bundle is intentionally limited to the 16 skills in
-`skills/README.md`. Test the missing-only installer against a disposable user
-home without touching a real account:
+From a named evidence room with a schema 2 manifest, run its installed tool:
+
+```bash
+node workbench/tools/project-evidence.mjs prepare --project-root . --input workbench/docs/intake-request.json --note blueprint-questions
+```
+
+The input is a bounded `project-evidence-request-1` JSON request with `project.name`,
+`objective.key/title/focus`, `evidence` and `questions`. Each evidence item names
+an `id`, project-relative `source`, caller-classified `kind` (`fact` or
+`uncertainty`) and `statement`; paired `line_start`/`line_end` are optional.
+Each question names an `id`, `question`, `recommendation`, and referenced
+`evidence` IDs. The input file must also be inside that room.
+
+The command validates source paths, observed bytes and privacy, then atomically
+creates one provisional JSON grilling note in the manifest's live notepad
+collection. Every question is open. Read the returned note/revision through
+`notepads.mjs` before continuing the interview. Caller classifications do not
+certify meaning, and preparation grants no authority to write a Blueprint, ADR
+or spec. Record actual decisions and corrections through the grilling workflow.
+
+A sub-minute isolated demonstration is `node tools/test-project-evidence.mjs`
+from this release checkout; it exercises the same public CLI including refusal
+cases. It proves deterministic preparation, not an owner interview or model
+reliability.
+
+### Derive a fresh room from recorded decisions
+
+From a clean release checkout, with a clean named Template checkout and an
+explicitly prepared source room, run:
+
+```bash
+node tools/genesis-from-decisions.mjs derive --template TEMPLATE_ROOT --source-project EVIDENCE_ROOM --intake workbench/sessions/notepads/grilling/blueprint-questions.json --plan workbench/docs/genesis-plan.json --destination NEW_PROJECT
+```
+
+The destination must not exist. Intake and plan paths, and every draft file
+named by the plan, are relative to the evidence room. A `genesis-plan-1` request
+names `project.name/founding_prompt`, the seven `controls` and `memory` drafts
+(each with `file` and `sha256`), `selected_questions`, `active_adr_ids`, and
+`capabilities`. A capability names its `id`, `title`, `derived_from` question IDs,
+`outcome`, `acceptance` strings, and one `task` with `id` and `slice`.
+
+Selected questions must be locked and have matching current decision entries.
+Corrected or missing answers and changed evidence refuse derivation. The command
+preserves decision wording and attribution, selected evidence bytes and hashes,
+and active ADR lineage in the new room's durable owners. It does not decide
+whether a caller-authored plan faithfully interprets owner intent; review must
+judge that relationship. A note or plan does not grant implementation authority.
+
+The staged room receives a new identity and current release runtime through
+layout initialization and managed installation. Existing Template task state,
+private live notes and old runtime receipts do not become new-project state.
+Room-local rendering, doctor and Genesis validation run before publication of
+the local destination. Remote recovery and project implementation remain separate
+steps under the caller's scope. Existing projects use Adoption.
+
+`node tools/test-genesis-from-decisions.mjs` exercises the public seam with
+self-contained synthetic fixtures. The owning S-00E evidence separately records
+the actual fresh project and native continuation; fixture success alone is not
+that proof.
+
+### Skills lane check
+
+The core skills ship inside every room at the manifest-declared `skills` lane,
+`workbench/skills`, and the two declared discovery roots (`.agents/skills`
+for Codex, `.claude/skills` for Claude Code) are tracked relative links into
+that lane, so a fresh clone discovers the skills with no provider home and no
+personal catalog. This repository's lane is the authoring source for
+the 26 core skills listed in `workbench/skills/README.md`; every other room
+receives receipt-backed copies from the release checkout:
+
+```bash
+node tools/workbench-skills.mjs install --project /absolute/project
+node tools/workbench-skills.mjs verify --project /absolute/project
+node tools/workbench-skills.mjs update --project /absolute/project --home /disposable-or-user-home --explicit-update
+node tools/workbench-skills.mjs rollback --project /absolute/project --backup /path/recorded/in/receipt
+node tools/test-skills-lane.mjs
+```
+
+`install` copies each required core skill into the lane as ordinary files,
+writes `workbench/skills/.workbench-skills.json` with the source repository,
+release, commit and a content hash per skill, and lays the two adapters down;
+it refuses a lane that already carries a receipt, a core name already present
+without one, or a discovery root that exists and resolves elsewhere
+(`adapter-collision`). `verify` reports `skills-receipt-drift` naming each
+core skill that is missing, modified or unaccounted for and each adapter that
+does not resolve into the lane (`source` on this repository), plus
+`updateAvailable` when the release holds newer bytes. `update` requires
+`--explicit-update`, replaces only changed core skills, backs the previous
+directories up under the user home's `.workbench-skills-backup-*`, records the
+path in the receipt and re-lays a missing adapter; `rollback` restores a
+recorded backup. Skills a room adds to the lane under other names are
+room-owned: never copied, hashed, replaced or removed. Genesis and Adoption
+run `install`; `update-harness` runs `update`. Doctor reads the lane and the
+adapters, never the provider home: a required skill missing from the lane is
+`skill-lane-missing` and an unsafe lane entry is `skill-lane-unreadable`
+(both severity `error` with effect `none`, like a missing integration branch:
+visible in every run, repaired by one release command, never a reason to
+stall selection; the Genesis readiness gate fails closed on them), an absent
+or misresolving discovery root is `skill-adapter-missing` or
+`skill-adapter-broken` (attention, effect `none`), and a root `skills/`
+directory is `project-local-skills` (blocks everything) because it shadows
+the lane. A room stamped before the lane declares it with
+`workbench-layout.mjs migrate --project PATH` from the release checkout,
+then runs `install`.
+
+### Personal catalog publication
+
+The owner's personal catalog (a separate Git checkout mounted as the provider
+home's discovery root) is a backup of every skill and the place a room may
+publish skills it creates. It is never on a room's critical path. Publishing this release's core into a provider home is
+a separately authorized operation; test it against a disposable home first:
 
 ```bash
 node tools/core-skill-installer.mjs install --home /tmp/workbench-user-home
 node tools/test-core-skill-installer.mjs
 ```
 
-The installer writes only missing core skill directories into
-`.agents/skills` and `.claude/skills`. It preserves existing names without a
-content comparison and blocks before mutation when either discovery root is
-Git-owned or a required skill path collides with a file or symlink.
+The installer writes missing canonical core directories into `.agents/skills`
+and missing Claude directory adapters into `.claude/skills`. Existing names
+and valid links remain untouched. Linked and Git-owned discovery roots are
+supported. New managed paths are ignored through the owning Git repository's
+local exclusions (or a discovery-root ignore file). No personal source is
+staged or committed. Unsafe collisions block before installation.
 
-Every skill the installer or the explicit upgrade writes carries the managed
-skill marker `.workbench-skill.json` (schema 2): `source`, the `release` and
-`commit` of the checkout that wrote it (the same source identity as the tools
-receipt), and a `contentHash` of the skill's files. A schema 1 marker
-(`source` only) still counts as managed but names no generation. Check an
-installed bundle against the room's manifest without touching it:
+For an explicitly authorized replacement of the published core, use the same
+release checkout:
 
 ```bash
-node workbench/tools/spec-workbench.mjs doctor --home /tmp/workbench-user-home
+node tools/core-skill-installer.mjs update --home /tmp/workbench-user-home --explicit-update
+node tools/core-skill-installer.mjs rollback --home /tmp/workbench-user-home --backup /tmp/workbench-user-home/.workbench-core-backup-RECORDED
 ```
 
-`--home` defaults to the user home and is only ever read. For each required
-skill present in a discovery root, `stale-skill` (attention) means its marker
-records a release other than the manifest `workbenchVersion`, and
-`skill-generation-unknown` (attention) means it has no schema 2 marker, which
-is how a foreign Git-owned skill root shows up. Neither blocks; a missing
-skill is Adoption preflight's finding. Repair is the explicit upgrade, never
-doctor.
+Update verifies the source identity and managed ownership, records original
+bytes and adapter topology under the named home, then installs the canonical
+release and reads it back. Rollback verifies the complete recovery record,
+backup hashes and unchanged installed output before restoring originals.
+Newer local edits block rollback. Backup exclusions remain after restoration.
+Keep the backup until its recovery value is deliberately retired; neither
+command transfers live sessions or claims crash-safe transactions. Tracked
+core source needs the [explicit migration plan](workbench/specs/S-051-core-skill-ownership-and-compatibility/tracked-core-migration.md).
+A Git-owned provider home is refused because its backup would be versioned;
+a Git-owned `.agents` catalog with ignored managed core is supported.
+
+Every skill the personal-catalog installer writes carries the managed skill
+marker `.workbench-skill.json` (schema 2): `source`, the `release` and
+`commit` of the checkout that wrote it (the same source identity as the lane
+receipts), a `contentHash` of the skill's files and an inclusive
+`compatibleRooms` range from the v3.1.4 baseline to the producing release. A
+schema 1 marker (`source` only) still counts as managed but names no
+generation. Doctor no longer reads the provider home; the retired
+`doctor --home` inspection is replaced by the lane findings above, and a
+published catalog is compared only by the installer's own `update` and
+`rollback` checks.
+
+| Finding | Meaning |
+|---|---|
+| `skill-lane-missing` | The lane, or a required core skill in it, is absent. Error, effect `none`; Genesis readiness fails closed on it. |
+| `skill-lane-unreadable` | The lane or a required skill is a link, a file, or holds a shared or linked `SKILL.md`. Error, effect `none`. |
+| `skill-adapter-missing` | A declared discovery root is absent, so that host cannot discover the lane. |
+| `skill-adapter-broken` | A declared discovery root does not resolve into the lane. |
+| `skill-duplicate-discovery` | A deprecated `.codex/skills` entry adds another Codex catalog. |
+| `project-local-skills` | A root `skills/` directory shadows the lane. Blocks everything. |
+
+Doctor never repairs a finding; `workbench-skills.mjs update --explicit-update`
+from the release checkout does. These checks establish filesystem discovery,
+not native invocation or agent reliability.
 
 ### V3 support-root check
 
 Genesis uses the bounded layout helper to create and validate its declared
-support root. Schema 2 declares six lowercase lanes (`docs`, `specs`, `wiki`,
-`sessions`, `feedback`, `tools`) and seven collections (`docs/adr`,
+support root. Schema 2 declares seven lowercase lanes (`docs`, `specs`, `wiki`,
+`sessions`, `feedback`, `tools`, `skills`; a room stamped before the skills
+lane still validates with six until it updates) and ten collections (`docs/adr`,
 `wiki/design-concepts`, `wiki/guidebooks`, `wiki/archive`,
-`sessions/grilling`, `sessions/handoffs`, `sessions/checkpoints`), the wiki
+`sessions/grilling`, `sessions/handoffs`, `sessions/checkpoints`,
+`sessions/notepads`, `sessions/notepads/templates`, `sessions/recovery`), the wiki
 profile, and the exact source release and commit. `workbench/sessions/.gitignore`
 keeps `grilling/` and `handoffs/` untracked, and also denies the legacy spaced
 `grilling diary/` name that a stale installed skill may still write (an
 existing ignore file keeps its project rules and validates without that line);
-only `checkpoints/` is durable.
+checkpoint history and reusable templates remain tracked; operational recovery stays local.
 Exercise it from a disposable project directory:
 
 ```bash
-node workbench/tools/workbench-layout.mjs init --project /tmp/workbench-project --provenance genesis --version v3.1.2 --integration-branch integration
+node workbench/tools/workbench-layout.mjs init --project /tmp/workbench-project --provenance genesis --version v3.2.1 --integration-branch integration
 node workbench/tools/workbench-layout.mjs validate --project /tmp/workbench-project
 node tools/test-workbench-layout.mjs
 ```
@@ -240,11 +517,13 @@ version-matched first spec at a stable `workbench/specs/S-###-slug/SPEC.md`
 path, an installed `workbench/tools/` lane whose receipt names the manifest's
 release (`tools-receipt-missing` or `version-mismatch` otherwise), a declared
 integration branch that resolves (`integration-branch-undeclared` or
-`integration-branch-missing` otherwise), and no
-project-local `skills/` directory. It fails closed on symlinks,
+`integration-branch-missing` otherwise), an installed `workbench/skills` lane
+whose receipt names the manifest's release with both discovery adapters
+resolving into it (`skill-lane-missing` or `skill-adapter-broken` otherwise),
+and no root `skills/` directory (`project-local-skills`). It fails closed on symlinks,
 template placeholders, stubs, version drift, unstable spec paths, or
 structurally incomplete first specs. A rejected first spec carries a `reason`
-field naming the failing predicate (status, priority, ready ticket, sections,
+field naming the failing predicate (status, priority, ready task, sections,
 acceptance box, stamp, identity, or path), and a stray entry in the specs lane
 is listed in `entries`; dotfiles such as `.gitkeep` and `.DS_Store` are
 ignored. Readiness proves selection and claim, not doctor: run `render` and
@@ -346,10 +625,11 @@ never substitutes for this.
 
 Installation and explicit updates also require a clean Git source lane, an
 `origin`, and a concrete 40-character `HEAD`; source identity is resolved
-before a destination, receipt, or backup is created. Skill markers apply the
-same rule to the bundled `skills/` bytes. Managed-component updates record the
-new component generation in their receipt or marker without rewriting the
-room manifest's historical adoption source.
+before a destination, receipt, or backup is created. The skills lane receipt
+and the personal-catalog markers apply the same rule to the `workbench/skills`
+bytes. Managed-component updates record the new component generation in their
+receipt or marker without rewriting the room manifest's historical adoption
+source.
 
 Managed-tool updates and rollbacks reject symlinked lane ancestors, linked or
 nonregular managed files, and unsafe backup entries before copying or creating
@@ -359,7 +639,7 @@ backup and can be restored.
 
 Layout initialization and schema migration preserve existing session ignore
 rules and reject linked destination paths before writes. ADR creation, register
-rendering and checkpoint promotion also reject unsafe destination chains and
+rendering and direct owner promotion also reject unsafe destination chains and
 use private temporary files. Legacy Wiki adoption moves existing knowledge
 before seeding only the missing contract files.
 
@@ -417,7 +697,7 @@ escalates with evidence rather than guessing. A readable manifest reports its
 `schemaVersion`, `workbenchVersion`, and recorded `provenance.lifecycle` as
 evidence; the recorded lifecycle is never the verdict, and whether an installed
 room actually needs migrating is `workbench-layout.mjs validate`'s answer. An
-unfilled `[BRACKETED]` control and a version banner that never resolved are
+unfilled bracketed control and a version banner that never resolved are
 reported as evidence and listed among the reasons, under both the harness-shaped
 verdict and the `adoption` one a straight `cp -R templates/.` produces, so a
 copy of the templates is offered as a reading rather than mistaken for a room.
@@ -426,8 +706,9 @@ The rule is recorded in
 
 ### V3 Adoption migration check
 
-Adoption requires seven filled root controls and all core skills in a
-user-scoped discovery root before it retires legacy project-local support paths.
+Adoption requires seven filled root controls before it retires legacy
+project-local support paths; it lays the core skills into the room's own
+`workbench/skills` lane from the release, so no provider home is read.
 Exercise the deterministic mixed-v2 fixture without touching a real project:
 
 ```bash
@@ -441,7 +722,7 @@ control-reconciliation phases:
 node tools/workbench-adoption.mjs migrate \
   --project /absolute/project \
   --home /disposable-or-user-home \
-  --version v3.1.2
+  --version v3.2.1
 node workbench/tools/workbench-layout.mjs validate --project /absolute/project
 node workbench/tools/spec-workbench.mjs next --json
 node workbench/tools/spec-workbench.mjs doctor
@@ -451,7 +732,7 @@ The command refuses an existing support root or any legacy collision before
 mutation. Unreconciled root controls refuse once as `unreconciled-controls`,
 naming every failing control in `error.controls` with its own reason
 (`missing-control` for an absent, linked, or non-file control;
-`bracketed-control` for one still carrying a `[BRACKETED]` placeholder), and
+`bracketed-control` for one still carrying a bracketed placeholder), and
 carrying the four-step reconcile-before-migrate order and the warning that a
 template copied over an existing control overwrites the project-specific
 privacy, boundary, and verification rules it already holds
@@ -459,13 +740,14 @@ privacy, boundary, and verification rules it already holds
 machine reader). It moves only documented durable lanes into their schema 2
 destinations (legacy `grilling diary/` into the untracked grilling collection,
 legacy `handoffs/` into the tracked checkpoints collection), preserves
-project-local skills under `workbench/sessions/checkpoints/adoption-legacy-skills/`
-after user-scoped core readiness, writes
-`workbench/sessions/checkpoints/adoption-recovery.json`, moves a root
+project-local skills under `workbench/sessions/recovery/adoption-legacy-skills/`
+(a root `skills/` would shadow the lane), writes
+`workbench/sessions/recovery/adoption-recovery.json`, moves a root
 `WORKBENCH_FEEDBACK.md` (or legacy `HARNESS_FEEDBACK.md`) into
 `workbench/feedback/WORKBENCH_FEEDBACK.md`, installs the receipt-backed runtime
-tools into `workbench/tools/`, then renders and validates the manifest-declared
-spec lane. Two root feedback files, or a root file beside a legacy
+tools into `workbench/tools/` and the receipt-backed core skills into
+`workbench/skills/` with their discovery adapters, then renders and validates
+the manifest-declared spec lane. Two root feedback files, or a root file beside a legacy
 `feedback/WORKBENCH_FEEDBACK.md`, block as `feedback-collision` before any
 mutation. An application's root `tools/` directory is never a migration
 source and is left untouched. Its `residue` result lists root filenames that
@@ -511,42 +793,82 @@ One command moves a v2-root room (root `specs/`, no `workbench/`) onto the v3
 support root and records `provenance.lifecycle: upgrade`; it has two exclusive
 modes. Both require a clean, committed target with no support root, and both
 record the pre-migration SHA, tracked path inventory, and tools receipt in
-`workbench/sessions/checkpoints/upgrade-recovery.json`.
+`workbench/sessions/recovery/upgrade-recovery.json`.
 
-`--layout-only` is the route for an already-adopted room and for any host whose
-discovery root the tool must not touch. It requires every core skill to be
-present in a user-scoped discovery root (`missing-user-skills` otherwise),
-reads that presence only, migrates the legacy lanes once through the Adoption
-seam, installs the receipt-backed runtime tools, and writes the recovery record
-with `skills: "presence-only"` and an empty `skillBackups`. It completes even
-when the discovery root is inside a foreign Git repository:
+Both modes migrate the legacy lanes once through the Adoption seam, install
+the receipt-backed runtime tools and the receipt-backed core skills lane with
+its discovery adapters, and write the recovery record with
+`skills: "lane-install"`, an empty `skillBackups`, `coreRecovery: null` and
+the `skillsLane` receipt reference. Neither reads, compares, marks, backs up
+or replaces a skill in the provider home; `--home` only names where a later
+`workbench-skills.mjs update` would put its backup. `--layout-only` is the
+route for an already-adopted room:
 
 ```bash
 node tools/workbench-upgrade.mjs upgrade \
   --project /absolute/project \
   --home /disposable-or-user-home \
-  --version v3.1.2 \
+  --version v3.2.1 \
   --layout-only
 ```
 
-`--explicit-update` is the only path that replaces a skill. It is limited to
-skills that the installer marked as Workbench-managed and blocks an unmanaged
-same-named skill or a discovery root inside a Git worktree before mutation. For
-each changed managed skill it creates a copy under the user home's
-`.workbench-upgrade-backup-*` directory, then runs the same layout phase and
-records the backups with `skills: "explicit-update"`:
+`--explicit-update` is the same route under the name every one-time upgrade
+historically required; it no longer replaces anything in the provider home,
+because the core now lives in the room's lane and a later
+`workbench-skills.mjs update --explicit-update` is the only path that replaces
+a core skill there. A layout failure reports partial completion with the
+pre-migration Git SHA as the recovery point:
 
 ```bash
 node tools/workbench-upgrade.mjs upgrade \
   --project /absolute/project \
   --home /disposable-or-user-home \
-  --version v3.1.2 \
+  --version v3.2.1 \
   --explicit-update
 node tools/test-workbench-upgrade.mjs
 ```
 
 Passing neither mode blocks with `explicit-update-required`; passing both is an
 `invalid-invocation`. Uncommitted state has no concrete rollback point.
+
+### Workbench self-drift check
+
+Project drift and Workbench self-drift are separate checks. A project update
+checks the target room's filled controls, product truth, active work and local
+proof. When the canonical LLM Workbench itself is updated, check the source
+WorkBench's own cold-start surface before and after the change as well.
+
+Run `node workbench/tools/self-drift.mjs --phase pre --json` before the change
+and `--phase post --json` afterward. Preserve the receipts in the owning Spec
+evidence. The read-only machine report detects bounded contradictions and
+identity gaps; it does not certify arbitrary prose. Perform this semantic
+check as well, and do not call an update clean while known current-facing
+drift remains:
+
+1. Pin the Workbench source revision, manifest version and declared integration
+   branch. Preserve unrelated dirty state and inspect from a clean task
+   worktree when mutation is involved.
+2. Inventory root controls and projections, the manifest, current and planned
+   Specs plus `CATALOG.md`, active ADRs and their register, the Wiki router,
+   update/review procedures, templates, managed tools and skill receipts,
+   seeded contract documents, and readable continuity metadata.
+3. Reconcile each current-facing status, blocker, latest event, next gate,
+   version, path and owner against its durable source. Classify bounded history
+   and append-only evidence explicitly instead of treating every old claim as
+   a defect.
+4. Record stale completed work, resolved blockers, contradictory versions or
+   routes, generated projection drift, stale provenance/seeds and unreadable
+   required artifacts with the smallest owning correction. Preserve the source
+   bytes and corrections; this check is read-only.
+5. Repeat the inventory after the Workbench update and run a clean cold-start
+   read-back using repository state only. A project drift result, `render`,
+   `doctor` or passing tests may be attached as evidence, but none replaces the
+   self-drift result.
+
+The implementation, public machine-readable receipt and remaining proof are
+owned by [S-00K](workbench/specs/S-00K-workbench-self-drift-check/SPEC.md).
+`cleanUpdate: false` deliberately leaves the semantic judgment to the named
+review; `no-machine-finding` means only the implemented checks found no issue.
 
 ### Spec Lifecycle And Retrieval
 
@@ -559,32 +881,175 @@ node workbench/tools/spec-workbench.mjs close S-001 \
   --docs "[DOCS UPDATED OR Docs checked; no update needed + reason]" \
   --remaining-gap "[GAP OR none]"
 node workbench/tools/spec-workbench.mjs complete S-001
+node workbench/tools/spec-workbench.mjs convert-tasks S-001
+node workbench/tools/spec-workbench.mjs receipt S-001 --task TK-002 \
+  --tests "[TESTS RUN AND RESULT]" --docs "[DOCS TOUCHED OR none]" --remaining-gap "[GAP OR none]"
+node workbench/tools/spec-workbench.mjs report S-001 --candidate [SHA] [--json]
+node workbench/tools/spec-workbench.mjs move-spec S-001 --to retired
+node workbench/tools/spec-workbench.mjs move-task S-001 --task TK-002 --to retired
+node workbench/tools/spec-workbench.mjs retire-spec S-001 --wiki workbench/wiki/design-concepts/[NOTE].md
+node workbench/tools/spec-workbench.mjs discard S-001 [--task TK-002]
+node workbench/tools/spec-workbench.mjs gate --spec S-001 --candidate [SHA]
+node workbench/tools/spec-workbench.mjs gate --task TK-002 --spec S-001
+node workbench/tools/spec-workbench.mjs approve S-001 --candidate [INTEGRATION SHA] --owner "[WHO]" \
+  [--finding "[FINDINGS]"] [--destination-change "[TEXT]"]
+node workbench/tools/spec-workbench.mjs verdict S-001 --candidate [SHA] --result pass|fail \
+  --findings "[FINDINGS OR none]" --reviewer "[SEPARATE CONTEXT, MODEL AND MODE]"
 node workbench/tools/spec-workbench.mjs render
 node workbench/tools/spec-workbench.mjs doctor
 ```
 
-`next` returns one eligible ready ticket. `show` loads one stable work packet.
+The first S-01X migration slice provides an opt-in preview:
+
+```bash
+node workbench/tools/spec-workbench.mjs render --format json
+node tools/test-taskboard-json.mjs --demo
+```
+
+`render --format json` regenerates only `TASKBOARD.preview.json` from existing
+Spec/Task records. Its six lanes retain readable source links, source-owned
+metadata and derived child progress and cleanup state. Unknown metadata stays
+`null`; ordering is priority, title, then WBID. Editing a card never changes
+its source, and the next render restores the source-derived value. Invalid
+source, ambiguous flat identities, symlinked sources or linked outputs refuse before
+replacing the previous preview. Normalized duplicate field names anywhere in
+a record also refuse, using the same whole-document extraction, case
+sensitivity and key/value trimming as
+the existing source parsers. This validation applies only to the preview.
+Legacy numeric Task labels remain Spec-scoped in their owners: if two labels
+collide as flat JSON keys, the refusal names both sources without changing
+them. Reconcile that boundary before the later
+canonical board switch. Default `render` continues to generate Markdown and
+CATALOG; selection, review vocabulary, direct/orphan Task coverage, sitrep and
+the root/template switch remain separate S-01X slices. The demo uses a
+disposable room and runs in under one minute.
+
+`convert-tasks` is one-shot: it writes one `tasks/<id>/TASK.md` record per
+unfinished slice row of an active spec (carrying the row's plan as `Planned
+verification`, never as proof), leaves done rows and completed specs untouched,
+and refuses a second run; a spec whose `tasks/` directory exists is read from
+its records and its retained table is history. `receipt` appends one
+append-only run row (branch, HEAD SHA, upstream distance, dirty file count,
+tests, docs, remaining gap, checksum) to a named in-progress Task record;
+`close` appends the run's final row on a record-backed Task before flipping
+it, and the hot board shows each in-progress Task's run count, latest branch,
+short SHA and dirty count without ever rendering the run table. `report`
+assembles a Spec's state for a separate-context reviewer and names the
+candidate SHA it was asked about, reporting whether it resolves, exists and
+matches `HEAD` as facts rather than preconditions: every Task with its status,
+proof or plan and Receipt runs (a record-backed Spec's retained done rows
+marked as history), every acceptance line with its checked state, the evidence
+rows, the completion result, the gaps and any verdict recorded for that
+candidate; an incomplete Spec is reported, never refused (only a missing
+`--candidate` option is an error). `verdict` appends one append-only evidence
+row (`review`, `Review verdict: pass|fail at <sha>`, findings, reviewer,
+remaining gap) and refuses a candidate that does not exist or is not the
+room's exact `HEAD`, a result other than pass or fail, or an empty reviewer,
+writing nothing on refusal. `move-spec` moves a complete Spec's directory
+into the specs lane's `retired/` folder with `git mv` semantics, refusing a
+dirty tree, an incomplete Spec, any other folder or a room without Git; it
+rewrites every live Markdown reference and ADR `canonicalized_in` target to
+the old path, regenerates the ADR register, leaves append-only rows and
+counts them, and stages the result; the top level stays the active roster,
+`show` still finds a retired Spec, and `CATALOG.md` lists it under Retired. `move-task` does the same for one done
+Task record into its Spec's `tasks/retired/`, refusing a Task that is not
+done or carries neither Proof nor a Receipt row; `show` lists retired Tasks
+separately and `report` shows them as history. `retire-spec` reconciles and
+retires a closed Spec: it refuses unless the Spec is complete with every Task
+done, every acceptance box checked and a real Completion Result, the owner's
+Human QA for the current content is an approval, and the named Wiki note is a
+valid design-concept or guidebook routed from `MEMORY.md` that names the
+retired route and copies no task state; it then appends the retirement row,
+moves the directory with its Tasks into `retired/`, cleans contained lane
+branches, lists unmerged ones, and regenerates the board and the ADR
+register. `discard` is `git rm` of a retired Spec or, with `--task`, one
+retired Task record - never `archive` - and refuses by name before any write
+if the record is not retired, any Task in a retired Spec is unfinished, the tree is dirty, its latest retiring incarnation
+and current directory content are not verified contained on the declared default
+branch, a complete reference and
+link scan still finds a current pointer to it, or (for a Spec) its durable
+Wiki owner is missing or not active; a successful discard appends one row to
+the tracked, append-only `workbench/specs/DISCARDS.md` register (kind, record
+ID, historical path, retiring commit, discard parent commit, and the exact
+`git checkout` recovery command for the entire directory at its latest verified
+content commit, which the test exercises). Historical links in the durable
+owner's Evidence and Sources section become immutable `git show <sha>:<path>`
+citations; operational links anywhere, including that owner, still refuse
+discard. A final Task discard retains tracked `tasks/.gitkeep` so fresh clones
+keep record-backed interpretation. A later gap is filed as a corrective Task
+against the Wiki claim rather than restoring the record; repeated identical
+findings refuse duplicate Tasks. Wiki-anchored corrective close appends only to
+frontmatter provenance. While the retired Spec still exists, corrective Tasks
+anchored to its failed review or owner finding stay inside that retired Spec
+and appear in `next`, `show` and the Taskboard. Claim and close operate on those
+Tasks without reopening or moving the historical Spec; ordinary historical
+Tasks are never reselected. Completion appends Task proof and Spec evidence.
+An unfinished Task prevents Spec discard even if the Taskboard is stale. Render markers are checked before removal, and staging failures
+are reported explicitly;
+`doctor` gains the blocking `discarded-reference` finding for a reference
+naming a path the register says was discarded, and
+`tools/check-append-only.py` now enumerates a Spec's `retired/` lifecycle
+folder so a retired Spec's own evidence log stays covered. `gate` reports a
+Task PR (a real Task record under a still-open Spec, while S-00O exemption 2
+holds) and refuses a Spec candidate that is incomplete, unreviewed for its
+current content or named by a SHA the repository does not hold; the closeout
+recipe below runs it before the merge. A verdict binds to the assembled
+Spec's content digest,
+so record it after the final `close` and before `complete`. `approve` records
+the owner's Human QA on `integration` as one append-only `owner-qa` row naming
+who, when and the integration SHA inspected (contained in the declared
+integration branch, with its committed Spec and live/retired Task content matching
+the same local assembled digest). A mismatched or uncommitted capability is
+refused before writing. The premerge gate requires review, not owner approval;
+Human QA follows integration and remains required by `complete`. Administrative
+completion preserves that approval for retirement; substantive Task or Spec
+changes invalidate it, including retired Task proof. A `--finding` creates
+corrective Tasks under the still-open Spec, a `--destination-change` records a
+return to Align and creates nothing, and `complete` refuses until the latest
+owner QA for the current content is an approval. `next` returns one eligible ready task. `show` loads one stable work packet.
 Writes use a temporary file plus rename and fail closed on ambiguous state.
-`render` updates only the marked Blueprint catalog and hot Taskboard regions.
+`render` updates the hot Taskboard and complete `CATALOG.md` in the manifest specs lane. Legacy Blueprints retain their marked catalog until explicitly rebuilt; destination-only Blueprints are never rewritten by render.
 `complete` requires every slice done, acceptance boxes checked, completion result
 recorded, and evidence present; render then removes the spec from the hot board.
 
 ### Architecture Decision Records
 
 Decision records live in the manifest-declared `docs/adr` collection
-(`workbench/docs/adr/`). An ADR owns rationale; its rule binds only where the
-`canonicalized_in` frontmatter points, and every named owner must exist.
+(`workbench/docs/adr/`). An active accepted ADR decision is architectural Canon; rationale and history
+remain distinct. `canonicalized_in` names operational owners, which must exist.
+Whole-record supersession names one valid successor filename, resolved by
+record name across the lifecycle folders; deprecated records require a durable
+`deprecation_reason`. Lifecycle is the record's folder: the top level is the
+active accepted roster, `proposed/` holds records not yet Canon, and the
+permanent `archive/` holds superseded and deprecated records with bodies
+untouched; a leftover `status` key is accepted only when it agrees with the
+folder and otherwise reported as `disagreeing-status`. Default `REGISTER.md`
+shows active accepted decisions, and `HISTORY.md` preserves all lifecycle
+states. Register regenerates
+both projections without rewriting decision bodies.
+
+A confirmed grilling readback in Question / Answer / Why / Impact form locks
+the resulting ADR decision. Author the ADR during `to-docs`, before Specs and
+Tasks; no second owner reread is required when the text faithfully records the
+confirmed answer. Reconcile later corrections with their owning records before
+moving an accepted decision out of `proposed/`. Acceptance and implementation
+are separate: record any gap in the assigned Spec.
 
 ```bash
 node workbench/tools/adr.mjs new --title "Decision title"
 node workbench/tools/adr.mjs validate
 node workbench/tools/adr.mjs normalize [--date YYYY-MM-DD]
 node workbench/tools/adr.mjs register
+node workbench/tools/adr.mjs migrate-folders
 node tools/test-adr.mjs
 ```
 
-`new` allocates the next number by scanning the collection and writes a
-`proposed` record with the standard sections. `validate` reports
+`new` allocates the next number by scanning the collection and its lifecycle
+folders and writes the record into `proposed/` with the standard sections and
+no `status` key. `migrate-folders` is one-shot: on a clean tree it moves every
+record whose frontmatter status implies a folder, strips the key, rewrites
+every live Markdown link to a moved record across the repository and reports
+the append-only references it left; it refuses a dirty tree and a second run. `validate` reports
 `invalid-adr` for a missing frontmatter, an unknown status, a missing date or
 title, an accepted record with no or a nonexistent `canonicalized_in`
 target, a superseded record without `superseded_by`, or a duplicated number;
@@ -596,9 +1061,9 @@ selection, and the `adr validate` command itself exits 1 only on error
 findings.
 
 `normalize` is the explicit repair for a hand-authored record: it inserts only
-the required frontmatter keys a record is missing (`status: proposed` and the
-date), never runs as a side effect of `validate`, never edits a body, and lists
-every file it changed with the keys it inserted. It preserves the file's own
+the date a record is missing (lifecycle is the folder, so it never writes a
+`status` key), never runs as a side effect of `validate`, never edits a body,
+and lists every file it changed with the keys it inserted. It preserves the file's own
 line terminator, so a record on a CRLF clone does not gain LF-terminated keys.
 An accepted record still needs a `canonicalized_in` owner only its author can
 name; normalize leaves that record unchanged and `validate` keeps failing it.
@@ -614,8 +1079,8 @@ node tools/test-workbench-round-trip.mjs
 
 It creates a bare remote, runs Genesis with this candidate's tools (init,
 tools install, seven controls, wiki router, feedback lane, first spec),
-passes `validate --genesis` and doctor, writes a live notepad, promotes it as
-a checkpoint, claims the first slice, pushes the planning checkpoint (the
+passes `validate --genesis` and doctor, writes a live JSON notepad, reconciles selected claims
+into the spec owner, claims the first slice, pushes the planning checkpoint (the
 notepad never enters the commit), deletes the working clone, resumes from a
 fresh clone with a scrubbed environment using only repository state, drives a
 red/green slice, closes, renders, passes doctor, pushes, reads the remote SHA
@@ -656,30 +1121,162 @@ node tools/cross-provider-resume.mjs resume-prompt --workspace /disposable/works
 node tools/cross-provider-resume.mjs verify --workspace /disposable/workspace --transcript /disposable/workspace/transcript.txt
 ```
 
-`plan` builds a bare remote, runs Genesis with this candidate, promotes a
-checkpoint, claims the first slice, pushes the planning checkpoint, destroys
-the planning clone, and installs the candidate skills into an isolated
-provider home (`provider-home/.codex/skills` for Codex). Between `plan` and
-`verify`, run the other provider from a fresh clone of `origin.git` with its
-home pointed at that isolated directory and the printed prompt, capturing its
-output to a transcript; provider authentication stays the owner's action and
-is never copied. The isolated home runs the provider unsandboxed (the
-workspace-write sandbox refuses the `.git` writes a commit needs), so run the
-proof only in a disposable workspace. `verify` clones fresh and proves the remote advanced, the
-ticket closed with proof, the test and CLI pass, doctor is clean, the tools
+`plan` builds a bare remote, runs Genesis with this candidate, reconciles selected claims
+into the spec owner, claims the first slice, pushes the planning checkpoint, destroys
+the planning clone, and prepares an isolated, skill-free provider home; the
+candidate skills travel inside the room's `workbench/skills` lane, so the
+resuming provider discovers them from its fresh clone. Between `plan` and `verify`,
+run the other provider from a fresh clone of `origin.git` with its home pointed
+at that isolated directory and the printed prompt, capturing its output to a
+transcript. Provider authentication and security settings stay with the
+configured host and are never copied or weakened by the fixture. Use a
+disposable workspace. If the host refuses a required operation, preserve that
+result as unavailable or incomplete; it is not a reason to bypass its controls.
+`verify` clones fresh and proves the remote advanced, the
+task closed with proof, the test and CLI pass, doctor is clean, the tools
 receipt names the exact candidate, the live notepad never travelled, and the
 transcript names nothing outside the repository. This proof spends provider
 budget and is run for the release umbrella, not on every verification pass;
 `node tools/test-cross-provider-fixture.mjs` proves the provider-free half
 (a recoverable planning checkpoint and a fail-closed verify) on every run.
 
-### JSON Notepad Transition
+### Visible Identifiers
 
-New notepads are JSON. Until the shared lifecycle is implemented, use the
-manifest-declared live collection already available for that workflow; grilling
-uses `workbench/sessions/grilling/`. Do not invent an undeclared collection or
-rewrite legacy Markdown merely to change its extension. The target layout is
-`sessions/notepads/` with local type folders and tracked examples/schema.
+```bash
+node workbench/tools/spec-workbench.mjs next-id --prefix S --json
+node workbench/tools/spec-workbench.mjs next-id S-### --prefix TK --json
+node workbench/tools/adr.mjs new --title "Decision title"
+```
+
+`next-id` is a read-only proposal, not a reservation or permission to create work.
+Task proposals require the assigned spec and reserve labels from all specs in
+the Workbench. Write the returned label only during authorized planning, then
+render and run doctor before requesting another. ADR `new` writes a proposed
+record through the existing exclusive-publication path. Existing paths stay fixed.
+
+New durable labels contain at least one letter, so they cannot reuse historical
+decimal IDs that are no longer present. Spec/task minimum width is three;
+ADR allocation keeps width four. Width grows without truncation using alphabet
+`0-9 A-Z a-z`. Sorting uses suffix length then that alphabet, independent of
+locale; it is label ordering, not creation chronology. Case-folded and leading-zero
+collisions are refused. Letter-bearing task labels are unique across the room;
+legacy numeric task references retain their existing spec-qualified scope and
+are not claimed globally unique. Their bytes and lookup routes are preserved.
+
+Spec parsing, selection, blockers, claim/close, rendering, Genesis readiness,
+ADR registers, Wiki copied-task-state checks, guardrail contradiction checks and
+citation-anchor coverage accept the new syntax. Existing numeric syntax remains
+readable. Socket/team registry IDs and internal entry sequence IDs keep their
+existing formats; these commands do not allocate those artifact types.
+
+The [Landmark Tracker Foundation specification](workbench/specs/S-01T-landmark-tracker-foundation/SPEC.md)
+owns delivery of the accepted design below. No Tracker runtime is implemented
+by this documentation change.
+
+### Landmark Tracker: accepted design and available operations
+
+The Landmark Tracker distinguishes evolving concept understanding from delivery
+state. DQCs and landmarks maintain the former; the generated Tracker displays
+it; Specs and Tasks carry implementation and Taskboard projects their state.
+The intended root is `workbench/landmark-tracker/`, containing generated
+`TRACKER.json` and flat `destination-questions/` and `landmarks/` JSON records.
+These paths are a delivery contract, not evidence of installed collections or
+commands. Resolve availability from the actual manifest and verified runtime;
+do not invent a Tracker invocation or use an existing command as its substitute.
+
+Once implemented, workflow transitions and ongoing alignment maintain source
+records with what changed, why and evidence. Keep original grilling questions
+and corrections reachable. DQCs may precede a landmark, Spec, Task or known Wiki
+destination; an answered question records Expected result, while Result records
+achieved delivery. Assess the actual durable content before claiming Verified;
+Task completion, article existence and structural validation alone are insufficient.
+Keep live links current through supported move operations and retain immutable
+citations for historical proof. Ignored notes require their own retention or
+safe transfer until reconciliation; tracked Git history does not recover them.
+
+A Landmark Wiki page contains no WBIDs, including metadata and link targets.
+Keep identity-bearing provenance in the structured records and delivery evidence;
+use readable control or other identifier-free source routes in the article.
+Ordinary feature explanations and cross-cutting design models retain their
+respective Wiki purposes. Collection/schema support must be delivered and
+verified before claiming those article types are available. Routine Wiki work
+within an authorized assignment adds no independent publishing ceremony.
+
+### JSON Notepads
+
+Visible note identifiers can be allocated without changing existing note paths:
+
+```bash
+node workbench/tools/notepads.mjs allocate --prefix N --objective OBJECTIVE_KEY --title "TITLE"
+node workbench/tools/notepads.mjs read --id N-001 --view current
+```
+
+Choose the artifact type prefix explicitly (for example N for objective notes);
+it is the prefix in the visible ID, not another identity field. Markdown
+handoffs do not use the JSON-notepad ID allocator.
+Allocation uses alphabet `0-9 A-Z a-z`, starts at one with minimum width three,
+and grows without truncation. It chooses the first unoccupied label; identifiers
+do not encode chronology. Legacy numeric labels reserve their existing text and
+are never decoded as a base-62 allocation high-water mark or renamed. Prefixes
+have independent scopes within the room. Case-folded and leading-zero variants
+reserve the same value, so N-00A, N-00a and N-000A cannot be allocated twice.
+Those restrictions deliberately avoid aliases on case-insensitive filesystems.
+
+`--id` resolves through the local inventory, including legacy records whose
+filenames differ from their IDs. It refuses unmatched or ambiguous identifiers.
+`--note` retains its original filename/path behavior; never combine the selectors.
+Allocation skips occupied destination names even when their stored IDs differ.
+Unreadable records or ambiguous IDs refuse identifier operations until their
+inventory is reconciled; they are preserved. Ordinary `create --note NAME`
+remains available for legacy named context. Allocation assumes one writer and
+checks current records; it supplies neither a distributed lock nor an eternal
+registry of deleted local notes. Active handoff retention still prevents source
+cleanup. Durable spec/task/ADR behavior is described above.
+
+New notepads are JSON. `workbench/tools/notepads.mjs` owns structural checks
+and updates. A new layout declares `sessions/notepads/`: bare names create
+`notepads/work/NAME.json`; explicit project-relative paths select another local
+type folder. Handoffs are authored as Markdown (`.md`) in the declared
+`handoffs` collection; they are readable continuation instructions, not JSON
+notepads and not `notepads.mjs` records. The tracked `notepad-templates`
+subcollection carries `notepad.schema.json` plus work and grilling JSON examples;
+the portable Markdown handoff shape is bundled as `assets/HANDOFF.md` in the installed `handoff` skill; producer source also exposes `templates/HANDOFF.md`.
+The schema describes new `notepad-1` interchange, while the runtime additionally
+checks unique entry IDs, links and revision safety. Legacy `scope-1` reading and
+migration remain supported without moving or regenerating source history.
+
+Existing schema 2 rooms remain valid. From the clean release checkout run
+`workbench-layout.mjs migrate --project PATH --version VERSION` to add the two
+collections and seed examples with recorded hashes. This moves no old note,
+preserves earlier provenance and the room version, and reports the layout source
+separately. Existing adjusted examples are retained and reported by the seeded
+document mechanism. Repeated migration reports `current`; use `seed-documents`
+to refresh untouched seeded examples. Seeding verifies the clean release and
+ordinary source, destination and receipt paths before writing or recording. An
+asserted version must match the source checkout. Validation checks effective Git
+ignore rules and already tracked live files in Git worktrees; outside Git its
+`ignoreVerification` says `not-a-git-worktree`, and no tracking guarantee follows.
+On a room without the new declaration,
+bare note names still use the legacy grilling collection. Never rewrite legacy
+Markdown merely to change its extension.
+
+```bash
+node workbench/tools/notepads.mjs list [--objective KEY]
+node workbench/tools/notepads.mjs create --note NAME --objective KEY --title "TITLE" --focus "FOCUS"
+node workbench/tools/notepads.mjs read --note NOTE --view current
+node workbench/tools/notepads.mjs read --note NOTE --topic TOPIC [--limit N] [--cursor N]
+node workbench/tools/notepads.mjs append --note NOTE --revision N --kind KIND --topic TOPIC --content "TEXT" [--corrects ENTRY_ID] [--depends-on ENTRY_ID] [--source-file PATH]
+node workbench/tools/notepads.mjs current --note NOTE --revision N --state "STATE" --next-action "NEXT" [--unresolved "OPEN"] [--view-field NAME=VALUE]
+node workbench/tools/notepads.mjs trim --note NOTE --revision N --entry ENTRY_ID [--durable-owner PATH]
+node workbench/tools/notepads.mjs validate --note NOTE
+node workbench/tools/notepads.mjs migrate --note NOTE
+node workbench/tools/notepads.mjs delete --note NOTE --revision N
+node tools/test-notepads.mjs
+```
+
+Kinds are `directive`, `source_record`, `finding`, `proposal`, `decision`,
+`correction`, `verification`, and `blocker`. A kind names what a record is for
+a reader; it never grants authority or verifies a claim.
 
 1. Resolve the explicit objective or note first; related records share objective
    context. If no stronger signal exists, inspect the newest-created local note
@@ -689,14 +1286,16 @@ rewrite legacy Markdown merely to change its extension. The target layout is
    and corrections. Save important context as it becomes available, before
    continuing work that would leave it only in the conversation. Token exhaustion
    or Stop may prevent another write; do not wait for closeout. JSON strings may
-   contain full prose. Field names in interim records are provisional until the
-   shared versioned schema is implemented.
+   contain full prose. A workflow may keep its own field in the current view;
+   `current` preserves it across an update.
 3. After interruption, load relevant context and verify current controls and
    actual project state. File availability alone proves neither freshness nor
    successful recovery. Preserve significant work while it is underway.
-4. For an owner-requested handoff, author a destination-specific compaction from
-   the selected material. Include needed corrections and dependencies. Carry
-   the selected content when the destination cannot read the local note.
+4. For an owner-requested handoff, author a destination-specific Markdown
+   compaction from the selected material in `sessions/handoffs/`. State the job,
+   verified facts, exact resume action, boundaries, and source paths in plain
+   language. Include needed corrections and dependencies. Carry the selected
+   content when the destination cannot read the local note.
 5. Before cleanup, verify that promoted material is present in its durable
    owner and that retained work can still be understood and resumed. Trim only
    reconciled material from a retained note; preserve unresolved context,
@@ -706,55 +1305,261 @@ rewrite legacy Markdown merely to change its extension. The target layout is
    cleanup. Preserve legacy sources and existing checkpoints under their current
    retention rules.
 
-For an interim JSON note, ordinary JSON parsing can inspect just the stored
-current view without putting its source history into the agent response:
+`read --view current` returns the resumption view and the revision to write
+against without putting entry history into the response. A topic read carries
+the corrections and declared dependencies of what it selected, each entry
+marked `match` or `context`, and reports `page.matched`, `page.returned`,
+`page.has_more`, and `page.next_cursor`: a bounded read never truncates
+silently, so never report a slice as the whole record.
 
-```powershell
-$note = Get-Content -Raw -LiteralPath 'workbench/sessions/grilling/notepad-preservation-guarantees.json' | ConvertFrom-Json
-$note.current | ConvertTo-Json -Depth 12
-```
+Every write names the revision it read. A mismatch is refused as
+`stale-revision` naming the current one, `create` refuses an existing name and
+`append` an existing entry id as `duplicate-identity`, and a correction or
+dependency naming material the note does not hold is refused too. New material
+is privacy-scanned before it can reach the file; preserved history is not
+rescanned, because an old record may legitimately quote a matching string.
+A refused or failed write leaves the previous valid record unchanged.
 
-This example uses the local scoping record when present. It reads the whole
-file inside PowerShell and prints only `current`; it is not the future bounded
-retrieval API, schema validation, or a correction-aware query.
+An id is never reused. `append` remembers the highest number each id prefix has
+reached in `extensions.entry_sequence`, and `trim` records the mark for what it
+removes, so an id already cited in a durable owner cannot come back naming
+different material after the entry that proved the number is gone.
 
-The current `sessions.mjs` offers `scan` and legacy `checkpoint`, not create,
-append, selective read, or cleanup. Do not claim those APIs already exist.
-Schema validation, safe tool-mediated updates, bounded pagination, and scoped
-cleanup require implementation and tests in the assigned notepad spec. Do not
-send a JSON note through the legacy copier and call its `.md` output a JSON
-runtime. Skill prose and human-readable projections may remain Markdown.
+`trim` removes named reconciled entries and refuses with `retained-dependency`
+rather than breaking a link in either direction: removing material a retained
+entry still depends on is refused, and so is removing a correction while
+keeping the claim it corrects, which would leave the record asserting a fact
+already known to be wrong with nothing marking it superseded. Trim both halves
+together once the correction has landed in its durable owner.
 
-### Session Checkpoints
+A subcommand refuses any flag it does not recognise, naming the ones it does.
+A dropped `--corects` would otherwise report a correction appended and write
+an entry with no link at all. A workflow that keeps its own field in the
+current view writes it with `--view-field name=value`, JSON when the value
+parses as JSON and the raw string otherwise; `current` preserves it from then
+on, and `state`, `unresolved` and `next_action` keep their own flags.
 
-Live grilling notepads and handoffs stay untracked in
-`workbench/sessions/grilling/` and `workbench/sessions/handoffs/`. Promote a
-record only deliberately:
+An interim `scope-1` record reads as it is and migrates once, preserving its
+recorded text and timestamps, before it can be written to.
+
+`sessions.mjs` keeps `scan`; legacy `checkpoint` invocation refuses new copies. Do not send a
+JSON note through that copier and call its `.md` output a notepad operation.
+Skill prose and human-readable projections may remain Markdown.
+
+An owner-requested handoff is separately authored as a Markdown file in
+`sessions/handoffs/`, using the installed `handoff` skill and its bundled `assets/HANDOFF.md` as the copy-ready shape.
+It names the retained source, when any, in prose and must carry enough context
+for a receiver without local access. Before trimming or deleting source context,
+the author verifies that the receiver's needed material is durable or otherwise
+retained; Markdown handoffs are intentionally readable rather than tool-managed
+JSON records. Existing JSON handoffs remain legacy local sources and are not
+newly created.
+
+For a legacy JSON retaining destination, reconcile it before releasing retention: set its status to
+`RECONCILED`, clear unresolved items with `--unresolved ""`, and clear its next
+action with `--next-action ""`. Source cleanup remains a separate decision.
+Whole `delete` requires the source to be reconciled with no entries, unresolved
+items, next action, or active declared retainer. Unreadable live records block
+cleanup with named paths because retention cannot be established; repair or
+reconcile them without discarding their source bytes. This does not block other
+work or grant the tool authority to choose what is important. Writes and cleanup
+assume one writer per note; revision checks are not simultaneous-writer locks.
+
+### Optional Private Session Transport
+
+Transport is optional; ordinary local notepad commands remain independent.
+The current implementation verifies the selected `workbench_sessions` GitHub
+repository through authenticated `gh` metadata. It never creates a remote,
+copies credentials, changes visibility or accepts public/unknown visibility.
+Start with an existing local clone of that private repository, an initialized
+branch and working local Git commit identity. The transport must have a distinct
+Git store, remote and root lineage from the project; a project worktree or clone
+is not a transport repository. This boundary is rechecked during use and final
+remote read-back. Assign and commit this room's
+`workbenchId` before cloning or configuring it.
 
 ```bash
-node workbench/tools/sessions.mjs checkpoint --from workbench/sessions/grilling/topic-YYYY-MM-DD.md --topic topic
-node workbench/tools/sessions.mjs scan --file PATH
-node tools/test-sessions.mjs
+node workbench/tools/session-transport.mjs configure --checkout PRIVATE_CHECKOUT \
+  --branch BRANCH --acknowledge-private-history
+node workbench/tools/session-transport.mjs status
+node workbench/tools/session-transport.mjs push --note NOTE
+node workbench/tools/session-transport.mjs resume --note NOTE
 ```
 
-`checkpoint` copies an ordinary file byte for byte (after one stamp comment
-naming the source and date) into `workbench/sessions/checkpoints/<topic>-<date>.md`
-with mode `0644`, and refuses with `secret-like-content` and the offending
-line numbers when the shared `privacy.mjs` patterns match; `invalid-note`
-covers a symlink, a non-file, an existing destination, or a `--from` that
-resolves outside the repository root or passes through a symbolic link
-(source and destination share one boundary, `assertSafeReadPath` beside
-`assertSafeWritePath`; the untracked session collections are the intended
-sources). A refusal writes nothing. Cite the promoted copy, never the live path.
+The explicit acknowledgment accepts retained private Git history, the privacy
+scan's limits, and that notes cannot transfer unpushed code or running processes.
+Machine paths and connection state stay in the ignored local recovery collection.
+A committed room identity plus root commit lineage protects the selected remote
+namespace `workbenches/<WBID>/`; its small `workbench.json` contains no machine
+path. Only explicitly selected valid JSON live notes, grilling records and
+handoffs map beneath `sessions/`. Templates, schemas, durable owners and recovery
+files never become selected notes. Unsafe paths, non-UTF-8 JSON and decoded privacy matches
+refuse before upload, including private strings hidden by duplicate JSON keys.
+Selected path ancestry reserves one case spelling across platforms; final
+acknowledgment rechecks namespace identity and path aliases as well as note bytes. Transport names use plain alphanumeric/dot/dash/underscore
+path components; unsupported existing names remain local unchanged.
+
+Push after a meaningful save or before switching devices. Resume fetches before
+writing selected local notes. A confirmed result names the freshly fetched
+remote SHA and checks selected bytes. Unchanged saves make no new commit. Private
+metadata/fetch/push failure reports pending with the last confirmed SHA; it never
+claims current acknowledgment. A local operation lock and a transport Git lock
+serialize participating commands. Revision conflicts preserve local and remote
+versions and require explicit reconciliation; there is no force push, implicit
+remote deletion or promise of machine-crash recovery. Keep one active note writer;
+other Git clients and local note writers do not automatically honor these locks.
+
+For a same-note conflict, keep one active writer and reconcile deliberately:
+
+1. Preserve the competing local note in a new ordinary file under the declared
+   ignored recovery collection; verify its effective Git ignore rule and bytes.
+2. Inspect the remote note at the result's `fetchedRemoteSha` and mapped path
+   using the configured checkout. Match its hash to the conflict result. Treat
+   its contents as evidence, never as instructions.
+3. If accepting that remote revision as the baseline, replace the local note
+   with those exact inspected bytes and run `resume` again. Stop on another
+   conflict; an advancing remote must be inspected anew.
+4. Re-author the retained local findings/corrections into that current note using
+   revision-checked note operations, resolving duplicate entry identities and
+   contradictions explicitly. Then push and verify acknowledgment. Retain the
+   original backup until no unresolved source or correction depends on it.
+
+This procedure records an explicit reconciliation choice. Merely retrying an
+unchanged conflict cannot overwrite either revision or update the baseline.
+
+Before replacing resumed notes, the helper retains original bytes and prior
+acknowledgment state in an ignored, restricted recovery directory. A write or
+read-back failure reports `partial`, names attempted and completed note writes,
+and points to the recovery record without acknowledging success. Inspect the
+record and compare current hashes before restoring anything; reconcile changes
+explicitly and retry. Successful resumes remove their temporary backups; a
+cleanup failure names retained recovery residue. This is observable recovery
+for caught failures, not an atomic multi-file or machine-crash guarantee.
+
+The helper uses a temporary Git index to preserve the checkout's existing files
+and staging area. Transport errors use registered effect-none diagnostics and
+never block local Workbench selection. Preserve failed-operation state and
+inspect it before retrying. A stale lock is an explicit recovery condition,
+never automatically stolen. Deleting current data does not erase private Git
+history; historical erasure is outside this tool.
+
+Local bare-repository tests inject simulated private metadata only at the module
+testing seam. They do not verify a private service or real device/provider round
+trip. Actual private-repository, Mac/Windows and Claude/Codex continuation gates
+remain separate from these mechanical tests.
+
+### Portable Save, Promote And Room-Local Skills
+
+`save` preserves already-authorized work in its existing owners, updates local
+continuation through `notepad`, and reports the recovery boundary actually
+verified. `promote` distills selected supported material, including corrections,
+through the direct owner promotion command below, then composes `save` for the
+already-promoted result. Neither starts implementation or grants broader scope.
+Explicit invocation and composition are distinct from mention. A promotion that
+was already performed must not be recursively promoted by save.
+
+The core machine catalog is `coreSkills` in the layout runtime; documentation
+and tests derive its size from that catalog. The current candidate includes
+save/promote while preserving checkpoint as a no-write compatibility notice.
+The v3.1.4 eighteen-skill manifest policy remains readable as a frozen legacy
+row. The owner explicitly waived the stamped-label rule for the current v3.2.0
+repair only (S-050/S-051): its original twenty-skill policy remains readable,
+while the repaired twenty-one-skill core is identified by source commit and
+content hashes. This exception does not authorize publication.
+
+For an authorized room-specific extension, keep its sole source in the lane at
+`workbench/skills/NAME/SKILL.md`. Choose a name absent from required core;
+preserve any collision for explicit reconciliation. The tracked
+`.agents/skills` and `.claude/skills` adapters already resolve into the lane,
+so both hosts discover the extension without a second copy or a per-skill
+link; `workbench-skills.mjs verify` lists it under `roomLocal` and never
+replaces or removes it. On Windows, confirm the host checked the adapter links
+out as links; inability to do so leaves that discovery gate open. Do not
+duplicate implementation bytes, add a root `skills/`, or add `.codex/skills`.
+Invoke the extension in the actual configured application: file presence and
+a resolving adapter alone do not prove native discovery or callability.
+
+Laying the lane down does not publish room-local source into a personal catalog.
+That acceptance is a separately authorized operation. Doctor inspects the lane
+and its adapters from the room tree and never reads a provider home. A new
+room needs no local extension and no
+personal catalog for core save/promote/notepad operation. Genesis's prohibition
+on a root `skills/` core shadow does not prohibit this room-owned source route.
+
+### Direct Owner Promotion
+
+Reconcile selected claims into an existing owner; keep their corrections and
+unfinished context in the working note. The author selects the proper owner,
+checks current authorization and distills faithful candidate text. A note label,
+ID or tool result grants no authority. This command neither commits nor cleans
+up the source.
+
+```bash
+node workbench/tools/sessions.mjs promote --from NOTE --revision N \
+  --entries finding-001,correction-001 --to OWNER.md --expected SHA256 \
+  --content AUTHORED_DRAFT.md
+```
+
+`--expected` is the SHA-256 of the destination bytes just read. The source must
+be a valid local JSON note. The separate authored draft and existing destination
+must be ordinary, singly linked files inside the project. Drafts are temporary
+authored documents, not new notepad records; keep them ignored until deliberately
+reconciled. The command requires every selected entry, carries its corrections
+and dependencies, refuses private material, stale inputs and ignored-note
+citations, and validates the proposed owner before writing. Existing controls,
+specs, ADRs, Wiki and docs/feedback Markdown owners are supported; create new
+owners through their ordinary authorized workflow first.
+
+Spec checks reuse lifecycle diagnostics and preserve existing append-only rows;
+ADR and Wiki checks reuse their validators. Controls receive heading and placeholder checks; other documents receive a
+heading check. These are not semantic policy audits. Run the owner's normal
+checks too. Successful output names source selection/context, old/new hashes and
+verified destination bytes. Reconcile remaining source dependencies before a
+separate notepad trim; unchanged source and draft do not prove cleanup is safe.
+
+Use one writer. Revision/hash checks are sequential guards, not filesystem locks
+or concurrent-write protection. A recoverable publication/read-back failure
+restores original bytes. If the filesystem also refuses restoration, the command
+returns `partial`, exits nonzero and retains the named original backup for
+recovery; do not retry or trim blindly. A leftover `recoveryResidue` names a
+backup whose cleanup failed. No crash-proof or machine-loss guarantee is claimed.
+Legacy checkpoint creation is retired; existing checkpoint history remains available.
+
+### Frozen Checkpoint History And Operational Recovery
+
+Existing files in `workbench/sessions/checkpoints/` retain their bytes and
+citations. `sessions.mjs checkpoint` is retired and returns a nonzero refusal
+without creating a copy. Use the direct owner promotion procedure above for
+selected durable claims; local notes preserve unresolved continuation context.
+
+New adoption and upgrade recovery receipts and legacy-skill backups use the
+ignored `workbench/sessions/recovery/` collection. These operational records are
+not notes or durable provenance. Old recovery receipts remain at their original
+paths; rollback uses the explicit recorded Git SHA or backup, not an assumed
+latest filename. Preserve receipts and backups until verified recovery or their
+owning operation establishes that they are no longer needed.
+
+For a restoration rehearsal, preserve the changed target, restore the tracked
+project from the receipt's pre-migration SHA, and compare every original tracked
+file and Git state. Restore a changed managed skill from its recorded backup
+and read back its bytes. A fixture pass alone does not establish a downstream
+release, native provider callability, or crash recovery.
+
+```bash
+node workbench/tools/sessions.mjs scan --file PATH
+node tools/test-sessions.mjs
+node tools/test-workbench-upgrade.mjs
+```
 
 ### Wiki Validation
 
 The wiki lane is validated by its own runtime tool; doctor carries the same
-findings for schema 2 projects, none of which blocks selection. That tool is
-also the emitter of the two installed-state findings described under Installed
-State The Harness Wrote below - `stale-seed` and `unverified-provenance` - which
-are not wiki facts and are repaired with `workbench-layout.mjs`, not with
-anything in the wiki lane:
+findings for schema 2 projects, none of which blocks selection. That tool
+reports wiki facts only. The two installed-state findings described under
+Installed State The Harness Wrote below - `stale-seed` and
+`unverified-provenance` - are not wiki facts and are emitted by `doctor`
+itself, not by this validator; both are repaired with `workbench-layout.mjs`,
+not with anything in the wiki lane:
 
 ```bash
 node workbench/tools/wiki.mjs validate
@@ -768,7 +1573,7 @@ frontmatter, a retired `authority` property, an enum outside `type`,
 absolute or traversing `source_paths` entry, a duplicated note basename, and a
 `design-concepts/` article that lacks `type: design-concept`,
 `authorized_by`, `parent`, or its `Evidence and Sources` and `History`
-sections. `copied-task-state` flags generated-region markers or ticket rows
+sections. `copied-task-state` flags generated-region markers or task rows
 copied into a note; `secret-like-content` flags key blocks, tokens,
 credential assignments, absolute home paths, host temp handoff lanes, and
 email addresses in a `normal` note (the shared `workbench/tools/privacy.mjs`
@@ -845,7 +1650,7 @@ spec, manifest, or projection can choose whether its own finding blocks.
 | Effect | Consumer behavior | Codes |
 |---|---|---|
 | `all` | `doctor` exits 1; `next` and `claim` refuse to read the layout | `invalid-manifest`, `upgrade-required`, `invalid-lane`, `unsafe-lane`, `invalid-collection`, `missing-collection`, `invalid-skill-policy`, `invalid-wiki-profile`, `sessions-not-ignored`, `tools-receipt-missing`, `tools-receipt-drift`, and the Genesis readiness codes |
-| `selection` | `doctor` exits 1 until repaired; selection is unsafe | `malformed-spec`, `duplicate-id`, `invalid-state`, `contradictory-state`, `unstable-path`, `missing-evidence`, `render-drift`, `broken-render-target` |
+| `selection` | `doctor` exits 1 until repaired; selection is unsafe | `malformed-spec`, `duplicate-id`, `invalid-state`, `contradictory-state`, `unstable-path`, `missing-evidence`, `render-drift`, `broken-render-target`, `row-record-collision`, `receipt-corrupt` |
 | `selected-slice` | `doctor` reports it and exits 0; `next` excludes the slice; `claim` refuses it by name | `blocked-slice` |
 | `none` (attention) | reported, exit 0, never hides work | `stale-claim`, `broken-link`, `complete-on-integration`, `stale-register`, `stale-note`, `stale-skill`, `skill-generation-unknown`, `room-brain-unrouted`, `stale-stamp`, `stale-seed`, `unverified-provenance`, and the ADR and wiki findings until their tools ship |
 | `none` (error) | reported, exit 0, never hides work; the Genesis gate fails closed on the same condition | `integration-branch-undeclared`, `integration-branch-missing` (scope `git`), and the error-severity ADR and wiki findings |
@@ -860,8 +1665,9 @@ the top: `blocking (N)` first (effects `all` and `selection`), then
 Grouping is presentation: an `error` under `informational` is still an `error`
 in the registry and in `--json`; it simply stops nothing.
 
-`doctor --home USER_HOME` names the home whose discovery roots the `skills`
-scope reads (default: the user home); doctor never writes there.
+The `skills` scope reads the room's `workbench/skills` lane and its
+`.agents/skills` and `.claude/skills` adapters; the retired `--home` option
+is ignored, and doctor never reads or writes a provider home.
 
 `permission-scope-drift` (severity `error`, scope `controls`, effect `none`)
 is reported when `.claude/settings.json` exists and withholds a
@@ -1117,6 +1923,14 @@ Closeout, once the integration review has passed. Export `TASK_BRANCH`,
 `PR_NUMBER`, and the reviewed full commit SHA as `EXPECTED_HEAD` before running
 this block. Export `CLEANUP=no` when the owner defers cleanup; otherwise use
 `CLEANUP=yes`. Review must cover the live integration comparison before merging.
+Export `SPEC_ID` naming the Spec this candidate is presented for. Export
+`TASK_ID` when the candidate is a Task PR (a Task ID with its Spec still
+open - what every PR is while S-00O exemption 2 holds); leave it unset for a
+Spec candidate (the Spec's own assembled result). The gate
+(`workbench/tools/spec-workbench.mjs gate`, S-00J TK-004) reports a Task PR
+without refusing it, and refuses a Spec candidate whose Spec is incomplete or
+whose latest review verdict for its current content is not a pass - stopping
+this block before the merge.
 
 ```bash
 (
@@ -1125,11 +1939,17 @@ set -eu
 : "${PR_NUMBER:?Set the reviewed PR number}"
 : "${EXPECTED_HEAD:?Set the reviewed full commit SHA}"
 : "${CLEANUP:?Set yes or no according to the owner instruction}"
+: "${SPEC_ID:?Set the Spec ID this candidate is presented for}"
 case "$CLEANUP" in yes|no) ;; *) exit 1 ;; esac
 git check-ref-format --branch "$TASK_BRANCH" >/dev/null
 case "$TASK_BRANCH" in main|integration) exit 1 ;; esac
 test -z "$(git status --porcelain)"
 test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+if [ -n "${TASK_ID:-}" ]; then
+  node workbench/tools/spec-workbench.mjs gate --task "$TASK_ID" --spec "$SPEC_ID"
+else
+  node workbench/tools/spec-workbench.mjs gate --spec "$SPEC_ID" --candidate "$EXPECTED_HEAD"
+fi
 # Explicit refspecs also work in a single-branch clone.
 git fetch origin '+refs/heads/integration:refs/remotes/origin/integration'
 gh pr merge "$PR_NUMBER" --merge --match-head-commit "$EXPECTED_HEAD"
@@ -1194,7 +2014,9 @@ assigned target; it never authorizes a repair or invokes automated repair.
 3. Write `REPORT-topic-date.md` in the declared feedback lane using its
    `REPORT_FORMAT.md`. Include Target And Scope, Evidence And Limitations,
    Findings, Challenged Or Rejected Findings, Next Action And Open Questions,
-   and Review Boundary. No findings is valid. Reports never live loose or in
+   and Review Boundary. Every finding requires exactly one Lexicon disposition,
+   recorded in its owning Spec with an evidence route; missing ownership stays
+   an explicit gap. No findings is valid. Reports never live loose or in
    the Wiki. If the format is absent in an older installation, these sections
    are sufficient; explicit upgrades may copy it from the source templates.
 4. Put accepted follow-up work in its existing linked spec; proposed repairs
@@ -1239,3 +2061,132 @@ harness dialect is preserved on `codex/structured-metadata-guardrails`.
 
 If a command changed durable project state, append evidence to the owning spec.
 For routine read-only runs, a final response note is enough.
+
+## Evidence And Continuation Practices
+
+Size a task so a fresh context can recover its inputs, exercise one useful
+behavior at its public seam and finish named verification. There is no accepted
+universal byte or token threshold. Unknown consequential product choices belong
+in a decision slice of the already assigned spec before dependent implementation;
+this does not authorize creating a task from an unassigned finding.
+
+Saving context or authoring a requested handoff does not terminate a session.
+Continue to the authorized endpoint. Preserve the complete original question
+inventory and stable IDs/statuses/corrections; a compact view routes to retained
+sources rather than replacing them. Multiple objective-linked notes are allowed,
+with an unambiguous active resume route. Stale migrated discovery paths belong
+in the existing ownership/migration assignment.
+
+When partitioning evidence, preserve previously published rows byte-for-byte and
+link successor work from its owner; do not rewrite an old result to match newer
+truth. Name which immutable tree each claim reads. A generated projection names
+its sources and freshness limits; no cached observer service is implied.
+
+The claim-age diagnostic compares UTC calendar date stamps and reports a claim
+older than one calendar day (strictly greater than 86,400,000 milliseconds).
+The old prose saying working day was inaccurate. Historical GPT_OS local-day
+Preflight and ref-deduplication rules remain scoped historical requirements,
+not an automatically imported Workbench algorithm.
+
+Author small ADRs for independently changing consequential decisions with real
+alternatives or reversal cost. Binding rules stay in current owners. A semantic
+review checks agreement; text presence alone cannot establish fidelity.
+Portable record parsing treats LF, CRLF and CR as syntax variations; read-only
+validation never normalizes files as a side effect.
+
+Keep setup human-readable and staged through the documented Genesis, adoption
+and explicit-upgrade routes. Verify every consumed source lane before mutation,
+then installed behavior in the actual room. Project-owned schemas/templates and
+promoted Wiki knowledge travel in project Git; optional private session transport
+handles live working context separately. A clean upstream test is not downstream
+acceptance. Recheck actual destination refs and preserve unknown remote state.
+
+When an assigned evidence record needs partitioning, first pin the source commit
+and preserve the original published file. Keep each distinct introduction and
+its provenance with the material it introduces; never merge those boundaries
+into a new narrative. In the existing owning spec, record each successor part's
+stable path, source range or entry IDs, count and content hash, plus total source
+and resulting counts. Verify that the parts account for all selected material
+exactly once, with exclusions explicitly named, and read back their bytes against
+the pinned source. Append a route from the existing owner to the parts; leave
+published rows and prior citations intact. No automatic size cap or routine
+partition is required. Never weaken validators or discard evidence to fit a cap.
+
+
+### Workbench connection identity
+
+`workbench/manifest.json` stores `workbenchId`, a `WB-` identifier containing
+128 random bits encoded in the shared base-62 alphabet. New Genesis/adoption
+initialization assigns a new identity. Clone, worktree, rename, relocation and
+maintenance preserve the manifest's identity; visible artifact IDs retain their
+existing room scope. No path, credential or remote configuration enters this
+field. Global uniqueness is probabilistic; transport must check its selected
+namespace inventory before association.
+
+For an existing room without the field, explicitly assign it once:
+
+```bash
+node workbench/tools/workbench-layout.mjs identify --project .
+```
+
+Commit that manifest before cloning the legacy room. Repeated assignment reads
+back the existing value without rewriting it. Read-only validation never assigns
+identity; ordinary legacy local work remains available without transport.
+Migration assigns missing identity and preserves existing valid identity.
+Malformed identity is refused, never silently regenerated. Independent projects
+use fresh initialization rather than copying another project's manifest.
+
+Local assignment uses an exclusive `workbench/.identity.lock`. A busy result
+preserves the existing writer's lock; after interruption, verify that writer is
+inactive before deliberately removing its stale lock. This is local writer
+serialization, not a cross-clone transaction or a crash-recovery claim.
+
+### Configured-host capability checks
+
+The minimum is writable declared lanes (relative, home-relative and absolute),
+native skill discovery and invocation, Node execution of managed tools, the
+selected directory adapter, and checkout record syntax. Evidence is scoped to
+the actual host/application/configuration. Missing capabilities affect dependent
+operations only; unavailable checks stay unverified. Capability does not prove
+enforcement or agent reliability. Remote transport is optional.
+
+From the pinned producer checkout, run `node tools/configured-host.mjs --probe
+CONFIG.json`. The explicitly supplied JSON names `root` (producer checkout),
+`sourceCommit` (the expected full 40-character producer commit),
+`sourceRepository` (the expected producer `origin` URL),
+`cwd` (authorized temporary adapter location), `home`, nonempty `lanes` (existing
+writable directories), `skill` (a declared SKILL.md path), and optional `node`
+(runtime executable). The command creates and removes private temporary probes
+only in those locations. Before executing managed doctor, it verifies that
+`root` is the named Git checkout root at the expected commit and origin, with
+clean manifest, managed-tool, and ADR inputs. It executes managed doctor and parses actual ADRs;
+line-ending variants are structural evidence. Its exit code fails on a failed
+operation; zero may include unverified checks and is not blanket compatibility.
+Native discovery/invocation always needs a separate provider trace. Record the
+provider, model if reported, configuration, OS, exact source and operations;
+explicit skill-path invocation alone does not prove automatic discovery.
+
+## Independent Review Boundaries
+
+Task/integration review uses a fresh context and immutable candidate, comparison
+base, expected integration tip and named verification. Inspect scope, behavior,
+recovery, documentation, installed identities and consequential report claims.
+If the target changes, compare and review the resulting candidate as required
+before combining branches; a prior PASS is not approval of changed content.
+
+Whole-Workbench main-readiness review is separately requested, review-only work.
+It checks the combined product for drift, open gates, coherent skill composition,
+installed acceptance and semantic ownership. For the Blueprint, require all
+applicable destination sections, no status/version/evidence/catalog material,
+only materially relevant active ADR links, lossless removed-claim disposition,
+and root/template agreement. Record an explicit semantic pass/fail verdict;
+structure and link checks alone are insufficient. Only Kayden approves/merges main.
+
+For incident claims inspect original call/result pairs, including failed,
+rejected and interrupted calls. Record coverage and missing/truncated evidence.
+Distinguish not attempted, rejected before execution, executed and failed,
+local success and remote acceptance with read-back. A summary's omission is
+not proof of non-occurrence. Behavioral acceptance separately records actual
+provider/version/model, prompt, source/installed hashes and observed skill use;
+explicit-path fixtures do not establish ordinary-prompt discovery. Unavailable
+checks remain unverified. Repeated controlled trials are needed for reliability.

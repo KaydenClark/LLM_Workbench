@@ -1,22 +1,38 @@
 #!/usr/bin/env node
 // Portable wiki validator: router, declared collections, note metadata,
-// portability, the Design Concept article shape, no copied live task state,
+// portability, the Design Concept and features article shapes, no copied live task state,
 // no secret-like material. Staleness is attention, never blocking.
 import fs from 'node:fs';
 import path from 'node:path';
 import { finding } from './diagnostics.mjs';
-import { collectionRelative, findRoot, isMainModule, lanePath, laneRelative, readManifest, writeSafeFile, WIKI_PROFILES } from './workbench-paths.mjs';
-import { insertFrontmatterKeys, parseFrontmatter } from './adr.mjs';
+import { collectionRelative, findRoot, isMainModule, lanePath, laneRelative, liveRecordPath, markdownLinkTargets, readManifest, writeSafeFile, WIKI_PROFILES } from './workbench-paths.mjs';
+import { insertFrontmatterKeys, localLinks, parseFrontmatter } from './adr.mjs';
 import { scanPrivacy } from './privacy.mjs';
-import { provenanceFindings, seededDocumentFindings, versionStamp, wikiContractFiles } from './workbench-layout.mjs';
+import { versionStamp, wikiContractFiles } from './workbench-layout.mjs';
 
-export const NOTE_TYPES = Object.freeze(['memory', 'project', 'person', 'machine', 'guidebook', 'design-concept', 'meta']);
+export const NOTE_TYPES = Object.freeze(['memory', 'project', 'person', 'machine', 'guidebook', 'design-concept', 'feature', 'meta']);
+// S-00I TK-01U: a features article is the readable knowledge a completed Spec
+// is captured into at its closure point. It lives only in the additive
+// `features` collection, which is not required to exist (earlier rooms never
+// declared it), and it must state what the capability does, why it matters,
+// its limits and its evidence.
+export const FEATURE_SECTIONS = Object.freeze(['What It Does', 'Why It Matters', 'Limits', 'Evidence and Sources']);
 export const NOTE_STATUSES = Object.freeze(['active', 'partial', 'stale', 'archived']);
 export const SENSITIVITIES = Object.freeze(['normal', 'private', 'restricted']);
 export const KNOWLEDGE_ROLES = Object.freeze(['canonical', 'curated', 'derived', 'historical']);
 export const REQUIRED_PROPERTIES = Object.freeze(['type', 'status', 'sensitivity', 'knowledge_role', 'provenance', 'source_paths', 'last_verified']);
 const REQUIRED_COLLECTIONS = Object.freeze(['design-concepts', 'guidebooks', 'archive']);
-const LIVE_STATE_MARKERS = [/<!--\s*hot-specs:start\s*-->/, /<!--\s*spec-catalog:start\s*-->/, /^\|\s*TK-\d{3}\s*\|.*\|\s*(?:ready|in-progress|blocked|done|deferred)\s*\|/m];
+// S-00I TK-005: a slice-table row (first cell a bare Task id) is not the
+// only shape "copied live task state" takes. SCHEMA.md's Update section
+// already forbids copying "live task rows, spec evidence, or generated
+// Taskboard state" into a note; a Spec's own Append-Only Evidence And
+// Execution Log row - first cell a date, second cell a Task id or the
+// literal `spec`/`review` (closeTask/completeSpec/recordReviewVerdict's own
+// vocabulary in spec-workbench.mjs/spec-report.mjs) - is copied spec
+// evidence, the exact class SCHEMA.md already names, so a reconciliation
+// that pastes it must fail the same check a copied slice table already
+// does rather than passing silently.
+const LIVE_STATE_MARKERS = [/<!--\s*hot-specs:start\s*-->/, /<!--\s*spec-catalog:start\s*-->/, /^\|\s*TK-[0-9A-Za-z]+\s*\|.*\|\s*(?:ready|in-progress|blocked|done|deferred)\s*\|/m, /^\|\s*\d{4}-\d{2}-\d{2}\s*\|\s*(?:TK-[0-9A-Za-z]+|spec|review)\s*\|/m];
 
 function walkMarkdown(directory, files = []) {
   for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
@@ -68,7 +84,7 @@ function wikiStamps(root, wikiRoot, wikiRelative, expectedVersion) {
   return findings;
 }
 
-export function validateWiki(root) {
+export function validateWiki(root, options = {}) {
   const findings = [];
   const wikiRoot = lanePath(root, 'wiki');
   const wikiRelative = laneRelative(root, 'wiki');
@@ -82,20 +98,23 @@ export function validateWiki(root) {
   }
   else findings.push(...roomBrainRouting(root, wikiRelative));
   findings.push(...wikiStamps(root, wikiRoot, wikiRelative, manifest?.workbenchVersion));
-  // The next two checks are not wiki facts: the generation of a room's seeded
-  // lane documents and the source identity its manifest records. Unlike
+  // S-045 TK-002 moved two checks out of here: `stale-seed`, the generation of
+  // a room's seeded lane documents, and `unverified-provenance`, the source
+  // identity its manifest records. Neither is a wiki fact - unlike
   // invalid-wiki-profile and missing-collection above, which are wiki-domain
-  // facts that happen to be stored in the manifest, these belong behind a
-  // dedicated doctor hook in spec-workbench.mjs. Doctor wires exactly two
-  // support-root validators, this one and the ADR validator, and
-  // spec-workbench.mjs was held by a sibling branch when this landed, so
-  // AGENTS.md's non-overlapping file lanes rule kept this ticket out of it.
-  // The placement is therefore interim and is carried as a follow-up in
-  // S-042. Both checks live in workbench-layout.mjs, which owns seeding and
-  // provenance; this validator only carries them to the one report a room
-  // actually reads, and RUNBOOK.md and wiki/SCHEMA.md name it as the emitter.
-  findings.push(...seededDocumentFindings(root));
-  findings.push(...provenanceFindings(root));
+  // facts that happen to be stored in the manifest - so `wiki.mjs validate`
+  // reported a feedback-lane fact and a manifest fact to anyone checking the
+  // wiki. S-042 recorded the placement as interim: doctor wired exactly two
+  // support-root validators, and `spec-workbench.mjs` was held by a sibling
+  // branch, so the non-overlapping file lanes rule kept that task out of it.
+  // They are now emitted from `collectionFindings` in `spec-workbench.mjs`,
+  // next to the managed-runtime check, whose scope is the room's installed
+  // state. The checks themselves still live in `workbench-layout.mjs`, which
+  // owns seeding and provenance. One consequence of the move, deliberate:
+  // running here meant running only when a room had a wiki lane, and running
+  // there means running for every schema 2 room. Both codes are registered
+  // `none`, so nothing new blocks - but a wiki-less room now sees two findings
+  // it did not see before, which is the correct scope rather than a regression.
   for (const name of REQUIRED_COLLECTIONS) {
     const relative = collectionRelative(root, name);
     const entry = fs.existsSync(path.join(root, relative)) ? fs.lstatSync(path.join(root, relative)) : null;
@@ -105,11 +124,13 @@ export function validateWiki(root) {
   }
   if (!fs.existsSync(wikiRoot)) return findings;
   const designConcepts = path.join(root, collectionRelative(root, 'design-concepts'));
+  const featuresRelative = collectionRelative(root, 'features');
+  const features = path.join(root, featuresRelative);
   const archive = path.join(root, collectionRelative(root, 'archive'));
   const basenames = new Map();
   for (const file of walkMarkdown(wikiRoot)) {
     const relative = path.relative(root, file).split(path.sep).join('/');
-    const content = fs.readFileSync(file, 'utf8');
+    const content = options.contentOverrides?.get(file) ?? fs.readFileSync(file, 'utf8');
     const inArchive = file.startsWith(archive + path.sep);
     const basename = path.basename(file, '.md');
     basenames.set(basename, [...(basenames.get(basename) ?? []), relative]);
@@ -134,6 +155,20 @@ export function validateWiki(root) {
         findings.push(finding('invalid-note', `${relative} source path ${source} must be repository-relative`, { note: relative }));
       }
     }
+    // S-00V TK-00J: a live record is working context even when committed, so
+    // neither a source path nor a body link may name one as provenance.
+    const liveTargets = new Set();
+    for (const source of sources) {
+      const live = typeof source === 'string' ? liveRecordPath(root, source) : null;
+      if (live) liveTargets.add(live);
+    }
+    for (const link of markdownLinkTargets(content)) {
+      const live = liveRecordPath(root, path.resolve(path.dirname(file), link));
+      if (live) liveTargets.add(live);
+    }
+    for (const target of liveTargets) {
+      findings.push(finding('untracked-provenance', `${relative} cites live record ${target}; a notepad or handoff is working context even when committed, so cite the durable owner it was promoted into`, { note: relative, target }));
+    }
     if (LIVE_STATE_MARKERS.some((marker) => marker.test(content))) {
       findings.push(finding('copied-task-state', `${relative} copies live task state; link to the owner instead`, { note: relative }));
     }
@@ -149,6 +184,15 @@ export function validateWiki(root) {
       for (const section of ['Evidence and Sources', 'History']) {
         if (!new RegExp(`^## ${section}$`, 'm').test(content)) findings.push(finding('invalid-note', `${relative} must end with a ${section} section`, { note: relative }));
       }
+    }
+    const inFeatures = file.startsWith(features + path.sep);
+    if (inFeatures && basename !== 'README') {
+      if (data.type !== 'feature') findings.push(finding('invalid-note', `${relative} must declare type feature; it lives in the features collection ${featuresRelative}`, { note: relative }));
+      for (const section of FEATURE_SECTIONS) {
+        if (!new RegExp(`^## ${section}$`, 'm').test(content)) findings.push(finding('invalid-note', `${relative} must carry a ${section} section`, { note: relative }));
+      }
+    } else if (!inFeatures && data.type === 'feature') {
+      findings.push(finding('invalid-note', `${relative} type feature belongs in ${featuresRelative}; move the article into the features collection`, { note: relative }));
     }
   }
   for (const [basename, paths] of basenames) {
@@ -199,7 +243,7 @@ function noteFields(root, file, relative, date) {
 
 function inferredType(root, file) {
   if (path.basename(file) === 'MEMORY.md') return 'memory';
-  for (const [collection, type] of [['guidebooks', 'guidebook'], ['design-concepts', 'design-concept']]) {
+  for (const [collection, type] of [['guidebooks', 'guidebook'], ['design-concepts', 'design-concept'], ['features', 'feature']]) {
     if (file.startsWith(path.join(root, collectionRelative(root, collection)) + path.sep)) return type;
   }
   return 'meta';
@@ -212,7 +256,7 @@ if (isMainModule(import.meta.url)) {
     const pathIndex = rest.indexOf('--path');
     const root = findRoot(pathIndex >= 0 ? rest[pathIndex + 1] : process.cwd());
     const dateIndex = rest.indexOf('--date');
-    if (!['validate', 'normalize'].includes(command)) throw new Error('Usage: wiki.mjs validate [--path PROJECT] [--json] | normalize [--path PROJECT] [--date YYYY-MM-DD] [--json] (validate also reports the installed-state findings stale-seed and unverified-provenance, which workbench-layout.mjs repairs; see RUNBOOK.md)');
+    if (!['validate', 'normalize'].includes(command)) throw new Error('Usage: wiki.mjs validate [--path PROJECT] [--json] | normalize [--path PROJECT] [--date YYYY-MM-DD] [--json] (validate reports wiki facts only; the installed-state findings stale-seed and unverified-provenance come from doctor and are repaired with workbench-layout.mjs; see RUNBOOK.md)');
     if (command === 'normalize') {
       const result = normalizeWiki(root, { date: dateIndex >= 0 ? rest[dateIndex + 1] : undefined });
       console.log(json ? JSON.stringify(result, null, 2) : (result.changed.length ? result.changed.map((entry) => `${entry.note}: inserted ${entry.inserted.join(', ')}`).join('\n') : 'ok - every note already carries its required properties'));

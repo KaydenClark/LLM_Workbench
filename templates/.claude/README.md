@@ -14,7 +14,7 @@ idea:
 | **writable roots** (`[PRIMARY_SOURCE_DIR]`, `[TEST_DIR]`, docs to keep current) | `allow` (`Edit`) | edits and new files inside these paths run without a prompt |
 | **forbidden paths** (secrets, credentials, build output) | `deny` | hard-blocked - takes precedence over everything |
 | **requires review** (schema/migrations, `git push`, destructive commands, `workbench/tools/`) | `ask` | pauses for owner confirmation before running |
-| **Workbench authorship lanes** (`workbench/specs/`, `workbench/docs/`, `workbench/wiki/`, `workbench/feedback/`, `workbench/sessions/`) | `allow` (`Edit`) | agents can create and revise specs, ADRs, wiki pages, feedback rows, and checkpoints without a prompt |
+| **Workbench authorship lanes** (`workbench/specs/`, `workbench/docs/`, `workbench/wiki/`, `workbench/feedback/`, `workbench/sessions/`) | `allow` (`Edit`) | agents can create and revise specs, ADRs, wiki pages, feedback rows, and authorized local working records without a prompt |
 
 Claude Code Edit rules apply to all built-in tools that edit files, including
 creating a new file. Path-scoped `Write(...)` rules are not a second creation

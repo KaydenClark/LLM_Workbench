@@ -1,0 +1,548 @@
+#!/usr/bin/env node
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import test from 'node:test';
+import * as workbench from '../workbench/tools/spec-workbench.mjs';
+import { newAdr, listAdrs, validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
+import { allocateArtifactId, isWorkbenchId } from '../workbench/tools/visible-ids.mjs';
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const version = JSON.parse(fs.readFileSync(path.join(root, 'workbench/manifest.json'))).workbenchVersion;
+function room() {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'visible-consumers-'));
+  const init = spawnSync(process.execPath, [path.join(root, 'workbench/tools/workbench-layout.mjs'), 'init', '--project', dir, '--provenance', 'genesis', '--version', version], { encoding: 'utf8' });
+  assert.equal(init.status, 0, init.stdout);
+  fs.writeFileSync(path.join(dir, 'AGENTS.md'), '# Rules\n');
+  fs.writeFileSync(path.join(dir, 'BLUEPRINT.md'), '# Blueprint\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n');
+  fs.writeFileSync(path.join(dir, 'TASKBOARD.md'), '# Taskboard\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n');
+  return dir;
+}
+function spec(dir, id, tasks = [['TK-001', 'ready', 'none']], status = 'active', slug = 'fixture') {
+  const destination = path.join(dir, 'workbench/specs', `${id}-${slug}`, 'SPEC.md');
+  fs.mkdirSync(path.dirname(destination), { recursive: true });
+  fs.writeFileSync(destination, `# ${id} - Identity fixture\n\n**Spec ID:** ${id}\n**Status:** ${status}\n**Priority:** 1\n**Owner:** test\n**Updated:** 2026-09-08\n**Catalog description:** Verify identity consumers.\n**Blockers:** none\n**Latest event:** Fixture created.\n**Next gate:** Verify the slice.\n\n## Vertical Implementation Slices\n\n| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n${tasks.map(([task, state, blocker]) => `| ${task} | Verify ${task} | ${state} | ${blocker} | ${state === 'done' ? 'verified fixture' : 'pending'} |`).join('\n')}\n\n## Acceptance Criteria\n\n- [x] Fixture verified.\n\n## Append-Only Evidence And Execution Log\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n\n## Completion Result\n\nVerified fixture.\n`);
+  return destination;
+}
+function cli(dir, args) {
+  const result = spawnSync(process.execPath, [path.join(root, 'workbench/tools/spec-workbench.mjs'), ...args, '--path', dir, '--json'], { encoding: 'utf8' });
+  return { ...result, json: result.stdout.trim() ? JSON.parse(result.stdout) : null };
+}
+
+test('mixed visible spec/task IDs select, claim, close and render without moving legacy paths', () => {
+  const dir = room();
+  try {
+    const legacy = spec(dir, 'S-010', [['TK-001', 'done', 'none']], 'complete');
+    spec(dir, 'S-011', [['TK-001', 'done', 'none']], 'complete');
+    const before = fs.readFileSync(legacy);
+    const candidate = spec(dir, 'S-00A', [['TK-00A', 'ready', 'none'], ['TK-00B', 'ready', 'TK-00A']]);
+    workbench.render(dir);
+    assert.equal(workbench.nextWork(dir).specId, 'S-00A');
+    assert.equal(workbench.nextWork(dir).taskId, 'TK-00A');
+    workbench.claimWork(dir, 'S-00A', { agent: 'test' });
+    workbench.closeTask(dir, 'S-00A', { proof: 'Verified public seam', docs: 'Docs checked', remainingGap: 'Second slice' });
+    assert.equal(workbench.nextWork(dir).taskId, 'TK-00B');
+    assert.equal(workbench.showSpec(dir, 'S-00A').path, path.relative(dir, candidate).split(path.sep).join('/'));
+    assert.deepEqual(fs.readFileSync(legacy), before);
+    assert.ok(!workbench.doctor(dir).some(issue => ['duplicate-id', 'malformed-spec', 'unstable-path'].includes(issue.code)));
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('new task allocation reserves repeated legacy labels across the whole Workbench', () => {
+  const dir = room();
+  try {
+    spec(dir, 'S-001'); spec(dir, 'S-002');
+    const before = fs.readFileSync(path.join(dir, 'workbench/specs/S-001-fixture/SPEC.md'));
+    const result = cli(dir, ['next-id', 'S-001', '--prefix', 'TK']);
+    assert.equal(result.status, 0, result.stdout || result.stderr);
+    assert.equal(result.json.id, 'TK-000A');
+    assert.equal(result.json.reserved, false, 'read-only proposal does not reserve or create a task');
+    assert.deepEqual(fs.readFileSync(path.join(dir, 'workbench/specs/S-001-fixture/SPEC.md')), before);
+    assert.equal(cli(dir, ['next-id', '--prefix', 'S']).json.id, 'S-000A');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+for (const collision of ['spec', 'task']) {
+  test(`${collision} identity aliases refuse selection without rewriting history`, () => {
+    const dir = room();
+    try {
+      spec(dir, 'S-00A', [['TK-00A', 'ready', 'none']], 'active', 'first');
+      spec(dir, collision === 'spec' ? 'S-00a' : 'S-00B', [[collision === 'task' ? 'TK-00a' : 'TK-00B', 'ready', 'none']], 'active', 'second');
+      assert.throws(() => workbench.nextWork(dir), /duplicate.*ID|identity collision/i);
+      assert.ok(workbench.doctor(dir).some(issue => issue.code === 'duplicate-id'));
+    } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+  });
+}
+
+test('ADR allocation, register and duplicate checks consume mixed labels without renaming old files', () => {
+  const dir = room();
+  const content = '---\nstatus: proposed\ndate: 2026-09-08\ncanonicalized_in:\n  - AGENTS.md\n---\n\n# A decision\n\nProvenance: fixture.\n';
+  try {
+    const folder = path.join(dir, 'workbench/docs/adr');
+    for (let i = 1; i <= 10; i++) fs.writeFileSync(path.join(folder, `${String(i).padStart(4, '0')}-legacy.md`), content);
+    const old = fs.readFileSync(path.join(folder, '0010-legacy.md'));
+    const created = newAdr(dir, { title: 'Mixed visible identity', date: '2026-09-08' });
+    assert.equal(created.number, '000A');
+    writeRegister(dir);
+    assert.ok(listAdrs(dir).some(adr => adr.number === '000A'));
+    assert.match(fs.readFileSync(path.join(folder, 'HISTORY.md'), 'utf8'), /000A-mixed-visible-identity/);
+    assert.deepEqual(fs.readFileSync(path.join(folder, '0010-legacy.md')), old);
+    fs.writeFileSync(path.join(folder, '000a-collision.md'), content);
+    assert.ok(validateAdrs(dir).some(issue => issue.code === 'invalid-adr' && /used by|collision/.test(issue.message)));
+    assert.throws(() => newAdr(dir, { title: 'Refuse collision' }), /collision/i);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('numeric task aliases in different legacy specs reserve one label without blocking a new proposal', () => {
+  const dir = room();
+  try {
+    spec(dir, 'S-001', [['TK-001', 'ready', 'none']]);
+    const second = spec(dir, 'S-002', [['TK-0001', 'ready', 'none']]);
+    const original = fs.readFileSync(second);
+    assert.ok(!workbench.doctor(dir).some(issue => issue.code === 'duplicate-id'));
+    const result = cli(dir, ['next-id', 'S-001', '--prefix', 'TK']);
+    assert.equal(result.status, 0, result.stdout || result.stderr);
+    assert.equal(result.json.id, 'TK-000A');
+    assert.deepEqual(fs.readFileSync(second), original);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+for (const kind of ['symlink', 'dangling-symlink', 'directory', 'hardlink']) {
+  test(`nonordinary ADR name (${kind}) is diagnosed and blocks allocation without following it`, () => {
+    const dir = room();
+    try {
+      const folder = path.join(dir, 'workbench/docs/adr');
+      const target = path.join(dir, 'target.md');
+      fs.writeFileSync(target, 'Original bytes');
+      const occupied = path.join(folder, '000A-existing.md');
+      if (kind === 'directory') fs.mkdirSync(occupied);
+      else if (kind === 'hardlink') fs.linkSync(target, occupied);
+      else fs.symlinkSync(kind === 'symlink' ? target : path.join(dir, 'absent.md'), occupied);
+      const before = fs.readdirSync(folder);
+      assert.ok(validateAdrs(dir).some(issue => issue.code === 'invalid-adr' && /ordinary|unsafe|link/i.test(issue.message)), 'unsafe identity inventory is visible');
+      assert.throws(() => newAdr(dir, { title: 'Must refuse' }), /ordinary|unsafe|link/i);
+      assert.deepEqual(fs.readdirSync(folder), before);
+      assert.equal(fs.readFileSync(target, 'utf8'), 'Original bytes');
+    } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+  });
+}
+test('next and claim agree for out-of-order mixed ready task labels', () => {
+ const dir=room();
+ try {
+  spec(dir, 'S-00A', [['TK-010','ready','none'],['TK-00A','ready','none']]);
+  const selected=workbench.nextWork(dir);
+  const claimed=workbench.claimWork(dir, selected.specId, {agent:'test'});
+  assert.equal(claimed.tasks.find(task=>task.status==='in-progress').id, selected.taskId);
+ } finally {fs.rmSync(dir,{recursive:true,force:true});}
+});
+
+// S-01W TK-02B: the public `next-id` routes propose uppercase width-four
+// labels under one shared artifact policy, reserve every existing spelling,
+// and leave legacy records exactly where and as they were.
+function snapshot(dir) {
+  const specsDir = path.join(dir, 'workbench/specs');
+  const files = new Map();
+  const walk = (folder) => {
+    for (const entry of fs.readdirSync(folder, { withFileTypes: true })) {
+      const full = path.join(folder, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else files.set(path.relative(dir, full), fs.readFileSync(full));
+    }
+  };
+  walk(specsDir);
+  return files;
+}
+const EARLY_LETTERS = [...'ABCDEFGHIJKLMNOP'];
+
+test('next-id proposes uppercase width-four Spec and Task labels in a numeric legacy room', () => {
+  const dir = room();
+  try {
+    spec(dir, 'S-001', [['TK-001', 'done', 'none']], 'complete');
+    spec(dir, 'S-002', [['TK-001', 'ready', 'none'], ['TK-002', 'ready', 'none']]);
+    const before = snapshot(dir);
+    const specId = cli(dir, ['next-id', '--prefix', 'S']);
+    assert.equal(specId.status, 0, specId.stdout || specId.stderr);
+    assert.deepEqual(specId.json, { status: 'proposed', id: 'S-000A', reserved: false });
+    const taskId = cli(dir, ['next-id', 'S-002', '--prefix', 'TK']);
+    assert.equal(taskId.status, 0, taskId.stdout || taskId.stderr);
+    assert.deepEqual(taskId.json, { status: 'proposed', id: 'TK-000A', reserved: false, specId: 'S-002' });
+    assert.deepEqual(snapshot(dir), before, 'a proposal leaves every legacy path and byte unchanged');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+// S-01W TK-002Q: every artifact consumer that allocates visible labels -
+// Specs, Tasks, ADRs and notepads - proposes the one artifact policy's label
+// for its own inventory, and the room's Workbench connection identity keeps
+// its base62 form.
+test('ADR and notepad public allocation follow the artifact policy beside next-id, keeping legacy records and the connection identity', () => {
+  const dir = room();
+  try {
+    spec(dir, 'S-001', [['TK-001', 'done', 'none']], 'complete');
+    const adrFolder = path.join(dir, 'workbench/docs/adr');
+    const adrBody = '---\ndate: 2026-09-26\ncanonicalized_in:\n  - AGENTS.md\n---\n\n# A decision\n\nProvenance: fixture.\n';
+    for (const label of ['0001', '00A', '000b']) fs.writeFileSync(path.join(adrFolder, `${label}-legacy.md`), adrBody);
+    const notes = path.join(dir, 'workbench/sessions/notepads/work');
+    const notepads = path.join(root, 'workbench/tools/notepads.mjs');
+    const note = (args) => {
+      const result = spawnSync(process.execPath, [notepads, ...args, '--path', dir], { encoding: 'utf8' });
+      return { ...result, json: JSON.parse(result.stdout) };
+    };
+    assert.equal(note(['create', '--note', 'legacy-short', '--id', 'N-001', '--objective', 'identity', '--title', 'Legacy numeric']).json.status, 'created');
+    assert.equal(note(['create', '--note', 'legacy-letter', '--id', 'N-00A', '--objective', 'identity', '--title', 'Legacy letter']).json.status, 'created');
+    const manifestPath = path.join(dir, 'workbench/manifest.json');
+    const workbenchId = JSON.parse(fs.readFileSync(manifestPath, 'utf8')).workbenchId;
+    const records = () => {
+      const files = new Map();
+      for (const folder of [adrFolder, notes, path.join(dir, 'workbench/specs')]) {
+        for (const name of fs.readdirSync(folder, { recursive: true })) {
+          const full = path.join(folder, name);
+          if (fs.statSync(full).isFile()) files.set(path.relative(dir, full), fs.readFileSync(full));
+        }
+      }
+      return files;
+    };
+    const before = records();
+
+    assert.equal(cli(dir, ['next-id', '--prefix', 'S']).json.id, allocateArtifactId('S', ['S-001']));
+    const adr = spawnSync(process.execPath, [path.join(root, 'workbench/tools/adr.mjs'), 'new', '--path', dir, '--title', 'Policy consumer'], { encoding: 'utf8' });
+    assert.equal(adr.status, 0, adr.stderr);
+    const adrLabel = `ADR-${JSON.parse(adr.stdout).number}`;
+    assert.equal(adrLabel, allocateArtifactId('ADR', ['ADR-0001', 'ADR-00A', 'ADR-000b']));
+    assert.equal(adrLabel, 'ADR-000C');
+    const allocated = note(['allocate', '--prefix', 'N', '--objective', 'identity', '--title', 'Policy consumer']);
+    assert.equal(allocated.status, 0, allocated.stdout);
+    assert.equal(allocated.json.id, allocateArtifactId('N', ['N-001', 'N-00A']));
+    assert.equal(allocated.json.id, 'N-000B');
+    for (const label of [adrLabel, allocated.json.id]) assert.match(label, /^[A-Z]+-[0-9A-Z]{4,}$/, `${label} is uppercase and width four`);
+
+    const after = records();
+    assert.ok(before.has('workbench/docs/adr/00A-legacy.md') && before.has('workbench/sessions/notepads/work/legacy-short.json'));
+    for (const [file, bytes] of before) assert.deepEqual(after.get(file), bytes, `${file} keeps its name and bytes`);
+    assert.ok(listAdrs(dir).some(item => item.number === '00A'), 'the short legacy ADR still lists under its written label');
+    assert.equal(fs.existsSync(path.join(notes, 'legacy-letter.json')), true);
+    assert.equal(JSON.parse(fs.readFileSync(manifestPath, 'utf8')).workbenchId, workbenchId, 'allocation leaves the connection identity untouched');
+    assert.ok(isWorkbenchId(workbenchId), 'the connection identity keeps its base62 WB form');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+for (const [occupiedSpelling, label] of [['00Q', 'short'], ['000Q', 'widened']]) {
+  test(`next-id treats a ${label} legacy label as occupying every spelling of that identity`, () => {
+    const dir = room();
+    try {
+      spec(dir, 'S-001', [...EARLY_LETTERS.map(letter => [`TK-00${letter}`, 'done', 'none']), [`TK-${occupiedSpelling}`, 'done', 'none']], 'complete');
+      for (const letter of EARLY_LETTERS) spec(dir, `S-00${letter}`, [['TK-001', 'done', 'none']], 'complete', `legacy-${letter.toLowerCase()}`);
+      spec(dir, `S-${occupiedSpelling}`, [['TK-001', 'ready', 'none']], 'active', 'occupied');
+      const before = snapshot(dir);
+      const specId = cli(dir, ['next-id', '--prefix', 'S']);
+      assert.equal(specId.status, 0, specId.stdout || specId.stderr);
+      assert.equal(specId.json.id, 'S-000R');
+      const taskId = cli(dir, ['next-id', `S-${occupiedSpelling}`, '--prefix', 'TK']);
+      assert.equal(taskId.status, 0, taskId.stdout || taskId.stderr);
+      assert.equal(taskId.json.id, 'TK-000R');
+      assert.equal(taskId.json.reserved, false);
+      assert.deepEqual(snapshot(dir), before);
+    } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+  });
+}
+
+test('next-id treats a lowercase legacy label as occupying its uppercase identity', () => {
+  const dir = room();
+  try {
+    spec(dir, 'S-00a', [['TK-00a', 'ready', 'none']]);
+    assert.equal(cli(dir, ['next-id', '--prefix', 'S']).json.id, 'S-000B');
+    assert.equal(cli(dir, ['next-id', 'S-00a', '--prefix', 'TK']).json.id, 'TK-000B');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+for (const collision of ['spec', 'task']) {
+  test(`next-id refuses duplicate ${collision} records that alias one identity instead of choosing a winner`, () => {
+    const dir = room();
+    try {
+      spec(dir, 'S-00Q', [[collision === 'task' ? 'TK-00Q' : 'TK-001', 'ready', 'none']], 'active', 'short');
+      spec(dir, collision === 'spec' ? 'S-000Q' : 'S-00R', [[collision === 'task' ? 'TK-000Q' : 'TK-001', 'ready', 'none']], 'active', 'widened');
+      const before = snapshot(dir);
+      const specId = cli(dir, ['next-id', '--prefix', 'S']);
+      assert.notEqual(specId.status, 0);
+      assert.match(specId.stderr + specId.stdout, /duplicate/i);
+      const taskId = cli(dir, ['next-id', 'S-00Q', '--prefix', 'TK']);
+      assert.notEqual(taskId.status, 0);
+      assert.match(taskId.stderr + taskId.stdout, /duplicate/i);
+      assert.deepEqual(snapshot(dir), before);
+    } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+  });
+}
+
+// S-01W TK-002K: every supported spelling of one identity - short `S-00Q`,
+// widened `S-000Q` and a case variant sharing the collision key - reaches the
+// one stored record through the public Spec and Task selectors. Output names
+// the stored ID and path, nothing is renamed, and a key that two stored
+// records share refuses by name instead of choosing a winner.
+function relative(dir, file) { return path.relative(dir, file).split(path.sep).join('/'); }
+function retiredSpec(dir, id, slug = 'retired') {
+  const active = spec(dir, id, [['TK-001', 'done', 'none']], 'complete', slug);
+  const destination = path.join(dir, 'workbench/specs/retired', path.basename(path.dirname(active)), 'SPEC.md');
+  fs.mkdirSync(path.dirname(destination), { recursive: true });
+  fs.renameSync(active, destination);
+  fs.rmdirSync(path.dirname(active));
+  return destination;
+}
+
+test('widened, short and case-variant Spec selectors show, claim and close the one stored record', () => {
+  const dir = room();
+  try {
+    const stored = spec(dir, 'S-00Q', [['TK-00A', 'ready', 'none'], ['TK-00B', 'ready', 'TK-000A']]);
+    workbench.render(dir);
+    const names = () => [...snapshot(dir).keys()].sort();
+    const paths = names();
+    const before = snapshot(dir);
+    for (const selector of ['S-00Q', 'S-000Q', 'S-00q', 'S-0000q']) {
+      const shown = cli(dir, ['show', selector]);
+      assert.equal(shown.status, 0, `show ${selector}: ${shown.stderr}`);
+      assert.equal(shown.json.id, 'S-00Q', `show ${selector} reports the stored ID`);
+      assert.equal(shown.json.path, relative(dir, stored), `show ${selector} reports the stored path`);
+    }
+    assert.deepEqual(snapshot(dir), before, 'show changes no record bytes or paths');
+    const proposed = cli(dir, ['next-id', 'S-000Q', '--prefix', 'TK']);
+    assert.equal(proposed.status, 0, proposed.stderr);
+    assert.equal(proposed.json.specId, 'S-00Q', 'a widened parent selector proposes under the stored Spec ID');
+    const claimed = cli(dir, ['claim', 'S-000Q', '--agent', 'test']);
+    assert.equal(claimed.status, 0, claimed.stderr);
+    assert.equal(claimed.json.id, 'S-00Q');
+    assert.equal(claimed.json.path, relative(dir, stored));
+    assert.equal(claimed.json.tasks.find(task => task.status === 'in-progress').id, 'TK-00A');
+    const closed = cli(dir, ['close', 'S-00q', '--proof', 'Verified public seam', '--docs', 'Docs checked', '--remaining-gap', 'TK-00B']);
+    assert.equal(closed.status, 0, closed.stderr);
+    assert.equal(closed.json.id, 'S-00Q');
+    assert.equal(closed.json.path, relative(dir, stored));
+    assert.equal(closed.json.tasks.find(task => task.id === 'TK-00A').status, 'done');
+    const content = fs.readFileSync(stored, 'utf8');
+    assert.match(content, /\*\*Spec ID:\*\* S-00Q\n/, 'the stored identity is not rewritten to the selector spelling');
+    assert.match(content, /\| \d{4}-\d{2}-\d{2} \| TK-00A \| Task closed \|/, 'evidence names the stored Task ID');
+    const next = cli(dir, ['next']);
+    assert.equal(next.status, 0, next.stderr);
+    assert.equal(next.json?.taskId, 'TK-00B', 'a widened blocker spelling (TK-000A) is satisfied by the stored done Task TK-00A');
+    assert.deepEqual(names(), paths, 'no record path was renamed or added');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('a widened Spec blocker spelling is satisfied by the completed stored Spec', () => {
+  const dir = room();
+  try {
+    spec(dir, 'S-00P', [['TK-001', 'done', 'none']], 'complete', 'done');
+    spec(dir, 'S-00R', [['TK-00A', 'ready', 'S-000P']], 'active', 'waiting');
+    const next = cli(dir, ['next']);
+    assert.equal(next.status, 0, next.stderr);
+    assert.equal(next.json?.specId, 'S-00R');
+    assert.equal(next.json?.taskId, 'TK-00A');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('two active records sharing one collision key refuse show, claim and close by name', () => {
+  const dir = room();
+  try {
+    spec(dir, 'S-00Q', [['TK-001', 'ready', 'none']], 'active', 'short');
+    spec(dir, 'S-000Q', [['TK-001', 'ready', 'none']], 'active', 'widened');
+    const before = snapshot(dir);
+    for (const args of [['show', 'S-000Q'], ['claim', 'S-00Q', '--agent', 'test'], ['close', 'S-00q', '--proof', 'p', '--docs', 'd', '--remaining-gap', 'g']]) {
+      const result = cli(dir, args);
+      assert.notEqual(result.status, 0, `${args[0]} must refuse`);
+      assert.match(result.stderr, /duplicate spec ID/i);
+      assert.match(result.stderr, /S-00Q/);
+      assert.match(result.stderr, /S-000Q/);
+    }
+    assert.deepEqual(snapshot(dir), before);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('an active record and a retired record sharing one key refuse selection by name while allocation folds them as occupied', () => {
+  const dir = room();
+  try {
+    const active = spec(dir, 'S-00Q', [['TK-00A', 'ready', 'none']], 'active', 'short');
+    const retired = retiredSpec(dir, 'S-000Q', 'widened');
+    const before = snapshot(dir);
+    for (const args of [['show', 'S-00Q'], ['show', 'S-000Q'], ['claim', 'S-000Q', '--agent', 'test'], ['close', 'S-00Q', '--proof', 'p', '--docs', 'd', '--remaining-gap', 'g'], ['next-id', 'S-00Q', '--prefix', 'TK']]) {
+      const result = cli(dir, args);
+      assert.notEqual(result.status, 0, `${args.join(' ')} must refuse rather than choose the active or retired record`);
+      assert.match(result.stderr, /duplicate spec ID/i);
+      assert.ok(result.stderr.includes(relative(dir, active)) && result.stderr.includes(relative(dir, retired)), `${args[0]} names both stored records: ${result.stderr}`);
+    }
+    const proposal = cli(dir, ['next-id', '--prefix', 'S']);
+    assert.equal(proposal.status, 0, proposal.stderr);
+    assert.notEqual(proposal.json.id, 'S-000Q', 'allocation keeps treating the shared key as occupied');
+    assert.ok(workbench.doctor(dir).some(issue => issue.code === 'duplicate-id'), 'doctor still diagnoses the pair');
+    assert.deepEqual(snapshot(dir), before);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('numeric historical Task labels keep Spec-qualified scope under widened selectors and blockers', () => {
+  const dir = room();
+  try {
+    spec(dir, 'S-001', [['TK-001', 'done', 'none']], 'complete', 'first');
+    const second = spec(dir, 'S-002', [['TK-001', 'ready', 'none'], ['TK-002', 'ready', 'TK-0001']], 'active', 'second');
+    let next = cli(dir, ['next']);
+    assert.equal(next.json?.specId, 'S-002');
+    assert.equal(next.json?.taskId, 'TK-001', "S-001's done TK-001 does not satisfy S-002's TK-0001 blocker");
+    assert.equal(cli(dir, ['claim', 'S-0002', '--agent', 'test']).status, 0);
+    const closed = cli(dir, ['close', 'S-0002', '--proof', 'Verified', '--docs', 'Docs checked', '--remaining-gap', 'TK-002']);
+    assert.equal(closed.status, 0, closed.stderr);
+    assert.equal(closed.json.path, relative(dir, second));
+    next = cli(dir, ['next']);
+    assert.equal(next.json?.specId, 'S-002');
+    assert.equal(next.json?.taskId, 'TK-002', "S-002's own done TK-001 satisfies its TK-0001 blocker");
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('an orphan corrective Task claims by a widened spelling of its stored ID', () => {
+  const dir = room();
+  try {
+    const record = path.join(dir, 'workbench/specs/corrective/tasks/TK-00X/TASK.md');
+    fs.mkdirSync(path.dirname(record), { recursive: true });
+    fs.writeFileSync(record, '# TK-00X - Corrective fixture\n\n**Task ID:** TK-00X\n**Spec ID:** S-00D\n**Slice:** Corrective fixture\n**Status:** ready\n**Blockers:** none\n**Destination:** wiki-claim: workbench/wiki/fixture.md#Claim\n');
+    const claimed = cli(dir, ['claim', 'TK-000x', '--agent', 'test']);
+    assert.equal(claimed.status, 0, claimed.stderr);
+    assert.equal(claimed.json.taskId, 'TK-00X', 'the claim reports the stored Task ID');
+    assert.match(fs.readFileSync(record, 'utf8'), /\*\*Task ID:\*\* TK-00X\n[\s\S]*\*\*Status:\*\* in-progress/);
+    assert.ok(fs.existsSync(record), 'the record keeps its stored path');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+// S-01W TK-002O: `widen-id S-###|TK-###` is the explicit identity-only touch.
+// These fixtures pin its refusals - each leaves every byte and path as it was -
+// and its former-ID metadata. The full widen, link-rewrite, evidence, repeat,
+// recovery and cold-clone journey lives in tools/test-spec-workbench.mjs.
+function gitRoom() {
+  const dir = room();
+  const git = (...args) => spawnSync('git', ['-C', dir, ...args], { encoding: 'utf8' });
+  git('init', '--quiet');
+  git('config', 'user.email', 'fixture@example.com');
+  git('config', 'user.name', 'Fixture');
+  return { dir, git, commit: (message) => { git('add', '-A'); const result = git('commit', '--quiet', '-m', message); assert.equal(result.status, 0, result.stderr); } };
+}
+function recordSpec(dir, id, tasks, { status = 'active', slug = 'fixture', folder = null, extraHeader = '' } = {}) {
+  const specDir = path.join(dir, 'workbench/specs', ...(folder ? [folder] : []), `${id}-${slug}`);
+  fs.mkdirSync(specDir, { recursive: true });
+  fs.writeFileSync(path.join(specDir, 'SPEC.md'), `# ${id} - Widen fixture\n\n**Spec ID:** ${id}\n${extraHeader}**Status:** ${status}\n**Priority:** 1\n**Owner:** test\n**Updated:** 2026-09-26\n**Catalog description:** Verify widen-id.\n**Blockers:** none\n**Latest event:** Fixture created.\n**Next gate:** Verify the slice.\n\n## Vertical Implementation Slices\n\n| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n\n## Acceptance Criteria\n\n- [ ] Fixture verified.\n\n## Append-Only Evidence And Execution Log\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n\n## Completion Result\n\nPending.\n`);
+  for (const [task, state] of tasks) {
+    const record = path.join(specDir, 'tasks', task, 'TASK.md');
+    fs.mkdirSync(path.dirname(record), { recursive: true });
+    fs.writeFileSync(record, `# ${task} - Widen ${task}\n\n**Task ID:** ${task}\n**Spec ID:** ${id}\n**Slice:** Widen ${task}\n**Status:** ${state}\n**Blockers:** none\n**Destination:** spec-acceptance: ${id} Acceptance Criteria\n${state === 'done' ? '**Proof:** verified fixture\n' : ''}`);
+  }
+  return path.join(specDir, 'SPEC.md');
+}
+function refuses(dir, args, pattern) {
+  const before = snapshot(dir);
+  const result = cli(dir, args);
+  assert.notEqual(result.status, 0, `${args.join(' ')} must refuse`);
+  assert.match(result.stderr, pattern, `${args.join(' ')}: ${result.stderr}`);
+  assert.deepEqual(snapshot(dir), before, `${args.join(' ')} leaves every record byte and path unchanged`);
+  return result;
+}
+
+test('widen-id refuses a widened Spec alias already held by a retired record, naming both', () => {
+  const { dir, commit } = gitRoom();
+  try {
+    const active = recordSpec(dir, 'S-00Q', [['TK-00A', 'ready']], { slug: 'short' });
+    const retired = recordSpec(dir, 'S-000Q', [['TK-00B', 'done']], { status: 'complete', slug: 'widened', folder: 'retired' });
+    commit('alias corpus');
+    const result = refuses(dir, ['widen-id', 'S-00Q'], /duplicate spec ID/i);
+    assert.ok(result.stderr.includes(relative(dir, active)) && result.stderr.includes(relative(dir, retired)));
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('widen-id refuses a widened Task alias already held by a record in another Spec', () => {
+  const { dir, commit } = gitRoom();
+  try {
+    recordSpec(dir, 'S-00Q', [['TK-00A', 'ready']], { slug: 'short' });
+    recordSpec(dir, 'S-00N', [['TK-000A', 'done']], { status: 'complete', slug: 'retired', folder: 'retired' });
+    commit('task alias corpus');
+    const result = refuses(dir, ['widen-id', 'TK-00A'], /TK-000A/);
+    assert.match(result.stderr, /S-00N/);
+    refuses(dir, ['widen-id', 'TK-00A', '--spec', 'S-00Q'], /S-00N\/TK-000A/);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('widen-id refuses an occupied Spec or Task destination path', () => {
+  const { dir, commit } = gitRoom();
+  try {
+    recordSpec(dir, 'S-00Q', [['TK-00A', 'ready']]);
+    fs.writeFileSync(path.join(dir, 'workbench/specs/S-000Q-fixture'), 'not a record\n');
+    fs.writeFileSync(path.join(dir, 'workbench/specs/S-00Q-fixture/tasks/TK-000A'), 'not a record\n');
+    commit('occupied destinations');
+    refuses(dir, ['widen-id', 'S-00Q'], /destination already exists: workbench\/specs\/S-000Q-fixture/);
+    refuses(dir, ['widen-id', 'TK-00A'], /destination already exists: workbench\/specs\/S-00Q-fixture\/tasks\/TK-000A/);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('widen-id refuses a symlinked Spec or Task record as an unsafe path', () => {
+  const { dir, commit } = gitRoom();
+  try {
+    const specFile = recordSpec(dir, 'S-00Q', [['TK-00A', 'ready']]);
+    const taskFile = path.join(path.dirname(specFile), 'tasks/TK-00A/TASK.md');
+    for (const [file, target] of [[specFile, 'linked-spec.md'], [taskFile, 'linked-task.md']]) {
+      fs.renameSync(file, path.join(dir, target));
+      fs.symlinkSync(path.relative(path.dirname(file), path.join(dir, target)), file);
+    }
+    commit('symlinked records');
+    refuses(dir, ['widen-id', 'S-00Q'], /unsafe/i);
+    refuses(dir, ['widen-id', 'TK-00A'], /unsafe/i);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('widen-id refuses a slice-table row and asks for --spec when a numeric Task label recurs', () => {
+  const { dir, commit } = gitRoom();
+  try {
+    spec(dir, 'S-00T', [['TK-00C', 'ready', 'none']], 'active', 'table');
+    const first = recordSpec(dir, 'S-001', [['TK-001', 'ready']], { slug: 'first' });
+    recordSpec(dir, 'S-002', [['TK-001', 'ready']], { slug: 'second' });
+    commit('numeric corpus');
+    refuses(dir, ['widen-id', 'TK-00C'], /slice-table row/);
+    refuses(dir, ['widen-id', 'TK-001'], /--spec/);
+    const firstTask = fs.readFileSync(path.join(path.dirname(first), 'tasks/TK-001/TASK.md'));
+    const widened = cli(dir, ['widen-id', 'TK-001', '--spec', 'S-0002']);
+    assert.equal(widened.status, 0, widened.stderr);
+    assert.equal(widened.json.id, 'TK-0001');
+    assert.equal(widened.json.specId, 'S-002');
+    assert.equal(widened.json.formerId, 'TK-001');
+    assert.ok(fs.existsSync(path.join(dir, 'workbench/specs/S-002-second/tasks/TK-0001/TASK.md')));
+    assert.deepEqual(fs.readFileSync(path.join(path.dirname(first), 'tasks/TK-001/TASK.md')), firstTask, "S-001's own numeric TK-001 keeps its Spec-scoped identity");
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('widen-id normalizes a width-four lowercase identity through a case-only rename', () => {
+  const { dir, commit } = gitRoom();
+  try {
+    recordSpec(dir, 'S-000q', [['TK-00A', 'ready']], { slug: 'lower' });
+    commit('lowercase corpus');
+    const widened = cli(dir, ['widen-id', 'S-000q']);
+    assert.equal(widened.status, 0, widened.stderr);
+    assert.equal(widened.json.id, 'S-000Q');
+    assert.equal(widened.json.formerId, 'S-000q');
+    assert.deepEqual(fs.readdirSync(path.join(dir, 'workbench/specs')).filter(name => name.startsWith('S-')), ['S-000Q-lower']);
+    const shown = cli(dir, ['show', 'S-000q']);
+    assert.equal(shown.json.id, 'S-000Q');
+    assert.equal(shown.json.path, 'workbench/specs/S-000Q-lower/SPEC.md');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('the Former ID field parses, formats and round-trips, and refuses a spelling of another identity', async () => {
+  const { formatTaskRecord, parseTaskRecord } = await import('../workbench/tools/task-record.mjs');
+  const fields = { id: 'TK-000A', formerId: 'TK-00A', specId: 'S-000Q', slice: 'Widened', status: 'ready', blockers: 'none', destination: 'spec-acceptance: S-000Q Acceptance Criteria' };
+  const content = formatTaskRecord(fields);
+  assert.match(content, /^\*\*Task ID:\*\* TK-000A\n\*\*Former ID:\*\* TK-00A\n/m, 'the Former ID sits directly under the record ID it describes');
+  const parsed = parseTaskRecord(content);
+  assert.equal(parsed.formerId, 'TK-00A');
+  assert.equal(formatTaskRecord({ ...fields, formerId: parsed.formerId }), content, 'format(parse(record)) reproduces the bytes');
+  assert.equal(parseTaskRecord(formatTaskRecord({ ...fields, formerId: undefined })).formerId, null, 'a record that never widened carries no Former ID');
+  assert.throws(() => parseTaskRecord(formatTaskRecord({ ...fields, formerId: 'TK-00B' })), /Former ID/);
+  assert.throws(() => parseTaskRecord(formatTaskRecord({ ...fields, formerId: 'TK-000A' })), /Former ID/);
+  const { dir } = gitRoom();
+  try {
+    recordSpec(dir, 'S-000Q', [['TK-00A', 'ready']], { extraHeader: '**Former ID:** S-00Z\n' });
+    const shown = cli(dir, ['show', 'S-000Q']);
+    assert.notEqual(shown.status, 0);
+    assert.match(shown.stderr, /Former ID/);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});

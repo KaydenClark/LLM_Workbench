@@ -1,0 +1,383 @@
+# S-00V - Portable Workbench
+
+> Captured from the owner-approved 2026-09-22 grilling session
+> (portable-workbench-cloud-deployable). This spec lives at its stable
+> manifest-declared path.
+
+**Spec ID:** S-00V
+**Status:** active
+**Priority:** 1
+**Owner:** claude-lane-F
+**Stance:** Builder
+**Updated:** 2026-09-30
+**Catalog description:** Make every Workbench room a fully packaged, deployable agent harness: a fresh agent, or ten at once in the cloud, clones the Git remote alone, finds its skills there, claims work visibly, does it, pushes it, and cleans up after itself.
+**Blockers:** none
+**Latest event:** TK-003J closed with proof.
+**Next gate:** Complete TK-01K.
+
+> **Citation anchors.** pre=`8dbd619da7e920edb5e819802aff9119f8cb1662` post=`39eaa4881b88a2fe7a4a4fe63c111dd6c34966f7`.
+
+## Outcome
+
+A **Portable Workbench** as the Lexicon now defines it: a fully packaged,
+deployable agent harness. Everything an agent needs is in the project's Git
+repository, so any agent on any machine, or several at once in the cloud, can
+clone it, do the authorized work, push it, and clean up after itself. The
+owner is no longer tied to the machines that hold a personal skills catalog,
+local notes, or host memory; ten cloud instances can start from GitHub and
+work the same Taskboard without taking each other's Tasks.
+
+## Why It Matters
+
+Today the harness is portable in name only. A clone discovers no skills, a
+cloud instance's working notes die with it, two instances cannot see each
+other's claims, and part of the project's operating knowledge lives only in
+the owner's home directory. The owner's stated need is to spin up cloud
+sessions from the repository alone and have each one able to finish a Task.
+The success criterion, in the owner's words: a fresh agent finding the right
+answer, completing authorized work, maintaining its proper owners, cleaning
+up after itself, and continuing without the owner reconstructing the project.
+
+## Current Verified State
+
+Verified 2026-09-22 at the pre anchor.
+
+- **Skills.** No `.claude/` is tracked, `.agents/` does not exist, and `skills/` (21 core skills) is producer source rather than a
+  manifest discovery root; `workbench/manifest.json` declares discovery at
+  `.agents/skills` and `.claude/skills` and `normalSetup: presence-only`.
+  ADR-0046 keeps the installed core in the provider home as ignored managed
+  state, so a clone never carries it. The owner's working catalog is a
+  separate Git checkout (KaydenClark/skills) that the root controls do not
+  name except for `research`.
+- **Continuity.** `workbench/sessions/.gitignore` ignores `notepads/*`
+  and `handoffs/*`; AGENTS.md says live notes and handoffs stay untracked in
+  project Git; the Lexicon Packet row calls them local and untracked;
+  ADR-0051 makes private transport optional and rejects a required cloud
+  service.
+- **Coordination.** `claimWork` in `workbench/tools/spec-workbench.mjs`
+  rewrites the Spec header and Task record on the local branch and pushes
+  nothing; `next` reads only the local tree. `occupiedIdentities` in the
+  same file already scans every `refs/remotes` tip when allocating IDs,
+  which is the pattern a shared claim surface needs.
+- **Host floor.** RUNBOOK's Prerequisites names Node 18+, Python 3.9+, git,
+  `gh` and GitHub with nothing to install; no tool checks that floor. `doctor --home`
+  inspects only the global core skills.
+- **Owner-only truth.** The Claude auto-memory directory for this project
+  holds 17 files a cloud agent never sees.
+- **Already present.** `tools/test-workbench-round-trip.mjs` and
+  `tools/cross-provider-resume.mjs` resume from a fresh clone with a
+  scrubbed environment using only repository state, but the fixture installs
+  candidate skills into an isolated provider home outside the clone.
+- **Vocabulary.** LEXICON.md Core Terms carry Portable Workbench, Host
+  portability and Ownership origin model, with Portable layout and
+  Portability model retired, promoted from the grilling record at the pre
+  anchor. templates/LEXICON.md mirrors the generic rows.
+
+## Desired Behavior
+
+1. **Skills ship in the room.** Every room carries the core skills it needs
+   at `workbench/skills`, a seventh manifest lane owned and versioned by
+   LLM Workbench and replaced by the ordinary Workbench update. Tracked
+   adapters from the declared discovery roots (`.claude/skills`,
+   `.agents/skills`) point into the lane so Claude Code and Codex discover
+   them from a clone. This producer repository moves its source from root
+   `skills/` into the lane and `templates/` ships the lane so Genesis lays
+   it down and update-harness refreshes it. A root `skills/` becomes a
+   doctor finding.
+2. **Needed skills live in the lane; the personal catalog is backup and
+   publication target.** The Contract may name only skills that ship in the
+   lane. KaydenClark/skills stays as a backup of every skill and the place a
+   room may publish skills it creates, through a separately authorized
+   operation; it is never on a room's critical path.
+3. **Promote before end; notes may travel.** For almost every session the
+   goal is to promote settled claims into their durable owners, append the
+   Task receipt as the run proceeds, push the branch, and let the instance's
+   notepad die. A session that ends without promoting has not cleaned up.
+   Notepads and handoffs are structured records and may be committed
+   temporarily when continuation needs it, then promoted and removed;
+   committing one is transport, never promotion or evidence, and privacy
+   rules still apply. ADR-0051 private transport stays optional.
+4. **Claims are visible across instances.** `claim` creates the task branch
+   from the integration branch, commits the claim as that branch's first
+   commit, and pushes it. `next` and `claim` fetch every ref from origin,
+   read the integration branch as the base and overlay Task state from every
+   remote tip; a Task in-progress on any tip is taken. The PR into
+   integration carries the claim's closure with the work, so integration
+   stays review-only. A session with no remote falls back to today's local
+   behavior and says so. The Taskboard rendered from integration shows
+   in-flight remote claims.
+5. **The host floor is checked; missing capabilities block visibly.** A
+   tracked check reports the floor (Node 18+, Python 3.9+, git, `gh`
+   authenticated with push rights to the room's remote, network to GitHub)
+   at session start; a missing floor item is an `all` finding. Anything
+   beyond the floor is an optional capability a Task names in its Packet; a
+   session lacking it sets the Task to blocked, or needs-review when the
+   work is otherwise done, naming the missing capability so the owner's
+   sitrep surfaces it. Nothing is faked or skipped silently.
+6. **Owner-machine truth moves to the Wiki.** Project knowledge that lives
+   only in host memory or the personal catalog is promoted into the room's
+   Wiki; host memory stays a per-machine convenience the Workbench never
+   depends on.
+7. **Proof is a run that ends clean.** The round-trip test starts with
+   nothing outside the clone, claims by pushing, and ends with every settled
+   claim promoted, the receipt appended, the branch pushed and no needed
+   state left only on the instance. A real cloud session that lands a Task
+   from GitHub, and a two-instance run in which the second skips the first's
+   claim, are the milestone demos.
+
+## Decisions And Contracts
+
+All locked by the owner on 2026-09-22 in the grilling record and promoted or
+carried here; the record is working context, not evidence.
+
+- Definition and renames: LEXICON.md Core Terms (Portable Workbench, Host
+  portability, Ownership origin model; Portable layout and Portability model
+  retired).
+- FND-Q24B stays live under [S-00G](../S-00G-ownership-map-root-control/SPEC.md)
+  as an ownership-origin question, independent of this Spec.
+- `workbench/skills` is the seventh lane. This supersedes the six-lane
+  count in [ADR-0017](../../docs/adr/archive/0017-workbench-support-directory-has-six-lanes.md)
+  and turns the "per-room core copies" alternative that
+  [ADR-0046](../../docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md)
+  rejected into the decision, on the managed model of
+  [ADR-0031](../../docs/adr/0031-runtime-tools-are-workbench-managed-in-the-tools-lane.md):
+  tracked, marked with source release, commit and hash, replaced only by
+  update. TK-001 authors that ADR; the owner accepts it before TK-001 lands.
+- Notes and handoffs may be committed temporarily. This narrows
+  [ADR-0051](../../docs/adr/0051-optional-private-git-transport-for-session-continuity.md)'s
+  "live records stay ignored" and the local-only boundary it cites; the
+  Task that lifts the ignore rule records that narrowing in an ADR.
+- Claim-on-branch with fetch-all is hard to reverse and a real trade-off
+  against direct integration commits; the Task that builds it records the
+  decision in an ADR. TK-01L recorded it as
+  [ADR-000O](../../docs/adr/000O-claims-are-pushed-on-the-task-branch-and-read-from-every-remote-tip.md),
+  which restates the owner's PW-6 lock and separates the agent's
+  implementation choices from it.
+- The manifest `skillPolicy` shape (required list, discovery roots,
+  presence-only setup, explicit-only updates) is reshaped by TK-001; whether
+  the seventh lane needs manifest schema 3 with a migration is TK-001's
+  technical call, made under ADR-0032's migration rules.
+
+## Non-Goals
+
+- Answering FND-Q24B or building `OWNERSHIP.json`; that is S-00G.
+- Making ADR-0051 private session transport a cloud prerequisite.
+- Publishing room-local skills into KaydenClark/skills; that stays a separate
+  authorized operation.
+- Committing notes or handoffs as durable evidence, or relaxing privacy rules
+  on them.
+- Any host-specific setup beyond the floor: simulators, screen history, MCP
+  servers, Foundry, or access to the Workbench_Template repository become
+  optional capabilities, not session requirements. AGENTS.md's Template
+  Upgrade Release Gate is untouched.
+- Direct commits to the integration branch for any purpose.
+
+## Dependencies And Blockers
+
+- None block TK-001. Its ADR ([ADR-000M](../../docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md))
+  records the owner's locked PW-3, PW-3A and PW-4 decisions; the owner said on
+  2026-09-23 that ADRs written from his own decisions are accepted, so it
+  enters the active roster with the Task rather than waiting in `proposed/`.
+- The catalog review that decides which non-core skills join the lane starts
+  from a tentative list (lexicon, domain-modeling, land, preflight,
+  brainstorm, research, sitrep). Membership is derived from the owner's locked
+  PW-4 rule ("If we need it, it should be included in workbench/skills"): a
+  skill is needed when the Contract names it or a lane skill composes it as a
+  required step. TK-00G applies that rule and reports each disposition, which
+  the owner may correct; no owner confirmation gates it. `sitrep` returns
+  through the room-core sitrep planned with [S-01X](../S-01X-generated-json-taskboard/SPEC.md) (the generated JSON taskboard Spec from S-00O), not this Spec.
+- The reading of "proof is a run that ends clean" in Desired Behavior 7 is
+  the agent's interpretation of the owner's one-line answer; the owner
+  delegated the PW-7..PW-10 mechanics to the agent, so TK-01N proceeds on it
+  and stays open to his correction.
+
+## Vertical Implementation Slices
+
+Tasks are temporary tracer bullets within this stable capability record.
+TK-001 closed as a row in this table before the Spec became record-backed; the
+table is completed history only. The remaining slices are Task records under
+[`tasks/`](tasks/), cut on 2026-09-26 in dependency order:
+
+- [TK-00G](tasks/TK-00G/TASK.md) catalog review (derived lane membership) - box 7
+- [TK-00H](tasks/TK-00H/TASK.md) host floor check - box 5
+- [TK-00I](tasks/TK-00I/TASK.md) Wiki audit of host-memory knowledge - box 6
+- [TK-00J](tasks/TK-00J/TASK.md) committed notes stay privacy-checked non-evidence - box 3
+- [TK-00K](tasks/TK-00K/TASK.md) optional-capability routing, after TK-00H - box 5
+- [TK-01K](tasks/TK-01K/TASK.md) lift the notes ignore rule and add promote-before-end, after TK-00J and the S-00P hold - box 3
+- [TK-01L](tasks/TK-01L/TASK.md) push-on-claim and fetch-before-select with its ADR, after the S-00M hold - box 4
+- [TK-01M](tasks/TK-01M/TASK.md) Taskboard shows remote claims, after TK-01L and [S-01X](../S-01X-generated-json-taskboard/SPEC.md) (the generated JSON taskboard Spec from S-00O), held as S-01X - box 4
+- [TK-01N](tasks/TK-01N/TASK.md) ends-clean round-trip gate, after TK-00G, TK-01K and TK-01L - box 7
+- [TK-01O](tasks/TK-01O/TASK.md) real cloud session and two-instance demos, after TK-01N - box 8
+- [TK-01P](tasks/TK-01P/TASK.md) controls and templates sweep, after the S-00P hold and the behavior Tasks - Documentation Impact
+- [TK-003J](tasks/TK-003J/TASK.md) bounded local cloud-setup regression: distinguish empty Git sentinels while preserving real and malformed repository safety
+
+A cross-Spec Task cannot be named in `Blockers` (the vocabulary takes `S-`/`TK-`
+ids and satisfies a Spec id only on completion), so the S-00P and S-00M holds
+are written as Spec ids and each record states the narrower real condition
+(S-00P TK-002 contained; S-00M TK-001 contained). The dispatcher removes the
+Spec id in its own commit, with an evidence row, when that condition holds.
+
+| Task | Slice | Status | Blockers | Proof |
+|---|---|---|---|---|
+| TK-001 | A fresh clone discovers the core skills from `workbench/skills` | done | none | tools/test-skills-lane.mjs red on the pre-lane candidate, green after; full 47-command AGENTS suite green on the committed candidate; adr validate ok; render and doctor clean |
+
+### TK-001 - A fresh clone discovers the core skills from `workbench/skills`
+
+**Stance:** Builder
+
+Pierce every layer once. Red first: a test at the workbench-layout seam clones
+the committed candidate into a scrubbed directory and asserts that every
+`skillPolicy.required` skill resolves to a `SKILL.md` through both declared
+discovery roots without touching the provider home; confirm it fails. Then
+the smallest green: declare `lanes.skills` in the manifest, move root
+`skills/` to `workbench/skills` with history preserved, add tracked
+adapters under `.claude/skills` and `.agents/skills`, tracked rather than
+ignored as RUNBOOK's room-local extension procedure says today, ship the lane in `templates/`, teach Genesis and
+update-harness to lay it down and refresh it, add the doctor finding for a
+root `skills/` shadow and for a required skill missing from the lane, and
+retire the `--home` global-core inspection. The first commit proposes the
+ADR named in Decisions And Contracts; the Task cannot land until the owner
+accepts it (the owner's 2026-09-23 direction that owner-authored ADRs are
+accepted is that acceptance; see Dependencies And Blockers). Update RUNBOOK's skill procedures, the Lexicon rows Support lane,
+Core skill bundle, Normal setup and Explicit skill update, and the README
+install text in the same Task.
+
+## Acceptance Criteria
+
+- [x] A scrubbed clone of a room resolves every required skill through both
+      discovery roots with no provider home and no personal catalog
+      (`tools/test-skills-lane.mjs`, first test, clones the committed candidate).
+- [x] Genesis creates the skills lane and update-harness refreshes it, with
+      the lane receipt `.workbench-skills.json` naming source release, commit
+      and a hash per skill (`tools/test-skills-lane.mjs` second test,
+      `tools/test-genesis-from-decisions.mjs`, `tools/test-workbench-upgrade.mjs`).
+- [ ] A session's notepad and handoff can be committed and later removed
+      without a privacy or provenance check treating them as durable evidence.
+- [x] `claim` pushes the claim on the task branch; a second instance running
+      `next` after a fetch does not receive that Task (the TK-01L
+      push-on-claim block in `tools/test-spec-workbench.mjs`, a bare-remote
+      fixture with one clone per instance; mechanism and choices in
+      [ADR-000O](../../docs/adr/000O-claims-are-pushed-on-the-task-branch-and-read-from-every-remote-tip.md)).
+- [x] The host floor check reports each floor item, and a Task needing an
+      optional capability the host lacks lands in blocked or needs-review
+      with the capability named (TK-00H host floor tests in
+      `tools/test-diagnostics.mjs`; the TK-00K optional-capability routing
+      block in `tools/test-spec-workbench.mjs`, blocked routing; the
+      needs-review route waits on S-01X, see Remaining Limitations).
+- [x] Knowledge a cloud agent needs that lived only in host memory is in the
+      Wiki, and the Workbench runs without the memory directory
+      (`workbench/wiki/archive/host-memory-audit-2026-09-26.md` inventory, the
+      MEMORY.md Agent Operating Knowledge route, and the empty-HOME assertions
+      in `tools/test-workbench-round-trip.mjs`).
+- [ ] The round-trip test starts with nothing outside the clone and ends with
+      everything promoted, pushed, and nothing needed left on the instance.
+- [ ] One real cloud session lands a Task from GitHub alone, and a
+      two-instance run shows the second skipping the first's claim, both
+      recorded as demo artifacts.
+
+## Testing Seams
+
+- `workbench/tools/workbench-layout.mjs`: lane declaration, skill resolution
+  through discovery roots, adapter creation.
+- `workbench/tools/spec-workbench.mjs`: `next`, `claim`, `doctor`, with
+  a bare remote fixture for push-on-claim and fetch-before-select.
+- `workbench/tools/notepads.mjs` and `sessions.mjs`: committed notes stay
+  non-evidence and privacy-checked.
+- `tools/test-workbench-round-trip.mjs`: the cold-clone, ends-clean gate.
+- `tools/workbench-upgrade.mjs` and the template tests: lane in Genesis,
+  Adoption and update.
+
+## Verification Procedure
+
+```bash
+node tools/test-workbench-layout.mjs
+node tools/test-workbench-round-trip.mjs
+node tools/test-spec-workbench.mjs
+node workbench/tools/spec-workbench.mjs doctor
+```
+
+Then the full suite named in AGENTS.md on the committed candidate.
+
+## Documentation Impact
+
+- LEXICON.md: Support lane (seven), Core skill bundle, Normal setup, Explicit
+  skill update, Packet (no longer "untracked"), and a Claim row if one is
+  added; templates/LEXICON.md mirrors the generic changes.
+- AGENTS.md: the untracked-notes sentence in Session Records And Checkpoints
+  lifted per Desired Behavior 3; the promote-before-end exit rule; the
+  capability-blocked Task rule; the claim push in Git Rules.
+- BLUEPRINT.md: the "portable operating harness" opening and the Portability
+  quality sentence point at the Lexicon definition.
+- RUNBOOK.md: skills lane procedures, claim push and fetch, host floor check,
+  round-trip gate wording, and the Portability and privacy matrix heading
+  reading as host portability.
+- RUNBOOK.md Prerequisites and Install text; README.md only where it names
+  skill discovery or setup.
+- ADRs: supersede ADR-0017, amend ADR-0046, narrow ADR-0051, and record
+  claim-on-branch; each authored by the Task that makes the change.
+- workbench/manifest.json and templates/: the lane and skillPolicy shape.
+- Each Task records `Docs checked; no update needed` with its reason when
+  nothing above applies to it.
+
+## Append-Only Evidence And Execution Log
+
+| Date | Task | Event | Verification | Docs | Remaining gap |
+|---|---|---|---|---|---|
+| 2026-09-22 | — | Spec captured from the locked grilling record portable-workbench-cloud-deployable-2026-09-22 (revision 24); Lexicon term and renames promoted at `8dbd619da7e920edb5e819802aff9119f8cb1662` | `render`, `doctor`, vocabulary sweep and template evaluation on the committed candidate | LEXICON.md and templates/LEXICON.md updated; the rest of Documentation Impact waits on its Task | Everything in Desired Behavior is unbuilt; TK-001 is the only cut slice |
+| 2026-09-22 | — | Separate-context review of `edd6cbe` PASS for the integration gate with one Medium (host floor credited to README instead of RUNBOOK) and five Lows; all corrected in this commit | Reviewer ran doctor, render no-op, citation anchors, vocabulary sweep, control fidelity and template evaluation on a clean detached worktree; full 46-command suite green on `edd6cbe` | Spec wording only; LEXICON.md Last reviewed set to 2026-09-22 | Unchanged: nothing built |
+| 2026-09-23 | TK-001 | Owner directed on 2026-09-23: every core skill lives in `workbench/skills` and whatever workbench is running uses its local skills; Spec activated and TK-001 claimed | Red: new `tools/test-skills-lane.mjs` failed on the committed candidate (no `lanes.skills`, no `tools/workbench-skills.mjs`); green after the lane, adapters, manifest, doctor findings and installer landed | Guardrail baseline before editing 78/100 | Full suite, review and integration delivery pending |
+| 2026-09-23 | TK-001 | Lane built: root `skills/` moved to `workbench/skills` with history; tracked `.agents/skills` and `.claude/skills` links; `tools/workbench-skills.mjs` install/verify/update/rollback with `.workbench-skills.json` receipt; Genesis, Adoption and the one-time upgrade lay the lane down; doctor reads the lane (`skill-lane-missing`, `skill-lane-unreadable`, `skill-adapter-missing`, `skill-adapter-broken`, `project-local-skills`) and `--home` is retired; ADR-000M accepted, ADR-0017 archived as superseded | Targeted red/green then the full AGENTS suite (47 commands including the new test) green on the committed candidate; `adr validate` ok; `render` and `doctor` clean | RUNBOOK skills lane and personal catalog procedures, LEXICON Support lane/Skills lane/Core skill bundle/Normal setup/Explicit skill update, README, BLUEPRINT skills sentence, templates GENESIS/ADOPTION/RUNBOOK/LEXICON/.claude settings, `workbench/skills/README.md`, `update-harness` skill | Personal-catalog copies on the owner's Mac still carry the v3.2.0 bundle until published from this lane; the remaining S-00V slices (catalog review, notes may travel, push-on-claim, host floor, Wiki audit, ends-clean round trip) are uncut |
+| 2026-09-23 | TK-001 | Correction: `tools/test-adr.mjs` was red at `4b6d05c360ca8032c122943e66877ffadadabc0e` (four literal corpus re-counts moved by ADR-000M and the archived ADR-0017), so the row above claiming a green suite at that commit was wrong for that one command; green at `39eaa4881b88a2fe7a4a4fe63c111dd6c34966f7` after the pins were re-counted | Full suite on 4b6d05c 46/47 with test-adr failing; test-adr 29/29 at 39eaa48 | None | The earlier row is preserved unedited as an append-only record |
+| 2026-09-23 | TK-001 | Separate-context review (Claude Fable 5.1, read-only detached worktree at 4b6d05c and 39eaa48) FAIL: pre-lane rooms had no command to declare the lane (`migrate` left six lanes), plus the evidence row above; Mediums on effect wording, retired `--home` text, Support root row, install partial state on adapter collision, unrecorded rollback backups, stale post anchor, ADR-0046 unamended, missing guardrail after-score | Findings reproduced by the reviewer; corrected in the next commit: `migrate` now declares `lanes.skills` and the lane policy for six-lane rooms (new test in `tools/test-workbench-layout.mjs`), `install` preflights adapters before copying and `rollback` accepts only a recorded backup (new test in `tools/test-skills-lane.mjs`), RUNBOOK/templates/LEXICON/README wording, ADR-0046 amendment paragraph, post anchor set to 39eaa48 | Owners named per finding | ADR-000M acceptance rests on the owner's 2026-09-23 chat direction that ADRs written from his own decisions are accepted; it is recorded here and in PR #145, not verifiable from the repository alone |
+| 2026-09-23 | TK-001 | Guardrail audit after the change: 78/100, unchanged from the 78/100 baseline; remaining recommendations are the pre-existing ones the audit lists (none names the skills lane); outcome limitation: a static score and a green suite say nothing about agent reliability, and no repeated controlled trial was run | `node tools/audit-guardrails.mjs` before and after | None | Unchanged |
+| 2026-09-23 | TK-001 | Task closed | tools/test-skills-lane.mjs red on the pre-lane candidate, green after; full 47-command AGENTS suite green on the committed candidate; adr validate ok; render and doctor clean | RUNBOOK skills lane and personal catalog sections, LEXICON rows, README, BLUEPRINT, templates (GENESIS, ADOPTION, RUNBOOK, LEXICON, .claude/settings.json), workbench/skills/README.md, update-harness skill, ADR-000M accepted and ADR-0017 archived | Owner Mac personal catalog still on the v3.2.0 bundle until published from the lane; remaining S-00V slices uncut |
+| 2026-09-23 | TK-001 | Second separate-context review at `380a52ce16e3f8dd7c737a783e66b8f147898d55` PASS for the integration gate, with one Medium: `migrate` refused a pre-lane room whose `workbench/skills` directory already existed; fixed in the following commit (placeholder-path guard, layout test keeps the empty lane and a room-local skill in place) | Reviewer reproduced every earlier correction; `tools/test-workbench-layout.mjs`, `tools/test-skills-lane.mjs`, adoption and upgrade tests green after the fix; full suite 47/47 at 380a52c | None | Rows appended after the close row from here on; the three rows above the close row were inserted out of order and stay as published |
+| 2026-09-26 | — | Acceptance audit against integration `058f0898e551f95a935c4ae9d61d4a18dc92ea00` (Lane E dispatcher `claude-lane-E`): boxes 1-2 met by TK-001; boxes 3-8 unmet, so the Spec stays active and the stale Next gate "Confirm acceptance criteria and completion result" is replaced | Read at that commit: box 3, `workbench/sessions/.gitignore` lines 4, 9 and 12 still ignore `handoffs/*` and `notepads/*` and AGENTS.md line 418 still says live notes and handoffs stay untracked; box 4, `claimWork` in `workbench/tools/spec-workbench.mjs` makes no git call (no branch, push or fetch) and `tools/test-workbench-round-trip.mjs` line 166 claims locally then commits and pushes by hand; box 5, no host floor check or finding exists in `workbench/tools` or `tools`; box 6, no Wiki article audits host-memory knowledge; box 7, the round trip does not claim by pushing or assert an ends-clean instance; box 8, no cloud or two-instance demo artifact is recorded | Docs checked; no update needed: this row and the header are the only change, and no behavior changed | Six boxes need the six uncut slices listed under Remaining Limitations; no owner gate is named for completion |
+| 2026-09-26 | review | Review verdict: pass at a7e2b6b36943b2bf21e7aca5d071e492a5352140 [dd2b15658b6e] #1 | none; every factual claim in the acceptance-audit row verified at 058f089; full suite 48/48 on a7e2b6b | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 3 |
+| 2026-09-26 | — | Remaining slices cut by Lane F dispatcher `claude-lane-F` into eleven Task records TK-00G, TK-00H, TK-00I, TK-00J, TK-00K, TK-01K, TK-01L, TK-01M, TK-01N, TK-01O, TK-01P (ids from `next-id`); every unmet box 3-8 maps to at least one record; collision holds encoded as blockers (S-00P on TK-01K and TK-01P, S-00M on TK-01L, S-01V on TK-01M); catalog-review membership derived from grilling decision-005 instead of an owner confirmation | `show S-00V` parses all eleven records; `render` and `doctor` on the committed candidate; full AGENTS suite on the committed candidate | Spec header, Vertical Implementation Slices, Dependencies And Blockers and Remaining Limitations updated; Task records added; no control changed | Four Tasks ready; seven blocked on predecessors or holds; boxes 3-8 still unmet |
+| 2026-09-26 | review | Review verdict: pass at 8d51f147229e29ac48974fa1caef7c017534c0f3 [fa262e1aea26] #2 | none; eleven Task records parse, every box 3-8 mapped, Spec-id collision holds and derived PW-4 catalog rule judged faithful; full suite 48/48 on 8d51f14 | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 3 |
+| 2026-09-26 | TK-01L | Collision hold lifted: S-00M TK-001 (repository-state reader `readRepositoryState` in `workbench/tools/workbench-layout.mjs`) is contained in integration by merge `9e434b3c61eceada46e76bea099d83e0b8044de7` (PR #159), so `S-00M` is removed from TK-01L Blockers and the record returns to ready | `git merge-base --is-ancestor 9e434b3c61eceada46e76bea099d83e0b8044de7 origin/integration`; S-00M TK-001 row reads done; `show S-00V` lists TK-01L ready | Docs checked; no update needed: only the TK-01L record and this row change | TK-01L still coordinates with S-00M TK-002/TK-003 edits to `close` and diagnostics; rebase often |
+| 2026-09-26 | TK-00G | Task closed | Catalog review at 655ea90: new test 4 in tools/test-skills-lane.mjs red on the committed candidate (unclassified domain-modeling, init, path, tdd, wayfinder), green after the disposition table in workbench/skills/README.md Referenced non-lane skills; tests 1-4 green on the committed tree; mutation (tdd marked required/joined) fails as expected. Dispositions (skill \| reference \| requirement \| disposition): domain-modeling \| grilling SKILL.md \| optional \| optional mention; wayfinder \| grilling SKILL.md, BLUEPRINT.md \| optional \| optional mention; tdd \| tracer-bullet SKILL.md \| optional \| optional mention (red/green lives in AGENTS.md and lane implement/builder); brainstorm \| BLUEPRINT.md \| optional \| optional mention; prototype \| BLUEPRINT.md \| optional \| optional mention; research \| BLUEPRINT.md, README.md \| none \| out of scope (activity, and README's simonw/research repo link); init \| README.md \| none \| out of scope (Claude Code built-in); path \| RUNBOOK.md \| none \| out of scope (path form); lexicon, land, preflight, sitrep, diagnosing-bugs, codebase-design \| none \| none \| out of scope (unreferenced as skills; sitrep owned by S-01V). No skill joins, so skillPolicy.required and the lane are unchanged. Names considered: personal catalog at 8832f07d701bacfb75f04a873e01e15b1afe968e plus skills-pending and skills-archive; template controls checked by hand and reference only lane skills. Guardrail 78/100 before and after. | workbench/skills/README.md gains the Referenced non-lane skills section (rule, test contract, 14-row disposition table); RUNBOOK skills lane wording is recorded in the remaining gap instead of edited (S-00P holds root controls) | Needed control wording for TK-01P (not edited; S-00P rewrites controls): RUNBOOK Skills lane check, append: 'A skill the Contract names or a lane skill composes as a required step ships in the lane. Every other skill reference in a root control or lane SKILL.md has a row in workbench/skills/README.md Referenced non-lane skills, and tools/test-skills-lane.mjs fails on a reference with no row.' S-00V Current Verified State (pre-anchored, left as published) says the root controls name research; that mention is README's link to Simon Willison's research repository, not the skill. The owner may correct any disposition. |
+| 2026-09-26 | TK-01M | Correction: S-01V is not an allocated Spec ID (its reservation existed only on an unpushed Codex branch and S-01U went to PR #161), so every S-01V reference above, including the Task-cut row and the TK-00G close row and Proof, means the generated JSON taskboard Spec from S-00O (ID pending allocation); TK-01M Blockers re-pointed from `S-01V` to `S-00O` as a conservative hold until that Spec is allocated, and live Spec, Task and `workbench/skills/README.md` text updated | `git ls-tree origin/integration workbench/specs/` at d16ef63 shows no S-01V; `show S-00V` lists TK-01M blocked by TK-01L, S-00O | Docs checked: S-00V Spec, TK-00G/TK-00K/TK-01L/TK-01M records and `workbench/skills/README.md` wording only | Re-point TK-01M to the board Spec once allocated |
+| 2026-09-26 | review | Review verdict: fail at 6671f0cd8c0779b1df55c4593256d6f06aa2408a [d4536f36cd1c] #3 | Medium: TK-00G test 4 in tools/test-skills-lane.mjs does not fail on a stale disposition row (a cited file no longer mentioning the skill), contrary to the close proof | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 1 |
+| 2026-09-26 | TK-01W | Task closed | Answers the fail verdict at 6671f0cd8c0779b1df55c4593256d6f06aa2408a (evidence row 17). Red: with the test 4 of 6671f0c and the domain-modeling mention removed from workbench/skills/grilling/SKILL.md while its disposition row stays, test 4 still passed (1/1), so the TK-00G close row's claim that test 4 fails on a stale row was wrong. Green: test 4 now asserts that at least one file a row cites still mentions the skill (a word-prefix match, because rows such as brainstorm record a prose mention the reference detector does not match); the same mutation fails with 'domain-modeling: stale row'; node tools/test-skills-lane.mjs 4/4 on the committed tree; full AGENTS suite on the committed candidate recorded by the dispatcher. | workbench/skills/README.md Referenced non-lane skills test contract names the stale-row failure | none for this finding; TK-00G's remaining gap (RUNBOOK skills lane wording for TK-01P) is unchanged |
+| 2026-09-26 | TK-01W | Provenance: TK-01W was taken to in-progress by editing its record in `8a8341d8`, not by `claim`, because `claim` selects the lowest ready id and on this branch that is TK-00I, which is claimed on its own branch (`claude/s00v-tk00i-wiki-host-memory`); `close S-00V` then closed TK-01W as the only in-progress Task. The second-pass separate-context review at `d3149bea5b3bfc28e4cb638dfe62fe2446fa4620` (Codex CLI `codex exec -s read-only -m gpt-5.5`) returned FAIL with one Medium for this missing disclosure, and passed the stale-row fix itself; this row answers it and no verdict row was recorded for that pass | `git diff ce6b3fd 8a8341d -- workbench/specs/S-00V-portable-workbench/tasks/TK-01W/TASK.md` shows the ready to in-progress edit | Docs checked; no update needed: disclosure only | none |
+| 2026-09-26 | review | Review verdict: pass at 128f619430e0f9e37652bfac8a51707603f47c44 [6cb30e32a157] #4 | none at the final pass; first pass at 6671f0c failed on the stale-row test (answered by corrective TK-01W), second pass at d3149be failed on the TK-01W provenance disclosure (answered by the 128f619 evidence row); full suite 48/48 on 128f619 | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 3 |
+| 2026-09-26 | TK-00H | Task closed | Red: tools/test-diagnostics.mjs 25/32 (7 failing: two registry pin tests without host-floor-unmet, plus five host-floor tests failing on ERR_MODULE_NOT_FOUND for workbench/tools/host-floor.mjs) and the tools/test-spec-workbench.mjs parseCliArgs doctor --host assertion (host swallowed --json); green 32/32 and test-spec-workbench pass after workbench/tools/host-floor.mjs, the host-floor-unmet registry entry (error/host/all, new host scope) and doctorCommand landed. Invocation shape: boolean doctor --host on spec-workbench.mjs, chosen because session start already runs doctor (AGENTS Work Selection step 2) and the Done Criteria name a doctor exit in that invocation only; plain doctor, next and claim never call a probe, so the suite and read-only reviewers stay deterministic offline, and --host JSON is {floor, findings} while plain --json stays the byte-unchanged finding array. Every floor item (Node 18+, Python 3.9+, git, gh authenticated with push rights to origin, network to GitHub) is reported with pass/fail and observed value; each item missing in turn raises exactly one host-floor-unmet and doctorCommand exits 1 with --host and 0 without; probes are injected, and a throwing probe is a visible fail. PINNED_EFFECTS updated deliberately for the new code. Manual: real-host doctor --host 5/5 pass, exit 0; with PATH reduced to node only, python/git/gh fail, exit 1. Full AGENTS suite TOTAL pass=48 fail=0 on the worker candidate bcac36a929e8f354a5bbcb15338d5249a341b48b, whose implementation commit is replayed unchanged as effa1c1 on top of the closed TK-00G; templates and controls untouched; static check only, no agent-outcome claim. | Contract documented in code comments in workbench/tools/host-floor.mjs, the host-floor-unmet registry entry and the doctorCommand seam comment. RUNBOOK Prerequisites and the session-start command wording are deferred to TK-01P under the S-00P controls hold; exact wording is in the remaining gap. Docs checked; no other owner needs an update. | TK-01P controls sweep must add to RUNBOOK Prerequisites (and templates/RUNBOOK.md, generic): 'Check the host floor at session start with node workbench/tools/spec-workbench.mjs doctor --host. It reports Node 18+, Python 3.9+, git, gh authenticated with push rights to the room's origin remote, and network to GitHub, each with pass or fail and the observed value. A missing item is the all finding host-floor-unmet and that run exits 1; plain doctor never probes the host and stays offline.' AGENTS.md Work Selection step 2 may name doctor --host for the first doctor run of a session. Optional-capability routing stays TK-00K. |
+| 2026-09-26 | TK-00H | Rebase adaptation: onto integration `752f4df`, which carries S-00M's new `untracked-controls` attention finding, the host floor test in `tools/test-diagnostics.mjs` failed because it pinned doctor's whole finding list; it now pins only host-scope findings in `doctor --host` and asserts plain doctor raises none, leaving the behavior under test unchanged | `node tools/test-diagnostics.mjs` failed 1 on the rebased tree (actual list gained `untracked-controls`), 36/36 after | Docs checked; no update needed: test-only adaptation | none |
+| 2026-09-26 | review | Review verdict: pass at 644252c4b5eb252ae849e3b9b4ca59b497bd9643 [65f465b04754] #5 | none; first pass PASS at 294924c (host floor thresholds, injectable probes, offline plain doctor, registry entry), delta pass PASS at 644252c (rebase test adaptation for S-00M untracked-controls); full suite 48/48 on 644252c | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 3 |
+| 2026-09-26 | TK-00I | Task closed | Audit of the owner's Claude Code auto-memory directory for this project, read-only at 2026-09-26: 27 files (26 notes plus the MEMORY.md index; the pre anchor counted 17), every one given a disposition in workbench/wiki/archive/host-memory-audit-2026-09-26.md. Promoted (15): finish-authorized-work and dont-manufacture-owner-gates -> finish-authorized-work; owner-authored-adrs-are-accepted -> owner-authored-adrs-are-accepted; derive-before-asking-the-owner -> same; design-interviews-are-forward-looking -> same; prefers-visual-over-prose-reports -> recurring-results-are-visual; pc-test-only-at-main-readiness -> pc-test-at-main-readiness; workbench-core-rhythm-and-rework -> core-rhythm; suite-needs-a-committed-candidate -> same; spec-workbench-lifecycle-tool-quirks and promote-draft-lives-in-recovery -> lifecycle-tool-behaviors; parallel-spec-merge-pipeline, check-for-an-existing-lane-first and the durable part of v4-dispatcher-lane-pattern -> parallel-lane-dispatch; codex-separate-context-review-route -> separate-context-review-with-codex. Already owned (7, nothing copied): qa-destination-is-the-grilling-answers (MEMORY.md ledger route, ledger, AGENTS Human QA), wiki-as-knowledge-base (ledger TT-Q8, SCHEMA, MEMORY.md articles), landmarks-are-the-design-concept-rung (design-concepts/landmark-tracker.md, S-01T), notepad-cli-note-path and notepads-concurrent-write-loss (RUNBOOK notepad section, notepad skill, skill-notepad), example-workbench-reference-room (AGENTS/RUNBOOK Template Upgrade Release Gate; pinned detail stale), per-skill-rebuild-specs (S-00X to S-01S; planned-claim fact promoted). Stale (1): llm-workbench-upgrade-route. Excluded (3): notepad-cleanup-blocked-by-legacy-records (machine-local records), skills-root-is-a-git-repo (machine state), master-workbench-upstream-fix-list (another project); plus the index. Each promoted claim re-verified against source (spec-workbench.mjs claim/close/effectiveStatus, check-append-only.py identity, workbench-layout.mjs invalid-source-identity, sessions.mjs ordinaryFile, workbench-paths.mjs writeSafeFile rename, sessions/.gitignore); one quirk corrected (record-backed Tasks derive readiness from Blockers). Runs without the memory directory: tools/test-workbench-round-trip.mjs red first with the new start assertion 'the scrubbed HOME starts empty' (54005 !== 0, HOME was the shared os.tmpdir()), green after HOME became a fresh empty mkdtemp directory, with an end assertion that neither .claude nor .codex exists under it; git grep finds no tracked tool reading a provider memory path. wiki.mjs validate ok; tools/test-wiki.mjs 13/13; full AGENTS suite TOTAL pass=48 fail=0 on committed candidate 12762f0387e3cfe4209d7a24bbffc8e6cd9b3f41; guardrail 78/100 before (d1c75e7) and after; evaluator templates 106.6/113; static and context change only, no agent-outcome claim. | workbench/wiki: eleven new flat entries (finish-authorized-work, owner-authored-adrs-are-accepted, derive-before-asking-the-owner, design-interviews-are-forward-looking, recurring-results-are-visual, pc-test-at-main-readiness, core-rhythm, suite-needs-a-committed-candidate, lifecycle-tool-behaviors, parallel-lane-dispatch, separate-context-review-with-codex) routed from a new MEMORY.md Agent Operating Knowledge section, with a provenance line added to MEMORY.md; archive/host-memory-audit-2026-09-26.md holds the inventory. tools/test-workbench-round-trip.mjs comments and assertions. S-00V acceptance box 6 checked. No control, template, ADR or other Spec changed; control wording is in the remaining gap. | Needed control wording for TK-01P (not edited; S-00P rewrites controls): (1) AGENTS Safety And Change Control, append: 'An owner instruction to do work is its authorization. Do not add an owner-review, owner-approval or owner-QA gate the controls do not name; a step waits on the owner only for a real product tradeoff stated with options, a recommendation and its cost.' (2) AGENTS Assigned Work And Stances, append: 'Before escalating a question to the owner, look it up in workbench/wiki/grilling-destination-audit-ledger.json and the locked decisions; a question that originated in an agent audit is not an owner question.' (3) RUNBOOK ADR procedure (and the ADR register guidance): 'An ADR the owner authored, or one recording his locked grilling decisions, is accepted; agents move it out of proposed/ and reconcile its consequences, raising only a consequence that changes a product tradeoff.' Ledger ACC-1 (ADR-000B/C/D acceptance timing) is still open and the records remain in proposed/, so the owner may narrow (3). (4) AGENTS Engineering And Verification, after the suite: 'Run the full suite only against a committed candidate; an uncommitted manifest, runtime-tool or template change makes fixture init refuse with invalid-source-identity.' Other suite commands were not individually HOME-scrubbed; the round trip is the proof. Findings with no owning Spec (no work authorized): notepads.mjs still loses concurrent writes; host MEMORY.md links two missing files. |
+| 2026-09-26 | TK-01M | Correction: the generated JSON taskboard Spec from S-00O is now allocated as S-01X (S-00O planning packet, PR #179, merge `d4ec0d6`), so TK-01M Blockers are re-pointed from the conservative `S-00O` hold to `S-01X`, the live Spec, Task and `workbench/skills/README.md` text names it, and TK-01M records Lane I's preliminary S-01X board contract at contract level (TK-01L's remote-claim overlay is passed into S-01X's shared lane calculation `workbench/tools/taskboard.mjs` as an input; no `TASKBOARD.json` parsing and no second reader; exact export and card-field names follow S-01X's first board Task) | `git ls-tree origin/integration workbench/specs/` at `d4ec0d6` lists S-01X-generated-json-taskboard; `show S-00V` lists TK-01M blocked by TK-01L, S-01X | Docs checked: S-00V Spec, TK-00G/TK-00K/TK-01L/TK-01M records and `workbench/skills/README.md` wording | Replace the contract-level wording in TK-01M with S-01X's final export and card-field names once its first board Task is cut |
+| 2026-09-26 | review | Review verdict: fail at 505c12b3aacf15adea5834f24e9e7075d75e29fa [c40e1847f739] #6 | Medium: workbench/wiki/parallel-lane-dispatch.md Merging overlapping lanes presents a diff-equality check as a substitute for re-review of a rebased candidate, contradicting AGENTS.md (a new candidate requires a fresh review) | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 1 |
+| 2026-09-26 | TK-02C | Task closed | Answers the fail verdict at 505c12b3aacf15adea5834f24e9e7075d75e29fa: workbench/wiki/parallel-lane-dispatch.md Merging overlapping lanes said a diff-equality check replaces re-review of a rebased candidate, contradicting AGENTS.md (a new candidate requires a fresh review; self-review cannot satisfy the gate). The section now says the rebased tip is a new candidate governed by the AGENTS integration gate, and the equality check is preparatory evidence handed to a fresh separate-context reviewer, never a substitute. grep finds no other Wiki entry claiming review carries across a rebase; node workbench/tools/wiki.mjs validate ok. Provenance: TK-02C was set to in-progress by editing its record, not by claim, because claim selects the lowest ready id and on this branch that is TK-00J, claimed on its own branch; close then took TK-02C as the only in-progress Task. | workbench/wiki/parallel-lane-dispatch.md Merging overlapping lanes section rewritten | Whether a rebase-only tip whose changed lines equal the reviewed diff is a new candidate needing a fresh review is control wording for S-00P/TK-01P: the Director protocol and earlier lanes treated equality as carrying the review, AGENTS.md says a new candidate requires a fresh review; this lane now runs a short fresh delta review on every rebased tip |
+| 2026-09-26 | review | Review verdict: pass at a7855b0ecd0585c962c2d09df499c5958a988259 [f7e22584c8fc] #7 | none at the second pass; first pass at 505c12b failed on the parallel-lane Wiki entry treating diff-equality as a substitute for re-review (answered by corrective TK-02C); full suite 48/48 on a7855b0 | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 3 |
+| 2026-09-26 | TK-00J | Task closed | At 34b76b8: tools/test-sessions.mjs three committed-fixture tests (note and handoff force-added past the ignore rule and committed). Red first on the claim tree for Wiki source/link, project-evidence source and Spec/Task-record link citations (untracked-provenance absent, prepareEvidence returned prepared); green after workbench-paths liveRecordPath plus the wiki, project-evidence and spec-workbench checks. Already held and now proved on committed records: notepad append privacy refusal, sessions scan and promote privacy refusal, promote citation refusal, ADR untracked-provenance, clean removal back to the doctor baseline. Full 48-command AGENTS suite TOTAL pass=48 fail=0 on committed candidate 34b76b8; guardrail 106.6/113 unchanged (templates and controls untouched); doctor no blocking finding | Code comments in workbench-paths.mjs, spec-workbench.mjs, wiki.mjs, project-evidence.mjs and sessions.mjs, and the diagnostics.mjs untracked-provenance summary, updated to say a live record is working context even when committed; promote and ADR refusal messages reworded from ignored/untracked to live record. No control, template or Wiki change: RUNBOOK's ADR validate paragraph is now narrower than the tool (wording recorded in Remaining gap, held on S-00P) | Box 3 stays open for TK-01K. (1) A tracked notepad still fails the manifest's live-record ignore check (workbench-layout.mjs verifyNotepadIgnores: the published and leaked checks over notepads and recovery), so doctor reports invalid-manifest until TK-01K lifts it; TK-01K must lift that check for notepads alongside workbench/sessions/.gitignore, keep recovery ignored, and then update the test-sessions pin. Committed handoffs already pass. (2) Needed RUNBOOK wording (ADR validate paragraph, replacing the untracked-provenance clause): untracked-provenance for a link into a live session collection (sessions/grilling, sessions/handoffs, sessions/notepads outside notepads/templates, sessions/recovery), committed or not; doctor reports the same code for a Spec or active Task record link and for a Wiki source path or body link, and project-evidence prepare refuses such a source as non-durable-source. |
+| 2026-09-26 | review | Review verdict: fail at e41c2a5b130881da0a8c3d7d689f6d6c80696e3f [5b6e4ba4e490] #8 | Medium: the live-record citation checks in spec-workbench.mjs, wiki.mjs and adr.mjs see only inline Markdown links, so a reference-style link to a committed notepad or handoff escapes untracked-provenance | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 1 |
+| 2026-09-26 | TK-02E | Task closed | Answers the fail verdict at e41c2a5b130881da0a8c3d7d689f6d6c80696e3f: the live-record citation checks read only inline Markdown links. New shared markdownLinkTargets in workbench/tools/workbench-paths.mjs reads inline links (including the angle-bracket form) and reference-style definitions; spec-workbench.mjs liveRecordCitations and the wiki.mjs body-link check use it, and adr.mjs adds a pass for link forms localLinks does not carry (localLinks stays inline-only for the broken-link check). Red: new tools/test-sessions.mjs test 'a reference-style or angle-bracket link to a committed live record is refused like an inline one' failed on the committed test-only tree (ADR untracked-provenance targets [] instead of the committed handoff and notepad); green after the fix, test-sessions 8/8, test-adr 29/29, test-wiki 13/13, adr and wiki validate ok, doctor no new finding. Provenance: TK-02E was set to in-progress by editing its record, not by claim, because claim selects the lowest ready id (TK-00K, claimed on its own branch); close then took TK-02E as the only in-progress Task. | Code comments in workbench/tools/workbench-paths.mjs (markdownLinkTargets) and adr.mjs; no control, template or Wiki change | none for this finding; TK-00J's remaining gap (RUNBOOK ADR validate wording for TK-01P; box 3 open for TK-01K) is unchanged |
+| 2026-09-26 | review | Review verdict: pass at eb0c4c9fe5991244c2a0a97993d53480d8407492 [7ff3a70cb112] #9 | none at the second pass; first pass at e41c2a5 failed on inline-only live-record link parsing (answered by corrective TK-02E); full suite 48/48 on eb0c4c9 | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 3 |
+| 2026-09-26 | TK-00K | Task closed | Red: the new tools/test-spec-workbench.mjs block 'S-00V TK-00K: optional-capability routing' failed first at assertion (1) 'the Capabilities field is parsed into a list' (actual undefined, expected ['simulator']); green after the implementation commit 731a227: the block passes (parser, next skip-and-name for an absent probe, a throwing probe and no probe/no declaration, claim routing, Taskboard naming, claim refusal when every ready Task lacks a capability, re-claim once declared, close refusal with no Receipt/Proof/evidence written, CLI next --json and plain next with nothing eligible), and tools/test-diagnostics, test-workbench-tools, test-workbench-layout and test-visible-id-consumers pass unchanged. Design: capability named in a separate optional record field **Capabilities:** (lowercase kebab-case list or none) and the routed block in **Missing capabilities:** (must be a subset of Capabilities, only on a blocked record), because Blockers stays the closed S-/TK- id list; effectiveStatus keeps a record with Missing capabilities blocked (no session, so render and doctor stay deterministic) until a session establishes every recorded capability, and claim clears the field. A session establishes a capability only by an explicit --capabilities a,b on next, claim or close or an injected probe returning true; defaultCapabilityProbes is empty, so no probe, no declaration, a non-true result or a throwing probe is absence (fail closed) and next/claim/close never read the real host. next skips such a Task and names it under capabilityBlocked (specId, taskId, missing, recorded, reason), returning {specId:null, taskId:null, capabilityBlocked} rather than null when nothing else is eligible; claim writes Status blocked plus Missing capabilities on each ready lacking Task of that Spec, then claims the next doable Task or refuses naming what it routed; close routes and refuses before any write. The Taskboard Blocker cell names every capability-blocked Task; a room with none renders byte-identically (render of this repo produced no diff). New managed runtime tool workbench/tools/optional-capabilities.mjs registered in RUNTIME_TOOLS. Full AGENTS suite TOTAL pass=48 fail=0 on candidate 731a2276bf01c741214f0334bb39055dd3f123cf (dirty: []); static check only, no agent-outcome claim. | Contract documented in code comments: the workbench/tools/optional-capabilities.mjs header (record fields, how a session establishes a capability, empty fail-closed default probes, routing), the task-record.mjs field-parse comment, and the nextWork, selectWork, effectiveStatus, claimWork, closeTask, publicSlice and renderHotBoard comments in workbench/tools/spec-workbench.mjs; the CLI usage string names --capabilities. AGENTS.md, RUNBOOK.md, LEXICON.md and templates/ untouched under the S-00P controls hold; exact wording deferred to TK-01P in the remaining gap. Docs checked; no other owner needs an update. | needs-review half: needs-review is not a Task status at this candidate, so a Task whose work is otherwise done but whose closing session lacks a capability is routed to blocked by close (proof not written); switching that route to needs-review waits on S-01X adding the status. Not routed: an in-progress Task another session claimed (next only skips and names it, recorded false) and orphan corrective Tasks under corrective/ (not capability-checked). defaultCapabilityProbes is empty, so only --capabilities declarations establish a capability until a later Task adds deterministic probes. TK-01P controls sweep must add, to AGENTS.md Work Selection And Lifecycle: 'A Task may name optional capabilities beyond the host floor in its record Capabilities field. Pass the capabilities this session actually has with --capabilities a,b to next, claim and close; one you cannot positively establish is absent. claim and close route a Task needing an absent capability to blocked with Missing capabilities on its record, and next names it under capabilityBlocked; never fake, skip or close past a missing capability.' And to RUNBOOK.md (templates/RUNBOOK.md generic): 'Optional capabilities. Anything beyond the host floor (a simulator, screen history, an MCP server, access to another repository) is an optional capability a Task names as **Capabilities:** name, name (lowercase kebab-case) in its TASK.md. Declare what the session has with next, claim or close --capabilities name,name; with no declaration and no probe a capability is absent. A Task needing an absent capability is skipped by next and listed as capability-blocked, routed to **Status:** blocked with **Missing capabilities:** by claim or close, and named in the Taskboard Blocker cell; a later session that declares the capability claims it and the field clears.' LEXICON.md may add an Optional capability row. |
+| 2026-09-26 | review | Review verdict: pass at 9c3e8c2afabb59bd2d6d357aa36a42fdc76e11ee [c1acdb6983aa] #10 | none; capability routing fail-closed, backward compatible, nextWork consumers traced; full suite 48/48 on 9c3e8c2 | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 3 |
+| 2026-09-26 | TK-01L | Task closed | Red: the TK-01L push-on-claim block in tools/test-spec-workbench.mjs failed first at '(1) a room with origin and a declared integration branch coordinates through the remote' (claim returned no coordination and pushed nothing). Green: its five ok lines at 730c6d4, on a bare origin with one clone per instance: A on integration cuts alpha/s801-tk002 from origin/integration with the claim as its first commit, pushed, integration unchanged; B, cloned before the claim, runs next after the fetch and gets TK-003 with remoteClaimed S-801/TK-002 on origin/alpha/s801-tk002, and claim skips it too; a third instance gets null; A resumes its own claim; deleting the remote branch releases the claim. Claim behavior matrix: integration or default branch = cut the task branch from fetched origin/<integration>, commit Claim <Spec> <Task> (Task record, Spec header, re-rendered projections), push -u to the same-named branch; already-cut task branch = commit the claim there and push to the same-named branch, never the tracked upstream, integration or default, no second branch; detached HEAD = cut like integration; no remote, no declared integration branch, no origin/<integration>, or --local = today's local write left uncommitted, coordination.mode local with the reason, CLI stderr says so; push failure = refused, claim commit undone, starting checkout restored, cut branch removed, nothing written left; fetch failure = claim refused before any write, next answers from the last fetched refs with fetched false and the error. ADR-000O accepted (owner PW-6 lock, agent choices separated); adr validate ok; test-adr corpus re-counted 23 files/27 Spec links and 36 files/65 intra-ADR links; test-workbench-round-trip, test-cross-provider-fixture, test-diagnostics, test-visible-id-consumers, test-workbench-dogfood, test-workbench-layout, test-spec-report green; full 48-command AGENTS suite pass=48 fail=0 on 730c6d4; self-drift pre/post show only pre-existing findings; live next in this repo skipped S-00J/TK-01T and S-01T/TK-01X claimed on other lanes' pushed branches. | New ADR workbench/docs/adr/000O-claims-are-pushed-on-the-task-branch-and-read-from-every-remote-tip.md in the active roster, REGISTER.md and HISTORY.md regenerated; S-00V Decisions And Contracts links ADR-000O and acceptance box 4 is checked with its test citation; header comments in the new managed tool workbench/tools/claim-coordination.mjs and in spec-workbench.mjs; the CLI usage string names --local and --branch. AGENTS.md, RUNBOOK.md, LEXICON.md, BLUEPRINT.md and templates/ not edited (S-00P holds them; wording recorded in the remaining gap for TK-01P). | TK-01P wording needed: AGENTS.md Git Rules - claim commits the claim as the task branch's first commit and pushes it; run it from the integration branch to have it cut the branch, or from an already-cut task branch; do not commit the claim by hand afterwards; --local only for a deliberately single-instance room. AGENTS.md Work Selection step 5 - claim S-### --agent NAME commits and pushes the claim on the task branch. RUNBOOK claim procedure - next and claim fetch origin and skip a Task claimed on any remote tip (stderr names each), --branch NAME, --local, and the refusals (fetch failure, push failure rolled back, uncommitted base checkout, uncommitted claim paths). TK-01M shows remote claims on the Taskboard. TK-01N converts tools/test-workbench-round-trip.mjs and tools/cross-provider-resume.mjs from claim --local to claim by pushing. adr.mjs new allocated 000L, already used on origin/claude/adr-notepad-objective-ownership, so the ADR takes 000O, the first id free on every local and remote ref; adr new does not scan remote refs (no owning Spec). Remote claims are never aged out automatically: the stale-claim rule reads only the local tree. A push the server accepted but reported as failed is not re-verified. |
+| 2026-09-26 | review | Review verdict: fail at 90680eb683ec48dbbcbea06b282bafa094e9c9d5 [3ebe7fc3c6f8] #11 | Medium: workbench/tools/claim-coordination.mjs excludes origin/<integration> but not origin/<defaultBranch> from the remote-claim overlay, so default-branch state can be read as a competing claim | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 1 |
+| 2026-09-26 | TK-002M | Task closed | Answers the fail verdict at 90680eb683ec48dbbcbea06b282bafa094e9c9d5: workbench/tools/claim-coordination.mjs excluded origin/<integration> but not origin/<defaultBranch> from the remote-claim overlay. Red: new case (5b) in the TK-01L block of tools/test-spec-workbench.mjs (origin/main carries TK-002 in-progress while integration has it ready) failed on the committed test-only tree: next returned null because origin/main was read as a claim. Green: the overlay now excludes both shared branches (the integration base and the manifest default branch); tools/test-spec-workbench.mjs passes. Provenance: TK-002M was set to in-progress by editing its record, not by claim, because the corrective Task was created on this branch after TK-01L closed and claim would now cut and push a new branch; close then took TK-002M as the only in-progress Task. | Code comment in workbench/tools/claim-coordination.mjs; no control, template or Wiki change | none for this finding; TK-01L's remaining gap is unchanged |
+| 2026-09-26 | review | Review verdict: pass at 92d590f8d09fc59ee2bd12d7fb96f5ddf5be2be4 [bdeb4d894356] #12 | none at the second pass; first pass at 90680eb failed on the default branch being read as a claim surface (answered by corrective TK-002M); full suite 48/48 on 92d590f | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 3 |
+
+| 2026-09-30 | TK-003J | Vespar Director coordination assigned bounded local maintenance during owner-authorized cloud portability setup; Task remains in-progress on an isolated branch based on 2f5b13b0a20d6a278310cf1b709d1fcd31274a11, without commit, remote claim, push or PR | Red: focused new installer regressions produced two expected sentinel failures and one malformed-metadata pass. Green on the uncommitted local candidate: four focused cases pass, including valid linked-worktree ownership and malformed metadata inside a real outer repository. Affected suites all exit 0 with process-only init.defaultBranch=main: composition 2/2, installer 29 passed plus 2 platform skips, layout 72/72, adoption all 4 reported scenario groups, diagnostics 36/36; syntax and diff checks pass. Guardrail remains 78/100. Self-drift remains blocked by pre-existing S-00Q stale claim; the local untracked Task adds an explicit pending-commit finding, with historical seed/provenance limits unchanged. | Installer comments, this Spec, TK-003J and generated Taskboard; no public command or template contract changes, no second installer source exists | Immutable candidate, full suite, separate-context review and any authorized delivery remain pending; no release, configured-provider reliability or clean-update claim |
+| 2026-09-30 | TK-003J | Task closed | Exact remote candidate 5d2b6469eb308a90bb07b8ebd46563c3c290fc83 verified in saved cloud: all 51 RUNBOOK commands exit 0; independent code/safety review PASS without findings; exact tree 7d3b6ed0a086f70901f989c8a4b53285e29bdbc3; 29 installer tests pass plus 2 existing platform skips and 3 extra probes. Local identical-tree 2900351 also passes full51 and exact remote reviewer 10 focused cases. | TK-003J owns portability fix and truthful local/remote verification; no product/template contract changed | Final docs-only closeout verification, exact-head review and integration delivery still pending; no native-provider, main, clean-update or owner Human QA claim |
+
+## Completion Result
+
+Pending.
+
+## Remaining Limitations Or Follow-Up Specs
+
+The planned slices listed here were cut into Task records on 2026-09-26; see
+Vertical Implementation Slices. Known limits carried by those records:
+`needs-review` routing for a capability-blocked Task depends on [S-01X](../S-01X-generated-json-taskboard/SPEC.md) (the generated JSON taskboard Spec from S-00O) adding
+that status (TK-00K satisfies box 5 with blocked routing until then), and
+control wording that S-00P is rewriting is collected in TK-01P.
+
+## Supersession
+
+- Supersedes: none
+- Superseded by: none
