@@ -5023,8 +5023,11 @@ function commitAll(dir, message) {
 
     // Review corrective (High, separate-context review of ed8c4f5): the same
     // routed, valid article reached through a symlinked features collection
-    // is not a capture. The shared predicate must refuse to read through a
-    // linked root before anything is read, so discard keeps waiting.
+    // is not a capture, so discard keeps refusing and writes nothing. For
+    // discard the manifest boundary refuses a linked collection before the
+    // capture predicate runs (observed at da1c757a); the predicate's own
+    // linked-root refusal is proved through doctor below, which reads the
+    // collection without that boundary.
     const featuresDir = path.join(captureRoot, 'workbench/wiki/features');
     const linkedFeatures = path.join(captureLinked, 'features');
     fs.renameSync(featuresDir, linkedFeatures);
@@ -5032,7 +5035,7 @@ function commitAll(dir, message) {
     commitAll(captureRoot, 'link the features collection out of the Wiki lane');
     execFileSync('git', ['-C', captureRoot, 'push', '--quiet', 'origin', 'HEAD:refs/heads/main']);
     before = gitSnapshot(captureRoot);
-    assert.throws(() => discardRetiredTask(captureRoot, 'S-612', 'TK-001'), /has no captured features article/, 'a features collection reached through a symlink is not a capture location');
+    assert.throws(() => discardRetiredTask(captureRoot, 'S-612', 'TK-001'), /Manifest collection workbench\/wiki\/features must be an ordinary directory/, 'a features collection reached through a symlink is not a capture location');
     assert.deepEqual(gitSnapshot(captureRoot), before, 'the linked-root refusal writes nothing');
     fs.unlinkSync(featuresDir);
     fs.renameSync(linkedFeatures, featuresDir);
@@ -5078,14 +5081,34 @@ function commitAll(dir, message) {
     assert.deepEqual(uncaptured(), [], 'capturing the article clears the finding');
 
     // Review corrective (High, separate-context review of ed8c4f5): doctor
-    // shares the capture predicate, so the same article behind a symlinked
-    // features collection is read by nothing and the Spec is reported
-    // uncaptured again.
+    // shares the capture predicate, so the same article reached through a
+    // link is never a capture. A linked features collection is refused at
+    // the manifest boundary first: doctor reports only the blocking
+    // invalid-manifest finding and never a silent capture.
     const visibleFeatures = path.join(visibleRoot, 'workbench/wiki/features');
     fs.renameSync(visibleFeatures, path.join(visibleLinked, 'features'));
     fs.symlinkSync(path.join(visibleLinked, 'features'), visibleFeatures);
-    assert.deepEqual(uncaptured().map((item) => item.specId), ['S-613'], 'a features collection reached through a symlink is not a capture location');
-    console.log('ok - doctor reports a Spec completed under the closure-capture contract with no captured features article as attention, stays silent for a pre-contract complete Spec, treats a symlinked features collection as no capture, and the Spec stays complete');
+    assert.deepEqual(doctor(visibleRoot, { today: TODAY }).map((item) => item.code), ['invalid-manifest'], 'a features collection reached through a symlink is refused at the manifest boundary');
+    fs.unlinkSync(visibleFeatures);
+    fs.renameSync(path.join(visibleLinked, 'features'), visibleFeatures);
+    assert.deepEqual(uncaptured(), [], 'the restored ordinary collection captures again');
+    // A linked ancestor above every path the manifest checks passes that
+    // boundary (lstat follows ancestors), so the predicate itself must refuse
+    // before it reads anything through the link. The article behind the link
+    // is made unreadable: a predicate that reads before refusing throws
+    // EACCES here; one that refuses first reports the Spec uncaptured.
+    const visibleWorkbench = path.join(visibleRoot, 'workbench');
+    const linkedWorkbench = path.join(visibleLinked, 'workbench');
+    fs.renameSync(visibleWorkbench, linkedWorkbench);
+    fs.symlinkSync(linkedWorkbench, visibleWorkbench);
+    const unreadableArticle = path.join(linkedWorkbench, 'wiki/features/contract-complete-capability.md');
+    fs.chmodSync(unreadableArticle, 0o000);
+    try {
+      assert.deepEqual(uncaptured().map((item) => item.specId), ['S-613'], 'an article reached through a linked ancestor of the features collection is not a capture and is never read');
+    } finally {
+      fs.chmodSync(unreadableArticle, 0o644);
+    }
+    console.log('ok - doctor reports a Spec completed under the closure-capture contract with no captured features article as attention, stays silent for a pre-contract complete Spec, never treats an article reached through a symlinked features collection or linked ancestor as a capture, and the Spec stays complete');
   } finally {
     fs.rmSync(visibleRoot, { recursive: true, force: true });
     fs.rmSync(visibleLinked, { recursive: true, force: true });

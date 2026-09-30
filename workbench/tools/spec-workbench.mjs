@@ -2581,10 +2581,23 @@ function specHistoricalRoute(root, spec) {
 // only when it passes the shared owner predicate with `featureOnly`.
 function capturedFeatureArticle(root, spec) {
   const featuresRoot = collectionPath(root, 'features');
-  if (!fs.existsSync(featuresRoot) || !fs.statSync(featuresRoot).isDirectory()) return null;
+  // Review corrective (High, separate-context review of ed8c4f5): the
+  // collection root and every candidate must be ordinary paths inside the
+  // repository before anything is read. `collectDirectoryFiles` already skips
+  // linked entries, but a linked root or a linked ancestor is a location
+  // `validateWiki` never walks, so nothing behind one is a capture: the Spec
+  // stays visibly uncaptured (doctor) and its Task records keep waiting
+  // (discard), which is the same refusal `durableOwnerRefusal` names for a
+  // linked note.
+  try { assertSafeReadPath(root, featuresRoot); } catch { return null; }
+  let rootEntry = null;
+  try { rootEntry = fs.lstatSync(featuresRoot); } catch (error) { if (error.code !== 'ENOENT') throw error; }
+  if (!rootEntry?.isDirectory()) return null;
   const historicalRoute = specHistoricalRoute(root, spec);
   for (const file of collectDirectoryFiles(featuresRoot).sort()) {
     if (!file.endsWith('.md') || path.basename(file) === 'README.md') continue;
+    try { assertSafeReadPath(root, file); } catch { continue; }
+    if (!fs.lstatSync(file).isFile()) continue;
     const sources = parseFrontmatter(fs.readFileSync(file, 'utf8')).data?.source_paths;
     if (!Array.isArray(sources) || !sources.includes(historicalRoute)) continue;
     if (durableOwnerRefusal(root, spec.id, historicalRoute, file, { featureOnly: true }) === null) {
