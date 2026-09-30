@@ -105,7 +105,9 @@ Owner direction in the FND-Q23 deep-dive chat on 2026-09-15, on observing that
 a second chat's appends to a live grilling note confused agents on other
 models that read the skill's "one writer per note" as one chat per note, while
 agents that read the objective-scoped intent appended correctly. The grilling
-destination ledger records TT-Q9 as answered with this direction. Proposed on
+destination ledger records the objective-ownership part of TT-Q9 as answered
+with this direction; its remaining Spec and Task relationships beyond the Packet
+rule remain open. Proposed on
 PR #92, where separate-context review corrected the first draft's claim that
 the revision check serializes writers; the later review findings are resolved
 in the text above. The historical 2026-09-11 foundation question report still
