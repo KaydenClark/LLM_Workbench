@@ -4973,6 +4973,7 @@ function commitAll(dir, message) {
 {
   const captureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'task-discard-capture-'));
   const captureRemote = fs.mkdtempSync(path.join(os.tmpdir(), 'task-discard-capture-remote-'));
+  const captureLinked = fs.mkdtempSync(path.join(os.tmpdir(), 'task-discard-capture-linked-'));
   try {
     initLifecycleFixture(captureRoot);
     fs.writeFileSync(path.join(captureRoot, 'AGENTS.md'), '# Agents\n\nRoutes to workbench/wiki.\n');
@@ -5019,18 +5020,39 @@ function commitAll(dir, message) {
     writeAt(captureRoot, 'workbench/wiki/MEMORY.md', '# Fixture Room Brain\n\n- [guide](guidebooks/capture-fixture-guide.md)\n- [capability](features/capture-fixture-capability.md)\n');
     commitAll(captureRoot, 'route the features article');
     execFileSync('git', ['-C', captureRoot, 'push', '--quiet', 'origin', 'HEAD:refs/heads/main']);
+
+    // Review corrective (High, separate-context review of ed8c4f5): the same
+    // routed, valid article reached through a symlinked features collection
+    // is not a capture. The shared predicate must refuse to read through a
+    // linked root before anything is read, so discard keeps waiting.
+    const featuresDir = path.join(captureRoot, 'workbench/wiki/features');
+    const linkedFeatures = path.join(captureLinked, 'features');
+    fs.renameSync(featuresDir, linkedFeatures);
+    fs.symlinkSync(linkedFeatures, featuresDir);
+    commitAll(captureRoot, 'link the features collection out of the Wiki lane');
+    execFileSync('git', ['-C', captureRoot, 'push', '--quiet', 'origin', 'HEAD:refs/heads/main']);
+    before = gitSnapshot(captureRoot);
+    assert.throws(() => discardRetiredTask(captureRoot, 'S-612', 'TK-001'), /has no captured features article/, 'a features collection reached through a symlink is not a capture location');
+    assert.deepEqual(gitSnapshot(captureRoot), before, 'the linked-root refusal writes nothing');
+    fs.unlinkSync(featuresDir);
+    fs.renameSync(linkedFeatures, featuresDir);
+    commitAll(captureRoot, 'restore the ordinary features collection');
+    execFileSync('git', ['-C', captureRoot, 'push', '--quiet', 'origin', 'HEAD:refs/heads/main']);
+
     const receipt = discardRetiredTask(captureRoot, 'S-612', 'TK-001');
     assert.equal(receipt.historicalRoute, taskRoute);
     assert.ok(!fs.existsSync(path.join(captureRoot, taskRoute)), 'discard proceeds once the parent Spec is captured');
-    console.log('ok - discard --task refuses by name, writing nothing, until the parent Spec has a captured features article; a legacy owner or an unrouted article is not a capture');
+    console.log('ok - discard --task refuses by name, writing nothing, until the parent Spec has a captured features article; a legacy owner, an unrouted article or an article behind a symlinked features collection is not a capture');
   } finally {
     fs.rmSync(captureRoot, { recursive: true, force: true });
     fs.rmSync(captureRemote, { recursive: true, force: true });
+    fs.rmSync(captureLinked, { recursive: true, force: true });
   }
 }
 
 {
   const visibleRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-uncaptured-complete-'));
+  const visibleLinked = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-uncaptured-complete-linked-'));
   try {
     initLifecycleFixture(visibleRoot);
     fs.writeFileSync(path.join(visibleRoot, 'AGENTS.md'), '# Agents\n\nRoutes to workbench/wiki.\n');
@@ -5054,9 +5076,19 @@ function commitAll(dir, message) {
     writeAt(visibleRoot, 'workbench/wiki/features/contract-complete-capability.md', featureOwnerArticle('workbench/specs/retired/S-613-contract-complete/SPEC.md', { sourcePaths: ['workbench/specs/retired/S-613-contract-complete/SPEC.md'] }));
     writeAt(visibleRoot, 'workbench/wiki/MEMORY.md', '# Fixture Room Brain\n\n- [capability](features/contract-complete-capability.md)\n');
     assert.deepEqual(uncaptured(), [], 'capturing the article clears the finding');
-    console.log('ok - doctor reports a Spec completed under the closure-capture contract with no captured features article as attention, stays silent for a pre-contract complete Spec, and the Spec stays complete');
+
+    // Review corrective (High, separate-context review of ed8c4f5): doctor
+    // shares the capture predicate, so the same article behind a symlinked
+    // features collection is read by nothing and the Spec is reported
+    // uncaptured again.
+    const visibleFeatures = path.join(visibleRoot, 'workbench/wiki/features');
+    fs.renameSync(visibleFeatures, path.join(visibleLinked, 'features'));
+    fs.symlinkSync(path.join(visibleLinked, 'features'), visibleFeatures);
+    assert.deepEqual(uncaptured().map((item) => item.specId), ['S-613'], 'a features collection reached through a symlink is not a capture location');
+    console.log('ok - doctor reports a Spec completed under the closure-capture contract with no captured features article as attention, stays silent for a pre-contract complete Spec, treats a symlinked features collection as no capture, and the Spec stays complete');
   } finally {
     fs.rmSync(visibleRoot, { recursive: true, force: true });
+    fs.rmSync(visibleLinked, { recursive: true, force: true });
   }
 }
 
