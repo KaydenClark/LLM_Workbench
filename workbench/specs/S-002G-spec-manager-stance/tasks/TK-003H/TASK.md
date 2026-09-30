@@ -32,11 +32,15 @@ Reviewer and Auditor stances, and its verified behavior and limits.
   scope work, stances define the job), and the role model article for the
   cross-capability picture. It does not copy live Task state or the Spec's
   progress.
-- Cross-links: link only to files that exist on `origin/integration` at
-  landing time. Refer to a sibling capability that has not landed by its Spec
-  path. Because S-002G lands last, the Dispatcher adds the final cross-links
-  among the four skills and four articles at rebase; the article leaves a
-  clearly named "Composition" list where those links belong.
+- Cross-links: the three sibling articles (`skill-director.md`,
+  `skill-dispatcher.md`, `skill-spec-planner.md`) exist on integration
+  `ac6fadbc`. The new article's "Composition" list links each sibling article
+  and entry. Cross-link pass (Dispatcher assignment 2026-09-30): where a
+  sibling article names another of the four role and stance capabilities by
+  its Spec path, the link becomes that capability's article; the Worker
+  (S-002E, not delivered) stays a LEXICON term or Spec path, and each
+  article's own delivery-Spec link and `source_paths` entry stay. Link-only:
+  no behavior claim in a sibling article changes.
 - `workbench/wiki/MEMORY.md` "Roles And Stances" gains one router line for
   the article (single writer: the Dispatcher lane merges this line).
 - "Verified behavior and limits" is reconciled by the Dispatcher after
@@ -47,10 +51,10 @@ Reviewer and Auditor stances, and its verified behavior and limits.
 
 ## Boundaries
 
-- One article and one router line. No edits to `templates/wiki` (the
-  auditor article precedent landed without a template mirror because the
-  router section is project-specific), no root-control edits, no edits to
-  the sibling articles' files (they may not exist yet).
+- One article, one router line and the link-only cross-link pass in the
+  three sibling articles. No edits to `templates/wiki` (the auditor article
+  precedent landed without a template mirror because the router section is
+  project-specific), no root-control edits.
 - The Wiki explains and routes; it grants no authority and proves no claim.
 
 ## Done Criteria And Closing Proof

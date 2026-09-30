@@ -61,12 +61,22 @@ plus assembled proof is [TK-003I](../TK-003I/TASK.md).
   stances and pins the spec-manager contract terms; `tools/test-workbench-
   layout.mjs` keeps the frozen v3.2.1 twenty-one-skill row exact by filtering
   the grown names.
+- Cross-link pass for the shipped entries (Dispatcher assignment 2026-09-30,
+  after S-002C, S-002D and S-002F landed on integration): an installed room
+  has no repository Spec paths, so no role or stance entry among `director`,
+  `dispatcher`, `spec-planner` and `spec-manager` cites
+  `workbench/specs/S-002?-*/SPEC.md`. The `dispatcher` and `spec-planner`
+  entries' Spec-path references to their siblings become the landed skill
+  names; the Worker stays the LEXICON term. Link-only: no behavior claim in
+  another Spec's entry changes, and the catalog pins that held those Spec
+  paths move to the skill names.
 
 ## Boundaries
 
 - One Spec, one skill wide. Do not touch S-002C, S-002D, S-002E or S-002F
-  files; refer to them by Spec path. The sibling skills land before this one;
-  reconcile adjacent-line conflicts in the shared files at rebase.
+  Spec or Task records. The only edit to a sibling's shipped entry is the
+  link-only cross-link pass above. The sibling skills landed before this one
+  (integration `ac6fadbc`); conform to their shared-file convention.
 - Root controls: edit only the count-bearing sentences the suite holds, one
   number or one category clause each, and record them in the Spec evidence.
   Any other AGENTS/RUNBOOK/LEXICON/BLUEPRINT wording is a remaining gap routed
