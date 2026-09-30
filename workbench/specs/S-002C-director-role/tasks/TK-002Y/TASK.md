@@ -3,11 +3,12 @@
 **Task ID:** TK-002Y
 **Spec ID:** S-002C
 **Slice:** Route the director Wiki article and record the fresh-context coordination scenario
-**Status:** in-progress
+**Status:** done
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-002C Acceptance Criteria, box 6 (a fresh agent discovers the entry and its article and performs the scenario without private notes) and the scenario named under Testing Seams
 **Planned verification:** `node workbench/tools/wiki.mjs validate` and `node tools/test-wiki.mjs` green with the new article routed from the "Roles And Stances" section of `workbench/wiki/MEMORY.md`; one fresh-context agent given only the delivered `workbench/skills/director/SKILL.md` text, a disposable fixture room outside the repository pinned at a named commit, and scripted Dispatcher reports (two Specs advancing in parallel, one shared artifact both need, one out-of-scope request) is observed to name the single writer, permit the other lane's independent work, route the candidate review to a separate context, record the dependency and result in the fixture's tracked owners, and report the out-of-scope request instead of performing it; the observation and its limits are handed back for the Spec evidence.
+**Proof:** Wiki: node workbench/tools/wiki.mjs validate ok and tools/test-wiki.mjs 13/13 at b296c5e5; article workbench/wiki/skill-director.md routed from MEMORY.md Roles And Stances (Worker attempt 1 b296c5e5, merged 12c13003). Scenario (Dispatcher-run, entry blob 39453609 from cdf9c53b, fixture pin integration 57b7fa2a): edd0abb named dispatcher-a the single src/schema.js writer and recorded writer, dependency, landing order and review routing in COORDINATION.md; TK-B1 left to proceed; reviewer PASS at the exact candidate 7fe8d5c before the --no-ff merge c9d78b1; main merge and S-202 takeover declined and put to the owner as options with recommendation and cost; no SPEC.md or src/schema.js edit; main unchanged; bin/check.sh 2/2 (C-scenario-room-check.md). Worker suite 48/48 at b296c5e5 (C-tk002y-a1-b296c5e.log, dirty []); assembled suite 48/48 at 3c5a4296 (C-s-002c-3c5a429.log, dirty [])
 
 ## Outcome
 
@@ -133,3 +134,9 @@ request.
 - Cross-links among the four new role and stance articles are added by the
   last lane to land (S-002G), not here.
 - Installed personal copies of the skill are not updated by a source change.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s-002c-director-role | cd01046937b3118acc8e161da82e88d707a8982c | ahead 0 behind 0 | 0 | Wiki: node workbench/tools/wiki.mjs validate ok and tools/test-wiki.mjs 13/13 at b296c5e5; article workbench/wiki/skill-director.md routed from MEMORY.md Roles And Stances (Worker attempt 1 b296c5e5, merged 12c13003). Scenario (Dispatcher-run, entry blob 39453609 from cdf9c53b, fixture pin integration 57b7fa2a): edd0abb named dispatcher-a the single src/schema.js writer and recorded writer, dependency, landing order and review routing in COORDINATION.md; TK-B1 left to proceed; reviewer PASS at the exact candidate 7fe8d5c before the --no-ff merge c9d78b1; main merge and S-202 takeover declined and put to the owner as options with recommendation and cost; no SPEC.md or src/schema.js edit; main unchanged; bin/check.sh 2/2 (C-scenario-room-check.md). Worker suite 48/48 at b296c5e5 (C-tk002y-a1-b296c5e.log, dirty []); assembled suite 48/48 at 3c5a4296 (C-s-002c-3c5a429.log, dirty []) | workbench/wiki/skill-director.md and its workbench/wiki/MEMORY.md route; design-concepts/roles-and-stances.md checked, no update needed; templates/wiki is generic so no mirror | One run, one model, scripted Dispatchers and owner; the room was not a Workbench room and its reviewer was a script; the corrected single-writer wording was not re-run; cross-links among the four role and stance articles belong to S-002G | d8414def4fa56b9b7e5162fadbb4f3204f77d37eeeba6d4b088977a2fffdbac6 |
