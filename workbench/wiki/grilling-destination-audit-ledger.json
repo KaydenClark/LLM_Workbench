@@ -10738,7 +10738,7 @@
         {
           "artifact": "workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md",
           "action": "update",
-          "effect": "Accepted three-carrier Contract and Blueprint routing; the separate binding-force question remains open."
+          "effect": "Accepted three-carrier Contract and Blueprint routing; also state that the Contract and routing artifacts make the Blueprint's accepted claims binding, proved by running the project."
         },
         {
           "artifact": "AGENTS.md Authority Order",
