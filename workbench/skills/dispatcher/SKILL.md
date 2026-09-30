@@ -35,9 +35,7 @@ a small named concurrency, and accumulate their hand-backs. Reviewer or
 Auditor: perform a named verification job inside the Spec. Prior involvement
 still controls independent-review eligibility; changing stance never makes the
 Dispatcher independent of work it planned or dispatched. The Spec Planner and
-Spec Manager capabilities are owned by
-`workbench/specs/S-002F-spec-planner-stance/SPEC.md` and
-`workbench/specs/S-002G-spec-manager-stance/SPEC.md`.
+Spec Manager stances ship as the `spec-planner` and `spec-manager` skills.
 
 Name one durable writer for the Spec, its TASK.md records and the rendered
 projections before any Worker starts; by default that writer is the

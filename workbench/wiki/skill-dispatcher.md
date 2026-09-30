@@ -41,10 +41,10 @@ The operating entry is [the dispatcher skill](../skills/dispatcher/SKILL.md), de
 
 ## Composition
 
-- **Spec Planner**, owned by `workbench/specs/S-002F-spec-planner-stance/SPEC.md`: at flight launch, cut small complete-path Tasks and group the ones with disjoint files into safe parallel slices; planning Workers may draft Task records and the Dispatcher reconciles their drafts.
-- **Spec Manager**, owned by `workbench/specs/S-002G-spec-manager-stance/SPEC.md`: during execution, dispatch and monitor Workers, one Task and one attempt each, within a small named concurrency, and accumulate their hand-backs.
+- [Spec Planner](skill-spec-planner.md) ([spec-planner skill](../skills/spec-planner/SKILL.md)): at flight launch, cut small complete-path Tasks and group the ones with disjoint files into safe parallel slices; planning Workers may draft Task records and the Dispatcher reconciles their drafts.
+- [Spec Manager](skill-spec-manager.md) ([spec-manager skill](../skills/spec-manager/SKILL.md)): during execution, dispatch and monitor Workers, one Task and one attempt each, within a small named concurrency, and accumulate their hand-backs.
 - **Reviewer** (`workbench/skills/reviewer/SKILL.md`) and [Auditor](skill-auditor.md): named verification jobs the Dispatcher may perform inside the Spec. Prior involvement still controls independent-review eligibility.
-- **Director**, owned by `workbench/specs/S-002C-director-role/SPEC.md`: the role the Dispatcher hands back to; it coordinates cross-Spec dependencies, shared writers outside a Spec and the integration review.
+- [Director](skill-director.md) ([director skill](../skills/director/SKILL.md)): the role the Dispatcher hands back to; it coordinates cross-Spec dependencies, shared writers outside a Spec and the integration review.
 - **Worker**, owned by `workbench/specs/S-002E-worker-role/SPEC.md`: one Task, one attempt, hand-back to the Dispatcher.
 
 The [roles and stances design concept](design-concepts/roles-and-stances.md) explains how these compose; each linked Spec owns its own delivery state.
@@ -83,3 +83,4 @@ The agent also reported one boundary incident itself. During the first review, i
 
 - 2026-09-29: Created by S-002D TK-003B with the role-versus-stance boundary, the single-writer and no-self-approval rules, the containment route and its bootstrap exception, and one fresh-context scenario recorded with its limits.
 - 2026-09-29: At S-002D assembly, the Dispatcher linked the landed entry and added a second scenario run in which Workers ran concurrently.
+- 2026-09-30: S-002G cross-link pass: sibling capabilities link their articles.
