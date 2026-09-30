@@ -3,11 +3,12 @@
 **Task ID:** TK-003G
 **Spec ID:** S-002G
 **Slice:** Ship the spec-manager core skill entry with bundle, catalog and installer proof
-**Status:** in-progress
+**Status:** done
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-002G Desired Behavior 1-5 stated as the operating contract of one discoverable core skill entry, and acceptance line 7 (source behavior, templates, discovery and managed installation agree)
 **Planned verification:** Red: with the new contract assertions added to `tools/test-skill-catalog.mjs` before the source exists, `node tools/test-skill-catalog.mjs` fails naming the missing `spec-manager` entry; after `coreSkills` grows, the unchanged count-bearing documents and the frozen v3.2.1 row check in `tools/test-workbench-layout.mjs` fail. Green: `node tools/test-skill-catalog.mjs`, `node tools/test-workbench-layout.mjs`, `node --test tools/test-delivery-skills.mjs`, `node tools/test-core-skill-installer.mjs`, `node tools/test-skills-lane.mjs`, `node tools/test-cross-provider-fixture.mjs` and `node tools/test-skill-inspection.mjs` pass on the committed candidate, then the full AGENTS suite.
+**Proof:** Red ccb611b6: node tools/test-skill-catalog.mjs exits 1 with 'spec-manager must be a declared core skill' (G-tk003g-red.txt). Green c8cb2cac and b2f42d6d: test-skill-catalog, test-workbench-layout, test-delivery-skills, test-core-skill-installer, test-skills-lane, test-cross-provider-fixture, test-skill-inspection and test-control-fidelity exit 0; doctor no blocking finding; full AGENTS suite 48/48 at b2f42d6d, first line dirty [] (G-tk003g-b2f42d6.log). Dispatcher review re-read the diff against every Required Behavior clause and re-ran test-skill-catalog, test-workbench-layout, test-workbench-tools and test-wiki at the merged Spec tip 09b35bfb (all exit 0); merged as 41582c22
 
 ## Outcome
 
@@ -92,3 +93,9 @@ plus assembled proof is [TK-003I](../TK-003I/TASK.md).
   candidate (log path and first-line SHA with `dirty: []` recorded).
 - Docs status names every changed document and why; remaining gaps name the
   Wiki article, scenario and any S-00P wording.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s-002g-spec-manager-stance-r3 | 09b35bfb891e11e0ee96df1d9850c146448537f4 | ahead 0 behind 0 | 0 | Red ccb611b6: node tools/test-skill-catalog.mjs exits 1 with 'spec-manager must be a declared core skill' (G-tk003g-red.txt). Green c8cb2cac and b2f42d6d: test-skill-catalog, test-workbench-layout, test-delivery-skills, test-core-skill-installer, test-skills-lane, test-cross-provider-fixture, test-skill-inspection and test-control-fidelity exit 0; doctor no blocking finding; full AGENTS suite 48/48 at b2f42d6d, first line dirty [] (G-tk003g-b2f42d6.log). Dispatcher review re-read the diff against every Required Behavior clause and re-ran test-skill-catalog, test-workbench-layout, test-workbench-tools and test-wiki at the merged Spec tip 09b35bfb (all exit 0); merged as 41582c22 | workbench/skills/spec-manager/SKILL.md (new); workbench/skills/README.md row and 26-skill bundle sentence; manifest skillPolicy.required; workbench-layout coordinationSkills and its comment; one-number counts in README.md, RUNBOOK.md, templates/GENESIS.md, LEXICON.md Core skill bundle row and workbench/wiki/skill-genesis.md; link-only sibling-name edits in workbench/skills/dispatcher/SKILL.md and workbench/skills/spec-planner/SKILL.md; catalog pins moved from Spec paths to skill names | Root-control Spec Manager wording beyond the pinned counts routed to S-00P; the spec-planner entry still cites the ADR-000P and role-model paths, which are repository-only and outside this Spec's Spec-path scope | 797c690b1a158896f69e5350e3bb53e3bd19aaaa1b13f4fdaadb3e350a360080 |
