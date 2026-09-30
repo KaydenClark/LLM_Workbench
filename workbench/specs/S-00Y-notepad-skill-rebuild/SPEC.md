@@ -8,8 +8,8 @@
 **Updated:** 2026-09-30
 **Catalog description:** Preserve one objective's working context in revision-checked JSON without making it authority.
 **Blockers:** none.
-**Latest event:** TK-003S claimed by codex-servitor-pr-resolution.
-**Next gate:** Close TK-003S with verification and documentation proof.
+**Latest event:** TK-003T carries the bounded claimed documentation correction after identity collision reconciliation.
+**Next gate:** Close TK-003T with verification and documentation proof.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -94,6 +94,8 @@ Maintain `workbench/wiki/skill-notepad.md` and its sole router entry alongside t
 | 2026-09-26 | TK-00P review | Separate-context review of immutable candidate `926ba63392c540978a2daa41af93d1b1914ded18` against base `02e9823`: PASS, no High/Medium/Low findings | Codex CLI `codex exec -s read-only -m gpt-5.5`; reviewer ran `wiki.mjs validate` and `git diff --check` (both pass) and checked by source review that the diff is one skill wide with no runtime, schema or migration change, that every command in the notepad source exists in the runtime CLI, and that the pending convention matches grilling's `source_record` + `current.unresolved` + `decision` pattern. Landing agent reran `test-notepads`, `test-skill-catalog`, `test-skill-inspection` and `test-core-skill-installer` green on the committed candidate | None | Reviewer could not run fixture tests in its sandbox (`EPERM` on `mkdtemp`). Owner Human QA remains |
 | 2026-09-26 | review | Review verdict: pass at eec12cf74ee3f649fa199cfe618c67f4df697938 [382ebd255f83] #1 | none; final-content review of the Spec at eec12cf (checked acceptance lines supported by recorded evidence, Completion Result accurate against source, header and Wiki route consistent); refreshes the digest after the boxes and Completion Result were written post-verdict; fixture tests not run in the reviewer sandbox | Codex CLI codex exec -s read-only -m gpt-5.5, separate context (Lane E log E-gate-review-1.log) | 4 |
 | 2026-09-30 | review | Review verdict: fail at 350c56375a7ab5ebfc5ca00ba6d7bbdb8486bf05 [382ebd255f83] #2 | P2 accepted-notepad truth correction: accepted ADR000L and skill guidance must say stale-revision means the supplied revision is absent or mismatched, not prove that the note changed or identify a writer. Independent fresh revision1 missing-revision probe refused without byte changes. P2 multipart TT-Q9 must preserve its implemented objective-ownership answer but remain partially answered with Spec and Task relationships open beyond the Packet rule. No accepted ADR rollback, concurrency implementation, new owner decision or conversational-fidelity QA claim. | Independent reviewer thread01a0f455-9401-77f4-a66a-8097f754d01b supplied independent-review.md and synthetic revision probe | 1 |
+| 2026-09-30 | TK-003T | Correct the new documentation claim identity before implementation: the narrow disposable-clone refspec omitted the concurrently published S-01X TK-003S claim | Native next-id with refreshed full remote branch inventory proposes TK-003T. Original S-00Y claim e9bcaf4 remains in Git history, with failure evidence unchanged. This is the same bounded correction attempt, relabeled before any Receipt or implementation proof | The accepted ADR and original owner direction remain unchanged by this identity correction | Independent correction review and existing S-00Y conversational-fidelity owner QA remain separate |
+
 
 ## Completion Result
 
