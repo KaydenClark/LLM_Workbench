@@ -5372,6 +5372,42 @@ function commitAll(dir, message) {
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 }
 
+// A remote tip whose matched spec lines exceed Node's default 1 MiB spawnSync
+// buffer still reserves its IDs: `next-id` must neither fail with an empty
+// message nor skip the IDs that only that large remote tip holds.
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'large-remote-identities-'));
+  try {
+    initLifecycleFixture(root);
+    writeAt(root, 'workbench/specs/S-00A-active/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-00A').replaceAll('TK-001', 'TK-00A'));
+    execFileSync('git', ['init', '--quiet', root]);
+    execFileSync('git', ['-C', root, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', root, 'config', 'user.name', 'Fixture']);
+    execFileSync('git', ['-C', root, 'add', '-A']);
+    execFileSync('git', ['-C', root, 'commit', '--quiet', '-m', 'local identities']);
+    const base = headSha(root);
+    const padding = ' '.repeat(8) + 'x'.repeat(120);
+    const evidence = Array.from({ length: 10000 }, () => `| 2026-09-30 | TK-00B | evidence | ${padding} | none | none |`).join('\n');
+    const large = fixtureSpec().replaceAll('S-001', 'S-00B').replaceAll('TK-001', 'TK-00B')
+      .replace('| TK-00B | First slice | ready | none | pending |', '| TK-00B | First slice | ready | none | pending |\n| TK-00C | Second slice | ready | none | pending |\n| TK-00D | Third slice | ready | S-00C, S-00D | pending |')
+      .replace('|---|---|---|---|---|---|\n', `|---|---|---|---|---|---|\n${evidence}\n`);
+    assert.ok(Buffer.byteLength(large) > 1024 * 1024, 'the remote-only spec must exceed the 1 MiB default spawnSync buffer');
+    writeAt(root, 'workbench/specs/S-00B-large-remote/SPEC.md', large);
+    execFileSync('git', ['-C', root, 'add', '-A']);
+    execFileSync('git', ['-C', root, 'commit', '--quiet', '-m', 'large remote-only identities']);
+    execFileSync('git', ['-C', root, 'update-ref', 'refs/remotes/origin/large', 'HEAD']);
+    execFileSync('git', ['-C', root, 'reset', '--hard', '--quiet', base]);
+    const specTool = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+    const nextSpec = spawnSync(process.execPath, [specTool, 'next-id', '--prefix', 'S', '--path', root], { encoding: 'utf8' });
+    assert.equal(nextSpec.status, 0, nextSpec.stdout + nextSpec.stderr);
+    assert.equal(JSON.parse(nextSpec.stdout).id, 'S-000E', 'S-00B, S-00C and S-00D exist only on the large remote tip and stay reserved');
+    const nextTask = spawnSync(process.execPath, [specTool, 'next-id', 'S-00A', '--prefix', 'TK', '--path', root], { encoding: 'utf8' });
+    assert.equal(nextTask.status, 0, nextTask.stdout + nextTask.stderr);
+    assert.equal(JSON.parse(nextTask.stdout).id, 'TK-000E', 'TK-00B, TK-00C and TK-00D exist only on the large remote tip and stay reserved');
+    console.log('ok - next-id reserves IDs from a remote tip whose matched spec lines exceed 1 MiB');
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+}
+
 // ---- S-00J TK-01T: reviewed-delivery blocker `S-###:delivered` (begin) ----
 // A dependent that needs only a blocker Spec's reviewed integration delivery
 // (T0 of S-00J's closure-capture transition contract) writes
