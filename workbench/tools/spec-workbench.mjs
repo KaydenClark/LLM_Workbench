@@ -1941,6 +1941,35 @@ function collectDirectoryFiles(dir) {
   return files;
 }
 
+// Directory links are live navigation too. Keep directory targets separate
+// from the files to read/write, and validate linked targets before git mv.
+// Only the lifecycle moves use this planner; identity widening has its own
+// assigned delivery lane and remains unchanged.
+function lifecycleMoveLocations(root, oldDir, newDir, movingFiles, unmoved) {
+  const locations = new Map(unmoved.map(file => [file, file]));
+  for (const file of movingFiles) locations.set(file, path.join(newDir, path.relative(oldDir, file)));
+  const movingDirectories = dir => {
+    assertSafeReadPath(root, dir);
+    locations.set(dir, path.join(newDir, path.relative(oldDir, dir)));
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.isDirectory()) movingDirectories(path.join(dir, entry.name));
+    }
+  };
+  movingDirectories(oldDir);
+  for (const file of [...movingFiles, ...unmoved]) {
+    if (!file.endsWith('.md')) continue;
+    const { prefix, suffix } = splitEvidenceSection(fs.readFileSync(file, 'utf8'));
+    for (const link of localLinks(prefix + suffix)) {
+      const target = path.resolve(path.dirname(file), link);
+      if (target !== root && !target.startsWith(root + path.sep)) continue;
+      if (!fs.existsSync(target) || !fs.statSync(target).isDirectory()) continue;
+      if (target !== root) assertSafeReadPath(root, target);
+      if (!locations.has(target)) locations.set(target, target);
+    }
+  }
+  return locations;
+}
+
 // Rewrites one file in place against `locations` (old absolute path -> new
 // absolute path, and - critically - every entry that did NOT move mapped to
 // itself, exactly as TK-002's own `locations` map does), protecting its
@@ -2076,13 +2105,7 @@ export function moveSpecDirectory(rootDir, specId, folder) {
   // its relative path recomputed, because the moved file itself now sits one
   // folder deeper. The preflight excludes the moving directory; its files
   // are mapped old-path -> new-path below, not to themselves.
-  const locations = new Map();
-  for (const file of unmoved) {
-    locations.set(file, file);
-  }
-  for (const file of movingFiles) {
-    locations.set(file, path.join(newSpecDir, path.relative(oldSpecDir, file)));
-  }
+  const locations = lifecycleMoveLocations(root, oldSpecDir, newSpecDir, movingFiles, unmoved);
 
   preflightReferenceWrites(root, [...movingFiles, ...unmoved], locations);
   fs.mkdirSync(destinationRoot, { recursive: true });
@@ -2206,13 +2229,7 @@ export function moveTaskRecord(rootDir, specId, taskId, folder) {
   // Validate all live reference surfaces before any rename or write.
   const unmoved = collectSpecReferenceFiles(root, oldTaskDir);
 
-  const locations = new Map();
-  for (const file of unmoved) {
-    locations.set(file, file);
-  }
-  for (const file of movingFiles) {
-    locations.set(file, path.join(newTaskDir, path.relative(oldTaskDir, file)));
-  }
+  const locations = lifecycleMoveLocations(root, oldTaskDir, newTaskDir, movingFiles, unmoved);
 
   preflightReferenceWrites(root, [...movingFiles, ...unmoved], locations);
   fs.mkdirSync(destinationRoot, { recursive: true });

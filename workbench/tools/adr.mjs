@@ -558,8 +558,13 @@ export function rewriteAdrLinks(content, oldDir, newDir, locations) {
     // renormalized an active Spec's own untouched `../S-050-.../SPEC.md`
     // self-link down to `SPEC.md` this way. Leave it exactly as written.
     if (newAbsolute === oldAbsolute && newDir === oldDir) return whole;
-    const relative = path.relative(newDir, newAbsolute).split(path.sep).join('/');
-    const rebuilt = fragment !== undefined ? `${relative}#${fragment}` : relative;
+    const relative = path.relative(newDir, newAbsolute).split(path.sep).join('/') || '.';
+    // Preserve directory-route syntax and URI encoding when recomputing a
+    // moved target or referrer. In particular ./ names a directory; # alone
+    // would instead name a fragment in the referencing document.
+    const encoded = /%[0-9a-f]{2}/i.test(rawPath) ? encodeURI(relative) : relative;
+    const route = rawPath.endsWith('/') ? `${encoded}/` : encoded;
+    const rebuilt = fragment !== undefined ? `${route}#${fragment}` : route;
     if (rebuilt === target) return whole;
     count += 1;
     return `${open}${rebuilt}${close}`;

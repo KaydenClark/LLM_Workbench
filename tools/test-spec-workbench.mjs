@@ -45,6 +45,7 @@ import { parseMarkdownTableRow } from '../workbench/tools/markdown-table.mjs';
 // S-00I TK-01U: features capture reads the Wiki validator and note frontmatter.
 import { validateWiki } from '../workbench/tools/wiki.mjs';
 import { parseFrontmatter } from '../workbench/tools/adr.mjs';
+import './test-lifecycle-directory-links.mjs';
 
 // `doctor`'s `stale-claim` rule (workbench/tools/spec-workbench.mjs) flags an
 // in-progress claim whose `Updated` date-only stamp is more than one day
