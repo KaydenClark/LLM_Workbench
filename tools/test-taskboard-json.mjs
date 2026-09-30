@@ -94,8 +94,16 @@ function sample(root) {
 if (process.argv.includes('--demo')) {
   withRoom(root => {
     sample(root);
+    const available = spec(root, { id: 'S-000H', title: 'Offer an eligible To-do', priority: 1 });
+    task(root, available, { id: 'TK-000H', title: 'Demonstrate ordinary dispatch' });
     const board = preview(root);
     for (const lane of lanes) console.log(`${lane}: ${Object.entries(board.lanes[lane]).map(([id, card]) => `${card.title} (${id})`).join('; ')}`);
+    const next = selected(root, '--local');
+    assert.equal(next.taskId, 'TK-000H');
+    console.log(`ordinary next: ${next.slice} (${next.specId}/${next.taskId}); in-progress and dependency-waiting To-do remain visible and unoffered`);
+    const waits = dependencyFindings(root);
+    assert.ok(waits.some(item => item.taskId === 'TK-000C'));
+    console.log(`doctor dependency waits: ${waits.map(item => `${item.specId}/${item.taskId}`).join(', ')}`);
     console.log('Source-only fixture; default Markdown retained; no owner approval or canonical switch.');
   });
 } else {
@@ -189,6 +197,29 @@ if (process.argv.includes('--demo')) {
     const before = sourceSnapshot(root); assert.equal(selected(root, '--local'), null);
     assert.equal(command(root, 'claim', 'S-aa', '--agent', 'fixture', '--local').status, 1);
     assert.deepEqual(sourceSnapshot(root), before);
+  }));
+
+  test('equal source priority and title use WBID order across preview, next and scoped claim', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA' });
+    task(root, a, { id: 'TK-00AC', title: 'Same title' });
+    task(root, a, { id: 'TK-00AB', title: 'Same title' });
+    const board = preview(root);
+    assert.deepEqual(Object.keys(board.lanes.toDo).filter(id => id.startsWith('TK-')), ['TK-00AB', 'TK-00AC']);
+    assert.equal(selected(root, '--local').taskId, 'TK-00AB');
+    assert.equal(command(root, 'claim', 'S-aa', '--agent', 'fixture', '--local').status, 0);
+    assert.match(fs.readFileSync(path.join(root, a.dir, 'tasks/TK-00AB/TASK.md'), 'utf8'), /Status:\*\* in-progress/);
+  }));
+
+  test('invalid source priority is named by doctor and refuses preview, next and claim without writes', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA' }); const file = task(root, a, { id: 'TK-00AA' }); preview(root);
+    put(root, file, fs.readFileSync(path.join(root, file), 'utf8') + '**Priority:** invalid\n');
+    assert.equal(command(root, 'render').status, 0);
+    const before = sourceSnapshot(root), findings = JSON.parse(command(root, 'doctor').stdout);
+    assert.ok(findings.some(item => item.taskId === 'TK-00AA' && /invalid priority/.test(item.message)));
+    for (const args of [['render','--format','json'], ['next','--local'], ['claim','S-aa','--agent','fixture','--local']]) {
+      const result = command(root, ...args); assert.equal(result.status, 1); assert.match(result.stderr, /invalid priority/);
+      assert.deepEqual(sourceSnapshot(root), before);
+    }
   }));
 
   test('competing remote claims exclude offers and claims without changing visible source lanes or integration', () => withRoom(root => {

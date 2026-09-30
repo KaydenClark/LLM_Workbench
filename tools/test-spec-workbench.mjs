@@ -310,7 +310,7 @@ try {
 
   claimWork(root, 'S-001', { agent: 'codex', date: '2026-07-12' });
   assert.match(read('specs/S-001-fixture/SPEC.md'), /\| TK-001 \| First slice \| in-progress \|/);
-  assert.equal(nextWork(root).status, 'in-progress', 'next should resume claimed work before selecting new work');
+  assert.equal(nextWork(root), null, 'ordinary next offers only To-do; the claimed table row remains visible in progress');
 
   assert.throws(
     () => completeSpec(root, 'S-001', { date: '2026-07-12' }),
@@ -831,7 +831,7 @@ try {
   assert.match(read('specs/S-301-records/SPEC.md'), /\*\*Latest event:\*\* TK-002 claimed by codex\./);
   assert.equal(sliceTable(read('specs/S-301-records/SPEC.md')), recordTableBefore,
     'claiming a Task record leaves the Spec slice table untouched');
-  assert.equal(nextWork(root).status, 'in-progress', 'a claimed record resumes before new work is selected');
+  assert.equal(nextWork(root), null, 'ordinary next does not offer the claimed record; its successor remains dependency-blocked');
 
   publishFixture(root);
   const closedRecord = closeTask(root, 'S-301', {
@@ -5875,7 +5875,7 @@ function commitAll(dir, message) {
     assert.ok(doctor(correctiveRetiredRoot).some(item => item.code === 'blocked-slice'));
     fs.writeFileSync(correctivePath, readyContent);
     claimWork(correctiveRetiredRoot, 'S-591', { agent: 'fixture' });
-    assert.equal(nextWork(correctiveRetiredRoot)?.status, 'in-progress');
+    assert.equal(nextWork(correctiveRetiredRoot), null, 'ordinary next offers no already claimed corrective or successor Task');
     assert.equal(fs.readFileSync(path.join(correctiveRetiredRoot, historicalRoute), 'utf8'), retiredBytes, 'claim preserves historical Spec header and evidence');
     // S-00M TK-003: close refuses a dirty or unpushed tree, so the claim is
     // committed and "pushed" the way this fixture already simulates its remote.
@@ -5905,7 +5905,7 @@ function commitAll(dir, message) {
     assert.equal(doctor(correctiveRetiredRoot).some(item => item.code === 'blocked-slice' && item.specId === 'S-592'), false,
       'doctor and selection agree on retired completed dependencies');
     claimWork(correctiveRetiredRoot, 'S-592', { agent: 'fixture' });
-    assert.equal(nextWork(correctiveRetiredRoot)?.status, 'in-progress');
+    assert.equal(nextWork(correctiveRetiredRoot), null, 'ordinary next offers no already claimed corrective or successor Task');
 
     console.log('ok - createCorrectiveTasks against a retired (not discarded) Spec writes the new Task straight into its still-retired tasks/ directory, never under tasks/retired/, and never moves the Spec back out of retired/ - S-00J\'s deferred retired-folder case');
   } finally {
@@ -6752,9 +6752,10 @@ function parseTaskRecordForTest(content) {
     assert.equal(gitIn(gamma, 'branch', '--show-current'), 'integration', '(3) a refused claim leaves the instance where it was');
     assert.equal(gitIn(gamma, 'status', '--porcelain'), '', '(3) a refused claim writes nothing');
 
-    // (4) The owning instance resumes its own claim: its own tip is not a
-    // competing claim.
-    assert.equal(nextWork(alpha).taskId, 'TK-002', '(4) the claiming instance resumes its own in-progress Task');
+    // (4) Own in-progress work remains visible through source/show, but ordinary
+    // next offers only To-do; the other Task is now remotely claimed too.
+    assert.equal(nextWork(alpha), null, '(4) own in-progress work is not a new To-do offer');
+    assert.equal(statusOf(alpha, 'TK-002'), 'in-progress', '(4) claim state remains intact for explicit recovery');
 
     // (5) An abandoned branch abandons its claim: once the remote branch is
     // deleted, a fetch prunes it and the Task is selectable again.

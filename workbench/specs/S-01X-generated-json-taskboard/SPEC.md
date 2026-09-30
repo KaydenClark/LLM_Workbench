@@ -54,6 +54,15 @@ now owns the first opt-in preview from integration
 `2c47d96239dd48f17969e4d5fa8f668850c2ecfe`; later slices remain proposals.
 Task IDs come from `next-id` on the current integration tip; no lease holds.
 
+Stage 1, including TK-003P's normalized-field correction, is independently
+reviewed and contained through PR228 at integration
+`2780fe66754abf69b2ab6dea23337a7be0f6d801`. TK-003Q now owns stage 2A:
+source-qualified shared lane/eligibility, ordinary To-do-only dispatch and
+dependency visibility. The opt-in preview and default Markdown remain separate
+render boundaries. Source needs-review/review mode, minimal Backlog validation
+and the later rollout remain unfinished; no whole-Spec criterion is checked.
+
+
 ## Desired Behavior
 
 1. Root and generic starting board use schema-v1 JSON with exactly six lane
@@ -277,14 +286,17 @@ occurs during this planning authoring.
 | 2026-09-30 | TK-003P | Normalized-field preview correction implemented | Independent FAIL1 at exact 7a1746843200ca14243ff6337ce2345103f6eac3 preserved; both public reproducers returned 0 and replaced bytes with incorrect Complete. Test-only d249f5797d4b801bfee3dd065b9a267f88c24186 had four new failures with runtime unchanged; focused suite now passes 13 groups and demo; immutable full51 pending | Preview duplicate validation matches whole-document source extraction and key/value trim, with unchanged default parsers; RUNBOOK preview procedure | Fresh independent exact-head review and all broader S01X criteria remain open |
 | 2026-09-30 | TK-003P | Task closed | Exact correction 82bd5b3847a816ee6a6ed731aee64b9af3d70439: all 51 required local commands PASS (48 AGENTS plus three RUNBOOK), 13 public JSON regression groups PASS and under-minute demo. Both original exact7a reproducers now refuse with prior JSON bytes preserved and no incorrect Complete. Red d249f5797d4b801bfee3dd065b9a267f88c24186 had four new failures with runtime unchanged from reviewed7a. Default source parsers and render seam unchanged. Actual append-only history CLEAN, FAIL1 and TK003O receipt preserved. Self-drift retains seven prior findings, guardrails unchanged 78/100 with four recommendations, no clean-update or owner QA claim. | RUNBOOK preview normalized-field refusal procedure, S01X correction state and TK003P boundary/proof; TK003O failure link, prior proof/receipt unchanged. | Fresh independent exact-head Task PR review required before integration. All nine S01X acceptance criteria and owner QA remain open. Canonical legacy flat-ID reconciliation, shared selection/review vocabulary, direct/orphan Tasks, sitrep and root/template rollout remain later slices. S01W QA remains separate. |
 | 2026-09-30 | TK-003Q | Stage 2A shared eligibility assigned | Native identity/remote claim checks at integration 2780fe66754abf69b2ab6dea23337a7be0f6d801; prior PR228 exact195 reviewed and contained; S01W claimed QA remains separate | Own pure lane module and selection/claim/dependency sections plus matching tests; default Markdown and later stage-2 obligations retained | Public red/green, full checks and independent exact-head review pending |
+| 2026-09-30 | TK-003Q | Shared To-do calculation implemented; immutable checks pending | Red test-only 43e15bd698f22f359919106746db23031d1d46c4 had six expected behavior failures with runtime unchanged; focused public preview/next/claim/doctor, capability and remote-claim controls pass 23 groups; public demo shows eligible To-do offer and named dependency wait | Source-qualified lane/eligibility and priority/title/WBID ordering shared; default Markdown, selectors, capability routing, remote claims and flat collision refusal retained; installed diagnostics and cold recovery assertions reconciled | Full51 immutable gate and independent exact-head Task review pending; later stage-2 review vocabulary/Backlog and whole-Spec criteria remain open |
 
 ## Completion Result
 
 Planning capability owner authored; TK-003O's scoped preview is closed with
 implementation proof. Independent review of exact 7a17468 failed with a
 normalized-field P2. TK-003P closed the bounded correction with immutable
-local proof at 82bd5b3; fresh independent delivery review remains pending.
-Whole-capability acceptance, independent delivery review and owner Human QA
+local proof at 82bd5b3; separate exact195 Task review passed and PR228 is
+contained at integration 2780fe6. TK-003Q implements bounded stage 2A, with
+immutable aggregate checks and fresh independent Task review still pending.
+Whole-capability acceptance, assembled independent review and owner Human QA
 remain pending; no Spec completion is claimed.
 
 ## Remaining Limitations Or Follow-Up Specs

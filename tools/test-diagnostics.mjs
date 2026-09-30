@@ -145,14 +145,15 @@ test('the registry is closed, typed, and every emitted code is registered', () =
 test('attention findings stay visible and never change the doctor exit code or hide work', () => {
   const dir = project();
   try {
-    write(dir, 'workbench/specs/S-001-stale/SPEC.md', spec('S-001', { tasks: '| TK-001 | First slice | in-progress | none | pending |', updated: '2026-01-01', extra: '[missing](../../missing.md)' }));
+    write(dir, 'workbench/specs/S-001-stale/SPEC.md', spec('S-001', { tasks: '| TK-001 | First slice | in-progress | none | pending |\n| TK-002 | New To-do | ready | none | pending |', updated: '2026-01-01', extra: '[missing](../../missing.md)' }));
     render(dir);
     const findings = doctor(dir, { today: '2026-09-04', home: quietHome });
     assert.deepEqual(findings.map((item) => [item.code, item.severity, item.blocks]).sort(), [['broken-link', 'attention', 'none'], ['stale-claim', 'attention', 'none']]);
     const cli = cliDoctor(dir);
     assert.equal(cli.status, 0, 'attention findings must not fail doctor');
     assert.equal(cli.findings.length, 2);
-    assert.equal(nextWork(dir).taskId, 'TK-001', 'attention findings must not hide resumable work');
+    assert.equal(nextWork(dir).taskId, 'TK-002', 'attention findings must not hide eligible To-do work');
+    assert.match(fs.readFileSync(path.join(dir, 'workbench/specs/S-001-stale/SPEC.md'), 'utf8'), /TK-001.*in-progress/, 'existing claim remains visible in source');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

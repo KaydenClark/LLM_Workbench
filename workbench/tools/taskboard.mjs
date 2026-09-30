@@ -4,9 +4,31 @@ export const TASKBOARD_LANES = Object.freeze(['backlog', 'toDo', 'inProgress', '
 const SPEC_STATES = new Set(['planned', 'active', 'blocked', 'needs-review', 'complete', 'superseded']);
 const TASK_LANES = Object.freeze({ ready: 'toDo', 'in-progress': 'inProgress', blocked: 'blocked', done: 'complete', deferred: 'backlog' });
 
+// Source-qualified calculation shared by preview and execution consumers.
+// Dependencies and capability facts come from existing source resolvers; the
+// calculation never reads output, allocates identities or writes lifecycle state.
+export function taskboardTaskEntry(spec, task, { resolvedStatus = task.status, dependenciesMet = true } = {}) {
+  const lane = TASK_LANES[task.status === 'ready' ? 'ready' : resolvedStatus];
+  if (!lane) throw new Error(`taskboard-source: ${task.id} has invalid status ${task.status}`);
+  const fields = sourceFields(task.content, false);
+  const priority = fields.Priority === undefined ? spec.priority : Number(fields.Priority);
+  if (!Number.isInteger(priority) || priority < 0) throw new Error(`taskboard-source: ${task.id} has invalid priority`);
+  return {
+    key: `${visibleIdKey(spec.id)}/${visibleIdKey(task.id)}`,
+    specId: spec.id, id: task.id, title: task.slice, priority,
+    lane, status: resolvedStatus, dependenciesMet,
+    eligible: lane === 'toDo' && resolvedStatus === 'ready' && dependenciesMet
+  };
+}
+
+export function compareTaskboardEntries(a, b) {
+  return a.priority - b.priority || compareText(a.title, b.title)
+    || compareVisibleIds(a.id, b.id) || compareVisibleIds(a.specId ?? a.id, b.specId ?? b.id);
+}
+
 // First S-01X slice: a pure projection of existing parsed owners. No clock,
 // output reads, allocation, selection, review verdict or lifecycle mutation.
-export function buildTaskboard(specs) {
+export function buildTaskboard(specs, { resolveTask = () => ({}) } = {}) {
   const entries = [];
   const identities = new Map();
   function add(id, lane, card, source) {
@@ -25,13 +47,13 @@ export function buildTaskboard(specs) {
       ...spec.records,
       ...(spec.retiredRecords ?? [])
     ];
-    for (const child of children) {
+    const childEntries = children.map(child => taskboardTaskEntry(spec, child, resolveTask(spec, child)));
+    for (const [index, child] of children.entries()) {
       if (visibleIdKey(child.specId) !== visibleIdKey(spec.id)) throw new Error(`taskboard-source: ${child.relativePath} names ${child.specId}, expected parent ${spec.id}`);
-      const lane = TASK_LANES[child.status];
-      if (!lane) throw new Error(`taskboard-source: ${child.id} has invalid status ${child.status}`);
+      const entry = childEntries[index], lane = entry.lane;
       const retired = Boolean(spec.lifecycleFolder || child.lifecycleFolder);
       const card = makeCard({
-        title: child.slice, priority: spec.priority, content: child.content,
+        title: child.slice, priority: entry.priority, content: child.content,
         dependencies: child.blockers, sourceLinks: [child.relativePath, spec.relativePath],
         progress: null, nextAction: taskAction(child, retired),
         cleanupState: lane === 'complete' ? (retired ? 'readyToDelete' : 'readyToCapture') : null
@@ -39,7 +61,7 @@ export function buildTaskboard(specs) {
       card.specId = child.specId;
       add(child.id, lane, card, child.relativePath);
     }
-    const lane = specLane(spec, children);
+    const lane = specLane(spec, childEntries);
     const card = makeCard({
       title: spec.title, priority: spec.priority, content: spec.content,
       assignee: spec.owner, dependencies: spec.blockers, sourceLinks: [spec.relativePath],
@@ -50,7 +72,7 @@ export function buildTaskboard(specs) {
     add(spec.id, lane, card, spec.relativePath);
   }
   const board = { schemaVersion: 1, lanes: Object.fromEntries(TASKBOARD_LANES.map(lane => [lane, {}])) };
-  entries.sort((a, b) => a.card.priority - b.card.priority || compareText(a.card.title, b.card.title) || compareVisibleIds(a.id, b.id));
+  entries.sort((a, b) => compareTaskboardEntries({ ...a.card, id: a.id }, { ...b.card, id: b.id }));
   for (const { id, lane, card } of entries) board.lanes[lane][id] = card;
   validateTaskboard(board);
   return board;
@@ -59,12 +81,12 @@ export function buildTaskboard(specs) {
 function specLane(spec, children) {
   if (spec.status === 'planned') return 'backlog';
   if (spec.status === 'blocked') return 'blocked';
-  const allDone = children.every(child => child.status === 'done');
+  const allDone = children.every(child => child.lane === 'complete');
   if (allDone && ['complete', 'superseded'].includes(spec.status)) return 'complete';
   if (allDone && spec.status === 'needs-review') return 'needsReview';
-  if (children.some(child => child.status === 'in-progress')) return 'inProgress';
-  if (children.some(child => child.status === 'ready') || children.length === 0) return 'toDo';
-  if (children.some(child => child.status === 'blocked')) return 'blocked';
+  if (children.some(child => child.lane === 'inProgress')) return 'inProgress';
+  if (children.some(child => child.lane === 'toDo') || children.length === 0) return 'toDo';
+  if (children.some(child => child.lane === 'blocked')) return 'blocked';
   // Completing children never manufactures an assembled-review readiness claim.
   return 'inProgress';
 }
@@ -85,7 +107,7 @@ function makeCard({ title, priority, content, assignee, dependencies, sourceLink
   };
 }
 
-function sourceFields(content = '') {
+function sourceFields(content = '', rejectDuplicates = true) {
   // Match the exact whole-document field extraction used by parseSpecPacket
   // and parseTaskRecord: same regex, key/value trim, and case-sensitive names.
   // Spec parsing currently last-wins; preview publication must instead refuse
@@ -93,7 +115,7 @@ function sourceFields(content = '') {
   const fields = {};
   for (const match of content.matchAll(/^\*\*([^*]+):\*\*\s*(.+)$/gm)) {
     const key = match[1].trim();
-    if (Object.hasOwn(fields, key)) throw new Error(`taskboard-source: duplicated source field ${key}`);
+    if (rejectDuplicates && Object.hasOwn(fields, key)) throw new Error(`taskboard-source: duplicated source field ${key}`);
     fields[key] = match[2].trim();
   }
   return fields;
