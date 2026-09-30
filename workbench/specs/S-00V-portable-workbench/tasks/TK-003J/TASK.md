@@ -117,6 +117,15 @@ three additional independent safety probes. Separate local review of the
 exact remote candidate also passed, with 10 focused cases.
 
 The repository close command records the scoped Task as done with this proof.
-This final documentation-only closeout still requires immutable review and
-integration containment; it does not complete S-00V, approve owner Human QA,
+At that checkpoint, the final documentation-only closeout still required
+immutable review and integration containment; it does not complete S-00V, approve owner Human QA,
 change main, publish a release or clear the S-00Q self-drift blocker.
+
+## Verified Integration Delivery — 2026-09-30
+
+PR #225 merged as `54146bf6bf90310b750ee69c3075bc30c67ff09d`.
+A fresh fetch proved reviewed final head
+`fb62f9d216cc611ccf7b40254dfa4bd1f908bf2a` is contained in
+`origin/integration`; its exact final SHA passed all 51 commands in the
+independent saved-cloud verifier and fresh exact-head review. Main was not
+modified. This delivers TK-003J while S-00V and its remaining gates stay open.

@@ -1879,7 +1879,8 @@ export function findSpec(rootDir, selector) {
 
 // Every live Markdown surface a Spec move must repair a reference in: the
 // same external classes TK-002's ADR migration rewrote (root controls, the
-// Wiki, `skills/`, `team templates/`), plus the ADR collection itself - an
+// Wiki, manifest-resolved skills plus legacy `skills/`, `team templates/`),
+// plus the ADR collection itself - an
 // accepted ADR naming a live Spec path is exactly the reference class this
 // Spec's own Decisions section names for ADRs, the inverse direction - and
 // every Spec's `SPEC.md` and standalone `tasks/**/TASK.md` Task record,
@@ -1893,19 +1894,26 @@ function collectSpecReferenceFiles(root, excludeDir) {
     const file = path.join(root, name);
     if (fs.existsSync(file) && fs.statSync(file).isFile()) files.push(file);
   }
-  const walk = (dir, match) => {
+  const walk = (dir, match, ordinaryOnly = false) => {
+    if (ordinaryOnly) assertSafeReadPath(root, dir);
     if (!fs.existsSync(dir)) return;
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-      if (entry.isSymbolicLink()) continue;
+      if (entry.isSymbolicLink()) {
+        if (ordinaryOnly) assertSafeReadPath(root, path.join(dir, entry.name));
+        continue;
+      }
       const full = path.join(dir, entry.name);
-      if (entry.isDirectory()) walk(full, match);
+      if (entry.isDirectory()) walk(full, match, ordinaryOnly);
       else if (entry.isFile() && match(entry.name)) files.push(full);
     }
   };
-  walk(path.join(root, 'workbench', 'wiki'), (name) => name.endsWith('.md'));
-  walk(path.join(root, 'skills'), (name) => name.endsWith('.md'));
+  walk(lanePath(root, 'wiki'), (name) => name.endsWith('.md'));
+  walk(lanePath(root, 'skills'), (name) => name.endsWith('.md'), true);
+  // Pre-lane installations may still carry root skills; keep that supported
+  // surface too. Deduplication below prevents double counting a shared path.
+  walk(path.join(root, 'skills'), (name) => name.endsWith('.md'), true);
   walk(path.join(root, 'team templates'), (name) => name.endsWith('.md'));
-  walk(path.join(root, 'workbench', 'docs', 'adr'), (name) => name.endsWith('.md'));
+  walk(collectionPath(root, 'adr'), (name) => name.endsWith('.md'));
   walk(resolveSpecsRoot(root).specsRoot, (name) => name === 'SPEC.md' || name === 'TASK.md');
   const seen = new Set();
   return files.filter((file) => {
@@ -1933,6 +1941,38 @@ function collectDirectoryFiles(dir) {
   return files;
 }
 
+// Directory links are live navigation too. Keep directory targets separate
+// from the files to read/write, and validate linked targets before git mv.
+// Only the lifecycle moves use this planner; identity widening has its own
+// assigned delivery lane and remains unchanged.
+function lifecycleMoveLocations(root, oldDir, newDir, movingFiles, unmoved) {
+  const locations = new Map(unmoved.map(file => [file, file]));
+  const directoryTargets = new Set();
+  for (const file of movingFiles) locations.set(file, path.join(newDir, path.relative(oldDir, file)));
+  const movingDirectories = dir => {
+    assertSafeReadPath(root, dir);
+    locations.set(dir, path.join(newDir, path.relative(oldDir, dir)));
+    directoryTargets.add(dir);
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.isDirectory()) movingDirectories(path.join(dir, entry.name));
+    }
+  };
+  movingDirectories(oldDir);
+  for (const file of [...movingFiles, ...unmoved]) {
+    if (!file.endsWith('.md')) continue;
+    const { prefix, suffix } = splitEvidenceSection(fs.readFileSync(file, 'utf8'));
+    for (const link of [...localLinks(prefix), ...localLinks(suffix)]) {
+      const target = path.resolve(path.dirname(file), link);
+      if (target !== root && !target.startsWith(root + path.sep)) continue;
+      if (!fs.existsSync(target) || !fs.statSync(target).isDirectory()) continue;
+      if (target !== root) assertSafeReadPath(root, target);
+      if (!locations.has(target)) locations.set(target, target);
+      directoryTargets.add(target);
+    }
+  }
+  return { locations, directoryTargets };
+}
+
 // Rewrites one file in place against `locations` (old absolute path -> new
 // absolute path, and - critically - every entry that did NOT move mapped to
 // itself, exactly as TK-002's own `locations` map does), protecting its
@@ -1951,11 +1991,27 @@ function collectDirectoryFiles(dir) {
 // recomputed (the moved file sits one folder deeper now), and
 // `rewriteAdrLinks` can only do that when the unmoved target is in the map,
 // mapped to itself.
-function rewriteReferenceFile(root, filePath, oldDir, newDir, locations, totals) {
-  const finalContent = planReferenceRewrite(root, filePath, fs.readFileSync(filePath, 'utf8'), oldDir, newDir, locations, totals);
+function rewriteReferenceFile(root, filePath, oldDir, newDir, locations, totals, options = {}) {
+  const finalContent = planReferenceRewrite(root, filePath, fs.readFileSync(filePath, 'utf8'), oldDir, newDir, locations, totals, options);
   if (finalContent !== null) {
     assertSafeWritePath(root, filePath);
     writeSafeFile(root, filePath, finalContent);
+  }
+}
+
+// Discover deterministic unsafe rewrites before git mv changes any path.
+// Only files whose live bytes actually change need write permission: an
+// unrelated hard-linked reference surface is not a reason to refuse a move.
+function preflightReferenceWrites(root, files, locations, options = {}) {
+  for (const file of files) {
+    const destination = locations.get(file);
+    if (!destination.endsWith('.md')) continue;
+    const rewritten = planReferenceRewrite(root, destination, fs.readFileSync(file, 'utf8'),
+      path.dirname(file), path.dirname(destination), locations,
+      { referencesRewritten: {}, historicalReferencesLeft: {} }, options);
+    if (rewritten === null) continue;
+    assertSafeWritePath(root, file);
+    if (destination !== file) assertSafeWritePath(root, destination);
   }
 }
 
@@ -1966,12 +2022,12 @@ function rewriteReferenceFile(root, filePath, oldDir, newDir, locations, totals)
 // (S-01W TK-002O) plans every rewrite with this before it touches the tree, so
 // a refusal can never leave a partial mutation; the lifecycle moves keep
 // calling `rewriteReferenceFile` exactly as before.
-function planReferenceRewrite(root, filePath, original, oldDir, newDir, locations, totals) {
+function planReferenceRewrite(root, filePath, original, oldDir, newDir, locations, totals, options = {}) {
   const { prefix, evidence, suffix } = splitEvidenceSection(original);
   const canonicalized = rewriteCanonicalizedIn(prefix, root, locations);
-  const rewrittenPrefix = rewriteAdrLinks(canonicalized.content, oldDir, newDir, locations);
-  const rewrittenSuffix = rewriteAdrLinks(suffix, oldDir, newDir, locations);
-  const skippedInEvidence = rewriteAdrLinks(evidence, oldDir, newDir, locations).count;
+  const rewrittenPrefix = rewriteAdrLinks(canonicalized.content, oldDir, newDir, locations, options);
+  const rewrittenSuffix = rewriteAdrLinks(suffix, oldDir, newDir, locations, options);
+  const skippedInEvidence = rewriteAdrLinks(evidence, oldDir, newDir, locations, options).count;
   const relative = path.relative(root, filePath).split(path.sep).join('/');
   if (skippedInEvidence > 0) totals.historicalReferencesLeft[relative] = (totals.historicalReferencesLeft[relative] ?? 0) + skippedInEvidence;
   const rewritten = rewrittenPrefix.count + rewrittenSuffix.count + canonicalized.count;
@@ -2043,34 +2099,31 @@ export function moveSpecDirectory(rootDir, specId, folder) {
   // Snapshot every file the move carries before touching the filesystem;
   // `oldSpecDir` will not exist once the directory itself has moved.
   const movingFiles = collectDirectoryFiles(oldSpecDir);
-
-  fs.mkdirSync(destinationRoot, { recursive: true });
-  const moveResult = spawnSync('git', ['-C', root, 'mv', path.relative(root, oldSpecDir), path.relative(root, newSpecDir)], { encoding: 'utf8' });
-  if (moveResult.status !== 0) throw new Error(`git mv failed for ${specId}: ${(moveResult.stderr || moveResult.stdout || '').trim()}`);
+  // Validate all live reference surfaces before any rename or write.
+  const unmoved = collectSpecReferenceFiles(root, oldSpecDir);
 
   // Corrective review finding 1: `locations` must carry every reference
   // target this move can touch, not only the ones that are moving - a moved
   // file's own outgoing link to an unmoved sibling Spec or ADR still needs
   // its relative path recomputed, because the moved file itself now sits one
-  // folder deeper. `collectSpecReferenceFiles` is called once, after the
-  // move, excluding the Spec's own new directory (its files are mapped
-  // old-path -> new-path immediately below, not to themselves).
-  const locations = new Map();
-  for (const file of collectSpecReferenceFiles(root, newSpecDir)) {
-    locations.set(file, file);
-  }
-  for (const file of movingFiles) {
-    locations.set(file, path.join(newSpecDir, path.relative(oldSpecDir, file)));
-  }
+  // folder deeper. The preflight excludes the moving directory; its files
+  // are mapped old-path -> new-path below, not to themselves.
+  const { locations, directoryTargets } = lifecycleMoveLocations(root, oldSpecDir, newSpecDir, movingFiles, unmoved);
+  const rewriteOptions = { directoryTargets };
+
+  preflightReferenceWrites(root, [...movingFiles, ...unmoved], locations, rewriteOptions);
+  fs.mkdirSync(destinationRoot, { recursive: true });
+  const moveResult = spawnSync('git', ['-C', root, 'mv', path.relative(root, oldSpecDir), path.relative(root, newSpecDir)], { encoding: 'utf8' });
+  if (moveResult.status !== 0) throw new Error(`git mv failed for ${specId}: ${(moveResult.stderr || moveResult.stdout || '').trim()}`);
 
   const totals = { referencesRewritten: {}, historicalReferencesLeft: {} };
   for (const oldFile of movingFiles) {
     const newFile = locations.get(oldFile);
     if (!newFile.endsWith('.md')) continue;
-    rewriteReferenceFile(root, newFile, path.dirname(oldFile), path.dirname(newFile), locations, totals);
+    rewriteReferenceFile(root, newFile, path.dirname(oldFile), path.dirname(newFile), locations, totals, rewriteOptions);
   }
-  for (const file of collectSpecReferenceFiles(root, newSpecDir)) {
-    rewriteReferenceFile(root, file, path.dirname(file), path.dirname(file), locations, totals);
+  for (const file of unmoved) {
+    rewriteReferenceFile(root, file, path.dirname(file), path.dirname(file), locations, totals, rewriteOptions);
   }
 
   // Corrective review finding 1 (second round): REGISTER.md and HISTORY.md
@@ -2177,27 +2230,25 @@ export function moveTaskRecord(rootDir, specId, taskId, folder) {
   // Snapshot every file the move carries before touching the filesystem;
   // `oldTaskDir` will not exist once the directory itself has moved.
   const movingFiles = collectDirectoryFiles(oldTaskDir);
+  // Validate all live reference surfaces before any rename or write.
+  const unmoved = collectSpecReferenceFiles(root, oldTaskDir);
 
+  const { locations, directoryTargets } = lifecycleMoveLocations(root, oldTaskDir, newTaskDir, movingFiles, unmoved);
+  const rewriteOptions = { directoryTargets };
+
+  preflightReferenceWrites(root, [...movingFiles, ...unmoved], locations, rewriteOptions);
   fs.mkdirSync(destinationRoot, { recursive: true });
   const moveResult = spawnSync('git', ['-C', root, 'mv', path.relative(root, oldTaskDir), path.relative(root, newTaskDir)], { encoding: 'utf8' });
   if (moveResult.status !== 0) throw new Error(`git mv failed for ${specId}/${taskId}: ${(moveResult.stderr || moveResult.stdout || '').trim()}`);
-
-  const locations = new Map();
-  for (const file of collectSpecReferenceFiles(root, newTaskDir)) {
-    locations.set(file, file);
-  }
-  for (const file of movingFiles) {
-    locations.set(file, path.join(newTaskDir, path.relative(oldTaskDir, file)));
-  }
 
   const totals = { referencesRewritten: {}, historicalReferencesLeft: {} };
   for (const oldFile of movingFiles) {
     const newFile = locations.get(oldFile);
     if (!newFile.endsWith('.md')) continue;
-    rewriteReferenceFile(root, newFile, path.dirname(oldFile), path.dirname(newFile), locations, totals);
+    rewriteReferenceFile(root, newFile, path.dirname(oldFile), path.dirname(newFile), locations, totals, rewriteOptions);
   }
-  for (const file of collectSpecReferenceFiles(root, newTaskDir)) {
-    rewriteReferenceFile(root, file, path.dirname(file), path.dirname(file), locations, totals);
+  for (const file of unmoved) {
+    rewriteReferenceFile(root, file, path.dirname(file), path.dirname(file), locations, totals, rewriteOptions);
   }
 
   // Corrective review finding 2 (S-00I TK-004 review): mirror
@@ -2907,25 +2958,68 @@ function parseWorktreeEntries(porcelain) {
 // computed yet). Resolve the most recent path addition, not the first one:
 // a removed and re-added route is a different incarnation whose containment
 // must be established independently.
-function resolveMovingCommit(root, relativePath) {
-  const result = spawnSync('git', ['-C', root, 'log', '--no-renames', '--diff-filter=A', '--format=%H', '-1', '--', relativePath], { encoding: 'utf8' });
-  if (result.status !== 0) return null;
-  const shas = result.stdout.split('\n').map((line) => line.trim()).filter(Boolean);
-  return shas.length > 0 ? shas[0] : null;
+// Git's default path history simplifies away merges, including a merge
+// restoring a deleted record from a retained side parent. Per-parent history
+// makes those additions visible. An ordinary import from a parent that never
+// carried the path is not a new incarnation; restoration after a deletion is.
+function discardHistory(root, args) {
+  const result = spawnSync('git', ['-C', root, ...args], { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
+  if (result.status !== 0) throw new Error(`Cannot verify discard history: ${result.stderr?.trim() || result.error?.message || 'Git read failed'}`);
+  return result.stdout;
 }
 
-// Recovery covers the whole directory at its latest change, including proof
-// files added after retirement. Both incarnation and content must be on main.
+function discardParents(root, commit) {
+  return discardHistory(root, ['rev-list', '--parents', '-n', '1', commit]).trim().split(' ').slice(1);
+}
+
+function resolveMovingCommit(root, relativePath) {
+  const additions = discardHistory(root, ['log', '--full-history', '--topo-order', '-m', '--no-renames', '--diff-filter=A', '--format=%H', 'HEAD', '--', relativePath]);
+  for (const commit of new Set(additions.trim().split('\n').filter(Boolean))) {
+    const parents = discardParents(root, commit);
+    const missingParents = parents.filter(parent => discardHistory(root, ['ls-tree', '-z', parent, '--', relativePath]) === '');
+    // A root commit or a new path absent from every parent introduces it.
+    if (missingParents.length === parents.length) return commit;
+    for (const parent of missingParents) {
+      const deleted = discardHistory(root, ['log', '--full-history', '-m', '--no-renames', '--diff-filter=D', '--format=%H', '-1', parent, '--', relativePath]);
+      if (deleted.trim()) return commit;
+    }
+  }
+  return null;
+}
+
+// Recover the complete current directory, not just its primary record. Walk
+// exact tree-preserving parent edges, rather than trusting simplified log's
+// chosen side. A merge creating a new combination is itself a content origin;
+// an ordinary non-FF import follows the parent that actually supplied it.
+// Every surviving origin must be main-contained before one can be printed.
 function recoveryIdentity(root, relativeDir, remoteRef) {
-  const result = spawnSync('git', ['-C', root, 'log', '-1', '--format=%H', '--', relativeDir], { encoding: 'utf8' });
-  const commit = result.stdout?.trim();
-  if (result.status !== 0 || !commit || spawnSync('git', ['-C', root, 'merge-base', '--is-ancestor', commit, remoteRef]).status !== 0) {
+  const treeCache = new Map();
+  const tree = commit => {
+    if (!treeCache.has(commit)) {
+      const entry = discardHistory(root, ['ls-tree', '-z', commit, '--', relativeDir]);
+      const match = /^040000 tree ([0-9a-f]+)\t([^\0]+)\0$/.exec(entry);
+      treeCache.set(commit, match?.[2] === relativeDir ? match[1] : null);
+    }
+    return treeCache.get(commit);
+  };
+  const head = discardHistory(root, ['rev-parse', '--verify', 'HEAD^{commit}']).trim();
+  const currentTree = tree(head);
+  if (!currentTree) throw new Error('discard recovery commit does not match the complete current directory');
+  const pending = [head];
+  const seen = new Set();
+  const origins = [];
+  while (pending.length) {
+    const commit = pending.pop();
+    if (seen.has(commit)) continue;
+    seen.add(commit);
+    const matchingParents = discardParents(root, commit).filter(parent => tree(parent) === currentTree);
+    if (matchingParents.length) pending.push(...matchingParents);
+    else origins.push(commit);
+  }
+  if (origins.length === 0 || origins.some(commit => spawnSync('git', ['-C', root, 'merge-base', '--is-ancestor', commit, remoteRef]).status !== 0)) {
     throw new Error(`discard current directory content is not verified contained in ${remoteRef}`);
   }
-  const tree = ref => spawnSync('git', ['-C', root, 'rev-parse', `${ref}:${relativeDir}`], { encoding: 'utf8' });
-  const recovered = tree(commit);
-  const current = tree('HEAD');
-  if (recovered.status !== 0 || current.status !== 0 || recovered.stdout !== current.stdout) throw new Error('discard recovery commit does not match the complete current directory');
+  const commit = origins[0];
   const quotedDir = /^[A-Za-z0-9_./-]+$/.test(relativeDir) ? relativeDir : "'" + relativeDir.replaceAll("'", "'\"'\"'") + "'";
   return { recoveryCommit: commit, recoveryCommand: `git checkout ${commit} -- ${quotedDir}` };
 }

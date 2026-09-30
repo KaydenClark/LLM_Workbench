@@ -165,12 +165,13 @@ export function computeSpecDigest(root, spec, candidate = null) {
     hash.update(content);
     hash.update('\n');
   }
-  const relativeDir = path.relative(root, specDir).split(path.sep).join('/');
+  let relativeDir = path.relative(root, specDir).split(path.sep).join('/');
   function committed(args) {
     const result = spawnSync('git', args, { cwd: root, encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
     if (result.status !== 0) throw new Error(`Cannot read committed content for ${spec.id} at ${candidate}: ${result.stderr?.trim() || result.error?.message || 'Git read failed'}`);
     return result.stdout;
   }
+  if (candidate) relativeDir = committedSpecDirectory(root, spec, candidate, relativeDir, committed);
   const specContent = candidate ? committed(['show', `${candidate}:${relativeDir}/SPEC.md`]) : spec.content;
   addEntry('SPEC.md', stripVolatileSpecFields(stripEvidenceRows(specContent)));
   let taskNames;
@@ -194,6 +195,70 @@ export function computeSpecDigest(root, spec, candidate = null) {
     addEntry(name, stripReceiptSection(content));
   }
   return hash.digest('hex');
+}
+
+// S-00U TK-003K: a retirement changes the lookup path, not the approved
+// candidate or digest. Only follow the one canonical active -> retired move,
+// proven by Git's staged rename or the latest committed destination addition.
+// Never search for another same-ID or same-digest record. In particular, a
+// removed/re-added source or destination is a new incarnation: an older
+// approval cannot prove it, even when somebody copies the old evidence rows.
+function committedSpecDirectory(root, spec, candidate, relativeDir, committed) {
+  const currentFile = `${relativeDir}/SPEC.md`;
+  const regularBlob = (ref, file) => {
+    const entries = committed(['ls-tree', '-z', ref, '--', file]).split('\0').filter(Boolean);
+    return entries.length === 1 && /^(100644|100755) blob [0-9a-f]+\t/.test(entries[0])
+      && entries[0].slice(entries[0].indexOf('\t') + 1) === file;
+  };
+  if (regularBlob(candidate, currentFile)) return relativeDir;
+
+  const refuse = () => { throw new Error(`Cannot prove the committed retirement source for ${spec.id} at ${candidate}`); };
+  const { specsPrefix } = resolveSpecsRoot(root);
+  const basename = path.posix.basename(relativeDir);
+  if (relativeDir !== `${specsPrefix}/retired/${basename}` || !basename.startsWith(`${spec.id}-`)) refuse();
+  const sourceDir = `${specsPrefix}/${basename}`;
+  const sourceFile = `${sourceDir}/SPEC.md`;
+  const missing = (ref, file) => committed(['ls-tree', '-z', ref, '--', file]) === '';
+  const ancestor = (older, newer) => spawnSync('git', ['merge-base', '--is-ancestor', older, newer], { cwd: root }).status === 0;
+  const parentsOf = ref => committed(['rev-list', '--parents', '-n', '1', ref]).trim().split(' ').slice(1);
+  const latestAddition = (ref, file) => {
+    // Default log hides additions made by merge commits. Per-parent history
+    // exposes them, but an ordinary merge importing an existing path is not
+    // a new incarnation: at least one parent already carries that path.
+    const additions = committed(['log', '--full-history', '--topo-order', '-m', '--no-renames', '--diff-filter=A', '--format=%H', ref, '--', file]).trim().split('\n').filter(Boolean);
+    return [...new Set(additions)].find(sha => parentsOf(sha).every(parent => missing(parent, file)));
+  };
+  // A deletion anywhere on the candidate's surviving ancestry invalidates
+  // that incarnation, including a merge that restores another parent's old
+  // bytes. Parents predating the candidate are excluded, so ordinary delivery
+  // of a newly introduced Spec through a non-FF merge stays valid.
+  const deletedSince = (from, to, file) => committed(['log', '--ancestry-path', '--full-history', '-m', '--no-renames', '--diff-filter=D', '--format=%H', `${from}..${to}`, '--', file]).trim() !== '';
+  const isRename = (args) => {
+    const fields = committed(['diff', '--name-status', '-z', '--find-renames', ...args, '--', sourceFile, currentFile]).split('\0').filter(Boolean);
+    return fields.length === 3 && /^R\d+$/.test(fields[0]) && fields[1] === sourceFile && fields[2] === currentFile;
+  };
+  if (!regularBlob(candidate, sourceFile) || !missing(candidate, currentFile) || !ancestor(candidate, 'HEAD')) refuse();
+
+  let sourceParent;
+  if (regularBlob('HEAD', sourceFile) && missing('HEAD', currentFile)) {
+    // moveSpecDirectory stages the whole rename before its caller commits.
+    if (!isRename(['--cached', 'HEAD'])) refuse();
+    sourceParent = 'HEAD';
+  } else {
+    if (!missing('HEAD', sourceFile) || !regularBlob('HEAD', currentFile)) refuse();
+    const move = latestAddition('HEAD', currentFile);
+    if (!move) refuse();
+    if (deletedSince(move, 'HEAD', currentFile)) refuse();
+    const parents = parentsOf(move);
+    sourceParent = parents.find(parent => ancestor(candidate, parent)
+      && regularBlob(parent, sourceFile) && missing(parent, currentFile)
+      && missing(move, sourceFile) && regularBlob(move, currentFile)
+      && isRename([parent, move]));
+    if (!sourceParent) refuse();
+  }
+  const sourceAdded = latestAddition(sourceParent, sourceFile);
+  if (!sourceAdded || !ancestor(sourceAdded, candidate) || deletedSince(candidate, sourceParent, sourceFile)) refuse();
+  return sourceDir;
 }
 
 // Blanks the Spec header's `Updated`, `Latest event` and `Next gate` field
@@ -888,7 +953,7 @@ function latestOwnerApprovalFor(approvals, specDigest, root, spec) {
     // Retain those rows as history, but never treat one as valid authorization.
     try {
       if (computeSpecDigest(root, spec, approvals[index].candidate) === specDigest) return approvals[index];
-    } catch { /* Missing or moved historical content cannot prove approval. */ }
+    } catch { /* Missing content or an unproven lifecycle move cannot prove approval. */ }
   }
   return null;
 }
