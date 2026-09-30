@@ -34,7 +34,15 @@ node workbench/tools/notepads.mjs read --note NOTE --view current
 
 `--view current` returns the compact resumption view and the revision to write
 against, without putting the entry history into your response. Start there.
-Create only when no existing note owns the objective:
+A note belongs to its objective, not to the chat, model or host that created
+it ([ADR-000L](../../docs/adr/000L-a-notepad-belongs-to-its-objective-and-every-chat-working-that-objective-writes-to-it.md)):
+resume the objective's note even when another context created it, and expect
+entries you did not write. Create only when no reachable note already serves
+this purpose for the objective; a purpose-distinct note, such as a grilling
+record beside a work note, is linked through `related_notes`. If the
+objective's note is unreachable from this host, continue from its Markdown
+handoff and keep a local note under the same objective key that names it as
+related, for later reconciliation:
 
 ```bash
 node workbench/tools/notepads.mjs create --note NAME --objective OBJECTIVE_KEY \
@@ -83,11 +91,13 @@ node workbench/tools/notepads.mjs append --note NOTE --revision N \
 ```
 
 Every write names the revision you read. A write against a revision that has
-moved is refused as `stale-revision` naming the current one - read again and
-re-apply. This is a check, not a lock: it catches the sequential case, where
-your note moved while you were working. Two writers that both read the same
-revision at the same moment would both pass it, so one writer per note remains
-the rule. Every free-text field you supply is privacy-scanned before it can
+moved is refused as `stale-revision` naming the current one - the note moved,
+whoever moved it; read again and re-apply. This is a check, not a lock: it
+catches the sequential case, where your note moved while you were working. Two
+writers that both read the same revision at the same moment would both pass
+it, and the later write silently replaces the earlier one, so writes stay one
+writer at a time. That rule bounds overlapping writes, not which chat may own
+or resume the note. Every free-text field you supply is privacy-scanned before it can
 reach the file; record a safe reference rather than a secret, credential, or
 raw private data.
 
