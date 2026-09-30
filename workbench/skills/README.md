@@ -1,8 +1,8 @@
 # Workbench Core Skills
 
 This directory is the self-contained, versioned LLM Workbench skill source. It
-is a closed 22-skill bundle (eighteen workflow skills and four stances),
-counted from the manifest and catalog below, for a
+is a closed 26-skill bundle (eighteen workflow skills, four coordination skills
+and four portable stances), counted from the manifest and catalog below, for a
 brand-new installation, not a general catalog or a project-local discovery tree.
 The checked-out LLM Workbench release owns the exact source versions.
 
@@ -27,6 +27,10 @@ The checked-out LLM Workbench release owns the exact source versions.
 | `handoff` | Author readable, scope-preserving Markdown continuation for the requested destination. |
 | `grill-me` | Start a saved design inquiry: compose grilling with objective-scoped notepad continuity, keeping pending answers pending. |
 | `notepad` | Keep one objective's local JSON working context: save it as it appears, retrieve a topic with its corrections, trim only what is reconciled. |
+| `director` | Coordinate the whole project across Spec-bound Dispatchers and integrate independently reviewed results. |
+| `dispatcher` | Operate as the assigned Dispatcher for one Spec and its branch: plan its Tasks, dispatch and monitor Workers, own assembled verification and hand the candidate to the Director. |
+| `spec-planner` | Plan small Tasks and parallel vertical slices for one assigned Spec from current Actuality at flight launch, then hand the plan to Spec Manager. |
+| `spec-manager` | Dispatch and monitor Workers on ready non-conflicting Tasks within one assigned Spec, assess hand-backs and report the assembled candidate to the Director. |
 | `builder` | Deliver the assigned result with useful verification and truthful documentation. |
 | `auditor` | Determine whether named claims hold on the assigned target and evidence. |
 | `reviewer` | Challenge candidate correctness, downstream impact and consequential claims. |
@@ -180,7 +184,9 @@ directly. If a user separately stores a stance below `stances/` in a personal
 catalog, that nested installation also needs a flat top-level symlink there.
 The missing-only publication installer never replaces a foreign symlink or
 rearranges existing installations. SPEC and TASK assign a stance; loading one
-changes method without changing authority or spawning an agent.
+changes method without changing authority or spawning an agent. Spec Planner,
+the coordination stance a Dispatcher adopts at flight launch, ships flat in the
+lane like the four portable stances and is assigned the same way.
 
 ## Composition And Authoring
 
