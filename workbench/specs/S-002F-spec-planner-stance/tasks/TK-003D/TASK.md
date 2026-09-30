@@ -3,11 +3,12 @@
 **Task ID:** TK-003D
 **Spec ID:** S-002F
 **Slice:** Ship the spec-planner core entry with its bundle proof
-**Status:** in-progress
+**Status:** done
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: Source behavior, templates, discovery and managed installation agree; named verification and remaining limitations are recorded without claiming owner approval.
 **Planned verification:** Red: a new `spec-planner` pin in `tools/test-skill-catalog.mjs` fails at the base because `workbench/skills/spec-planner/SKILL.md` does not exist and `coreSkills` in `workbench/tools/workbench-layout.mjs` does not name it. Green: the entry ships in the lane, `coreSkills` and `workbench/manifest.json` `skillPolicy.required` name it immediately before `builder`, the `workbench/skills/README.md` catalog row and bundle sentence and every prose count the test derives agree, and `test-skill-catalog`, `test-workbench-layout`, `test-core-skill-installer`, `test-skills-lane`, `test-skill-inspection` and `test-delivery-skills` pass; then the full AGENTS suite on the committed candidate.
+**Proof:** Red 9e55735f (attempt 1, cherry-picked from 74cd3b30): tools/test-skill-catalog.mjs exits 1 with 'spec-planner must be a declared core skill', re-observed by attempt 2. Green 7c9f675e (attempt 1, from 5620ff83) reconciled to the S-002D convention in 3cad77df: test-skill-catalog, test-workbench-layout, test-core-skill-installer, test-skills-lane, test-skill-inspection, test-delivery-skills and test-control-fidelity exit 0; doctor no blocking finding; full AGENTS suite 48/48 at 3cad77df (F-tk003d-3cad77d.log, dirty [])
 
 ## Outcome
 
@@ -80,3 +81,9 @@ already supplies scope and dispatch responsibility.
   to land (S-002G); this Task links only to files on integration.
 - Root-control count edits beyond the number, and any control wording the
   stance needs, route to S-00P.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s-002f-spec-planner-stance-r2 | 00a45ba2e542dbfc7e75a5a49a5544f552e4adbb | ahead 0 behind 0 | 0 | Red 9e55735f (attempt 1, cherry-picked from 74cd3b30): tools/test-skill-catalog.mjs exits 1 with 'spec-planner must be a declared core skill', re-observed by attempt 2. Green 7c9f675e (attempt 1, from 5620ff83) reconciled to the S-002D convention in 3cad77df: test-skill-catalog, test-workbench-layout, test-core-skill-installer, test-skills-lane, test-skill-inspection, test-delivery-skills and test-control-fidelity exit 0; doctor no blocking finding; full AGENTS suite 48/48 at 3cad77df (F-tk003d-3cad77d.log, dirty []) | workbench/skills/spec-planner/SKILL.md; workbench/skills/README.md row and 24-skill bundle sentence; manifest skillPolicy.required; workbench-layout coordinationSkills; pinned counts in README.md, RUNBOOK.md, LEXICON.md Core skill bundle row, templates/GENESIS.md and workbench/wiki/skill-genesis.md | Root-control wording beyond the pinned counts routed to S-00P; references to the Dispatcher role and Spec Manager stance by repository Spec path routed to S-002G; attempt-1 branch claude/s-002f-tk-002x is patch-contained but not an ancestor | e83e011d78df1bbd21bbe102ffee32512456cb23b51becde2e8f90a10e0ea473 |
