@@ -327,7 +327,9 @@ not a separate publishing ceremony. Apply claim-level ownership and the current
 request throughout; no record or projection can manufacture authority.
 
 Notepads, including grilling records, use JSON, including when older workflow
-examples say Markdown. Handoffs are separate human-readable Markdown (`.md`)
+examples say Markdown. A note belongs to its objective, not to the chat that
+created it: every context that can reach it resumes and appends to it, one
+writer at a time. Handoffs are separate human-readable Markdown (`.md`)
 files: they give a receiving agent or a new chat plain-language instructions
 for continuing one objective. Do not serialize a handoff as a JSON notepad.
 The shared runtime is `workbench/tools/notepads.mjs`; its interchange schema

@@ -430,8 +430,8 @@ test('every accepted-ADR-to-spec reference in the real corpus resolves literally
     if (countForRecord > 0) filesWithLink += 1;
   }
   // S-00V TK-01L: ADR-000O adds one file and one link to S-00V.
-  assert.equal(filesWithLink, 23, 're-count of accepted ADR files carrying a live Spec-path reference at this candidate');
-  assert.equal(totalLinks, 27, 're-count of total accepted-ADR-to-spec link edges at this candidate');
+  assert.equal(filesWithLink, 24, 're-count of accepted ADR files carrying a live Spec-path reference at this candidate');
+  assert.equal(totalLinks, 28, 're-count of total accepted-ADR-to-spec link edges at this candidate');
 });
 
 test('durable references distinguish tracked notepad templates from ignored live records', () => {
@@ -568,8 +568,8 @@ test('every intra-ADR link in the real corpus resolves literally, and the re-cou
     if (countForRecord > 0) filesWithLink += 1;
   }
   // ADR-000P adds one file and one link (to ADR-0036) to the prior 36/65 corpus.
-  assert.equal(filesWithLink, 37, 're-count of ADR files carrying an intra-ADR link at this candidate');
-  assert.equal(totalLinks, 66, 're-count of total intra-ADR link edges at this candidate');
+  assert.equal(filesWithLink, 38, 're-count of ADR files carrying an intra-ADR link at this candidate');
+  assert.equal(totalLinks, 71, 're-count of total intra-ADR link edges at this candidate');
 });
 
 // S-00I TK-001 review correction: a link is validated literally, never
