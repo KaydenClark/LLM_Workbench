@@ -11,7 +11,7 @@
 **Latest event:** Historical Spec completion preserved; PR77 citation correction has public baseline provenance; frozen verification and independent review remain.
 **Next gate:** PR77 frozen verification and independent review; no Spec reopening.
 
-> **Citation anchors.** pre=`18ffc0d` post=`18ffc0d`. A label before a citation names
+> **Citation anchors.** pre=`18ffc0d` post=`1c74fa7c9951c689717be086cbfefedd0ec14a8e`. A label before a citation names
 > its tree and wins: "shipped `:M`" reads at `post`, "base `:N`" at the `git show`
 > anchor that introduced the path. Unlabelled, a citation reads at `pre` in
 > Outcome, Why It Matters, Current Verified State, Desired Behavior and

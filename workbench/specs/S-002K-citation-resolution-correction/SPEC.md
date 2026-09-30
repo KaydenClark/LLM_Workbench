@@ -74,6 +74,7 @@ S045 gets a truthful historical post anchor and a follow-up link; this linked Sp
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-30 | planning | Linked follow-up for independently verified late PR77 findings | Separate reviewer supplied three actionable parser reproductions and qualified the historical anchor defect; producer read the designated synthetic probe and verified historical1c74fa7 contains Spec/checker. No new implementation or PASS claimed | Bounded linked owner; completed S045 preserved | Native activation, durable reds, bounded repair, required verification and independent final-head review |
+| 2026-09-30 | TK-003U | Reproduced durable reds and implemented bounded citation correction | Published test-only red93c41eafbeaa6634c7eb06561e3f6e891d65c348: seven existing tests PASS and three new regressions FAIL before parser changes. Label lists now retain explicit tree until a new label/path/prose boundary; digit-leading basenames are scanned; dotted non-file values preserve scope. Historical1c74fa7c9951c689717be086cbfefedd0ec14a8e contains S045 and checker | S045 post anchor restored to that truthful historical tree; completed status, Tasks, evidence and original verdicts preserved. Linked owner and native projection route remain | Frozen required verification and separate independent final-head review pending; no owner approval or whole-S045 reopening |
 
 ## Completion Result
 

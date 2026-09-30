@@ -35,13 +35,14 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SPECS = path.join(root, 'workbench', 'specs');
 const FIRST_ANCHORED = 36;
 
-const FULL = /(?<![\w/.-])([A-Za-z_.][A-Za-z0-9_./-]*):(\d+)(?:-(\d+))?/g;
+const FULL = /(?<![\w/.-])([A-Za-z0-9_.][A-Za-z0-9_./-]*):(\d+)(?:-(\d+))?/g;
 const SHORT = /`:(\d+)(?:-(\d+))?`/g;
 // A path put in scope for a following shorthand: backticked, or written bare
 // with a directory separator, which these specs do inside table cells
 // ("tools/test-diagnostics.mjs ... at `:477`").
-const PATH_ONLY = /`([A-Za-z_.][A-Za-z0-9_./-]*)`|(?<![`/\w.-])([A-Za-z_.][A-Za-z0-9_./-]*\/[A-Za-z0-9_./-]+)(?![`\w])/g;
+const PATH_ONLY = /`([A-Za-z0-9_.][A-Za-z0-9_./-]*)`|(?<![`/\w.-])([A-Za-z0-9_.][A-Za-z0-9_./-]*\/[A-Za-z0-9_./-]+)(?![`\w])/g;
 const KNOWN_PATHS = new Set(execFileSync('git', ['ls-tree', '-r', '--name-only', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim().split('\n'));
+const KNOWN_BASENAMES = new Set([...KNOWN_PATHS].map((file) => path.posix.basename(file)));
 const GIT_SHOW = /git show\s+[0-9a-f]{7,40}:[A-Za-z0-9_./-]+/g;
 const ANCHOR = /\*\*Citation anchors\.\*\*\s*pre=`([0-9a-f]{7,40})`\s*post=`([0-9a-f]{7,40})`/;
 // Pre-change sections describe the tree the work started from. Documentation
@@ -94,6 +95,7 @@ function scanParagraph(text, section) {
   const out = [];
   let lastPath = null;
   let lineBase = null;
+  let previousCitation = null;
 
   // A `git show <sha>:path` anchor is absolute: not itself a bare citation, but
   // it names the path and base tree the shorthand AFTER it refers to. It is
@@ -112,22 +114,24 @@ function scanParagraph(text, section) {
     // an evidence token such as commitSHA:45 into a file citation.
     const cited = m[1];
     if (cited.includes('/') || cited.includes('.') || KNOWN_PATHS.has(cited)) {
-      marks.push({ at: m.index, kind: 'full', cited, from: Number(m[2]), to: Number(m[3] ?? m[2]) });
+      marks.push({ at: m.index, end: m.index + m[0].length, kind: 'full', cited, from: Number(m[2]), to: Number(m[3] ?? m[2]) });
     }
   }
-  for (const m of para.matchAll(SHORT)) marks.push({ at: m.index, kind: 'short', from: Number(m[1]), to: Number(m[2] ?? m[1]) });
+  for (const m of para.matchAll(SHORT)) marks.push({ at: m.index, end: m.index + m[0].length, kind: 'short', from: Number(m[1]), to: Number(m[2] ?? m[1]) });
   // A path named without a line number still puts that path in scope for the
   // shorthand that follows it.
   for (const m of para.matchAll(PATH_ONLY)) {
     const cited = m[1] ?? m[2];
-    if (cited.includes('/') || cited.includes('.') || KNOWN_PATHS.has(cited)) {
+    // A dotted prose/version value is not a path. Bare repository filenames
+    // still establish scope; qualified paths remain visible even if absent.
+    if (cited.includes('/') || KNOWN_BASENAMES.has(cited)) {
       marks.push({ at: m.index, kind: 'path', cited });
     }
   }
   marks.sort((a, b) => a.at - b.at);
 
   for (const mark of marks) {
-    if (mark.kind === 'anchor') { lastPath = mark.cited; lineBase = mark.sha; continue; }
+    if (mark.kind === 'anchor') { lastPath = mark.cited; lineBase = mark.sha; previousCitation = null; continue; }
     if (mark.kind === 'path') {
       if (lastPath !== mark.cited) lineBase = null;
       lastPath = mark.cited; continue;
@@ -138,10 +142,15 @@ function scanParagraph(text, section) {
     }
     const cited = mark.cited ?? lastPath;
     const lookback = para.slice(Math.max(0, mark.at - 40), mark.at).toLowerCase();
-    const shipped = /shipped[^:]*$/.test(lookback);
-    const based = /\bbase\b[^:]*$/.test(lookback);
+    // An explicit label covers the following comma/and-separated list, not
+    // just its first member. New prose, path or explicit label ends that scope.
+    const continuation = previousCitation?.cited === cited
+      && /^[\s,`]*(?:(?:and|or)[\s,`]*)?$/.test(para.slice(previousCitation.end, mark.at));
+    const shipped = /shipped[^:]*$/.test(lookback) || Boolean(continuation && previousCitation.shipped);
+    const based = !shipped && (/\bbase\b[^:]*$/.test(lookback) || Boolean(continuation && previousCitation.based));
     out.push({ section, cited, from: mark.from, to: mark.to, shipped, based, lineBase,
                shorthand: mark.kind === 'short' });
+    previousCitation = { cited, end: mark.end, shipped, based };
   }
   return out;
 }
@@ -294,6 +303,8 @@ test('an explicit tree label governs every citation in its list and stops at a n
   assert.deepEqual(pair.map((c) => c.shipped), [true, true], 'both actual S040 shipped lines must select post');
   const group = liveCitations('## Current Verified State\n\n`tools/test-diagnostics.mjs` (base `:12`, `:13`), shipped `:14` and `:15`; later `:16`.');
   assert.deepEqual(group.map((c) => [c.based, c.shipped]), [[true, false], [true, false], [false, true], [false, true], [false, false]]);
+  const anchored = liveCitations('## Current Verified State\n\n`tools/test-diagnostics.mjs` shipped `:12`, `git show 1234567:tools/test-diagnostics.mjs` then `:13`.');
+  assert.deepEqual(anchored.map((c) => c.shipped), [true, false], 'a new absolute anchor ends the old list label');
 });
 
 test('digit-leading bare filenames are citations just like qualified paths', () => {
