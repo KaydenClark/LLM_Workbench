@@ -1003,6 +1003,13 @@ shows active accepted decisions, and `HISTORY.md` preserves all lifecycle
 states. Register regenerates
 both projections without rewriting decision bodies.
 
+A confirmed grilling readback in Question / Answer / Why / Impact form locks
+the resulting ADR decision. Author the ADR during `to-docs`, before Specs and
+Tasks; no second owner reread is required when the text faithfully records the
+confirmed answer. Reconcile later corrections with their owning records before
+moving an accepted decision out of `proposed/`. Acceptance and implementation
+are separate: record any gap in the assigned Spec.
+
 ```bash
 node workbench/tools/adr.mjs new --title "Decision title"
 node workbench/tools/adr.mjs validate

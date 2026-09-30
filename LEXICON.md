@@ -34,6 +34,9 @@ These are the Context Map's entry routes. Follow the smallest applicable route:
 
 The Wiki retains its single `MEMORY.md` router. This table connects existing
 owners; it does not add a second Wiki index or copy their contents.
+For a completed capability or historical release explanation, follow its Wiki
+feature article before source archives; use the Spec catalog for current
+status and the original Spec for dated proof.
 
 ## Ownership Rules
 
@@ -55,8 +58,9 @@ An **artifact owner** is the maintained location of a particular kind of truth;
 a **maintainer** is the person or assigned agent responsible for keeping it
 current. Owning information does not grant permission to change it.
 
-The Workbench Contract spans its existing controls and the assigned Spec; it is
-not another document. The following jobs are distinct even when one document
+The Workbench Contract spans `AGENTS.md`, `RUNBOOK.md`, `LEXICON.md`
+and the bounded assigned Spec; it is not another document. Other root
+artifacts are routed by the question they answer. The following jobs are distinct even when one document
 serves several. This is an ownership map, not a requirement to create one file,
 agent or workflow stage per row. Paths below use the standard layout; the
 manifest resolves an installed project's actual lanes and collections.
@@ -99,7 +103,7 @@ prevent a supporting artifact from silently taking over another job:
 
 | Artifact | Defined job and ownership limit |
 |---|---|
-| **Root controls** | AGENTS governs agents; Blueprint describes destination; Lexicon defines and routes; Runbook gives operations and procedures; README orients people. TASKBOARD projects Spec state; CLAUDE adapts entry for its host. They are discoverable together, but do not carry equal instruction authority. |
+| **Root controls** | AGENTS governs agents; Blueprint describes destination; Lexicon defines and routes; Runbook gives operations and procedures; README orients people. TASKBOARD projects Spec state; CLAUDE adapts entry for its host. The accepted destination adds `OWNERSHIP.json` as a Core route and replaces the Markdown projection with `TASKBOARD.json`; S-00G and the board work own installation. Root placement alone grants no Contract authority ([ADR-000B](workbench/docs/adr/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md)). |
 | **SPEC and TASK** | The Spec is the durable capability owner. Its Tasks divide delivery into temporary slices, each bound for its own `TASK.md` once [S-00H](workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md) migrates them out of the Spec's slice table. Neither a dashboard nor a local task list replaces their accepted state. |
 | **ADR** | An active accepted decision owns architectural Canon; rationale and rejected or superseded alternatives remain distinguishable. Operational owners are named by `canonicalized_in`. |
 | **Wiki article and guidebook** | An article owns an explanation; a guidebook owns a linked detailed procedure. Both cite governing sources and cannot authorize work or become a second work tracker. Wiki `SCHEMA.md` owns their structure and maintenance rules. |
@@ -220,7 +224,7 @@ architecture in `BLUEPRINT.md`, and rationale in the ADR collection.
 | Term | Definition | Distinction |
 |---|---|---|
 | **Governance Plane** | The role one claim plays in one operation: **Intent** (the request), **Canon** (the binding current-state rule), **Grounding** (evidence about intended truth or whether work was done correctly), **Enduring Context** (durable reference consulted), **Actuality** (the target being changed, including files, source, runtime, and verified state), and **Projection** (a source-derived report). | Planes classify claims and their use, never whole files, directories, or artifact types. One assigned spec carries Canon, Projection, Grounding, and Enduring Context claims at once ([ADR-000A](workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md)). |
-| **Workbench Contract** | The logical set of current claims owned by the seven root controls plus the explicitly assigned spec. | It is not a file; no `CONTRACT.md` or other coequal root control exists ([ADR-0033](workbench/docs/adr/0033-workbench-contract-is-a-claim-set.md)). |
+| **Workbench Contract** | The binding claim set carried by `AGENTS.md`, `RUNBOOK.md` and `LEXICON.md`, plus the explicitly assigned Spec's bounded capability requirements. | It is not a file; other root artifacts are routed by intent, and no `CONTRACT.md` exists ([ADR-000C](workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md)). |
 | **Instruction authority** | What an agent may do: the current owner request, then `AGENTS.md` with platform safety, then the explicitly assigned spec as a bounded capability delegate, then the procedural controls. | An assigned spec cannot enlarge the request, platform safety, or `AGENTS.md` scope; an unassigned spec is evidence ([ADR-0027](workbench/docs/adr/0027-instruction-authority-is-separate-from-state-resolution.md)). |
 | **State resolution** | How a Canon claim and verified Actuality are reconciled: newer Canon is an implementation gap, newer verified Actuality is documentation drift, unclear ordering is an ambiguity to investigate. | Neither "code always wins" nor "Canon proves implementation"; the touched owner is repaired rather than a universal precedence applied. |
 | **No-governance-tax rule** | Ordinary owner-directed project work requires only the Workbench Contract and its verification; no coordination system, order form, flight, or external mechanism is a prerequisite. | Available mechanisms a change genuinely needs still apply; the line is availability, not ceremony ([ADR-0023](workbench/docs/adr/0023-mechanical-guarantees-and-agent-obligations.md)). |
