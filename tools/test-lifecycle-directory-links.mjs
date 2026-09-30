@@ -85,11 +85,14 @@ Fixture complete.
     write(`${task}/TASK.md`, '# TK-001 - Directory Links\n\n**Task ID:** TK-001\n**Spec ID:** S-616\n**Slice:** Directory links\n**Status:** done\n**Blockers:** none\n**Destination:** spec-acceptance: S-616 Acceptance Criteria\n**Proof:** Fixture-only proof\n');
     write(`${oldDir}/nested folder/deeper/asset.txt`, 'carried asset\n');
     write(`${oldDir}/nested folder/deeper/hash #percent%/asset.txt`, 'reserved directory name\n');
+    const parentheses = [['Closing', 'parentheses)', 'parentheses%29'], ['Opening', 'parentheses(', 'parentheses%28'], ['Balanced', 'parentheses(a)', 'parentheses%28a%29']];
+    for (const [, name] of parentheses) write(`${oldDir}/nested folder/deeper/${name}/asset.txt`, 'parenthesis directory\n');
     write('assets/shared space/deep/asset.txt', 'unmoved asset\n');
-    const link = (file, destination) => path.posix.relative(path.posix.dirname(file), destination).split('/').map(encodeURIComponent).join('/');
+    const link = (file, destination) => path.posix.relative(path.posix.dirname(file), destination).split('/').map(part => encodeURIComponent(part).replaceAll('(', '%28').replaceAll(')', '%29')).join('/');
     const outgoing = `${oldDir}/navigation.md`;
     const outgoingSeed = `# Outgoing directory links\n\n[Shared](${link(outgoing, 'assets/shared space')}/#shared)\n[Room](${link(outgoing, '.')}/#room)\n[Self](./#self)\n[Nested](nested%20folder/deeper/#nested)\n[Reserved](nested%20folder/deeper/hash%20%23percent%25/#reserved?fragment)\n`;
-    write(outgoing, outgoingSeed);
+    const parenthesisLinks = file => parentheses.map(([label, name]) => `[${label}](${link(file, `${oldDir}/nested folder/deeper/${name}`)}/#proof?fragment)`).join('\n');
+    write(outgoing, `${outgoingSeed}${parenthesisLinks(outgoing)}\n`);
     const skills = ['workbench/skills/directory-probe/SKILL.md', 'skills/directory-probe/SKILL.md'];
     const histories = new Map();
     const untouched = new Map();
@@ -97,7 +100,7 @@ Fixture complete.
       const history = `## Append-Only Evidence And Execution Log\n\n| Date | Claim |\n|---|---|\n| 2026-09-30 | [Root](${link(file, oldDir)}/#history) and [Nested](${link(file, `${oldDir}/nested folder`)}/#history) |\n\n`;
       const unchanged = `[Unchanged](${link(file, 'assets/shared space').replace('/assets/', '/assets/./')}/#unchanged)`;
       histories.set(file, history); untouched.set(file, unchanged);
-      write(file, `# Incoming directory links\n\n[Root](${link(file, oldDir)}/#root)\n[Bare](${link(file, oldDir)}#bare)\n[Plain](${link(file, oldDir)})\n[Nested](${link(file, `${oldDir}/nested folder/deeper`)}/#nested)\n[Reserved](${link(file, `${oldDir}/nested folder/deeper/hash #percent%`)}/#reserved?fragment)\n[Record](${link(file, `${oldDir}/${primary}`)}#record)\n${unchanged}\n[External](https://example.invalid/folder/#external)\n\n${history}## Current limits\n\nFixture only.\n`);
+      write(file, `# Incoming directory links\n\n[Root](${link(file, oldDir)}/#root)\n[Bare](${link(file, oldDir)}#bare)\n[Plain](${link(file, oldDir)})\n[Nested](${link(file, `${oldDir}/nested folder/deeper`)}/#nested)\n[Reserved](${link(file, `${oldDir}/nested folder/deeper/hash #percent%`)}/#reserved?fragment)\n${parenthesisLinks(file)}\n[Record](${link(file, `${oldDir}/${primary}`)}#record)\n${unchanged}\n[External](https://example.invalid/folder/#external)\n\n${history}## Current limits\n\nFixture only.\n`);
     }
     // A directory-only referrer ensures preflight does not rely on a file link.
     const directoryOnly = 'workbench/skills/directory-only/SKILL.md';
@@ -114,6 +117,10 @@ Fixture complete.
       assert.ok(content.includes(`[Bare](${link(file, newDir)}#bare)`) && content.includes(`[Plain](${link(file, newDir)})`), `${kind}: directory links need neither a slash nor a fragment`);
       assert.ok(content.includes(`[Nested](${link(file, `${newDir}/nested folder/deeper`)}/#nested)`), `${kind}: nested directory link preserves encoding`);
       assert.ok(content.includes(`[Reserved](${link(file, `${newDir}/nested folder/deeper/hash #percent%`)}/#reserved?fragment)`), `${kind}: encoded hash and percent remain path bytes`);
+      for (const [label, , encodedName] of parentheses) {
+        const expected = `${link(file, `${newDir}/nested folder/deeper`)}/${encodedName}/#proof?fragment`;
+        assert.ok(content.includes(`[${label}](${expected})`), `${kind}: ${label.toLowerCase()} parenthesis remains explicitly percent encoded`);
+      }
       assert.ok(content.includes(`[Record](${link(file, `${newDir}/${primary}`)}#record)`), `${kind}: primary file link remains correct`);
       assert.ok(content.includes(untouched.get(file)), `${kind}: unchanged referrer keeps its original spelling`);
       assert.ok(content.includes(histories.get(file)), `${kind}: historical directory links stay byte-identical`);
@@ -126,6 +133,9 @@ Fixture complete.
     assert.ok(outgoingBytes.includes('[Self](./#self)'), `${kind}: a moved self-directory link keeps its relative meaning`);
     assert.ok(outgoingBytes.includes('[Nested](nested%20folder/deeper/#nested)'), `${kind}: moved internal directory retains its relative path`);
     assert.ok(outgoingBytes.includes('[Reserved](nested%20folder/deeper/hash%20%23percent%25/#reserved?fragment)'), `${kind}: moved reserved-name directory retains its relative path`);
+    for (const [label, , encodedName] of parentheses) {
+      assert.ok(outgoingBytes.includes(`[${label}](nested%20folder/deeper/${encodedName}/#proof?fragment)`), `${kind}: outgoing ${label.toLowerCase()} parenthesis remains percent encoded`);
+    }
     assert.deepEqual(scanReferences(room), [], `${kind}: live directory and file links resolve after retirement`);
     // Commit the supported move, then use a fresh active incarnation to probe refusals.
     commit('record supported fixture retirement');

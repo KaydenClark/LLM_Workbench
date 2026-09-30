@@ -567,7 +567,9 @@ export function rewriteAdrLinks(content, oldDir, newDir, locations, { directoryT
     const directory = directoryTargets.has(oldAbsolute);
     const directoryRelative = relative || '.';
     const encoded = /%[0-9a-f]{2}/i.test(rawPath)
-      ? directoryRelative.split('/').map(encodeURIComponent).join('/') : directoryRelative;
+      ? directoryRelative.split('/').map(part => encodeURIComponent(part)
+        // encodeURIComponent leaves parentheses raw; Markdown uses them as delimiters.
+        .replaceAll('(', '%28').replaceAll(')', '%29')).join('/') : directoryRelative;
     const route = directory ? `${encoded}${rawPath.endsWith('/') ? '/' : ''}` : relative;
     const rebuilt = fragment !== undefined ? `${route}#${fragment}` : route;
     if (rebuilt === target) return whole;
