@@ -285,3 +285,34 @@ test('citations cover shell, CommonJS, YAML and extensionless paths', () => {
     assert.equal(citations[0].from, 20);
   }
 });
+
+// S002K: independently reproduced late PR77 findings, retained as durable reds.
+test('an explicit tree label governs every citation in its list and stops at a new label or prose boundary', () => {
+  const text = fs.readFileSync(path.join(SPECS, 'S-040-skill-gate-route-selection', 'SPEC.md'), 'utf8');
+  const pair = liveCitations(text).filter((c) => c.cited === 'tools/workbench-upgrade.mjs' && [132, 133].includes(c.from));
+  assert.equal(pair.length, 2);
+  assert.deepEqual(pair.map((c) => c.shipped), [true, true], 'both actual S040 shipped lines must select post');
+  const group = liveCitations('## Current Verified State\n\n`tools/test-diagnostics.mjs` (base `:12`, `:13`), shipped `:14` and `:15`; later `:16`.');
+  assert.deepEqual(group.map((c) => [c.based, c.shipped]), [[true, false], [true, false], [false, true], [false, true], [false, false]]);
+});
+
+test('digit-leading bare filenames are citations just like qualified paths', () => {
+  const basename = '0001-planes-classify-operations-not-artifacts.md';
+  for (const cited of [basename, 'workbench/docs/adr/' + basename]) {
+    const citations = liveCitations('## Desired Behavior\n\n`' + cited + ':999999`');
+    assert.equal(citations.length, 1, cited + ' must not evade anchor and range enforcement');
+    assert.equal(citations[0].cited, cited);
+    assert.equal(citations[0].from, 999999);
+  }
+});
+
+test('dotted non-path values do not replace a scoped file for shorthand', () => {
+  for (const token of ['v3.1.2', '1.2.3', 'example.com']) {
+    const citations = liveCitations('## Current Verified State\n\n`tools/test-diagnostics.mjs` supports `' + token + '`; see `:12`.');
+    assert.equal(citations.length, 1);
+    assert.equal(citations[0].cited, 'tools/test-diagnostics.mjs', token);
+  }
+  const basename = '0001-planes-classify-operations-not-artifacts.md';
+  const bare = liveCitations('## Desired Behavior\n\n`' + basename + '` governs this; see `:12`.');
+  assert.equal(bare[0].cited, basename, 'a genuine repository basename still establishes scope');
+});
