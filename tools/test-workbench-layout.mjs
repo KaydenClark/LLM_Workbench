@@ -10,7 +10,7 @@ import test from 'node:test';
 import { doctor, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
 import { coordinationSkills, coreSkills, legacyCoreSkills, validateManifest, readContextUnit, ContextUnitUndeclaredError } from '../workbench/tools/workbench-layout.mjs';
 import { genesisTemplateFiles, templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
-import { COLLECTIONS, LANES } from '../workbench/tools/workbench-paths.mjs';
+import { COLLECTIONS, LANES, collectionRelative } from '../workbench/tools/workbench-paths.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
@@ -368,6 +368,55 @@ test('the validator requires every declared collection, the sessions ignore file
       fs.rmSync(project, { recursive: true, force: true });
     }
   }
+});
+
+// S-00I TK-01U: `features` is an additive Wiki collection, not an eighth
+// lane. A new room resolves, creates and seeds it; every pre-feature
+// collection shape a room was stamped with - including the current
+// seven-lane, ten-collection room - still validates, and migrate adds the
+// collection without touching anything else. Replacing the allowed shape
+// instead of adding one fails the pre-feature assertion below.
+test('the additive features collection resolves, is created and seeded by init, and every pre-feature collection shape still validates and migrates additively', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    assert.equal(manifest.collections.features, 'workbench/wiki/features', 'init declares the features collection');
+    assert.deepEqual(manifest.lanes, LANES, 'features is a collection, never an eighth lane');
+    assert.equal(Object.keys(manifest.lanes).length, 7);
+    assert.equal(collectionRelative(project, 'features'), 'workbench/wiki/features', 'the resolver answers the declared collection');
+    assert.equal(fs.statSync(path.join(project, 'workbench', 'wiki', 'features')).isDirectory(), true);
+    assert.equal(fs.existsSync(path.join(project, 'workbench', 'wiki', 'features', 'README.md')), true, 'the collection README is seeded from templates/wiki');
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+
+    const { features, ...preFeature } = manifest.collections;
+    assert.equal(features, 'workbench/wiki/features');
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: preFeature }, null, 2)}\n`);
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'the current seven-lane room declared before features still validates');
+    assert.equal(collectionRelative(project, 'features'), 'workbench/wiki/features', 'an undeclared room resolves the default path');
+
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: { ...preFeature, features: 'workbench/wiki/feature-articles' } }, null, 2)}\n`);
+    assert.equal(run('validate', '--project', project).report.error.code, 'invalid-collection', 'a relocated features declaration is not the contract');
+
+    const legacy = { ...preFeature };
+    delete legacy.recovery; delete legacy.notepads; delete legacy['notepad-templates'];
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: { ...legacy, features } }, null, 2)}\n`);
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'the preserved v3.1 collection set with features appended still validates');
+
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: preFeature }, null, 2)}\n`);
+    fs.rmSync(path.join(project, 'workbench', 'wiki', 'features'), { recursive: true });
+    const migrated = run('migrate', '--project', project);
+    assert.equal(migrated.status, 0, `${migrated.stdout}\n${migrated.stderr}`);
+    assert.equal(migrated.report.status, 'migrated');
+    assert.deepEqual(migrated.report.added, ['collections.features']);
+    const after = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    assert.deepEqual(after.collections, COLLECTIONS, 'migrate appends exactly the features collection');
+    assert.deepEqual({ ...after, collections: preFeature }, { ...manifest, collections: preFeature }, 'nothing else in the manifest changes');
+    assert.equal(fs.statSync(path.join(project, 'workbench', 'wiki', 'features')).isDirectory(), true);
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+    assert.equal(run('migrate', '--project', project).report.status, 'current');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });
 
 test('the validator rejects a traversing manifest lane', () => {

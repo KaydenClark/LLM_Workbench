@@ -166,6 +166,7 @@ The provenance of every promoted and excluded memory file is in
 | [docs/adr/REGISTER.md](../docs/adr/REGISTER.md) | The derived register of decision records |
 | [SCHEMA.md](SCHEMA.md) | Wiki CRUD, metadata, sensitivity, and freshness rules |
 | [design-concepts/](design-concepts/README.md) | Owner-directed articles explaining durable design models |
+| [features/](features/README.md) | Readable articles capturing each completed Spec's delivered capability (empty) |
 | [guidebooks/](guidebooks/) | Ordered procedures that outgrew the Runbook (empty) |
 
 ## Routing
@@ -177,7 +178,9 @@ The provenance of every promoted and excluded memory file is in
 
 This product repository keeps no personal, machine, or deployment notes; it is
 a `project` profile wiki. `guidebooks/` ships empty until the owner directs
-one; `design-concepts/` carries the owner-directed articles routed above.
+one; `design-concepts/` carries the owner-directed articles routed above;
+`features/` stays empty until a completed Spec is captured at its closure
+point.
 
 ## Up-Link
 

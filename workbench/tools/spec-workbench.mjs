@@ -12,7 +12,7 @@ import { blocksSelection, describe, finding } from './diagnostics.mjs';
 import { checkHostFloor, formatHostFloor } from './host-floor.mjs';
 import { capabilitySession } from './optional-capabilities.mjs';
 import { coordinationContext, publicCoordination, publishClaim } from './claim-coordination.mjs';
-import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePath, liveRecordPath, markdownLinkTargets, readManifest } from './workbench-paths.mjs';
+import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, declaredGit, lanePath, liveRecordPath, markdownLinkTargets, readManifest } from './workbench-paths.mjs';
 import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenceSection, validateAdrs, writeRegister } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { ARTIFACT_ID_MIN_WIDTH, allocateArtifactId, compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
@@ -938,6 +938,7 @@ export function doctor(rootDir, options = {}) {
     return [finding(['upgrade-required', 'invalid-manifest'].includes(error.code) ? error.code : 'malformed-spec', error.message)];
   }
   issues.push(...packetFindings(specs, options, retired, root));
+  issues.push(...uncapturedCompleteFindings(root, specs.filter((spec) => !spec.sliceConflict)));
   const blueprint = fs.existsSync(path.join(root, 'BLUEPRINT.md')) ? fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8') : '';
   if (blueprint.includes(CATALOG_START) || blueprint.includes(CATALOG_END)) checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs, retired), issues);
   else checkRender(root, path.relative(root, path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md')), CATALOG_START, CATALOG_END, renderCatalog(specs, retired).replaceAll(`](${resolveSpecsRoot(root).specsPrefix}/`, ']('), issues);
@@ -2499,6 +2500,136 @@ function retiredSpecWikiOwnerStatus(root, historicalRoute) {
   return data?.status ?? null;
 }
 
+// S-00I TK-001 to TK-006 retired a Spec into a design-concept or guidebook
+// owner; S-00I TK-01U adds the features article a completed Spec is captured
+// into at its closure point (S-00J closure-capture contract T4). This is the
+// one owner predicate `retireSpec` (T5), `discardRetiredTask` (T6) and doctor's
+// `uncaptured-complete` finding share, so the three can never disagree about
+// what a captured owner is. It returns the refusal naming the first missing
+// condition, or `null` when the note owns the Spec. `featureOnly` narrows the
+// admitted types to `feature`, which is what "captured" means for T6 and
+// doctor; retirement also admits the legacy owners. It reads and never
+// writes: the note must exist, carry frontmatter, declare an admitted type
+// (a feature article only inside the features collection), declare
+// `knowledge_role` canonical or curated, name the Spec's historical route in
+// `source_paths`, pass `validateWiki` with no `copied-task-state`,
+// `invalid-note` or `secret-like-content` finding against it, and be linked
+// from the Wiki lane's `MEMORY.md` router.
+function durableOwnerRefusal(root, specId, historicalRoute, noteAbsolute, { featureOnly = false } = {}) {
+  const wikiRoot = lanePath(root, 'wiki');
+  const noteRelative = path.relative(root, noteAbsolute).split(path.sep).join('/');
+  // Review corrective (High, separate-context review of 10bdf5b): the note
+  // and every ancestor must be ordinary paths inside the repository before
+  // anything is read. `validateWiki` skips symlinks when it walks, so a
+  // linked note would otherwise be read here (statSync follows links) yet
+  // never validated, letting an article outside the Wiki lane own a Spec.
+  try { assertSafeReadPath(root, noteAbsolute); }
+  catch (error) { return `${error.message}; a linked note cannot be ${specId}'s durable owner`; }
+  let entry = null;
+  try { entry = fs.lstatSync(noteAbsolute); } catch (error) { if (error.code !== 'ENOENT') throw error; }
+  if (!entry?.isFile()) {
+    return `retire-spec found no Wiki note at ${noteRelative}; ${specId}'s surviving claims name no durable owner`;
+  }
+  const content = fs.readFileSync(noteAbsolute, 'utf8');
+  const frontmatter = parseFrontmatter(content).data;
+  if (!frontmatter) return `${noteRelative} has no frontmatter; it cannot be ${specId}'s durable owner`;
+  const featuresRelative = collectionRelative(root, 'features');
+  const featuresRoot = path.join(root, featuresRelative);
+  const admitted = featureOnly ? ['feature'] : ['design-concept', 'guidebook', 'feature'];
+  if (!admitted.includes(frontmatter.type)) {
+    return featureOnly
+      ? `${noteRelative} must declare type feature in ${featuresRelative} to capture ${specId}, found ${frontmatter.type ?? 'none'}`
+      : `${noteRelative} must declare type design-concept or guidebook, or type feature in ${featuresRelative}, to retire ${specId}, found ${frontmatter.type ?? 'none'}`;
+  }
+  if (frontmatter.type === 'feature' && !noteAbsolute.startsWith(featuresRoot + path.sep)) {
+    return `${noteRelative} declares type feature, but type feature must live in the features collection ${featuresRelative}; it cannot be ${specId}'s durable owner there`;
+  }
+  if (!['canonical', 'curated'].includes(frontmatter.knowledge_role)) {
+    return `${noteRelative} must declare knowledge_role canonical or curated to retire ${specId}, found ${frontmatter.knowledge_role ?? 'none'}`;
+  }
+  const sourcePaths = Array.isArray(frontmatter.source_paths) ? frontmatter.source_paths : [];
+  if (!sourcePaths.includes(historicalRoute)) {
+    return `${noteRelative} source_paths must name ${specId}'s historical route ${historicalRoute}; found ${sourcePaths.join(', ') || 'none'}`;
+  }
+  const wikiFindings = validateWiki(root, { contentOverrides: new Map([[noteAbsolute, content]]) })
+    .filter((item) => item.note === noteRelative && ['copied-task-state', 'invalid-note', 'secret-like-content'].includes(item.code));
+  if (wikiFindings.length > 0) {
+    return `${noteRelative} fails Wiki validation, so it cannot be ${specId}'s durable owner: ${wikiFindings.map((item) => `${item.code}: ${item.message}`).join('; ')}`;
+  }
+  // Review corrective (Low, S-00I TK-005): a note can satisfy every property
+  // check above and still be unreachable from a cold-start agent's actual
+  // entry point. `MEMORY.md` is the one router `SCHEMA.md`/`LEXICON.md` name.
+  const memoryPath = path.join(wikiRoot, 'MEMORY.md');
+  const memoryContent = fs.existsSync(memoryPath) ? fs.readFileSync(memoryPath, 'utf8') : '';
+  const noteRelativeToWikiRoot = path.relative(wikiRoot, noteAbsolute).split(path.sep).join('/');
+  if (!memoryContent.includes(noteRelativeToWikiRoot)) {
+    return `${noteRelative} is not linked from workbench/wiki/MEMORY.md (no relative link to ${noteRelativeToWikiRoot} found); a durable owner unreachable from the room brain is not routed`;
+  }
+  return null;
+}
+
+// The route a Spec's durable owner names in `source_paths`: its own path once
+// retired, otherwise the retired route `retireSpec` will move it to.
+function specHistoricalRoute(root, spec) {
+  if (spec.lifecycleFolder) return spec.relativePath;
+  const { specsPrefix } = resolveSpecsRoot(root);
+  return `${specsPrefix}/${SPEC_LIFECYCLE_FOLDERS[0]}/${path.basename(path.dirname(spec.filePath))}/SPEC.md`;
+}
+
+// S-00I TK-01U: the features article that captures `spec`, or `null`. A note
+// in the features collection naming the Spec's historical route is captured
+// only when it passes the shared owner predicate with `featureOnly`.
+function capturedFeatureArticle(root, spec) {
+  const featuresRoot = collectionPath(root, 'features');
+  // Review corrective (High, separate-context review of ed8c4f5): the
+  // collection root and every candidate must be ordinary paths inside the
+  // repository before anything is read. `collectDirectoryFiles` already skips
+  // linked entries, but a linked root or a linked ancestor is a location
+  // `validateWiki` never walks, so nothing behind one is a capture: the Spec
+  // stays visibly uncaptured (doctor) and its Task records keep waiting
+  // (discard), which is the same refusal `durableOwnerRefusal` names for a
+  // linked note.
+  try { assertSafeReadPath(root, featuresRoot); } catch { return null; }
+  let rootEntry = null;
+  try { rootEntry = fs.lstatSync(featuresRoot); } catch (error) { if (error.code !== 'ENOENT') throw error; }
+  if (!rootEntry?.isDirectory()) return null;
+  const historicalRoute = specHistoricalRoute(root, spec);
+  for (const file of collectDirectoryFiles(featuresRoot).sort()) {
+    if (!file.endsWith('.md') || path.basename(file) === 'README.md') continue;
+    try { assertSafeReadPath(root, file); } catch { continue; }
+    if (!fs.lstatSync(file).isFile()) continue;
+    const sources = parseFrontmatter(fs.readFileSync(file, 'utf8')).data?.source_paths;
+    if (!Array.isArray(sources) || !sources.includes(historicalRoute)) continue;
+    if (durableOwnerRefusal(root, spec.id, historicalRoute, file, { featureOnly: true }) === null) {
+      return path.relative(root, file).split(path.sep).join('/');
+    }
+  }
+  return null;
+}
+
+// S-00I TK-01U: `completeSpec` (S-00J TK-01S) records the observed main ref
+// and SHA in the completion evidence row; that row is what marks a Spec as
+// completed under the closure-capture contract. Specs completed before it
+// carry no such row and are never reported.
+function completedUnderCaptureContract(spec) {
+  return evidenceRows(spec.content).some((line) => {
+    const cells = parseMarkdownTableRow(line);
+    return cells[1] === 'spec' && cells[2] === 'Spec completed' && /approved delivery verified: \S+ at [0-9a-f]{7,40}\b/.test(cells[3] ?? '');
+  });
+}
+
+// Doctor's T4 visibility: a Spec completed under the contract with no
+// captured features article stays `complete` and is reported as attention.
+function uncapturedCompleteFindings(root, specs) {
+  const findings = [];
+  for (const spec of specs) {
+    if (spec.status !== 'complete' || !completedUnderCaptureContract(spec)) continue;
+    if (capturedFeatureArticle(root, spec)) continue;
+    findings.push(finding('uncaptured-complete', `${spec.id} is complete with main-verified closure but has no captured features article in ${collectionRelative(root, 'features')} naming ${specHistoricalRoute(root, spec)}; capture it before retirement or any record discard`, { specId: spec.id }));
+  }
+  return findings;
+}
+
 // S-00I TK-005: reconciles a completed Spec's surviving current claims into
 // their named durable owner (a Wiki capability record - `wiki.mjs`'s own
 // `copied-task-state` and property validation is the enforcement, never
@@ -2588,41 +2719,13 @@ export function retireSpec(rootDir, specId, options = {}) {
     throw new Error(`--wiki ${wikiNoteGiven} must name a note under the Wiki lane; a Spec cannot retire without a durable owner there`);
   }
   const wikiNoteRelative = path.relative(root, wikiNoteAbsolute).split(path.sep).join('/');
-  if (!fs.existsSync(wikiNoteAbsolute) || !fs.statSync(wikiNoteAbsolute).isFile()) {
-    throw new Error(`retire-spec found no Wiki note at ${wikiNoteRelative}; ${specId}'s surviving claims name no durable owner`);
-  }
-  const wikiNoteContent = fs.readFileSync(wikiNoteAbsolute, 'utf8');
-  const wikiFrontmatter = parseFrontmatter(wikiNoteContent).data;
-  if (!wikiFrontmatter) {
-    throw new Error(`${wikiNoteRelative} has no frontmatter; it cannot be ${specId}'s durable owner`);
-  }
-  if (!['design-concept', 'guidebook'].includes(wikiFrontmatter.type)) {
-    throw new Error(`${wikiNoteRelative} must declare type design-concept or guidebook to retire ${specId}, found ${wikiFrontmatter.type ?? 'none'}`);
-  }
-  if (!['canonical', 'curated'].includes(wikiFrontmatter.knowledge_role)) {
-    throw new Error(`${wikiNoteRelative} must declare knowledge_role canonical or curated to retire ${specId}, found ${wikiFrontmatter.knowledge_role ?? 'none'}`);
-  }
-  const sourcePaths = Array.isArray(wikiFrontmatter.source_paths) ? wikiFrontmatter.source_paths : [];
-  if (!sourcePaths.includes(historicalRoute)) {
-    throw new Error(`${wikiNoteRelative} source_paths must name ${specId}'s historical route ${historicalRoute}; found ${sourcePaths.join(', ') || 'none'}`);
-  }
-  const wikiFindings = validateWiki(root, { contentOverrides: new Map([[wikiNoteAbsolute, wikiNoteContent]]) })
-    .filter((item) => item.note === wikiNoteRelative && ['copied-task-state', 'invalid-note', 'secret-like-content'].includes(item.code));
-  if (wikiFindings.length > 0) {
-    throw new Error(`${wikiNoteRelative} fails Wiki validation, so it cannot be ${specId}'s durable owner: ${wikiFindings.map((item) => `${item.code}: ${item.message}`).join('; ')}`);
-  }
-  // Review corrective (Low): a note can satisfy every property check above
-  // and still be unreachable from a cold-start agent's actual entry point.
-  // `MEMORY.md` is the one router `SCHEMA.md`/`LEXICON.md` name; a relative
-  // link to the note's own path within the Wiki lane is the same fact
-  // `roomBrainRouting` in `wiki.mjs` already checks for the router itself,
-  // applied here to the note this Spec is about to depend on.
-  const memoryPath = path.join(wikiRoot, 'MEMORY.md');
-  const memoryContent = fs.existsSync(memoryPath) ? fs.readFileSync(memoryPath, 'utf8') : '';
-  const wikiNoteRelativeToWikiRoot = path.relative(wikiRoot, wikiNoteAbsolute).split(path.sep).join('/');
-  if (!memoryContent.includes(wikiNoteRelativeToWikiRoot)) {
-    throw new Error(`${wikiNoteRelative} is not linked from workbench/wiki/MEMORY.md (no relative link to ${wikiNoteRelativeToWikiRoot} found); a durable owner unreachable from the room brain is not routed`);
-  }
+  // S-00I TK-01U: the owner checks moved into `durableOwnerRefusal`, shared
+  // with Task discard and doctor, and now admit a features article beside the
+  // legacy design-concept and guidebook owners. Every refusal is still named
+  // before any write.
+  const ownerRefusal = durableOwnerRefusal(root, specId, historicalRoute, wikiNoteAbsolute);
+  if (ownerRefusal) throw new Error(ownerRefusal);
+  const ownerType = parseFrontmatter(fs.readFileSync(wikiNoteAbsolute, 'utf8')).data.type;
 
   // S-00J TK-005 has since landed `recordOwnerApproval` and its own
   // `approvalGapReason` (the owner Human QA counterpart to
@@ -2685,6 +2788,7 @@ export function retireSpec(rootDir, specId, options = {}) {
     specId,
     route: `${moveResult.to}/SPEC.md`,
     wikiNote: wikiNoteRelative,
+    ownerType,
     referencesRewritten: moveResult.referencesRewritten,
     referencesRewrittenCount,
     historicalReferencesLeft: moveResult.historicalReferencesLeft,
@@ -3083,9 +3187,11 @@ export function discardRetiredSpec(rootDir, specId) {
 // S-00I TK-006: discards one retired Task record. A Task carries no
 // evidence-log analogue and `moveTaskRecord` requires no Wiki note at all
 // (only its own Proof/Receipt evidence, already satisfied before it could
-// retire) - so there is no durable-owner gate to repeat here; the
-// containment, dirty-tree and reference-scan gates are the same three that
-// apply to a Spec. Fixture-only: no room in this repository has ever
+// retire); the containment, dirty-tree and reference-scan gates are the same
+// three that apply to a Spec. S-00I TK-01U adds the one owner gate the
+// closure-capture contract puts before T6: the parent Spec must already be
+// captured into a features article (`capturedFeatureArticle`, the predicate
+// retirement shares). Fixture-only: no room in this repository has ever
 // retired a Task into `tasks/retired/`.
 export function discardRetiredTask(rootDir, specId, taskId) {
   const root = path.resolve(rootDir);
@@ -3119,6 +3225,13 @@ export function discardRetiredTask(rootDir, specId, taskId) {
   const references = referencesToPath(root, taskDir);
   if (references.length > 0) {
     throw new Error(`${specId}/${taskId} cannot discard: a complete reference scan still finds ${references.length} current reference(s) naming it, starting with ${references[0].file} -> ${references[0].target}`);
+  }
+  // S-00I TK-01U (closure-capture contract T4 before T6): Task records,
+  // live or retired and including missed attempts, stay until the parent
+  // Spec is captured into a features article. Moving a done Task into
+  // `tasks/retired/` stays allowed; only discard waits.
+  if (!capturedFeatureArticle(root, spec)) {
+    throw new Error(`${specId}/${taskId} cannot discard: its parent Spec ${specId} has no captured features article (a validated type feature note in ${collectionRelative(root, 'features')} naming ${specHistoricalRoute(root, spec)} in source_paths and routed from MEMORY.md); Task records wait for features capture`);
   }
 
   const parentCommit = spawnSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).stdout.trim();

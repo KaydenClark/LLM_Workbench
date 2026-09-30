@@ -987,6 +987,10 @@ const PINNED_EFFECTS = {
   'retired-task-not-done': ['attention', 'specs', 'none'],
   'retired-wiki-owner-stale': ['attention', 'specs', 'none'],
   'discarded-reference': ['error', 'specs', 'selection'],
+  // S-00I TK-01U: a Spec completed under the closure-capture contract with no
+  // captured features article is visible and never blocks; a failed or
+  // missing capture never reverts `complete`.
+  'uncaptured-complete': ['attention', 'specs', 'none'],
   'stale-note': ['attention', 'wiki', 'none'],
   'room-brain-unrouted': ['attention', 'wiki', 'none'],
   'stale-stamp': ['attention', 'wiki', 'none'],

@@ -42,16 +42,17 @@ additional index service is required by this boundary.
   one deployment-profile wiki.
 
 Declared collections are `design-concepts/` (required to exist, may be empty),
-`guidebooks/` (ordered procedures), and `archive/` (historical, generated,
-superseded, and migration evidence). Every collection is flat; only `archive/`
-may nest. `MEMORY.md` is the only router.
+`features/` (one readable article per completed Spec, captured at its closure
+point; additive, may be empty), `guidebooks/` (ordered procedures), and
+`archive/` (historical, generated, superseded, and migration evidence). Every
+collection is flat; only `archive/` may nest. `MEMORY.md` is the only router.
 
 ## Required Properties
 
 Every active note uses YAML frontmatter with:
 
 ```yaml
-type: memory | project | person | machine | guidebook | design-concept | meta
+type: memory | project | person | machine | guidebook | design-concept | feature | meta
 status: active | partial | stale | archived
 sensitivity: normal | private | restricted
 knowledge_role: canonical | curated | derived | historical
@@ -85,6 +86,8 @@ last_verified: YYYY-MM-DD
 - Do not create notes for one-off chat answers, temporary status, or tasks.
 - Design Concept articles are created only on the owner's direction; see
   `design-concepts/README.md`.
+- A features article is written for a completed Spec at its closure point,
+  before its records are retired or discarded; see `features/README.md`.
 
 ## Read
 
@@ -135,9 +138,9 @@ node workbench/tools/wiki.mjs normalize
 ```
 
 The validator checks the router, the declared collections, required
-properties and enums, relative source paths, the Design Concept article shape,
-the absence of copied live task state and secret-like material, and reports
-stale notes as attention. `validate` never writes.
+properties and enums, relative source paths, the Design Concept and features
+article shapes, the absence of copied live task state and secret-like material,
+and reports stale notes as attention. `validate` never writes.
 
 `validate` reports wiki facts only. Two findings it used to carry are not wiki
 facts and no longer come from here: `stale-seed`, for a seeded lane document
@@ -156,4 +159,5 @@ allows - `status: partial`, `knowledge_role: derived`, a `provenance` line
 naming the normalization, the note's own path as `source_paths`, and
 `last_verified` set to the day it ran - and infers `type` from the note's
 location. Correct those values by hand afterwards; a Design Concept article
-still needs its owner-directed `authorized_by`, `parent`, and sections.
+still needs its owner-directed `authorized_by`, `parent`, and sections, and a
+features article still needs its sections.

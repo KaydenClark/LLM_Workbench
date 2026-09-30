@@ -16,7 +16,7 @@ const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
 const installer = path.join(root, 'tools', 'workbench-tools.mjs');
 const skillsInstaller = path.join(root, 'tools', 'workbench-skills.mjs');
 const vocabulary = new Set(templatePlaceholders);
-const WIKI_TEMPLATES = ['README.md', 'MEMORY.project.md', 'MEMORY.root.md', 'SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md'];
+const WIKI_TEMPLATES = ['README.md', 'MEMORY.project.md', 'MEMORY.root.md', 'SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md', 'features/README.md'];
 
 function fixture() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-wiki-'));
@@ -38,7 +38,7 @@ test('the wiki template set is lowercase and complete, and the retired capitalis
   for (const relative of WIKI_TEMPLATES) {
     assert.equal(fs.existsSync(path.join(root, 'templates', 'wiki', relative)), true, `templates/wiki/${relative} must ship`);
   }
-  for (const relative of ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md', 'MEMORY.project.md', 'MEMORY.root.md']) {
+  for (const relative of ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md', 'features/README.md', 'MEMORY.project.md', 'MEMORY.root.md']) {
     const content = fs.readFileSync(path.join(root, 'templates', 'wiki', relative), 'utf8');
     assert.match(content, /^---\n/, `${relative} carries frontmatter`);
     assert.match(content, /knowledge_role:/, `${relative} uses knowledge_role`);
@@ -57,8 +57,8 @@ test('init seeds the wiki contract files with placeholders filled and reports th
     const initialized = run(layout, 'init', '--project', project, '--provenance', 'genesis', '--version', VERSION, '--name', 'Puffer Pond', '--date', '2026-09-04');
     assert.equal(initialized.status, 0, initialized.stdout);
     assert.equal(initialized.report.seeded.wiki, true);
-    assert.deepEqual(initialized.report.seeded.written.sort(), ['workbench/wiki/AGENTS.md', 'workbench/wiki/SCHEMA.md', 'workbench/wiki/design-concepts/README.md']);
-    for (const relative of ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md']) {
+    assert.deepEqual(initialized.report.seeded.written.sort(), ['workbench/wiki/AGENTS.md', 'workbench/wiki/SCHEMA.md', 'workbench/wiki/design-concepts/README.md', 'workbench/wiki/features/README.md']);
+    for (const relative of ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md', 'features/README.md']) {
       const content = fs.readFileSync(path.join(project, 'workbench', 'wiki', relative), 'utf8');
       assert.deepEqual(placeholders(content), [], `${relative} must be seeded without placeholders`);
       assert.match(content, /last_verified: 2026-09-04/, `${relative} carries the seeding date`);
@@ -227,7 +227,7 @@ test('design-concept articles need the owner-directed shape and stale notes are 
 });
 
 test('the product wiki adopts the contract and both Lexicons route design questions to the collection', () => {
-  for (const relative of ['MEMORY.md', 'SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md']) {
+  for (const relative of ['MEMORY.md', 'SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md', 'features/README.md']) {
     const file = path.join(root, 'workbench', 'wiki', relative);
     assert.equal(fs.existsSync(file), true, `workbench/wiki/${relative} must exist in the product`);
     assert.deepEqual(placeholders(fs.readFileSync(file, 'utf8')), [], `workbench/wiki/${relative} must carry no template placeholder`);
@@ -280,7 +280,7 @@ test('a wiki stamp naming a version other than the manifest is attention only, a
 });
 
 test('this repository stamps its wiki contract files with its manifest version and routes to its room brain', () => {
-  for (const relative of ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md']) {
+  for (const relative of ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md', 'features/README.md']) {
     const content = fs.readFileSync(path.join(root, 'workbench', 'wiki', relative), 'utf8');
     assert.equal(content.match(/Generated from LLM Workbench (v\d+\.\d+\.\d+)/)?.[1], VERSION, `${relative} stamp`);
   }
@@ -381,4 +381,72 @@ test('a Spec\'s own Append-Only Evidence And Execution Log row pasted into a wik
         `${label} must be reported as copied-task-state; SCHEMA.md forbids copying spec evidence into a note`);
     }
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+// S-00I TK-01U: a features article is the readable knowledge a completed Spec
+// is captured into at its closure point (S-00J closure-capture contract T4):
+// what the delivered capability does, why it matters, its limits and its
+// named evidence. It lives in the additive `features` collection, declares
+// `type: feature`, and is refused when misplaced, malformed or a copy of
+// delivery state. Design-concept and guidebook rules are unchanged.
+function featureArticle(overrides = {}, sections = {}) {
+  const body = {
+    title: '# Fixture Capability\n\nA fixture room can retire a completed Spec into a readable article.\n',
+    what: '## What It Does\n\nRetirement accepts a routed features article as the Spec\'s durable owner.\n',
+    why: '## Why It Matters\n\nA cold reader learns what shipped without opening transient Task records.\n',
+    limits: '## Limits\n\nFixture-only; no production record is retired by this proof.\n',
+    evidence: '## Evidence and Sources\n\n- `tools/test-spec-workbench.mjs` exercises the eligibility seam.\n',
+    ...sections
+  };
+  return note({
+    type: 'feature',
+    knowledge_role: 'curated',
+    provenance: ['features capture at the closure point, 2026-09-26'],
+    source_paths: ['workbench/specs/retired/S-700-fixture/SPEC.md', 'tools/test-spec-workbench.mjs'],
+    last_verified: '2026-09-26',
+    ...overrides
+  }, [body.title, body.what, body.why, body.limits, body.evidence].filter(Boolean).join('\n'));
+}
+
+test('a feature article validates in the features collection, normalize infers its type, and a misplaced, malformed or copied one is refused', () => {
+  const project = seededWiki();
+  try {
+    const wiki = path.join(project, 'workbench', 'wiki');
+    const features = path.join(wiki, 'features');
+    fs.mkdirSync(features, { recursive: true });
+    fs.writeFileSync(path.join(features, 'fixture-capability.md'), featureArticle());
+    assert.deepEqual(validateWiki(project), [], 'a complete, placed feature article validates with no finding');
+
+    const noteFindings = (relative) => validateWiki(project).filter((item) => item.note === `workbench/wiki/${relative}`);
+
+    fs.writeFileSync(path.join(wiki, 'misplaced-feature.md'), featureArticle());
+    assert.ok(noteFindings('misplaced-feature.md').some((item) => item.code === 'invalid-note' && /type feature belongs in workbench\/wiki\/features/.test(item.message)),
+      'a feature article outside the features collection is refused by name');
+    fs.rmSync(path.join(wiki, 'misplaced-feature.md'));
+
+    fs.writeFileSync(path.join(features, 'wrong-type.md'), featureArticle({ type: 'guidebook' }));
+    assert.ok(noteFindings('features/wrong-type.md').some((item) => item.code === 'invalid-note' && /must declare type feature/.test(item.message)),
+      'a note in the features collection must declare type feature');
+    fs.rmSync(path.join(features, 'wrong-type.md'));
+
+    fs.writeFileSync(path.join(features, 'no-limits.md'), featureArticle({}, { limits: '', why: '' }));
+    const missing = noteFindings('features/no-limits.md').map((item) => item.message);
+    assert.ok(missing.some((message) => /Limits section/.test(message)), 'a feature article states its limits');
+    assert.ok(missing.some((message) => /Why It Matters section/.test(message)), 'a feature article says why it matters');
+    fs.rmSync(path.join(features, 'no-limits.md'));
+
+    fs.writeFileSync(path.join(features, 'pasted-state.md'), featureArticle({}, {
+      evidence: '## Evidence and Sources\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| 2026-09-26 | TK-001 | Task closed | proof | docs | none |\n'
+    }));
+    assert.ok(noteFindings('features/pasted-state.md').some((item) => item.code === 'copied-task-state'), 'copied delivery state is refused, never captured');
+    fs.rmSync(path.join(features, 'pasted-state.md'));
+
+    fs.writeFileSync(path.join(features, 'Bare Feature.md'), '# Bare Feature\n\nNo metadata yet.\n');
+    const result = normalizeWiki(project, { date: '2026-09-26' });
+    assert.deepEqual(result.changed.map((entry) => entry.note), ['workbench/wiki/features/Bare Feature.md']);
+    assert.match(fs.readFileSync(path.join(features, 'Bare Feature.md'), 'utf8'), /^---\ntype: feature\nstatus: partial\n/, 'normalize infers type feature from the collection');
+    assert.ok(noteFindings('features/Bare Feature.md').some((item) => /What It Does section/.test(item.message)), 'normalize adds no article sections; validate keeps reporting them');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
 });

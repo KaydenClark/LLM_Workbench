@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Portable wiki validator: router, declared collections, note metadata,
-// portability, the Design Concept article shape, no copied live task state,
+// portability, the Design Concept and features article shapes, no copied live task state,
 // no secret-like material. Staleness is attention, never blocking.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -10,7 +10,13 @@ import { insertFrontmatterKeys, localLinks, parseFrontmatter } from './adr.mjs';
 import { scanPrivacy } from './privacy.mjs';
 import { versionStamp, wikiContractFiles } from './workbench-layout.mjs';
 
-export const NOTE_TYPES = Object.freeze(['memory', 'project', 'person', 'machine', 'guidebook', 'design-concept', 'meta']);
+export const NOTE_TYPES = Object.freeze(['memory', 'project', 'person', 'machine', 'guidebook', 'design-concept', 'feature', 'meta']);
+// S-00I TK-01U: a features article is the readable knowledge a completed Spec
+// is captured into at its closure point. It lives only in the additive
+// `features` collection, which is not required to exist (earlier rooms never
+// declared it), and it must state what the capability does, why it matters,
+// its limits and its evidence.
+export const FEATURE_SECTIONS = Object.freeze(['What It Does', 'Why It Matters', 'Limits', 'Evidence and Sources']);
 export const NOTE_STATUSES = Object.freeze(['active', 'partial', 'stale', 'archived']);
 export const SENSITIVITIES = Object.freeze(['normal', 'private', 'restricted']);
 export const KNOWLEDGE_ROLES = Object.freeze(['canonical', 'curated', 'derived', 'historical']);
@@ -118,6 +124,8 @@ export function validateWiki(root, options = {}) {
   }
   if (!fs.existsSync(wikiRoot)) return findings;
   const designConcepts = path.join(root, collectionRelative(root, 'design-concepts'));
+  const featuresRelative = collectionRelative(root, 'features');
+  const features = path.join(root, featuresRelative);
   const archive = path.join(root, collectionRelative(root, 'archive'));
   const basenames = new Map();
   for (const file of walkMarkdown(wikiRoot)) {
@@ -177,6 +185,15 @@ export function validateWiki(root, options = {}) {
         if (!new RegExp(`^## ${section}$`, 'm').test(content)) findings.push(finding('invalid-note', `${relative} must end with a ${section} section`, { note: relative }));
       }
     }
+    const inFeatures = file.startsWith(features + path.sep);
+    if (inFeatures && basename !== 'README') {
+      if (data.type !== 'feature') findings.push(finding('invalid-note', `${relative} must declare type feature; it lives in the features collection ${featuresRelative}`, { note: relative }));
+      for (const section of FEATURE_SECTIONS) {
+        if (!new RegExp(`^## ${section}$`, 'm').test(content)) findings.push(finding('invalid-note', `${relative} must carry a ${section} section`, { note: relative }));
+      }
+    } else if (!inFeatures && data.type === 'feature') {
+      findings.push(finding('invalid-note', `${relative} type feature belongs in ${featuresRelative}; move the article into the features collection`, { note: relative }));
+    }
   }
   for (const [basename, paths] of basenames) {
     if (paths.length > 1 && basename !== 'README') findings.push(finding('invalid-note', `note basename ${basename} is not unique: ${paths.join(', ')}`));
@@ -226,7 +243,7 @@ function noteFields(root, file, relative, date) {
 
 function inferredType(root, file) {
   if (path.basename(file) === 'MEMORY.md') return 'memory';
-  for (const [collection, type] of [['guidebooks', 'guidebook'], ['design-concepts', 'design-concept']]) {
+  for (const [collection, type] of [['guidebooks', 'guidebook'], ['design-concepts', 'design-concept'], ['features', 'feature']]) {
     if (file.startsWith(path.join(root, collectionRelative(root, collection)) + path.sep)) return type;
   }
   return 'meta';
