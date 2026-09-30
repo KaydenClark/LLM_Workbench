@@ -1961,7 +1961,7 @@ function lifecycleMoveLocations(root, oldDir, newDir, movingFiles, unmoved) {
   for (const file of [...movingFiles, ...unmoved]) {
     if (!file.endsWith('.md')) continue;
     const { prefix, suffix } = splitEvidenceSection(fs.readFileSync(file, 'utf8'));
-    for (const link of localLinks(prefix + suffix)) {
+    for (const link of [...localLinks(prefix), ...localLinks(suffix)]) {
       const target = path.resolve(path.dirname(file), link);
       if (target !== root && !target.startsWith(root + path.sep)) continue;
       if (!fs.existsSync(target) || !fs.statSync(target).isDirectory()) continue;

@@ -97,7 +97,7 @@ Fixture complete.
       const history = `## Append-Only Evidence And Execution Log\n\n| Date | Claim |\n|---|---|\n| 2026-09-30 | [Root](${link(file, oldDir)}/#history) and [Nested](${link(file, `${oldDir}/nested folder`)}/#history) |\n\n`;
       const unchanged = `[Unchanged](${link(file, 'assets/shared space').replace('/assets/', '/assets/./')}/#unchanged)`;
       histories.set(file, history); untouched.set(file, unchanged);
-      write(file, `# Incoming directory links\n\n[Root](${link(file, oldDir)}/#root)\n[Nested](${link(file, `${oldDir}/nested folder/deeper`)}/#nested)\n[Reserved](${link(file, `${oldDir}/nested folder/deeper/hash #percent%`)}/#reserved?fragment)\n[Record](${link(file, `${oldDir}/${primary}`)}#record)\n${unchanged}\n[External](https://example.invalid/folder/#external)\n\n${history}## Current limits\n\nFixture only.\n`);
+      write(file, `# Incoming directory links\n\n[Root](${link(file, oldDir)}/#root)\n[Bare](${link(file, oldDir)}#bare)\n[Plain](${link(file, oldDir)})\n[Nested](${link(file, `${oldDir}/nested folder/deeper`)}/#nested)\n[Reserved](${link(file, `${oldDir}/nested folder/deeper/hash #percent%`)}/#reserved?fragment)\n[Record](${link(file, `${oldDir}/${primary}`)}#record)\n${unchanged}\n[External](https://example.invalid/folder/#external)\n\n${history}## Current limits\n\nFixture only.\n`);
     }
     // A directory-only referrer ensures preflight does not rely on a file link.
     const directoryOnly = 'workbench/skills/directory-only/SKILL.md';
@@ -111,6 +111,7 @@ Fixture complete.
     for (const file of skills) {
       const content = fs.readFileSync(path.join(room, file), 'utf8');
       assert.ok(content.includes(`[Root](${link(file, newDir)}/#root)`), `${kind}: moved-root directory link preserves slash and fragment`);
+      assert.ok(content.includes(`[Bare](${link(file, newDir)}#bare)`) && content.includes(`[Plain](${link(file, newDir)})`), `${kind}: directory links need neither a slash nor a fragment`);
       assert.ok(content.includes(`[Nested](${link(file, `${newDir}/nested folder/deeper`)}/#nested)`), `${kind}: nested directory link preserves encoding`);
       assert.ok(content.includes(`[Reserved](${link(file, `${newDir}/nested folder/deeper/hash #percent%`)}/#reserved?fragment)`), `${kind}: encoded hash and percent remain path bytes`);
       assert.ok(content.includes(`[Record](${link(file, `${newDir}/${primary}`)}#record)`), `${kind}: primary file link remains correct`);
