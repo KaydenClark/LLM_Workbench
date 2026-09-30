@@ -9,7 +9,7 @@
 **Catalog description:** Replace the Markdown Spec summary with a generated six-lane implementation board, shared lane selection and title-first room-core sitrep.
 **Blockers:** S-01W first identity/consumer delivery is contained in integration; its claimed assembled QA remains separate. Direct-Task coverage awaits its source-home contract.
 **Latest event:** TK-003Q closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Next gate:** Fresh independent exact-head TK-003Q review before integration; later stage-2 review vocabulary and Backlog remain unallocated.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 
@@ -296,8 +296,10 @@ Planning capability owner authored; TK-003O's scoped preview is closed with
 implementation proof. Independent review of exact 7a17468 failed with a
 normalized-field P2. TK-003P closed the bounded correction with immutable
 local proof at 82bd5b3; separate exact195 Task review passed and PR228 is
-contained at integration 2780fe6. TK-003Q implements bounded stage 2A, with
-immutable aggregate checks and fresh independent Task review still pending.
+contained at integration 2780fe6. TK-003Q closed bounded stage 2A with all51
+required local checks and 23 public regression groups passing at exact
+b06f3e47cbfa42ad690832097555e58f1cd1ef39. Final closeout checkpoint validation
+and fresh independent exact-head Task review remain pending.
 Whole-capability acceptance, assembled independent review and owner Human QA
 remain pending; no Spec completion is claimed.
 
