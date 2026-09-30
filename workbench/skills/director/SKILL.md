@@ -32,8 +32,12 @@ rendered Taskboard, the ADR collection under `workbench/docs/adr` and the
 Wiki router. Never depend on a local chat, private memory or an unmerged
 branch for state another agent must continue from. Record each coordination
 decision compactly in its existing owner as it is made, not at closeout.
-Distinguish a documented decision, an unmerged candidate and a delivered
-capability; only a reviewed merge into the integration branch delivers.
+A Spec's records keep their single writer:
+route what belongs in a Spec to that Spec's writer, or record it in the
+coordination owner the project names, and
+never edit another writer's Spec state concurrently. Distinguish a documented
+decision, an unmerged candidate and a delivered capability; only a reviewed
+merge into the integration branch delivers.
 
 ## Obligations
 
@@ -42,8 +46,8 @@ capability; only a reviewed merge into the integration branch delivers.
 2. Assign one Spec and its branch to each Dispatcher. Name the
    single durable writer for every shared artifact (Spec records,
    projections, controls, routers) and record each cross-Spec dependency and
-   the landing order in the owning Spec, so independent lanes proceed in
-   parallel without colliding.
+   the landing order in a tracked owner on the integration branch, so
+   independent lanes proceed in parallel without colliding.
 3. Monitor Dispatcher reports and resolve coordination issues inside the
    project assignment. Record a permission refusal or an unsupported host
    capability in the owning Spec rather than routing around it or acting on a
