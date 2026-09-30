@@ -326,7 +326,7 @@ The core skills ship inside every room at the manifest-declared `skills` lane,
 for Codex, `.claude/skills` for Claude Code) are tracked relative links into
 that lane, so a fresh clone discovers the skills with no provider home and no
 personal catalog. This repository's lane is the authoring source for
-the 22 core skills listed in `workbench/skills/README.md`; every other room
+the 25 core skills listed in `workbench/skills/README.md`; every other room
 receives receipt-backed copies from the release checkout:
 
 ```bash
@@ -1002,6 +1002,13 @@ folder and otherwise reported as `disagreeing-status`. Default `REGISTER.md`
 shows active accepted decisions, and `HISTORY.md` preserves all lifecycle
 states. Register regenerates
 both projections without rewriting decision bodies.
+
+A confirmed grilling readback in Question / Answer / Why / Impact form locks
+the resulting ADR decision. Author the ADR during `to-docs`, before Specs and
+Tasks; no second owner reread is required when the text faithfully records the
+confirmed answer. Reconcile later corrections with their owning records before
+moving an accepted decision out of `proposed/`. Acceptance and implementation
+are separate: record any gap in the assigned Spec.
 
 ```bash
 node workbench/tools/adr.mjs new --title "Decision title"

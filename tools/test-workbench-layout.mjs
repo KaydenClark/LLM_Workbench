@@ -8,7 +8,7 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import test from 'node:test';
 import { doctor, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
-import { coreSkills, legacyCoreSkills, validateManifest, readContextUnit, ContextUnitUndeclaredError } from '../workbench/tools/workbench-layout.mjs';
+import { coordinationSkills, coreSkills, legacyCoreSkills, validateManifest, readContextUnit, ContextUnitUndeclaredError } from '../workbench/tools/workbench-layout.mjs';
 import { genesisTemplateFiles, templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
 import { COLLECTIONS, LANES } from '../workbench/tools/workbench-paths.mjs';
 
@@ -266,8 +266,9 @@ test('a six-lane schema 2 manifest gains the skills lane through migrate, after 
     delete manifest.lanes.skills;
     // A room stamped before the lane holds the bundle its release stamped:
     // v3.2.1's frozen twenty-one, without the `grill-me` S-00Z grew the live
-    // bundle with. The provider-home shape validates only with a stamped row.
-    manifest.skillPolicy = { ...manifest.skillPolicy, required: manifest.skillPolicy.required.filter((name) => name !== 'grill-me'), normalSetup: 'presence-only', updates: 'explicit-only' };
+    // bundle with or the coordination entries that grew it after. The
+    // provider-home shape validates only with a stamped row.
+    manifest.skillPolicy = { ...manifest.skillPolicy, required: manifest.skillPolicy.required.filter((name) => name !== 'grill-me' && !coordinationSkills.includes(name)), normalSetup: 'presence-only', updates: 'explicit-only' };
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
     // The undeclared directory may already exist, empty (init's .gitkeep) or
     // holding a room-local skill; migrate must accept both, not refuse them.
@@ -915,10 +916,11 @@ test('each listed legacy version validates only at the policy its release declar
     assert.equal(outcome('v3.2.0', [...legacyCoreSkills, 'carry', 'notepad', 'save', 'promote', ...current.slice(-4)]), 'valid');
     assert.equal(outcome('v3.2.0', [...twelve, 'carry', 'notepad', ...current.slice(-4)]), 'invalid-skill-policy');
     // v3.2.1 stamped the twenty-one-skill bundle with `handoff`; S-00Z grew the
-    // live bundle with `grill-me`, so the v3.2.1 row freezes at twenty-one and
-    // a room stamped v3.2.1 validates with either the frozen row or the
-    // current policy the Workbench update writes before restamping.
-    const twentyOne = current.filter((name) => name !== 'grill-me');
+    // live bundle with `grill-me` and the coordination entries grew it again,
+    // so the v3.2.1 row freezes at twenty-one and a room stamped v3.2.1
+    // validates with either the frozen row or the current policy the
+    // Workbench update writes before restamping.
+    const twentyOne = current.filter((name) => name !== 'grill-me' && !coordinationSkills.includes(name));
     assert.equal(twentyOne.length, 21);
     assert.equal(outcome('v3.2.1', twentyOne), 'valid');
     assert.equal(outcome('v3.2.1', current), 'valid');
