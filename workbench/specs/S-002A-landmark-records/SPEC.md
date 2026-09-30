@@ -3,13 +3,13 @@
 **Spec ID:** S-002A
 **Status:** active
 **Priority:** 1
-**Owner:** codex-records-dispatcher
+**Owner:** codex-v4-carry
 **Stance:** Builder
-**Updated:** 2026-09-26
+**Updated:** 2026-09-29
 **Catalog description:** Maintain evolving landmark relationships and readable durable knowledge with recoverable provenance.
 **Blockers:** none
-**Latest event:** 2026-09-27 planning and existing Task receipts reconciled from `92ba4e61356389effc54d3ceebd79f9f6ff49c7a`; implementation remains off integration.
-**Next gate:** Reconcile and independently review the implementing lane candidate before its code enters integration; preserve named unresolved gates below.
+**Latest event:** 2026-09-29 owner-directed carry resumes TK-002T from worker source `90885bde8c67c8690e1a70371d39c227da65f751` on integration base `ac6fadbcd97abf8a9d502e0b724bfba7d98b6c6f`; installed runtime registration, fresh full verification and separate-context Task review remain.
+**Next gate:** Finish the released TK-002T runtime registration, verify a clean immutable candidate, obtain fresh separate-context Task review and land it in integration. Shared Wiki wiring, assessment and TK-002W lifecycle work remain separate.
 
 ## Integration Visibility
 
@@ -210,3 +210,5 @@ self-drift cleanUpdate=false. Passing checks do not prove clean update or QA.
 | 2026-09-26 | review | Separate-context Sol source review01a0e020-fe95-7413-bc64-201083ebac61 pins04d54b1 to6688a94, dirty[]; P2 registry omission independently reproduced; no additional proven source defect. Import exact worker90885bd Task receipts/state without rewriting rows | Independentvalidator16/16, Tracker23/23, Wiki13/13, documenteddemo2/2 in0.28s, diffcheckpass; no independentfullsuitepass. Guardrail78/100, cleanUpdatefalse; reported49/50 retains failing registrygate | Actual Task in-progress and receipts preserved; current feature compatibility limited to projecttype | Review does not pass integration; corrected registered immutable candidate/fullproof and freshreview still needed; direct registry approval pending |
 
 | 2026-09-27 | none | Integration visibility reconciliation | Imported requirements and existing Task receipts from `92ba4e61356389effc54d3ceebd79f9f6ff49c7a`; no runtime files merged and no new Tasks cut | This owner and release reconciliation report | Implementing candidate review, integration delivery and applicable owner gates remain |
+
+| 2026-09-29 | TK-002T | Owner-directed carry resumes the existing in-progress slice on current integration, preserving historical attempts and pending whole-Spec gates; zero coordination hand-backs | Fresh fetch and next select TK-002T; original worker and Dispatcher tips last changed 2026-09-26, Dispatcher checkout clean, no worker worktree registered. claim refuses because no ready Task exists and restores the tree; this run resumes the existing in-progress Task rather than resetting it. Prior automatic registry commit rejection remains history; current user requests the smallest v4 slice to completion and its Task explicitly releases the one-line registry hunk | Existing source/test/usage bytes recovered from worker 90885bde; no unrelated branch changes imported | Reproduce installed red, permitted registry commit, green full checks and fresh review pending |
