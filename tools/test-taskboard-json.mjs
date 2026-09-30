@@ -15,6 +15,7 @@ function put(root, file, text) {
 }
 function room() {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'taskboard-json-'));
+  put(root, 'workbench/manifest.json', fs.readFileSync(new URL('../workbench/manifest.json', import.meta.url), 'utf8'));
   put(root, 'BLUEPRINT.md', '# Fixture Blueprint\n');
   put(root, 'TASKBOARD.md', '# Fixture Board\n<!-- hot-specs:start -->\nold\n<!-- hot-specs:end -->\n');
   return root;
