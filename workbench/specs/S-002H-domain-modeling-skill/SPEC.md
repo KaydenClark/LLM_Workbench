@@ -8,8 +8,8 @@
 **Updated:** 2026-09-30
 **Catalog description:** Make active domain modeling precise and usable through the Workbench's Lexicon, Spec, ADR, Wiki, and authority boundaries.
 **Blockers:** none
-**Latest event:** TK-003V closed with proof.
-**Next gate:** Complete TK-003W.
+**Latest event:** TK-003W claimed by claude-s002h.
+**Next gate:** Close TK-003W with verification and documentation proof.
 
 > **Citation anchors.** pre=`2780fe66754abf69b2ab6dea23337a7be0f6d801` post=`2780fe66754abf69b2ab6dea23337a7be0f6d801`.
 

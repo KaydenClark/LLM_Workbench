@@ -3,7 +3,7 @@
 **Task ID:** TK-003W
 **Spec ID:** S-002H
 **Slice:** Observe domain-modeling scenarios in fresh contexts, red on pending source and green on the candidate
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-002H acceptance lines 1-5 observed at the Testing Seams scenario seam, plus the short upstream-naming demo transcript the Verification Procedure names
