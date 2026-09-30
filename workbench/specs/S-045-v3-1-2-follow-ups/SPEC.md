@@ -8,8 +8,8 @@
 **Updated:** 2026-09-07
 **Catalog description:** Own the seven follow-ups the v3.1.2 slices and their retrospective reviews left open, so owed work has a spec that carries it instead of surviving only as prose inside completed specs.
 **Blockers:** none
-**Latest event:** Historical Spec completion preserved; PR77 citation correction awaits provenance reconciliation and independent review.
-**Next gate:** PR77 provenance reconciliation and independent review; no Spec reopening.
+**Latest event:** Historical Spec completion preserved; PR77 citation correction has public baseline provenance; frozen verification and independent review remain.
+**Next gate:** PR77 frozen verification and independent review; no Spec reopening.
 
 > **Citation anchors.** pre=`18ffc0d` post=`18ffc0d`. A label before a citation names
 > its tree and wins: "shipped `:M`" reads at `post`, "base `:N`" at the `git show`
