@@ -8,7 +8,7 @@
 **Updated:** 2026-09-30
 **Catalog description:** Coordinate planning, parallel Task delivery and assembled verification within one assigned Spec and its branch.
 **Blockers:** none
-**Latest event:** TK-003B closed with proof.
+**Latest event:** TK-003B closed with proof; the assembled candidate goes to separate-context review and then to integration as one reviewed Spec PR.
 **Next gate:** Owner Human QA on integration, then complete S-002D
 
 > **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`0f80049ce1570c04460a3315374d5e558241c71e`.
@@ -96,4 +96,4 @@ Maintain the role or stance definition in LEXICON.md, the operating contract in 
 
 ## Completion Result
 
-TK-003A delivered the Spec-bound operating entry `workbench/skills/dispatcher/SKILL.md` as a required core entry. The manifest lists it before `builder`, and `workbench/tools/workbench-layout.mjs` places it in the exported `coordinationSkills` group ahead of the four portable stances. The catalog and layout tests hold its contract and position, and every pinned bundle count now reads 23. TK-003B delivered `workbench/wiki/skill-dispatcher.md`, routed from `workbench/wiki/MEMORY.md` Roles And Stances, with two recorded fresh-context scenario runs and their limits. In the second run, Workers ran concurrently behind a single writer that was named first. The Spec is not complete: separate-context review of the assembled candidate, integration delivery and owner Human QA remain, and no owner approval is claimed.
+TK-003A delivered the Spec-bound operating entry `workbench/skills/dispatcher/SKILL.md` as a required core entry. The manifest lists it before `builder`, and `workbench/tools/workbench-layout.mjs` places it in the exported `coordinationSkills` group ahead of the four portable stances. The catalog and layout tests hold its contract and position, and every pinned bundle count now reads 23. TK-003B delivered `workbench/wiki/skill-dispatcher.md`, routed from `workbench/wiki/MEMORY.md` Roles And Stances, with two recorded fresh-context scenario runs and their limits. In the second run, Workers ran concurrently behind a single writer that was named first. This text does not claim reviewed integration delivery. That rests on the review verdict row for the assembled candidate and on that candidate being contained in `integration`. The Spec is not complete: owner Human QA on `integration` remains, and no owner approval is claimed.
