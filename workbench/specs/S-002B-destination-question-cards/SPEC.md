@@ -5,13 +5,13 @@
 **Priority:** 1
 **Owner:** DQC dispatcher
 **Stance:** Builder
-**Updated:** 2026-09-26
+**Updated:** 2026-09-30
 **Catalog description:** Preserve evolving concept understanding, source lineage, Expected result and achieved Result through public safe record operations.
 **Blockers:** none
-**Latest event:** 2026-09-27 planning and existing Task receipts reconciled from `a9e32803e7f7f866f510f529aa677e7aa4f1a40f`; implementation remains off integration.
-**Next gate:** Reconcile and independently review the implementing lane candidate before its code enters integration; preserve named unresolved gates below.
+**Latest event:** TK-002S Result runtime recovered onto fresh integration base `2780fe66754abf69b2ab6dea23337a7be0f6d801`; targeted red/green reproduced. Committed assembled verification and fresh independent review precede the Task PR.
+**Next gate:** Verify the assembled Result recovery, obtain separate-context review, and contain its immutable candidate on integration; then recover the Tracker view before the first source-cluster incorporation. Whole-Spec composition and owner gates remain open.
 
-> **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`b00a2e338436ef7b281b0cc53e74f891af32f18c`.
+> **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`ce1347d`.
 
 ## Integration Visibility
 
@@ -25,6 +25,29 @@ integration verification and independent review remain open. Existing Task
 states preserve the actual hand-back rather than inventing new execution.
 The Dispatcher retains its lane and pending gates. Do not reimplement completed
 branch work or infer permission to bypass a pending approval/review.
+
+### Current recovery and coordinated delivery — 2026-09-30
+
+The preceding visibility account describes the historical planning import.
+This candidate restores only TK-002S runtime, dedicated tests, disposable demo
+and owning README from the existing recovery objects. It does not import old
+controls, peer state or generated projections from those branches. The Result
+source anchor is `ce1347d`; integration containment remains a separate Task-PR
+gate until the immutable candidate passes review and its remote merge is read back.
+
+Owner authorized this Director run to deliver Result, then S-001Z/TK-002U's
+readable view, then one source-faithful DQC cluster from draft questions 026–029.
+The runtime/README lease belongs to the Result recovery worker until its clean
+seam is released, then to the Tracker recovery worker. Codex Director is this
+run's sole S-002B/S-001Z Spec and generated projection writer. Claude alone
+owns S-002H source preparation; Servitor retains S-01X/PR #229. This lane
+changes no peer controls, manifest, Wiki routers or skill registry. Generated
+Taskboard and Spec catalog are rebuilt from this assembled source.
+New source cards require current ledger/correction reconciliation and serial
+native identities; draft boundaries remain provisional. TK-002V and TK-002W,
+main promotion, version/release and other-room updates remain outside this run.
+Owner Human QA has been underway since 2026-09-19, with failed reviews and no
+recorded approval; tests and independent review do not reset it.
 
 ## Outcome
 
@@ -109,6 +132,8 @@ Update `workbench/landmark-tracker/README.md` with actual Result operation and l
 | 2026-09-26 | whole-Spec QA | Reproduced inherited public DQC/landmark/view behavior and imported single-writer foundation transfer | Clean df987692: inherited Tracker 23/23, shared public demo PASS 2.52s, prior Result 5/5 and demo PASS; post drift cleanUpdate false dirty false, guardrails 78/100, known seven findings unchanged. Committed source map imported exactly from 28103a70, source original completed evidence unchanged | Confirmed DQC transfer and preserved original TK-01Z/TK-02A redirected history; shared demo ownership remains Tracker | Fixed worker full-suite, Task receipts/closure and assembled independent review outstanding; workflow maintenance TK-002V deferred and other composition paths open |
 | 2026-09-26 | TK-002S | Task closed | TK-002S expected red 6f2165b93efa2a999ed6e4d3c8a8b90f7b058fcb0/5; clean runtime/test source912563f981ad89045635ef6c5b6cc9eb96f104f8 Result5/5 Tracker23/23 demoPASS0.4s full current AGENTS48/48. Task-only receipt882430c imported94dba08. Dispatcher reproduced targeted/runtime demos. Closure proof/source-state changes occur afterward and are not full-suite-tested runtime912. | README Result procedure and disposable demo updated; existing schema/generic control meaning preserved, mirror exemption in Spec/receipt. | Task behavior satisfied; dispatcher branch publication rejected before execution by auto-review, so local closure is not delivered integration. S-002B composition TK-002V and other maintenance/jointproof/review remain open; owner Human QA unchanged. Git state at close: unpushed (no upstream); recorded reason: Scoped dispatcher recovery push rejected by automatic approval review before execution for explicit-public-payload authorization; retain local immutable reviewable candidate. Worker runtime/Task proof882430c is separately remote-recoverable. No workaround publication; Director integration review and specific publication authorization remain gates. |
 | 2026-09-26 | TK-002S close correction | First close refused before Task mutation because dispatcher had no upstream; scoped public recovery push auto-review rejected before execution | Rejection stated specific public source/Spec/Task payload authorization missing. Subsequent supported local close records git-state reason and does not publish or bypass review; original 9057f52 prose closure claim preceded actual close and is corrected by this row | Actual Task close/local recovery state now recorded; no external payload sent by dispatcher | Explicit public-payload authorization and Director integration review remain; local closure is not delivered integration |
+
+| 2026-09-30 | TK-002S recovery | Owner authorized Director delivery; read-only recovery reconciliation found Result absent on fresh integration and recoverable at historical runtime 912563f | Fresh base 2780fe66754abf69b2ab6dea23337a7be0f6d801; recovery red 0802a41 reproduced 0/5 (CLI rejects --result; API reports no change). Recovery green ce1347d: Result 5/5, inherited Tracker 23/23, public demo and diff check PASS. Disposable installed fixture at ce1347d: public install/verify receipt valid, CLI capture/revise and fresh-process JSON/readable Result reload PASS; no existing room or personal catalog changed. Full assembled suite and independent review remain pending | Scoped runtime/test/demo/README recovery; historical receipts preserved; current coordination and remaining gates reconciled here | No integration containment or whole-Spec completion yet; known self-drift and failed owner Human QA remain |
 
 ## Completion Result
 
