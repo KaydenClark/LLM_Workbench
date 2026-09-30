@@ -3,13 +3,13 @@
 **Spec ID:** S-01X
 **Status:** active
 **Priority:** 1
-**Owner:** codex-servitor-shared-eligibility
+**Owner:** codex-servitor-pr-resolution
 **Stance:** Builder
 **Updated:** 2026-09-30
 **Catalog description:** Replace the Markdown Spec summary with a generated six-lane implementation board, shared lane selection and title-first room-core sitrep.
 **Blockers:** S-01W first identity/consumer delivery is contained in integration; its claimed assembled QA remains separate. Direct-Task coverage awaits its source-home contract.
-**Latest event:** TK-003R closed with proof.
-**Next gate:** Fresh independent exact-head TK-003R correction review before integration; later stage-2 review vocabulary and Backlog remain unallocated.
+**Latest event:** TK-003S claimed by codex-servitor-pr-resolution.
+**Next gate:** Close TK-003S with verification and documentation proof.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 
