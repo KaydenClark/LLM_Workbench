@@ -90,10 +90,12 @@ node workbench/tools/notepads.mjs append --note NOTE --revision N \
   --source-file PATH --interpretation "WHAT IT MEANS HERE"
 ```
 
-Every write names the revision you read. A write against a revision that has
-moved is refused as `stale-revision` naming the current one - the note moved,
-whoever moved it; read again and re-apply. This is a check, not a lock: it
-catches the sequential case, where your note moved while you were working. Two
+Every write names the revision you read. A missing or mismatched supplied
+revision is refused as `stale-revision`, naming the current one. The refusal
+does not prove a change or identify a writer: an omitted revision is refused
+on an unchanged fresh note, and your own older revision is refused too. Read
+the current note, supply its revision, and re-apply. This is a check, not a lock:
+it catches a sequential change while you were working. Two
 writers that both read the same revision at the same moment would both pass
 it, and the later write silently replaces the earlier one, so writes stay one
 writer at a time. That rule bounds overlapping writes, not which chat may own
