@@ -200,7 +200,8 @@ test('a selected slice with an unmet dependency is reported, excluded by next, a
 
     write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { tasks: '| TK-001 | First slice | ready | none | pending |\n| TK-002 | Second slice | ready | TK-001 | pending |' }));
     render(dir);
-    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a later task waiting on its predecessor is ordinary sequencing, not a finding');
+    assert.deepEqual(doctor(dir, { home: quietHome }).map(item => [item.code, item.taskId, item.blocks]), [['blocked-slice', 'TK-002', 'selected-slice']], 'every dependency-waiting To-do remains visible with its existing per-Task effect');
+    assert.equal(cliDoctor(dir).status, 0, 'a later To-do wait also does not fail doctor for unrelated work');
     assert.equal(nextWork(dir).taskId, 'TK-001');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });

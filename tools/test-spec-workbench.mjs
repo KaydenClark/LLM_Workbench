@@ -1083,7 +1083,8 @@ try {
   );
   render(root);
   assert.deepEqual(doctor(root), [], 'a converted Spec renders and passes doctor');
-  assert.equal(nextWork(root).taskId, 'TK-002', 'the converted room selects the first eligible record');
+  assert.equal(nextWork(root).specId, 'S-306', 'ordinary next orders eligible Task titles across owners, rather than Spec IDs');
+  assert.equal(showSpec(root, 'S-304').tasks.find(task => task.id === 'TK-002').status, 'ready', 'the converted first eligible record remains source-owned and ready');
   assert.throws(
     () => convertSpecSlices(root, 'S-304'),
     /already has specs\/S-304-convert\/tasks; conversion runs once/,
