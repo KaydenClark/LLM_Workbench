@@ -3,7 +3,7 @@
 **Task ID:** TK-003S
 **Spec ID:** S-00Y
 **Slice:** P2 accepted-notepad truth correction: accepted ADR000L and skill guidance must say stale-revision means the supplied revision is absent or mismatched, not prove that the note changed or identify a writer. Independent fresh revision1 missing-revision probe refused without byte changes. P2 multipart TT-Q9 must preserve its implemented objective-ownership answer but remain partially answered with Spec and Task relationships open beyond the Packet rule. No accepted ADR rollback, concurrency implementation, new owner decision or conversational-fidelity QA claim.
-**Status:** ready
+**Status:** in-progress
 **Blockers:** none
 **Destination:** spec-acceptance: S-00Y Acceptance Criteria
 **Planned verification:** Answers evidence row 9 (fail verdict at 350c56375a7ab5ebfc5ca00ba6d7bbdb8486bf05 on 2026-09-30): P2 accepted-notepad truth correction: accepted ADR000L and skill guidance must say stale-revision means the supplied revision is absent or mismatched, not prove that the note changed or identify a writer. Independent fresh revision1 missing-revision probe refused without byte changes. P2 multipart TT-Q9 must preserve its implemented objective-ownership answer but remain partially answered with Spec and Task relationships open beyond the Packet rule. No accepted ADR rollback, concurrency implementation, new owner decision or conversational-fidelity QA claim.

@@ -3,13 +3,13 @@
 **Spec ID:** S-00Y
 **Status:** active
 **Priority:** 2
-**Owner:** claude-opus-5-5
+**Owner:** codex-servitor-pr-resolution
 **Stance:** Builder
-**Updated:** 2026-09-26
+**Updated:** 2026-09-30
 **Catalog description:** Preserve one objective's working context in revision-checked JSON without making it authority.
 **Blockers:** none.
-**Latest event:** TK-00P closed with proof.
-**Next gate:** Owner Human QA of conversational fidelity on `integration`, then `complete S-00Y`.
+**Latest event:** TK-003S claimed by codex-servitor-pr-resolution.
+**Next gate:** Close TK-003S with verification and documentation proof.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
