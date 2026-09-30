@@ -18,6 +18,7 @@ import { validateWiki } from './wiki.mjs';
 import { ARTIFACT_ID_MIN_WIDTH, allocateArtifactId, compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
 import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseFormerId, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
 import { appendReceiptRow, readReceiptFromFile } from './task-receipt.mjs';
+import { buildTaskboard } from './taskboard.mjs';
 import { assembleSpecReport, computeSpecDigest, formatSpecReport, isAncestorOfBranch, recordOwnerApproval, recordReviewVerdict } from './spec-report.mjs';
 
 // One closed status vocabulary for an execution slice, owned by the record
@@ -910,8 +911,10 @@ export function gate(rootDir, options = {}) {
   };
 }
 
-export function render(rootDir) {
+export function render(rootDir, options = {}) {
   const root = path.resolve(rootDir);
+  if (options.format === 'json') return renderJsonPreview(root);
+  if (options.format !== undefined && options.format !== 'markdown') throw new Error(`Unsupported render format: ${options.format}; use json for the opt-in preview or markdown for the existing projection`);
   const specs = loadSpecs(root);
   const retired = loadRetiredSpecs(root);
   const blueprintPath = path.join(root, 'BLUEPRINT.md');
@@ -929,6 +932,55 @@ export function render(rootDir) {
   }
   atomicWrite(taskboardPath, replaceRegion(taskboard, HOT_START, HOT_END, renderHotBoard(specs, retired)));
   return { specs: specs.length, active: specs.filter((spec) => isHot(spec)).length, retired: retired.length };
+}
+
+function renderJsonPreview(root) {
+  const output = path.join(root, 'TASKBOARD.preview.json');
+  assertSafeWritePath(root, output);
+  assertSafeReadPath(root, path.join(root, 'workbench', 'manifest.json'));
+  const { specsRoot } = resolveSpecsRoot(root);
+  // Refuse linked sources before loaders can skip a symlinked directory or
+  // read through it. Traverse only the existing Spec/Task ownership shapes.
+  const inspectFile = file => {
+    assertSafeReadPath(root, file);
+    if (fs.existsSync(file) && !fs.statSync(file).isFile()) throw new Error(`taskboard-source: ${file} must be an ordinary file`);
+  };
+  const inspectTasks = directory => {
+    assertSafeReadPath(root, directory);
+    if (!fs.existsSync(directory)) return;
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const child = path.join(directory, entry.name);
+      assertSafeReadPath(root, child);
+      if (entry.isDirectory()) {
+        if (TASK_LIFECYCLE_FOLDERS.includes(entry.name)) inspectTasks(child);
+        else inspectFile(path.join(child, 'TASK.md'));
+      }
+    }
+  };
+  const inspectSpecs = directory => {
+    assertSafeReadPath(root, directory);
+    if (!fs.existsSync(directory)) return;
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const child = path.join(directory, entry.name);
+      assertSafeReadPath(root, child);
+      if (!entry.isDirectory()) continue;
+      if (SPEC_LIFECYCLE_FOLDERS.includes(entry.name)) inspectSpecs(child);
+      else {
+        const file = path.join(child, 'SPEC.md');
+        inspectFile(file);
+        if (fs.existsSync(file)) inspectTasks(path.join(child, 'tasks'));
+      }
+    }
+  };
+  inspectSpecs(specsRoot);
+  const board = buildTaskboard([...loadSpecs(root), ...loadRetiredSpecs(root)]);
+  for (const lane of Object.values(board.lanes)) for (const card of Object.values(lane)) for (const source of card.sourceLinks) {
+    const file = path.join(root, source);
+    inspectFile(file);
+    if (!fs.existsSync(file)) throw new Error(`taskboard-source: missing source link ${source}`);
+  }
+  writeSafeFile(root, output, JSON.stringify(board, null, 2)+'\n');
+  return { format: 'json-preview', path: 'TASKBOARD.preview.json', schemaVersion: board.schemaVersion, cards: Object.values(board.lanes).reduce((count, lane) => count + Object.keys(lane).length, 0) };
 }
 
 export function doctor(rootDir, options = {}) {
@@ -3755,7 +3807,7 @@ async function main() {
   else if (command === 'widen-id') result = widenId(root, id, { spec: options.spec });
   else if (command === 'retire-spec') result = retireSpec(root, id, { wikiNote: options.wiki });
   else if (command === 'discard') result = options.task ? discardRetiredTask(root, id, options.task) : discardRetiredSpec(root, id);
-  else if (command === 'render') result = render(root);
+  else if (command === 'render') result = render(root, { format: options.format });
   else if (command === 'doctor') {
     doctorRun = doctorCommand(root, options);
     result = doctorRun.json;

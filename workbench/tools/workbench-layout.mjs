@@ -1136,6 +1136,7 @@ export const RUNTIME_TOOLS = Object.freeze([
   'task-packet.mjs',
   'task-receipt.mjs',
   'task-record.mjs',
+  'taskboard.mjs',
   'template-placeholders.mjs',
   'visible-ids.mjs',
   'skill-inspection.mjs',

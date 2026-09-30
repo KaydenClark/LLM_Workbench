@@ -46,6 +46,7 @@ import { parseMarkdownTableRow } from '../workbench/tools/markdown-table.mjs';
 import { validateWiki } from '../workbench/tools/wiki.mjs';
 import { parseFrontmatter } from '../workbench/tools/adr.mjs';
 import './test-lifecycle-directory-links.mjs';
+import './test-taskboard-json.mjs';
 
 // `doctor`'s `stale-claim` rule (workbench/tools/spec-workbench.mjs) flags an
 // in-progress claim whose `Updated` date-only stamp is more than one day

@@ -899,6 +899,31 @@ node workbench/tools/spec-workbench.mjs render
 node workbench/tools/spec-workbench.mjs doctor
 ```
 
+The first S-01X migration slice provides an opt-in preview:
+
+```bash
+node workbench/tools/spec-workbench.mjs render --format json
+node tools/test-taskboard-json.mjs --demo
+```
+
+`render --format json` regenerates only `TASKBOARD.preview.json` from existing
+Spec/Task records. Its six lanes retain readable source links, source-owned
+metadata and derived child progress and cleanup state. Unknown metadata stays
+`null`; ordering is priority, title, then WBID. Editing a card never changes
+its source, and the next render restores the source-derived value. Invalid
+source, ambiguous flat identities, symlinked sources or linked outputs refuse before
+replacing the previous preview. Normalized duplicate field names anywhere in
+a record also refuse, using the same whole-document extraction, case
+sensitivity and key/value trimming as
+the existing source parsers. This validation applies only to the preview.
+Legacy numeric Task labels remain Spec-scoped in their owners: if two labels
+collide as flat JSON keys, the refusal names both sources without changing
+them. Reconcile that boundary before the later
+canonical board switch. Default `render` continues to generate Markdown and
+CATALOG; selection, review vocabulary, direct/orphan Task coverage, sitrep and
+the root/template switch remain separate S-01X slices. The demo uses a
+disposable room and runs in under one minute.
+
 `convert-tasks` is one-shot: it writes one `tasks/<id>/TASK.md` record per
 unfinished slice row of an active spec (carrying the row's plan as `Planned
 verification`, never as proof), leaves done rows and completed specs untouched,
