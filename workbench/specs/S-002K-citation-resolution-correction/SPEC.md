@@ -1,7 +1,7 @@
 # S-002K - Resolve citation groups and file identity faithfully
 
 **Spec ID:** S-002K
-**Status:** planned
+**Status:** active
 **Priority:** 1
 **Owner:** unassigned
 **Stance:** Builder
