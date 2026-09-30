@@ -80,6 +80,30 @@ time; corrections stay in that history. Expected result (the intended durable
 change and its home) is distinct from Result (achieved delivery). A landmark
 revises its `--title`, `--summary` and `--importance` the same way.
 
+Record achieved delivery independently after reading the current revision:
+
+```bash
+node workbench/tools/landmark-tracker.mjs revise DQC-000A --expect-revision N \
+  --result "What was actually delivered and checked" --reason "Why this records achieved delivery"
+node workbench/tools/landmark-tracker.mjs show DQC-000A
+```
+
+The public API accepts the same `result` summary in `reviseRecord`. A non-empty
+summary is stored as `result: {summary, revision}` at the recording revision;
+each later Result revision preserves the previous value in before/after history.
+JSON and readable `show` expose it separately from Expected result, including
+after restart or rebuild. Recording Result alone leaves Expected result,
+confirmation and assessment unchanged; it never establishes Verified or an
+owner approval. Empty, invalid, private, stale and landmark Result writes are
+refused without changing source or projection bytes. Revision checks remain
+stale-read checks; keep one writer per record.
+
+Run a disposable-room public demonstration in under one minute:
+
+```bash
+node tools/dqc-result-demo.mjs
+```
+
 Assess documentation progress with fractions over the exact vocabulary Idea,
 Aligning, Confirmed, Mapped, Planned, Journey, Review, Verified. Fractions sum
 to one and always carry a basis and at least one piece of evidence:
