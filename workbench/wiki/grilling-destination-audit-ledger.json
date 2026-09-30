@@ -10757,7 +10757,7 @@
         "FND-Q23"
       ],
       "aliases": [],
-      "notes": "Answered part: the Blueprint's place (a routed artifact outside the three-carrier Contract). Open part: what makes its accepted claims binding; the reason given is an inference from decision-024 and correction-009, and the gap triage proposed agent wording for owner confirmation. 2026-09-29: ADR-000C acceptance and root control wording resolve the carrier/routing part, but do not answer the separate binding-force question. Keep status partially-answered. 2026-09-30: the owner's 2026-09-26 clarification, recorded verbatim in the local audit-ledger reconciliation note, answers the binding-force part; status moves to answered-in-chat. ADR-000C and the Authority Order do not yet say that the routing artifacts carry the Blueprint's binding force or that running the project proves it.",
+      "notes": "Answered part: the Blueprint's place (a routed artifact outside the three-carrier Contract). Part open until 2026-09-26: what makes its accepted claims binding; the reason given is an inference from decision-024 and correction-009, and the gap triage proposed agent wording for owner confirmation. 2026-09-29: ADR-000C acceptance and root control wording resolve the carrier/routing part, but do not answer the separate binding-force question. That reading kept status partially-answered until the 2026-09-30 promotion below. 2026-09-30: the owner's 2026-09-26 clarification, recorded verbatim in the local audit-ledger reconciliation note, answers the binding-force part; status moves to answered-in-chat. ADR-000C and the Authority Order do not yet say that the routing artifacts carry the Blueprint's binding force or that running the project proves it.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-020",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-027",
@@ -10767,7 +10767,7 @@
       ],
       "progress": {
         "status": "in-progress",
-        "sub_label": "ADR-000C accepted; binding-force question open",
+        "sub_label": "ADR-000C accepted; binding-force wording not yet implemented",
         "evidence": "ADR-000C is active. AGENTS.md and LEXICON.md carry the three-carrier definition and Blueprint route; S-00G records the implementation window. Integration containment is verified from Git, not by this ledger.",
         "gap": "State in ADR-000C (or its operational owners) that the Contract and routing artifacts bind the Blueprint's accepted claims and that proof is running the project; mirror in templates."
       }
