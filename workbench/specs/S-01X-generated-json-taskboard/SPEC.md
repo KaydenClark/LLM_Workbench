@@ -8,8 +8,8 @@
 **Updated:** 2026-09-30
 **Catalog description:** Replace the Markdown Spec summary with a generated six-lane implementation board, shared lane selection and title-first room-core sitrep.
 **Blockers:** S-01W first identity/consumer delivery is contained in integration; its claimed assembled QA remains separate. Direct-Task coverage awaits its source-home contract.
-**Latest event:** TK-003P claimed by codex-servitor-json-preview.
-**Next gate:** Close TK-003P with verification and documentation proof.
+**Latest event:** TK-003P closed with proof.
+**Next gate:** Obtain fresh separate exact-head PR228 review after TK-003P correction before integration; later shared selection and whole-Spec delivery remain unallocated.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 
@@ -275,12 +275,14 @@ occurs during this planning authoring.
 | 2026-09-30 | review | Review verdict: fail at 7a1746843200ca14243ff6337ce2345103f6eac3 [723a1035108c] #1 | P2: TK-003O preview field guard disagrees with the whole-document normalized source parser: a body duplicate Status or whitespace-normalized Status key is accepted at 7a1746843200ca14243ff6337ce2345103f6eac3 and overwrites existing JSON while moving active Spec with done children into Complete. Align preview validation with actual key/value normalization and preserve output on refusal. | Independent PR228 exact-head reviewer in a separate context (reported by source coordinator), model and mode identity unrecorded | 1 |
 
 | 2026-09-30 | TK-003P | Normalized-field preview correction implemented | Independent FAIL1 at exact 7a1746843200ca14243ff6337ce2345103f6eac3 preserved; both public reproducers returned 0 and replaced bytes with incorrect Complete. Test-only d249f5797d4b801bfee3dd065b9a267f88c24186 had four new failures with runtime unchanged; focused suite now passes 13 groups and demo; immutable full51 pending | Preview duplicate validation matches whole-document source extraction and key/value trim, with unchanged default parsers; RUNBOOK preview procedure | Fresh independent exact-head review and all broader S01X criteria remain open |
+| 2026-09-30 | TK-003P | Task closed | Exact correction 82bd5b3847a816ee6a6ed731aee64b9af3d70439: all 51 required local commands PASS (48 AGENTS plus three RUNBOOK), 13 public JSON regression groups PASS and under-minute demo. Both original exact7a reproducers now refuse with prior JSON bytes preserved and no incorrect Complete. Red d249f5797d4b801bfee3dd065b9a267f88c24186 had four new failures with runtime unchanged from reviewed7a. Default source parsers and render seam unchanged. Actual append-only history CLEAN, FAIL1 and TK003O receipt preserved. Self-drift retains seven prior findings, guardrails unchanged 78/100 with four recommendations, no clean-update or owner QA claim. | RUNBOOK preview normalized-field refusal procedure, S01X correction state and TK003P boundary/proof; TK003O failure link, prior proof/receipt unchanged. | Fresh independent exact-head Task PR review required before integration. All nine S01X acceptance criteria and owner QA remain open. Canonical legacy flat-ID reconciliation, shared selection/review vocabulary, direct/orphan Tasks, sitrep and root/template rollout remain later slices. S01W QA remains separate. |
 
 ## Completion Result
 
 Planning capability owner authored; TK-003O's scoped preview is closed with
 implementation proof. Independent review of exact 7a17468 failed with a
-normalized-field P2; TK-003P owns that bounded correction before delivery.
+normalized-field P2. TK-003P closed the bounded correction with immutable
+local proof at 82bd5b3; fresh independent delivery review remains pending.
 Whole-capability acceptance, independent delivery review and owner Human QA
 remain pending; no Spec completion is claimed.
 
