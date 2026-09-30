@@ -3,7 +3,7 @@
 **Task ID:** TK-003G
 **Spec ID:** S-002G
 **Slice:** Ship the spec-manager core skill entry with bundle, catalog and installer proof
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-002G Desired Behavior 1-5 stated as the operating contract of one discoverable core skill entry, and acceptance line 7 (source behavior, templates, discovery and managed installation agree)

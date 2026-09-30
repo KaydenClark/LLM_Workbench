@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** claude-lane-G
 **Stance:** Builder
-**Updated:** 2026-09-29
+**Updated:** 2026-09-30
 **Catalog description:** Dispatch and monitor planned Task work in parallel within one Spec, preserving proof and coordinated hand-back.
 **Blockers:** none
-**Latest event:** Flight launched 2026-09-29 under the owner's Director-run instruction; Spec Planner cut TK-003G (source entry and bundle proof), TK-003H (routed Wiki article) and TK-003I (fresh-context scenario and assembled proof) from live Actuality at 1450e7a8.
-**Next gate:** Close TK-003G and TK-003H with named proof, then TK-003I with the observed scenario and assembled proof; separate-context review before integration.
+**Latest event:** TK-003G claimed by claude-lane-G.
+**Next gate:** Close TK-003G with verification and documentation proof.
 
 > **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`ac6fadbcd97abf8a9d502e0b724bfba7d98b6c6f`.
 
