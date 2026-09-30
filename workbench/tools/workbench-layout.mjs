@@ -40,11 +40,14 @@ const currentCoreSkills = legacyCoreSkills.map((name) => (name === 'to-tickets' 
 // entry composing grilling with notepad, ahead of the stances so every
 // `slice(-4)` stance read stays exact.
 const handoffCoreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', ...stanceSkills];
-// S-002C grows the live bundle with the `director` role entry. Roles scope
-// work and are not portable stances, so they sit between the workflow skills
-// and `stanceSkills`, keeping every `slice(-4)` stance read exact.
-export const roleSkills = ['director'];
-export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', ...roleSkills, ...stanceSkills];
+// Role and coordination-stance entries sit between the workflow skills and
+// the four portable stances; each is a required core entry delivered by its
+// own Spec. S-002C adds `director`, which leads the group as the top role;
+// S-002D adds `dispatcher`; S-002F adds `spec-planner`, the stance a
+// Dispatcher adopts at flight launch. Exported so the tests derive the frozen
+// v3.2.1 row by excluding this group rather than by naming each entry.
+export const coordinationSkills = ['director', 'dispatcher', 'spec-planner'];
+export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', ...coordinationSkills, ...stanceSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];

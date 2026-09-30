@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const skillsRoot = path.join(root, 'workbench', 'skills');
 const archivedSkillsRoot = path.join(root, 'skills-archive', 'optional-active-2026-09-01');
-import { coreSkills as runtimeCoreSkills, roleSkills } from '../workbench/tools/workbench-layout.mjs';
+import { coordinationSkills, coreSkills as runtimeCoreSkills } from '../workbench/tools/workbench-layout.mjs';
 const coreSkills = [...runtimeCoreSkills].sort();
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
 const assertIncludesAll = (content, requiredTerms, label) => {
@@ -82,19 +82,14 @@ assert.match(catalog, /\.claude\/skills/,
 // to it - `README.md` and `BLUEPRINT.md` both went stale when the bundle grew
 // and an independent review, not a test, caught them. Derive the numbers so a
 // future bundle change fails here instead of shipping a wrong count.
-// S-002C: role entries (`roleSkills`) are counted apart from the workflow
-// skills and the four stances, because a role scopes work and is neither a
-// workflow step nor a portable stance; the catalog sentence names all three
-// categories, and the workflow word is what remains after both are removed.
 const bundleSize = coreSkills.length;
 const stanceCount = 4;
-const roleCount = roleSkills.length;
 const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
   'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen'];
-const workflowWord = words[bundleSize - stanceCount - roleCount];
-const roleWord = words[roleCount];
+const workflowWord = words[bundleSize - stanceCount - coordinationSkills.length];
 for (const [relative, expected] of [
-  ['workbench/skills/README.md', [`closed ${bundleSize}-skill bundle`, `${workflowWord} workflow skills`, `${roleWord} role skill`]],
+  ['workbench/skills/README.md', [`closed ${bundleSize}-skill bundle`, `${workflowWord} workflow skills`,
+    `${words[coordinationSkills.length]} coordination skills`, 'four portable stances']],
   ['README.md', [`closed ${bundleSize}-skill core bundle`]],
   ['RUNBOOK.md', [`the ${bundleSize} core skills`]],
   ['LEXICON.md', [`closed set of ${workflowWord} workflow skills`]],
@@ -626,6 +621,8 @@ assert.ok(auditorSkill.indexOf('Stay inside the assigned target and project') < 
 // writer per shared artifact across Specs, and leaves owner Human QA and
 // main promotion to the owner. The fresh-context scenario in S-002C records
 // the behavior. Portable wording only: the bundle installs into every room.
+// It is counted as a coordination entry and leads that group, pinned below.
+assert.ok(coordinationSkills.includes('director'), 'director is counted as a coordination entry');
 const directorSkill = read('workbench/skills/director/SKILL.md');
 assert.match(directorSkill, /^name: director$/m, 'director frontmatter name');
 assert.match(directorSkill, /^description: Adopt the assigned Director role for one project and its integration branch within existing authority\.$/m,
@@ -665,6 +662,78 @@ assert.ok(directorSkill.indexOf('single durable writer') > directorSkill.indexOf
   'the shared-writer rule belongs to the director obligations');
 assert.doesNotMatch(directorSkill, /\/Users\/|GPT_OS|\bgpt-|\bopus\b|\bsonnet\b|\bcodex\b|\bclaude\b|scheduler|\b(?:two|three|four|five|six)\s+Dispatchers/i,
   'director must stay portable: no private path, provider, model, scheduler or Dispatcher count');
+
+// S-002D: the Dispatcher role entry is Spec-bound - one assigned Spec and its
+// branch, one durable writer for shared Spec state, Workers returning proof to
+// that writer, Task-branch merge requests into the Spec branch and never
+// approving its own candidate - obeys the shared skill contract and imports no
+// GPT_OS policy. It joins the live bundle as a coordination entry immediately
+// before the four portable stances, which stay the last four. The adjacency
+// reads the runtime order, not the sorted copy above.
+const dispatcherSkill = read('workbench/skills/dispatcher/SKILL.md');
+assertIncludesAll(dispatcherSkill, [
+  '## Purpose', '## Method / Posture', '## Obligations', '## Completion / Exit Condition',
+  'never grants, removes, or transfers authority', 'never spawns an agent',
+  'one assigned Spec', 'one durable writer', 'never approves its own',
+  'Task-branch merge request into the Spec branch', 'Director'
+], 'dispatcher role contract');
+assert.doesNotMatch(dispatcherSkill, /GPT_OS/, 'the dispatcher entry imports no GPT_OS policy');
+// S-002F appended `spec-planner` to the coordination group and S-002C put
+// `director`, the top role, at its head, so the group, in its declared order -
+// director, dispatcher, spec-planner - is what sits immediately before the four
+// stances.
+assert.deepEqual(runtimeCoreSkills.slice(-4 - coordinationSkills.length, -4), coordinationSkills,
+  'the coordination entries sit together, in declared order, immediately before the four portable stances');
+assert.equal(coordinationSkills[0], 'director', 'director leads the coordination entries');
+assert.equal(coordinationSkills[1], 'dispatcher', 'dispatcher follows the director');
+assert.deepEqual(runtimeCoreSkills.slice(-4), ['builder', 'auditor', 'reviewer', 'reconciler'],
+  'the four portable stances stay the last four of the live bundle');
+
+// S-002F TK-003D: the Spec Planner stance is the coordination entry a
+// Dispatcher adopts at flight launch. It composes with the assigned Dispatcher
+// role, plans only the one assigned Spec from live Actuality, cuts
+// complete-path slices with one named writer per shared file, keeps a
+// proposed Task distinct from an executable assignment, allocates ids with
+// `next-id` and activates once with `convert-tasks --activate`, hands the plan
+// to Spec Manager and escalates cross-Spec dependencies to the Director.
+// These pin the source contract; the fresh-context run in S-002F TK-003F
+// records the behavior.
+assert.ok(coreSkills.includes('spec-planner'), 'spec-planner must be a declared core skill');
+assert.ok(coordinationSkills.includes('spec-planner'), 'spec-planner is counted as a coordination entry');
+assert.equal(runtimeCoreSkills.indexOf('spec-planner'), runtimeCoreSkills.indexOf('builder') - 1,
+  'spec-planner sits immediately before builder, after dispatcher, in the live bundle');
+const specPlanner = read('workbench/skills/spec-planner/SKILL.md');
+assert.match(specPlanner, /^name: spec-planner$/m, 'spec-planner must declare its skill name');
+for (const section of ['Purpose', 'Method / Posture', 'Obligations', 'Completion / Exit Condition']) {
+  assert.ok(specPlanner.includes(`## ${section}`), `spec-planner: ${section}`);
+}
+assert.match(specPlanner, /never grants, removes, or transfers authority/);
+assert.match(specPlanner, /never spawns/);
+assert.match(specPlanner, /assigned SPEC and TASK/);
+assert.match(specPlanner, /composed with an already assigned Dispatcher role/,
+  'spec-planner composes with the Dispatcher role rather than replacing it');
+assert.match(specPlanner, /Never enumerate execution Tasks when merely authoring a planned Spec/,
+  'spec-planner plans at flight launch, never into a planned Spec');
+assert.match(specPlanner, /complete-path/, 'spec-planner cuts complete-path vertical slices');
+assert.match(specPlanner, /one named writer per shared file/, 'spec-planner names one writer per shared file');
+assert.match(specPlanner, /which groups may run concurrently/, 'spec-planner exposes concurrency within the Spec');
+assert.match(specPlanner, /a proposed Task distinct from an executable assignment/,
+  'spec-planner keeps a Worker draft distinct from an executable assignment');
+assert.match(specPlanner, /single Spec writer/, 'the Dispatcher reconciles Worker drafts as the single Spec writer');
+assert.match(specPlanner, /never approves its own candidate/);
+assert.match(specPlanner, /node workbench\/tools\/spec-workbench\.mjs next-id S-### --prefix TK/,
+  'spec-planner allocates ids with next-id, never by hand');
+assert.match(specPlanner, /convert-tasks S-### --activate/, 'spec-planner activates once with convert-tasks --activate');
+assert.match(specPlanner, /Spec Manager/, 'spec-planner hands the plan to Spec Manager');
+assert.match(specPlanner, /workbench\/specs\/S-002G-spec-manager-stance\/SPEC\.md/);
+assert.match(specPlanner, /workbench\/specs\/S-002D-dispatcher-role\/SPEC\.md/);
+assert.match(specPlanner, /to the Director/, 'spec-planner escalates cross-Spec dependencies to the Director');
+assert.match(specPlanner, /workbench\/manifest\.json/);
+assert.ok(specPlanner.indexOf('Never enumerate execution Tasks') < specPlanner.indexOf('## Obligations'),
+  'the no-Tasks-into-a-planned-Spec rule belongs to the planning method');
+assert.ok(specPlanner.indexOf('Spec Manager') > specPlanner.indexOf('## Completion / Exit Condition')
+  || specPlanner.lastIndexOf('Spec Manager') > specPlanner.indexOf('## Completion / Exit Condition'),
+  'the hand-off to Spec Manager belongs to the exit condition');
 
 // S-00J TK-006: the reviewed unit at integration is the assembled Spec bound
 // to a content digest - obtained with `report S-### --candidate <sha>` and

@@ -17,9 +17,11 @@ source_paths:
   - workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md
   - workbench/docs/adr/0027-instruction-authority-is-separate-from-state-resolution.md
   - workbench/docs/adr/0029-diagnostics-carry-registered-blocking-semantics.md
+  - workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md
+  - workbench/docs/adr/archive/0033-workbench-contract-is-a-claim-set.md
 parent: none
 authorized_by: owner
-last_verified: 2026-09-19
+last_verified: 2026-09-29
 ---
 
 # Governance Claims And Diagnostics (S-024)
@@ -30,7 +32,7 @@ Instruction authority and state resolution answer different questions. AGENTS de
 
 Diagnostics have separate severity, scope and blocking effect. diagnostics.mjs owns the closed registry. Doctor reports; selection and claim consume the effects applicable to those operations. Attention stays visible without becoming an invented blocker. A finding alone does not authorize a repair.
 
-ADRs preserve consequential decisions, alternatives and provenance. Current accepted decision claims are architectural Canon under root controls; rationale and superseded alternatives remain evidence. The original ADR-0025 route was later superseded, so readers follow the current Lexicon and ADR-000A rather than treating archived wording as current.
+ADRs preserve consequential decisions, alternatives and provenance. Current accepted decision claims are architectural Canon under root controls; rationale and superseded alternatives remain evidence. The original ADR-0025 route was later superseded. The three-carrier Contract decision in ADR-000C supersedes ADR-0033; the archived record remains a source for the earlier claim-set model. Readers follow current Lexicon and active ADRs for accepted meaning.
 
 Registry tests, consumer fixtures and ADR validation establish mechanical behavior. They do not establish universal agent compliance. Historical ADR counts describe the original delivery; the generated ADR register owns today's inventory. Cross-plane transition systems and Foundry governance extensions are outside this portable capability.
 
@@ -51,7 +53,11 @@ verification, rather than asserting every historical behavior remains current.
 - [workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md](../../docs/adr/000A-active-adr-decisions-and-destination-blueprints.md)
 - [workbench/docs/adr/0027-instruction-authority-is-separate-from-state-resolution.md](../../docs/adr/0027-instruction-authority-is-separate-from-state-resolution.md)
 - [workbench/docs/adr/0029-diagnostics-carry-registered-blocking-semantics.md](../../docs/adr/0029-diagnostics-carry-registered-blocking-semantics.md)
+- [Accepted Contract ADR-000C](../../docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md)
+- [Archived Contract ADR-0033](../../docs/adr/archive/0033-workbench-contract-is-a-claim-set.md)
 
 ## History
 
 - 2026-09-19: Created on explicit owner direction for one article per legacy Spec. Preserved useful knowledge and historical limits; no source record retired or discarded.
+
+- 2026-09-29: Added the active three-carrier Contract route and retained the superseded ADR-0033 as a source under the owner-confirmed Wiki-first navigation rule.
