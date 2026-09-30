@@ -329,6 +329,11 @@ if (process.argv.includes('--demo')) {
     const result = command(root, 'render', '--format', 'json'); assert.notEqual(result.status, 0); assert.match(result.stderr, /collision|Duplicate task ID/i);
     assert.ok(result.stderr.includes('TK-000Z') && result.stderr.includes('TK-00z'));
     assert.equal(fs.readFileSync(path.join(root, 'TASKBOARD.preview.json'), 'utf8'), output);
+    const sourceBefore = sourceSnapshot(root);
+    for (const args of [['next','--local'], ['claim','S-b','--agent','fixture','--local']]) {
+      const refusal = command(root, ...args); assert.equal(refusal.status, 1); assert.match(refusal.stderr, /Duplicate task ID/i);
+      assert.deepEqual(sourceSnapshot(root), sourceBefore);
+    }
   }));
 
   test('malformed source, parent mismatch, invalid metadata and unsupported format refuse before any write', () => withRoom(root => {

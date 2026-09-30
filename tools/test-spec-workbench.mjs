@@ -2260,7 +2260,7 @@ function wikiClaimFixture() {
     // it must not touch the historical Spec either.
     render(historicalRoot);
     assert.equal(readHistorical(), beforeAnyCommand, 'the first render never rewrites the historical Spec');
-    assert.deepEqual(doctor(historicalRoot), [], 'a historical Ticket-header completed Spec beside an active sibling passes doctor');
+    assert.deepEqual(doctor(historicalRoot).map(item => [item.code, item.specId, item.taskId]), [['blocked-slice', 'S-602', 'TK-002']], 'historical Ticket-header remains valid; only the active sibling To-do dependency wait is named');
     assert.equal(readHistorical(), beforeAnyCommand, 'doctor never rewrites the historical Spec');
 
     assert.equal(nextWork(historicalRoot).specId, 'S-602', 'selection is unaffected by the historical completed Spec');
