@@ -18,7 +18,7 @@ import { validateWiki } from './wiki.mjs';
 import { ARTIFACT_ID_MIN_WIDTH, allocateArtifactId, compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
 import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseFormerId, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
 import { appendReceiptRow, readReceiptFromFile } from './task-receipt.mjs';
-import { buildTaskboard } from './taskboard.mjs';
+import { buildTaskboard, taskboardTaskEntry, compareTaskboardEntries } from './taskboard.mjs';
 import { assembleSpecReport, computeSpecDigest, formatSpecReport, isAncestorOfBranch, recordOwnerApproval, recordReviewVerdict } from './spec-report.mjs';
 
 // One closed status vocabulary for an execution slice, owned by the record
@@ -94,16 +94,16 @@ export function loadCorrectiveTasks(rootDir) {
   return listTaskRecords(path.join(specsRoot, 'corrective'), root);
 }
 
-// Mirrors `selectCandidate`'s own ordering (resumable before ready, then
-// visible-id order) over the one status vocabulary an orphan corrective
+// Uses the same To-do eligibility and priority/title/visible-id ordering
+// over the existing status vocabulary of an orphan corrective
 // Task's own record already carries, without a Spec to read priority or
 // blockers from - an orphan corrective Task declares `Blockers: none` by
 // construction (`createOrphanCorrectiveTasks`), so there is nothing to
 // resolve here that `unmetBlockers` would need to check.
 function selectOrphanCorrectiveCandidate(tasks) {
-  const eligible = tasks.filter((task) => ['ready', 'in-progress'].includes(taskStatus(task)));
+  const eligible = tasks.filter((task) => taskboardTaskEntry({ id: task.specId, priority: 0 }, task).eligible);
   if (eligible.length === 0) return null;
-  eligible.sort((a, b) => (taskStatus(a) === 'in-progress' ? -1 : 0) - (taskStatus(b) === 'in-progress' ? -1 : 0) || compareVisibleIds(a.id, b.id));
+  eligible.sort((a, b) => compareTaskboardEntries(taskboardTaskEntry({ id: a.specId, priority: 0 }, a), taskboardTaskEntry({ id: b.specId, priority: 0 }, b)));
   const task = eligible[0];
   return {
     specId: task.specId,
@@ -138,16 +138,16 @@ function selectCandidate(specs, options = {}) {
   return selectWork(specs, options).candidate;
 }
 
-// Selection plus the capability-blocked Tasks it passed over (S-00V TK-00K).
+// To-do selection plus capability-blocked Tasks it passed over (S-00V TK-00K).
 // With a `session`, a Task recorded as capability-blocked stays blocked while
-// the session still lacks a recorded capability, and a ready or resumable Task
+// the session still lacks a recorded capability, and a To-do Task
 // needing a capability the session cannot establish is skipped; each is
 // reported with `recorded` saying whether its record already carries the
 // block. Without a session nothing capability-related is reported.
 // S-00V TK-01L: with `remoteClaims` (a Map of `SPEC/TK` to the remote tips
-// holding a claim), a ready or resumable Task claimed on another tip is taken:
+// holding a claim), a To-do Task claimed on another tip is taken:
 // it is skipped and reported under `remoteClaimed`.
-function selectWork(specs, { specId, readyOnly = false, session = null, remoteClaims = null } = {}) {
+function selectWork(specs, { specId, session = null, remoteClaims = null } = {}) {
   const completed = satisfiedBlockers(specs);
   const candidates = [];
   const capabilityBlocked = [];
@@ -156,15 +156,14 @@ function selectWork(specs, { specId, readyOnly = false, session = null, remoteCl
     if ((spec.status !== 'active' && spec.lifecycleFolder !== 'retired') || (specId && spec.id !== specId)) continue;
     const satisfied = satisfiedIds(spec, completed);
     for (const slice of executionSlices(spec)) {
-      const status = effectiveStatus(slice, satisfied, session);
+      const entry = taskboardEntryForSlice(spec, slice, satisfied, session);
+      const status = entry.status;
       if (session && status === 'blocked' && slice.missingCapabilities.length > 0) {
         const missing = session.missing(slice.missingCapabilities);
         if (missing.names.length > 0) capabilityBlocked.push({ specId: spec.id, taskId: slice.id, missing: missing.names, recorded: true, reason: missing.reason });
         continue;
       }
-      const resumable = !readyOnly && status === 'in-progress';
-      const eligible = status === 'ready' && blockersSatisfied(slice.blockers, satisfied);
-      if (!resumable && !eligible) continue;
+      if (!entry.eligible) continue;
       const claimedOn = remoteClaims?.get(`${spec.id}/${slice.id}`);
       if (claimedOn) {
         remoteClaimed.push({ specId: spec.id, taskId: slice.id, refs: [...claimedOn].sort() });
@@ -183,19 +182,19 @@ function selectWork(specs, { specId, readyOnly = false, session = null, remoteCl
         taskId: slice.id,
         slice: slice.slice,
         status,
-        rank: resumable ? -1 : 0,
-        priority: spec.priority,
+        cardTitle: entry.title,
+        priority: entry.priority,
         owner: spec.owner,
         path: spec.relativePath,
         nextGate: spec.nextGate
       });
     }
   }
-  candidates.sort((a, b) => a.rank - b.rank || a.priority - b.priority || compareVisibleIds(a.specId, b.specId) || compareVisibleIds(a.taskId, b.taskId));
+  candidates.sort((a, b) => compareTaskboardEntries({ ...a, id: a.taskId, title: a.cardTitle }, { ...b, id: b.taskId, title: b.cardTitle }));
   capabilityBlocked.sort((a, b) => compareVisibleIds(a.specId, b.specId) || compareVisibleIds(a.taskId, b.taskId));
   remoteClaimed.sort((a, b) => compareVisibleIds(a.specId, b.specId) || compareVisibleIds(a.taskId, b.taskId));
   if (candidates.length === 0) return { candidate: null, capabilityBlocked, remoteClaimed };
-  const { rank: _rank, ...result } = candidates[0];
+  const { cardTitle: _cardTitle, ...result } = candidates[0];
   return { candidate: result, capabilityBlocked, remoteClaimed };
 }
 
@@ -318,7 +317,7 @@ function claimInTree(rootDir, id, options, remoteClaims) {
   const spec = matches[0];
   if (spec.status !== 'active' && spec.lifecycleFolder !== 'retired') throw new Error(`${id} is ${spec.status}, not active`);
   const session = capabilitySession(path.resolve(rootDir), options);
-  const { candidate, capabilityBlocked, remoteClaimed } = selectWork(specs, { specId: id, readyOnly: true, session, remoteClaims });
+  const { candidate, capabilityBlocked, remoteClaimed } = selectWork(specs, { specId: id, session, remoteClaims });
   const slices = executionSlices(spec);
   // S-00V TK-00K: a ready Task needing an optional capability this session
   // cannot establish is routed to blocked on its own record, naming the
@@ -973,7 +972,18 @@ function renderJsonPreview(root) {
     }
   };
   inspectSpecs(specsRoot);
-  const board = buildTaskboard([...loadSpecs(root), ...loadRetiredSpecs(root)]);
+  const specs = [...loadSpecs(root), ...loadRetiredSpecs(root)];
+  const completed = satisfiedBlockers(specs);
+  const board = buildTaskboard(specs, { resolveTask(spec, task) {
+    const slice = {
+      ...task, declared: task.status, source: task.content ? 'record' : 'table', record: task,
+      blockers: Array.isArray(task.blockers) ? task.blockers.join(', ') || 'none' : task.blockers,
+      blockerIds: Array.isArray(task.blockers) ? task.blockers : splitBlockers(task.blockers),
+      capabilities: task.capabilities ?? [], missingCapabilities: task.missingCapabilities ?? []
+    };
+    const entry = taskboardEntryForSlice(spec, slice, satisfiedIds(spec, completed));
+    return { resolvedStatus: entry.status, dependenciesMet: entry.dependenciesMet };
+  } });
   for (const lane of Object.values(board.lanes)) for (const card of Object.values(lane)) for (const source of card.sourceLinks) {
     const file = path.join(root, source);
     inspectFile(file);
@@ -1002,7 +1012,7 @@ export function doctor(rootDir, options = {}) {
   checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs, retired), issues);
   issues.push(...collectionFindings(root));
   issues.push(...skillFindings(root));
-  issues.push(...gitFindings(root, specs));
+  issues.push(...gitFindings(root, specs, issues));
   return issues;
 }
 
@@ -1139,16 +1149,20 @@ function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
         }
       }
     }
-    // The selected slice is the first resumable or ready slice; a later slice
-    // waiting on its predecessor is ordinary sequencing, not a finding. The
-    // rule reads declared status on both sources, so a table-only Spec raises
-    // exactly what it raised before. A record declared `blocked` is the same
-    // ordinary sequencing, and a record declared `ready` whose live blockers
-    // are unmet is the same contradiction a ready row is - so this never
-    // fires falsely on a record-backed Spec whose blockers are satisfied.
-    const head = slices.find((slice) => ['in-progress', 'ready'].includes(slice.declared));
-    if (spec.status === 'active' && head?.declared === 'ready' && !blockersSatisfied(head.blockers, satisfied)) {
-      issues.push(finding('blocked-slice', `${spec.id}/${head.id} waits on ${head.blockers}`, { specId: spec.id, taskId: head.id }));
+    // Every authored To-do with unmet dependencies stays visible and unoffered.
+    // Existing registered selected-slice findings name each wait; declared
+    // blocked sequencing remains separate and never becomes a new global gate.
+    for (const slice of slices) {
+      let entry;
+      try { entry = taskboardEntryForSlice(spec, slice, satisfied); }
+      catch (error) {
+        if (error.code !== 'taskboard-source') throw error;
+        if (TASK_STATUSES.includes(slice.declared)) issues.push(finding('invalid-state', error.message, { specId: spec.id, taskId: slice.id }));
+        continue;
+      }
+      if (spec.status === 'active' && entry.lane === 'toDo' && !entry.dependenciesMet) {
+        issues.push(finding('blocked-slice', `${spec.id}/${slice.id} waits on ${slice.blockers}`, { specId: spec.id, taskId: slice.id }));
+      }
     }
     if (['complete', 'superseded'].includes(spec.status) && slices.some((slice) => slice.declared !== 'done')) {
       issues.push(finding('contradictory-state', `${spec.id} is ${spec.status} with unfinished tasks`, { specId: spec.id }));
@@ -1197,10 +1211,10 @@ function skillFindings(root) {
   return inspectSkills(readManifest(root), root);
 }
 
-function gitFindings(root, specs) {
+function gitFindings(root, specs, sourceFindings = []) {
   const manifest = readManifest(root);
   if (!manifest || manifest.schemaVersion !== 2) return [];
-  return [...integrationBranchFindings(root, specs), ...repositoryStateFindings(root)];
+  return [...integrationBranchFindings(root, specs, sourceFindings), ...repositoryStateFindings(root)];
 }
 
 // S-00M TK-002: what TK-001's reader sees and no other finding observes. Both
@@ -1229,7 +1243,7 @@ function repositoryStateFindings(root) {
 // The declared integration branch is the review gate's merge target. Its
 // absence is an error every doctor run shows and none blocks: a room can
 // create the branch in one command, and selection must not wait on it.
-function integrationBranchFindings(root, specs) {
+function integrationBranchFindings(root, specs, sourceFindings = []) {
   const declared = declaredGit(root);
   if (!declared) return [finding('integration-branch-undeclared', 'workbench/manifest.json declares no git.integrationBranch; declare the branch the independent review gate merges into')];
   if (!insideWorkTree(root)) {
@@ -1243,16 +1257,15 @@ function integrationBranchFindings(root, specs) {
   // dispatch is already finished there. It still dispatches: a checkout may be
   // pinned deliberately, so the finding informs and never blocks.
   //
-  // A room with an unresolved row/record collision on an active Spec already
-  // carries that finding from `packetFindings`; `selectCandidate` refuses to
-  // resolve a candidate through it (via `slicesOf`, which throws only for
-  // that one reason), and this informational check simply has nothing to
-  // report rather than taking the whole doctor run down with it. The guard
-  // names that exact condition instead of catching every exception
-  // `selectCandidate` could ever raise, so an unrelated bug here still
-  // surfaces instead of being read as "no candidate".
+  // Expected malformed active source is already a registered diagnostic from
+  // packetFindings. Informational integration selection cannot resolve through
+  // that source, so skip only its known conflict/invalid-state conditions.
+  // Non-active records are outside this selector and never suppress its lookup;
+  // unexpected calculation exceptions still propagate instead of disappearing.
   const hasActiveSliceConflict = specs.some((item) => item.status === 'active' && item.sliceConflict);
-  const selected = hasActiveSliceConflict ? null : selectCandidate(specs);
+  const hasActiveInvalidState = specs.some((item) => item.status === 'active'
+    && sourceFindings.some((issue) => issue.code === 'invalid-state' && issue.specId === item.id));
+  const selected = hasActiveSliceConflict || hasActiveInvalidState ? null : selectCandidate(specs);
   const spec = selected && specs.find((item) => item.id === selected.specId);
   for (const { ref, name } of spec ? refs : []) {
     const status = readAtRef(root, ref, spec.relativePath)?.match(/^\*\*Status:\*\*\s*(\S+)/m)?.[1];
@@ -1596,6 +1609,15 @@ function effectiveStatus(slice, satisfied, session = null) {
     && (!session || session.missing(slice.missingCapabilities).names.length > 0)) return 'blocked';
   if (slice.declared === 'blocked' && !namesResolvableBlocker(slice)) return 'blocked';
   return unmetBlockers(slice.record, satisfied).length === 0 ? 'ready' : 'blocked';
+}
+
+// Existing blocker/capability resolution supplies facts; one pure lane and
+// eligibility calculation serves preview, ordinary selection, claim and doctor.
+function taskboardEntryForSlice(spec, slice, satisfied, session = null) {
+  return taskboardTaskEntry(spec, { ...slice, status: slice.declared, content: slice.record?.content }, {
+    resolvedStatus: effectiveStatus(slice, satisfied, session),
+    dependenciesMet: blockersSatisfied(slice.blockers, satisfied)
+  });
 }
 
 // Whether a record's declared `blocked` rests on something that can clear:

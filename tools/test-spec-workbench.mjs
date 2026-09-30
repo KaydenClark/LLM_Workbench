@@ -310,7 +310,7 @@ try {
 
   claimWork(root, 'S-001', { agent: 'codex', date: '2026-07-12' });
   assert.match(read('specs/S-001-fixture/SPEC.md'), /\| TK-001 \| First slice \| in-progress \|/);
-  assert.equal(nextWork(root).status, 'in-progress', 'next should resume claimed work before selecting new work');
+  assert.equal(nextWork(root), null, 'ordinary next offers only To-do; the claimed table row remains visible in progress');
 
   assert.throws(
     () => completeSpec(root, 'S-001', { date: '2026-07-12' }),
@@ -831,7 +831,7 @@ try {
   assert.match(read('specs/S-301-records/SPEC.md'), /\*\*Latest event:\*\* TK-002 claimed by codex\./);
   assert.equal(sliceTable(read('specs/S-301-records/SPEC.md')), recordTableBefore,
     'claiming a Task record leaves the Spec slice table untouched');
-  assert.equal(nextWork(root).status, 'in-progress', 'a claimed record resumes before new work is selected');
+  assert.equal(nextWork(root), null, 'ordinary next does not offer the claimed record; its successor remains dependency-blocked');
 
   publishFixture(root);
   const closedRecord = closeTask(root, 'S-301', {
@@ -1083,7 +1083,8 @@ try {
   );
   render(root);
   assert.deepEqual(doctor(root), [], 'a converted Spec renders and passes doctor');
-  assert.equal(nextWork(root).taskId, 'TK-002', 'the converted room selects the first eligible record');
+  assert.equal(nextWork(root).specId, 'S-306', 'ordinary next orders eligible Task titles across owners, rather than Spec IDs');
+  assert.equal(showSpec(root, 'S-304').tasks.find(task => task.id === 'TK-002').status, 'ready', 'the converted first eligible record remains source-owned and ready');
   assert.throws(
     () => convertSpecSlices(root, 'S-304'),
     /already has specs\/S-304-convert\/tasks; conversion runs once/,
@@ -2259,7 +2260,7 @@ function wikiClaimFixture() {
     // it must not touch the historical Spec either.
     render(historicalRoot);
     assert.equal(readHistorical(), beforeAnyCommand, 'the first render never rewrites the historical Spec');
-    assert.deepEqual(doctor(historicalRoot), [], 'a historical Ticket-header completed Spec beside an active sibling passes doctor');
+    assert.deepEqual(doctor(historicalRoot).map(item => [item.code, item.specId, item.taskId]), [['blocked-slice', 'S-602', 'TK-002']], 'historical Ticket-header remains valid; only the active sibling To-do dependency wait is named');
     assert.equal(readHistorical(), beforeAnyCommand, 'doctor never rewrites the historical Spec');
 
     assert.equal(nextWork(historicalRoot).specId, 'S-602', 'selection is unaffected by the historical completed Spec');
@@ -5875,7 +5876,7 @@ function commitAll(dir, message) {
     assert.ok(doctor(correctiveRetiredRoot).some(item => item.code === 'blocked-slice'));
     fs.writeFileSync(correctivePath, readyContent);
     claimWork(correctiveRetiredRoot, 'S-591', { agent: 'fixture' });
-    assert.equal(nextWork(correctiveRetiredRoot)?.status, 'in-progress');
+    assert.equal(nextWork(correctiveRetiredRoot), null, 'ordinary next offers no already claimed corrective or successor Task');
     assert.equal(fs.readFileSync(path.join(correctiveRetiredRoot, historicalRoute), 'utf8'), retiredBytes, 'claim preserves historical Spec header and evidence');
     // S-00M TK-003: close refuses a dirty or unpushed tree, so the claim is
     // committed and "pushed" the way this fixture already simulates its remote.
@@ -5905,7 +5906,7 @@ function commitAll(dir, message) {
     assert.equal(doctor(correctiveRetiredRoot).some(item => item.code === 'blocked-slice' && item.specId === 'S-592'), false,
       'doctor and selection agree on retired completed dependencies');
     claimWork(correctiveRetiredRoot, 'S-592', { agent: 'fixture' });
-    assert.equal(nextWork(correctiveRetiredRoot)?.status, 'in-progress');
+    assert.equal(nextWork(correctiveRetiredRoot), null, 'ordinary next offers no already claimed corrective or successor Task');
 
     console.log('ok - createCorrectiveTasks against a retired (not discarded) Spec writes the new Task straight into its still-retired tasks/ directory, never under tasks/retired/, and never moves the Spec back out of retired/ - S-00J\'s deferred retired-folder case');
   } finally {
@@ -6393,7 +6394,8 @@ function commitAll(dir, message) {
     }
     assert.match(nextWork(capRoot, absentProbe).capabilityBlocked[1].reason, /probe failed: foundry CLI not found/, '(2) a throwing probe is a visible absence, not a crash');
     const declared = nextWork(capRoot, { capabilities: 'simulator' });
-    assert.equal(declared.taskId, 'TK-002', '(2) an explicit declaration establishes the capability');
+    assert.equal(declared.taskId, 'TK-003', '(2) established simulator is eligible, but Plain slice sorts before Simulator slice');
+    assert.equal(declared.capabilityBlocked.some(entry => entry.specId === 'S-761'), false, '(2) an explicit declaration establishes simulator without a false capability block');
     assert.deepEqual(declared.capabilityBlocked.map((entry) => entry.taskId), ['TK-002'], '(2) only the still-lacking foundry Task stays named');
     assert.equal(declared.capabilityBlocked[0].specId, 'S-762');
     assert.equal(nextWork(capRoot, { capabilityProbes: { simulator: () => true, foundry: () => true } }).capabilityBlocked, undefined, '(2) a probe reporting present establishes it, and no capability-blocked list is attached');
@@ -6416,7 +6418,8 @@ function commitAll(dir, message) {
     assert.match(board, /\| \[S-761\]\([^)]*\) \| TK-003: Plain slice \(in-progress\) \| fixture \| TK-002 missing capability simulator \|/, '(4) the Taskboard names the capability-blocked Task beside the active one');
     assert.ok(!doctor(capRoot).some((issue) => issue.code === 'render-drift'), '(4) the board is a deterministic projection of the records');
     const afterClaim = nextWork(capRoot);
-    assert.equal(afterClaim.taskId, 'TK-003', '(4) the in-progress Task resumes');
+    assert.equal(afterClaim.taskId, null, '(4) ordinary next has no eligible To-do while capability-blocked work stays named');
+    assert.equal(showSpec(capRoot, 'S-761').tasks.find(task => task.id === 'TK-003').status, 'in-progress', '(4) existing claim remains recoverable through source');
     assert.deepEqual(afterClaim.capabilityBlocked.find((entry) => entry.specId === 'S-761'), { specId: 'S-761', taskId: 'TK-002', missing: ['simulator'], recorded: true, reason: 'simulator: no probe and no declaration' }, '(4) the recorded block is named in selection output');
 
     // (5) When the Spec's only ready Task lacks its capability, claim routes
@@ -6465,7 +6468,7 @@ function commitAll(dir, message) {
     const cliNext = spawnSync(process.execPath, [cli, 'next', '--json', '--path', capRoot], { encoding: 'utf8' });
     assert.equal(cliNext.status, 0, cliNext.stderr);
     const cliJson = JSON.parse(cliNext.stdout);
-    assert.equal(cliJson.taskId, 'TK-003');
+    assert.equal(cliJson.taskId, null, '(8) public next does not offer already claimed work while naming the capability wait');
     assert.deepEqual(cliJson.capabilityBlocked.map((entry) => `${entry.specId}/${entry.taskId}:${entry.missing.join(',')}`), ['S-761/TK-002:simulator'], '(8) next --json names the capability-blocked Task');
     publishFixture(capRoot, 'close foundry');
     closeTask(capRoot, 'S-761', { ...closeOptions });
@@ -6752,9 +6755,10 @@ function parseTaskRecordForTest(content) {
     assert.equal(gitIn(gamma, 'branch', '--show-current'), 'integration', '(3) a refused claim leaves the instance where it was');
     assert.equal(gitIn(gamma, 'status', '--porcelain'), '', '(3) a refused claim writes nothing');
 
-    // (4) The owning instance resumes its own claim: its own tip is not a
-    // competing claim.
-    assert.equal(nextWork(alpha).taskId, 'TK-002', '(4) the claiming instance resumes its own in-progress Task');
+    // (4) Own in-progress work remains visible through source/show, but ordinary
+    // next offers only To-do; the other Task is now remotely claimed too.
+    assert.equal(nextWork(alpha), null, '(4) own in-progress work is not a new To-do offer');
+    assert.equal(statusOf(alpha, 'TK-002'), 'in-progress', '(4) claim state remains intact for explicit recovery');
 
     // (5) An abandoned branch abandons its claim: once the remote branch is
     // deleted, a fetch prunes it and the Task is selectable again.
@@ -6867,7 +6871,8 @@ function parseTaskRecordForTest(content) {
     const cli = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
     const cliNext = spawnSync(process.execPath, [cli, 'next', '--json', '--path', localRoot], { encoding: 'utf8' });
     assert.equal(cliNext.status, 0, cliNext.stderr);
-    assert.equal(JSON.parse(cliNext.stdout).taskId, 'TK-001', 'next output is unchanged without a remote');
+    assert.equal(JSON.parse(cliNext.stdout), null, 'ordinary local next offers no already claimed Task');
+    assert.equal(showSpec(localRoot, 'S-802').tasks[0].status, 'in-progress', 'local claim remains explicitly recoverable');
     assert.match(cliNext.stderr, /local selection only \(no remote named origin\)/, 'the CLI says selection was local');
     console.log('ok - with no remote, claim and next keep today\'s local behavior and say so');
   } finally {
