@@ -3,7 +3,7 @@
 **Task ID:** TK-003H
 **Spec ID:** S-002G
 **Slice:** Route the spec-manager Wiki article from the Roles And Stances router
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-002G acceptance line 6 (a fresh agent discovers the individual Wiki article and identifies scope, inputs, outputs, hand-back and escalation) and Documentation Impact (one individual article routed through MEMORY.md; cross-capability explanation stays in roles-and-stances.md)

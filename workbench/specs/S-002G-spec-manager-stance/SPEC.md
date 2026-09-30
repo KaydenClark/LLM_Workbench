@@ -8,8 +8,8 @@
 **Updated:** 2026-09-30
 **Catalog description:** Dispatch and monitor planned Task work in parallel within one Spec, preserving proof and coordinated hand-back.
 **Blockers:** none
-**Latest event:** TK-003G claimed by claude-lane-G.
-**Next gate:** Close TK-003G with verification and documentation proof.
+**Latest event:** TK-003H claimed by claude-lane-G.
+**Next gate:** Close TK-003H with verification and documentation proof.
 
 > **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`ac6fadbcd97abf8a9d502e0b724bfba7d98b6c6f`.
 
