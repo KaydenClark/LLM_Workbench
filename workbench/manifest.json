@@ -83,6 +83,7 @@
       "director",
       "dispatcher",
       "spec-planner",
+      "spec-manager",
       "builder",
       "auditor",
       "reviewer",
