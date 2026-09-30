@@ -3,13 +3,13 @@
 **Spec ID:** S-00T
 **Status:** active
 **Priority:** 1
-**Owner:** claude-next-id
+**Owner:** codex-lifecycle
 **Stance:** Builder
 **Updated:** 2026-09-30
 **Catalog description:** Repair audited retirement identity, discard recovery, Wiki attribution, final Task persistence and corrective allocation defects before legacy migration.
 **Blockers:** none; explicit owner repair assignment precedes migration gates.
-**Latest event:** TK-003C claimed by claude-next-id.
-**Next gate:** Close TK-003C with verification and documentation proof.
+**Latest event:** Corrective TK-003C (next-id failed on remote tips past 1 MiB) closed with proof by claude-next-id; Human QA state unchanged.
+**Next gate:** Separate-context review and integration delivery of the TK-003C candidate; then reconcile the ongoing Human QA findings against this Spec, carry attributable corrections or a return to Align, and inspect a fresh result. Do not request that the owner start Human QA again.
 
 > **Citation anchors.** pre=`f9f77a8c6318231acc54941643f95750f44ef20d` post=`f9f77a8c6318231acc54941643f95750f44ef20d`.
 
@@ -49,7 +49,7 @@ No runtime dependency blocks fixture repair. Integration requires separate-conte
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-0T0 | Repair discard and identity safety seams | done | none | Full 51-command suite passed on immutable 58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c; separate-context source review PASS; shared command proof in S-00U/VERIFICATION.md. |
-| TK-003C | Reserve remote-visible identities from a remote tip whose matched spec lines exceed 1 MiB | in-progress | none | pending |
+| TK-003C | Reserve remote-visible identities from a remote tip whose matched spec lines exceed 1 MiB | done | none | Red on 1f205c2b code: new tools/test-spec-workbench.mjs case builds a remote-only tip whose matched spec lines exceed 1 MiB; next-id --prefix S exits 1 with 'Cannot reserve IDs from refs/remotes/origin/large: ' (empty stderr). Green at 6700c50f: git grep and git show per remote tip get maxBuffer 64 MiB (the claim-coordination/workbench-layout bound) and a spawn error is named in the thrown message; next-id returns S-000E and TK-000E, reserving the IDs only the large tip holds; whole test-spec-workbench.mjs exits 0. Full AGENTS suite 48/48 pass on fe168ef7d417939fac30ce4d26f3197f926ebe69 (log scratchpad logs/N-suite-fe168ef.log). Live: next-id --prefix S on the room returns S-002I after the fix. Self-drift pre 1f205c2b 8 findings / post fe168ef7 7 (detached-head gone; the same pre-existing stale-claim S-00Q, five stale-seed and unverified-provenance remain); guardrail 78/100 before and after. |
 
 ## Acceptance Criteria
 
@@ -102,6 +102,7 @@ do not expose this detailed procedure yet; S-00P owns that broader mirror rewrit
 | 2026-09-23 | owner correction | Human QA has been underway since 2026-09-19; the owner reports failed reviews, not a review waiting to start | Direct owner clarification on 2026-09-23; 2026-09-19 S-00I/S-00J approval audit records a failed readiness verdict on its pinned candidates; earlier 51-check and independent source PASS rows prove a different gate | Corrected current header and Taskboard projection; retained earlier evidence unchanged | No owner approval recorded; exact current findings still need per-Spec reconciliation and corrective proof |
 | 2026-09-23 | evidence scope correction | The owner correction establishes the state of the overall Human QA process; it does not assign the S-00I/S-00J audit verdict to this Spec | The 2026-09-19 approval audit names only S-00I and S-00J and older pinned candidates; this Spec has separate source-verification evidence | Narrowed the live header and Completion Result without changing prior evidence | Map any specific owner QA finding to this Spec before asserting a per-Spec failed verdict or opening corrective work |
 | 2026-09-30 | TK-003C | Remote-visible reservation fails once a remote tip's matched spec lines exceed 1 MiB | Reproduced on integration 1f205c2b: `next-id --prefix S` exits 1 with `Cannot reserve IDs from refs/remotes/origin/integration: ` and empty stderr; `occupiedIdentities` reads each remote tip with `git grep` and `git show` under Node's default 1 MiB spawnSync maxBuffer, so spawnSync kills git (ENOBUFS) and the tool throws; `verdict --result fail` corrective allocation shares the path; fixtures were too small to catch it | Owner-directed blocker fix (2026-09-30) filed as a corrective Task on this Spec because acceptance line 4 (remote-visible reservation) owns the broken seam | Red/green, full suite, separate-context review and integration delivery pending |
+| 2026-09-30 | TK-003C | Task closed | Red on 1f205c2b code: new tools/test-spec-workbench.mjs case builds a remote-only tip whose matched spec lines exceed 1 MiB; next-id --prefix S exits 1 with 'Cannot reserve IDs from refs/remotes/origin/large: ' (empty stderr). Green at 6700c50f: git grep and git show per remote tip get maxBuffer 64 MiB (the claim-coordination/workbench-layout bound) and a spawn error is named in the thrown message; next-id returns S-000E and TK-000E, reserving the IDs only the large tip holds; whole test-spec-workbench.mjs exits 0. Full AGENTS suite 48/48 pass on fe168ef7d417939fac30ce4d26f3197f926ebe69 (log scratchpad logs/N-suite-fe168ef.log). Live: next-id --prefix S on the room returns S-002I after the fix. Self-drift pre 1f205c2b 8 findings / post fe168ef7 7 (detached-head gone; the same pre-existing stale-claim S-00Q, five stale-seed and unverified-provenance remain); guardrail 78/100 before and after. | Docs checked; no update needed: RUNBOOK Visible Identifiers already states the reservation contract, and this repair restores it for large remote tips without changing any command, output or failure contract. | The spawn-error message path (result.error) has no fixture of its own because a real ENOBUFS now needs a 64 MiB tip; separate-context review and integration delivery follow. Owner Human QA on S-00T is unchanged. |
 
 ## Completion Result
 
