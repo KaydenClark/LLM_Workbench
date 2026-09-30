@@ -3,13 +3,13 @@
 **Spec ID:** S-00T
 **Status:** active
 **Priority:** 1
-**Owner:** codex-lifecycle
+**Owner:** claude-next-id
 **Stance:** Builder
 **Updated:** 2026-09-30
 **Catalog description:** Repair audited retirement identity, discard recovery, Wiki attribution, final Task persistence and corrective allocation defects before legacy migration.
 **Blockers:** none; explicit owner repair assignment precedes migration gates.
-**Latest event:** Owner clarified on 2026-09-23 that the Human QA process has been underway since 2026-09-19 and has produced failed reviews. The earlier 51-check/source-review PASS is a separate gate; no owner approval or per-Spec QA finding attribution is recorded here.
-**Next gate:** Reconcile the ongoing Human QA findings against this Spec, carry attributable corrections or a return to Align, and inspect a fresh result. Do not request that the owner start Human QA again.
+**Latest event:** TK-003C claimed by claude-next-id.
+**Next gate:** Close TK-003C with verification and documentation proof.
 
 > **Citation anchors.** pre=`f9f77a8c6318231acc54941643f95750f44ef20d` post=`f9f77a8c6318231acc54941643f95750f44ef20d`.
 
@@ -49,7 +49,7 @@ No runtime dependency blocks fixture repair. Integration requires separate-conte
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-0T0 | Repair discard and identity safety seams | done | none | Full 51-command suite passed on immutable 58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c; separate-context source review PASS; shared command proof in S-00U/VERIFICATION.md. |
-| TK-003C | Reserve remote-visible identities from a remote tip whose matched spec lines exceed 1 MiB | ready | none | pending |
+| TK-003C | Reserve remote-visible identities from a remote tip whose matched spec lines exceed 1 MiB | in-progress | none | pending |
 
 ## Acceptance Criteria
 
