@@ -3,7 +3,7 @@
 **Task ID:** TK-003V
 **Spec ID:** S-002H
 **Slice:** Stage the unreleased domain-modeling candidate source with a scoped test
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-002H Desired Behavior 1-6 stated as the operating contract of one staged candidate entry, and acceptance line 6 (source states exactly which rooms can discover it; pending source and notice recoverable)
