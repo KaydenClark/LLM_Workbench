@@ -3,7 +3,7 @@
 **Task ID:** TK-003F
 **Spec ID:** S-002F
 **Slice:** Prove the planning scenario with a fresh-context Dispatcher and assemble S-002F
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-003D, TK-003E
 **Destination:** spec-acceptance: Hand the plan and its open gates to the Dispatcher using Spec Manager. Surface cross-Spec dependencies to the Director rather than enlarging the Spec boundary or duplicating another lane.

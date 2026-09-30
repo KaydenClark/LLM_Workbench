@@ -8,8 +8,8 @@
 **Updated:** 2026-09-30
 **Catalog description:** Plan small Tasks and parallel vertical slices for one Spec from current Actuality when its flight launches.
 **Blockers:** none.
-**Latest event:** TK-003E closed with proof.
-**Next gate:** Complete TK-003F.
+**Latest event:** TK-003F claimed by claude-lane-F.
+**Next gate:** Close TK-003F with verification and documentation proof.
 
 > **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`56d1778132cabc6b024489517c6c6c55abb54dbb`.
 
