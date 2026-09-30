@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { spawnSync } from 'node:child_process';
+import { spawnSync, execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 
@@ -51,6 +51,29 @@ function withRoom(callback) {
   const root = room();
   try { callback(root); } finally { fs.rmSync(root, { recursive: true, force: true }); }
 }
+
+function sourceSnapshot(root) {
+  const files = {};
+  function visit(dir) {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.name === '.git') continue;
+      const file = path.join(dir, entry.name);
+      if (entry.isDirectory()) visit(file);
+      else if (entry.isFile()) files[path.relative(root, file)] = fs.readFileSync(file).toString('base64');
+    }
+  }
+  visit(root); return files;
+}
+function selected(root, ...options) {
+  const result = command(root, 'next', ...options);
+  assert.equal(result.status, 0, result.stderr); return JSON.parse(result.stdout);
+}
+function dependencyFindings(root) {
+  assert.equal(command(root, 'render').status, 0);
+  const result = command(root, 'doctor');
+  return JSON.parse(result.stdout).filter(item => item.code === 'blocked-slice');
+}
+
 function sample(root) {
   const a = spec(root, { id: 'S-000A', title: 'Plan a future capability', status: 'planned' });
   task(root, a, { id: 'TK-000A', title: 'Preserved pre-cut work', status: 'deferred' });
@@ -76,6 +99,125 @@ if (process.argv.includes('--demo')) {
     console.log('Source-only fixture; default Markdown retained; no owner approval or canonical switch.');
   });
 } else {
+
+  test('ordinary next offers To-do rather than in-progress work without writing source or preview', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA', priority: 0 });
+    task(root, a, { id: 'TK-00AA', status: 'in-progress' });
+    const b = spec(root, { id: 'S-00AB', priority: 2 });
+    task(root, b, { id: 'TK-00AB', title: 'Eligible To-do work' });
+    const board = preview(root), before = sourceSnapshot(root);
+    const next = selected(root, '--local');
+    assert.equal(next.taskId, 'TK-00AB'); assert.equal(next.status, 'ready');
+    assert.ok(board.lanes.toDo[next.taskId]); assert.ok(board.lanes.inProgress['TK-00AA']);
+    assert.deepEqual(sourceSnapshot(root), before);
+  }));
+
+  test('ordinary next and scoped claim use projected Task priority, title and WBID order', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA', title: 'Alpha parent', priority: 2 });
+    task(root, a, { id: 'TK-00AA', title: 'Zebra work' });
+    task(root, a, { id: 'TK-00AD', title: 'Alpha work' });
+    const b = spec(root, { id: 'S-00AB', title: 'Zebra parent', priority: 3 });
+    task(root, b, { id: 'TK-00AC', title: 'Urgent work', extra: '**Priority:** 1' });
+    const board = preview(root), tasks = Object.keys(board.lanes.toDo).filter(id => id.startsWith('TK-'));
+    assert.deepEqual(tasks, ['TK-00AC', 'TK-00AD', 'TK-00AA']);
+    assert.equal(selected(root, '--local').taskId, tasks[0]);
+    const claimed = command(root, 'claim', 'S-aa', '--agent', 'fixture', '--local');
+    assert.equal(claimed.status, 0, claimed.stderr); 
+    assert.match(fs.readFileSync(path.join(root, a.dir, 'tasks/TK-00AD/TASK.md'), 'utf8'), /Status:\*\* in-progress/);
+    assert.match(fs.readFileSync(path.join(root, a.dir, 'tasks/TK-00AA/TASK.md'), 'utf8'), /Status:\*\* ready/);
+  }));
+
+  test('every dependency-waiting To-do stays visible, unoffered and named by doctor; refused scoped claim writes nothing', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA' });
+    task(root, a, { id: 'TK-00AA', status: 'in-progress' });
+    task(root, a, { id: 'TK-00AB', blockers: 'S-00ZZ' });
+    task(root, a, { id: 'TK-00AC', blockers: 'owner:choose-input' });
+    const b = spec(root, { id: 'S-00AB' }); task(root, b, { id: 'TK-00AD' });
+    const board = preview(root);
+    assert.ok(board.lanes.toDo['TK-00AB']); assert.ok(board.lanes.toDo['TK-00AC']);
+    assert.equal(selected(root, '--local').taskId, 'TK-00AD');
+    assert.deepEqual(dependencyFindings(root).map(item => item.taskId).sort(), ['TK-00AB', 'TK-00AC']);
+    const before = sourceSnapshot(root), refused = command(root, 'claim', 'S-aa', '--agent', 'fixture', '--local');
+    assert.equal(refused.status, 1); assert.match(refused.stderr, /blocked by.*blocked-slice/);
+    assert.deepEqual(sourceSnapshot(root), before);
+  }));
+
+  test('cleared source dependency derives To-do consistently without changing the authored blocked status', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA' });
+    task(root, a, { id: 'TK-00AA', status: 'done', extra: '**Proof:** Fixture dependency delivered' });
+    const file = task(root, a, { id: 'TK-00AB', status: 'blocked', blockers: 'TK-00AA' });
+    const before = fs.readFileSync(path.join(root, file), 'utf8');
+    assert.ok(preview(root).lanes.toDo['TK-00AB']);
+    assert.equal(selected(root, '--local').taskId, 'TK-00AB');
+    assert.deepEqual(dependencyFindings(root), []);
+    assert.equal(fs.readFileSync(path.join(root, file), 'utf8'), before);
+    assert.equal(command(root, 'claim', 'S-aa', '--agent', 'fixture', '--local').status, 0);
+    assert.match(fs.readFileSync(path.join(root, file), 'utf8'), /Status:\*\* in-progress/);
+  }));
+
+  test('source-qualified selection and scoped claims preserve duplicate numeric labels while flat preview still refuses without writes', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA', priority: 2 }); const af = task(root, a, { id: 'TK-001', title: 'Zebra' });
+    preview(root); const output = fs.readFileSync(path.join(root, 'TASKBOARD.preview.json'), 'utf8');
+    const b = spec(root, { id: 'S-00AB', priority: 1 }); const bf = task(root, b, { id: 'TK-001', title: 'Alpha' });
+    const before = sourceSnapshot(root), refusal = command(root, 'render', '--format', 'json');
+    assert.equal(refusal.status, 1); assert.match(refusal.stderr, /taskboard-collision/); assert.deepEqual(sourceSnapshot(root), before);
+    assert.equal(selected(root, '--local').specId, b.id);
+    assert.equal(fs.readFileSync(path.join(root, 'TASKBOARD.preview.json'), 'utf8'), output);
+    assert.equal(command(root, 'claim', 'S-ab', '--agent', 'fixture', '--local').status, 0);
+    assert.match(fs.readFileSync(path.join(root, af), 'utf8'), /Status:\*\* ready/);
+    assert.match(fs.readFileSync(path.join(root, bf), 'utf8'), /Status:\*\* in-progress/);
+  }));
+
+  test('capability gates overlay shared eligibility, remain visible, and route only through an authorized claim', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA' });
+    const file = task(root, a, { id: 'TK-00AA', title: 'Alpha simulator', extra: '**Capabilities:** simulator' });
+    task(root, a, { id: 'TK-00AB', title: 'Zebra available' });
+    assert.ok(preview(root).lanes.toDo['TK-00AA']);
+    const before = sourceSnapshot(root), next = selected(root, '--local');
+    assert.equal(next.taskId, 'TK-00AB'); assert.equal(next.capabilityBlocked[0].taskId, 'TK-00AA');
+    assert.deepEqual(sourceSnapshot(root), before);
+    assert.equal(selected(root, '--local', '--capabilities', 'simulator').taskId, 'TK-00AA');
+    assert.equal(command(root, 'claim', 'S-aa', '--agent', 'fixture', '--local').status, 0);
+    assert.match(fs.readFileSync(path.join(root, file), 'utf8'), /Status:\*\* blocked/);
+    assert.match(fs.readFileSync(path.join(root, file), 'utf8'), /Missing capabilities:\*\* simulator/);
+    assert.ok(preview(root).lanes.blocked['TK-00AA']);
+    assert.equal(selected(root, '--local', '--capabilities', 'simulator').taskId, 'TK-00AA');
+  }));
+
+  test('no To-do work returns no ordinary offer and an unclaimed refusal preserves all bytes', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA' }); task(root, a, { id: 'TK-00AA', status: 'in-progress' }); preview(root);
+    const before = sourceSnapshot(root); assert.equal(selected(root, '--local'), null);
+    assert.equal(command(root, 'claim', 'S-aa', '--agent', 'fixture', '--local').status, 1);
+    assert.deepEqual(sourceSnapshot(root), before);
+  }));
+
+  test('competing remote claims exclude offers and claims without changing visible source lanes or integration', () => withRoom(root => {
+    const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'taskboard-remote-'));
+    const origin = path.join(scratch, 'origin.git');
+    const git = (dir, ...args) => execFileSync('git', ['-C', dir, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+    try {
+      const a = spec(root, { id: 'S-00AA' }); task(root, a, { id: 'TK-00AA', title: 'Alpha' }); task(root, a, { id: 'TK-00AB', title: 'Beta' });
+      assert.equal(command(root, 'render').status, 0);
+      execFileSync('git', ['init', '--quiet', '--bare', '-b', 'main', origin]);
+      git(root, 'init', '--quiet', '-b', 'integration'); git(root, 'config', 'user.email', 'fixture@example.com'); git(root, 'config', 'user.name', 'Fixture');
+      const manifest = JSON.parse(fs.readFileSync(path.join(root, 'workbench/manifest.json'), 'utf8'));
+      for (const folder of [...Object.values(manifest.lanes), ...Object.values(manifest.collections), manifest.landmarkTracker.root, ...Object.values(manifest.landmarkTracker.collections)]) put(root, folder+'/.gitkeep', '');
+      git(root, 'add', '.'); git(root, 'commit', '--quiet', '-m', 'Fixture room'); git(root, 'branch', 'main'); git(root, 'remote', 'add', 'origin', origin); git(root, 'push', '--quiet', 'origin', 'integration', 'main');
+      const base = git(root, 'rev-parse', 'HEAD');
+      const clones = ['alpha','beta','gamma'].map(name => {
+        const dir = path.join(scratch, name); execFileSync('git', ['clone', '--quiet', '--branch', 'integration', origin, dir], { stdio: 'ignore' });
+        git(dir, 'config', 'user.email', 'fixture@example.com'); git(dir, 'config', 'user.name', 'Fixture'); return dir;
+      });
+      const firstClaim = command(clones[0], 'claim', 'S-aa', '--agent', 'alpha'); assert.equal(firstClaim.status, 0, firstClaim.stderr);
+      const board = preview(clones[1]), next = selected(clones[1]);
+      assert.ok(board.lanes.toDo['TK-00AA']); assert.equal(next.taskId, 'TK-00AB'); assert.equal(next.coordination.remoteClaimed[0].taskId, 'TK-00AA');
+      assert.equal(command(clones[1], 'claim', 'S-aa', '--agent', 'beta').status, 0);
+      assert.equal(selected(clones[2]), null);
+      const before = sourceSnapshot(clones[2]); assert.equal(command(clones[2], 'claim', 'S-aa', '--agent', 'gamma').status, 1);
+      assert.deepEqual(sourceSnapshot(clones[2]), before);
+      assert.equal(git(root, 'ls-remote', 'origin', 'refs/heads/integration').split(/\s/)[0], base);
+    } finally { fs.rmSync(scratch, {recursive:true,force:true}); }
+  }));
   test('public JSON preview has six lanes, both card grains, resolving sources, dependency visibility and derived cleanup', () => withRoom(root => {
     sample(root);
     const markdown = fs.readFileSync(path.join(root, 'TASKBOARD.md'), 'utf8');
