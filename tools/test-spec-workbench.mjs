@@ -6468,7 +6468,7 @@ function commitAll(dir, message) {
     const cliNext = spawnSync(process.execPath, [cli, 'next', '--json', '--path', capRoot], { encoding: 'utf8' });
     assert.equal(cliNext.status, 0, cliNext.stderr);
     const cliJson = JSON.parse(cliNext.stdout);
-    assert.equal(cliJson.taskId, 'TK-003');
+    assert.equal(cliJson.taskId, null, '(8) public next does not offer already claimed work while naming the capability wait');
     assert.deepEqual(cliJson.capabilityBlocked.map((entry) => `${entry.specId}/${entry.taskId}:${entry.missing.join(',')}`), ['S-761/TK-002:simulator'], '(8) next --json names the capability-blocked Task');
     publishFixture(capRoot, 'close foundry');
     closeTask(capRoot, 'S-761', { ...closeOptions });
