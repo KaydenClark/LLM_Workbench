@@ -233,6 +233,10 @@ export function nextIdentity(rootDir, specId, options = {}) {
 
 // Identity is retained outside ordinary selection: retirement and discard do
 // not make a label reusable. Read declared lanes at each remote tip as well.
+// A remote tip's matched lines outgrow Node's default 1 MiB spawnSync buffer as
+// a room's evidence grows; the same 64 MiB bound claim-coordination and
+// workbench-layout use keeps the read whole, and a spawn error is named.
+const REF_READ_MAX_BUFFER = 64 * 1024 * 1024;
 export function occupiedIdentities(rootDir, prefix) {
   const root = path.resolve(rootDir);
   const specs = [...loadSpecs(root), ...loadRetiredSpecs(root)];
@@ -241,14 +245,15 @@ export function occupiedIdentities(rootDir, prefix) {
   occupied.push(...discardedLabels(root, prefix));
   const refs = spawnSync('git', ['-C', root, 'for-each-ref', '--format=%(refname)', 'refs/remotes'], { encoding: 'utf8' });
   if (refs.status === 0) for (const ref of refs.stdout.trim().split('\n').filter(Boolean)) {
-    const manifestResult = spawnSync('git', ['-C', root, 'show', `${ref}:workbench/manifest.json`], { encoding: 'utf8' });
+    const manifestResult = spawnSync('git', ['-C', root, 'show', `${ref}:workbench/manifest.json`], { encoding: 'utf8', maxBuffer: REF_READ_MAX_BUFFER });
+    if (manifestResult.error) throw new Error(`Cannot reserve IDs from ${ref}: ${manifestResult.error.message}`);
     let lane = resolveSpecsRoot(root).specsPrefix;
     if (manifestResult.status === 0) {
       try { lane = JSON.parse(manifestResult.stdout).lanes?.specs ?? lane; }
       catch { throw new Error(`Cannot reserve IDs from malformed manifest at ${ref}`); }
     }
-    const result = spawnSync('git', ['-C', root, 'grep', '-h', '-E', `^\\*\\*(Spec ID|Task ID):\\*\\*|^\\|.*(S-|TK-)`, ref, '--', lane, ...(manifestResult.status === 0 ? [] : ['specs'])], { encoding: 'utf8' });
-    if (![0, 1].includes(result.status)) throw new Error(`Cannot reserve IDs from ${ref}: ${result.stderr.trim()}`);
+    const result = spawnSync('git', ['-C', root, 'grep', '-h', '-E', `^\\*\\*(Spec ID|Task ID):\\*\\*|^\\|.*(S-|TK-)`, ref, '--', lane, ...(manifestResult.status === 0 ? [] : ['specs'])], { encoding: 'utf8', maxBuffer: REF_READ_MAX_BUFFER });
+    if (result.error || ![0, 1].includes(result.status)) throw new Error(`Cannot reserve IDs from ${ref}: ${result.error?.message ?? result.stderr.trim()}`);
     occupied.push(...(result.stdout.match(new RegExp(`\\b${prefix}-[0-9A-Za-z]{3,}\\b`, 'g')) ?? []));
   }
   return [...new Set(occupied)];
