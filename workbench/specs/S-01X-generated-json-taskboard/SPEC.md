@@ -7,7 +7,7 @@
 **Stance:** Builder
 **Updated:** 2026-09-30
 **Catalog description:** Replace the Markdown Spec summary with a generated six-lane implementation board, shared lane selection and title-first room-core sitrep.
-**Blockers:** S-01W identity delivery precedes board implementation.
+**Blockers:** S-01W first identity/consumer delivery is contained in integration; its claimed assembled QA remains separate. Direct-Task coverage awaits its source-home contract.
 **Latest event:** TK-003O claimed by codex-servitor-json-preview.
 **Next gate:** Close TK-003O with verification and documentation proof.
 
@@ -48,9 +48,11 @@ new selection/review behavior is implemented by this record.
 The S-00O draft (unmerged candidate 34dfa2f) allocated this record as S-01V.
 The Lane I rebuild on integration 1a6f6e0 re-ran supported `next-id` after
 S-01W was in the tree, which returned S-01X; this record retains S-01X until
-supported touch migration applies. Empty `tasks/.gitkeep` makes the Spec record-backed
-with no allocated implementation slices, matching the current parser rather
-than creating speculative Task IDs. Task IDs come from `next-id` on the current integration tip; no lease holds.
+supported touch migration applies. At that planning anchor, empty `tasks/.gitkeep`
+made the Spec record-backed with no allocated implementation slices. TK-003O
+now owns the first opt-in preview from integration
+`2c47d96239dd48f17969e4d5fa8f668850c2ecfe`; later slices remain proposals.
+Task IDs come from `next-id` on the current integration tip; no lease holds.
 
 ## Desired Behavior
 
@@ -131,8 +133,8 @@ version stamping, installed Template proof and whole-workflow readiness.
 
 ## Vertical Implementation Slices
 
-These are unallocated proposals, not executable Tasks. The Dispatcher cuts
-records only from live Actuality after lane release.
+TK-003O owns the first proposal below. The later proposals are not executable
+Tasks; records are cut only from live Actuality after lane release.
 
 1. **First vertical slice: public JSON render fixture.** Add a bounded fixture
    around the existing public render command that writes schema-v1 JSON from
@@ -210,6 +212,25 @@ records only from live Actuality after lane release.
 
 ## Testing Seams
 
+TK-003O implements only the temporary public `render --format json` preview,
+writing `TASKBOARD.preview.json`. The pure calculator consumes the existing
+parsed live/retired owners, derives six lanes and child progress, orders cards
+by priority/title/WBID and refuses ambiguous flat keys. Existing numeric Task
+source scope remains valid; a flat collision names both sources rather than
+renaming or dropping a record. Metadata is read from source headers or an
+explicit status/folder derivation; unknown dates, assignees and approvers stay
+unknown. The runtime registry includes the helper so installed Markdown
+commands still resolve their imports. This is packaging, not the root switch.
+
+`node tools/test-taskboard-json.mjs --demo` demonstrates all lanes through the
+public command in a disposable room. The focused suite also checks source
+regeneration, edited-output restoration, invalid-source no-write refusal,
+symlink/hardlink output refusal and default Markdown/CATALOG byte parity.
+All acceptance boxes stay open: shared selection, Task review vocabulary,
+minimal Backlog readers, required-QA presentation, direct/orphan Task coverage,
+sitrep, installed JSON consumer/root switch and assembled review remain later
+delivery. The preview does not claim those gates from structural green tests.
+
 Public render, next, claim, doctor, review, move/discard and installed update
 operations in disposable rooms. Initial opt-in JSON fixture seam is specified
 by the first Task before implementation; future flags are not invented here.
@@ -249,10 +270,13 @@ occurs during this planning authoring.
 | 2026-09-26 | none | Lane I (claude-lane-I) rebuilt unmerged S-00O planning candidate 34dfa2f onto integration 1a6f6e0: PR #161 had taken S-01U, so supported `next-id` re-allocated the identity Spec as S-01W and then the board Spec as S-01X; every reference in S-00O, S-01W, S-01X and the direct-Task proposal was renumbered and the stale Task-ID lease wording removed (no lease holds). | `next-id --prefix S` returned S-01W on clean integration 1a6f6e0 and, with both records present, the next free Spec ID after S-01X; render then doctor (no blocking finding) on the committed candidate and in a fresh clone of the pushed branch; the full suite, separate-context review and verdict are recorded by the landing PR's own evidence, not claimed here | This Spec, S-01W, S-00O, TASKBOARD.md, CATALOG.md | S-01W first delivery, then the first board Task and the S-00V consumer contract. S-00V's pre-existing mentions of the never-allocated draft ID S-01V (SPEC and TK-00G/TK-00K/TK-01L/TK-01M) are Lane F-owned; TK-01M assigns the re-point to the S-00V dispatcher, whose in-flight branch replaces them with S-00O pending this allocation and will re-point to S-01X |
 | 2026-09-30 | TK-003O | First opt-in JSON Task activated | Explicit parent release from integration 2c47d96239dd48f17969e4d5fa8f668850c2ecfe; S-01W first identity/consumer delivery is in integration, while claimed TK-002R QA remains separate; native next-id and convert-tasks --activate | Fixed preview boundary render --format json; default Markdown and all later criteria remain open | JSON implementation, required checks and independent exact-candidate review pending; no root switch, identity or QA takeover |
 
+| 2026-09-30 | TK-003O | Public preview behavior implemented; first-slice checkpoint | Corrected test-only ec18730a69d57db26bec32f7bec77201eabf10d7 produced nine expected failures with runtime unchanged; node tools/test-taskboard-json.mjs now passes nine groups and --demo shows six lanes in under one minute; full immutable-candidate checks pending | RUNBOOK render procedure, Task boundary and Spec implementation status; no template rewrite during opt-in migration | All whole-Spec criteria and owner QA remain open; independent exact-head Task review pending |
+
 ## Completion Result
 
-Planning capability owner authored. Runtime acceptance and delivery are pending;
-no implementation or owner Human QA completion is claimed.
+Planning capability owner authored; TK-003O's opt-in preview is in progress.
+Whole-capability acceptance, independent delivery review and owner Human QA
+remain pending; no Spec completion is claimed.
 
 ## Remaining Limitations Or Follow-Up Specs
 

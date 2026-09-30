@@ -104,12 +104,13 @@ if (process.argv.includes('--demo')) {
 
   test('source edits regenerate, output edits are erased, bytes are deterministic and known metadata stays source-owned', () => withRoom(root => {
     const a = spec(root, { id: 'S-000A', extra: '**Start date:** 2026-09-01\n**Due date:** 2026-10-01' });
-    const file = task(root, a, { id: 'TK-000A', extra: '**Assignee:** fixture-worker\n**Approver:** fixture-reviewer\n**Next action:** Run the public demo' });
+    const file = task(root, a, { id: 'TK-000A', extra: '**Assignee:** fixture-worker\n**Approver:** fixture-reviewer\n**Next action:** Run the public demo\n**Priority:** 1' });
     const initial = preview(root); const output = path.join(root, 'TASKBOARD.preview.json');
     const first = fs.readFileSync(output, 'utf8'); preview(root); assert.equal(fs.readFileSync(output, 'utf8'), first);
     assert.equal(initial.lanes.toDo['TK-000A'].assignee, 'fixture-worker');
     assert.equal(initial.lanes.toDo['TK-000A'].approver, 'fixture-reviewer');
     assert.equal(initial.lanes.toDo['TK-000A'].nextAction, 'Run the public demo');
+    assert.equal(initial.lanes.toDo['TK-000A'].priority, 1, 'known Task priority remains source-owned');
     assert.equal(initial.lanes.toDo['S-000A'].startDate, '2026-09-01');
     assert.equal(initial.lanes.toDo['TK-000A'].startDate, null, 'Updated and parent dates are not invented Task start dates');
     fs.writeFileSync(output, '{"edited":true}\n'); preview(root); assert.equal(fs.readFileSync(output, 'utf8'), first);
@@ -152,7 +153,8 @@ if (process.argv.includes('--demo')) {
     const a = spec(root, { id: 'S-000A' }); task(root, a, { id: 'TK-000Z' }); preview(root);
     const output = fs.readFileSync(path.join(root, 'TASKBOARD.preview.json'), 'utf8');
     const b = spec(root, { id: 'S-000B' }); task(root, b, { id: 'TK-00z' });
-    const result = command(root, 'render', '--format', 'json'); assert.notEqual(result.status, 0); assert.match(result.stderr, /collision/i);
+    const result = command(root, 'render', '--format', 'json'); assert.notEqual(result.status, 0); assert.match(result.stderr, /collision|Duplicate task ID/i);
+    assert.ok(result.stderr.includes('TK-000Z') && result.stderr.includes('TK-00z'));
     assert.equal(fs.readFileSync(path.join(root, 'TASKBOARD.preview.json'), 'utf8'), output);
   }));
 
