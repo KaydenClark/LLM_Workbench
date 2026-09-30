@@ -3,13 +3,13 @@
 **Spec ID:** S-00I
 **Status:** active
 **Priority:** 3
-**Owner:** claude-lane-H
+**Owner:** codex-cloud-lane-H
 **Stance:** Builder
-**Updated:** 2026-09-29
+**Updated:** 2026-09-30
 **Catalog description:** Express ADR, Spec and Task lifecycle by folder location, reconcile completed Specs and Tasks into readable durable owners before retiring them, and discard retired records only through a verified gate; permanent `archive` is never cleared.
 **Blockers:** none; S-00H is `complete` (integration `49c671e`).
-**Latest event:** TK-01U closed with proof; second review corrective (linked features path refused before any read) applied.
-**Next gate:** Complete TK-01V.
+**Latest event:** TK-01V claimed by codex-cloud-lane-H.
+**Next gate:** Close TK-01V with verification and documentation proof.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 

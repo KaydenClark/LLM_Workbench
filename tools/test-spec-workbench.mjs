@@ -19,6 +19,7 @@ import {
   discardRetiredTask,
   doctor,
   findSpec,
+  gate,
   loadCorrectiveTasks,
   loadRetiredSpecs,
   loadSpecs,
@@ -34,7 +35,7 @@ import {
   scanReferences,
   slicesOf
 } from '../workbench/tools/spec-workbench.mjs';
-import { assembleSpecReport, createCorrectiveTasks, recordOwnerApproval, recordReviewVerdict } from '../workbench/tools/spec-report.mjs';
+import { assembleSpecReport, computeSpecDigest, createCorrectiveTasks, recordOwnerApproval, recordReviewVerdict } from '../workbench/tools/spec-report.mjs';
 import { parseSpecPacket } from '../workbench/tools/spec-packet.mjs';
 import { validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
 import { TASK_STATUSES, listRetiredTaskRecords, listTaskRecords, readTaskRecord, taskStatus, unmetBlockers } from '../workbench/tools/task-record.mjs';
@@ -5112,6 +5113,460 @@ function commitAll(dir, message) {
   } finally {
     fs.rmSync(visibleRoot, { recursive: true, force: true });
     fs.rmSync(visibleLinked, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00I TK-01V: one continuous closure-capture room. Every identity below is
+// produced by an ordinary commit, merge, push and fetch against a local bare
+// remote. Never use integratedFixtureCandidate, update-ref, branch -f, a
+// completed starting Spec, or another owner approval to repair this chain.
+// The owner and reviewer are explicitly simulated fixture actors. These
+// receipts prove runtime machinery, never real Human QA or release approval.
+// ============================================================================
+{
+  const room = fs.mkdtempSync(path.join(os.tmpdir(), 'closure-capture-continuous-'));
+  const remote = fs.mkdtempSync(path.join(os.tmpdir(), 'closure-capture-remote-'));
+  const clones = [];
+  const started = Date.now();
+  const specId = 'S-620';
+  const taskId = 'TK-620';
+  const activeDir = 'workbench/specs/S-620-label-normalization';
+  const retiredDir = 'workbench/specs/retired/S-620-label-normalization';
+  const specPath = `${activeDir}/SPEC.md`;
+  const historicalRoute = `${retiredDir}/SPEC.md`;
+  const activeTaskPath = `${activeDir}/tasks/${taskId}/TASK.md`;
+  const retiredTaskPath = `${activeDir}/tasks/retired/${taskId}/TASK.md`;
+  const featurePath = 'workbench/wiki/features/label-normalization.md';
+  const memoryPath = 'workbench/wiki/MEMORY.md';
+  const owner = 'Simulated fixture owner (S-620 only; not Kayden Human QA)';
+  const reviewer = 'Simulated fixture Director review (machinery only)';
+  const transitions = [];
+  const git = (...args) => execFileSync('git', ['-C', room, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+  const read = (relative) => fs.readFileSync(path.join(room, relative), 'utf8');
+  const write = (relative, content) => writeAt(room, relative, content);
+  const commit = (message) => { commitAll(room, message); return headSha(room); };
+  const publish = (branch) => { git('push', '--quiet', '-u', 'origin', branch); git('fetch', '--quiet', 'origin', branch); };
+  const report = () => assembleSpecReport(room, specId);
+  // Capture bytes too: porcelain alone cannot detect a second write to an
+  // already-dirty file. Every refusal preserves files, index, HEAD and refs.
+  function directoryBytes(root) {
+    const result = {};
+    function walk(relative) {
+      for (const entry of fs.readdirSync(path.join(root, relative), { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+        if (!relative && entry.name === '.git') continue;
+        const child = path.posix.join(relative, entry.name);
+        if (entry.isDirectory()) { result[`${child}/`] = 'directory'; walk(child); }
+        else if (entry.isSymbolicLink()) result[child] = `link:${fs.readlinkSync(path.join(root, child))}`;
+        else result[child] = fs.readFileSync(path.join(root, child)).toString('base64');
+      }
+    }
+    walk('');
+    return result;
+  }
+  function snapshot() {
+    return { ...gitSnapshot(room), refs: git('for-each-ref', '--format=%(refname) %(objectname)'), files: directoryBytes(room) };
+  }
+  function refuses(label, operation, reason) {
+    const before = snapshot();
+    assert.throws(operation, reason, label);
+    assert.deepEqual(snapshot(), before, `${label}: no files, index, HEAD or refs changed`);
+  }
+  function receipt(step, details) {
+    const entry = { step, head: headSha(room), ...details };
+    transitions.push(entry);
+    console.log(`demo - S-00I TK-01V ${JSON.stringify(entry)}`);
+  }
+  function uncaptured() {
+    assert.equal(findSpec(room, specId).status, 'complete', 'failed capture never reopens the Spec');
+    const findings = doctor(room, { today: TODAY }).filter(item => item.code === 'uncaptured-complete');
+    assert.deepEqual(findings.map(item => item.specId), [specId]);
+    assert.equal(findings[0].blocks, 'none');
+    assert.ok(fs.existsSync(path.join(room, retiredTaskPath)), 'including the missed attempt, TASK.md stays until capture');
+  }
+  function freshClone(label) {
+    const clone = fs.mkdtempSync(path.join(os.tmpdir(), `closure-capture-${label}-`));
+    clones.push(clone);
+    execFileSync('git', ['clone', '--quiet', '--branch', 'integration', remote, clone], { stdio: 'pipe' });
+    return clone;
+  }
+  try {
+    initLifecycleFixture(room);
+    declareFixtureGit(room, { defaultBranch: 'main', integrationBranch: 'integration' });
+    write('AGENTS.md', '# Fixture controls\n\nRoutes to workbench/wiki.\n');
+    write(memoryPath, '# Fixture Room Brain\n');
+    write('workbench/wiki/archive/retained-fixture.txt', 'Permanent archive fixture; lifecycle operations must preserve these bytes.\n');
+    initGitRoot(room);
+    if (git('branch', '--show-current') !== 'main') git('branch', '-m', 'main');
+    execFileSync('git', ['init', '--quiet', '--bare', remote]);
+    git('remote', 'add', 'origin', remote);
+    render(room);
+    const base = commit('initialize the disposable closure-capture room');
+    publish('main');
+    git('switch', '--quiet', '-c', 'integration');
+    publish('integration');
+    git('switch', '--quiet', '-c', 'codex/label-normalization');
+    receipt('baseline', { source: headSha(repoToolRoot()), main: git('rev-parse', 'origin/main'), integration: git('rev-parse', 'origin/integration'), base });
+
+    // Build a tiny real capability, preserving a missed attempt through the
+    // actual Task Receipt API, then close and retire its record before T0.
+    // Task retirement is allowed before capture; Task discard is not.
+    write(specPath, emptyTableRecordBackedSpec(specId)
+      .replace('Task Lifecycle Fixture', 'Label Normalization')
+      .replace('Proves the Task folder lifecycle.', 'Trim surrounding whitespace while preserving label contents.')
+      .replace('**Updated:** 2026-09-18', `**Updated:** ${TODAY}`));
+    write(activeTaskPath, taskRecordFixture({ id: taskId, specId, slice: 'Normalize a label', status: 'ready', blockers: 'none', destination: `spec-acceptance: ${specId} Acceptance Criteria` }) + '\n## Decisions\n\nNone.\n');
+    write('src/label.mjs', 'export const normalizeLabel = value => value;\n');
+    write('test/label.mjs', "import assert from 'node:assert/strict';\nimport { normalizeLabel } from '../src/label.mjs';\nassert.equal(normalizeLabel('  orchard  '), 'orchard');\nassert.equal(normalizeLabel('red apple'), 'red apple');\nassert.equal(normalizeLabel('  '), '');\n");
+    render(room);
+    commit('add the active Spec and its ready Task with a failing label test');
+    publish('codex/label-normalization');
+    claimWork(room, specId, { agent: 'simulated-fixture-builder', date: TODAY });
+    const lane = git('branch', '--show-current');
+    const missed = spawnSync(process.execPath, ['test/label.mjs'], { cwd: room, encoding: 'utf8' });
+    assert.equal(missed.status, 1, 'the fixture capability first fails its whitespace assertion');
+    assert.match(missed.stderr, /AssertionError/);
+    receiptTask(room, specId, { task: taskId, tests: 'node test/label.mjs: FAIL (surrounding whitespace retained)', docs: 'none', remainingGap: 'Trim surrounding whitespace' });
+    write(`${activeDir}/tasks/${taskId}/proof.txt`, 'Observed red: surrounding whitespace was retained.\n');
+    write(`${activeDir}/tasks/${taskId}/assets/example.txt`, '  orchard  \n');
+    write(`${activeDir}/proof/behavior.txt`, 'The label test is the capability evidence; this sibling proof must travel and recover with the Spec.\n');
+    write(`${activeDir}/assets/example.txt`, '  red apple  \n');
+    write('src/label.mjs', 'export const normalizeLabel = value => value.trim();\n');
+    const green = spawnSync(process.execPath, ['test/label.mjs'], { cwd: room, encoding: 'utf8' });
+    assert.equal(green.status, 0, green.stderr);
+    write(`${activeDir}/tasks/${taskId}/proof.txt`, 'Observed red: surrounding whitespace was retained.\nObserved green: node test/label.mjs passed all three examples.\n');
+    write(specPath, read(specPath).replace('- [ ] Expected behavior is verified.', '- [x] Surrounding whitespace is removed; internal whitespace and empty labels are preserved.').replace('Pending.', 'node test/label.mjs verifies the delivered label behavior.'));
+    render(room);
+    commit('implement and verify label normalization');
+    publish(lane);
+    closeTask(room, specId, { proof: 'node test/label.mjs passed three examples after the preserved red attempt', docs: 'Capture destination: workbench/wiki/features/label-normalization.md after closure', remainingGap: 'none', date: TODAY });
+    render(room);
+    commit('persist Task close proof');
+    const originalRuns = readReceiptFromFile(path.join(room, activeTaskPath));
+    assert.equal(originalRuns.length, 2, 'missed attempt and successful close both survive');
+    moveTaskRecord(room, specId, taskId, 'retired');
+    render(room);
+    const candidate = commit('retain the reconciled Task and its assets in the retired Task folder');
+    publish(lane);
+    assert.equal(findSpec(room, specId).status, 'active');
+    assert.equal(report().complete, true, 'the assembled candidate contains Task proof, checked acceptance and outcome');
+    const digest = report().specDigest;
+    assert.equal(computeSpecDigest(room, findSpec(room, specId), candidate), digest);
+
+    // T0: missing review and stale reviewer digests refuse without writes.
+    refuses('T0 no review', () => completeSpec(room, specId), /no review verdict/);
+    assert.equal(gate(room, { spec: specId, candidate }).refused, true);
+    refuses('T0 mismatched review digest', () => recordReviewVerdict(room, specId, { candidate, digest: '0'.repeat(64), result: 'pass', findings: 'none', reviewer }), /does not match/);
+    const verdict = recordReviewVerdict(room, specId, { candidate, digest, result: 'pass', findings: 'none', reviewer });
+    assert.equal(gate(room, { spec: specId, candidate }).refused, false);
+    refuses('T1 cannot approve an undelivered lane', () => recordOwnerApproval(room, specId, { candidate, owner, result: 'approve' }), /not contained in the declared integration branch/);
+    commit('record the simulated immutable-candidate review');
+    publish(lane);
+    git('switch', '--quiet', 'integration');
+    git('merge', '--quiet', '--no-ff', lane, '-m', 'deliver the reviewed fixture candidate');
+    publish('integration');
+    assert.equal(git('merge-base', candidate, 'origin/integration'), candidate);
+    assert.equal(computeSpecDigest(room, findSpec(room, specId), git('rev-parse', 'origin/integration')), digest);
+    assert.equal(findSpec(room, specId).status, 'active');
+    receipt('T0 reviewed delivery', { candidate, digest, integration: git('rev-parse', 'origin/integration') });
+
+    // T1: one scoped simulated-owner approval, preserved through all later
+    // administrative steps. Neither a review nor an uncommitted edit is QA.
+    refuses('T3 requires T1', () => completeSpec(room, specId), /no owner Human QA approval/);
+    const approvedCandidate = headSha(room);
+    const originalTask = read(retiredTaskPath);
+    write(retiredTaskPath, originalTask.replace('Normalize a label', 'Normalize a different label'));
+    refuses('T1 rejects uncommitted substantive proof', () => recordOwnerApproval(room, specId, { candidate: approvedCandidate, owner, result: 'approve' }), /candidate content.*does not match/);
+    write(retiredTaskPath, originalTask);
+    const approval = recordOwnerApproval(room, specId, { candidate: approvedCandidate, owner, result: 'approve' });
+    assert.equal(approval.digest, digest);
+    commit('persist the single simulated owner approval for S-620');
+    publish('integration');
+    receipt('T1 owner approval', { approvedCandidate, digest, scope: specId, owner });
+    refuses('T3 requires T2', () => completeSpec(room, specId), /approved candidate .* is not contained in origin\/main/);
+
+    // T2 is an actual fixture-owner promotion followed by a fresh fetch.
+    git('switch', '--quiet', 'main');
+    git('merge', '--quiet', '--no-ff', 'integration', '-m', 'simulated owner promotes the approved fixture to main');
+    publish('main');
+    git('switch', '--quiet', 'integration');
+    const observedMain = git('rev-parse', 'origin/main');
+    assert.equal(git('merge-base', approvedCandidate, observedMain), approvedCandidate);
+    assert.equal(computeSpecDigest(room, findSpec(room, specId), observedMain), digest);
+    receipt('T2 main verification', { observedMain, approvedCandidate, digest });
+
+    // A substantive mutation still invalidates both bindings before T3.
+    write(retiredTaskPath, originalTask.replace('Normalize a label', 'Normalize a different label'));
+    assert.equal(report().latestOwnerApproval, null);
+    refuses('T3 refuses changed Task proof', () => completeSpec(room, specId), /earlier content/);
+    write(retiredTaskPath, originalTask);
+    completeSpec(room, specId, { date: TODAY });
+    render(room);
+    assert.equal(report().specDigest, digest, 'T3/F3 administrative completion preserves the approved digest');
+    assert.equal(report().latestOwnerApproval.candidate, approvedCandidate);
+    assert.ok(read(specPath).includes(`approved delivery verified: origin/main at ${observedMain} contains approved candidate ${approvedCandidate} [${digest.slice(0, 12)}]`));
+    assert.ok(read(specPath).includes(verdict.row));
+    assert.ok(read(specPath).includes(approval.row));
+    commit('record main-verified completion');
+    receipt('T3 complete', { observedMain, approvedCandidate, digest });
+
+    // T4: capture failures leave complete+uncaptured, not reopened or
+    // silently discardable. Each probe starts from persisted clean bytes.
+    uncaptured();
+    refuses('T4 missing feature owner', () => retireSpec(room, specId, { wikiNote: featurePath }), /found no Wiki note/);
+    refuses('T4 Task discard waits for capture', () => discardRetiredTask(room, specId, taskId), /has no captured features article/);
+    const article = featureOwnerArticle(historicalRoute, {
+      sourcePaths: [historicalRoute, 'src/label.mjs', 'test/label.mjs'],
+      limits: '## Limits\n\nOnly string labels are supported. Internal whitespace is preserved; this is not Unicode normalization. The owner and review receipts belong only to a disposable test room.\n',
+      evidence: `## Evidence and Sources\n\n- \`test/label.mjs\` checks surrounding spaces, internal spaces and an empty label against \`src/label.mjs\`.\n- [Closure record](../../specs/retired/S-620-label-normalization/SPEC.md) and [sibling proof](../../specs/retired/S-620-label-normalization/proof/behavior.txt) preserve the historical verification.\n`
+    }).replace('# Feature Fixture Capability', '# Label Normalization')
+      .replace('A disposable room retires a completed Spec into this readable article.', 'Labels have predictable edges without changing their contents.')
+      .replace("Retirement accepts a validated, routed features article as the Spec's durable owner.", 'normalizeLabel removes surrounding whitespace and preserves internal whitespace. An all-whitespace input becomes an empty label.')
+      .replace('A cold reader learns what was delivered without opening transient Task records.', 'Comparisons and displays can use a clean label while preserving meaningful spaces between words.');
+    write(featurePath, article);
+    commit('attempt a features capture before adding its router link');
+    uncaptured();
+    refuses('T4 unrouted feature owner', () => retireSpec(room, specId, { wikiNote: featurePath }), /is not linked from workbench\/wiki\/MEMORY/);
+    refuses('T4 unrouted capture cannot discard Task', () => discardRetiredTask(room, specId, taskId), /has no captured features article/);
+    write(memoryPath, '# Fixture Room Brain\n\n- [Label normalization](features/label-normalization.md)\n');
+    write(featurePath, article.replace('## Limits', '## Unsupported heading'));
+    commit('attempt a routed but invalid features capture');
+    uncaptured();
+    refuses('T4 invalid feature owner', () => retireSpec(room, specId, { wikiNote: featurePath }), /Limits section/);
+    refuses('T4 invalid capture cannot discard Task', () => discardRetiredTask(room, specId, taskId), /has no captured features article/);
+    write(featurePath, article);
+    const captureCommit = commit('capture the complete capability as a readable routed feature');
+    assert.deepEqual(validateWiki(room).filter(item => item.note === featurePath), [], 'article content and feature schema agree');
+    assert.deepEqual(doctor(room, { today: TODAY }).filter(item => item.code === 'uncaptured-complete'), []);
+    assert.equal(report().specDigest, digest);
+    assert.deepEqual(readReceiptFromFile(path.join(room, retiredTaskPath)), originalRuns);
+    receipt('T4 features capture', { article: featurePath, type: parseFrontmatter(read(featurePath)).data.type });
+
+    // T5/F3 must preserve the original binding after the path move too,
+    // not merely admit retirement using a still-active pre-move report.
+    const retirement = retireSpec(room, specId, { wikiNote: featurePath });
+    assert.equal(retirement.route, historicalRoute);
+    assert.equal(retirement.ownerApproval.approvedBy, owner);
+    assert.equal(report().specDigest, digest, 'T5/F3 retirement preserves substantive digest');
+    assert.equal(report().latestOwnerApproval?.candidate, approvedCandidate,
+      'T5/F3 the original owner approval remains valid after Spec retirement; no second approval may repair a location-only change');
+    assert.equal(report().ownerApproval.length, 1, 'the continuous room has exactly one owner approval');
+    const retirementCommit = commit('retire the captured fixture Spec');
+    assert.equal(report().latestOwnerApproval?.candidate, approvedCandidate,
+      'S-00U TK-003K the committed retirement retains the same approval identity');
+    publish('integration');
+    const fresh = freshClone('retired');
+    assert.equal(loadSpecs(fresh).some(spec => spec.id === specId), false);
+    assert.ok(loadRetiredSpecs(fresh).some(spec => spec.id === specId));
+    assert.equal(nextWork(fresh), null);
+    assert.deepEqual(scanReferences(room), []);
+    assert.deepEqual(scanReferences(fresh), []);
+    assert.ok(fs.existsSync(path.join(fresh, historicalRoute)));
+    assert.equal(assembleSpecReport(fresh, specId).latestOwnerApproval?.candidate, approvedCandidate,
+      'S-00U TK-003K the original approval remains bound in a fresh retired clone');
+    assert.equal(computeSpecDigest(fresh, findSpec(fresh, specId), candidate), digest,
+      'S-00U TK-003K normal non-FF delivery preserves the pre-integration feature candidate that introduced the Spec');
+    assert.match(fs.readFileSync(path.join(fresh, 'workbench/specs/CATALOG.md'), 'utf8'), new RegExp(escapeForRegExp(historicalRoute.replace('workbench/specs/', ''))));
+    receipt('T5 retirement', { retirementCommit, historicalRoute });
+
+    // S-00U TK-003K: copied approval rows never establish a historical
+    // source. Probes branch from actual persisted transition output and
+    // leave the positive room's candidate, approval and digest untouched.
+    function approvalProbe(label, prepare) {
+      const probe = freshClone(`approval-${label}`);
+      const probeGit = (...args) => execFileSync('git', ['-C', probe, ...args], { encoding: 'utf8', stdio: 'pipe' }).trim();
+      probeGit('config', 'user.email', 'fixture@example.com');
+      probeGit('config', 'user.name', 'Fixture');
+      prepare(probe, probeGit);
+      const before = { files: directoryBytes(probe), git: gitSnapshot(probe), refs: probeGit('for-each-ref', '--format=%(refname) %(objectname)') };
+      assert.equal(assembleSpecReport(probe, specId).latestOwnerApproval, null, `S-00U TK-003K ${label} cannot reuse the original approval`);
+      assert.deepEqual({ files: directoryBytes(probe), git: gitSnapshot(probe), refs: probeGit('for-each-ref', '--format=%(refname) %(objectname)') }, before,
+        `S-00U TK-003K ${label} approval lookup writes nothing`);
+    }
+    approvalProbe('altered-Spec', probe => {
+      const file = path.join(probe, historicalRoute);
+      fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('Surrounding whitespace is removed', 'Surrounding whitespace is retained'));
+    });
+    approvalProbe('altered-retired-Task', probe => {
+      const file = path.join(probe, `${retiredDir}/tasks/retired/${taskId}/TASK.md`);
+      fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('Normalize a label', 'Normalize a different label'));
+    });
+    approvalProbe('unrelated-candidate', probe => {
+      const file = path.join(probe, historicalRoute);
+      fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace(`Owner QA: approve at ${approvedCandidate}`, `Owner QA: approve at ${base}`));
+    });
+    approvalProbe('readded-retired-incarnation', (probe, probeGit) => {
+      const content = fs.readFileSync(path.join(probe, historicalRoute), 'utf8');
+      probeGit('rm', historicalRoute);
+      commitAll(probe, 'remove the retired record in an adversarial probe');
+      writeAt(probe, historicalRoute, content);
+      commitAll(probe, 're-add identical retired bytes as a new incarnation');
+      assert.equal(assembleSpecReport(probe, specId).specDigest, digest, 'same bytes do not prove the old incarnation');
+    });
+    approvalProbe('readded-active-incarnation', (probe, probeGit) => {
+      probeGit('switch', '--quiet', '--detach', captureCommit);
+      const content = fs.readFileSync(path.join(probe, specPath), 'utf8');
+      probeGit('rm', specPath);
+      commitAll(probe, 'remove the original active record in an adversarial probe');
+      writeAt(probe, specPath, content);
+      commitAll(probe, 're-add identical active bytes as a new incarnation');
+      moveSpecDirectory(probe, specId, 'retired');
+      assert.equal(assembleSpecReport(probe, specId).specDigest, digest, 'new active incarnation has identical substance');
+    });
+    for (const [kind, start, file] of [
+      ['active', captureCommit, specPath], ['retired', retirementCommit, historicalRoute]
+    ]) {
+      for (const retainedBySide of [false, true]) approvalProbe(`merge-${retainedBySide ? 'restored' : 'readded'}-${kind}-incarnation`, (probe, probeGit) => {
+        probeGit('switch', '--quiet', '-c', 'probe-side', start);
+        // Test both parents missing the record and a merge restoring the
+        // side parent's retained copy after the main ancestry deleted it.
+        const original = fs.readFileSync(path.join(probe, file), 'utf8');
+        if (!retainedBySide) probeGit('rm', file);
+        writeAt(probe, 'side-proof.txt', 'Different side history.\n');
+        commitAll(probe, 'prepare the side-parent incarnation probe');
+        probeGit('switch', '--quiet', '-c', 'probe-main', start);
+        probeGit('rm', file);
+        writeAt(probe, 'main-proof.txt', 'Different main history.\n');
+        commitAll(probe, 'remove the approved record on the main branch');
+        probeGit('merge', '--quiet', '--no-ff', '--no-commit', 'probe-side');
+        writeAt(probe, file, original);
+        commitAll(probe, 'restore copied approved bytes as a merge-created incarnation');
+        assert.equal(probeGit('ls-tree', 'HEAD^1', '--', file), '', 'first merge parent lacks the record');
+        assert.equal(probeGit('ls-tree', 'HEAD^2', '--', file) !== '', retainedBySide, 'second merge parent has the chosen retention state');
+        if (kind === 'active') moveSpecDirectory(probe, specId, 'retired');
+        assert.equal(assembleSpecReport(probe, specId).specDigest, digest, 'merge-created incarnation can copy the approved substance exactly');
+      });
+    }
+    approvalProbe('unproven-unstaged-move', (probe, probeGit) => {
+      probeGit('switch', '--quiet', '--detach', captureCommit);
+      fs.mkdirSync(path.dirname(path.join(probe, retiredDir)), { recursive: true });
+      fs.renameSync(path.join(probe, activeDir), path.join(probe, retiredDir));
+      assert.equal(assembleSpecReport(probe, specId).specDigest, digest, 'an unproven move may still have identical bytes');
+    });
+
+    // T6: the earlier T2 promotion does not authorize disposal of newer
+    // retired directory incarnations or sibling proof. Publish each actual
+    // lifecycle change through the same merge/push/fetch route first.
+    const archiveBefore = directoryBytes(path.join(room, 'workbench/wiki/archive'));
+    const movedTaskDir = `${retiredDir}/tasks/retired/${taskId}`;
+    const taskBefore = directoryBytes(path.join(room, movedTaskDir));
+    function promoteFixtureMain(message) {
+      git('switch', '--quiet', 'main');
+      git('merge', '--quiet', '--no-ff', 'integration', '-m', message);
+      publish('main');
+      git('switch', '--quiet', 'integration');
+    }
+    refuses('T6 Task retirement must reach main', () => discardRetiredTask(room, specId, taskId), /not verified contained in origin\/main/);
+    refuses('T6 Spec retirement must reach main', () => discardRetiredSpec(room, specId), /not verified contained in origin\/main/);
+    promoteFixtureMain('simulated owner preserves retirement on main before disposal');
+    const retiredMain = freshClone('retired-main');
+    execFileSync('git', ['-C', retiredMain, 'switch', '--quiet', '--detach', 'origin/main'], { stdio: 'pipe' });
+    assert.equal(computeSpecDigest(retiredMain, findSpec(retiredMain, specId), candidate), digest,
+      'S-00U TK-003K importing the retirement through a normal main merge keeps the original feature candidate identity');
+    assert.equal(assembleSpecReport(retiredMain, specId).latestOwnerApproval?.candidate, approvedCandidate);
+
+    function discardProbe(label, prepare, operation, reason) {
+      const probe = freshClone(`discard-${label}`);
+      const probeGit = (...args) => execFileSync('git', ['-C', probe, ...args], { encoding: 'utf8', stdio: 'pipe' }).trim();
+      probeGit('config', 'user.email', 'fixture@example.com');
+      probeGit('config', 'user.name', 'Fixture');
+      prepare(probe, probeGit);
+      const before = { files: directoryBytes(probe), git: gitSnapshot(probe), refs: probeGit('for-each-ref', '--format=%(refname) %(objectname)') };
+      assert.throws(() => operation(probe), reason, label);
+      assert.deepEqual({ files: directoryBytes(probe), git: gitSnapshot(probe), refs: probeGit('for-each-ref', '--format=%(refname) %(objectname)') }, before,
+        `${label}: no files, index, HEAD or refs changed`);
+    }
+    for (const [kind, file, discard] of [
+      ['Task', `${movedTaskDir}/TASK.md`, probe => discardRetiredTask(probe, specId, taskId)],
+      ['Spec', historicalRoute, probe => discardRetiredSpec(probe, specId)]
+    ]) {
+      discardProbe(`F4 ${kind} latest incarnation`, (probe, probeGit) => {
+        const content = fs.readFileSync(path.join(probe, file), 'utf8');
+        probeGit('rm', file);
+        commitAll(probe, `remove ${kind} in a disposal refusal probe`);
+        writeAt(probe, file, content);
+        commitAll(probe, `re-add ${kind} without publishing the new incarnation`);
+      }, discard, /not verified contained in origin\/main/);
+      discardProbe(`F4 ${kind} newer sibling proof`, probe => {
+        writeAt(probe, `${path.posix.dirname(file)}/unpublished-proof.txt`, 'This new proof is not contained on main.\n');
+        commitAll(probe, `add unpublished sibling proof to ${kind}`);
+      }, discard, /current directory content is not verified contained in origin\/main/);
+    }
+    discardProbe('F5 durable owner operational link', probe => {
+      const file = path.join(probe, featurePath);
+      fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('## Evidence and Sources', 'Use [the current procedure](../../specs/retired/S-620-label-normalization/SPEC.md).\n\n## Evidence and Sources'));
+      commitAll(probe, 'add an operational owner pointer in a refusal probe');
+    }, probe => discardRetiredSpec(probe, specId), /complete reference scan/);
+
+    const taskDiscard = discardRetiredTask(room, specId, taskId);
+    assert.equal(taskDiscard.recoveryCommand, `git checkout ${taskDiscard.recoveryCommit} -- ${movedTaskDir}`);
+    assert.equal(findSpec(room, specId).recordBacked, true);
+    assert.deepEqual(findSpec(room, specId).retiredRecords, []);
+    commit('discard the final retired Task and persist the record-backed marker');
+    publish('integration');
+    const withoutTask = freshClone('final-task-discarded');
+    assert.equal(findSpec(withoutTask, specId).recordBacked, true, 'T6/F7 tasks/.gitkeep preserves record-backed interpretation in a fresh clone');
+    assert.ok(fs.existsSync(path.join(withoutTask, retiredDir, 'tasks/.gitkeep')));
+    assert.deepEqual(slicesOf(findSpec(withoutTask, specId)), [], 'T6/F7 no fallback to historical legacy slices');
+    render(withoutTask);
+    assert.equal(nextWork(withoutTask), null);
+    assert.deepEqual(doctor(withoutTask, { today: TODAY }).filter(item => item.blocks !== 'none'), []);
+    assert.deepEqual(scanReferences(withoutTask), []);
+    const taskRecovery = freshClone('task-recovery');
+    execFileSync('sh', ['-c', taskDiscard.recoveryCommand], { cwd: taskRecovery, stdio: 'pipe' });
+    assert.deepEqual(directoryBytes(path.join(taskRecovery, movedTaskDir)), taskBefore, 'T6 recovery command restores the whole Task directory, both receipt attempts, proof and nested assets');
+    receipt('T6 final Task discard and recovery', { recoveryCommand: taskDiscard.recoveryCommand, recoveredEntries: Object.keys(taskBefore).length });
+
+    // Task removal changes the Spec directory too. Its complete current
+    // directory must reach main before the subsequent whole-Spec discard.
+    refuses('T6 Spec current directory must reach main', () => discardRetiredSpec(room, specId), /current directory content is not verified contained in origin\/main/);
+    promoteFixtureMain('simulated owner preserves final Task disposal before Spec disposal');
+    const specBefore = directoryBytes(path.join(room, retiredDir));
+    const specDiscard = discardRetiredSpec(room, specId);
+    assert.equal(specDiscard.recoveryCommand, `git checkout ${specDiscard.recoveryCommit} -- ${retiredDir}`);
+    assert.deepEqual(directoryBytes(path.join(room, 'workbench/wiki/archive')), archiveBefore, 'archive bytes remain unchanged');
+    assert.match(read(featurePath), new RegExp(`git show ${specDiscard.recoveryCommit}:${escapeForRegExp(historicalRoute)}`));
+    assert.match(read(featurePath), /normalizeLabel removes surrounding whitespace/);
+    const disposalCommit = commit('discard the retired Spec while preserving its durable feature explanation');
+    publish('integration');
+    const disposed = freshClone('spec-discarded');
+    assert.equal(loadSpecs(disposed).some(spec => spec.id === specId), false);
+    assert.equal(loadRetiredSpecs(disposed).some(spec => spec.id === specId), false);
+    assert.equal(nextWork(disposed), null);
+    assert.deepEqual(scanReferences(disposed), []);
+    assert.deepEqual(doctor(disposed, { today: TODAY }).filter(item => item.blocks !== 'none'), []);
+    assert.doesNotMatch(fs.readFileSync(path.join(disposed, 'workbench/specs/CATALOG.md'), 'utf8'), /S-620-label-normalization/);
+    assert.deepEqual(validateWiki(disposed).filter(item => item.note === featurePath), []);
+    const specRecovery = freshClone('spec-recovery');
+    execFileSync('sh', ['-c', specDiscard.recoveryCommand], { cwd: specRecovery, stdio: 'pipe' });
+    assert.deepEqual(directoryBytes(path.join(specRecovery, retiredDir)), specBefore, 'T6 recovery command restores the entire latest Spec directory, task marker, sibling proof and nested assets');
+    receipt('T6 Spec discard and fresh-clone recovery', { disposalCommit, recoveryCommand: specDiscard.recoveryCommand, recoveredEntries: Object.keys(specBefore).length });
+
+    // The same disposed room routes a later finding to its surviving claim.
+    // Existing S-591 regressions below retain the retired-owner correction
+    // and stale-board protection; this asserts their post-discard endpoint.
+    const correction = createCorrectiveTasks(room, specId, { candidate: disposalCommit, findings: 'Explain unsupported non-string labels', wikiClaim: `${featurePath}#Limits` });
+    const correctiveId = correction.created[0].id;
+    refuses('T6 repeated orphan finding is idempotently refused', () => createCorrectiveTasks(room, specId, { candidate: disposalCommit, findings: 'Explain unsupported non-string labels', wikiClaim: `${featurePath}#Limits` }), /already exist/);
+    assert.equal(nextWork(room)?.taskId, correctiveId);
+    assert.deepEqual(loadCorrectiveTasks(room).find(task => task.id === correctiveId).destination, { type: 'wiki-claim', reference: `${featurePath}#Limits` });
+    claimWork(room, correctiveId, { agent: 'simulated-fixture-builder', date: TODAY, local: true });
+    render(room);
+    commit('preserve the post-discard claim correction');
+    publish('integration');
+    closeTask(room, correctiveId, { proof: 'The Limits section already states string-only input; verified against src/label.mjs', docs: featurePath, remainingGap: 'none', date: TODAY });
+    render(room);
+    assert.equal(nextWork(room), null);
+    assert.ok(!fs.existsSync(path.join(room, historicalRoute)), 'post-discard correction never resurrects the historical Spec');
+    assert.match(read(featurePath), new RegExp(`${correctiveId} corrective Task closed`));
+    assert.deepEqual(scanReferences(room), []);
+    assert.deepEqual(directoryBytes(path.join(room, 'workbench/wiki/archive')), archiveBefore);
+    receipt('T6 post-discard correction', { correctiveId, destination: `${featurePath}#Limits` });
+  } finally {
+    console.log(`demo - S-00I TK-01V reached ${transitions.at(-1)?.step ?? 'initialization'} in ${((Date.now() - started) / 1000).toFixed(2)}s; fixture-only, no production approval`);
+    for (const clone of clones) fs.rmSync(clone, { recursive: true, force: true });
+    fs.rmSync(room, { recursive: true, force: true });
+    fs.rmSync(remote, { recursive: true, force: true });
   }
 }
 

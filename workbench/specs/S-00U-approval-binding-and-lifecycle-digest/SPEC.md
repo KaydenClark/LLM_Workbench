@@ -3,13 +3,13 @@
 **Spec ID:** S-00U
 **Status:** active
 **Priority:** 0
-**Owner:** codex-director
+**Owner:** codex-approval-retirement-worker
 **Stance:** Builder
-**Updated:** 2026-09-23
+**Updated:** 2026-09-30
 **Catalog description:** Bind Human QA to inspected Git content, separate integration review from closure approval, and preserve proof across administrative completion.
 **Blockers:** none
-**Latest event:** Owner clarified on 2026-09-23 that the Human QA process has been underway since 2026-09-19 and has produced failed reviews. The earlier 51-check/source-review PASS is a separate gate; no owner approval or per-Spec QA finding attribution is recorded here.
-**Next gate:** Reconcile the ongoing Human QA findings against this Spec, carry attributable corrections or a return to Align, and inspect a fresh result. Do not request that the owner start Human QA again.
+**Latest event:** TK-003K local runtime and regression candidate is green at ephemeral proof 66b2e37b84ed96e5e5858939be896dfe59e01249: original approval survives verified retirement; altered substance and linear or merge-restored incarnations fail closed. Initial review finding is corrected; fresh review and assembled verification remain pending.
+**Next gate:** Assemble the bounded local candidate with the coordinated v4 work, run the required full suite, and obtain fresh immutable-candidate review before delivery or Task closure. No real owner QA, Spec closure or main promotion is supplied by fixture proof.
 
 > **Citation anchors.** pre=`bc370fe742d5ddb8348bf361fccea31205f6cee7` post=`bc370fe742d5ddb8348bf361fccea31205f6cee7`.
 
@@ -24,6 +24,8 @@ The S-00J implementation checks candidate ancestry but hashes local content, so 
 ## Current Verified State
 
 At the pre anchor, `workbench/tools/spec-report.mjs` computes a working-tree digest and `recordOwnerApproval` checks ancestry without comparing candidate content. `workbench/tools/spec-workbench.mjs` requires owner approval in both `gate` and `complete`. The digest includes Spec Status but excludes retired Task files. These source observations are reproduced by task regressions before repair.
+
+The 2026-09-30 continuous S-00I TK-01V fixture exposed a later lookup regression at `2f5b13b`: unchanged approval content became unreadable at its retired path in the original active candidate. TK-003K repairs only that source resolution, keeping digest framing, normalization and the approval identity unchanged. Ephemeral candidate `66b2e37b84ed96e5e5858939be896dfe59e01249` passes targeted report/lifecycle verification; this is a local proof candidate, not delivered state or owner Human QA.
 
 ## Desired Behavior
 
@@ -83,9 +85,13 @@ RUNBOOK and generic template command descriptions; current S-00J limitations whe
 | 2026-09-23 | owner correction | Human QA has been underway since 2026-09-19; the owner reports failed reviews, not a review waiting to start | Direct owner clarification on 2026-09-23; 2026-09-19 S-00I/S-00J approval audit records a failed readiness verdict on its pinned candidates; earlier 51-check and independent source PASS rows prove a different gate | Corrected current header and Taskboard projection; retained earlier evidence unchanged | No owner approval recorded; exact current findings still need per-Spec reconciliation and corrective proof |
 | 2026-09-23 | evidence scope correction | The owner correction establishes the state of the overall Human QA process; it does not assign the S-00I/S-00J audit verdict to this Spec | The 2026-09-19 approval audit names only S-00I and S-00J and older pinned candidates; this Spec has separate source-verification evidence | Narrowed the live header and Completion Result without changing prior evidence | Map any specific owner QA finding to this Spec before asserting a per-Spec failed verdict or opening corrective work |
 
+| 2026-09-30 | TK-003K | Dispatcher assigned bounded lifecycle-binding corrective; local-only claim | S-00I TK-01V at 2f5b13b fails T5/F3 after retirement: unchanged digest, original approval absent because committed content lookup uses the retired path. Scope is source resolution with verified lifecycle provenance and incarnation; no digest or approval-identity change. TK-003J was concurrently reserved in the portability worktree; Dispatcher reserved TK-003K after local and remote-visible inventory check. | New Task record; retained completed legacy table and all prior evidence | Red/green, full suite and independent review pending; no real owner QA, closure, commit or push |
+
+| 2026-09-30 | TK-003K | Local red/green candidate; independent-review corrective incorporated, fresh review pending | Original red at 2f5b13b: TK-01V T5/F3 unchanged digest lost its original approval. Initial local helper d59a6ba passed targeted tests but separate-context review found that default Git history omitted merge-created source/destination incarnations. Durable regression 68542d4 reproduces that approval bypass. Candidate 66b2e37b84ed96e5e5858939be896dfe59e01249 resolves only the canonical active-to-retired Git rename, verifies candidate ancestry, uses full-history topological per-parent additions while excluding ordinary merge imports, and rejects ancestry deletions. test-spec-workbench passes 55 blocks; test-spec-report passes; reviewer source/destination merge probes pass. The continuous T0-T6 demo reaches post-discard correction in 7.21 seconds, with one simulated approval, no-write substance/incarnation negatives, normal feature delivery and main-merge positives, F4/F5 disposal refusals, final-Task fresh-clone marker, whole-directory Task and Spec recovery and unchanged archive bytes. | Docs checked; no control or template update needed: the implementation restores the existing content-bound lifecycle contract without changing digest normalization, approval identity or public commands. Owning Spec and Task retain current proof state. | Full combined suite, fresh immutable review and integration delivery pending. Guardrail pre/post 78/100, no agent-outcome claim; self-drift remains blocked on existing stale-claim/seed/provenance findings plus the new local untracked Task until committed. No real Human QA, production retirement/discard, main promotion or Task closure |
+
 ## Completion Result
 
-Approval binds to committed Spec/Task content, premerge review is separated from owner QA, and administrative completion preserves substantive review identity. Source `58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c` passed the full 51-command suite and separate-context source review. Shared [verification](../S-00U-approval-binding-and-lifecycle-digest/VERIFICATION.md) records commands, red/green cases and limits. Task delivery proof is complete; **whole-Spec closure is not approved**. Final proof-state review and integration delivery remain open; owner approval remains outstanding after ongoing Human QA. No real record was retired/discarded and no main promotion or native-host proof is inferred.
+Approval binds to committed Spec/Task content, premerge review is separated from owner QA, and administrative completion preserves substantive review identity. Source `58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c` passed the full 51-command suite and separate-context source review. Shared [verification](../S-00U-approval-binding-and-lifecycle-digest/VERIFICATION.md) records commands, red/green cases and limits. Earlier Task delivery proof is retained; TK-003K now repairs the approval-lookup regression exposed by continuous retirement verification. **Whole-Spec closure is not approved**. Final proof-state review and integration delivery remain open; owner approval remains outstanding after ongoing Human QA. No real record was retired/discarded and no main promotion or native-host proof is inferred.
 
 ## Supersession
 

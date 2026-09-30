@@ -3,7 +3,7 @@
 **Task ID:** TK-01V
 **Spec ID:** S-00I
 **Slice:** Demonstrate the continuous closure-capture lifecycle in one disposable Git room
-**Status:** blocked
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-01U
 **Destination:** spec-acceptance: S-00I closed-Spec durable reconciliation, retirement and verified-main discard, proven across steps T0 to T6 of the S-00J closure-capture transition contract without rewriting prior completed proof
@@ -160,3 +160,25 @@ Known limitation carried from S-00T: unexpected I/O after a successful removal
 is reported, but lifecycle mutation is not transactional. On any injected
 failure show the staged state and recovery identity and keep the separate
 clone for recovery; do not claim crash safety or atomic disposal.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | codex/cloud-v4-portability | 2f5b13b0a20d6a278310cf1b709d1fcd31274a11 | ahead 0 behind 0 | 4 | 2026-09-30 cloud baseline: node tools/test-spec-workbench.mjs passes with process init.defaultBranch=main in 26s; continuous candidate fails in 12s at T5/F3 after unchanged digest retirement loses original owner approval | TK-01V bounded runtime gap; no closure, no T6 proof, no real owner approval | spec-report approval validation resolves current retired path inside pre-retirement candidate; separate authorized runtime corrective required before TK-01V can finish | 2f08b7abe25827598e5bd075a8f55a8188d776fe7f65851325c24f56b17f63ca |
+
+## Continuous Candidate — 2026-09-30
+
+The retained T5/F3 failure led to the separately assigned S-00U/TK-003K
+corrective. Frozen proof `66b2e37b84ed96e5e5858939be896dfe59e01249`
+passes the continuous T0–T6 fixture through post-discard correction in
+7.21 seconds. The fixture uses one simulated owner approval, actual Git
+commits/merges/pushes/fetches, main verification, features capture, retirement,
+Task and Spec discard, fresh-clone verification and verbatim complete-directory
+recovery. It preserves prior failed Task proof and permanent archive bytes.
+
+Named no-write gates include changed substance, source/destination new
+incarnations (including merge resurrection), newer sibling proof, active
+owner links and missing capture. Main delivery is simulated only inside
+disposable rooms. No real owner approval, main promotion or record disposal
+is asserted. Full combined verification and exact-head review remain pending.
