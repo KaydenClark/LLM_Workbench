@@ -77,6 +77,14 @@ they are authored.
 - [Adoption: bring an existing project into the Workbench once](skill-adoption.md)
 - [Genesis: start a new room from a founding prompt](skill-genesis.md)
 
+## Planned And Optional Skill References
+
+[Domain Modeling: sharpen the Workbench's language as decisions form](skill-domain-modeling.md)
+explains the optional personal method and the proposed Workbench adaptation.
+[Domain Modeling Skill for the Workbench - S-002H](../specs/S-002H-domain-modeling-skill/SPEC.md)
+keeps its required-room versus optional-extension distribution choice open.
+This route does not claim that every room can discover the skill today.
+
 ## Release And Distribution Routing
 
 The reconciled release scope and complete historical inventory live in
@@ -119,7 +127,8 @@ copying its evidence log here.
 
 [Roles and stances](design-concepts/roles-and-stances.md) explains scope versus job and routes to each separately owned capability.
 
-[Spec Planner](skill-spec-planner.md) cuts one assigned Spec into small parallel Tasks at flight launch and hands the plan to Spec Manager.
+- [Dispatcher](skill-dispatcher.md): one Spec and its branch; plan its Tasks, dispatch Workers to one durable writer, verify the assembled Spec and hand the candidate to the Director
+- [Spec Planner](skill-spec-planner.md): the Dispatcher's flight-launch stance; plan one assigned Spec from live Actuality into small complete-path Tasks with one writer per shared file and hand the plan to Spec Manager
 
 ## Agent Operating Knowledge
 
@@ -198,6 +207,7 @@ proof from current behavior. Original records remain intact pending lifecycle ga
 - [Operable Genesis Readiness](design-concepts/spec-S-015-portable-v3-release-audit-recovery.md)
 - [Bounded Team Coordination (S-020)](design-concepts/spec-S-020-spec-native-team-coordination.md)
 - [Portable Workbench Architecture (S-021)](design-concepts/spec-S-021-portable-workbench-v3.md)
+- [Historical v3.1 Release Packet (S-022)](design-concepts/spec-S-022-llm-workbench-v3-1-release.md)
 - [Manifest And Managed Runtime (S-023)](design-concepts/spec-S-023-manifest-and-managed-runtime.md)
 - [Governance Claims And Diagnostics (S-024)](design-concepts/spec-S-024-governance-core-and-diagnostics.md)
 - [Portable Wiki Knowledge (S-025)](design-concepts/spec-S-025-portable-wiki-and-design-concepts.md)

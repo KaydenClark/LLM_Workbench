@@ -80,6 +80,7 @@
       "promote",
       "handoff",
       "grill-me",
+      "dispatcher",
       "spec-planner",
       "builder",
       "auditor",
