@@ -5,7 +5,7 @@
 **Priority:** 1
 **Owner:** DISPATCHER
 **Stance:** Builder
-**Updated:** 2026-09-26
+**Updated:** 2026-09-30
 **Catalog description:** Rewrite `BLUEPRINT.md` now to describe every rung of the governing workflow and the full recursive Spec/Task loop, then rewrite AGENTS, RUNBOOK, LEXICON and the `templates/` mirror once S-00H, S-00I and S-00J make the commands they describe real, and reconcile ADR-000F, ADR-000G and ADR-000I.
 **Blockers:** TK-002 onward wait on S-00I and S-00J; S-00J TK-01T will let TK-002 consume their reviewed integration delivery (`S-###:delivered`) instead of final `complete`. S-00H is complete and retired; TK-001 is done and landed.
 **Latest event:** 2026-09-26 Lane H reconciled the owner-confirmed SCR answers onto current integration: the owner's arrow-and-brace map stays verbatim beside a labeled interpretation, Director/Dispatcher/Worker Lexicon rows land, and ADR-000F is accepted with its Human QA timing, closure order and direct-Task gate placement corrected from the unlanded e318f14 candidate.
@@ -445,6 +445,7 @@ workflow. No other owner changes.
 
 | 2026-09-27 | none | Minimum role/stance definitions reconciled under explicit owner direction | ROLE-1..4 scope Director to project/integration, Dispatcher to one Spec/branch, Worker to Task; Spec Planner and Spec Manager are separate stances; Reviewer/Auditor remain stances | Root controls and generic mirrors; individual new Specs own behavioral delivery | Existing TK-002..TK-005 remain assigned to their wider runtime-dependent work; this bounded definition/procedure change does not close them or end the rollout exception |
 | 2026-09-27 | none | Recover accepted vocabulary from unmerged source and existing ledger | FND-Q17b confirms Map/Fog/Frontier; WF-2 confirms Align; WF-1 assigns the PRD-shaped destination to Spec. cc53fadc retained as source, not wholesale restored. | Root/template Lexicon and proposed ADR-000E current-reconciliation section | Wider runtime-dependent workflow and ADR acceptance remain with existing Tasks; no implementation closure claimed |
+| 2026-09-30 | TK-003N | Projection maintenance claimed | Explicit bounded assignment after reviewed PR226 integration containment at fad42375a2f9f093913e5782f8a6297a5ce54bdb; native claim publication for this assigned Task avoids selecting the separate TK-002 control rewrite | Generated TASKBOARD only; CATALOG and controls unchanged | Independent exact-candidate review pending; broader S-00P work and S-01W QA claim retained |
 
 ## Completion Result
 
