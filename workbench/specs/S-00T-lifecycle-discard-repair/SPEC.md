@@ -5,7 +5,7 @@
 **Priority:** 1
 **Owner:** codex-lifecycle
 **Stance:** Builder
-**Updated:** 2026-09-23
+**Updated:** 2026-09-30
 **Catalog description:** Repair audited retirement identity, discard recovery, Wiki attribution, final Task persistence and corrective allocation defects before legacy migration.
 **Blockers:** none; explicit owner repair assignment precedes migration gates.
 **Latest event:** Owner clarified on 2026-09-23 that the Human QA process has been underway since 2026-09-19 and has produced failed reviews. The earlier 51-check/source-review PASS is a separate gate; no owner approval or per-Spec QA finding attribution is recorded here.
@@ -49,6 +49,7 @@ No runtime dependency blocks fixture repair. Integration requires separate-conte
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-0T0 | Repair discard and identity safety seams | done | none | Full 51-command suite passed on immutable 58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c; separate-context source review PASS; shared command proof in S-00U/VERIFICATION.md. |
+| TK-003C | Reserve remote-visible identities from a remote tip whose matched spec lines exceed 1 MiB | ready | none | pending |
 
 ## Acceptance Criteria
 
@@ -100,6 +101,7 @@ do not expose this detailed procedure yet; S-00P owns that broader mirror rewrit
 
 | 2026-09-23 | owner correction | Human QA has been underway since 2026-09-19; the owner reports failed reviews, not a review waiting to start | Direct owner clarification on 2026-09-23; 2026-09-19 S-00I/S-00J approval audit records a failed readiness verdict on its pinned candidates; earlier 51-check and independent source PASS rows prove a different gate | Corrected current header and Taskboard projection; retained earlier evidence unchanged | No owner approval recorded; exact current findings still need per-Spec reconciliation and corrective proof |
 | 2026-09-23 | evidence scope correction | The owner correction establishes the state of the overall Human QA process; it does not assign the S-00I/S-00J audit verdict to this Spec | The 2026-09-19 approval audit names only S-00I and S-00J and older pinned candidates; this Spec has separate source-verification evidence | Narrowed the live header and Completion Result without changing prior evidence | Map any specific owner QA finding to this Spec before asserting a per-Spec failed verdict or opening corrective work |
+| 2026-09-30 | TK-003C | Remote-visible reservation fails once a remote tip's matched spec lines exceed 1 MiB | Reproduced on integration 1f205c2b: `next-id --prefix S` exits 1 with `Cannot reserve IDs from refs/remotes/origin/integration: ` and empty stderr; `occupiedIdentities` reads each remote tip with `git grep` and `git show` under Node's default 1 MiB spawnSync maxBuffer, so spawnSync kills git (ENOBUFS) and the tool throws; `verdict --result fail` corrective allocation shares the path; fixtures were too small to catch it | Owner-directed blocker fix (2026-09-30) filed as a corrective Task on this Spec because acceptance line 4 (remote-visible reservation) owns the broken seam | Red/green, full suite, separate-context review and integration delivery pending |
 
 ## Completion Result
 
