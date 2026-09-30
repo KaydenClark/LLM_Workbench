@@ -3,7 +3,7 @@
 **Task ID:** TK-003X
 **Spec ID:** S-002H
 **Slice:** Reconcile the Domain Modeling Wiki article and router with the staged candidate
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-002H acceptance line 7 (article and sole router separate upstream method, Workbench adaptation, verified current state, intended behavior and limits) and Documentation Impact
