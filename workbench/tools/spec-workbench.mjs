@@ -1947,10 +1947,12 @@ function collectDirectoryFiles(dir) {
 // assigned delivery lane and remains unchanged.
 function lifecycleMoveLocations(root, oldDir, newDir, movingFiles, unmoved) {
   const locations = new Map(unmoved.map(file => [file, file]));
+  const directoryTargets = new Set();
   for (const file of movingFiles) locations.set(file, path.join(newDir, path.relative(oldDir, file)));
   const movingDirectories = dir => {
     assertSafeReadPath(root, dir);
     locations.set(dir, path.join(newDir, path.relative(oldDir, dir)));
+    directoryTargets.add(dir);
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
       if (entry.isDirectory()) movingDirectories(path.join(dir, entry.name));
     }
@@ -1965,9 +1967,10 @@ function lifecycleMoveLocations(root, oldDir, newDir, movingFiles, unmoved) {
       if (!fs.existsSync(target) || !fs.statSync(target).isDirectory()) continue;
       if (target !== root) assertSafeReadPath(root, target);
       if (!locations.has(target)) locations.set(target, target);
+      directoryTargets.add(target);
     }
   }
-  return locations;
+  return { locations, directoryTargets };
 }
 
 // Rewrites one file in place against `locations` (old absolute path -> new
@@ -1988,8 +1991,8 @@ function lifecycleMoveLocations(root, oldDir, newDir, movingFiles, unmoved) {
 // recomputed (the moved file sits one folder deeper now), and
 // `rewriteAdrLinks` can only do that when the unmoved target is in the map,
 // mapped to itself.
-function rewriteReferenceFile(root, filePath, oldDir, newDir, locations, totals) {
-  const finalContent = planReferenceRewrite(root, filePath, fs.readFileSync(filePath, 'utf8'), oldDir, newDir, locations, totals);
+function rewriteReferenceFile(root, filePath, oldDir, newDir, locations, totals, options = {}) {
+  const finalContent = planReferenceRewrite(root, filePath, fs.readFileSync(filePath, 'utf8'), oldDir, newDir, locations, totals, options);
   if (finalContent !== null) {
     assertSafeWritePath(root, filePath);
     writeSafeFile(root, filePath, finalContent);
@@ -1999,13 +2002,13 @@ function rewriteReferenceFile(root, filePath, oldDir, newDir, locations, totals)
 // Discover deterministic unsafe rewrites before git mv changes any path.
 // Only files whose live bytes actually change need write permission: an
 // unrelated hard-linked reference surface is not a reason to refuse a move.
-function preflightReferenceWrites(root, files, locations) {
+function preflightReferenceWrites(root, files, locations, options = {}) {
   for (const file of files) {
     const destination = locations.get(file);
     if (!destination.endsWith('.md')) continue;
     const rewritten = planReferenceRewrite(root, destination, fs.readFileSync(file, 'utf8'),
       path.dirname(file), path.dirname(destination), locations,
-      { referencesRewritten: {}, historicalReferencesLeft: {} });
+      { referencesRewritten: {}, historicalReferencesLeft: {} }, options);
     if (rewritten === null) continue;
     assertSafeWritePath(root, file);
     if (destination !== file) assertSafeWritePath(root, destination);
@@ -2019,12 +2022,12 @@ function preflightReferenceWrites(root, files, locations) {
 // (S-01W TK-002O) plans every rewrite with this before it touches the tree, so
 // a refusal can never leave a partial mutation; the lifecycle moves keep
 // calling `rewriteReferenceFile` exactly as before.
-function planReferenceRewrite(root, filePath, original, oldDir, newDir, locations, totals) {
+function planReferenceRewrite(root, filePath, original, oldDir, newDir, locations, totals, options = {}) {
   const { prefix, evidence, suffix } = splitEvidenceSection(original);
   const canonicalized = rewriteCanonicalizedIn(prefix, root, locations);
-  const rewrittenPrefix = rewriteAdrLinks(canonicalized.content, oldDir, newDir, locations);
-  const rewrittenSuffix = rewriteAdrLinks(suffix, oldDir, newDir, locations);
-  const skippedInEvidence = rewriteAdrLinks(evidence, oldDir, newDir, locations).count;
+  const rewrittenPrefix = rewriteAdrLinks(canonicalized.content, oldDir, newDir, locations, options);
+  const rewrittenSuffix = rewriteAdrLinks(suffix, oldDir, newDir, locations, options);
+  const skippedInEvidence = rewriteAdrLinks(evidence, oldDir, newDir, locations, options).count;
   const relative = path.relative(root, filePath).split(path.sep).join('/');
   if (skippedInEvidence > 0) totals.historicalReferencesLeft[relative] = (totals.historicalReferencesLeft[relative] ?? 0) + skippedInEvidence;
   const rewritten = rewrittenPrefix.count + rewrittenSuffix.count + canonicalized.count;
@@ -2105,9 +2108,10 @@ export function moveSpecDirectory(rootDir, specId, folder) {
   // its relative path recomputed, because the moved file itself now sits one
   // folder deeper. The preflight excludes the moving directory; its files
   // are mapped old-path -> new-path below, not to themselves.
-  const locations = lifecycleMoveLocations(root, oldSpecDir, newSpecDir, movingFiles, unmoved);
+  const { locations, directoryTargets } = lifecycleMoveLocations(root, oldSpecDir, newSpecDir, movingFiles, unmoved);
+  const rewriteOptions = { directoryTargets };
 
-  preflightReferenceWrites(root, [...movingFiles, ...unmoved], locations);
+  preflightReferenceWrites(root, [...movingFiles, ...unmoved], locations, rewriteOptions);
   fs.mkdirSync(destinationRoot, { recursive: true });
   const moveResult = spawnSync('git', ['-C', root, 'mv', path.relative(root, oldSpecDir), path.relative(root, newSpecDir)], { encoding: 'utf8' });
   if (moveResult.status !== 0) throw new Error(`git mv failed for ${specId}: ${(moveResult.stderr || moveResult.stdout || '').trim()}`);
@@ -2116,10 +2120,10 @@ export function moveSpecDirectory(rootDir, specId, folder) {
   for (const oldFile of movingFiles) {
     const newFile = locations.get(oldFile);
     if (!newFile.endsWith('.md')) continue;
-    rewriteReferenceFile(root, newFile, path.dirname(oldFile), path.dirname(newFile), locations, totals);
+    rewriteReferenceFile(root, newFile, path.dirname(oldFile), path.dirname(newFile), locations, totals, rewriteOptions);
   }
   for (const file of unmoved) {
-    rewriteReferenceFile(root, file, path.dirname(file), path.dirname(file), locations, totals);
+    rewriteReferenceFile(root, file, path.dirname(file), path.dirname(file), locations, totals, rewriteOptions);
   }
 
   // Corrective review finding 1 (second round): REGISTER.md and HISTORY.md
@@ -2229,9 +2233,10 @@ export function moveTaskRecord(rootDir, specId, taskId, folder) {
   // Validate all live reference surfaces before any rename or write.
   const unmoved = collectSpecReferenceFiles(root, oldTaskDir);
 
-  const locations = lifecycleMoveLocations(root, oldTaskDir, newTaskDir, movingFiles, unmoved);
+  const { locations, directoryTargets } = lifecycleMoveLocations(root, oldTaskDir, newTaskDir, movingFiles, unmoved);
+  const rewriteOptions = { directoryTargets };
 
-  preflightReferenceWrites(root, [...movingFiles, ...unmoved], locations);
+  preflightReferenceWrites(root, [...movingFiles, ...unmoved], locations, rewriteOptions);
   fs.mkdirSync(destinationRoot, { recursive: true });
   const moveResult = spawnSync('git', ['-C', root, 'mv', path.relative(root, oldTaskDir), path.relative(root, newTaskDir)], { encoding: 'utf8' });
   if (moveResult.status !== 0) throw new Error(`git mv failed for ${specId}/${taskId}: ${(moveResult.stderr || moveResult.stdout || '').trim()}`);
@@ -2240,10 +2245,10 @@ export function moveTaskRecord(rootDir, specId, taskId, folder) {
   for (const oldFile of movingFiles) {
     const newFile = locations.get(oldFile);
     if (!newFile.endsWith('.md')) continue;
-    rewriteReferenceFile(root, newFile, path.dirname(oldFile), path.dirname(newFile), locations, totals);
+    rewriteReferenceFile(root, newFile, path.dirname(oldFile), path.dirname(newFile), locations, totals, rewriteOptions);
   }
   for (const file of unmoved) {
-    rewriteReferenceFile(root, file, path.dirname(file), path.dirname(file), locations, totals);
+    rewriteReferenceFile(root, file, path.dirname(file), path.dirname(file), locations, totals, rewriteOptions);
   }
 
   // Corrective review finding 2 (S-00I TK-004 review): mirror
