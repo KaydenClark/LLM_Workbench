@@ -42,10 +42,11 @@ const currentCoreSkills = legacyCoreSkills.map((name) => (name === 'to-tickets' 
 const handoffCoreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', ...stanceSkills];
 // Role and coordination-stance entries sit between the workflow skills and
 // the four portable stances; each is a required core entry delivered by its
-// own Spec. S-002D adds `dispatcher`; S-002F adds `spec-planner`, the stance
-// a Dispatcher adopts at flight launch. Exported so the tests derive the frozen
+// own Spec. S-002C adds `director`, which leads the group as the top role;
+// S-002D adds `dispatcher`; S-002F adds `spec-planner`, the stance a
+// Dispatcher adopts at flight launch. Exported so the tests derive the frozen
 // v3.2.1 row by excluding this group rather than by naming each entry.
-export const coordinationSkills = ['dispatcher', 'spec-planner'];
+export const coordinationSkills = ['director', 'dispatcher', 'spec-planner'];
 export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', ...coordinationSkills, ...stanceSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;

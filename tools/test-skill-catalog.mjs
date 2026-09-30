@@ -613,6 +613,63 @@ assert.ok(auditorSkill.indexOf('supported, unsupported or uncertain') > auditorS
 assert.ok(auditorSkill.indexOf('Stay inside the assigned target and project') < auditorSkill.indexOf('## Obligations'),
   'the no-widening boundary belongs to the auditor method, before its obligations');
 
+// S-002C TK-002X: the Director is a role, not a stance - it scopes the whole
+// project and its integration branch - but it ships in the same four-section
+// shape with the same authority sentences, so the existing skill contract
+// holds without a new shape. These pin the source contract: the role never
+// executes a Task, never approves a candidate it built, keeps one durable
+// writer per shared artifact across Specs, and leaves owner Human QA and
+// main promotion to the owner. The fresh-context scenario in S-002C records
+// the behavior. Portable wording only: the bundle installs into every room.
+// It is counted as a coordination entry and leads that group, pinned below.
+assert.ok(coordinationSkills.includes('director'), 'director is counted as a coordination entry');
+const directorSkill = read('workbench/skills/director/SKILL.md');
+assert.match(directorSkill, /^name: director$/m, 'director frontmatter name');
+assert.match(directorSkill, /^description: Adopt the assigned Director role for one project and its integration branch within existing authority\.$/m,
+  'director description takes the stance form');
+const directorSections = ['## Purpose', '## Method / Posture', '## Obligations', '## Completion / Exit Condition']
+  .map((heading) => directorSkill.indexOf(heading));
+assert.ok(directorSections.every((index) => index >= 0), 'director must carry the four stance sections');
+assert.deepEqual(directorSections, [...directorSections].sort((a, b) => a - b),
+  'director sections must follow Purpose, Method / Posture, Obligations, Completion / Exit Condition');
+assertIncludesAll(directorSkill, [
+  'never grants, removes, or transfers authority',
+  'Loading this skill never spawns an agent'
+], 'director authority sentences');
+assertIncludesAll(directorSkill, [
+  'never executes a Task',
+  'never approves a candidate it built',
+  'Neither a Dispatcher nor an implementing Worker supplies independent approval of its own candidate',
+  'never merges integration into main',
+  'never merges a PR whose review has not passed',
+  'remain owner acts',
+  'reported, not performed'
+], 'director boundaries');
+assertIncludesAll(directorSkill, [
+  'one Spec and its branch to each Dispatcher',
+  'single durable writer',
+  'cross-Spec',
+  'separate-context review',
+  'new candidate',
+  'options, a recommendation and its cost',
+  'never re-ask',
+  'permission refusal',
+  'workbench/manifest.json',
+  'workbench/docs/adr'
+], 'director coordination obligations');
+assert.ok(directorSkill.indexOf('single durable writer') > directorSkill.indexOf('## Obligations')
+  && directorSkill.indexOf('single durable writer') < directorSkill.indexOf('## Completion / Exit Condition'),
+  'the shared-writer rule belongs to the director obligations');
+assert.doesNotMatch(directorSkill, /\/Users\/|GPT_OS|\bgpt-|\bopus\b|\bsonnet\b|\bcodex\b|\bclaude\b|scheduler|\b(?:two|three|four|five|six)\s+Dispatchers/i,
+  'director must stay portable: no private path, provider, model, scheduler or Dispatcher count');
+// The S-002C fresh-context scenario surfaced a conflict: the entry told the
+// Director to record coordination in the owning Spec, whose records already
+// have a single writer. The Director routes Spec records through that writer.
+assertIncludesAll(directorSkill, [
+  "route what belongs in a Spec to that Spec's writer",
+  "never edit another writer's Spec state concurrently"
+], 'director keeps each Spec\'s single writer');
+
 // S-002D: the Dispatcher role entry is Spec-bound - one assigned Spec and its
 // branch, one durable writer for shared Spec state, Workers returning proof to
 // that writer, Task-branch merge requests into the Spec branch and never
@@ -628,11 +685,14 @@ assertIncludesAll(dispatcherSkill, [
   'Task-branch merge request into the Spec branch', 'Director'
 ], 'dispatcher role contract');
 assert.doesNotMatch(dispatcherSkill, /GPT_OS/, 'the dispatcher entry imports no GPT_OS policy');
-// S-002F appended `spec-planner` to the coordination group, so the group, in
-// its declared order, is what sits immediately before the four stances.
+// S-002F appended `spec-planner` to the coordination group and S-002C put
+// `director`, the top role, at its head, so the group, in its declared order -
+// director, dispatcher, spec-planner - is what sits immediately before the four
+// stances.
 assert.deepEqual(runtimeCoreSkills.slice(-4 - coordinationSkills.length, -4), coordinationSkills,
   'the coordination entries sit together, in declared order, immediately before the four portable stances');
-assert.equal(coordinationSkills[0], 'dispatcher', 'dispatcher leads the coordination entries');
+assert.equal(coordinationSkills[0], 'director', 'director leads the coordination entries');
+assert.equal(coordinationSkills[1], 'dispatcher', 'dispatcher follows the director');
 assert.deepEqual(runtimeCoreSkills.slice(-4), ['builder', 'auditor', 'reviewer', 'reconciler'],
   'the four portable stances stay the last four of the live bundle');
 

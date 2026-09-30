@@ -81,7 +81,7 @@ Derived from stable specs; includes completed history.
 | [S-029 - Declared Integration Branch And Recoverable Completion](S-029-declared-integration-branch/SPEC.md) | Make the integration branch a manifest-declared fact that Genesis, Adoption, and doctor can check, and require generation and adoption to end as a committed branch with a reachable review gate. | complete |
 | [S-002A - Landmark Records](S-002A-landmark-records/SPEC.md) | Maintain evolving landmark relationships and readable durable knowledge with recoverable provenance. | active |
 | [S-002B - Destination Question Cards](S-002B-destination-question-cards/SPEC.md) | Preserve evolving concept understanding, source lineage, Expected result and achieved Result through public safe record operations. | active |
-| [S-002C - Director Role](S-002C-director-role/SPEC.md) | Coordinate the whole project across Spec-bound Dispatchers and integrate independently reviewed results. | planned |
+| [S-002C - Director Role](S-002C-director-role/SPEC.md) | Coordinate the whole project across Spec-bound Dispatchers and integrate independently reviewed results. | active |
 | [S-002D - Dispatcher Role](S-002D-dispatcher-role/SPEC.md) | Coordinate planning, parallel Task delivery and assembled verification within one assigned Spec and its branch. | active |
 | [S-002E - Worker Role](S-002E-worker-role/SPEC.md) | Perform one assigned Task within its declared scope and return a verified, recoverable result. | planned |
 | [S-002F - Spec Planner Stance](S-002F-spec-planner-stance/SPEC.md) | Plan small Tasks and parallel vertical slices for one Spec from current Actuality when its flight launches. | active |
