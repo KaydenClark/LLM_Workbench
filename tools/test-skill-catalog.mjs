@@ -662,6 +662,13 @@ assert.ok(directorSkill.indexOf('single durable writer') > directorSkill.indexOf
   'the shared-writer rule belongs to the director obligations');
 assert.doesNotMatch(directorSkill, /\/Users\/|GPT_OS|\bgpt-|\bopus\b|\bsonnet\b|\bcodex\b|\bclaude\b|scheduler|\b(?:two|three|four|five|six)\s+Dispatchers/i,
   'director must stay portable: no private path, provider, model, scheduler or Dispatcher count');
+// The S-002C fresh-context scenario surfaced a conflict: the entry told the
+// Director to record coordination in the owning Spec, whose records already
+// have a single writer. The Director routes Spec records through that writer.
+assertIncludesAll(directorSkill, [
+  "route what belongs in a Spec to that Spec's writer",
+  "never edit another writer's Spec state concurrently"
+], 'director keeps each Spec\'s single writer');
 
 // S-002D: the Dispatcher role entry is Spec-bound - one assigned Spec and its
 // branch, one durable writer for shared Spec state, Workers returning proof to
