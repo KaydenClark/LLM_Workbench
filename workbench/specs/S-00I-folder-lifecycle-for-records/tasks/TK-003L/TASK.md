@@ -9,7 +9,7 @@
 **Destination:** spec-acceptance: S-00I safe lifecycle references and verified-main discard
 **Planned verification:** Preserve earlier bd218db red/green proof; reproduce Spec and Task directory-link reds at exact f7361483, verify the focused directory-link regression and full 51-command frozen checkpoint, then obtain fresh independent safety and assembled review
 
-**Proof:** Red on bd218db: installed-skill move link stale. Additional red on 394f8e6: hard-linked incoming reference leaves a staged rename before refusal. Green at 2254cb0: manifest and legacy skills move/scan/discard/diagnostics, six-lane compatibility, unsupported-lane refusal, linked/hard-linked no-write preflight and unchanged unrelated hard-linked skills pass. Bounded independent review PASS at 2254cb0. Parent notice-route repair removes exactly 22 newly exposed README findings; original 22 unrelated findings remain. Final aggregate, assembled review and delivery pending.
+**Proof:** Red on bd218db: installed-skill move link stale. Additional red on 394f8e6: hard-linked incoming reference leaves a staged rename before refusal. Green at 2254cb0: manifest and legacy skills move/scan/discard/diagnostics, six-lane compatibility, unsupported-lane refusal, linked/hard-linked no-write preflight and unchanged unrelated hard-linked skills pass. Bounded independent review PASS at 2254cb0. Historical notice-route repair removed 22 README findings; subsequent scoped Wiki repair leaves two intentional inline examples visible. Local full aggregate passes 51/51 at 3b9befd. Fresh independent safety/assembled review and delivery remain pending.
 
 ## Bounded Correction
 
@@ -62,3 +62,12 @@ linked-directory/directory-only hard-link refusal. See the owning
 [verification](../../DIRECTORY-LINK-VERIFICATION.md) for exact identities,
 commands, safety boundaries and remaining gates. This Task remains in progress;
 final code has no self-awarded independent PASS or owner approval.
+
+## Local Aggregate Checkpoint — 2026-09-30
+
+The exact clean checkpoint `3b9befd0ad43f3d0f6ef94fcf080c21ce0782137` passed all 48
+AGENTS commands and all three RUNBOOK extras: 51/51, with no change to HEAD or
+tracked bytes. This receipt update changes proof state only; runtime/test bytes
+are unchanged. The receipt checkpoint is reverified before draft publication.
+Local tests and scoped self-check do not independently approve final code. Task
+status and Spec acceptance remain unchanged pending coordinated review/delivery.

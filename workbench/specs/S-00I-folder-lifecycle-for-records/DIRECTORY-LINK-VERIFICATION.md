@@ -48,7 +48,7 @@ includes these regressions without introducing a separate unrun gate.
 | Unchanged live and external routes | An unmoved referrer keeps its original path spelling; external URLs remain untouched. |
 | Immutable history | Historical directory-link bytes remain identical and both matches are counted. |
 | Hard-linked incoming skill | A directory-only referrer refuses before rename; tracked bytes, index, HEAD, refs and external alias bytes remain unchanged. |
-| Linked directory target | Refusal occurs before rename with the same Git/filesystem snapshot. |
+| Linked directory target | Refusal occurs before rename with the same tracked-files/Git snapshot. |
 
 ## Correction Boundary
 
@@ -67,9 +67,13 @@ version or real record lifecycle was changed.
 
 ## Remaining Gates And Limits
 
-This is an in-progress correction checkpoint. Final frozen-candidate full-suite
-verification, fresh separate-context safety and assembled review, integration
-delivery and Task closeout remain coordinated gates. The implementing context
+The exact clean checkpoint `3b9befd0ad43f3d0f6ef94fcf080c21ce0782137` passes
+all 48 AGENTS commands plus RUNBOOK `test-team-coordination`,
+`test-team-coordination-demo` and `test-socket-contract`: **51/51**, with
+unchanged HEAD and no tracked dirt. This is local validation of an in-progress
+correction. The proof-state receipt checkpoint is reverified before publication.
+Fresh separate-context safety and assembled review, integration delivery and
+Task closeout remain coordinated gates. The implementing context
 does not independently approve its final code. Owner Human QA remains ongoing
 and unapproved; no main promotion or production disposal is implied.
 
@@ -82,7 +86,5 @@ improvement. The preflight guarantees do not add crash transactionality for
 unexpected I/O after mutation starts.
 
 The two intentionally conservative scanner findings in S-002C/TK-002Y remain
-visible; this correction introduces no masking or allowlist. Original dirty
-rooms and protected main/integration refs are preserved outside the isolated
-Task worktree. Publication is limited to a checkpoint on existing draft PR226;
+visible; this correction introduces no masking or allowlist. Publication is limited to a checkpoint on existing draft PR226;
 integration still requires the independent review gate.
