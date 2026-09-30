@@ -8,8 +8,8 @@
 **Updated:** 2026-09-30
 **Catalog description:** Coordinate the whole project across Spec-bound Dispatchers and integrate independently reviewed results.
 **Blockers:** none
-**Latest event:** TK-002X closed with proof.
-**Next gate:** Complete TK-002Y.
+**Latest event:** TK-002Y claimed by claude-lane-C.
+**Next gate:** Close TK-002Y with verification and documentation proof.
 
 > **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`d2d8e3cf3761a3afacd6d620e3e78331615f19a1`.
 

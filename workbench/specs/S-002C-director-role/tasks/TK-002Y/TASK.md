@@ -3,7 +3,7 @@
 **Task ID:** TK-002Y
 **Spec ID:** S-002C
 **Slice:** Route the director Wiki article and record the fresh-context coordination scenario
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-002C Acceptance Criteria, box 6 (a fresh agent discovers the entry and its article and performs the scenario without private notes) and the scenario named under Testing Seams
