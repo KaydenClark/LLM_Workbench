@@ -40,6 +40,28 @@ function task(root, parent, { id, title = 'A readable slice', status = 'ready', 
 function command(root, ...args) {
   return spawnSync(process.execPath, [tool, ...args, '--path', root, '--json'], { encoding: 'utf8' });
 }
+function fixtureGit(root, ...args) {
+  return execFileSync('git', ['-C', root, '-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid', ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+}
+function initializeGitRoom(root) {
+  fixtureGit(root, 'init', '--quiet', '-b', 'codex/fixture');
+  fixtureGit(root, 'add', '.');
+  fixtureGit(root, 'commit', '--quiet', '-m', 'Fixture source');
+  fixtureGit(root, 'branch', 'integration');
+}
+function gitSnapshot(root) {
+  return { sources: sourceSnapshot(root), refs: fixtureGit(root, 'show-ref'), status: fixtureGit(root, 'status', '--porcelain') };
+}
+function assertSourceDiagnostic(root, taskId) {
+  const result = command(root, 'doctor');
+  assert.equal(result.status, 1, 'invalid-state retains the registered selection effect');
+  assert.equal(result.stderr, '', 'expected malformed source must be reported through JSON');
+  const findings = JSON.parse(result.stdout);
+  assert.ok(findings.some(item => item.code === 'invalid-state' && item.taskId === taskId && item.severity === 'error' && item.blocks === 'selection'));
+  assert.ok(findings.some(item => item.code === 'blocked-slice' && item.taskId === 'TK-00AB'));
+  assert.ok(findings.some(item => item.code === 'missing-evidence' && item.taskId === 'TK-00AC'));
+  return findings;
+}
 function preview(root) {
   const result = command(root, 'render', '--format', 'json');
   assert.equal(result.status, 0, result.stdout + result.stderr);
@@ -221,6 +243,67 @@ if (process.argv.includes('--demo')) {
       const result = command(root, ...args); assert.equal(result.status, 1); assert.match(result.stderr, /invalid priority/);
       assert.deepEqual(sourceSnapshot(root), before);
     }
+  }));
+
+  for (const status of ['ready', 'in-progress']) for (const priority of ['invalid', '-1', '1.5', 'Infinity']) {
+    test(`Git-backed doctor retains invalid-state and other findings for ${status} Priority ${priority}, with no writes`, () => withRoom(root => {
+      const a = spec(root, { id: 'S-00AA' });
+      task(root, a, { id: 'TK-00AA', status, extra: `**Priority:** ${priority}` });
+      task(root, a, { id: 'TK-00AB', blockers: 'S-00AZ' });
+      task(root, a, { id: 'TK-00AC', status: 'done' });
+      put(root, 'TASKBOARD.preview.json', 'existing output must survive\n');
+      assert.equal(command(root, 'render').status, 0); initializeGitRoom(root);
+      const before = gitSnapshot(root);
+      assertSourceDiagnostic(root, 'TK-00AA');
+      for (const args of [['next','--local'], ['claim','S-aa','--agent','fixture','--local'], ['render','--format','json']]) {
+        const result = command(root, ...args); assert.equal(result.status, 1); assert.match(result.stderr, /invalid priority/);
+      }
+      assert.deepEqual(gitSnapshot(root), before);
+    }));
+  }
+
+  test('Git-backed doctor retains invalid legacy table status and unrelated findings while selection and preview refuse without writes', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA', table: '| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-00AA | Invalid table state | typo | none | pending |' });
+    const b = spec(root, { id: 'S-00AB' });
+    task(root, b, { id: 'TK-00AB', blockers: 'S-00AZ' }); task(root, b, { id: 'TK-00AC', status: 'done' });
+    put(root, 'TASKBOARD.preview.json', 'existing output must survive\n');
+    assert.equal(command(root, 'render').status, 0); initializeGitRoom(root);
+    const before = gitSnapshot(root); assertSourceDiagnostic(root, 'TK-00AA');
+    for (const args of [['next','--local'], ['claim','S-aa','--agent','fixture','--local'], ['render','--format','json']]) {
+      const result = command(root, ...args); assert.equal(result.status, 1); assert.match(result.stderr, /invalid status typo/);
+    }
+    assert.deepEqual(gitSnapshot(root), before);
+  }));
+
+  for (const malformed of ['priority', 'table-status']) test(`non-active ${malformed} remains diagnosed without hiding a valid integration candidate`, () => withRoom(root => {
+    const table = malformed === 'table-status' ? '| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-00AA | Invalid table state | typo | none | pending |' : '';
+    const a = spec(root, { id: 'S-00AA', status: 'blocked', table });
+    if (!table) task(root, a, { id: 'TK-00AA', extra: '**Priority:** invalid' });
+    const b = spec(root, { id: 'S-00AB', status: 'complete' });
+    const file = task(root, b, { id: 'TK-00AB', status: 'done', extra: '**Proof:** Fixture complete' });
+    assert.equal(command(root, 'render').status, 0); initializeGitRoom(root);
+    put(root, b.file, fs.readFileSync(path.join(root,b.file),'utf8').replace('**Status:** complete', '**Status:** active'));
+    put(root, file, fs.readFileSync(path.join(root,file),'utf8').replace('**Status:** done', '**Status:** ready'));
+    assert.equal(command(root, 'render').status, 0);
+    const before = gitSnapshot(root), result = command(root, 'doctor'); assert.equal(result.status, 1); assert.equal(result.stderr, '');
+    const findings = JSON.parse(result.stdout);
+    assert.ok(findings.some(item => item.code === 'invalid-state' && item.specId === a.id));
+    assert.ok(findings.some(item => item.code === 'complete-on-integration' && item.specId === b.id && item.ref === 'integration'));
+    assert.equal(selected(root, '--local').taskId, 'TK-00AB');
+    assert.deepEqual(gitSnapshot(root), before);
+  }));
+
+  test('doctor propagates unexpected shared-calculation faults rather than treating them as malformed source', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA' }); task(root, a, { id: 'TK-00AA' });
+    assert.equal(command(root, 'render').status, 0); initializeGitRoom(root);
+    const before = gitSnapshot(root);
+    const program = `import assert from 'node:assert/strict'; import {doctor} from ${JSON.stringify(new URL('../workbench/tools/spec-workbench.mjs', import.meta.url).href)};
+      const sentinel = new Error('unexpected calculation fault'); sentinel.code = 'FIXTURE_UNEXPECTED';
+      const original = String.prototype.matchAll;
+      String.prototype.matchAll = function(...args) { if (new Error().stack.includes('taskboardTaskEntry')) throw sentinel; return original.apply(this,args); };
+      try { assert.throws(() => doctor(${JSON.stringify(root)}), error => error === sentinel); } finally { String.prototype.matchAll = original; }`;
+    const result = spawnSync(process.execPath, ['--input-type=module','-e',program], {encoding:'utf8'});
+    assert.equal(result.status, 0, result.stdout+result.stderr); assert.deepEqual(gitSnapshot(root), before);
   }));
 
   test('competing remote claims exclude offers and claims without changing visible source lanes or integration', () => withRoom(root => {
