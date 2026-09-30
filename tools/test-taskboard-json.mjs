@@ -16,10 +16,11 @@ function put(root, file, text) {
 function room() {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'taskboard-json-'));
   const manifest = JSON.parse(fs.readFileSync(new URL('../workbench/manifest.json', import.meta.url), 'utf8'));
-  for (const folder of [...Object.values(manifest.lanes), ...Object.values(manifest.collections)]) {
+  for (const folder of [...Object.values(manifest.lanes), ...Object.values(manifest.collections), manifest.landmarkTracker.root, ...Object.values(manifest.landmarkTracker.collections)]) {
     fs.mkdirSync(path.join(root, folder), { recursive: true });
   }
   put(root, 'workbench/manifest.json', JSON.stringify(manifest, null, 2)+'\n');
+  put(root, 'workbench/sessions/.gitignore', fs.readFileSync(new URL('../workbench/sessions/.gitignore', import.meta.url), 'utf8'));
   put(root, 'BLUEPRINT.md', '# Fixture Blueprint\n');
   put(root, 'TASKBOARD.md', '# Fixture Board\n<!-- hot-specs:start -->\nold\n<!-- hot-specs:end -->\n');
   return root;
