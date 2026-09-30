@@ -42,7 +42,7 @@ The operating entry is [the director skill](../skills/director/SKILL.md), delive
 
 - [Dispatcher](skill-dispatcher.md) ([dispatcher skill](../skills/dispatcher/SKILL.md)): the role the Director assigns one Spec and its branch to; it delivers that Spec's Tasks as one reviewed candidate and hands back to the Director.
 - [Spec Planner](skill-spec-planner.md) ([spec-planner skill](../skills/spec-planner/SKILL.md)): the Dispatcher's flight-launch stance; it surfaces cross-Spec dependencies for the Director to order.
-- **Spec Manager**, owned by `workbench/specs/S-002G-spec-manager-stance/SPEC.md`: the Dispatcher's execution stance, dispatching and monitoring Workers inside one Spec.
+- [Spec Manager](skill-spec-manager.md) ([spec-manager skill](../skills/spec-manager/SKILL.md)): the Dispatcher's execution stance, dispatching and monitoring Workers inside one Spec.
 - **Worker**, owned by `workbench/specs/S-002E-worker-role/SPEC.md`: one Task, one attempt, hand-back to its Dispatcher. The Director never does a Worker's job.
 - **Reviewer** (`workbench/skills/reviewer/SKILL.md`) and [Auditor](skill-auditor.md): the review jobs the Director routes to a separate context for each candidate; prior involvement still controls independent-review eligibility.
 
@@ -82,3 +82,4 @@ The agent reported one conflict: the entry told it to record each dependency and
 ## History
 
 - 2026-09-30: Created by S-002C TK-002Y with the role-versus-stance boundary, the single-writer, landing-order and separate-review rules, the owner acts, and one fresh-context scenario recorded with its limits.
+- 2026-09-30: S-002G cross-link pass: sibling capabilities link their articles.
