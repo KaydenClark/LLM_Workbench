@@ -3,11 +3,12 @@
 **Task ID:** TK-003E
 **Spec ID:** S-002F
 **Slice:** Route the spec-planner article from the Wiki router
-**Status:** in-progress
+**Status:** done
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: A fresh agent from integration can discover the operating entry and its individual Wiki article, identify scope, inputs, outputs, hand-back and escalation, and perform the scenario below without private notes.
 **Planned verification:** `node workbench/tools/wiki.mjs validate` reports ok with the new article and router line; `node tools/test-wiki.mjs` and `node tools/test-control-fidelity.mjs` pass; every link in the article resolves on `origin/integration` or names a sibling capability by its Spec path; the article's "Verified behavior and limits" section is written last, after the TK-003D source is final and TK-003F's scenario has run, and the Dispatcher reconciles it before close.
+**Proof:** Wiki: node workbench/tools/wiki.mjs validate ok and tools/test-wiki.mjs pass on 3cad77df (full suite 48/48 there, F-tk003d-3cad77d.log, dirty []); article workbench/wiki/skill-spec-planner.md (attempt 1 aeabc24e, carried as 53964e0d) routed from workbench/wiki/MEMORY.md Roles And Stances; example and Verified behavior and limits reconciled by the Dispatcher from the TK-003F scenario in 00a45ba2; every relative link resolves with test -e from workbench/wiki/
 
 ## Outcome
 
@@ -66,3 +67,9 @@ state and not a second Spec.
   final article text at close.
 - Cross-links among the four role/stance articles are added by the last lane
   to land (S-002G).
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s-002f-spec-planner-stance-r2 | 9c631aad53cfa568b72d934ea81af60478268b3e | ahead 0 behind 0 | 0 | Wiki: node workbench/tools/wiki.mjs validate ok and tools/test-wiki.mjs pass on 3cad77df (full suite 48/48 there, F-tk003d-3cad77d.log, dirty []); article workbench/wiki/skill-spec-planner.md (attempt 1 aeabc24e, carried as 53964e0d) routed from workbench/wiki/MEMORY.md Roles And Stances; example and Verified behavior and limits reconciled by the Dispatcher from the TK-003F scenario in 00a45ba2; every relative link resolves with test -e from workbench/wiki/ | workbench/wiki/skill-spec-planner.md and its workbench/wiki/MEMORY.md route; templates/wiki carries no per-skill rows so no template mirror | Cross-links among the four role and stance articles belong to S-002G; attempt-1 branch claude/s-002f-tk-002y is patch-contained but not an ancestor | 1e4f5e95251fdfead70f727ee3a66769c0e61d01b7d4276c8ddbef009dc594df |
