@@ -8,8 +8,8 @@
 **Updated:** 2026-09-30
 **Catalog description:** Express ADR, Spec and Task lifecycle by folder location, reconcile completed Specs and Tasks into readable durable owners before retiring them, and discard retired records only through a verified gate; permanent `archive` is never cleared.
 **Blockers:** none; S-00H is `complete` (integration `49c671e`).
-**Latest event:** Exact 4bf independent assembled FAIL is preserved as receipt #6. The bounded TK-003L parenthesis refinement reproduces six encoding reds and passes focused Spec/Task green at 81d6f395; final frozen full51 publication gate and fresh independent review are required.
-**Next gate:** Obtain fresh independent safety and assembled review of the immutable corrected checkpoint, then close the scoped Tasks and deliver through integration only after that gate passes. Owner Human QA remains ongoing and unapproved; no main promotion or real disposal.
+**Latest event:** Independent implementation/safety review of exact 89c938d and digest 856d743469b2 reported PASS with no findings. TK-01V, TK-003L and TK-003M closed through the repository tool with exact-candidate proof; acceptance 8/9 reconciled. Final metadata-only validation and assembled review precede integration delivery.
+**Next gate:** Validate and publish the frozen administrative closeout checkpoint, then obtain fresh independent assembled review and bound verdict before integration delivery. Owner Human QA remains ongoing and unapproved; Spec completion and main promotion remain gated.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -150,7 +150,7 @@ retains the earlier continuous proof as limited: the assembled review reproduced
 a T6 merge-restoration bypass after the same T0-T5 chain. Its strengthened proof now passes after the implementation of
 [TK-003M](tasks/TK-003M/TASK.md), which followed verified
 [TK-003L](tasks/TK-003L/TASK.md) manifest-reference correction.
-Task closeout waits for the final aggregate and assembled review.
+Exact 89c938d passed the full aggregate and independent implementation/safety review, enabling the administrative Task closeout. Final closeout metadata still needs frozen validation and independent assembled review.
 The Director assigns these two existing corrective records to S-00I as the
 assembled capability owner; TK-003M restores the unchanged latest-incarnation
 and whole-directory recovery contract of [S-00T](../S-00T-lifecycle-discard-repair/SPEC.md).
@@ -249,10 +249,28 @@ the reconciled owners preserve the evidence.
 - [x] A closed Spec and its Tasks are reconciled into readable durable owners
       without copying task state into the Wiki, then retired out of ordinary
       discovery with an explicit historical route.
-- [ ] Discard refuses before verified `main`, a clean complete reference scan
+- [x] Discard refuses before verified `main`, a clean complete reference scan
       and recoverable Git identity, and always for `archive`; after every gate
       it succeeds and a corrective Task still works against the Wiki record.
-- [ ] The full verification suite passes and `doctor` is clean.
+- [x] The full verification suite passes and `doctor` is clean.
+
+
+Acceptance 8 is proved by the exact 89c938d disposable Git fixtures: verified
+main and complete reference-scan gates, immutable whole-directory recovery,
+archive preservation, merge-incarnation/merge-only sibling negatives,
+no-write refusal and post-discard correction all pass. These are capability
+proofs; no real record disposal or owner approval is asserted.
+
+Acceptance 9 is supported by the same clean immutable full51 result and
+`doctor` exit 0 with no blocking finding, using the registered AGENTS/Runbook
+diagnostic effects. Seven pre-existing informational findings remain explicit;
+this is not a global zero-findings or clean Workbench update claim. The two
+conservative inline scanner examples also remain visible. Administrative
+metadata must pass its own frozen full51 gate before publication.
+
+The [supplied independent implementation review](reviews/IMPLEMENTATION-89C938D.md)
+binds the prior implementation identity. Final assembled closeout review,
+bound Spec verdict and integration delivery remain separate pending gates.
 
 ## Testing Seams
 
@@ -323,6 +341,10 @@ exist. The generic `templates/` mirror changes in S-00P TK-005.
 | 2026-09-30 | TK-003L | Local full aggregate at 3b9befd0ad43f3d0f6ef94fcf080c21ce0782137 | All 48 AGENTS commands plus RUNBOOK test-team-coordination, test-team-coordination-demo and test-socket-contract exit 0: 51/51. The lifecycle command includes the new durable directory-link regression. Exact HEAD remains 3b9befd0ad43f3d0f6ef94fcf080c21ce0782137 and the checkout remains clean | Scoped verification and TK-003L carry red/green, directory-only hard-link and linked-directory no-write proof. Self-drift remains seven pre-existing findings; guardrail remains 78/100 | Local validation only, not independent approval. Freeze this receipt checkpoint and reverify it before publication; fresh safety/assembled review, integration and owner Human QA remain open |
 | 2026-09-30 | review | Review verdict: fail at 4bf0ab84f7bf9a84fa72ec51f63d55a5d8652e0c [9c8232319348] #6 | P2: lifecycle directory component formatting loses encoded parentheses because encodeURIComponent leaves delimiters raw. Spec and Task moves rewrite valid %29 routes to raw closing parentheses that break Markdown; %28 and balanced %28a%29 also lose encoding. Both moves reproduce each assertion at the exact reviewed runtime. Reuse existing TK-003L for the bounded lifecycle-only correction; preserve earlier receipts and default ADR/identity behavior. | Independent separate-context review; model identity unrecorded | 1 |
 | 2026-09-30 | TK-003L | Encoded directory parenthesis refinement | Six Spec/Task encoding cases red at exact 4bf. Focused green at 81d6f395: explicit %29, %28 and balanced %28a%29 bytes, managed/legacy incoming and outgoing nested links, immutable history and no-write preflight refusal. Final frozen full51 gate required before draft publication; independent review remains pending. | DIRECTORY-LINK-VERIFICATION.md and Task proof updated; prior receipts retained | Fresh independent safety/assembled review, delivery and closeout remain open |
+| 2026-09-30 | TK-01V | Task closed | Exact 89c938d82de0d83d16d3c79b26ef4c43ae10927e passed all51 (48 AGENTS plus3 RUNBOOK). test-spec-workbench continuous T0-T6 includes one simulated approval, main/refusal gates, merge-incarnation and merge-only sibling negatives, whole Task/Spec directory recovery and post-discard correction. Independent implementation/safety review of exact89c/digest856d743469b28d149915be28aa2216b156c73eab460811b3ef48c80a6a9771e4 reported PASS with no findings; no real owner approval or disposal. | TK-01V continuous proof and earlier failure/correction receipts retained; owning Spec and coordinated review summary reconciled in this administrative closeout. | Final metadata-only full51, independent assembled review and integration delivery remain pending; owner Human QA and main approval absent. |
+| 2026-09-30 | TK-003L | Task closed | Exact 89c938d82de0d83d16d3c79b26ef4c43ae10927e and digest856d743469b28d149915be28aa2216b156c73eab460811b3ef48c80a6a9771e4 passed all51 from clean immutable source. Independent separate-context implementation/safety review reported PASS with no findings; final assembled metadata review remains separate. Six Spec/Task %29/%28/%28a%29 reds at exact4bf then durable green; managed/legacy references, outgoing directory links, immutable history and pre-move linked/hard-linked refusal pass. Independent original parenthesis reproducer,18-case URI matrix,directory suite,four broader suites and64 default-format parity checks pass; default ADR and identity remain unchanged. | Owning Spec, TK-003L evidence and coordinated independent-review summary reconciled in administrative closeout; all prior FAIL/proof rows preserved. | Final frozen metadata-only full51, independent assembled review and integration delivery pending; owner approval and main promotion absent. Git state at close: dirty-tree (2 files: workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md, workbench/specs/S-00I-folder-lifecycle-for-records/tasks/TK-01V/TASK.md); recorded reason: Earlier Task closeout metadata in this same bounded administrative batch is uncommitted; runtime and tests remain exact reviewed89c. Commit, frozen full51 and guarded draft publication follow this batch. |
+| 2026-09-30 | TK-003M | Task closed | Exact 89c938d82de0d83d16d3c79b26ef4c43ae10927e and digest856d743469b28d149915be28aa2216b156c73eab460811b3ef48c80a6a9771e4 passed all51 from clean immutable source. Independent separate-context implementation/safety review reported PASS with no findings; final assembled metadata review remains separate. Durable continuous T0-T6 and Task/Spec discard tests refuse merge-restored/new incarnations absent from main, both-parent-missing/retained-side-parent variants and merge-only sibling proof, preserving files,index,HEAD,refs. Positive ordinary non-FF import and complete-directory recovery pass with the original single simulated approval. | Owning Spec, TK-003M evidence and coordinated independent-review summary reconciled in administrative closeout; all prior FAIL/proof rows preserved. | Final frozen metadata-only full51, independent assembled review and integration delivery pending; owner approval and main promotion absent. Git state at close: dirty-tree (3 files: workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md, workbench/specs/S-00I-folder-lifecycle-for-records/tasks/TK-003L/TASK.md, workbench/specs/S-00I-folder-lifecycle-for-records/tasks/TK-01V/TASK.md); recorded reason: Earlier Task closeout metadata in this same bounded administrative batch is uncommitted; runtime and tests remain exact reviewed89c. Commit, frozen full51 and guarded draft publication follow this batch. |
+| 2026-09-30 | spec | Independent implementation/safety report received; administrative closeout reconciled | Exact 89c938d and digest856d743469b2: supplied separate-context PASS, no findings, original reproducer,18-case URI matrix,directory suite,four broader suites and64 default parity checks pass. Implementing lane exact full51 passes clean. Repository close order TK-01V then TK-003L then TK-003M; later receipts truthfully record prior uncommitted metadata. Acceptance8/9 supported by disposable lifecycle and registered doctor-gate proof | [Independent summary](reviews/IMPLEMENTATION-89C938D.md), owning Tasks and acceptance evidence updated; all prior FAIL/proof retained | Final frozen metadata full51 and fresh assembled review/bound verdict before integration; owner QA unapproved, no Spec completion or main promotion |
 
 ## Completion Result
 

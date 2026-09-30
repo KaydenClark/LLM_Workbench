@@ -3,13 +3,13 @@
 **Task ID:** TK-003L
 **Spec ID:** S-00I
 **Slice:** Cover manifest-resolved skills references
-**Status:** in-progress
+**Status:** done
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-00I safe lifecycle references and verified-main discard
 **Planned verification:** Preserve earlier bd218db red/green proof; reproduce Spec and Task directory-link reds at exact f7361483, verify the focused directory-link regression and full 51-command frozen checkpoint, reproduce encoded %29/%28/%28a%29 directory cases at exact 4bf, then obtain fresh independent safety and assembled review
 
-**Proof:** Red on bd218db: installed-skill move link stale. Additional red on 394f8e6: hard-linked incoming reference leaves a staged rename before refusal. Green at 2254cb0: manifest and legacy skills move/scan/discard/diagnostics, six-lane compatibility, unsupported-lane refusal, linked/hard-linked no-write preflight and unchanged unrelated hard-linked skills pass. Bounded independent review PASS at 2254cb0. Historical notice-route repair removed 22 README findings; subsequent scoped Wiki repair leaves two intentional inline examples visible. Local full aggregate passes 51/51 at 3b9befd. Fresh independent safety/assembled review and delivery remain pending.
+**Proof:** Exact 89c938d82de0d83d16d3c79b26ef4c43ae10927e and digest856d743469b28d149915be28aa2216b156c73eab460811b3ef48c80a6a9771e4 passed all51 from clean immutable source. Independent separate-context implementation/safety review reported PASS with no findings; final assembled metadata review remains separate. Six Spec/Task %29/%28/%28a%29 reds at exact4bf then durable green; managed/legacy references, outgoing directory links, immutable history and pre-move linked/hard-linked refusal pass. Independent original parenthesis reproducer,18-case URI matrix,directory suite,four broader suites and64 default-format parity checks pass; default ADR and identity remain unchanged.
 
 ## Bounded Correction
 
@@ -60,8 +60,8 @@ Focused green at 48ce1da covers moved roots/nested directories, outgoing unmoved
 directories, URI/fragment/slash correctness, immutable history and pre-move
 linked-directory/directory-only hard-link refusal. See the owning
 [verification](../../DIRECTORY-LINK-VERIFICATION.md) for exact identities,
-commands, safety boundaries and remaining gates. This Task remains in progress;
-final code has no self-awarded independent PASS or owner approval.
+commands, safety boundaries and remaining gates. At that correction checkpoint this Task remained in progress;
+final code had no self-awarded independent PASS or owner approval.
 
 ## Local Aggregate Checkpoint — 2026-09-30
 
@@ -81,4 +81,29 @@ balanced encoding reds; opening-only correctness is explicitly asserted rather
 than inferred from scanner silence. Focused green at 81d6f395 retains the
 existing directory, history and pre-move safety proofs. Final publication is
 conditional on the exact frozen full51 gate, followed by fresh independent
-review. No done state, acceptance check or owner approval is recorded.
+review. At that pre-review checkpoint no done state, acceptance check or owner approval was recorded.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | codex/s00i-tk003l-directory-links | 89c938d82de0d83d16d3c79b26ef4c43ae10927e | none | 2 | Exact 89c938d82de0d83d16d3c79b26ef4c43ae10927e and digest856d743469b28d149915be28aa2216b156c73eab460811b3ef48c80a6a9771e4 passed all51 from clean immutable source. Independent separate-context implementation/safety review reported PASS with no findings; final assembled metadata review remains separate. Six Spec/Task %29/%28/%28a%29 reds at exact4bf then durable green; managed/legacy references, outgoing directory links, immutable history and pre-move linked/hard-linked refusal pass. Independent original parenthesis reproducer,18-case URI matrix,directory suite,four broader suites and64 default-format parity checks pass; default ADR and identity remain unchanged. | Owning Spec, TK-003L evidence and coordinated independent-review summary reconciled in administrative closeout; all prior FAIL/proof rows preserved. | Final frozen metadata-only full51, independent assembled review and integration delivery pending; owner approval and main promotion absent. Git state at close: dirty-tree (2 files: workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md, workbench/specs/S-00I-folder-lifecycle-for-records/tasks/TK-01V/TASK.md); recorded reason: Earlier Task closeout metadata in this same bounded administrative batch is uncommitted; runtime and tests remain exact reviewed89c. Commit, frozen full51 and guarded draft publication follow this batch. | 98053724accb1ee5bad66d85892cd7ab243bde9f4393cbb9e4d1f11bb69e860c |
+
+## Administrative Closeout — 2026-09-30
+
+Closed through the repository tool using exact
+`89c938d82de0d83d16d3c79b26ef4c43ae10927e` full51 and the supplied independent
+implementation/safety PASS at S-00I digest
+`856d743469b28d149915be28aa2216b156c73eab460811b3ef48c80a6a9771e4`.
+The tool's Receipt records actual Git state; later closes explicitly name
+uncommitted earlier administrative metadata. Prior failed proof, review
+receipts and checksums remain preserved. This resolves the Task's earlier
+pending implementation proof, not the Spec's final assembled review or
+integration/owner gates. No runtime or test byte changed in this closeout.
+
+## Retained Proof Header At Reviewed Implementation — 2026-09-30
+
+The repository close tool replaced the current Proof field. Its previous
+implementation-checkpoint proof remains preserved here:
+
+Red on bd218db: installed-skill move link stale. Additional red on 394f8e6: hard-linked incoming reference leaves a staged rename before refusal. Green at 2254cb0: manifest and legacy skills move/scan/discard/diagnostics, six-lane compatibility, unsupported-lane refusal, linked/hard-linked no-write preflight and unchanged unrelated hard-linked skills pass. Bounded independent review PASS at 2254cb0. Historical notice-route repair removed 22 README findings; subsequent scoped Wiki repair leaves two intentional inline examples visible. Local full aggregate passes 51/51 at 3b9befd. Fresh independent safety/assembled review and delivery remain pending.
