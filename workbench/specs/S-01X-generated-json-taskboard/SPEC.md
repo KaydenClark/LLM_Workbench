@@ -217,7 +217,7 @@ writing `TASKBOARD.preview.json`. The pure calculator consumes the existing
 parsed live/retired owners, derives six lanes and child progress, orders cards
 by priority/title/WBID and refuses ambiguous flat keys. Existing numeric Task
 source scope remains valid; a flat collision names both sources rather than
-renaming or dropping a record. Metadata is read from source headers or an
+renaming or dropping a record. Metadata is read from normalized source fields or an
 explicit status/folder derivation; unknown dates, assignees and approvers stay
 unknown. The runtime registry includes the helper so installed Markdown
 commands still resolve their imports. This is packaging, not the root switch.
@@ -274,10 +274,13 @@ occurs during this planning authoring.
 | 2026-09-30 | TK-003O | Task closed | Exact implementation e7bd9789c15e59c8bfa4c8c84aa04e165626f67d: all 51 required local commands PASS (48 AGENTS plus three RUNBOOK); nine public JSON regression groups PASS; node tools/test-taskboard-json.mjs --demo under one minute. Red ec18730a69d57db26bec32f7bec77201eabf10d7 had nine expected preview failures with runtime unchanged. Self-drift pre/post retained seven existing findings (inspection pre also detached); guardrails unchanged 78/100 with four recommendations; no clean-update or owner QA claim. | RUNBOOK render procedure, S01X source boundary and TK003O implementation/proof; templates unchanged for temporary opt-in preview. | Independent exact-head Task PR review pending; whole-Spec criteria remain unchecked. Shared selection/review vocabulary, flat legacy-ID reconciliation before root switch, direct/orphan Task coverage, sitrep and canonical root/template rollout remain later slices. S01W claimed QA remains separate. |
 | 2026-09-30 | review | Review verdict: fail at 7a1746843200ca14243ff6337ce2345103f6eac3 [723a1035108c] #1 | P2: TK-003O preview field guard disagrees with the whole-document normalized source parser: a body duplicate Status or whitespace-normalized Status key is accepted at 7a1746843200ca14243ff6337ce2345103f6eac3 and overwrites existing JSON while moving active Spec with done children into Complete. Align preview validation with actual key/value normalization and preserve output on refusal. | Independent PR228 exact-head reviewer in a separate context (reported by source coordinator), model and mode identity unrecorded | 1 |
 
+| 2026-09-30 | TK-003P | Normalized-field preview correction implemented | Independent FAIL1 at exact 7a1746843200ca14243ff6337ce2345103f6eac3 preserved; both public reproducers returned 0 and replaced bytes with incorrect Complete. Test-only d249f5797d4b801bfee3dd065b9a267f88c24186 had four new failures with runtime unchanged; focused suite now passes 13 groups and demo; immutable full51 pending | Preview duplicate validation matches whole-document source extraction and key/value trim, with unchanged default parsers; RUNBOOK preview procedure | Fresh independent exact-head review and all broader S01X criteria remain open |
+
 ## Completion Result
 
 Planning capability owner authored; TK-003O's scoped preview is closed with
-implementation proof, awaiting independent Task delivery review.
+implementation proof. Independent review of exact 7a17468 failed with a
+normalized-field P2; TK-003P owns that bounded correction before delivery.
 Whole-capability acceptance, independent delivery review and owner Human QA
 remain pending; no Spec completion is claimed.
 

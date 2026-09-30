@@ -912,8 +912,12 @@ metadata and derived child progress and cleanup state. Unknown metadata stays
 `null`; ordering is priority, title, then WBID. Editing a card never changes
 its source, and the next render restores the source-derived value. Invalid
 source, ambiguous flat identities, symlinked sources or linked outputs refuse before
-replacing the previous preview. Legacy numeric Task labels remain Spec-scoped
-in their owners: if two labels collide as flat JSON keys, the refusal names
+replacing the previous preview. Normalized duplicate field names anywhere in
+a record also refuse, using the
+same whole-document extraction, case sensitivity and key/value trimming as
+the existing source parsers. This validation applies only to the preview.
+Legacy numeric Task labels remain Spec-scoped in their owners: if two labels
+collide as flat JSON keys, the refusal names
 both sources without changing them. Reconcile that boundary before the later
 canonical board switch. Default `render` continues to generate Markdown and
 CATALOG; selection, review vocabulary, direct/orphan Task coverage, sitrep and

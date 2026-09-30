@@ -70,7 +70,7 @@ function specLane(spec, children) {
 }
 
 function makeCard({ title, priority, content, assignee, dependencies, sourceLinks, progress, nextAction, cleanupState }) {
-  const fields = headerFields(content);
+  const fields = sourceFields(content);
   if (typeof title !== 'string' || !title.trim()) throw new Error('taskboard-source: a card needs its readable source title');
   const sourcePriority = fields.Priority === undefined ? priority : Number(fields.Priority);
   if (!Number.isInteger(sourcePriority) || sourcePriority < 0) throw new Error(`taskboard-source: ${title} has invalid priority`);
@@ -85,12 +85,16 @@ function makeCard({ title, priority, content, assignee, dependencies, sourceLink
   };
 }
 
-function headerFields(content = '') {
-  const header = content.split(/^## /m)[0];
+function sourceFields(content = '') {
+  // Match the exact whole-document field extraction used by parseSpecPacket
+  // and parseTaskRecord: same regex, key/value trim, and case-sensitive names.
+  // Spec parsing currently last-wins; preview publication must instead refuse
+  // every normalized duplicate before replacing source-derived output.
   const fields = {};
-  for (const match of header.matchAll(/^\*\*([^*]+):\*\*\s*(.+)$/gm)) {
-    if (Object.hasOwn(fields, match[1])) throw new Error(`taskboard-source: duplicated header field ${match[1]}`);
-    fields[match[1]] = match[2].trim();
+  for (const match of content.matchAll(/^\*\*([^*]+):\*\*\s*(.+)$/gm)) {
+    const key = match[1].trim();
+    if (Object.hasOwn(fields, key)) throw new Error(`taskboard-source: duplicated source field ${key}`);
+    fields[key] = match[2].trim();
   }
   return fields;
 }

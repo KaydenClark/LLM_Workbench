@@ -197,6 +197,7 @@ if (process.argv.includes('--demo')) {
       ['leading key space', source + '\n** Status:** complete\n'],
       ['key tabs', source + '\n**\tStatus\t:** complete\n'],
       ['Unicode trim', source + '\n**\u00a0Status\u00a0:** complete\n'],
+      ['multiline key trim', source + '\n**\nStatus\n:** complete\n'],
       ['CRLF body', source.replaceAll('\n', '\r\n') + '\r\n## Evidence\r\n**Status :** complete\r\n'],
       ['other field', source + '\n## Evidence\n** Priority :** 1\n'],
       ['unknown repeated field', source.replace('## Vertical Implementation Slices', '**Context:** one\n\n## Vertical Implementation Slices') + '\n** Context :** two\n']
