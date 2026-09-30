@@ -13,9 +13,10 @@
 ## Outcome
 
 The Spec's evidence log records one observed run of the named scenario with
-its limits (one run, one model, scripted owner and scripted Workers), the
-assembled proof for the whole Spec, and the reviewed integration delivery.
-Owner Human QA remains separate and unclaimed.
+its limits (one run, one model, scripted owner and scripted Workers) and the
+assembled proof for the whole Spec. Separate-context review and reviewed
+integration delivery follow as the Spec closeout below and are recorded only
+when they happen. Owner Human QA remains separate and unclaimed.
 
 ## Required Behavior
 
