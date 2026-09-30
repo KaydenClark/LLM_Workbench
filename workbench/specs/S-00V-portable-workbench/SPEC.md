@@ -12,8 +12,8 @@
 **Updated:** 2026-09-30
 **Catalog description:** Make every Workbench room a fully packaged, deployable agent harness: a fresh agent, or ten at once in the cloud, clones the Git remote alone, finds its skills there, claims work visibly, does it, pushes it, and cleans up after itself.
 **Blockers:** none
-**Latest event:** TK-003J assigned locally for the optional installer Git-sentinel regression; no remote claim or completion is asserted.
-**Next gate:** Review and fully verify the local TK-003J candidate without claiming delivery; complete TK-01K once the S-00P hold clears (S-00P TK-002 contained); TK-01M also waits on S-01X, and TK-01N, TK-01O and TK-01P follow in order; completion waits on all eight acceptance boxes.
+**Latest event:** TK-003J closed with proof.
+**Next gate:** Complete TK-01K.
 
 > **Citation anchors.** pre=`8dbd619da7e920edb5e819802aff9119f8cb1662` post=`39eaa4881b88a2fe7a4a4fe63c111dd6c34966f7`.
 
@@ -363,6 +363,7 @@ Then the full suite named in AGENTS.md on the committed candidate.
 | 2026-09-26 | review | Review verdict: pass at 92d590f8d09fc59ee2bd12d7fb96f5ddf5be2be4 [bdeb4d894356] #12 | none at the second pass; first pass at 90680eb failed on the default branch being read as a claim surface (answered by corrective TK-002M); full suite 48/48 on 92d590f | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 3 |
 
 | 2026-09-30 | TK-003J | Vespar Director coordination assigned bounded local maintenance during owner-authorized cloud portability setup; Task remains in-progress on an isolated branch based on 2f5b13b0a20d6a278310cf1b709d1fcd31274a11, without commit, remote claim, push or PR | Red: focused new installer regressions produced two expected sentinel failures and one malformed-metadata pass. Green on the uncommitted local candidate: four focused cases pass, including valid linked-worktree ownership and malformed metadata inside a real outer repository. Affected suites all exit 0 with process-only init.defaultBranch=main: composition 2/2, installer 29 passed plus 2 platform skips, layout 72/72, adoption all 4 reported scenario groups, diagnostics 36/36; syntax and diff checks pass. Guardrail remains 78/100. Self-drift remains blocked by pre-existing S-00Q stale claim; the local untracked Task adds an explicit pending-commit finding, with historical seed/provenance limits unchanged. | Installer comments, this Spec, TK-003J and generated Taskboard; no public command or template contract changes, no second installer source exists | Immutable candidate, full suite, separate-context review and any authorized delivery remain pending; no release, configured-provider reliability or clean-update claim |
+| 2026-09-30 | TK-003J | Task closed | Exact remote candidate 5d2b6469eb308a90bb07b8ebd46563c3c290fc83 verified in saved cloud: all 51 RUNBOOK commands exit 0; independent code/safety review PASS without findings; exact tree 7d3b6ed0a086f70901f989c8a4b53285e29bdbc3; 29 installer tests pass plus 2 existing platform skips and 3 extra probes. Local identical-tree 2900351 also passes full51 and exact remote reviewer 10 focused cases. | TK-003J owns portability fix and truthful local/remote verification; no product/template contract changed | Final docs-only closeout verification, exact-head review and integration delivery still pending; no native-provider, main, clean-update or owner Human QA claim |
 
 ## Completion Result
 
