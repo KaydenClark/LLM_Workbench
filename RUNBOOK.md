@@ -97,6 +97,14 @@ it does not redefine acceptance. After interruption, the Runbook supplies the
 recovery procedure while the Spec, source and saved context supply what to
 recover. Execution and recovery therefore remain separate jobs.
 
+### GitHub Coordination Binding Inspection
+
+Follow the [GitHub coordination adapter procedure](workbench/docs/github-coordination.md)
+for read-only inspection of an explicit committed repository binding at an exact
+source SHA. It reports live access as unverified. This optional metadata command
+adds no Issue assignment or claim authority; ADR-000O remains operative until
+the separately reviewed cutover.
+
 ### Role And Stance Coordination
 
 [Role model and capability owners](workbench/wiki/design-concepts/roles-and-stances.md).
