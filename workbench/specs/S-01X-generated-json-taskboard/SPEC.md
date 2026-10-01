@@ -9,7 +9,7 @@
 **Catalog description:** Replace the Markdown Spec summary with a generated six-lane implementation board, shared lane selection and title-first room-core sitrep.
 **Blockers:** S-01W first identity/consumer delivery is contained in integration; its claimed assembled QA remains separate. Direct-Task coverage awaits its source-home contract.
 **Latest event:** TK-004N closed with proof.
-**Next gate:** Review final TK-004N closeout delta on current integration; remaining whole-Spec acceptance stays pending.
+**Next gate:** Review final TK-004N closeout delta on current integration; then confirm existing acceptance and cut the GitHub composition extension after its Issue-graph and operational-snapshot seams are verified. Projects requirement and whole-Spec acceptance remain open.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 
@@ -128,6 +128,19 @@ Shared controls and broad skill workflow rewrites are coordinated with S-00P.
 Use the user's live Sol/Luna/Astra allocation directions when dispatching work;
 this packet changes no model settings and imports no historical model mandate.
 
+### GitHub Coordination composition extension — 2026-10-01
+
+Owner-directed GitHub coordination reuses this destination rather than creating
+a second Taskboard Spec. Consume [Issue graph](../S-003Q-github-coordination-issue-graph/SPEC.md)
+and [operational transitions](../S-003S-github-coordination-operational-transitions/SPEC.md)
+as immutable verified seams. Compose canonical source work with an explicitly
+recorded coordination snapshot, its source revision, freshness and conflicts.
+Keep exactly six lanes and preserve incomplete/invalid states. GitHub Projects
+keeps understanding and execution views separate; its access and mandatory-v4
+policy remain unresolved. An Issue assignee or Project field supplies neither
+source authority, exclusivity nor owner approval. Existing Task proof remains
+preserved; this extension cuts no Task and changes no active claim reader.
+
 ## Non-Goals
 
 Landmark Tracker implementation; new Director stance or coordinator; WBID
@@ -224,6 +237,8 @@ live Actuality after lane release.
       preserving room-owned state and explicitly historical references.
 - [ ] Full checks, guardrail/self-drift pre/post, under-one-minute demo, immutable
       integration review and applicable owner Human QA are recorded.
+
+- [ ] GitHub composition records a reproducible coordination snapshot, source/freshness/conflicts and preserves six lanes without using Issue closure as assessment; Project policy/access remains explicit.
 
 ## Bounded stage2 preparation (TK-004N)
 
