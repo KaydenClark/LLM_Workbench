@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Make a separate context review the assembled Spec against its Task results, route a failed review into corrective Tasks under the still-open Spec, keep `integration` as the owner's Human QA surface, and refuse to close a Spec without a passed review and recorded owner approval.
 **Blockers:** TK-004D/TK-004E correct reproduced candidate-content binding. Separate close and corrective-batch recovery findings remain serial implementation work; original owner Human QA/main gates are unapproved.
-**Latest event:** TK-004D claimed by codex-v4-verdict-binding.
-**Next gate:** Close TK-004D with verification and documentation proof.
+**Latest event:** TK-004D closed with proof.
+**Next gate:** Complete TK-004E.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -394,6 +394,7 @@ TK-005.
 | 2026-09-26 | TK-002N | Dispatcher whole-Spec QA: TK-002N acceptance line checked after reading its diff and close proof (lagging-local, unpushed-local, no-remote and undeclared cases; report names the resolved ref; cleanup sweeps deliberately stay local); all S-00J Tasks done | Read diff 8ad27a8..75e899f; worker suite 48/48 at 9fd7dee and 75e899f; Dispatcher suite and separate-context review follow on the merged candidate | Reviewed delivery pending that review |
 | 2026-09-26 | review | Review verdict: pass at 6787fa8e827cceefcc0b0fd186a41d38dfe2ef48 [57b80907f8b4] #8 | none; assembled S-00J reviewed for reviewed integration delivery (T0) after TK-002N: containment prefers origin/<integration> with local fallback and no fetch, lagging-local shared-repo test present, report names the resolved ref, cleanup sweeps justified as local; all Tasks done and acceptance satisfied; full suite 48/48 on 6787fa8 | Codex CLI codex exec -s read-only -m gpt-5.5, separate context, assembled-Spec Director review | 4 |
 | 2026-10-01 | review | Review verdict: fail at 3b5b76bfd62aa98118cb73cc4947e0658f4040c6 [57b80907f8b4] #9 | Public report and verdict accept a PASS for changed working-tree Spec content whose named immutable candidate lacks that content; require committed candidate digest equality before persisting either PASS or FAIL. Disposable CLI probe at integration3b5b76bf preserved in task workspace. | codex overnight release audit; independent of prior S00J delivery | 2 |
+| 2026-10-01 | TK-004D | Task closed | Candidate-content public CLI red/green; report checks pass; lifecycle39/39 exit0. Original50/51 failed fixture preserved and corrected; final51 and independent review pending. | S00J dated correction and report field descriptions. | TK004E final verification, independent exact-head review and integration containment remain. |
 
 ## Completion Result
 
