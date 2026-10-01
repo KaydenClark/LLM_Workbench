@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Challenge candidate correctness, downstream impact and consequential claims.
 **Blockers:** none for implementation; independent evidence assessment and exact-head review remain delivery gates.
-**Latest event:** TK-01I source, article and public scenario implemented; required union and scoped checks pass. Independent review remains pending.
-**Next gate:** Current574 integration and sole MEMORY route assembly passed51/51; obtain separate independent review of the new immutable candidate.
+**Latest event:** Coordinator command-set overstatement corrected: original run48required+3additional; missing3nowpass separately. Parent reports independent actual51/51 on prior finalhead; narrow correction review pending.
+**Next gate:** Separate narrow exact-head review of the evidence correction; behavioral evidence assessment and remaining native acceptance gates stay open.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`02a30100443e725cbb1baad6fe5e771bfe85f648`.
 
