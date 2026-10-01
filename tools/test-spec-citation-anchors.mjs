@@ -368,3 +368,50 @@ test('a numeric endpoint remains ordinary documentation through the full checker
     assert.equal(result.status, 0, result.output);
   }
 });
+
+
+test('file-versus-network scope classification matrix follows explicit prose', () => {
+  const prior = 'tools/test-diagnostics.mjs';
+  const cases = [];
+  for (const cue of ['host', 'server', 'domain', 'URL', 'endpoint']) {
+    for (const token of ['api.example.py', 'api.example.sh', 'api.example.com', 'test-diagnostics.mjs']) {
+      cases.push([cue + ' `' + token + '`', prior]);
+    }
+  }
+  for (const cue of ['file', 'path', 'module', 'filename', 'basename']) {
+    for (const token of ['missing-review-target.mjs', 'unknown-target.custom', 'api.example.py', 'test-diagnostics.mjs', '0001-planes-classify-operations-not-artifacts.md']) {
+      cases.push([cue + ' `' + token + '`', token]);
+    }
+  }
+  for (const token of ['v3.1.2', '1.2.3', 'example.com', 'https://api.example.py/source.mjs', 'http://127.0.0.1:8080/source.mjs']) {
+    cases.push(['supports `' + token + '`', prior]);
+  }
+  cases.push(['then `missing-review-target.mjs`', 'missing-review-target.mjs']);
+  cases.push(['then `missing/target.custom`', 'missing/target.custom']);
+  for (const [prose, expected] of cases) {
+    const citations = liveCitations('## Current Verified State\n\n`' + prior + '` describes requests to the ' + prose + '; see `:12`.');
+    assert.equal(citations.length, 1, prose);
+    assert.equal(citations[0].cited, expected, prose);
+  }
+  for (const cue of ['host', 'server', 'domain', 'URL', 'endpoint']) {
+    assert.deepEqual(liveCitations('## Desired Behavior\n\nConnect to the ' + cue + ' `api.example.py:8080`.'), [], cue);
+  }
+  for (const cue of ['file', 'path', 'module']) {
+    const citations = liveCitations('## Desired Behavior\n\nInspect the ' + cue + ' `unknown-target.custom:12`.');
+    assert.equal(citations[0].cited, 'unknown-target.custom', cue);
+  }
+});
+
+test('explicit host prose preserves valid shorthand through the full checker', { skip: CORPUS_CHILD }, () => {
+  const head = git(['rev-parse', 'HEAD']).trim();
+  const lines = ['api.example.py', 'api.example.sh'].map((host) => '`tools/test-diagnostics.mjs` describes requests to the host `' + host + '`; see `:12`.').join('\n\n');
+  const result = runCitationCorpusFixture('**Citation anchors.** pre=`' + head + '` post=`' + head + '`.\n\n## Current Verified State\n\n' + lines);
+  assert.equal(result.status, 0, result.output);
+});
+
+test('explicit unknown file scope refuses even with an unobserved suffix', { skip: CORPUS_CHILD }, () => {
+  const head = git(['rev-parse', 'HEAD']).trim();
+  const result = runCitationCorpusFixture('**Citation anchors.** pre=`' + head + '` post=`' + head + '`.\n\n## Desired Behavior\n\n`tools/test-diagnostics.mjs` refers to the file `unknown-target.custom`; see `:12`.');
+  assert.notEqual(result.status, 0);
+  assert.match(result.output, /unknown-target\.custom:12.*names no unique path/);
+});
