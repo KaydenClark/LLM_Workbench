@@ -3,7 +3,7 @@
 **Task ID:** TK-004
 **Spec ID:** S-00P
 **Slice:** Rewrite `LEXICON.md` and reconcile ADR-000F, ADR-000G and ADR-000I
-**Status:** blocked
+**Status:** in-progress
 **Blockers:** TK-002
 **Destination:** spec-acceptance: S-00P Acceptance Criteria
 **Planned verification:** Red: semantic assertions against Lexicon definitions and the resolved active ADR decision/owner chain fail for the named contradiction or missing definition; green: released ADR dispositions match confirmed source claims, literal owner/Context Map links resolve, register/history match their sources, and targeted tests pass. Lifecycle status alone is not proof.
