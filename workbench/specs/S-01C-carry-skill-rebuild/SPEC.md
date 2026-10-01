@@ -3,13 +3,13 @@
 **Spec ID:** S-01C
 **Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-fable-5-1
 **Stance:** Builder
-**Updated:** 2026-09-24
+**Updated:** 2026-10-01
 **Catalog description:** Carry assigned work to its authorized endpoint and make genuine owner hand-backs visible.
 **Blockers:** none for planning; implementation is not assigned.
-**Latest event:** Per-skill destination extracted from the oversized Skills Wiki packet and current core inventory.
-**Next gate:** Review this skill's existing behavior, then activate TK-00T for this skill only.
+**Latest event:** TK-00T claimed by claude-fable-5-1.
+**Next gate:** Close TK-00T with verification and documentation proof.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
