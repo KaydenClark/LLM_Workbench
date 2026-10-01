@@ -3,7 +3,7 @@
 **Task ID:** TK-004N
 **Spec ID:** S-01X
 **Slice:** Bounded stage2 review vocabulary, child gates and Backlog preparation
-**Status:** ready
+**Status:** in-progress
 **Blockers:** none
 **Destination:** spec-acceptance: S-01X shared lane calculation and required QA visibility
 **Planned verification:** Public red/green fixtures for source needs-review, ordinary selection separation, child review gates and requiredQA visibility; exact 51-command suite. Minimal Backlog and next --review consumer assembly require coordinator seam release.
