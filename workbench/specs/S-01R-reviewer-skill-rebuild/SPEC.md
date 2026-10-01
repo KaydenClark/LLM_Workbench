@@ -1,7 +1,7 @@
 # S-01R - reviewer skill rebuild
 
 **Spec ID:** S-01R
-**Status:** planned
+**Status:** active
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
@@ -60,7 +60,6 @@ No other skill rebuild is a blanket prerequisite. Check current controls and the
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-01I | Audit reviewer, deliver the smallest supported source/documentation change and prove the routed article | ready | none | pending |
 
 ### TK-01I - Deliver the reviewer skill destination
 
