@@ -9,9 +9,11 @@ canonicalized_in:
 
 # A Task is a standalone artifact and Task replaces Ticket as the execution-slice term
 
-A Task is its own artifact, `TASK.md`: a bounded executable thin vertical slice
-of a `SPEC.md`, carrying its own blocking relationships so independent Tasks can
-complete in parallel. It is no longer a row in a table inside its Spec.
+A Task is its own artifact, `TASK.md`: bounded executable work that reaches or
+repairs a destination, normally a thin vertical slice of a Spec, carrying its
+own blocking relationships so independent Tasks can complete in parallel. The
+corrective Wiki case below preserves the same destination after its Spec is
+reconciled; it does not require that discarded Spec to remain an active owner. It is no longer a row in a table inside its Spec.
 
 **Task** is the execution-slice term across the Workbench — explanatory prose,
 the live tool vocabulary, the board's columns, and the identifiers newly
@@ -39,7 +41,7 @@ change with it, including `workbench/tools/spec-workbench.mjs`,
 `workbench/tools/diagnostics.mjs`, `workbench/tools/spec-packet.mjs` and
 `workbench/tools/workbench-layout.mjs`, verified read-only at `c0ac60a`. A
 standalone per-record artifact is also the precondition that lets
-[ADR-000I](proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md)
+[ADR-000I](000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md)
 apply folder lifecycle to Tasks at all, since a table row cannot occupy a
 folder. None of that migration is performed by this decision; it is owned by its
 scoped spec.
@@ -48,7 +50,7 @@ scoped spec.
 
 A Task loads a **Packet** and closes with a **Receipt**.
 
-The Packet is the bounded set of material a Task loads at entry. Its required
+The Packet is the bounded set of material a Task loads at entry. For work against an active Spec, its required
 members are the `TASK.md`, the Spec acceptance lines that Task satisfies, the
 cited source and test paths, and the Workbench Contract. Nothing else is loaded
 at entry; the Spec body is reached by traversal when a Task needs it, rather
@@ -58,6 +60,14 @@ assigned packet and linked context", `RUNBOOK.md` already says `show` "loads one
 stable work packet", `workbench/tools/spec-packet.mjs` parses one, and five core
 skills use the term. This decision defines the incumbent term rather than
 coining one.
+
+For a corrective Task against a reconciled Wiki claim, the maintained Wiki
+claim replaces the discarded Spec acceptance lines; the Packet still requires
+`TASK.md`, cited source/test paths and the Workbench Contract. It updates the
+same capability destination and does not resurrect `SPEC.md`. A surviving
+retired Spec is historical context when relevant, not a reason to invent a new
+Spec. This is WF-8A/WF-8G's corrective case implemented by S-00I; the broader
+direct-Blueprint Task home remains destination design, not a shipped location.
 
 Its optional members are a Scoped handoff and the objective's local JSON
 notepad, each included only when one exists. Both enter as working context only.
@@ -165,7 +175,20 @@ decision:
   contradictory by omission, so declaring the value ahead of its test would buy
   no coherence and would spend TK-008's red phase.
 
-Until those slices land, `AGENTS.md`, `RUNBOOK.md`, the tools and the skills
+Historical implementation gap at acceptance (2026-09-15): until those slices land, `AGENTS.md`, `RUNBOOK.md`, the tools and the skills
 still say `Ticket`. That is the recorded implementation gap S-00H closes, in
 the sense `AGENTS.md` State Resolution gives it — newer Canon with a named
 owner — not undetected drift.
+
+## Packet and delivery reconciliation
+
+S-00P TK-004 amends the existing Packet decision under ADR-000A's
+amendment-first rule. Its original Spec-bound opening and required-Spec-acceptance premise are preserved
+at `git show 5d743b4fda292ad772d2505aa3732c83d719fa81:workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md`: it covered active Spec work
+before WF-8A added corrective work against the reconciled Wiki claim. The
+addition above preserves the bounded entry material, optional-context limits,
+Receipt discipline, reasons and rejected alternatives, without another artifact
+or ADR identity. S-00H has since delivered Task vocabulary and standalone
+records; the dated Ticket/runtime disclaimer above is historical. Active Task
+state and proof live in TASK.md, projected by Taskboard. Historical identifiers
+and append-only rows remain unchanged.

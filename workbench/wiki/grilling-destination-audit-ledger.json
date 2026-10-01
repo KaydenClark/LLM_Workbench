@@ -5267,7 +5267,7 @@
           "effect": "Record that the stable-path rule is retired and reachability comes from moves that rewrite links."
         },
         {
-          "artifact": "workbench/docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
+          "artifact": "workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
           "action": "update",
           "effect": "Accepted successor rule for where retired records live (S-00P TK-004)."
         }
@@ -6160,7 +6160,7 @@
           "effect": "States the idea-to-verified-completion ladder with Align, Scope, Plan, Implement, Verify; prototype optional; Blueprint is the Destination, Spec the Journey, Task the Path (S-00P TK-001)."
         },
         {
-          "artifact": "workbench/docs/adr/proposed/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
+          "artifact": "workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
           "action": "update",
           "effect": "Names the six owner phases in place of Explore/Prototype/Implement and treats Prototype as optional (S-00P TK-004)."
         },
@@ -6493,7 +6493,7 @@
           "effect": "Closed Specs and Tasks are reconciled into durable owners and retired by folder; discard only after verified main, clean reference scan and recoverable Git identity."
         },
         {
-          "artifact": "workbench/docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
+          "artifact": "workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
           "action": "update",
           "effect": "Carries no FND-Q07/Q08 hold or transient-archive clearing; matches the WF-8D/8E/8F retirement model (S-00P TK-004)."
         },
@@ -7268,7 +7268,7 @@
       "reason": "Not recorded as a stated reason. The owner gave a worked example (a webapp Blueprint yielding login-page, email-form and shopping-cart Specs). correction-006 separates Workbench branch QA from Human QA, so Human QA is not a release batch by default.",
       "result": [
         {
-          "artifact": "workbench/docs/adr/proposed/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
+          "artifact": "workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
           "action": "update",
           "effect": "Accepted record that Blueprint, Spec and Task are three altitudes of one delivery chain."
         },
@@ -7748,7 +7748,7 @@
           "effect": "REGISTER header shows a computed count of proposed records with a when-to-care hint; adr.mjs offers list --status (decision-064)."
         },
         {
-          "artifact": "workbench/docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
+          "artifact": "workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
           "action": "update",
           "effect": "Lifecycle by folder location for ADRs, Specs, Tasks: archive permanent, retired transient (decisions 040-041)."
         }
@@ -8999,7 +8999,7 @@
           "effect": "Stays a generic reusable shape; each project fills its own product destination."
         },
         {
-          "artifact": "workbench/docs/adr/proposed/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
+          "artifact": "workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
           "action": "update",
           "effect": "Reconciled (accepted, amended or superseded) under S-00P TK-004 so it no longer claims the Blueprint owns the future-facing PRD function."
         },
@@ -9233,7 +9233,7 @@
           "effect": "Spec described as an objective with a destination (mini-PRD) instead of a stable capability record; owned by S-00P TK-004."
         },
         {
-          "artifact": "workbench/docs/adr/proposed/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
+          "artifact": "workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
           "action": "update",
           "effect": "Reconciled under S-00P TK-004 against the three-altitude answer."
         }
@@ -9532,7 +9532,7 @@
           "effect": "Task retirement by folder location after reconciliation; retired Tasks leave ordinary discovery."
         },
         {
-          "artifact": "workbench/docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
+          "artifact": "workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
           "action": "update",
           "effect": "Folder-lifecycle ADR reconciled under S-00P TK-004."
         },
@@ -9648,7 +9648,7 @@
           "effect": "Discard gated on verified main; never archive Specs or Tasks."
         },
         {
-          "artifact": "workbench/docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
+          "artifact": "workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
           "action": "update",
           "effect": "Reconciled under S-00P TK-004 to the transient lifecycle."
         }
@@ -10638,7 +10638,7 @@
           "effect": "Reports Complete as two counts (ready to capture, ready to delete)."
         },
         {
-          "artifact": "workbench/docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
+          "artifact": "workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
           "action": "none",
           "effect": "ADR-000I keeps retired/ as the folder that marks captured records; the derived Complete substate relies on it."
         }

@@ -8,7 +8,7 @@
 **Destination:** spec-acceptance: S-00P Acceptance Criteria
 **Planned verification:** Red/green contract regressions in `tools/test-control-fidelity.mjs`, exact command/argument checks against `workbench/tools/spec-workbench.mjs`, and a disposable-room cold-start walkthrough; preserve guardrail and self-drift before/after receipts. These are execution plans, not achieved proof.
 **Stance:** Builder
-**Proof:** Independent P2 at2c9c7727 preserved: active retired instruction inside proposed parentheses escaped classifier. Durable exact red exit1 before repair; bounded nominal-span helper green focused1/1 and matrix6/6. 26 new assertions:4 historical positives and22 active negatives across grilling/handoffs; existing9 negatives retained. Control-fidelity20/20, ledger5/5, syntax and diff-check pass. Earlier full51/51 at2c9c7727 remains historical; required full51 on this new final immutable candidate is pending before publication/delivery.
+**Proof:** Reviewed integration delivery PR #238: exact candidate 8c2c880bb3939bb231a2a39e3474133034d8f9cd passed required51/51 and third fresh independent entire-diff review; integration76932f5ba7643a55fa140320cb86550ab7fc99bb contains it. Control red18/20 then green20/20; portability durable P2 red then green6/6 with26 new assertions; append-only CLEAN and original closure/Receipt bytes preserved. Both failed review candidates/history retained in Spec evidence. Guardrail78/100, seven known self-drift findings/cleanUpdatefalse; no ownerQA/main or whole-Spec completion claim.
 
 ## Execution Reconciliation (2026-10-01 UTC)
 
