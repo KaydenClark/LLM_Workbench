@@ -11,6 +11,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const tool = path.join(root, 'tools', 'workbench-adoption.mjs');
 import { coreSkills } from '../workbench/tools/workbench-layout.mjs';
+import { templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
 
 function fixture() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-adoption-'));
@@ -83,6 +84,63 @@ function fixtureSpec() {
     '- Superseded by: none',
     ''
   ].join('\n');
+}
+
+// Reconciliation keeps a working product and its controls/history, while the
+// installed runtime can convert the compatibility seed into an actual Task.
+{
+  const project = fixture();
+  const home = fixture();
+  try {
+    seedUserSkills(home);
+    const controls = {};
+    for (const name of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md']) {
+      let content = name === 'CLAUDE.md' ? '@AGENTS.md\n' : fs.readFileSync(path.join(root, 'templates', name), 'utf8');
+      for (const placeholder of templatePlaceholders) content = content.split(placeholder).join('Room-owned value');
+      write(project, name, content);
+      controls[name] = content;
+    }
+    const product = "export const pond = () => 'Pond: ~~~ puffer ~~~';\n";
+    write(project, 'src/pond.mjs', product);
+    write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
+    const git = (...args) => {
+      const result = spawnSync('git', ['-c', 'user.name=Adoption Fixture', '-c', 'user.email=adoption@invalid.example', ...args], { cwd: project, encoding: 'utf8' });
+      assert.equal(result.status, 0, result.stdout + result.stderr);
+      return result.stdout.trim();
+    };
+    git('init', '-q', '-b', 'main'); git('add', '-A'); git('commit', '-q', '-m', 'Room-owned product and reconciled controls');
+    git('branch', 'integration');
+    const before = git('rev-parse', 'HEAD');
+    const result = run('migrate', '--project', project, '--home', home, '--version', VERSION);
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    for (const [name, content] of Object.entries(controls)) {
+      // Only the declared generated board region changes during render.
+      const owned = body => body.replace(/<!-- hot-specs:start -->[\s\S]*?<!-- hot-specs:end -->/, '<!-- generated -->');
+      assert.equal(name === 'TASKBOARD.md' ? owned(read(project, name)) : read(project, name), name === 'TASKBOARD.md' ? owned(content) : content, `${name}: adoption preserves room-owned control bytes outside generated regions`);
+    }
+    assert.equal(read(project, 'src/pond.mjs'), product);
+    assert.equal(git('rev-parse', 'HEAD'), before, 'adoption does not rewrite product history');
+    assert.equal(git('show', `${before}:src/pond.mjs`), product.trim());
+    const installed = (...args) => {
+      const result = spawnSync(process.execPath, ['workbench/tools/spec-workbench.mjs', ...args], { cwd: project, encoding: 'utf8' });
+      assert.equal(result.status, 0, result.stdout + result.stderr);
+      return result.stdout.trim();
+    };
+    assert.equal(JSON.parse(installed('next', '--json', '--local')).specId, 'S-101');
+    installed('show', 'S-101');
+    installed('convert-tasks', 'S-101');
+    git('add', '-A'); git('commit', '-q', '-m', 'Preserve adoption and convert the live seed');
+    installed('claim', 'S-101', '--agent', 'adoption-fixture', '--local');
+    assert.match(read(project, 'workbench/specs/S-101-adopted/tasks/TK-001/TASK.md'), /\*\*Status:\*\* in-progress/);
+    assert.equal(read(project, 'src/pond.mjs'), product);
+    for (const name of ['AGENTS.md', 'RUNBOOK.md', 'README.md']) assert.equal(read(project, name), controls[name]);
+    const receipt = JSON.parse(read(project, 'workbench/tools/.workbench-tools.json'));
+    assert.equal(receipt.source.commit, JSON.parse(read(project, 'workbench/manifest.json')).provenance.source.commit);
+    console.log(`ok - adoption retains product/control bytes and original ${before.slice(0, 8)}; installed ${receipt.source.commit.slice(0, 8)} selects and claims a real Task (local fixture)`);
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
 }
 
 {
