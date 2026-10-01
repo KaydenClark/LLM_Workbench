@@ -23,9 +23,18 @@ The prior Skills Wiki packet grouped the whole core inventory into one completio
 
 ## Current Verified State
 
-- `workbench/skills/reconciler/SKILL.md` is the manifest-declared core source at the pre anchor.
-- `workbench/wiki/skill-reconciler.md` is not yet routed as a current skill article; its existence and links must be rechecked before authoring.
-- The stance is set by the assigned Spec and Task. No fresh behavioral scenario for this per-skill delivery is claimed by this planning packet.
+- Achieved source is `1e403cbbb06be60a2c43fb489709e05453fbf2d3`; read
+  `git show 1e403cbb:workbench/skills/reconciler/SKILL.md` and its linked reference.
+  The public entry names pinned observations, Task ownership, governed
+  disposition, exact review boundaries and inability handback.
+- The individual article is committed at `915702cd` and linked from this Spec.
+  Its sole MEMORY route remains assigned to the coordinator and is not present.
+- TK-01J remains in-progress. One fresh-context observation found continuation
+  gaps; its corrective read-back confirmed the committed article and receipt
+  while finding stale current-facing summaries, corrected in this owner.
+- Focused command/contract checks passed at their recorded revisions. The
+  required union is being verified; separate-context candidate review and
+  owner Human QA are not claimed. The evidence log preserves failed attempts.
 
 ## Desired Behavior
 
@@ -123,7 +132,7 @@ template skill to edit. MEMORY is deliberately reserved to the coordinator.
 
 ## Completion Result
 
-Implementation candidate at `ef80692c`: Reconciler now compares pinned achieved output with existing owners, preserves governed dispositions and unresolved evidence, and names the exact review and inability boundary. Five focused regression checks and three delivery-skill checks pass. This is an in-progress draft, not completed delivery. Full verification, fresh-context read-back, the coordinator-owned MEMORY route and independent review remain open; no Human QA or merge is claimed.
+Achieved source at `1e403cbbb06be60a2c43fb489709e05453fbf2d3`: Reconciler now compares pinned achieved output with existing owners, preserves governed dispositions and unresolved evidence, and names the exact review and inability boundary. Five focused regression checks and three delivery-skill checks pass. This is an in-progress draft, not completed delivery. One fresh-context interpretation and corrective read-back are recorded; they do not establish repeated reliability or approval. Full verification, the coordinator-owned MEMORY route and independent candidate review remain open; no Human QA or merge is claimed.
 
 ## Supersession
 
