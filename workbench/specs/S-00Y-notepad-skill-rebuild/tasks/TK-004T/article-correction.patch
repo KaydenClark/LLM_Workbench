@@ -1,0 +1,52 @@
+--- a/workbench/wiki/skill-notepad.md
++++ b/workbench/wiki/skill-notepad.md
+@@ -14,18 +14,18 @@
+   - tools/test-notepads.mjs
+   - tools/test-skill-catalog.mjs
+   - RUNBOOK.md
+-last_verified: 2026-09-24
++last_verified: 2026-10-01
+ ---
+
+ # Notepad: preserve one objective's working context
+
+ Use `notepad` when meaningful work needs to survive an interruption: owner direction, findings, corrections, uncertainty and the next executable action. It is a reusable continuity primitive, including for objectives that have nothing to do with a design interview. A note is provisional context. The current controls and verified source still determine what is true and authorized.
+
+-**Inputs:** one objective, plus what the work learns as it goes. **Output:** one local, untracked JSON note with an append-only entry history and a compact current view (state, unresolved work, next action). **Done when:** a fresh reader can state the objective, current state, unresolved work and next action from the note, and everything the note no longer holds can be found in a durable owner it names.
++**Inputs:** one objective, plus what the work learns as it goes. **Output:** a local, untracked JSON note for the purpose (several linked, purpose-distinct notes may serve one objective) with an append-only entry history and a compact current view (state, unresolved work, next action). **Done when:** a fresh reader can state the objective, current state, unresolved work and next action from the note, and everything the note no longer holds can be found in a durable owner it names.
+
+ ## How it works
+
+-The [skill](../skills/notepad/SKILL.md) selects or creates one note per objective through the [shared runtime](../tools/notepads.mjs). The agent reads the returned revision and saves consequential context as it appears, with writes checked against that revision. Every free-text field is privacy-scanned before it reaches the file. The revision check is a check, not a lock, so one writer per note remains the rule.
++The [skill](../skills/notepad/SKILL.md) resumes a reachable note already serving this purpose for the objective, or creates one when none is reachable, through the [shared runtime](../tools/notepads.mjs). The agent reads the returned revision and saves consequential context as it appears, with writes checked against that revision. Every free-text field is privacy-scanned before it reaches the file. The revision check is a check, not a lock, so writes to a note remain one writer at a time. Objective ownership is shared across reachable contexts; linked purpose-distinct notes are allowed under [accepted ADR-000L](../docs/adr/000L-a-notepad-belongs-to-its-objective-and-every-chat-working-that-objective-writes-to-it.md).
+
+ - **Corrections link, never rewrite.** A `correction` entry names the entry it corrects, and both stay. Reading a topic returns the matched entries plus their corrections and declared dependencies, each marked `match` or `context`.
+ - **Resume reads before it relies.** The current view carries no entries and no corrections. Before relying on a saved claim, the agent reads its topic so the correction travels with it. The correction supersedes the original, but both only record what was believed when they were written, so the agent rechecks live state before relying on either.
+@@ -38,7 +38,7 @@
+
+ ## Composition with a design interview
+
+-The [accepted S-00W design](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md) keeps storage mechanics in `notepad`. [Grilling](skill-grilling.md) owns the interview and composes this primitive when the session needs saved context. [Grill-me](skill-grill-me.md) is the planned entry that composes both by default; its delivery belongs to S-00Z. The composing skill owns the question map and statuses. The notepad keeps pending, corrected and confirmed meaning readable, so an interrupted interview resumes at the pending confirmation rather than at the next question.
++The [accepted S-00W design](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md) keeps storage mechanics in `notepad`. [Grilling](skill-grilling.md) owns the interview and composes this primitive when the session needs saved context. [Grill-me](skill-grill-me.md) is the implemented repository core entry that composes both by default. Installed copies, current native reviewed delivery, S-00W shared-journey checks and owner Human QA remain separate gates. The composing skill owns the question map and statuses. The notepad keeps pending, corrected and confirmed meaning readable, so an interrupted interview resumes at the pending confirmation rather than at the next question.
+
+ The approved [Landmark Tracker model](design-concepts/landmark-tracker.md) adds
+ a current concept account in DQCs and landmark records before delivery artifacts
+@@ -49,9 +49,11 @@
+
+ ## Verified behavior and limits
+
++**Source alignment, 2026-10-01:** source claims read at `git show 0aeefbd4fdcb350f89ec041da43de66a34882329:workbench/manifest.json`, `workbench/tools/workbench-layout.mjs`, the three skill sources and `workbench/docs/adr/REGISTER.md` with ADR-000L at that same commit. The accepted register marks ADR-000L accepted (2026-09-30). The current manifest and runtime core list both contain 26 skills, including `grill-me`. This is source alignment, not a fresh behavioral observation, native assembled PASS, installed-copy verification or owner Human QA.
++
+ **Verified 2026-09-24:** the runtime behaviors above are covered by `tools/test-notepads.mjs`. That includes a characterization of the pending → correction → decision sequence, which passed without any runtime change. `tools/test-skill-catalog.mjs` holds the source wording for the pending convention and the corrected-resume recheck. One fresh-context agent, given only the skill source, followed both in the three-turn scenario above. The turn-by-turn record is in the [Spec evidence](../specs/S-00Y-notepad-skill-rebuild/SPEC.md#append-only-evidence-and-execution-log).
+
+-**Limits:** that was one run with one model, against a scripted owner. It is not owner Human QA and not a repeated trial. In that run the agent read all entries instead of one topic; both routes return the correction with its original. Two writers that read the same revision can still both write, as the still-proposed ADR-000L (open PR #92) records; this Spec does not change that. Installed personal copies of the skill are not updated by this source change. The composed grilling, notepad and grill-me journey is checked by [S-00W](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md) after all three skills are delivered.
++**Limits:** that was one run with one model, against a scripted owner. It is not owner Human QA and not a repeated trial. In that run the agent read all entries instead of one topic; both routes return the correction with its original. Two writers that read the same revision can still both write, as [accepted ADR-000L](../docs/adr/000L-a-notepad-belongs-to-its-objective-and-every-chat-working-that-objective-writes-to-it.md) records; this Spec does not change that. Installed personal copies of the skill are not updated by this source change. The composed grilling, notepad and grill-me journey is checked by [S-00W](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md) after all three skills are delivered.
+
+ ## Sources
+
+@@ -70,3 +72,5 @@
+
+ - 2026-09-26: Clarified the owner-confirmed relationship between grilling notes
+   and planned DQC/landmark understanding; existing runtime claims unchanged.
++
++- 2026-10-01: Corrected settled source and accepted-ADR claims at `0aeefbd4fdcb350f89ec041da43de66a34882329`; retained dated scenario evidence and its limitations.

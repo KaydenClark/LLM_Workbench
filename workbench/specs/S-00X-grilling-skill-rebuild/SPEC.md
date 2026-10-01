@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** claude-opus-5-5
 **Stance:** Builder
-**Updated:** 2026-09-24
+**Updated:** 2026-10-01
 **Catalog description:** Settle a shared design concept through one consequential question at a time.
 **Blockers:** none.
-**Latest event:** TK-00O closed with proof.
-**Next gate:** Owner Human QA of conversational fidelity on `integration`, then `complete S-00X`.
+**Latest event:** TK-004S ready with prepared article patch; claim pending Owner-preservation decision.
+**Next gate:** Resolve claim method preserving existing Spec Owner, execute TK-004S, then fresh independent assembled review; owner Human QA remains open.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -70,8 +70,8 @@ Inspect the current source, its callers/composition and relevant tests. Demonstr
 - [x] A recommendation, owner answer, pending Question / Answer / Why / Impact readback, correction and explicit confirmation occur in order; confirmed answers update only affected branches of the decision map.
 - [x] A changed upstream premise reopens only dependent answers, and missing evidence prevents a false concept-ready verdict.
 - [x] The named scenario is observed in a fresh or otherwise independent context: A fresh standalone conversation shows no next design question before confirmation and no specification transition before a confirmed final concept readback.
-- [x] `workbench/wiki/skill-grilling.md` accurately distinguishes verified current behavior from remaining intended behavior, links the current source and governing owners, and is reachable from `workbench/wiki/MEMORY.md`.
-- [x] Relevant targeted tests/scenarios, Wiki validation, the required full suite, Workbench self-drift pre/post receipts and separate-context review are recorded at their proper gates; no unrun check is reported as passing.
+- [ ] `workbench/wiki/skill-grilling.md` accurately distinguishes verified current behavior from remaining intended behavior, links the current source and governing owners, and is reachable from `workbench/wiki/MEMORY.md`.
+- [ ] Relevant targeted tests/scenarios, Wiki validation, the required full suite, Workbench self-drift pre/post receipts and separate-context review are recorded at their proper gates; no unrun check is reported as passing.
 
 ## Testing Seams
 
@@ -109,6 +109,8 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane.
 | 2026-09-24 | TK-00O | Task closed | Red/green tools/test-skill-catalog.mjs (red 85858f1, green 00c88f0); full AGENTS suite 48/48 at 00c88f0; fresh-context six-turn scenario matched the interaction contract; wiki validate ok | workbench/skills/grilling/SKILL.md and workbench/wiki/skill-grilling.md; RUNBOOK, BLUEPRINT, templates and skills README checked with no update needed because their grilling wording stays accurate | Separate-context candidate review; owner Human QA of conversational fidelity; installed personal skill copies not updated; S-00W shared-journey check after S-00Y and S-00Z |
 | 2026-09-24 | TK-00O review | Separate-context review of immutable candidate `18f62503107a5f15b7d07020f2f63c980d4be7ce` against base `6ae38b9`: PASS, no High/Medium/Low findings | Codex CLI `codex exec -s read-only -m gpt-5.5`; reviewer ran `wiki.mjs validate` and `git diff --check` (both pass) and checked by source review the project-evidence open-question path, genesis `open|tentative|locked` statuses, notepad `source_record`/`decision` separation, the catalog assertions and the append-only rows. A first attempt with `codex review --base` reviewed nothing because the CLI refuses a prompt together with `--base` | None | Reviewer could not re-run fixture tests in its sandbox (`EPERM` on `mkdtemp`); it compared against the implementing agent's summary of the pinned upstream text rather than fetching it. Owner Human QA remains |
 | 2026-09-26 | review | Review verdict: pass at eec12cf74ee3f649fa199cfe618c67f4df697938 [2048ddcfb307] #1 | none; final-content review of the Spec at eec12cf (checked acceptance lines supported by recorded evidence, Completion Result accurate against source, header and Wiki route consistent); refreshes the digest after the boxes and Completion Result were written post-verdict; fixture tests not run in the reviewer sandbox | Codex CLI codex exec -s read-only -m gpt-5.5, separate context (Lane E log E-gate-review-1.log) | 4 |
+| 2026-10-01 | TK-004S preparation | Coordinator01a0f684 delegated bounded corrective work after published 0aeefbd4fdcb350f89ec041da43de66a34882329; reports existing separate independent review at d90785908b26517068a474bb88136c81995a2f18 as allFAIL articlealignment for digest 0d17c5e731ad6f7449885cb11065b3f2518876a49a05d6f98cb55eac0998267b | Current pre-edit native report reproduced that exact digest. Attribution retained as coordinator-supplied review history; original reviewer identity/transcript was not supplied, and no native verdict or PASS was invented. Fresh fetched native occupiedIdentities check preceded this exact reserved Task creation; no extra IDs allocated | Prepared article-correction.patch and public PROOF-PLAN.md under this Task; patch application check passed; article remains unchanged pending claim | Native claim rewrites Spec Owner. Existing Owner and done Tasks preserved; claim decision requested before acting, Task stays ready. Fresh independent current-digest assembled review, S-00W checks and owner QA remain open. Q/carry untouched |
+| 2026-10-01 | TK-004S preparation verification | Ready corrective packet and unapplied patch checked; no claim or implementation completion | Full required AGENTS/RUNBOOK union 51/51 commands exit 0 on recovery-base source with ready packets; Wiki validation, final citation anchors, patch application checks and first-published append-only checker CLEAN. Scripted public notepad operations passed 3-to-5 correction retrieval, script-read live value 4, pending correction without decision, retained-dependency refusal and purpose-distinct creation. Actual codex exec probe failed before model execution: app-server initialization read-only filesystem error 30; no conversational observation or provider403 claimed | Prepared per-Task patch and public scenario plan; source articles unchanged. Existing Spec Owners, done Task rows, done TK-003T bytes and historical evidence verified preserved | Self-drift pre/post retain seven attention findings, machineResult blocked, cleanUpdate false; guardrail 78/100. Fresh whole-Spec independent review, configured-host model scenarios, owner-preserving claim decision, source patch application, S-00W and owner Human QA remain open. No native PASS, merge or Q/carry action |
 
 ## Completion Result
 
