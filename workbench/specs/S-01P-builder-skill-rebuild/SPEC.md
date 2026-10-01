@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Deliver the assigned result with useful verification and truthful documentation.
 **Blockers:** none for assigned evidence update; independent evidence assessment and separate exact-candidate review remain delivery gates.
-**Latest event:** Sole Wiki index now routes the Builder article; historical observations/source remain unchanged. Current integration assembly and separate exact review remain pending.
-**Next gate:** Test the current integration assembly and obtain separate exact-candidate review of the evidence/routed-article update; behavioral raw-evidence assessment remains held. Do not close or merge yet.
+**Latest event:** Sole Wiki index now routes the Builder article; historical observations/source remain unchanged. Current574 integration assembly passed51/51; separate immutable review remains pending.
+**Next gate:** Obtain separate exact-candidate review of the tested current574 evidence/routed-article update; behavioral raw-evidence assessment remains held. Do not close or merge yet.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`82cd8d1fbc79cb871429439a059be792bc59c137`.
 
