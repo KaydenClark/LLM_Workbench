@@ -982,6 +982,8 @@ export function gate(rootDir, options = {}) {
     reason = `Candidate ${candidate} does not exist in this repository; a Spec candidate must bind to a real commit, never an invented or mistyped SHA.`;
   } else if (!report.complete) {
     reason = `${specId} is not complete: ${report.gaps.join('; ')}`;
+  } else if (!report.candidate.matchesContent) {
+    reason = `Candidate ${candidate} does not contain the reviewed committed content for ${specId}: ${report.candidate.contentError ?? `candidate digest ${report.candidate.contentDigest?.slice(0, 12)} differs from current digest ${report.specDigest.slice(0, 12)}`}.`;
   } else {
     // Integration precedes owner Human QA. Closure retains its approval gate.
     reason = reviewGapReason(report);
