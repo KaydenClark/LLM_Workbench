@@ -32,7 +32,8 @@ function fixture(run) {
     git('commit', '-am', 'Candidate');
     const candidate = git('rev-parse', 'HEAD');
     const env = { ...process.env, BASE_SHA: base, CANDIDATE_SHA: candidate, OWNER_PATH: 'owner.md', INTEGRATION_SHA: base };
-    const observe = (id, overrides = {}) => spawnSync('bash', ['-e', '-c', command(id)], { cwd: dir, env: { ...env, ...overrides }, encoding: 'utf8' });
+    const helper = reference.includes('<!-- check:git-helper -->') ? command('git-helper') : '';
+    const observe = (id, overrides = {}) => spawnSync('bash', ['-e', '-c', `${helper}\n${command(id)}`], { cwd: dir, env: { ...env, ...overrides }, encoding: 'utf8' });
     run({ dir, git, base, candidate, observe });
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 }
@@ -91,4 +92,71 @@ test('containment distinguishes a branch candidate from landed content without c
   assert.equal(git('rev-parse', 'HEAD'), candidate);
   assert.match(fs.readFileSync(path.join(dir, 'owner.md'), 'utf8'), /review pending/);
   assert.notEqual(observe('containment', { INTEGRATION_SHA: 'missing-target' }).status, 0);
+}));
+
+test('replacement commit cannot substitute completion text under the original candidate SHA', () => fixture(({ dir, git, candidate, observe }) => {
+  fs.writeFileSync(path.join(dir, 'owner.md'), 'Complete. Owner approved release.\n');
+  git('commit', '-am', 'Substituted claim');
+  const replacement = git('rev-parse', 'HEAD');
+  git('replace', candidate, replacement);
+  assert.equal(git('rev-parse', '--verify', `${candidate}^{commit}`), candidate);
+  assert.equal(git('show', `${candidate}:owner.md`), 'Complete. Owner approved release.', 'unprotected read must exhibit the reported defect');
+  const pin = observe('pin');
+  assert.equal(pin.status, 0, pin.stderr);
+  assert.ok(pin.stdout.includes(candidate));
+  const owner = observe('owner');
+  assert.equal(owner.status, 0, owner.stderr);
+  assert.equal(owner.stdout, 'Achieved output; unresolved production timing; review pending.\n');
+  const compare = observe('compare');
+  assert.equal(compare.status, 0, compare.stderr);
+  assert.match(compare.stdout, /unresolved production timing/);
+  assert.doesNotMatch(compare.stdout, /Owner approved release/);
+  assert.equal(git('replace', '-l'), candidate, 'observation preserves replacement metadata');
+}));
+
+test('replacement parent cannot manufacture integration containment', () => fixture(({ git, base, candidate, observe }) => {
+  const graft = git('commit-tree', `${base}^{tree}`, '-p', candidate, '-m', 'Fabricated ancestry');
+  git('replace', base, graft);
+  assert.equal(git('merge-base', '--is-ancestor', candidate, base), '', 'unprotected ancestry check must be fooled');
+  assert.equal(observe('containment').status, 1, 'original integration base does not contain candidate');
+  assert.equal(git('replace', '-l'), base);
+}));
+
+test('inherited Git repository and index selectors cannot redirect an observation', () => fixture(({ dir, git, observe }) => {
+  const foreign = path.join(dir, 'foreign');
+  fs.mkdirSync(foreign);
+  execFileSync('git', ['init', '-b', 'foreign'], { cwd: foreign, stdio: 'ignore' });
+  const index = path.join(dir, 'unrelated-index');
+  fs.writeFileSync(index, 'not a Git index; retain byte-for-byte\n');
+  const environment = { GIT_DIR: path.join(foreign, '.git'), GIT_WORK_TREE: foreign, GIT_COMMON_DIR: path.join(foreign, '.git'), GIT_INDEX_FILE: index };
+  const redirected = spawnSync('git', ['rev-parse', '--show-toplevel'], { cwd: dir, env: { ...process.env, ...environment }, encoding: 'utf8' });
+  assert.equal(redirected.stdout.trim(), foreign, 'unprotected Git really selects the other repository');
+  const before = git('status', '--porcelain=v1');
+  const pin = observe('pin', environment);
+  assert.equal(pin.status, 0, pin.stderr);
+  const owner = observe('owner', environment);
+  assert.equal(owner.status, 0, owner.stderr);
+  assert.match(owner.stdout, /unresolved production timing/);
+  assert.equal(fs.readFileSync(index, 'utf8'), 'not a Git index; retain byte-for-byte\n');
+  assert.equal(git('status', '--porcelain=v1'), before);
+}));
+
+test('inherited object stores, replacement namespaces and config injection cannot alter pinned reads', () => fixture(({ dir, git, candidate, observe }) => {
+  const emptyObjects = path.join(dir, 'empty-objects');
+  fs.mkdirSync(emptyObjects);
+  const substitutions = [
+    { GIT_OBJECT_DIRECTORY: emptyObjects, GIT_ALTERNATE_OBJECT_DIRECTORIES: emptyObjects },
+    { GIT_CONFIG_COUNT: '1', GIT_CONFIG_KEY_0: 'core.bare', GIT_CONFIG_VALUE_0: 'true' },
+  ];
+  fs.writeFileSync(path.join(dir, 'owner.md'), 'Complete. Owner approved release.\n');
+  git('commit', '-am', 'Foreign replacement namespace');
+  git('update-ref', `refs/substitute/${candidate}`, git('rev-parse', 'HEAD'));
+  substitutions.push({ GIT_REPLACE_REF_BASE: 'refs/substitute/', GIT_NO_REPLACE_OBJECTS: '0' });
+  for (const env of substitutions) {
+    const pin = observe('pin', env);
+    assert.equal(pin.status, 0, pin.stderr);
+    const owner = observe('owner', env);
+    assert.equal(owner.status, 0, owner.stderr);
+    assert.equal(owner.stdout, 'Achieved output; unresolved production timing; review pending.\n');
+  }
 }));
