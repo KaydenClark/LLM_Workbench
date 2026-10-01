@@ -54,6 +54,8 @@ skill. This router does not copy their state or the local grilling queue.
 
 ## Skills Reference
 
+- [Implement: deliver one assigned Task with checkable proof](skill-implement.md)
+
 The individual pages below explain core skills and link to their executable or
 planned source. They are curated context, not
 instruction authority. [S-00W](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md)

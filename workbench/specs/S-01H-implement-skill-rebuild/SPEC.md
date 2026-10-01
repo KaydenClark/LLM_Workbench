@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-10-01
 **Catalog description:** Deliver one eligible assigned Task through red/green and verified recovery.
-**Blockers:** none for planning; implementation is not assigned.
+**Blockers:** Configured-agent scenario pending: available host cannot initialize app-server on read-only storage.
 **Latest event:** TK-00Y claimed by codex-s01h.
-**Next gate:** Close TK-00Y with verification and documentation proof.
+**Next gate:** Run configured-agent scenario through existing authorized host; review immutable candidate before integration.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -91,9 +91,11 @@ Maintain `workbench/wiki/skill-implement.md` and its sole router entry alongside
 | 2026-09-24 | planning | Owner directed one delivery Spec per skill; this Spec names implement's destination and first slice | Current manifest, core catalog, source presence and Wiki route inspected at pre anchor; no behavior change or scenario trial | This Spec authored; article remains future work | TK-00Y and independent delivery proof remain open |
 | 2026-09-24 | planning verification | Skill-sized ownership and routing checked on the isolated candidate | All 47 required AGENTS commands passed; Wiki validation and exact 21 core plus one proposed entry coverage passed; doctor has no blocking finding; pre/post self-drift at 4940233 retained the same seven pre-existing findings and cleanUpdate false | No skill source or new article authored in this planning pass | Immutable separate-context review and actual skill behavior remain open |
 
+| 2026-10-01 | TK-00Y | Refreshed ownership at integration `95176a4f216cc3d684301a355d6d23369ab275a1`, descendant of supplied `3b5b76bf`; native activation retained existing TK-00Y and coordinated claim published `1bb4cf0` | No live competing claim or matching remote branch observed. Red `3a30c15`: focused checks fail missing Task-record recovery and containment; green `9d12d4c`: 2/2 pass, including real Git unpublished/descendant containment fixture | Implement now resumes Task receipts, records in-progress proof, composes save, self-checks and bounds owner handback; individual article and scenario protocol authored | Fresh configured-agent proof blocked before execution: codex exec failed to initialize in-process app-server on read-only filesystem. No credentials copied or access expanded. Independent review and publication remain pending |
+
 ## Completion Result
 
-Pending. Planning only; no implement rebuild or behavioral acceptance is claimed.
+Implementation candidate prepared for TK-00Y; configured-agent scenario, independent review and owner gates remain open. No Spec completion or installed-behavior claim.
 
 ## Supersession
 
