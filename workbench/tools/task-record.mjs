@@ -33,7 +33,7 @@ import path from 'node:path';
 import { compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
 import { parseCapabilityList } from './optional-capabilities.mjs';
 
-export const TASK_STATUSES = Object.freeze(['ready', 'in-progress', 'blocked', 'done', 'deferred']);
+export const TASK_STATUSES = Object.freeze(['ready', 'in-progress', 'blocked', 'needs-review', 'done', 'deferred']);
 
 // S-00I TK-004: the closed set of lifecycle subfolders a Task directory may
 // move into, beneath its owning Spec's `tasks/` directory (the active
