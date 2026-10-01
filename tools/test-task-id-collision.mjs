@@ -9,7 +9,8 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { appendReceiptRowToContent, readReceipt } from '../workbench/tools/task-receipt.mjs';
 
 const source = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const cli = path.join(source, 'workbench/tools/spec-workbench.mjs');
+const cliOption = process.argv.indexOf('--cli');
+const cli = cliOption < 0 ? path.join(source, 'workbench/tools/spec-workbench.mjs') : path.resolve(process.argv[cliOption + 1]);
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const room = fs.mkdtempSync(path.join(os.tmpdir(), 'task-collision-'));
 const spec = 'workbench/specs/S-003P-binding';

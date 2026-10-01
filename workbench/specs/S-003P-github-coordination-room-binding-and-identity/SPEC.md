@@ -93,6 +93,8 @@ This Spec owns capability requirements, open gates and proof. Shared operational
 
 | 2026-10-01 | coordination | Preserve reservation authoring correction at f8051a8ed93c90e549ee1fa1b51e3b0d4835836c | Publishing J alongside I consumed J in native reference inventory. Director retained that published row and centrally reserved K after fresh origin inventory. Native exact5e FAIL allocated only TK-004K, with no allocator override. | Independent exact5e review confirms all three earlier defects corrected and54/54 PASS, with collision alone blocking integration. | Mechanism review precedes actual F-to-I repair; no identity mutation or approval transfer yet. |
 
+| 2026-10-01 | review | Independent mechanism FAIL at1fb97872ac44c10ab69c1d1791980bb1cb510c66, preserved | Reviewer01a0f689-cb20-717c-97ff-213d82289036 independently reproduces P1 omitted current-manifest and legacy table-backed replacement identities and P2 unexecuted Runbook example. Public22/22 plus six additional refusal controls pass; mandatory suite was incomplete at early handback. Producer exact1fb54/55 independently names the same round-trip failure. | In-progress TK-004K corrects both findings without reopening done records; originalF and receipts unchanged. | No mechanism approval or actual repair at1fb; fresh corrected mechanism review then separate actual repaired assembly review required. |
+
 ## Completion Result
 
 Pending.

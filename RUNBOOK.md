@@ -1096,8 +1096,10 @@ node workbench/tools/spec-workbench.mjs retire-spec S-001 --wiki workbench/wiki/
 Collision identity recovery is an exceptional `move-task` mode for an already
 published done Task in an open Spec. First fetch all remote tips and obtain the
 Director disposition naming the earlier identity and centrally reserved replacement.
-Freeze the clean candidate and the unchanged original Task bytes. In this room,
-S-00I retains TK-004F and S-003P's later record is reserved TK-004I. Set the exact
+Freeze the clean candidate and the unchanged original Task bytes. This room's
+2026-10-01 example retains S-00I/TK-004F and assigns its later S-003P record
+TK-004I. Replay historical examples only in a disposable checkout containing the
+original record; a completed recovery does not authorize another move. Set the exact
 `EXPECTED_HEAD`, original `SOURCE_SHA`, earlier `COLLISION_SHA`, and SHA256
 `TASK_HASH` from those reviewed inputs; the original source is recoverable with
 `git show SOURCE_SHA:workbench/specs/S-003P-github-coordination-room-binding-and-identity/tasks/TK-004F/TASK.md`.
