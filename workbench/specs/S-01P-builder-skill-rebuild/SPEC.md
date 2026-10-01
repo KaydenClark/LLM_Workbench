@@ -1,17 +1,17 @@
 # S-01P - builder skill rebuild
 
 **Spec ID:** S-01P
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** codex-s01p-builder
 **Stance:** Builder
-**Updated:** 2026-09-24
+**Updated:** 2026-10-01
 **Catalog description:** Deliver the assigned result with useful verification and truthful documentation.
-**Blockers:** none for planning; implementation is not assigned.
-**Latest event:** Per-skill destination extracted from the oversized Skills Wiki packet and current core inventory.
-**Next gate:** Review this skill's existing behavior, then activate TK-01G for this skill only.
+**Blockers:** none for assigned implementation; behavioral proof, coordinator router write and independent review remain delivery gates.
+**Latest event:** Builder implementation candidate verified with all 48 AGENTS commands, three RUNBOOK additions and focused contract test passing; behavioral and independent-review gates remain open.
+**Next gate:** Coordinator-owned MEMORY route, fresh-context behavioral proof and independent immutable-candidate review; do not close or merge yet.
 
-> **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
+> **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`82cd8d1fbc79cb871429439a059be792bc59c137`.
 
 ## Outcome
 
@@ -53,7 +53,6 @@ No other skill rebuild is a blanket prerequisite. Check current controls and the
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-01G | Audit builder, deliver the smallest supported source/documentation change and prove the routed article | ready | none | pending |
 
 ### TK-01G - Deliver the builder skill destination
 
@@ -100,9 +99,15 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane. When ther
 | 2026-09-24 | planning | Owner directed one delivery Spec per skill; this Spec names builder's destination and first slice | Current manifest, core catalog, source presence and Wiki route inspected at pre anchor; no behavior change or scenario trial | This Spec authored; article remains future work | TK-01G and independent delivery proof remain open |
 | 2026-09-24 | planning verification | Skill-sized ownership and routing checked on the isolated candidate | All 47 required AGENTS commands passed; Wiki validation and exact 21 core plus one proposed entry coverage passed; doctor has no blocking finding; pre/post self-drift at 4940233 retained the same seven pre-existing findings and cleanUpdate false | No skill source or new article authored in this planning pass | Immutable separate-context review and actual skill behavior remain open |
 
+| 2026-10-01 | TK-01G activation | Native `convert-tasks S-01P --activate` preserved TK-01G; remote claim by codex-s01p-builder committed and pushed at `59c67a916f24f8cd41745c26edf50925fa879952` | Fetched all advertised remote heads from integration `e96766f0e7b73e7159d1a748dffefc79569d267d`; every reachable S-01P header was planned/unassigned; no owner collision; first two claim attempts correctly refused uncommitted native conversion/projection before committing them | Existing Task converted; generated Taskboard and catalog only; no global ID allocation | Assigned implementation only; no merge or main modification |
+| 2026-10-01 | TK-01G source contract | Unbounded helper-composition wording and implicit completion report repaired at `82cd8d1f` | New `node tools/test-builder-skill.mjs` failed 2/3 at red commit `64c46d64`; 3/3 green after repair; `proof/contract-red.txt` and `proof/contract-green.txt` preserve outputs; these are source-text checks, not behavioral validation | Individual article and synthetic scenario authored; `proof/wiki-validation.txt` records successful Wiki validation | Fresh-context behavioral observation and independent review remain unperformed; coordinator serializes MEMORY route |
+
+| 2026-10-01 | TK-01G verification | All required suite commands executed; source implementation candidate `82cd8d1f` | `proof/suite-results.json`: 48/48 exact AGENTS commands, 3/3 additional RUNBOOK commands and 1/1 focused test passed; Wiki validate, diff whitespace check, citation-anchor check and proposed MEMORY patch application check passed | Article is curated partial context; coordinator owns single router hunk in `proof/memory-route.patch`; `proof/pr-body.md` prepared after GitHub API Forbidden | Actual fresh-context Builder behavior and independent review not run; TK-01G remains in progress; no review or Human QA PASS |
+| 2026-10-01 | TK-01G drift | Guardrail score unchanged at 78/100; no clean-update claim | `proof/verification-notes.md` distinguishes flawed initial in-tree receipt captures from reconstructed clean-base receipt and corrected outside-tree post capture; seven baseline findings remain outside this Task | Docs checked; no update needed for shared controls, runtime, identity or generic templates because their contracts are unchanged | Repeated outcome trials, coordinator route and independent candidate review remain; no private scenario material transferred |
+
 ## Completion Result
 
-Pending. Planning only; no builder rebuild or behavioral acceptance is claimed.
+Implementation candidate only. The Builder source now bounds composed helpers to the assigned Task and caller endpoint and names result, evidence, documentation state and remaining risk at exit. TK-01G remains in progress. No fresh-context behavioral acceptance, independent-review PASS, routed-article completion, integration or release is claimed.
 
 ## Supersession
 
