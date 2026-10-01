@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-10-01
 **Catalog description:** Challenge candidate correctness, downstream impact and consequential claims.
-**Blockers:** none for planning; implementation is not assigned.
+**Blockers:** none for implementation; independent review and coordinator-owned Wiki routing remain delivery gates.
 **Latest event:** TK-01I claimed by codex-s01r.
-**Next gate:** Close TK-01I with verification and documentation proof.
+**Next gate:** Finish required verification and fresh-context scenario; hand immutable draft to coordinator for routing and independent review.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -108,7 +108,7 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane. When ther
 
 ## Completion Result
 
-Pending. Planning only; no reviewer rebuild or behavioral acceptance is claimed.
+In progress on existing TK-01I. Source and article rebuild are under verification; no independent approval, integration delivery, owner Human QA or main promotion is claimed.
 
 ## Supersession
 
