@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-006K",
-  "revision": 4,
+  "revision": 6,
   "title": "What makes a concept Confirmed after Align, and how do the later steps advance?",
   "question": "What makes a concept Confirmed after Align, and how do the later steps advance?",
   "answer": "GX-1: Aligned is a locked grilling answer with no Tracker card yet. At session completion each locked answer is added to an existing DQC, or to a new DQC where it evolves independently, which makes it Confirmed. Mapped uses selective ADRs from DQCs where warranted, then Specs as small destinations. Planned means ready Tasks. Journey means implementation. Review is distinct code and QA review with TDD proof. Verified compares delivered work against the DQC's expected understanding and result. Existing workflow skills maintain DQCs at each step, preferably through one focused DQC primitive; there is no DQC-specific review skill.",
@@ -24,7 +24,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000O",
+    "LMK-000X"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -123,6 +126,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:59.826Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Grilling and Shared Understanding pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000O"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:02.801Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000O"
+          ],
+          "to": [
+            "LMK-000O",
+            "LMK-000X"
+          ]
         }
       ]
     }

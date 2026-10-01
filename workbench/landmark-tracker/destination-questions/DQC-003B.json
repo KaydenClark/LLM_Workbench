@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-003B",
-  "revision": 3,
+  "revision": 4,
   "title": "How should recurring approved maintenance fit the work model?",
   "question": "How should recurring approved maintenance fit the work model?",
   "answer": null,
@@ -17,7 +17,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000C"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -90,6 +92,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:53.910Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Boundaries pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000C"
+          ]
         }
       ]
     }

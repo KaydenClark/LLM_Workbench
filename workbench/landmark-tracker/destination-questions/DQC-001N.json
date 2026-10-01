@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-001N",
-  "revision": 4,
+  "revision": 5,
   "title": "Which relationships does the ownership model need to express?",
   "question": "Which relationships does the ownership model need to express?",
   "answer": "FND-Q20: Nine relations: owns, inherits, refines, references, summarizes, provides evidence for, canonicalizes, supersedes, blocks. Each is stored once, directional, with no inverse vocabulary (the query renders reverse labels), and each carries an instance_edge route to where instances are recorded. Inherits and refines stay separate. On 2026-09-22 he confirmed it stays locked: the decision was never blocked, only S-00G delivery was, and inherits-versus-refines needs a durable explanation.",
@@ -22,7 +22,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000M"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -121,6 +123,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:58.460Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Ownership Model pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000M"
+          ]
         }
       ]
     }

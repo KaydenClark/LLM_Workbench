@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002D",
-  "revision": 5,
+  "revision": 7,
   "title": "How should retired ADR history remain reachable?",
   "question": "How should retired ADR history remain reachable?",
   "answer": "ACC-5: Navigate from completed or historical capability links to the Wiki feature article first; the article links archived ADRs as sources. Keep the archive. S-024 already has an article; create one for S-022 while stating that its historical release packet is blocked, not completed.\nWF-8F: Specs and Tasks are transient working artifacts, not product documentation. Once their useful content is turned into readable durable documentation and the exact change is verified on main, they are retired and discarded. The Wiki stores the reconciled retired Spec and later corrective Tasks update it; Blueprint, Wiki and Taskboard are the enduring and navigational surfaces.",
@@ -30,7 +30,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000F",
+    "LMK-000N"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -169,6 +172,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:54.871Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Artifact Types pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000F"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:58.847Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Durable Knowledge pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000F"
+          ],
+          "to": [
+            "LMK-000F",
+            "LMK-000N"
+          ]
         }
       ]
     }

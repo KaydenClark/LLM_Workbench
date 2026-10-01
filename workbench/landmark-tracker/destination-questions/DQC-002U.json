@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002U",
-  "revision": 7,
+  "revision": 8,
   "title": "How should Task, Spec and integration branches relate?",
   "question": "How should Task, Spec and integration branches relate?",
   "answer": "WF-7: Branches nest by delivery altitude: main contains integration; each Spec branch starts from integration; each Task branch starts from its Spec branch, preferably in its own worktree. Proven Task results merge into the Spec branch, and contained Task branches and worktrees are cleaned up after their results are preserved.\nPW-6: Option 1: push the claim, read the remotes. claim creates the task branch from integration, commits the claim as its first commit and pushes at once; next and claim fetch all refs and overlay Task state from every remote tip. No direct claim commit on integration. The PR carries closure. A no-remote session falls back to local and says so.\nFND-Q17c: Specs nest and block each other, the same way Tasks do: \"SPECs can nest and block each other, same as tasks. we are changing that.\" In the same message he said a Task can be created and merged into integration without a Spec branch.\nSCR-4B: Most Tasks are children of Specs and branch from the Spec work. A Task may instead be a direct child of the Blueprint when no intermediate Spec destination is needed; it branches from and merges straight into integration, which is metaphorically the Blueprint accumulation branch.",
@@ -36,7 +36,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000K"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -243,6 +245,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:57.681Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000K"
+          ]
         }
       ]
     }

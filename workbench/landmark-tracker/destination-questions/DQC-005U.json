@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-005U",
-  "revision": 6,
+  "revision": 7,
   "title": "How does the landmark inventory start and evolve?",
   "question": "How does the landmark inventory start and evolve?",
   "answer": "LD-1: Use the proposed 23 candidates as an evolving starting inventory. Add further landmarks as meaningful features or framework pillars emerge from DQCs. The count is not fixed, overlap is allowed, and detailed names/boundaries remain refinable.\nLD-1A: Agreed candidate grouping: Context Map, Agent Autonomy, Agent Stances, Skills, Notepads, Handoffs, Session Transport. Individual eligibility and detailed boundaries remain provisional; overall inventory remains open.\nLD-1B: Keep Artifact Types, Durable Knowledge and Wiki as separate landmark candidates. Overlap is acceptable; rigid boundaries are not required.",
@@ -30,7 +30,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000X"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +203,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:50:02.230Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000X"
+          ]
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002L",
-  "revision": 7,
+  "revision": 8,
   "title": "How does the product destination decompose into Specs and Tasks?",
   "question": "How does the product destination decompose into Specs and Tasks?",
   "answer": "FND-Q01: The workflow starts when the owner brings an idea and runs six phases: Idea -> Align (grilling to a shared design concept) -> Scope (Blueprint plus Specs, updating ADRs and docs) -> Plan (decompose into Tasks) -> Implement (loop over Tasks, tracked on TASKBOARD) -> Verify (to Spec and/or human QA). Destination is in BLUEPRINT, the Journey is a SPEC, each walked Path is a TASK. Prototype is optional, not a standard phase.\nFND-Q19: Blueprint owns the grand design, start to destination. A Spec is a journey step derived from Blueprint, active ADRs, evidence and Actuality: a smaller goalpost. Tasks are tracer-round vertical slices of a Spec, the smallest work fitting one useful context. The Workbench QAs the finished Spec branch before integration; integration is the owner's Human QA branch; he merges to main. A Task is one fresh context, one branch, a packet and a receipt.\nWF-6: The Blueprint defines the product-level destination: count to 100. Each Spec is a mini-PRD, a scoped objective with its own destination, the next number to count to. Tasks do the counting. Stacked Specs together realize the Blueprint journey. TASKBOARD is the Kanban projection of progress and coordination, not truth or a second tracker.\nWF-12: 'I want every spec completed before we call this done.' The rollout must complete the Blueprint rework and every Spec needed to establish the full workflow. The reworked Blueprint describes every rung and the full recursive Spec/Task loop (Create Spec -> Create Tasks -> Complete and Reconcile Tasks -> Verify Whole Spec -> Corrective Tasks -> Repeat Until Approved -> Integrate Spec). Future Blueprint capabilities outside that scope need no Specs now.",
@@ -34,7 +34,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000K"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -241,6 +243,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:57.332Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000K"
+          ]
         }
       ]
     }

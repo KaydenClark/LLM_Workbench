@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-006L",
-  "revision": 5,
+  "revision": 8,
   "title": "Which skills own destination question card mechanics and the grilling-completion exit?",
   "question": "Which skills own destination question card mechanics and the grilling-completion exit?",
   "answer": "GX-2: One focused DQC primitive owns shared card mechanics: find, create or group the right DQC, preserve locked-question lineage and corrections, link ADRs, Specs, Tasks and other artifacts, and record evidence-backed progress assessments. The existing workflow skills decide when to call it and what their own step proves, and are updated to compose it. No dedicated DQC review skill. Domain-modeling stays available but is not required in this flow.\nGX-3: /to-dqc is the grilling-completion skill: it inspects every locked grilling answer and groups it into a suitable existing DQC, or creates a separate one when it evolves independently, preserving source question identity and corrections. /dqc is the reusable primitive for card operations and evidence-backed assessment, called by /to-dqc and by the mapping, planning, implementation, review and verification skills once those are updated.",
@@ -29,7 +29,11 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000I",
+    "LMK-000O",
+    "LMK-000X"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -164,6 +168,56 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:56.978Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Skills pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000I"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:59.866Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Grilling and Shared Understanding pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000I"
+          ],
+          "to": [
+            "LMK-000I",
+            "LMK-000O"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:50:02.841Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000I",
+            "LMK-000O"
+          ],
+          "to": [
+            "LMK-000I",
+            "LMK-000O",
+            "LMK-000X"
+          ]
         }
       ]
     }

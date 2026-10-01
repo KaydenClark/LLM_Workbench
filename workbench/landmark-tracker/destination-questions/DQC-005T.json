@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-005T",
-  "revision": 6,
+  "revision": 8,
   "title": "How should context cost and agent outcomes be evaluated?",
   "question": "How should context cost and agent outcomes be evaluated?",
   "answer": "RB-Q3: Neither suggestion: \"No budget limit, but budget grading.\" Record artifact sizes on each project during each Workbench update and monitor them; aim for artifacts that say the same thing in fewer words and stay human-readable. The mechanism belongs to the audit/evaluation workbench, not LLM_Workbench.\nRB-Q3A: Scoped out rather than answered: \"This is the audit workbench's problem to grill. It would be something like C. LLM_Workbench doesnt actually do the workbench harness feedback reviews.\" Direction is roughly C (per-update size measurement plus a separate agent-outcome evaluation), owned elsewhere.\nFND-Q15: Out of LLM_Workbench scope: measurement belongs to the audit workbench. 'No budget limit, but budget grading'; 'This is the audit workbench's problem'. Earlier (2026-09-11) the owner held the question until the workflow and foundation were settled.",
@@ -26,7 +26,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000H",
+    "LMK-000W"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -188,6 +191,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:56.290Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000H"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:50:02.149Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Harness Feedback Review pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000H"
+          ],
+          "to": [
+            "LMK-000H",
+            "LMK-000W"
+          ]
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002K",
-  "revision": 8,
+  "revision": 10,
   "title": "How does a grilling or handoff endpoint preserve the owner’s intended scope?",
   "question": "How does a grilling or handoff endpoint preserve the owner’s intended scope?",
   "answer": "BPR-R1: The prior chat 'failed at the beginning' because it never actually started a grilling session. Had it started correctly, stopping the grilling session would have been the endpoint. The handoff should then carry the owner-authorized task and authority plus all needed context from the grilling notepad.\nBPR-R3: This was a promotion and scoping handoff. The receiving chat should promote the grilling notepad into docs and Specs, using all the skills named for that process, so implementation could happen in a later step. It was not authorized to implement the promoted work in the same step.\nV3-20: It authorizes the minimum complete single-repository v3 runway and preserves Kayden's owner-only promotion gate.\nV3-20A: Promote the settled diary into the owning docs/spec, implement through red/green slices from refreshed integration, verify exact pushed heads, perform independent review, reconcile obsolete PR #42 after replacement proof, and open the final integration-to-main PR.\nV3-20B: Merging to main, changing visibility or credentials, editing the private skills repository, importing Foundry machinery, broad guidebook or skill-catalog redesign, and claiming release without source/test/fresh-exercise proof.",
@@ -38,7 +38,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000O",
+    "LMK-000P"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -281,6 +284,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "at": "2026-10-01T23:49:59.631Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Grilling and Shared Understanding pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000O"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 10,
+      "at": "2026-10-01T23:49:59.986Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Handoffs pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000O"
+          ],
+          "to": [
+            "LMK-000O",
+            "LMK-000P"
+          ]
         }
       ]
     }

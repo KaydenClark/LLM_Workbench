@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-005P",
-  "revision": 16,
+  "revision": 17,
   "title": "Which older release and continuity commitments remain live obligations?",
   "question": "Which older release and continuity commitments remain live obligations?",
   "answer": "FND-Q16: Specs, Tasks, DQCs, notepads and handoffs are transient scaffolding. Once their useful content reaches durable owners and the intended result exists, the implementation and its maintained documentation become the continuing reference and the scaffolding is no longer needed. Obsolete release promises become historical or superseded; still-needed obligations remain reachable until resolved. Correct or expand existing ADRs rather than add slightly different decisions; a new ADR must add a valuable architectural lens or layer and explain why the decision was made.\nV3-18: Implement directly in the public LLM Workbench repository from current integration; do not wait on or route through unfinished Forge producer work.\nV3-18A: Directly on an isolated codex/ branch from refreshed origin/integration in LLM Workbench.\nV3-18B: One. Skills, templates, guidebook edits, focused tools, migrations, and proof ship in LLM Workbench; there is no [the owner's private skills repository] PR.\nV3-20: It authorizes the minimum complete single-repository v3 runway and preserves Kayden's owner-only promotion gate.\nV3-20A: Promote the settled diary into the owning docs/spec, implement through red/green slices from refreshed integration, verify exact pushed heads, perform independent review, reconcile obsolete PR #42 after replacement proof, and open the final integration-to-main PR.\nV3-20B: Merging to main, changing visibility or credentials, editing the private skills repository, importing Foundry machinery, broad guidebook or skill-catalog redesign, and claiming release without source/test/fresh-exercise proof.\nV3-24A: The workbench/ layout and manifest; the 12-skill missing-only brand-new-install contract; updates to existing setup/upgrade instructions and affected paths; focused deterministic checks; one fresh Genesis proof; and one existing-project Adoption proof.\nU313-1: Yes - all six land in v3.1.3, TK-005 first.\nU313-1A: All six: TK-001, TK-002, TK-003, TK-005, TK-006, TK-007. Order starts at TK-005.\nU313-1B: This session owns all six.\nE-6: Two new v4 build Specs added to S-00O's build list, not folded into S-00P. Final order ('Yes, lets do it'): (1) WBID Spec (uppercase width 4 allocator, dual-form lookup, ADR-0041 amendment); (2) board Spec (TASKBOARD.json, lanes, lane function, sitrep; ADR-000E and ADR-0013 amendments); (3) S-00P TK-002..TK-005 rewriting controls once around the new board; (4) S-00O release.\nWB-11: Build only the four stance skills, the reduced ordinary entry route (AGENTS.md -> RUNBOOK.md -> LEXICON.md), and the feedback-report workflow and format in the existing feedback lane before running the first report. Implement it step by step.",
@@ -70,7 +70,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000G"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -601,6 +603,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 17,
+      "at": "2026-10-01T23:49:55.563Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Updates pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000G"
+          ]
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-003U",
-  "revision": 4,
+  "revision": 5,
   "title": "When should a planned Spec be decomposed into Tasks?",
   "question": "When should a planned Spec be decomposed into Tasks?",
   "answer": "E-4B: 'planned' is the Backlog separator going forward. to-spec scopes a Spec and it enters Backlog as planned; its Tasks are not cut until it moves to To do, when to-tasks runs from live Actuality. Correction: this applies to new Specs only; in-flight Specs keep their existing Tasks, and pre-cut Tasks in planned Specs are not an issue.",
@@ -22,7 +22,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000Q"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -121,6 +123,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:50:00.661Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Taskboard pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000Q"
+          ]
         }
       ]
     }

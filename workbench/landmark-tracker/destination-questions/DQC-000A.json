@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000A",
-  "revision": 8,
+  "revision": 9,
   "title": "Role scope and stance jobs for Spec delivery",
   "question": "How do scoped roles and composable stances coordinate parallel Spec and Task delivery?",
   "answer": "Role defines scope: Director covers project and integration, Dispatcher one Spec and its branch, Worker one Task. Spec Planner and Spec Manager are separate Dispatcher-usable stances with separate Specs. Planner prepares small parallel vertical slices and may use Workers to author Tasks; Manager dispatches and monitors execution. Reviewer and Auditor remain stances. Director coordinates cross-Spec work.",
@@ -42,7 +42,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000R"
+  ],
   "assessment": null,
   "related": [
     {
@@ -292,6 +294,20 @@
             "id": "SCR-4",
             "revision": "56b459da"
           }
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "at": "2026-10-01T23:50:00.979Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Agent Stances pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000R"
+          ]
         }
       ]
     }

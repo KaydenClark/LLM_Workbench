@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-004L",
-  "revision": 5,
+  "revision": 7,
   "title": "What should a Wiki feature article explain, and when is it written?",
   "question": "What should a Wiki feature article explain, and when is it written?",
   "answer": "WF-8H: A new Wiki collection named 'features' (not 'capabilities'), rather than widening design-concepts: '1, but features. Once a spec is a feature and not just a specification, then it needs a wiki article.' The article is written at the WF-8E closure point, not a new gate. Completed Specs and Tasks become wiki articles describing the product; this is a v4 requirement.\nWF-8E: A Spec closes only after separate-context Spec review passes and owner Human QA on integration confirms the destination is actually there. It is then reconciled into the Wiki and retired. No Git merge closes it automatically; main promotion stays a separate owner action.",
@@ -26,7 +26,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000J",
+    "LMK-000N"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +164,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:57.098Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Wiki pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000J"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:59.121Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Durable Knowledge pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000J"
+          ],
+          "to": [
+            "LMK-000J",
+            "LMK-000N"
+          ]
         }
       ]
     }

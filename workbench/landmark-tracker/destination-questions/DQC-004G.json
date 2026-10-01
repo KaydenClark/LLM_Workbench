@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-004G",
-  "revision": 4,
+  "revision": 5,
   "title": "How should dirty or unpushed work affect closeout?",
   "question": "How should dirty or unpushed work affect closeout?",
   "answer": "RB-Q4: Suggested B: visibility plus a gate at the claim. Doctor gains attention-level git diagnostics (detached HEAD, untracked files in the controls, ADR and spec lanes) that never block; upstream distance joins the receipt row. close refuses a dirty tree or unpushed branch unless the receipt records that state and a reason. Doctor must not block on detached HEAD.",
@@ -22,7 +22,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000H"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -121,6 +123,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:55.985Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000H"
+          ]
         }
       ]
     }

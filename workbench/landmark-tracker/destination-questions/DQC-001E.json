@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-001E",
-  "revision": 6,
+  "revision": 8,
   "title": "What place should carry have in the delivery workflow?",
   "question": "What place should carry have in the delivery workflow?",
   "answer": "REC-01: carry (chosen from carry, escort, own, finish).\nREC-02: 17th core skill (chosen over local-only outside the bundle, or contract text in AGENTS.md).\nU313-2: TK-005 first, then install carry via whatever route it defines. No hand-copy workaround.",
@@ -34,7 +34,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000I",
+    "LMK-000K"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -209,6 +212,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:56.863Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Skills pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000I"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:57.293Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000I"
+          ],
+          "to": [
+            "LMK-000I",
+            "LMK-000K"
+          ]
         }
       ]
     }

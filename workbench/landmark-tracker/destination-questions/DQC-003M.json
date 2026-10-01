@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-003M",
-  "revision": 6,
+  "revision": 7,
   "title": "Which board format and lanes should present implementation work?",
   "question": "Which board format and lanes should present implementation work?",
   "answer": "TRACK: Recorded as: 'Owner backed up to ADR-000E / TASKBOARD.md first.' The owner did not pick an option; he said 'we need to back way up', that the six lanes he specified should be the lanes on TASKBOARD.md, and asked what they were right now.\nE-1: Redirected answer: a generated TASKBOARD.json Agile Kanban board replaces TASKBOARD.md as the root contract artifact, with no TASKBOARD.md view. Six lanes (backlog, toDo, inProgress, blocked, needsReview, complete); cards keyed by WBID, no kind field; loose schema v1; owner = assignee; agents never write it. Complete cards 'stay until promoted to a durable place' and the record is deleted.\nE-6: Two new v4 build Specs added to S-00O's build list, not folded into S-00P. Final order ('Yes, lets do it'): (1) WBID Spec (uppercase width 4 allocator, dual-form lookup, ADR-0041 amendment); (2) board Spec (TASKBOARD.json, lanes, lane function, sitrep; ADR-000E and ADR-0013 amendments); (3) S-00P TK-002..TK-005 rewriting controls once around the new board; (4) S-00O release.",
@@ -30,7 +30,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000Q"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +203,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:50:00.345Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Taskboard pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000Q"
+          ]
         }
       ]
     }

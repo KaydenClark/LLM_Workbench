@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000L",
-  "revision": 4,
+  "revision": 5,
   "title": "Where must host-specific knowledge live when another instance needs it?",
   "question": "Where must host-specific knowledge live when another instance needs it?",
   "answer": "PW-8: 'This is what the wiki is for.' Owner-machine-only truth a cloud agent would need goes into the room's Wiki (MEMORY.md router), not host memory. Host auto-memory stays a per-machine convenience the Workbench never depends on.",
@@ -22,7 +22,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000B"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -121,6 +123,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:53.267Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Portable Workbench pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000B"
+          ]
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002M",
-  "revision": 5,
+  "revision": 6,
   "title": "When may Specs nest or block other Specs?",
   "question": "When may Specs nest or block other Specs?",
   "answer": "FND-Q17c: Specs nest and block each other, the same way Tasks do: \"SPECs can nest and block each other, same as tasks. we are changing that.\" In the same message he said a Task can be created and merged into integration without a Spec branch.\nTT-Q3: A Workbench is a 'room' that holds many Workbenches and many Projects; each Project has exactly one Workbench of its own. A Workbench is one set of Contract and routing artifacts with one Blueprint. A Blueprint has many Specs and many Tasks; a Spec has many Tasks and many Chats; a Task maps to one Chat. Spec is the destination, Task the steps; small work may be a standalone Task.",
@@ -28,7 +28,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000K"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -163,6 +165,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:57.371Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000K"
+          ]
         }
       ]
     }

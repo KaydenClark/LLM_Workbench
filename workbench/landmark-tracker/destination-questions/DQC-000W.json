@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000W",
-  "revision": 7,
+  "revision": 8,
   "title": "Which reusable behaviors belong in the required skill bundle?",
   "question": "Which reusable behaviors belong in the required skill bundle?",
   "answer": "V3-21A: The complete current setup and grilling-to-implementation workflow, not merely template-only setup.\nPW-4: 'If we need it, it should be included in workbench/skills. But we should keep [the owner's private skills repository] as a backup of all of the skills, and a place every workbench can publish skills to that they create.' The Contract names only skills that ship in the lane. The specific candidate list was not confirmed.\nREC-02: 17th core skill (chosen over local-only outside the bundle, or contract text in AGENTS.md).\nPW-3: 'We already locked in a version of 1. When we update the workbenches, we update the skills. LLM_Workbench owns the skills it needs to. We store them all in workbench/skills.' Core skills are tracked in every room at workbench/skills and replaced by the ordinary Workbench update; no provider home, personal catalog or bootstrap is on the critical path.",
@@ -50,7 +50,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000I"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -273,6 +275,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:56.557Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Skills pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000I"
+          ]
         }
       ]
     }

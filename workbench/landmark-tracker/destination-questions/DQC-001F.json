@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-001F",
-  "revision": 6,
+  "revision": 7,
   "title": "What must an agent read on ordinary entry?",
   "question": "What must an agent read on ordinary entry?",
   "answer": "WB-2: Keep the seven-control Workbench Contract. Shrink ordinary entry to AGENTS.md, RUNBOOK.md and LEXICON.md; the Lexicon routes to other owners only when the task needs them. Blueprint is not default reading but is consulted for architecture or cross-cutting direction. The selected SPEC.md stays mandatory after selection because it delegates the work's scope and verification.\nBPR-2: Only AGENTS.md, RUNBOOK.md and LEXICON.md are universal reading on every run; Blueprint and ADRs are not universal startup context and are reached by routing. LEXICON.md owns the single Context Map, RUNBOOK.md owns the ordinary entry procedure and points to it, and AGENTS.md requires traverse-don't-search without duplicating the map.\nFND-Q22: The Contract is AGENTS.md, RUNBOOK.md and LEXICON.md, read every run, plus the assigned Spec after selection. CLAUDE.md is a host adapter, not a carrier. The Contract routes by intent to Routed artifacts (Blueprint, Taskboard, Ownership map, README, Specs, Tasks, Wiki, ADRs and more), which are not all loaded. Core is the Contract plus the routing artifacts. ADR-0033 is superseded, not amended.",
@@ -30,7 +30,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000L"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +203,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:58.111Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Context Map pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000L"
+          ]
         }
       ]
     }

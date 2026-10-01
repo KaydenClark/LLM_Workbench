@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002Y",
-  "revision": 5,
+  "revision": 7,
   "title": "How should missing host or Task capabilities become visible to the owner?",
   "question": "How should missing host or Task capabilities become visible to the owner?",
   "answer": "PW-7: 'When we lack something, flag the task as blocked or needs review so when I do sitrep I find it.' Mechanics were delegated: floor = Node 18+, Python 3.9+, git, gh authenticated with push rights, GitHub network, checked at session start (missing = all-effect doctor finding); other capabilities are optional and named by the Task.\nE-10: Yes: sitrep (Situation Report) returns as a core skill reading TASKBOARD.json, delivered with the board Spec. Shape: lead with what needs his attention: (1) needs his review, (2) what he can unblock, (3) in progress, (4) to do, each in priority order, in plain language: 'I don't want to be reading a bunch of WBID. I want to know what the specs and tasks actually are, what the progress actually is.'",
@@ -26,7 +26,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000B",
+    "LMK-000Q"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +164,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:53.648Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Portable Workbench pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000B"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:50:00.224Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Taskboard pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000B"
+          ],
+          "to": [
+            "LMK-000B",
+            "LMK-000Q"
+          ]
         }
       ]
     }

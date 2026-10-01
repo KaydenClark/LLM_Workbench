@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-006E",
-  "revision": 4,
+  "revision": 6,
   "title": "How does a changed answer expose the claims it affects?",
   "question": "How does a changed answer expose the claims it affects?",
   "answer": "LD-13: Preserve what changed, why, related artifacts and evidence-bearing alignment assessments. Assess which specific claims are affected rather than assuming every link is stale. Proposed mechanics: identify the changed claim, compare related durable statements, and record supported impact or no impact plus any reconciliation need.",
@@ -22,7 +22,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000N",
+    "LMK-000X"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -121,6 +124,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:59.279Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Durable Knowledge pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000N"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:02.637Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000N"
+          ],
+          "to": [
+            "LMK-000N",
+            "LMK-000X"
+          ]
         }
       ]
     }

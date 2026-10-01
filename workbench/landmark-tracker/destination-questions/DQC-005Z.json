@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-005Z",
-  "revision": 6,
+  "revision": 8,
   "title": "Which grilling material becomes a destination question card, and can a card exist without a landmark?",
   "question": "Which grilling material becomes a destination question card, and can a card exist without a landmark?",
   "answer": "LD-31: Yes, owner identifies conceptual groups as destination questions. Retitle meaningfully and preserve source question IDs; exact example groupings/titles not final. Settled-question summary approved, without implementation or promotion authorization.\nLD-17: Show meaningful concept syntheses, relationships and step distributions, rather than a card for every conversational prompt. Keep readable explanations in the Wiki. Proposed presentation: concise title and distribution, with source lineage and assessments available on expansion.\nLD-30: Questions can be tracked without landmark; show no landmark. Early Idea/Aligning grouping can remain unsettled or change. Concept growth: grilling question -> destination question -> landmark if consequential enough. Main-project association tentative; record conversion and threshold unspecified.",
@@ -30,7 +30,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000O",
+    "LMK-000X"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +204,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:59.709Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Grilling and Shared Understanding pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000O"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:50:02.435Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000O"
+          ],
+          "to": [
+            "LMK-000O",
+            "LMK-000X"
+          ]
         }
       ]
     }

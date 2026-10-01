@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-001X",
-  "revision": 5,
+  "revision": 6,
   "title": "How adaptable should the generic Blueprint structure be?",
   "question": "How adaptable should the generic Blueprint structure be?",
   "answer": "BPR-8B: As a first version, explicitly adaptable through use: product destination; people and problems served; promised outcomes; desired experience and behavior; integrated system design; cross-cutting qualities and constraints; desired creation/update/repair/validation/deployment lifecycle; non-goals. Headings can be adapted and genuinely inapplicable sections omitted.\nFND-Q06: Eight sections, with headings adapted to the product and a genuinely inapplicable section omitted rather than filled with boilerplate. The fixed-heading test applies only to the root and template Blueprints.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000F"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:54.644Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Artifact Types pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000F"
+          ]
         }
       ]
     }

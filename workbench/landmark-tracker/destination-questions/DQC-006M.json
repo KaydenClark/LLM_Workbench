@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-006M",
-  "revision": 4,
+  "revision": 6,
   "title": "Where does the workflow begin relative to idea exploration, Align and room setup?",
   "question": "Where does the workflow begin relative to idea exploration, Align and room setup?",
   "answer": "SKW-1: Idea exploration may precede Align; grill-me, wayfinder or brainstorm can start Align; a grilling session starts with grill-me. Genesis and Adoption are first-time setup or update, not the governing workflow, and Genesis requires a grilling session afterward to form the Blueprint.",
@@ -35,7 +35,10 @@
       "revision": null
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000K",
+    "LMK-000O"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -138,6 +141,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:57.991Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000K"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:59.905Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Grilling and Shared Understanding pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000K"
+          ],
+          "to": [
+            "LMK-000K",
+            "LMK-000O"
+          ]
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-005H",
-  "revision": 6,
+  "revision": 8,
   "title": "What real Template upgrade must each Workbench version prove?",
   "question": "What real Template upgrade must each Workbench version prove?",
   "answer": "BPR-7A: Every Workbench version must be proved by successfully updating Example_Workbench (now Workbench Template) to that version. Genesis for a project with no Blueprint should seed a starting Blueprint and a prepared grilling notepad grounded in the project's evidence, and an update should not silently treat an existing Blueprint as owner-validated. Those mechanisms are future capabilities and must not be claimed before built and verified.\nFND-Q12: The Workbench_Template is the answer: each release must 'fully build a working template ... that a room can turn into its own project', and updating the Template to the new version is the release gate.\nBPR-7B1: For v3.2 it is enough that LLM Workbench applies the newly settled ownership and routing rules to update Workbench Template successfully. Fresh-copy personalization, prepared project grilling, Genesis completion and validation of a personalized Workbench are future capabilities; v3.2 must not claim them.",
@@ -30,7 +30,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000G",
+    "LMK-000V"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +204,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:55.485Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Updates pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000G"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:50:01.902Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Template pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000G"
+          ],
+          "to": [
+            "LMK-000G",
+            "LMK-000V"
+          ]
         }
       ]
     }

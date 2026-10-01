@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-005X",
-  "revision": 6,
+  "revision": 7,
   "title": "Where and in what form do Tracker records live?",
   "question": "Where and in what form do Tracker records live?",
   "answer": "LD-22: Use workbench/landmark-tracker/ with generated TRACKER.json and flat destination-questions/ and landmarks/ JSON records; Wiki explanations are Markdown. Earlier status-folder and root proposals are superseded or unselected.\nLD-22A: Current approved layout: workbench/landmark-tracker/ containing generated TRACKER.json and flat JSON destination-questions/ and landmarks/. Root from decision-012, question folder revised by decision-023.\nLD-6: Landmarks and questions both get WBIDs; legacy question labels stay readable.",
@@ -30,7 +30,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000X"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +203,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:50:02.353Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000X"
+          ]
         }
       ]
     }

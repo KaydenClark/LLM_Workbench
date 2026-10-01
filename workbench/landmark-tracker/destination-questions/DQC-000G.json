@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000G",
-  "revision": 5,
+  "revision": 6,
   "title": "What does next mean, and which work should it offer?",
   "question": "What does next mean, and which work should it offer?",
   "answer": "E-5: Confirmed the agent's proposal: one shared lane function for render, next and doctor; next offers only To do cards (cards with unfinished dependsOn visible but not offered); next --review lists Needs review; doctor never blocks on needsReview or Backlog; Blocked stays attention; a Spec's lane is derived from its Tasks, never hand-set.",
@@ -28,7 +28,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000Q"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -163,6 +165,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:00.185Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Taskboard pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000Q"
+          ]
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002S",
-  "revision": 7,
+  "revision": 8,
   "title": "When can a small change be a standalone Task?",
   "question": "When can a small change be a standalone Task?",
   "answer": "E-9: At workbench/tasks/TK-XXXX/TASK.md beside the Specs, under the same ADR-000I folder lifecycle, in the same Workbench-unique TK- series. Its card has an empty spec field and moves through lanes on its own. Used for small localized changes; a standalone Task that outgrows one context unit becomes a Spec.\nTT-Q3: A Workbench is a 'room' that holds many Workbenches and many Projects; each Project has exactly one Workbench of its own. A Workbench is one set of Contract and routing artifacts with one Blueprint. A Blueprint has many Specs and many Tasks; a Spec has many Tasks and many Chats; a Task maps to one Chat. Spec is the destination, Task the steps; small work may be a standalone Task.\nFND-Q17c: Specs nest and block each other, the same way Tasks do: \"SPECs can nest and block each other, same as tasks. we are changing that.\" In the same message he said a Task can be created and merged into integration without a Spec branch.\nSCR-7A: The full hierarchy still runs: Dispatcher -> Worker -> Dispatcher -> Director, with Git integration -> Task branch -> integration -> integration. The Dispatcher sends the Worker from integration, verifies and merges the result, and the Director checks it on integration. No role works from main. A direct Task that outgrows one context or repeats one objective becomes a Spec.",
@@ -36,7 +36,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000K"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -243,6 +245,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:57.604Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000K"
+          ]
         }
       ]
     }

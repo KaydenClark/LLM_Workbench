@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002T",
-  "revision": 5,
+  "revision": 6,
   "title": "When does a corrective change need a new Spec?",
   "question": "When does a corrective change need a new Spec?",
   "answer": "WF-8G: Route by scope and destination, not Task count. A gap against an existing Spec destination is fixed with reopened or corrective Tasks, even when several are needed. A new Spec is only for a distinct scoped objective with its own destination, such as investigating why the journey missed something. TASK.md holds active work state and TASKBOARD projects it; a Spec is open if it has Tasks on the board.\nWF-8A: No reopen ceremony. A small corrective change against a retired Spec is a Task plus an update to the Wiki record of the reconciled retired Spec; SPEC.md is not resurrected, though a Spec branch may still carry the commit. 'What we wanted was the Spec, if that is right, then we are okay.'",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000K"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:57.642Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000K"
+          ]
         }
       ]
     }

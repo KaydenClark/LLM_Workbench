@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-004Q",
-  "revision": 4,
+  "revision": 6,
   "title": "When should working material be promoted instead of copied into a checkpoint?",
   "question": "When should working material be promoted instead of copied into a checkpoint?",
   "answer": "PW-5: Promote-before-end is the goal for almost every session: promote settled claims, append the receipt, push, let the notepad die. With an amendment: 'we can have the notepads and handoffs stay if needed... we should be able to commit them for a bit if we need to, undoing the lock on them never being committed.' Committed notes are transport, not evidence; privacy rules stand; ADR-0051 stays optional.",
@@ -38,7 +38,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000N",
+    "LMK-000S"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -153,6 +156,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:59.200Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Durable Knowledge pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000N"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:01.141Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Notepads pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000N"
+          ],
+          "to": [
+            "LMK-000N",
+            "LMK-000S"
+          ]
         }
       ]
     }

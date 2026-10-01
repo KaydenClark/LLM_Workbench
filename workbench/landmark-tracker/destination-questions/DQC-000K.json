@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000K",
-  "revision": 8,
+  "revision": 10,
   "title": "Which coordination machinery belongs outside the base Workbench?",
   "question": "Which coordination machinery belongs outside the base Workbench?",
   "answer": "V3-5: FUIDs, Job Orders, flights, Claims, Journal/CAS, Halls, sockets, Captain, CIC, scheduling and runtime visibility remain Foundry augmentation.\nV3-24: Make LLM Workbench good enough, current, and safely reusable in other projects while Foundry finishes; do not redesign it into Foundry or expand optional architecture.\nV3-24B: Broad guidebook taxonomy, Foundry runtime concepts, orchestration, generalized plugin/catalog architecture, unrelated pending skills, and aesthetic refactors.\nFND-Q17e: A coordinator comes later; first prove single-Task execution: \"There should be a coordinator, but that will be built in a little bit. Right now let's just prove that we can execute a task every single time consistently.\" Backlog after v4.\nWF-10: 'Its more B': there should be a coordinator, but it will be built later. 'Right now let's just prove that we can execute a task every single time consistently.' Future capabilities are planned on the Blueprint; not every Spec is built now.",
@@ -40,7 +40,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000C",
+    "LMK-000D"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -283,6 +286,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "at": "2026-10-01T23:49:53.834Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Boundaries pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000C"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 10,
+      "at": "2026-10-01T23:49:53.984Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Agent Autonomy pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000C"
+          ],
+          "to": [
+            "LMK-000C",
+            "LMK-000D"
+          ]
         }
       ]
     }

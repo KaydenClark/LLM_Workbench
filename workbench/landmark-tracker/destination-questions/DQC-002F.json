@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002F",
-  "revision": 6,
+  "revision": 7,
   "title": "What establishes that an idea has become a shared design concept?",
   "question": "What establishes that an idea has become a shared design concept?",
   "answer": "WF-2: An owner idea starts Align through grilling; owner and agent explicitly confirm a shared design concept, then blueprint it. Workflow: Idea -> Align through grilling -> confirmed design concept -> Blueprint -> recursive delivery loop.\nFND-Q01: The workflow starts when the owner brings an idea and runs six phases: Idea -> Align (grilling to a shared design concept) -> Scope (Blueprint plus Specs, updating ADRs and docs) -> Plan (decompose into Tasks) -> Implement (loop over Tasks, tracked on TASKBOARD) -> Verify (to Spec and/or human QA). Destination is in BLUEPRINT, the Journey is a SPEC, each walked Path is a TASK. Prototype is optional, not a standard phase.\nBPR-R1: The prior chat 'failed at the beginning' because it never actually started a grilling session. Had it started correctly, stopping the grilling session would have been the endpoint. The handoff should then carry the owner-authorized task and authority plus all needed context from the grilling notepad.",
@@ -30,7 +30,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000O"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +203,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:59.436Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Grilling and Shared Understanding pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000O"
+          ]
         }
       ]
     }

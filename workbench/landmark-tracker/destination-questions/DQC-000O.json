@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000O",
-  "revision": 7,
+  "revision": 9,
   "title": "Which artifacts need to be discoverable at the room root?",
   "question": "Which artifacts need to be discoverable at the room root?",
   "answer": "V3-1: The seven root surfaces remain AGENTS.md, BLUEPRINT.md, LEXICON.md, RUNBOOK.md, TASKBOARD.md, CLAUDE.md and README.md; workbench/ is a support-record directory, \"not a second control root\".\nFND-Q23A: A separate map is needed: OWNERSHIP.json at the repository root as the eighth root file, a Core routing artifact outside the three-file Contract; root placement never implies Contract membership. The ownership schema leaves LEXICON.md, which keeps shared language and routes ownership questions to the map. ADR-0013 must be superseded. On 2026-09-22 the \"root control\" label was dropped: it is the Ownership map, a routing artifact.\nE-1: Redirected answer: a generated TASKBOARD.json Agile Kanban board replaces TASKBOARD.md as the root contract artifact, with no TASKBOARD.md view. Six lanes (backlog, toDo, inProgress, blocked, needsReview, complete); cards keyed by WBID, no kind field; loose schema v1; owner = assignee; agents never write it. Complete cards 'stay until promoted to a durable place' and the record is deleted.\nACC-2: The accepted eight-file destination may lead the current seven-file implementation. ADR-000B names TASKBOARD.json; AGENTS and LEXICON distinguish accepted destination from installed files.",
@@ -34,7 +34,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000B",
+    "LMK-000F"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -241,6 +244,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:53.306Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Portable Workbench pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000B"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "at": "2026-10-01T23:49:54.402Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Artifact Types pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000B"
+          ],
+          "to": [
+            "LMK-000B",
+            "LMK-000F"
+          ]
         }
       ]
     }

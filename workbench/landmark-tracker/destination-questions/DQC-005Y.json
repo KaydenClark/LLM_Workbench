@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-005Y",
-  "revision": 5,
+  "revision": 8,
   "title": "Where does pre-delivery understanding live, and what becomes of the grilling sources?",
   "question": "Where does pre-delivery understanding live, and what becomes of the grilling sources?",
   "answer": "LD-5: Keep the existing grilling sources. Destination Questions synthesize related source questions and preserve evolving understanding and lineage; landmarks connect that understanding around a feature or pillar; TRACKER.json projects the source records. Existing artifacts keep their jobs. Do not move or replace the grilling ledger. Exact link fields remain build design.\nLD-8: Tracker, landmarks and Destination Question Cards (DQCs) are the place to maintain and consult that current understanding. DQCs and landmark records hold its substance; the generated Tracker presents it. Grilling notepads remain, but become more historical and handoff-like rather than the primary current account.",
@@ -26,7 +26,11 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000O",
+    "LMK-000S",
+    "LMK-000X"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +165,56 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:59.670Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Grilling and Shared Understanding pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000O"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:50:01.262Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Notepads pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000O"
+          ],
+          "to": [
+            "LMK-000O",
+            "LMK-000S"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:50:02.394Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000O",
+            "LMK-000S"
+          ],
+          "to": [
+            "LMK-000O",
+            "LMK-000S",
+            "LMK-000X"
+          ]
         }
       ]
     }

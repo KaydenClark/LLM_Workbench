@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-001I",
-  "revision": 6,
+  "revision": 7,
   "title": "Which artifacts constitute the Workbench Contract?",
   "question": "Which artifacts constitute the Workbench Contract?",
   "answer": "FND-Q22: The Contract is AGENTS.md, RUNBOOK.md and LEXICON.md, read every run, plus the assigned Spec after selection. CLAUDE.md is a host adapter, not a carrier. The Contract routes by intent to Routed artifacts (Blueprint, Taskboard, Ownership map, README, Specs, Tasks, Wiki, ADRs and more), which are not all loaded. Core is the Contract plus the routing artifacts. ADR-0033 is superseded, not amended.\nFND-Q23A: A separate map is needed: OWNERSHIP.json at the repository root as the eighth root file, a Core routing artifact outside the three-file Contract; root placement never implies Contract membership. The ownership schema leaves LEXICON.md, which keeps shared language and routes ownership questions to the map. ADR-0013 must be superseded. On 2026-09-22 the \"root control\" label was dropped: it is the Ownership map, a routing artifact.\nACC-3: Contract = AGENTS.md, RUNBOOK.md and LEXICON.md, read on every run, plus the assigned Spec; the Blueprint is a routed artifact the Contract directs agents to by intent. The Contract and the other routing artifacts make the Blueprint's claims binding: the Blueprint describes how the project should work with the Workbench, and the Workbench proves those claims by running the project.",
@@ -30,7 +30,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000M"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +203,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:58.267Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Ownership Model pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000M"
+          ]
         }
       ]
     }

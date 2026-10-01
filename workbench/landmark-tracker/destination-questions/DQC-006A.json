@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-006A",
-  "revision": 6,
+  "revision": 8,
   "title": "How do the Tracker and the Taskboard divide alignment from delivery, and where does Frontier fit?",
   "question": "How do the Tracker and the Taskboard divide alignment from delivery, and where does Frontier fit?",
   "answer": "LD-9: Two boards: Landmark Board (alignment) and Taskboard (delivery). No third grilling board.\nLD-16: Tracker monitors documentation and alignment; Taskboard monitors implementation. The earlier sole-board language must be reconciled to that accepted division while preserving historical answers.\nLD-11: Landmark and Destination Question have the approved distinct meanings; neither should be folded into Frontier. FND-Q17b records a ready-Task meaning of Frontier, while later discussion uses it more broadly for evolving understanding. Proposed reconciliation: retain the technical ready-Task meaning and describe the broader concept explicitly without silently redefining the term. Exact formal wording is not owner-confirmed.",
@@ -30,7 +30,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000Q",
+    "LMK-000X"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +204,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:50:00.739Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Taskboard pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000Q"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:50:02.475Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000Q"
+          ],
+          "to": [
+            "LMK-000Q",
+            "LMK-000X"
+          ]
         }
       ]
     }

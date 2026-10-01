@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-005L",
-  "revision": 5,
+  "revision": 7,
   "title": "What complete cycle on another room establishes workflow mission success?",
   "question": "What complete cycle on another room establishes workflow mission success?",
   "answer": "WF-11: Mission success is one full cycle on another workbench: LLM_Workbench creates or updates it, a grilling session runs, the contract and Specs are created or updated, Tasks are created and executed correctly, and the Spec is verified and on integration for owner review. 'Once that cycle is complete on another workbench we will say mission success.'\nWF-12: 'I want every spec completed before we call this done.' The rollout must complete the Blueprint rework and every Spec needed to establish the full workflow. The reworked Blueprint describes every rung and the full recursive Spec/Task loop (Create Spec -> Create Tasks -> Complete and Reconcile Tasks -> Verify Whole Spec -> Corrective Tasks -> Repeat Until Approved -> Integrate Spec). Future Blueprint capabilities outside that scope need no Specs now.",
@@ -26,7 +26,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000H",
+    "LMK-000K"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +164,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:56.213Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000H"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:57.912Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000H"
+          ],
+          "to": [
+            "LMK-000H",
+            "LMK-000K"
+          ]
         }
       ]
     }

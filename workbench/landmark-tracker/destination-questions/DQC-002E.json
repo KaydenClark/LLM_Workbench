@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002E",
-  "revision": 5,
+  "revision": 6,
   "title": "How should acceptance and artifact migration be sequenced without contradictory controls?",
   "question": "How should acceptance and artifact migration be sequenced without contradictory controls?",
   "answer": "ACC-1: Reconcile ADR-000B/C/D to the locked answers, then accept them now without another owner reread. A confirmed grilling Question / Answer / Why / Impact readback locks the ADR; to-docs authors it before Specs and Tasks.\nACC-2: The accepted eight-file destination may lead the current seven-file implementation. ADR-000B names TASKBOARD.json; AGENTS and LEXICON distinguish accepted destination from installed files.",
@@ -30,7 +30,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000F"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -169,6 +171,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:54.909Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Artifact Types pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000F"
+          ]
         }
       ]
     }

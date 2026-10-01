@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-006I",
-  "revision": 5,
+  "revision": 8,
   "title": "Who maintains Tracker records and landmark Wiki pages, and when?",
   "question": "Who maintains Tracker records and landmark Wiki pages, and when?",
   "answer": "LD-20: The grilling primitive stays unaware of landmarks and the Tracker; compound workflow activity owns reading and updating the landmark system. The grilling skill rebuild is untouched.\nLD-21: Tracker updates follow workflow events and ongoing alignment, deriving its view from source artifacts wherever possible. Wiki creation/update uses normal Spec/Task delivery during building; planning/review are also opportunities for Wiki reconciliation. No separate publishing ceremony.",
@@ -26,7 +26,11 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000J",
+    "LMK-000O",
+    "LMK-000X"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +165,56 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:57.214Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Wiki pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000J"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:59.787Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Grilling and Shared Understanding pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000J"
+          ],
+          "to": [
+            "LMK-000J",
+            "LMK-000O"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:50:02.720Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000J",
+            "LMK-000O"
+          ],
+          "to": [
+            "LMK-000J",
+            "LMK-000O",
+            "LMK-000X"
+          ]
         }
       ]
     }

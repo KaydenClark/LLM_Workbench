@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-005V",
-  "revision": 7,
+  "revision": 8,
   "title": "What is a landmark, and how long does it live?",
   "question": "What is a landmark, and how long does it live?",
   "answer": "LD-2: Codex definition (proposal-001) locked; landmark holds exploration before the canonical map; accepted direction reflected in the Blueprint.\nLD-3: A landmark is an evolving feature/framework account, not a Spec or PRD. It has its own structured record alongside the readable Wiki explanation.\nLD-7: No universal parent Spec. A landmark is not a Spec or PRD and is not implemented itself. Bounded Specs and Tasks deliver work; several Specs may contribute to one landmark explanation. Links expose those contributions.\nLD-18: A landmark is an evolving account of a Workbench feature or framework. It is never implemented itself: Specs and Tasks implement, and the landmark tracks them as they evolve. It must earn a place in the contract (for LLM_Workbench mostly its Blueprint). It has a Wiki page and durable place from the start, may never leave the board, and retires only when nothing lives solely on it. ADRs are routing and decision records, not the delivery path.",
@@ -34,7 +34,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000X"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -241,6 +243,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:50:02.270Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000X"
+          ]
         }
       ]
     }

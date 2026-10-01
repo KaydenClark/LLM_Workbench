@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000R",
-  "revision": 5,
+  "revision": 6,
   "title": "How should tools and skills resolve relocated support paths?",
   "question": "How should tools and skills resolve relocated support paths?",
   "answer": "V3-13: Every one of the 12 core skills resolves any project support path through workbench/manifest.json; a skill that does not touch support records remains behaviorally unchanged.\nV3-12C: No. Genesis writes only v3 paths; Adoption and update recognize legacy inputs during a one-time migration, then the manifest becomes the sole path authority.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000B"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:53.422Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Portable Workbench pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000B"
+          ]
         }
       ]
     }

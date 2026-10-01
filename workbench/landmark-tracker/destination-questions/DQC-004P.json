@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-004P",
-  "revision": 8,
+  "revision": 9,
   "title": "What makes a handoff useful to its receiving context?",
   "question": "What makes a handoff useful to its receiving context?",
   "answer": "BPR-R2: A human-readable Markdown handoff. The handoff skill 'already should require' this, and its wording should say explicitly that a handoff is a human-readable Markdown file. The JSON notepad stays the working context and is not the handoff.\nBPR-R4: The handoff succeeds when the new chat can complete the task it was created for, using the authority and context the handoff carries. Success is not measured by completing ceremony after the handoff file exists.\nBPR-R1: The prior chat 'failed at the beginning' because it never actually started a grilling session. Had it started correctly, stopping the grilling session would have been the endpoint. The handoff should then carry the owner-authorized task and authority plus all needed context from the grilling notepad.\nTT-Q7: A fresh Chat is needed when the context is used up, and for the separate-context review. Handoffs are Markdown written for a new Chat. TT-Q4 adds that each Task gets its own Chat.\nTT-Q9: A handoff is Markdown for a new Chat or agent; a notepad is the JSON working record; a notepad belongs to its objective, not to the Chat, model or host that created it (ADR-000L).",
@@ -40,7 +40,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000P"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -283,6 +285,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "at": "2026-10-01T23:50:00.066Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Handoffs pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000P"
+          ]
         }
       ]
     }

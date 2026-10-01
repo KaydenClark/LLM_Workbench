@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-003N",
-  "revision": 5,
+  "revision": 6,
   "title": "How should Spec and Task cards show hierarchy without double-counting work?",
   "question": "How should Spec and Task cards show hierarchy without double-counting work?",
   "answer": "E-3: Both. A Task is a nested part of a Spec, so Spec and Task cards show progression, not duplicate work; a Spec card can count its child Tasks. A Spec cannot move to needsReview or complete until all its Tasks are in needsReview or complete. 'Not every Task has to belong to a Spec.' Specs always appear as cards.\nFND-Q02A: The underlying Specs and Tasks own substantive progress, issues, evidence and recoverable context; TASKBOARD.md renders and summarizes them and should hold as little irreplaceable context as possible. Sitrep must be able to read only the board for a complete active picture. Correction: do not call the board the navigation view. It is the Kanban and project-management view; it links to Tasks only because everything is navlinked. The Lexicon keeps the Context Map and Navlink hub role.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000Q"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:00.385Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Taskboard pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000Q"
+          ]
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000H",
-  "revision": 1,
+  "revision": 2,
   "title": "How should incomplete setup report its result and recovery path?",
   "question": "How should incomplete setup report its result and recovery path?",
   "answer": null,
@@ -17,7 +17,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000U"
+  ],
   "assessment": null,
   "related": [],
   "claims": [],
@@ -41,6 +43,20 @@
       "changes": [
         {
           "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:50:01.583Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Genesis and Adoption pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000U"
+          ]
         }
       ]
     }

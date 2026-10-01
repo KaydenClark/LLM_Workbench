@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-005I",
-  "revision": 5,
+  "revision": 7,
   "title": "Which focused fixtures demonstrate the portable layout and preservation seams?",
   "question": "Which focused fixtures demonstrate the portable layout and preservation seams?",
   "answer": "V3-17: Focused red/green fixtures plus real Genesis and Adoption exercises prove the portable contract; the v2 upgrade path receives its own migration fixture.\nV3-17A: Valid and invalid manifests, legacy-path migration, missing-skill install, existing-skill preservation, explicitly authorized update with backup, project-local shadows, conflicting destinations, and portable path handling.",
@@ -26,7 +26,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000B",
+    "LMK-000H"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +164,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:53.685Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Portable Workbench pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000B"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:56.100Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000B"
+          ],
+          "to": [
+            "LMK-000B",
+            "LMK-000H"
+          ]
         }
       ]
     }

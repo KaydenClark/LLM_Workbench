@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-006G",
-  "revision": 4,
+  "revision": 6,
   "title": "How do Tracker evidence links stay recoverable after their sources retire?",
   "question": "How do Tracker evidence links stay recoverable after their sources retire?",
   "answer": "LD-15: Use current identities and resolved paths for live navigation; retain immutable commit/path citations for historical proof. Existing move operations maintain live links and discard uses a recovery register. Tracker JSON integration must be built and verified. Ignored local notes are not protected by tracked Git history and must remain until their needed content is safely reconciled or transferred.",
@@ -22,7 +22,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000N",
+    "LMK-000X"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -121,6 +124,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:59.358Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Durable Knowledge pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000N"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:02.678Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000N"
+          ],
+          "to": [
+            "LMK-000N",
+            "LMK-000X"
+          ]
         }
       ]
     }

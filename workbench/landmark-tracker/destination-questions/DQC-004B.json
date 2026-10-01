@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-004B",
-  "revision": 10,
+  "revision": 11,
   "title": "When is separate-context review required, and what unit does it inspect?",
   "question": "When is separate-context review required, and what unit does it inspect?",
   "answer": "WB-4: Independent review is required only when work is ready to merge into integration: the proposed integration candidate gets a separate-context review before branches combine. That reviewer checks the candidate and its evidence, which is enough to challenge consequential claims, code changes and report recommendations. Earlier review, verification and audit are supports, not mandatory independent ceremonies.\nWF-8B: No per-Task independent-review ceremony just because it is a Task. Ordinary verification and proof are mandatory: red/green TDD, relevant tests green, exercising what was built, and preserved proof before handoff.\nWF-8C: Keep a separate-context review whose unit is the assembled Spec and the combined result of its Tasks. A failed review is diagnostic, not blame: state what is wrong, create new corrective Tasks under the still-open Spec, update the Taskboard, execute and prove them, then present a fresh immutable Spec candidate. Passing lets the Spec branch move toward integration.\nSCR-2: When every Task in a Spec is complete. The unit is the assembled Spec and the combined Actuality and proof its Tasks produced; the check is whether the Spec's local destination was reached and moves the product toward the Blueprint destination. It has two agent checks: the Dispatcher's whole-Spec Verify/QA, then the Director's separate-context approval.\nSCR-5: Nobody runs an approval gate per Task. The Worker self-verifies and hands back; the Dispatcher consumes the report, updates the view of Actuality and chooses the next step, for a Spec-scoped and a direct Blueprint Task alike. Merge or sequencing is coordination and containment, not destination-level QA.\nSCR-7: Neither. Do not QA every Task and do not add a second reviewer for grouped brick-laying slices. Run toward the local destination the Spec describes, then do whole-Spec QA. A Task ends after its one attempt; if it missed, do not reopen it, create a new Task.\nWF-8: Tasks use red/green TDD, make relevant tests green, exercise what was built to confirm it works, and preserve proof before handoff. A separate context checks the assembled Spec. Integration is the assembled surface for owner Human QA, which can return work to Align before owner-only main promotion.",
@@ -50,7 +50,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000H"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -369,6 +371,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 11,
+      "at": "2026-10-01T23:49:55.793Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000H"
+          ]
         }
       ]
     }

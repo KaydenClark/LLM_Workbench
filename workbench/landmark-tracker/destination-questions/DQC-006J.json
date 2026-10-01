@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-006J",
-  "revision": 4,
+  "revision": 6,
   "title": "What do a card's Expected result and Result record?",
   "question": "What do a card's Expected result and Result record?",
   "answer": "LD-29: Unanswered questions need not know destination. Answered summary uses Expected result for intended durable change and destination if known. Delivery Spec/Task usually makes destination/Wiki change concrete; both records can carry relevant context. Result distinguishes achieved delivery outcome. Wiki changes use ordinary delivery.",
@@ -22,7 +22,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000H",
+    "LMK-000X"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -121,6 +124,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:56.328Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000H"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:02.760Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000H"
+          ],
+          "to": [
+            "LMK-000H",
+            "LMK-000X"
+          ]
         }
       ]
     }

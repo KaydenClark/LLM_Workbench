@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-004N",
-  "revision": 4,
+  "revision": 6,
   "title": "What must survive for a truthful cold continuation?",
   "question": "What must survive for a truthful cold continuation?",
   "answer": "WB-5: A cold start needs the Workbench Contract, the selected work packet and its linked owners, the exact achieved output or commit, current ticket/spec state, named verification, and the next executable action or blocker. An interrupted agent cannot be forced to save, but should record this state in existing owners as it works and promote a checkpoint when its session reasoning is material. No universal handoff artifact or duplicated truth.",
@@ -22,7 +22,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000P",
+    "LMK-000S"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -121,6 +124,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:50:00.026Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Handoffs pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000P"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:01.060Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Notepads pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000P"
+          ],
+          "to": [
+            "LMK-000P",
+            "LMK-000S"
+          ]
         }
       ]
     }

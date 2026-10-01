@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000S",
-  "revision": 5,
+  "revision": 6,
   "title": "How can an empty declared collection remain visible without implying content?",
   "question": "How can an empty declared collection remain visible without implying content?",
   "answer": "V3-11C: The manifest declares every lane and a minimal tracked placeholder preserves any required empty directory \"without implying that a record exists\".\nV3-15A: Manifest and required lane directories exist; the first durable spec is created; lanes without records remain explicitly empty.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000B"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:53.460Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Portable Workbench pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000B"
+          ]
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-001R",
-  "revision": 4,
+  "revision": 5,
   "title": "What would a routes-not-claims violation look like, and how is it detected?",
   "question": "What would a routes-not-claims violation look like, and how is it detected?",
   "answer": "ACC-4: A map row or query result carrying claim text, an instance identifier, or a status-shaped field violates routes-not-claims. S-00G TK-004 checks query output and schema rejection.",
@@ -22,7 +22,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000M"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -121,6 +123,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:58.614Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Ownership Model pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000M"
+          ]
         }
       ]
     }

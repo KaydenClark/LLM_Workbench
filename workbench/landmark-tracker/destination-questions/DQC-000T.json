@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000T",
-  "revision": 6,
+  "revision": 7,
   "title": "Which layout changes require a new version contract?",
   "question": "Which layout changes require a new version contract?",
   "answer": "V3-12: Treat the breaking support-path move as LLM Workbench v3 while keeping the implementation limited to this portable layout contract.\nV3-12A: Yes. \"Moving stable support paths and changing skill installation ownership is a major layout contract.\"\nREC-03: Bump to v3.1.3: freeze v3.1.2 at sixteen in supportedLegacy and set the room's manifest to v3.1.3.",
@@ -30,7 +30,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000G"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +203,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:55.024Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Updates pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000G"
+          ]
         }
       ]
     }

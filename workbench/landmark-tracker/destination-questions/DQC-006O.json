@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-006O",
-  "revision": 4,
+  "revision": 6,
   "title": "What happens to a Task whose one attempt missed?",
   "question": "What happens to a Task whose one attempt missed?",
   "answer": "SCR-8: A Task that did not complete its run is not discarded: its TASK.md is the record until the Spec is cleaned up into the features Wiki. Its hand-back report stays as diagnostic proof in the Spec evidence. Its card returns to In progress and a new Task, named for its objective (the card title, not the WBID), fixes what the check found, starting fresh unless the Dispatcher deliberately builds on the old tip. The worktree is removed at hand-back; the missed branch is named in the Spec evidence and its deletion is covered by the Director's Spec approval. A Worker that stops unexpectedly leaves what it documented as it went; updating the card is part of finishing a Task.",
@@ -22,7 +22,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000H",
+    "LMK-000K"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -121,6 +124,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:56.404Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000H"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:58.030Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000H"
+          ],
+          "to": [
+            "LMK-000H",
+            "LMK-000K"
+          ]
         }
       ]
     }

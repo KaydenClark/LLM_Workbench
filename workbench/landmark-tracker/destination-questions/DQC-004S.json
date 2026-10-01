@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-004S",
-  "revision": 5,
+  "revision": 8,
   "title": "When may notes and handoffs persist or be committed for transport?",
   "question": "When may notes and handoffs persist or be committed for transport?",
   "answer": "PW-5: Promote-before-end is the goal for almost every session: promote settled claims, append the receipt, push, let the notepad die. With an amendment: 'we can have the notepads and handoffs stay if needed... we should be able to commit them for a bit if we need to, undoing the lock on them never being committed.' Committed notes are transport, not evidence; privacy rules stand; ADR-0051 stays optional.\nTT-Q9: A handoff is Markdown for a new Chat or agent; a notepad is the JSON working record; a notepad belongs to its objective, not to the Chat, model or host that created it (ADR-000L).",
@@ -32,7 +32,11 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000P",
+    "LMK-000S",
+    "LMK-000T"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -171,6 +175,56 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:00.106Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Handoffs pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000P"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:50:01.221Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Notepads pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000P"
+          ],
+          "to": [
+            "LMK-000P",
+            "LMK-000S"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:50:01.343Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Session Transport pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000P",
+            "LMK-000S"
+          ],
+          "to": [
+            "LMK-000P",
+            "LMK-000S",
+            "LMK-000T"
+          ]
         }
       ]
     }

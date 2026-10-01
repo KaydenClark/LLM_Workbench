@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002I",
-  "revision": 7,
+  "revision": 9,
   "title": "How do confirmed answers reach durable owners?",
   "question": "How do confirmed answers reach durable owners?",
   "answer": "FND-Q13: A grilling answer does not enter Canon inline. Settled material is promoted through ordinary scoped work: a TASK when the change is small and localized, or a SPEC with Tasks when it affects many things. Updating the Lexicon will usually be one Task, which performs and verifies the Canon update under the Contract.\nTT-Q12: First clause: settled answers route by the whole ownership map (FND-Q21): definitions to the Lexicon, obligations to root controls, scoped capability choices to a Spec, cross-cutting choices to an ADR. Owner: locked answers go 'in some state of durable in the contract, docs, or specs' / 'in their durable places'.\nPW-10: 'In their durable places in the workbench, wherever that may be.' The agent drew the landing map: Lexicon term and renames; Blueprint sentence; AGENTS and RUNBOOK rules; ADRs for the skills lane, note transport and claim-on-branch; manifest and templates; and a new Portable Workbench Spec owning the Tasks.\nBPR-R3: This was a promotion and scoping handoff. The receiving chat should promote the grilling notepad into docs and Specs, using all the skills named for that process, so implementation could happen in a later step. It was not authorized to implement the promoted work in the same step.",
@@ -36,7 +36,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000N",
+    "LMK-000O"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -243,6 +246,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:58.886Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Durable Knowledge pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000N"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "at": "2026-10-01T23:49:59.554Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Grilling and Shared Understanding pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000N"
+          ],
+          "to": [
+            "LMK-000N",
+            "LMK-000O"
+          ]
         }
       ]
     }

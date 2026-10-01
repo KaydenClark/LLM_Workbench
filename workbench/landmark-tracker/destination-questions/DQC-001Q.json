@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-001Q",
-  "revision": 5,
+  "revision": 6,
   "title": "How should an accepted ownership assignment change?",
   "question": "How should an accepted ownership assignment change?",
   "answer": "FND-Q23: OWNERSHIP.json holds accepted rows only, with no lifecycle field; lifecycle belongs to records (ADR, Spec, Task). A proposed change lives in the proposing ADR until acceptance; then the applying Task rewrites the row. Changing which type answers a responsibility is an ADR; adjusting route or wording is a Task. Three guards: no instance identifiers, no status-shaped field, routes only. Framing fixed 2026-09-22: no \"canon owners\"; the map is a routing artifact.\nFND-Q21C: Four tiers: ADR for a consequential cross-cutting choice with rationale; Spec for a scoped capability choice; Task body (not the Receipt) for an execution-local choice; a change to what a Core type owns is always an ADR naming OWNERSHIP.json in canonicalized_in. A durable Task choice escalates at close, listed as a remaining gap until then. Editing a Contract or routing artifact is Task work, not a tier. The owns-vs-content rule lives in OWNERSHIP.json.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000M"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:58.576Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Ownership Model pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000M"
+          ]
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002R",
-  "revision": 7,
+  "revision": 9,
   "title": "What must a Task receipt preserve after each run?",
   "question": "What must a Task receipt preserve after each run?",
   "answer": "RB-Q1: Suggested A. Packet: TASK.md, the Spec acceptance lines the Task satisfies, the cited source and test paths, and the Contract; nothing else loads at entry. Receipt: commit SHA on the Task branch, tests run with result, docs touched, dirty files remaining, remaining gap; written into TASK.md and shown on the Taskboard. \"Receipt\" keeps its existing Lexicon meaning. Ticket-to-Task is the intended fix, not drift.\nRB-Q2: Suggested A with sub-answer (ii): TASK.md is the single execution-slice artifact (context, branch and receipt unit); no level beneath Task; Ticket stays retired. Receipt is append-only, one row per run. \"A is an aspiration, not a rule or a guarantee.\" New sizing rule: a Task expected to need more than one context unit should be a Spec that Tasks are cut from. He stated the unit as 250k tokens (revised to 200k in RB-Q2B).\nRB-Q2A: Suggested A. The per-run receipt rows live in TASK.md as evidence; the Taskboard shows only a generated signal per active Task: run count and the latest run's branch, short SHA and dirty-file count. The full run table is never on the board.\nRB-Q4: Suggested B: visibility plus a gate at the claim. Doctor gains attention-level git diagnostics (detached HEAD, untracked files in the controls, ADR and spec lanes) that never block; upstream distance joins the receipt row. close refuses a dirty tree or unpushed branch unless the receipt records that state and a reason. Doctor must not block on detached HEAD.",
@@ -34,7 +34,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000H",
+    "LMK-000K"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -241,6 +244,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:55.715Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000H"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "at": "2026-10-01T23:49:57.564Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000H"
+          ],
+          "to": [
+            "LMK-000H",
+            "LMK-000K"
+          ]
         }
       ]
     }

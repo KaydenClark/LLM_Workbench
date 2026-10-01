@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-004H",
-  "revision": 7,
+  "revision": 9,
   "title": "What does a release-readiness review establish and authorize?",
   "question": "What does a release-readiness review establish and authorize?",
   "answer": "BPR-8F1: Asking whether a candidate is ready for main authorizes an independent release review and a verdict only, not merge or publication. Kayden keeps approval and merge authority for integration to main. An agent may create the release PR only when explicitly asked, and Kayden still approves and merges it.\nBPR-8E: When Kayden asks whether a candidate is ready for main, the independent reviewer checks the Blueprint boundary: destination narrative and whole-product constraints only; no version chronology, live status, Spec inventory, evidence or displaced ADR/Spec/Runbook content; ADR links selective, active and coherent; each new ADR has a recorded Blueprint relevance disposition. Mechanical checks support structure and links but cannot replace semantic review.\nWF-8: Tasks use red/green TDD, make relevant tests green, exercise what was built to confirm it works, and preserve proof before handoff. A separate context checks the assembled Spec. Integration is the assembled surface for owner Human QA, which can return work to Align before owner-only main promotion.\nWF-8B: No per-Task independent-review ceremony just because it is a Task. Ordinary verification and proof are mandatory: red/green TDD, relevant tests green, exercising what was built, and preserved proof before handoff.",
@@ -38,7 +38,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000G",
+    "LMK-000H"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -249,6 +252,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:55.213Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Updates pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000G"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "at": "2026-10-01T23:49:56.023Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000G"
+          ],
+          "to": [
+            "LMK-000G",
+            "LMK-000H"
+          ]
         }
       ]
     }

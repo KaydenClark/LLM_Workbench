@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-005M",
-  "revision": 6,
+  "revision": 8,
   "title": "What proves a cloud or parallel-instance run is portable end to end?",
   "question": "What proves a cloud or parallel-instance run is portable end to end?",
   "answer": "PW-9: 'End clean up.' Recorded as the agent's interpretation: proof is a run that ends clean. Extend the round-trip test to start with nothing outside the clone, claim by pushing, and end with everything promoted, pushed and nothing left on the instance; demos are one real cloud session and a two-instance parallel run.\nPW-1: Portable Workbench = 'a fully packaged and deployable agentic harness': everything an agent needs is in the Git repository, so any agent, or several at once in the cloud, can clone it, do authorized work, push, and clean up after itself. All three renames accepted: support-root layout, host portability, ownership origin model. The success criterion gains 'cleaning up after itself'.\nPW-6: Option 1: push the claim, read the remotes. claim creates the task branch from integration, commits the claim as its first commit and pushes at once; next and claim fetch all refs and overlay Task state from every remote tip. No direct claim commit on integration. The PR carries closure. A no-remote session falls back to local and says so.",
@@ -30,7 +30,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000B",
+    "LMK-000H"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +204,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:53.721Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Portable Workbench pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000B"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:56.251Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000B"
+          ],
+          "to": [
+            "LMK-000B",
+            "LMK-000H"
+          ]
         }
       ]
     }

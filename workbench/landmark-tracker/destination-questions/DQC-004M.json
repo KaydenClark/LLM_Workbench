@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-004M",
-  "revision": 5,
+  "revision": 7,
   "title": "How should later corrections maintain knowledge from a retired Spec?",
   "question": "How should later corrections maintain knowledge from a retired Spec?",
   "answer": "WF-8A: No reopen ceremony. A small corrective change against a retired Spec is a Task plus an update to the Wiki record of the reconciled retired Spec; SPEC.md is not resurrected, though a Spec branch may still carry the commit. 'What we wanted was the Spec, if that is right, then we are okay.'\nWF-8G: Route by scope and destination, not Task count. A gap against an existing Spec destination is fixed with reopened or corrective Tasks, even when several are needed. A new Spec is only for a distinct scoped objective with its own destination, such as investigating why the journey missed something. TASK.md holds active work state and TASKBOARD projects it; a Spec is open if it has Tasks on the board.",
@@ -26,7 +26,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000J",
+    "LMK-000N"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +164,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:57.136Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Wiki pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000J"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:59.160Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Durable Knowledge pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000J"
+          ],
+          "to": [
+            "LMK-000J",
+            "LMK-000N"
+          ]
         }
       ]
     }

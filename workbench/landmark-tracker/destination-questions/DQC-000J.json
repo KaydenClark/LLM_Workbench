@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000J",
-  "revision": 7,
+  "revision": 9,
   "title": "Which dependencies must remain optional for a room to function?",
   "question": "Which dependencies must remain optional for a room to function?",
   "answer": "V3-7: It must remain fully set up without that repository; \"the instruction is to replace confusing bundled/project-local skill copies, not to make Kayden's private catalog mandatory.\"\nV3-7A: No. Genesis and Adoption complete from public Workbench-owned templates, tools, and any public Workbench-owned skill package.\nV3-7B: No. \"No substitution contract is needed because the public product does not validate or depend on Kayden's catalog at all.\"\nPW-4: 'If we need it, it should be included in workbench/skills. But we should keep [the owner's private skills repository] as a backup of all of the skills, and a place every workbench can publish skills to that they create.' The Contract names only skills that ship in the lane. The specific candidate list was not confirmed.",
@@ -34,7 +34,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000B",
+    "LMK-000C"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -241,6 +244,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:53.226Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Portable Workbench pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000B"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "at": "2026-10-01T23:49:53.797Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Boundaries pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000B"
+          ],
+          "to": [
+            "LMK-000B",
+            "LMK-000C"
+          ]
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-003C",
-  "revision": 5,
+  "revision": 6,
   "title": "How should the four agent stances be packaged and composed?",
   "question": "How should the four agent stances be packaged and composed?",
   "answer": "WB-3: Package all four as portable stance skills. A stance says how an agent performs one task with the authority, responsibilities, good practices and composing skills suited to that work. Loading a stance never spawns a sub-agent; Builder, for example, must make sure review and verification happen. Keep cross-provider discovery: a stance stored under ~/.agents/skills/stances/ also needs a flat top-level symlink for Claude's one-level scan.\nWB-12: A stance never grants, removes or transfers authority; it only changes how the model behaves within authority set before adoption. Every stance defines Purpose, Method / Posture, Obligations, and Completion / Exit Condition, and may add intrinsic constraints (e.g. Reviewer evaluates rather than quietly repairs). Changing stance creates no handoff, so one task may move Builder -> Reviewer -> Builder -> Reconciler uninterrupted.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000R"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:00.859Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Agent Stances pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000R"
+          ]
         }
       ]
     }

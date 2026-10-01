@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000F",
-  "revision": 6,
+  "revision": 8,
   "title": "Where should the authoritative skill copies for a room live?",
   "question": "Where should the authoritative skill copies for a room live?",
   "answer": "PW-3: 'We already locked in a version of 1. When we update the workbenches, we update the skills. LLM_Workbench owns the skills it needs to. We store them all in workbench/skills.' Core skills are tracked in every room at workbench/skills and replaced by the ordinary Workbench update; no provider home, personal catalog or bootstrap is on the critical path.\nPW-3A: 'Move its sources to workbench/skills, and give templates what it needs to.' The 21-skill source moves from root skills/ to workbench/skills and root skills/ is removed; templates gain what Genesis and update-harness need to lay down and refresh the lane. A root skills/ becomes a doctor finding.\nPW-4: 'If we need it, it should be included in workbench/skills. But we should keep [the owner's private skills repository] as a backup of all of the skills, and a place every workbench can publish skills to that they create.' The Contract names only skills that ship in the lane. The specific candidate list was not confirmed.",
@@ -42,7 +42,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000B",
+    "LMK-000I"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -225,6 +228,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:53.536Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Portable Workbench pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000B"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:56.480Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Skills pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000B"
+          ],
+          "to": [
+            "LMK-000B",
+            "LMK-000I"
+          ]
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-005K",
-  "revision": 5,
+  "revision": 6,
   "title": "What can a short demo prove, and which outcome claims remain unsupported?",
   "question": "What can a short demo prove, and which outcome claims remain unsupported?",
   "answer": "V3-17C: No. Prove both Codex and Claude user-scoped discovery paths deterministically and perform one cold-context resume; broader model-outcome trials are outside this interim release.\nV3-17D: Show the manifest and lanes, run the bounded layout/spec/skill checks, and demonstrate that an existing installed skill was preserved; make no model-outcome claim.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000H"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:56.176Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000H"
+          ]
         }
       ]
     }

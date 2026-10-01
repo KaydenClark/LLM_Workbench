@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-006D",
-  "revision": 4,
+  "revision": 5,
   "title": "What happens to a card and its landmark as understanding and delivery progress?",
   "question": "What happens to a card and its landmark as understanding and delivery progress?",
   "answer": "LD-10: Keep the evolving account and its source history. The generated view reflects current mixed documentation progress; cards are not reopened or reset as a completion lifecycle. Finished Specs do not automatically finish a landmark.",
@@ -22,7 +22,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000X"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -121,6 +123,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:50:02.597Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000X"
+          ]
         }
       ]
     }

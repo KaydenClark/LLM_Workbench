@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-004X",
-  "revision": 5,
+  "revision": 6,
   "title": "How should Adoption preserve an existing project’s truth and history?",
   "question": "How should Adoption preserve an existing project’s truth and history?",
   "answer": "V3-14: A lossless, manifest-backed v3 Workbench for an existing project, preserving project truth and history while removing only proven obsolete local shadows.\nV3-14A: Inventory and classify first; preserve durable specs, Wiki, feedback, and checkpoints; move known records with history where practical; stop on conflicting destinations or unclear ownership instead of overwriting.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000U"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:01.622Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Genesis and Adoption pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000U"
+          ]
         }
       ]
     }

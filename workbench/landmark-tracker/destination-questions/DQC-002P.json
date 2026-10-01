@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002P",
-  "revision": 6,
+  "revision": 7,
   "title": "How many Tasks should one Chat execute?",
   "question": "How many Tasks should one Chat execute?",
   "answer": "TT-Q4: A Task should be 1:1 with a Chat. A few Chats for one Task is allowed but 'is not how it should be done': make the Task smaller, still vertical. One Chat should not do several Tasks: 'The chat should complete the task, clean up, and be done.' A dispatcher or director watches the Spec, writes handoffs and opens a new Chat per unblocked Task, and approves; it never executes Tasks itself.\nTT-Q7: A fresh Chat is needed when the context is used up, and for the separate-context review. Handoffs are Markdown written for a new Chat. TT-Q4 adds that each Task gets its own Chat.\nFND-Q03: A Task is the smallest bounded work that fits one useful context; work expected to exceed one context unit (about 200k tokens, 'a goalpost, not a gate') is a Spec with Tasks. A context ends when its Task is complete and cleaned up: one Chat does one Task, then ends. The next context loads the Contract plus the Task (its Spec acceptance, optional handoff or notepad).",
@@ -30,7 +30,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000K"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +203,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:57.487Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000K"
+          ]
         }
       ]
     }

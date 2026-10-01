@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000X",
-  "revision": 8,
+  "revision": 10,
   "title": "How do skill versions relate to Workbench releases?",
   "question": "How do skill versions relate to Workbench releases?",
   "answer": "V3-8: The checked-out LLM Workbench release owns the bundled versions. Normal setup is presence-only; an explicitly authorized skill update backs up changed destinations and synchronizes the required core to the exact bundled versions.\nV3-8A: No. No separate release dependency is required; the bundled skill sources version with LLM Workbench.\nV3-8B: Yes, so no second repository or publication gate is required.\nV3-13C: Together in the same LLM Workbench v3 candidate so no external skills-repository dependency exists.\nREC-03: Bump to v3.1.3: freeze v3.1.2 at sixteen in supportedLegacy and set the room's manifest to v3.1.3.",
@@ -38,7 +38,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000G",
+    "LMK-000I"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -281,6 +284,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "at": "2026-10-01T23:49:55.062Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Updates pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000G"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 10,
+      "at": "2026-10-01T23:49:56.595Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Skills pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000G"
+          ],
+          "to": [
+            "LMK-000G",
+            "LMK-000I"
+          ]
         }
       ]
     }

@@ -1,0 +1,26 @@
+{
+  "schema": "landmark-tracker/landmark@1",
+  "id": "LMK-000H",
+  "revision": 1,
+  "title": "Verification",
+  "summary": "Evidence demonstrates the intended result at the right scope and preserves the distinction between checks, review and owner QA.",
+  "importance": "A feature or framework pillar on the core path that deserves Blueprint representation, from the starting inventory the owner approved on 2026-09-26 (landmark-definition note decision-037); boundaries remain refinable and overlap is allowed.",
+  "origin": {
+    "title": "Verification",
+    "summary": "Evidence demonstrates the intended result at the right scope and preserves the distinction between checks, review and owner QA.",
+    "revision": 1,
+    "at": "2026-10-01T23:49:55.602Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:55.602Z",
+      "reason": "Owner-approved 2026-09-26 starting-inventory candidate; at least one backfilled card clearly belongs to it: DQC-000U, DQC-001A, DQC-002R, DQC-004A, DQC-004B, DQC-004C, DQC-004D, DQC-004E, DQC-004F, DQC-004G, DQC-004H, DQC-005F, DQC-005I, DQC-005J, DQC-005K, DQC-005L, DQC-005M, DQC-005T, DQC-006J, DQC-006N, DQC-006O.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    }
+  ]
+}

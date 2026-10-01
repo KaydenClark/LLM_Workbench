@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-001V",
-  "revision": 7,
+  "revision": 8,
   "title": "What must the Blueprint explain about the finished product?",
   "question": "What must the Blueprint explain about the finished product?",
   "answer": "BPR-1: Each artifact has one job. BLUEPRINT.md is the 'future state and grand design' of the finished product; active ADRs are authoritative cross-cutting decisions with their reasoning; Specs detail the capabilities that move verified Actuality toward the Blueprint within ADR limits; AGENTS owns behavior and authority, RUNBOOK operation, LEXICON shared language and navigation. Formula: Blueprint target + active ADRs + verified Actuality -> Specs.\nBPR-5: Blueprint describes the destination: the coherent narrative of the finished product, its goals, what it solves, desired behavior, qualities and how the architectural parts work together. It excludes current activity, completion status, version goals, release mechanics and implementation evidence. It may summarize how active ADRs combine but is not a list of ADRs. Project-wide client requirements may belong there.\nFND-Q05: The Blueprint is 'the grand design of the finished product', the future-looking goal: what we want and what it should be and have, while Specs fill in the details. 'BLUEPRINT + ADRs = SPECs'. For LLM_Workbench it describes the perfect workbench and how agents deploy it.\nWF-1: The Blueprint owns the product destination and user journey (the whole of \"counting to 100\"); each Spec is the PRD-shaped smaller destination derived from it. The Workbench Contract, not the Blueprint, owns the agreement (instructions, authority, boundaries, language, process, completion, verification). LLM_Workbench's Blueprint maps the Workbench product; each project blueprints its own product; the template supplies only the reusable shape.",
@@ -34,7 +34,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000F"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -241,6 +243,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:54.567Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Artifact Types pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000F"
+          ]
         }
       ]
     }

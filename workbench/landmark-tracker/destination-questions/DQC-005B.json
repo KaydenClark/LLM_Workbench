@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-005B",
-  "revision": 5,
+  "revision": 7,
   "title": "How should locked project design become a personalized working room?",
   "question": "How should locked project design become a personalized working room?",
   "answer": "BPR-7B2: Staged capability Specs: first a valid copyable Workbench Template; then project-evidence intake with a prepared Blueprint grilling notepad; then Genesis turning locked Blueprint and ADR decisions into Specs and a valid project Workbench; then fresh-copy end-to-end proof. Each stage proves its own seam, and the Blueprint keeps the full destination without claiming delivery.\nBPR-7B1: For v3.2 it is enough that LLM Workbench applies the newly settled ownership and routing rules to update Workbench Template successfully. Fresh-copy personalization, prepared project grilling, Genesis completion and validation of a personalized Workbench are future capabilities; v3.2 must not claim them.",
@@ -28,7 +28,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000U",
+    "LMK-000V"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -163,6 +166,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:01.741Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Genesis and Adoption pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000U"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:50:01.863Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Template pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000U"
+          ],
+          "to": [
+            "LMK-000U",
+            "LMK-000V"
+          ]
         }
       ]
     }

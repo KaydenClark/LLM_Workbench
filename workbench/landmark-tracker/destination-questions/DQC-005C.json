@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-005C",
-  "revision": 6,
+  "revision": 7,
   "title": "What makes a layout migration recoverable?",
   "question": "What makes a layout migration recoverable?",
   "answer": "V3-16: A one-time, recoverable v3 migration using the same manifest, path, and missing-only skill rules as Adoption.\nV3-16A: Move affected durable records, update links/tools/scopes, remove legacy local skill shadows only after the presence gate, and retain the migration result in the owning spec evidence.\nV3-16B: Record the pre-migration Git recovery point, preserve or back up every retired path before removal, verify the new paths and references, and leave no unattributed dirty residue.",
@@ -30,7 +30,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000G"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +203,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:55.295Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Updates pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000G"
+          ]
         }
       ]
     }

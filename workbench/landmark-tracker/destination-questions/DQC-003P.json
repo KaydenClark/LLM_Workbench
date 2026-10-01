@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-003P",
-  "revision": 7,
+  "revision": 8,
   "title": "What does Needs review mean without imposing independent review on every Task?",
   "question": "What does Needs review mean without imposing independent review on every Task?",
   "answer": "E-4C: Needs review is the independent reviewer (QA/verify) stage. Most Tasks go In progress -> Needs review -> Complete to await cleanup; work needing no independent review may go straight to Complete. Tasks collect in Needs review and Complete while their Spec is In progress, and move to Complete together when the Spec is reviewed.\nE-3: Both. A Task is a nested part of a Spec, so Spec and Task cards show progression, not duplicate work; a Spec card can count its child Tasks. A Spec cannot move to needsReview or complete until all its Tasks are in needsReview or complete. 'Not every Task has to belong to a Spec.' Specs always appear as cards.\nWF-8B: No per-Task independent-review ceremony just because it is a Task. Ordinary verification and proof are mandatory: red/green TDD, relevant tests green, exercising what was built, and preserved proof before handoff.\nWF-8C: Keep a separate-context review whose unit is the assembled Spec and the combined result of its Tasks. A failed review is diagnostic, not blame: state what is wrong, create new corrective Tasks under the still-open Spec, update the Taskboard, execute and prove them, then present a fresh immutable Spec candidate. Passing lets the Spec branch move toward integration.",
@@ -34,7 +34,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000Q"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -241,6 +243,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:50:00.464Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Taskboard pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000Q"
+          ]
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-004Z",
-  "revision": 5,
+  "revision": 6,
   "title": "What is the reference Template meant to provide?",
   "question": "What is the reference Template meant to provide?",
   "answer": "BPR-7B: Workbench Template: a copyable starter for a blank project. The owner copies it, starts a grilling session, and the Workbench guides project discovery, the project Blueprint and active ADRs, and Spec derivation. The Example-specific product story and CLI tour are not the template's role.\nFND-Q12: The Workbench_Template is the answer: each release must 'fully build a working template ... that a room can turn into its own project', and updating the Template to the new version is the release gate.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000V"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:01.823Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Template pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000V"
+          ]
         }
       ]
     }

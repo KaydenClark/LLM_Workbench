@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002A",
-  "revision": 4,
+  "revision": 5,
   "title": "How can misplaced Blueprint claims move without losing substance?",
   "question": "How can misplaced Blueprint claims move without losing substance?",
   "answer": "BPR-8D: Rewriting the Blueprint requires a complete claim-level disposition: destination claims stay; architectural decisions and rationale go to active ADRs; scoped requirements and delivery state to Specs; procedures to RUNBOOK; terms and routes to LEXICON; evidence and release history to their existing owners. Verify content in its proper owner before removal, keep lineage and supersession; 'nothing is discarded merely for tidiness'.",
@@ -22,7 +22,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000F"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -121,6 +123,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:54.758Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Artifact Types pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000F"
+          ]
         }
       ]
     }

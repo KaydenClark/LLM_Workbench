@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-005J",
-  "revision": 5,
+  "revision": 7,
   "title": "Which fresh-room and existing-room exercises complement those fixtures?",
   "question": "Which fresh-room and existing-room exercises complement those fixtures?",
   "answer": "V3-17B: One fresh Genesis, one mixed existing-project Adoption, and one v2 update fixture from clean recoverable starting points.\nV3-24A: The workbench/ layout and manifest; the 12-skill missing-only brand-new-install contract; updates to existing setup/upgrade instructions and affected paths; focused deterministic checks; one fresh Genesis proof; and one existing-project Adoption proof.",
@@ -26,7 +26,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000H",
+    "LMK-000V"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +164,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:56.137Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000H"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:50:01.943Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Template pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000H"
+          ],
+          "to": [
+            "LMK-000H",
+            "LMK-000V"
+          ]
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002Q",
-  "revision": 5,
+  "revision": 6,
   "title": "What belongs in the Task’s entry Packet?",
   "question": "What belongs in the Task’s entry Packet?",
   "answer": "RB-Q1: Suggested A. Packet: TASK.md, the Spec acceptance lines the Task satisfies, the cited source and test paths, and the Contract; nothing else loads at entry. Receipt: commit SHA on the Task branch, tests run with result, docs touched, dirty files remaining, remaining gap; written into TASK.md and shown on the Taskboard. \"Receipt\" keeps its existing Lexicon meaning. Ticket-to-Task is the intended fix, not drift.\nRB-Q1A: Suggested A with one extension: keep the incumbent name Packet and define it in LEXICON.md; Ticket stays retired and points to Task. Required members: TASK, the Spec acceptance lines it satisfies, the cited source and test paths, the Contract. Optional members, in his words \"optional handoff or notepad\": a Scoped handoff and the objective's local notepad when they exist.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000K"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:57.525Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000K"
+          ]
         }
       ]
     }

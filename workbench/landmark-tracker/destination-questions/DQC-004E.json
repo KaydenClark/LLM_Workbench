@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-004E",
-  "revision": 5,
+  "revision": 6,
   "title": "What conditions allow a Spec to close?",
   "question": "What conditions allow a Spec to close?",
   "answer": "WF-8E: A Spec closes only after separate-context Spec review passes and owner Human QA on integration confirms the destination is actually there. It is then reconciled into the Wiki and retired. No Git merge closes it automatically; main promotion stays a separate owner action.\nFND-Q14: Two named gates. Spec QA gate: working branch into integration, triggered by the merge request; it checks every Task in the Spec is done and the branch is up to Spec, passing merges and failing denies. Human QA gate: integration into main; integration is the Human QA branch where the owner decides if work is ready or needs more. Human QA is not a release ceremony and is not batched by release.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000H"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:55.908Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000H"
+          ]
         }
       ]
     }

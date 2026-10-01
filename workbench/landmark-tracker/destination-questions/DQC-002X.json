@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002X",
-  "revision": 4,
+  "revision": 5,
   "title": "What is the minimum host capability floor?",
   "question": "What is the minimum host capability floor?",
   "answer": "PW-7: 'When we lack something, flag the task as blocked or needs review so when I do sitrep I find it.' Mechanics were delegated: floor = Node 18+, Python 3.9+, git, gh authenticated with push rights, GitHub network, checked at session start (missing = all-effect doctor finding); other capabilities are optional and named by the Task.",
@@ -22,7 +22,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000B"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -121,6 +123,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:53.610Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Portable Workbench pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000B"
+          ]
         }
       ]
     }

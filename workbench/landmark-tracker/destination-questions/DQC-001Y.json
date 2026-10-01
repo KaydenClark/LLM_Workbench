@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-001Y",
-  "revision": 4,
+  "revision": 5,
   "title": "How should active ADRs inform the Blueprint narrative?",
   "question": "How should active ADRs inform the Blueprint narrative?",
   "answer": "BPR-8C: Blueprint links active ADRs selectively and inline, only where they materially explain or constrain the destination, synthesizing them into narrative rather than listing them. The active ADR register owns the inventory. Each newly accepted ADR gets a Blueprint relevance check, but the Blueprint changes only when the decision materially changes the destination; there is no mandatory duplication pass.",
@@ -22,7 +22,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000F"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -121,6 +123,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:54.681Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Artifact Types pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000F"
+          ]
         }
       ]
     }

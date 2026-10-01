@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-004I",
-  "revision": 5,
+  "revision": 6,
   "title": "What must be captured before a completed Task retires?",
   "question": "What must be captured before a completed Task retires?",
   "answer": "WF-8D: After a completed Task's results and needed proof are reconciled into the owning Spec, the Task is retired: its branch and worktree are deleted after verified containment, it leaves the hot Taskboard and ordinary pickup, and its TASK.md survives only as retired history reachable by an explicit historical route.\nE-11: Derived, never authored on the board: complete record in a live folder = ready to capture; in retired/ (ADR-000I) = captured, ready to delete; deleted = card drops. 'The state should show that we are good to move forward, not the taskboard. Updating that it's ready only to wipe it is pointless.' sitrep reports Complete as two counts.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000N"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:59.002Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Durable Knowledge pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000N"
+          ]
         }
       ]
     }

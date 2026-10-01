@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-001D",
-  "revision": 4,
+  "revision": 6,
   "title": "How should the Wiki explain each available skill?",
   "question": "How should the Wiki explain each available skill?",
   "answer": "TT-Q8: Answered part: the owner wants a Wiki skills reference in the aihero.dev/skills shape, one readable entry per skill (2026-09-23). Open part: which skills are owner-facing versus internal; he gave no classification.",
@@ -24,7 +24,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000I",
+    "LMK-000J"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -123,6 +126,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:56.825Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Skills pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000I"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:57.058Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Wiki pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000I"
+          ],
+          "to": [
+            "LMK-000I",
+            "LMK-000J"
+          ]
         }
       ]
     }

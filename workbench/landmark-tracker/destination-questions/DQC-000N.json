@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000N",
-  "revision": 4,
+  "revision": 5,
   "title": "What demonstrated need would justify a Master Workbench?",
   "question": "What demonstrated need would justify a Master Workbench?",
   "answer": "WB-9: Validate through real, contrasting existing Workbenches and products, not artificial pilots. Candidates include LLM Workbench, Master Workbench, GPT_OS, Cashflow Calculator, CIC, OpenBrain and Foundry; pick the next from live owner priorities. Each proof must show owner-useful delivery, named verification and truthful fresh-session continuation. Revisit Master Workbench only when several such proofs show a concrete need for its registry, observation audit or visualization role.",
@@ -22,7 +22,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000E"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -121,6 +123,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:54.327Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench and Project Relationships pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000E"
+          ]
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002G",
-  "revision": 4,
+  "revision": 5,
   "title": "Which investigations should be used during Align?",
   "question": "Which investigations should be used during Align?",
   "answer": "WF-3: Research, brainstorming and wayfinding are allowed Align investigations to resolve a named uncertainty (Suggestion A minus prototypes). Prototypes are not an Align method now: 'right now it would come after we blueprint but before we spec to see if its plausible. we dont need to add it in right now.'",
@@ -22,7 +22,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000O"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -121,6 +123,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:59.476Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Grilling and Shared Understanding pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000O"
+          ]
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-001Z",
-  "revision": 6,
+  "revision": 7,
   "title": "How is live status and release history kept out of the Blueprint?",
   "question": "How is live status and release history kept out of the Blueprint?",
   "answer": "BPR-8A: Blueprint contains no version history or release goals, live status or current health, implementation evidence, or generated Spec catalog. Version identity goes to the manifest and release Specs; current work and status to Specs and TASKBOARD; verification to tests and evidence; the full Spec inventory is manifest-derived. Blueprint keeps the destination and selective links.\nBPR-8E: When Kayden asks whether a candidate is ready for main, the independent reviewer checks the Blueprint boundary: destination narrative and whole-product constraints only; no version chronology, live status, Spec inventory, evidence or displaced ADR/Spec/Runbook content; ADR links selective, active and coherent; each new ADR has a recorded Blueprint relevance disposition. Mechanical checks support structure and links but cannot replace semantic review.\nBPR-5: Blueprint describes the destination: the coherent narrative of the finished product, its goals, what it solves, desired behavior, qualities and how the architectural parts work together. It excludes current activity, completion status, version goals, release mechanics and implementation evidence. It may summarize how active ADRs combine but is not a list of ADRs. Project-wide client requirements may belong there.",
@@ -30,7 +30,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000F"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +203,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:54.719Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Artifact Types pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000F"
+          ]
         }
       ]
     }

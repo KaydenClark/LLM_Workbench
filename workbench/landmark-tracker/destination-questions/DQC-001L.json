@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-001L",
-  "revision": 7,
+  "revision": 8,
   "title": "What responsibilities and artifact types must the ownership map cover?",
   "question": "What responsibilities and artifact types must the ownership map cover?",
   "answer": "FND-Q18: The owner chose the recommended first terrain: artifact ownership and Workbench Contract boundaries, starting with the scope relationship among Blueprint, Spec and Task before allocating the full responsibility inventory or designing any map.\nFND-Q21: Answered through its sub-questions: comprehensive type-level coverage answered by query (FND-Q21A); six scoped rows, with the Taskboard first-class as the project-wide representation of work state (FND-Q21B); a four-tier Decisions rule (FND-Q21C); 21 single-owner rows plus a 28th Representation/monitoring row, so the inventory is 28, owner-locked (FND-Q21D).\nFND-Q21A: Yes. Blueprint -> Spec -> Task is only an example. The schema is an exhaustive type-level framework for every Core artifact type, its relationships and ownership interactions, so a fresh agent with no prior context can use the Workbench as intended. Instances keep their facts in their own artifacts. It is queried, not read whole, and sits outside the Contract. Reconfirmed 2026-09-22; the map also needs rows for OWNERSHIP.json and TASKBOARD.json.\nFND-Q21D: The 21 single-owner rows stand as one bundle with the four proposal-017 repairs and three proposal-024 additions (Navigation is an ordered pair, Lexicon Context Map then OWNERSHIP.json; Evaluation owns method, Evidence owns results; distinct question strings for Provenance, History, Delivery, Release). On 2026-09-22 he added a 28th row, Representation/monitoring (Frontier view), owned by TASKBOARD.json, sitrep and README. The inventory is 28, owner-locked.",
@@ -34,7 +34,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000M"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -241,6 +243,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:58.383Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Ownership Model pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000M"
+          ]
         }
       ]
     }

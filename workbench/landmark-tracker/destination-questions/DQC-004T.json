@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-004T",
-  "revision": 4,
+  "revision": 5,
   "title": "How should optional private transport preserve cross-machine continuity?",
   "question": "How should optional private transport preserve cross-machine continuity?",
   "answer": "CAND-N: 2026-09-08: use optional private Git transport (workbench_sessions) with a stable Workbench identity, selected live collections, one writer per note, preserved conflicts and explicit remote confirmation; Git history retention accepted. 2026-09-21: 'Approved transport design remains settled. Clean up the failed audit first; then use the real PC handoff as a deployment-readiness test before any merge to main.' That interview authorized no test or cleanup.",
@@ -22,7 +22,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000T"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -121,6 +123,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:50:01.383Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Session Transport pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000T"
+          ]
         }
       ]
     }

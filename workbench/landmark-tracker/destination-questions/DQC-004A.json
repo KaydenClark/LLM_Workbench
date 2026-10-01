@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-004A",
-  "revision": 6,
+  "revision": 7,
   "title": "What must a worker prove before handing off a Task result?",
   "question": "What must a worker prove before handing off a Task result?",
   "answer": "WF-8: Tasks use red/green TDD, make relevant tests green, exercise what was built to confirm it works, and preserve proof before handoff. A separate context checks the assembled Spec. Integration is the assembled surface for owner Human QA, which can return work to Align before owner-only main promotion.\nWF-8B: No per-Task independent-review ceremony just because it is a Task. Ordinary verification and proof are mandatory: red/green TDD, relevant tests green, exercising what was built, and preserved proof before handoff.\nSCR-1: No separate-context QA or approval gate on a Task. A Task is a small one-time instruction: do the bounded step, update proof that Actuality moved closer to the destination, report back, end. The Worker self-checks that its claims are valid and backed by proof before hand-back; destination-level QA waits until the Spec is assembled.",
@@ -30,7 +30,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000H"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +203,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:55.754Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000H"
+          ]
         }
       ]
     }

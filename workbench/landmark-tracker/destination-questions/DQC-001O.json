@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-001O",
-  "revision": 6,
+  "revision": 8,
   "title": "Where should architectural, capability and execution-local decisions be recorded?",
   "question": "Where should architectural, capability and execution-local decisions be recorded?",
   "answer": "FND-Q21C: Four tiers: ADR for a consequential cross-cutting choice with rationale; Spec for a scoped capability choice; Task body (not the Receipt) for an execution-local choice; a change to what a Core type owns is always an ADR naming OWNERSHIP.json in canonicalized_in. A durable Task choice escalates at close, listed as a remaining gap until then. Editing a Contract or routing artifact is Task work, not a tier. The owns-vs-content rule lives in OWNERSHIP.json.\nBPR-5A: Blueprint holds durable whole-product outcomes and constraints. Specs hold scoped, testable capability requirements. ADRs hold accepted cross-cutting architectural choices from consequential tradeoffs. A whole-product client requirement can sit in the Blueprint without an ADR; implementation specifics and acceptance go in Specs; an ADR exists only for the architectural choice and why.\nTT-Q12: First clause: settled answers route by the whole ownership map (FND-Q21): definitions to the Lexicon, obligations to root controls, scoped capability choices to a Spec, cross-cutting choices to an ADR. Owner: locked answers go 'in some state of durable in the contract, docs, or specs' / 'in their durable places'.",
@@ -32,7 +32,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000F",
+    "LMK-000M"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -203,6 +206,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:54.529Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Artifact Types pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000F"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:58.498Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Ownership Model pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000F"
+          ],
+          "to": [
+            "LMK-000F",
+            "LMK-000M"
+          ]
         }
       ]
     }

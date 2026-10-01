@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002V",
-  "revision": 6,
+  "revision": 7,
   "title": "How should branches and worktrees be cleaned up after delivery?",
   "question": "How should branches and worktrees be cleaned up after delivery?",
   "answer": "WF-7: Branches nest by delivery altitude: main contains integration; each Spec branch starts from integration; each Task branch starts from its Spec branch, preferably in its own worktree. Proven Task results merge into the Spec branch, and contained Task branches and worktrees are cleaned up after their results are preserved.\nWF-8D: After a completed Task's results and needed proof are reconciled into the owning Spec, the Task is retired: its branch and worktree are deleted after verified containment, it leaves the hot Taskboard and ordinary pickup, and its TASK.md survives only as retired history reachable by an explicit historical route.\nPW-9: 'End clean up.' Recorded as the agent's interpretation: proof is a run that ends clean. Extend the round-trip test to start with nothing outside the clone, claim by pushing, and end with everything promoted, pushed and nothing left on the instance; demos are one real cloud session and a two-instance parallel run.",
@@ -30,7 +30,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000K"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +203,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:57.719Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000K"
+          ]
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-003R",
-  "revision": 6,
+  "revision": 8,
   "title": "How should Complete distinguish capture from final cleanup?",
   "question": "How should Complete distinguish capture from final cleanup?",
   "answer": "E-11: Derived, never authored on the board: complete record in a live folder = ready to capture; in retired/ (ADR-000I) = captured, ready to delete; deleted = card drops. 'The state should show that we are good to move forward, not the taskboard. Updating that it's ready only to wipe it is pointless.' sitrep reports Complete as two counts.\nE-1: Redirected answer: a generated TASKBOARD.json Agile Kanban board replaces TASKBOARD.md as the root contract artifact, with no TASKBOARD.md view. Six lanes (backlog, toDo, inProgress, blocked, needsReview, complete); cards keyed by WBID, no kind field; loose schema v1; owner = assignee; agents never write it. Complete cards 'stay until promoted to a durable place' and the record is deleted.\nWF-8D: After a completed Task's results and needed proof are reconciled into the owning Spec, the Task is retired: its branch and worktree are deleted after verified containment, it leaves the hot Taskboard and ordinary pickup, and its TASK.md survives only as retired history reachable by an explicit historical route.",
@@ -30,7 +30,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000N",
+    "LMK-000Q"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +204,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:58.963Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Durable Knowledge pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000N"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:50:00.542Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Taskboard pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000N"
+          ],
+          "to": [
+            "LMK-000N",
+            "LMK-000Q"
+          ]
         }
       ]
     }

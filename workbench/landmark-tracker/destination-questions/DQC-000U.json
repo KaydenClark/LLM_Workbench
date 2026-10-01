@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000U",
-  "revision": 5,
+  "revision": 7,
   "title": "How does the source Workbench prove it uses the same layout it distributes?",
   "question": "How does the source Workbench prove it uses the same layout it distributes?",
   "answer": "V3-12B: Yes. Move this repository's own affected durable support records under workbench/ with Git history preserved, \"so the published source proves the same contract it generates.\"\nBPR-7: The comprehensive ownership and routing repair is part of v3.2 and covers the full upstream LLM_Workbench source and generic templates, not only the newest Blueprint section. Downstream project Workbenches get it only through their own explicit update path; an upstream release alone does not change them.",
@@ -26,7 +26,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000B",
+    "LMK-000H"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +164,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:53.497Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Portable Workbench pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000B"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:55.640Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000B"
+          ],
+          "to": [
+            "LMK-000B",
+            "LMK-000H"
+          ]
         }
       ]
     }

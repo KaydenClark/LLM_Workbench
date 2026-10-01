@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000M",
-  "revision": 4,
+  "revision": 5,
   "title": "How do rooms and projects contain and own one another?",
   "question": "How do rooms and projects contain and own one another?",
   "answer": "TT-Q3: A Workbench is a 'room' that holds many Workbenches and many Projects; each Project has exactly one Workbench of its own. A Workbench is one set of Contract and routing artifacts with one Blueprint. A Blueprint has many Specs and many Tasks; a Spec has many Tasks and many Chats; a Task maps to one Chat. Spec is the destination, Task the steps; small work may be a standalone Task.",
@@ -24,7 +24,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000E"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -123,6 +125,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:54.289Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench and Project Relationships pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000E"
+          ]
         }
       ]
     }

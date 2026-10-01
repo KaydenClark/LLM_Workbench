@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-006C",
-  "revision": 6,
+  "revision": 7,
   "title": "How do step distributions aggregate across cards, landmarks and the Workbench?",
   "question": "How do step distributions aggregate across cards, landmarks and the Workbench?",
   "answer": "LD-24: A Task can appear under every related destination question but counts once in the shared landmark percentage breakdown. Preserve all relationships without duplicate contribution.\nLD-25: First version: each distinct item contributes equally regardless of type. Evolve weighting later as Tracker usefulness is proven; not a permanent invariant.\nLD-27: Each distinct item contributes one total unit, split into step fractions when mixed. Sum contributions per step, divide by distinct item count. Same calculation for destination questions, landmarks, Workbench-wide views; shared items count once.",
@@ -30,7 +30,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000X"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +203,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:50:02.557Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000X"
+          ]
         }
       ]
     }

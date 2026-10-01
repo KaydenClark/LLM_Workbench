@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-004K",
-  "revision": 7,
+  "revision": 9,
   "title": "When is it safe to discard reconciled Spec and Task records?",
   "question": "When is it safe to discard reconciled Spec and Task records?",
   "answer": "WF-8F: Specs and Tasks are transient working artifacts, not product documentation. Once their useful content is turned into readable durable documentation and the exact change is verified on main, they are retired and discarded. The Wiki stores the reconciled retired Spec and later corrective Tasks update it; Blueprint, Wiki and Taskboard are the enduring and navigational surfaces.\nE-11: Derived, never authored on the board: complete record in a live folder = ready to capture; in retired/ (ADR-000I) = captured, ready to delete; deleted = card drops. 'The state should show that we are good to move forward, not the taskboard. Updating that it's ready only to wipe it is pointless.' sitrep reports Complete as two counts.\nWF-8D: After a completed Task's results and needed proof are reconciled into the owning Spec, the Task is retired: its branch and worktree are deleted after verified containment, it leaves the hot Taskboard and ordinary pickup, and its TASK.md survives only as retired history reachable by an explicit historical route.\nWF-8E: A Spec closes only after separate-context Spec review passes and owner Human QA on integration confirms the destination is actually there. It is then reconciled into the Wiki and retired. No Git merge closes it automatically; main promotion stays a separate owner action.",
@@ -38,7 +38,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000F",
+    "LMK-000N"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -249,6 +252,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:54.946Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Artifact Types pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000F"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "at": "2026-10-01T23:49:59.080Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Durable Knowledge pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000F"
+          ],
+          "to": [
+            "LMK-000F",
+            "LMK-000N"
+          ]
         }
       ]
     }

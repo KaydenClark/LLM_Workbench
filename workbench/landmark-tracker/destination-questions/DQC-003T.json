@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-003T",
-  "revision": 5,
+  "revision": 6,
   "title": "What qualifies as a backlog item, and where should it live?",
   "question": "What qualifies as a backlog item, and where should it live?",
   "answer": "E-4: Backlog: 'things I have asked for, but we have not decided to start yet. They are wish list items basically... just on the edge of the frontier that we know we want to go there.' It is the residual lane. The done-Task half was split into E-4A, E-4B and E-4C and answered there.\nE-4A: As a bare-bones Spec, which can be as little as one sentence and be improved later. 'Why can't we have backlog spec items?... Anything not a part of v4 got moved to the backlog.' 'If I have asked for it, and described it, it should go on here.' Backlog is the residual lane. No separate BL- record type.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000Q"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:00.622Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Taskboard pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000Q"
+          ]
         }
       ]
     }

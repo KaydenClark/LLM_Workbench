@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-003O",
-  "revision": 4,
+  "revision": 5,
   "title": "How should lane derivation stay consistent across render, pickup and diagnostics?",
   "question": "How should lane derivation stay consistent across render, pickup and diagnostics?",
   "answer": "E-5: Confirmed the agent's proposal: one shared lane function for render, next and doctor; next offers only To do cards (cards with unfinished dependsOn visible but not offered); next --review lists Needs review; doctor never blocks on needsReview or Backlog; Blocked stays attention; a Spec's lane is derived from its Tasks, never hand-set.",
@@ -22,7 +22,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000Q"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -121,6 +123,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:50:00.424Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Taskboard pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000Q"
+          ]
         }
       ]
     }

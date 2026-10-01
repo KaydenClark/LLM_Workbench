@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002C",
-  "revision": 5,
+  "revision": 6,
   "title": "How should a decision be superseded or deprecated?",
   "question": "How should a decision be superseded or deprecated?",
   "answer": "BPR-6: ADRs are atomic decision units. Proposed has no Canon; accepted carries active architectural Canon; superseded is replaced by an explicit successor that states the complete current decision; deprecated ends Canon without a replacement and needs an explanation. The register separates active and historical records. Partial supersession is prohibited.",
@@ -28,7 +28,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000F"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -163,6 +165,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:54.833Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Artifact Types pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000F"
+          ]
         }
       ]
     }

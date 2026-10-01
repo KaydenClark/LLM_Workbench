@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-001G",
-  "revision": 5,
+  "revision": 6,
   "title": "How does an agent navigate from a question to its smallest relevant owner?",
   "question": "How does an agent navigate from a question to its smallest relevant owner?",
   "answer": "BPR-2: Only AGENTS.md, RUNBOOK.md and LEXICON.md are universal reading on every run; Blueprint and ADRs are not universal startup context and are reached by routing. LEXICON.md owns the single Context Map, RUNBOOK.md owns the ordinary entry procedure and points to it, and AGENTS.md requires traverse-don't-search without duplicating the map.\nFND-Q09: The Lexicon is the Workbench's shared dictionary, Context Map, record of shared understanding and hub of the Navlink system: settled terms, what they mean to the owner and agents, and a link from each to the artifact holding deeper context. It is the starting surface for Traverse, don't search. Unsettled questions do not belong in the Lexicon as if they were defined meaning.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000L"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:58.150Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Context Map pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000L"
+          ]
         }
       ]
     }

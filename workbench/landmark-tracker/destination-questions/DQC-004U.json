@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-004U",
-  "revision": 4,
+  "revision": 5,
   "title": "How should private recovery material be preserved outside the public product?",
   "question": "How should private recovery material be preserved outside the public product?",
   "answer": "U313-7: Move it to the GPT_OS workbench root (a private repo): 'We can do something with it later.' The private copy must be byte-identical by sha256, and no copy stays in the LLM_Workbench tree.",
@@ -22,7 +22,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000T"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -121,6 +123,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:50:01.423Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Session Transport pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000T"
+          ]
         }
       ]
     }

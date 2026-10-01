@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-003G",
-  "revision": 4,
+  "revision": 5,
   "title": "May an agent manufacture its next assignment when current work is blocked?",
   "question": "May an agent manufacture its next assignment when current work is blocked?",
   "answer": "WB-15: It does not create a next task for itself. An agent picks up its assigned task and works it autonomously; if information is missing it investigates and resolves it within that task from project evidence. Only when it cannot is a separate new task needed for a new agent, and the current agent does not manufacture that queue item or treat its absence as routine blockage.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000D"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -129,6 +131,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:54.137Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Agent Autonomy pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000D"
+          ]
         }
       ]
     }

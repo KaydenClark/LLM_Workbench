@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-005A",
-  "revision": 5,
+  "revision": 6,
   "title": "How should project evidence prepare Blueprint grilling?",
   "question": "How should project evidence prepare Blueprint grilling?",
   "answer": "BPR-7A: Every Workbench version must be proved by successfully updating Example_Workbench (now Workbench Template) to that version. Genesis for a project with no Blueprint should seed a starting Blueprint and a prepared grilling notepad grounded in the project's evidence, and an update should not silently treat an existing Blueprint as owner-validated. Those mechanisms are future capabilities and must not be claimed before built and verified.\nBPR-7B2: Staged capability Specs: first a valid copyable Workbench Template; then project-evidence intake with a prepared Blueprint grilling notepad; then Genesis turning locked Blueprint and ADR decisions into Specs and a valid project Workbench; then fresh-copy end-to-end proof. Each stage proves its own seam, and the Blueprint keeps the full destination without claiming delivery.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000U"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:01.702Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Genesis and Adoption pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000U"
+          ]
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-005W",
-  "revision": 6,
+  "revision": 9,
   "title": "How do destination question cards, landmarks, the Tracker and the Wiki divide their jobs?",
   "question": "How do destination question cards, landmarks, the Tracker and the Wiki divide their jobs?",
   "answer": "LD-4: Four pieces divide the jobs: Destination Questions preserve concept understanding and lineage; Landmarks connect the evolving feature/pillar account; Tracker generates the compact view; Wiki explains confirmed durable understanding in readable Markdown without WBIDs.\nLD-22B: Landmark files and question cards are JSON structured records; landmark files hold the evolving alignment account and links, cards own questions/answers/history. Wiki pages are human-presentable Markdown explanations containing understanding confirmed enough for durable KB, with no WBIDs. Wiki is how the owner reads about the project; JSON is difficult for him to read.\nLD-28: Four-piece model confirmed; flat destination-questions/ and landmarks/ JSON records. Workflow activities maintain sources and reasons/evidence; generated Tracker shows percentage distributions. Wiki readable durable Markdown without WBIDs, fed by several Specs. Landmark can precede and outlive Specs.",
@@ -30,7 +30,11 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000J",
+    "LMK-000N",
+    "LMK-000X"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +205,56 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:57.175Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Wiki pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000J"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:59.240Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Durable Knowledge pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000J"
+          ],
+          "to": [
+            "LMK-000J",
+            "LMK-000N"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "at": "2026-10-01T23:50:02.312Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000J",
+            "LMK-000N"
+          ],
+          "to": [
+            "LMK-000J",
+            "LMK-000N",
+            "LMK-000X"
+          ]
         }
       ]
     }

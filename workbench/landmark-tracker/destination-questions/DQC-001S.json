@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-001S",
-  "revision": 4,
+  "revision": 6,
   "title": "How should upstream and project-local ownership origins be represented?",
   "question": "How should upstream and project-local ownership origins be represented?",
   "answer": "FND-Q24: Two ownership origins (upstream Workbench, project-local) and three classifications (portable invariants and defaults, project bindings, optional extensions). A deliberate change to a baseline assignment is divergence and needs an explicit disposition. Define relationships, including primary ownership and supporting roles, rather than the full cross-product. \"An added row is a mechanical comparison fact\"; \"a core artifact type does not by itself prove compatibility.\" Renamed the Ownership origin model on 2026-09-22.",
@@ -22,7 +22,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000G",
+    "LMK-000M"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -121,6 +124,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:55.138Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Updates pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000G"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:58.652Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Ownership Model pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000G"
+          ],
+          "to": [
+            "LMK-000G",
+            "LMK-000M"
+          ]
         }
       ]
     }

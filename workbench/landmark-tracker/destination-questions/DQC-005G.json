@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-005G",
-  "revision": 5,
+  "revision": 6,
   "title": "When is a downstream room update authorized?",
   "question": "When is a downstream room update authorized?",
   "answer": "BPR-7C: No. LLM Workbench builds and maintains the reusable system and Workbench Template; it owns no portfolio rollout, automatic propagation, monitoring or automation suite. A real project Workbench is updated only when Kayden explicitly points LLM Workbench at it and asks; otherwise the project is left untouched. 'This is the plan until Kayden changes it.'\nBPR-7: The comprehensive ownership and routing repair is part of v3.2 and covers the full upstream LLM_Workbench source and generic templates, not only the newest Blueprint section. Downstream project Workbenches get it only through their own explicit update path; an upstream release alone does not change them.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000G"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:55.447Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Updates pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000G"
+          ]
         }
       ]
     }

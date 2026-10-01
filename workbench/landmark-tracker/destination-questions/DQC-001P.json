@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-001P",
-  "revision": 5,
+  "revision": 6,
   "title": "Where should the ownership map live, and what information may it contain?",
   "question": "Where should the ownership map live, and what information may it contain?",
   "answer": "FND-Q22A: Yes. The ownership map owns the maintained record of artifact classes, responsibilities, scopes, routes and relations, and answers where a truth belongs, including the Blueprint -> Spec -> Task relationships the other controls do not answer. It routes to the artifacts holding claims and never copies them or tracks live card instances. The Taskboard is a derived projection that summarizes Spec and Task records.\nFND-Q23A: A separate map is needed: OWNERSHIP.json at the repository root as the eighth root file, a Core routing artifact outside the three-file Contract; root placement never implies Contract membership. The ownership schema leaves LEXICON.md, which keeps shared language and routes ownership questions to the map. ADR-0013 must be superseded. On 2026-09-22 the \"root control\" label was dropped: it is the Ownership map, a routing artifact.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000M"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:58.537Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Ownership Model pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000M"
+          ]
         }
       ]
     }

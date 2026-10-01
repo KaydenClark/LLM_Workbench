@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-005N",
-  "revision": 6,
+  "revision": 7,
   "title": "How should release identities preserve earlier evidence and bundle history?",
   "question": "How should release identities preserve earlier evidence and bundle history?",
   "answer": "WB-8: This is continuing LLM Workbench work under the v3.1.1 direction, not a pivot away from an abandoned candidate. Existing v3.1 work, specs and proof are the baseline to continue and improve. The provisional label does not publish a version, create a release claim, or rewrite historical evidence.\nREC-03: Bump to v3.1.3: freeze v3.1.2 at sixteen in supportedLegacy and set the room's manifest to v3.1.3.\nREC-04: Yes - rooms are on v3.1.2.",
@@ -30,7 +30,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000G"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +203,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:55.525Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Updates pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000G"
+          ]
         }
       ]
     }

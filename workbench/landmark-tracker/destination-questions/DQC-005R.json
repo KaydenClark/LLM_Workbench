@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-005R",
-  "revision": 5,
+  "revision": 6,
   "title": "Where should feedback reports and their accepted follow-up live?",
   "question": "Where should feedback reports and their accepted follow-up live?",
   "answer": "WB-7: Harness-feedback reports go in the manifest-declared workbench/feedback/ lane - never loose, in the Wiki, or in an ad-hoc folder. Accepted follow-up work goes in its owning linked spec. A report does not repair its target or authorize automated repair.\nWB-1: Build the redesigned workflow, then complete Round One: a fresh agent uses the reduced route, Wiki and ADRs to confirm the Workbench is set up correctly. Only after Round One succeeds, produce a reviewed, evidence-backed harness-feedback report and show cold continuation to its accepted next action. The report must not authorize or include a repair to the harness it evaluates.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000W"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:02.069Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Harness Feedback Review pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000W"
+          ]
         }
       ]
     }

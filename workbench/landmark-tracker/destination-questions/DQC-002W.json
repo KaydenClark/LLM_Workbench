@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002W",
-  "revision": 6,
+  "revision": 8,
   "title": "What authorizes work, and what does a claim merely record?",
   "question": "What authorizes work, and what does a claim merely record?",
   "answer": "TT-Q6: The owner's instruction is the authorization; the claim is recorded by pushing it on the Task branch (PW-6).\nPW-6: Option 1: push the claim, read the remotes. claim creates the task branch from integration, commits the claim as its first commit and pushes at once; next and claim fetch all refs and overlay Task state from every remote tip. No direct claim commit on integration. The PR carries closure. A no-remote session falls back to local and says so.\nU313-1B: This session owns all six.",
@@ -34,7 +34,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000D",
+    "LMK-000K"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -209,6 +212,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:54.023Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Agent Autonomy pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000D"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:57.757Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000D"
+          ],
+          "to": [
+            "LMK-000D",
+            "LMK-000K"
+          ]
         }
       ]
     }

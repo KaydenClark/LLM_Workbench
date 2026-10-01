@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-003E",
-  "revision": 4,
+  "revision": 5,
   "title": "Who selects the normal stance for an assignment?",
   "question": "Who selects the normal stance for an assignment?",
   "answer": "WB-16: Normal task stance is set in the assigned SPEC and TASK; the agent does not choose or record its own. A stance decision may arise only once work enters troubleshooting mode, and what happens there is outside this grilling session's scope.",
@@ -22,7 +22,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000R"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -121,6 +123,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:50:00.937Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Agent Stances pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000R"
+          ]
         }
       ]
     }

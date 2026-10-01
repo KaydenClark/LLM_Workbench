@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-006B",
-  "revision": 6,
+  "revision": 7,
   "title": "What do the eight documentation steps measure?",
   "question": "What do the eight documentation steps measure?",
   "answer": "LD-12: Cards represent destination concepts, distinct from constituent grilling prompts. Mixed progress shown as percentage distributions for questions and landmarks; no single card lane/reset lifecycle. Exact steps Idea, Aligning, Confirmed, Mapped, Planned, Journey, Review, Verified remain locked. Tracker generated; folder placement behavior needs reconciliation with corrected model.\nLD-23: Destination concept/documentation progress toward durable destination, displayed as per-step percentage distribution. Each related item contributes actual step or mixed fractions totaling one. Same calculation for landmarks/Workbench, with shared items counted once. Tracker additive/documentation; Taskboard implementation. No child-completion proxy or reset lifecycle.\nLD-26: Destination concept progress toward documentation destination, not child implementation completion. Wiki is agents brain and actual content is verified against expected durable knowledge.",
@@ -30,7 +30,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000X"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +203,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:50:02.516Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000X"
+          ]
         }
       ]
     }

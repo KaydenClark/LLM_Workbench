@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-004D",
-  "revision": 7,
+  "revision": 8,
   "title": "What does owner Human QA evaluate, and where does it happen?",
   "question": "What does owner Human QA evaluate, and where does it happen?",
   "answer": "FND-Q14: Two named gates. Spec QA gate: working branch into integration, triggered by the merge request; it checks every Task in the Spec is done and the branch is up to Spec, passing merges and failing denies. Human QA gate: integration into main; integration is the Human QA branch where the owner decides if work is ready or needs more. Human QA is not a release ceremony and is not batched by release.\nWF-8: Tasks use red/green TDD, make relevant tests green, exercise what was built to confirm it works, and preserve proof before handoff. A separate context checks the assembled Spec. Integration is the assembled surface for owner Human QA, which can return work to Align before owner-only main promotion.\nWF-9: Delivery repeats recursively. A failed Human QA result returns to Align and the design-concept/delivery loop at the appropriate scope.\nSCR-6: Two acts by two parties. The Director approves each Spec its Dispatcher carries (a pass lets the Spec branch merge into integration and moves its card to Complete) and coordinates across Dispatchers. Owner Human QA comes after the Director has approved every Spec in the version or escalated blockers, and ends in the owner-only integration to main merge. What Human QA consists of is project-specific; here it is the owner monitoring, asking the Director questions and starting the next steps. Closure (features Wiki capture, record deletion) follows verification on main.",
@@ -34,7 +34,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000H"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -241,6 +243,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:55.869Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000H"
+          ]
         }
       ]
     }

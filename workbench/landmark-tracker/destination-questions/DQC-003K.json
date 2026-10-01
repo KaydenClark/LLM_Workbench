@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-003K",
-  "revision": 7,
+  "revision": 8,
   "title": "Which record authors work state, and what does the board project?",
   "question": "Which record authors work state, and what does the board project?",
   "answer": "FND-Q02: TASKBOARD.md is the sole live project-management and Kanban view of the Frontier. It mostly renders active Specs and Tasks (priority, what is hot, progress, lanes, blockers) and holds no irreplaceable detail; Specs and Tasks own that. Agents update or regenerate it as Tasks move, and completed verified Specs and Tasks disappear so the board clears.\nFND-Q02A: The underlying Specs and Tasks own substantive progress, issues, evidence and recoverable context; TASKBOARD.md renders and summarizes them and should hold as little irreplaceable context as possible. Sitrep must be able to read only the board for a complete active picture. Correction: do not call the board the navigation view. It is the Kanban and project-management view; it links to Tasks only because everything is navlinked. The Lexicon keeps the Context Map and Navlink hub role.\nFND-Q21B: An altitude is a scope, not a file. Boundaries, Requirements, Acceptance and Evidence have owners at all three scopes; Destination (Blueprint, Spec) and Work state (Spec, Task) at two. Gaps are declared with a route. Boundaries splits inside one row: permission limits arrive by inherits, product exclusions by refines. Refined 2026-09-22 (Option B): the Taskboard is first-class as the project-wide representation of work state; TASKBOARD.json summarizes the Spec and Task records that author it.\nFND-Q22A: Yes. The ownership map owns the maintained record of artifact classes, responsibilities, scopes, routes and relations, and answers where a truth belongs, including the Blueprint -> Spec -> Task relationships the other controls do not answer. It routes to the artifacts holding claims and never copies them or tracks live card instances. The Taskboard is a derived projection that summarizes Spec and Task records.",
@@ -34,7 +34,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000Q"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -241,6 +243,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:50:00.264Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Taskboard pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000Q"
+          ]
         }
       ]
     }

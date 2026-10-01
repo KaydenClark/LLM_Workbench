@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002Z",
-  "revision": 5,
+  "revision": 6,
   "title": "What work should a dispatcher or director perform without executing Tasks?",
   "question": "What work should a dispatcher or director perform without executing Tasks?",
   "answer": "TT-Q4: A Task should be 1:1 with a Chat. A few Chats for one Task is allowed but 'is not how it should be done': make the Task smaller, still vertical. One Chat should not do several Tasks: 'The chat should complete the task, clean up, and be done.' A dispatcher or director watches the Spec, writes handoffs and opens a new Chat per unblocked Task, and approves; it never executes Tasks itself.",
@@ -32,7 +32,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000R"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -171,6 +173,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:00.820Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Agent Stances pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000R"
+          ]
         }
       ]
     }

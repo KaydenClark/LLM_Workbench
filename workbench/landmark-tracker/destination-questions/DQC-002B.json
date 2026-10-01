@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002B",
-  "revision": 6,
+  "revision": 7,
   "title": "When does an ADR become active architectural Canon?",
   "question": "When does an ADR become active architectural Canon?",
   "answer": "BPR-4: Yes. An accepted, non-superseded ADR is authoritative for its cross-cutting decision until it is explicitly superseded, and it 'preserves the reasons behind what has been done'. It does not need to be copied into another control to bind.\nBPR-3: Planes classify claims, not whole ADRs. In an accepted, non-superseded ADR the active decision claim is architectural Canon; rationale and alternatives usually give Grounding; provenance and history may give Enduring Context. A proposed ADR holds no Canon. A superseded ADR keeps historical context while its explicit successor carries active Canon.\nACC-1: Reconcile ADR-000B/C/D to the locked answers, then accept them now without another owner reread. A confirmed grilling Question / Answer / Why / Impact readback locks the ADR; to-docs authors it before Specs and Tasks.",
@@ -30,7 +30,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000F"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +203,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:54.795Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Artifact Types pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000F"
+          ]
         }
       ]
     }

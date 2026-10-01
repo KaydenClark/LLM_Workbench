@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-003I",
-  "revision": 6,
+  "revision": 8,
   "title": "Which parts of a procedure belong in prose and which in deterministic tools?",
   "question": "Which parts of a procedure belong in prose and which in deterministic tools?",
   "answer": "V3-10C: Keep spec-workbench.mjs focused and manifest-aware; retain the source-catalog test; add only a layout/manifest check and a bounded installed-skill check/install/update helper. Each markdown procedure invokes only its relevant mechanical check; \"there is no umbrella lifecycle program.\"\nV3-23: Guidebook-first. Agents work through small markdown procedures that explain purpose, inputs, decisions, actions, stopping conditions, and proof; .mjs tools exist only for narrow deterministic checks that are clearer and safer as code.\nV3-23A: No. Keep spec-workbench.mjs bounded to spec/ticket mechanics and avoid a monolithic lifecycle program.",
@@ -30,7 +30,10 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000D",
+    "LMK-000I"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -201,6 +204,37 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:54.212Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Agent Autonomy pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000D"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:56.902Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Skills pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000D"
+          ],
+          "to": [
+            "LMK-000D",
+            "LMK-000I"
+          ]
         }
       ]
     }

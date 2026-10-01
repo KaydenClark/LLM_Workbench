@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-001W",
-  "revision": 5,
+  "revision": 6,
   "title": "Which whole-product requirements belong in Blueprint rather than Specs or ADRs?",
   "question": "Which whole-product requirements belong in Blueprint rather than Specs or ADRs?",
   "answer": "BPR-5A: Blueprint holds durable whole-product outcomes and constraints. Specs hold scoped, testable capability requirements. ADRs hold accepted cross-cutting architectural choices from consequential tradeoffs. A whole-product client requirement can sit in the Blueprint without an ADR; implementation specifics and acceptance go in Specs; an ADR exists only for the architectural choice and why.\nWF-6: The Blueprint defines the product-level destination: count to 100. Each Spec is a mini-PRD, a scoped objective with its own destination, the next number to count to. Tasks do the counting. Stacked Specs together realize the Blueprint journey. TASKBOARD is the Kanban projection of progress and coordination, not truth or a second tracker.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000F"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:54.606Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Artifact Types pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000F"
+          ]
         }
       ]
     }

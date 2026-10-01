@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000I",
-  "revision": 5,
+  "revision": 6,
   "title": "What must a room carry so an agent can work from a fresh clone?",
   "question": "What must a room carry so an agent can work from a fresh clone?",
   "answer": "PW-1: Portable Workbench = 'a fully packaged and deployable agentic harness': everything an agent needs is in the Git repository, so any agent, or several at once in the cloud, can clone it, do authorized work, push, and clean up after itself. All three renames accepted: support-root layout, host portability, ownership origin model. The success criterion gains 'cleaning up after itself'.\nV3-21A: The complete current setup and grilling-to-implementation workflow, not merely template-only setup.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000B"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:53.186Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Portable Workbench pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000B"
+          ]
         }
       ]
     }

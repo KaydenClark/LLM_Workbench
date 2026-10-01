@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-003F",
-  "revision": 5,
+  "revision": 6,
   "title": "How far should an agent investigate before asking the owner or stopping?",
   "question": "How far should an agent investigate before asking the owner or stopping?",
   "answer": "WB-6: The Workbench is autonomous within its standing authority. An arriving agent investigates the Contract, relevant ADRs, specs, task state, Wiki and project evidence, makes the best supported choice, and may construct the next decision from that evidence. Only when it cannot find a confident good next decision does it record the blocker and stop; the owner can open a grilling session on return. Platform safety and owner-only boundaries still apply.\nWB-15: It does not create a next task for itself. An agent picks up its assigned task and works it autonomously; if information is missing it investigates and resolves it within that task from project evidence. Only when it cannot is a separate new task needed for a new agent, and the current agent does not manufacture that queue item or treat its absence as routine blockage.",
@@ -26,7 +26,9 @@
       "revision": "56b459da"
     }
   ],
-  "landmarks": [],
+  "landmarks": [
+    "LMK-000D"
+  ],
   "assessment": {
     "derived": "related",
     "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
@@ -161,6 +163,20 @@
           "field": "assessment",
           "from": null,
           "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:54.099Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Agent Autonomy pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000D"
+          ]
         }
       ]
     }
