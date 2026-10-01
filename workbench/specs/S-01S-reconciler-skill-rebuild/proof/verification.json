@@ -347,5 +347,12 @@
     "Separate-context review of final immutable candidate under current Task-PR exception and applicable assembled gate",
     "Owner Human QA and owner-only main promotion; neither requested nor claimed"
   ],
-  "publication": "Branch publication verified separately at handback; GitHub API is Forbidden, so draft PR may require parent Servitor. This receipt does not claim a created PR."
+  "publication": "Branch publication verified separately at handback; GitHub API is Forbidden, so draft PR may require parent Servitor. This receipt does not claim a created PR.",
+  "integrationDrift": {
+    "observedTip": "25d3f4d23b3719693065336a4ba66349d0a95907",
+    "branchBase": "d90785908b26517068a474bb88136c81995a2f18",
+    "requiredUnionUnchanged": true,
+    "reconcilerLaneOverlap": false,
+    "limit": "Integration advanced with PR 240 while this isolated candidate was tested. No rebase or assembly test is claimed. Parent must regenerate shared projections and review/test the assembled candidate, including coordinator MEMORY route."
+  }
 }
