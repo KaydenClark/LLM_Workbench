@@ -289,7 +289,9 @@ After the Scaffold's running path is verified, create one stable
 Derive it from locked owner decisions, active ADRs, verified Actuality from the
 target, and bounded choices explicitly supplied in the founding prompt; link
 those sources and keep unresolved questions open. Put 1-3 one-context
-tracer-bullet tasks in its implementation table and record the Genesis result
+tracer-bullet tasks in its compatibility seed table; convert unfinished rows
+through `convert-tasks` before the first record-backed claim, following Runbook
+lifecycle. TASK.md then owns active state and proof. Record the Genesis result
 in its evidence log. The
 manifest declares the seven lanes (`docs`, `specs`, `wiki`, `sessions`,
 `feedback`, `tools`, `skills`) and their collections; live grilling and handoff records

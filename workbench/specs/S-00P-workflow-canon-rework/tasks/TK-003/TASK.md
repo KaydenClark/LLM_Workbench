@@ -8,7 +8,7 @@
 **Destination:** spec-acceptance: S-00P Acceptance Criteria
 **Planned verification:** Red: a disposable-room lifecycle run driven by the documented procedure fails an observable transition or refusal required below; green: the same run reaches its verified project destination, preserves corrective and recovery evidence, and every documented command has an executed result. Command-existence and phrase checks are supporting checks only.
 **Stance:** Builder
-**Proof:** Document-driven stale-verdict RED at claimed3251303 preserved; corrected continuous installed disposable lifecycle green, 25 actual command examples, greeting product red/green, corrective review and fixture QA/main, complete then feature capture then whole-directory retirement/discard with fresh-clone byte recovery, standalone Wiki corrective claim/close and unsupported receipt no-write refusal; demo25.539s. node tools/test-control-fidelity.mjs PASS22/22; node tools/test-spec-report.mjs PASS; syntax/diff checks PASS. Focused test-spec-workbench and immutable final required51 pending; no production approval.
+**Proof:** Delivered through PR #241: exact independently reviewed head3b82f6ab5fc5e90a60963405698806d16b915963 contained in fetched integration66815b4e4d0a35802d28c3a470921c00692f8d0d, actual-tip guarded cleanup complete. Document-driven stale-report red then installed continuous product/corrective/closure/capture/retirement/recovery green with25 examples/demo25.539s; controls22/22, spec-workbench39/39, report, required full51/51 and direct append-only/citations15/15. Fresh entire-eight-path independent PASS with no actionable findings (reviewer demo27.663s). Original source/close/Receipt checkpoints remain preserved; current whole-Spec/final closure gate lives in S-00P, with generic Task5 mirrors and owner QA/main open.
 
 ## Execution Reconciliation (2026-10-01)
 
@@ -189,10 +189,12 @@ approval, production branch deletion or external room as test data.
   negative checks preserve state and unmerged work on refusal.
 - [x] Template upgrade and self-drift obligations remain intact; generic mirror
   work is explicitly returned to TK-005 with the changed sections identified.
-- [ ] Worker returns immutable SHA, paths, tests/results, docs, remaining gaps
+- [x] Worker returns immutable SHA, paths, tests/results, docs, remaining gaps
   and known limitations to Dispatcher. Dispatcher updates shared Spec state,
   evaluates whole-Spec acceptance, runs the required assembled full suite and
   obtains separate Director review before integration delivery.
+
+Achieved Task-level hand-back, required51, independent review and containment are named in current Proof above. Whole-Spec acceptance was assessed with TK-005 remaining; final assembled-Spec verdict/delivery status is owned by S-00P report/gate/evidence, and no whole-Spec or owner approval follows from this Task checklist.
 
 Task self-check is not whole-Spec approval. Do not mark S-00P complete, record
 owner approval, merge main, or run a full suite to certify this draft packet.

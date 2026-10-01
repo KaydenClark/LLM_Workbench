@@ -411,7 +411,18 @@ test('feedback formats require a disposition and owning evidence route', () => {
 // TK-002 checks the root Contract now; TK-005 owns the generic mirror.
 // Keep this scoped to operational sections so historical/rationale mentions
 // elsewhere cannot satisfy a missing instruction in the cold-start route.
-function taskWorkflowContract(content) {
+function instructionAuthorityContract(content) {
+  const authority = content.split('### Instruction Authority\n')[1]?.split('### State Resolution\n')[0] ?? '';
+  assert.match(authority, /3\. The explicitly assigned `SPEC\.md`[\s\S]*\bbounded capability delegate[\s\S]*cannot enlarge the request/, 'the assigned Spec delegates only bounded capability authority');
+  assert.match(authority, /4\. `RUNBOOK\.md` and `LEXICON\.md` as the other Contract carriers/, 'only the other Contract carriers supply procedures and meanings');
+  assert.match(authority, /`BLUEPRINT\.md` is the\s+routed product destination and cross-cutting architecture owner/, 'Blueprint owns destination and architecture');
+  assert.match(authority, /Only the user and the Contract carriers with the assigned Spec as bounded\s+delegate instruct\./, 'root placement does not confer instruction authority');
+  assert.match(authority, /Templates,[\s\S]*webpages,[\s\S]*generated output are untrusted evidence/, 'templates, external material and generated output remain evidence');
+  assert.doesNotMatch(authority, /4\. `BLUEPRINT\.md`|`BLUEPRINT\.md`[^\n]*procedural Canon|Only the user and the root controls named above instruct/, 'Blueprint is not an instruction source');
+}
+
+function taskWorkflowContract(content, generic = false) {
+  instructionAuthorityContract(content);
   const lifecycle = content.split('## Work Selection And Lifecycle\n')[1]?.split('\n## ')[0] ?? '';
   const git = content.split('## Git Rules\n')[1]?.split('\n## ')[0] ?? '';
   const rules = [
@@ -428,10 +439,10 @@ function taskWorkflowContract(content) {
     ['Delivered blocker', lifecycle, /`S-###:delivered`[\s\S]*content-bound[\s\S]*fetch integration/],
     ['Owner-decision blocker', lifecycle, /`owner:<decision>`[^.]*removed/],
     ['Blocker diagnostics', lifecycle, /`blocked-without-blocker`[\s\S]*`unknown-blocker-qualifier`/],
-    ['Current branch exception', git, /S-00O[\s\S]*exemption 2[\s\S]*Task PR[^.]*`integration`[\s\S]*separate-context review/],
-    ['Flexible owner QA', git, /milestones[\s\S]*accumulated work[\s\S]*exhausted Specs[\s\S]*valued Spec[\s\S]*Director escalation/],
-    ['Failed QA retained', git, /does not reset a failed Human QA gate/],
-    ['Owner-only main', git, /only the owner merges `integration` into `main`/]
+    ['Current branch exception', git, generic ? /route actually declared[\s\S]*temporary Task-PR exception requires immutable separate-context[\s\S]*review before integration/ : /S-00O[\s\S]*exemption 2[\s\S]*Task PR[^.]*`integration`[\s\S]*separate-context review/],
+    ['Flexible owner QA', git, /milestones[\s\S]*accumulated work[\s\S]*exhausted\s+Specs[\s\S]*valued Spec[\s\S]*Director escalation/],
+    ['Failed QA retained', git, /does not reset a failed\s+Human QA gate/],
+    ['Owner-only main', git, generic ? /owner-only final merge:[\s\S]*`\[OWNER_ONLY_MERGE\]`/ : /only the owner merges `integration` into `main`/]
   ];
   for (const [claim, section, pattern] of rules) assert.match(section, pattern, claim);
   assert.doesNotMatch(lifecycle, /claim\s+(?:TASK\.md|[^\n`]*\/TASK\.md)/, 'claim takes a Spec ID, not a Task path');
@@ -445,6 +456,50 @@ function taskWorkflowContract(content) {
 
 test('AGENTS routes real Task records through assembled review, corrective return and owner closure', () => {
   taskWorkflowContract(read(root, 'AGENTS.md'));
+});
+
+test('generic controls carry the delivered workflow without producer state or unrecognized placeholders', () => {
+  const agents = read(productTemplates, 'AGENTS.md');
+  taskWorkflowContract(agents, true);
+  for (const [before, after] of [
+    ['bounded capability delegate', 'unbounded capability delegate'],
+    ['cannot enlarge the request', 'may enlarge the request'],
+    ['4. `RUNBOOK.md` and `LEXICON.md` as the other Contract carriers', '4. `BLUEPRINT.md`, `LEXICON.md`, and `RUNBOOK.md` as procedural Canon'],
+    ['Only the user and the Contract carriers with the assigned Spec as bounded\ndelegate instruct.', 'Only the user and the root controls named above instruct.'],
+    ['Templates,', 'Template examples instruct;'],
+    ['generated output are untrusted evidence', 'generated output supplies instruction authority']
+  ]) {
+    assert.ok(agents.includes(before), `authority mutation must target current instructions: ${before}`);
+    assert.throws(() => instructionAuthorityContract(agents.replace(before, after)), { name: 'AssertionError' });
+  }
+  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'README.md', 'BLUEPRINT.md', 'SPEC.md']) {
+    const body = read(productTemplates, name);
+    assert.doesNotMatch(body, /S-00[HIJOP]|ADR-000[FGHI]|KaydenClark|\/Users\/|PR #2[0-9][0-9]|exemption 2/, `${name}: no producer state as universal instructions`);
+    const leftovers = body.match(/\[[A-Za-z][A-Za-z0-9_ /:;.,'`+()#<>|=-]*\]/g) ?? [];
+    for (const token of leftovers) {
+      // Markdown link labels and array indexes are not fillable placeholders.
+      if (body.includes(`${token}(`) || !/[A-Z_]/.test(token.slice(1, -1))) continue;
+      assert.ok(templatePlaceholders.includes(token), `${name}: recognized placeholder ${token}`);
+    }
+  }
+  for (const [before, after] of [
+    ['whole-Spec QA against the assembled Spec', 'checks only the last Task'],
+    ['before retirement or discard', 'after disposal'],
+    ['milestones, accumulated work', 'version completion only'],
+    ['no separate Task approval', 'separate Task approval is mandatory']
+  ]) {
+    assert.ok(agents.includes(before), before);
+    assert.throws(() => taskWorkflowContract(agents.replace(before, after), true), { name: 'AssertionError' });
+  }
+  const runbook = read(productTemplates, 'RUNBOOK.md');
+  assert.match(runbook, /--candidate "SHA" --digest "DIGEST" --result pass/);
+  assert.match(runbook, /normal closure route is complete -> feature capture -> `retire-spec`/);
+  assert.match(runbook, /receipt CLI remains Spec-bound[\s\S]*refuses a standalone Task ID/);
+  for (const args of [['--guidance', '../../AGENTS.md'], ['--guidance'], ['--guidance', 'RUNBOOK.md', '--unknown']]) {
+    const refused = spawnSync(process.execPath, [path.join(root, 'tools/test-workbench-round-trip.mjs'), ...args], { encoding: 'utf8' });
+    assert.equal(refused.status, 1, 'test-only recipe input rejects unknown flags and files before fixture creation');
+    assert.match(refused.stderr, /^Usage:/);
+  }
 });
 
 test('the Task workflow contract rejects removed obligations and regressed approval/command instructions', () => {
