@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Resolve an explicit GitHub coordination repository and room-scoped artifact identities from immutable repository sources.
 **Blockers:** No prerequisite blocks the first read-only binding slice. Native Issue mapping awaits the Issue graph seam. Live actor trust belongs to the assignment owner.
-**Latest event:** TK-004A inspector implemented with public red/green and 7/7 source/receipt-backed installed tests; final verification and independent review pending.
-**Next gate:** Run the full frozen-candidate suite, then obtain independent review before integration and Task close; later identity/Issue slices remain uncut.
+**Latest event:** TK-004A source candidate4d9a24b8 passed51/51 checks, public inspector7/7 and receipt-backed installed invocation/hash; independent integration review remains.
+**Next gate:** Independent review of the immutable assembled Task candidate, then reviewed integration containment and Task close; later artifact-identity/Issue slices remain uncut.
 
 > **Citation anchors.** pre=`282dc043ab7dad92826a6d5447369238c35df0a3` post=`282dc043ab7dad92826a6d5447369238c35df0a3`.
 
@@ -54,7 +54,7 @@ No prerequisite blocks the first read-only binding slice. Native Issue mapping a
 
 ## Acceptance Criteria
 
-- [ ] A read-only public command resolves committed room binding at an exact commit, rejects malformed input with named errors and leaves the checkout unchanged.
+- [x] A read-only public command resolves committed room binding at an exact commit, rejects malformed input with named errors and leaves the checkout unchanged.
 - [ ] Artifact lookup distinguishes identically labelled legacy Tasks in different Specs and resolves supported former spellings without choosing an ambiguous record.
 - [ ] Moves and retirement retain room/artifact/Issue correspondence and immutable source references.
 - [ ] The adapter is registered in the managed runtime and its delivered seams work from a receipt-backed fresh-room installation.
@@ -77,6 +77,7 @@ This Spec owns capability requirements, open gates and proof. Shared operational
 |---|---|---|---|---|---|
 | 2026-10-01 | none | Owner-directed capability capture from integration 282dc043ab7dad92826a6d5447369238c35df0a3; reviewed concept seed PR235. | Planning only; runtime proof not claimed. | Capability owner authored; generic operational template changes deferred to implemented seams/cutover, because no operative workflow changes here. | Acceptance unchecked; unresolved choices and later independent review preserved. |
 | 2026-10-01 | TK-004A | Candidate de53544083201d66e76c7f56a95b975911ec8ed5 implements an optional committed-manifest binding inspector; native claim99643c2 is pushed. | Public red: absent inspector exits1. Green: 7/7 including immutable source, refusal/no-write and receipt-backed installed command/hash; live repository demo resolves metadata with access unverified. Full initial run45/49 exposed stale Taskboard after Receipt; regenerate and rerun final candidate. | Procedure, manifest declaration and managed registration; workflow/templates unchanged because no active service or claim rule changes. Native DQC links preserve origins/evidence. | Final full suite and independent integration review; native Issue operations, artifact mapping, actor policy and cutover remain. No Human QA/main or clean-update claim. |
+| 2026-10-01 | TK-004A | Frozen candidate4d9a24b8692e90ab63c11b07515b12cae0ab2ee7 self-checked; Task remains in-progress pending independent review/integration. Zero coordination hand-backs in this continuation. | 51/51 required plus inspector/Tracker commands PASS; inspector7/7 with receipt hash and fresh installed invocation; Tracker23/23 and exact projection; demo reports metadata with access unverified. Guardrail78/100 before/after; repeated real outcome trials/control comparisons/uncertainty evidence remain recommendations. Self-drift pre/post keeps7 existing findings and cleanUpdatefalse; projection drift from first run repaired. | Procedure, source/managed registration and capability/concept routes; generic workflow/templates intentionally unchanged because active claims/required service are unchanged. | No live Issue/auth/cross-host proof, independent review or containment yet. Failed ongoing owner Human QA and owner-only main remain separate. |
 
 ## Completion Result
 
