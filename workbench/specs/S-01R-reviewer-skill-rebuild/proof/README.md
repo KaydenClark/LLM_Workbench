@@ -20,6 +20,10 @@ needed because this patch expresses existing accepted contracts.
   with `node workbench/specs/S-01R-reviewer-skill-rebuild/proof/scenario.mjs`.
 - [Pre self-drift](self-drift-pre.json) and [post self-drift](self-drift-post.json).
   Source revision, dirty state and findings are recorded by the real tool.
+  The final post receipt at e8d68ef1436685826f44b7fa56ca460c381585fe is clean
+  and retains exactly the seven baseline findings (`cleanUpdate: false`).
+  Earlier interim receipts (untracked proof then unrendered receipt row) are
+  retained in Git history; native render resolved the local projection drift.
 
 ## Required verification
 
@@ -27,12 +31,16 @@ The exact command union is extracted from AGENTS.md's full-suite block and
 RUNBOOK.md's Full verification block at the source candidate, preserving order
 and removing duplicates. The union contains 51 commands. Three additional
 scoped commands are reviewer-stance, delivery-skills and Wiki validation.
-The dated result matrix will record every actual exit and immutable run source.
+[The result matrix](verification.json) records all 54 commands passing in the
+committed-source sweep, every initial attempt, source identity and the observed
+current-integration command-union check. Source/tools/tests stayed unchanged;
+the native Taskboard receipt row was refreshed during that sweep, so the
+whole worktree is not represented as one frozen SHA. Final doctor passed.
 
 An initial working-tree sweep started before the source commit. Four installers
 refused `invalid-source-identity` because skill source was uncommitted; this
-was an execution-precondition failure, not a pass. Preserve that sweep and run
-the exact full union again from the committed candidate. No criteria were
+was an execution-precondition failure, not a pass. The retained initial sweep
+is followed by the full committed-source union rerun, all green. No criteria were
 weakened, environment refusals bypassed or runtime fixes introduced.
 
 ## Drift, documentation and boundaries
@@ -73,3 +81,9 @@ Git publication works in this saved Workbench; `gh pr list --head
 codex/s01r-tk01i-reviewer-rebuild --json number,url,isDraft` returned GraphQL
 `Forbidden`. If draft creation is likewise unavailable, parent Servitor can
 open the draft from the verified public branch. No API bypass is required.
+
+The observed remote integration advanced to `25d3f4d23b3719693065336a4ba66349d0a95907`;
+its required AGENTS/RUNBOOK command blocks are unchanged and reviewer source,
+S-01R records and MEMORY have no overlapping changes. This branch does not
+claim to have tested the new integration runtime assembly. Main remained
+`6f3a60e695dfd320e75190e828a5a3e939cc80a3`.

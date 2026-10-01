@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "operation": "workbench-self-drift",
   "phase": "post",
-  "sourceRevision": "02a30100443e725cbb1baad6fe5e771bfe85f648",
-  "dirty": true,
+  "sourceRevision": "e8d68ef1436685826f44b7fa56ca460c381585fe",
+  "dirty": false,
   "workbenchVersion": "v3.2.1",
   "sourceIdentity": {
     "repository": "https://github.com/KaydenClark/LLM_Workbench",
@@ -109,8 +109,8 @@
     {
       "artifact": "TASKBOARD.md",
       "classification": "current",
-      "sha256": "74840c29b1270ba525bdda30e2b5c1d55acd3819e7263140abbffabd82096494",
-      "bytes": 16545,
+      "sha256": "da3751b88790d36850253d408f2725438d3f7a78deb270e194063e005102815e",
+      "bytes": 16607,
       "status": null
     },
     {
@@ -1670,8 +1670,8 @@
     {
       "artifact": "workbench/specs/S-01R-reviewer-skill-rebuild/proof/README.md",
       "classification": "current",
-      "sha256": "3bad3416ee92bba6a331450791098443e7034b6d6be6ace37b732d132f5ea2ec",
-      "bytes": 114,
+      "sha256": "c822fccb074292bf252dff8ad45fda0aab6247a405ae5c9ca87188429445bc8c",
+      "bytes": 4342,
       "status": null
     },
     {
@@ -1691,8 +1691,8 @@
     {
       "artifact": "workbench/specs/S-01R-reviewer-skill-rebuild/proof/self-drift-post.json",
       "classification": "current",
-      "sha256": "7c610795460849cb19336042af5a70f9aae3bb144faed2b1338ae906ad7b9f89",
-      "bytes": 119256,
+      "sha256": "d59b872a28b4d9f8aef8758b5c16639c494257609a88f16d1fd7d4169acb6843",
+      "bytes": 120839,
       "status": null
     },
     {
@@ -1719,8 +1719,8 @@
     {
       "artifact": "workbench/specs/S-01R-reviewer-skill-rebuild/tasks/TK-01I/TASK.md",
       "classification": "current",
-      "sha256": "94594c69ef6ac3e1b58d83286bb8409038e8ceec73bc686f2bcab25fc56a4b20",
-      "bytes": 373,
+      "sha256": "749948acae9457cb33e3f3fb719683b4f3c5fd433f920472b1377dca41c424ae",
+      "bytes": 1143,
       "status": "in-progress"
     },
     {
@@ -3109,18 +3109,6 @@
       "classification": "historical",
       "severity": "attention",
       "effect": "limitation",
-      "diagnosticEffect": "none"
-    },
-    {
-      "code": "untracked-controls",
-      "artifact": "git",
-      "claim": "4 untracked file(s) under the root controls, the ADR collection or the spec lane: workbench/specs/S-01R-reviewer-skill-rebuild/proof/scenario-observation.md, workbench/specs/S-01R-reviewer-skill-rebuild/proof/self-drift-post.json, workbench/specs/S-01R-reviewer-skill-rebuild/proof/self-drift-pre.json, workbench/specs/S-01R-reviewer-skill-rebuild/proof/source-regression.json; commit or remove them before claiming the work done",
-      "expected": "current owner and verified identity",
-      "observed": "4 untracked file(s) under the root controls, the ADR collection or the spec lane: workbench/specs/S-01R-reviewer-skill-rebuild/proof/scenario-observation.md, workbench/specs/S-01R-reviewer-skill-rebuild/proof/self-drift-post.json, workbench/specs/S-01R-reviewer-skill-rebuild/proof/self-drift-pre.json, workbench/specs/S-01R-reviewer-skill-rebuild/proof/source-regression.json; commit or remove them before claiming the work done",
-      "correction": "4 untracked file(s) under the root controls, the ADR collection or the spec lane: workbench/specs/S-01R-reviewer-skill-rebuild/proof/scenario-observation.md, workbench/specs/S-01R-reviewer-skill-rebuild/proof/self-drift-post.json, workbench/specs/S-01R-reviewer-skill-rebuild/proof/self-drift-pre.json, workbench/specs/S-01R-reviewer-skill-rebuild/proof/source-regression.json; commit or remove them before claiming the work done",
-      "classification": "stale",
-      "severity": "attention",
-      "effect": "blocks-clean-update",
       "diagnosticEffect": "none"
     }
   ],
