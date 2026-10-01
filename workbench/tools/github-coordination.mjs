@@ -12,10 +12,13 @@ function refuse(code, message) {
 }
 
 function git(root, args, code, message) {
+  // Discover the selected root's own .git, including linked worktrees, without
+  // inheriting repository, object-store or configuration selectors from callers.
+  const environment = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('GIT_')));
   // A replacement object must not change what an immutable source SHA means.
   const result = spawnSync('git', ['--no-lazy-fetch', '--no-optional-locks', '-C', root, ...args], {
     encoding: 'utf8', timeout: 10000, maxBuffer: 2 * 1024 * 1024,
-    env: { ...process.env, GIT_NO_REPLACE_OBJECTS: '1', GIT_TERMINAL_PROMPT: '0' }
+    env: { ...environment, GIT_NO_REPLACE_OBJECTS: '1', GIT_TERMINAL_PROMPT: '0' }
   });
   if (result.status !== 0) refuse(code, message);
   return result.stdout;

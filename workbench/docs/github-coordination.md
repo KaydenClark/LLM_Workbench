@@ -24,7 +24,8 @@ The schema accepts a portable ASCII `owner/repository` name, with no URL,
 credentials or extra fields. The room must already have a valid `workbenchId`
 in its schema-2 manifest. Legacy rooms remain usable through existing tools;
 the inspector refuses an unconfigured room with `coordination-unconfigured`.
-Dirty manifest edits cannot change the result for a committed revision. Missing
+Inherited Git environment overrides are discarded before repository discovery;
+real linked worktrees retain their own root and source. Dirty manifest edits cannot change the result for a committed revision. Missing
 objects, malformed JSON/configuration, linked source manifests and nested
 project roots are refused with named errors. Git replacement objects are ignored
 so a source SHA retains its original meaning. Every Git operation disables lazy
