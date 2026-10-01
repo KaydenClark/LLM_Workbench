@@ -9,9 +9,9 @@
 **Catalog description:** Leave achieved work and its existing truth owners consistent for continuation.
 **Blockers:** none for assigned implementation; coordinator owns the shared MEMORY route.
 **Latest event:** TK-01J claimed by codex-s01s-tk01j.
-**Next gate:** Close TK-01J with verification and documentation proof.
+**Next gate:** Finish required verification and fresh-context evidence, then publish immutable draft; coordinator adds MEMORY route before independent review.
 
-> **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
+> **Citation anchors.** pre=`d90785908b26517068a474bb88136c81995a2f18` post=`1e403cbb`.
 
 ## Outcome
 
@@ -94,6 +94,23 @@ Dispatcher takes up an already-active one). Tasks already cut stay as they
 are. This section changes none of this Spec's acceptance, evidence or status;
 steps 1-5 touch only the draft wiki and step 6 only this skill's lane. When there is no Matt counterpart, steps 3 and 4 compare with the named nearest neighbor skill instead.
 
+## Implementation review
+
+The baseline entry says to compare actual output, verification and owners but offers
+no executable pinned observation or explicit Task-receipt, candidate-drift and
+inability treatment. TK-01J addresses those continuation gaps without adding a
+runtime or lifecycle policy. See [source reference](../../skills/reconciler/references/reconcile.md)
+and the [individual article](../../wiki/skill-reconciler.md). The article was drafted
+and compared with the named nearest neighbor, `to-docs`: both route each claim
+once, while Reconciler owns achieved-state consistency and cold read-back. The
+assigned Spec declares no Matt counterpart, so no upstream import is warranted.
+Existing TK-01J remains the sole slice; no global identity was allocated.
+
+Docs checked; no update needed in controls, templates, manifest or skill catalog:
+the stance purpose, public authority and lifecycle contract are unchanged. The
+canonical skill source supplies the installed bundle; there is no duplicate
+template skill to edit. MEMORY is deliberately reserved to the coordinator.
+
 ## Append-Only Evidence And Execution Log
 
 | Date | Task | Event | Verification | Docs | Remaining gap |
@@ -101,9 +118,12 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane. When ther
 | 2026-09-24 | planning | Owner directed one delivery Spec per skill; this Spec names reconciler's destination and first slice | Current manifest, core catalog, source presence and Wiki route inspected at pre anchor; no behavior change or scenario trial | This Spec authored; article remains future work | TK-01J and independent delivery proof remain open |
 | 2026-09-24 | planning verification | Skill-sized ownership and routing checked on the isolated candidate | All 47 required AGENTS commands passed; Wiki validation and exact 21 core plus one proposed entry coverage passed; doctor has no blocking finding; pre/post self-drift at 4940233 retained the same seven pre-existing findings and cleanUpdate false | No skill source or new article authored in this planning pass | Immutable separate-context review and actual skill behavior remain open |
 
+| 2026-10-01 | TK-01J | Rebuild source and command regression | Red commit 3c243888: 5 failures because entry lacks linked pinned observations; green ef80692c: 5/5 focused checks and 3/3 delivery checks. Catalog found missing explicit ADR path; source corrected at 1e403cbb and catalog plus focused checks passed. These execute Git observations, not model judgment | Reconciler source/reference updated; individual article drafted; controls/templates/catalog unchanged because public contract and purpose are unchanged | Full suite and durable fresh-reader proof still pending; coordinator MEMORY route and independent review open |
+| 2026-10-01 | TK-01J | First fresh-context continuation observation | Separate read-only context followed ordinary routes and identified ef80692c, in-progress state and next action. It found dirty owner updates, an untracked article, no Task receipt and no MEMORY link; no tests or remote proof inferred. Native CLI launch separately failed before model initialization with read-only app-server state | Add Task receipt and commit the updated owners/article; reserve MEMORY to coordinator | One observation only; not independent candidate review, owner QA, repeated trials or reliability proof |
+
 ## Completion Result
 
-Pending. Planning only; no reconciler rebuild or behavioral acceptance is claimed.
+Implementation candidate at `ef80692c`: Reconciler now compares pinned achieved output with existing owners, preserves governed dispositions and unresolved evidence, and names the exact review and inability boundary. Five focused regression checks and three delivery-skill checks pass. This is an in-progress draft, not completed delivery. Full verification, fresh-context read-back, the coordinator-owned MEMORY route and independent review remain open; no Human QA or merge is claimed.
 
 ## Supersession
 
