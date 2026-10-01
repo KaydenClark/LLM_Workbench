@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-10-01
 **Catalog description:** Workflow Canon and generic controls describe scoped destinations, Task-record self-check, assembled independent review, owner QA/main closure, durable capture and recoverable retirement with source-backed ADR decisions.
-**Blockers:** All five source Tasks are done; upstream delivery and Task prerequisites are satisfied. Current whole-Spec review/integration containment and actual owner QA/main formal closure remain distinct gates.
-**Latest event:** TK-005 closed with proof.
-**Next gate:** Fresh immutable whole-Spec review and content-bound verdict, then independently reviewed integration delivery; current refs determine containment. Actual owner QA/main remain formal closure gates.
+**Blockers:** Original five source Tasks are done. Independent whole-Spec review failed at9430252f: TK-004B must repair generic Blueprint instruction authority and TK-004C must reconcile the active ADR-000F delivered TK-003 claim before integration. Actual owner QA/main remain separate formal closure gates.
+**Latest event:** Exact9430252f whole-Spec review failed; native verdict allocated corrective TK-004B and TK-004C without reopening original TK-005.
+**Next gate:** Director assigns the concrete corrective branch/PR route for native TK-004B/TK-004C; then fresh red/green correction, immutable whole-Spec review/content-bound verdict and independently reviewed integration delivery. Actual owner QA/main remain formal closure gates.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`f84b4691be7cd3abf7cdf719942ca6efaec0c617`.
 
@@ -147,7 +147,7 @@ blocker. At the historical TK-002 execution base
 claim succeeded after fetching satisfied S-00I/S-00J delivery. TK-002, TK-004
 and TK-003 have since landed through reviewed PR #238, #239 and #241. At TK-005 execution entry, native claim selected its final source slice from fetched integration
 `66815b4e4d0a35802d28c3a470921c00692f8d0d`, with both Task blockers satisfied.
-All five source Tasks are now done; final template source verified at f4dae2d84f16c4bc0a99360194659d72515bad0f with required51/51. Prior exact review/merge/containment identities and current whole-Spec gate are preserved in evidence/report below.
+The original five source Tasks are done; final template source verified at f4dae2d84f16c4bc0a99360194659d72515bad0f with required51/51. Subsequent independent whole-Spec review at9430252f found two omitted obligations and native verdict allocated corrective TK-004B/TK-004C. Original proof remains preserved; the corrections, fresh review and integration containment are now the delivery gate.
 
 Whole-Spec integration delivery requires all Tasks done, acceptance checked,
 a current PASS whose immutable candidate is contained in the declared
@@ -157,7 +157,7 @@ complete or superseded; `owner:<decision>` requires explicit removal. Historical
 prerequisite plans retain their dated scope; they are not pending current work.
 
 The dependency order is TK-002 -> TK-003 and TK-004 -> TK-005; the first three
-are integrated and TK-005 source is built/verified; final whole-Spec integration review/containment remains the delivery gate. The current
+are integrated and TK-005 original source is built/verified. Failed assembled review at9430252f requires corrective TK-004B/TK-004C, then fresh whole-Spec integration review/containment. The current
 owner request releases these Tasks' controls, tests, ADRs and templates to this
 Dispatcher. One durable writer maintains this Spec, Task state and generated
 projections; Workers return one Task's proof at a time. Claude's skill Specs,
@@ -334,7 +334,7 @@ generic and `[BRACKETED]`.
 The accepted dependency graph is TK-001 -> TK-002 -> TK-003/TK-004 -> TK-005.
 TK-002 also names S-00H completion and S-00I:delivered/S-00J:delivered; native
 resolver and claim enforce those Task fields. Those upstream and TK-002/003/004
-prerequisites are now satisfied on the current execution base. All five source slices are now done. Whole-Spec integration review/containment and actual owner QA/main formal closure remain separate gates.
+prerequisites are now satisfied on the current execution base. Original five source slices are done; independent assembled review allocated TK-004B/TK-004C for omitted mirror authority and stale ADR currentness. Corrective delivery/fresh review/integration containment and actual owner QA/main formal closure remain separate gates.
 
 ## Vertical Implementation Slices
 
@@ -433,7 +433,7 @@ template with its reason.
 - [x] `AGENTS.md`, `RUNBOOK.md` and `LEXICON.md` describe the Task-record workflow, Task self-check and hand-back before containment, assembled-Spec QA, the corrective-Task return path, Human QA closure, reconciliation and retirement, naming only commands and records that exist, proven by the command-existence sweep.
 - [x] S-00H's repository-wide `Ticket` sweep still passes after phase two, and no control or template instructs the embedded-row route; this verifies S-00H's result rather than owning it a second time.
 - [x] ADR-000F, ADR-000G and ADR-000I are each accepted, amended or superseded, the register is regenerated, and no active record contradicts a locked WF answer.
-- [x] `templates/` mirrors the reworked controls, generic and `[BRACKETED]`, and a freshly generated room speaks the new workflow.
+- [ ] `templates/` mirrors the reworked controls, generic and `[BRACKETED]`, and a freshly generated room speaks the new workflow.
 - [x] The guardrail baseline is captured before phase two and the after-score recorded with no criterion weakened.
 - [x] The full verification suite passes and `doctor` is clean.
 
@@ -538,6 +538,9 @@ workflow. No other owner changes.
 | 2026-10-01 | TK-005 | Task closed | Generic templates/source tests verified at repaired committedf4dae2d84f16c4bc0a99360194659d72515bad0f: actual required51/51 incl canonical Adoption/layout/Generation. Existing template-guidance actual no-TASK red then conversion green; real pond red/green, installed Receipt/close/report and no-write stale/missing proof refusals; installed demo3.136s/source27cb67257cf72e4b49f25147fd34d203bd8aa2cb. Durable generic25 examples24.436s/default25examples24.448s; controls23/23. Legacy placeholder exact red repaired1/1 plus genuine sourceee1a4a933ff46f207b5f15f13432a1ffce901b53 generated/authored Spec validation and zero leaks. Source self-check complete; current assembled review/integration delivery is determined by S00P report/content-bound verdict/current refs and evidence, separate from actual owner QA/main formal closure. | Nine generic templates mirror current meanings; shared8heading Blueprint/product placeholders preserved without producer journey/map. Supported lifecycle/inspection/digest/main/capture/retirement limits explicit; no producer exemption universalized or runtime change. Four existing tests incl closed test-only guidance input; actual canonical Adoption preserves product/control/history. Original50/51 failure and legacy-label compatibility retained. | Whole-Spec current review/delivery gate is owned by S00P report/verdict/integration refs; actual owner QA/main/formal complete and release/real installed reference-room proof remain separate unsatisfied obligations. Existing seven self-drift findings/CLAUDE fidelity mismatch retain no-clean-update limitation; no outcome claim. |
 
 | 2026-10-01 | TK-005 | Repaired committed source full verification and assembled source QA | Exact repaired sourcef4dae2d84f16c4bc0a99360194659d72515bad0f required51/51 process exit0, canonical Adoption/layout/Generation pass; prior0b actual50/51 preserved. Actual targeted/durable generic examples and generated-filled compatibility proof retained. Native Task5 close names achieved source proof and routes current review/integration status to this Spec; all five source Tasks done, acceptance checked against achieved source suite and bounded doctor exit0 semantics, real Completion Result authored | Current prerequisites/dependency/result/catalog prose reconciled to achieved source state, original historical rows/Receipts preserved. Task5 source checklist tracks achieved source/demo/examples; unchanged Dispatcher full-suite/separate Director obligation is explicit in shared report/gate. Normal closure/capture/retirement meaning retained; no actual owner QA/main act | Final immutable closure/acceptance head required51 and fresh independent whole-Spec+Task5 review/content-bound verdict/exact PR-head review/remote integration containment remain before delivery. Owner QA/main/formal complete separate; guardrail78 and known seven self-drift findings/CLAUDE fidelity difference remain, no clean-update/outcome/release claim. |
+| 2026-10-01 | review | Review verdict: fail at 9430252fff64b952d7f4f9311d5008d10f26b891 [118d10d4368d] #3 | P1 Preserve the Contract authority boundary in generic AGENTS and generated rooms: Blueprint is product destination and cross-cutting architecture owner, not instruction authority; P2 Reconcile active ADR-000F current operational consequence to achieved TK-003 Runbook delivery instead of presenting it as pending | Fresh separate Director context /root/s00p_assembled_review, Reviewer stance, model identity unrecorded | 2 |
+
+| 2026-10-01 | review | Failed assembled candidate and attributable corrective allocation at9430252f | BASE66815b4e4d0a35802d28c3a470921c00692f8d0d / HEAD9430252fff64b952d7f4f9311d5008d10f26b891 / digest118d10d4368dcd80a6fbdd63f7874ee83a5bfea201c2dd858b2e80b294d66551: fresh separate Director whole-Spec FAIL P1 templateAGENTS Blueprint instruction authority, P2 activeADRF stale TK003-pending claim; Task5 FAIL P1 only. Native verdict fail allocated TK-004B/TK-004C, original closed Tasks/Receipts and failed candidate remain unchanged. Exact required51 initial49/51 from overlapping live citation fixtures, both affected dogfood/citation checks subsequently passed identicalHEAD; original failed tally/logs retained, all51 named current results pass | Acceptance mirror checkbox reopened for proven omitted authority; activeADR currentness remains an explicit manual gap beyond machine seven findings. No source correction, runtime/skill/Wiki/ownerQA change yet. Reviewer context /root/s00p_assembled_review, Reviewer stance/model identity unrecorded. Zero routine owner coordination hand-backs | No merge of943. Director supplies concrete corrective branch/PR route, then red/green, full required verification and fresh immutable whole-Spec/exact integration review. Ongoing/failed ownerQA/main/formalcomplete/release gates remain, no clean-update/outcome claim |
 
 ## Completion Result
 
@@ -551,7 +554,7 @@ historical proposals and narrow routing provenance remain preserved. Generic
 mirrors retain product placeholders/eight headings and execute the same
 supported workflow without universalizing producer state or copying its journey.
 
-All five source Tasks are done. TK-001/002/004/003 have recorded reviewed
+The original five source Tasks are done. Native corrective TK-004B/TK-004C remain ready after independent whole-Spec FAIL at9430252f; template authority and active ADR currentness must be corrected before delivery. Original TK-005 and its proof are preserved. TK-001/002/004/003 have recorded reviewed
 integration delivery; the final template source at
 `f4dae2d84f16c4bc0a99360194659d72515bad0f` passed the required51/51 including
 canonical installed Adoption/Generation. Actual generated pond/product red-green,
