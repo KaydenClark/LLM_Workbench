@@ -266,14 +266,16 @@ ownership route move. `RUNBOOK.md` gains the query procedure at that point.
 
 | 2026-10-01 | 574df962fcfdd8045ec4dd405ba7f548216f7d4a | Reproduced faithful prospective activation before live metadata edits | Public `convert-tasks S-00G --activate` in a disposable clone first refused stale prose with a byte-identical inventory; after only resolved metadata reconciliation it preserved four IDs/plans and TK-001 -> TK-002 -> TK-003 -> TK-004, with no Proof fields. [Literal original header/rows and results](activation-migration-2026-10-01.json). | No converter change; no human precondition invented. Implementation, full verification and independent review remain open. |
 
+| 2026-10-01 | 311001ae4d8debdebbb1be74c689f53c6e1f9583 | TK-001 schema/reader proved at source and installed seam | Missing-module and embedded-claim red tests; 4/4 focused tests; 52/52 exact AGENTS/RUNBOOK union in clean clone; installed runtime bytes and verify valid; separate reader review no remaining findings. [Detailed evidence](reader-proof-2026-10-01.json). | Reader milestone only. Seven inherited self-drift findings and 78/100 guardrails unchanged; no outcome improvement, final query, template, whole-Spec approval or owner QA claimed. Zero coordination hand-backs in this run. |
+
 ## Completion Result
 
 ADR acceptance and the related documentation decisions are reconciled.
-Map implementation has not started. Faithful native activation is verified in a disposable clone; claim/publication and implementation remain the next gates, not another ADR acceptance decision.
+TK-001 is natively claimed and published. The schema and reader now validate 28 responsibility rows and nine directional relations; [reader evidence](reader-proof-2026-10-01.json) names red/green checks, installed byte proof, independent review and verification limits. Consumer, template, structured query and coordinated routing delivery remain open.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-No Ownership map or structured JSON comparison is implemented. The accepted
+The schema/reader and initial 28-row map are implemented; structured query and JSON comparison are not. The accepted
 eight-file root destination and three-carrier Contract therefore lead actual
 files, templates and consumers. Q21A-D/Q23/Q24 are settled and Q24B's
 undeclared-difference policy is conflict; its field shape and disposition

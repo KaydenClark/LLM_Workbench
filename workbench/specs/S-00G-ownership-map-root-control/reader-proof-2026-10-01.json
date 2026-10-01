@@ -1,0 +1,328 @@
+{
+  "candidate": "311001ae4d8debdebbb1be74c689f53c6e1f9583",
+  "red": [
+    "tools/test-ownership-map.mjs failed ERR_MODULE_NOT_FOUND before reader implementation",
+    "embedded definition/artifact and prose/path mutations failed Missing expected exception before guard correction"
+  ],
+  "green": {
+    "command": "node tools/test-ownership-map.mjs",
+    "passed": 4
+  },
+  "independent_review": {
+    "candidate": "311001ae4d8debdebbb1be74c689f53c6e1f9583",
+    "context": "independent_reader_review",
+    "result": "no remaining TK-001 findings; targeted tests 4/4; no whole-Spec verdict"
+  },
+  "installed_reader": {
+    "source": "311001ae4d8debdebbb1be74c689f53c6e1f9583",
+    "operations": [
+      "workbench-layout.mjs init --provenance genesis --version v3.2.1",
+      "workbench-tools.mjs install",
+      "copy validated source map into disposable room",
+      "installed ownership-map.mjs validate",
+      "workbench-tools.mjs verify"
+    ],
+    "result": {
+      "valid": true,
+      "responsibilities": 28,
+      "relations": 9
+    },
+    "managed_sha256": {
+      "ownership-map.mjs": "a7dd9fcdb1b207c325974793724a801aefd3cd69c57586d291eb9c4758554653",
+      "ownership-map.schema.json": "cb7946659fbd43b5363dd1c6889e81e992c8742afa75fafc81138a25f773d3c8"
+    },
+    "limitation": "Reader installation only. Map copied explicitly; generic template, adoption and upgrade map behavior not yet delivered.",
+    "managed_verify_status": "valid"
+  },
+  "guardrail": {
+    "pre": 78,
+    "post": 78,
+    "criteria_unchanged": true,
+    "limitation": "No repeated controlled trials or agent-outcome improvement claimed."
+  },
+  "self_drift": {
+    "pre_findings": [
+      {
+        "code": "stale-claim",
+        "artifact": "specs"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/feedback/REPORT_FORMAT.md"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/notepad.schema.json"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/work.example.json"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/grilling.example.json"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/handoff.example.json"
+      },
+      {
+        "code": "unverified-provenance",
+        "artifact": "manifest"
+      }
+    ],
+    "post_findings": [
+      {
+        "code": "stale-claim",
+        "artifact": "specs"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/feedback/REPORT_FORMAT.md"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/notepad.schema.json"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/work.example.json"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/grilling.example.json"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/handoff.example.json"
+      },
+      {
+        "code": "unverified-provenance",
+        "artifact": "manifest"
+      }
+    ],
+    "cleanUpdate": false,
+    "limitation": "Inherited seven baseline findings retained. Receipt projection rerendered; no clean-update claim."
+  },
+  "limitations": [
+    "No structured query or comparator",
+    "Generic template and proved root-consumer sweep pending",
+    "Evolving concept coverage/S01U coordination pending",
+    "GitHub API Forbidden prevents draft PR creation through gh"
+  ],
+  "full_required_union": {
+    "candidate": "311001ae4d8debdebbb1be74c689f53c6e1f9583",
+    "passed": 52,
+    "total": 52,
+    "commands": [
+      {
+        "command": "node tools/test-spec-workbench.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-skill-catalog.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-skill-inspection.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-skills-lane.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-core-composition.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-project-evidence.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-genesis-from-decisions.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-blueprint-contract.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-session-transport.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-configured-host.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-core-skill-installer.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-workbench-layout.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-workbench-adoption.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-workbench-upgrade.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-workbench-tools.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-diagnostics.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-adr.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-governance-core.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-branch-closeout.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-wiki.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-sessions.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-notepads.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-visible-ids.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-workbench-identity.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-visible-id-consumers.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-direct-promotion.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-workbench-round-trip.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-cross-provider-fixture.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-portability-matrix.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-workbench-dogfood.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-evaluate-workbench.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-guardrail-audit.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-context-tools.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-outcome-trials.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-eval-runner.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-feedback-automation.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-symlink-invocation.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-control-fidelity.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-spec-citation-anchors.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-controls-vocabulary-sweep.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-spec-report.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-self-drift.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-feedback-inventory.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-grilling-ledger.mjs",
+        "exit": 0
+      },
+      {
+        "command": "python3 tools/test-check-append-only.py",
+        "exit": 0
+      },
+      {
+        "command": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+        "exit": 0
+      },
+      {
+        "command": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+        "exit": 0
+      },
+      {
+        "command": "node workbench/tools/spec-workbench.mjs doctor",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-team-coordination.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-team-coordination-demo.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-socket-contract.mjs",
+        "exit": 0
+      },
+      {
+        "command": "node tools/test-ownership-map.mjs",
+        "exit": 0
+      }
+    ]
+  }
+}
