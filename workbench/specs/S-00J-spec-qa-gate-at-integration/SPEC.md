@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-10-01
 **Catalog description:** Make a separate context review the assembled Spec against its Task results, route a failed review into corrective Tasks under the still-open Spec, keep `integration` as the owner's Human QA surface, and refuse to close a Spec without a passed review and recorded owner approval.
-**Blockers:** TK-004O corrective-batch failure recovery requires final source verification, independent review and integration containment. Verdict binding is delivered by PR #250; separate lifecycle recovery and owner Human QA/main gates remain open.
+**Blockers:** TK-004R must preserve foreign Task modifications during rollback, then pass final independent review and integration containment. Original TK-004O done/FAIL history preserved; owner Human QA/main remain unapproved.
 **Latest event:** TK-004R claimed by codex-v4-corrective-batch.
-**Next gate:** Close TK-004R with verification and documentation proof.
+**Next gate:** Verify and close TK-004R with immutable current-base proof, then obtain separate exact successor review and integration delivery.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -341,7 +341,7 @@ manifest branch declaration; and the skill catalog and inspection tests.
 
 A synchronous failure while appending a fail verdict or an owner finding restores the exact pre-call Spec bytes after removing only newly created corrective Task files and empty directories. The same public invocation can then retry and produce the complete batch. The narrower `createCorrectiveTasks` seam and discarded Wiki-claim corrective batches receive the same bounded cleanup. A complete existing batch remains refused as a duplicate.
 
-Concurrent Spec edits, changed directories, linked paths or unexpected directory contents are never overwritten or recursively removed. Incomplete rollback stays visibly failed and keeps any needed durable anchor for explicit recovery. Asynchronous process death during a partially published batch is outside this synchronous rollback guarantee; the row-before-any-Task case retains the narrower recovery seam. Historical and previously published evidence is preserved.
+Concurrent Spec edits, changed directories, modified or replaced published Task files, linked paths or unexpected directory contents are never overwritten or recursively removed. Incomplete rollback stays visibly failed and keeps any needed durable anchor for explicit recovery. Asynchronous process death during a partially published batch is outside this synchronous rollback guarantee; the row-before-any-Task case retains the narrower recovery seam. Historical and previously published evidence is preserved.
 
 ## Verification Procedure
 
