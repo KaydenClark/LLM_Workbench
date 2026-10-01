@@ -1,15 +1,15 @@
 # S-01S - reconciler skill rebuild
 
 **Spec ID:** S-01S
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** codex-s01s-tk01j
 **Stance:** Builder
-**Updated:** 2026-09-24
+**Updated:** 2026-10-01
 **Catalog description:** Leave achieved work and its existing truth owners consistent for continuation.
-**Blockers:** none for planning; implementation is not assigned.
-**Latest event:** Per-skill destination extracted from the oversized Skills Wiki packet and current core inventory.
-**Next gate:** Review this skill's existing behavior, then activate TK-01J for this skill only.
+**Blockers:** none for assigned implementation; coordinator owns the shared MEMORY route.
+**Latest event:** Existing TK-01J activated under the overnight full-v4 directive after a fresh 125-ref ownership scan found no active S-01S packet or Task claim.
+**Next gate:** Claim TK-01J, demonstrate the supported gap, and return an immutable tested draft for independent review.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -53,7 +53,8 @@ No other skill rebuild is a blanket prerequisite. Check current controls and the
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-01J | Audit reconciler, deliver the smallest supported source/documentation change and prove the routed article | ready | none | pending |
+
+Active state and proof: [TK-01J](tasks/TK-01J/TASK.md).
 
 ### TK-01J - Deliver the reconciler skill destination
 

@@ -63,7 +63,7 @@ Derived from stable specs; includes completed history.
 | [S-01P - builder skill rebuild](S-01P-builder-skill-rebuild/SPEC.md) | Deliver the assigned result with useful verification and truthful documentation. | planned |
 | [S-01Q - auditor skill rebuild](S-01Q-auditor-skill-rebuild/SPEC.md) | Determine whether named claims hold on the assigned target and evidence. | active |
 | [S-01R - reviewer skill rebuild](S-01R-reviewer-skill-rebuild/SPEC.md) | Challenge candidate correctness, downstream impact and consequential claims. | planned |
-| [S-01S - reconciler skill rebuild](S-01S-reconciler-skill-rebuild/SPEC.md) | Leave achieved work and its existing truth owners consistent for continuation. | planned |
+| [S-01S - reconciler skill rebuild](S-01S-reconciler-skill-rebuild/SPEC.md) | Leave achieved work and its existing truth owners consistent for continuation. | active |
 | [S-01T - Landmark Tracker Foundation](S-01T-landmark-tracker-foundation/SPEC.md) | Preserved foundation design and completed proof; remaining delivery is assigned to Tracker S-001Z, Records S-002A and DQC S-002B. | planned |
 | [S-01U - Lexicon Design-Concept Reconciliation](S-01U-lexicon-design-concept-reconciliation/SPEC.md) | Audit the whole Lexicon against current design concepts and their governing sources, repair supported drift, and expose unresolved conflicts without promoting proposals or claiming undelivered behavior. | planned |
 | [S-01W - Uppercase Width-Four Workbench Artifact IDs](S-01W-uppercase-width-four-workbench-artifact-ids/SPEC.md) | Allocate uppercase width-four artifact identifiers, resolve legacy aliases and preserve identities through bounded touch-and-update migration. | active |
