@@ -1,0 +1,3 @@
+# Coordinator assembly
+
+Original author source360f8d34cd9372dc0c018d374ec11dda5f06b09b contains current integration25d3 and preserved earlyFAIL/red/green/sourceproof. This assembly adds only the reserved Reconciler link in the sole MEMORY index, reconciles current route/proof claims and regenerates the native Taskboard. Prior evidence rows and Receipt bytes remain intact; TK01J remains inprogress and all acceptance unchecked. Required current51/focused9/delivery3/Wiki/history checks and fresh immutable review remain gates. Original raw scenario independent verification, ownerQA/main and Factory remain held.

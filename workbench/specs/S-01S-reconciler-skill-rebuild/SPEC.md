@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-10-01
 **Catalog description:** Leave achieved work and its existing truth owners consistent for continuation.
-**Blockers:** none for assigned implementation; coordinator owns the shared MEMORY route.
+**Blockers:** none for assigned implementation; separate immutable review and raw scenario verification remain delivery gates.
 **Latest event:** Same TK-01J replacement-object correction passed all 51 required commands and focused 9/9 checks at 6c85b1aa480f1c356aa82884a8bf7d423fc15047; prior independent FAIL remains preserved.
-**Next gate:** Fresh independent review of the new immutable current-base candidate; coordinator owns MEMORY assembly. Original raw scenario verification remains open.
+**Next gate:** Verify the routed current-base assembly, then obtain fresh independent review of the immutable candidate. Original raw scenario verification remains open.
 
 > **Citation anchors.** pre=`d90785908b26517068a474bb88136c81995a2f18` post=`5433310e`.
 
@@ -32,12 +32,10 @@ The prior Skills Wiki packet grouped the whole core inventory into one completio
   original candidate SHA is reported. No passed review is claimed.
 - Four new executable regressions failed at `d180ab8c`; all nine focused checks
   pass after `5433310e`, including fabricated ancestry and inherited repository,
-  index, object-store and configuration selection. Current-base full proof is
-  still being refreshed; earlier suite success did not cover this defect.
+  index, object-store and configuration selection. Current-base full proof passed all51 at6c85b1aa; earlier suite success did not cover this defect.
 - The correction branch contains integration `25d3f4d2` via merge `247639ea`.
   Shared upstream changes were adopted unchanged, not edited in this lane.
-- The article remains Spec-linked and the sole MEMORY route remains assigned
-  to the coordinator. The earlier fresh-reader observation is locally reported;
+- The article remains Spec-linked and is now reachable through the sole MEMORY index, applied by the coordinator. The earlier fresh-reader observation is locally reported;
   its raw evidence has not been independently verified. This correction makes
   no new fresh-context or behavioral-reliability claim.
 
@@ -133,7 +131,7 @@ of its raw evidence; the historical local observation is preserved.
 Docs checked; no update needed in controls, templates, manifest or skill catalog:
 the stance purpose, public authority and lifecycle contract are unchanged. The
 canonical skill source supplies the installed bundle; there is no duplicate
-template skill to edit. MEMORY is deliberately reserved to the coordinator.
+template skill to edit. The coordinator applied the sole MEMORY route in this isolated assembly.
 
 ## Append-Only Evidence And Execution Log
 
@@ -162,8 +160,7 @@ integration `25d3f4d2`; all 51 current required commands passed at
 `6c85b1aa480f1c356aa82884a8bf7d423fc15047`, with focused 9/9, delivery 3/3,
 GitHub coordination 10/10 and collision 34/34 checks passing. The earlier
 51-command proof remains historical and did not cover replacement objects.
-No review PASS, completion, owner QA or merge is claimed. Coordinator MEMORY
-assembly and independent verification of the original raw scenario remain open.
+The sole MEMORY route is now applied. No review PASS, completion, owner QA or merge is claimed. Independent assembled review and verification of the original raw scenario remain open.
 
 ## Supersession
 
