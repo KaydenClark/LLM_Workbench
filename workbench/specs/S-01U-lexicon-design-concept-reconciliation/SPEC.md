@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Audit the whole Lexicon against current design concepts and their governing sources, repair supported drift, and expose unresolved conflicts without promoting proposals or claiming undelivered behavior.
 **Blockers:** none for source inventory and independent reconciliation; overlapping workflow and ownership changes retain S-00P and S-00G gates.
-**Latest event:** TK-01Q claimed by codex.
-**Next gate:** Verify TK-01Q scoped candidate and timed reader distinction; independent immutable review and branch/draft PR only. Whole audit and owner QA/main remain open.
+**Latest event:** TK-01Q closed with proof.
+**Next gate:** Independent review of the final immutable Task candidate, then explicit public-destination approval through the coordinator before final publication. Whole-Lexicon audit and owner QA/main remain open; do not merge.
 
 ## Current Execution Instruction — 2026-10-01
 
@@ -298,14 +298,19 @@ glossary. Completed knowledge follows existing reconciliation/lifecycle rules.
 | 2026-10-01 | TK-01Q | Draft PR creation rejected before execution by automatic approval review; no alternate publication route attempted. Earlier branch recovery through 07bb18b3b6beb99aea716884989dbaa3ffb4a093 succeeded before this rejection. | Connector repository read succeeds and confirms public KaydenClark/LLM_Workbench; draft creation refusal says that destination is not established as trusted organization-owned or explicitly user-approved for disclosure. Separate gh GraphQL Forbidden is not this approval rejection. | Final reviewable proof/state prepared locally. Existing scope, history and user no-merge limit retained. | Coordinator must obtain explicit destination/payload approval in its existing single grilling record before final publication. No Servitor workaround; whole audit and owner gates remain open. |
 
 | 2026-10-01 | TK-01Q | Current integration plus lexical candidate verified without merging: integration25d3f4d23b3719693065336a4ba66349d0a95907, lexical4f9416b4, detached fixture445972e26b376f3b5646f3928bbe72fd26bfda86. | 58/58 commands passed in authorized unsandboxed fixture execution: 51 required plus7 targeted, including new upstream coordination/collision tests and validator18/18. Source delta and all output hashes are recorded in the receipt. | Family definitions unchanged by concurrent integration; refreshed DQC relation/correction evidence explicitly assessed. | Seven existing self-drift findings plus fixture detached-head; guardrail78/100. Final administrative closure/review local until explicit public-destination approval. All ten whole criteria remain open; no merge or owner QA/main. |
+| 2026-10-01 | TK-01Q | Task closed | TK01Q family reconciliation: original lexical4f9416b with51 required commands; current union445972e58/58; independent reader24.91s; qualified validator18/18; pinned source and history checks. Final exact-head review separate; no whole-Spec acceptance or owner QA. | LEXICON.md, templates/LEXICON.md and S01U scoped coverage/source/reader/verification evidence | Whole S01U audit and all ten criteria remain open; S00P procedure-route finding and owner QA/main retained. Final public branch/PR publication requires explicit destination approval after automatic review rejection. No merge. Git state at close: unpushed (ahead 1 behind 0 of origin/codex/s01u-tk01q-lexicon-reconciliation); recorded reason: Final proof is intentionally local: automatic approval review rejected draft PR disclosure to public KaydenClark/LLM_Workbench for missing explicit destination approval. Remote07bb18b retains earlier checkpoint; no alternate publication route attempted. |
 
 ## Completion Result
 
-TK-01Q has bounded root/template corrections and [claim coverage](tk01q-coverage.md)
+TK-01Q is closed locally with bounded root/template corrections and [claim coverage](tk01q-coverage.md)
 against [pinned sources](tk01q-sources.json). Verification is recorded in the
 [scoped receipt](tk01q-verification.json); whole-Lexicon inventory, comprehensive
 semantic audit, all ten acceptance criteria and owner QA remain open. This is
-not whole-Spec completion or a clean-update claim.
+not whole-Spec completion or a clean-update claim. Final proof/closure publication
+is held after automatic approval review rejected draft-PR disclosure; the last
+verified remote recovery is `07bb18b3b6beb99aea716884989dbaa3ffb4a093`.
+The final independent review is reported against the resulting immutable SHA,
+outside its own bytes; no whole-Spec verdict or owner approval is recorded.
 
 ## Remaining Limitations Or Follow-Up Specs
 
