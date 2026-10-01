@@ -107,3 +107,8 @@ harnesses, recent non-synthetic evidence and uncertainty reporting. No score
 criteria were weakened and no agent-outcome gain is claimed. Read-only
 self-drift retains seven existing findings and `cleanUpdate: false`; this is
 not a clean-update, owner Human QA or release-readiness verdict.
+
+
+## 2026-10-01 Handoff role-authority promotion
+
+Guardrail audit measured **78/100 before** at `574df962fcfdd8045ec4dd405ba7f548216f7d4a` and **78/100 after** on `f98f0ea183e2507231ca494c9166472cd9f963f2`, with unchanged criteria (static20, drift25, discipline25, outcome8). Remaining recommendations are repeated real outcome trials, controls/prior/candidate comparison, recent real evidence and uncertainty estimates. All 48 required AGENTS commands passed on that immutable candidate. Pre/post self-drift retain seven existing findings and `cleanUpdate: false`. This is promotion and documentation proof; role-based handoff implementation and new behavioral trials remain open in S-01A. No agent-outcome improvement, owner Human QA or clean-update result is claimed.

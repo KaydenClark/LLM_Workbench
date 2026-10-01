@@ -118,6 +118,30 @@ TK-00R and all completed evidence. A delegation/completion-report scenario and
 a Q12-only investigation-and-return scenario remain unverified for this
 correction. No runtime, installation or owner Human QA result is implied.
 
+## Promotion receipt (2026-10-01)
+
+The public promotion seam selected `decision-002`, `decision-003`,
+`decision-004` and `decision-005` from source revision 15 after the author read
+the correction history. Source SHA-256:
+`12dd55d5700d91ffb73d9b36eadf404275f2d782a5941185e21f7157094976c8`.
+Privacy, existing-owner structure, expected destination hashes and exact byte
+read-back passed; these checks do not establish semantic fidelity or runtime
+behavior. Source context and corrections remain retained locally.
+
+Initial promoted owner bytes, contained in `f98f0ea183e2507231ca494c9166472cd9f963f2`:
+
+| Owner | SHA-256 |
+|---|---|
+| `AGENTS.md` | `d08f06d58ac0862c2344563c2640591a1ac067e3ff05465889c07695ec03e25c` |
+| `LEXICON.md` | `92ea4a030fc269f1d96f398da3085e6416a1e758f3c6817b0d3e0c7df84e7177` |
+| `RUNBOOK.md` | `1ca7c08d95a712bfde1f24e18ecff7cd3200f74ba3ffc01a5e39f9f98c9d6ae7` |
+| `workbench/specs/S-01A-handoff-skill-rebuild/SPEC.md` | `df1e46fc1710aaa4b61701051942e882de061fa1b4396eed20b540bc059c1f74` |
+| `workbench/wiki/skill-handoff.md` | `3f694c1405f1093b5be6a86ebdda6e371bce4d899701fe51695b816121128e56` |
+
+The control templates were synchronized with their filled owners. Subsequent
+Spec evidence and the historical Completion Result clarification are separate
+from these initial hashes. The handoff skill source and shapes remain unchanged.
+
 ## Append-Only Evidence And Execution Log
 
 | Date | Task | Event | Verification | Docs | Remaining gap |
@@ -134,9 +158,11 @@ correction. No runtime, installation or owner Human QA result is implied.
 | 2026-09-26 | TK-00R verdict-row correction | Correction: the review verdict row above names `c9b07f3`, an intermediate merge tip of the lane (integration merged into the reviewed commit), not the commit Codex reviewed or the landed head. Codex reviewed `f3a894b` against base `d16ef63`, and PR #171 landed at head `58c89a8` via merge `ef9dcfb`. The published verdict row stays as recorded; the retro review row above supplies the review of the landed contribution | Verified with git: `f3a894b` is an ancestor of `c9b07f3`, which is an ancestor of `58c89a8`; `ef9dcfb^2` is `58c89a8` | Docs checked; no update needed: record-only row | none |
 | 2026-09-26 | review | Review verdict: pass at eec12cf74ee3f649fa199cfe618c67f4df697938 [4141ef7d4d23] #2 | none; final-content review of the Spec at eec12cf (checked acceptance lines supported by recorded evidence, Completion Result accurate against source, header and Wiki route consistent); refreshes the digest after the boxes and Completion Result were written post-verdict; fixture tests not run in the reviewer sandbox | Codex CLI codex exec -s read-only -m gpt-5.5, separate context (Lane E log E-gate-review-1.log) | 4 |
 
+| 2026-10-01 | promotion | Owner confirmed the role-based handoff correction and selected promotion; prior completed TK-00R retained | Public hash-checked promotion and owner byte read-back; all 48 required AGENTS commands passed on `f98f0ea183e2507231ca494c9166472cd9f963f2`; control fidelity, vocabulary, catalog and Wiki checks passed. The initial session-suite refusal for uncommitted template identity was resolved by committing the exact candidate before the full rerun. Pre/post self-drift at base `574df962fcfdd8045ec4dd405ba7f548216f7d4a` and candidate `f98f0ea183e2507231ca494c9166472cd9f963f2` retain the same seven findings and `cleanUpdate: false`; guardrail unchanged 78/100. Bounded semantic read-back checked author/recipient, assigned-role limits, delegation, shared scaffolding, recipient purpose and historical/current Wiki distinctions | AGENTS, LEXICON, RUNBOOK and generic mirrors; this Spec and routed Wiki explanation; Taskboard regenerated | Source/shape and neighboring notepad composition alignment, behavioral scenarios, integration gate and owner Human QA remain open; no agent-outcome improvement claimed |
+
 ## Completion Result
 
-TK-00R mapped every obligation in `workbench/skills/handoff/SKILL.md` onto a heading of its bundled Markdown shape, which stays byte-equal to `templates/HANDOFF.md`. The source now puts a correction beside the claim it corrects, cites an untracked live notepad only for a recipient in the same checkout, and applies notepad retention only when the handoff draws on a note. `workbench/wiki/skill-handoff.md` records the pinned upstream comparison and one two-agent fresh-context scenario. A separate-context review passed. The Spec is not complete: owner Human QA of conversational fidelity remains.
+TK-00R mapped every obligation in `workbench/skills/handoff/SKILL.md` onto a heading of its bundled Markdown shape, which stays byte-equal to `templates/HANDOFF.md`. The source now puts a correction beside the claim it corrects, cites an untracked live notepad only for a recipient in the same checkout, and applies notepad retention only when the handoff draws on a note. `workbench/wiki/skill-handoff.md` records the pinned upstream comparison and one two-agent fresh-context scenario. A separate-context review passed. This is TK-00R's historical 2026-09-26 result and review. The Spec remains open: the accepted 2026-10-01 correction still needs source/shape alignment and new delegation, reporting and Q12 return proof; owner Human QA of conversational fidelity also remains open.
 
 ## Supersession
 
