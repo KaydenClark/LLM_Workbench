@@ -406,7 +406,8 @@ export function recordReviewVerdict(rootDir, specId, options = {}) {
   // this checkout's HEAD. A reviewer names the digest their own `report`
   // call showed them (`--digest`), refused when the working tree's own
   // current digest has since moved on; omitting `--digest` recomputes it
-  // fresh from the working tree instead, with nothing to compare against.
+  // fresh from the working tree. Both forms must also match the normalized
+  // Spec and Task content actually committed at the immutable candidate.
   const currentDigest = computeSpecDigest(root, spec);
   const givenDigest = options.digest ? String(options.digest).trim() : null;
   if (givenDigest && givenDigest !== currentDigest) {

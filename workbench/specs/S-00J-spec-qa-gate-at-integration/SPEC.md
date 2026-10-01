@@ -7,7 +7,7 @@
 **Stance:** Builder
 **Updated:** 2026-10-01
 **Catalog description:** Make a separate context review the assembled Spec against its Task results, route a failed review into corrective Tasks under the still-open Spec, keep `integration` as the owner's Human QA surface, and refuse to close a Spec without a passed review and recorded owner approval.
-**Blockers:** none; S-00H is `complete` (integration `49c671e`).
+**Blockers:** TK-004D/TK-004E correct reproduced candidate-content binding. Separate close and corrective-batch recovery findings remain serial implementation work; original owner Human QA/main gates are unapproved.
 **Latest event:** TK-004D claimed by codex-v4-verdict-binding.
 **Next gate:** Close TK-004D with verification and documentation proof.
 
@@ -42,6 +42,10 @@ blame or a terminal ritual, and that closure is the owner's confirmed
 judgment on `integration`.
 
 ## Current Verified State
+
+### Candidate-content correction — 2026-10-01
+
+The public CLI on integration `3b5b76bfd62aa98118cb73cc4947e0658f4040c6` accepted a verdict for substantive working-tree content absent from its named committed candidate, including a candidate with no Spec. TK-004D/TK-004E now require normalized committed Spec/Task content equality for PASS and FAIL, and the Spec gate checks the presented candidate rather than lending another candidate its current PASS. The informational report exposes committed digest, content equality and any read failure separately from HEAD equality. Evidence, Receipt and administrative exclusions and the proven canonical retirement route remain unchanged. Public red/green cases cover byte-preserving refusals, omitted/supplied digest, working-tree changes at HEAD, unchanged content across commits and valid multi-finding FAIL. Final immutable review and integration containment are pending; this correction grants no owner QA or main approval.
 
 At the pre anchor, `AGENTS.md` requires a separate-context reviewer to check an
 immutable candidate against its controls, assigned spec and named evidence
