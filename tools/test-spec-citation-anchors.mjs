@@ -35,13 +35,15 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SPECS = path.join(root, 'workbench', 'specs');
 const FIRST_ANCHORED = 36;
 
-const FULL = /(?<![\w/.-])([A-Za-z_.][A-Za-z0-9_./-]*):(\d+)(?:-(\d+))?/g;
+const FULL = /(?<![\w/.-])([A-Za-z0-9_.][A-Za-z0-9_./-]*):(\d+)(?:-(\d+))?/g;
 const SHORT = /`:(\d+)(?:-(\d+))?`/g;
 // A path put in scope for a following shorthand: backticked, or written bare
 // with a directory separator, which these specs do inside table cells
 // ("tools/test-diagnostics.mjs ... at `:477`").
-const PATH_ONLY = /`([A-Za-z_.][A-Za-z0-9_./-]*)`|(?<![`/\w.-])([A-Za-z_.][A-Za-z0-9_./-]*\/[A-Za-z0-9_./-]+)(?![`\w])/g;
+const PATH_ONLY = /`([A-Za-z0-9_.][A-Za-z0-9_./-]*)`|(?<![`/\w.-])([A-Za-z0-9_.][A-Za-z0-9_./-]*\/[A-Za-z0-9_./-]+)(?![`\w])/g;
 const KNOWN_PATHS = new Set(execFileSync('git', ['ls-tree', '-r', '--name-only', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim().split('\n'));
+const KNOWN_BASENAMES = new Set([...KNOWN_PATHS].map((file) => path.posix.basename(file)));
+const KNOWN_FILE_EXTENSIONS = new Set([...KNOWN_PATHS].map((file) => path.posix.extname(file).toLowerCase()).filter(Boolean));
 const GIT_SHOW = /git show\s+[0-9a-f]{7,40}:[A-Za-z0-9_./-]+/g;
 const ANCHOR = /\*\*Citation anchors\.\*\*\s*pre=`([0-9a-f]{7,40})`\s*post=`([0-9a-f]{7,40})`/;
 // Pre-change sections describe the tree the work started from. Documentation
@@ -90,10 +92,27 @@ export function liveCitations(text) {
   return out;
 }
 
+// Interpret explicit prose before token shape: an extension can name either a
+// file or a hostname. The nearest semantic noun in the current prose fragment
+// supplies that distinction; URL spans are network references independently.
+function referenceKind(text, at, cited, urls) {
+  const tokenAt = text[at] === '`' ? at + 1 : at;
+  if (urls.some(([start, end]) => tokenAt >= start && tokenAt < end)) return 'network';
+  const prefix = text.slice(0, at).replace(/`$/, '');
+  // A cue describes this token only when immediately attached, optionally
+  // through named/called/at. Earlier prose nouns must not classify later code.
+  const cue = /\b(host(?:name)?s?|servers?|domains?|urls?|endpoints?|files?|paths?|modules?|filenames?|basenames?)\s+(?:(?:named|called|at)\s+)?$/i.exec(prefix)?.[1].toLowerCase();
+  if (cue) return /^(?:host|server|domain|url|endpoint)/.test(cue) ? 'network' : 'file';
+  if (cited.includes('/') || KNOWN_BASENAMES.has(cited)) return 'file';
+  if (/^\d+(?:\.\d+)+$/.test(cited)) return 'prose';
+  return KNOWN_FILE_EXTENSIONS.has(path.posix.extname(cited).toLowerCase()) ? 'file' : 'prose';
+}
+
 function scanParagraph(text, section) {
   const out = [];
   let lastPath = null;
   let lineBase = null;
+  let previousCitation = null;
 
   // A `git show <sha>:path` anchor is absolute: not itself a bare citation, but
   // it names the path and base tree the shorthand AFTER it refers to. It is
@@ -106,28 +125,30 @@ function scanParagraph(text, section) {
     return ' '.repeat(tok.length);
   });
 
+  const urls = [...para.matchAll(/\b[a-z][a-z0-9+.-]*:\/\/[^\s`<>]+/gi)].map((m) => [m.index, m.index + m[0].length]);
   const marks = [...anchors];
   for (const m of para.matchAll(FULL)) {
-    // Git trees supply extensionless paths; punctuation alone must not turn
-    // an evidence token such as commitSHA:45 into a file citation.
     const cited = m[1];
-    if (cited.includes('/') || cited.includes('.') || KNOWN_PATHS.has(cited)) {
-      marks.push({ at: m.index, kind: 'full', cited, from: Number(m[2]), to: Number(m[3] ?? m[2]) });
+    const kind = referenceKind(para, m.index, cited, urls);
+    // Explicit line-number syntax remains an unresolved citation unless prose
+    // identifies it as a network reference or an ordinary numeric endpoint.
+    if (kind === 'file' || (kind !== 'network' && cited.includes('.') && !/^\d+(?:\.\d+)+$/.test(cited))) {
+      marks.push({ at: m.index, end: m.index + m[0].length, kind: 'full', cited, from: Number(m[2]), to: Number(m[3] ?? m[2]) });
     }
   }
-  for (const m of para.matchAll(SHORT)) marks.push({ at: m.index, kind: 'short', from: Number(m[1]), to: Number(m[2] ?? m[1]) });
+  for (const m of para.matchAll(SHORT)) marks.push({ at: m.index, end: m.index + m[0].length, kind: 'short', from: Number(m[1]), to: Number(m[2] ?? m[1]) });
   // A path named without a line number still puts that path in scope for the
   // shorthand that follows it.
   for (const m of para.matchAll(PATH_ONLY)) {
     const cited = m[1] ?? m[2];
-    if (cited.includes('/') || cited.includes('.') || KNOWN_PATHS.has(cited)) {
+    if (referenceKind(para, m.index, cited, urls) === 'file') {
       marks.push({ at: m.index, kind: 'path', cited });
     }
   }
   marks.sort((a, b) => a.at - b.at);
 
   for (const mark of marks) {
-    if (mark.kind === 'anchor') { lastPath = mark.cited; lineBase = mark.sha; continue; }
+    if (mark.kind === 'anchor') { lastPath = mark.cited; lineBase = mark.sha; previousCitation = null; continue; }
     if (mark.kind === 'path') {
       if (lastPath !== mark.cited) lineBase = null;
       lastPath = mark.cited; continue;
@@ -138,10 +159,15 @@ function scanParagraph(text, section) {
     }
     const cited = mark.cited ?? lastPath;
     const lookback = para.slice(Math.max(0, mark.at - 40), mark.at).toLowerCase();
-    const shipped = /shipped[^:]*$/.test(lookback);
-    const based = /\bbase\b[^:]*$/.test(lookback);
+    // An explicit label covers the following comma/and-separated list, not
+    // just its first member. New prose, path or explicit label ends that scope.
+    const continuation = previousCitation?.cited === cited
+      && /^[\s,`]*(?:(?:and|or)[\s,`]*)?$/.test(para.slice(previousCitation.end, mark.at));
+    const shipped = /shipped[^:]*$/.test(lookback) || Boolean(continuation && previousCitation.shipped);
+    const based = !shipped && (/\bbase\b[^:]*$/.test(lookback) || Boolean(continuation && previousCitation.based));
     out.push({ section, cited, from: mark.from, to: mark.to, shipped, based, lineBase,
                shorthand: mark.kind === 'short' });
+    previousCitation = { cited, end: mark.end, shipped, based };
   }
   return out;
 }
@@ -284,4 +310,118 @@ test('citations cover shell, CommonJS, YAML and extensionless paths', () => {
     assert.equal(citations[0].cited, cited);
     assert.equal(citations[0].from, 20);
   }
+});
+
+// S002K: independently reproduced late PR77 findings, retained as durable reds.
+test('an explicit tree label governs every citation in its list and stops at a new label or prose boundary', () => {
+  const text = fs.readFileSync(path.join(SPECS, 'S-040-skill-gate-route-selection', 'SPEC.md'), 'utf8');
+  const pair = liveCitations(text).filter((c) => c.cited === 'tools/workbench-upgrade.mjs' && [132, 133].includes(c.from));
+  assert.equal(pair.length, 2);
+  assert.deepEqual(pair.map((c) => c.shipped), [true, true], 'both actual S040 shipped lines must select post');
+  const group = liveCitations('## Current Verified State\n\n`tools/test-diagnostics.mjs` (base `:12`, `:13`), shipped `:14` and `:15`; later `:16`.');
+  assert.deepEqual(group.map((c) => [c.based, c.shipped]), [[true, false], [true, false], [false, true], [false, true], [false, false]]);
+  const anchored = liveCitations('## Current Verified State\n\n`tools/test-diagnostics.mjs` shipped `:12`, `git show 1234567:tools/test-diagnostics.mjs` then `:13`.');
+  assert.deepEqual(anchored.map((c) => c.shipped), [true, false], 'a new absolute anchor ends the old list label');
+});
+
+test('digit-leading bare filenames are citations just like qualified paths', () => {
+  const basename = '0001-planes-classify-operations-not-artifacts.md';
+  for (const cited of [basename, 'workbench/docs/adr/' + basename]) {
+    const citations = liveCitations('## Desired Behavior\n\n`' + cited + ':999999`');
+    assert.equal(citations.length, 1, cited + ' must not evade anchor and range enforcement');
+    assert.equal(citations[0].cited, cited);
+    assert.equal(citations[0].from, 999999);
+  }
+});
+
+test('dotted non-path values do not replace a scoped file for shorthand', () => {
+  for (const token of ['v3.1.2', '1.2.3', 'example.com']) {
+    const citations = liveCitations('## Current Verified State\n\n`tools/test-diagnostics.mjs` supports `' + token + '`; see `:12`.');
+    assert.equal(citations.length, 1);
+    assert.equal(citations[0].cited, 'tools/test-diagnostics.mjs', token);
+  }
+  const basename = '0001-planes-classify-operations-not-artifacts.md';
+  const bare = liveCitations('## Desired Behavior\n\n`' + basename + '` governs this; see `:12`.');
+  assert.equal(bare[0].cited, basename, 'a genuine repository basename still establishes scope');
+});
+
+// The child runs the same complete checker against a disposable corpus entry.
+// Skip only these wrappers in that child, keeping all enforcement tests active.
+function runCitationCorpusFixture(text) {
+  const folder = fs.mkdtempSync(path.join(SPECS, 'S-0990-citation-fixture-'));
+  try {
+    fs.writeFileSync(path.join(folder, 'SPEC.md'), '# Synthetic citation fixture\n\n' + text);
+    try {
+      const output = execFileSync(process.execPath, [fileURLToPath(import.meta.url)], {
+        cwd: root, encoding: 'utf8', env: { ...process.env, WORKBENCH_CITATION_CORPUS_CHILD: '1' },
+        stdio: ['ignore', 'pipe', 'pipe'],
+      });
+      return { status: 0, output };
+    } catch (error) {
+      return { status: error.status, output: String(error.stdout ?? '') + String(error.stderr ?? '') };
+    }
+  } finally { fs.rmSync(folder, { recursive: true, force: true }); }
+}
+const CORPUS_CHILD = process.env.WORKBENCH_CITATION_CORPUS_CHILD === '1';
+
+test('a missing bare filename resets prior scope and refuses through the full checker', { skip: CORPUS_CHILD }, () => {
+  const head = git(['rev-parse', 'HEAD']).trim();
+  const result = runCitationCorpusFixture('> **Citation anchors.** pre=`' + head + '` post=`' + head + '`.\n\n## Desired Behavior\n\n`tools/test-diagnostics.mjs` then `missing-review-target.mjs`; see `:12`.\n');
+  assert.notEqual(result.status, 0, 'a missing target must not validate the preceding file');
+  assert.match(result.output, /missing-review-target\.mjs:12.*names no unique path/);
+});
+
+test('a numeric endpoint remains ordinary documentation through the full checker', { skip: CORPUS_CHILD }, () => {
+  const head = git(['rev-parse', 'HEAD']).trim();
+  for (const anchors of ['', '> **Citation anchors.** pre=`' + head + '` post=`' + head + '`.\n\n']) {
+    const result = runCitationCorpusFixture(anchors + '## Desired Behavior\n\nConnect to `127.0.0.1:8080`.\n');
+    assert.equal(result.status, 0, result.output);
+  }
+});
+
+
+test('file-versus-network scope classification matrix follows explicit prose', { skip: CORPUS_CHILD }, () => {
+  const prior = 'tools/test-diagnostics.mjs';
+  const cases = [];
+  for (const cue of ['host', 'server', 'domain', 'URL', 'endpoint']) {
+    for (const token of ['api.example.py', 'api.example.sh', 'api.example.com', 'test-diagnostics.mjs']) {
+      cases.push([cue + ' `' + token + '`', prior]);
+    }
+  }
+  for (const cue of ['file', 'path', 'module', 'filename', 'basename']) {
+    for (const token of ['missing-review-target.mjs', 'unknown-target.custom', 'api.example.py', 'test-diagnostics.mjs', '0001-planes-classify-operations-not-artifacts.md']) {
+      cases.push([cue + ' `' + token + '`', token]);
+    }
+  }
+  for (const token of ['v3.1.2', '1.2.3', 'example.com', 'https://api.example.py/source.mjs', 'http://127.0.0.1:8080/source.mjs']) {
+    cases.push(['supports `' + token + '`', prior]);
+  }
+  cases.push(['then `missing-review-target.mjs`', 'missing-review-target.mjs']);
+  cases.push(['then `missing/target.custom`', 'missing/target.custom']);
+  for (const [prose, expected] of cases) {
+    const citations = liveCitations('## Current Verified State\n\n`' + prior + '` describes requests to the ' + prose + '; see `:12`.');
+    assert.equal(citations.length, 1, prose);
+    assert.equal(citations[0].cited, expected, prose);
+  }
+  for (const cue of ['host', 'server', 'domain', 'URL', 'endpoint']) {
+    assert.deepEqual(liveCitations('## Desired Behavior\n\nConnect to the ' + cue + ' `api.example.py:8080`.'), [], cue);
+  }
+  for (const cue of ['file', 'path', 'module']) {
+    const citations = liveCitations('## Desired Behavior\n\nInspect the ' + cue + ' `unknown-target.custom:12`.');
+    assert.equal(citations[0].cited, 'unknown-target.custom', cue);
+  }
+});
+
+test('explicit host prose preserves valid shorthand through the full checker', { skip: CORPUS_CHILD }, () => {
+  const head = git(['rev-parse', 'HEAD']).trim();
+  const lines = ['api.example.py', 'api.example.sh'].map((host) => '`tools/test-diagnostics.mjs` describes requests to the host `' + host + '`; see `:12`.').join('\n\n');
+  const result = runCitationCorpusFixture('**Citation anchors.** pre=`' + head + '` post=`' + head + '`.\n\n## Current Verified State\n\n' + lines);
+  assert.equal(result.status, 0, result.output);
+});
+
+test('explicit unknown file scope refuses even with an unobserved suffix', { skip: CORPUS_CHILD }, () => {
+  const head = git(['rev-parse', 'HEAD']).trim();
+  const result = runCitationCorpusFixture('**Citation anchors.** pre=`' + head + '` post=`' + head + '`.\n\n## Desired Behavior\n\n`tools/test-diagnostics.mjs` refers to the file `unknown-target.custom`; see `:12`.');
+  assert.notEqual(result.status, 0);
+  assert.match(result.output, /unknown-target\.custom:12.*names no unique path/);
 });

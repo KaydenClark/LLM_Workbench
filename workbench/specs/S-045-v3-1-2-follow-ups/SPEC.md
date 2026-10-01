@@ -8,10 +8,10 @@
 **Updated:** 2026-09-07
 **Catalog description:** Own the seven follow-ups the v3.1.2 slices and their retrospective reviews left open, so owed work has a spec that carries it instead of surviving only as prose inside completed specs.
 **Blockers:** none
-**Latest event:** Historical Spec completion preserved; PR77 citation correction has public baseline provenance; frozen verification and independent review remain.
-**Next gate:** PR77 frozen verification and independent review; no Spec reopening.
+**Latest event:** Historical Spec completion and PR77 review evidence preserved; late citation-checker findings and anchor correction are owned by linked S-002K.
+**Next gate:** Follow S-002K verification and independent review; no reopening of this completed Spec.
 
-> **Citation anchors.** pre=`18ffc0d` post=`18ffc0d`. A label before a citation names
+> **Citation anchors.** pre=`18ffc0d` post=`1c74fa7c9951c689717be086cbfefedd0ec14a8e`. A label before a citation names
 > its tree and wins: "shipped `:M`" reads at `post`, "base `:N`" at the `git show`
 > anchor that introduced the path. Unlabelled, a citation reads at `pre` in
 > Outcome, Why It Matters, Current Verified State, Desired Behavior and
@@ -349,3 +349,7 @@ third time.
 
 - Supersedes: none
 - Superseded by: none
+
+## Linked Late-Review Follow-Up
+
+[S-002K](../S-002K-citation-resolution-correction/SPEC.md) owns the three independently reproduced PR77 citation-checker defects and truthful historical post-anchor correction. This completed Spec, its Tasks, evidence and prior approval state remain preserved.
