@@ -810,8 +810,16 @@ function writeCorrectiveBatch(root, staged) {
         ownedDirectories.push({path:directory,dev:stat.dev,ino:stat.ino});
       }
       assertSafeWritePath(root, item.filePath);
-      ownedFiles.push(item.filePath, `${item.filePath}.tmp-${process.pid}`);
+      const temporary=`${item.filePath}.tmp-${process.pid}`;
+      if (fs.existsSync(item.filePath) || fs.existsSync(temporary)) throw new Error(`Corrective destination became occupied: ${item.filePath}`);
+      const expectedContent=item.content.endsWith('\n') ? item.content : `${item.content}\n`;
+      const published={path:item.filePath,expectedContent,identity:null};
+      ownedFiles.push(published,{path:temporary,expectedContent,identity:null});
       atomicWrite(item.filePath, item.content);
+      assertSafeWritePath(root,item.filePath);
+      const stat=fs.lstatSync(item.filePath);
+      published.identity={dev:stat.dev,ino:stat.ino};
+      if (fs.readFileSync(item.filePath,'utf8')!==expectedContent) throw new Error(`Corrective file changed during publication: ${item.filePath}`);
     }
   } catch (error) {
     try {
@@ -819,11 +827,23 @@ function writeCorrectiveBatch(root, staged) {
         const stat=fs.lstatSync(directory.path);
         if (!stat.isDirectory() || stat.dev!==directory.dev || stat.ino!==directory.ino) throw new Error(`Corrective rollback directory changed: ${directory.path}`);
       }
-      for (const file of ownedFiles.reverse()) {
-        if (!fs.existsSync(file)) continue;
-        assertSafeWritePath(root,file);
-        fs.unlinkSync(file);
+      // Directory ownership never proves ownership of its current files.
+      // Validate every owned path before deleting any of them; a concurrent
+      // modification/replacement preserves the complete partial state and
+      // its durable anchor for explicit recovery.
+      const removable=[];
+      for (const file of ownedFiles) {
+        let stat;
+        try {stat=fs.lstatSync(file.path);} catch(missing) {if(missing.code==='ENOENT')continue;throw missing;}
+        assertSafeWritePath(root,file.path);
+        if (!stat.isFile() || stat.nlink!==1
+          || (file.identity && (stat.dev!==file.identity.dev || stat.ino!==file.identity.ino))
+          || fs.readFileSync(file.path,'utf8')!==file.expectedContent) {
+          throw new Error(`Corrective rollback file changed: ${file.path}`);
+        }
+        removable.push(file.path);
       }
+      for (const file of removable.reverse()) fs.unlinkSync(file);
       for (const directory of ownedDirectories.reverse()) fs.rmdirSync(directory.path);
     } catch (rollbackError) {
       const failure=new AggregateError([error,rollbackError], `Corrective batch failed (${error.message}); bounded rollback also failed (${rollbackError.message}). Preserve remaining artifacts for explicit recovery.`);
