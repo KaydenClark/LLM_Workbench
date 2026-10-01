@@ -45,8 +45,88 @@ import { parseMarkdownTableRow } from '../workbench/tools/markdown-table.mjs';
 // S-00I TK-01U: features capture reads the Wiki validator and note frontmatter.
 import { validateWiki } from '../workbench/tools/wiki.mjs';
 import { parseFrontmatter } from '../workbench/tools/adr.mjs';
-import './test-lifecycle-directory-links.mjs';
-import './test-taskboard-json.mjs';
+if (!process.argv.includes('--close-recovery-only')) {
+  await import('./test-lifecycle-directory-links.mjs');
+  await import('./test-taskboard-json.mjs');
+}
+
+// S-00I TK-004F: public CLI interrupted close recovery. Each preload only
+// changes filesystem behavior in a disposable subprocess, never runtime source.
+{
+  const closeCli = fileURLToPath(new URL('../workbench/tools/spec-workbench.mjs', import.meta.url));
+  const cases = ['single', 'two', 'exit', 'cleanup', 'task-write', 'missing-log', 'tamper', 'ambiguous', 'conflict', 'malformed', 'hardlink', 'task-hardlink'];
+  const caseOption = process.argv.indexOf('--close-recovery-case');
+  const selected = caseOption < 0 ? cases : [process.argv[caseOption + 1]];
+  assert.ok(selected.every(name => cases.includes(name)), 'close recovery case must name a known scenario');
+  for (const scenario of selected) {
+    const room = fs.mkdtempSync(path.join(os.tmpdir(), 'close-recovery-'));
+    try {
+      const git = (...args) => execFileSync('git', ['-C', room, ...args], { encoding: 'utf8' }).trim();
+      git('init', '--quiet'); git('config', 'user.name', 'Fixture'); git('config', 'user.email', 'fixture@example.invalid');
+      const specDir = path.join(room, 'specs/S-701-close');
+      fs.mkdirSync(path.join(specDir, 'tasks/TK-002'), { recursive: true });
+      const sp = path.join(specDir, 'SPEC.md');
+      fs.writeFileSync(sp, `# S-701 - Close fixture\n\n**Spec ID:** S-701\n**Status:** active\n**Priority:** 0\n**Owner:** fixture\n**Catalog description:** Fixture close recovery.\n**Updated:** 2026-10-01\n**Blockers:** none\n**Latest event:** fixture\n**Next gate:** fixture\n\n## Vertical Implementation Slices\n\n| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n\n## Acceptance Criteria\n\n- [x] fixture\n\n## Append-Only Evidence And Execution Log\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n\n## Completion Result\n\nFixture.\n`);
+      const tp = path.join(specDir, 'tasks/TK-002/TASK.md');
+      const other = path.join(specDir, 'tasks/TK-003/TASK.md');
+      const record = id => `# ${id} - Close fixture\n\n**Task ID:** ${id}\n**Spec ID:** S-701\n**Slice:** Close fixture\n**Status:** in-progress\n**Blockers:** none\n**Destination:** spec-acceptance: S-701 Acceptance Criteria\n`;
+      fs.writeFileSync(tp, record('TK-002'));
+      if (['two', 'ambiguous'].includes(scenario)) {
+        fs.mkdirSync(path.dirname(other)); fs.writeFileSync(other, record('TK-003'));
+      }
+      git('add', '.'); git('commit', '--quiet', '-m', 'Fixture');
+      if (scenario === 'two') {
+        const earlier = spawnSync(process.execPath, [closeCli, 'receipt', 'S-701', '--path', room, '--task', 'TK-002', '--tests', 'earlier partial proof', '--docs', 'earlier docs', '--remaining-gap', 'still running', '--json'], { encoding: 'utf8' });
+        assert.equal(earlier.status, 0, earlier.stderr);
+      }
+      const beforeSpec = fs.readFileSync(sp, 'utf8');
+      const beforeTask = fs.readFileSync(tp, 'utf8');
+      const hook = path.join(room, '.git/fault.cjs');
+      const mode = scenario === 'cleanup' ? 'cleanup' : scenario === 'task-write' ? 'task' : 'spec';
+      fs.writeFileSync(hook, `const fs=require('node:fs');const rename=fs.renameSync;let tasks=0;fs.renameSync=function(a,b){const task=String(b).endsWith('/TASK.md');if(task)tasks++;if((${JSON.stringify(mode)}==='spec'&&String(b).endsWith('/SPEC.md'))||(${JSON.stringify(mode)}==='cleanup'&&task&&tasks===2)||(${JSON.stringify(mode)}==='task'&&task)){${scenario === 'exit' ? 'process.exit(91)' : "throw new Error('INJECTED_CLOSE_FAILURE')"};}return rename.apply(this,arguments)};`);
+      const run = (fault = false) => spawnSync(process.execPath, [...(fault ? ['--require', hook] : []), closeCli, 'close', 'S-701', '--path', room, '--proof', fault ? 'original proof $& | x' : 'retry replacement proof', '--docs', fault ? 'original docs' : 'retry replacement docs', '--remaining-gap', 'none', '--git-state-reason', 'Disposable recovery fixture', '--json'], { encoding: 'utf8' });
+      if (scenario === 'missing-log') fs.writeFileSync(sp, beforeSpec.replace('## Append-Only Evidence And Execution Log', '## Missing evidence log'));
+      if (scenario === 'task-hardlink') fs.linkSync(tp, path.join(room, '.git/task-link'));
+      if (scenario === 'hardlink') fs.linkSync(sp, path.join(room, '.git/spec-link'));
+      const first = run(true);
+      assert.notEqual(first.status, 0, `${scenario}: injected/preflight failure is visible`);
+      if (['task-write', 'missing-log', 'hardlink', 'task-hardlink'].includes(scenario)) {
+        assert.equal(fs.readFileSync(tp, 'utf8'), beforeTask, `${scenario}: no Task publication on refusal`);
+        if (scenario === 'task-write') assert.equal(run().status, 0, 'retry after failed first publication succeeds');
+        continue;
+      }
+      const published = fs.readFileSync(tp, 'utf8');
+      assert.match(published, /\*\*Status:\*\* done/, `${scenario}: Task is done after publication`);
+      const receipts = readReceiptFromFile(tp);
+      assert.equal(receipts.length, scenario === 'two' ? 2 : 1, `${scenario}: one intact Receipt`);
+      if (scenario !== 'cleanup') assert.equal(fs.readFileSync(sp, 'utf8'), beforeSpec, `${scenario}: failed Spec publication preserved original bytes`);
+      if (scenario === 'malformed') fs.writeFileSync(tp, published.replace(/^\*\*Close pending:\*\* .+$/m, '**Close pending:** invalid-json'));
+      if (scenario === 'tamper') fs.writeFileSync(tp, published.replace('original docs |', 'altered docs |'));
+      if (scenario === 'ambiguous') fs.writeFileSync(other, published.replaceAll('TK-002', 'TK-003'));
+      if (scenario === 'conflict') fs.writeFileSync(sp, beforeSpec.replace('\n## Completion Result', '\n| 2026-10-01 | TK-002 | Task closed | unrelated proof | unrelated docs | none |\n\n## Completion Result'));
+      const snapshot = [fs.readFileSync(sp, 'utf8'), fs.readFileSync(tp, 'utf8'), fs.existsSync(other) ? fs.readFileSync(other, 'utf8') : null];
+      const retry = run();
+      if (['tamper', 'ambiguous', 'conflict', 'malformed'].includes(scenario)) {
+        assert.notEqual(retry.status, 0, `${scenario}: inconsistent recovery refuses`);
+        assert.deepEqual([fs.readFileSync(sp, 'utf8'), fs.readFileSync(tp, 'utf8'), fs.existsSync(other) ? fs.readFileSync(other, 'utf8') : null], snapshot, `${scenario}: refusal changes no record`);
+        continue;
+      }
+      assert.equal(retry.status, 0, `${scenario}: retry recovers exact target: ${retry.stderr}`);
+      assert.deepEqual(readReceiptFromFile(tp), receipts, `${scenario}: retry preserves Receipt bytes and chain`);
+      const evidence = fs.readFileSync(sp, 'utf8');
+      assert.equal((evidence.match(/\| TK-002 \| Task closed \|/g) ?? []).length, 1, `${scenario}: one original close evidence row`);
+      assert.match(evidence, /original docs/, `${scenario}: original evidence recovered`);
+      assert.doesNotMatch(evidence, /retry replacement/, `${scenario}: retry inputs never replace published proof`);
+      assert.doesNotMatch(fs.readFileSync(tp, 'utf8'), /\*\*Close pending:\*\*/, `${scenario}: pending operation cleared after evidence`);
+      if (scenario === 'two') {
+        assert.match(fs.readFileSync(other, 'utf8'), /\*\*Status:\*\* in-progress/, 'retry never closes different claimed Task');
+        assert.equal(readReceiptFromFile(other).length, 0, 'other Task has no fabricated Receipt');
+      }
+    } finally { fs.rmSync(room, { recursive: true, force: true }); }
+  }
+  console.log('ok - public close recovers interrupted publication without wrong-target selection or duplicate proof');
+}
+if (process.argv.includes('--close-recovery-only')) process.exit(0);
 
 // `doctor`'s `stale-claim` rule (workbench/tools/spec-workbench.mjs) flags an
 // in-progress claim whose `Updated` date-only stamp is more than one day

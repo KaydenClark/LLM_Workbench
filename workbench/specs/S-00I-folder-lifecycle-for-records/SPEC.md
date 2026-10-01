@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Express ADR, Spec and Task lifecycle by folder location, reconcile completed Specs and Tasks into readable durable owners before retiring them, and discard retired records only through a verified gate; permanent `archive` is never cleared.
 **Blockers:** none; S-00H is `complete` (integration `49c671e`).
-**Latest event:** TK-004F claimed by codex-close-recovery.
-**Next gate:** Close TK-004F with verification and documentation proof.
+**Latest event:** Native fail verdict #8 allocated TK-004F for independent interrupted-close findings. The isolated correction passes public CLI failure-injection self-checks; earlier assembled PASS is historical support for the prior candidate.
+**Next gate:** Freeze TK-004F with the required 51-command union, publish its draft Task PR, then obtain parent independent review and serialize shared-file assembly with S-00J binding correction. Owner Human QA remains ongoing and unapproved; main promotion and Spec completion remain gated.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -348,6 +348,40 @@ exist. The generic `templates/` mirror changes in S-00P TK-005.
 | 2026-09-30 | spec | Administrative append-only identity correction after 04c33e5 | Frozen 04c33e5db6c19c61f0e9d2dde88614895084dc80 passed50/51; test-check-append-only failed because the tool-generated TK-01V reclose reused the historical same-day Date+Task+Task closed identity. Original first-published row bytes and all Task Receipt checksums were retained. Give only the new reclose event a distinct identity, preserving its proof and the failed commit/verification receipt. No runtime/checker change or history rewrite | Owning Spec evidence identity clarified; final frozen full51 still required before draft publication | Fresh assembled review/bound verdict, integration and owner gates remain pending |
 | 2026-09-30 | review | Review verdict: pass at 09f650866ad8d6d383323a1bac5a0a1be93880f1 [bd96878bafc5] #7 | none | Independent native Reviewer in separate context; native review mode; model identity unrecorded | none |
 | 2026-10-01 | review | Review verdict: fail at 3b5b76bfd62aa98118cb73cc4947e0658f4040c6 [638c8e539ba8] #8 | Interrupted record Task close publishes Receipt and done status before Spec evidence and retry either refuses recovery or closes another Task - independent public CLI failure injection at integration3b5b76bf reproduced both single-claim and two-claim cases | Parent-routed independent runtime probe report 2026-10-01 | 1 |
+
+## Interrupted Close Correction (TK-004F)
+
+Independent public CLI probes at integration `3b5b76bfd62aa98118cb73cc4947e0658f4040c6`
+found that an I/O failure after Task publication strands the Spec evidence;
+a retry with another claimed Task closes different work. The native fail
+verdict #8 and TK-004F preserve that correction separately from earlier done
+Tasks and review receipts.
+
+Record-backed Spec close now publishes the new checksummed Receipt, done
+status, original Proof and temporary `Close pending` evidence together in one
+atomic Task write. A retry finds that marker before normal Task selection,
+validates it against the Task and last Receipt, and publishes the original
+Spec evidence. Retry arguments cannot replace that proof. Evidence publication
+followed by interrupted marker cleanup is idempotent; a conflict, altered
+Receipt, malformed marker or multiple pending closes refuses without changing
+records. Existing done Tasks are never reopened and existing receipts stay
+byte-identical. Unsafe Task/Spec destinations and missing evidence logs refuse
+before the Task publication.
+
+One-command demo: `node tools/test-spec-workbench.mjs --close-recovery-only`.
+`--close-recovery-case single|two|exit|cleanup|task-write|missing-log|tamper|ambiguous|conflict|malformed|hardlink|task-hardlink`
+selects one adversarial scenario. The regression uses public CLI subprocesses
+and disposable filesystem preloads, including process exit after Task
+publication before Spec evidence. This is process/I/O interruption recovery,
+not a power-loss durability guarantee or concurrent-writer lock. Old completed
+records lacking this marker are preserved; they are not automatically inferred
+as interrupted closes. Table-backed and orphan Task close behavior is outside
+this correction, as are the coordinator's verdict/gate/report repairs.
+
+Generic templates are unchanged because this repairs existing runtime close
+behavior without adding a control rule or new command. Capability proof and
+recovery semantics live here and in TK-004F; the final immutable handback must
+name the exact tested candidate and parent review gate.
 
 ## Completion Result
 

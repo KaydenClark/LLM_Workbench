@@ -17,7 +17,7 @@ import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenc
 import { validateWiki } from './wiki.mjs';
 import { ARTIFACT_ID_MIN_WIDTH, allocateArtifactId, compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
 import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseFormerId, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
-import { appendReceiptRow, readReceiptFromFile } from './task-receipt.mjs';
+import { appendReceiptRow, appendReceiptRowToContent, readGitFacts, readReceipt, readReceiptFromFile } from './task-receipt.mjs';
 import { buildTaskboard, taskboardTaskEntry, compareTaskboardEntries } from './taskboard.mjs';
 import { assembleSpecReport, computeSpecDigest, formatSpecReport, isAncestorOfBranch, recordOwnerApproval, recordReviewVerdict } from './spec-report.mjs';
 
@@ -384,6 +384,13 @@ export function closeTask(rootDir, id, options) {
   const date = validDate(options?.date ?? today());
   const spec = findSpec(root, id);
   const slices = executionSlices(spec);
+  // A published close takes precedence over normal selection, including when
+  // another Task is claimed. Recovery uses its original checksummed Receipt,
+  // never the retry's replacement proof, and never reopens a done record.
+  const pending = slices.filter((item) => item.source === 'record' && /^\*\*Close pending:\*\*/m.test(item.record.content));
+  if (pending.length > 1) throw new Error(`${id} has multiple pending closes; reconcile them before closing another Task`);
+  if (pending.length === 1) return finishRecordClose(root, spec, pending[0], slices);
+
   // S-00M TK-003: `close` names no Task, so it closes only a claimed one;
   // falling through to the first ready Task closed work nobody claimed.
   const task = slices.find((item) => item.declared === 'in-progress');
@@ -401,35 +408,34 @@ export function closeTask(rootDir, id, options) {
     }
   }
   const recordedGap = gitStateAtClose(root, remainingGap, options?.gitStateReason);
-  // Proof text for a record goes on the record; the Spec's append-only
-  // evidence row below is appended either way, because the Spec still owns
-  // the evidence log whichever source its slices come from. `close` is the
-  // Receipt's first writer (ADR-000H): a record-backed Task's run gets its
-  // one Receipt row here, with live Git facts, before the Spec's own
-  // evidence row is appended; a table-backed Spec has no record to carry a
-  // Receipt on, so it gets none.
-  //
-  // The Receipt append runs BEFORE the record is flipped to done. It fails
-  // closed on a non-Git room or an altered earlier row (task-receipt.mjs's
-  // own checksum chain), and it must fail before anything is written: doing
-  // this the other way round left a record marked done, with Proof, but no
-  // Receipt row and no Spec evidence row, on the exact failure this guards
-  // against - and a rerun would then close a different Task entirely. The
-  // record is re-read after the append so `writeTaskStatus` writes onto the
-  // Receipt-bearing content just landed on disk, not a stale in-memory copy
-  // from before the append.
-  let content = spec.content;
+  // Receipt, done status and pending evidence publish in one atomic Task
+  // write. The following Spec write may fail or the process may exit; the
+  // durable marker pins retry to this Task until evidence and cleanup land.
   if (task.source === 'record') {
-    appendReceiptRow(task.record.filePath, { repoRoot: root, testsRun: proof, docsTouched: docs, remainingGap: recordedGap });
-    const receipted = readTaskRecord(task.record.filePath, task.record.root);
-    writeTaskStatus(receipted, { Status: 'done', Proof: proof });
-  } else {
-    content = updateTaskRow(spec.content, task.id, (cells) => {
-      cells[2] = 'done';
-      cells[4] = proof;
-      return cells;
+    assertSafeWritePath(root, task.record.filePath);
+    assertSafeWritePath(root, spec.filePath);
+    const facts = readGitFacts(root);
+    const receipted = appendReceiptRowToContent(task.record.content, {
+      ...facts, testsRun: proof, docsTouched: docs, remainingGap: recordedGap
+    }, task.record.filePath);
+    const receipt = readReceipt(receipted, task.record.filePath).at(-1);
+    const row = `| ${[date, task.id, 'Task closed', receipt.testsRun, receipt.docsTouched, receipt.remainingGap].map(escapeCell).join(' | ')} |`;
+    // Validate the evidence destination before publishing the Task.
+    appendEvidence(spec.content, row);
+    const published = updateTaskFields(receipted, {
+      Status: 'done', Proof: receipt.testsRun,
+      'Close pending': JSON.stringify({ version: 1, row, receiptChecksum: receipt.checksum })
     });
+    const record = parseTaskRecord(published, task.record.filePath, task.record.root);
+    writeSafeFile(root, task.record.filePath, published);
+    return finishRecordClose(root, spec, { ...task, declared: 'done', record }, slices);
   }
+  let content = spec.content;
+  content = updateTaskRow(spec.content, task.id, (cells) => {
+    cells[2] = 'done';
+    cells[4] = proof;
+    return cells;
+  });
   const remaining = slices.find((item) => item.id !== task.id && item.declared !== 'done');
   if (spec.lifecycleFolder !== 'retired') content = updateFields(content, {
     Updated: date,
@@ -439,6 +445,56 @@ export function closeTask(rootDir, id, options) {
   content = appendEvidence(content, `| ${escapeCell(date)} | ${escapeCell(task.id)} | Task closed | ${escapeCell(proof)} | ${escapeCell(docs)} | ${escapeCell(recordedGap)} |`);
   atomicWrite(spec.filePath, content);
   return showSpec(rootDir, id);
+}
+
+// Only record-backed Spec close uses this protocol. The pending marker is
+// temporary delivery state, not a new Task status or independent proof store.
+// Existing Receipt rows are checked and retained byte-for-byte. A mismatch is
+// visible and refuses before any write, rather than choosing other work.
+function finishRecordClose(root, spec, task, slices) {
+  assertSafeReadPath(root, task.record.filePath);
+  assertSafeWritePath(root, task.record.filePath);
+  assertSafeWritePath(root, spec.filePath);
+  const record = readTaskRecord(task.record.filePath, task.record.root);
+  const match = record.content.match(/^\*\*Close pending:\*\* (.+)$/m);
+  let pending;
+  try { pending = JSON.parse(match?.[1]); } catch { throw new Error(`${task.id} has invalid pending close evidence`); }
+  if (!pending || pending.version !== 1 || typeof pending.row !== 'string' || pending.row.includes('\n')) {
+    throw new Error(`${task.id} has invalid pending close evidence`);
+  }
+  const receipt = readReceipt(record.content, record.filePath).at(-1);
+  const cells = splitRow(pending.row);
+  if (cells.length !== 6 || !receipt || record.status !== 'done' || record.proof !== receipt.testsRun
+      || pending.receiptChecksum !== receipt.checksum || cells[1] !== task.id || cells[2] !== 'Task closed'
+      || cells[3] !== receipt.testsRun || cells[4] !== receipt.docsTouched || cells[5] !== receipt.remainingGap) {
+    throw new Error(`${task.id} pending close does not match its done Task and Receipt`);
+  }
+  const date = validDate(cells[0]);
+  // Inspect only the owning log. A conflicting row with the same identity is
+  // never overwritten; successful Spec publication followed by failed cleanup
+  // is idempotent, even across separate CLI processes.
+  const sameIdentity = evidenceRows(spec.content).filter((row) => {
+    const existing = splitRow(row);
+    return existing[0] === date && existing[1] === task.id && existing[2] === 'Task closed';
+  });
+  if (sameIdentity.length > 1 || (sameIdentity.length === 1 && sameIdentity[0] !== pending.row)) {
+    throw new Error(`${task.id} pending close conflicts with existing Spec evidence`);
+  }
+  let content = spec.content;
+  if (sameIdentity.length === 0) {
+    const remaining = slices.find((item) => item.id !== task.id && item.declared !== 'done');
+    if (spec.lifecycleFolder !== 'retired') content = updateFields(content, {
+      Updated: date,
+      'Latest event': `${task.id} closed with proof.`,
+      'Next gate': remaining ? `Complete ${remaining.id}.` : 'Confirm acceptance criteria and completion result.'
+    });
+    content = appendEvidence(content, pending.row);
+    writeSafeFile(root, spec.filePath, content);
+  }
+  const cleared = record.content.replace(/^\*\*Close pending:\*\* .+\r?\n?/m, '');
+  parseTaskRecord(cleared, record.filePath, record.root);
+  writeSafeFile(root, record.filePath, cleared);
+  return showSpec(root, spec.id);
 }
 
 // S-00M TK-003 (ADR-000J): a completion claim the repository contradicts is
