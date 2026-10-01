@@ -11,7 +11,7 @@
 **Latest event:** TK-01I claimed by codex-s01r.
 **Next gate:** Finish required verification and fresh-context scenario; hand immutable draft to coordinator for routing and independent review.
 
-> **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
+> **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`02a30100443e725cbb1baad6fe5e771bfe85f648`.
 
 ## Outcome
 
@@ -23,9 +23,18 @@ The prior Skills Wiki packet grouped the whole core inventory into one completio
 
 ## Current Verified State
 
-- `workbench/skills/reviewer/SKILL.md` is the manifest-declared core source at the pre anchor.
-- `workbench/wiki/skill-reviewer.md` is not yet routed as a current skill article; its existence and links must be rechecked before authoring.
-- The stance is set by the assigned Spec and Task. No fresh behavioral scenario for this per-skill delivery is claimed by this planning packet.
+- Source candidate `02a30100443e725cbb1baad6fe5e771bfe85f648` contains the reviewer
+  entry, bundled evidence reference, individual article and focused tests.
+- The source-contract test was red on the prior entry and green after repair.
+  It proves wording and routes, not model decisions. The public synthetic
+  fresh-context run observed actionable findings, evidence limits and target
+  preservation; [scenario evidence](proof/scenario-observation.md) records its
+  exact fixture pins, commands and limits.
+- The individual article exists; its sole MEMORY route is explicitly reserved
+  to the coordinator. Until that hunk is assembled, routing acceptance is open.
+- Required-suite evidence and pre/post self-drift are recorded in
+  [delivery proof](proof/README.md). Independent review of this implementation,
+  integration containment, owner Human QA and main remain separate open gates.
 
 ## Desired Behavior
 
@@ -71,7 +80,7 @@ Inspect the current source, its callers/composition and relevant tests. Demonstr
 
 - [ ] The assigned Reviewer stance inspects the immutable candidate and its acceptance/proof in a separate context at the integration gate.
 - [ ] It does not repair the candidate while claiming to be independent or treat a new SHA as already reviewed.
-- [ ] The named scenario is observed in a fresh or otherwise independent context: A fixed candidate receives actionable findings or a pass with named limits.
+- [x] The named scenario is observed in a fresh or otherwise independent context: A fixed candidate receives actionable findings or a pass with named limits.
 - [ ] `workbench/wiki/skill-reviewer.md` accurately distinguishes verified current behavior from remaining intended behavior, links the current source and governing owners, and is reachable from `workbench/wiki/MEMORY.md`.
 - [ ] Relevant targeted tests/scenarios, Wiki validation, the required full suite, Workbench self-drift pre/post receipts and separate-context review are recorded at their proper gates; no unrun check is reported as passing.
 
@@ -105,6 +114,9 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane. When ther
 |---|---|---|---|---|---|
 | 2026-09-24 | planning | Owner directed one delivery Spec per skill; this Spec names reviewer's destination and first slice | Current manifest, core catalog, source presence and Wiki route inspected at pre anchor; no behavior change or scenario trial | This Spec authored; article remains future work | TK-01I and independent delivery proof remain open |
 | 2026-09-24 | planning verification | Skill-sized ownership and routing checked on the isolated candidate | All 47 required AGENTS commands passed; Wiki validation and exact 21 core plus one proposed entry coverage passed; doctor has no blocking finding; pre/post self-drift at 4940233 retained the same seven pre-existing findings and cleanUpdate false | No skill source or new article authored in this planning pass | Immutable separate-context review and actual skill behavior remain open |
+
+| 2026-10-01 | TK-01I | Owner assigned reviewer-only rebuild; fresh fetch found 124 remote refs, three S-01R variants all planned/unassigned; native conversion retained existing ID and native claim found no remote claimant | Activation c1b0f08a; native claim published 41c39c6f79ab24d195100458a99136064efb1471 on codex/s01r-tk01i-reviewer-rebuild, based on d90785908b26517068a474bb88136c81995a2f18 | No second Task allocated; source lane, article and owned records only; native projection changes retained | MEMORY sole writer remains coordinator; no private scenario transfer, no carry changes |
+| 2026-10-01 | TK-01I | Repair accepted gaps in independent eligibility, immutable binding, evidence classes and inability hand-back; source 02a30100443e725cbb1baad6fe5e771bfe85f648 | Focused source regression 0/3 red then 3/3 green; intermediate whitespace-sensitive assertion corrected; fresh uninvolved fixture review reproduced negative validation defect, identified missing throughput evidence and preserved target | Reviewer entry/reference and individual article; nearest-neighbor comparison uses code-review, no Matt counterpart; source-regression.json and scenario-observation.md preserve limits | Source assertions are not behavior; one synthetic observation is not installed discovery, reliability, owner QA or independent approval of this rebuild |
 
 ## Completion Result
 
