@@ -101,14 +101,14 @@
     {
       "file": "tools/test-diagnostics.mjs",
       "line": 75,
-      "sha256": "14c47be379510709bd96aac07bd504b9e9a6f4f0f1177eec7d3870af8c0ac712",
+      "sha256": "91d4a1e32da766d7504179775aa0c705cb10025ad2608176fdb6a06ade514584",
       "kind": "literal-setup",
       "disposition": "bounded-subset",
       "reason": "Diagnostics fixtures intentionally isolate selected Markdown control conditions and do not claim Genesis completeness; full Genesis fixtures include the map."
     },
     {
       "file": "tools/test-ownership-root-surface.mjs",
-      "line": 27,
+      "line": 30,
       "sha256": "996ae15a99504dc1c95218d7e1257165a1db0201bf0fc83959597a6c84ebd363",
       "kind": "prose",
       "disposition": "bounded-subset",

@@ -14,10 +14,13 @@ export function scanRootSurface(text) {
     if (names.length >= 5 && !match[0].includes('OWNERSHIP.json')) hits.push({ offset: match.index, kind: 'array', text: match[0] });
   }
   for (const match of text.matchAll(/\b(?:seven|7)\s+(?:(?:ordinary,?\s+|filled\s+|stamped\s+|root\s+)){0,3}(?:controls|root files)\b/gi)) hits.push({ offset: match.index, kind: 'prose', text: match[0] });
-  const writes = [...text.matchAll(/\bwrite\(\w+,\s*['"]([^'"]+)['"]/g)];
-  const setupNames = new Set(writes.map(match => match[1]));
-  if (rootNames.filter(name => setupNames.has(name)).length >= 5 && !setupNames.has('OWNERSHIP.json')) {
-    hits.push({ offset: writes[0].index, kind: 'literal-setup', text: [...setupNames].filter(name => rootNames.includes(name)).sort().join(', ') });
+  const writes = [...text.matchAll(/\bwrite\((\w+),\s*['"]([^'"]+)['"]/g)];
+  for (const target of new Set(writes.map(match => match[1]))) {
+    const targetWrites = writes.filter(match => match[1] === target);
+    const setupNames = new Set(targetWrites.map(match => match[2]));
+    if (rootNames.filter(name => setupNames.has(name)).length >= 5 && !setupNames.has('OWNERSHIP.json')) {
+      hits.push({ offset: targetWrites[0].index, kind: 'literal-setup', text: `${target}: ${[...setupNames].filter(name => rootNames.includes(name)).sort().join(', ')}` });
+    }
   }
   return hits;
 }
@@ -26,7 +29,9 @@ test('sweep discovers new multiline root arrays and prose, without treating lane
   assert.equal(scanRootSurface(`[\n${rootNames.map(n => JSON.stringify(n)).join(',\n')}\n]`).length, 1);
   assert.equal(scanRootSurface('seven filled root controls').length, 1);
   assert.equal(scanRootSurface('seven lowercase lanes').length, 0);
-  assert.equal(scanRootSurface(rootNames.map(name => `write(room, '${name}', 'fixture');`).join('\n')).length, 1);
+  const setup = rootNames.map(name => `write(room, '${name}', 'fixture');`).join('\n');
+  assert.equal(scanRootSurface(setup).length, 1);
+  assert.equal(scanRootSurface(setup + `write(otherRoom, 'OWNERSHIP.json', '{}');`).length, 1);
 });
 test('repository-wide root surface inventory has no unaccounted old enumeration', () => {
   const inventoryPath = path.join(root, 'workbench/specs/S-00G-ownership-map-root-control/root-surface-inventory.json');
