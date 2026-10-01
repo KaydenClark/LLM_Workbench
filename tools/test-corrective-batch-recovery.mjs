@@ -6,7 +6,7 @@ import {execFileSync, spawnSync} from 'node:child_process';
 
 const cli = path.resolve('workbench/tools/spec-workbench.mjs');
 const reportModule = path.resolve('workbench/tools/spec-report.mjs');
-const cases = ['verdict-no-final-newline', 'verdict-first-task', 'verdict-second-task', 'verdict-spec', 'owner-second-task', 'narrow-second-task', 'wiki-second-task', 'verdict-directory-failure', 'verdict-rollback-interference', 'verdict-spec-interference'];
+const cases = ['verdict-no-final-newline', 'verdict-first-task', 'verdict-second-task', 'verdict-spec', 'owner-second-task', 'narrow-second-task', 'wiki-second-task', 'verdict-directory-failure', 'verdict-rollback-interference', 'verdict-spec-interference', 'verdict-task-content-interference', 'verdict-task-replacement-interference', 'verdict-nested-interference'];
 for (const scenario of cases) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'corrective-batch-recovery-'));
   try {
@@ -37,6 +37,9 @@ for (const scenario of cases) {
     let injection=`if(${scenario.endsWith('spec')?"String(b).endsWith('/SPEC.md')":`String(b).endsWith('/TASK.md') && ++n===${target}`})throw Error('INJECTED_BATCH_FAILURE');`;
     if(scenario==='verdict-rollback-interference') injection="if(String(b).endsWith('/TASK.md') && ++n===2){fs.writeFileSync(require('node:path').join(require('node:path').dirname(b),'unrelated-arrival.txt'),'Preserve concurrent bytes.');throw Error('INJECTED_BATCH_FAILURE');}";
     if(scenario==='verdict-spec-interference') injection=`if(String(b).endsWith('/TASK.md') && ++n===2){fs.appendFileSync(${JSON.stringify(specPath)},'Concurrent Spec bytes.');throw Error('INJECTED_BATCH_FAILURE');}`;
+    if(scenario==='verdict-task-content-interference') injection="if(String(b).endsWith('/TASK.md')){if(++n===1)global.firstTask=b;else if(n===2){fs.writeFileSync(global.firstTask,'FOREIGN TASK CONTENT');throw Error('INJECTED_BATCH_FAILURE');}}";
+    if(scenario==='verdict-task-replacement-interference') injection="if(String(b).endsWith('/TASK.md')){if(++n===1)global.firstTask=b;else if(n===2){const replacement=global.firstTask+'.foreign';fs.writeFileSync(replacement,fs.readFileSync(global.firstTask));rename(replacement,global.firstTask);throw Error('INJECTED_BATCH_FAILURE');}}";
+    if(scenario==='verdict-nested-interference') injection="if(String(b).endsWith('/TASK.md')){if(++n===1)global.firstTask=b;else if(n===2){const incoming=require('node:path').join(require('node:path').dirname(global.firstTask),'foreign');fs.mkdirSync(incoming);fs.writeFileSync(require('node:path').join(incoming,'keep.txt'),'Nested foreign bytes.');throw Error('INJECTED_BATCH_FAILURE');}}";
     let hookText=`const fs=require('node:fs');const rename=fs.renameSync;let n=0;fs.renameSync=function(a,b){${injection}return rename.apply(this,arguments);};`;
     if(scenario==='verdict-directory-failure') hookText="const fs=require('node:fs');const mkdir=fs.mkdirSync;let n=0;fs.mkdirSync=function(a){if(/TK-[^/]+$/.test(String(a)) && ++n===2)throw Error('INJECTED_BATCH_FAILURE');return mkdir.apply(this,arguments);};";
     const hook=write('fault.cjs',hookText);
@@ -52,7 +55,10 @@ for (const scenario of cases) {
       assert.match(failed.stderr,/rollback also failed|changed during corrective/,'interference reports incomplete recovery');
       assert.ok(fs.readFileSync(specPath,'utf8').includes('Review verdict: fail at '+candidate),'incomplete cleanup preserves its exact durable anchor');
       if(scenario==='verdict-rollback-interference') assert.ok(Object.entries(tree()).some(([name,value])=>name.endsWith('/unrelated-arrival.txt') && value===Buffer.from('Preserve concurrent bytes.').toString('base64')),'never recursively remove concurrently arriving bytes');
-      else assert.ok(fs.readFileSync(specPath,'utf8').endsWith('Concurrent Spec bytes.'),'never overwrite concurrent Spec edits');
+      else if(scenario==='verdict-spec-interference') assert.ok(fs.readFileSync(specPath,'utf8').endsWith('Concurrent Spec bytes.'),'never overwrite concurrent Spec edits');
+      else if(scenario==='verdict-task-content-interference') assert.ok(Object.entries(tree()).some(([name,value])=>name.endsWith('/TASK.md') && value===Buffer.from('FOREIGN TASK CONTENT').toString('base64')),'never delete modified first Task bytes');
+      else if(scenario==='verdict-task-replacement-interference') assert.ok(Object.keys(tree()).some(name=>name.endsWith('/TASK.md')),'never delete a replaced first Task even when bytes match');
+      else if(scenario==='verdict-nested-interference') assert.ok(Object.entries(tree()).some(([name,value])=>name.endsWith('/foreign/keep.txt') && value===Buffer.from('Nested foreign bytes.').toString('base64')),'never recursively delete nested foreign files');
       assert.equal(fs.readFileSync(path.join(root,'unrelated.txt'),'utf8'),'Unrelated bytes remain intact.\n');
       console.log('ok - '+scenario+' preserves unexpected bytes and reports explicit incomplete recovery');
       continue;
