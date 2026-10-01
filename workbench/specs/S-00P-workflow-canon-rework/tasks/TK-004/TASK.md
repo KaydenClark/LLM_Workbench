@@ -3,11 +3,12 @@
 **Task ID:** TK-004
 **Spec ID:** S-00P
 **Slice:** Rewrite `LEXICON.md` and reconcile ADR-000F, ADR-000G and ADR-000I
-**Status:** in-progress
+**Status:** done
 **Blockers:** TK-002
 **Destination:** spec-acceptance: S-00P Acceptance Criteria
 **Planned verification:** Red: semantic assertions against Lexicon definitions and the resolved active ADR decision/owner chain fail for the named contradiction or missing definition; green: released ADR dispositions match confirmed source claims, literal owner/Context Map links resolve, register/history match their sources, and targeted tests pass. Lifecycle status alone is not proof.
 **Stance:** Builder
+**Proof:** Status-independent semantic red after accepted fixture migration; green ADR40/40 with18 accepted-status-preserving decision/owner/route mutations, wiki14/14, controls20/20, ledger5/5, nativeADRvalidateempty. Supported G/I migration fixture, currentcorpus57records/intra40files83edges/acceptedSpec26files31edges. Demo308ms; originalG/I proposals retained except move-only links; all24 publishedSpecrows and neighbors preserved; ledger exacttenArtifactpointer substitutions. DirectappendonlyCLEAN/citations15of15. Source committed/pushed56b459da; required51 on finalclosed immutablecandidate pending before review/integrationdelivery.
 
 ## Execution Reconciliation (2026-10-01)
 
@@ -204,3 +205,4 @@ agent-outcome improvement.
 | Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
 |---|---|---|---|---|---|---|---|---|
 | 1 | codex/s00p-tk004-workflow-language | 5d743b4fda292ad772d2505aa3732c83d719fa81 | ahead 0 behind 0 | 3 | Fresh doctor exit0; native nextTK004 and claimedpublished5d743b4f from reviewed integration76932f5; preguardrail78/100; preselfdrift7/cleanUpdatefalse. Targeted red/green pending Worker. | Prior TK002 reviewPASS/full51/PR238 containment and explicit public destination authority appended to S00P; currentTK004 execution reconciliation preserves earlier planning. | Worker source-backed semantic red/green, exactADR disposition/literalpointer inventory; frozen51 and fresh independent TaskPR review/integration containment pending; ownerQA/main remain open. | ce089459594ac8b137be22facf5090759e25e7e21e56db7d4f5501632550430e |
+| 2 | codex/s00p-tk004-workflow-language | 56b459dac8574cc96af353c3da6a790809546f28 | ahead 0 behind 0 | 0 | Status-independent semantic red after accepted fixture migration; green ADR40/40 with18 accepted-status-preserving decision/owner/route mutations, wiki14/14, controls20/20, ledger5/5, nativeADRvalidateempty. Supported G/I migration fixture, currentcorpus57records/intra40files83edges/acceptedSpec26files31edges. Demo308ms; originalG/I proposals retained except move-only links; all24 publishedSpecrows and neighbors preserved; ledger exacttenArtifactpointer substitutions. DirectappendonlyCLEAN/citations15of15. Source committed/pushed56b459da; required51 on finalclosed immutablecandidate pending before review/integrationdelivery. | Lexicon workflow meanings/routes; G/I existing-basename accepted records, F operational premise and H correctiveWikiPacket amendment; generatedADRregister/history; onlyreleased neighbor/tenledgerPointer links. Originalproposals and evidencehistory retained. Templates deliberately deferredTK005; noWikiContent/routers/skills/manifest/runtime edits. | Exact finalcandidate full51 and separatecontext review/TaskPR integrationcontainment pending; TK003/TK005 and ownerQA/main remain open; guardrail78 and seven knownselfdrift findings prevent outcome/cleanupdate claim. | b61f3d7c2f5b076c242b17fcf63bf52456699c2031cf1a9803b85633759fdb28 |
