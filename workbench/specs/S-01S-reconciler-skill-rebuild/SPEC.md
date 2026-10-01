@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Leave achieved work and its existing truth owners consistent for continuation.
 **Blockers:** none for assigned implementation; coordinator owns the shared MEMORY route.
-**Latest event:** Independent early review of e0a75d8b failed P2 on Git replacement objects; same TK-01J correction is green at 5433310e on current integration.
-**Next gate:** Run current-base full verification, publish a new immutable candidate, and return it for fresh independent review; MEMORY assembly remains with coordinator.
+**Latest event:** Same TK-01J replacement-object correction passed all 51 required commands and focused 9/9 checks at 6c85b1aa480f1c356aa82884a8bf7d423fc15047; prior independent FAIL remains preserved.
+**Next gate:** Fresh independent review of the new immutable current-base candidate; coordinator owns MEMORY assembly. Original raw scenario verification remains open.
 
 > **Citation anchors.** pre=`d90785908b26517068a474bb88136c81995a2f18` post=`5433310e`.
 
@@ -151,12 +151,16 @@ template skill to edit. MEMORY is deliberately reserved to the coordinator.
 
 | 2026-10-01 | TK-01J | Independent early review FAIL P2 and executable correction | Parent relayed reviewer 01a0f689 FAIL of exact e0a75d8b: Git replacements substitute completion/approval text while the original SHA is printed. Reproduced at d180ab8c: five prior tests pass, four new tests fail. At 5433310e all nine pass; plain Git fixture controls demonstrate substituted owner text and fabricated ancestry before protected reads reject them | Governed disposition test in this owning Spec; documented helper disables replacements for every observation and isolates inherited Git selection. Existing evidence rows and Task receipts retained; no new Task or identity | Full current-base union and fresh independent review pending; original fresh-context raw evidence not independently verified; coordinator MEMORY route open |
 
+| 2026-10-01 | TK-01J | Current-base corrective full verification | Exact current AGENTS/RUNBOOK union 51/51 exit 0 at 6c85b1aa480f1c356aa82884a8bf7d423fc15047 on integration base 25d3f4d2. Focused 9/9, delivery 3/3, GitHub coordination 10/10, collision 34/34 and Wiki validation pass. Append-only history CLEAN. Pre/post seven findings unchanged and cleanUpdate false; guardrail78/100 unchanged. See proof/replacement-correction.json | Same Task, source/helper, article, proof and native receipts; original failed candidate and evidence retained. No authored shared runtime/control/manifest/identity/carry/MEMORY changes | Fresh exact-candidate review, coordinator MEMORY route, independent raw scenario verification and owner QA remain open; no approval or integration/main promotion |
+
 ## Completion Result
 
 Corrective source at `5433310e` addresses the independent early review FAIL P2
 of `e0a75d8b` under the existing in-progress TK-01J. Four new regressions first
 failed and all nine focused checks now pass. The branch contains current
-integration `25d3f4d2`; current-base full verification is pending. The earlier
+integration `25d3f4d2`; all 51 current required commands passed at
+`6c85b1aa480f1c356aa82884a8bf7d423fc15047`, with focused 9/9, delivery 3/3,
+GitHub coordination 10/10 and collision 34/34 checks passing. The earlier
 51-command proof remains historical and did not cover replacement objects.
 No review PASS, completion, owner QA or merge is claimed. Coordinator MEMORY
 assembly and independent verification of the original raw scenario remain open.

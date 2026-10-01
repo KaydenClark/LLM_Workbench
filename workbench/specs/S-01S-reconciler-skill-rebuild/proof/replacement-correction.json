@@ -43,11 +43,453 @@
     "No new agent scenario or review PASS claimed",
     "Shared upstream runtime/control/manifest changes adopted unchanged by merge; no lane-authored shared runtime changes"
   ],
-  "requiredUnion": "pending current-base run",
+  "requiredUnion": {
+    "testedRevision": "6c85b1aa480f1c356aa82884a8bf7d423fc15047",
+    "count": 51,
+    "passed": 51,
+    "source": "Deduplicated current AGENTS full-suite and RUNBOOK full-verification command blocks",
+    "results": [
+      {
+        "command": "node tools/test-spec-workbench.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-skill-catalog.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-skill-inspection.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-skills-lane.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-core-composition.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-project-evidence.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-genesis-from-decisions.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-blueprint-contract.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-session-transport.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-configured-host.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-core-skill-installer.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-workbench-layout.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-workbench-adoption.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-workbench-upgrade.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-workbench-tools.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-diagnostics.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-adr.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-governance-core.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-branch-closeout.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-wiki.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-sessions.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-notepads.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-visible-ids.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-workbench-identity.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-visible-id-consumers.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-direct-promotion.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-workbench-round-trip.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-cross-provider-fixture.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-portability-matrix.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-workbench-dogfood.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-evaluate-workbench.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-guardrail-audit.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-context-tools.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-outcome-trials.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-eval-runner.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-feedback-automation.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-symlink-invocation.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-control-fidelity.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-spec-citation-anchors.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-controls-vocabulary-sweep.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-spec-report.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-self-drift.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-feedback-inventory.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-grilling-ledger.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "python3 tools/test-check-append-only.py",
+        "exitCode": 0
+      },
+      {
+        "command": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+        "exitCode": 0
+      },
+      {
+        "command": "node workbench/tools/spec-workbench.mjs doctor",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-team-coordination.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-team-coordination-demo.mjs",
+        "exitCode": 0
+      },
+      {
+        "command": "node tools/test-socket-contract.mjs",
+        "exitCode": 0
+      }
+    ]
+  },
   "remaining": [
     "Coordinator MEMORY assembly",
     "Independent review of exact new candidate",
     "Raw scenario evidence verification",
     "Owner QA"
+  ],
+  "additionalChecks": [
+    {
+      "command": "node tools/test-reconciler-skill.mjs",
+      "result": "9/9 passed; prior five plus four actual hostile-Git regressions"
+    },
+    {
+      "command": "node tools/test-delivery-skills.mjs",
+      "result": "3/3 passed"
+    },
+    {
+      "command": "node tools/test-github-coordination.mjs",
+      "result": "10/10 passed"
+    },
+    {
+      "command": "node tools/test-task-id-collision.mjs",
+      "result": "34/34 passed"
+    },
+    {
+      "command": "node workbench/tools/wiki.mjs validate",
+      "result": "exit 0"
+    },
+    {
+      "command": "python3 tools/check-append-only.py",
+      "result": "CLEAN: first-published evidence preserved"
+    }
+  ],
+  "drift": {
+    "pre": {
+      "sourceRevision": "247639eab52a21e808fd9329e41d1b3229d0fc16",
+      "fullReceiptSha256": "4c6c82782db7867523186f94c54399deeb8a0f09a0419e9140e335f9330b4853",
+      "findings": [
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-00Q has an in-progress task last updated 2026-09-19",
+          "expected": "current owner and verified identity",
+          "observed": "S-00Q has an in-progress task last updated 2026-09-19",
+          "correction": "S-00Q has an in-progress task last updated 2026-09-19",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/feedback/REPORT_FORMAT.md",
+          "claim": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/notepad.schema.json",
+          "claim": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/work.example.json",
+          "claim": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/grilling.example.json",
+          "claim": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/handoff.example.json",
+          "claim": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "unverified-provenance",
+          "artifact": "manifest",
+          "claim": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        }
+      ],
+      "machineResult": "blocked",
+      "cleanUpdate": false,
+      "fullReceiptRetention": "Local only; no raw private artifact or inventory transfer"
+    },
+    "post": {
+      "sourceRevision": "6c85b1aa480f1c356aa82884a8bf7d423fc15047",
+      "fullReceiptSha256": "e472a456f84e5b84dfa597d0578227300c212237f6fef3bfb01e34eb8ea090e9",
+      "findings": [
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-00Q has an in-progress task last updated 2026-09-19",
+          "expected": "current owner and verified identity",
+          "observed": "S-00Q has an in-progress task last updated 2026-09-19",
+          "correction": "S-00Q has an in-progress task last updated 2026-09-19",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/feedback/REPORT_FORMAT.md",
+          "claim": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/notepad.schema.json",
+          "claim": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/work.example.json",
+          "claim": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/grilling.example.json",
+          "claim": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/handoff.example.json",
+          "claim": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "unverified-provenance",
+          "artifact": "manifest",
+          "claim": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        }
+      ],
+      "machineResult": "blocked",
+      "cleanUpdate": false,
+      "fullReceiptRetention": "Local only; no raw private artifact or inventory transfer"
+    },
+    "sameFindings": true
+  },
+  "guardrail": {
+    "pre": 78,
+    "post": 78,
+    "remaining": "Real repeated outcome trials, comparison baselines, recent evidence and uncertainty reporting; no outcome-improvement claim."
+  },
+  "historyAndScope": {
+    "oldCandidatePreserved": true,
+    "priorSpecRowsAndTaskReceiptsPreserved": true,
+    "taskRemains": "in-progress",
+    "newGlobalIdentityAllocated": false,
+    "sharedRuntimeControlsManifestCarryMemoryDeltaAgainstBase": "none; verified with git diff --exit-code",
+    "sourceAndTestChangesAfterTestedRevision": "none; subsequent commit only reconciles proof and generated state"
+  },
+  "platformLimits": [
+    "Core installer skips two case-insensitive-filesystem cases on this case-sensitive host."
   ]
 }
