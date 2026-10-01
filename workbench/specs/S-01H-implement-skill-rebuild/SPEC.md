@@ -1,7 +1,7 @@
 # S-01H - implement skill rebuild
 
 **Spec ID:** S-01H
-**Status:** planned
+**Status:** active
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
@@ -55,7 +55,6 @@ No other skill rebuild is a blanket prerequisite. Check current controls and the
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-00Y | Audit implement, deliver the smallest supported source/documentation change and prove the routed article | ready | none | pending |
 
 ### TK-00Y - Deliver the implement skill destination
 
