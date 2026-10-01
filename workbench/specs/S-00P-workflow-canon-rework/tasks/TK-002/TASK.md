@@ -3,11 +3,12 @@
 **Task ID:** TK-002
 **Spec ID:** S-00P
 **Slice:** Rewrite `AGENTS.md` to the Task-record workflow using only commands that exist
-**Status:** in-progress
+**Status:** done
 **Blockers:** TK-001, S-00H, S-00I:delivered, S-00J:delivered
 **Destination:** spec-acceptance: S-00P Acceptance Criteria
 **Planned verification:** Red/green contract regressions in `tools/test-control-fidelity.mjs`, exact command/argument checks against `workbench/tools/spec-workbench.mjs`, and a disposable-room cold-start walkthrough; preserve guardrail and self-drift before/after receipts. These are execution plans, not achieved proof.
 **Stance:** Builder
+**Proof:** Control-fidelity red18/20 then green20/20 with9 contract mutations; spec-workbench39/39, spec-report, branch-closeout8/8, argument12/12; disposable cold-start and corrective-return demo6.39s with stale-digest/Task-path/unclaimed-close/owner-main/retirement refusals and original Task proof preserved. Full51/51 at immutable bf06376df5ccf298e94849a1363c4b2fdc74f07f; baseline portability3/4 corrected narrowly to5/5 with active-route/privacy negative cases. Guardrail78/100 before/after; self-drift7 known findings and cleanUpdatefalse retained.
 
 ## Execution Reconciliation (2026-10-01 UTC)
 
@@ -194,3 +195,4 @@ assembled planning verification belongs to the Dispatcher.
 | Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
 |---|---|---|---|---|---|---|---|---|
 | 1 | codex/s00p-tk002-workflow-controls | 699ca112d33e7a2042f49efbfa766f6c12d60099 | ahead 0 behind 0 | 4 | Portability baseline red 3/4 at 07edccc5; narrow structured historical proposal handling green 5/5 with active-path/private-path negative cases. Worker AGENTS contract and disposable behavior proof in progress. | S-00P current prerequisite/role/closure text reconciled to delivered I/J behavior; historical evidence preserved. AGENTS rewrite in progress. | TK-002 Worker proof, full frozen-candidate suite and independent review; TK-003..005 and owner QA/main remain open. | 9290c61995dfe011ef89157463a7204a3e991613a35fa27e91b6c86b4b2a6864 |
+| 2 | codex/s00p-tk002-workflow-controls | bf06376df5ccf298e94849a1363c4b2fdc74f07f | ahead 1 behind 0 | 0 | Control-fidelity red18/20 then green20/20 with9 contract mutations; spec-workbench39/39, spec-report, branch-closeout8/8, argument12/12; disposable cold-start and corrective-return demo6.39s with stale-digest/Task-path/unclaimed-close/owner-main/retirement refusals and original Task proof preserved. Full51/51 at immutable bf06376df5ccf298e94849a1363c4b2fdc74f07f; baseline portability3/4 corrected narrowly to5/5 with active-route/privacy negative cases. Guardrail78/100 before/after; self-drift7 known findings and cleanUpdatefalse retained. | AGENTS current Task-record, review/correction, blocker grammar and closure instructions rewritten; S-00P current dependency/role/claim text reconciled. Templates deliberately deferred to TK-005; historical rows preserved; no Wiki/skills/ledger/manifest change. | Independent final-candidate review, PUBLIC origin publication approval and integration containment pending; TK-003..005 and owner QA/main remain open. No clean-update or agent-outcome claim. Git state at close: unpushed (ahead 1 behind 0 of origin/codex/s00p-tk002-workflow-controls); recorded reason: Local unpushed review-ready checkpoint because automatic approval review refused public-origin egress before execution; no transport retry. Local-only bf06376d has full51/51 proof. Exact final public-destination approval remains required before push and integration delivery. | 9baa06a84f4cdf9a0f00f1fc94e9ad43dcbf0374d39e0e956b0075d238a7d8f7 |
