@@ -136,7 +136,7 @@ if (process.argv.includes('--demo')) {
     const board = preview(root);
     assert.ok(board.lanes.needsReview['TK-00AA']);
     assert.match(board.lanes.needsReview['TK-00AA'].nextAction, /review/i);
-    assert.deepEqual(board.lanes.needsReview['TK-00AA'].requiredQA, ['independent-candidate-review']);
+    assert.deepEqual(board.lanes.needsReview['TK-00AA'].requiredQA, ['assembled-spec-review']);
     assert.equal(command(root, 'render').status, 0);
     const before = sourceSnapshot(root);
     assert.equal(selected(root, '--local'), null);

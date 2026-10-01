@@ -71,9 +71,9 @@ export function buildTaskboard(specs, { resolveTask = () => ({}) } = {}) {
         progress: null, nextAction: taskAction({ ...child, status: entry.status }, retired),
         cleanupState: lane === 'complete' ? (retired ? 'readyToDelete' : 'readyToCapture') : null
       });
-      // An explicit review state names a required candidate boundary, not a
-      // universal Task approval ceremony or evidence that review passed.
-      card.requiredQA = lane === 'needsReview' ? ['independent-candidate-review'] : [];
+      // SCR-1/SCR-7 refine Task review to waiting for assembled Spec review;
+      // this never creates a separate destination-level Task approval.
+      card.requiredQA = lane === 'needsReview' ? ['assembled-spec-review'] : [];
       card.specId = child.specId;
       add(child.id, lane, card, child.relativePath);
     }
@@ -153,7 +153,7 @@ function dateField(value, title) {
   return date;
 }
 function taskAction(task, retired) {
-  if (task.status === 'needs-review') return 'Obtain the required independent candidate review.';
+  if (task.status === 'needs-review') return 'Await independent review of the assembled Spec.';
   if (task.status === 'done') return retired ? 'Ready to delete through the lifecycle gates.' : 'Ready to capture through the lifecycle gates.';
   if (task.status === 'blocked') return 'Resolve the recorded blockers.';
   if (task.status === 'deferred') return 'Reconcile the deferred slice before execution.';
