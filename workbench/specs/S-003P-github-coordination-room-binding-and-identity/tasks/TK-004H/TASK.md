@@ -3,7 +3,7 @@
 **Task ID:** TK-004H
 **Spec ID:** S-003P
 **Slice:** P2: Add a durable RUNBOOK entry route - bounded entry-owner lookup at394 finds no route to the binding procedure.
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-003P Acceptance Criteria
