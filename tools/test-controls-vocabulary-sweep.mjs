@@ -68,7 +68,7 @@ function walk(dir) {
 }
 
 const targets = [];
-for (const file of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'README.md', 'BLUEPRINT.md', 'CLAUDE.md']) {
+for (const file of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'README.md', 'BLUEPRINT.md', 'CLAUDE.md', 'OWNERSHIP.json']) {
   targets.push(path.join(root, file));
 }
 for (const dir of ['skills', 'templates', 'team templates']) {

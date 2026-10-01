@@ -11,7 +11,7 @@ const root = fs.mkdtempSync(path.join(os.tmpdir(), 'self-drift-'));
 function write(file, text) { fs.mkdirSync(path.dirname(path.join(root, file)), { recursive: true }); fs.writeFileSync(path.join(root, file), text); }
 try {
   write('workbench/manifest.json', JSON.stringify({ schemaVersion: 2, workbenchVersion: 'v3.2.1', lanes: { specs: 'workbench/specs', tools: 'workbench/tools', wiki: 'workbench/wiki' }, collections: { adr: 'workbench/docs/adr', notepads: 'workbench/sessions/notepads' } }));
-  for (const file of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'README.md', 'TASKBOARD.md', 'workbench/specs/CATALOG.md', 'workbench/wiki/MEMORY.md', 'workbench/docs/adr/REGISTER.md']) write(file, '# Current\n');
+  for (const file of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'README.md', 'TASKBOARD.md', 'workbench/specs/CATALOG.md', 'workbench/wiki/MEMORY.md', 'workbench/docs/adr/REGISTER.md', 'OWNERSHIP.json']) write(file, file === 'OWNERSHIP.json' ? fs.readFileSync(path.resolve(import.meta.dirname, '..', file), 'utf8') : '# Current\n');
   write('workbench/specs/S-001-example/SPEC.md', '**Spec ID:** S-001\n**Status:** complete\n**Blockers:** none\n## Completion Result\nVerified.\n');
   write('workbench/specs/S-002-example/SPEC.md', '**Spec ID:** S-002\n**Status:** blocked\n**Blockers:** S-001\n## Completion Result\nPending.\n');
   let report = inspectSelfDrift(root);

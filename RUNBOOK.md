@@ -303,7 +303,7 @@ node tools/genesis-from-decisions.mjs derive --template TEMPLATE_ROOT --source-p
 
 The destination must not exist. Intake and plan paths, and every draft file
 named by the plan, are relative to the evidence room. A `genesis-plan-1` request
-names `project.name/founding_prompt`, the seven `controls` and `memory` drafts
+names `project.name/founding_prompt`, the eight root artifacts in `controls` and `memory` drafts
 (each with `file` and `sha256`), `selected_questions`, `active_adr_ids`, and
 `capabilities`. A capability names its `id`, `title`, `derived_from` question IDs,
 `outcome`, `acceptance` strings, and one `task` with `id` and `slice`.
@@ -517,7 +517,7 @@ copy of the tool reports `seeded.wiki: false` truthfully. The Genesis
 readiness gate requires the filled `workbench/wiki/MEMORY.md` router and those
 three files with no template placeholder.
 
-`validate --genesis` additionally requires seven ordinary, filled root controls,
+`validate --genesis` additionally requires eight ordinary root artifacts (filled Markdown plus validated `OWNERSHIP.json`),
 exact Workbench version stamps on the six stamped controls (the thin
 `CLAUDE.md` remains exactly `@AGENTS.md`), the generated-region markers in
 `BLUEPRINT.md` and `TASKBOARD.md` that `render` fills, one actionable
@@ -679,8 +679,8 @@ ordinary directory - exits 1.
 | `upgrade` | A `workbench/manifest.json` that reads as a manifest object carrying an integer `schemaVersion`, or a Workbench version stamp in a root control with no manifest (the `upgrade --layout-only` v2-root room) |
 | `unclassifiable` | `workbench/` is present but is not an ordinary directory or carries no readable manifest; a root control or the room's own top-level listing cannot be read and nothing else is stamped; or the room is harness-shaped with no manifest and no stamp |
 
-Harness-shaped means all seven root controls, or root `tools/` files from the
-managed runtime set in a room that also carries more of the seven controls than
+Harness-shaped means the legacy Markdown surface or all eight current root artifacts, or root `tools/` files from the
+managed runtime set in a room that also carries a majority of the legacy Markdown surface than
 it is missing. Those filenames (`privacy.mjs`, `sessions.mjs`) are ordinary, so
 one of them alone never makes a room harness-shaped. A `workbench/manifest.json`
 that parses as an unrelated JSON object, an array, or a `schemaVersion` that is
@@ -714,7 +714,7 @@ The rule is recorded in
 
 ### V3 Adoption migration check
 
-Adoption requires seven filled root controls before it retires legacy
+Adoption requires eight root artifacts, including a validated `OWNERSHIP.json`, before it retires legacy
 project-local support paths; it lays the core skills into the room's own
 `workbench/skills` lane from the release, so no provider home is read.
 Exercise the deterministic mixed-v2 fixture without touching a real project:
@@ -1273,7 +1273,7 @@ node tools/test-workbench-round-trip.mjs
 ```
 
 It creates a bare remote, runs Genesis with this candidate's tools (init,
-tools install, seven controls, wiki router, feedback lane, first spec),
+tools install, eight root artifacts, wiki router, feedback lane, first spec),
 passes `validate --genesis` and doctor, writes a live JSON notepad, reconciles selected claims
 into the spec owner, claims the first slice, pushes the planning checkpoint (the
 notepad never enters the commit), deletes the working clone, resumes from a

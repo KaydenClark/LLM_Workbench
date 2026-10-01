@@ -17,7 +17,7 @@ const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifes
 const runtime = path.join(root, 'workbench', 'tools');
 const tool = path.join(runtime, 'workbench-layout.mjs');
 const installer = path.join(root, 'tools', 'workbench-tools.mjs');
-const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
+const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md', 'OWNERSHIP.json'];
 
 // S-00M TK-002: doctor reports untracked files under the root controls, the
 // ADR collection and the spec lane. These Genesis rooms are never committed, so
@@ -87,6 +87,7 @@ function completeGenesis(project, options = {}) {
     .replace(/^\| \[QUESTION THIS ROOM'S MEMORY ANSWERS\].*\n/m, '').replace(/^\| \[ANOTHER DURABLE QUESTION\].*\n/m, '');
   fs.writeFileSync(path.join(project, 'workbench', 'wiki', 'MEMORY.md'), router);
   for (const control of controls) {
+    if (control === 'OWNERSHIP.json') { fs.copyFileSync(path.join(root, control), path.join(project, control)); continue; }
     const content = control === 'CLAUDE.md'
       ? '@AGENTS.md\n'
       : control === 'BLUEPRINT.md'
@@ -145,7 +146,7 @@ test('copy-ready v3 templates route active spec authority through workbench/spec
   for (const relative of ['AGENTS.md', 'LEXICON.md', 'TASKBOARD.md', 'SPEC.md', 'README.md', path.join('wiki', 'MEMORY.project.md')]) {
     assert.match(fs.readFileSync(path.join(templateRoot, relative), 'utf8'), /workbench\/specs\//, `${relative} does not name the manifest-default spec lane`);
   }
-  // Exactly seven root controls: the feedback return channel lives in its lane.
+  // Eight root artifacts: the feedback return channel lives in its lane.
   const readme = fs.readFileSync(path.join(templateRoot, 'README.md'), 'utf8');
   assert.match(readme, /workbench\/feedback\/WORKBENCH_FEEDBACK\.md/, 'the project README routes feedback to the lane');
   assert.doesNotMatch(readme, /\]\(WORKBENCH_FEEDBACK\.md\)/, 'the project README must not link a root feedback file');
@@ -161,7 +162,7 @@ test('the committed placeholder vocabulary exactly matches the shipped Genesis t
   assert.deepEqual([...actual].sort(), [...templatePlaceholders].sort());
 });
 
-test('a fresh Genesis fixture has the seven controls, manifest lanes, first spec, and no local skill shadow', () => {
+test('a fresh Genesis fixture has the eight root artifacts, manifest lanes, first spec, and no local skill shadow', () => {
   const project = fixture();
   const quietHome = healthySkillHome();
   try {

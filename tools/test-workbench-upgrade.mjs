@@ -15,7 +15,7 @@ import { coreSkills } from '../workbench/tools/workbench-layout.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const tool = path.join(root, 'tools', 'workbench-upgrade.mjs');
-const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
+const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md', 'OWNERSHIP.json'];
 
 function fixture(prefix) {
   return fs.mkdtempSync(path.join(os.tmpdir(), prefix));
@@ -33,7 +33,7 @@ function write(project, relative, content) {
 }
 
 function seedProject(project) {
-  for (const control of controls) write(project, control, `# ${control}\n\nProject-specific v2 truth.\n`);
+  for (const control of controls) write(project, control, control === 'OWNERSHIP.json' ? fs.readFileSync(path.join(root, control), 'utf8') : `# ${control}\n\nProject-specific v2 truth.\n`);
   write(project, 'BLUEPRINT.md', '# Blueprint\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n');
   write(project, 'TASKBOARD.md', '# Taskboard\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n');
   write(project, 'specs/S-101-upgrade/SPEC.md', [

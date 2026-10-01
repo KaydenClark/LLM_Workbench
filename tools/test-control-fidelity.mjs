@@ -52,6 +52,8 @@ function manifest(version, profile = 'project') {
 function fixtureTemplates() {
   const templates = fixture('control-fidelity-templates-');
   fs.cpSync(productTemplates, templates, { recursive: true });
+  // TK-002 fixture supplies a validated map; the generic shipping copy is TK-003.
+  fs.copyFileSync(path.join(root, 'OWNERSHIP.json'), path.join(templates, 'OWNERSHIP.json'));
   assert.ok(read(templates, 'AGENTS.md').includes(adrRow), 'templates/AGENTS.md must ship the ADR ownership row under test');
   return templates;
 }
@@ -60,6 +62,7 @@ function fixtureTemplates() {
 function fixtureRoom(templates, version = VERSION) {
   const project = fixture('control-fidelity-room-');
   for (const control of controls) write(project, control, fill(read(templates, control)));
+  write(project, 'OWNERSHIP.json', read(templates, 'OWNERSHIP.json'));
   write(project, 'CLAUDE.md', '@AGENTS.md\n');
   write(project, 'workbench/manifest.json', manifest(version));
   return project;
@@ -305,6 +308,7 @@ test('an unsafe manifest wiki lane is never joined: the report notes it and fall
   const parent = fixture('control-fidelity-parent-');
   const project = path.join(parent, 'room');
   for (const name of controls) write(project, name, fill(read(templates, name)));
+  write(project, 'OWNERSHIP.json', read(templates, 'OWNERSHIP.json'));
   write(project, 'CLAUDE.md', '@AGENTS.md\n');
   write(project, 'workbench/manifest.json', `${JSON.stringify({ schemaVersion: 2, workbenchVersion: VERSION, lanes: { wiki: '../outside' }, wiki: { profile: 'project' } }, null, 2)}\n`);
   write(parent, 'outside/SCHEMA.md', '# Outside the room\n\nsecret-marker-line\n');
@@ -560,4 +564,11 @@ test('Runbook contract detects operationally consequential guidance regressions'
     assert.ok(current.includes(before), `mutation targets current instructions: ${before}`);
     assert.throws(() => runbookWorkflowContract(current.replace(before, after)), { name: 'AssertionError' });
   }
+});
+
+test('ownership map is a structured fidelity target, not Markdown claim lines', () => {
+  const templates = fixtureTemplates(); const project = fixtureRoom(templates);
+  try { const result = control(reportFidelity({ project, templates }), 'OWNERSHIP.json');
+    assert.equal(result.status, 'structured'); assert.equal(result.rows.length, 28); assert.deepEqual(result.lines, []);
+  } finally { fs.rmSync(project, { recursive: true, force: true }); fs.rmSync(templates, { recursive: true, force: true }); }
 });

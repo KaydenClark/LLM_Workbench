@@ -9,7 +9,7 @@ import { assertSafeReadPath, isMainModule, readManifest, laneRelative, collectio
 import { doctor } from './spec-workbench.mjs';
 import { provenanceFindings, seededDocumentFindings } from './workbench-layout.mjs';
 
-const CONTROLS = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'README.md', 'TASKBOARD.md'];
+const CONTROLS = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'README.md', 'TASKBOARD.md', 'OWNERSHIP.json'];
 const HISTORY = /(?:^|\/)(?:retired|archive|checkpoints|recovery)(?:\/|$)/;
 function field(text, name) { return text.match(new RegExp(`^\\*\\*${name}:\\*\\* (.+)$`, 'm'))?.[1]?.trim() ?? null; }
 function section(text, name) { return text.match(new RegExp(`^## ${name}\\r?\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))`, 'm'))?.[1]?.trim() ?? ''; }

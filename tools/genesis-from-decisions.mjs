@@ -9,6 +9,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { listAdrs, validateAdrs } from '../workbench/tools/adr.mjs';
+import { validateOwnership } from '../workbench/tools/ownership-map.mjs';
 import { controls, versionStamp } from '../workbench/tools/workbench-layout.mjs';
 import { checkStructure, resolveNote } from '../workbench/tools/notepads.mjs';
 import { scanPrivacy } from '../workbench/tools/privacy.mjs';
@@ -188,6 +189,10 @@ function releaseIdentity() {
 
 function validateDraft(content, name, version) {
   privacy(content, `control draft ${name}`);
+  if (name === 'OWNERSHIP.json') {
+    try { validateOwnership(JSON.parse(content)); return; }
+    catch (error) { fail('invalid-ownership-map', error.message); }
+  }
   if (!content.trim() || templatePlaceholders.some((placeholder) => content.includes(placeholder))) fail('unfilled-control', `${name} contains a template placeholder`);
   if (name === 'CLAUDE.md') {
     if (content.trim() !== '@AGENTS.md') fail('unfilled-control', 'CLAUDE.md must be exactly @AGENTS.md');

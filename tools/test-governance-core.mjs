@@ -67,7 +67,7 @@ test('the ADR corpus is reconciled: ADR-0008 is not ported and ADR-0025 records 
   assert.match(String(claimLevel.data.supersedes), /Grounding/);
   for (const adr of adrs) {
     const owners = Array.isArray(adr.data.canonicalized_in) ? adr.data.canonicalized_in : [adr.data.canonicalized_in];
-    for (const owner of owners) assert.ok(['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md'].includes(owner) || owner.startsWith('workbench/specs/'), `${adr.name} canonicalized_in ${owner} must target a control or spec owner`);
+    for (const owner of owners) assert.ok(['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'OWNERSHIP.json'].includes(owner) || owner.startsWith('workbench/specs/'), `${adr.name} canonicalized_in ${owner} must target a control or spec owner`);
     if (adr.data.ported_from) assert.doesNotMatch(String(adr.data.ported_from), /\/Users\/|\/home\//, `${adr.name} ported_from must not carry a private path`);
   }
 });

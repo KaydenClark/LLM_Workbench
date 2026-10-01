@@ -77,6 +77,7 @@ function fillPlaceholders(content) {
 // planted in templates/ - or left over at an unrenamed base - propagates into
 // the derived room and the post-Genesis sweep below can actually catch it.
 function controlText(name, version, templatesRoot) {
+  if (name === 'OWNERSHIP.json') return fs.readFileSync(path.join(repoRoot, name), 'utf8');
   if (name === 'CLAUDE.md') return '@AGENTS.md\n';
   const region = name === 'TASKBOARD.md'
     ? '\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n'
@@ -90,6 +91,7 @@ function controlText(name, version, templatesRoot) {
 }
 
 function templateControlText(name, version) {
+  if (name === 'OWNERSHIP.json') return fs.readFileSync(path.join(repoRoot, name), 'utf8');
   if (name === 'CLAUDE.md') return '@AGENTS.md\n';
   if (name === 'LEXICON.md') return `# Workbench Template - Lexicon\n\n> Generated from LLM Workbench ${version}.\n\n## Status\n\n[active / partial / stale]\n`;
   const region = name === 'TASKBOARD.md'
@@ -101,7 +103,7 @@ function templateControlText(name, version) {
 function makeTemplate(release, base, origin = 'https://example.invalid/workbench-template.git') {
   const root = path.join(base, 'template');
   initializeRoom(release, root, origin);
-  for (const name of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md']) {
+  for (const name of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md', 'OWNERSHIP.json']) {
     write(path.join(root, name), templateControlText(name, release.version));
   }
   write(path.join(root, 'template-only.txt'), 'This state must not be inherited.\n');
@@ -117,7 +119,7 @@ function makeSource(release, base) {
   write(evidence, '# Pond\nA small interactive simulation.\n');
   const drafts = path.join(root, 'workbench', 'docs', 'puffer-drafts');
   const controls = {};
-  for (const name of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md']) {
+  for (const name of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md', 'OWNERSHIP.json']) {
     const file = path.join(drafts, name);
     write(file, controlText(name, release.version, path.join(release.root, 'templates')));
     controls[name] = { file: path.relative(root, file).split(path.sep).join('/'), sha256: sha256(file) };

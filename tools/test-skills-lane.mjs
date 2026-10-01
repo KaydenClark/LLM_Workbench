@@ -141,8 +141,7 @@ test('install refuses an adapter collision before copying anything, and rollback
   }
 });
 
-// S-00V TK-00G: the catalog review. A skill the Contract (the seven root
-// controls) names, or a lane skill composes as a required step, must ship in
+// S-00V TK-00G: the catalog review. A skill the Contract (three carriers and the assigned Spec) names, or a lane skill composes as a required step, must ship in
 // the lane, or a clone would stop at a reference it cannot resolve. The scan
 // finds every syntactic skill reference - a backticked slash command
 // (`/name`) or backticked names followed by "skill(s)" - and fails for any
@@ -150,7 +149,7 @@ test('install refuses an adapter collision before copying anything, and rollback
 // reference is required is a reading of its context, not something a regex
 // can decide, so the disposition table in `workbench/skills/README.md`
 // records that reading and this test holds the table to the lane.
-const rootControls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
+const rootControls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md', 'OWNERSHIP.json'];
 const referenceRequirements = ['required', 'optional', 'none'];
 const referenceDispositions = ['joined', 'optional mention', 'out of scope'];
 

@@ -12,7 +12,7 @@
 // facts it reports.
 import fs from 'node:fs';
 import path from 'node:path';
-import { controls, versionStamp } from '../workbench/tools/workbench-layout.mjs';
+import { controls, legacyControls, versionStamp } from '../workbench/tools/workbench-layout.mjs';
 import { isMainModule } from '../workbench/tools/workbench-paths.mjs';
 import { RECEIPT_NAME, RUNTIME_TOOLS } from './workbench-tools.mjs';
 
@@ -171,7 +171,7 @@ function controlEvidence(project) {
       read.unreadable.push(control);
       continue;
     }
-    if (BRACKETED_PLACEHOLDER.test(content)) read.bracketed.push(control);
+    if (control !== 'OWNERSHIP.json' && BRACKETED_PLACEHOLDER.test(content)) read.bracketed.push(control);
     const version = versionStamp(content);
     if (version) {
       read.stamped.push(control);
@@ -364,13 +364,15 @@ function decide(evidence) {
       ]
     };
   }
-  // The seven controls are the Workbench's exact closed set, so the whole set
+  // The legacy Markdown surface and the current map-bearing surface both
+  // remain recognizable; presence is evidence, not Contract membership. The set
   // corroborates itself. A managed runtime-tool filename does not: those names
   // are ordinary (`privacy.mjs`, `sessions.mjs`), and one of them under a root
   // `tools/` says nothing on its own. That limb counts only when the room also
   // carries more of the control set than it is missing.
-  const controlMajority = legacyControlShapes.controlsPresent.length > legacyControlShapes.controlsMissing.length;
-  const harnessShaped = legacyControlShapes.controlsMissing.length === 0
+  const legacyPresent = legacyControls.filter(name => legacyControlShapes.controlsPresent.includes(name)).length;
+  const controlMajority = legacyPresent > legacyControls.length - legacyPresent;
+  const harnessShaped = legacyPresent === legacyControls.length
     || (lifecycleTools.rootManagedNames.length > 0 && controlMajority);
   if (!stamp.stamped.length && harnessShaped) {
     const shape = legacyControlShapes.controlsMissing.length === 0

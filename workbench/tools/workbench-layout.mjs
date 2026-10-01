@@ -10,6 +10,7 @@ import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { finding } from './diagnostics.mjs';
+import { readOwnership } from './ownership-map.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { allocateWorkbenchId, isWorkbenchId } from './visible-ids.mjs';
 import { templatePlaceholders } from './template-placeholders.mjs';
@@ -51,7 +52,11 @@ export const coordinationSkills = ['director', 'dispatcher', 'spec-planner', 'sp
 export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', ...coordinationSkills, ...stanceSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
-export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
+// Frozen pre-map root surface remains readable by legacy classification.
+export const legacyControls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
+// The exported name is retained for callers; membership is root placement,
+// not Contract authority. Markdown Taskboard remains until its owning migration.
+export const controls = [...legacyControls, 'OWNERSHIP.json'];
 // The spaced `grilling diary/` name is a legacy path a stale installed skill
 // may still write; denying it keeps a live notepad untrackable before the
 // checkpoint privacy scan runs. `validate` does not require the line.
@@ -1047,6 +1052,10 @@ function validateGenesisControl(project, control, expectedVersion) {
   const target = path.join(project, control);
   const entry = lstatOrNull(target);
   if (!entry || entry.isSymbolicLink() || !entry.isFile()) return fail('unsafe-control', `${control} must be an ordinary file.`, { control });
+  if (control === 'OWNERSHIP.json') {
+    try { readOwnership(project); return null; }
+    catch (error) { return fail('invalid-ownership-map', error.message, { control }); }
+  }
   const content = fs.readFileSync(target, 'utf8');
   const trimmed = content.trim();
   if (!trimmed || trimmed === control || containsPlaceholder(content)) {

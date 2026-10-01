@@ -143,8 +143,7 @@ consumer/reference review, preserved notices and a pinned recovery commit.
 
 ## Referenced non-lane skills
 
-A skill ships in this lane when the Workbench Contract (the seven root
-controls) names it or a lane skill composes it as a required step; otherwise a
+A skill ships in this lane when the Workbench Contract (the three carriers and assigned Spec) names it or a lane skill composes it as a required step; otherwise a
 clone would stop at a reference it cannot resolve (S-00V TK-00G, from the
 owner's rule "If we need it, it should be included in workbench/skills").
 An optional mention ("may", "can", an example) is an optional capability, not

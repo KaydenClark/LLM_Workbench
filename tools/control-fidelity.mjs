@@ -5,12 +5,14 @@
 // reports and never enforces: divergence is legitimate, silence is the defect.
 // The tool reads the room and the release checkout; it never writes.
 import fs from 'node:fs';
+import { validateOwnership } from '../workbench/tools/ownership-map.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
 import { LANES, isMainModule, isSafeRelative, readManifest } from '../workbench/tools/workbench-paths.mjs';
 
 const productRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+// Markdown line-comparison subset; OWNERSHIP.json is a structured target below.
 export const templatedControls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'README.md'];
 export const CLAUDE_CONTROL = '@AGENTS.md';
 export const KINDS = ['filled', 'unchanged', 'dropped', 'changed', 'added'];
@@ -271,12 +273,13 @@ export function wikiLaneOf(manifest) {
   return { lane: LANES.wiki, note: `manifest lane wiki is unsafe: ${JSON.stringify(declared)}; the wiki files were compared under the default lane ${LANES.wiki}.` };
 }
 
-// The files a room derives from templates: the seven root controls, the
+// The files a room derives from templates: eight root artifacts, the
 // optional Claude permission file, and the seeded wiki contract files.
 export function fidelityTargets(project, manifest) {
   const wikiLane = wikiLaneOf(manifest).lane;
   const profile = manifest?.wiki?.profile;
   const targets = templatedControls.map((control) => ({ control, template: control, optional: false }));
+  targets.push({ control: 'OWNERSHIP.json', template: 'OWNERSHIP.json', optional: false });
   targets.push({ control: 'CLAUDE.md', template: null, optional: false });
   targets.push({ control: '.claude/settings.json', template: '.claude/settings.json', optional: true });
   for (const relative of wikiContractFiles) targets.push({ control: `${wikiLane}/${relative}`, template: `wiki/${relative}`, optional: true });
@@ -297,6 +300,18 @@ function compareTarget(project, templates, target) {
   const templateContent = readOrdinary(path.join(templates, target.template));
   if (templateContent === null) {
     return { ...base, status: 'template-missing', counts: Object.fromEntries(KINDS.map((kind) => [kind, 0])), lines: [], note: `${target.template} is not an ordinary file under ${templates}.` };
+  }
+  if (target.control === 'OWNERSHIP.json') {
+    try {
+      const upstream = validateOwnership(JSON.parse(templateContent));
+      const local = validateOwnership(JSON.parse(roomContent));
+      const rows = upstream.rows.map(row => ({ key: row.key,
+        kind: JSON.stringify(row) === JSON.stringify(local.rows.find(item => item.key === row.key)) ? 'unchanged' : 'changed' }));
+      return { ...base, status: 'structured', counts: Object.fromEntries(KINDS.map(kind => [kind, 0])), lines: [], rows,
+        note: 'Row-keyed mechanical comparison only; changed rows do not establish compatibility or disposition.' };
+    } catch (error) {
+      return { ...base, status: 'invalid', counts: Object.fromEntries(KINDS.map(kind => [kind, 0])), lines: [], note: error.message };
+    }
   }
   return { ...base, status: 'compared', ...classifyLines(templateContent, roomContent) };
 }

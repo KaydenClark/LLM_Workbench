@@ -32,7 +32,8 @@ function read(project, relative) {
 }
 
 function seedControls(project) {
-  for (const control of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md']) {
+  for (const control of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md', 'OWNERSHIP.json']) {
+    if (control === 'OWNERSHIP.json') { fs.copyFileSync(path.join(root, control), path.join(project, control)); continue; }
     write(project, control, `# ${control}\n\nProject-specific adoption truth.\n`);
   }
   write(project, 'BLUEPRINT.md', '# Blueprint\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n');
@@ -94,8 +95,8 @@ function fixtureSpec() {
   try {
     seedUserSkills(home);
     const controls = {};
-    for (const name of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md']) {
-      let content = name === 'CLAUDE.md' ? '@AGENTS.md\n' : fs.readFileSync(path.join(root, 'templates', name), 'utf8');
+    for (const name of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md', 'OWNERSHIP.json']) {
+      let content = name === 'OWNERSHIP.json' ? fs.readFileSync(path.join(root, name), 'utf8') : name === 'CLAUDE.md' ? '@AGENTS.md\n' : fs.readFileSync(path.join(root, 'templates', name), 'utf8');
       for (const placeholder of templatePlaceholders) content = content.split(placeholder).join('Room-owned value');
       write(project, name, content);
       controls[name] = content;

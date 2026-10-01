@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
+import { readOwnership } from '../workbench/tools/ownership-map.mjs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -68,6 +69,7 @@ const RECONCILE_ORDER = [
 ];
 const TEMPLATE_OVERWRITE_WARNING = 'Never copy a template over an existing control: the template overwrites the project-specific privacy, boundary, and verification rules that control already carries. Copy a template only into a control that does not exist yet, and merge by hand everywhere else.';
 const CONTROL_REASONS = {
+  'invalid-ownership-map': 'must validate as a type-level routing map',
   'missing-control': 'must be a filled ordinary root control before adoption',
   'bracketed-control': 'contains an unfilled template placeholder'
 };
@@ -83,6 +85,10 @@ function unreconciledControls(project) {
       findings.push({ control, reason: 'missing-control', path: controlPath });
       continue;
     }
+    if (control === 'OWNERSHIP.json') {
+      try { readOwnership(project); } catch { findings.push({ control, reason: 'invalid-ownership-map', path: controlPath }); }
+      continue;
+    }
     if (/\[BRACKETED(?:_[A-Z]+)*\]/.test(fs.readFileSync(controlPath, 'utf8'))) {
       findings.push({ control, reason: 'bracketed-control', path: controlPath });
     }
@@ -93,7 +99,7 @@ function unreconciledControls(project) {
 function unreconciledControlsMessage(findings) {
   const named = findings.map(({ control, reason, path: controlPath }) => `${control} (${reason}: ${controlPath} ${CONTROL_REASONS[reason]})`).join('; ');
   return [
-    `Adoption requires all ${controls.length} root controls reconciled with project-specific content; ${findings.length} ${findings.length === 1 ? 'is' : 'are'} not: ${named}.`,
+    `Adoption requires all ${controls.length} root artifacts reconciled with project-specific content; ${findings.length} ${findings.length === 1 ? 'is' : 'are'} not: ${named}.`,
     `Reconcile before migrating, in this order: ${RECONCILE_ORDER.map((step, index) => `${index + 1}. ${step}`).join(' ')}`,
     TEMPLATE_OVERWRITE_WARNING
   ].join(' ');

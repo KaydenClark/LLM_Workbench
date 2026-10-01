@@ -1,0 +1,686 @@
+{
+  "source": "574df962fcfdd8045ec4dd405ba7f548216f7d4a",
+  "detector": "Tracked text files: quoted root arrays with at least five familiar names, and literal root/control count phrases. New unmatched occurrences fail; exact-content dispositions retain history and deliberate subsets.",
+  "dispositions": [
+    {
+      "file": "outcomes/conditions/conditions.json",
+      "line": 19,
+      "sha256": "88441786b6cb4490d2d919da3da40f9cacad3ea066a112bbd4cea5390d32197d",
+      "kind": "array",
+      "disposition": "historical",
+      "reason": "Frozen experimental input condition; changing it would redefine previous outcome comparisons."
+    },
+    {
+      "file": "templates/ADOPTION.md",
+      "line": 42,
+      "sha256": "996ae15a99504dc1c95218d7e1257165a1db0201bf0fc83959597a6c84ebd363",
+      "kind": "prose",
+      "disposition": "TK-003-template",
+      "reason": "Generic template surface migration assigned to TK-003; Lexicon ownership route is coordinated with S01U."
+    },
+    {
+      "file": "templates/ADOPTION.md",
+      "line": 254,
+      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
+      "kind": "prose",
+      "disposition": "TK-003-template",
+      "reason": "Generic template surface migration assigned to TK-003; Lexicon ownership route is coordinated with S01U."
+    },
+    {
+      "file": "templates/ADOPTION.md",
+      "line": 334,
+      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
+      "kind": "prose",
+      "disposition": "TK-003-template",
+      "reason": "Generic template surface migration assigned to TK-003; Lexicon ownership route is coordinated with S01U."
+    },
+    {
+      "file": "templates/GENESIS.md",
+      "line": 7,
+      "sha256": "996ae15a99504dc1c95218d7e1257165a1db0201bf0fc83959597a6c84ebd363",
+      "kind": "prose",
+      "disposition": "TK-003-template",
+      "reason": "Generic template surface migration assigned to TK-003; Lexicon ownership route is coordinated with S01U."
+    },
+    {
+      "file": "templates/GENESIS.md",
+      "line": 333,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "TK-003-template",
+      "reason": "Generic template surface migration assigned to TK-003; Lexicon ownership route is coordinated with S01U."
+    },
+    {
+      "file": "templates/LEXICON.md",
+      "line": 212,
+      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
+      "kind": "prose",
+      "disposition": "TK-003-template",
+      "reason": "Generic template surface migration assigned to TK-003; Lexicon ownership route is coordinated with S01U."
+    },
+    {
+      "file": "templates/README.md",
+      "line": 37,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "TK-003-template",
+      "reason": "Generic template surface migration assigned to TK-003; Lexicon ownership route is coordinated with S01U."
+    },
+    {
+      "file": "tools/audit-guardrails.mjs",
+      "line": 314,
+      "sha256": "8ff7da930fd23446010a9f28ff249e7e04e6351cdd428b41e89f9ce9c98feca7",
+      "kind": "array",
+      "disposition": "bounded-subset",
+      "reason": "Named prose guardrail scoring inputs; criteria must not be changed to increase scores. Not an exhaustive root inventory."
+    },
+    {
+      "file": "tools/control-fidelity.mjs",
+      "line": 16,
+      "sha256": "0932d2204ac83db5a33341f0b4667179979c0d7252013074272887dbcb8bed17",
+      "kind": "array",
+      "disposition": "bounded-subset",
+      "reason": "Markdown line-comparison subset. fidelityTargets separately includes OWNERSHIP.json with structured row comparison."
+    },
+    {
+      "file": "tools/test-control-fidelity.mjs",
+      "line": 21,
+      "sha256": "0932d2204ac83db5a33341f0b4667179979c0d7252013074272887dbcb8bed17",
+      "kind": "array",
+      "disposition": "bounded-subset",
+      "reason": "Markdown fidelity and template-prose assertions only. Separate structured-map fixture/test covers OWNERSHIP.json."
+    },
+    {
+      "file": "tools/test-control-fidelity.mjs",
+      "line": 479,
+      "sha256": "690b2a86ac7bca502a5585ebd5e309679065932dddde6f23db5083abd429b9a1",
+      "kind": "array",
+      "disposition": "bounded-subset",
+      "reason": "Markdown fidelity and template-prose assertions only. Separate structured-map fixture/test covers OWNERSHIP.json."
+    },
+    {
+      "file": "tools/test-ownership-root-surface.mjs",
+      "line": 22,
+      "sha256": "996ae15a99504dc1c95218d7e1257165a1db0201bf0fc83959597a6c84ebd363",
+      "kind": "prose",
+      "disposition": "bounded-subset",
+      "reason": "Intentional negative scanner input; test proves detection rather than asserting current surface."
+    },
+    {
+      "file": "tools/test-skill-catalog.mjs",
+      "line": 400,
+      "sha256": "27360d7c5f6a6e2e7f685128e3100ef4ec2d220fc0f383ac68204df52fb0ff1c",
+      "kind": "array",
+      "disposition": "bounded-subset",
+      "reason": "Behavior routing assertion excerpts, not a root-file inventory."
+    },
+    {
+      "file": "tools/test-wiki.mjs",
+      "line": 94,
+      "sha256": "0932d2204ac83db5a33341f0b4667179979c0d7252013074272887dbcb8bed17",
+      "kind": "array",
+      "disposition": "bounded-subset",
+      "reason": "Markdown link-validation fixture, not complete setup. JSON routing has its own schema/reader tests."
+    },
+    {
+      "file": "tools/test-workbench-layout.mjs",
+      "line": 1654,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Legacy room classification fixture prose; current Genesis fixture requires eight artifacts and validates JSON."
+    },
+    {
+      "file": "tools/test-workbench-layout.mjs",
+      "line": 1836,
+      "sha256": "18813dae0a27d486b32d3a9743b0b7c8d7a1d59de78467b546174876d0ab791b",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Legacy room classification fixture prose; current Genesis fixture requires eight artifacts and validates JSON."
+    },
+    {
+      "file": "tools/test-workbench-layout.mjs",
+      "line": 2135,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Legacy room classification fixture prose; current Genesis fixture requires eight artifacts and validates JSON."
+    },
+    {
+      "file": "tools/test-workbench-layout.mjs",
+      "line": 2187,
+      "sha256": "18813dae0a27d486b32d3a9743b0b7c8d7a1d59de78467b546174876d0ab791b",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Legacy room classification fixture prose; current Genesis fixture requires eight artifacts and validates JSON."
+    },
+    {
+      "file": "tools/test-workbench-layout.mjs",
+      "line": 2201,
+      "sha256": "18813dae0a27d486b32d3a9743b0b7c8d7a1d59de78467b546174876d0ab791b",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Legacy room classification fixture prose; current Genesis fixture requires eight artifacts and validates JSON."
+    },
+    {
+      "file": "tools/test-workbench-layout.mjs",
+      "line": 2240,
+      "sha256": "18813dae0a27d486b32d3a9743b0b7c8d7a1d59de78467b546174876d0ab791b",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Legacy room classification fixture prose; current Genesis fixture requires eight artifacts and validates JSON."
+    },
+    {
+      "file": "workbench/docs/adr/HISTORY.md",
+      "line": 30,
+      "sha256": "ed4ddb85c5ca019e71378ae492c9066e574cc073bdcb99c6a0e65d6be95cd31a",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/docs/adr/HISTORY.md",
+      "line": 44,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/docs/adr/archive/0013-seven-file-workbench-contract.md",
+      "line": 10,
+      "sha256": "ed4ddb85c5ca019e71378ae492c9066e574cc073bdcb99c6a0e65d6be95cd31a",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/docs/adr/archive/0033-workbench-contract-is-a-claim-set.md",
+      "line": 9,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/docs/adr/archive/0033-workbench-contract-is-a-claim-set.md",
+      "line": 11,
+      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/feedback/REPORT-cic-v3-1-1-adoption-2026-09-05.md",
+      "line": 42,
+      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/feedback/REPORT-cic-v3-1-1-adoption-2026-09-05.md",
+      "line": 287,
+      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/feedback/REPORT-upstream-v3-1-1-summary-2026-09-06.md",
+      "line": 268,
+      "sha256": "e18ff6b05427acd98f2a5e6d52d7ebcfcd04a66ec08a4406ca0c6759eb38c884",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/feedback/REPORT-upstream-v3-1-1-summary-2026-09-06.md",
+      "line": 272,
+      "sha256": "996ae15a99504dc1c95218d7e1257165a1db0201bf0fc83959597a6c84ebd363",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/feedback/decision-triage-2026-09-07.json",
+      "line": 139,
+      "sha256": "39a83f4b070834d1aa792950296aeead71cb27c8dae3a3426ad6763777265bd4",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/feedback/decision-triage-second-pass-2026-09-07/decision-ledger.json",
+      "line": 296,
+      "sha256": "39a83f4b070834d1aa792950296aeead71cb27c8dae3a3426ad6763777265bd4",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/feedback/decision-triage-second-pass-2026-09-07/decision-ledger.md",
+      "line": 401,
+      "sha256": "39a83f4b070834d1aa792950296aeead71cb27c8dae3a3426ad6763777265bd4",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/feedback/decision-triage-second-pass-2026-09-07/first-pass-snapshot.json",
+      "line": 139,
+      "sha256": "39a83f4b070834d1aa792950296aeead71cb27c8dae3a3426ad6763777265bd4",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/feedback/decision-triage-second-pass-2026-09-07/historical-inventory-snapshot.json",
+      "line": 199,
+      "sha256": "39a83f4b070834d1aa792950296aeead71cb27c8dae3a3426ad6763777265bd4",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-002Q-workbench-setup-step/SPEC.md",
+      "line": 28,
+      "sha256": "996ae15a99504dc1c95218d7e1257165a1db0201bf0fc83959597a6c84ebd363",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-00A-blueprint-active-adr-and-context-map/blueprint-claim-disposition.json",
+      "line": 180,
+      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-00A-blueprint-active-adr-and-context-map/blueprint-claim-disposition.json",
+      "line": 308,
+      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md",
+      "line": 290,
+      "sha256": "ed4ddb85c5ca019e71378ae492c9066e574cc073bdcb99c6a0e65d6be95cd31a",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-00P-workflow-canon-rework/SPEC.md",
+      "line": 537,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-01D-adoption-skill-rebuild/SPEC.md",
+      "line": 103,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-01G-genesis-skill-rebuild/SPEC.md",
+      "line": 104,
+      "sha256": "e18ff6b05427acd98f2a5e6d52d7ebcfcd04a66ec08a4406ca0c6759eb38c884",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-01G-genesis-skill-rebuild/SPEC.md",
+      "line": 105,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
+      "line": 21,
+      "sha256": "109f3e6abfd7f46502d0fb294e95c184c8b276c3ac84c216e25f1c517e2ea607",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
+      "line": 63,
+      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
+      "line": 152,
+      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
+      "line": 285,
+      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-022-llm-workbench-v3-1-release/SPEC.md",
+      "line": 96,
+      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-026-workflow-composition-and-cold-resume/SPEC.md",
+      "line": 54,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-026-workflow-composition-and-cold-resume/SPEC.md",
+      "line": 88,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md",
+      "line": 42,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-034-control-fidelity-report/SPEC.md",
+      "line": 128,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-038-v3-1-2-upstream-fix-list/SPEC.md",
+      "line": 79,
+      "sha256": "e18ff6b05427acd98f2a5e6d52d7ebcfcd04a66ec08a4406ca0c6759eb38c884",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-038-v3-1-2-upstream-fix-list/SPEC.md",
+      "line": 288,
+      "sha256": "e18ff6b05427acd98f2a5e6d52d7ebcfcd04a66ec08a4406ca0c6759eb38c884",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-044-legacy-room-classification/SPEC.md",
+      "line": 59,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-044-legacy-room-classification/SPEC.md",
+      "line": 195,
+      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-044-legacy-room-classification/SPEC.md",
+      "line": 197,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-044-legacy-room-classification/SPEC.md",
+      "line": 200,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-044-legacy-room-classification/SPEC.md",
+      "line": 280,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-044-legacy-room-classification/SPEC.md",
+      "line": 372,
+      "sha256": "18813dae0a27d486b32d3a9743b0b7c8d7a1d59de78467b546174876d0ab791b",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-044-legacy-room-classification/SPEC.md",
+      "line": 372,
+      "sha256": "18813dae0a27d486b32d3a9743b0b7c8d7a1d59de78467b546174876d0ab791b",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-044-legacy-room-classification/SPEC.md",
+      "line": 439,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-044-legacy-room-classification/SPEC.md",
+      "line": 440,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-044-legacy-room-classification/SPEC.md",
+      "line": 440,
+      "sha256": "ea6b90740d328666c25919e70af816ec3c3afa3a68fa8f4b1fae15f7d3a684b9",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-044-legacy-room-classification/SPEC.md",
+      "line": 452,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 352,
+      "sha256": "39a83f4b070834d1aa792950296aeead71cb27c8dae3a3426ad6763777265bd4",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/tools/adr.mjs",
+      "line": 589,
+      "sha256": "815a0252d2d458ebfa921c4a90852ab81974dfea7669c1f1115d7f595794a801",
+      "kind": "array",
+      "disposition": "bounded-subset",
+      "reason": "collectExternalMarkdownFiles repairs Markdown instance links only. Ownership map forbids those instances and is not a Markdown link surface."
+    },
+    {
+      "file": "workbench/tools/spec-workbench.mjs",
+      "line": 2130,
+      "sha256": "815a0252d2d458ebfa921c4a90852ab81974dfea7669c1f1115d7f595794a801",
+      "kind": "array",
+      "disposition": "bounded-subset",
+      "reason": "Markdown instance-link rewriting only. Map forbids instance identifiers; adding it to a Markdown writer would violate the schema."
+    },
+    {
+      "file": "workbench/tools/template-placeholders.mjs",
+      "line": 2,
+      "sha256": "055ef7b61983100e6fee139e1caecd7d4cc4f78204b0fc3b6d39b8b5582bf789",
+      "kind": "array",
+      "disposition": "bounded-subset",
+      "reason": "Prose templates whose project values are filled. Symbolic type paths in ownership JSON are not project-value placeholders."
+    },
+    {
+      "file": "workbench/tools/workbench-layout.mjs",
+      "line": 56,
+      "sha256": "8170a5399076f190164cb8cc96470385ae3b70a08f76ff4d2dfcdd6c1d8f81b1",
+      "kind": "array",
+      "disposition": "historical",
+      "reason": "Named frozen legacyControls compatibility set. Current controls explicitly adds OWNERSHIP.json."
+    },
+    {
+      "file": "workbench/wiki/grilling-destination-audit-ledger.json",
+      "line": 218,
+      "sha256": "ed4ddb85c5ca019e71378ae492c9066e574cc073bdcb99c6a0e65d6be95cd31a",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/wiki/grilling-destination-audit-ledger.json",
+      "line": 223,
+      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/wiki/grilling-destination-audit-ledger.json",
+      "line": 233,
+      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/wiki/grilling-destination-audit-ledger.json",
+      "line": 1916,
+      "sha256": "996ae15a99504dc1c95218d7e1257165a1db0201bf0fc83959597a6c84ebd363",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/wiki/grilling-destination-audit-ledger.json",
+      "line": 1923,
+      "sha256": "e18ff6b05427acd98f2a5e6d52d7ebcfcd04a66ec08a4406ca0c6759eb38c884",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/wiki/grilling-destination-audit-ledger.json",
+      "line": 3646,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/wiki/grilling-destination-audit-ledger.json",
+      "line": 7640,
+      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/wiki/grilling-destination-audit-ledger.json",
+      "line": 7672,
+      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/wiki/skill-adoption.md",
+      "line": 23,
+      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/wiki/skill-adoption.md",
+      "line": 25,
+      "sha256": "996ae15a99504dc1c95218d7e1257165a1db0201bf0fc83959597a6c84ebd363",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/wiki/skill-adoption.md",
+      "line": 33,
+      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/wiki/skill-adoption.md",
+      "line": 42,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/wiki/skill-genesis.md",
+      "line": 26,
+      "sha256": "996ae15a99504dc1c95218d7e1257165a1db0201bf0fc83959597a6c84ebd363",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/wiki/skill-genesis.md",
+      "line": 50,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/wiki/skill-genesis.md",
+      "line": 58,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    }
+  ]
+}
