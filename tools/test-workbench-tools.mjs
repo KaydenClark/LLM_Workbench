@@ -82,7 +82,7 @@ test('source identity requires the requested root to be the Git checkout root', 
 });
 
 test('the product tools lane is the canonical runtime source and holds exactly the runtime tools', () => {
-  const lane = fs.readdirSync(path.join(root, 'workbench', 'tools')).filter((name) => name.endsWith('.mjs')).sort();
+  const lane = fs.readdirSync(path.join(root, 'workbench', 'tools')).filter((name) => !name.startsWith('.')).sort();
   assert.deepEqual(lane, [...RUNTIME_TOOLS].sort());
   assert.equal(fs.existsSync(path.join(root, 'workbench', 'tools', RECEIPT_NAME)), false, 'the source lane carries no receipt');
   assert.equal(run(installer, 'verify', '--project', root).report.status, 'source');
