@@ -13,7 +13,8 @@ canonicalized_in:
 This record is **proposed**. It records an approved destination and the
 conditions under which it takes effect; it does not take effect by being
 written. Until the cutover described below is separately reviewed and lands on
-integration, [ADR-000O](../000O-claims-are-pushed-on-the-task-branch-and-read-from-every-remote-tip.md)
+integration, ADR-000O
+(`workbench/docs/adr/000O-claims-are-pushed-on-the-task-branch-and-read-from-every-remote-tip.md`)
 stays accepted, byte-identical and operative, and
 `workbench/tools/claim-coordination.mjs` remains the only active claim
 authority. The `canonicalized_in` list above names the owners intended to
