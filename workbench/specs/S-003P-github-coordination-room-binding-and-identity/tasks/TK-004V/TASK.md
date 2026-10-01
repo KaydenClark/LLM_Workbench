@@ -3,7 +3,7 @@
 **Task ID:** TK-004V
 **Spec ID:** S-003P
 **Slice:** P2: Correct collision recovery reference and rollback boundaries - independent exact25d3 four public probes confirm foreign-qualified ID corruption, escaped JSON bypass, ignored Markdown mutation and leftover projection temporary after rollback.
-**Status:** ready
+**Status:** in-progress
 **Blockers:** none
 **Destination:** spec-acceptance: S-003P Acceptance Criteria
 **Planned verification:** Answers evidence row 22 (fail verdict at 25d3f4d23b3719693065336a4ba66349d0a95907 on 2026-10-01): P2: Correct collision recovery reference and rollback boundaries - independent exact25d3 four public probes confirm foreign-qualified ID corruption, escaped JSON bypass, ignored Markdown mutation and leftover projection temporary after rollback.
