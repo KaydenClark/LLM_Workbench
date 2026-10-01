@@ -148,7 +148,7 @@ try {
   // S-00V: the skills lane and its installer ride along too, so Genesis below
   // lays this candidate's real skills into the room and the post-Genesis
   // sweep reads them from the clone, never from a provider home.
-  for (const relative of ['templates', 'workbench/tools', 'workbench/manifest.json', 'tools/workbench-tools.mjs', 'workbench/skills',
+  for (const relative of ['templates', 'OWNERSHIP.json', 'workbench/tools', 'workbench/manifest.json', 'tools/workbench-tools.mjs', 'workbench/skills',
     'tools/workbench-skills.mjs']) {
     const target = path.join(product, relative);
     fs.mkdirSync(path.dirname(target), { recursive: true });
