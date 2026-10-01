@@ -3,13 +3,13 @@
 **Spec ID:** S-00I
 **Status:** active
 **Priority:** 3
-**Owner:** codex-assembled-lifecycle
+**Owner:** codex-close-recovery
 **Stance:** Builder
-**Updated:** 2026-09-30
+**Updated:** 2026-10-01
 **Catalog description:** Express ADR, Spec and Task lifecycle by folder location, reconcile completed Specs and Tasks into readable durable owners before retiring them, and discard retired records only through a verified gate; permanent `archive` is never cleared.
 **Blockers:** none; S-00H is `complete` (integration `49c671e`).
-**Latest event:** Independent native assembled review PASS is recorded against exact 09f6508 and digest bd96878bafc5, with no actionable findings. All Tasks and acceptance criteria have proof; the evidence-only checkpoint retains the substantive digest.
-**Next gate:** Confirm independent exact-head review of the evidence-only checkpoint and required validation, then deliver through integration under the expected-head gate. Owner Human QA remains ongoing and unapproved; Spec completion and main promotion remain gated.
+**Latest event:** TK-004F claimed by codex-close-recovery.
+**Next gate:** Close TK-004F with verification and documentation proof.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
