@@ -19,8 +19,9 @@ Commands live in `RUNBOOK.md`.
 <!-- hot-specs:end -->
 
 Completed specs disappear from this projection immediately. Their requirements,
-decisions, acceptance, proof, completion, and supersession remain in the stable
-spec linked from the manifest specs lane `CATALOG.md`.
+decisions, acceptance, proof, completion, and supersession remain in retained Specs linked from the manifest specs lane
+`CATALOG.md`; captured capability knowledge lives in Wiki features. The board
+projects Task records and never approves or completes them.
 
 ## Owner Decisions
 

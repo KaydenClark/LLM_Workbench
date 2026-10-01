@@ -10,7 +10,7 @@ source_paths:
   - AGENTS.md
   - RUNBOOK.md
   - README.md
-  - skills/update-harness/SKILL.md
+  - workbench/skills/update-harness/SKILL.md
   - tools/workbench-tools.mjs
 parent: none
 authorized_by: owner
@@ -37,9 +37,10 @@ The source record and named owners were read at `bc370fe742d5ddb8348bf361fccea31
 - [AGENTS.md](../../../AGENTS.md)
 - [RUNBOOK.md](../../../RUNBOOK.md)
 - [README.md](../../../README.md)
-- [skills/update-harness/SKILL.md](../../../skills/update-harness/SKILL.md)
+- [workbench/skills/update-harness/SKILL.md](../../skills/update-harness/SKILL.md)
 - [tools/workbench-tools.mjs](../../../tools/workbench-tools.mjs)
 
 ## History
 
 - 2026-09-19: Reconciled into one Spec article on owner direction. Original source and proof remain intact; this article does not authorize retirement or discard.
+- 2026-09-30: Repaired live skill links and source_paths after relocation to workbench/skills; verified destinations only, without revalidating historical capability claims.

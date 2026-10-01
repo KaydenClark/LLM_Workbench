@@ -151,6 +151,155 @@ test('new allocates an unused letter-bearing label, lands in the folder its stat
   }
 });
 
+// S-01W TK-002Q: ADR labels follow the one artifact policy (uppercase
+// `0-9A-Z`, minimum width four, letter-bearing). The case-folded base62
+// allocator ADRs used before could never emit a lowercase label - every
+// lowercase candidate shares its collision key with an earlier uppercase
+// one - so this is a characterization of the delivered sequence past `000Z`,
+// not a red case: legacy files keep their names and bytes and still reserve
+// their identities.
+test('new continues past 000Z to an uppercase width-four label and leaves legacy files byte-identical', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench', 'docs', 'adr');
+    const body = adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n');
+    const legacy = [];
+    for (const ordinal of '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ') legacy.push(ordinal === 'Q' ? '00Q' : `000${ordinal}`);
+    for (const label of legacy) fs.writeFileSync(path.join(collection, `${label}-legacy.md`), body);
+    const before = new Map(legacy.map((label) => [label, fs.readFileSync(path.join(collection, `${label}-legacy.md`))]));
+    const created = newAdr(dir, { title: 'Past the single letters', date: '2026-09-26' });
+    assert.equal(created.number, '001A', 'the next letter-bearing uppercase label after 000Z; the short 00Q reserves 000Q');
+    assert.match(created.number, /^[0-9A-Z]{4,}$/);
+    for (const [label, bytes] of before) assert.deepEqual(fs.readFileSync(path.join(collection, `${label}-legacy.md`)), bytes, `${label} keeps its name and bytes`);
+    writeRegister(dir);
+    assert.match(fs.readFileSync(path.join(collection, 'HISTORY.md'), 'utf8'), /\[00Q\]\(00Q-legacy\.md\)/, 'the register still lists a short legacy label as written');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// Lane F observed `adr new` proposing a label another pushed branch already
+// held, because ADR allocation read only the local tree. `next-id` reads every
+// remote tip (ADR-000O); ADR allocation now reserves the same way.
+test('new reserves ADR labels held only at a remote tip, in every spelling, without touching the local tree', () => {
+  const dir = gitFixture();
+  const remote = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-adr-remote-'));
+  const git = (...args) => {
+    const result = spawnSync('git', ['-C', dir, ...args], { encoding: 'utf8' });
+    assert.equal(result.status, 0, `git ${args.join(' ')}: ${result.stderr}`);
+    return result.stdout;
+  };
+  try {
+    const collection = path.join(dir, 'workbench', 'docs', 'adr');
+    fs.writeFileSync(path.join(collection, '0001-local.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+    git('checkout', '--quiet', '-b', 'main');
+    gitCommitAll(dir, 'Seed the room');
+    assert.equal(spawnSync('git', ['init', '--quiet', '--bare', remote]).status, 0);
+    git('remote', 'add', 'origin', remote);
+    git('push', '--quiet', 'origin', 'main');
+    git('checkout', '--quiet', '-b', 'claude/other-lane');
+    for (const folder of ['proposed', 'archive']) fs.mkdirSync(path.join(collection, folder), { recursive: true });
+    fs.writeFileSync(path.join(collection, 'proposed', '000A-held-on-another-branch.md'), adr('proposed'));
+    fs.writeFileSync(path.join(collection, 'archive', '00b-short-lowercase-legacy.md'), adr('deprecated', 'deprecation_reason: fixture\n'));
+    gitCommitAll(dir, 'Another lane adds two ADRs');
+    git('push', '--quiet', 'origin', 'claude/other-lane');
+    git('checkout', '--quiet', 'main');
+    git('branch', '--quiet', '-D', 'claude/other-lane');
+    git('fetch', '--quiet', 'origin');
+    assert.equal(fs.existsSync(path.join(collection, 'proposed', '000A-held-on-another-branch.md')), false, 'the local tree lacks the remote-only record');
+    const created = newAdr(dir, { title: 'Local decision', date: '2026-09-26' });
+    assert.equal(created.number, '000C', 'ADR-000A and the short lowercase ADR-00b at origin/claude/other-lane are occupied');
+    const cli = spawnSync(process.execPath, [adrTool, 'new', '--path', dir, '--title', 'Second local decision'], { cwd: dir, encoding: 'utf8' });
+    assert.equal(cli.status, 0, cli.stderr);
+    assert.equal(JSON.parse(cli.stdout).number, '000D');
+    assert.deepEqual(fs.readdirSync(path.join(collection, 'proposed')).sort(), ['000C-local-decision.md', '000D-second-local-decision.md'], 'nothing from the remote tip is written locally');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+    fs.rmSync(remote, { recursive: true, force: true });
+  }
+});
+
+// TK-002Q review corrective: a remote tip's declared `adr` collection is
+// held to the same `isSafeRelative` rule the local manifest uses, and an
+// unreadable tip refuses, so allocation never scans the wrong tree or
+// under-reserves. Each refusal writes nothing.
+function remoteRoom() {
+  const dir = gitFixture();
+  const remote = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-adr-remote-'));
+  const git = (...args) => {
+    const result = spawnSync('git', ['-C', dir, ...args], { encoding: 'utf8' });
+    assert.equal(result.status, 0, `git ${args.join(' ')}: ${result.stderr}`);
+    return result.stdout.trim();
+  };
+  fs.writeFileSync(path.join(dir, 'workbench', 'docs', 'adr', '0001-local.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+  git('checkout', '--quiet', '-b', 'main');
+  gitCommitAll(dir, 'Seed the room');
+  assert.equal(spawnSync('git', ['init', '--quiet', '--bare', remote]).status, 0);
+  git('remote', 'add', 'origin', remote);
+  git('push', '--quiet', 'origin', 'main');
+  const cleanup = () => { fs.rmSync(dir, { recursive: true, force: true }); fs.rmSync(remote, { recursive: true, force: true }); };
+  return { dir, git, cleanup };
+}
+
+function publishRemoteBranch({ dir, git }, change) {
+  git('checkout', '--quiet', '-b', 'claude/other-lane');
+  change();
+  gitCommitAll(dir, 'Another lane changes its tree');
+  git('push', '--quiet', 'origin', 'claude/other-lane');
+  git('checkout', '--quiet', 'main');
+  git('branch', '--quiet', '-D', 'claude/other-lane');
+  git('fetch', '--quiet', 'origin');
+}
+
+function assertAdrNewRefuses(dir, pattern) {
+  const collection = path.join(dir, 'workbench', 'docs', 'adr');
+  const before = fs.readdirSync(collection, { recursive: true }).sort();
+  assert.throws(() => newAdr(dir, { title: 'Must refuse', date: '2026-09-26' }), pattern);
+  const cli = spawnSync(process.execPath, [adrTool, 'new', '--path', dir, '--title', 'Must refuse'], { cwd: dir, encoding: 'utf8' });
+  assert.notEqual(cli.status, 0, cli.stdout);
+  assert.match(cli.stderr + cli.stdout, pattern);
+  assert.deepEqual(fs.readdirSync(collection, { recursive: true }).sort(), before, 'a refusal writes nothing');
+  assert.equal(gitStatus(dir), '', 'the working tree stays clean');
+}
+
+for (const [label, declared] of [['dot', '.'], ['dot-prefixed', './workbench/docs/adr'], ['backslash', 'workbench\\docs\\adr'], ['whitespace', 'workbench/docs/my adr'], ['non-workbench', 'docs/adr']]) {
+  test(`new refuses a remote tip whose manifest declares an unsafe adr collection (${label})`, () => {
+    const room = remoteRoom();
+    try {
+      publishRemoteBranch(room, () => {
+        const manifestFile = path.join(room.dir, 'workbench', 'manifest.json');
+        const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+        manifest.collections.adr = declared;
+        fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
+      });
+      assertAdrNewRefuses(room.dir, /unsafe adr collection at refs\/remotes\/origin\/claude\/other-lane/);
+    } finally { room.cleanup(); }
+  });
+}
+
+test('new refuses a remote tip whose manifest is malformed JSON', () => {
+  const room = remoteRoom();
+  try {
+    publishRemoteBranch(room, () => fs.writeFileSync(path.join(room.dir, 'workbench', 'manifest.json'), '{ "collections": '));
+    assertAdrNewRefuses(room.dir, /malformed manifest at refs\/remotes\/origin\/claude\/other-lane/);
+  } finally { room.cleanup(); }
+});
+
+test('new refuses an unreadable remote tip: a tip that is not a commit and a commit whose tree is missing', () => {
+  const room = remoteRoom();
+  try {
+    const blob = spawnSync('git', ['-C', room.dir, 'hash-object', '-w', '--stdin'], { input: 'not a tree\n', encoding: 'utf8' }).stdout.trim();
+    room.git('update-ref', 'refs/remotes/origin/blob-tip', blob);
+    assertAdrNewRefuses(room.dir, /Cannot reserve ADR labels from refs\/remotes\/origin\/blob-tip/);
+    room.git('update-ref', '-d', 'refs/remotes/origin/blob-tip');
+    const tree = spawnSync('git', ['-C', room.dir, 'mktree'], { input: `100644 blob ${blob}\tstray.md\n`, encoding: 'utf8' }).stdout.trim();
+    const commit = room.git('commit-tree', tree, '-m', 'Tip with a missing tree');
+    room.git('update-ref', 'refs/remotes/origin/missing-tree', commit);
+    fs.rmSync(path.join(room.dir, '.git', 'objects', tree.slice(0, 2), tree.slice(2)));
+    assertAdrNewRefuses(room.dir, /Cannot reserve ADR labels from refs\/remotes\/origin\/missing-tree/);
+  } finally { room.cleanup(); }
+});
+
 test('the product corpus validates with a current register and no error findings', () => {
   const findings = validateAdrs(root);
   assert.deepEqual(findings.filter((item) => item.severity === 'error'), []);
@@ -280,9 +429,9 @@ test('every accepted-ADR-to-spec reference in the real corpus resolves literally
     totalLinks += countForRecord;
     if (countForRecord > 0) filesWithLink += 1;
   }
-  // S-00V TK-01L: ADR-000O adds one file and one link to S-00V.
-  assert.equal(filesWithLink, 23, 're-count of accepted ADR files carrying a live Spec-path reference at this candidate');
-  assert.equal(totalLinks, 27, 're-count of total accepted-ADR-to-spec link edges at this candidate');
+  // TK-004 activates G/I: G routes its S-00P decision owner; I routes S-00I/S-00J.
+  assert.equal(filesWithLink, 26, 're-count of accepted ADR files carrying a live Spec-path reference at this candidate');
+  assert.equal(totalLinks, 31, 're-count of total accepted-ADR-to-spec link edges at this candidate');
 });
 
 test('durable references distinguish tracked notepad templates from ignored live records', () => {
@@ -418,9 +567,9 @@ test('every intra-ADR link in the real corpus resolves literally, and the re-cou
     totalLinks += countForRecord;
     if (countForRecord > 0) filesWithLink += 1;
   }
-  // S-00V TK-01L: ADR-000O adds one file and one link (to ADR-0039).
-  assert.equal(filesWithLink, 36, 're-count of ADR files carrying an intra-ADR link at this candidate');
-  assert.equal(totalLinks, 65, 're-count of total intra-ADR link edges at this candidate');
+  // TK-004 adds six decision-route edges; retained proposal history remains linked.
+  assert.equal(filesWithLink, 40, 're-count of ADR files carrying an intra-ADR link at this candidate');
+  assert.equal(totalLinks, 83, 're-count of total intra-ADR link edges at this candidate');
 });
 
 // S-00I TK-001 review correction: a link is validated literally, never
@@ -686,4 +835,143 @@ test('missing and stale history are reported without rewriting history',()=>{
    if(state==='stale')assert.equal(fs.readFileSync(history,'utf8'),'stale history');
   }
  }finally{fs.rmSync(dir,{recursive:true,force:true});}
+});
+
+// TK-004 checks active decisions separately from retained proposal history.
+// Mutations keep each effective lifecycle unchanged: acceptance alone is not proof.
+function workflowCorpus() {
+  const records = listAdrs(root);
+  return {
+    records: new Map(['000F', '000G', '000H', '000I'].map(id => {
+      const record = records.find(item => item.name.startsWith(`${id}-`));
+      assert.ok(record, `missing ADR-${id}`);
+      return [id, { ...record, body: record.body.split('\n## Historical proposal')[0] }];
+    })),
+    controls: new Map(['LEXICON.md', 'AGENTS.md', 'RUNBOOK.md', 'BLUEPRINT.md'].map(file => [file, fs.readFileSync(path.join(root, file), 'utf8')]))
+  };
+}
+
+function assertWorkflowMeaning(corpus) {
+  const { records, controls } = corpus;
+  const requires = (text, pattern, claim) => assert.match(text.replace(/\s+/g, ' '), pattern, claim);
+  for (const [id, record] of records) {
+    assert.equal(record.status, 'accepted', `ADR-${id} must be an active accepted decision`);
+    assert.equal(record.folder, null, `ADR-${id} belongs in the active roster`);
+    for (const owner of ['AGENTS.md', 'LEXICON.md']) {
+      assert.ok(record.data.canonicalized_in.includes(owner), `ADR-${id} names ${owner}`);
+      assert.ok(controls.has(owner), `ADR-${id} owner ${owner} exists`);
+    }
+  }
+  const g = records.get('000G').body;
+  requires(g, /Blueprint owns the grand product destination/, 'Blueprint owns product altitude');
+  requires(g, /Spec is a PRD-shaped scoped objective with its own destination/, 'Spec owns the scoped PRD altitude');
+  requires(g, /active ADRs, verified Actuality and required evidence/, 'Spec derives from decisions and verified actuality');
+  requires(g, /Idea -> Align -> Scope -> Plan -> Implement -> Verify/, 'six confirmed phases');
+  requires(g, /prototype is optional, after the Blueprint and before a Spec/i, 'prototype position and optionality');
+  assert.doesNotMatch(g, /Blueprint[^.]*owns[^.]*PRD function/i, 'retired Blueprint PRD premise cannot be active');
+  const f = records.get('000F').body;
+  requires(f, /Dispatcher verifies the whole Spec/, 'Dispatcher owns whole-Spec QA');
+  requires(f, /Director then approves the immutable assembled candidate in a separate context before it combines into `integration`/, 'separate Director review precedes integration');
+  requires(f, /Worker self-checks[\s\S]*handing back/, 'Worker supplies self-check and proof');
+  requires(f, /bootstrap exemption 2/, 'operative Task PR exception remains explicit');
+  requires(f, /owner chooses when to QA/, 'owner chooses Human QA timing');
+  requires(f, /not the only permitted time/, 'version cadence is not exclusive');
+  requires(f, /failed Human QA[\s\S]*Align[\s\S]*appropriate scope/i, 'failed QA returns at implicated scope');
+  const consequences = f.match(/\nConsequences:([\s\S]*?)\nProvenance:/)?.[1];
+  assert.ok(consequences, 'ADR-000F retains its operational consequences');
+  assert.doesNotMatch(consequences.replace(/\s+/g, ' '), /RUNBOOK[^.]*\b(?:remains|pending|awaits)\b[^.]*TK-003/i, 'active ADR-000F must not present delivered TK-003 Runbook procedures as pending');
+  requires(consequences, /RUNBOOK carries the delivered Task-record workflow procedures from S-00P TK-003/, 'ADR-000F reflects achieved Runbook procedure delivery');
+  const i = records.get('000I').body;
+  requires(i, /Folder location is the source of lifecycle truth/, 'folder lifecycle');
+  requires(i, /`archive`[\s\S]*permanent[\s\S]*never cleared/i, 'ADR archive is permanent');
+  requires(i, /\*\*`retired`\*\* is a transient staging area/, 'retired is transient, distinct from permanent ADR archive');
+  requires(i, /reviewed delivery on `integration`, owner approval, verification on `main`, then `complete`, features Wiki capture, retirement and discard/, 'main precedes completion, capture precedes cleanup');
+  requires(i, /hold[\s\S]*lifted/i, 'superseded deletion hold resolved');
+  requires(i, /stable-path rule[\s\S]*retired/i, 'stable path premise retired');
+  requires(i, /Task progress \(`ready`, `in-progress`, `done`\) is distinct from folder lifecycle/, 'Task execution state distinct from folder lifecycle');
+  const h = records.get('000H').body;
+  requires(h, /corrective Task against a reconciled Wiki claim[\s\S]*replaces the discarded Spec acceptance lines/i, 'Packet supports Wiki corrective work without resurrection');
+  requires(h, /does not resurrect `SPEC.md`/, 'corrective Packet does not restore retired scaffolding');
+  const lexicon = controls.get('LEXICON.md');
+  for (const [term, pattern] of [
+    ['Blueprint', /desired finished product/],
+    ['Packet', /Spec acceptance lines[\s\S]*or the reconciled Wiki claim/],
+    ['Align', /shared design concept explicitly confirmed by owner and agent/],
+    ['Design concept', /exists between participants/],
+    ['Spec', /scoped objective with its own destination/],
+    ['Task', /reaches or repairs a destination/],
+    ['Retired', /transient staging/],
+    ['Archive', /permanent[\s\S]*ADRs/i],
+    ['Assembled-Spec review', /Dispatcher[\s\S]*separate Director[\s\S]*before integration/],
+    ['Human QA', /owner-led[\s\S]*chooses[\s\S]*failed findings/],
+    ['Feature article', /manifest-declared `features` collection/],
+    ['Uncaptured complete', /complete[\s\S]*missing[\s\S]*capture/]
+  ]) {
+    const row = lexicon.split('\n').find(line => line.startsWith(`| **${term}** |`));
+    assert.ok(row, `Lexicon defines ${term}`);
+    requires(row, pattern, `Lexicon meaning of ${term}`);
+  }
+  requires(controls.get('AGENTS.md'), /Dispatcher owns whole-Spec QA[\s\S]*separate Director context reviews/, 'AGENTS carries review roles');
+  requires(controls.get('AGENTS.md'), /verification on main -> `complete`/, 'AGENTS carries closure order');
+  // A reader follows literal paths and fragments; basename fallback is unsafe.
+  for (const [file, text] of [['LEXICON.md', lexicon], ...[...records.values()].map(record => [record.relativePath, record.body])]) {
+    for (const match of text.matchAll(/\[[^\]]*\]\(([^)]+)\)/g)) {
+      const target = decodeURIComponent(match[1]);
+      if (/^(?:https?:|mailto:)/.test(target)) continue;
+      const [relative, fragment] = target.split('#');
+      const resolved = path.resolve(path.dirname(path.join(root, file)), relative || path.basename(file));
+      assert.ok(fs.existsSync(resolved), `${file} has missing literal route ${target}`);
+      if (!fragment || !resolved.endsWith('.md')) continue;
+      const content = controls.get(path.relative(root, resolved)) ?? fs.readFileSync(resolved, 'utf8');
+      const anchors = [...content.matchAll(/^#{1,6} (.+)$/gm)].map(match => match[1].toLowerCase().replace(/[^\p{L}\p{N}\s_-]/gu, '').replace(/\s/g, '-'));
+      assert.ok(anchors.includes(fragment), `${file} has missing literal heading ${target}`);
+    }
+  }
+}
+
+test('active workflow decisions and Lexicon meanings reconstruct the confirmed owner chain', () => {
+  assertWorkflowMeaning(workflowCorpus());
+});
+
+test('workflow checks reject substantive and literal-route mutations with accepted status retained', () => {
+  assertWorkflowMeaning(workflowCorpus());
+  const cases = [
+    ['Blueprint PRD', '000G', 'Blueprint owns the grand product destination', 'Blueprint owns the future-facing PRD function'],
+    ['Spec altitude', '000G', 'Spec is a PRD-shaped scoped objective with its own destination', 'Spec is only a task list'],
+    ['prototype standard', '000G', 'prototype is optional, after the Blueprint and before a Spec', 'prototype is a mandatory Align method'],
+    ['Dispatcher QA', '000F', 'Dispatcher verifies the whole\nSpec', 'Worker verifies the whole\nSpec'],
+    ['postintegration review', '000F', 'before it combines', 'after it combines'],
+    ['exclusive QA cadence', '000F', 'not the only permitted time', 'the only permitted time'],
+    ['delivered Runbook presented as pending', '000F', 'Task-record workflow procedures from S-00P TK-003.', "Task-record workflow procedures from S-00P TK-003. RUNBOOK's comprehensive workflow procedure rewrite remains S-00P TK-003 work."],
+    ['ADR archive clearing', '000I', 'never cleared', 'cleared after main'],
+    ['Task lifecycle conflation', '000I', 'is distinct from folder lifecycle', 'is the folder lifecycle'],
+    ['premature capture', '000I', 'then `complete`, features Wiki capture', 'features Wiki capture, then `complete`'],
+    ['permanent retirement', '000I', 'transient staging area', 'permanent archive'],
+    ['closure before main', '000I', 'verification on `main`, then `complete`', '`complete`, then verification on `main`'],
+    ['Packet loses Wiki', '000H', 'replaces the discarded Spec acceptance lines', 'requires the discarded Spec acceptance lines'],
+    ['lost ADR route', '000G', '(000F-', '(proposed/000F-']
+  ];
+  for (const [label, id, before, after] of cases) {
+    const corpus = workflowCorpus();
+    const record = corpus.records.get(id);
+    assert.ok(record.body.includes(before), `${label}: mutation must hit its real source`);
+    record.body = record.body.replace(before, after);
+    assert.equal(record.status, 'accepted');
+    assert.throws(() => assertWorkflowMeaning(corpus), undefined, label);
+  }
+  const missingOwner = workflowCorpus();
+  missingOwner.records.get('000G').data = { ...missingOwner.records.get('000G').data, canonicalized_in: ['BLUEPRINT.md'] };
+  assert.throws(() => assertWorkflowMeaning(missingOwner), undefined, 'missing operational owner with accepted lifecycle');
+  for (const [label, file, before, after] of [
+    ['Context Map route', 'LEXICON.md', '(RUNBOOK.md)', '(MISSING-RUNBOOK.md)'],
+    ['Context Map heading', 'LEXICON.md', '(#artifact-ownership-schema)', '(#missing-owner-heading)'],
+    ['Packet loses corrective claim', 'LEXICON.md', 'or the reconciled Wiki claim for corrective work', 'only the Spec'],
+    ['operational owner claim', 'AGENTS.md', 'Dispatcher owns whole-Spec QA', 'Worker owns whole-Spec QA']
+  ]) {
+    const corpus = workflowCorpus();
+    const content = corpus.controls.get(file);
+    assert.ok(content.includes(before), `${label}: mutation must hit its real source`);
+    corpus.controls.set(file, content.replace(before, after));
+    assert.throws(() => assertWorkflowMeaning(corpus), undefined, label);
+  }
 });

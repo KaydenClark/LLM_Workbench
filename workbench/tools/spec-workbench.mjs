@@ -12,12 +12,13 @@ import { blocksSelection, describe, finding } from './diagnostics.mjs';
 import { checkHostFloor, formatHostFloor } from './host-floor.mjs';
 import { capabilitySession } from './optional-capabilities.mjs';
 import { coordinationContext, publicCoordination, publishClaim } from './claim-coordination.mjs';
-import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePath, liveRecordPath, markdownLinkTargets, readManifest } from './workbench-paths.mjs';
+import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, declaredGit, lanePath, liveRecordPath, markdownLinkTargets, readManifest } from './workbench-paths.mjs';
 import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenceSection, validateAdrs, writeRegister } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
-import { allocateArtifactId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
-import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
+import { ARTIFACT_ID_MIN_WIDTH, allocateArtifactId, compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
+import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseFormerId, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
 import { appendReceiptRow, readReceiptFromFile } from './task-receipt.mjs';
+import { buildTaskboard, taskboardTaskEntry, compareTaskboardEntries } from './taskboard.mjs';
 import { assembleSpecReport, computeSpecDigest, formatSpecReport, isAncestorOfBranch, recordOwnerApproval, recordReviewVerdict } from './spec-report.mjs';
 
 // One closed status vocabulary for an execution slice, owned by the record
@@ -93,16 +94,16 @@ export function loadCorrectiveTasks(rootDir) {
   return listTaskRecords(path.join(specsRoot, 'corrective'), root);
 }
 
-// Mirrors `selectCandidate`'s own ordering (resumable before ready, then
-// visible-id order) over the one status vocabulary an orphan corrective
+// Uses the same To-do eligibility and priority/title/visible-id ordering
+// over the existing status vocabulary of an orphan corrective
 // Task's own record already carries, without a Spec to read priority or
 // blockers from - an orphan corrective Task declares `Blockers: none` by
 // construction (`createOrphanCorrectiveTasks`), so there is nothing to
 // resolve here that `unmetBlockers` would need to check.
 function selectOrphanCorrectiveCandidate(tasks) {
-  const eligible = tasks.filter((task) => ['ready', 'in-progress'].includes(taskStatus(task)));
+  const eligible = tasks.filter((task) => taskboardTaskEntry({ id: task.specId, priority: 0 }, task).eligible);
   if (eligible.length === 0) return null;
-  eligible.sort((a, b) => (taskStatus(a) === 'in-progress' ? -1 : 0) - (taskStatus(b) === 'in-progress' ? -1 : 0) || compareVisibleIds(a.id, b.id));
+  eligible.sort((a, b) => compareTaskboardEntries(taskboardTaskEntry({ id: a.specId, priority: 0 }, a), taskboardTaskEntry({ id: b.specId, priority: 0 }, b)));
   const task = eligible[0];
   return {
     specId: task.specId,
@@ -137,16 +138,16 @@ function selectCandidate(specs, options = {}) {
   return selectWork(specs, options).candidate;
 }
 
-// Selection plus the capability-blocked Tasks it passed over (S-00V TK-00K).
+// To-do selection plus capability-blocked Tasks it passed over (S-00V TK-00K).
 // With a `session`, a Task recorded as capability-blocked stays blocked while
-// the session still lacks a recorded capability, and a ready or resumable Task
+// the session still lacks a recorded capability, and a To-do Task
 // needing a capability the session cannot establish is skipped; each is
 // reported with `recorded` saying whether its record already carries the
 // block. Without a session nothing capability-related is reported.
 // S-00V TK-01L: with `remoteClaims` (a Map of `SPEC/TK` to the remote tips
-// holding a claim), a ready or resumable Task claimed on another tip is taken:
+// holding a claim), a To-do Task claimed on another tip is taken:
 // it is skipped and reported under `remoteClaimed`.
-function selectWork(specs, { specId, readyOnly = false, session = null, remoteClaims = null } = {}) {
+function selectWork(specs, { specId, session = null, remoteClaims = null } = {}) {
   const completed = satisfiedBlockers(specs);
   const candidates = [];
   const capabilityBlocked = [];
@@ -155,15 +156,14 @@ function selectWork(specs, { specId, readyOnly = false, session = null, remoteCl
     if ((spec.status !== 'active' && spec.lifecycleFolder !== 'retired') || (specId && spec.id !== specId)) continue;
     const satisfied = satisfiedIds(spec, completed);
     for (const slice of executionSlices(spec)) {
-      const status = effectiveStatus(slice, satisfied, session);
+      const entry = taskboardEntryForSlice(spec, slice, satisfied, session);
+      const status = entry.status;
       if (session && status === 'blocked' && slice.missingCapabilities.length > 0) {
         const missing = session.missing(slice.missingCapabilities);
         if (missing.names.length > 0) capabilityBlocked.push({ specId: spec.id, taskId: slice.id, missing: missing.names, recorded: true, reason: missing.reason });
         continue;
       }
-      const resumable = !readyOnly && status === 'in-progress';
-      const eligible = status === 'ready' && blockersSatisfied(slice.blockers, satisfied);
-      if (!resumable && !eligible) continue;
+      if (!entry.eligible) continue;
       const claimedOn = remoteClaims?.get(`${spec.id}/${slice.id}`);
       if (claimedOn) {
         remoteClaimed.push({ specId: spec.id, taskId: slice.id, refs: [...claimedOn].sort() });
@@ -182,19 +182,19 @@ function selectWork(specs, { specId, readyOnly = false, session = null, remoteCl
         taskId: slice.id,
         slice: slice.slice,
         status,
-        rank: resumable ? -1 : 0,
-        priority: spec.priority,
+        cardTitle: entry.title,
+        priority: entry.priority,
         owner: spec.owner,
         path: spec.relativePath,
         nextGate: spec.nextGate
       });
     }
   }
-  candidates.sort((a, b) => a.rank - b.rank || a.priority - b.priority || compareVisibleIds(a.specId, b.specId) || compareVisibleIds(a.taskId, b.taskId));
+  candidates.sort((a, b) => compareTaskboardEntries({ ...a, id: a.taskId, title: a.cardTitle }, { ...b, id: b.taskId, title: b.cardTitle }));
   capabilityBlocked.sort((a, b) => compareVisibleIds(a.specId, b.specId) || compareVisibleIds(a.taskId, b.taskId));
   remoteClaimed.sort((a, b) => compareVisibleIds(a.specId, b.specId) || compareVisibleIds(a.taskId, b.taskId));
   if (candidates.length === 0) return { candidate: null, capabilityBlocked, remoteClaimed };
-  const { rank: _rank, ...result } = candidates[0];
+  const { cardTitle: _cardTitle, ...result } = candidates[0];
   return { candidate: result, capabilityBlocked, remoteClaimed };
 }
 
@@ -233,32 +233,44 @@ export function nextIdentity(rootDir, specId, options = {}) {
 
 // Identity is retained outside ordinary selection: retirement and discard do
 // not make a label reusable. Read declared lanes at each remote tip as well.
+// A remote tip's matched lines outgrow Node's default 1 MiB spawnSync buffer as
+// a room's evidence grows; the same 64 MiB bound claim-coordination and
+// workbench-layout use keeps the read whole, and a spawn error is named.
+const REF_READ_MAX_BUFFER = 64 * 1024 * 1024;
 export function occupiedIdentities(rootDir, prefix) {
   const root = path.resolve(rootDir);
   const specs = [...loadSpecs(root), ...loadRetiredSpecs(root)];
   const occupied = prefix === 'S' ? specs.map(spec => spec.id)
     : [...specs.flatMap(spec => [...spec.rows, ...spec.records, ...(spec.retiredRecords ?? [])].map(item => item.id)), ...loadCorrectiveTasks(root).map(task => task.id)];
-  const register = path.join(resolveSpecsRoot(root).specsRoot, 'DISCARDS.md');
-  if (fs.existsSync(register)) {
-    for (const line of fs.readFileSync(register, 'utf8').split('\n')) {
-      if (!/^\|\s*\d{4}-\d{2}-\d{2}\s*\|/.test(line)) continue;
-      const label = parseMarkdownTableRow(line)[2] ?? '';
-      occupied.push(...(label.match(new RegExp(`${prefix}-[0-9A-Za-z]{3,}`, 'g')) ?? []));
-    }
-  }
+  occupied.push(...discardedLabels(root, prefix));
   const refs = spawnSync('git', ['-C', root, 'for-each-ref', '--format=%(refname)', 'refs/remotes'], { encoding: 'utf8' });
   if (refs.status === 0) for (const ref of refs.stdout.trim().split('\n').filter(Boolean)) {
-    const manifestResult = spawnSync('git', ['-C', root, 'show', `${ref}:workbench/manifest.json`], { encoding: 'utf8' });
+    const manifestResult = spawnSync('git', ['-C', root, 'show', `${ref}:workbench/manifest.json`], { encoding: 'utf8', maxBuffer: REF_READ_MAX_BUFFER });
+    if (manifestResult.error) throw new Error(`Cannot reserve IDs from ${ref}: ${manifestResult.error.message}`);
     let lane = resolveSpecsRoot(root).specsPrefix;
     if (manifestResult.status === 0) {
       try { lane = JSON.parse(manifestResult.stdout).lanes?.specs ?? lane; }
       catch { throw new Error(`Cannot reserve IDs from malformed manifest at ${ref}`); }
     }
-    const result = spawnSync('git', ['-C', root, 'grep', '-h', '-E', `^\\*\\*(Spec ID|Task ID):\\*\\*|^\\|.*(S-|TK-)`, ref, '--', lane, ...(manifestResult.status === 0 ? [] : ['specs'])], { encoding: 'utf8' });
-    if (![0, 1].includes(result.status)) throw new Error(`Cannot reserve IDs from ${ref}: ${result.stderr.trim()}`);
+    const result = spawnSync('git', ['-C', root, 'grep', '-h', '-E', `^\\*\\*(Spec ID|Task ID):\\*\\*|^\\|.*(S-|TK-)`, ref, '--', lane, ...(manifestResult.status === 0 ? [] : ['specs'])], { encoding: 'utf8', maxBuffer: REF_READ_MAX_BUFFER });
+    if (result.error || ![0, 1].includes(result.status)) throw new Error(`Cannot reserve IDs from ${ref}: ${result.error?.message ?? result.stderr.trim()}`);
     occupied.push(...(result.stdout.match(new RegExp(`\\b${prefix}-[0-9A-Za-z]{3,}\\b`, 'g')) ?? []));
   }
   return [...new Set(occupied)];
+}
+
+// Labels the discard register (`DISCARDS.md`) still holds: a discarded record's
+// identity stays reserved even though its record is gone.
+function discardedLabels(root, prefix) {
+  const register = path.join(resolveSpecsRoot(root).specsRoot, 'DISCARDS.md');
+  if (!fs.existsSync(register)) return [];
+  const labels = [];
+  for (const line of fs.readFileSync(register, 'utf8').split('\n')) {
+    if (!/^\|\s*\d{4}-\d{2}-\d{2}\s*\|/.test(line)) continue;
+    const label = parseMarkdownTableRow(line)[2] ?? '';
+    labels.push(...(label.match(new RegExp(`${prefix}-[0-9A-Za-z]{3,}`, 'g')) ?? []));
+  }
+  return labels;
 }
 
 // S-00V TK-01L (ADR-000O): a coordinated room commits the claim on its task
@@ -305,7 +317,7 @@ function claimInTree(rootDir, id, options, remoteClaims) {
   const spec = matches[0];
   if (spec.status !== 'active' && spec.lifecycleFolder !== 'retired') throw new Error(`${id} is ${spec.status}, not active`);
   const session = capabilitySession(path.resolve(rootDir), options);
-  const { candidate, capabilityBlocked, remoteClaimed } = selectWork(specs, { specId: id, readyOnly: true, session, remoteClaims });
+  const { candidate, capabilityBlocked, remoteClaimed } = selectWork(specs, { specId: id, session, remoteClaims });
   const slices = executionSlices(spec);
   // S-00V TK-00K: a ready Task needing an optional capability this session
   // cannot establish is routed to blocked on its own record, naming the
@@ -602,6 +614,28 @@ export function convertSpecSlices(rootDir, id, options = {}) {
   }
   const specDir = path.dirname(spec.filePath);
   const tasksDir = path.join(specDir, 'tasks');
+  // S-01L TK-002P: a planned record-backed Spec - to-spec's shape, a `tasks/`
+  // directory and no unfinished table row (`loadSpecs` already refuses a
+  // record-backed Spec that still holds one) - has no row to convert. to-tasks
+  // writes its first records; `--activate` is then only the activation gate.
+  // Every live record was parsed by `loadSpecs` (an unparseable one refuses
+  // before this point, naming the Task), and `slicesOf` refuses a row/record
+  // collision, so this checks that at least one record exists and changes
+  // nothing but Status.
+  if (activating && spec.recordBacked) {
+    const tasks = slicesOf(spec).map((slice) => slice.id);
+    if (tasks.length === 0) {
+      throw new Error(`${id} has no Task record under ${path.relative(root, tasksDir).split(path.sep).join('/')} to activate; write its first TASK.md record(s) with to-tasks, then run convert-tasks ${id} --activate`);
+    }
+    atomicWrite(spec.filePath, updateFields(spec.content, { Status: 'active' }));
+    return {
+      specId: id,
+      activated: true,
+      converted: [],
+      retained: spec.rows.filter((row) => row.status === 'done').map((row) => row.id),
+      tasks
+    };
+  }
   if (fs.existsSync(tasksDir)) {
     throw new Error(`${id} already has ${path.relative(root, tasksDir).split(path.sep).join('/')}; conversion runs once and refuses to run again`);
   }
@@ -876,8 +910,10 @@ export function gate(rootDir, options = {}) {
   };
 }
 
-export function render(rootDir) {
+export function render(rootDir, options = {}) {
   const root = path.resolve(rootDir);
+  if (options.format === 'json') return renderJsonPreview(root);
+  if (options.format !== undefined && options.format !== 'markdown') throw new Error(`Unsupported render format: ${options.format}; use json for the opt-in preview or markdown for the existing projection`);
   const specs = loadSpecs(root);
   const retired = loadRetiredSpecs(root);
   const blueprintPath = path.join(root, 'BLUEPRINT.md');
@@ -897,6 +933,66 @@ export function render(rootDir) {
   return { specs: specs.length, active: specs.filter((spec) => isHot(spec)).length, retired: retired.length };
 }
 
+function renderJsonPreview(root) {
+  const output = path.join(root, 'TASKBOARD.preview.json');
+  assertSafeWritePath(root, output);
+  assertSafeReadPath(root, path.join(root, 'workbench', 'manifest.json'));
+  const { specsRoot } = resolveSpecsRoot(root);
+  // Refuse linked sources before loaders can skip a symlinked directory or
+  // read through it. Traverse only the existing Spec/Task ownership shapes.
+  const inspectFile = file => {
+    assertSafeReadPath(root, file);
+    if (fs.existsSync(file) && !fs.statSync(file).isFile()) throw new Error(`taskboard-source: ${file} must be an ordinary file`);
+  };
+  const inspectTasks = directory => {
+    assertSafeReadPath(root, directory);
+    if (!fs.existsSync(directory)) return;
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const child = path.join(directory, entry.name);
+      assertSafeReadPath(root, child);
+      if (entry.isDirectory()) {
+        if (TASK_LIFECYCLE_FOLDERS.includes(entry.name)) inspectTasks(child);
+        else inspectFile(path.join(child, 'TASK.md'));
+      }
+    }
+  };
+  const inspectSpecs = directory => {
+    assertSafeReadPath(root, directory);
+    if (!fs.existsSync(directory)) return;
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const child = path.join(directory, entry.name);
+      assertSafeReadPath(root, child);
+      if (!entry.isDirectory()) continue;
+      if (SPEC_LIFECYCLE_FOLDERS.includes(entry.name)) inspectSpecs(child);
+      else {
+        const file = path.join(child, 'SPEC.md');
+        inspectFile(file);
+        if (fs.existsSync(file)) inspectTasks(path.join(child, 'tasks'));
+      }
+    }
+  };
+  inspectSpecs(specsRoot);
+  const specs = [...loadSpecs(root), ...loadRetiredSpecs(root)];
+  const completed = satisfiedBlockers(specs);
+  const board = buildTaskboard(specs, { resolveTask(spec, task) {
+    const slice = {
+      ...task, declared: task.status, source: task.content ? 'record' : 'table', record: task,
+      blockers: Array.isArray(task.blockers) ? task.blockers.join(', ') || 'none' : task.blockers,
+      blockerIds: Array.isArray(task.blockers) ? task.blockers : splitBlockers(task.blockers),
+      capabilities: task.capabilities ?? [], missingCapabilities: task.missingCapabilities ?? []
+    };
+    const entry = taskboardEntryForSlice(spec, slice, satisfiedIds(spec, completed));
+    return { resolvedStatus: entry.status, dependenciesMet: entry.dependenciesMet };
+  } });
+  for (const lane of Object.values(board.lanes)) for (const card of Object.values(lane)) for (const source of card.sourceLinks) {
+    const file = path.join(root, source);
+    inspectFile(file);
+    if (!fs.existsSync(file)) throw new Error(`taskboard-source: missing source link ${source}`);
+  }
+  writeSafeFile(root, output, JSON.stringify(board, null, 2)+'\n');
+  return { format: 'json-preview', path: 'TASKBOARD.preview.json', schemaVersion: board.schemaVersion, cards: Object.values(board.lanes).reduce((count, lane) => count + Object.keys(lane).length, 0) };
+}
+
 export function doctor(rootDir, options = {}) {
   const root = path.resolve(rootDir);
   const issues = [];
@@ -909,13 +1005,14 @@ export function doctor(rootDir, options = {}) {
     return [finding(['upgrade-required', 'invalid-manifest'].includes(error.code) ? error.code : 'malformed-spec', error.message)];
   }
   issues.push(...packetFindings(specs, options, retired, root));
+  issues.push(...uncapturedCompleteFindings(root, specs.filter((spec) => !spec.sliceConflict)));
   const blueprint = fs.existsSync(path.join(root, 'BLUEPRINT.md')) ? fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8') : '';
   if (blueprint.includes(CATALOG_START) || blueprint.includes(CATALOG_END)) checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs, retired), issues);
   else checkRender(root, path.relative(root, path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md')), CATALOG_START, CATALOG_END, renderCatalog(specs, retired).replaceAll(`](${resolveSpecsRoot(root).specsPrefix}/`, ']('), issues);
   checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs, retired), issues);
   issues.push(...collectionFindings(root));
   issues.push(...skillFindings(root));
-  issues.push(...gitFindings(root, specs));
+  issues.push(...gitFindings(root, specs, issues));
   return issues;
 }
 
@@ -1052,16 +1149,20 @@ function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
         }
       }
     }
-    // The selected slice is the first resumable or ready slice; a later slice
-    // waiting on its predecessor is ordinary sequencing, not a finding. The
-    // rule reads declared status on both sources, so a table-only Spec raises
-    // exactly what it raised before. A record declared `blocked` is the same
-    // ordinary sequencing, and a record declared `ready` whose live blockers
-    // are unmet is the same contradiction a ready row is - so this never
-    // fires falsely on a record-backed Spec whose blockers are satisfied.
-    const head = slices.find((slice) => ['in-progress', 'ready'].includes(slice.declared));
-    if (spec.status === 'active' && head?.declared === 'ready' && !blockersSatisfied(head.blockers, satisfied)) {
-      issues.push(finding('blocked-slice', `${spec.id}/${head.id} waits on ${head.blockers}`, { specId: spec.id, taskId: head.id }));
+    // Every authored To-do with unmet dependencies stays visible and unoffered.
+    // Existing registered selected-slice findings name each wait; declared
+    // blocked sequencing remains separate and never becomes a new global gate.
+    for (const slice of slices) {
+      let entry;
+      try { entry = taskboardEntryForSlice(spec, slice, satisfied); }
+      catch (error) {
+        if (error.code !== 'taskboard-source') throw error;
+        if (TASK_STATUSES.includes(slice.declared)) issues.push(finding('invalid-state', error.message, { specId: spec.id, taskId: slice.id }));
+        continue;
+      }
+      if (spec.status === 'active' && entry.lane === 'toDo' && !entry.dependenciesMet) {
+        issues.push(finding('blocked-slice', `${spec.id}/${slice.id} waits on ${slice.blockers}`, { specId: spec.id, taskId: slice.id }));
+      }
     }
     if (['complete', 'superseded'].includes(spec.status) && slices.some((slice) => slice.declared !== 'done')) {
       issues.push(finding('contradictory-state', `${spec.id} is ${spec.status} with unfinished tasks`, { specId: spec.id }));
@@ -1110,10 +1211,10 @@ function skillFindings(root) {
   return inspectSkills(readManifest(root), root);
 }
 
-function gitFindings(root, specs) {
+function gitFindings(root, specs, sourceFindings = []) {
   const manifest = readManifest(root);
   if (!manifest || manifest.schemaVersion !== 2) return [];
-  return [...integrationBranchFindings(root, specs), ...repositoryStateFindings(root)];
+  return [...integrationBranchFindings(root, specs, sourceFindings), ...repositoryStateFindings(root)];
 }
 
 // S-00M TK-002: what TK-001's reader sees and no other finding observes. Both
@@ -1142,7 +1243,7 @@ function repositoryStateFindings(root) {
 // The declared integration branch is the review gate's merge target. Its
 // absence is an error every doctor run shows and none blocks: a room can
 // create the branch in one command, and selection must not wait on it.
-function integrationBranchFindings(root, specs) {
+function integrationBranchFindings(root, specs, sourceFindings = []) {
   const declared = declaredGit(root);
   if (!declared) return [finding('integration-branch-undeclared', 'workbench/manifest.json declares no git.integrationBranch; declare the branch the independent review gate merges into')];
   if (!insideWorkTree(root)) {
@@ -1156,16 +1257,18 @@ function integrationBranchFindings(root, specs) {
   // dispatch is already finished there. It still dispatches: a checkout may be
   // pinned deliberately, so the finding informs and never blocks.
   //
-  // A room with an unresolved row/record collision on an active Spec already
-  // carries that finding from `packetFindings`; `selectCandidate` refuses to
-  // resolve a candidate through it (via `slicesOf`, which throws only for
-  // that one reason), and this informational check simply has nothing to
-  // report rather than taking the whole doctor run down with it. The guard
-  // names that exact condition instead of catching every exception
-  // `selectCandidate` could ever raise, so an unrelated bug here still
-  // surfaces instead of being read as "no candidate".
-  const hasActiveSliceConflict = specs.some((item) => item.status === 'active' && item.sliceConflict);
-  const selected = hasActiveSliceConflict ? null : selectCandidate(specs);
+  // Expected malformed active source is already a registered diagnostic from
+  // packetFindings. Informational integration selection cannot resolve through
+  // that source, so skip only its known conflict/invalid-state conditions.
+  // Non-active records are outside this selector and never suppress its lookup;
+  // unexpected calculation exceptions still propagate instead of disappearing.
+  const diagnosticSpecs = specs.filter((item) => {
+    const hasActiveSliceConflict = item.status === 'active' && item.sliceConflict;
+    const hasActiveInvalidState = item.status === 'active'
+      && sourceFindings.some((issue) => issue.code === 'invalid-state' && issue.specId === item.id);
+    return !hasActiveSliceConflict && !hasActiveInvalidState;
+  });
+  const selected = selectCandidate(diagnosticSpecs);
   const spec = selected && specs.find((item) => item.id === selected.specId);
   for (const { ref, name } of spec ? refs : []) {
     const status = readAtRef(root, ref, spec.relativePath)?.match(/^\*\*Status:\*\*\s*(\S+)/m)?.[1];
@@ -1242,6 +1345,7 @@ export function loadSpecs(rootDir, options = {}) {
     const recordBacked = fs.existsSync(path.join(specDir, 'tasks'));
     const content = options.contentOverrides?.get(filePath) ?? fs.readFileSync(filePath, 'utf8');
     const spec = { ...parseSpecPacket(content, filePath, root, { recordBacked }), specsPrefix, records, retiredRecords, recordBacked };
+    spec.formerId = specFormerId(content, spec.id);
     assertOneSliceTruth(spec);
     return spec;
   });
@@ -1250,6 +1354,16 @@ export function loadSpecs(rootDir, options = {}) {
     if (collision) throw new Error(collision.message);
   }
   return specs;
+}
+
+// S-01W TK-002O: a Spec's `**Former ID:**` header field, read through the
+// same rule a Task record uses (`parseFormerId` in task-record.mjs). The Spec
+// packet parser keeps the last of a repeated field, so a repeat is refused
+// here rather than silently choosing one former spelling.
+function specFormerId(content, id) {
+  const values = [...content.matchAll(/^\*\*Former ID:\*\*\s*(.+)$/gm)].map((match) => match[1]);
+  if (values.length > 1) throw new Error(`${id} has a duplicated field "Former ID"; a record carries at most one former spelling`);
+  return parseFormerId(values[0], id);
 }
 
 // S-00I TK-003: the explicit historical route. `loadSpecs` above deliberately
@@ -1281,6 +1395,7 @@ export function loadRetiredSpecs(rootDir) {
       const recordBacked = fs.existsSync(path.join(specDir, 'tasks'));
       const content = fs.readFileSync(filePath, 'utf8');
       const spec = { ...parseSpecPacket(content, filePath, root, { recordBacked }), specsPrefix, records, retiredRecords, recordBacked, lifecycleFolder: folder };
+      spec.formerId = specFormerId(content, spec.id);
       assertOneSliceTruth(spec);
       specs.push(spec);
     }
@@ -1447,22 +1562,24 @@ function blockerKind(token) {
 // second parser: every Task done and every acceptance line checked
 // (`assembleSpecReport`), the latest verdict bound to the Spec's current
 // content digest is a PASS (`latestVerdict`), its candidate is an ancestor of
-// the manifest-declared integration branch (`isAncestorOfBranch`, the check
-// owner approval already makes), and the Spec/Task content committed at that
-// candidate hashes to the same digest (`computeSpecDigest`). A room with no
+// the manifest-declared integration branch as resolved by
+// `resolveIntegrationContainmentRef` (`origin/<branch>` when it exists, else
+// the local branch; S-00J TK-002N), the check owner approval also makes,
+// and the Spec/Task content committed at that candidate hashes to the same
+// digest (`computeSpecDigest`). A room with no
 // declared integration branch has nothing to check containment against, so
 // the edge stays unmet. Any read failure is an unmet edge, never a throw
 // through `next`, `render` or doctor.
 function reviewedDelivery(spec) {
-  const integrationBranch = declaredGit(spec.root)?.integrationBranch;
-  if (!integrationBranch) return false;
+  const containment = resolveIntegrationContainmentRef(spec.root);
+  if (!containment.ref) return false;
   try {
     const report = assembleSpecReport(spec.root, spec.id);
     if (report.tasks.some((task) => task.status !== 'done')) return false;
     if (report.acceptance.some((line) => !line.checked)) return false;
     const verdict = report.latestVerdict;
     if (verdict?.result !== 'pass') return false;
-    if (!isAncestorOfBranch(spec.root, verdict.candidate, integrationBranch)) return false;
+    if (!isAncestorOfBranch(spec.root, verdict.candidate, containment.ref)) return false;
     return computeSpecDigest(spec.root, spec, verdict.candidate) === report.specDigest;
   } catch {
     return false;
@@ -1495,6 +1612,15 @@ function effectiveStatus(slice, satisfied, session = null) {
     && (!session || session.missing(slice.missingCapabilities).names.length > 0)) return 'blocked';
   if (slice.declared === 'blocked' && !namesResolvableBlocker(slice)) return 'blocked';
   return unmetBlockers(slice.record, satisfied).length === 0 ? 'ready' : 'blocked';
+}
+
+// Existing blocker/capability resolution supplies facts; one pure lane and
+// eligibility calculation serves preview, ordinary selection, claim and doctor.
+function taskboardEntryForSlice(spec, slice, satisfied, session = null) {
+  return taskboardTaskEntry(spec, { ...slice, status: slice.declared, content: slice.record?.content }, {
+    resolvedStatus: effectiveStatus(slice, satisfied, session),
+    dependenciesMet: blockersSatisfied(slice.blockers, satisfied)
+  });
 }
 
 // Whether a record's declared `blocked` rests on something that can clear:
@@ -1545,6 +1671,7 @@ function publicSlice(slice) {
   // other Task's `show` output is unchanged.
   if (slice.capabilities.length > 0) result.capabilities = slice.capabilities;
   if (slice.missingCapabilities.length > 0) result.missingCapabilities = slice.missingCapabilities;
+  if (slice.record?.formerId) result.formerId = slice.record.formerId;
   return result;
 }
 
@@ -1556,6 +1683,7 @@ function publicSlice(slice) {
 function publicRetiredTask(task) {
   return {
     id: task.id,
+    ...(task.formerId ? { formerId: task.formerId } : {}),
     slice: task.slice,
     status: taskStatus(task),
     blockers: task.blockers.length > 0 ? task.blockers.join(', ') : 'none',
@@ -1828,7 +1956,8 @@ export function findSpec(rootDir, selector) {
 
 // Every live Markdown surface a Spec move must repair a reference in: the
 // same external classes TK-002's ADR migration rewrote (root controls, the
-// Wiki, `skills/`, `team templates/`), plus the ADR collection itself - an
+// Wiki, manifest-resolved skills plus legacy `skills/`, `team templates/`),
+// plus the ADR collection itself - an
 // accepted ADR naming a live Spec path is exactly the reference class this
 // Spec's own Decisions section names for ADRs, the inverse direction - and
 // every Spec's `SPEC.md` and standalone `tasks/**/TASK.md` Task record,
@@ -1842,19 +1971,26 @@ function collectSpecReferenceFiles(root, excludeDir) {
     const file = path.join(root, name);
     if (fs.existsSync(file) && fs.statSync(file).isFile()) files.push(file);
   }
-  const walk = (dir, match) => {
+  const walk = (dir, match, ordinaryOnly = false) => {
+    if (ordinaryOnly) assertSafeReadPath(root, dir);
     if (!fs.existsSync(dir)) return;
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-      if (entry.isSymbolicLink()) continue;
+      if (entry.isSymbolicLink()) {
+        if (ordinaryOnly) assertSafeReadPath(root, path.join(dir, entry.name));
+        continue;
+      }
       const full = path.join(dir, entry.name);
-      if (entry.isDirectory()) walk(full, match);
+      if (entry.isDirectory()) walk(full, match, ordinaryOnly);
       else if (entry.isFile() && match(entry.name)) files.push(full);
     }
   };
-  walk(path.join(root, 'workbench', 'wiki'), (name) => name.endsWith('.md'));
-  walk(path.join(root, 'skills'), (name) => name.endsWith('.md'));
+  walk(lanePath(root, 'wiki'), (name) => name.endsWith('.md'));
+  walk(lanePath(root, 'skills'), (name) => name.endsWith('.md'), true);
+  // Pre-lane installations may still carry root skills; keep that supported
+  // surface too. Deduplication below prevents double counting a shared path.
+  walk(path.join(root, 'skills'), (name) => name.endsWith('.md'), true);
   walk(path.join(root, 'team templates'), (name) => name.endsWith('.md'));
-  walk(path.join(root, 'workbench', 'docs', 'adr'), (name) => name.endsWith('.md'));
+  walk(collectionPath(root, 'adr'), (name) => name.endsWith('.md'));
   walk(resolveSpecsRoot(root).specsRoot, (name) => name === 'SPEC.md' || name === 'TASK.md');
   const seen = new Set();
   return files.filter((file) => {
@@ -1882,6 +2018,38 @@ function collectDirectoryFiles(dir) {
   return files;
 }
 
+// Directory links are live navigation too. Keep directory targets separate
+// from the files to read/write, and validate linked targets before git mv.
+// Only the lifecycle moves use this planner; identity widening has its own
+// assigned delivery lane and remains unchanged.
+function lifecycleMoveLocations(root, oldDir, newDir, movingFiles, unmoved) {
+  const locations = new Map(unmoved.map(file => [file, file]));
+  const directoryTargets = new Set();
+  for (const file of movingFiles) locations.set(file, path.join(newDir, path.relative(oldDir, file)));
+  const movingDirectories = dir => {
+    assertSafeReadPath(root, dir);
+    locations.set(dir, path.join(newDir, path.relative(oldDir, dir)));
+    directoryTargets.add(dir);
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.isDirectory()) movingDirectories(path.join(dir, entry.name));
+    }
+  };
+  movingDirectories(oldDir);
+  for (const file of [...movingFiles, ...unmoved]) {
+    if (!file.endsWith('.md')) continue;
+    const { prefix, suffix } = splitEvidenceSection(fs.readFileSync(file, 'utf8'));
+    for (const link of [...localLinks(prefix), ...localLinks(suffix)]) {
+      const target = path.resolve(path.dirname(file), link);
+      if (target !== root && !target.startsWith(root + path.sep)) continue;
+      if (!fs.existsSync(target) || !fs.statSync(target).isDirectory()) continue;
+      if (target !== root) assertSafeReadPath(root, target);
+      if (!locations.has(target)) locations.set(target, target);
+      directoryTargets.add(target);
+    }
+  }
+  return { locations, directoryTargets };
+}
+
 // Rewrites one file in place against `locations` (old absolute path -> new
 // absolute path, and - critically - every entry that did NOT move mapped to
 // itself, exactly as TK-002's own `locations` map does), protecting its
@@ -1900,22 +2068,49 @@ function collectDirectoryFiles(dir) {
 // recomputed (the moved file sits one folder deeper now), and
 // `rewriteAdrLinks` can only do that when the unmoved target is in the map,
 // mapped to itself.
-function rewriteReferenceFile(root, filePath, oldDir, newDir, locations, totals) {
-  const original = fs.readFileSync(filePath, 'utf8');
+function rewriteReferenceFile(root, filePath, oldDir, newDir, locations, totals, options = {}) {
+  const finalContent = planReferenceRewrite(root, filePath, fs.readFileSync(filePath, 'utf8'), oldDir, newDir, locations, totals, options);
+  if (finalContent !== null) {
+    assertSafeWritePath(root, filePath);
+    writeSafeFile(root, filePath, finalContent);
+  }
+}
+
+// Discover deterministic unsafe rewrites before git mv changes any path.
+// Only files whose live bytes actually change need write permission: an
+// unrelated hard-linked reference surface is not a reason to refuse a move.
+function preflightReferenceWrites(root, files, locations, options = {}) {
+  for (const file of files) {
+    const destination = locations.get(file);
+    if (!destination.endsWith('.md')) continue;
+    const rewritten = planReferenceRewrite(root, destination, fs.readFileSync(file, 'utf8'),
+      path.dirname(file), path.dirname(destination), locations,
+      { referencesRewritten: {}, historicalReferencesLeft: {} }, options);
+    if (rewritten === null) continue;
+    assertSafeWritePath(root, file);
+    if (destination !== file) assertSafeWritePath(root, destination);
+  }
+}
+
+// The pure half of `rewriteReferenceFile`: computes the rewritten bytes for
+// `original` (read from wherever the caller holds it) as the file that will
+// live at `filePath`, records the counts in `totals` under that path, and
+// returns the new content, or null when no live match changed. `widen-id`
+// (S-01W TK-002O) plans every rewrite with this before it touches the tree, so
+// a refusal can never leave a partial mutation; the lifecycle moves keep
+// calling `rewriteReferenceFile` exactly as before.
+function planReferenceRewrite(root, filePath, original, oldDir, newDir, locations, totals, options = {}) {
   const { prefix, evidence, suffix } = splitEvidenceSection(original);
   const canonicalized = rewriteCanonicalizedIn(prefix, root, locations);
-  const rewrittenPrefix = rewriteAdrLinks(canonicalized.content, oldDir, newDir, locations);
-  const rewrittenSuffix = rewriteAdrLinks(suffix, oldDir, newDir, locations);
-  const skippedInEvidence = rewriteAdrLinks(evidence, oldDir, newDir, locations).count;
+  const rewrittenPrefix = rewriteAdrLinks(canonicalized.content, oldDir, newDir, locations, options);
+  const rewrittenSuffix = rewriteAdrLinks(suffix, oldDir, newDir, locations, options);
+  const skippedInEvidence = rewriteAdrLinks(evidence, oldDir, newDir, locations, options).count;
   const relative = path.relative(root, filePath).split(path.sep).join('/');
   if (skippedInEvidence > 0) totals.historicalReferencesLeft[relative] = (totals.historicalReferencesLeft[relative] ?? 0) + skippedInEvidence;
   const rewritten = rewrittenPrefix.count + rewrittenSuffix.count + canonicalized.count;
-  if (rewritten > 0) {
-    const finalContent = rewrittenPrefix.content + evidence + rewrittenSuffix.content;
-    assertSafeWritePath(root, filePath);
-    writeSafeFile(root, filePath, finalContent);
-    totals.referencesRewritten[relative] = (totals.referencesRewritten[relative] ?? 0) + rewritten;
-  }
+  if (rewritten === 0) return null;
+  totals.referencesRewritten[relative] = (totals.referencesRewritten[relative] ?? 0) + rewritten;
+  return rewrittenPrefix.content + evidence + rewrittenSuffix.content;
 }
 
 // S-00I TK-003: moves a completed Spec's whole directory (Task records and
@@ -1981,34 +2176,31 @@ export function moveSpecDirectory(rootDir, specId, folder) {
   // Snapshot every file the move carries before touching the filesystem;
   // `oldSpecDir` will not exist once the directory itself has moved.
   const movingFiles = collectDirectoryFiles(oldSpecDir);
-
-  fs.mkdirSync(destinationRoot, { recursive: true });
-  const moveResult = spawnSync('git', ['-C', root, 'mv', path.relative(root, oldSpecDir), path.relative(root, newSpecDir)], { encoding: 'utf8' });
-  if (moveResult.status !== 0) throw new Error(`git mv failed for ${specId}: ${(moveResult.stderr || moveResult.stdout || '').trim()}`);
+  // Validate all live reference surfaces before any rename or write.
+  const unmoved = collectSpecReferenceFiles(root, oldSpecDir);
 
   // Corrective review finding 1: `locations` must carry every reference
   // target this move can touch, not only the ones that are moving - a moved
   // file's own outgoing link to an unmoved sibling Spec or ADR still needs
   // its relative path recomputed, because the moved file itself now sits one
-  // folder deeper. `collectSpecReferenceFiles` is called once, after the
-  // move, excluding the Spec's own new directory (its files are mapped
-  // old-path -> new-path immediately below, not to themselves).
-  const locations = new Map();
-  for (const file of collectSpecReferenceFiles(root, newSpecDir)) {
-    locations.set(file, file);
-  }
-  for (const file of movingFiles) {
-    locations.set(file, path.join(newSpecDir, path.relative(oldSpecDir, file)));
-  }
+  // folder deeper. The preflight excludes the moving directory; its files
+  // are mapped old-path -> new-path below, not to themselves.
+  const { locations, directoryTargets } = lifecycleMoveLocations(root, oldSpecDir, newSpecDir, movingFiles, unmoved);
+  const rewriteOptions = { directoryTargets };
+
+  preflightReferenceWrites(root, [...movingFiles, ...unmoved], locations, rewriteOptions);
+  fs.mkdirSync(destinationRoot, { recursive: true });
+  const moveResult = spawnSync('git', ['-C', root, 'mv', path.relative(root, oldSpecDir), path.relative(root, newSpecDir)], { encoding: 'utf8' });
+  if (moveResult.status !== 0) throw new Error(`git mv failed for ${specId}: ${(moveResult.stderr || moveResult.stdout || '').trim()}`);
 
   const totals = { referencesRewritten: {}, historicalReferencesLeft: {} };
   for (const oldFile of movingFiles) {
     const newFile = locations.get(oldFile);
     if (!newFile.endsWith('.md')) continue;
-    rewriteReferenceFile(root, newFile, path.dirname(oldFile), path.dirname(newFile), locations, totals);
+    rewriteReferenceFile(root, newFile, path.dirname(oldFile), path.dirname(newFile), locations, totals, rewriteOptions);
   }
-  for (const file of collectSpecReferenceFiles(root, newSpecDir)) {
-    rewriteReferenceFile(root, file, path.dirname(file), path.dirname(file), locations, totals);
+  for (const file of unmoved) {
+    rewriteReferenceFile(root, file, path.dirname(file), path.dirname(file), locations, totals, rewriteOptions);
   }
 
   // Corrective review finding 1 (second round): REGISTER.md and HISTORY.md
@@ -2115,27 +2307,25 @@ export function moveTaskRecord(rootDir, specId, taskId, folder) {
   // Snapshot every file the move carries before touching the filesystem;
   // `oldTaskDir` will not exist once the directory itself has moved.
   const movingFiles = collectDirectoryFiles(oldTaskDir);
+  // Validate all live reference surfaces before any rename or write.
+  const unmoved = collectSpecReferenceFiles(root, oldTaskDir);
 
+  const { locations, directoryTargets } = lifecycleMoveLocations(root, oldTaskDir, newTaskDir, movingFiles, unmoved);
+  const rewriteOptions = { directoryTargets };
+
+  preflightReferenceWrites(root, [...movingFiles, ...unmoved], locations, rewriteOptions);
   fs.mkdirSync(destinationRoot, { recursive: true });
   const moveResult = spawnSync('git', ['-C', root, 'mv', path.relative(root, oldTaskDir), path.relative(root, newTaskDir)], { encoding: 'utf8' });
   if (moveResult.status !== 0) throw new Error(`git mv failed for ${specId}/${taskId}: ${(moveResult.stderr || moveResult.stdout || '').trim()}`);
-
-  const locations = new Map();
-  for (const file of collectSpecReferenceFiles(root, newTaskDir)) {
-    locations.set(file, file);
-  }
-  for (const file of movingFiles) {
-    locations.set(file, path.join(newTaskDir, path.relative(oldTaskDir, file)));
-  }
 
   const totals = { referencesRewritten: {}, historicalReferencesLeft: {} };
   for (const oldFile of movingFiles) {
     const newFile = locations.get(oldFile);
     if (!newFile.endsWith('.md')) continue;
-    rewriteReferenceFile(root, newFile, path.dirname(oldFile), path.dirname(newFile), locations, totals);
+    rewriteReferenceFile(root, newFile, path.dirname(oldFile), path.dirname(newFile), locations, totals, rewriteOptions);
   }
-  for (const file of collectSpecReferenceFiles(root, newTaskDir)) {
-    rewriteReferenceFile(root, file, path.dirname(file), path.dirname(file), locations, totals);
+  for (const file of unmoved) {
+    rewriteReferenceFile(root, file, path.dirname(file), path.dirname(file), locations, totals, rewriteOptions);
   }
 
   // Corrective review finding 2 (S-00I TK-004 review): mirror
@@ -2170,6 +2360,246 @@ export function moveTaskRecord(rootDir, specId, taskId, folder) {
   };
 }
 
+// S-01W TK-002O: the explicit identity-only touch. `widen-id S-###|TK-###`
+// widens one eligible record to the uppercase width-four spelling of its own
+// collision key (`widenedIdentity`: `S-00Q` -> `S-000Q`, `TK-00a` ->
+// `TK-000A`, numeric `TK-001` -> `TK-0001`), the spelling `allocateArtifactId`
+// would give that identity. It renames the record's directory, rewrites its
+// ID field and title, records the previous spelling in one `**Former ID:**`
+// field directly under the ID field (`parseFormerId` in task-record.mjs), and
+// repairs every live link with the lifecycle moves' own reference machinery
+// (`collectSpecReferenceFiles`, `planReferenceRewrite`, the old-path ->
+// new-path `locations` map, the frozen Append-Only Evidence section left
+// byte-identical and its link matches counted as historical). Widening a Spec
+// also points its open (not done) Task records' `**Spec ID:**` at the widened
+// parent; done and retired records keep their bytes.
+//
+// It never changes status and never touches a completed, reviewed or retired
+// record: a Spec must be planned, active or blocked, a Task must be an
+// active-roster record that is not done, under such a Spec. A record already
+// at its widened spelling is a no-op (checked before the clean-tree
+// precondition, so a repeat run on the staged result stays a no-op). Every
+// other refusal - a dirty tree, an occupied destination path, an identity
+// alias held by another record or a discarded label, a symlinked, hard-linked
+// or unstable record path, a slice-table row, an ambiguous numeric Task label
+// without `--spec` - is decided before anything is written, from a complete
+// in-memory plan, so a refusal leaves no partial mutation.
+//
+// Like `move-spec` and `move-task`, the result is staged with `git add -A`
+// and never committed: the dirty-tree refusal guarantees the stage holds only
+// this change, HEAD remains the recovery point (`git reset --hard HEAD`), and
+// the agent commits it as one reviewable candidate. The projections are
+// re-rendered so the Taskboard and catalog name the widened ID.
+const WIDENABLE_SPEC_STATUSES = Object.freeze(['planned', 'active', 'blocked']);
+
+export function widenedIdentity(id) {
+  const key = visibleIdKey(id);
+  if (!key) throw new Error(`${id} is not a visible identifier`);
+  const separator = key.indexOf('-');
+  return `${key.slice(0, separator)}-${key.slice(separator + 1).padStart(ARTIFACT_ID_MIN_WIDTH, '0')}`;
+}
+
+export function widenId(rootDir, selector, options = {}) {
+  const root = path.resolve(rootDir);
+  const parts = visibleIdParts(selector);
+  if (!parts || !['S', 'TK'].includes(parts.prefix)) throw new Error('Usage: widen-id S-###|TK-### [--spec S-###]');
+  if (parts.prefix === 'S') {
+    if (options.spec) throw new Error('widen-id S-### takes no --spec');
+    return widenSpecIdentity(root, selector);
+  }
+  return widenTaskIdentity(root, selector, options.spec);
+}
+
+function widenSpecIdentity(root, selector) {
+  const id = resolveSpecId(root, selector);
+  const spec = loadSpecs(root).find((item) => item.id === id);
+  if (!spec) {
+    if (loadRetiredSpecs(root).some((item) => item.id === id)) throw new Error(`${id} is retired; widen-id never renames a retired record`);
+    throw new Error(`Unknown spec ID: ${id}`);
+  }
+  if (!WIDENABLE_SPEC_STATUSES.includes(spec.status)) {
+    throw new Error(`${id} is ${spec.status}; widen-id widens only a ${WIDENABLE_SPEC_STATUSES.join(', ')} Spec and never renames a completed or reviewed record`);
+  }
+  const widened = widenedIdentity(id);
+  if (widened === id) return { status: 'unchanged', kind: 'spec', id, formerId: spec.formerId, path: spec.relativePath };
+  if (spec.formerId) throw new Error(`${id} already records Former ID ${spec.formerId}; an identity widens once`);
+  requireCleanWidenTree(root);
+  refuseDiscardedAlias(root, 'S', id);
+  const { specsRoot, specsPrefix } = resolveSpecsRoot(root);
+  const oldDir = path.dirname(spec.filePath);
+  const base = path.basename(oldDir);
+  if (path.dirname(oldDir) !== specsRoot || !base.startsWith(`${id}-`)) {
+    throw new Error(`${spec.relativePath} is not at ${specsPrefix}/${id}-...; widen-id refuses an unstable record path`);
+  }
+  const newDir = path.join(specsRoot, `${widened}${base.slice(id.length)}`);
+  const edits = new Map([[spec.filePath, (content) => widenRecordHeader(content, 'Spec ID', id, widened)]]);
+  for (const task of spec.records) {
+    if (taskStatus(task) === 'done' || task.specId === widened || visibleIdKey(task.specId) !== visibleIdKey(id)) continue;
+    edits.set(task.filePath, (content) => replaceIdField(content, 'Spec ID', task.specId, widened));
+  }
+  const newSpecFile = path.join(newDir, 'SPEC.md');
+  const planned = applyIdentityWiden(root, oldDir, newDir, edits, (writes) => {
+    const content = writes.get(newSpecFile);
+    const packet = parseSpecPacket(content, newSpecFile, root, { recordBacked: spec.recordBacked });
+    if (packet.id !== widened || specFormerId(content, packet.id) !== id) throw new Error(`widen-id could not write a readable ${widened} record`);
+    for (const [file, text] of writes) if (path.basename(file) === 'TASK.md') parseTaskRecord(text, file, root);
+  });
+  return { status: 'widened', kind: 'spec', id: widened, formerId: id, ...planned };
+}
+
+function widenTaskIdentity(root, selector, specSelector) {
+  const all = [...loadSpecs(root), ...loadRetiredSpecs(root)];
+  const key = visibleIdKey(selector);
+  const numeric = /^TK-\d+$/.test(selector);
+  let scope = all;
+  if (specSelector) {
+    const specId = resolveSpecId(root, specSelector);
+    scope = all.filter((spec) => spec.id === specId);
+    if (scope.length === 0) throw new Error(`Unknown spec ID: ${specId}`);
+  }
+  const holders = (specs) => specs.flatMap((spec) => [
+    ...spec.rows.map((item) => ({ spec, item, source: 'slice-table row' })),
+    ...(spec.records ?? []).map((item) => ({ spec, item, source: spec.lifecycleFolder ? 'record under a retired Spec' : 'record' })),
+    ...(spec.retiredRecords ?? []).map((item) => ({ spec, item, source: 'retired record' }))
+  ]).filter((entry) => visibleIdKey(entry.item.id) === key);
+  const describeHolders = (entries) => entries.map((entry) => `${entry.spec.id}/${entry.item.id} (${entry.source})`).join(' and ');
+  const matches = holders(scope);
+  if (matches.length === 0) throw new Error(`Unknown Task ID: ${specSelector ? `${scope[0].id}/` : ''}${selector}`);
+  const owners = [...new Set(matches.map((entry) => entry.spec.id))];
+  if (owners.length > 1) {
+    if (numeric) throw new Error(`${selector} names Tasks in ${owners.join(' and ')}; numeric Task labels are Spec-scoped, so pass --spec S-###`);
+    throw new Error(`widen-id refuses ${selector}: the identity is held by ${describeHolders(matches)}; an occupied alias is never widened over`);
+  }
+  if (matches.length > 1) throw new Error(`Duplicate task ID: ${selector} matches ${describeHolders(matches)}; widen-id refuses rather than choosing one`);
+  const { spec, item: task, source } = matches[0];
+  if (spec.lifecycleFolder || source === 'retired record') throw new Error(`${spec.id}/${task.id} is retired; widen-id never renames a retired record`);
+  if (source === 'slice-table row') throw new Error(`${spec.id}/${task.id} is a slice-table row, not a Task record; widen-id widens record-backed Tasks only`);
+  if (taskStatus(task) === 'done') throw new Error(`${spec.id}/${task.id} is done; widen-id never renames a completed record`);
+  if (!WIDENABLE_SPEC_STATUSES.includes(spec.status)) {
+    throw new Error(`${spec.id} is ${spec.status}; widen-id widens a Task only under a ${WIDENABLE_SPEC_STATUSES.join(', ')} Spec`);
+  }
+  const widened = widenedIdentity(task.id);
+  if (widened === task.id) return { status: 'unchanged', kind: 'task', id: task.id, specId: spec.id, formerId: task.formerId, path: task.relativePath };
+  if (task.formerId) throw new Error(`${spec.id}/${task.id} already records Former ID ${task.formerId}; an identity widens once`);
+  requireCleanWidenTree(root);
+  if (!numeric) {
+    // Letter-bearing Task labels are whole-room identities (ADR-0041), so any
+    // other holder anywhere - a record under a retired Spec, a retired record,
+    // an orphan corrective Task, a discarded label - occupies the alias.
+    const others = [
+      ...holders(all).filter((entry) => entry.item !== task),
+      ...loadCorrectiveTasks(root).filter((item) => visibleIdKey(item.id) === key).map((item) => ({ spec: { id: item.specId }, item, source: 'corrective record' }))
+    ];
+    if (others.length > 0) throw new Error(`widen-id refuses ${spec.id}/${task.id}: ${widened} is an occupied alias held by ${describeHolders(others)}`);
+    refuseDiscardedAlias(root, 'TK', task.id);
+  }
+  const tasksDir = path.join(path.dirname(spec.filePath), 'tasks');
+  const oldDir = path.dirname(task.filePath);
+  if (path.dirname(oldDir) !== tasksDir) throw new Error(`${task.relativePath} is not at the top level of tasks/; widen-id refuses an unstable record path`);
+  const newDir = path.join(tasksDir, widened);
+  const newTaskFile = path.join(newDir, 'TASK.md');
+  const edits = new Map([[task.filePath, (content) => widenRecordHeader(content, 'Task ID', task.id, widened)]]);
+  const planned = applyIdentityWiden(root, oldDir, newDir, edits, (writes) => {
+    const record = parseTaskRecord(writes.get(newTaskFile), newTaskFile, root);
+    if (record.id !== widened || record.formerId !== task.id) throw new Error(`widen-id could not write a readable ${widened} record`);
+  });
+  return { status: 'widened', kind: 'task', id: widened, formerId: task.id, specId: spec.id, ...planned };
+}
+
+function requireCleanWidenTree(root) {
+  const gitStatus = spawnSync('git', ['-C', root, 'status', '--porcelain'], { encoding: 'utf8' });
+  if (gitStatus.status !== 0) throw new Error('widen-id requires a Git working tree so the change is recoverable; none was found');
+  if (gitStatus.stdout.trim() !== '') throw new Error('widen-id refuses a dirty working tree; commit or stash first so the candidate shows only this identity change');
+}
+
+function refuseDiscardedAlias(root, prefix, id) {
+  const label = discardedLabels(root, prefix).find((item) => visibleIdKey(item) === visibleIdKey(id));
+  if (label) throw new Error(`widen-id refuses ${id}: its identity is also the discarded label ${label} in DISCARDS.md, an occupied alias`);
+}
+
+// Replaces the record's own ID field with the widened spelling followed by
+// the one `**Former ID:**` line, and the matching `# ID - Title` heading.
+function widenRecordHeader(content, field, oldId, newId) {
+  const idLine = new RegExp(`^\\*\\*${field}:\\*\\*[ \\t]*${escapeRegExp(oldId)}[ \\t]*$`, 'm');
+  const title = new RegExp(`^# ${escapeRegExp(oldId)} - `, 'm');
+  if (!idLine.test(content) || !title.test(content)) throw new Error(`${oldId} has no ${field} field and matching title for widen-id to rewrite`);
+  return content.replace(idLine, () => `**${field}:** ${newId}\n**Former ID:** ${oldId}`).replace(title, () => `# ${newId} - `);
+}
+
+function replaceIdField(content, field, from, to) {
+  return content.replace(new RegExp(`^\\*\\*${field}:\\*\\*[ \\t]*${escapeRegExp(from)}[ \\t]*$`, 'm'), () => `**${field}:** ${to}`);
+}
+
+// Plans every write in memory, validates it, and only then mutates: `git mv`
+// of the record directory, the planned writes, the ADR register, the
+// projections, and one `git add -A`.
+function applyIdentityWiden(root, oldDir, newDir, edits, validate) {
+  for (const file of edits.keys()) assertSafeWritePath(root, file);
+  refuseOccupiedDestination(root, oldDir, newDir);
+  const movingFiles = collectDirectoryFiles(oldDir);
+  const unmoved = collectSpecReferenceFiles(root, oldDir);
+  const locations = new Map(unmoved.map((file) => [file, file]));
+  for (const file of movingFiles) locations.set(file, path.join(newDir, path.relative(oldDir, file)));
+  const totals = { referencesRewritten: {}, historicalReferencesLeft: {} };
+  const writes = new Map();
+  for (const oldFile of movingFiles) {
+    const newFile = locations.get(oldFile);
+    let content = fs.readFileSync(oldFile, 'utf8');
+    let changed = false;
+    if (newFile.endsWith('.md')) {
+      const rewritten = planReferenceRewrite(root, newFile, content, path.dirname(oldFile), path.dirname(newFile), locations, totals);
+      if (rewritten !== null) { content = rewritten; changed = true; }
+    }
+    if (edits.has(oldFile)) { content = edits.get(oldFile)(content); changed = true; }
+    if (changed) { assertSafeWritePath(root, oldFile); writes.set(newFile, content); }
+  }
+  if ([...edits.keys()].some((file) => !writes.has(locations.get(file)))) throw new Error('widen-id refuses a record that is not an ordinary file inside its own directory');
+  for (const file of unmoved) {
+    const rewritten = planReferenceRewrite(root, file, fs.readFileSync(file, 'utf8'), path.dirname(file), path.dirname(file), locations, totals);
+    if (rewritten !== null) { assertSafeWritePath(root, file); writes.set(file, rewritten); }
+  }
+  validate(writes);
+  const projections = ['BLUEPRINT.md', 'TASKBOARD.md'].every((name) => fs.existsSync(path.join(root, name)));
+  try {
+    moveRecordDirectory(root, oldDir, newDir);
+    for (const [file, content] of writes) writeSafeFile(root, file, content);
+    if (fs.existsSync(collectionPath(root, 'adr'))) writeRegister(root);
+    if (projections) render(root);
+    spawnSync('git', ['-C', root, 'add', '-A']);
+  } catch (error) {
+    throw new Error(`widen-id failed after it began writing: ${error.message}; the tree was clean at HEAD before it started, so \`git reset --hard HEAD\` restores it`);
+  }
+  return {
+    from: path.relative(root, oldDir).split(path.sep).join('/'),
+    to: path.relative(root, newDir).split(path.sep).join('/'),
+    committed: false,
+    referencesRewritten: totals.referencesRewritten,
+    historicalReferencesLeft: totals.historicalReferencesLeft
+  };
+}
+
+// An existing destination refuses, except the source itself seen through a
+// case-insensitive filesystem (`S-000q-x` -> `S-000Q-x`).
+function refuseOccupiedDestination(root, from, to) {
+  let target;
+  try { target = fs.lstatSync(to); } catch (error) { if (error.code === 'ENOENT') return; throw error; }
+  const source = fs.lstatSync(from);
+  if (target.ino === source.ino && target.dev === source.dev) return;
+  throw new Error(`widen-id destination already exists: ${path.relative(root, to).split(path.sep).join('/')}`);
+}
+
+// A case-only rename goes through a temporary name so it also lands on a
+// case-insensitive filesystem.
+function moveRecordDirectory(root, from, to) {
+  const relative = (value) => path.relative(root, value);
+  const temporary = `${to}.widen-id-${process.pid}`;
+  const steps = from.toLowerCase() === to.toLowerCase() ? [[from, temporary], [temporary, to]] : [[from, to]];
+  for (const [source, destination] of steps) {
+    const moved = spawnSync('git', ['-C', root, 'mv', relative(source), relative(destination)], { encoding: 'utf8' });
+    if (moved.status !== 0) throw new Error(`git mv ${relative(source)} failed: ${(moved.stderr || moved.stdout || '').trim()}`);
+  }
+}
+
 // Finds a retired Spec's own durable Wiki owner by the one fact that names
 // it - a note's `source_paths` entry naming the Spec's historical route,
 // exactly the fact `retireSpec` itself required before the move - and
@@ -2201,6 +2631,136 @@ function retiredSpecWikiOwnerStatus(root, historicalRoute) {
   if (!file) return null;
   const data = parseFrontmatter(fs.readFileSync(file, 'utf8')).data;
   return data?.status ?? null;
+}
+
+// S-00I TK-001 to TK-006 retired a Spec into a design-concept or guidebook
+// owner; S-00I TK-01U adds the features article a completed Spec is captured
+// into at its closure point (S-00J closure-capture contract T4). This is the
+// one owner predicate `retireSpec` (T5), `discardRetiredTask` (T6) and doctor's
+// `uncaptured-complete` finding share, so the three can never disagree about
+// what a captured owner is. It returns the refusal naming the first missing
+// condition, or `null` when the note owns the Spec. `featureOnly` narrows the
+// admitted types to `feature`, which is what "captured" means for T6 and
+// doctor; retirement also admits the legacy owners. It reads and never
+// writes: the note must exist, carry frontmatter, declare an admitted type
+// (a feature article only inside the features collection), declare
+// `knowledge_role` canonical or curated, name the Spec's historical route in
+// `source_paths`, pass `validateWiki` with no `copied-task-state`,
+// `invalid-note` or `secret-like-content` finding against it, and be linked
+// from the Wiki lane's `MEMORY.md` router.
+function durableOwnerRefusal(root, specId, historicalRoute, noteAbsolute, { featureOnly = false } = {}) {
+  const wikiRoot = lanePath(root, 'wiki');
+  const noteRelative = path.relative(root, noteAbsolute).split(path.sep).join('/');
+  // Review corrective (High, separate-context review of 10bdf5b): the note
+  // and every ancestor must be ordinary paths inside the repository before
+  // anything is read. `validateWiki` skips symlinks when it walks, so a
+  // linked note would otherwise be read here (statSync follows links) yet
+  // never validated, letting an article outside the Wiki lane own a Spec.
+  try { assertSafeReadPath(root, noteAbsolute); }
+  catch (error) { return `${error.message}; a linked note cannot be ${specId}'s durable owner`; }
+  let entry = null;
+  try { entry = fs.lstatSync(noteAbsolute); } catch (error) { if (error.code !== 'ENOENT') throw error; }
+  if (!entry?.isFile()) {
+    return `retire-spec found no Wiki note at ${noteRelative}; ${specId}'s surviving claims name no durable owner`;
+  }
+  const content = fs.readFileSync(noteAbsolute, 'utf8');
+  const frontmatter = parseFrontmatter(content).data;
+  if (!frontmatter) return `${noteRelative} has no frontmatter; it cannot be ${specId}'s durable owner`;
+  const featuresRelative = collectionRelative(root, 'features');
+  const featuresRoot = path.join(root, featuresRelative);
+  const admitted = featureOnly ? ['feature'] : ['design-concept', 'guidebook', 'feature'];
+  if (!admitted.includes(frontmatter.type)) {
+    return featureOnly
+      ? `${noteRelative} must declare type feature in ${featuresRelative} to capture ${specId}, found ${frontmatter.type ?? 'none'}`
+      : `${noteRelative} must declare type design-concept or guidebook, or type feature in ${featuresRelative}, to retire ${specId}, found ${frontmatter.type ?? 'none'}`;
+  }
+  if (frontmatter.type === 'feature' && !noteAbsolute.startsWith(featuresRoot + path.sep)) {
+    return `${noteRelative} declares type feature, but type feature must live in the features collection ${featuresRelative}; it cannot be ${specId}'s durable owner there`;
+  }
+  if (!['canonical', 'curated'].includes(frontmatter.knowledge_role)) {
+    return `${noteRelative} must declare knowledge_role canonical or curated to retire ${specId}, found ${frontmatter.knowledge_role ?? 'none'}`;
+  }
+  const sourcePaths = Array.isArray(frontmatter.source_paths) ? frontmatter.source_paths : [];
+  if (!sourcePaths.includes(historicalRoute)) {
+    return `${noteRelative} source_paths must name ${specId}'s historical route ${historicalRoute}; found ${sourcePaths.join(', ') || 'none'}`;
+  }
+  const wikiFindings = validateWiki(root, { contentOverrides: new Map([[noteAbsolute, content]]) })
+    .filter((item) => item.note === noteRelative && ['copied-task-state', 'invalid-note', 'secret-like-content'].includes(item.code));
+  if (wikiFindings.length > 0) {
+    return `${noteRelative} fails Wiki validation, so it cannot be ${specId}'s durable owner: ${wikiFindings.map((item) => `${item.code}: ${item.message}`).join('; ')}`;
+  }
+  // Review corrective (Low, S-00I TK-005): a note can satisfy every property
+  // check above and still be unreachable from a cold-start agent's actual
+  // entry point. `MEMORY.md` is the one router `SCHEMA.md`/`LEXICON.md` name.
+  const memoryPath = path.join(wikiRoot, 'MEMORY.md');
+  const memoryContent = fs.existsSync(memoryPath) ? fs.readFileSync(memoryPath, 'utf8') : '';
+  const noteRelativeToWikiRoot = path.relative(wikiRoot, noteAbsolute).split(path.sep).join('/');
+  if (!memoryContent.includes(noteRelativeToWikiRoot)) {
+    return `${noteRelative} is not linked from workbench/wiki/MEMORY.md (no relative link to ${noteRelativeToWikiRoot} found); a durable owner unreachable from the room brain is not routed`;
+  }
+  return null;
+}
+
+// The route a Spec's durable owner names in `source_paths`: its own path once
+// retired, otherwise the retired route `retireSpec` will move it to.
+function specHistoricalRoute(root, spec) {
+  if (spec.lifecycleFolder) return spec.relativePath;
+  const { specsPrefix } = resolveSpecsRoot(root);
+  return `${specsPrefix}/${SPEC_LIFECYCLE_FOLDERS[0]}/${path.basename(path.dirname(spec.filePath))}/SPEC.md`;
+}
+
+// S-00I TK-01U: the features article that captures `spec`, or `null`. A note
+// in the features collection naming the Spec's historical route is captured
+// only when it passes the shared owner predicate with `featureOnly`.
+function capturedFeatureArticle(root, spec) {
+  const featuresRoot = collectionPath(root, 'features');
+  // Review corrective (High, separate-context review of ed8c4f5): the
+  // collection root and every candidate must be ordinary paths inside the
+  // repository before anything is read. `collectDirectoryFiles` already skips
+  // linked entries, but a linked root or a linked ancestor is a location
+  // `validateWiki` never walks, so nothing behind one is a capture: the Spec
+  // stays visibly uncaptured (doctor) and its Task records keep waiting
+  // (discard), which is the same refusal `durableOwnerRefusal` names for a
+  // linked note.
+  try { assertSafeReadPath(root, featuresRoot); } catch { return null; }
+  let rootEntry = null;
+  try { rootEntry = fs.lstatSync(featuresRoot); } catch (error) { if (error.code !== 'ENOENT') throw error; }
+  if (!rootEntry?.isDirectory()) return null;
+  const historicalRoute = specHistoricalRoute(root, spec);
+  for (const file of collectDirectoryFiles(featuresRoot).sort()) {
+    if (!file.endsWith('.md') || path.basename(file) === 'README.md') continue;
+    try { assertSafeReadPath(root, file); } catch { continue; }
+    if (!fs.lstatSync(file).isFile()) continue;
+    const sources = parseFrontmatter(fs.readFileSync(file, 'utf8')).data?.source_paths;
+    if (!Array.isArray(sources) || !sources.includes(historicalRoute)) continue;
+    if (durableOwnerRefusal(root, spec.id, historicalRoute, file, { featureOnly: true }) === null) {
+      return path.relative(root, file).split(path.sep).join('/');
+    }
+  }
+  return null;
+}
+
+// S-00I TK-01U: `completeSpec` (S-00J TK-01S) records the observed main ref
+// and SHA in the completion evidence row; that row is what marks a Spec as
+// completed under the closure-capture contract. Specs completed before it
+// carry no such row and are never reported.
+function completedUnderCaptureContract(spec) {
+  return evidenceRows(spec.content).some((line) => {
+    const cells = parseMarkdownTableRow(line);
+    return cells[1] === 'spec' && cells[2] === 'Spec completed' && /approved delivery verified: \S+ at [0-9a-f]{7,40}\b/.test(cells[3] ?? '');
+  });
+}
+
+// Doctor's T4 visibility: a Spec completed under the contract with no
+// captured features article stays `complete` and is reported as attention.
+function uncapturedCompleteFindings(root, specs) {
+  const findings = [];
+  for (const spec of specs) {
+    if (spec.status !== 'complete' || !completedUnderCaptureContract(spec)) continue;
+    if (capturedFeatureArticle(root, spec)) continue;
+    findings.push(finding('uncaptured-complete', `${spec.id} is complete with main-verified closure but has no captured features article in ${collectionRelative(root, 'features')} naming ${specHistoricalRoute(root, spec)}; capture it before retirement or any record discard`, { specId: spec.id }));
+  }
+  return findings;
 }
 
 // S-00I TK-005: reconciles a completed Spec's surviving current claims into
@@ -2292,41 +2852,13 @@ export function retireSpec(rootDir, specId, options = {}) {
     throw new Error(`--wiki ${wikiNoteGiven} must name a note under the Wiki lane; a Spec cannot retire without a durable owner there`);
   }
   const wikiNoteRelative = path.relative(root, wikiNoteAbsolute).split(path.sep).join('/');
-  if (!fs.existsSync(wikiNoteAbsolute) || !fs.statSync(wikiNoteAbsolute).isFile()) {
-    throw new Error(`retire-spec found no Wiki note at ${wikiNoteRelative}; ${specId}'s surviving claims name no durable owner`);
-  }
-  const wikiNoteContent = fs.readFileSync(wikiNoteAbsolute, 'utf8');
-  const wikiFrontmatter = parseFrontmatter(wikiNoteContent).data;
-  if (!wikiFrontmatter) {
-    throw new Error(`${wikiNoteRelative} has no frontmatter; it cannot be ${specId}'s durable owner`);
-  }
-  if (!['design-concept', 'guidebook'].includes(wikiFrontmatter.type)) {
-    throw new Error(`${wikiNoteRelative} must declare type design-concept or guidebook to retire ${specId}, found ${wikiFrontmatter.type ?? 'none'}`);
-  }
-  if (!['canonical', 'curated'].includes(wikiFrontmatter.knowledge_role)) {
-    throw new Error(`${wikiNoteRelative} must declare knowledge_role canonical or curated to retire ${specId}, found ${wikiFrontmatter.knowledge_role ?? 'none'}`);
-  }
-  const sourcePaths = Array.isArray(wikiFrontmatter.source_paths) ? wikiFrontmatter.source_paths : [];
-  if (!sourcePaths.includes(historicalRoute)) {
-    throw new Error(`${wikiNoteRelative} source_paths must name ${specId}'s historical route ${historicalRoute}; found ${sourcePaths.join(', ') || 'none'}`);
-  }
-  const wikiFindings = validateWiki(root, { contentOverrides: new Map([[wikiNoteAbsolute, wikiNoteContent]]) })
-    .filter((item) => item.note === wikiNoteRelative && ['copied-task-state', 'invalid-note', 'secret-like-content'].includes(item.code));
-  if (wikiFindings.length > 0) {
-    throw new Error(`${wikiNoteRelative} fails Wiki validation, so it cannot be ${specId}'s durable owner: ${wikiFindings.map((item) => `${item.code}: ${item.message}`).join('; ')}`);
-  }
-  // Review corrective (Low): a note can satisfy every property check above
-  // and still be unreachable from a cold-start agent's actual entry point.
-  // `MEMORY.md` is the one router `SCHEMA.md`/`LEXICON.md` name; a relative
-  // link to the note's own path within the Wiki lane is the same fact
-  // `roomBrainRouting` in `wiki.mjs` already checks for the router itself,
-  // applied here to the note this Spec is about to depend on.
-  const memoryPath = path.join(wikiRoot, 'MEMORY.md');
-  const memoryContent = fs.existsSync(memoryPath) ? fs.readFileSync(memoryPath, 'utf8') : '';
-  const wikiNoteRelativeToWikiRoot = path.relative(wikiRoot, wikiNoteAbsolute).split(path.sep).join('/');
-  if (!memoryContent.includes(wikiNoteRelativeToWikiRoot)) {
-    throw new Error(`${wikiNoteRelative} is not linked from workbench/wiki/MEMORY.md (no relative link to ${wikiNoteRelativeToWikiRoot} found); a durable owner unreachable from the room brain is not routed`);
-  }
+  // S-00I TK-01U: the owner checks moved into `durableOwnerRefusal`, shared
+  // with Task discard and doctor, and now admit a features article beside the
+  // legacy design-concept and guidebook owners. Every refusal is still named
+  // before any write.
+  const ownerRefusal = durableOwnerRefusal(root, specId, historicalRoute, wikiNoteAbsolute);
+  if (ownerRefusal) throw new Error(ownerRefusal);
+  const ownerType = parseFrontmatter(fs.readFileSync(wikiNoteAbsolute, 'utf8')).data.type;
 
   // S-00J TK-005 has since landed `recordOwnerApproval` and its own
   // `approvalGapReason` (the owner Human QA counterpart to
@@ -2389,6 +2921,7 @@ export function retireSpec(rootDir, specId, options = {}) {
     specId,
     route: `${moveResult.to}/SPEC.md`,
     wikiNote: wikiNoteRelative,
+    ownerType,
     referencesRewritten: moveResult.referencesRewritten,
     referencesRewrittenCount,
     historicalReferencesLeft: moveResult.historicalReferencesLeft,
@@ -2502,25 +3035,68 @@ function parseWorktreeEntries(porcelain) {
 // computed yet). Resolve the most recent path addition, not the first one:
 // a removed and re-added route is a different incarnation whose containment
 // must be established independently.
-function resolveMovingCommit(root, relativePath) {
-  const result = spawnSync('git', ['-C', root, 'log', '--no-renames', '--diff-filter=A', '--format=%H', '-1', '--', relativePath], { encoding: 'utf8' });
-  if (result.status !== 0) return null;
-  const shas = result.stdout.split('\n').map((line) => line.trim()).filter(Boolean);
-  return shas.length > 0 ? shas[0] : null;
+// Git's default path history simplifies away merges, including a merge
+// restoring a deleted record from a retained side parent. Per-parent history
+// makes those additions visible. An ordinary import from a parent that never
+// carried the path is not a new incarnation; restoration after a deletion is.
+function discardHistory(root, args) {
+  const result = spawnSync('git', ['-C', root, ...args], { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
+  if (result.status !== 0) throw new Error(`Cannot verify discard history: ${result.stderr?.trim() || result.error?.message || 'Git read failed'}`);
+  return result.stdout;
 }
 
-// Recovery covers the whole directory at its latest change, including proof
-// files added after retirement. Both incarnation and content must be on main.
+function discardParents(root, commit) {
+  return discardHistory(root, ['rev-list', '--parents', '-n', '1', commit]).trim().split(' ').slice(1);
+}
+
+function resolveMovingCommit(root, relativePath) {
+  const additions = discardHistory(root, ['log', '--full-history', '--topo-order', '-m', '--no-renames', '--diff-filter=A', '--format=%H', 'HEAD', '--', relativePath]);
+  for (const commit of new Set(additions.trim().split('\n').filter(Boolean))) {
+    const parents = discardParents(root, commit);
+    const missingParents = parents.filter(parent => discardHistory(root, ['ls-tree', '-z', parent, '--', relativePath]) === '');
+    // A root commit or a new path absent from every parent introduces it.
+    if (missingParents.length === parents.length) return commit;
+    for (const parent of missingParents) {
+      const deleted = discardHistory(root, ['log', '--full-history', '-m', '--no-renames', '--diff-filter=D', '--format=%H', '-1', parent, '--', relativePath]);
+      if (deleted.trim()) return commit;
+    }
+  }
+  return null;
+}
+
+// Recover the complete current directory, not just its primary record. Walk
+// exact tree-preserving parent edges, rather than trusting simplified log's
+// chosen side. A merge creating a new combination is itself a content origin;
+// an ordinary non-FF import follows the parent that actually supplied it.
+// Every surviving origin must be main-contained before one can be printed.
 function recoveryIdentity(root, relativeDir, remoteRef) {
-  const result = spawnSync('git', ['-C', root, 'log', '-1', '--format=%H', '--', relativeDir], { encoding: 'utf8' });
-  const commit = result.stdout?.trim();
-  if (result.status !== 0 || !commit || spawnSync('git', ['-C', root, 'merge-base', '--is-ancestor', commit, remoteRef]).status !== 0) {
+  const treeCache = new Map();
+  const tree = commit => {
+    if (!treeCache.has(commit)) {
+      const entry = discardHistory(root, ['ls-tree', '-z', commit, '--', relativeDir]);
+      const match = /^040000 tree ([0-9a-f]+)\t([^\0]+)\0$/.exec(entry);
+      treeCache.set(commit, match?.[2] === relativeDir ? match[1] : null);
+    }
+    return treeCache.get(commit);
+  };
+  const head = discardHistory(root, ['rev-parse', '--verify', 'HEAD^{commit}']).trim();
+  const currentTree = tree(head);
+  if (!currentTree) throw new Error('discard recovery commit does not match the complete current directory');
+  const pending = [head];
+  const seen = new Set();
+  const origins = [];
+  while (pending.length) {
+    const commit = pending.pop();
+    if (seen.has(commit)) continue;
+    seen.add(commit);
+    const matchingParents = discardParents(root, commit).filter(parent => tree(parent) === currentTree);
+    if (matchingParents.length) pending.push(...matchingParents);
+    else origins.push(commit);
+  }
+  if (origins.length === 0 || origins.some(commit => spawnSync('git', ['-C', root, 'merge-base', '--is-ancestor', commit, remoteRef]).status !== 0)) {
     throw new Error(`discard current directory content is not verified contained in ${remoteRef}`);
   }
-  const tree = ref => spawnSync('git', ['-C', root, 'rev-parse', `${ref}:${relativeDir}`], { encoding: 'utf8' });
-  const recovered = tree(commit);
-  const current = tree('HEAD');
-  if (recovered.status !== 0 || current.status !== 0 || recovered.stdout !== current.stdout) throw new Error('discard recovery commit does not match the complete current directory');
+  const commit = origins[0];
   const quotedDir = /^[A-Za-z0-9_./-]+$/.test(relativeDir) ? relativeDir : "'" + relativeDir.replaceAll("'", "'\"'\"'") + "'";
   return { recoveryCommit: commit, recoveryCommand: `git checkout ${commit} -- ${quotedDir}` };
 }
@@ -2562,9 +3138,45 @@ function stageDiscard(root) {
 function resolveDefaultBranchRemoteRef(root) {
   const defaultBranch = declaredGit(root)?.defaultBranch ?? null;
   if (!defaultBranch) return { defaultBranch: null, remoteRef: null };
-  const remoteRef = `origin/${defaultBranch}`;
-  const hasRemoteRef = spawnSync('git', ['-C', root, 'show-ref', '--verify', '--quiet', `refs/remotes/${remoteRef}`]).status === 0;
-  return { defaultBranch, remoteRef: hasRemoteRef ? remoteRef : null };
+  return { defaultBranch, remoteRef: resolveRemoteTrackingRef(root, defaultBranch) };
+}
+
+// `origin/<branch>` when that remote-tracking ref exists locally, else
+// `null`. Reads local refs only; never fetches.
+function resolveRemoteTrackingRef(root, branch) {
+  const remoteRef = `origin/${branch}`;
+  return spawnSync('git', ['-C', root, 'show-ref', '--verify', '--quiet', `refs/remotes/${remoteRef}`]).status === 0 ? remoteRef : null;
+}
+
+function resolveCommit(root, ref) {
+  const result = spawnSync('git', ['-C', root, 'rev-parse', '--verify', '--quiet', `${ref}^{commit}`], { encoding: 'utf8' });
+  return result.status === 0 ? result.stdout.trim() || null : null;
+}
+
+// S-00J TK-002N: the one ref integration containment is checked against -
+// the declared integration branch's remote-tracking ref (`origin/<branch>`,
+// the same resolution TK-01S's default-branch delivery check uses) when it
+// exists, otherwise the local branch. In a shared repository the local
+// `integration` branch is held by another checkout and can lag far behind
+// `origin/integration`; reading the remote-tracking ref keeps that stale
+// local ref from hiding reviewed delivery, and keeps an unpushed local
+// branch from counting as delivery. A room with no remote keeps using its
+// local branch. Local refs only; nothing is fetched, so a stale fetch is
+// named by `sha` (and `localSha`) for the caller to show. `source` is
+// `remote-tracking`, `local`, or `undeclared` (no `git.integrationBranch`,
+// `ref` null: nothing to check against).
+export function resolveIntegrationContainmentRef(root) {
+  const branch = declaredGit(root)?.integrationBranch ?? null;
+  if (!branch) return { branch: null, ref: null, source: 'undeclared', sha: null, localSha: null };
+  const remoteRef = resolveRemoteTrackingRef(root, branch);
+  const ref = remoteRef ?? branch;
+  return {
+    branch,
+    ref,
+    source: remoteRef ? 'remote-tracking' : 'local',
+    sha: resolveCommit(root, ref),
+    localSha: resolveCommit(root, `refs/heads/${branch}`)
+  };
 }
 
 // The tracked, append-only discards register this lane defines: a Spec or
@@ -2751,9 +3363,11 @@ export function discardRetiredSpec(rootDir, specId) {
 // S-00I TK-006: discards one retired Task record. A Task carries no
 // evidence-log analogue and `moveTaskRecord` requires no Wiki note at all
 // (only its own Proof/Receipt evidence, already satisfied before it could
-// retire) - so there is no durable-owner gate to repeat here; the
-// containment, dirty-tree and reference-scan gates are the same three that
-// apply to a Spec. Fixture-only: no room in this repository has ever
+// retire); the containment, dirty-tree and reference-scan gates are the same
+// three that apply to a Spec. S-00I TK-01U adds the one owner gate the
+// closure-capture contract puts before T6: the parent Spec must already be
+// captured into a features article (`capturedFeatureArticle`, the predicate
+// retirement shares). Fixture-only: no room in this repository has ever
 // retired a Task into `tasks/retired/`.
 export function discardRetiredTask(rootDir, specId, taskId) {
   const root = path.resolve(rootDir);
@@ -2787,6 +3401,13 @@ export function discardRetiredTask(rootDir, specId, taskId) {
   const references = referencesToPath(root, taskDir);
   if (references.length > 0) {
     throw new Error(`${specId}/${taskId} cannot discard: a complete reference scan still finds ${references.length} current reference(s) naming it, starting with ${references[0].file} -> ${references[0].target}`);
+  }
+  // S-00I TK-01U (closure-capture contract T4 before T6): Task records,
+  // live or retired and including missed attempts, stay until the parent
+  // Spec is captured into a features article. Moving a done Task into
+  // `tasks/retired/` stays allowed; only discard waits.
+  if (!capturedFeatureArticle(root, spec)) {
+    throw new Error(`${specId}/${taskId} cannot discard: its parent Spec ${specId} has no captured features article (a validated type feature note in ${collectionRelative(root, 'features')} naming ${specHistoricalRoute(root, spec)} in source_paths and routed from MEMORY.md); Task records wait for features capture`);
   }
 
   const parentCommit = spawnSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).stdout.trim();
@@ -2953,6 +3574,8 @@ export function referencesToPath(rootDir, targetPath, options = {}) {
 function publicSpec(spec) {
   return {
     id: spec.id,
+    // S-01W TK-002O: present only on a record `widen-id` widened.
+    ...(spec.formerId ? { formerId: spec.formerId } : {}),
     title: spec.title,
     status: spec.status,
     priority: spec.priority,
@@ -3206,15 +3829,16 @@ async function main() {
   }
   else if (command === 'move-spec') result = moveSpecDirectory(root, id, options.to);
   else if (command === 'move-task') result = moveTaskRecord(root, id, options.task, options.to);
+  else if (command === 'widen-id') result = widenId(root, id, { spec: options.spec });
   else if (command === 'retire-spec') result = retireSpec(root, id, { wikiNote: options.wiki });
   else if (command === 'discard') result = options.task ? discardRetiredTask(root, id, options.task) : discardRetiredSpec(root, id);
-  else if (command === 'render') result = render(root);
+  else if (command === 'render') result = render(root, { format: options.format });
   else if (command === 'doctor') {
     doctorRun = doctorCommand(root, options);
     result = doctorRun.json;
     process.exitCode = doctorRun.exitCode;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|approve|move-spec|move-task|retire-spec|discard|render|doctor [S-###] [options] (discard S-### [--task TK-###]; doctor [--host]; next|claim|close [--capabilities a,b]; next|claim [--local]; claim [--branch NAME])');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|approve|move-spec|move-task|widen-id|retire-spec|discard|render|doctor [S-###] [options] (widen-id S-###|TK-### [--spec S-###]; discard S-### [--task TK-###]; doctor [--host]; next|claim|close [--capabilities a,b]; next|claim [--local]; claim [--branch NAME])');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);

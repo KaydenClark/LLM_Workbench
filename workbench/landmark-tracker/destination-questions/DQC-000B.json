@@ -1,0 +1,280 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000B",
+  "revision": 4,
+  "title": "GitHub Issues as the required live coordination authority",
+  "question": "Which owner holds live assignment, the active Worker, operational holds and the next hand-back during normal delivery, and how does that authority replace pushed Task-branch claims without two claim authorities?",
+  "answer": "GitHub Issues is required live coordination for normal delivery, not an optional mirror. Issues own live assignment, the active Worker, operational holds and the next hand-back through bounded trusted operations; the request, Contract and assigned Spec and Task keep scope, requirements, acceptance and permission; native pull requests and exact commits express candidate and review activity through Workbench gates; repository evidence owners keep receipts, acceptance and owner approval. Directors resolve assignment races and the owner-designated coordinator Vespar breaks v4 ties. ADR-000O's pushed Task-branch remote-tip claim is superseded for v4 only at a separately reviewed cutover that leaves exactly one active claim authority. Issue prose, an assignee or status alone, labels and bot messages never enlarge authority, prove exclusivity or manufacture independent review or QA. Visible error and pending state and refusal of unverifiable unsafe assignments or writes are required; no atomic lock, custom scheduler or second queue.",
+  "confirmation": {
+    "basis": "Owner approved superseding ADR-000O and settled required Issue coordination, Director race resolution with the Vespar tie-break, and the ownership split; relayed as settled in the 2026-10-01 coordinating assignment. Trusted actor identities and migration mechanics are not confirmed.",
+    "revision": 3
+  },
+  "expectedResult": {
+    "change": "Record the accepted destination, retained ADR-000O rationale, one-authority cutover conditions and current gaps in a proposed superseding ADR; later reconcile the shared controls and S-00V through their owners and plan the claim capability in a separately assigned Spec.",
+    "home": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md; later AGENTS.md; LEXICON.md; BLUEPRINT.md; RUNBOOK.md; workbench/specs/S-00V-portable-workbench/SPEC.md",
+    "revision": 3
+  },
+  "result": null,
+  "uncertainty": [
+    "Trusted actor mechanics are open: which GitHub identities (owner account, GitHub App or per-agent accounts) perform trusted Issue operations, and how Director race outcomes and Vespar tie-breaks are attributed verifiably.",
+    "GitHub write capability is unverified: on 2026-10-01 the Claude cloud Workbench session read Issues and pull requests through the GitHub connector, the gh CLI token was invalid, and no write was probed.",
+    "Migration of in-progress pushed Task-branch claims (S-00V TK-01L runtime) into Issue assignment is unplanned."
+  ],
+  "sources": [
+    {
+      "id": "github-coordination-to-docs-2026-09-30",
+      "revision": "2780fe66754abf69b2ab6dea23337a7be0f6d801"
+    },
+    {
+      "id": "github-coordination-to-spec-2026-09-30",
+      "revision": "2780fe66754abf69b2ab6dea23337a7be0f6d801"
+    },
+    {
+      "id": "ADR-000O",
+      "revision": "065a7ce4436e46ae6726985b567b6b94ed94660c"
+    },
+    {
+      "id": "S-00V",
+      "revision": "065a7ce4436e46ae6726985b567b6b94ed94660c"
+    },
+    {
+      "id": "S-002C",
+      "revision": "065a7ce4436e46ae6726985b567b6b94ed94660c"
+    },
+    {
+      "id": "AGENTS.md",
+      "revision": "065a7ce4436e46ae6726985b567b6b94ed94660c"
+    }
+  ],
+  "landmarks": [
+    "LMK-000A"
+  ],
+  "assessment": {
+    "contributions": {
+      "Aligning": 0.2,
+      "Confirmed": 0.8
+    },
+    "basis": "Five named claims: C1-C4 carry scoped owner confirmation and are recorded in proposed ADR-000Q; C5 is open alignment. No destination owner is reconciled yet, so nothing is Mapped.",
+    "evidence": [
+      "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+    ],
+    "revision": 4
+  },
+  "related": [],
+  "claims": [
+    {
+      "key": "C1",
+      "text": "GitHub Issues is required live coordination for normal delivery, not an optional mirror.",
+      "revision": 4,
+      "evidence": [
+        {
+          "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8",
+          "revision": 4
+        }
+      ],
+      "affected": []
+    },
+    {
+      "key": "C2",
+      "text": "Directors resolve assignment races and the owner-designated coordinator Vespar breaks v4 ties.",
+      "revision": 4,
+      "evidence": [
+        {
+          "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8",
+          "revision": 4
+        }
+      ],
+      "affected": []
+    },
+    {
+      "key": "C3",
+      "text": "ADR-000O is superseded for v4 only at a separately reviewed cutover that leaves exactly one active claim authority.",
+      "revision": 4,
+      "evidence": [
+        {
+          "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8",
+          "revision": 4
+        }
+      ],
+      "affected": []
+    },
+    {
+      "key": "C4",
+      "text": "Issue prose, an assignee or status alone, labels and bot messages never enlarge authority, prove exclusivity or manufacture independent review or QA.",
+      "revision": 4,
+      "evidence": [
+        {
+          "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8",
+          "revision": 4
+        }
+      ],
+      "affected": []
+    },
+    {
+      "key": "C5",
+      "text": "The trusted GitHub actor identities for Issue operations, and verifiable attribution of Director and Vespar decisions, are not yet settled.",
+      "revision": 4,
+      "evidence": [
+        {
+          "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8",
+          "revision": 4
+        }
+      ],
+      "affected": []
+    }
+  ],
+  "origin": {
+    "title": "GitHub Issues as the required live coordination authority",
+    "question": "Which owner holds live assignment, the active Worker, operational holds and the next hand-back during normal delivery, and how does that authority replace pushed Task-branch claims without two claim authorities?",
+    "sources": [
+      {
+        "id": "github-coordination-to-docs-2026-09-30",
+        "revision": "2780fe66754abf69b2ab6dea23337a7be0f6d801"
+      },
+      {
+        "id": "github-coordination-to-spec-2026-09-30",
+        "revision": "2780fe66754abf69b2ab6dea23337a7be0f6d801"
+      },
+      {
+        "id": "ADR-000O",
+        "revision": "065a7ce4436e46ae6726985b567b6b94ed94660c"
+      },
+      {
+        "id": "S-00V",
+        "revision": "065a7ce4436e46ae6726985b567b6b94ed94660c"
+      },
+      {
+        "id": "S-002C",
+        "revision": "065a7ce4436e46ae6726985b567b6b94ed94660c"
+      },
+      {
+        "id": "AGENTS.md",
+        "revision": "065a7ce4436e46ae6726985b567b6b94ed94660c"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T01:54:49.239Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T01:54:49.239Z",
+      "reason": "Capture the owner-accepted GitHub Issues coordination direction (two untracked 2026-09-30 handoffs written against 2780fe6, relayed as settled in the 2026-10-01 coordinating assignment) before any Landmark, Spec or ADR. Handoff identities are lineage only, not durable evidence.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T01:55:06.640Z",
+      "reason": "This concept is part of the GitHub Coordination pillar.",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000A"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T01:56:05.507Z",
+      "reason": "Promote the settled answer and its scoped confirmation; open mechanics stay as uncertainty.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "GitHub Issues is required live coordination for normal delivery, not an optional mirror. Issues own live assignment, the active Worker, operational holds and the next hand-back through bounded trusted operations; the request, Contract and assigned Spec and Task keep scope, requirements, acceptance and permission; native pull requests and exact commits express candidate and review activity through Workbench gates; repository evidence owners keep receipts, acceptance and owner approval. Directors resolve assignment races and the owner-designated coordinator Vespar breaks v4 ties. ADR-000O's pushed Task-branch remote-tip claim is superseded for v4 only at a separately reviewed cutover that leaves exactly one active claim authority. Issue prose, an assignee or status alone, labels and bot messages never enlarge authority, prove exclusivity or manufacture independent review or QA. Visible error and pending state and refusal of unverifiable unsafe assignments or writes are required; no atomic lock, custom scheduler or second queue."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Owner approved superseding ADR-000O and settled required Issue coordination, Director race resolution with the Vespar tie-break, and the ownership split; relayed as settled in the 2026-10-01 coordinating assignment. Trusted actor identities and migration mechanics are not confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "Record the accepted destination, retained ADR-000O rationale, one-authority cutover conditions and current gaps in a proposed superseding ADR; later reconcile the shared controls and S-00V through their owners and plan the claim capability in a separately assigned Spec.",
+            "home": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md; later AGENTS.md; LEXICON.md; BLUEPRINT.md; RUNBOOK.md; workbench/specs/S-00V-portable-workbench/SPEC.md",
+            "revision": 3
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T01:56:35.729Z",
+      "reason": "Name the documentation claims and assess against the committed proposed ADR.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": {
+            "Aligning": 0.2,
+            "Confirmed": 0.8
+          }
+        },
+        {
+          "field": "claim",
+          "claim": "C1",
+          "from": null,
+          "to": "GitHub Issues is required live coordination for normal delivery, not an optional mirror."
+        },
+        {
+          "field": "claim",
+          "claim": "C2",
+          "from": null,
+          "to": "Directors resolve assignment races and the owner-designated coordinator Vespar breaks v4 ties."
+        },
+        {
+          "field": "claim",
+          "claim": "C3",
+          "from": null,
+          "to": "ADR-000O is superseded for v4 only at a separately reviewed cutover that leaves exactly one active claim authority."
+        },
+        {
+          "field": "claim",
+          "claim": "C4",
+          "from": null,
+          "to": "Issue prose, an assignee or status alone, labels and bot messages never enlarge authority, prove exclusivity or manufacture independent review or QA."
+        },
+        {
+          "field": "claim",
+          "claim": "C5",
+          "from": null,
+          "to": "The trusted GitHub actor identities for Issue operations, and verifiable attribution of Director and Vespar decisions, are not yet settled."
+        },
+        {
+          "field": "claim-evidence",
+          "claim": "C1",
+          "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+        },
+        {
+          "field": "claim-evidence",
+          "claim": "C2",
+          "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+        },
+        {
+          "field": "claim-evidence",
+          "claim": "C3",
+          "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+        },
+        {
+          "field": "claim-evidence",
+          "claim": "C4",
+          "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+        },
+        {
+          "field": "claim-evidence",
+          "claim": "C5",
+          "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+        }
+      ]
+    }
+  ]
+}

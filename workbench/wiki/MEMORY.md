@@ -70,6 +70,7 @@ they are authored.
 - [Checkpoint: route a retired request to current continuity](skill-checkpoint.md)
 - [Auditor: check named claims against pinned evidence](skill-auditor.md)
 - [Make-it-so: carry approved work to the endpoint the owner named](skill-make-it-so.md)
+- [Carry: take assigned work to its authorized endpoint](skill-carry.md) ([S-01C](../specs/S-01C-carry-skill-rebuild/SPEC.md))
 - [To-spec: turn a settled decision into one bounded Spec](skill-to-spec.md)
 - [Save: persist authorized work and prove where it landed](skill-save.md)
 - [Handoff: pass one objective to a named recipient](skill-handoff.md) ([S-01A](../specs/S-01A-handoff-skill-rebuild/SPEC.md))
@@ -77,6 +78,14 @@ they are authored.
 - [To-tasks: cut an activated Spec into executable Tasks](skill-to-tasks.md)
 - [Adoption: bring an existing project into the Workbench once](skill-adoption.md)
 - [Genesis: start a new room from a founding prompt](skill-genesis.md)
+
+## Planned And Optional Skill References
+
+[Domain Modeling: sharpen the Workbench's language as decisions form](skill-domain-modeling.md)
+explains the optional personal method and the proposed Workbench adaptation.
+[Domain Modeling Skill for the Workbench - S-002H](../specs/S-002H-domain-modeling-skill/SPEC.md)
+keeps its required-room versus optional-extension distribution choice open.
+This route does not claim that every room can discover the skill today.
 
 ## Release And Distribution Routing
 
@@ -91,6 +100,8 @@ copying task state here.
 Every unique grilling question put to the owner, with its answer, reason and
 intended result, is recorded in
 [grilling-destination-audit-ledger.json](grilling-destination-audit-ledger.json).
+Its progress assessment is historical and pinned; use the linked Specs and current
+Taskboard for delivery state. The [v4 reconciliation receipt](../specs/S-00O-workbench-v4-0-0-release/INTEGRATION-RECONCILIATION.md) identifies recovered sources, branch-only work and remaining gaps.
 That JSON file is the ledger itself, not a projection: readable views are
 rendered from it and never edited by hand. It is the destination the v4
 Workbench is audited against; look a question up by its `id`, or audit one
@@ -113,6 +124,15 @@ That article is this capability's durable owner, reconciled from
 [ADR-000H](../docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md);
 this route preserves the retired Spec's historical reachability without
 copying its evidence log here.
+
+## Roles And Stances
+
+[Roles and stances](design-concepts/roles-and-stances.md) explains scope versus job and routes to each separately owned capability.
+
+- [Director](skill-director.md): the whole project and its integration branch; assign one Spec to each Dispatcher, name one writer per shared artifact, route separate-context review of each candidate and leave Human QA and main promotion to the owner
+- [Dispatcher](skill-dispatcher.md): one Spec and its branch; plan its Tasks, dispatch Workers to one durable writer, verify the assembled Spec and hand the candidate to the Director
+- [Spec Planner](skill-spec-planner.md): the Dispatcher's flight-launch stance; plan one assigned Spec from live Actuality into small complete-path Tasks with one writer per shared file and hand the plan to Spec Manager
+- [Spec Manager](skill-spec-manager.md): the Dispatcher's execution stance; dispatch Workers to ready non-conflicting Tasks, hold conflicting writes under one writer, assess hand-backs against their commits and report the assembled candidate to the Director
 
 ## Agent Operating Knowledge
 
@@ -148,6 +168,7 @@ The provenance of every promoted and excluded memory file is in
 | [docs/adr/REGISTER.md](../docs/adr/REGISTER.md) | The derived register of decision records |
 | [SCHEMA.md](SCHEMA.md) | Wiki CRUD, metadata, sensitivity, and freshness rules |
 | [design-concepts/](design-concepts/README.md) | Owner-directed articles explaining durable design models |
+| [features/](features/README.md) | Readable articles capturing each completed Spec's delivered capability (empty) |
 | [guidebooks/](guidebooks/) | Ordered procedures that outgrew the Runbook (empty) |
 
 ## Routing
@@ -159,7 +180,9 @@ The provenance of every promoted and excluded memory file is in
 
 This product repository keeps no personal, machine, or deployment notes; it is
 a `project` profile wiki. `guidebooks/` ships empty until the owner directs
-one; `design-concepts/` carries the owner-directed articles routed above.
+one; `design-concepts/` carries the owner-directed articles routed above;
+`features/` stays empty until a completed Spec is captured at its closure
+point.
 
 ## Up-Link
 
@@ -191,6 +214,7 @@ proof from current behavior. Original records remain intact pending lifecycle ga
 - [Operable Genesis Readiness](design-concepts/spec-S-015-portable-v3-release-audit-recovery.md)
 - [Bounded Team Coordination (S-020)](design-concepts/spec-S-020-spec-native-team-coordination.md)
 - [Portable Workbench Architecture (S-021)](design-concepts/spec-S-021-portable-workbench-v3.md)
+- [Historical v3.1 Release Packet (S-022)](design-concepts/spec-S-022-llm-workbench-v3-1-release.md)
 - [Manifest And Managed Runtime (S-023)](design-concepts/spec-S-023-manifest-and-managed-runtime.md)
 - [Governance Claims And Diagnostics (S-024)](design-concepts/spec-S-024-governance-core-and-diagnostics.md)
 - [Portable Wiki Knowledge (S-025)](design-concepts/spec-S-025-portable-wiki-and-design-concepts.md)

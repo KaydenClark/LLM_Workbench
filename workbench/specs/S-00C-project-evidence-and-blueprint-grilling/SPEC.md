@@ -11,7 +11,7 @@
 **Latest event:** Spec completed and removed from the hot board.
 **Next gate:** none
 
-> **Citation anchors.** pre=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2` post=`6e5b0807688c0eed86d1ef3c5759f1c7742456eb`.
+> **Citation anchors.** pre=`340e80a1b4f1af92afbbe3a974e7de3d4cb679b7` post=`6e5b0807688c0eed86d1ef3c5759f1c7742456eb`.
 
 ## Outcome
 
@@ -86,6 +86,8 @@ and the derived project owner's own durable records.
 | 2026-09-09 | spec | Owner activated the named S-00A through S-00E run for v3.2.1; manager is the single durable spec writer | Recovered c0ac60a integration and completed A/B records; guardrail baseline 78/100 | Existing ticket preserved as a complete CLI/input-to-output/test slice; no new coordination store | Implementation and exact-candidate review remain; zero coordination hand-backs |
 | 2026-09-09 | TK-00D | Ticket closed | e935ac3 full44:43PASS plus stale doc-command selector repaired2f01f31; notepads50/50PASS; source/privacy CLI PASS; native Puffer intake4sources2openquestions | Runtime inventory, grilling/Genesis skills, Runbook, Wiki routing and evidence updated | Combined exact-candidate review and integration remain with the assigned v3.2.1 run |
 | 2026-09-09 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
+| 2026-09-30 | spec | PR77 corrects the live pre-implementation anchor from the invalid full SHA 340e80a4b9cf6e07ca30f3a5f406b93998d48ed2; historical evidence and completion status remain preserved | Public introducing commit ea4fac899db22a421a5872b83fc39ebff00601cb created S-00A through S-00E with direct parent 340e80a1b4f1af92afbbe3a974e7de3d4cb679b7 (tree 3d63e1ac30800a34aa7254a053a567a5b0d8070c, Record v3.2.0 upstream integration); git rev-parse of the original seven-character prefix resolves that parent | Only the live pre anchor is corrected; post anchor and original proof files remain unchanged | Frozen citation corpus verification and independent PR77 review remain required |
+
 
 ## Completion Result
 

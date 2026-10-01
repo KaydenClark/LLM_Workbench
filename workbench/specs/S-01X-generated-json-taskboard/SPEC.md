@@ -1,15 +1,15 @@
 # S-01X - Generated JSON Taskboard
 
 **Spec ID:** S-01X
-**Status:** planned
+**Status:** active
 **Priority:** 1
-**Owner:** claude-lane-I
+**Owner:** codex-servitor-pr-resolution
 **Stance:** Builder
-**Updated:** 2026-09-26
+**Updated:** 2026-09-30
 **Catalog description:** Replace the Markdown Spec summary with a generated six-lane implementation board, shared lane selection and title-first room-core sitrep.
-**Blockers:** S-01W identity delivery precedes board implementation.
-**Latest event:** Lane I rebuilt the S-00O planning packet on integration 1a6f6e0 and re-allocated this Spec as S-01X (the draft's S-01V identity was renumbered with S-01W); no Tasks allocated or runtime changed.
-**Next gate:** After S-01W's first delivery, Lane I cuts the first bounded board Task with `next-id` and publishes the board contract for S-00V's Taskboard consumer.
+**Blockers:** S-01W first identity/consumer delivery is contained in integration; its claimed assembled QA remains separate. Direct-Task coverage awaits its source-home contract.
+**Latest event:** TK-003S closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 
@@ -48,9 +48,24 @@ new selection/review behavior is implemented by this record.
 The S-00O draft (unmerged candidate 34dfa2f) allocated this record as S-01V.
 The Lane I rebuild on integration 1a6f6e0 re-ran supported `next-id` after
 S-01W was in the tree, which returned S-01X; this record retains S-01X until
-supported touch migration applies. Empty `tasks/.gitkeep` makes the Spec record-backed
-with no allocated implementation slices, matching the current parser rather
-than creating speculative Task IDs. Task IDs come from `next-id` on the current integration tip; no lease holds.
+supported touch migration applies. At that planning anchor, empty `tasks/.gitkeep`
+made the Spec record-backed with no allocated implementation slices. TK-003O
+now owns the first opt-in preview from integration
+`2c47d96239dd48f17969e4d5fa8f668850c2ecfe`; later slices remain proposals.
+Task IDs come from `next-id` on the current integration tip; no lease holds.
+
+Stage 1, including TK-003P's normalized-field correction, is independently
+reviewed and contained through PR228 at integration
+`2780fe66754abf69b2ab6dea23337a7be0f6d801`. TK-003Q now owns stage 2A:
+source-qualified shared lane/eligibility, ordinary To-do-only dispatch and
+dependency visibility. The opt-in preview and default Markdown remain separate
+render boundaries. Source needs-review/review mode, minimal Backlog validation
+and the later rollout remain unfinished; no whole-Spec criterion is checked.
+PR229 exact ac0d5669c8dd8e661153e472844e9d130e756082 independently failed with
+one P2: malformed Task priority or legacy table status aborts Git-backed
+doctor JSON. TK-003R owns that diagnostic correction; the final reviewer
+otherwise passed full51, focused23, demo and append-only history.
+
 
 ## Desired Behavior
 
@@ -131,8 +146,10 @@ version stamping, installed Template proof and whole-workflow readiness.
 
 ## Vertical Implementation Slices
 
-These are unallocated proposals, not executable Tasks. The Dispatcher cuts
-records only from live Actuality after lane release.
+TK-003O owns the first proposal below; TK-003Q delivered the bounded stage-2A
+implementation checkpoint and TK-003R corrects its independent diagnostic P2.
+The remaining proposals are not executable Tasks; records are cut only from
+live Actuality after lane release.
 
 1. **First vertical slice: public JSON render fixture.** Add a bounded fixture
    around the existing public render command that writes schema-v1 JSON from
@@ -210,6 +227,25 @@ records only from live Actuality after lane release.
 
 ## Testing Seams
 
+TK-003O implements only the temporary public `render --format json` preview,
+writing `TASKBOARD.preview.json`. The pure calculator consumes the existing
+parsed live/retired owners, derives six lanes and child progress, orders cards
+by priority/title/WBID and refuses ambiguous flat keys. Existing numeric Task
+source scope remains valid; a flat collision names both sources rather than
+renaming or dropping a record. Metadata is read from normalized source fields or an
+explicit status/folder derivation; unknown dates, assignees and approvers stay
+unknown. The runtime registry includes the helper so installed Markdown
+commands still resolve their imports. This is packaging, not the root switch.
+
+`node tools/test-taskboard-json.mjs --demo` demonstrates all lanes through the
+public command in a disposable room. The focused suite also checks source
+regeneration, edited-output restoration, invalid-source no-write refusal,
+symlink/hardlink output refusal and default Markdown/CATALOG byte parity.
+All acceptance boxes stay open: Task review vocabulary,
+minimal Backlog readers, required-QA presentation, direct/orphan Task coverage,
+sitrep, installed JSON consumer/root switch and assembled review remain later
+delivery. The preview does not claim those gates from structural green tests.
+
 Public render, next, claim, doctor, review, move/discard and installed update
 operations in disposable rooms. Initial opt-in JSON fixture seam is specified
 by the first Task before implementation; future flags are not invented here.
@@ -247,11 +283,43 @@ occurs during this planning authoring.
 | 2026-09-26 | none | Director released supported bootstrap S-01V (draft ID, now S-01X) after S-01U (draft ID, now S-01W) render/doctor; Worker authored planned record with empty record-backed tasks directory. | Source baseline 89d4042 clean detached; read-only doctor passed with seven attention findings. Ledger E rows and latest decision-023 origin checked. Authored record render/show/doctor pending. | Accepted generated/reproducible correction and earlier persistent-marker lineage preserved; no Task IDs allocated. | Runtime, delivery Tasks, review, Human QA and release proof remain pending. |
 | 2026-09-26 | none | Planned S-01X self-check after authoring, no runtime changes. | Public render succeeded (97 Specs); show S-01V (draft ID, now S-01X) resolved this record; doctor passed with zero blockers and the same seven attention findings. | Source-linked planning owner and empty tasks/.gitkeep checked; Dispatcher owns combined projections and candidate proof. | Implementation and full candidate verification remain pending. |
 | 2026-09-26 | none | Lane I (claude-lane-I) rebuilt unmerged S-00O planning candidate 34dfa2f onto integration 1a6f6e0: PR #161 had taken S-01U, so supported `next-id` re-allocated the identity Spec as S-01W and then the board Spec as S-01X; every reference in S-00O, S-01W, S-01X and the direct-Task proposal was renumbered and the stale Task-ID lease wording removed (no lease holds). | `next-id --prefix S` returned S-01W on clean integration 1a6f6e0 and, with both records present, the next free Spec ID after S-01X; render then doctor (no blocking finding) on the committed candidate and in a fresh clone of the pushed branch; the full suite, separate-context review and verdict are recorded by the landing PR's own evidence, not claimed here | This Spec, S-01W, S-00O, TASKBOARD.md, CATALOG.md | S-01W first delivery, then the first board Task and the S-00V consumer contract. S-00V's pre-existing mentions of the never-allocated draft ID S-01V (SPEC and TK-00G/TK-00K/TK-01L/TK-01M) are Lane F-owned; TK-01M assigns the re-point to the S-00V dispatcher, whose in-flight branch replaces them with S-00O pending this allocation and will re-point to S-01X |
+| 2026-09-30 | TK-003O | First opt-in JSON Task activated | Explicit parent release from integration 2c47d96239dd48f17969e4d5fa8f668850c2ecfe; S-01W first identity/consumer delivery is in integration, while claimed TK-002R QA remains separate; native next-id and convert-tasks --activate | Fixed preview boundary render --format json; default Markdown and all later criteria remain open | JSON implementation, required checks and independent exact-candidate review pending; no root switch, identity or QA takeover |
+
+| 2026-09-30 | TK-003O | Public preview behavior implemented; first-slice checkpoint | Corrected test-only ec18730a69d57db26bec32f7bec77201eabf10d7 produced nine expected failures with runtime unchanged; node tools/test-taskboard-json.mjs now passes nine groups and --demo shows six lanes in under one minute; full immutable-candidate checks pending | RUNBOOK render procedure, Task boundary and Spec implementation status; no template rewrite during opt-in migration | All whole-Spec criteria and owner QA remain open; independent exact-head Task review pending |
+| 2026-09-30 | TK-003O | Task closed | Exact implementation e7bd9789c15e59c8bfa4c8c84aa04e165626f67d: all 51 required local commands PASS (48 AGENTS plus three RUNBOOK); nine public JSON regression groups PASS; node tools/test-taskboard-json.mjs --demo under one minute. Red ec18730a69d57db26bec32f7bec77201eabf10d7 had nine expected preview failures with runtime unchanged. Self-drift pre/post retained seven existing findings (inspection pre also detached); guardrails unchanged 78/100 with four recommendations; no clean-update or owner QA claim. | RUNBOOK render procedure, S01X source boundary and TK003O implementation/proof; templates unchanged for temporary opt-in preview. | Independent exact-head Task PR review pending; whole-Spec criteria remain unchecked. Shared selection/review vocabulary, flat legacy-ID reconciliation before root switch, direct/orphan Task coverage, sitrep and canonical root/template rollout remain later slices. S01W claimed QA remains separate. |
+| 2026-09-30 | review | Review verdict: fail at 7a1746843200ca14243ff6337ce2345103f6eac3 [723a1035108c] #1 | P2: TK-003O preview field guard disagrees with the whole-document normalized source parser: a body duplicate Status or whitespace-normalized Status key is accepted at 7a1746843200ca14243ff6337ce2345103f6eac3 and overwrites existing JSON while moving active Spec with done children into Complete. Align preview validation with actual key/value normalization and preserve output on refusal. | Independent PR228 exact-head reviewer in a separate context (reported by source coordinator), model and mode identity unrecorded | 1 |
+
+| 2026-09-30 | TK-003P | Normalized-field preview correction implemented | Independent FAIL1 at exact 7a1746843200ca14243ff6337ce2345103f6eac3 preserved; both public reproducers returned 0 and replaced bytes with incorrect Complete. Test-only d249f5797d4b801bfee3dd065b9a267f88c24186 had four new failures with runtime unchanged; focused suite now passes 13 groups and demo; immutable full51 pending | Preview duplicate validation matches whole-document source extraction and key/value trim, with unchanged default parsers; RUNBOOK preview procedure | Fresh independent exact-head review and all broader S01X criteria remain open |
+| 2026-09-30 | TK-003P | Task closed | Exact correction 82bd5b3847a816ee6a6ed731aee64b9af3d70439: all 51 required local commands PASS (48 AGENTS plus three RUNBOOK), 13 public JSON regression groups PASS and under-minute demo. Both original exact7a reproducers now refuse with prior JSON bytes preserved and no incorrect Complete. Red d249f5797d4b801bfee3dd065b9a267f88c24186 had four new failures with runtime unchanged from reviewed7a. Default source parsers and render seam unchanged. Actual append-only history CLEAN, FAIL1 and TK003O receipt preserved. Self-drift retains seven prior findings, guardrails unchanged 78/100 with four recommendations, no clean-update or owner QA claim. | RUNBOOK preview normalized-field refusal procedure, S01X correction state and TK003P boundary/proof; TK003O failure link, prior proof/receipt unchanged. | Fresh independent exact-head Task PR review required before integration. All nine S01X acceptance criteria and owner QA remain open. Canonical legacy flat-ID reconciliation, shared selection/review vocabulary, direct/orphan Tasks, sitrep and root/template rollout remain later slices. S01W QA remains separate. |
+| 2026-09-30 | TK-003Q | Stage 2A shared eligibility assigned | Native identity/remote claim checks at integration 2780fe66754abf69b2ab6dea23337a7be0f6d801; prior PR228 exact195 reviewed and contained; S01W claimed QA remains separate | Own pure lane module and selection/claim/dependency sections plus matching tests; default Markdown and later stage-2 obligations retained | Public red/green, full checks and independent exact-head review pending |
+| 2026-09-30 | TK-003Q | Shared To-do calculation implemented; immutable checks pending | Red test-only 43e15bd698f22f359919106746db23031d1d46c4 had six expected behavior failures with runtime unchanged; focused public preview/next/claim/doctor, capability and remote-claim controls pass 23 groups; public demo shows eligible To-do offer and named dependency wait | Source-qualified lane/eligibility and priority/title/WBID ordering shared; default Markdown, selectors, capability routing, remote claims and flat collision refusal retained; installed diagnostics and cold recovery assertions reconciled | Full51 immutable gate and independent exact-head Task review pending; later stage-2 review vocabulary/Backlog and whole-Spec criteria remain open |
+| 2026-09-30 | TK-003Q | First aggregate regression receipts retained | Immutable fc50c1c5dbe7ae4f4976d6980ddee4f326696e53: 46/48 AGENTS commands passed; spec-workbench stopped at converted-room legacy ID-order assertion and diagnostics retained a later-ready dependency silence assertion. Public 23/23 and installed round-trip passed | Matching source/show conversion and per-Task doctor assertions reconciled to authoritative Task-title ordering and visible To-do dependency waits; runtime unchanged | Corrected immutable aggregate checks and independent exact-head Task review pending; no approval or acceptance claim |
+| 2026-09-30 | TK-003Q | Task closed | Exact implementation b06f3e47cbfa42ad690832097555e58f1cd1ef39: all51 local required commands PASS (48 AGENTS plus3 RUNBOOK), 23 public preview/next/claim/doctor regression groups PASS and under-minute demo. Red43e15bd698f22f359919106746db23031d1d46c4 had six expected behavior failures with runtime unchanged. Source-qualified To-do-only eligibility, Task priority/title/WBID order, visible dependency waits, cleared continuation action, capability and competing-claim gates, scoped numeric IDs and canonical no-write collision refusal verified. Installed cold source/show recovery, actual append-only history CLEAN; earlier fc50 46/48 receipts retained. Prior Tasks/FAIL1/S00I bound proof preserved; guardrails78/100 four recommendations and seven prior drift findings remain, no clean-update or owner-QA claim. | S01X stage2A verified state and owning Task boundary updated; matching installed diagnostics/round-trip expectations reconciled. RUNBOOK, templates and root Markdown contract untouched. | Fresh independent exact-head Task review required before integration. Source needs-review/review mode, minimal Backlog validation, complete stage2 child/review gates, direct/orphan home, sitrep and canonical root/template rollout remain later work. All nine Spec criteria and owner Human QA remain open; S01W QA ownership separate. |
+| 2026-09-30 | review | Review verdict: fail at ac0d5669c8dd8e661153e472844e9d130e756082 [2fb42aaa3bd5] #2 | P2: At exact ac0d5669c8dd8e661153e472844e9d130e756082, doctor --json in a normal Git room with resolvable integration loses all registered findings and emits plain stderr when the informational integration selector encounters malformed Task Priority or invalid legacy table Task status (typo). The new shared entry validation escapes integrationBranchFindings through selectCandidate. Preserve invalid-state and unrelated findings with narrow expected-source validation handling while keeping unexpected errors visible and next/claim/preview rejection gates unchanged. Independent reviewer full51, focused23, demo and append-only checks otherwise passed and producer external immutable reproduction corroborates the priority outage. Retired-owner corrective dependency visibility is an existing base limitation outside this correction. | Independent PR229 exact-head reviewer in a separate context (final report relayed by source coordinator); model and mode identity unrecorded | 1 |
+| 2026-09-30 | TK-003R | Diagnostic correction implemented; immutable checks pending | Test-only ab89847906716037dad84e89b495eb53d946502b retained nine expected Git-backed JSON failures with runtime unchanged from failed ac0d; focused35 now pass, including malformed priority/status, unrelated findings, inactive isolation and unexpected fault propagation | Reuse named active invalid-state findings for informational integration selection; expected source errors carry a narrow code, while unrelated calculation faults propagate. Default Markdown and selection rejection gates retained | Full51 immutable proof and fresh independent exact-head review pending; both FAIL rows preserved, all nine whole-Spec criteria and owner QA open |
+| 2026-09-30 | TK-003R | Task closed | Exact correction 89fe6e1cca5af8a62ce236dfa27b944d92dbafd0: all51 required local commands PASS (48 AGENTS plus3 RUNBOOK), public35/35 and diagnostics36/36 PASS, under-minute demo, actual append-only history CLEAN and default Markdown/CATALOG render byte-idempotence. Durable test-only ab89847906716037dad84e89b495eb53d946502b had nine expected Git doctor failures with runtime unchanged from failed ac0d. Git-backed malformed ready/in-progress Task Priority (invalid, negative, fractional, nonfinite) and legacy table typo status now retain registered invalid-state plus unrelated findings. Source/output/ref no-write, inactive-record isolation, complete-on-integration diagnostics, unexpected-fault propagation, ordinary next/claim/preview refusal and original priority reproducer recovery verified. Native FAIL1/FAIL2, prior closed Tasks/receipts and S00I bound digest preserved. Same seven prior drift findings and guardrails78/100 four recommendations remain, no clean-update or owner/CI claim. | Owning S01X diagnostic correction state and new TK003R boundary/proof updated. Typed expected source errors and diagnostic composition only; durable public regressions. Default Markdown, RUNBOOK, templates, lifecycle vocabulary, capability/remote claims and S01W QA ownership unchanged. | Fresh independent exact-head TK003R correction review before integration. Existing retired-owner corrective dependency diagnostic gap remains a base limitation outside this repair. All nine whole-S01X criteria and owner Human QA open; later stage2 review vocabulary/Backlog, direct/orphan home, sitrep and root/template rollout remain separate work. |
+| 2026-09-30 | review | Review verdict: fail at 559f785760c33dc4da50ab620cc109e5bfcb7e25 [0c9575e2055c] #3 | P2 source-qualified calculation correction: preserve valid peer complete-on-integration diagnostics when another active Spec has malformed Priority or table status, and refuse a Task declaring another existing parent Spec consistently in preview, next and claim without writes. Three committed red regressions at84d1a7a independently reproduce both review findings4149623596 and4149623602. No runtime eligibility expansion or stage2 delivery. | Codex automated separate-context review5372316366, independently reproduced at350c by Servitor | 1 |
+| 2026-09-30 | TK-003S | Correct live public red-test provenance without rewriting historical FAIL3 | The earlier FAIL3 row names local scratch 84d1a7a, which was not published. Reachable public red commit 2e191c01fd5d98e6da5c3d4c3ebbc599483456d2 is titled Reproduce postmerge diagnostics and declared Task parent review findings and directly follows integration 983af08d603c852b36ae69f31823815614cd6a60. Its test file is byte-identical to the scratch source, with three reproduced failures before the correction. Live Task and projection references now name the public commit | Prior FAIL3 and historical receipts remain untouched. Source calculation still filters only known malformed active Specs and propagates unexpected errors | Full frozen verification and fresh independent correction review remain before integration |
+| 2026-09-30 | TK-003S | Task closed | Exact published source 838565dc0fed6791e548e2f563985797439bff4d: all51 required commands PASS (48 AGENTS plus3 RUNBOOK), taskboard JSON39/39 and diagnostics36/36 PASS. Reachable public red2e191c01fd5d98e6da5c3d4c3ebbc599483456d2 reproduces three failures, independently confirmed. Malformed active Priority/table-status/row-record collision preserves valid peer diagnostics; declared foreign parent refuses preview/next/claim with prior bytes and refs preserved; normalized equivalent identity remains eligible; unexpected errors still propagate. Actual first-published append-only history CLEAN. Existing seven self-drift attention findings and guardrail78/100 remain; no clean-update, installed-distribution or reliability claim. | Shared calculation and parent-ownership validation, focused behavior controls, obsolete global source-shape assertion corrected, live Task and projection cite full published red2e191c01 SHA. Historical FAIL3 scratch84d1a7a citation preserved with appended truthful correction; prior Tasks, FAILs and receipts retained. | Fresh independent exact-final-head review required before integration. All nine whole-S01X acceptance criteria and owner Human QA remain open; stage2 review vocabulary/Backlog, direct/orphan Task home, sitrep and root/template rollout remain separate work. S01W assembled QA is unchanged. |
 
 ## Completion Result
 
-Planning capability owner authored. Runtime acceptance and delivery are pending;
-no implementation or owner Human QA completion is claimed.
+Planning capability owner authored; TK-003O's scoped preview is closed with
+implementation proof. Independent review of exact 7a17468 failed with a
+normalized-field P2. TK-003P closed the bounded correction with immutable
+local proof at 82bd5b3; separate exact195 Task review passed and PR228 is
+contained at integration 2780fe6. TK-003Q closed bounded stage 2A with all51
+required local checks and 23 public regression groups passing at exact
+b06f3e47cbfa42ad690832097555e58f1cd1ef39. Final checkpoint ac0d566 passed local
+full51, but independent PR229 review failed with the Git-backed doctor
+diagnostic exception P2. TK-003R closed the bounded correction with all51 required local checks,
+public35 and diagnostics36 passing at exact
+89fe6e1cca5af8a62ce236dfa27b944d92dbafd0. Git-backed doctor retains registered
+invalid-state and unrelated findings for malformed priority and legacy status;
+unexpected calculation faults remain visible. Fresh independent exact-head
+correction review remains required before integration.
+Whole-capability acceptance, assembled independent review and owner Human QA
+remain pending; no Spec completion is claimed.
 
 ## Remaining Limitations Or Follow-Up Specs
 

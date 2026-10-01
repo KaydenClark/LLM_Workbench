@@ -9,7 +9,7 @@ source_paths:
   - workbench/specs/S-048-checkpoint-retirement/SPEC.md
   - workbench/tools/sessions.mjs
   - tools/test-sessions.mjs
-  - skills/promote/SKILL.md
+  - workbench/skills/promote/SKILL.md
   - AGENTS.md
 parent: none
 authorized_by: owner
@@ -35,9 +35,10 @@ The source record was read at `bc370fe742d5ddb8348bf361fccea31205f6cee7` and the
 - [workbench/specs/S-048-checkpoint-retirement/SPEC.md](../../../workbench/specs/S-048-checkpoint-retirement/SPEC.md)
 - [workbench/tools/sessions.mjs](../../../workbench/tools/sessions.mjs)
 - [tools/test-sessions.mjs](../../../tools/test-sessions.mjs)
-- [skills/promote/SKILL.md](../../../skills/promote/SKILL.md)
+- [workbench/skills/promote/SKILL.md](../../skills/promote/SKILL.md)
 - [AGENTS.md](../../../AGENTS.md)
 
 ## History
 
 - 2026-09-19: Reconciled into one article on owner direction; source records and proof remain intact pending their lifecycle gates.
+- 2026-09-30: Repaired live skill links and source_paths after relocation to workbench/skills; verified destinations only, without revalidating historical capability claims.

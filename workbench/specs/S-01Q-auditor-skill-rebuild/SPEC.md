@@ -35,6 +35,13 @@ The prior Skills Wiki packet grouped the whole core inventory into one completio
 
 ## Decisions And Contracts
 
+- ROLE-3 confirms this is a stance, not a separate role. A Dispatcher may use
+  it within its Spec scope; its job does not widen role authority or erase
+  prior involvement for independent-review eligibility. The
+  [role model](../../wiki/design-concepts/roles-and-stances.md) owns composition
+  explanation. Existing Tasks and proof are preserved; no duplicate capability
+  or new Task is created by the 2026-09-27 reconciliation.
+
 - This Spec owns auditor alone. Shared controls, manifest, catalog and the sole Wiki router are edited only as required by this skill's proven change; neighboring skill specs retain their own source and article ownership.
 - A Wiki article is curated context, not instruction authority or proof of behavior. Current source and tests establish Actuality; accepted controls and this assigned Spec establish the target.
 - The oversized unmerged Skills Wiki packet is planning evidence, not a live S-00V owner. S-00V now names Portable Workbench. For the shared grilling/notepad/grill-me journey, S-00W remains the design source while the individual skill Specs own delivery.
@@ -80,6 +87,18 @@ Run targeted tests for the changed source and `node workbench/tools/wiki.mjs val
 ## Documentation Impact
 
 Maintain `workbench/wiki/skill-auditor.md` and its sole router entry alongside the skill change. Update shared controls or generic template wording only where this skill changes their meaning; record `Docs checked; no update needed` with a reason when they do not change.
+
+## Draft-wiki alignment (owner direction 2026-09-30)
+
+Group: stances. Matt counterpart: none. Enabling Spec: S-002L.
+Intended slice direction: the six per-skill steps of the draft skills wiki
+(1 investigate ours, 2 draft the article, 3 investigate Matt's skill at
+`mattpocock/skills@d81f3a183412e71a5b1e84ca21bc1a35eea03a60`, 4 compare,
+5 align the article, 6 fix or create the skill), to be cut into Tasks by
+`/to-tasks` (at activation for a planned Spec; as additional Tasks when the
+Dispatcher takes up an already-active one). Tasks already cut stay as they
+are. This section changes none of this Spec's acceptance, evidence or status;
+steps 1-5 touch only the draft wiki and step 6 only this skill's lane. When there is no Matt counterpart, steps 3 and 4 compare with the named nearest neighbor skill instead.
 
 ## Append-Only Evidence And Execution Log
 

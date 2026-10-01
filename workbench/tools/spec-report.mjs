@@ -33,10 +33,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
-import { appendEvidence, atomicWrite, findSpec, loadRetiredSpecs, loadSpecs, occupiedIdentities, resolveSpecsRoot, slicesOf } from './spec-workbench.mjs';
+import { appendEvidence, atomicWrite, findSpec, loadRetiredSpecs, loadSpecs, occupiedIdentities, resolveIntegrationContainmentRef, resolveSpecsRoot, slicesOf } from './spec-workbench.mjs';
 import { formatTaskRecord, listTaskRecords, parseTaskRecord, taskStatus } from './task-record.mjs';
 import { readReceiptFromFile } from './task-receipt.mjs';
-import { assertSafeWritePath, declaredGit, lanePath } from './workbench-paths.mjs';
+import { assertSafeWritePath, lanePath } from './workbench-paths.mjs';
 import { allocateArtifactId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 
 const PLACEHOLDER_COMPLETION = /^pending\.?$/i;
@@ -76,6 +76,18 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
   const decisionGaps = collectDecisionGaps(tasks);
   const gaps = [...collectGaps({ tasks, acceptance, completionResult, evidence }), ...decisionGaps];
 
+  // S-00J TK-002N: which ref integration containment resolves against
+  // (`origin/<branch>` when it exists, else the local branch) and the SHA it
+  // read, so a reviewer or owner can see a stale fetch. Informational: the
+  // report still refuses nothing: a malformed manifest git block is shown
+  // as `unresolved` with its reason rather than thrown through the report.
+  let integrationContainment;
+  try {
+    integrationContainment = resolveIntegrationContainmentRef(root);
+  } catch (error) {
+    integrationContainment = { branch: null, ref: null, source: 'unresolved', sha: null, localSha: null, error: error.message };
+  }
+
   return {
     id: spec.id,
     title: spec.title,
@@ -97,6 +109,7 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
     latestVerdict,
     ownerApproval,
     latestOwnerApproval,
+    integrationContainment,
     completionResult,
     decisionCoverage: decisionCoverageOf(tasks),
     decisionGaps,
@@ -152,12 +165,13 @@ export function computeSpecDigest(root, spec, candidate = null) {
     hash.update(content);
     hash.update('\n');
   }
-  const relativeDir = path.relative(root, specDir).split(path.sep).join('/');
+  let relativeDir = path.relative(root, specDir).split(path.sep).join('/');
   function committed(args) {
     const result = spawnSync('git', args, { cwd: root, encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
     if (result.status !== 0) throw new Error(`Cannot read committed content for ${spec.id} at ${candidate}: ${result.stderr?.trim() || result.error?.message || 'Git read failed'}`);
     return result.stdout;
   }
+  if (candidate) relativeDir = committedSpecDirectory(root, spec, candidate, relativeDir, committed);
   const specContent = candidate ? committed(['show', `${candidate}:${relativeDir}/SPEC.md`]) : spec.content;
   addEntry('SPEC.md', stripVolatileSpecFields(stripEvidenceRows(specContent)));
   let taskNames;
@@ -181,6 +195,70 @@ export function computeSpecDigest(root, spec, candidate = null) {
     addEntry(name, stripReceiptSection(content));
   }
   return hash.digest('hex');
+}
+
+// S-00U TK-003K: a retirement changes the lookup path, not the approved
+// candidate or digest. Only follow the one canonical active -> retired move,
+// proven by Git's staged rename or the latest committed destination addition.
+// Never search for another same-ID or same-digest record. In particular, a
+// removed/re-added source or destination is a new incarnation: an older
+// approval cannot prove it, even when somebody copies the old evidence rows.
+function committedSpecDirectory(root, spec, candidate, relativeDir, committed) {
+  const currentFile = `${relativeDir}/SPEC.md`;
+  const regularBlob = (ref, file) => {
+    const entries = committed(['ls-tree', '-z', ref, '--', file]).split('\0').filter(Boolean);
+    return entries.length === 1 && /^(100644|100755) blob [0-9a-f]+\t/.test(entries[0])
+      && entries[0].slice(entries[0].indexOf('\t') + 1) === file;
+  };
+  if (regularBlob(candidate, currentFile)) return relativeDir;
+
+  const refuse = () => { throw new Error(`Cannot prove the committed retirement source for ${spec.id} at ${candidate}`); };
+  const { specsPrefix } = resolveSpecsRoot(root);
+  const basename = path.posix.basename(relativeDir);
+  if (relativeDir !== `${specsPrefix}/retired/${basename}` || !basename.startsWith(`${spec.id}-`)) refuse();
+  const sourceDir = `${specsPrefix}/${basename}`;
+  const sourceFile = `${sourceDir}/SPEC.md`;
+  const missing = (ref, file) => committed(['ls-tree', '-z', ref, '--', file]) === '';
+  const ancestor = (older, newer) => spawnSync('git', ['merge-base', '--is-ancestor', older, newer], { cwd: root }).status === 0;
+  const parentsOf = ref => committed(['rev-list', '--parents', '-n', '1', ref]).trim().split(' ').slice(1);
+  const latestAddition = (ref, file) => {
+    // Default log hides additions made by merge commits. Per-parent history
+    // exposes them, but an ordinary merge importing an existing path is not
+    // a new incarnation: at least one parent already carries that path.
+    const additions = committed(['log', '--full-history', '--topo-order', '-m', '--no-renames', '--diff-filter=A', '--format=%H', ref, '--', file]).trim().split('\n').filter(Boolean);
+    return [...new Set(additions)].find(sha => parentsOf(sha).every(parent => missing(parent, file)));
+  };
+  // A deletion anywhere on the candidate's surviving ancestry invalidates
+  // that incarnation, including a merge that restores another parent's old
+  // bytes. Parents predating the candidate are excluded, so ordinary delivery
+  // of a newly introduced Spec through a non-FF merge stays valid.
+  const deletedSince = (from, to, file) => committed(['log', '--ancestry-path', '--full-history', '-m', '--no-renames', '--diff-filter=D', '--format=%H', `${from}..${to}`, '--', file]).trim() !== '';
+  const isRename = (args) => {
+    const fields = committed(['diff', '--name-status', '-z', '--find-renames', ...args, '--', sourceFile, currentFile]).split('\0').filter(Boolean);
+    return fields.length === 3 && /^R\d+$/.test(fields[0]) && fields[1] === sourceFile && fields[2] === currentFile;
+  };
+  if (!regularBlob(candidate, sourceFile) || !missing(candidate, currentFile) || !ancestor(candidate, 'HEAD')) refuse();
+
+  let sourceParent;
+  if (regularBlob('HEAD', sourceFile) && missing('HEAD', currentFile)) {
+    // moveSpecDirectory stages the whole rename before its caller commits.
+    if (!isRename(['--cached', 'HEAD'])) refuse();
+    sourceParent = 'HEAD';
+  } else {
+    if (!missing('HEAD', sourceFile) || !regularBlob('HEAD', currentFile)) refuse();
+    const move = latestAddition('HEAD', currentFile);
+    if (!move) refuse();
+    if (deletedSince(move, 'HEAD', currentFile)) refuse();
+    const parents = parentsOf(move);
+    sourceParent = parents.find(parent => ancestor(candidate, parent)
+      && regularBlob(parent, sourceFile) && missing(parent, currentFile)
+      && missing(move, sourceFile) && regularBlob(move, currentFile)
+      && isRename([parent, move]));
+    if (!sourceParent) refuse();
+  }
+  const sourceAdded = latestAddition(sourceParent, sourceFile);
+  if (!sourceAdded || !ancestor(sourceAdded, candidate) || deletedSince(candidate, sourceParent, sourceFile)) refuse();
+  return sourceDir;
 }
 
 // Blanks the Spec header's `Updated`, `Latest event` and `Next gate` field
@@ -433,10 +511,19 @@ export function recordOwnerApproval(rootDir, specId, options = {}) {
   // it (never a hardcoded literal, never a refusal over an absent
   // declaration) - the check below only ever runs once a branch is actually
   // named.
-  const integrationBranch = declaredGit(root)?.integrationBranch ?? null;
+  //
+  // S-00J TK-002N: the containment ref is `origin/<branch>` when that
+  // remote-tracking ref exists, else the local branch
+  // (`resolveIntegrationContainmentRef`), so a lagging local `integration`
+  // held by another checkout cannot refuse a candidate the remote carries,
+  // and an unpushed local branch cannot approve one it does not. The
+  // refusal names the ref and the SHA actually checked.
+  const integrationContainment = resolveIntegrationContainmentRef(root);
+  const integrationBranch = integrationContainment.branch;
   const containmentUnchecked = integrationBranch === null;
-  if (integrationBranch && !isAncestorOfBranch(root, candidate, integrationBranch)) {
-    throw new Error(`Candidate ${candidate} is not contained in the declared integration branch '${integrationBranch}' (checked via git merge-base --is-ancestor); an owner approval binds to a SHA on integration, never a lane tip.`);
+  if (integrationBranch && !isAncestorOfBranch(root, candidate, integrationContainment.ref)) {
+    const checked = `${integrationContainment.ref} ${integrationContainment.sha ? `at ${integrationContainment.sha}` : '(does not resolve)'}`;
+    throw new Error(`Candidate ${candidate} is not contained in the declared integration branch '${integrationBranch}' (checked ${checked} via git merge-base --is-ancestor; local refs only, nothing fetched); an owner approval binds to a SHA on integration, never a lane tip.`);
   }
 
   const spec = findSpec(root, specId);
@@ -490,7 +577,7 @@ export function recordOwnerApproval(rootDir, specId, options = {}) {
     correctiveTasks = createCorrectiveTasks(root, specId, { candidate, findings: findingsInput }).created;
   }
 
-  return { specId: spec.id, candidate, owner, result, findings: findingsCell, date, remainingGap, digest, digest12, ordinal, row, ...(correctiveTasks ? { correctiveTasks } : {}) };
+  return { specId: spec.id, candidate, owner, result, findings: findingsCell, date, remainingGap, digest, digest12, ordinal, row, integrationContainment, ...(correctiveTasks ? { correctiveTasks } : {}) };
 }
 
 // `git merge-base --is-ancestor <sha> <branch>` exits 0 exactly when `sha` is
@@ -866,7 +953,7 @@ function latestOwnerApprovalFor(approvals, specDigest, root, spec) {
     // Retain those rows as history, but never treat one as valid authorization.
     try {
       if (computeSpecDigest(root, spec, approvals[index].candidate) === specDigest) return approvals[index];
-    } catch { /* Missing or moved historical content cannot prove approval. */ }
+    } catch { /* Missing content or an unproven lifecycle move cannot prove approval. */ }
   }
   return null;
 }
@@ -1178,10 +1265,25 @@ function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+// S-00J TK-002N: one line naming the ref integration containment resolves
+// against and the SHA it read, so a stale fetch (or a lagging local branch)
+// is visible in the plain-text report.
+function formatIntegrationContainment(containment) {
+  if (!containment || containment.source === 'undeclared') return 'Integration containment: no integration branch declared; containment unchecked';
+  if (containment.source === 'unresolved') return `Integration containment: unresolved (${containment.error})`;
+  const at = containment.sha ? `at ${containment.sha}` : '(does not resolve)';
+  if (containment.source === 'remote-tracking') {
+    const local = containment.localSha ? `local ${containment.branch} at ${containment.localSha}` : `no local ${containment.branch} branch`;
+    return `Integration containment: ${containment.ref} ${at} (remote-tracking ref, local refs only, never fetched; ${local})`;
+  }
+  return `Integration containment: ${containment.ref} ${at} (local branch; no origin/${containment.branch} remote-tracking ref)`;
+}
+
 // The short human-readable form the `report` CLI verb prints without
 // `--json`: a Spec line, the candidate line with its resolution and HEAD
-// match, one line per Task with its status, source and Receipt run count
-// when it has one, and the gap count followed by each gap. `--json` keeps
+// match, the verdict, owner QA and integration containment lines, one line
+// per Task with its status, source and Receipt run count when it has one,
+// and the gap count followed by each gap. `--json` keeps
 // printing the full object this module returns; this is a rendering of the
 // same data, never a second source of it.
 export function formatSpecReport(report) {
@@ -1196,6 +1298,7 @@ export function formatSpecReport(report) {
   lines.push(v ? `Verdict: ${v.result} at ${v.candidate} by ${v.reviewer} (${v.date}) [digest ${v.digest}]` : 'Verdict: none for this candidate');
   const a = report.latestOwnerApproval;
   lines.push(a ? `Owner QA: ${a.result} at ${a.candidate} by ${a.owner} (${a.date}) [digest ${a.digest}]` : 'Owner QA: none for this candidate');
+  lines.push(formatIntegrationContainment(report.integrationContainment));
   lines.push('Tasks:');
   for (const task of report.tasks) {
     const runs = task.receipt ? `, runs ${task.receipt.runCount}` : '';

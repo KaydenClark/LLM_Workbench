@@ -1,6 +1,6 @@
 # LLM Workbench - Runbook
 
-**Last reviewed:** 2026-09-04
+**Last reviewed:** 2026-10-01
 **Blueprint reviewed:** 2026-09-09
 **Runtime owner:** Kayden
 **Environment:** local (macOS); public repo `github.com/KaydenClark/LLM_Workbench`
@@ -96,6 +96,32 @@ Spec records any resulting blocker. A Wiki explanation may clarify the cause;
 it does not redefine acceptance. After interruption, the Runbook supplies the
 recovery procedure while the Spec, source and saved context supply what to
 recover. Execution and recovery therefore remain separate jobs.
+
+### Role And Stance Coordination
+
+[Role model and capability owners](workbench/wiki/design-concepts/roles-and-stances.md).
+The current Task-PR bootstrap exception remains in
+[Workbench v4.0.0 Release](workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md#bootstrap-exemptions).
+
+Roles scope assignments; stances supply their job. Follow the Lexicon before
+assigning Director (project/integration), Dispatcher (one Spec/branch) or Worker
+(one Task). At flight launch, assign Spec Planner to plan small Tasks and safe
+parallel groups from current Actuality; planning Workers may assist. Assign
+Spec Manager to dispatch and monitor execution. Keep one writer for shared
+Spec/projection state and route cross-Spec dependencies to the Director.
+
+Use Reviewer or Auditor stance for the named verification job. Apply the
+existing independent-review eligibility rules to the actual agent/context;
+changing stance does not clear prior involvement. Normally Workers hand back
+merge requests to the Dispatcher branch and the Dispatcher presents the
+assembled candidate for review and merge into integration. Inspect the current
+release owner for any bootstrap exception before selecting a target.
+
+Reconcile accepted decisions, current progress, off-integration candidate
+references and remaining gates into their existing tracked owners through
+reviewed changes. Distinguish a documented decision, an unmerged candidate and
+a delivered capability. Create no Tasks for a newly planned Spec until launch;
+preserve already-authored Tasks and their evidence.
 
 ### Behavior Selection
 
@@ -300,7 +326,7 @@ The core skills ship inside every room at the manifest-declared `skills` lane,
 for Codex, `.claude/skills` for Claude Code) are tracked relative links into
 that lane, so a fresh clone discovers the skills with no provider home and no
 personal catalog. This repository's lane is the authoring source for
-the 22 core skills listed in `workbench/skills/README.md`; every other room
+the 26 core skills listed in `workbench/skills/README.md`; every other room
 receives receipt-backed copies from the release checkout:
 
 ```bash
@@ -671,7 +697,7 @@ escalates with evidence rather than guessing. A readable manifest reports its
 `schemaVersion`, `workbenchVersion`, and recorded `provenance.lifecycle` as
 evidence; the recorded lifecycle is never the verdict, and whether an installed
 room actually needs migrating is `workbench-layout.mjs validate`'s answer. An
-unfilled `[BRACKETED]` control and a version banner that never resolved are
+unfilled bracketed control and a version banner that never resolved are
 reported as evidence and listed among the reasons, under both the harness-shaped
 verdict and the `adoption` one a straight `cp -R templates/.` produces, so a
 copy of the templates is offered as a reading rather than mistaken for a room.
@@ -706,7 +732,7 @@ The command refuses an existing support root or any legacy collision before
 mutation. Unreconciled root controls refuse once as `unreconciled-controls`,
 naming every failing control in `error.controls` with its own reason
 (`missing-control` for an absent, linked, or non-file control;
-`bracketed-control` for one still carrying a `[BRACKETED]` placeholder), and
+`bracketed-control` for one still carrying a bracketed placeholder), and
 carrying the four-step reconcile-before-migrate order and the warning that a
 template copied over an existing control overwrites the project-specific
 privacy, boundary, and verification rules it already holds
@@ -846,120 +872,275 @@ review; `no-machine-finding` means only the implemented checks found no issue.
 
 ### Spec Lifecycle And Retrieval
 
+Use this sequence for one assigned Spec and its Task records. Examples name
+S-001/TK-001; substitute the actual IDs and quoted values. These are separate
+role checkpoints, not one unattended script: a Worker supplies self-check,
+the Dispatcher owns whole-Spec QA, a separate Director reviews the immutable
+candidate, and only the owner supplies Human QA approval and main promotion.
+The runnable mechanical example is `node tools/test-workbench-round-trip.mjs`;
+its reviewer, owner and main promotion are explicitly disposable fixture data.
+
+#### Worker: selection, implementation and hand-back
+
+Ordinary entry is AGENTS -> this Runbook -> Lexicon Task Routing -> the assigned
+Spec and Task. Verify root, branch, remote, upstream and dirty state first.
+Preserve unrelated work and obey the assigned stance/file lane. For ordinary
+pickup run these read-only commands before claiming:
+
 ```bash
+node workbench/tools/spec-workbench.mjs doctor
 node workbench/tools/spec-workbench.mjs next --json
 node workbench/tools/spec-workbench.mjs show S-001
+```
+
+Read the returned TASK.md, destination, blockers and acceptance. `next` offers
+ready eligible work; an existing in-progress assignment resumes from its record
+and `show`, not a second claim. `claim` takes a Spec ID and selects one eligible
+Task; it does not take a TASK.md path. Plain Spec blockers require complete or
+superseded; plain Task blockers require done. `S-001:delivered` instead requires
+all prerequisite Tasks done, checked acceptance and a content-bound PASS whose
+candidate and committed Spec/Task content are contained in integration. Fetch
+integration before relying on that local-ref check. `owner:<decision>` is never
+automatically satisfied; remove it only after the authorized decision resolves
+it. Investigate `blocked-without-blocker` and `unknown-blocker-qualifier` rather
+than bypassing them.
+
+For an active table-backed Spec, this one-shot migration precedes its first
+record-backed claim. Omit conversion when `tasks/` already exists. It converts
+unfinished rows, retaining done rows as history; a second conversion refuses.
+A planned Spec needs `--activate` only after its accepted plan is executable.
+These migration alternatives are not steps to repeat on an already claimed Spec:
+
+```bash
+node workbench/tools/spec-workbench.mjs convert-tasks S-001
+node workbench/tools/spec-workbench.mjs convert-tasks S-001 --activate
+```
+
+Commit the ready packet before the coordinated claim. From a clean Task branch,
+claim publishes its record/projection commit to the configured remote. `--local`
+is an explicit local-only alternative, not remote recovery proof.
+
+```bash
 node workbench/tools/spec-workbench.mjs claim S-001 --agent codex
+```
+
+Implement red/green at the product seam; preserve failed-attempt proof and
+unmerged results. Record meaningful checks while the Task is in progress:
+
+```bash
+node workbench/tools/spec-workbench.mjs receipt S-001 --task TK-001 \
+  --tests "[TESTS RUN AND RESULT]" --docs "[DOCS TOUCHED OR none]" --remaining-gap "[GAP OR none]"
+```
+
+Self-check acceptance, actual behavior, documentation and remaining gaps; hand
+those results to the Dispatcher. Normal Task hand-back has no separate Task
+approval ceremony. Commit and push the verified candidate and Receipt before
+close; compare local HEAD to the actual remote branch tip. `close` refuses dirty
+or unpushed work unless `--git-state-reason` records the truthful exception; it
+closes the first in-progress Task, appends its final Receipt and Spec evidence,
+and never selects a ready Task or completes the Spec. One writer must confirm
+which record will close. A Receipt records Git/test facts, not approval.
+
+```bash
 node workbench/tools/spec-workbench.mjs close S-001 \
   --proof "[NAMED VERIFICATION]" \
   --docs "[DOCS UPDATED OR Docs checked; no update needed + reason]" \
   --remaining-gap "[GAP OR none]"
-node workbench/tools/spec-workbench.mjs complete S-001
-node workbench/tools/spec-workbench.mjs convert-tasks S-001
-node workbench/tools/spec-workbench.mjs receipt S-001 --task TK-002 \
-  --tests "[TESTS RUN AND RESULT]" --docs "[DOCS TOUCHED OR none]" --remaining-gap "[GAP OR none]"
-node workbench/tools/spec-workbench.mjs report S-001 --candidate [SHA] [--json]
-node workbench/tools/spec-workbench.mjs move-spec S-001 --to retired
-node workbench/tools/spec-workbench.mjs move-task S-001 --task TK-002 --to retired
-node workbench/tools/spec-workbench.mjs retire-spec S-001 --wiki workbench/wiki/design-concepts/[NOTE].md
-node workbench/tools/spec-workbench.mjs discard S-001 [--task TK-002]
-node workbench/tools/spec-workbench.mjs gate --spec S-001 --candidate [SHA]
-node workbench/tools/spec-workbench.mjs gate --task TK-002 --spec S-001
-node workbench/tools/spec-workbench.mjs approve S-001 --candidate [INTEGRATION SHA] --owner "[WHO]" \
-  [--finding "[FINDINGS]"] [--destination-change "[TEXT]"]
-node workbench/tools/spec-workbench.mjs verdict S-001 --candidate [SHA] --result pass|fail \
-  --findings "[FINDINGS OR none]" --reviewer "[SEPARATE CONTEXT, MODEL AND MODE]"
 node workbench/tools/spec-workbench.mjs render
 node workbench/tools/spec-workbench.mjs doctor
 ```
 
-`convert-tasks` is one-shot: it writes one `tasks/<id>/TASK.md` record per
-unfinished slice row of an active spec (carrying the row's plan as `Planned
-verification`, never as proof), leaves done rows and completed specs untouched,
-and refuses a second run; a spec whose `tasks/` directory exists is read from
-its records and its retained table is history. `receipt` appends one
-append-only run row (branch, HEAD SHA, upstream distance, dirty file count,
-tests, docs, remaining gap, checksum) to a named in-progress Task record;
-`close` appends the run's final row on a record-backed Task before flipping
-it, and the hot board shows each in-progress Task's run count, latest branch,
-short SHA and dirty count without ever rendering the run table. `report`
-assembles a Spec's state for a separate-context reviewer and names the
-candidate SHA it was asked about, reporting whether it resolves, exists and
-matches `HEAD` as facts rather than preconditions: every Task with its status,
-proof or plan and Receipt runs (a record-backed Spec's retained done rows
-marked as history), every acceptance line with its checked state, the evidence
-rows, the completion result, the gaps and any verdict recorded for that
-candidate; an incomplete Spec is reported, never refused (only a missing
-`--candidate` option is an error). `verdict` appends one append-only evidence
-row (`review`, `Review verdict: pass|fail at <sha>`, findings, reviewer,
-remaining gap) and refuses a candidate that does not exist or is not the
-room's exact `HEAD`, a result other than pass or fail, or an empty reviewer,
-writing nothing on refusal. `move-spec` moves a complete Spec's directory
-into the specs lane's `retired/` folder with `git mv` semantics, refusing a
-dirty tree, an incomplete Spec, any other folder or a room without Git; it
-rewrites every live Markdown reference and ADR `canonicalized_in` target to
-the old path, regenerates the ADR register, leaves append-only rows and
-counts them, and stages the result; the top level stays the active roster,
-`show` still finds a retired Spec, and `CATALOG.md` lists it under Retired. `move-task` does the same for one done
-Task record into its Spec's `tasks/retired/`, refusing a Task that is not
-done or carries neither Proof nor a Receipt row; `show` lists retired Tasks
-separately and `report` shows them as history. `retire-spec` reconciles and
-retires a closed Spec: it refuses unless the Spec is complete with every Task
-done, every acceptance box checked and a real Completion Result, the owner's
-Human QA for the current content is an approval, and the named Wiki note is a
-valid design-concept or guidebook routed from `MEMORY.md` that names the
-retired route and copies no task state; it then appends the retirement row,
-moves the directory with its Tasks into `retired/`, cleans contained lane
-branches, lists unmerged ones, and regenerates the board and the ADR
-register. `discard` is `git rm` of a retired Spec or, with `--task`, one
-retired Task record - never `archive` - and refuses by name before any write
-if the record is not retired, any Task in a retired Spec is unfinished, the tree is dirty, its latest retiring incarnation
-and current directory content are not verified contained on the declared default
-branch, a complete reference and
-link scan still finds a current pointer to it, or (for a Spec) its durable
-Wiki owner is missing or not active; a successful discard appends one row to
-the tracked, append-only `workbench/specs/DISCARDS.md` register (kind, record
-ID, historical path, retiring commit, discard parent commit, and the exact
-`git checkout` recovery command for the entire directory at its latest verified
-content commit, which the test exercises). Historical links in the durable
-owner's Evidence and Sources section become immutable `git show <sha>:<path>`
-citations; operational links anywhere, including that owner, still refuse
-discard. A final Task discard retains tracked `tasks/.gitkeep` so fresh clones
-keep record-backed interpretation. A later gap is filed as a corrective Task
-against the Wiki claim rather than restoring the record; repeated identical
-findings refuse duplicate Tasks. Wiki-anchored corrective close appends only to
-frontmatter provenance. While the retired Spec still exists, corrective Tasks
-anchored to its failed review or owner finding stay inside that retired Spec
-and appear in `next`, `show` and the Taskboard. Claim and close operate on those
-Tasks without reopening or moving the historical Spec; ordinary historical
-Tasks are never reselected. Completion appends Task proof and Spec evidence.
-An unfinished Task prevents Spec discard even if the Taskboard is stale. Render markers are checked before removal, and staging failures
-are reported explicitly;
-`doctor` gains the blocking `discarded-reference` finding for a reference
-naming a path the register says was discarded, and
-`tools/check-append-only.py` now enumerates a Spec's `retired/` lifecycle
-folder so a retired Spec's own evidence log stays covered. `gate` reports a
-Task PR (a real Task record under a still-open Spec, while S-00O exemption 2
-holds) and refuses a Spec candidate that is incomplete, unreviewed for its
-current content or named by a SHA the repository does not hold; the closeout
-recipe below runs it before the merge. A verdict binds to the assembled
-Spec's content digest,
-so record it after the final `close` and before `complete`. `approve` records
-the owner's Human QA on `integration` as one append-only `owner-qa` row naming
-who, when and the integration SHA inspected (contained in the declared
-integration branch, with its committed Spec and live/retired Task content matching
-the same local assembled digest). A mismatched or uncommitted capability is
-refused before writing. The premerge gate requires review, not owner approval;
-Human QA follows integration and remains required by `complete`. Administrative
-completion preserves that approval for retirement; substantive Task or Spec
-changes invalidate it, including retired Task proof. A `--finding` creates
-corrective Tasks under the still-open Spec, a `--destination-change` records a
-return to Align and creates nothing, and `complete` refuses until the latest
-owner QA for the current content is an approval. `next` returns one eligible ready task. `show` loads one stable work packet.
-Writes use a temporary file plus rename and fail closed on ambiguous state.
-`render` updates the hot Taskboard and complete `CATALOG.md` in the manifest specs lane. Legacy Blueprints retain their marked catalog until explicitly rebuilt; destination-only Blueprints are never rewritten by render.
-`complete` requires every slice done, acceptance boxes checked, completion result
-recorded, and evidence present; render then removes the spec from the hot board.
+Commit and publish the closure evidence and projections too; verify the remote
+SHA. TASK.md owns Task state/proof, SPEC.md owns requirements/acceptance/evidence
+and its next gate, and generated TASKBOARD.md/CATALOG.md cannot satisfy either.
+
+#### Dispatcher and separate Director: assembled review
+
+The Dispatcher assembles all Task results, checked acceptance, real Completion
+Result, documentation and remaining limitations and performs whole-Spec QA.
+The separate Director inspects that immutable candidate and its report:
+
+```bash
+node workbench/tools/spec-workbench.mjs report S-001 --candidate "[SHA]"
+node workbench/tools/spec-workbench.mjs report S-001 --candidate "[SHA]" --json
+```
+
+An incomplete report is useful evidence, not approval. Record the actual result
+using the `specDigest` from the inspected report. These pass/fail alternatives
+belong to the reviewer; do not run both for one result:
+
+```bash
+node workbench/tools/spec-workbench.mjs verdict S-001 --candidate "[SHA]" --digest "[DIGEST]" --result fail \
+  --findings "[FINDINGS]" --reviewer "[SEPARATE CONTEXT, MODEL AND MODE]"
+node workbench/tools/spec-workbench.mjs verdict S-001 --candidate "[SHA]" --digest "[DIGEST]" --result pass \
+  --findings "[FINDINGS OR none]" --reviewer "[SEPARATE CONTEXT, MODEL AND MODE]"
+```
+
+The candidate must exist; it need not equal HEAD. Always supply the inspected
+digest: a changed substantive Spec/Task body refuses an old digest before a
+write. Receipt runs and administrative headers are excluded narrowly; checked
+acceptance, Task status/proof and decisions remain bound. A green test or a
+Dispatcher's self-review cannot substitute for independent review.
+
+A failed verdict creates one corrective Task per attributable finding, anchored
+to that evidence row. Preserve the original done Task and its proof. Select and
+claim the corrective record, repair it, self-check and hand back, then rerun
+whole-Spec QA and obtain fresh separate review of the new immutable candidate.
+Do not reopen the original record or reuse the earlier PASS for changed content.
+
+Before integration the Spec form checks assembled completion and current PASS:
+
+```bash
+node workbench/tools/spec-workbench.mjs gate --spec S-001 --candidate "[SHA]"
+```
+
+This repository currently follows S-00O bootstrap exemption 2: each Task PR goes
+directly into integration with separate-context immutable-candidate review.
+Its Task gate reports the exception, not an independent PASS or owner approval:
+
+```bash
+node workbench/tools/spec-workbench.mjs gate --task TK-001 --spec S-001
+```
+
+Nested Worker Task-branch -> Dispatcher Spec-branch -> integration is the
+Blueprint destination, not delivered Spec-branch tooling. Follow the release
+owner if the exception changes. Use the [branch closeout recipe](#version-control-procedures)
+after the relevant review passes; prove remote containment and protect actual
+local/remote tips before cleanup. Integration delivery is distinct from final
+Spec closure. Only the owner promotes integration into main.
+
+#### Owner: Human QA and main-before-complete
+
+The owner chooses useful milestones, accumulated work, valued Specs, exhausted
+Specs or Director escalations for Human QA; version cadence is a default, not a
+mandatory sole trigger. An ongoing or failed review remains its corrective
+cycle, not a request to start QA again. Monitoring, findings, a merge and a green
+suite do not approve anything. The runtime records approval per Spec and binds
+it to the delivered integration content; it has no batch/version approval verb.
+
+Only record the owner's actual decision. Finding and destination-change examples
+are alternatives to explicit approval, not approval with optional decorations:
+
+```bash
+node workbench/tools/spec-workbench.mjs approve S-001 --candidate "[INTEGRATION SHA]" --owner "[WHO]" \
+  --finding "[FINDINGS]"
+node workbench/tools/spec-workbench.mjs approve S-001 --candidate "[INTEGRATION SHA]" --owner "[WHO]" \
+  --destination-change "[TEXT]"
+node workbench/tools/spec-workbench.mjs approve S-001 --candidate "[INTEGRATION SHA]" --owner "[WHO]"
+```
+
+A finding creates corrective Tasks; a destination change records return to Align
+without inventing Tasks. Return at the implicated scope: a defect need not
+change the design concept. Keep failed required-capability findings visible
+as real downstream dependencies until resolved. After correction, repeat
+assembly/review/delivery and obtain the owner's actual approval of that content.
+
+After the owner promotes the approved content to main, fetch the declared
+default branch (`main` here), then close the Spec:
+
+```bash
+git fetch origin main
+node workbench/tools/spec-workbench.mjs complete S-001
+node workbench/tools/spec-workbench.mjs render
+node workbench/tools/spec-workbench.mjs doctor
+```
+
+`complete` requires all Tasks done, checked acceptance, a real Completion Result,
+evidence, current passed review and owner approval. It verifies the approved
+candidate and unchanged assembled content on observed `origin/main`; a local
+main branch or integration merge is insufficient. Refusals leave state untouched.
+Completion records the observed ref/SHA and preserves administrative approval;
+substantive changes invalidate it. Render removes complete Specs from the hot
+board; outstanding diagnostics remain visible.
+
+#### Documentation: feature capture, retirement and recovery
+
+After complete, author capability knowledge in the manifest-declared `features`
+collection, route it from Wiki MEMORY.md and validate it with the Wiki schema.
+There is no capture CLI. A feature article uses `type: feature`, active status,
+provenance and source_paths naming the Spec's eventual retired route; it explains
+What It Does, Why It Matters, Limits, and Evidence and Sources without copying
+active Task state. Follow [features](workbench/wiki/features/README.md) and
+[Wiki schema](workbench/wiki/SCHEMA.md). `uncaptured-complete` is attention while
+the Spec stays complete; missing, invalid or unrouted capture blocks retirement
+and Task/Spec discard. Reconcile surviving claims into their existing owners.
+
+Move records only with the link-safe operations. Task retirement is optional
+for a done record with proof/Receipt; it rewrites live links, preserves and counts
+historical references, and retains the complete Task directory. `move-spec` is
+a folder-only alternative for an already complete Spec, not reconciliation or
+a bypass of capture. The normal closure route is complete -> feature capture -> `retire-spec`, which
+moves the whole Spec and its Tasks together. An individual Task move is a
+separate optional operation; its path participates in the review digest and
+invalidates earlier content-bound approval. Do not describe it as transparent
+normal cleanup or move normal cleanup before closure to avoid that limit.
+Use `retire-spec` after validated feature capture;
+it checks closure/approval/capture, appends evidence, moves the complete directory,
+regenerates ADR/board projections, cleans contained lane branches and lists
+unmerged results without deleting them. Do not run both Spec moves sequentially:
+
+```bash
+node workbench/tools/spec-workbench.mjs move-task S-001 --task TK-001 --to retired
+node workbench/tools/spec-workbench.mjs move-spec S-001 --to retired
+node workbench/tools/spec-workbench.mjs retire-spec S-001 --wiki workbench/wiki/features/greeting.md
+```
+
+Commit and preserve the retirement result. Its latest incarnation and entire
+current directory must reach the declared default branch, observed by a fresh
+fetch, before discard. Discard alternatives are separate operations:
+
+```bash
+node workbench/tools/spec-workbench.mjs discard S-001 --task TK-001
+node workbench/tools/spec-workbench.mjs discard S-001
+```
+
+Discard refuses active records, dirty state, unfinished work, missing/invalid
+capture, unverified current directory on main and current references. It never
+clears the permanent ADR archive. After a Task discard the parent directory has
+changed; publish/verify that latest directory on main before Spec discard.
+Operational references still block even in the feature owner. Historical links
+in its Evidence and Sources become immutable git-show citations. Successful
+removal writes DISCARDS.md with the historical route, retiring/discard-parent
+commits and exact `git checkout SHA -- DIRECTORY` recovery command; exercise it
+in a disposable clone and compare all recovered bytes, including sibling proof,
+assets and Receipt runs. The final Task leaves `tasks/.gitkeep` so fresh clones
+retain record-backed interpretation. Recovery is for inspection, not new work.
+
+A later same-capability gap targets the surviving Wiki claim; it does not
+resurrect a discarded Spec. The delivered `createCorrectiveTasks` export in
+`workbench/tools/spec-report.mjs` accepts `wikiClaim: "path#heading"` for this
+route and refuses duplicate findings. This is a programmatic API, not a
+create-corrective CLI. Ordinary claim and close accept the resulting standalone corrective Task ID;
+close appends feature provenance. The current receipt CLI remains Spec-bound
+and refuses a standalone Task ID; preserve its intermediate proof in the Task
+and surviving Wiki owner rather than claiming a standalone Receipt command. While the retired Spec
+still exists, findings instead create its corrective Tasks inside that folder.
+A different destination needs a new assigned Spec.
+
+The first S-01X migration slice provides an opt-in preview:
+
+```bash
+node workbench/tools/spec-workbench.mjs render --format json
+node tools/test-taskboard-json.mjs --demo
+```
+
+`render --format json` regenerates only `TASKBOARD.preview.json` from existing
+Spec/Task records. Its six lanes retain readable source links, source-owned
+metadata and derived child progress and cleanup state. Unknown metadata stays
+`null`; ordering is priority, title, then WBID. Editing a card never changes
+its source, and the next render restores the source-derived value. Invalid
+source, ambiguous flat identities, symlinked sources or linked outputs refuse before
+replacing the previous preview. Normalized duplicate field names anywhere in
+a record also refuse, using the same whole-document extraction, case
+sensitivity and key/value trimming as
+the existing source parsers. This validation applies only to the preview.
+Legacy numeric Task labels remain Spec-scoped in their owners: if two labels
+collide as flat JSON keys, the refusal names both sources without changing
+them. Reconcile that boundary before the later
+canonical board switch. Default `render` continues to generate Markdown and
+CATALOG; selection, review vocabulary, direct/orphan Task coverage, sitrep and
+the root/template switch remain separate S-01X slices. The demo uses a
+disposable room and runs in under one minute.
 
 ### Architecture Decision Records
 
@@ -976,6 +1157,13 @@ folder and otherwise reported as `disagreeing-status`. Default `REGISTER.md`
 shows active accepted decisions, and `HISTORY.md` preserves all lifecycle
 states. Register regenerates
 both projections without rewriting decision bodies.
+
+A confirmed grilling readback in Question / Answer / Why / Impact form locks
+the resulting ADR decision. Author the ADR during `to-docs`, before Specs and
+Tasks; no second owner reread is required when the text faithfully records the
+confirmed answer. Reconcile later corrections with their owning records before
+moving an accepted decision out of `proposed/`. Acceptance and implementation
+are separate: record any gap in the assigned Spec.
 
 ```bash
 node workbench/tools/adr.mjs new --title "Decision title"
@@ -2030,8 +2218,13 @@ The old prose saying working day was inaccurate. Historical GPT_OS local-day
 Preflight and ref-deduplication rules remain scoped historical requirements,
 not an automatically imported Workbench algorithm.
 
-Author small ADRs for independently changing consequential decisions with real
-alternatives or reversal cost. Binding rules stay in current owners. A semantic
+[ADR-000A](workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md)
+owns the amendment-first decision rule. Correct or expand the existing ADR
+when refining the same architectural
+decision; preserve its identity, rationale and consequential alternatives.
+Create a new ADR only when it adds a valuable distinct architectural lens or
+layer, with the reasons for that decision and real alternatives or reversal
+cost. Binding rules stay in current owners. A semantic
 review checks agreement; text presence alone cannot establish fidelity.
 Portable record parsing treats LF, CRLF and CR as syntax variations; read-only
 validation never normalizes files as a side effect.

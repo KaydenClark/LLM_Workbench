@@ -9,7 +9,7 @@ source_paths:
   - workbench/specs/S-00D-genesis-from-blueprint-and-adrs/SPEC.md
   - tools/genesis-from-decisions.mjs
   - tools/test-genesis-from-decisions.mjs
-  - skills/genesis/SKILL.md
+  - workbench/skills/genesis/SKILL.md
   - templates/GENESIS.md
 parent: none
 authorized_by: owner
@@ -35,9 +35,10 @@ The source record and named owners were read at `bc370fe742d5ddb8348bf361fccea31
 - [workbench/specs/S-00D-genesis-from-blueprint-and-adrs/SPEC.md](../../../workbench/specs/S-00D-genesis-from-blueprint-and-adrs/SPEC.md)
 - [tools/genesis-from-decisions.mjs](../../../tools/genesis-from-decisions.mjs)
 - [tools/test-genesis-from-decisions.mjs](../../../tools/test-genesis-from-decisions.mjs)
-- [skills/genesis/SKILL.md](../../../skills/genesis/SKILL.md)
+- [workbench/skills/genesis/SKILL.md](../../skills/genesis/SKILL.md)
 - [templates/GENESIS.md](../../../templates/GENESIS.md)
 
 ## History
 
 - 2026-09-19: Reconciled into one Spec article on owner direction. Original source and proof remain intact; this article does not authorize retirement or discard.
+- 2026-09-30: Repaired live skill links and source_paths after relocation to workbench/skills; verified destinations only, without revalidating historical capability claims.

@@ -40,6 +40,7 @@ Markdown home. The wiki is a map, not a Governance Plane.
 | Installed tools and agent capabilities | [[TOOLS NOTE NAME]] |
 | CRUD, freshness, sensitivity, or provenance rules | [SCHEMA.md](SCHEMA.md) |
 | Durable design models | [design-concepts/](design-concepts/README.md) |
+| Delivered capabilities of completed Specs | [features/](features/README.md) |
 | Superseded facts or old conversations | Follow a specific link into `archive/` |
 
 ## Projects

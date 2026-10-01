@@ -57,3 +57,37 @@ separate-context full-branch review found no actionable issue. The audit still
 recommends repeated real outcome trials, controls/prior/candidate comparison,
 recent outcome evidence and uncertainty estimates. This documentation and
 contract check does not establish improved agent outcomes.
+
+## 2026-09-27 v4 role groundwork
+
+Guardrail audit using `node tools/audit-guardrails.mjs --path .` measured
+**78/100 before** at `b00a2e338436ef7b281b0cc53e74f891af32f18c` and
+**78/100 after** at `950cf1bd988da8ee622fd3cbe4fb7a031c19ed16`, with
+unchanged criteria (static20, drift25, discipline25, outcome evidence8).
+Repeated real outcome trials, controls/prior/candidate comparison, recent
+outcome evidence and uncertainty estimates remain missing. These documentation
+and planning changes establish no improvement in agent outcomes. Final
+verification is recorded in S-00O's integration reconciliation receipt.
+
+## 2026-09-29 ADR-000B/C/D acceptance documentation
+
+Guardrail audit using `node tools/audit-guardrails.mjs --path .` measured
+**78/100 before** on clean S-00G parent `ef2b129692ba051b65214331b67b44a8542f27a3`
+and **78/100 after** on the ADR acceptance candidate tree. Criteria were
+unchanged: static contract 20/20, drift resistance 25/25, benchmark discipline
+25/25, outcome evidence 8/30. Remaining recommendations are repeated real
+outcome trials, controls/prior/candidate comparison, recent real outcome
+evidence, and uncertainty estimates. This documentation change adds no agent
+outcome evidence and makes no reliability claim. The S-00G evidence log names
+the verified candidate commit and checks after save.
+
+## 2026-09-30 FND-Q16 existing ADR reconciliation
+
+Guardrail audit using `node tools/audit-guardrails.mjs --path .` measured
+**78/100 before** at `065a7ce4436e46ae6726985b567b6b94ed94660c` and
+**78/100 after** on the amendment candidate tree. Criteria remain unchanged:
+static contract 20/20, drift resistance 25/25, benchmark discipline 25/25,
+outcome evidence 8/30. Remaining recommendations are repeated real outcome
+trials, controls/prior/candidate comparison, recent real evidence and uncertainty
+estimates. These documentation amendments establish no agent outcome improvement.
+S-00P records the immutable candidate verification and self-drift limits.

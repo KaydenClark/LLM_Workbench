@@ -145,14 +145,15 @@ test('the registry is closed, typed, and every emitted code is registered', () =
 test('attention findings stay visible and never change the doctor exit code or hide work', () => {
   const dir = project();
   try {
-    write(dir, 'workbench/specs/S-001-stale/SPEC.md', spec('S-001', { tasks: '| TK-001 | First slice | in-progress | none | pending |', updated: '2026-01-01', extra: '[missing](../../missing.md)' }));
+    write(dir, 'workbench/specs/S-001-stale/SPEC.md', spec('S-001', { tasks: '| TK-001 | First slice | in-progress | none | pending |\n| TK-002 | New To-do | ready | none | pending |', updated: '2026-01-01', extra: '[missing](../../missing.md)' }));
     render(dir);
     const findings = doctor(dir, { today: '2026-09-04', home: quietHome });
     assert.deepEqual(findings.map((item) => [item.code, item.severity, item.blocks]).sort(), [['broken-link', 'attention', 'none'], ['stale-claim', 'attention', 'none']]);
     const cli = cliDoctor(dir);
     assert.equal(cli.status, 0, 'attention findings must not fail doctor');
     assert.equal(cli.findings.length, 2);
-    assert.equal(nextWork(dir).taskId, 'TK-001', 'attention findings must not hide resumable work');
+    assert.equal(nextWork(dir).taskId, 'TK-002', 'attention findings must not hide eligible To-do work');
+    assert.match(fs.readFileSync(path.join(dir, 'workbench/specs/S-001-stale/SPEC.md'), 'utf8'), /TK-001.*in-progress/, 'existing claim remains visible in source');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
@@ -199,7 +200,8 @@ test('a selected slice with an unmet dependency is reported, excluded by next, a
 
     write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { tasks: '| TK-001 | First slice | ready | none | pending |\n| TK-002 | Second slice | ready | TK-001 | pending |' }));
     render(dir);
-    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a later task waiting on its predecessor is ordinary sequencing, not a finding');
+    assert.deepEqual(doctor(dir, { home: quietHome }).map(item => [item.code, item.taskId, item.blocks]), [['blocked-slice', 'TK-002', 'selected-slice']], 'every dependency-waiting To-do remains visible with its existing per-Task effect');
+    assert.equal(cliDoctor(dir).status, 0, 'a later To-do wait also does not fail doctor for unrelated work');
     assert.equal(nextWork(dir).taskId, 'TK-001');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
@@ -775,14 +777,13 @@ test('gitFindings only skips its candidate lookup for an active row/record colli
   const source = fs.readFileSync(specTool, 'utf8');
   assert.doesNotMatch(
     source,
-    /selectCandidate\(specs\);\s*\n\s*\} catch/,
+    /selectCandidate\([^)]*\);\s*\n\s*\} catch/,
     'no bare catch may wrap the gitFindings candidate lookup again; a narrow, named guard replaced it'
   );
-  assert.match(
-    source,
-    /hasActiveSliceConflict[\s\S]{0,80}status === 'active'[\s\S]{0,20}sliceConflict/,
-    'the guard must name the active-status condition explicitly rather than catching every exception'
-  );
+  // The old global-boolean source shape is obsolete. Active/non-active
+  // collision cases below retain diagnostics; test-taskboard-json adds a
+  // valid completed peer to prove that per-Spec filtering preserves lookup.
+  // Its unexpected-fault sentinel also verifies that exceptions propagate.
 
   const dir = project();
   try {
@@ -987,6 +988,10 @@ const PINNED_EFFECTS = {
   'retired-task-not-done': ['attention', 'specs', 'none'],
   'retired-wiki-owner-stale': ['attention', 'specs', 'none'],
   'discarded-reference': ['error', 'specs', 'selection'],
+  // S-00I TK-01U: a Spec completed under the closure-capture contract with no
+  // captured features article is visible and never blocks; a failed or
+  // missing capture never reverts `complete`.
+  'uncaptured-complete': ['attention', 'specs', 'none'],
   'stale-note': ['attention', 'wiki', 'none'],
   'room-brain-unrouted': ['attention', 'wiki', 'none'],
   'stale-stamp': ['attention', 'wiki', 'none'],

@@ -9,7 +9,7 @@ source_paths:
   - workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md
   - tools/core-skill-installer.mjs
   - tools/test-core-skill-installer.mjs
-  - skills/update-harness/SKILL.md
+  - workbench/skills/update-harness/SKILL.md
   - workbench/manifest.json
 parent: none
 authorized_by: owner
@@ -46,9 +46,10 @@ The source record was read at `bc370fe742d5ddb8348bf361fccea31205f6cee7` and the
 - [workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md](../../../workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md)
 - [tools/core-skill-installer.mjs](../../../tools/core-skill-installer.mjs)
 - [tools/test-core-skill-installer.mjs](../../../tools/test-core-skill-installer.mjs)
-- [skills/update-harness/SKILL.md](../../../skills/update-harness/SKILL.md)
+- [workbench/skills/update-harness/SKILL.md](../../skills/update-harness/SKILL.md)
 - [workbench/manifest.json](../../../workbench/manifest.json)
 
 ## History
 
 - 2026-09-19: Reconciled into one article on owner direction; source records and proof remain intact pending their lifecycle gates.
+- 2026-09-30: Repaired live skill links and source_paths after relocation to workbench/skills; verified destinations only, without revalidating historical capability claims.

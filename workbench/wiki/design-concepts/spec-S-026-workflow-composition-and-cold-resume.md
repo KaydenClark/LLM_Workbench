@@ -12,8 +12,8 @@ source_paths:
   - tools/test-workbench-round-trip.mjs
   - tools/test-sessions.mjs
   - tools/test-direct-promotion.mjs
-  - skills/make-it-so/SKILL.md
-  - skills/promote/SKILL.md
+  - workbench/skills/make-it-so/SKILL.md
+  - workbench/skills/promote/SKILL.md
   - RUNBOOK.md
 parent: none
 authorized_by: owner
@@ -44,10 +44,11 @@ verification, rather than asserting every historical behavior remains current.
 - [tools/test-workbench-round-trip.mjs](../../../tools/test-workbench-round-trip.mjs)
 - [tools/test-sessions.mjs](../../../tools/test-sessions.mjs)
 - [tools/test-direct-promotion.mjs](../../../tools/test-direct-promotion.mjs)
-- [skills/make-it-so/SKILL.md](../../../skills/make-it-so/SKILL.md)
-- [skills/promote/SKILL.md](../../../skills/promote/SKILL.md)
+- [workbench/skills/make-it-so/SKILL.md](../../skills/make-it-so/SKILL.md)
+- [workbench/skills/promote/SKILL.md](../../skills/promote/SKILL.md)
 - [RUNBOOK.md](../../../RUNBOOK.md)
 
 ## History
 
 - 2026-09-19: Created on explicit owner direction for one article per legacy Spec. Preserved useful knowledge and historical limits; no source record retired or discarded.
+- 2026-09-30: Repaired live skill links and source_paths after relocation to workbench/skills; verified destinations only, without revalidating historical capability claims.

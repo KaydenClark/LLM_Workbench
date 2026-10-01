@@ -11,7 +11,7 @@
 **Latest event:** Spec completed and removed from the hot board.
 **Next gate:** none
 
-> **Citation anchors.** pre=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2` post=`0174675`.
+> **Citation anchors.** pre=`340e80a1b4f1af92afbbe3a974e7de3d4cb679b7` post=`0174675`.
 
 ## Outcome
 
@@ -91,6 +91,8 @@ and `skills/genesis/SKILL.md`; generated-project requirements stay in its Spec.
 | 2026-09-10 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
 | 2026-09-10 | TK-00E | Final release correction at 1dda511c541662ab96d61c5bdf5dac33b2bcb83e accepts credential-free Git SSH source origins | Reproduced valid git@host:path rejection by the email privacy scan; red/green derivation suite passes for SCP and ssh://git@host forms, while wrong SSH users and embedded tokens remain refused | Input validation retains privacy scanning after recognizing the fixed Git transport prefix | New immutable release candidate requires full verification and fresh integration review |
+| 2026-09-30 | spec | PR77 corrects the live pre-implementation anchor from the invalid full SHA 340e80a4b9cf6e07ca30f3a5f406b93998d48ed2; historical evidence and completion status remain preserved | Public introducing commit ea4fac899db22a421a5872b83fc39ebff00601cb created S-00A through S-00E with direct parent 340e80a1b4f1af92afbbe3a974e7de3d4cb679b7 (tree 3d63e1ac30800a34aa7254a053a567a5b0d8070c, Record v3.2.0 upstream integration); git rev-parse of the original seven-character prefix resolves that parent | Only the live pre anchor is corrected; post anchor and original proof files remain unchanged | Frozen citation corpus verification and independent PR77 review remain required |
+
 
 ## Completion Result
 

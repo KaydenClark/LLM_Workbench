@@ -30,7 +30,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
+import { compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
 import { parseCapabilityList } from './optional-capabilities.mjs';
 
 export const TASK_STATUSES = Object.freeze(['ready', 'in-progress', 'blocked', 'done', 'deferred']);
@@ -116,6 +116,9 @@ export function parseTaskRecord(content, filePath, root) {
     relativePath: filePath && root ? path.relative(root, filePath).split(path.sep).join('/') : null,
     content,
     id,
+    // S-01W TK-002O: the spelling this record carried before `widen-id`
+    // widened it, or null for a record that never widened.
+    formerId: parseFormerId(fields['Former ID'], id),
     specId,
     slice: fields.Slice,
     status: fields.Status,
@@ -271,11 +274,12 @@ export function updateTaskFields(content, values) {
 // The bytes one Task record is written as. Kept beside the parser so the two
 // cannot drift; every caller validates the result by parsing it back before
 // writing it, so a record this produces is never one the reader refuses.
-export function formatTaskRecord({ id, specId, slice, status, blockers, destination, plannedVerification, proof }) {
+export function formatTaskRecord({ id, formerId, specId, slice, status, blockers, destination, plannedVerification, proof }) {
   const lines = [
     `# ${id} - ${slice}`,
     '',
     `**Task ID:** ${id}`,
+    ...(formerId ? [`**Former ID:** ${formerId}`] : []),
     `**Spec ID:** ${specId}`,
     `**Slice:** ${slice}`,
     `**Status:** ${status}`,
@@ -286,6 +290,24 @@ export function formatTaskRecord({ id, specId, slice, status, blockers, destinat
   if (proof) lines.push(`**Proof:** ${proof}`);
   lines.push('');
   return lines.join('\n');
+}
+
+// S-01W TK-002O: a Spec or Task record that `widen-id` widened keeps its
+// previous spelling in one `**Former ID:**` header field, written directly
+// under the record's own ID field. The value must be a different spelling of
+// the same identity (same prefix and collision key, so `S-00Q` for `S-000Q`):
+// the field records a widening, never a second or unrelated identity, and a
+// record carries at most one because an identity widens once. Absent means
+// the record never widened. spec-workbench.mjs reads a Spec's field through
+// this same check so both record kinds share one rule.
+export function parseFormerId(value, id, label = id) {
+  if (value === undefined || value === null) return null;
+  const former = String(value).trim();
+  if (!visibleIdParts(former) || visibleIdKey(former) !== visibleIdKey(id)) {
+    throw new Error(`${label} records Former ID "${former}", which is not another spelling of ${id}; the field names the same identity before widen-id widened it`);
+  }
+  if (former === id) throw new Error(`${label} records Former ID ${former}, which is its current ID; the field names a previous spelling`);
+  return former;
 }
 
 function parseBlockers(value, id) {
