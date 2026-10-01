@@ -370,7 +370,7 @@ test('a numeric endpoint remains ordinary documentation through the full checker
 });
 
 
-test('file-versus-network scope classification matrix follows explicit prose', () => {
+test('file-versus-network scope classification matrix follows explicit prose', { skip: CORPUS_CHILD }, () => {
   const prior = 'tools/test-diagnostics.mjs';
   const cases = [];
   for (const cue of ['host', 'server', 'domain', 'URL', 'endpoint']) {
