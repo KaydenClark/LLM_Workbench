@@ -3,6 +3,7 @@ import { inspectSkills } from './skill-inspection.mjs';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { insideWorkTree, managedRuntimeDrift, permissionScopeDrift, permissionScopeMessage, provenanceFindings, readAtRef, readRepositoryState, resolveBranchRefs, seededDocumentFindings, validateManifest } from './workbench-layout.mjs';
 import { isMainModule } from './workbench-paths.mjs';
@@ -2346,7 +2347,9 @@ export function moveSpecDirectory(rootDir, specId, folder) {
 //   - a Task whose Receipt carries no run AND whose Proof field is empty
 //     (both absent, not either alone) - "nothing to carry" into its own
 //     historical record, the Task analogue of refusing an incomplete Spec.
-export function moveTaskRecord(rootDir, specId, taskId, folder) {
+export function moveTaskRecord(rootDir, specId, taskId, folder, options = {}) {
+  if (Object.hasOwn(options, 'replacement')) return recoverTaskCollision(rootDir, specId, taskId, folder, options);
+  if (options.dryRun) throw new Error('move-task --dry-run requires the collision recovery replacement mode');
   const root = path.resolve(rootDir);
   if (!TASK_LIFECYCLE_FOLDERS.includes(folder)) {
     throw new Error(`move-task refuses folder "${folder}"; the closed set is ${TASK_LIFECYCLE_FOLDERS.join(', ')}`);
@@ -2483,6 +2486,216 @@ export function moveTaskRecord(rootDir, specId, taskId, folder) {
 // the agent commits it as one reviewable candidate. The projections are
 // re-rendered so the Taskboard and catalog name the widened ID.
 const WIDENABLE_SPEC_STATUSES = Object.freeze(['planned', 'active', 'blocked']);
+
+// A semantic collision is different from widening a spelling: keeping the
+// old label as an alias would continue shadowing the earlier record. This
+// narrowly selected move preserves the original record at its immutable Git
+// route and its Receipt bytes, and stages a new canonical identity only.
+function recoverTaskCollision(rootDir, specId, taskId, folder, options) {
+  const root = path.resolve(rootDir);
+  const fail = message => { throw new Error(`move-task collision recovery: ${message}`); };
+  if (folder) fail('replacement cannot be combined with a lifecycle folder');
+  if (Object.keys(process.env).some(key => key.startsWith('GIT_') && key !== 'GIT_PAGER')) fail('inherited Git environment must be removed (GIT_PAGER is harmless)');
+  const git = (...args) => {
+    const result = spawnSync('git', ['--no-lazy-fetch', '--no-optional-locks', '-C', root, ...args], {
+      encoding: 'utf8', maxBuffer: REF_READ_MAX_BUFFER,
+      env: { ...process.env, GIT_NO_REPLACE_OBJECTS: '1', GIT_TERMINAL_PROMPT: '0' }
+    });
+    if (result.error || result.status !== 0) fail(`Git ${args[0]} failed (output omitted)`);
+    return result.stdout.trimEnd();
+  };
+  if (!fs.lstatSync(root).isDirectory() || fs.lstatSync(root).isSymbolicLink()
+      || fs.realpathSync(git('rev-parse', '--show-toplevel')) !== fs.realpathSync(root)) fail('project root must be the ordinary Git working-tree root');
+  for (const name of ['expectedHead', 'sourceRevision', 'collisionRevision']) {
+    if (!/^[0-9a-f]{40}$/.test(options[name] ?? '')) fail(`${name} requires an exact lowercase commit revision`);
+    if (git('rev-parse', '--verify', `${options[name]}^{commit}`) !== options[name]) fail(`${name} is not an exact commit revision`);
+  }
+  if (git('rev-parse', 'HEAD') !== options.expectedHead) fail('expected HEAD no longer matches');
+  if (git('status', '--porcelain') !== '') fail('requires a clean tree and index');
+  if (!/^[0-9a-f]{64}$/.test(options.taskHash ?? '')) fail('Task hash must be an exact SHA256');
+  if (!/^TK-[0-9A-Z]{4,}$/.test(options.replacement) || !/[A-Z]/.test(options.replacement.slice(3))
+      || visibleIdKey(options.replacement) === visibleIdKey(taskId)) fail('replacement must name a different identity in the current letter-bearing format');
+  if (!options.reason?.trim() || /[\r\n]/.test(options.reason)) fail('a single-line Director disposition reason is required');
+  const ordinaryTree = directory => {
+    assertSafeReadPath(root, directory);
+    if (!fs.existsSync(directory)) return;
+    if (!fs.lstatSync(directory).isDirectory()) fail('source directory must be ordinary');
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const file = path.join(directory, entry.name);
+      assertSafeReadPath(root, file);
+      if (entry.isDirectory()) ordinaryTree(file);
+      else if (!entry.isFile()) fail('source entries must be ordinary files or directories');
+    }
+  };
+  ordinaryTree(resolveSpecsRoot(root).specsRoot);
+  const owners = [...loadSpecs(root, { allowDuplicates: true }), ...loadRetiredSpecs(root)];
+  const selected = owners.filter(owner => visibleIdKey(owner.id) === visibleIdKey(specId));
+  if (selected.length !== 1) fail('assigned Spec must resolve uniquely');
+  const spec = selected[0];
+  specId = spec.id; taskId = resolveTaskId(spec, taskId);
+  if (spec.lifecycleFolder || !WIDENABLE_SPEC_STATUSES.includes(spec.status)) fail('owning Spec must be active, planned or blocked');
+  const task = spec.records.find(record => record.id === taskId);
+  if (!task || task.status !== 'done' || task.formerId) fail('source must be an active-roster done record without a Former ID alias');
+  if (/^\*\*Close pending:\*\*/m.test(task.content)) fail('source has pending close evidence; finish close before moving');
+  readReceiptFromFile(task.filePath);
+  if (!task.proof) fail('source done record must retain its verified Proof');
+  const oldDir = path.dirname(task.filePath);
+  if (path.dirname(oldDir) !== path.join(path.dirname(spec.filePath), 'tasks') || path.basename(oldDir) !== taskId) fail('source Task is not at its declared canonical path');
+  const relative = file => path.relative(root, file).split(path.sep).join('/');
+  const oldPath = relative(task.filePath);
+  const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+  if (hash(fs.readFileSync(task.filePath)) !== options.taskHash) fail('source Task hash changed');
+  // Use bytes rather than trimmed `git show` output for immutable equality.
+  const blob = (revision, file) => {
+    const result = spawnSync('git', ['--no-lazy-fetch', '--no-optional-locks', '-C', root, 'show', `${revision}:${file}`], {
+      maxBuffer: REF_READ_MAX_BUFFER, env: { ...process.env, GIT_NO_REPLACE_OBJECTS: '1', GIT_TERMINAL_PROMPT: '0' }
+    });
+    if (result.error || result.status !== 0) fail('immutable collision evidence is unavailable (output omitted)');
+    return result.stdout;
+  };
+  if (!blob(options.sourceRevision, oldPath).equals(fs.readFileSync(task.filePath))) fail('source Task differs from its immutable source revision');
+  git('merge-base', '--is-ancestor', options.sourceRevision, options.expectedHead);
+  for (const revision of [options.sourceRevision, options.collisionRevision]) {
+    if (!git('for-each-ref', `--contains=${revision}`, '--format=%(refname)', 'refs/remotes')) fail('immutable collision evidence must be contained in an observed remote tip');
+    let identity;
+    try { identity = JSON.parse(blob(revision, 'workbench/manifest.json')).workbenchId; }
+    catch { fail('immutable collision manifest is unreadable'); }
+    if (!identity || identity !== readManifest(root).workbenchId) fail('immutable collision evidence belongs to a different room');
+  }
+  const foreignPath = options.collisionPath;
+  if (typeof foreignPath !== 'string' || path.isAbsolute(foreignPath) || foreignPath.split('/').some(part => !part || part === '.' || part === '..')
+      || !foreignPath.startsWith(`${resolveSpecsRoot(root).specsPrefix}/`) || !foreignPath.endsWith('/TASK.md')) fail('collision evidence requires an ordinary explicit Task path');
+  const foreign = parseTaskRecord(blob(options.collisionRevision, foreignPath).toString('utf8'), path.join(root, foreignPath), root);
+  const foreignDir = path.posix.dirname(foreignPath);
+  const foreignTasks = path.posix.dirname(foreignDir);
+  if (path.posix.basename(foreignDir) !== foreign.id || path.posix.basename(foreignTasks) !== 'tasks') fail('collision evidence Task path does not match its record');
+  const foreignSpecPath = path.posix.join(path.posix.dirname(foreignTasks), 'SPEC.md');
+  const foreignSpec = parseSpecPacket(blob(options.collisionRevision, foreignSpecPath).toString('utf8'), path.join(root, foreignSpecPath), root, { recordBacked: true });
+  if (foreignSpec.id !== foreign.specId) fail('collision evidence Spec does not own its Task');
+  if (foreign.specId !== options.collisionSpec || visibleIdKey(foreign.specId) === visibleIdKey(specId)
+      || visibleIdKey(foreign.id) !== visibleIdKey(taskId)) fail('collision evidence must name the same identity in a different declared Spec');
+  // Reference-only reservations may name the replacement. Actual records,
+  // former aliases and discard entries at every observed tip may not.
+  const key = visibleIdKey(options.replacement);
+  const holders = owners.flatMap(owner => [...owner.rows, ...owner.records, ...owner.retiredRecords].map(record => ({ owner, record })))
+    .filter(({ record }) => [record.id, record.formerId].some(id => id && visibleIdKey(id) === visibleIdKey(taskId)));
+  if (holders.length > 2 || holders.some(({ owner }) => ![spec.id, foreign.specId].includes(owner.id))) fail('collision has additional local holders');
+  if (identityFindings(owners).some(issue => visibleIdKey(issue.taskId) !== visibleIdKey(taskId))) fail('unrelated identity collisions must be resolved separately');
+  for (const owner of owners) {
+    for (const record of [...owner.rows, ...owner.records, ...owner.retiredRecords]) {
+      if ([record.id, record.formerId].some(id => id && visibleIdKey(id) === key)) fail('replacement identity is occupied by a record or alias');
+    }
+  }
+  if (discardedLabels(root, 'TK').some(id => visibleIdKey(id) === key)) fail('replacement identity is occupied by a discard');
+  for (const orphan of loadCorrectiveTasks(root)) {
+    if ([orphan.id, orphan.formerId].some(id => id && visibleIdKey(id) === key)) fail('replacement identity is occupied by a corrective record or alias');
+    if (visibleIdKey(orphan.id) === visibleIdKey(taskId)) fail('collision has an additional corrective holder');
+  }
+  for (const ref of git('for-each-ref', '--format=%(refname)', 'refs/remotes').split('\n').filter(Boolean)) {
+    // Pre-manifest tips retain the same legacy lane inventory as next-id.
+    // A present but malformed manifest still refuses instead of guessing.
+    let lanes = [...new Set([resolveSpecsRoot(root).specsPrefix, 'specs'])];
+    if (git('ls-tree', '--name-only', ref, '--', 'workbench/manifest.json')) {
+      let lane;
+      try { lane = JSON.parse(blob(ref, 'workbench/manifest.json')).lanes?.specs; }
+      catch { fail('cannot inspect an observed remote manifest'); }
+      if (typeof lane !== 'string' || path.isAbsolute(lane) || lane.split('/').some(part => !part || part === '.' || part === '..')) fail('observed remote Spec lane is invalid');
+      lanes = [lane];
+    }
+    const result = spawnSync('git', ['--no-lazy-fetch', '--no-optional-locks', '-C', root, 'grep', '-h', '-E', '^\\*\\*(Task ID|Former ID):\\*\\*', ref, '--', ...lanes], { encoding: 'utf8', maxBuffer: REF_READ_MAX_BUFFER, env: { ...process.env, GIT_NO_REPLACE_OBJECTS: '1' } });
+    if (result.error || ![0, 1].includes(result.status)) fail('cannot inspect remote replacement records');
+    if ([...result.stdout.matchAll(/\bTK-[0-9A-Za-z]+\b/g)].some(match => visibleIdKey(match[0]) === key)) fail('replacement identity is occupied on an observed remote tip');
+    for (const file of git('ls-tree', '-r', '--name-only', ref, '--', ...lanes).split('\n').filter(file => file.endsWith('/SPEC.md'))) {
+      const packet = parseSpecPacket(blob(ref, file).toString('utf8'), path.join(root, file), root, { recordBacked: true });
+      if (packet.rows.some(row => visibleIdKey(row.id) === key)) fail('replacement identity is occupied by an observed remote slice');
+    }
+    for (const lane of lanes) {
+      const discardPath = `${lane}/DISCARDS.md`;
+      if (git('ls-tree', '--name-only', ref, '--', discardPath)
+          && [...blob(ref, discardPath).toString('utf8').matchAll(/\bTK-[0-9A-Za-z]+\b/g)].some(match => visibleIdKey(match[0]) === key)) fail('replacement identity is discarded on an observed remote tip');
+    }
+  }
+  const newDir = path.join(path.dirname(oldDir), options.replacement);
+  assertSafeReadPath(root, newDir);
+  if (fs.existsSync(newDir)) fail('replacement destination is occupied');
+  const moving = collectDirectoryFiles(oldDir);
+  const unmoved = collectSpecReferenceFiles(root, oldDir);
+  for (const file of [...moving, ...unmoved]) assertSafeReadPath(root, file);
+  const { locations, directoryTargets } = lifecycleMoveLocations(root, oldDir, newDir, moving, unmoved);
+  const totals = { referencesRewritten: {}, historicalReferencesLeft: {} };
+  const writes = new Map();
+  const provenance = `${specId}/${taskId}@${options.sourceRevision}:${oldPath}; retained ${foreign.specId}/${foreign.id}@${options.collisionRevision}:${foreignPath}`;
+  for (const file of [...moving, ...unmoved]) {
+    assertSafeReadPath(root, file);
+    const destination = locations.get(file);
+    if (!destination.endsWith('.md')) continue;
+    const original = fs.readFileSync(file, 'utf8');
+    let content = planReferenceRewrite(root, destination, original, path.dirname(file), path.dirname(destination), locations, totals, { directoryTargets }) ?? original;
+    if (file === task.filePath) {
+      content = replaceIdField(content, 'Task ID', taskId, options.replacement)
+        .replace(new RegExp(`^# ${escapeRegExp(taskId)} - `, 'm'), `# ${options.replacement} - `)
+        .replace(`**Task ID:** ${options.replacement}`, `**Task ID:** ${options.replacement}\n**Collision recovery:** ${provenance}`);
+      const parsed = parseTaskRecord(content, destination, root);
+      if (parsed.id !== options.replacement || parsed.status !== task.status || parsed.formerId) fail('planned canonical record does not preserve status without an alias');
+      const receipt = original.indexOf('## Receipt');
+      if (receipt >= 0 && content.slice(content.indexOf('## Receipt')) !== original.slice(receipt)) fail('planned Receipt bytes changed');
+    }
+    if (file === spec.filePath) {
+      const { prefix, evidence, suffix } = splitEvidenceSection(content);
+      const replace = text => text.replace(new RegExp(`\\b${escapeRegExp(taskId)}\\b`, 'g'), options.replacement);
+      content = replace(prefix) + evidence + replace(suffix);
+      content = appendEvidence(content, `| ${today()} | ${escapeCell(specId + '/' + taskId)} | Collision identity recovered to ${options.replacement} | ${escapeCell(provenance)} | ${escapeCell(options.reason)} | Identity repair only; no review or owner approval transferred. |`);
+    }
+    if (content !== original) { assertSafeWritePath(root, file); assertSafeWritePath(root, destination); writes.set(destination, content); }
+  }
+  // JSON source references need their owning runtime; never silently leave a
+  // current path dangling or rewrite unknown schemas during this operation.
+  for (const file of git('ls-files', '--', '*.json').split('\n').filter(Boolean)) {
+    assertSafeReadPath(root, path.join(root, file));
+    if (fs.readFileSync(path.join(root, file), 'utf8').includes(relative(oldDir))) fail(`unhandled JSON path reference in ${file}; reconcile its owner first`);
+  }
+  const projections = [path.join(root, 'BLUEPRINT.md'), path.join(root, 'TASKBOARD.md'), path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md')];
+  if (fs.existsSync(collectionPath(root, 'adr'))) projections.push(...['REGISTER.md', 'HISTORY.md'].map(name => path.join(collectionPath(root, 'adr'), name)));
+  const originals = new Map();
+  for (const file of new Set([...moving, ...[...writes.keys()].map(file => file.startsWith(newDir + path.sep) ? path.join(oldDir, path.relative(newDir, file)) : file), ...projections])) {
+    assertSafeWritePath(root, file);
+    originals.set(file, fs.existsSync(file) ? { bytes: fs.readFileSync(file), mode: fs.statSync(file).mode & 0o777 } : null);
+  }
+  for (const file of moving) {
+    if (!git('ls-files', '--error-unmatch', '--', relative(file))) fail('moving files must be tracked');
+  }
+  const indexPath = path.resolve(root, git('rev-parse', '--git-path', 'index'));
+  const indexStat = fs.lstatSync(indexPath);
+  if (!indexStat.isFile() || indexStat.isSymbolicLink() || indexStat.nlink > 1) fail('Git index must be an ordinary private file');
+  const index = fs.readFileSync(indexPath);
+  const result = { status: options.dryRun ? 'planned' : 'recovered', specId, taskId: options.replacement, from: relative(oldDir), to: relative(newDir), sourceTaskHash: options.taskHash, provenance, committed: false, staged: !options.dryRun, ...totals };
+  if (options.dryRun) return result;
+  // No fetched state or new HEAD is created here. Recheck the whole planned
+  // input immediately before mutation; the published commit remains recovery.
+  if (git('rev-parse', 'HEAD') !== options.expectedHead || git('status', '--porcelain') !== '' || !fs.readFileSync(indexPath).equals(index)) fail('planned input changed before publication');
+  for (const [file, saved] of originals) if (saved && !fs.readFileSync(file).equals(saved.bytes)) fail('planned source bytes changed before publication');
+  try {
+    git('mv', '--', relative(oldDir), relative(newDir));
+    for (const [file, bytes] of writes) writeSafeFile(root, file, bytes);
+    if (fs.existsSync(collectionPath(root, 'adr'))) writeRegister(root);
+    render(root);
+    git('add', '-A');
+  } catch (error) {
+    try {
+      if (git('rev-parse', 'HEAD') !== options.expectedHead) fail('HEAD changed during recovery; automatic rollback refuses');
+      if (fs.existsSync(newDir) && !fs.existsSync(oldDir)) fs.renameSync(newDir, oldDir);
+      for (const [file, saved] of originals) {
+        if (saved) { writeSafeFile(root, file, saved.bytes); fs.chmodSync(file, saved.mode); }
+        else if (fs.existsSync(file)) fs.unlinkSync(file);
+      }
+      const temporary = `${indexPath}.collision-restore-${process.pid}`;
+      try { fs.writeFileSync(temporary, index, { flag: 'wx', mode: indexStat.mode & 0o777 }); fs.renameSync(temporary, indexPath); }
+      finally { if (fs.existsSync(temporary)) fs.unlinkSync(temporary); }
+    } catch (rollback) { fail(`publication failed and rollback failed: ${rollback.message}; retain the tree for recovery at ${options.expectedHead}`); }
+    fail(`publication rolled back: ${error.message}`);
+  }
+  return result;
+}
 
 export function widenedIdentity(id) {
   const key = visibleIdKey(id);
@@ -3864,6 +4077,7 @@ export function parseCliArgs(argv) {
     else if (arg === '--host') options.host = true;
     else if (arg === '--activate') options.activate = true;
     else if (arg === '--local') options.local = true;
+    else if (arg === '--dry-run') options.dryRun = true;
     else if (arg.startsWith('--')) options[toCamel(arg.slice(2))] = rest[++optionIndex];
     else throw new Error(`Unknown argument: ${arg}`);
   }
@@ -3883,6 +4097,7 @@ function toCamel(value) {
 
 async function main() {
   const { command, id, options } = parseCliArgs(process.argv.slice(2));
+  if (options.dryRun && command !== 'move-task') throw new Error('--dry-run is supported only by move-task collision recovery');
   const root = options.path ?? process.cwd();
   let result;
   let doctorRun;
@@ -3920,7 +4135,7 @@ async function main() {
     if (result.refused) process.exitCode = 1;
   }
   else if (command === 'move-spec') result = moveSpecDirectory(root, id, options.to);
-  else if (command === 'move-task') result = moveTaskRecord(root, id, options.task, options.to);
+  else if (command === 'move-task') result = moveTaskRecord(root, id, options.task, options.to, options);
   else if (command === 'widen-id') result = widenId(root, id, { spec: options.spec });
   else if (command === 'retire-spec') result = retireSpec(root, id, { wikiNote: options.wiki });
   else if (command === 'discard') result = options.task ? discardRetiredTask(root, id, options.task) : discardRetiredSpec(root, id);

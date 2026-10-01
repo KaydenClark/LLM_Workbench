@@ -1119,6 +1119,7 @@ export const RUNTIME_TOOLS = Object.freeze([
   'adr.mjs',
   'claim-coordination.mjs',
   'diagnostics.mjs',
+  'github-coordination.mjs',
   'host-floor.mjs',
   'landmark-tracker.mjs',
   'landmark-wiki.mjs',
