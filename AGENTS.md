@@ -96,6 +96,30 @@ independent. Director coordinates cross-Spec dependencies and shared writers.
 The role and stance operating capabilities have separate delivery owners; their
 definitions do not imply a new scheduler or a shipped agent entry.
 
+### Handoff assignments and shared context
+
+The assigned role carries authority within the scope established by the user,
+this Contract and the assigned Spec. Handoffs and notepads carry instructions
+and context. Agents may delegate work through handoffs within their assigned
+roles; each transfer need not come directly from the owner. A recipient follows
+its assigned job under the current controls without requiring the owner to
+repeat an already authorized assignment. A document or role title cannot
+expand that scope.
+
+Distinguish author from recipient, and assigner from assignee. A request to
+prepare a handoff assigns its author the preparation of instructions for
+another agent in a separate context. Authoring it does not assign the
+recipient's work to the author. A handoff may convey a delegated assignment,
+a completion report or an update; its instructions do not carry independent
+authority.
+
+Notepads capture context as it happens; handoffs select and organize it for a
+specified recipient and purpose. Agents may read each other's handoffs and
+objective notepads. Directors and Dispatchers may manage shared updates to
+both as temporary scaffolding, with one writer per note or handoff at a time.
+The [Lexicon](LEXICON.md#artifact-boundaries) defines their jobs and the
+[Runbook](RUNBOOK.md#handoff-transfer) owns the transfer procedure.
+
 For Task execution, normal stance is set in the assigned SPEC and its TASK,
 not selected or recorded by the arriving agent. Builder, Auditor, Reviewer and
 Reconciler are portable behavior skills. A stance never grants, removes, or

@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** claude-lane-A-worker
 **Stance:** Builder
-**Updated:** 2026-09-26
+**Updated:** 2026-10-01
 **Catalog description:** Transfer one objective to a named destination in readable Markdown.
 **Blockers:** none.
-**Latest event:** TK-00R closed with proof.
-**Next gate:** Owner Human QA on `integration`, then `complete S-01A`.
+**Latest event:** Owner confirmed and promoted the role-based handoff correction; TK-00R proof remains historical delivery evidence.
+**Next gate:** Align handoff source and bundled shape with the accepted correction, then verify delegation and recipient behavior; owner Human QA and completion remain open.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -23,9 +23,9 @@ The prior Skills Wiki packet grouped the whole core inventory into one completio
 
 ## Current Verified State
 
-- `workbench/skills/handoff/SKILL.md` is the manifest-declared core source at the pre anchor.
-- `workbench/wiki/skill-handoff.md` is not yet routed as a current skill article; its existence and links must be rechecked before authoring.
-- Current source includes a Markdown asset; S-00W does not own this skill. No fresh behavioral scenario for this per-skill delivery is claimed by this planning packet.
+- At `574df962fcfdd8045ec4dd405ba7f548216f7d4a`, the manifest-declared handoff source, bundled Markdown shape and routed `workbench/wiki/skill-handoff.md` exist. TK-00R's completed proof and its 2026-09-26 scenario remain in the evidence log.
+- The source and shape still describe inherited authorization and owner-requested authorship. The notepad skill also describes owner-requested transfer. Their alignment with the 2026-10-01 accepted role and delegation correction is an implementation gap, not verified behavior.
+- This promotion changes accepted controls and documentation only. It does not reopen TK-00R, create a corrective Task, update skill sources/assets, install personal copies or claim a new behavioral trial.
 
 ## Desired Behavior
 
@@ -73,6 +73,8 @@ Inspect the current source, its callers/composition and relevant tests. Demonstr
 - [x] `workbench/wiki/skill-handoff.md` accurately distinguishes verified current behavior from remaining intended behavior, links the current source and governing owners, and is reachable from `workbench/wiki/MEMORY.md`.
 - [x] Relevant targeted tests/scenarios, Wiki validation, the required full suite, Workbench self-drift pre/post receipts and separate-context review are recorded at their proper gates; no unrun check is reported as passing.
 
+- [ ] The handoff source and bundled shape agree with the accepted 2026-10-01 correction; focused role-based delegation, upward reporting and Q12 investigation-and-return behavior are verified.
+
 ## Testing Seams
 
 Use the skill's public entry and its nearest source/test seam for the scenario: A receiving agent continues a specification-only request without implementing it and can resolve every cited owner. Structural catalog and Wiki checks prove routing, not agent behavior. If the skill changes behavior, show red then green at the closest meaningful seam. A human review may still be needed for conversational fidelity.
@@ -96,6 +98,25 @@ Intended slice direction: the six per-skill steps of the draft skills wiki
 Dispatcher takes up an already-active one). Tasks already cut stay as they
 are. This section changes none of this Spec's acceptance, evidence or status;
 steps 1-5 touch only the draft wiki and step 6 only this skill's lane.
+
+## Accepted handoff correction (2026-10-01)
+
+The owner confirmed the author/recipient and assigner/assignee distinction and
+explicitly selected promotion. [AGENTS](../../../AGENTS.md#handoff-assignments-and-shared-context)
+owns role authority, delegation and shared scaffolding boundaries;
+[LEXICON](../../../LEXICON.md#artifact-boundaries) owns the artifact meanings;
+[RUNBOOK](../../../RUNBOOK.md#handoff-transfer) owns recipient-purpose and
+transfer preparation. These owners supersede a reading that the handoff
+itself grants authorization or that agents must obtain a new owner request
+for every transfer.
+
+The next authorized source-repair slice must reconcile the handoff skill,
+its bundled shape and `templates/HANDOFF.md`, tests and Wiki explanation with
+those owners. Coordinate the notepad composition wording with its own skill
+owner; this Spec does not absorb another skill's implementation. Preserve
+TK-00R and all completed evidence. A delegation/completion-report scenario and
+a Q12-only investigation-and-return scenario remain unverified for this
+correction. No runtime, installation or owner Human QA result is implied.
 
 ## Append-Only Evidence And Execution Log
 

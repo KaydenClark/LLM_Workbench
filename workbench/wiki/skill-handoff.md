@@ -24,6 +24,19 @@ last_verified: 2026-09-26
 
 # Handoff: pass one objective to a named recipient
 
+## Current accepted correction
+
+The owner confirmed a role-based delegation correction on 2026-10-01. Follow
+[AGENTS](../../AGENTS.md#handoff-assignments-and-shared-context) for the operating
+boundaries and [RUNBOOK](../../RUNBOOK.md#handoff-transfer) for preparing the
+recipient purpose and context. [S-01A](../specs/S-01A-handoff-skill-rebuild/SPEC.md#accepted-handoff-correction-2026-10-01)
+keeps the remaining source/shape alignment and behavioral proof visible.
+The account below describes the 2026-09-26 source and scenario; its owner-only
+and inherited-authorization wording is historical behavior, not the current
+accepted rule. No skill implementation or new trial is claimed by this promotion.
+
+## Verified 2026-09-26 account
+
 Use `handoff` when the owner asks for work to continue somewhere else: another agent, a new chat, a later session. The skill writes one readable Markdown file. The recipient can take up the job from that file without the owner having to explain it again, and without the job growing on the way. Writing a handoff authorizes writing it and nothing more. It does not send the file, run the work, promote anything or create a task.
 
 **Inputs:** the current assignment, the owner's request (which usually names who receives the work and where they stop), and any working notepad for the objective. **Output:** one `.md` file in the manifest-declared `handoffs` collection (`workbench/sessions/handoffs/`, untracked). Its sections follow the bundled [shape](../skills/handoff/assets/HANDOFF.md). Any source notepad also gets an `active_handoffs` entry. **Done when:** a reader who has only the file can state the job, the endpoint and exclusions, the relevant decisions with their corrections, the evidence limits and the one next action. Every path it cites must also be openable by that reader. A file that merely exists does not count.
@@ -69,4 +82,5 @@ The skill descends from Matt Pocock's MIT-licensed `handoff` ([notice](../../THI
 
 ## History
 
+- 2026-10-01: Routed the accepted role-based delegation correction and distinguished it from the prior verified source account; implementation alignment remains in S-01A.
 - 2026-09-26: Created by S-01A TK-00R. The source maps its obligations onto the bundled shape, and one two-agent fresh-context scenario is recorded.

@@ -143,7 +143,7 @@ authorized by ordinary language; do not wait for a second skill invocation.
 | Reconcile agreed claims | `promote` with `to-docs` and `save`; no implied implementation |
 | Write specifications only | `to-spec` and needed `to-tasks`; stop at the specified endpoint |
 | Deliver assigned work | `carry` with `implement`, verification, independent integration review and `save` |
-| Prepare another agent's continuation | core `handoff`; readable Markdown with inherited scope |
+| Transfer a job or report to another context | core `handoff`; recipient purpose, instructions and context within assigned role scope |
 | Review a candidate or readiness | `code-review`; report only, no implementation or main merge |
 
 Every helper inherits the caller's narrower endpoint. Mention is not invocation
@@ -1486,7 +1486,8 @@ a reader; it never grants authority or verifies a claim.
 3. After interruption, load relevant context and verify current controls and
    actual project state. File availability alone proves neither freshness nor
    successful recovery. Preserve significant work while it is underway.
-4. For an owner-requested handoff, author a destination-specific Markdown
+4. For a handoff requested by the owner or initiated within an assigned role,
+   author a destination-specific Markdown
    compaction from the selected material in `sessions/handoffs/`. State the job,
    verified facts, exact resume action, boundaries, and source paths in plain
    language. Include needed corrections and dependencies. Carry the selected
@@ -1541,7 +1542,21 @@ recorded text and timestamps, before it can be written to.
 JSON note through that copier and call its `.md` output a notepad operation.
 Skill prose and human-readable projections may remain Markdown.
 
-An owner-requested handoff is separately authored as a Markdown file in
+### Handoff Transfer
+
+Use a handoff for a specified receiving context: a delegated job, a focused
+investigation, a completion report or an update. Follow the
+[role and author/recipient boundaries](AGENTS.md#handoff-assignments-and-shared-context).
+State why that context exists, what its recipient should do, the endpoint and
+any expected return. Derive the purpose from the request and current assignment
+when clear; ask one focused question only when the intended work is really
+unclear. Include the selected compressed context, relevant objective notepad,
+accessible source links and suggested investigation before the recipient starts.
+For a Q12-only deep dive, prepare the Q12 brief and note/source links for the
+new context to investigate and return a clean answer to the original inquiry.
+
+A handoff requested by the owner or initiated within an assigned role is
+separately authored as a Markdown file in
 `sessions/handoffs/`, using the installed `handoff` skill and its bundled `assets/HANDOFF.md` as the copy-ready shape.
 It names the retained source, when any, in prose and must carry enough context
 for a receiver without local access. Before trimming or deleting source context,
