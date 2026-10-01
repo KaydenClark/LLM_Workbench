@@ -1,0 +1,105 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000E",
+  "revision": 3,
+  "title": "Extended GitHub outage recovery (deferred from v4)",
+  "question": "How does delivery continue and recover through an extended GitHub outage or lost coordination state?",
+  "answer": "Extended GitHub outage recovery is deferred off the v4 critical path. v4 still requires basic visible error and pending state and refusal of unverifiable unsafe assignments or writes; extended recovery waits for a post-v4 capability.",
+  "confirmation": {
+    "basis": "Owner deferred extended outage recovery off the v4 critical path; relayed as settled on 2026-10-01.",
+    "revision": 3
+  },
+  "expectedResult": {
+    "change": "Record the deferral and its reachable destination in the proposed superseding ADR, and keep this card as the destination until a post-v4 capability Spec owns the work.",
+    "home": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md; this card until a post-v4 capability Spec is allocated",
+    "revision": 3
+  },
+  "result": null,
+  "uncertainty": [
+    "No post-v4 capability Spec owns extended outage recovery yet; this card is its reachable destination until one is allocated."
+  ],
+  "sources": [
+    {
+      "id": "github-coordination-to-docs-2026-09-30",
+      "revision": "2780fe66754abf69b2ab6dea23337a7be0f6d801"
+    },
+    {
+      "id": "github-coordination-to-spec-2026-09-30",
+      "revision": "2780fe66754abf69b2ab6dea23337a7be0f6d801"
+    }
+  ],
+  "landmarks": [
+    "LMK-000A"
+  ],
+  "assessment": null,
+  "related": [],
+  "claims": [],
+  "origin": {
+    "title": "Extended GitHub outage recovery (deferred from v4)",
+    "question": "How does delivery continue and recover through an extended GitHub outage or lost coordination state?",
+    "sources": [
+      {
+        "id": "github-coordination-to-docs-2026-09-30",
+        "revision": "2780fe66754abf69b2ab6dea23337a7be0f6d801"
+      },
+      {
+        "id": "github-coordination-to-spec-2026-09-30",
+        "revision": "2780fe66754abf69b2ab6dea23337a7be0f6d801"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T01:55:00.147Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T01:55:00.147Z",
+      "reason": "Keep the owner's deferral of extended outage recovery reachable instead of erasing the obligation.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T01:55:06.806Z",
+      "reason": "This concept is part of the GitHub Coordination pillar.",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000A"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T01:56:05.664Z",
+      "reason": "Keep the deferred obligation reachable.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "Extended GitHub outage recovery is deferred off the v4 critical path. v4 still requires basic visible error and pending state and refusal of unverifiable unsafe assignments or writes; extended recovery waits for a post-v4 capability."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Owner deferred extended outage recovery off the v4 critical path; relayed as settled on 2026-10-01."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "Record the deferral and its reachable destination in the proposed superseding ADR, and keep this card as the destination until a post-v4 capability Spec owns the work.",
+            "home": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md; this card until a post-v4 capability Spec is allocated",
+            "revision": 3
+          }
+        }
+      ]
+    }
+  ]
+}
