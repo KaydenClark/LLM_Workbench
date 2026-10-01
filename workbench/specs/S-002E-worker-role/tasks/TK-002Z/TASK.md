@@ -3,7 +3,7 @@
 **Task ID:** TK-002Z
 **Spec ID:** S-002E
 **Slice:** Stage the Worker operating entry, explanation and scenario proof
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: Load the assigned Task, its owning Spec and branch, acceptance, write scope and required stance before acting; a Worker has no authority over neighboring Tasks merely because their files are visible.

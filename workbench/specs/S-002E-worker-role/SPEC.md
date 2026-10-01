@@ -3,13 +3,13 @@
 **Spec ID:** S-002E
 **Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** codex-s002e-worker
 **Stance:** Builder
-**Updated:** 2026-09-27
+**Updated:** 2026-10-01
 **Catalog description:** Perform one assigned Task within its declared scope and return a verified, recoverable result.
 **Blockers:** none for staged implementation; managed installation awaits release bundle identity.
-**Latest event:** Authorized staged Worker slice planned as TK-002Z from live integration 95176a4.
-**Next gate:** Claim and verify TK-002Z, then hand immutable candidate to separate review.
+**Latest event:** TK-002Z claimed by codex-s002e-worker.
+**Next gate:** Close TK-002Z with verification and documentation proof.
 
 > **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`b00a2e338436ef7b281b0cc53e74f891af32f18c`.
 
