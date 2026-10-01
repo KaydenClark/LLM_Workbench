@@ -87,6 +87,8 @@ This Spec owns capability requirements, open gates and proof. Shared operational
 | 2026-10-01 | TK-004F | Task closed | Redaa32ff2f foreign ambient Git environment resolved incorrectly. Greend337006d10/10 inspector tests including receipt-backed installed hash/invocation, selector/object-store/config isolation, true linked worktrees and promised-object no-write checks. | Existing binding procedure updated; active claim/control authority unchanged. | TK004H entry route and full final assembled suite/independent review/integration remain; full Spec and owner gates open. |
 | 2026-10-01 | TK-004H | Task closed | Independent394 missing-route evidence answered by RUNBOOK -> existing adapter procedure -> existing public command read-back; control-fidelity checks PASS. Behavior and generic claim workflow unchanged. | RUNBOOK now routes the optional binding procedure without duplicating its command contract. | Required full assembled candidate suite and independent review before integration. Later artifact identity, Issue and actor-dependent slices uncut; full Spec acceptance and owner gates remain open. |
 
+| 2026-10-01 | TK-004F/G/H | Expand final verification to the full documented union | Producer historical51-command runs covered AGENTS48 plus inspector, Tracker test and rebuild. RUNBOOK additionally requires team-coordination, team-coordination-demo and socket-contract checks. Final assembled verification will run all54 unique commands; earlier named command results remain preserved and are not a full RUNBOOK-union claim. | Verification scope clarified without weakening gates. | Full54 frozen-candidate results and independent exact-candidate review pending. |
+
 ## Completion Result
 
 Pending.
