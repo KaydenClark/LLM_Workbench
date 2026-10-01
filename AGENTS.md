@@ -176,8 +176,11 @@ Unless the user names work directly:
 Do not load the full Blueprint, Taskboard, completed specs, or proof archive for
 normal task selection. Read Blueprint for cross-cutting architecture; read the
 Lexicon when a shared term is unclear or a selected skill depends on project
-vocabulary; read the Taskboard for an owner dashboard or collision review. A spec is a durable
-capability; a task is a temporary implementation slice. Later changes create
+vocabulary; read the Taskboard for an owner dashboard or collision review.
+
+A Spec and its Tasks are delivery scaffolding. Preserve them while needed;
+after verified delivery and reconciliation, the implementation and maintained
+documentation hold the enduring capability knowledge. Later changes create
 a new linked spec instead of rewriting a completed result.
 
 ## Engineering And Verification

@@ -51,7 +51,13 @@ No Git merge closes a Spec. Closure follows the order in the
 [closure-capture transition contract](../../specs/S-00J-spec-qa-gate-at-integration/SPEC.md):
 reviewed delivery on `integration`, owner approval, verification of the
 approved change on `main`, then `complete`, then features Wiki capture at that
-closure point, then retirement, then discard of the transient records.
+closure point, then retirement, then discard of the transient records. Specs and Tasks are
+delivery scaffolding under
+[ADR-000A](000A-active-adr-decisions-and-destination-blueprints.md): their useful
+content reaches durable documentation, while the implemented result supplies
+the delivered behavior. Keeping the old packet is unnecessary once those
+destinations and the existing closure/discard gates are satisfied. This does
+not mark unchecked historical acceptance complete or bypass owner approval.
 
 **Direct Blueprint Tasks: destination design.** A Task that advances the
 Blueprint directly has no Spec. As the owner answered it, its Dispatcher sends

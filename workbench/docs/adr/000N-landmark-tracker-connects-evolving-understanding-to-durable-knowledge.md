@@ -25,6 +25,17 @@ importance. DQCs and landmarks maintain the current account before Specs,
 Tasks or Wiki articles exist; grilling notepads remain more historical and
 handoff-like, with useful origins and corrections retained.
 
+DQCs are temporary concept scaffolding under
+[ADR-000A](000A-active-adr-decisions-and-destination-blueprints.md). Once the
+intended result exists and a DQC's useful understanding, corrections, rationale
+and source lineage have been verified in durable owners, the card need not be
+retained. Unresolved questions and still-needed obligations must remain
+reachable; live landmark relationships, source references and generated views
+must be reconciled before removal. A Verified label alone does not establish
+this condition. The implemented thing and its maintained documentation are
+better continuing references than a permanent duplicate card. This lifecycle
+clarification adds no runtime cleanup command and removes no current DQC.
+
 Tracker is a generated documentation/alignment view. Taskboard remains the
 implementation view. The new system replaces nothing: the grilling ledger,
 source questions, Specs, Tasks, ADRs, Contract and Wiki retain their jobs.
@@ -82,8 +93,9 @@ Rejected or superseded interpretations: replace/move the grilling ledger;
 turn every interview prompt into a card; make landmarks parent Specs/PRDs;
 status folders or one manually assigned card stage; reopen/reset completed
 cards; flatten nested question contributions; infer documentation verification
-from finished Tasks; require a known Wiki destination before an answer; or
-finish the entire landmark inventory before building the foundation.
+from finished Tasks; require a known Wiki destination before an answer;
+finish the entire landmark inventory before building the foundation; or
+retain every DQC forever after its content has reached durable documentation.
 
 ## Consequences and limits
 
