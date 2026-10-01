@@ -9,7 +9,7 @@
   ],
   "counting": {
     "destination_audit_rows": 254,
-    "unique_question_ids": 294,
+    "unique_question_ids": 295,
     "reassessed_ids": [
       "CAND-N",
       "FND-Q20",
@@ -40,7 +40,7 @@
       "withdrawn": 6,
       "answered-in-chat": 10,
       "not-a-question": 1,
-      "open": 8,
+      "open": 9,
       "partially-answered": 3
     }
   },
@@ -81,7 +81,7 @@
       "specced-and-tasked": 10,
       "in-progress": 63,
       "not-started": 35,
-      "no-build-obligation": 51
+      "no-build-obligation": 52
     }
   },
   "families": [
@@ -13654,6 +13654,47 @@
         "sub_label": "genesis wording",
         "evidence": "At integration f373ec58: BLUEPRINT.md carries the idea-first workflow map with grill-me/wayfinding/brainstorm opening Align and setup kept separate.",
         "gap": "Genesis requiring a follow-up grilling session is not stated in workbench/skills/genesis/SKILL.md."
+      }
+    },
+    {
+      "id": "TT-Q13",
+      "family": "TT",
+      "counted": true,
+      "topic": "Referring to records by name, not by WBID alone",
+      "question": "When an agent refers to a Spec, Task, ADR, Landmark or other record in prose addressed to the owner or another agent, must it give the record's title or explanation alongside its WBID, and where does that rule live?",
+      "status": "open",
+      "answer": "Open - no owner answer. Owner statement on 2026-10-01 (chat, not a grilling session): \"What happened to the rule inside of the workbench that we dont call things by their WBIDs? Those aren't their names, titles, or explanations. If you cant find it, let's make it one.\" A search of AGENTS.md, RUNBOOK.md, LEXICON.md, BLUEPRINT.md and the Wiki on that date found the WBID definition and the Visible Identifiers procedure but no rule about naming records in prose.",
+      "answered": "",
+      "reason": "Not recorded. The owner could not place S-00P from its identifier in a consolidation handoff; a WBID is a lookup key, and prose that carries only the key sends the reader to the catalog.",
+      "result": [
+        {
+          "artifact": "AGENTS.md (Documentation Ownership And Proof or Writing conventions) and templates/AGENTS.md",
+          "action": "none",
+          "effect": "Would own the rule once decided: a WBID in owner-facing or agent-facing prose is accompanied by the record title on first mention."
+        },
+        {
+          "artifact": "LEXICON.md (WBID entry) and templates/LEXICON.md",
+          "action": "none",
+          "effect": "Would state that a WBID is a lookup key, not a name."
+        }
+      ],
+      "related": [
+        "TT-Q10",
+        "TT-Q11",
+        "E-6"
+      ],
+      "aliases": [
+        "integration-consolidation-2026-10-01 naming question"
+      ],
+      "notes": "Added 2026-10-01 at the owner's direction while reviewing the integration consolidation handoff. The handoff was rewritten to carry titles beside identifiers pending the answer.",
+      "source_refs": [
+        "workbench/sessions/notepads/work/integration-consolidation-2026-10-01.json#tt-q13-origin"
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "needs decision",
+        "evidence": "Decision status is open; both Result actions are none.",
+        "gap": ""
       }
     }
   ]
