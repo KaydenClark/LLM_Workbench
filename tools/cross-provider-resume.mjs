@@ -67,6 +67,7 @@ export function plan(workspace, date = new Date().toISOString().slice(0, 10)) {
   write(planning, 'TASKBOARD.md', `# Greeter - Hot Taskboard\n\n${stamp}\n\n## Active Specs\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n`);
   write(planning, 'README.md', `# Greeter\n\n${stamp}\n\n## Usage\n\n\`node src/greet.mjs Ada\` prints \`Hello, Ada!\`.\n`);
   write(planning, 'CLAUDE.md', '@AGENTS.md\n');
+  write(planning, 'OWNERSHIP.json', fs.readFileSync(path.join(product, 'OWNERSHIP.json'), 'utf8')); // TK-002 fixture; generic template is TK-003.
   const router = fs.readFileSync(path.join(product, 'templates', 'wiki', 'MEMORY.project.md'), 'utf8')
     .replaceAll('[PROJECT_NAME]', 'Greeter').replaceAll('[HARNESS_VERSION]', VERSION.slice(1)).replaceAll('[YYYY-MM-DD]', date)
     .replace(/^\| \[QUESTION THIS ROOM'S MEMORY ANSWERS\].*\n/m, '').replace(/^\| \[ANOTHER DURABLE QUESTION\].*\n/m, '');

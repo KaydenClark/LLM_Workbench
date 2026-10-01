@@ -1054,7 +1054,7 @@ function validateGenesisControl(project, control, expectedVersion) {
   if (!entry || entry.isSymbolicLink() || !entry.isFile()) return fail('unsafe-control', `${control} must be an ordinary file.`, { control });
   if (control === 'OWNERSHIP.json') {
     try { readOwnership(project); return null; }
-    catch (error) { return fail('invalid-ownership-map', error.message, { control }); }
+    catch (error) { return fail('unfilled-control', `${control} must contain a valid ownership map: ${error.message}`, { control }); }
   }
   const content = fs.readFileSync(target, 'utf8');
   const trimmed = content.trim();

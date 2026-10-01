@@ -183,6 +183,7 @@ try {
   write(first, 'TASKBOARD.md', `# Round Trip - Hot Taskboard\n\n${stamp}\n\n## Active Specs\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n`);
   write(first, 'README.md', withTemplateBody('README.md', productTemplates, `# Round Trip\n\n${stamp}\n\n## Usage\n\nRun \`node src/hello.mjs\`.`));
   write(first, 'CLAUDE.md', '@AGENTS.md\n');
+  write(first, 'OWNERSHIP.json', fs.readFileSync(path.join(product, 'OWNERSHIP.json'), 'utf8')); // TK-002 fixture; generic template is TK-003.
   const router = fs.readFileSync(path.join(product, 'templates', 'wiki', 'MEMORY.project.md'), 'utf8')
     .replaceAll('[PROJECT_NAME]', 'Round Trip').replaceAll('[HARNESS_VERSION]', VERSION.slice(1)).replaceAll('[YYYY-MM-DD]', DATE)
     .replace(/^\| \[QUESTION THIS ROOM'S MEMORY ANSWERS\].*\n/m, '').replace(/^\| \[ANOTHER DURABLE QUESTION\].*\n/m, '');
