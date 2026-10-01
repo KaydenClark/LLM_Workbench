@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Workflow Canon and generic controls describe scoped destinations, Task-record self-check, assembled independent review, owner QA/main closure, durable capture and recoverable retirement with source-backed ADR decisions.
 **Blockers:** Original five source Tasks are done. TK-004B authority correction is source-verified and needs scoped exact-head review/containment; TK-004C must reconcile active ADR-000F delivered TK-003 currentness before whole-Spec PASS. Original9430252f failed review remains preserved. Actual owner QA/main remain separate formal closure gates.
-**Latest event:** TK-004B closed with proof.
-**Next gate:** Complete TK-004C.
+**Latest event:** TK-004C claimed by codex-s00p-dispatcher.
+**Next gate:** Close TK-004C with verification and documentation proof.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`f84b4691be7cd3abf7cdf719942ca6efaec0c617`.
 
