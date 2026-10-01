@@ -80,10 +80,10 @@ they are authored.
 ## Planned And Optional Skill References
 
 [Domain Modeling: sharpen the Workbench's language as decisions form](skill-domain-modeling.md)
-explains the optional personal method and the proposed Workbench adaptation.
-[Domain Modeling Skill for the Workbench - S-002H](../specs/S-002H-domain-modeling-skill/SPEC.md)
-keeps its required-room versus optional-extension distribution choice open.
-This route does not claim that every room can discover the skill today.
+explains the method and its Workbench adaptation. The owner made it a required
+room skill; [Domain Modeling Skill for the Workbench - S-002H](../specs/S-002H-domain-modeling-skill/SPEC.md)
+stages it as an unreleased candidate until a fresh bundle identity publishes it.
+This route does not claim that any room can discover the skill today.
 
 ## Release And Distribution Routing
 
