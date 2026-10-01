@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Workflow Canon and generic controls describe scoped destinations, Task-record self-check, assembled independent review, owner QA/main closure, durable capture and recoverable retirement with source-backed ADR decisions.
 **Blockers:** Original five source Tasks are done. Independent whole-Spec review failed at9430252f: TK-004B must repair generic Blueprint instruction authority and TK-004C must reconcile the active ADR-000F delivered TK-003 claim before integration. Actual owner QA/main remain separate formal closure gates.
-**Latest event:** Exact9430252f whole-Spec review failed; native verdict allocated corrective TK-004B and TK-004C without reopening original TK-005.
-**Next gate:** Director assigns the concrete corrective branch/PR route for native TK-004B/TK-004C; then fresh red/green correction, immutable whole-Spec review/content-bound verdict and independently reviewed integration delivery. Actual owner QA/main remain formal closure gates.
+**Latest event:** TK-004B claimed by codex-s00p-dispatcher.
+**Next gate:** Close TK-004B with verification and documentation proof.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`f84b4691be7cd3abf7cdf719942ca6efaec0c617`.
 
