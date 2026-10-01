@@ -225,6 +225,31 @@ live Actuality after lane release.
 - [ ] Full checks, guardrail/self-drift pre/post, under-one-minute demo, immutable
       integration review and applicable owner Human QA are recorded.
 
+## Bounded stage2 preparation (TK-004N)
+
+TK-004N is in progress on the released task-record/taskboard lane. Source
+`needs-review` is accepted for Task records and legacy rows; ordinary To-do
+selection and claim do not consume it. A Spec explicitly awaiting review can
+project Needs review when every child is either Needs review or Complete;
+Complete still requires every child done. This does not derive a passed
+assembled review, owner approval or Spec completion from child state.
+
+Preview cards expose `requiredQA` as boundary labels, never verdicts or
+approval state. A Task in Needs review names `assembled-spec-review`, following
+E-4C's later SCR-1/SCR-7 refinement; this adds no separate destination-level
+Task approval. Non-complete Spec cards name `assembled-spec-review` and
+`owner-human-qa`. The existing report/gate readers remain the evidence owners.
+Authored next actions, including failed Human QA corrective actions, remain
+visible without being reset by green tests.
+
+Minimal one-sentence Backlog parsing and public `next --review` assembly are
+still pending the coordinator's serialized parser/CLI lane release. The helper
+exposes dependency-qualified `reviewEligible` for that assembly, but does not
+claim capability or remote-claim filtering for an unimplemented review command.
+Default Markdown/CATALOG behavior, preview protections and all prior failed
+review evidence remain. Root/template rollout and direct Task homes remain
+outside this slice; no whole-Spec acceptance is checked.
+
 ## Testing Seams
 
 TK-003O implements only the temporary public `render --format json` preview,
