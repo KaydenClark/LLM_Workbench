@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "task": "TK-01J",
+  "failedCandidate": "e0a75d8b88b7454134b2aa6b7719226d8367ab8e",
+  "review": {
+    "result": "FAIL",
+    "priority": "P2",
+    "reviewer": "01a0f689",
+    "provenance": "Parent relayed independent early review; not a self-verdict",
+    "finding": "Git replacements substitute completion/approval text and ancestry under the original reported candidate SHA",
+    "disposition": "test",
+    "owner": "S-01S"
+  },
+  "base": "25d3f4d23b3719693065336a4ba66349d0a95907",
+  "assembly": "247639ea",
+  "red": {
+    "revision": "d180ab8c",
+    "command": "node tools/test-reconciler-skill.mjs",
+    "passed": 5,
+    "failed": 4
+  },
+  "green": {
+    "revision": "5433310e",
+    "command": "node tools/test-reconciler-skill.mjs",
+    "passed": 9,
+    "failed": 0
+  },
+  "mechanism": "All documented Git observations use a subshell helper: remove inherited GIT_* variables, invoke git --no-replace-objects, disable fsmonitor; comparison still disables external diff/textconv. Caller environment and repository metadata are preserved.",
+  "inheritedSelectionCoverage": [
+    "GIT_DIR",
+    "GIT_WORK_TREE",
+    "GIT_COMMON_DIR",
+    "GIT_INDEX_FILE",
+    "GIT_OBJECT_DIRECTORY",
+    "GIT_ALTERNATE_OBJECT_DIRECTORIES",
+    "GIT_CONFIG_COUNT and key/value injection",
+    "GIT_REPLACE_REF_BASE",
+    "GIT_NO_REPLACE_OBJECTS"
+  ],
+  "limits": [
+    "Trusted shell and Git executable assumed; not a sandbox for arbitrary tools",
+    "Original fresh-context raw evidence has not been independently verified",
+    "No new agent scenario or review PASS claimed",
+    "Shared upstream runtime/control/manifest changes adopted unchanged by merge; no lane-authored shared runtime changes"
+  ],
+  "requiredUnion": "pending current-base run",
+  "remaining": [
+    "Coordinator MEMORY assembly",
+    "Independent review of exact new candidate",
+    "Raw scenario evidence verification",
+    "Owner QA"
+  ]
+}

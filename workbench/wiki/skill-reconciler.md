@@ -36,7 +36,10 @@ There is no universal reconciliation report or mandatory handoff file.
 The [source](../skills/reconciler/SKILL.md) and its
 [reference](../skills/reconciler/references/reconcile.md) begin with the achieved
 output. A newer branch tip cannot silently replace the revision that was tested.
-An unavailable owner remains a missing evidence route. Contradictions follow
+Git replacement objects cannot stand in for the pinned commit: the documented
+helper disables them for every observation and isolates inherited Git settings
+that could select another repository, index or object store. An unavailable
+owner remains a missing evidence route. Contradictions follow
 the Contract's State Resolution rather than a blanket preference for source,
 documentation or the newest timestamp.
 
@@ -85,18 +88,21 @@ retained still depends on it.
 
 ## Verified behavior and limits
 
-At source revision `ef80692c`, five focused checks in
-`tools/test-reconciler-skill.mjs` pass. Four execute the documented Git
-observations against disposable repositories: reading a pinned owner despite
-newer HEAD and dirty work; refusing missing revisions and owners; suppressing
-target-controlled diff helpers; and distinguishing an unmerged candidate from
-contained history without changing acceptance. The fifth checks the entry route
-and selected safety clauses. The delivery-skill stance contract also passes.
+At corrective source revision `5433310e`, nine focused checks in
+`tools/test-reconciler-skill.mjs` pass. The earlier five-check set missed Git
+replacement objects. Four added regressions execute replaced commit content,
+fabricated ancestry, foreign repository/index selectors and inherited object
+store/configuration settings against the documented helper. Unprotected reads
+first demonstrate the substituted approval text and false ancestry; protected
+reads recover the original content and reject that containment claim. Existing
+pinned-owner, missing-evidence, diff-helper and dirty-preservation checks remain.
 
 These are command and structural regressions, not repeated agent trials or
 proof that an agent always reconciles faithfully. The
 [delivery evidence](../specs/S-01S-reconciler-skill-rebuild/SPEC.md#append-only-evidence-and-execution-log)
 owns fresh-context observations, exact verification scope and remaining gates.
+The original scenario is a local report whose raw evidence has not been
+independently verified; no new agent trial is claimed for this correction.
 Git ancestry alone proves neither review nor approval nor unchanged assembled
 content. No shared runtime, root control, manifest, release identity or installed
 personal skill copy is changed by this source rebuild.
@@ -114,3 +120,6 @@ personal skill copy is changed by this source rebuild.
 
 - 2026-10-01: Authored from the scoped rebuild and executable command regressions;
   no upstream skill imported and no agent reliability or Human QA claim made.
+
+- 2026-10-01: Corrected replacement-object and inherited Git selection handling
+  after independent early review; retained the earlier evidence as history.

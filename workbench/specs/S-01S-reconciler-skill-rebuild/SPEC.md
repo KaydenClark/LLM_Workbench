@@ -8,10 +8,10 @@
 **Updated:** 2026-10-01
 **Catalog description:** Leave achieved work and its existing truth owners consistent for continuation.
 **Blockers:** none for assigned implementation; coordinator owns the shared MEMORY route.
-**Latest event:** Reconciler source, article and proof tested at 652bff52; all 51 required commands passed.
-**Next gate:** Coordinator adds the single MEMORY route on an assembly branch; independently review the resulting immutable candidate. Publish draft PR through parent Servitor if the GitHub API remains Forbidden.
+**Latest event:** Independent early review of e0a75d8b failed P2 on Git replacement objects; same TK-01J correction is green at 5433310e on current integration.
+**Next gate:** Run current-base full verification, publish a new immutable candidate, and return it for fresh independent review; MEMORY assembly remains with coordinator.
 
-> **Citation anchors.** pre=`d90785908b26517068a474bb88136c81995a2f18` post=`1e403cbb`.
+> **Citation anchors.** pre=`d90785908b26517068a474bb88136c81995a2f18` post=`5433310e`.
 
 ## Outcome
 
@@ -23,19 +23,23 @@ The prior Skills Wiki packet grouped the whole core inventory into one completio
 
 ## Current Verified State
 
-- Achieved source is `1e403cbbb06be60a2c43fb489709e05453fbf2d3`; read
-  `git show 1e403cbb:workbench/skills/reconciler/SKILL.md` and its linked reference.
-  The public entry names pinned observations, Task ownership, governed
-  disposition, exact review boundaries and inability handback.
-- The individual article is committed at `915702cd` and linked from this Spec.
-  Its sole MEMORY route remains assigned to the coordinator and is not present.
-- TK-01J remains in-progress. One fresh-context observation found continuation
-  gaps; its corrective read-back confirmed the committed article and receipt
-  while finding stale current-facing summaries, corrected in this owner.
-- Focused command/contract checks passed at their recorded revisions. The
-  exact 51-command required union passed at `652bff52`. Separate-context
-  candidate review and owner Human QA are not claimed. The evidence log
-  preserves failed attempts.
+- Achieved corrective source is `5433310e`; read its Reconciler source and linked
+  reference. Every documented Git evidence command uses the subshell helper
+  with replacement objects disabled and inherited Git selectors cleared.
+- Existing TK-01J remains in-progress. The prior immutable draft `e0a75d8b`
+  has an independent early review FAIL P2, relayed by the parent from reviewer
+  01a0f689: replaced objects can substitute completion/approval text while the
+  original candidate SHA is reported. No passed review is claimed.
+- Four new executable regressions failed at `d180ab8c`; all nine focused checks
+  pass after `5433310e`, including fabricated ancestry and inherited repository,
+  index, object-store and configuration selection. Current-base full proof is
+  still being refreshed; earlier suite success did not cover this defect.
+- The correction branch contains integration `25d3f4d2` via merge `247639ea`.
+  Shared upstream changes were adopted unchanged, not edited in this lane.
+- The article remains Spec-linked and the sole MEMORY route remains assigned
+  to the coordinator. The earlier fresh-reader observation is locally reported;
+  its raw evidence has not been independently verified. This correction makes
+  no new fresh-context or behavioral-reliability claim.
 
 ## Desired Behavior
 
@@ -76,7 +80,7 @@ Inspect the current source, its callers/composition and relevant tests. Demonstr
 
 - [x] The assigned Reconciler stance aligns source, Spec state, projections, docs and next gate with what actually happened.
 - [x] It does not manufacture completion, discard unresolved material or create a universal handoff.
-- [x] The named scenario is observed in a fresh or otherwise independent context: A cold reader can follow the existing owners to the exact achieved output and next action.
+- [ ] The named scenario is observed in a fresh or otherwise independent context: A cold reader can follow the existing owners to the exact achieved output and next action.
 - [ ] `workbench/wiki/skill-reconciler.md` accurately distinguishes verified current behavior from remaining intended behavior, links the current source and governing owners, and is reachable from `workbench/wiki/MEMORY.md`.
 - [ ] Relevant targeted tests/scenarios, Wiki validation, the required full suite, Workbench self-drift pre/post receipts and separate-context review are recorded at their proper gates; no unrun check is reported as passing.
 
@@ -116,11 +120,15 @@ once, while Reconciler owns achieved-state consistency and cold read-back. The
 assigned Spec declares no Matt counterpart, so no upstream import is warranted.
 Existing TK-01J remains the sole slice; no global identity was allocated.
 
-[Verification receipt](proof/verification.json) records the exact 51-command
+[Original verification receipt](proof/verification.json) records the prior exact 51-command
 union, focused red/green, failed attempts, one fresh reader and its limits.
 [Pre self-drift](proof/self-drift-pre.json) and
 [post self-drift](proof/self-drift-post.json) retain the same seven findings
-and `cleanUpdate: false`. This is not a clean whole-Workbench update.
+and `cleanUpdate: false`. This is not a clean whole-Workbench update. The
+[replacement correction receipt](proof/replacement-correction.json) preserves
+the independent FAIL, executable red/green and current-base revalidation.
+The original scenario checkbox remains open pending independent verification
+of its raw evidence; the historical local observation is preserved.
 
 Docs checked; no update needed in controls, templates, manifest or skill catalog:
 the stance purpose, public authority and lifecycle contract are unchanged. The
@@ -141,9 +149,17 @@ template skill to edit. MEMORY is deliberately reserved to the coordinator.
 
 | 2026-10-01 | TK-01J | Integration advancement observed before handback | Refreshed origin/integration is 25d3f4d2, ahead of branch base d9078590 through PR 240. Re-extracted current AGENTS/RUNBOOK union remains exactly the same 51 commands. No overlapping reconciler source, article or assigned Spec/Task changes; shared projections need regeneration when assembled | Preserve this immutable draft and proof against its named base | No current-base assembly or review is claimed; coordinator owns MEMORY and regenerated projections before independent assembled review |
 
+| 2026-10-01 | TK-01J | Independent early review FAIL P2 and executable correction | Parent relayed reviewer 01a0f689 FAIL of exact e0a75d8b: Git replacements substitute completion/approval text while the original SHA is printed. Reproduced at d180ab8c: five prior tests pass, four new tests fail. At 5433310e all nine pass; plain Git fixture controls demonstrate substituted owner text and fabricated ancestry before protected reads reject them | Governed disposition test in this owning Spec; documented helper disables replacements for every observation and isolates inherited Git selection. Existing evidence rows and Task receipts retained; no new Task or identity | Full current-base union and fresh independent review pending; original fresh-context raw evidence not independently verified; coordinator MEMORY route open |
+
 ## Completion Result
 
-Achieved source at `1e403cbbb06be60a2c43fb489709e05453fbf2d3`: Reconciler now compares pinned achieved output with existing owners, preserves governed dispositions and unresolved evidence, and names the exact review and inability boundary. Five focused regression checks and three delivery-skill checks pass. This is an in-progress draft, not completed delivery. One fresh-context interpretation and corrective read-back are recorded; they do not establish repeated reliability or approval. The full required union passed at `652bff52`; the coordinator-owned MEMORY route and independent candidate review remain open. This branch is a tested draft, not completed delivery; no Human QA or merge is claimed.
+Corrective source at `5433310e` addresses the independent early review FAIL P2
+of `e0a75d8b` under the existing in-progress TK-01J. Four new regressions first
+failed and all nine focused checks now pass. The branch contains current
+integration `25d3f4d2`; current-base full verification is pending. The earlier
+51-command proof remains historical and did not cover replacement objects.
+No review PASS, completion, owner QA or merge is claimed. Coordinator MEMORY
+assembly and independent verification of the original raw scenario remain open.
 
 ## Supersession
 
