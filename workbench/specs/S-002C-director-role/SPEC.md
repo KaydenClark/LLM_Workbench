@@ -84,6 +84,18 @@ Run the targeted source/discovery/Wiki checks and the full AGENTS suite for the 
 
 Maintain the role or stance definition in LEXICON.md, the operating contract in the existing source lane, and one individual Wiki article routed through MEMORY.md. Mirror changed portable rules in templates. Cross-capability explanation stays in roles-and-stances.md; do not duplicate live progress there.
 
+## Draft-wiki alignment (owner direction 2026-09-30)
+
+Group: main-workflow. Matt counterpart: none. Enabling Spec: S-002L.
+Intended slice direction: the six per-skill steps of the draft skills wiki
+(1 investigate ours, 2 draft the article, 3 investigate Matt's skill at
+`mattpocock/skills@d81f3a183412e71a5b1e84ca21bc1a35eea03a60`, 4 compare,
+5 align the article, 6 fix or create the skill), to be cut into Tasks by
+`/to-tasks` (at activation for a planned Spec; as additional Tasks when the
+Dispatcher takes up an already-active one). Tasks already cut stay as they
+are. This section changes none of this Spec's acceptance, evidence or status;
+steps 1-5 touch only the draft wiki and step 6 only this skill's lane. When there is no Matt counterpart, steps 3 and 4 compare with the named nearest neighbor skill instead.
+
 ## Append-Only Evidence And Execution Log
 
 | Date | Task | Event | Evidence | Docs | Remaining gap |
