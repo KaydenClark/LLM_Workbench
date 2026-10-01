@@ -3,10 +3,11 @@
 **Task ID:** TK-004L
 **Spec ID:** S-00I
 **Slice:** P2: Pending close target disappears through linked or retired Task directories and retry closes another claimed Task - independent exact55beae7d public two-claim probes reproduce both directory cases
-**Status:** in-progress
+**Status:** done
 **Blockers:** none
 **Destination:** spec-acceptance: S-00I Acceptance Criteria
 **Planned verification:** Answers evidence row 46 (fail verdict at 55beae7dbba12d96978c889f1cc25d3a3c1fc94d on 2026-10-01): P2: Pending close target disappears through linked or retired Task directories and retry closes another claimed Task - independent exact55beae7d public two-claim probes reproduce both directory cases
+**Proof:** Exact4d28a2b7447ea032e214aa58f75dd14dac5461b8 passed required51/51 and18 focused public CLI interrupted-close scenarios. Frozen55 linked-directory retry red and public native-retired pending close missing original evidence red preserved. Unsafe directory variants refuse without record, index, HEAD or link/file changes; retired recovery removes only marker and preserves original Receipt and unrelated claim.
 
 ## Acceptance Boundary
 
@@ -23,3 +24,4 @@ Public seam: `node tools/test-spec-workbench.mjs --close-recovery-only` (eightee
 | Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
 |---|---|---|---|---|---|---|---|---|
 | 1 | codex/s00i-close-directory-recovery | 3234fa771751af3e6955723268b3278182405b4a | ahead 0 behind 0 | 4 | 18 public CLI interrupted-close scenarios green. Immutable55 primary linked-directory and native-retired directory recovery regressions red before source correction. Full committed required51 pending. | S-00I Close Directory Recovery Correction and TK-004L acceptance boundary. Generic templates unchanged for existing close runtime contract repair. | Parent independent exact-head review and serial shared-file assembly pending. Owner Human QA unapproved. No integration or main promotion. | aab1855803945af0f8479b3da657671b16fb643bb528e2e5220fdbe7c6ae2577 |
+| 2 | codex/s00i-close-directory-recovery | 4d28a2b7447ea032e214aa58f75dd14dac5461b8 | ahead 0 behind 0 | 0 | Exact4d28a2b7447ea032e214aa58f75dd14dac5461b8 passed required51/51 and18 focused public CLI interrupted-close scenarios. Frozen55 linked-directory retry red and public native-retired pending close missing original evidence red preserved. Unsafe directory variants refuse without record, index, HEAD or link/file changes; retired recovery removes only marker and preserves original Receipt and unrelated claim. | S-00I Close Directory Recovery Correction and TK-004L acceptance boundary updated. Generic templates unchanged because this repairs existing close semantics. No move/report/gate/parser/selection changes. | Final metadata verification, parent independent exact review, serial shared-file assembly and integration remain open. Owner Human QA unapproved and main promotion absent. | 337f9bcc80a022ab65ed6215dd58125d27f4ed59d5b84611283df055362ed923 |

@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Express ADR, Spec and Task lifecycle by folder location, reconcile completed Specs and Tasks into readable durable owners before retiring them, and discard retired records only through a verified gate; permanent `archive` is never cleared.
 **Blockers:** none; S-00H is `complete` (integration `49c671e`).
-**Latest event:** TK-004L claimed by codex-close-directory-recovery.
-**Next gate:** Close TK-004L with verification and documentation proof.
+**Latest event:** TK-004L closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -357,6 +357,9 @@ exist. The generic `templates/` mirror changes in S-00P TK-005.
 | 2026-10-01 | review | Review verdict: fail at 55beae7dbba12d96978c889f1cc25d3a3c1fc94d [70f52a8a2635] #9 | P2: Pending close target disappears through linked or retired Task directories and retry closes another claimed Task - independent exact55beae7d public two-claim probes reproduce both directory cases | Parent-routed separate-context exact PR247 reviewer01a0f6af | 1 |
 
 | 2026-10-01 | TK-004L | Public directory recovery red and green | Immutable55beae7d fails linked-directory refusal and retired-directory original evidence recovery. Working correction passes18 public CLI interrupted-close scenarios including native retirement, linked retired directory/root, ordinary-file replacement and marker-free history. Full committed required51 pending | Close Directory Recovery Correction and owning Task acceptance updated. All failed55 evidence and closedTK004F receipts preserved | Producer proof only. Fresh parent exact review and serial assembly pending |
+| 2026-10-01 | TK-004L | Task closed | Exact4d28a2b7447ea032e214aa58f75dd14dac5461b8 passed required51/51 and18 focused public CLI interrupted-close scenarios. Frozen55 linked-directory retry red and public native-retired pending close missing original evidence red preserved. Unsafe directory variants refuse without record, index, HEAD or link/file changes; retired recovery removes only marker and preserves original Receipt and unrelated claim. | S-00I Close Directory Recovery Correction and TK-004L acceptance boundary updated. Generic templates unchanged because this repairs existing close semantics. No move/report/gate/parser/selection changes. | Final metadata verification, parent independent exact review, serial shared-file assembly and integration remain open. Owner Human QA unapproved and main promotion absent. |
+
+| 2026-10-01 | TK-004L | Directory recovery immutable producer aggregate | Exact4d28a2b7447ea032e214aa58f75dd14dac5461b8 passed required51/51 and18 focused public CLI cases, with remote branch verified at that SHA before native close. Independent frozen55 FAIL and closedTK004F history retained | Owning close correction and Task acceptance updated. Native close proof and Receipt preserve source identity. Taskboard regenerated after Receipt | Final metadata verification, parent independent exact review, serial assembly and integration pending. No owner Human QA approval or main promotion |
 
 ## Interrupted Close Correction (TK-004F)
 
