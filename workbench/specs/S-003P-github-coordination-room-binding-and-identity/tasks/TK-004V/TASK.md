@@ -17,3 +17,9 @@ Use the existing collision CLI fixture and targeted atomic-write boundary. Do no
 ## Completion / Exit Condition
 
 Public red/green regressions cover all four failures, full file/index/ref and ignored-file preservation on refusal or rollback, successful collision recovery, supported retirement and retry after rollback. Run the complete current verification union plus the delivered stage-two board seam and receipt-backed installed collision checks. Commit/push the verified candidate before native Receipt/close, freeze the final assembly for independent parent review, and hand back for coordinated integration. No direct merge, whole-Spec completion, owner Human QA, main promotion or clean-update claim.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | codex/github-collision-reference-safety | 8fbde5856197751cdc0f9ec5916c8714a4896487 | ahead 0 behind 0 | 0 | Committed redf091e923 public cases reproduce all four postdelivery P2 gaps. Green8fbde585 collision43/43 PASS adds qualified ownership, escaped slash/unicode/key JSON refusal, ignored-file preservation, projection rename/partial-write rollback and retry, pre-existing/foreign temporary preservation with explicit incomplete recovery. Initial partial-write fixture ENOENT was corrected and its failed log retained. | Root/template collision procedure bounds updated. Done records and historical PASS/FAIL/Receipts preserved. Ordinary retirement/close/gate/Issue behavior unchanged. | Final current-base union with independently reviewed/delivered batch R, all13batch groups, board/close/binding and full verification, installed collision proof and exact independent parent review pending. No direct merge or real rename use before release. FullSpec/owner/main gates remain open. | 751600d43022556c3dae32ce009a71e6a70258b2c526f459e6d68b09d509f1bc |
