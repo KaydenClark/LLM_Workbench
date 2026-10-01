@@ -88,6 +88,14 @@ mechanical enforcement, behavioral reliability or owner Human QA. Read the
 Spec for actual trial results and any missing proof; this article carries no
 live Task status. Personal installations are not changed by editing this source.
 
+A later coordinator report attributes two fresh synthetic trials to a separate
+Servitor observer using the same Builder source hash. The
+[Spec evidence](../specs/S-01P-builder-skill-rebuild/SPEC.md#append-only-evidence-and-execution-log)
+owns their reported outcomes, custody and limitations. This article does not
+claim the implementing author inspected raw traces or independently verified
+those observations, and the reports do not establish installed discovery,
+whole-Spec acceptance or owner Human QA.
+
 ## Sources
 
 - [Builder source](../skills/builder/SKILL.md) and [scenario](../skills/builder/references/verification.md)

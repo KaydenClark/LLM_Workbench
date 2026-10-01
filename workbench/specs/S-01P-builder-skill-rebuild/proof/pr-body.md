@@ -6,7 +6,7 @@ keeps the Task incomplete.
 
 Changes are limited to Builder source/references, a focused contract regression,
 the individual Wiki explanation, S-01P/TK-01G and native generated projections.
-No shared controls, runtime, manifest, bundle identity or Factory changes.
+No Builder-authored shared controls, runtime, manifest, bundle identity or Factory changes; current-base assembly inherits reviewed integration changes.
 The existing TK-01G was converted and claimed through the native CLI; historical
 evidence and original branches are retained.
 
@@ -19,11 +19,17 @@ are not fresh-agent behavioral validation.
 
 Draft only. TK-01G remains in progress. Before acceptance/merge:
 
-- Run the synthetic Builder scenario in an authorized independent context and
-  preserve actual observations; no behavioral PASS is claimed here.
-- Obtain independent review of the immutable candidate and record its verdict.
+- Assess the attributed coordinator report from separate Servitor observer
+  01a0f166: two fresh trials at source 74dd407a, with explicit failure, custody,
+  provider-identity and dirty-final-tree limitations in `proof/producer-observations.md`.
+  The author did not inspect raw traces or independently verify the trials.
+- Obtain separate exact review of this evidence/current-base candidate and
+  record its verdict. The parent reports prior source-only review PASS; it does
+  not cover this amendment.
 - Have the coordinator serialize the single MEMORY router hunk supplied in
   `proof/memory-route.patch`, then validate and re-review the resulting candidate.
 
 Target: integration. No merge or main update is requested. Owner Human QA and
 repeated behavioral reliability remain separate gates.
+
+Original candidate `74dd407aef68d63c597637dab9b7cfe9706f7243` is preserved; this assembly starts from integration `d90785908b26517068a474bb88136c81995a2f18`.

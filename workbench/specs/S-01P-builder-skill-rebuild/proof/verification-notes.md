@@ -25,9 +25,12 @@ in this checkout.
 The configured Codex CLI is present and `codex login status` reports a ChatGPT
 login. No fresh agent execution or independent review was performed here. CLI
 presence/login is not a configured behavioral result, and this implementing
-context cannot provide independent review. Both remain explicit delivery gates;
-the scenario under Builder's references is a synthetic repeatable procedure,
-not a passing trial. No private Worker packet or scenario original was moved.
+context cannot provide independent review. At the initial handback both were missing. The subsequent coordinator report
+is now attributed in `producer-observations.md`: two fresh trials were observed
+by a separate Servitor context, but their raw traces were not inspected here.
+The parent reports source-only review PASS for the earlier candidate; separate
+review of the evidence/current-base update is still required. The scenario
+under Builder's references is a procedure, not itself a passing trial. No private Worker packet or scenario original was moved.
 No owner Human QA, reliability or release claim follows from the test suite.
 
 ## Self-drift capture correction
@@ -69,3 +72,13 @@ satisfy any of those outcome claims or change their scoring criteria.
 failed with GitHub GraphQL Forbidden. Git fetch and native claim push succeeded.
 A final remote-head readback and prepared PR body identify the recoverable
 candidate. No merge or main update is authorized by this packet.
+
+## Current-base evidence amendment
+
+The original `74dd407a` branch remains intact. A separate current-base branch
+assembles it on integration `d90785908b26517068a474bb88136c81995a2f18`.
+The release coordinator confirmed that MEMORY route assembly will happen later;
+the proposed single hunk remains unapplied and reserved to that writer. No
+receipt or reported trial is promoted into acceptance or a native review verdict.
+Read the additional current-base suite and drift receipts for this amendment;
+the original 52-command result remains historical proof of the initial candidate.
