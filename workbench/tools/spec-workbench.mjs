@@ -383,11 +383,17 @@ export function closeTask(rootDir, id, options) {
   const remainingGap = requireValue(options?.remainingGap, '--remaining-gap is required');
   const date = validDate(options?.date ?? today());
   const spec = findSpec(root, id);
+  assertCloseTaskDirectories(root, spec);
   const slices = executionSlices(spec);
   // A published close takes precedence over normal selection, including when
   // another Task is claimed. Recovery uses its original checksummed Receipt,
   // never the retry's replacement proof, and never reopens a done record.
-  const pending = slices.filter((item) => item.source === 'record' && /^\*\*Close pending:\*\*/m.test(item.record.content));
+  // Retirement changes location, not a published operation's identity. Read
+  // all native records here, including retired and nonselectable history;
+  // ordinary selection continues to use only the existing execution slices.
+  const pending = [...(spec.records ?? []), ...(spec.retiredRecords ?? [])]
+    .filter((record) => /^\*\*Close pending:\*\*/m.test(record.content))
+    .map((record) => ({ id: record.id, record }));
   if (pending.length > 1) throw new Error(`${id} has multiple pending closes; reconcile them before closing another Task`);
   if (pending.length === 1) return finishRecordClose(root, spec, pending[0], slices);
 
@@ -445,6 +451,34 @@ export function closeTask(rootDir, id, options) {
   content = appendEvidence(content, `| ${escapeCell(date)} | ${escapeCell(task.id)} | Task closed | ${escapeCell(proof)} | ${escapeCell(docs)} | ${escapeCell(recordedGap)} |`);
   atomicWrite(spec.filePath, content);
   return showSpec(rootDir, id);
+}
+
+// S-00I TK-004L: native inventory skips symlink directory entries. A close
+// must refuse an unsafe ownership shape before selecting another claim, since
+// a skipped directory can hold the only durable pending operation. Keep this
+// preflight local to close; other lifecycle readers and operations are unchanged.
+function assertCloseTaskDirectories(root, spec) {
+  const tasksDir = path.join(path.dirname(spec.filePath), 'tasks');
+  const inspect = (directory, lifecycleRoot = false) => {
+    try { assertSafeReadPath(root, directory); }
+    catch (error) { throw new Error(`unsafe close Task directory: ${directory}: ${error.message}`); }
+    let info;
+    try { info = fs.lstatSync(directory); }
+    catch (error) { if (error.code === 'ENOENT') return; throw error; }
+    if (!info.isDirectory()) throw new Error(`unsafe close Task directory: ${directory} must be an ordinary directory`);
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const child = path.join(directory, entry.name);
+      if (entry.isSymbolicLink() || (!entry.isDirectory()
+          && (!entry.isFile() || /^TK-[0-9A-Za-z]+$/.test(entry.name) || TASK_LIFECYCLE_FOLDERS.includes(entry.name)))) {
+        throw new Error(`unsafe close Task directory: ${child} must be an ordinary directory`);
+      }
+      if (entry.isDirectory()) {
+        assertSafeReadPath(root, child);
+        if (!lifecycleRoot && TASK_LIFECYCLE_FOLDERS.includes(entry.name)) inspect(child, true);
+      }
+    }
+  };
+  inspect(tasksDir);
 }
 
 // Only record-backed Spec close uses this protocol. The pending marker is

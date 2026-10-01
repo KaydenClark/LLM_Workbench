@@ -356,6 +356,8 @@ exist. The generic `templates/` mirror changes in S-00P TK-005.
 | 2026-10-01 | TK-004F | Corrected immutable producer aggregate | Exact clean0d4ad14afaeaf7c552aa2afe453d38f14947abad passed every required51command, native Task-PR gate and12focused public CLI recovery cases. Remote branch was verified at that exact SHA before native close; scoped done status does not imply independent assembled review or integration delivery | Render follows Receipt; guardrail78/100 unchanged. Self-drift returns to7pre-existing findings, machineResult blocked and cleanUpdate false. Parent Director disposition preserves earlier S-00I/TK-004F identity and repairs later S-003P collision separately | Final metadata-only exact51, parent independent review and serial shared-file assembly remain open; no owner QA approval or main promotion |
 | 2026-10-01 | review | Review verdict: fail at 55beae7dbba12d96978c889f1cc25d3a3c1fc94d [70f52a8a2635] #9 | P2: Pending close target disappears through linked or retired Task directories and retry closes another claimed Task - independent exact55beae7d public two-claim probes reproduce both directory cases | Parent-routed separate-context exact PR247 reviewer01a0f6af | 1 |
 
+| 2026-10-01 | TK-004L | Public directory recovery red and green | Immutable55beae7d fails linked-directory refusal and retired-directory original evidence recovery. Working correction passes18 public CLI interrupted-close scenarios including native retirement, linked retired directory/root, ordinary-file replacement and marker-free history. Full committed required51 pending | Close Directory Recovery Correction and owning Task acceptance updated. All failed55 evidence and closedTK004F receipts preserved | Producer proof only. Fresh parent exact review and serial assembly pending |
+
 ## Interrupted Close Correction (TK-004F)
 
 Independent public CLI probes at integration `3b5b76bfd62aa98118cb73cc4947e0658f4040c6`
@@ -389,6 +391,39 @@ Generic templates are unchanged because this repairs existing runtime close
 behavior without adding a control rule or new command. Capability proof and
 recovery semantics live here and in TK-004F; the final immutable handback must
 name the exact tested candidate and parent review gate.
+
+## Close Directory Recovery Correction (TK-004L)
+
+Independent exact review of draft PR247 at
+`55beae7dbba12d96978c889f1cc25d3a3c1fc94d` failed on two published-close
+recovery paths: a linked Task directory disappears from ordinary discovery,
+and native retirement removes a pending done Task from execution selection.
+In each case retry can close another claimed Task. Native fail verdict #9 and
+TK-004L retain that failure; TK-004F stays done with its original receipts.
+
+Close now checks the owning `tasks/` and lifecycle directory entries before
+selection, refusing symbolic links and nonordinary Task directory shapes
+without touching records, links, index or history. Pending-close discovery
+includes active and retired native records, even when they are not execution
+candidates. Recovery validates the original checksummed receipt and publishes
+its original evidence into the owning Spec, then clears only the temporary
+marker at the Task's current location. A retired Task stays done and retired;
+the other claim remains in progress. Marker-free retired history is unchanged
+and permits ordinary active close. Multiple pending operations still refuse.
+
+The public demo above now includes `linked-directory`, `retired-directory`,
+`retired-history`, `linked-retired-directory`, `linked-retired-root` and
+`file-directory`, for eighteen scenarios total. Both primary regressions fail
+on immutable `55beae7d` before this source correction. Tests inject failure
+after Task publication and before Spec evidence, then use a separate public
+CLI retry; retirement uses the public `move-task` verb. Unsafe-path refusals
+compare record bytes, index bytes, HEAD and link/file contents. Successful
+recovery compares the published Task bytes with only the marker removed and
+retains its receipt chain. Scope is the close operation and its tests; native
+move, general readers, selection, report and gate behavior are unchanged.
+Process/I/O recovery limits remain as stated above. Full required verification,
+remote recovery and fresh parent review must name the immutable candidate;
+producer green does not approve integration or owner Human QA.
 
 ## Completion Result
 

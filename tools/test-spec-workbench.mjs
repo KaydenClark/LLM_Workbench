@@ -54,7 +54,7 @@ if (!process.argv.includes('--close-recovery-only')) {
 // changes filesystem behavior in a disposable subprocess, never runtime source.
 {
   const closeCli = fileURLToPath(new URL('../workbench/tools/spec-workbench.mjs', import.meta.url));
-  const cases = ['single', 'two', 'exit', 'cleanup', 'task-write', 'missing-log', 'tamper', 'ambiguous', 'conflict', 'malformed', 'hardlink', 'task-hardlink'];
+  const cases = ['single', 'two', 'exit', 'cleanup', 'task-write', 'missing-log', 'tamper', 'ambiguous', 'conflict', 'malformed', 'hardlink', 'task-hardlink', 'linked-directory', 'retired-directory', 'retired-history', 'linked-retired-directory', 'linked-retired-root', 'file-directory'];
   const caseOption = process.argv.indexOf('--close-recovery-case');
   const selected = caseOption < 0 ? cases : [process.argv[caseOption + 1]];
   assert.ok(selected.every(name => cases.includes(name)), 'close recovery case must name a known scenario');
@@ -67,11 +67,11 @@ if (!process.argv.includes('--close-recovery-only')) {
       fs.mkdirSync(path.join(specDir, 'tasks/TK-002'), { recursive: true });
       const sp = path.join(specDir, 'SPEC.md');
       fs.writeFileSync(sp, `# S-701 - Close fixture\n\n**Spec ID:** S-701\n**Status:** active\n**Priority:** 0\n**Owner:** fixture\n**Catalog description:** Fixture close recovery.\n**Updated:** 2026-10-01\n**Blockers:** none\n**Latest event:** fixture\n**Next gate:** fixture\n\n## Vertical Implementation Slices\n\n| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n\n## Acceptance Criteria\n\n- [x] fixture\n\n## Append-Only Evidence And Execution Log\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n\n## Completion Result\n\nFixture.\n`);
-      const tp = path.join(specDir, 'tasks/TK-002/TASK.md');
+      let tp = path.join(specDir, 'tasks/TK-002/TASK.md');
       const other = path.join(specDir, 'tasks/TK-003/TASK.md');
       const record = id => `# ${id} - Close fixture\n\n**Task ID:** ${id}\n**Spec ID:** S-701\n**Slice:** Close fixture\n**Status:** in-progress\n**Blockers:** none\n**Destination:** spec-acceptance: S-701 Acceptance Criteria\n`;
       fs.writeFileSync(tp, record('TK-002'));
-      if (['two', 'ambiguous'].includes(scenario)) {
+      if (['two', 'ambiguous', 'linked-directory', 'retired-directory', 'retired-history', 'linked-retired-directory', 'linked-retired-root', 'file-directory'].includes(scenario)) {
         fs.mkdirSync(path.dirname(other)); fs.writeFileSync(other, record('TK-003'));
       }
       git('add', '.'); git('commit', '--quiet', '-m', 'Fixture');
@@ -104,21 +104,60 @@ if (!process.argv.includes('--close-recovery-only')) {
       if (scenario === 'tamper') fs.writeFileSync(tp, published.replace('original docs |', 'altered docs |'));
       if (scenario === 'ambiguous') fs.writeFileSync(other, published.replaceAll('TK-002', 'TK-003'));
       if (scenario === 'conflict') fs.writeFileSync(sp, beforeSpec.replace('\n## Completion Result', '\n| 2026-10-01 | TK-002 | Task closed | unrelated proof | unrelated docs | none |\n\n## Completion Result'));
+      // S-00I TK-004L: preserve a published operation across lifecycle changes.
+      // Public move-task is deliberately allowed; close must recover its exact
+      // retired target without moving it back or selecting the other claim.
+      if (['retired-directory', 'retired-history', 'linked-retired-directory', 'linked-retired-root'].includes(scenario)) {
+        if (scenario === 'retired-history') assert.equal(run().status, 0, 'finish before creating marker-free history');
+        git('add', '.'); git('commit', '--quiet', '-m', 'Published close state');
+        const moved = spawnSync(process.execPath, [closeCli, 'move-task', 'S-701', '--path', room, '--task', 'TK-002', '--to', 'retired', '--json'], { encoding: 'utf8' });
+        assert.equal(moved.status, 0, `public retirement succeeds: ${moved.stderr}`);
+        tp = path.join(specDir, 'tasks/retired/TK-002/TASK.md');
+        assert.equal(fs.existsSync(path.join(specDir, 'tasks/TK-002')), false, 'retirement removes active directory');
+      }
+      let unsafePath = null;
+      if (['linked-directory', 'linked-retired-directory', 'linked-retired-root', 'file-directory'].includes(scenario)) {
+        const target = scenario === 'linked-retired-root' ? path.dirname(path.dirname(tp)) : path.dirname(tp);
+        unsafePath = target;
+        const preserved = path.join(room, '.git/preserved-task');
+        fs.renameSync(target, preserved);
+        if (scenario === 'file-directory') {
+          fs.writeFileSync(target, 'An ordinary file cannot replace a Task directory.\n');
+          tp = path.join(preserved, 'TASK.md');
+        } else fs.symlinkSync(preserved, target, 'dir');
+      }
       const snapshot = [fs.readFileSync(sp, 'utf8'), fs.readFileSync(tp, 'utf8'), fs.existsSync(other) ? fs.readFileSync(other, 'utf8') : null];
+      const indexBefore = fs.readFileSync(path.join(room, '.git/index'));
+      const headBefore = git('rev-parse', 'HEAD');
+      const unsafeBefore = unsafePath === null ? null : scenario === 'file-directory' ? fs.readFileSync(unsafePath, 'utf8') : fs.readlinkSync(unsafePath);
       const retry = run();
-      if (['tamper', 'ambiguous', 'conflict', 'malformed'].includes(scenario)) {
+      if (['tamper', 'ambiguous', 'conflict', 'malformed', 'linked-directory', 'linked-retired-directory', 'linked-retired-root', 'file-directory'].includes(scenario)) {
         assert.notEqual(retry.status, 0, `${scenario}: inconsistent recovery refuses`);
         assert.deepEqual([fs.readFileSync(sp, 'utf8'), fs.readFileSync(tp, 'utf8'), fs.existsSync(other) ? fs.readFileSync(other, 'utf8') : null], snapshot, `${scenario}: refusal changes no record`);
+        if (unsafePath !== null) {
+          assert.match(retry.stderr, /unsafe close Task directory/, 'close-local preflight names unsafe directory');
+          assert.equal(scenario === 'file-directory' ? fs.readFileSync(unsafePath, 'utf8') : fs.readlinkSync(unsafePath), unsafeBefore, 'refusal preserves unsafe entry bytes or link');
+          assert.deepEqual(fs.readFileSync(path.join(room, '.git/index')), indexBefore, 'refusal preserves index bytes');
+          assert.equal(git('rev-parse', 'HEAD'), headBefore, 'refusal preserves history');
+        }
+        continue;
+      }
+      if (scenario === 'retired-history') {
+        assert.equal(retry.status, 0, retry.stderr);
+        assert.equal(fs.readFileSync(tp, 'utf8'), snapshot[1], 'marker-free retired history is unchanged');
+        assert.match(fs.readFileSync(other, 'utf8'), /\*\*Status:\*\* done/, 'marker-free history permits normal active close');
         continue;
       }
       assert.equal(retry.status, 0, `${scenario}: retry recovers exact target: ${retry.stderr}`);
+      assert.equal(fs.readFileSync(tp, 'utf8'), snapshot[1].replace(/^\*\*Close pending:\*\* .+\r?\n?/m, ''), `${scenario}: only the temporary marker changes in the published Task`);
       assert.deepEqual(readReceiptFromFile(tp), receipts, `${scenario}: retry preserves Receipt bytes and chain`);
       const evidence = fs.readFileSync(sp, 'utf8');
       assert.equal((evidence.match(/\| TK-002 \| Task closed \|/g) ?? []).length, 1, `${scenario}: one original close evidence row`);
       assert.match(evidence, /original docs/, `${scenario}: original evidence recovered`);
       assert.doesNotMatch(evidence, /retry replacement/, `${scenario}: retry inputs never replace published proof`);
       assert.doesNotMatch(fs.readFileSync(tp, 'utf8'), /\*\*Close pending:\*\*/, `${scenario}: pending operation cleared after evidence`);
-      if (scenario === 'two') {
+      if (['two', 'retired-directory'].includes(scenario)) {
+        if (scenario === 'retired-directory') assert.equal(fs.existsSync(path.join(specDir, 'tasks/TK-002')), false, 'recovery never moves or reopens retired Task');
         assert.match(fs.readFileSync(other, 'utf8'), /\*\*Status:\*\* in-progress/, 'retry never closes different claimed Task');
         assert.equal(readReceiptFromFile(other).length, 0, 'other Task has no fabricated Receipt');
       }
