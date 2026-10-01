@@ -3,13 +3,13 @@
 **Spec ID:** S-00I
 **Status:** active
 **Priority:** 3
-**Owner:** codex-assembled-lifecycle
+**Owner:** codex-close-directory-recovery
 **Stance:** Builder
-**Updated:** 2026-09-30
+**Updated:** 2026-10-01
 **Catalog description:** Express ADR, Spec and Task lifecycle by folder location, reconcile completed Specs and Tasks into readable durable owners before retiring them, and discard retired records only through a verified gate; permanent `archive` is never cleared.
 **Blockers:** none; S-00H is `complete` (integration `49c671e`).
-**Latest event:** Independent native assembled review PASS is recorded against exact 09f6508 and digest bd96878bafc5, with no actionable findings. All Tasks and acceptance criteria have proof; the evidence-only checkpoint retains the substantive digest.
-**Next gate:** Confirm independent exact-head review of the evidence-only checkpoint and required validation, then deliver through integration under the expected-head gate. Owner Human QA remains ongoing and unapproved; Spec completion and main promotion remain gated.
+**Latest event:** TK-004L closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -347,6 +347,86 @@ exist. The generic `templates/` mirror changes in S-00P TK-005.
 | 2026-09-30 | spec | Independent implementation/safety report received; administrative closeout reconciled | Exact 89c938d and digest856d743469b2: supplied separate-context PASS, no findings, original reproducer,18-case URI matrix,directory suite,four broader suites and64 default parity checks pass. Implementing lane exact full51 passes clean. Repository close order TK-01V then TK-003L then TK-003M; later receipts truthfully record prior uncommitted metadata. Acceptance8/9 supported by disposable lifecycle and registered doctor-gate proof | [Independent summary](reviews/IMPLEMENTATION-89C938D.md), owning Tasks and acceptance evidence updated; all prior FAIL/proof retained | Final frozen metadata full51 and fresh assembled review/bound verdict before integration; owner QA unapproved, no Spec completion or main promotion |
 | 2026-09-30 | spec | Administrative append-only identity correction after 04c33e5 | Frozen 04c33e5db6c19c61f0e9d2dde88614895084dc80 passed50/51; test-check-append-only failed because the tool-generated TK-01V reclose reused the historical same-day Date+Task+Task closed identity. Original first-published row bytes and all Task Receipt checksums were retained. Give only the new reclose event a distinct identity, preserving its proof and the failed commit/verification receipt. No runtime/checker change or history rewrite | Owning Spec evidence identity clarified; final frozen full51 still required before draft publication | Fresh assembled review/bound verdict, integration and owner gates remain pending |
 | 2026-09-30 | review | Review verdict: pass at 09f650866ad8d6d383323a1bac5a0a1be93880f1 [bd96878bafc5] #7 | none | Independent native Reviewer in separate context; native review mode; model identity unrecorded | none |
+| 2026-10-01 | review | Review verdict: fail at 3b5b76bfd62aa98118cb73cc4947e0658f4040c6 [638c8e539ba8] #8 | Interrupted record Task close publishes Receipt and done status before Spec evidence and retry either refuses recovery or closes another Task - independent public CLI failure injection at integration3b5b76bf reproduced both single-claim and two-claim cases | Parent-routed independent runtime probe report 2026-10-01 | 1 |
+
+| 2026-10-01 | TK-004F | Public close recovery red and green | Unchanged integration3b5b76bf fails the durable single-claim retry with no open Task and the two-claim retry with original TK-002 evidence absent. Candidate0ea331db passes all12 public CLI scenarios, including abrupt exit, two claims, cleanup retry, earlier Receipt preservation and no-write malformed/tampered/conflicting/linked recovery refusals | Correction semantics and Task acceptance are recorded here; generic templates unchanged for existing runtime contract repair | Producer self-check only; full51 and parent independent review pending |
+| 2026-10-01 | TK-004F | Initial aggregate projection correction | Candidate0ea331db full51 completed47/51. Lifecycle and report suites pass. skills-lane, configured-host, dogfood and doctor fail on own stale TASKBOARD Receipt summary because render preceded native in-progress Receipt. Failed candidate and log are retained; render-after-Receipt corrects the projection without runtime or test changes | Earlier runtime proof and all historical evidence preserved | New immutable full51 required before draft publication; no independent review or delivery claim |
+| 2026-10-01 | TK-004F | Task closed | Exact0d4ad14afaeaf7c552aa2afe453d38f14947abad passed required51/51 and12focused public CLI recovery cases. Durable baseline3b5b76bf reds: single retry noopenTask and two retry wrongtarget/missing original evidence. Process-exit, cleanup retry, prior Receipt preservation and malformed/tampered/conflicting/linked no-write cases green. | S-00I Interrupted Close Correction and TK-004F acceptance/boundary updated. Generic templates unchanged because this repairs existing runtime contract. Native Receipt and Taskboard projection refreshed after close. | Final metadata-only exact51, parent independent exact-head review, serial assembly with S00J binding correction and integration remain open. LaterS003P duplicateF repair is separately coordinated. Owner Human QA unapproved and main promotion absent. |
+
+| 2026-10-01 | TK-004F | Corrected immutable producer aggregate | Exact clean0d4ad14afaeaf7c552aa2afe453d38f14947abad passed every required51command, native Task-PR gate and12focused public CLI recovery cases. Remote branch was verified at that exact SHA before native close; scoped done status does not imply independent assembled review or integration delivery | Render follows Receipt; guardrail78/100 unchanged. Self-drift returns to7pre-existing findings, machineResult blocked and cleanUpdate false. Parent Director disposition preserves earlier S-00I/TK-004F identity and repairs later S-003P collision separately | Final metadata-only exact51, parent independent review and serial shared-file assembly remain open; no owner QA approval or main promotion |
+| 2026-10-01 | review | Review verdict: fail at 55beae7dbba12d96978c889f1cc25d3a3c1fc94d [70f52a8a2635] #9 | P2: Pending close target disappears through linked or retired Task directories and retry closes another claimed Task - independent exact55beae7d public two-claim probes reproduce both directory cases | Parent-routed separate-context exact PR247 reviewer01a0f6af | 1 |
+
+| 2026-10-01 | TK-004L | Public directory recovery red and green | Immutable55beae7d fails linked-directory refusal and retired-directory original evidence recovery. Working correction passes18 public CLI interrupted-close scenarios including native retirement, linked retired directory/root, ordinary-file replacement and marker-free history. Full committed required51 pending | Close Directory Recovery Correction and owning Task acceptance updated. All failed55 evidence and closedTK004F receipts preserved | Producer proof only. Fresh parent exact review and serial assembly pending |
+| 2026-10-01 | TK-004L | Task closed | Exact4d28a2b7447ea032e214aa58f75dd14dac5461b8 passed required51/51 and18 focused public CLI interrupted-close scenarios. Frozen55 linked-directory retry red and public native-retired pending close missing original evidence red preserved. Unsafe directory variants refuse without record, index, HEAD or link/file changes; retired recovery removes only marker and preserves original Receipt and unrelated claim. | S-00I Close Directory Recovery Correction and TK-004L acceptance boundary updated. Generic templates unchanged because this repairs existing close semantics. No move/report/gate/parser/selection changes. | Final metadata verification, parent independent exact review, serial shared-file assembly and integration remain open. Owner Human QA unapproved and main promotion absent. |
+
+| 2026-10-01 | TK-004L | Directory recovery immutable producer aggregate | Exact4d28a2b7447ea032e214aa58f75dd14dac5461b8 passed required51/51 and18 focused public CLI cases, with remote branch verified at that SHA before native close. Independent frozen55 FAIL and closedTK004F history retained | Owning close correction and Task acceptance updated. Native close proof and Receipt preserve source identity. Taskboard regenerated after Receipt | Final metadata verification, parent independent exact review, serial assembly and integration pending. No owner Human QA approval or main promotion |
+
+## Interrupted Close Correction (TK-004F)
+
+Independent public CLI probes at integration `3b5b76bfd62aa98118cb73cc4947e0658f4040c6`
+found that an I/O failure after Task publication strands the Spec evidence;
+a retry with another claimed Task closes different work. The native fail
+verdict #8 and TK-004F preserve that correction separately from earlier done
+Tasks and review receipts.
+
+Record-backed Spec close now publishes the new checksummed Receipt, done
+status, original Proof and temporary `Close pending` evidence together in one
+atomic Task write. A retry finds that marker before normal Task selection,
+validates it against the Task and last Receipt, and publishes the original
+Spec evidence. Retry arguments cannot replace that proof. Evidence publication
+followed by interrupted marker cleanup is idempotent; a conflict, altered
+Receipt, malformed marker or multiple pending closes refuses without changing
+records. Existing done Tasks are never reopened and existing receipts stay
+byte-identical. Unsafe Task/Spec destinations and missing evidence logs refuse
+before the Task publication.
+
+One-command demo: `node tools/test-spec-workbench.mjs --close-recovery-only`.
+`--close-recovery-case single|two|exit|cleanup|task-write|missing-log|tamper|ambiguous|conflict|malformed|hardlink|task-hardlink`
+selects one adversarial scenario. The regression uses public CLI subprocesses
+and disposable filesystem preloads, including process exit after Task
+publication before Spec evidence. This is process/I/O interruption recovery,
+not a power-loss durability guarantee or concurrent-writer lock. Old completed
+records lacking this marker are preserved; they are not automatically inferred
+as interrupted closes. Table-backed and orphan Task close behavior is outside
+this correction, as are the coordinator's verdict/gate/report repairs.
+
+Generic templates are unchanged because this repairs existing runtime close
+behavior without adding a control rule or new command. Capability proof and
+recovery semantics live here and in TK-004F; the final immutable handback must
+name the exact tested candidate and parent review gate.
+
+## Close Directory Recovery Correction (TK-004L)
+
+Independent exact review of draft PR247 at
+`55beae7dbba12d96978c889f1cc25d3a3c1fc94d` failed on two published-close
+recovery paths: a linked Task directory disappears from ordinary discovery,
+and native retirement removes a pending done Task from execution selection.
+In each case retry can close another claimed Task. Native fail verdict #9 and
+TK-004L retain that failure; TK-004F stays done with its original receipts.
+
+Close now checks the owning `tasks/` and lifecycle directory entries before
+selection, refusing symbolic links and nonordinary Task directory shapes
+without touching records, links, index or history. Pending-close discovery
+includes active and retired native records, even when they are not execution
+candidates. Recovery validates the original checksummed receipt and publishes
+its original evidence into the owning Spec, then clears only the temporary
+marker at the Task's current location. A retired Task stays done and retired;
+the other claim remains in progress. Marker-free retired history is unchanged
+and permits ordinary active close. Multiple pending operations still refuse.
+
+The public demo above now includes `linked-directory`, `retired-directory`,
+`retired-history`, `linked-retired-directory`, `linked-retired-root` and
+`file-directory`, for eighteen scenarios total. Both primary regressions fail
+on immutable `55beae7d` before this source correction. Tests inject failure
+after Task publication and before Spec evidence, then use a separate public
+CLI retry; retirement uses the public `move-task` verb. Unsafe-path refusals
+compare record bytes, index bytes, HEAD and link/file contents. Successful
+recovery compares the published Task bytes with only the marker removed and
+retains its receipt chain. Scope is the close operation and its tests; native
+move, general readers, selection, report and gate behavior are unchanged.
+Process/I/O recovery limits remain as stated above. Full required verification,
+remote recovery and fresh parent review must name the immutable candidate;
+producer green does not approve integration or owner Human QA.
 
 ## Completion Result
 
