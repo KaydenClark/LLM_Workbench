@@ -283,6 +283,54 @@
       "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
     },
     {
+      "file": "workbench/sessions/checkpoints/llm-workbench-v3-1-plan-2026-09-04.md",
+      "line": 34,
+      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/sessions/checkpoints/llm-workbench-v3-1-plan-2026-09-04.md",
+      "line": 35,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md",
+      "line": 98,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md",
+      "line": 263,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/sessions/checkpoints/workbench-boundaries-redesign-2026-09-04.md",
+      "line": 91,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
+      "file": "workbench/sessions/checkpoints/workbench-boundaries-redesign-2026-09-04.md",
+      "line": 247,
+      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
+      "kind": "prose",
+      "disposition": "historical",
+      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+    },
+    {
       "file": "workbench/specs/S-002Q-workbench-setup-step/SPEC.md",
       "line": 28,
       "sha256": "996ae15a99504dc1c95218d7e1257165a1db0201bf0fc83959597a6c84ebd363",
