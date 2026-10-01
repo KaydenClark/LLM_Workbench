@@ -288,7 +288,6 @@ The review and delivery skills describe the reviewed candidate in task-level
 terms. Correct them to the assembled Spec, consistent with the locked WF-8C
 answer, without weakening the immutable-candidate requirement from ADR-0037.
 `AGENTS.md` and `RUNBOOK.md` are rewritten by S-00P phase two, not here.
-| TK-004O | Atomic corrective Task batch creation and supported retry after injected write failure | ready | none | pending public fault regression and verification |
 
 ## Acceptance Criteria
 
