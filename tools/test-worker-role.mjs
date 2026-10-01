@@ -28,6 +28,7 @@ if (process.argv[2] === '--scenario') {
   const cwd = process.argv[3];
   assert.ok(cwd, 'provide the disposable scenario repository');
   const git = (...args) => execFileSync('git', args, { cwd, encoding: 'utf8' }).trim();
+  assert.equal(git('show', 'HEAD:worker-skill.md'), skill.trimEnd(), 'scenario loaded the exact staged entry');
   const base = git('rev-parse', 'spec/totals');
   const head = git('rev-parse', 'codex/task-100');
   assert.notEqual(head, base, 'scenario must produce a candidate');
