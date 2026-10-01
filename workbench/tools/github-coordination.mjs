@@ -13,7 +13,7 @@ function refuse(code, message) {
 
 function git(root, args, code, message) {
   // A replacement object must not change what an immutable source SHA means.
-  const result = spawnSync('git', ['-C', root, ...args], {
+  const result = spawnSync('git', ['--no-lazy-fetch', '--no-optional-locks', '-C', root, ...args], {
     encoding: 'utf8', timeout: 10000, maxBuffer: 2 * 1024 * 1024,
     env: { ...process.env, GIT_NO_REPLACE_OBJECTS: '1', GIT_TERMINAL_PROMPT: '0' }
   });

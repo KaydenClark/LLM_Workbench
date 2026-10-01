@@ -27,7 +27,10 @@ the inspector refuses an unconfigured room with `coordination-unconfigured`.
 Dirty manifest edits cannot change the result for a committed revision. Missing
 objects, malformed JSON/configuration, linked source manifests and nested
 project roots are refused with named errors. Git replacement objects are ignored
-so a source SHA retains its original meaning.
+so a source SHA retains its original meaning. Every Git operation disables lazy
+fetching and optional locks; locally absent promised commits, trees and blobs
+refuse without contacting their remote or changing Git metadata. Git must
+support [`--no-lazy-fetch`](https://git-scm.com/docs/git#Documentation/git.txt---no-lazy-fetch); an unsupported Git invocation refuses rather than falling back.
 
 The inspector ships through the existing managed runtime installer and receipt.
 It adds no installed skill or new setup workflow. Setup, authenticated Issue
