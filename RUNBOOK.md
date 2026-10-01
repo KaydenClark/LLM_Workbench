@@ -680,8 +680,7 @@ ordinary directory - exits 1.
 | `unclassifiable` | `workbench/` is present but is not an ordinary directory or carries no readable manifest; a root control or the room's own top-level listing cannot be read and nothing else is stamped; or the room is harness-shaped with no manifest and no stamp |
 
 Harness-shaped means the legacy Markdown surface or all eight current root artifacts, or root `tools/` files from the
-managed runtime set in a room that also carries a majority of the legacy Markdown surface than
-it is missing. Those filenames (`privacy.mjs`, `sessions.mjs`) are ordinary, so
+managed runtime set in a room that also carries a majority of the legacy Markdown surface. Those filenames (`privacy.mjs`, `sessions.mjs`) are ordinary, so
 one of them alone never makes a room harness-shaped. A `workbench/manifest.json`
 that parses as an unrelated JSON object, an array, or a `schemaVersion` that is
 absent, `null`, or not an integer is not this room's authority and reads as

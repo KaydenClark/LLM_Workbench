@@ -171,7 +171,7 @@ function controlEvidence(project) {
       read.unreadable.push(control);
       continue;
     }
-    if (control !== 'OWNERSHIP.json' && BRACKETED_PLACEHOLDER.test(content)) read.bracketed.push(control);
+    if (BRACKETED_PLACEHOLDER.test(content)) read.bracketed.push(control);
     const version = versionStamp(content);
     if (version) {
       read.stamped.push(control);

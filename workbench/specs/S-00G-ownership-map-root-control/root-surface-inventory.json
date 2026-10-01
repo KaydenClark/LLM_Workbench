@@ -176,7 +176,7 @@
       "sha256": "ed4ddb85c5ca019e71378ae492c9066e574cc073bdcb99c6a0e65d6be95cd31a",
       "kind": "prose",
       "disposition": "historical",
-      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+      "reason": "Append-only dated architecture decision history; current carrier instructions are elsewhere."
     },
     {
       "file": "workbench/docs/adr/HISTORY.md",
@@ -184,7 +184,7 @@
       "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
       "kind": "prose",
       "disposition": "historical",
-      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+      "reason": "Append-only dated architecture decision history; current carrier instructions are elsewhere."
     },
     {
       "file": "workbench/docs/adr/archive/0013-seven-file-workbench-contract.md",
@@ -192,7 +192,7 @@
       "sha256": "ed4ddb85c5ca019e71378ae492c9066e574cc073bdcb99c6a0e65d6be95cd31a",
       "kind": "prose",
       "disposition": "historical",
-      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+      "reason": "Archived architectural decision; preserved accepted lineage, not current root setup instructions."
     },
     {
       "file": "workbench/docs/adr/archive/0033-workbench-contract-is-a-claim-set.md",
@@ -200,7 +200,7 @@
       "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
       "kind": "prose",
       "disposition": "historical",
-      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+      "reason": "Archived architectural decision; preserved accepted lineage, not current root setup instructions."
     },
     {
       "file": "workbench/docs/adr/archive/0033-workbench-contract-is-a-claim-set.md",
@@ -208,7 +208,7 @@
       "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
       "kind": "prose",
       "disposition": "historical",
-      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+      "reason": "Archived architectural decision; preserved accepted lineage, not current root setup instructions."
     },
     {
       "file": "workbench/feedback/REPORT-cic-v3-1-1-adoption-2026-09-05.md",
@@ -616,7 +616,7 @@
       "sha256": "ed4ddb85c5ca019e71378ae492c9066e574cc073bdcb99c6a0e65d6be95cd31a",
       "kind": "prose",
       "disposition": "historical",
-      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+      "reason": "Frozen dated source audit ledger; this records earlier evidence, not current operational instructions."
     },
     {
       "file": "workbench/wiki/grilling-destination-audit-ledger.json",
@@ -624,7 +624,7 @@
       "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
       "kind": "prose",
       "disposition": "historical",
-      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+      "reason": "Frozen dated source audit ledger; this records earlier evidence, not current operational instructions."
     },
     {
       "file": "workbench/wiki/grilling-destination-audit-ledger.json",
@@ -632,7 +632,7 @@
       "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
       "kind": "prose",
       "disposition": "historical",
-      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+      "reason": "Frozen dated source audit ledger; this records earlier evidence, not current operational instructions."
     },
     {
       "file": "workbench/wiki/grilling-destination-audit-ledger.json",
@@ -640,7 +640,7 @@
       "sha256": "996ae15a99504dc1c95218d7e1257165a1db0201bf0fc83959597a6c84ebd363",
       "kind": "prose",
       "disposition": "historical",
-      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+      "reason": "Frozen dated source audit ledger; this records earlier evidence, not current operational instructions."
     },
     {
       "file": "workbench/wiki/grilling-destination-audit-ledger.json",
@@ -648,7 +648,7 @@
       "sha256": "e18ff6b05427acd98f2a5e6d52d7ebcfcd04a66ec08a4406ca0c6759eb38c884",
       "kind": "prose",
       "disposition": "historical",
-      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+      "reason": "Frozen dated source audit ledger; this records earlier evidence, not current operational instructions."
     },
     {
       "file": "workbench/wiki/grilling-destination-audit-ledger.json",
@@ -656,7 +656,7 @@
       "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
       "kind": "prose",
       "disposition": "historical",
-      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+      "reason": "Frozen dated source audit ledger; this records earlier evidence, not current operational instructions."
     },
     {
       "file": "workbench/wiki/grilling-destination-audit-ledger.json",
@@ -664,7 +664,7 @@
       "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
       "kind": "prose",
       "disposition": "historical",
-      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+      "reason": "Frozen dated source audit ledger; this records earlier evidence, not current operational instructions."
     },
     {
       "file": "workbench/wiki/grilling-destination-audit-ledger.json",
@@ -672,31 +672,7 @@
       "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
       "kind": "prose",
       "disposition": "historical",
-      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
-    },
-    {
-      "file": "workbench/wiki/skill-adoption.md",
-      "line": 23,
-      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
-      "kind": "prose",
-      "disposition": "historical",
-      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
-    },
-    {
-      "file": "workbench/wiki/skill-adoption.md",
-      "line": 25,
-      "sha256": "996ae15a99504dc1c95218d7e1257165a1db0201bf0fc83959597a6c84ebd363",
-      "kind": "prose",
-      "disposition": "historical",
-      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
-    },
-    {
-      "file": "workbench/wiki/skill-adoption.md",
-      "line": 33,
-      "sha256": "f05a38406882199934c24a69a3927283b522ce5d7423a75ef64ffbcd5f3c747d",
-      "kind": "prose",
-      "disposition": "historical",
-      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+      "reason": "Frozen dated source audit ledger; this records earlier evidence, not current operational instructions."
     },
     {
       "file": "workbench/wiki/skill-adoption.md",
@@ -704,23 +680,7 @@
       "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
       "kind": "prose",
       "disposition": "historical",
-      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
-    },
-    {
-      "file": "workbench/wiki/skill-genesis.md",
-      "line": 26,
-      "sha256": "996ae15a99504dc1c95218d7e1257165a1db0201bf0fc83959597a6c84ebd363",
-      "kind": "prose",
-      "disposition": "historical",
-      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
-    },
-    {
-      "file": "workbench/wiki/skill-genesis.md",
-      "line": 50,
-      "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
-      "kind": "prose",
-      "disposition": "historical",
-      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+      "reason": "Only the explicitly dated S-01D verification scenario retains its original control count; live setup instructions were reconciled."
     },
     {
       "file": "workbench/wiki/skill-genesis.md",
@@ -728,7 +688,7 @@
       "sha256": "5952d839e4d03edf793a7b33f469bf8ecfa06a9a2194dc1de19e63bb7f166e87",
       "kind": "prose",
       "disposition": "historical",
-      "reason": "Retained dated evidence, capability planning or architectural lineage; not an executing root-surface consumer. Current root, runtime and template owners are checked separately."
+      "reason": "Only the explicitly dated S-01G verification scenario retains its original control count; live setup instructions were reconciled."
     }
   ]
 }

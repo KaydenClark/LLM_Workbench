@@ -572,3 +572,21 @@ test('ownership map is a structured fidelity target, not Markdown claim lines', 
     assert.equal(result.status, 'structured'); assert.equal(result.rows.length, 28); assert.deepEqual(result.lines, []);
   } finally { fs.rmSync(project, { recursive: true, force: true }); fs.rmSync(templates, { recursive: true, force: true }); }
 });
+
+test('structured fidelity renders row and relation changes without claiming disposition', () => {
+  const templates = fixtureTemplates(); const project = fixtureRoom(templates);
+  try {
+    const file = path.join(project, 'OWNERSHIP.json');
+    const map = JSON.parse(fs.readFileSync(file));
+    map.rows[0].routes[0].path = 'BLUEPRINT.md';
+    map.relations[0].instance_edge.path = 'BLUEPRINT.md';
+    fs.writeFileSync(file, JSON.stringify(map));
+    const report = reportFidelity({ project, templates });
+    const result = control(report, 'OWNERSHIP.json');
+    assert.equal(result.counts.changed, 2);
+    assert.equal(result.relations.filter(item => item.kind === 'changed').length, 1);
+    assert.match(report.markdown, /changed responsibility authority/);
+    assert.match(report.markdown, /changed relation owns/);
+    assert.match(report.markdown, /do not establish compatibility/);
+  } finally { fs.rmSync(project, { recursive: true, force: true }); fs.rmSync(templates, { recursive: true, force: true }); }
+});

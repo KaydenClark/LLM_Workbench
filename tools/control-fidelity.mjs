@@ -307,7 +307,10 @@ function compareTarget(project, templates, target) {
       const local = validateOwnership(JSON.parse(roomContent));
       const rows = upstream.rows.map(row => ({ key: row.key,
         kind: JSON.stringify(row) === JSON.stringify(local.rows.find(item => item.key === row.key)) ? 'unchanged' : 'changed' }));
-      return { ...base, status: 'structured', counts: Object.fromEntries(KINDS.map(kind => [kind, 0])), lines: [], rows,
+      const relations = upstream.relations.map(relation => ({ name: relation.name,
+        kind: JSON.stringify(relation) === JSON.stringify(local.relations.find(item => item.name === relation.name)) ? 'unchanged' : 'changed' }));
+      const counts = Object.fromEntries(KINDS.map(kind => [kind, [...rows, ...relations].filter(item => item.kind === kind).length]));
+      return { ...base, status: 'structured', counts, lines: [], rows, relations,
         note: 'Row-keyed mechanical comparison only; changed rows do not establish compatibility or disposition.' };
     } catch (error) {
       return { ...base, status: 'invalid', counts: Object.fromEntries(KINDS.map(kind => [kind, 0])), lines: [], note: error.message };
@@ -339,8 +342,13 @@ export function summarizeMarkdown(report) {
   for (const control of report.controls) {
     out.push(`## ${control.control}`, '');
     if (control.status === 'absent') { out.push(`Optional; not present in the room.`, ''); continue; }
-    if (control.status === 'missing' || control.status === 'template-missing') { out.push(`${control.status}: ${control.note}`, ''); continue; }
+    if (['missing', 'template-missing', 'invalid'].includes(control.status)) { out.push(`${control.status}: ${control.note}`, ''); continue; }
     out.push(`Template \`${control.template}\` (${control.status}): ${headlineCounts(control)}.`, '');
+    if (control.status === 'structured') {
+      for (const row of control.rows.filter(item => item.kind === 'changed')) out.push(`- changed responsibility ${row.key}`);
+      for (const relation of control.relations.filter(item => item.kind === 'changed')) out.push(`- changed relation ${relation.name}`);
+      out.push('', control.note, '');
+    }
     const notable = control.lines.filter((line) => !line.trivial && ['dropped', 'changed', 'added'].includes(line.kind));
     for (const line of notable) {
       if (line.kind === 'changed') out.push(`- changed L${line.templateLine} -> L${line.roomLine}: \`${excerpt(line.template)}\` -> \`${excerpt(line.room)}\``);

@@ -23,7 +23,7 @@ last_verified: 2026-09-26
 
 # Genesis: start a new room from a founding prompt
 
-Use `genesis` when the owner wants a brand-new project from a founding prompt, or from an explicitly chosen fresh copy of the Workbench Template. The result is a room a second agent could pick up cold. It has its own identity, seven filled root controls, the declared support lanes with the managed tools and skills, one actionable first Spec, a smallest running scaffold, and a pushed recovery point. The skill is the conversational entry. [`templates/GENESIS.md`](../../templates/GENESIS.md) is the procedure it follows.
+Use `genesis` when the owner wants a brand-new project from a founding prompt, or from an explicitly chosen fresh copy of the Workbench Template. The result is a room a second agent could pick up cold. It has its own identity, eight root artifacts (filled Markdown controls and validated `OWNERSHIP.json`), the declared support lanes with the managed tools and skills, one actionable first Spec, a smallest running scaffold, and a pushed recovery point. The skill is the conversational entry. [`templates/GENESIS.md`](../../templates/GENESIS.md) is the procedure it follows.
 
 **Inputs:** the founding prompt (kept word for word), an empty target path inside the authorized workspace, the owner's answers to the few questions that change architecture, privacy, money, credentials or destructive risk, and a private remote. **Output:** a committed room on a prefixed task branch, pushed to the remote, with the declared integration branch created or its omission recorded. **Done when:** every completion box in `templates/GENESIS.md` holds, including `validate --genesis` and doctor passing on the generated room.
 
@@ -47,7 +47,7 @@ A Template copy is still greenfield: it starts a new identity and does not inher
 1. Keep the founding prompt verbatim, confirm the target is inside the workspace, and classify it as above.
 2. Prepare owner questions from the prompt. Ask only the ones that change something expensive to reverse. A prepared question or a working assumption is never recorded as an owner decision.
 3. Record locked owner decisions, with ADRs for cross-cutting choices. Verify Actuality with the smallest thing that runs, then derive the first scoped Spec from those inputs.
-4. Build the room. On the manual path that means the seven controls, `workbench-layout.mjs init` (lanes, collections, wiki contract, Git branch declaration), `workbench-tools.mjs install` (runtime tools with a receipt), `workbench-skills.mjs install` (the 26 core skills in `workbench/skills` with a receipt and the `.agents/skills` and `.claude/skills` links), the filled wiki router and one active first Spec. The fresh-Template path does the equivalent through `derive`.
+4. Build the room. On the manual path that means the eight root artifacts, `workbench-layout.mjs init` (lanes, collections, wiki contract, Git branch declaration), `workbench-tools.mjs install` (runtime tools with a receipt), `workbench-skills.mjs install` (the 26 core skills in `workbench/skills` with a receipt and the `.agents/skills` and `.claude/skills` links), the filled wiki router and one active first Spec. The fresh-Template path does the equivalent through `derive`.
 5. Commit on a `claude/`, `codex/` or `backup/` branch and push it to a private remote. Genesis never infers public visibility or overwrites an existing remote. Create and push the declared integration branch when authorized, or record why not.
 6. Run the room's verification, render, doctor and the readiness gate `validate --project PATH --genesis`, then report the recovery ref and a one-minute demo.
 
@@ -93,3 +93,5 @@ None is claimed. At the pinned `mattpocock/skills@c55ee46` there is no genesis, 
 ## History
 
 - 2026-09-26: Created by S-01G TK-00X. The source now classifies the target before writing, installs the skills lane and names the readiness gate. The tool-level refusal is recorded as a remaining gap.
+
+- 2026-10-01: Current setup instructions now include validated `OWNERSHIP.json`; dated scenario evidence above remains unchanged. S-00G consumer checks cover this addition; generic template delivery is separately tracked by TK-003.
