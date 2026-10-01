@@ -28,6 +28,8 @@ Resolve the assigned packet and support lanes through `workbench/manifest.json`.
 Use the [reconciliation reference](references/reconcile.md) for pinned evidence
 observations, contradiction handling and the final cold read-back. Its commands
 observe facts; the agent still has to judge whether those facts support a claim.
+Use its replacement-disabled Git helper for all evidence observations; inherited
+Git selectors must not redirect the repository, object store or index being read.
 
 ## Obligations
 

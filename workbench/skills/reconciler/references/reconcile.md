@@ -11,13 +11,38 @@ Name the repository, actual output, requested endpoint and relevant comparison.
 For Git work, resolve the supplied base and candidate to immutable commit SHAs.
 Do not substitute HEAD when either is missing. Keep dirty or untracked output
 separate from committed proof and preserve unrelated work. These observations
-run from the selected repository, with caller-supplied shell variables:
+run from the selected repository, with caller-supplied shell variables. Enter
+that repository's verified working root first, then define this Bash helper in
+the same shell as the observations:
+
+<!-- check:git-helper -->
+```bash
+reconcile_git() (
+  for name in "${!GIT_@}"; do
+    unset "$name" || return
+  done
+  command git --no-replace-objects -c core.fsmonitor=false "$@"
+)
+```
+
+The subshell clears inherited `GIT_*` settings only for this observation. In
+particular, repository/worktree/common-dir/index selectors, object stores,
+replacement namespaces and injected configuration must not silently select a
+different evidence source. The caller's environment and repository metadata
+stay unchanged. `--no-replace-objects` disables replacement refs for every
+operation: otherwise Git can print the requested SHA while reading another
+commit's tree or ancestry. Disabling diff helpers alone does not prevent that.
+Use this helper consistently for pins, owner reads, comparisons and containment;
+do not fall back to a plain Git read when a protected observation fails. This
+assumes a trusted Git executable and shell; it is not a general sandbox for
+arbitrary repository tools. The status read also disables filesystem-monitor
+callbacks from repository configuration.
 
 <!-- check:pin -->
 ```bash
-git rev-parse --verify "${BASE_SHA}^{commit}"
-git rev-parse --verify "${CANDIDATE_SHA}^{commit}"
-git status --porcelain=v1
+reconcile_git rev-parse --verify "${BASE_SHA}^{commit}"
+reconcile_git rev-parse --verify "${CANDIDATE_SHA}^{commit}"
+reconcile_git status --porcelain=v1
 ```
 
 Record the returned SHAs and use those full values for subsequent commands.
@@ -25,7 +50,7 @@ Read the exact comparison without running target-controlled diff helpers:
 
 <!-- check:compare -->
 ```bash
-git diff --no-ext-diff --no-textconv "$BASE_SHA" "$CANDIDATE_SHA" --
+reconcile_git diff --no-ext-diff --no-textconv "$BASE_SHA" "$CANDIDATE_SHA" --
 ```
 
 Read an evidence owner at the achieved revision; `OWNER_PATH` is its
@@ -33,7 +58,7 @@ repository-relative path from the selected packet, not an assumed root folder:
 
 <!-- check:owner -->
 ```bash
-git show "${CANDIDATE_SHA}:${OWNER_PATH}"
+reconcile_git show "${CANDIDATE_SHA}:${OWNER_PATH}"
 ```
 
 A failed read leaves that evidence unavailable. Record the failure and inspect
@@ -86,7 +111,7 @@ remote path and resolve its SHA before this read-only observation:
 
 <!-- check:containment -->
 ```bash
-git merge-base --is-ancestor "$CANDIDATE_SHA" "$INTEGRATION_SHA"
+reconcile_git merge-base --is-ancestor "$CANDIDATE_SHA" "$INTEGRATION_SHA"
 ```
 
 Exit 0 proves ancestry in the observed target, not review, unchanged assembled
