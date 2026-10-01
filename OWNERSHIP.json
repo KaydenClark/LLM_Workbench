@@ -1,0 +1,812 @@
+{
+  "schemaVersion": 1,
+  "rows": [
+    {
+      "key": "authority",
+      "responsibility": "Authority",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "AGENTS.md",
+          "path": "AGENTS.md#authority-order",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Request",
+          "path": "AGENTS.md#authority-order",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "references"
+        },
+        {
+          "artifact": "Spec",
+          "path": "workbench/specs/[SPEC]/SPEC.md",
+          "scope": "capability",
+          "role": "supporting",
+          "relation": "inherits"
+        }
+      ]
+    },
+    {
+      "key": "decisions",
+      "responsibility": "Decisions",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "ADR",
+          "path": "workbench/docs/adr/REGISTER.md",
+          "scope": "cross-cutting",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Spec",
+          "path": "workbench/specs/[SPEC]/SPEC.md",
+          "scope": "capability",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Task",
+          "path": "workbench/specs/[SPEC]/tasks/[TASK]/TASK.md",
+          "scope": "execution",
+          "role": "primary",
+          "relation": "owns"
+        }
+      ]
+    },
+    {
+      "key": "language",
+      "responsibility": "Language",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "LEXICON.md",
+          "path": "LEXICON.md",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Spec",
+          "path": "workbench/specs/[SPEC]/SPEC.md",
+          "scope": "capability",
+          "role": "supporting",
+          "relation": "refines"
+        }
+      ]
+    },
+    {
+      "key": "knowledge",
+      "responsibility": "Knowledge",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "Wiki",
+          "path": "workbench/wiki/MEMORY.md",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        }
+      ]
+    },
+    {
+      "key": "navigation",
+      "responsibility": "Navigation",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "LEXICON.md",
+          "path": "LEXICON.md#task-routing",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "OWNERSHIP.json",
+          "path": "OWNERSHIP.json",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "references"
+        },
+        {
+          "artifact": "Wiki",
+          "path": "workbench/wiki/MEMORY.md",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "references"
+        },
+        {
+          "artifact": "Manifest",
+          "path": "workbench/manifest.json",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "references"
+        }
+      ]
+    },
+    {
+      "key": "operations",
+      "responsibility": "Operations",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "AGENTS.md",
+          "path": "AGENTS.md#work-selection-and-lifecycle",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "RUNBOOK.md",
+          "path": "RUNBOOK.md",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "references"
+        }
+      ]
+    },
+    {
+      "key": "procedures",
+      "responsibility": "Procedures",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "RUNBOOK.md",
+          "path": "RUNBOOK.md",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Guidebook",
+          "path": "workbench/wiki/guidebooks/[GUIDE].md",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "references"
+        }
+      ]
+    },
+    {
+      "key": "reusable-behavior",
+      "responsibility": "Reusable behavior",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "Skill",
+          "path": "workbench/skills/[SKILL]/SKILL.md",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "RUNBOOK.md",
+          "path": "RUNBOOK.md#behavior-selection",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "references"
+        },
+        {
+          "artifact": "Task",
+          "path": "workbench/specs/[SPEC]/tasks/[TASK]/TASK.md",
+          "scope": "execution",
+          "role": "supporting",
+          "relation": "references"
+        }
+      ]
+    },
+    {
+      "key": "execution",
+      "responsibility": "Execution",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "Source",
+          "path": "[SOURCE]",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Host configuration",
+          "path": "[HOST-CONFIGURATION]",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "references"
+        },
+        {
+          "artifact": "RUNBOOK.md",
+          "path": "RUNBOOK.md",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "references"
+        },
+        {
+          "artifact": "Spec",
+          "path": "workbench/specs/[SPEC]/SPEC.md",
+          "scope": "capability",
+          "role": "supporting",
+          "relation": "provides evidence for"
+        }
+      ]
+    },
+    {
+      "key": "configuration",
+      "responsibility": "Configuration",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "Manifest",
+          "path": "workbench/manifest.json",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Configuration",
+          "path": "[CONFIGURATION]",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "references"
+        },
+        {
+          "artifact": "Component receipt",
+          "path": "[COMPONENT-RECEIPT]",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "provides evidence for"
+        }
+      ]
+    },
+    {
+      "key": "capability",
+      "responsibility": "Capability",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "RUNBOOK.md",
+          "path": "RUNBOOK.md#configured-host-capabilities",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Capability result",
+          "path": "[CAPABILITY-RESULT]",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "provides evidence for"
+        }
+      ]
+    },
+    {
+      "key": "working-context",
+      "responsibility": "Working context",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "Notepad",
+          "path": "workbench/sessions/notepads/[TYPE]/[NOTE].json",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        }
+      ]
+    },
+    {
+      "key": "recovery",
+      "responsibility": "Recovery",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "RUNBOOK.md",
+          "path": "RUNBOOK.md",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Recovery receipt",
+          "path": "workbench/sessions/recovery/[RECEIPT]",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "references"
+        },
+        {
+          "artifact": "Spec",
+          "path": "workbench/specs/[SPEC]/SPEC.md",
+          "scope": "capability",
+          "role": "supporting",
+          "relation": "references"
+        }
+      ]
+    },
+    {
+      "key": "handoff",
+      "responsibility": "Handoff",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "Handoff",
+          "path": "workbench/sessions/handoffs/[HANDOFF].md",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        }
+      ]
+    },
+    {
+      "key": "feedback",
+      "responsibility": "Feedback",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "Feedback",
+          "path": "workbench/feedback/[REPORT].md",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Spec",
+          "path": "workbench/specs/[SPEC]/SPEC.md",
+          "scope": "capability",
+          "role": "supporting",
+          "relation": "references"
+        }
+      ]
+    },
+    {
+      "key": "evaluation",
+      "responsibility": "Evaluation",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "Evaluation definition",
+          "path": "evals/[EVALUATION]",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Outcome definition",
+          "path": "outcomes/[OUTCOME]",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "references"
+        }
+      ]
+    },
+    {
+      "key": "provenance",
+      "responsibility": "Provenance",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "Manifest",
+          "path": "workbench/manifest.json",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Component receipt",
+          "path": "[COMPONENT-RECEIPT]",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "provides evidence for"
+        },
+        {
+          "artifact": "Artifact",
+          "path": "[ARTIFACT]",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "references"
+        }
+      ]
+    },
+    {
+      "key": "history",
+      "responsibility": "History",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "Git",
+          "path": "RUNBOOK.md#git-workflow",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "ADR history",
+          "path": "workbench/docs/adr/HISTORY.md",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "references"
+        }
+      ]
+    },
+    {
+      "key": "delivery",
+      "responsibility": "Delivery",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "Git",
+          "path": "RUNBOOK.md#git-workflow",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Spec",
+          "path": "workbench/specs/[SPEC]/SPEC.md",
+          "scope": "capability",
+          "role": "supporting",
+          "relation": "provides evidence for"
+        }
+      ]
+    },
+    {
+      "key": "release",
+      "responsibility": "Release",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "Release record",
+          "path": "[RELEASE-RECORD]",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Manifest",
+          "path": "workbench/manifest.json",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "references"
+        },
+        {
+          "artifact": "RUNBOOK.md",
+          "path": "RUNBOOK.md#template-upgrade-release-gate",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "references"
+        }
+      ]
+    },
+    {
+      "key": "human-orientation",
+      "responsibility": "Human orientation",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "README.md",
+          "path": "README.md",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "RUNBOOK.md",
+          "path": "RUNBOOK.md",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "references"
+        },
+        {
+          "artifact": "CLAUDE.md",
+          "path": "CLAUDE.md",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "references"
+        }
+      ]
+    },
+    {
+      "key": "destination",
+      "responsibility": "Destination",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "BLUEPRINT.md",
+          "path": "BLUEPRINT.md",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Spec",
+          "path": "workbench/specs/[SPEC]/SPEC.md",
+          "scope": "capability",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Packet",
+          "path": "workbench/specs/[SPEC]/tasks/[TASK]/TASK.md",
+          "scope": "execution",
+          "role": "supporting",
+          "relation": "references"
+        }
+      ]
+    },
+    {
+      "key": "boundaries",
+      "responsibility": "Boundaries",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "AGENTS.md",
+          "path": "AGENTS.md",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "BLUEPRINT.md",
+          "path": "BLUEPRINT.md",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "refines"
+        },
+        {
+          "artifact": "Spec",
+          "path": "workbench/specs/[SPEC]/SPEC.md",
+          "scope": "capability",
+          "role": "supporting",
+          "relation": "inherits"
+        },
+        {
+          "artifact": "Task",
+          "path": "workbench/specs/[SPEC]/tasks/[TASK]/TASK.md",
+          "scope": "execution",
+          "role": "supporting",
+          "relation": "inherits"
+        }
+      ]
+    },
+    {
+      "key": "requirements",
+      "responsibility": "Requirements",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "BLUEPRINT.md",
+          "path": "BLUEPRINT.md",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Spec",
+          "path": "workbench/specs/[SPEC]/SPEC.md",
+          "scope": "capability",
+          "role": "primary",
+          "relation": "refines"
+        },
+        {
+          "artifact": "Task",
+          "path": "workbench/specs/[SPEC]/tasks/[TASK]/TASK.md",
+          "scope": "execution",
+          "role": "primary",
+          "relation": "refines"
+        }
+      ]
+    },
+    {
+      "key": "acceptance",
+      "responsibility": "Acceptance",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "BLUEPRINT.md",
+          "path": "BLUEPRINT.md",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Spec",
+          "path": "workbench/specs/[SPEC]/SPEC.md#acceptance-criteria",
+          "scope": "capability",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Task",
+          "path": "workbench/specs/[SPEC]/tasks/[TASK]/TASK.md",
+          "scope": "execution",
+          "role": "primary",
+          "relation": "owns"
+        }
+      ]
+    },
+    {
+      "key": "evidence",
+      "responsibility": "Evidence",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "Test result",
+          "path": "[TEST-RESULT]",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Evaluation result",
+          "path": "evals/[RESULT]",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "provides evidence for"
+        },
+        {
+          "artifact": "Spec",
+          "path": "workbench/specs/[SPEC]/SPEC.md#append-only-evidence-and-execution-log",
+          "scope": "capability",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Receipt",
+          "path": "workbench/specs/[SPEC]/tasks/[TASK]/TASK.md",
+          "scope": "execution",
+          "role": "primary",
+          "relation": "owns"
+        }
+      ]
+    },
+    {
+      "key": "work-state",
+      "responsibility": "Work state",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "Spec",
+          "path": "workbench/specs/[SPEC]/SPEC.md",
+          "scope": "capability",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Task",
+          "path": "workbench/specs/[SPEC]/tasks/[TASK]/TASK.md",
+          "scope": "execution",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "TASKBOARD.json",
+          "path": "TASKBOARD.json",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "summarizes"
+        }
+      ]
+    },
+    {
+      "key": "representation-monitoring",
+      "responsibility": "Representation / monitoring",
+      "origin": "upstream-workbench",
+      "classification": "portable-invariants-and-defaults",
+      "routes": [
+        {
+          "artifact": "TASKBOARD.json",
+          "path": "TASKBOARD.json",
+          "scope": "project",
+          "role": "primary",
+          "relation": "owns"
+        },
+        {
+          "artifact": "Sitrep",
+          "path": "RUNBOOK.md",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "summarizes"
+        },
+        {
+          "artifact": "README.md",
+          "path": "README.md",
+          "scope": "project",
+          "role": "supporting",
+          "relation": "references"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "name": "owns",
+      "instance_edge": {
+        "artifact": "OWNERSHIP.json",
+        "path": "OWNERSHIP.json"
+      }
+    },
+    {
+      "name": "inherits",
+      "instance_edge": {
+        "artifact": "Spec",
+        "path": "workbench/specs/[SPEC]/SPEC.md"
+      }
+    },
+    {
+      "name": "refines",
+      "instance_edge": {
+        "artifact": "Spec",
+        "path": "workbench/specs/[SPEC]/SPEC.md"
+      }
+    },
+    {
+      "name": "references",
+      "instance_edge": {
+        "artifact": "Spec",
+        "path": "workbench/specs/[SPEC]/SPEC.md"
+      }
+    },
+    {
+      "name": "summarizes",
+      "instance_edge": {
+        "artifact": "TASKBOARD.json",
+        "path": "TASKBOARD.json"
+      }
+    },
+    {
+      "name": "provides evidence for",
+      "instance_edge": {
+        "artifact": "Spec",
+        "path": "workbench/specs/[SPEC]/SPEC.md"
+      }
+    },
+    {
+      "name": "canonicalizes",
+      "instance_edge": {
+        "artifact": "ADR",
+        "path": "workbench/docs/adr/REGISTER.md"
+      }
+    },
+    {
+      "name": "supersedes",
+      "instance_edge": {
+        "artifact": "ADR history",
+        "path": "workbench/docs/adr/HISTORY.md"
+      }
+    },
+    {
+      "name": "blocks",
+      "instance_edge": {
+        "artifact": "Task",
+        "path": "workbench/specs/[SPEC]/tasks/[TASK]/TASK.md"
+      }
+    }
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "rows",
+    "relations"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "key",
+          "responsibility",
+          "origin",
+          "classification",
+          "routes"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "enum": [
+              "authority",
+              "decisions",
+              "language",
+              "knowledge",
+              "navigation",
+              "operations",
+              "procedures",
+              "reusable-behavior",
+              "execution",
+              "configuration",
+              "capability",
+              "working-context",
+              "recovery",
+              "handoff",
+              "feedback",
+              "evaluation",
+              "provenance",
+              "history",
+              "delivery",
+              "release",
+              "human-orientation",
+              "destination",
+              "boundaries",
+              "requirements",
+              "acceptance",
+              "evidence",
+              "work-state",
+              "representation-monitoring"
+            ]
+          },
+          "responsibility": {
+            "type": "string",
+            "enum": [
+              "Authority",
+              "Decisions",
+              "Language",
+              "Knowledge",
+              "Navigation",
+              "Operations",
+              "Procedures",
+              "Reusable behavior",
+              "Execution",
+              "Configuration",
+              "Capability",
+              "Working context",
+              "Recovery",
+              "Handoff",
+              "Feedback",
+              "Evaluation",
+              "Provenance",
+              "History",
+              "Delivery",
+              "Release",
+              "Human orientation",
+              "Destination",
+              "Boundaries",
+              "Requirements",
+              "Acceptance",
+              "Evidence",
+              "Work state",
+              "Representation / monitoring"
+            ]
+          },
+          "origin": {
+            "type": "string",
+            "enum": [
+              "upstream-workbench",
+              "project-local"
+            ]
+          },
+          "classification": {
+            "type": "string",
+            "enum": [
+              "portable-invariants-and-defaults",
+              "project-bindings",
+              "optional-extensions"
+            ]
+          },
+          "routes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "artifact",
+                "path",
+                "scope",
+                "role",
+                "relation"
+              ],
+              "properties": {
+                "artifact": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "scope": {
+                  "type": "string",
+                  "enum": [
+                    "project",
+                    "capability",
+                    "execution",
+                    "cross-cutting"
+                  ]
+                },
+                "role": {
+                  "type": "string",
+                  "enum": [
+                    "primary",
+                    "supporting"
+                  ]
+                },
+                "relation": {
+                  "type": "string",
+                  "enum": [
+                    "owns",
+                    "inherits",
+                    "refines",
+                    "references",
+                    "summarizes",
+                    "provides evidence for",
+                    "canonicalizes",
+                    "supersedes",
+                    "blocks"
+                  ]
+                }
+              }
+            },
+            "minItems": 1
+          }
+        }
+      },
+      "minItems": 28,
+      "maxItems": 28
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "instance_edge"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "enum": [
+              "owns",
+              "inherits",
+              "refines",
+              "references",
+              "summarizes",
+              "provides evidence for",
+              "canonicalizes",
+              "supersedes",
+              "blocks"
+            ]
+          },
+          "instance_edge": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "artifact",
+              "path"
+            ],
+            "properties": {
+              "artifact": {
+                "type": "string",
+                "minLength": 1
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      },
+      "minItems": 9,
+      "maxItems": 9
+    }
+  }
+}

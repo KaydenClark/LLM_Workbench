@@ -1126,6 +1126,8 @@ export const RUNTIME_TOOLS = Object.freeze([
   'markdown-table.mjs',
   'notepads.mjs',
   'optional-capabilities.mjs',
+  'ownership-map.mjs',
+  'ownership-map.schema.json',
   'privacy.mjs',
   'project-evidence.mjs',
   'self-drift.mjs',
