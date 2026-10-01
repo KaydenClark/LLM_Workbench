@@ -12404,7 +12404,8 @@
       "source_refs": [
         "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-027",
         "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-002",
-        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-023"
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-023",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#correction-011"
       ],
       "progress": {
         "status": "implemented-and-completed",
@@ -13099,7 +13100,8 @@
       ],
       "notes": "decision-014 moved update timing to workflow activity; GX-2 (2026-09-29) refines which skills do it. Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
       "source_refs": [
-        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-008"
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-008",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-014"
       ],
       "progress": {
         "status": "in-progress",
@@ -13198,7 +13200,7 @@
       "question": "What folder system and root path should hold the Landmark Tracker?",
       "status": "locked",
       "answer": "Current approved layout: workbench/landmark-tracker/ containing generated TRACKER.json and flat JSON destination-questions/ and landmarks/. Root from decision-012, question folder revised by decision-023.",
-      "answered": "2026-09-26, landmark-definition grilling (decision-012)",
+      "answered": "2026-09-25, landmark-definition grilling (decision-012, revised by decision-023)",
       "reason": "Inference: a dedicated root keeps the Tracker apart from the Wiki and the session records.",
       "result": [
         {
@@ -13216,7 +13218,8 @@
       ],
       "notes": "decision-023 replaced only the question status folders with flat destination-questions/. Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
       "source_refs": [
-        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-012"
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-012",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-023"
       ],
       "progress": {
         "status": "implemented-and-completed",
