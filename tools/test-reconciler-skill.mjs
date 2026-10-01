@@ -43,7 +43,7 @@ test('public entry routes to executable observations and owns reconciliation, no
   assert.match(skill, /TASK\.md/);
   assert.match(skill, /inability/i);
   assert.match(reference, /Feedback Dispositions/);
-  assert.match(reference, /new candidate.*fresh review/is);
+  assert.match(reference, /new\s+candidate.*fresh review/is);
   assert.match(reference, /append-only/);
 });
 

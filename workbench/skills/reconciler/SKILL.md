@@ -19,21 +19,47 @@ next task. Troubleshooting stance selection is outside this skill.
 
 ## Method / Posture
 
-Compare the actual output or commit, named verification, selected packet and
-current control claims. Investigate contradictions rather than choosing a
-source by age alone.
+Start with the achieved result, not the intended ending. Pin the actual output
+or commit, read named verification and the assigned Spec and TASK.md, and
+compare them with current control claims. Keep a branch result, reviewed
+candidate, integrated result and owner-approved release distinct.
 
 Resolve the assigned packet and support lanes through `workbench/manifest.json`.
+Use the [reconciliation reference](references/reconcile.md) for pinned evidence
+observations, contradiction handling and the final cold read-back. Its commands
+observe facts; the agent still has to judge whether those facts support a claim.
 
 ## Obligations
 
-Route truth once using `/to-docs`: requirements and proof to the assigned
-spec, meanings to Lexicon, procedures to Runbook, rationale to the manifest
-`workbench/docs/adr/` collection. Render projections from specs. Use
-`/notepad` to preserve material session reasoning locally. Do not invent
-a handoff, new task or evidence, or mark unmet acceptance complete.
+Split mixed claims and route each once using `/to-docs`: capability requirements,
+acceptance and evidence to the assigned Spec; active Task state and receipts to
+its TASK.md; meanings and procedures to their existing control owners; durable
+explanation to the Wiki; decision rationale to the manifest's ADR collection.
+Link other readers to that owner. Render projections from the actual Spec/Task
+records only after supported owner updates. Respect an assigned shared writer:
+return the exact proposed correction and evidence to that writer.
+
+Preserve append-only evidence, completed proof, unresolved material and its
+corrections. Apply the governing feedback dispositions to findings; a disposition
+does not authorize work. Use `/notepad` for material local reasoning and compose
+`/promote` only for supported selected claims within the existing assignment.
+Read back the durable result before any eligible cleanup. Do not invent a
+handoff, new task or evidence, or mark unmet acceptance complete.
+
+Reconciliation does not supply review, approval or a merge. Preserve the exact
+candidate and review boundary from the controls and request. A finding or an
+unavailable tool cannot widen scope. Continue independent authorized work when
+possible; return an inability handback when a required step cannot be done,
+naming the achieved output, failed or unrun check, retained context, affected
+owner and concrete next action or genuine owner decision. Do not turn a routine
+technical correction into an invented approval gate.
 
 ## Completion / Exit Condition
 
 The exact output, current state, verification and next executable action or
 blocker agree in existing owners. Name unresolved mismatches without hiding them.
+Read those owners as a cold reader: can the next context recover the achieved
+revision, what was and was not checked, what remains open, and one next action?
+Report missing access honestly. A consistent record of incomplete work is a
+valid reconciliation result; it is not completed delivery or permission to clean
+up context still needed for continuation.
