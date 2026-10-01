@@ -3,11 +3,12 @@
 **Task ID:** TK-005
 **Spec ID:** S-00P
 **Slice:** Mirror the reworked controls into `templates/`
-**Status:** in-progress
+**Status:** done
 **Blockers:** TK-003, TK-004
 **Destination:** spec-acceptance: S-00P Acceptance Criteria
 **Planned verification:** Red: candidate-derived fresh-room guidance fails an observable product-workflow checkpoint or generic-template check; green: the same room delivers its bounded project result through the installed Workbench and the mirrored controls remain generic. Phrase and command-existence checks support behavioral proof.
 **Stance:** Builder
+**Proof:** Generic templates/source tests verified at repaired committedf4dae2d84f16c4bc0a99360194659d72515bad0f: actual required51/51 incl canonical Adoption/layout/Generation. Existing template-guidance actual no-TASK red then conversion green; real pond red/green, installed Receipt/close/report and no-write stale/missing proof refusals; installed demo3.136s/source27cb67257cf72e4b49f25147fd34d203bd8aa2cb. Durable generic25 examples24.436s/default25examples24.448s; controls23/23. Legacy placeholder exact red repaired1/1 plus genuine sourceee1a4a933ff46f207b5f15f13432a1ffce901b53 generated/authored Spec validation and zero leaks. Source self-check complete; current assembled review/integration delivery is determined by S00P report/content-bound verdict/current refs and evidence, separate from actual owner QA/main formal closure.
 
 ## Execution Reconciliation (2026-10-01)
 
@@ -186,14 +187,16 @@ test entry points above are plans to extend and run, not claimed demo results.
 
 ## Done And Evidence Limits
 
-- [ ] Released templates mirror the reconciled controls, remain generic and
+- [x] Released templates mirror the reconciled controls, remain generic and
   copy-ready, and retain only supported commands and accepted ADR semantics.
-- [ ] Red then green proof includes fresh-room project behavior and Workbench
+- [x] Red then green proof includes fresh-room project behavior and Workbench
   transitions; Adoption preserves room-owned truth; all changed examples run.
-- [ ] The short demo and section-by-section mirror dispositions are returned
+- [x] The short demo and section-by-section mirror dispositions are returned
   with immutable SHA, exact paths, commands/results, docs and remaining gaps.
-- [ ] Dispatcher evaluates assembled acceptance and required full-suite proof;
-  separate Director reviews that immutable candidate before integration.
+Dispatcher evaluates assembled acceptance and required full-suite proof;
+a separate Director reviews the immutable candidate before integration. This
+obligation remains in S-00P report/content-bound verdict/current refs and
+evidence; the source checklist here grants no integration or owner approval.
 
 No implementation result, full-suite pass, approval, release or lifecycle
 completion is claimed by authoring this packet. The Worker does not update shared
@@ -209,3 +212,4 @@ wording. Historical evidence and pending decision lineage remain intact.
 | Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
 |---|---|---|---|---|---|---|---|---|
 | 1 | codex/s00p-tk005-template-workflow | 7108cd92f83b36a29bc5d3627519b6829d09e59e | ahead 0 behind 0 | 3 | Fresh doctor exit0/no blocking; native next and claim7108cd9 from integration66815b4 after reviewed Task3 containment. Pre guardrail78/self-drift7. Source-pinned fresh-room product/guidance red pending new Worker. | Prior Task3 exact PASS/full51/PR241 actual integration containment appended; current Task3 Proof and Task5 execution reconciliation updated. Worker generic template and three test lanes only. | Actual candidate-template installed room behavior and example inventory; final51/whole-Spec QA/content-bound verdict/fresh exact-head review and integration containment; owner QA/main remain open. | 1fd6d8a09d8281056612a2a092cf3e3177241bbe8652a3e17dd39792b2eb289d |
+| 2 | codex/s00p-tk005-template-workflow | f4dae2d84f16c4bc0a99360194659d72515bad0f | ahead 0 behind 0 | 0 | Generic templates/source tests verified at repaired committedf4dae2d84f16c4bc0a99360194659d72515bad0f: actual required51/51 incl canonical Adoption/layout/Generation. Existing template-guidance actual no-TASK red then conversion green; real pond red/green, installed Receipt/close/report and no-write stale/missing proof refusals; installed demo3.136s/source27cb67257cf72e4b49f25147fd34d203bd8aa2cb. Durable generic25 examples24.436s/default25examples24.448s; controls23/23. Legacy placeholder exact red repaired1/1 plus genuine sourceee1a4a933ff46f207b5f15f13432a1ffce901b53 generated/authored Spec validation and zero leaks. Source self-check complete; current assembled review/integration delivery is determined by S00P report/content-bound verdict/current refs and evidence, separate from actual owner QA/main formal closure. | Nine generic templates mirror current meanings; shared8heading Blueprint/product placeholders preserved without producer journey/map. Supported lifecycle/inspection/digest/main/capture/retirement limits explicit; no producer exemption universalized or runtime change. Four existing tests incl closed test-only guidance input; actual canonical Adoption preserves product/control/history. Original50/51 failure and legacy-label compatibility retained. | Whole-Spec current review/delivery gate is owned by S00P report/verdict/integration refs; actual owner QA/main/formal complete and release/real installed reference-room proof remain separate unsatisfied obligations. Existing seven self-drift findings/CLAUDE fidelity mismatch retain no-clean-update limitation; no outcome claim. | 9c4156b1a82372a19de655fdf958a00b65cd5d98cf2eef939a9ea85ee184ddd5 |

@@ -6,10 +6,10 @@
 **Owner:** codex-s00p-dispatcher
 **Stance:** Builder
 **Updated:** 2026-10-01
-**Catalog description:** Rewrite `BLUEPRINT.md` now to describe every rung of the governing workflow and the full recursive Spec/Task loop, then rewrite AGENTS, RUNBOOK, LEXICON and the `templates/` mirror once S-00H, S-00I and S-00J make the commands they describe real, and reconcile ADR-000F, ADR-000G and ADR-000I.
-**Blockers:** TK-002/TK-003/TK-004 are reviewed and contained in integration; TK-005 executes from66815b4 with satisfied Task prerequisites. Whole-Spec integration review/delivery and owner QA/main formal closure remain distinct gates.
-**Latest event:** TK-005 claimed by codex-s00p-dispatcher.
-**Next gate:** Close TK-005 with verification and documentation proof.
+**Catalog description:** Workflow Canon and generic controls describe scoped destinations, Task-record self-check, assembled independent review, owner QA/main closure, durable capture and recoverable retirement with source-backed ADR decisions.
+**Blockers:** All five source Tasks are done; upstream delivery and Task prerequisites are satisfied. Current whole-Spec review/integration containment and actual owner QA/main formal closure remain distinct gates.
+**Latest event:** TK-005 closed with proof.
+**Next gate:** Fresh immutable whole-Spec review and content-bound verdict, then independently reviewed integration delivery; current refs determine containment. Actual owner QA/main remain formal closure gates.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`f84b4691be7cd3abf7cdf719942ca6efaec0c617`.
 
@@ -145,10 +145,9 @@ S-00J TK-01T and TK-02J delivered the content-bound `S-###:delivered`
 blocker. At the historical TK-002 execution base
 `07edccc57b8f75613ad1d09203a3e414d867b90c`, `next` selected TK-002 and native
 claim succeeded after fetching satisfied S-00I/S-00J delivery. TK-002, TK-004
-and TK-003 have since landed through reviewed PR #238, #239 and #241. Current
-TK-005 executes from fetched integration
+and TK-003 have since landed through reviewed PR #238, #239 and #241. At TK-005 execution entry, native claim selected its final source slice from fetched integration
 `66815b4e4d0a35802d28c3a470921c00692f8d0d`, with both Task blockers satisfied.
-Their exact review/merge/containment identities are preserved in evidence below.
+All five source Tasks are now done; final template source verified at f4dae2d84f16c4bc0a99360194659d72515bad0f with required51/51. Prior exact review/merge/containment identities and current whole-Spec gate are preserved in evidence/report below.
 
 Whole-Spec integration delivery requires all Tasks done, acceptance checked,
 a current PASS whose immutable candidate is contained in the declared
@@ -158,7 +157,7 @@ complete or superseded; `owner:<decision>` requires explicit removal. Historical
 prerequisite plans retain their dated scope; they are not pending current work.
 
 The dependency order is TK-002 -> TK-003 and TK-004 -> TK-005; the first three
-are delivered and TK-005 is the remaining executing slice. The current
+are integrated and TK-005 source is built/verified; final whole-Spec integration review/containment remains the delivery gate. The current
 owner request releases these Tasks' controls, tests, ADRs and templates to this
 Dispatcher. One durable writer maintains this Spec, Task state and generated
 projections; Workers return one Task's proof at a time. Claude's skill Specs,
@@ -335,9 +334,7 @@ generic and `[BRACKETED]`.
 The accepted dependency graph is TK-001 -> TK-002 -> TK-003/TK-004 -> TK-005.
 TK-002 also names S-00H completion and S-00I:delivered/S-00J:delivered; native
 resolver and claim enforce those Task fields. Those upstream and TK-002/003/004
-prerequisites are now satisfied on the current execution base. TK-005 is the
-remaining source slice; whole-Spec integration delivery and actual owner
-QA/main formal closure are separate subsequent gates.
+prerequisites are now satisfied on the current execution base. All five source slices are now done. Whole-Spec integration review/containment and actual owner QA/main formal closure remain separate gates.
 
 ## Vertical Implementation Slices
 
@@ -434,11 +431,11 @@ template with its reason.
 
 - [x] `BLUEPRINT.md` names every rung, the three altitudes, the full recursive loop, the intended topology, reconciliation and retirement, and the coordinator as future scope, with no current status, and passes the Blueprint contract test including its new rung assertion.
 - [x] `AGENTS.md`, `RUNBOOK.md` and `LEXICON.md` describe the Task-record workflow, Task self-check and hand-back before containment, assembled-Spec QA, the corrective-Task return path, Human QA closure, reconciliation and retirement, naming only commands and records that exist, proven by the command-existence sweep.
-- [ ] S-00H's repository-wide `Ticket` sweep still passes after phase two, and no control or template instructs the embedded-row route; this verifies S-00H's result rather than owning it a second time.
+- [x] S-00H's repository-wide `Ticket` sweep still passes after phase two, and no control or template instructs the embedded-row route; this verifies S-00H's result rather than owning it a second time.
 - [x] ADR-000F, ADR-000G and ADR-000I are each accepted, amended or superseded, the register is regenerated, and no active record contradicts a locked WF answer.
-- [ ] `templates/` mirrors the reworked controls, generic and `[BRACKETED]`, and a freshly generated room speaks the new workflow.
-- [ ] The guardrail baseline is captured before phase two and the after-score recorded with no criterion weakened.
-- [ ] The full verification suite passes and `doctor` is clean.
+- [x] `templates/` mirrors the reworked controls, generic and `[BRACKETED]`, and a freshly generated room speaks the new workflow.
+- [x] The guardrail baseline is captured before phase two and the after-score recorded with no criterion weakened.
+- [x] The full verification suite passes and `doctor` is clean.
 
 **Verification meaning for the doctor criterion.** The command's registered
 success condition is exit0 with no `all` or `selection` blockers; `attention`
@@ -538,10 +535,36 @@ workflow. No other owner changes.
 | 2026-10-01 | TK-005 | Frozen generic mirror and installed-room behavioral self-check | At claimed7108cd92 candidate-derived Genesis guidance changed only embedded row on claim; expected actual TASK.md assertion failed exit1 before template edits. Correct conversion guidance green; receipt-pinned installed source27cb67257cf72e4b49f25147fd34d203bd8aa2cb produced real pond red then green visible view/visitor response, retained red/green Receipt, close/assembled report and stale-digest/missing-candidate no-write refusals preserving files/index/HEAD/refs, demo3.136seconds. Durable generic guidance25 actual examples24.436seconds; default root25examples24.448seconds. Controls23/23, Blueprint/vocabulary/evaluator/fidelity/syntax/diff passed. Genuine clean Adoption snapshot4083ca7c28c4f6e0166518a3f9c0b2e7923dc32f preserved product/control bytes/history and installed real Task discovery/claim | Nine generic templates and four existing tests only; test-only closed guidance parameter explicitly released, no runtime changes. Section dispositions above preserve eight-heading generic Blueprint without copying producer journey/map, actual room exception boundaries, accepted cleanup order and actual receipt limitations. Generated/adopted adapter exact; absent CLAUDE template stays absent. Current-tree Adoption correctly refused uncommitted templates; guard preserved, no fake source pin | Canonical committed-source Adoption and source full51 pending before final assembled acceptance; native Task close/content-bound whole-Spec report/verdict/fresh final-head review/integration containment remain. Fixture approval/main prove mechanics only. Owner QA/main/formal complete, installed release/external-room proof separate; baseline guardrail78/seven drift findings retained and no clean-update/outcome claim. Zero routine owner coordination hand-backs. |
 
 | 2026-10-01 | TK-005 | Exact source verification failure and legacy-token compatibility repair | Published0b16837c64b2f13ad6fe4c49f65e995ccda78486 required suite actual50/51, only layout exact placeholder vocabulary assertion failed after known legacy catalog token disappeared; all other50 including canonical Adoption passed. Failed head/log retained. Fresh template-only attempt existing focused red exit1 then green1/1 and controls23/23; other12 frozen source paths exact0b bytes. Real generated candidate room installed sourceee1a4a933ff46f207b5f15f13432a1ffce901b53; repaired templateSPEC authored at its sole first-Spec seam, installed show/render/doctor and validate--genesis valid, seven controls/Spec zero known-placeholder leaks | Only templateSPEC repair retains exact recognized legacy marker and explicitly current capability-in-Spec-catalog meaning, no Blueprint catalog instruction. Production Genesis constructs firstSpec itself; original generatedSpec retained and distinct template-authoring proof labeled. Initial two-Spec fixture refused exactly-one gate and was corrected locally, no runtime guard changed. Prior Task2 correction prose now explicitly historical and Task3 achieved handback checklist reconciled; all published Receipt/evidence rows unchanged | New exact required51 needed before checking full-suite acceptance/native close/final assembled review. No runtime/vocabulary/equality-test weakening or fabricated source identity; whole-Spec/native verdict/final integration/owner QA/main remain distinct gates. Guardrail78, known seven self-drift findings and observational CLAUDE fidelity limit retained; no clean-update/outcome/release claim. |
+| 2026-10-01 | TK-005 | Task closed | Generic templates/source tests verified at repaired committedf4dae2d84f16c4bc0a99360194659d72515bad0f: actual required51/51 incl canonical Adoption/layout/Generation. Existing template-guidance actual no-TASK red then conversion green; real pond red/green, installed Receipt/close/report and no-write stale/missing proof refusals; installed demo3.136s/source27cb67257cf72e4b49f25147fd34d203bd8aa2cb. Durable generic25 examples24.436s/default25examples24.448s; controls23/23. Legacy placeholder exact red repaired1/1 plus genuine sourceee1a4a933ff46f207b5f15f13432a1ffce901b53 generated/authored Spec validation and zero leaks. Source self-check complete; current assembled review/integration delivery is determined by S00P report/content-bound verdict/current refs and evidence, separate from actual owner QA/main formal closure. | Nine generic templates mirror current meanings; shared8heading Blueprint/product placeholders preserved without producer journey/map. Supported lifecycle/inspection/digest/main/capture/retirement limits explicit; no producer exemption universalized or runtime change. Four existing tests incl closed test-only guidance input; actual canonical Adoption preserves product/control/history. Original50/51 failure and legacy-label compatibility retained. | Whole-Spec current review/delivery gate is owned by S00P report/verdict/integration refs; actual owner QA/main/formal complete and release/real installed reference-room proof remain separate unsatisfied obligations. Existing seven self-drift findings/CLAUDE fidelity mismatch retain no-clean-update limitation; no outcome claim. |
+
+| 2026-10-01 | TK-005 | Repaired committed source full verification and assembled source QA | Exact repaired sourcef4dae2d84f16c4bc0a99360194659d72515bad0f required51/51 process exit0, canonical Adoption/layout/Generation pass; prior0b actual50/51 preserved. Actual targeted/durable generic examples and generated-filled compatibility proof retained. Native Task5 close names achieved source proof and routes current review/integration status to this Spec; all five source Tasks done, acceptance checked against achieved source suite and bounded doctor exit0 semantics, real Completion Result authored | Current prerequisites/dependency/result/catalog prose reconciled to achieved source state, original historical rows/Receipts preserved. Task5 source checklist tracks achieved source/demo/examples; unchanged Dispatcher full-suite/separate Director obligation is explicit in shared report/gate. Normal closure/capture/retirement meaning retained; no actual owner QA/main act | Final immutable closure/acceptance head required51 and fresh independent whole-Spec+Task5 review/content-bound verdict/exact PR-head review/remote integration containment remain before delivery. Owner QA/main/formal complete separate; guardrail78 and known seven self-drift findings/CLAUDE fidelity difference remain, no clean-update/outcome/release claim. |
 
 ## Completion Result
 
-Pending.
+Built and verified the scoped workflow Canon: Blueprint preserves every rung,
+recursive source map and destination topology; operating controls now route
+Task-record execution, Worker self-check/hand-back, Dispatcher assembled QA,
+separate Director review, corrective return, owner-chosen Human QA and actual
+main-before-complete/capture/retirement order through delivered commands.
+Active F/G/I decisions and H corrective meaning agree with settled sources;
+historical proposals and narrow routing provenance remain preserved. Generic
+mirrors retain product placeholders/eight headings and execute the same
+supported workflow without universalizing producer state or copying its journey.
+
+All five source Tasks are done. TK-001/002/004/003 have recorded reviewed
+integration delivery; the final template source at
+`f4dae2d84f16c4bc0a99360194659d72515bad0f` passed the required51/51 including
+canonical installed Adoption/Generation. Actual generated pond/product red-green,
+retained Task proof, all25 generic examples, no-write refusals and exact fresh-clone
+recovery are mechanical fixture proof. Current final integration delivery is
+resolved from this Spec's report/content-bound verdict and actual integration
+refs/evidence; this result does not preclaim a future merge or owner approval.
+
+Formal Spec status remains active: ongoing/failed owner Human QA findings retain
+their corrective scope, no owner approval is recorded here, and owner main
+promotion/verification then complete are separate unsatisfied gates. Guardrail78
+and seven existing self-drift findings remain; no clean-update, agent-outcome,
+release readiness or real reference-room upgrade claim follows from source proof.
 
 ## Remaining Limitations Or Follow-Up Specs
 
@@ -554,12 +577,10 @@ the review digest, so the normal accepted route retires the complete captured
 Spec directory together. Standalone Wiki corrective creation is a delivered
 export API and claim/close work by Task ID, but the receipt CLI remains
 Spec-bound; no runtime enhancement is delivered by this documentation Spec.
-The generic mirror must preserve those actual boundaries.
+The generic mirror preserves those actual boundaries.
 
 
-S-00J TK-01T and TK-02J added public blocker grammar that S-00P's control
-rewrite must describe (TK-002 AGENTS, TK-003 RUNBOOK, TK-004 LEXICON, TK-005
-templates): `S-###:delivered` (satisfied by the blocker Spec's reviewed
+S-00J TK-01T and TK-02J delivered public blocker grammar now described in AGENTS, RUNBOOK, LEXICON and the generic mirrors: `S-###:delivered` (satisfied by the blocker Spec's reviewed
 integration delivery; fetch integration before relying on it),
 `owner:<decision>` (an owner-decision blocker the resolver never satisfies;
 it clears only when removed), and the `blocked-without-blocker` and
