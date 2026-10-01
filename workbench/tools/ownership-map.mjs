@@ -3,7 +3,6 @@
 // establishes that a routed capability is installed or authorizes its use.
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { assertSafeReadPath, isMainModule } from './workbench-paths.mjs';
 const schema = JSON.parse(fs.readFileSync(new URL('./ownership-map.schema.json', import.meta.url), 'utf8'));
 // Numeric and letter-bearing identities are rejected within values, including
@@ -22,6 +21,7 @@ function check(value, rule, at) {
   } else if (rule.type === 'string') {
     if (typeof value !== 'string' || !value.trim() || value !== value.trim() || /[\x00-\x1f]/.test(value)) throw new Error(`${at}: expected nonempty string`);
     if (rule.enum && !rule.enum.includes(value)) throw new Error(`${at}: unexpected value`);
+    if (rule.pattern && !new RegExp(rule.pattern).test(value)) throw new Error(`${at}: expected a type-level route`);
     if (instance.test(value)) throw new Error(`${at}: instance identifier forbidden`);
     if (at.endsWith('.path') && (/^(?:\/|[A-Za-z]:|[a-z]+:\/\/)/i.test(value) || value.includes('\\') || value.split(/[\/#]/).includes('..'))) throw new Error(`${at}: unsafe route`);
   }

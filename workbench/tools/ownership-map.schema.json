@@ -120,11 +120,49 @@
               "properties": {
                 "artifact": {
                   "type": "string",
-                  "minLength": 1
+                  "enum": [
+                    "ADR",
+                    "ADR history",
+                    "AGENTS.md",
+                    "Artifact",
+                    "BLUEPRINT.md",
+                    "CLAUDE.md",
+                    "Capability result",
+                    "Component receipt",
+                    "Configuration",
+                    "Evaluation definition",
+                    "Evaluation result",
+                    "Feedback",
+                    "Git",
+                    "Guidebook",
+                    "Handoff",
+                    "Host configuration",
+                    "LEXICON.md",
+                    "Manifest",
+                    "Notepad",
+                    "OWNERSHIP.json",
+                    "Outcome definition",
+                    "Packet",
+                    "README.md",
+                    "RUNBOOK.md",
+                    "Receipt",
+                    "Recovery receipt",
+                    "Release record",
+                    "Request",
+                    "Sitrep",
+                    "Skill",
+                    "Source",
+                    "Spec",
+                    "TASKBOARD.json",
+                    "Task",
+                    "Test result",
+                    "Wiki"
+                  ]
                 },
                 "path": {
                   "type": "string",
-                  "minLength": 1
+                  "minLength": 1,
+                  "pattern": "^(?:[A-Za-z0-9_.-]+|\\[[A-Z][A-Z-]*\\])(?:/(?:[A-Za-z0-9_.-]+|\\[[A-Z][A-Z-]*\\]))*(?:\\.[A-Za-z0-9]+)?(?:#[a-z0-9-]+)?$"
                 },
                 "scope": {
                   "type": "string",
@@ -199,11 +237,49 @@
             "properties": {
               "artifact": {
                 "type": "string",
-                "minLength": 1
+                "enum": [
+                  "ADR",
+                  "ADR history",
+                  "AGENTS.md",
+                  "Artifact",
+                  "BLUEPRINT.md",
+                  "CLAUDE.md",
+                  "Capability result",
+                  "Component receipt",
+                  "Configuration",
+                  "Evaluation definition",
+                  "Evaluation result",
+                  "Feedback",
+                  "Git",
+                  "Guidebook",
+                  "Handoff",
+                  "Host configuration",
+                  "LEXICON.md",
+                  "Manifest",
+                  "Notepad",
+                  "OWNERSHIP.json",
+                  "Outcome definition",
+                  "Packet",
+                  "README.md",
+                  "RUNBOOK.md",
+                  "Receipt",
+                  "Recovery receipt",
+                  "Release record",
+                  "Request",
+                  "Sitrep",
+                  "Skill",
+                  "Source",
+                  "Spec",
+                  "TASKBOARD.json",
+                  "Task",
+                  "Test result",
+                  "Wiki"
+                ]
               },
               "path": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "pattern": "^(?:[A-Za-z0-9_.-]+|\\[[A-Z][A-Z-]*\\])(?:/(?:[A-Za-z0-9_.-]+|\\[[A-Z][A-Z-]*\\]))*(?:\\.[A-Za-z0-9]+)?(?:#[a-z0-9-]+)?$"
               }
             }
           }

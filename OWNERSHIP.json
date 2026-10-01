@@ -278,7 +278,7 @@
       "routes": [
         {
           "artifact": "RUNBOOK.md",
-          "path": "RUNBOOK.md#configured-host-capabilities",
+          "path": "RUNBOOK.md#configured-host-capability-checks",
           "scope": "project",
           "role": "primary",
           "relation": "owns"
@@ -432,7 +432,7 @@
       "routes": [
         {
           "artifact": "Git",
-          "path": "RUNBOOK.md#git-workflow",
+          "path": "AGENTS.md#git-rules",
           "scope": "project",
           "role": "primary",
           "relation": "owns"
@@ -454,7 +454,7 @@
       "routes": [
         {
           "artifact": "Git",
-          "path": "RUNBOOK.md#git-workflow",
+          "path": "AGENTS.md#git-rules",
           "scope": "project",
           "role": "primary",
           "relation": "owns"

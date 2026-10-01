@@ -26,6 +26,8 @@ test('closed schema rejects duplicate/missing keys, claim text, status and embed
   const source = readOwnership(root);
   for (const change of [
     m => m.rows.pop(), m => m.rows[1].key = m.rows[0].key,
+    m => m.rows[0].routes[0].artifact = 'The shared understanding between the parties working on a project',
+    m => m.rows[0].routes[0].path = 'Agents must never merge main without approval',
     m => m.rows[0].status = 'accepted', m => m.rows[0].claim = 'Agent must obey',
     m => m.rows[0].routes[0].path = 'docs/prefix-ADR-000B-suffix.md',
     m => m.rows[0].routes[0].path = '../outside.md',
