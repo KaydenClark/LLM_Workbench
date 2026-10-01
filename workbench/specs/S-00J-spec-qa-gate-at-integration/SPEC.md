@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-10-01
 **Catalog description:** Make a separate context review the assembled Spec against its Task results, route a failed review into corrective Tasks under the still-open Spec, keep `integration` as the owner's Human QA surface, and refuse to close a Spec without a passed review and recorded owner approval.
-**Blockers:** TK-004R must preserve foreign Task modifications during rollback, then pass final independent review and integration containment. Original TK-004O done/FAIL history preserved; owner Human QA/main remain unapproved.
-**Latest event:** TK-004R claimed by codex-v4-corrective-batch.
-**Next gate:** Verify and close TK-004R with immutable current-base proof, then obtain separate exact successor review and integration delivery.
+**Blockers:** Independent immutable TK-004R successor review and integration containment remain. Original TK-004O done/FAIL history preserved; owner Human QA/main remain unapproved.
+**Latest event:** TK-004R closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -409,6 +409,7 @@ TK-005.
 | 2026-10-01 | TK-004O | Bounded corrective write recovery verified at committed current-base source | Source17029e39b233f4325b3962676baee1ec6fa07b90 includes delivered250/255 and passes exact full51 aggregate, report regressions and10publicfault groups. Red e5d5ab6c and intermediate fixture/unclean-source/generated-render failures retained. Eight IO failure cases preserve originalbytes and retry allfindings; two interference cases preserve unexpectedbytes and durableanchor with explicit incomplete failure. Actual history CLEAN, doctor zero blockers, postselfdrift baseline limits retained | Owned correctivebatch writers and dated S00J recoverycontract; requiredreporttest imports genuine publicregression. No global transaction, close/gate/identity/manifest/root/template changes | Receipt/close and separate finalimmutable review/integration pending. Async midbatch death is outside synchronous rollback guarantee; ownerQA/main remain unapproved |
 | 2026-10-01 | TK-004O | Task closed | Currentbase source17029e39 full51/51PASS and10publicfaultgroups. EightIOcasesrestoreexactbytes/retrycompletebatch; twointerferencecontrols preserveunexpectedbytes+anchor and reportincompleterecovery. Originalred andfailedrunsretained, finalindependentreviewpending. | Owned correctivebatch implementation, required publicreport regressions and dated S00J recoverycontract; root/template no change needed for private IO fix. | Final immutable independent review and integration containment pending. Async midbatch process termination remains outside synchronous rollback guarantee; owner Human QA/main unapproved. |
 | 2026-10-01 | review | Review verdict: fail at 2e9b8c7caa30032fc17e0ae44881822914116b63 [c4500a4020a2] #11 | P1: Bounded rollback deletes foreign modifications to the first published corrective TASK.md after second publication failure, then removes its FAIL anchor. Snapshot each owned published file and refuse deletion after mutation or replacement while preserving foreign bytes and the durable anchor. | Independent reviewer01a0f686, Director-reported exact-head review; model not supplied, separate context | 1 |
+| 2026-10-01 | TK-004R | Task closed | Committed source f767cb746ef6fc6c26f0f1b8e4446d8d6489827e full51/51 plus13publicfaultgroups PASS; current25d3 runtime assembly tested. Published9deec32d Receipt beforeclose. Original2e9 independentFAIL preserved; finalsuccessor reviewpending. | Owned synchronous recovery contract, foreign file identity/bytes regression, required suite receipts and native Taskboard. | Independent exact successor review and integration containment pending; asynchronous process death outside bounded rollback; ownerQA/main unapproved. |
 
 ## Completion Result
 
