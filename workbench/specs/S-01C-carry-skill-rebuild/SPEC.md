@@ -1,7 +1,7 @@
 # S-01C - carry skill rebuild
 
 **Spec ID:** S-01C
-**Status:** planned
+**Status:** active
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
@@ -53,7 +53,6 @@ No other skill rebuild is a blanket prerequisite. Check current controls and the
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-00T | Audit carry, deliver the smallest supported source/documentation change and prove the routed article | ready | none | pending |
 
 ### TK-00T - Deliver the carry skill destination
 
