@@ -540,7 +540,7 @@ try {
   if (collisionExamples.length) {
     // This fixture's normal greeting identity is unique. Execute the actual
     // shipped collision example in its dedicated public CLI collision room.
-    run(workspace, process.execPath, [path.join(sourceProduct, 'tools/test-task-id-collision.mjs')]);
+    run(sourceProduct, process.execPath, ['tools/test-task-id-collision.mjs']);
     for (const command of collisionExamples) executedRecipes.add(command);
   }
   assert.deepEqual(allRecipes.filter(command => !executedRecipes.has(command)), [], 'every changed lifecycle CLI example has an executed result');
