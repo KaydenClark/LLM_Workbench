@@ -1,15 +1,29 @@
 # S-01U - Lexicon Design-Concept Reconciliation
 
 **Spec ID:** S-01U
-**Status:** planned
+**Status:** active
 **Priority:** 1
 **Owner:** codex
 **Stance:** Builder
-**Updated:** 2026-09-26
+**Updated:** 2026-10-01
 **Catalog description:** Audit the whole Lexicon against current design concepts and their governing sources, repair supported drift, and expose unresolved conflicts without promoting proposals or claiming undelivered behavior.
 **Blockers:** none for source inventory and independent reconciliation; overlapping workflow and ownership changes retain S-00P and S-00G gates.
-**Latest event:** Owner requested a specification for checking and updating the stale Lexicon against all new design concepts; implementation remains unassigned.
-**Next gate:** Assign the first bounded reconciliation slice; this request delivers the specification only.
+**Latest event:** Current overnight entire-v4 instruction assigns existing TK-01Q for bounded Landmark Tracker language reconciliation; native activation preserves the original planning history and owner.
+**Next gate:** Claim and publish TK-01Q before Lexicon edits; verify its scoped candidate independently and leave the whole audit, owner QA and main gates open.
+
+## Current Execution Instruction — 2026-10-01
+
+The current user delegation under Kayden's overnight entire-v4 directive
+supersedes the planning-only execution endpoint for existing TK-01Q only.
+The original planning constraints and evidence below retain their dated meaning.
+Owner remains codex. Scope is root and generic Lexicon, this Spec/Task and
+Spec-local coverage/readback proof, with native generated projections.
+No new Task ID, carry TK-004Q work, ADR acceptance, Tracker source, Wiki index,
+Ownership map, runtime/schema or Taskboard JSON rollout is authorized here.
+S-00P retains its workflow ownership; consume its settled current controls.
+Publish a branch/draft PR when permitted; do not merge. All ten whole-audit
+acceptance boxes and owner Human QA/main remain open. Genuine user decisions
+route to the coordinator's existing single grilling record, never a new one.
 
 ## Outcome
 
@@ -185,7 +199,6 @@ coverage inventory under a later assignment, preserving the full acceptance belo
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-01Q | Reconcile the Landmark Tracker concept family from accepted sources through Lexicon distinctions, applicable generic mirror and a cold-start readback | ready | none | pending |
 
 ### TK-01Q - Reconcile the Landmark Tracker concept family
 
