@@ -1,6 +1,7 @@
-# TK-004F - P1: Isolate Git repository and configuration environment - public394 CLI with GIT_DIR/GIT_WORK_TREE resolves a foreign binding instead of refusing its SHA.
+# TK-004I - P1: Isolate Git repository and configuration environment - public394 CLI with GIT_DIR/GIT_WORK_TREE resolves a foreign binding instead of refusing its SHA.
 
-**Task ID:** TK-004F
+**Task ID:** TK-004I
+**Collision recovery:** S-003P/TK-004F@5e8803f673898dd0eb716446fba5f61881d6a106:workbench/specs/S-003P-github-coordination-room-binding-and-identity/tasks/TK-004F/TASK.md; retained S-00I/TK-004F@7a51c53a528ff4dba407042a4de860bc66bb2d66:workbench/specs/S-00I-folder-lifecycle-for-records/tasks/TK-004F/TASK.md
 **Spec ID:** S-003P
 **Slice:** P1: Isolate Git repository and configuration environment - public394 CLI with GIT_DIR/GIT_WORK_TREE resolves a foreign binding instead of refusing its SHA.
 **Status:** done
