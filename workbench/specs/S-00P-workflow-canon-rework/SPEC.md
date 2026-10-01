@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Rewrite `BLUEPRINT.md` now to describe every rung of the governing workflow and the full recursive Spec/Task loop, then rewrite AGENTS, RUNBOOK, LEXICON and the `templates/` mirror once S-00H, S-00I and S-00J make the commands they describe real, and reconcile ADR-000F, ADR-000G and ADR-000I.
 **Blockers:** TK-002 consumes S-00I:delivered and S-00J:delivered; both are satisfied on integration 07edccc5. TK-003/TK-004 follow TK-002, then TK-005 follows both. Owner Human QA and main verification remain final closure gates.
-**Latest event:** TK-004 forward integration reconciled; fresh immutable verification/review required.
-**Next gate:** Verify frozen TK-004 full51 and fresh independent review, merge its Task PR and prove integration containment, then claim TK-003; TK-005 follows both. Owner QA/main remain final closure gates.
+**Latest event:** TK-003 claimed by codex-s00p-dispatcher.
+**Next gate:** Close TK-003 with verification and documentation proof.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`f84b4691be7cd3abf7cdf719942ca6efaec0c617`.
 

@@ -3,7 +3,7 @@
 **Task ID:** TK-003
 **Spec ID:** S-00P
 **Slice:** Rewrite `RUNBOOK.md` procedures for Task lifecycle, assembled-Spec review, corrective Tasks, Human QA closure, reconciliation and retirement, and reconcile `README.md` orientation
-**Status:** blocked
+**Status:** in-progress
 **Blockers:** TK-002
 **Destination:** spec-acceptance: S-00P Acceptance Criteria
 **Planned verification:** Red: a disposable-room lifecycle run driven by the documented procedure fails an observable transition or refusal required below; green: the same run reaches its verified project destination, preserves corrective and recovery evidence, and every documented command has an executed result. Command-existence and phrase checks are supporting checks only.
