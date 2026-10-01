@@ -3,11 +3,12 @@
 **Task ID:** TK-003
 **Spec ID:** S-00P
 **Slice:** Rewrite `RUNBOOK.md` procedures for Task lifecycle, assembled-Spec review, corrective Tasks, Human QA closure, reconciliation and retirement, and reconcile `README.md` orientation
-**Status:** in-progress
+**Status:** done
 **Blockers:** TK-002
 **Destination:** spec-acceptance: S-00P Acceptance Criteria
 **Planned verification:** Red: a disposable-room lifecycle run driven by the documented procedure fails an observable transition or refusal required below; green: the same run reaches its verified project destination, preserves corrective and recovery evidence, and every documented command has an executed result. Command-existence and phrase checks are supporting checks only.
 **Stance:** Builder
+**Proof:** Document-driven stale-verdict RED at claimed3251303 preserved; corrected continuous installed disposable lifecycle green, 25 actual command examples, greeting product red/green, corrective review and fixture QA/main, complete then feature capture then whole-directory retirement/discard with fresh-clone byte recovery, standalone Wiki corrective claim/close and unsupported receipt no-write refusal; demo25.539s. node tools/test-control-fidelity.mjs PASS22/22; node tools/test-spec-report.mjs PASS; syntax/diff checks PASS. Focused test-spec-workbench and immutable final required51 pending; no production approval.
 
 ## Execution Reconciliation (2026-10-01)
 
@@ -225,3 +226,4 @@ completion is asserted by this packet.
 | Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
 |---|---|---|---|---|---|---|---|---|
 | 1 | codex/s00p-tk003-workflow-procedures | 3251303153422efd2bb7ce6b0b6a6b0d11051489 | ahead 0 behind 0 | 3 | Freshdoctor exit0 attention7; native next/claim Task3 published3251303 from reviewedintegrationc1ee83e; preguardrail78/selfdrift7. Documentation-driven executable stale-review-digest red pending freshWorker. | PriorTask4 exactb9 PASS/full51/PR239 containment appended; currentTask3execution reconciliation preserves authoringhistory and deliveredmechanisms. | Actual document-derived product/lifecycle/corrective/recovery redgreen and everychangedexample; final51/freshreview/integrationcontainment; Task5/ownerQA/main open. | 1f820fa6bfcc2c0ffb31fe1085e32a8eb80c62b3306cea1ce2d03dbc787e1eb8 |
+| 2 | codex/s00p-tk003-workflow-procedures | 0bdbc31f9bea98c0e258b91c26c27af47d7343ed | ahead 0 behind 0 | 0 | Document-driven stale-verdict RED at claimed3251303 preserved; corrected continuous installed disposable lifecycle green, 25 actual command examples, greeting product red/green, corrective review and fixture QA/main, complete then feature capture then whole-directory retirement/discard with fresh-clone byte recovery, standalone Wiki corrective claim/close and unsupported receipt no-write refusal; demo25.539s. node tools/test-control-fidelity.mjs PASS22/22; node tools/test-spec-report.mjs PASS; syntax/diff checks PASS. Focused test-spec-workbench and immutable final required51 pending; no production approval. | RUNBOOK/README actual Task procedure and orientation corrected; documented inspected digest, accepted closure order, optional move binding and unsupported standalone Receipt. Generic mirrors TK005; upgrade release and self-drift obligations retained. | Final required51 and fresh independent exact-head integration review/containment pending; TK005 and whole-Spec acceptance/review, owner QA/main and release/installed-room proof remain open. Guardrail78 and seven existing self-drift findings retained; no clean-update/outcome claim. | c4b5a1068bdc92aca586d48d47dbe3b3fff9179630f4e0bc52345110cc4e8f8e |
