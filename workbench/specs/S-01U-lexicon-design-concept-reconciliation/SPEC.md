@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Audit the whole Lexicon against current design concepts and their governing sources, repair supported drift, and expose unresolved conflicts without promoting proposals or claiming undelivered behavior.
 **Blockers:** none for source inventory and independent reconciliation; overlapping workflow and ownership changes retain S-00P and S-00G gates.
-**Latest event:** Current overnight entire-v4 instruction assigns existing TK-01Q for bounded Landmark Tracker language reconciliation; native activation preserves the original planning history and owner.
-**Next gate:** Claim and publish TK-01Q before Lexicon edits; verify its scoped candidate independently and leave the whole audit, owner QA and main gates open.
+**Latest event:** TK-01Q claimed by codex.
+**Next gate:** Close TK-01Q with verification and documentation proof.
 
 ## Current Execution Instruction — 2026-10-01
 
