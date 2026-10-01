@@ -191,6 +191,18 @@ try {
       assert.equal(fs.statSync(path.join(room, temporaries[0])).mode & 0o777, 0o600);
     } finally { fs.unlinkSync(injector); }
   });
+  regression('foreign temporary interference', () => {
+    const injector = path.join(os.tmpdir(), `collision-replaced-temp-${process.pid}.mjs`);
+    fs.writeFileSync(injector, `import fs from 'node:fs'; const rename=fs.renameSync; let fired=false; fs.renameSync=(from,to,...args)=>{if(!fired && String(to).endsWith('/TASKBOARD.md')){fired=true;const foreign=from+'.foreign';fs.writeFileSync(foreign,'preserve foreign temporary',{mode:0o600});rename(foreign,from);throw new Error('injected replaced temporary');}return rename(from,to,...args);};`);
+    try {
+      const prior = snapshot(); const output = run([], { env: { ...cliEnv, NODE_OPTIONS: `--import=${injector}` } });
+      assert.notEqual(output.status, 0); assert.match(output.stderr, /publication failed and rollback incomplete.*injected replaced temporary.*cleanup refuses unrelated bytes/s);
+      const after = snapshot(); assert.deepEqual({ ...after, status: prior.status }, prior);
+      const temporaries = fs.readdirSync(room).filter(name => name.startsWith('TASKBOARD.md.tmp-')); assert.equal(temporaries.length, 1);
+      assert.equal(fs.readFileSync(path.join(room, temporaries[0]), 'utf8'), 'preserve foreign temporary');
+      assert.equal(fs.statSync(path.join(room, temporaries[0])).mode & 0o777, 0o600);
+    } finally { fs.unlinkSync(injector); }
+  });
   if (regressions.length) throw new AggregateError(regressions, regressions.map(error => error.message).join('\n'));
   // Use a unique, done local Task so duplicate-ID refusal cannot mask a
   // malformed-mode dispatch into ordinary retirement.

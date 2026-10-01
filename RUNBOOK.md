@@ -1141,9 +1141,17 @@ reservations are allowed, but current/retired records, aliases and discard entri
 at observed remote tips refuse an occupied replacement. Pending close evidence,
 linked paths, dirty state, mismatched inputs and unsupported JSON path references
 refuse before writes. Git environment overrides must be removed; GIT_PAGER is
-allowed. Missing Git objects are not fetched by this operation.
+allowed. Missing Git objects are not fetched by this operation. Local labels and selected-owner qualified IDs update; foreign qualified IDs and
+foreign paths remain unchanged. Decoded tracked JSON strings and keys are checked;
+unsupported path references or unreadable JSON refuse before writes. Any external
+Markdown source that would change must be tracked. Ignored matches refuse without
+changing their bytes.
 
-A process or I/O failure restores touched files and the original Git index. A
+A process or I/O failure restores touched files and the original Git index. Projection
+publication creates its temporary exclusively and removes only that owned file on
+failure, including a partial write. A pre-existing temporary remains untouched;
+replacement of an owned temporary reports incomplete recovery and preserves the
+unexpected bytes. A
 rollback failure reports its pinned recovery commit and leaves the tree for
 inspection. This does not guarantee recovery after power loss or coordinate
 concurrent writers. Commit and independently review the actual repaired assembly;

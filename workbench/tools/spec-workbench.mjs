@@ -2709,17 +2709,35 @@ function recoverTaskCollision(rootDir, specId, taskId, folder, options) {
     }
     if (file === spec.filePath) {
       const { prefix, evidence, suffix } = splitEvidenceSection(content);
-      const replace = text => text.replace(new RegExp(`\\b${escapeRegExp(taskId)}\\b`, 'g'), options.replacement);
+      const replace = text => text.replace(new RegExp(`\\b(?:(S-[0-9A-Za-z]+)/)?${escapeRegExp(taskId)}\\b`, 'gi'), (label, owner, offset, source) => {
+        if (owner) return visibleIdKey(owner) === visibleIdKey(specId) ? `${owner}/${options.replacement}` : label;
+        // Paths are handled by the reference planner, not bare-label replacement.
+        if (/[\\/]/.test(source[offset - 1] ?? '') || /[\\/@]/.test(source[offset + label.length] ?? '')) return label;
+        return options.replacement;
+      });
       content = replace(prefix) + evidence + replace(suffix);
       content = appendEvidence(content, `| ${today()} | ${escapeCell(specId + '/' + taskId)} | Collision identity recovered to ${options.replacement} | ${escapeCell(provenance)} | ${escapeCell(options.reason)} | Identity repair only; no review or owner approval transferred. |`);
     }
-    if (content !== original) { assertSafeWritePath(root, file); assertSafeWritePath(root, destination); writes.set(destination, content); }
+    if (content !== original) {
+      if (!file.startsWith(oldDir + path.sep) && !git('ls-files', '--', relative(file))) fail(`external rewrite source must be tracked: ${relative(file)}`);
+      assertSafeWritePath(root, file); assertSafeWritePath(root, destination); writes.set(destination, content);
+    }
   }
   // JSON source references need their owning runtime; never silently leave a
   // current path dangling or rewrite unknown schemas during this operation.
   for (const file of git('ls-files', '--', '*.json').split('\n').filter(Boolean)) {
     assertSafeReadPath(root, path.join(root, file));
-    if (fs.readFileSync(path.join(root, file), 'utf8').includes(relative(oldDir))) fail(`unhandled JSON path reference in ${file}; reconcile its owner first`);
+    let parsed;
+    try { parsed = JSON.parse(fs.readFileSync(path.join(root, file), 'utf8')); }
+    catch { fail(`unreadable JSON source in ${file}; reconcile its owner first`); }
+    const pending = [parsed];
+    while (pending.length) {
+      const value = pending.pop();
+      if (typeof value === 'string' && value.includes(relative(oldDir))) fail(`unhandled JSON path reference in ${file}; reconcile its owner first`);
+      if (value && typeof value === 'object') {
+        for (const [key, entry] of Object.entries(value)) { pending.push(key); pending.push(entry); }
+      }
+    }
   }
   const projections = [path.join(root, 'BLUEPRINT.md'), path.join(root, 'TASKBOARD.md'), path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md')];
   if (fs.existsSync(collectionPath(root, 'adr'))) projections.push(...['REGISTER.md', 'HISTORY.md'].map(name => path.join(collectionPath(root, 'adr'), name)));
@@ -2759,6 +2777,7 @@ function recoverTaskCollision(rootDir, specId, taskId, folder, options) {
       try { fs.writeFileSync(temporary, index, { flag: 'wx', mode: indexStat.mode & 0o777 }); fs.renameSync(temporary, indexPath); }
       finally { if (fs.existsSync(temporary)) fs.unlinkSync(temporary); }
     } catch (rollback) { fail(`publication failed and rollback failed: ${rollback.message}; retain the tree for recovery at ${options.expectedHead}`); }
+    if (error.code === 'atomic-write-cleanup-incomplete') fail(`publication failed and rollback incomplete: ${error.message}; retain the tree for recovery at ${options.expectedHead}`);
     fail(`publication rolled back: ${error.message}`);
   }
   return result;
@@ -4076,8 +4095,32 @@ function localLinks(content) {
 // rename discipline rather than a second write path.
 export function atomicWrite(filePath, content) {
   const temporary = `${filePath}.tmp-${process.pid}`;
-  fs.writeFileSync(temporary, content.endsWith('\n') ? content : `${content}\n`);
-  fs.renameSync(temporary, filePath);
+  let descriptor = null;
+  let ownership = null;
+  try {
+    // Exclusive creation establishes ownership before even a partial write.
+    descriptor = fs.openSync(temporary, 'wx');
+    ownership = fs.fstatSync(descriptor);
+    fs.closeSync(descriptor); descriptor = null;
+    fs.writeFileSync(temporary, content.endsWith('\n') ? content : `${content}\n`, { flag: 'r+' });
+    fs.renameSync(temporary, filePath);
+  } catch (error) {
+    if (descriptor !== null) { try { fs.closeSync(descriptor); } catch { /* Preserve the original failure. */ } }
+    if (ownership) {
+      try {
+        const current = fs.lstatSync(temporary);
+        if (!current.isFile() || current.dev !== ownership.dev || current.ino !== ownership.ino) throw new Error('temporary was replaced; cleanup refuses unrelated bytes');
+        fs.unlinkSync(temporary);
+      } catch (cleanup) {
+        if (cleanup.code !== 'ENOENT') {
+          const incomplete = new AggregateError([error, cleanup], `${error.message}; temporary cleanup failed: ${cleanup.message}`);
+          incomplete.code = 'atomic-write-cleanup-incomplete';
+          throw incomplete;
+        }
+      }
+    }
+    throw error;
+  }
 }
 
 function validDate(value) {
