@@ -9,6 +9,23 @@
 **Planned verification:** Red/green contract regressions in `tools/test-control-fidelity.mjs`, exact command/argument checks against `workbench/tools/spec-workbench.mjs`, and a disposable-room cold-start walkthrough; preserve guardrail and self-drift before/after receipts. These are execution plans, not achieved proof.
 **Stance:** Builder
 
+## Execution Reconciliation (2026-10-01 UTC)
+
+The current owner request and Director release authorize this Task's named
+AGENTS/control-test lane. Native claim selected this record at `699ca112` after
+fetching integration; S-00I:delivered and S-00J:delivered are satisfied at base
+`07edccc57b8f75613ad1d09203a3e414d867b90c`. The September 26 packet below is
+planning history where it says execution is blocked, a lane is unreleased or
+main/capture behavior is unavailable. Current source implements content-bound
+review/owner approval, main-before-complete verification and feature capture
+before cleanup. The latest SCR role chain governs; S-00O exemption 2 still
+requires immutable independent review of this Task's integration candidate.
+The Dispatcher also owns the Director-released test-portability-matrix lane,
+limited to structured historical proposal classification with active-route and
+privacy negative checks; no ledger bytes change. Worker source/proof hand-back
+is recorded in the owning Spec; full candidate verification and native close
+follow before review. Templates remain TK-005's staged mirror obligation.
+
 ## Objective And Destination
 
 Rewrite `AGENTS.md` so a cold-start Worker can select and execute a real
@@ -171,3 +188,9 @@ remain historical; planning observations read at base
 reconciliation of conflicting S-00P review/closure wording. Packet-only checks
 are whitespace validation, unchanged Status/Blockers and a one-file diff;
 assembled planning verification belongs to the Dispatcher.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | codex/s00p-tk002-workflow-controls | 699ca112d33e7a2042f49efbfa766f6c12d60099 | ahead 0 behind 0 | 4 | Portability baseline red 3/4 at 07edccc5; narrow structured historical proposal handling green 5/5 with active-path/private-path negative cases. Worker AGENTS contract and disposable behavior proof in progress. | S-00P current prerequisite/role/closure text reconciled to delivered I/J behavior; historical evidence preserved. AGENTS rewrite in progress. | TK-002 Worker proof, full frozen-candidate suite and independent review; TK-003..005 and owner QA/main remain open. | 9290c61995dfe011ef89157463a7204a3e991613a35fa27e91b6c86b4b2a6864 |
