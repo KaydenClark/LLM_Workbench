@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Resolve an explicit GitHub coordination repository and room-scoped artifact identities from immutable repository sources.
 **Blockers:** No prerequisite blocks the first read-only binding slice. Native Issue mapping awaits the Issue graph seam. Live actor trust belongs to the assignment owner.
-**Latest event:** TK-004G claimed by codex-github-binding.
-**Next gate:** Close TK-004G with verification and documentation proof.
+**Latest event:** TK-004G closed with proof.
+**Next gate:** Complete TK-004F.
 
 > **Citation anchors.** pre=`282dc043ab7dad92826a6d5447369238c35df0a3` post=`282dc043ab7dad92826a6d5447369238c35df0a3`.
 
@@ -83,6 +83,7 @@ This Spec owns capability requirements, open gates and proof. Shared operational
 | 2026-10-01 | review | Independent exact394 FAIL confirmed by parent relay | Reviewer01a0f686-0291-71d7-a754-53a5027ad029 checked base3b5b76bfd62aa98118cb73cc4947e0658f4040c6/head394a5d869d2630a069a5ba2fd90fee0cad28bf49/tree6b1e44e2e2c7c86b2d3740258fb04e79c77be9d0. Full51/51, inspector7/7 and Tracker23/23 pass but two P1 Git-boundary repros and P2 missing route require correction. Model unrecorded. Local public CLI independently confirms both P1s. | TK-004A and prior receipts retained; native self-check FAIL creates TK-004F/G/H answering the three findings. | Freeze released for corrections; fresh final-candidate review required, no integration or owner approval. |
 
 | 2026-10-01 | TK-004G | Correct premature Receipt1 green claim | Actual initial dirty-source result7/8: installed-source identity refusal, not8/8. Committed5f3ce522 rerun passes8/8 including exact managed hash and invocation. Public redcce88dc6 and all prior rows preserved. | Lazy-fetch procedure and regression current. | Full assembled suite and independent review still pending. |
+| 2026-10-01 | TK-004G | Task closed | Promisor regression expectedredcce88dc6, committed5f3ce522 inspector8/8 including fresh installed hash/invocation and absent promised commit/tree/blob refusal without transport or any Git metadata change. Receipt1 premature8/8 corrected append-only by Receipt2 and Spec evidence. | Binding procedure states no lazy fetch, optional locks and fail-closed Git compatibility. | TK004F environment and TK004H route remain. Required full final assembly suite and independent review/integration pending, no fullSpec or ownerQA claim. |
 
 ## Completion Result
 
