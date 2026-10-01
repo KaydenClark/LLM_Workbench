@@ -1093,6 +1093,42 @@ node workbench/tools/spec-workbench.mjs move-spec S-001 --to retired
 node workbench/tools/spec-workbench.mjs retire-spec S-001 --wiki workbench/wiki/features/greeting.md
 ```
 
+Collision identity recovery is an exceptional `move-task` mode for an already
+published done Task in an open Spec. First fetch all remote tips and obtain the
+Director disposition naming the earlier identity and centrally reserved replacement.
+Freeze the clean candidate and the unchanged original Task bytes. In this room,
+S-00I retains TK-004F and S-003P's later record is reserved TK-004I. Set the exact
+`EXPECTED_HEAD`, original `SOURCE_SHA`, earlier `COLLISION_SHA`, and SHA256
+`TASK_HASH` from those reviewed inputs; the original source is recoverable with
+`git show SOURCE_SHA:workbench/specs/S-003P-github-coordination-room-binding-and-identity/tasks/TK-004F/TASK.md`.
+
+```bash
+node workbench/tools/spec-workbench.mjs move-task S-003P --task TK-004F \
+  --replacement TK-004I --expected-head "$EXPECTED_HEAD" --task-hash "$TASK_HASH" \
+  --source-revision "$SOURCE_SHA" --collision-spec S-00I \
+  --collision-revision "$COLLISION_SHA" \
+  --collision-path workbench/specs/S-00I-folder-lifecycle-for-records/tasks/TK-004F/TASK.md \
+  --reason "Director retains earlier S-00I identity" --dry-run --json
+```
+
+`--dry-run` validates and reports without writes. After independent review of the
+mechanism and plan, repeat the identical command without `--dry-run`; it stages
+one guarded move and its live Markdown references/projections, without a commit.
+The original Receipt bytes, done status and append-only Spec rows stay intact;
+qualified immutable provenance replaces a colliding Former ID alias. Reference
+reservations are allowed, but current/retired records, aliases and discard entries
+at observed remote tips refuse an occupied replacement. Pending close evidence,
+linked paths, dirty state, mismatched inputs and unsupported JSON path references
+refuse before writes. Git environment overrides must be removed; GIT_PAGER is
+allowed. Missing Git objects are not fetched by this operation.
+
+A process or I/O failure restores touched files and the original Git index. A
+rollback failure reports its pinned recovery commit and leaves the tree for
+inspection. This does not guarantee recovery after power loss or coordinate
+concurrent writers. Commit and independently review the actual repaired assembly;
+identity repair transfers no review, acceptance or owner approval. Ordinary
+retirement keeps using `--to retired` with no replacement options.
+
 Commit and preserve the retirement result. Its latest incarnation and entire
 current directory must reach the declared default branch, observed by a fresh
 fetch, before discard. Discard alternatives are separate operations:

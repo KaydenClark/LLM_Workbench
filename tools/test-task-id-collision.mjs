@@ -6,6 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { execFileSync, spawnSync } from 'node:child_process';
+import { appendReceiptRowToContent, readReceipt } from '../workbench/tools/task-receipt.mjs';
 
 const source = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const cli = path.join(source, 'workbench/tools/spec-workbench.mjs');
@@ -19,11 +20,18 @@ const git = (...args) => execFileSync('git', ['-C', room, ...args], { encoding: 
 const write = (file, bytes) => { fs.mkdirSync(path.dirname(path.join(room, file)), { recursive: true }); fs.writeFileSync(path.join(room, file), bytes); };
 const commit = message => { git('add', '-A'); git('commit', '-qm', message); return git('rev-parse', 'HEAD'); };
 const specBytes = id => `# ${id} - Fixture\n\n**Spec ID:** ${id}\n**Status:** active\n**Priority:** 1\n**Owner:** fixture\n**Updated:** 2026-10-01\n**Catalog description:** Collision fixture\n**Blockers:** none\n**Latest event:** TK-004F closed\n**Next gate:** review\n\n## Vertical Implementation Slices\n\n| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n\n## Acceptance Criteria\n\n- [ ] Fixture review\n\n## Append-Only Evidence And Execution Log\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| 2026-10-01 | TK-004F | Task closed | original proof | none | review |\n\n## Completion Result\n\nPending.\n`;
-const taskBytes = id => `# TK-004F - Fixture\n\n**Task ID:** TK-004F\n**Spec ID:** ${id}\n**Slice:** Fixture\n**Status:** done\n**Blockers:** none\n**Destination:** spec-acceptance: ${id} Acceptance Criteria\n**Proof:** original proof\n\n## Receipt\n\nOriginal receipt bytes and checksum remain untouched.\n`;
+const taskBytes = id => appendReceiptRowToContent(`# TK-004F - Fixture\n\n**Task ID:** TK-004F\n**Spec ID:** ${id}\n**Slice:** Fixture\n**Status:** done\n**Blockers:** none\n**Destination:** spec-acceptance: ${id} Acceptance Criteria\n**Proof:** original proof\n`, { branch: 'fixture', headSha: '1'.repeat(40), upstream: 'none', dirty: 0, testsRun: 'original proof', docsTouched: 'none', remainingGap: 'review' });
 const snapshot = () => ({ head: git('rev-parse', 'HEAD'), refs: git('for-each-ref', '--format=%(refname) %(objectname)'), index: fs.readFileSync(path.join(room, '.git/index')).toString('base64'), status: git('status', '--porcelain'), files: git('ls-files').split('\n').map(file => [file, fs.lstatSync(path.join(room, file)).isSymbolicLink() ? fs.readlinkSync(path.join(room, file)) : fs.readFileSync(path.join(room, file)).toString('base64')]) });
 let tests = 0;
 try {
-  execFileSync(process.execPath, [path.join(source, 'workbench/tools/workbench-layout.mjs'), 'init', '--project', room, '--provenance', 'genesis', '--version', JSON.parse(fs.readFileSync(path.join(source, 'workbench/manifest.json'))).workbenchVersion]);
+  // This is a controlled command fixture, not a receipt-backed installation.
+  // Keeping its manifest explicit lets red/green run while source is dirty.
+  write('workbench/manifest.json', fs.readFileSync(path.join(source, 'workbench/manifest.json')));
+  const manifest = JSON.parse(fs.readFileSync(path.join(room, 'workbench/manifest.json')));
+  for (const directory of [...Object.values(manifest.lanes), ...Object.values(manifest.collections)]) fs.mkdirSync(path.join(room, directory), { recursive: true });
+  for (const directory of [manifest.landmarkTracker.root, ...Object.values(manifest.landmarkTracker.collections)]) fs.mkdirSync(path.join(room, directory), { recursive: true });
+  write('workbench/sessions/.gitignore', fs.readFileSync(path.join(source, 'workbench/sessions/.gitignore')));
+  for (const directory of [...Object.values(manifest.lanes), ...Object.values(manifest.collections), manifest.landmarkTracker.root, ...Object.values(manifest.landmarkTracker.collections)]) write(`${directory}/.gitkeep`, '');
   git('init', '-q'); git('config', 'user.name', 'Fixture'); git('config', 'user.email', 'fixture@example.com');
   write('BLUEPRINT.md', '# Blueprint\n'); write('TASKBOARD.md', '<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n');
   write('RUNBOOK.md', '# Procedure\n');
@@ -45,6 +53,7 @@ try {
   assert.ok(changed.startsWith('# TK-004I - ')); assert.ok(changed.includes('**Task ID:** TK-004I'));
   assert.ok(changed.includes('**Collision recovery:** S-003P/TK-004F@'+original)); assert.ok(!changed.includes('**Former ID:**'));
   assert.equal(changed.slice(changed.indexOf('## Receipt')), originalTask.toString().slice(originalTask.toString().indexOf('## Receipt')));
+  assert.deepEqual(readReceipt(changed), readReceipt(originalTask.toString()));
   assert.ok(changed.includes('**Status:** done')); assert.equal(git('rev-parse', 'HEAD'), original);
   assert.equal(fs.readFileSync(path.join(room, foreignPath), 'utf8'), taskBytes('S-00I'));
   assert.ok(fs.readFileSync(path.join(room, `${spec}/SPEC.md`), 'utf8').includes('| 2026-10-01 | TK-004F | Task closed | original proof | none | review |'));
@@ -52,7 +61,7 @@ try {
   assert.ok(fs.readFileSync(path.join(room, 'README.md'), 'utf8').includes(`${newDir}/`)); tests++;
   git('reset', '--hard', original);
   const refusal = (args, pattern, options) => { const prior = snapshot(); const output = run(args, options); assert.notEqual(output.status, 0); assert.match(output.stderr, pattern); assert.deepEqual(snapshot(), prior, 'refusal leaves complete tracked state unchanged'); tests++; };
-  refusal(['--expected-head', '0'.repeat(40)], /expected HEAD/);
+  refusal(['--expected-head', earlier], /expected HEAD/);
   refusal(['--task-hash', '0'.repeat(64)], /Task hash/);
   refusal(['--collision-path', `${oldDir}/TASK.md`], /collision evidence/);
   refusal(['--replacement', 'TK-0004F'], /different identity/);
@@ -60,9 +69,36 @@ try {
   refusal(['--collision-revision', original.slice(0, 8)], /exact.*revision/);
   refusal([], /Git environment/, { env: { ...process.env, GIT_DIR: path.join(room, '.git') } });
   write('README.md', 'uncommitted\n'); refusal([], /clean/); git('restore', 'README.md');
+  const currentArgs = () => ['--expected-head', git('rev-parse', 'HEAD')];
+  write(`${oldDir}/TASK.md`, originalTask.toString().replace('**Status:** done', '**Status:** in-progress')); commit('unfinished source');
+  refusal(currentArgs(), /done record/); git('reset', '--hard', original);
+  write(`${oldDir}/TASK.md`, originalTask.toString().replace('**Status:** done', '**Status:** done\n**Close pending:** {"version":1}')); commit('pending close');
+  refusal(currentArgs(), /pending close/); git('reset', '--hard', original);
+  write('linked-target.md', 'outside linked bytes\n'); commit('hardlink target');
+  fs.unlinkSync(path.join(room, 'README.md')); fs.linkSync(path.join(room, 'linked-target.md'), path.join(room, 'README.md'));
+  // Keep the link's bytes a live incoming reference and then commit it.
+  fs.writeFileSync(path.join(room, 'README.md'), `[Task](${oldDir}/TASK.md)\n`); commit('linked live reference');
+  refusal(currentArgs(), /Unsafe write destination/); fs.unlinkSync(path.join(room, 'README.md')); git('reset', '--hard', original);
+  fs.renameSync(path.join(room, oldDir), path.join(room, 'linked-task'));
+  fs.symlinkSync(path.relative(path.dirname(path.join(room, oldDir)), path.join(room, 'linked-task')), path.join(room, oldDir)); commit('linked Task directory');
+  refusal(currentArgs(), /symbolic link/); fs.unlinkSync(path.join(room, oldDir)); fs.rmSync(path.join(room, 'linked-task'), { recursive: true }); git('reset', '--hard', original);
+  write('live-reference.json', JSON.stringify({ taskPath: `${oldDir}/TASK.md` })); commit('unsupported source reference');
+  refusal(currentArgs(), /unhandled JSON/); git('reset', '--hard', original);
+  write('workbench/specs/S-00I-lifecycle/tasks/TK-004I/TASK.md', taskBytes('S-00I').replaceAll('TK-004F', 'TK-004I'));
+  const occupied = commit('remote replacement record'); git('update-ref', 'refs/remotes/origin/occupied', occupied); git('reset', '--hard', original);
+  refusal([], /occupied on an observed remote tip/); git('update-ref', '-d', 'refs/remotes/origin/occupied');
+  write('workbench/specs/DISCARDS.md', '| TK-0004i | preserved discard |\n'); const discarded = commit('remote discarded alias');
+  git('update-ref', 'refs/remotes/origin/discarded', discarded); git('reset', '--hard', original);
+  refusal([], /discarded on an observed remote tip/); git('update-ref', '-d', 'refs/remotes/origin/discarded');
+  write('workbench/specs/S-00I-lifecycle/tasks/TK-004I/TASK.md', taskBytes('S-00I').replaceAll('TK-004F', 'TK-004I')); commit('local occupied replacement');
+  refusal(currentArgs(), /occupied by a record/); git('reset', '--hard', original);
+  write('workbench/specs/S-00I-lifecycle/tasks/TK-004J/TASK.md', taskBytes('S-00I').replaceAll('TK-004F', 'TK-004J').replace('**Task ID:** TK-004J', '**Task ID:** TK-004J\n**Former ID:** TK-0004i'));
+  commit('local replacement alias'); refusal(currentArgs(), /occupied by a record or alias/); git('reset', '--hard', original);
   // One failed publication after git mv must restore the original bytes AND index.
   const injection = path.join(os.tmpdir(), `collision-inject-${process.pid}.mjs`);
   fs.writeFileSync(injection, `import fs from 'node:fs'; const old=fs.renameSync; let failed=false; fs.renameSync=(from,to)=>{if(!failed && String(to).endsWith('/TK-004I/TASK.md')) {failed=true;throw new Error('injected publication failure');} return old(from,to);};`);
   try { refusal([], /rolled back.*injected publication failure/s, { env: { ...process.env, NODE_OPTIONS: `--import=${injection}` } }); } finally { fs.unlinkSync(injection); }
+  fs.writeFileSync(injection, `import fs from 'node:fs'; const old=fs.renameSync; let failed=false; fs.renameSync=(from,to)=>{if(!failed && String(to).endsWith('/CATALOG.md')) {failed=true;throw new Error('injected projection failure');} return old(from,to);};`);
+  try { refusal([], /rolled back.*injected projection failure/s, { env: { ...process.env, NODE_OPTIONS: `--import=${injection}` } }); } finally { fs.unlinkSync(injection); }
   console.log(`task-id-collision ${tests}/${tests} PASS`);
 } finally { fs.rmSync(room, { recursive: true, force: true }); }
