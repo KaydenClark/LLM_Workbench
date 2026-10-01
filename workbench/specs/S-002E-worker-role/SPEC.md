@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Perform one assigned Task within its declared scope and return a verified, recoverable result.
 **Blockers:** none for staged implementation; managed installation awaits release bundle identity.
-**Latest event:** Staged entry and configured-session Worker scenario verified; final suite and immutable review hand-back in progress.
-**Next gate:** Verify and publish TK-002Z for separate immutable-candidate review; managed installation remains gated.
+**Latest event:** Staged Worker candidate verified; full required suite 51/51 and configured-session scenario pass.
+**Next gate:** Separate review of the published immutable candidate; coordinator owns current-base assembly, MEMORY route and managed installation gates.
 
 > **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`20bbe95`.
 
@@ -97,3 +97,4 @@ Maintain the role or stance definition in LEXICON.md, the operating contract in 
 
 | 2026-10-01 | TK-002Z | Authorized activation and claim | Fresh origin integration 95176a4 was planned/unassigned with no Tasks; native next-id, convert-tasks --activate and claim published 648e00f. Dirty planning/projection paths were committed before claim retry. | Staged boundary recorded; MEMORY hunk reserved for coordinator | Managed identity/install, final suite and independent review remain |
 | 2026-10-01 | TK-002Z | Staged source and actual configured-session scenario | Source contract red ENOENT then green; Wiki validation PASS. Scenario candidate 86842675d564b5d0cf98373ba10bdddee560ef1e; four allowed paths only, negative-input red/green, conflicting writer and out-of-scope requests refused, main unchanged and exact local-origin head verified. See tasks/TK-002Z/evidence/scenario.md and scenario.patch at 20bbe95. | Individual skill-worker-role.md; no root/template/managed changes | Explicit loading in one fixture is not managed installation or outcome reliability; no interrupted-process trial |
+| 2026-10-01 | TK-002Z | Candidate verification complete; no approval or merge | Full AGENTS/Runbook union 51/51 PASS serially at 89f7593; final-suite.json records commands. Initial 48/51 and transient untracked/parallel-fixture failures preserved, then resolved by committed-tree serial run. Source/scenario inspector and Wiki PASS; guardrail 78/100 pre/post. Raw self-drift receipts preserve seven baseline findings; S-00Q stale claim still blocks clean-update. | Staged entry, individual Wiki, Task evidence; no root/template/managed changes. MEMORY hunk reserved for coordinator. | Separate review, bundle identity/install, MEMORY routing; gh API Forbidden prevents draft PR here. Integration assembly must preserve newer S01C metadata. No installed behavior, owner QA, completion or repeated-outcome claim |

@@ -17,7 +17,7 @@ after committing it; untouched base also passed 10/10. Dogfood and citation-anch
 checks observed the extra check's temporary S-0990 citation fixtures. These are
 harness execution interference, not accepted passes. A final serial run on the
 committed tree, without concurrent repository tests or edits, supersedes this
-first run; its command-level results will be attached here.
+first run; its command-level results are in final-suite.json: **51/51 passed**, tested commit 89f7593fefd5975c03733c6c038a2dcd3873f258. Initial command results remain in initial-suite.json. Final closeout changes only receipts, evidence and generated state; focused source/scenario, Wiki, citation and doctor checks are repeated after closeout.
 
 ## Self-drift and semantic read-back
 
