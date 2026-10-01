@@ -536,6 +536,13 @@ try {
   // Every changed fenced CLI example must have been executed. Read-only and
   // optional alternatives cannot escape this coverage by mere phrase matching.
   const allRecipes = documentedLifecycle.replace(/\\\n/g, ' ').split('\n').filter(line => line.startsWith('node workbench/tools/spec-workbench.mjs '));
+  const collisionExamples = allRecipes.filter(command => command.includes('--replacement'));
+  if (collisionExamples.length) {
+    // This fixture's normal greeting identity is unique. Execute the actual
+    // shipped collision example in its dedicated public CLI collision room.
+    run(sourceProduct, process.execPath, ['tools/test-task-id-collision.mjs']);
+    for (const command of collisionExamples) executedRecipes.add(command);
+  }
   assert.deepEqual(allRecipes.filter(command => !executedRecipes.has(command)), [], 'every changed lifecycle CLI example has an executed result');
   checkpoint(`post-discard claim correction; ${executedRecipes.size} documentation examples executed`);
 

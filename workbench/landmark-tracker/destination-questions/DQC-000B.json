@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000B",
-  "revision": 4,
+  "revision": 7,
   "title": "GitHub Issues as the required live coordination authority",
   "question": "Which owner holds live assignment, the active Worker, operational holds and the next hand-back during normal delivery, and how does that authority replace pushed Task-branch claims without two claim authorities?",
   "answer": "GitHub Issues is required live coordination for normal delivery, not an optional mirror. Issues own live assignment, the active Worker, operational holds and the next hand-back through bounded trusted operations; the request, Contract and assigned Spec and Task keep scope, requirements, acceptance and permission; native pull requests and exact commits express candidate and review activity through Workbench gates; repository evidence owners keep receipts, acceptance and owner approval. Directors resolve assignment races and the owner-designated coordinator Vespar breaks v4 ties. ADR-000O's pushed Task-branch remote-tip claim is superseded for v4 only at a separately reviewed cutover that leaves exactly one active claim authority. Issue prose, an assignee or status alone, labels and bot messages never enlarge authority, prove exclusivity or manufacture independent review or QA. Visible error and pending state and refusal of unverifiable unsafe assignments or writes are required; no atomic lock, custom scheduler or second queue.",
@@ -60,7 +60,29 @@
     ],
     "revision": 4
   },
-  "related": [],
+  "related": [
+    {
+      "type": "spec",
+      "id": "S-003R",
+      "revision": "9f5bd5ab",
+      "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+      "assessment": null
+    },
+    {
+      "type": "spec",
+      "id": "S-003S",
+      "revision": "9f5bd5ab",
+      "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+      "assessment": null
+    },
+    {
+      "type": "spec",
+      "id": "S-003V",
+      "revision": "9f5bd5ab",
+      "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+      "assessment": null
+    }
+  ],
   "claims": [
     {
       "key": "C1",
@@ -273,6 +295,54 @@
           "field": "claim-evidence",
           "claim": "C5",
           "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T05:56:08.029Z",
+      "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "spec",
+            "id": "S-003R",
+            "revision": "9f5bd5ab"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T05:56:08.126Z",
+      "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "spec",
+            "id": "S-003S",
+            "revision": "9f5bd5ab"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T05:56:08.205Z",
+      "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "spec",
+            "id": "S-003V",
+            "revision": "9f5bd5ab"
+          }
         }
       ]
     }

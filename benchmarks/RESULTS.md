@@ -91,3 +91,19 @@ outcome evidence 8/30. Remaining recommendations are repeated real outcome
 trials, controls/prior/candidate comparison, recent real evidence and uncertainty
 estimates. These documentation amendments establish no agent outcome improvement.
 S-00P records the immutable candidate verification and self-drift limits.
+
+## 2026-10-01 — GitHub binding inspector
+
+S-003P/TK-004A candidate `4d9a24b8692e90ab63c11b07515b12cae0ab2ee7`
+passed 51/51 required and Task-focused commands after regeneration corrected
+Receipt projection drift. Public source/refusal and fresh receipt-backed
+installed-inspector tests passed 7/7. This is metadata/source/installed-runtime
+proof; GitHub Issue operations, cross-host outcomes and integration review are
+separate and remain open at this checkpoint.
+
+Guardrail score is 78/100 before and after. Remaining recommendations are
+repeated real outcome trials, comparisons against controls and prior/candidate
+harnesses, recent non-synthetic evidence and uncertainty reporting. No score
+criteria were weakened and no agent-outcome gain is claimed. Read-only
+self-drift retains seven existing findings and `cleanUpdate: false`; this is
+not a clean-update, owner Human QA or release-readiness verdict.
