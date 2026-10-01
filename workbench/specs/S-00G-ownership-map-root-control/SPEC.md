@@ -1,15 +1,15 @@
 # S-00G - Ownership Map Root Control
 
 **Spec ID:** S-00G
-**Status:** planned
+**Status:** active
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
-**Updated:** 2026-09-29
+**Updated:** 2026-10-01
 **Catalog description:** Deliver the Ownership map as the eighth root file and Core routing artifact, with queryable responsibility routes and coordinated root-surface consumers.
-**Blockers:** ADR-000B/C/D acceptance is resolved. The Spec remains planned: the four legacy slices cannot be converted faithfully while the converter refuses a planned Spec with ADR/question blockers. FND-Q24B's undeclared-difference policy is decided (conflict); its field shape and disposition placement remain implementation decisions within the locked guards.
-**Latest event:** On 2026-09-29 the owner confirmed Q1 and ACC-1/2/4/5, then explicitly authorized their promotion and the ADR acceptance change. ADR-000B/C/D are active; ADR-0013/0033 are archived. ACC-5 routes completed capability navigation through Wiki feature articles; S-022 is a historical blocked packet and its new article must preserve that limit. No map schema or Task was implemented.
-**Next gate:** Faithful conversion of the four legacy slices once the converter supports this planned Spec without inventing Task state, then S-00G implementation and verification. ADR acceptance is no longer a gate.
+**Blockers:** No unresolved activation prerequisite. Q24B field shape/disposition placement and later concept coverage remain implementation decisions under the locked guards.
+**Latest event:** Disposable native activation reproduced the stale-blocker refusal with no writes; faithful metadata reconciliation preserves four legacy IDs, dependency edges and verification plans. See activation-migration-2026-10-01.json.
+**Next gate:** Native activation and TK-001 claim/publication, then useful schema/reader, proved consumer sweep, generic template and populated routes-only query in existing Task order.
 
 > **Citation anchors.** pre=`c0ac60a179235ef22fa6ea81aec74735087e06e5` post=`c0ac60a179235ef22fa6ea81aec74735087e06e5`.
 
@@ -101,7 +101,7 @@ FND-Q21 fixes 28 responsibilities: 21 single-owner rows, six scoped rows and Rep
 
 Current Lexicon coverage has since added Evolving concept understanding. Reconcile that later capability against exhaustive coverage and the locked 28-row recovery before final map population; do not silently expand the approved inventory. The map must represent OWNERSHIP.json and TASKBOARD.json as artifact types. Relations follow locked FND-Q20.
 
-This accepted-decision change updates ADRs, root controls and Wiki routes; runtime, manifest, template and test implementation remains in later S-00G slices. Task-record conversion also needs a faithful path for this planned Spec with its remaining blockers: `convert-tasks S-00G` refuses a planned Spec, and the Task parser accepts only S/TK blocker IDs, so the four legacy slices and the pending A/B/C packet drafts stay in this Spec and PACKET-PLAN.md without invented IDs. Activating the Spec only to satisfy the converter is not a faithful path.
+This accepted-decision change updates ADRs, root controls and Wiki routes; runtime, manifest, template and test implementation remains in later S-00G slices. The 2026-10-01 disposable reproduction at `574df962fcfdd8045ec4dd405ba7f548216f7d4a` established the native `convert-tasks S-00G --activate` path. Only demonstrably resolved planning/conversion blocker text is reconciled; original literal metadata and four plans are preserved in [dated migration evidence](activation-migration-2026-10-01.json). The explicit implementation assignment authorizes activation; it supplies no owner QA or implementation proof.
 
 ### Owner choices, as tradeoffs
 
@@ -152,10 +152,6 @@ do not implement the map, JSON Taskboard or query.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Add `OWNERSHIP.json` at root with a validated schema and a failing-first reader | blocked | Spec planned; Task conversion unavailable | Red test for a missing/malformed map; green minimal reader; full suite |
-| TK-002 | Sweep and teach every live root-surface consumer about the eighth file | blocked | TK-001 | Red repo-wide sweep proving every hardcoded root-surface count/list is found; green update of every one found; `doctor` clean |
-| TK-003 | Ship a copy-ready `templates/OWNERSHIP.json` and update every template consumer | blocked | TK-002 | Template render and adoption tests pass; `evaluate-workbench --path templates` unchanged or improved |
-| TK-004 | Implement the structured query surface and move the schema out of `LEXICON.md` | blocked | TK-003; Spec planned (FND-Q24B policy answered 2026-09-29) | Red query-output test proving routes, never claim text, plus schema rejection of instance IDs and status-shaped fields; green query; Lexicon routes onward |
 
 ### TK-001 - Add `OWNERSHIP.json` at root with a validated schema and a failing-first reader
 
@@ -268,12 +264,12 @@ ownership route move. `RUNBOOK.md` gains the query procedure at that point.
 
 | 2026-09-29 | 1cec360553b60a60c97471c51eb87f68cb4c290c | Corrected combined acceptance candidate passed independent review and full verification | Separate-context reviewer returned PASS with no actionable finding on the full clean diff against origin/integration at 1450e7a8; all 48 AGENTS commands passed on this exact clean SHA, including ADR, Wiki, ledger, append-only, template evaluation and doctor checks. The ledger now keeps integration containment as a Git fact rather than a transient status claim. | ADR acceptance and Wiki-first navigation are ready for integration delivery. S-00G map and JSON Taskboard implementation, ACC-3 binding-force question, and the eight baseline self-drift attention findings remain separate open work; this row does not claim release proof or agent-outcome improvement. |
 
+| 2026-10-01 | 574df962fcfdd8045ec4dd405ba7f548216f7d4a | Reproduced faithful prospective activation before live metadata edits | Public `convert-tasks S-00G --activate` in a disposable clone first refused stale prose with a byte-identical inventory; after only resolved metadata reconciliation it preserved four IDs/plans and TK-001 -> TK-002 -> TK-003 -> TK-004, with no Proof fields. [Literal original header/rows and results](activation-migration-2026-10-01.json). | No converter change; no human precondition invented. Implementation, full verification and independent review remain open. |
+
 ## Completion Result
 
 ADR acceptance and the related documentation decisions are reconciled.
-Map implementation has not started. The Spec remains planned until its four
-legacy slices can be converted faithfully; the next delivery gate is the
-conversion and then implementation, not another ADR acceptance decision.
+Map implementation has not started. Faithful native activation is verified in a disposable clone; claim/publication and implementation remain the next gates, not another ADR acceptance decision.
 
 ## Remaining Limitations Or Follow-Up Specs
 
@@ -285,8 +281,7 @@ placement remain implementation decisions. The 28-row allocation and the
 newer Evolving concept understanding responsibility need explicit coverage
 reconciliation before map population. The current fidelity consumer compares
 Markdown lines, so a row-keyed JSON comparator needs its own implementation
-slice. The converter cannot yet faithfully convert this planned Spec's legacy
-slices; no Task is claimed or marked complete to hide that limitation.
+slice. Faithful native conversion has been reproduced with four plans and no Proof fields; no implementation acceptance or completion is claimed.
 
 The Lexicon's existing ownership schema remains the usable route until TK-004.
 Templates and runtime consumers still describe seven root files and are

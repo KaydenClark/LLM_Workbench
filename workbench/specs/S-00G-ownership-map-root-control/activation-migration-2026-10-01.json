@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-01",
+  "base": "574df962fcfdd8045ec4dd405ba7f548216f7d4a",
+  "command": "node workbench/tools/spec-workbench.mjs convert-tasks S-00G --activate",
+  "original_refusal": {
+    "exit": 1,
+    "stderr": "error: S-00G/TK-001 cannot be converted: TK-001 has an invalid blocker id: Spec planned; Task conversion unavailable\n",
+    "stdout": "",
+    "no_writes": true
+  },
+  "reconciled_activation": {
+    "exit": 0,
+    "stdout": "{\n  \"specId\": \"S-00G\",\n  \"activated\": true,\n  \"converted\": [\n    \"workbench/specs/S-00G-ownership-map-root-control/tasks/TK-001/TASK.md\",\n    \"workbench/specs/S-00G-ownership-map-root-control/tasks/TK-002/TASK.md\",\n    \"workbench/specs/S-00G-ownership-map-root-control/tasks/TK-003/TASK.md\",\n    \"workbench/specs/S-00G-ownership-map-root-control/tasks/TK-004/TASK.md\"\n  ],\n  \"retained\": []\n}\n",
+    "tasks": 4,
+    "planned_verification": 4,
+    "proof_fields": 0,
+    "ids_and_dependency_chain_preserved": true
+  },
+  "original_header": "# S-00G - Ownership Map Root Control\n\n**Spec ID:** S-00G\n**Status:** planned\n**Priority:** 2\n**Owner:** unassigned\n**Stance:** Builder\n**Updated:** 2026-09-29\n**Catalog description:** Deliver the Ownership map as the eighth root file and Core routing artifact, with queryable responsibility routes and coordinated root-surface consumers.\n**Blockers:** ADR-000B/C/D acceptance is resolved. The Spec remains planned: the four legacy slices cannot be converted faithfully while the converter refuses a planned Spec with ADR/question blockers. FND-Q24B's undeclared-difference policy is decided (conflict); its field shape and disposition placement remain implementation decisions within the locked guards.\n**Latest event:** On 2026-09-29 the owner confirmed Q1 and ACC-1/2/4/5, then explicitly authorized their promotion and the ADR acceptance change. ADR-000B/C/D are active; ADR-0013/0033 are archived. ACC-5 routes completed capability navigation through Wiki feature articles; S-022 is a historical blocked packet and its new article must preserve that limit. No map schema or Task was implemented.\n**Next gate:** Faithful conversion of the four legacy slices once the converter supports this planned Spec without inventing Task state, then S-00G implementation and verification. ADR acceptance is no longer a gate.\n\n> **Citation anchors.** pre=`c0ac60a179235ef22fa6ea81aec74735087e06e5` post=`c0ac60a179235ef22fa6ea81aec74735087e06e5`.\n\n",
+  "original_rows": [
+    "| TK-001 | Add `OWNERSHIP.json` at root with a validated schema and a failing-first reader | blocked | Spec planned; Task conversion unavailable | Red test for a missing/malformed map; green minimal reader; full suite |",
+    "| TK-002 | Sweep and teach every live root-surface consumer about the eighth file | blocked | TK-001 | Red repo-wide sweep proving every hardcoded root-surface count/list is found; green update of every one found; `doctor` clean |",
+    "| TK-003 | Ship a copy-ready `templates/OWNERSHIP.json` and update every template consumer | blocked | TK-002 | Template render and adoption tests pass; `evaluate-workbench --path templates` unchanged or improved |",
+    "| TK-004 | Implement the structured query surface and move the schema out of `LEXICON.md` | blocked | TK-003; Spec planned (FND-Q24B policy answered 2026-09-29) | Red query-output test proving routes, never claim text, plus schema rejection of instance IDs and status-shaped fields; green query; Lexicon routes onward |"
+  ]
+}
