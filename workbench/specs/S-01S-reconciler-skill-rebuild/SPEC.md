@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Leave achieved work and its existing truth owners consistent for continuation.
 **Blockers:** none for assigned implementation; coordinator owns the shared MEMORY route.
-**Latest event:** TK-01J claimed by codex-s01s-tk01j.
-**Next gate:** Finish required verification and fresh-context evidence, then publish immutable draft; coordinator adds MEMORY route before independent review.
+**Latest event:** Reconciler source, article and proof tested at 652bff52; all 51 required commands passed.
+**Next gate:** Coordinator adds the single MEMORY route on an assembly branch; independently review the resulting immutable candidate. Publish draft PR through parent Servitor if the GitHub API remains Forbidden.
 
 > **Citation anchors.** pre=`d90785908b26517068a474bb88136c81995a2f18` post=`1e403cbb`.
 
@@ -33,8 +33,9 @@ The prior Skills Wiki packet grouped the whole core inventory into one completio
   gaps; its corrective read-back confirmed the committed article and receipt
   while finding stale current-facing summaries, corrected in this owner.
 - Focused command/contract checks passed at their recorded revisions. The
-  required union is being verified; separate-context candidate review and
-  owner Human QA are not claimed. The evidence log preserves failed attempts.
+  exact 51-command required union passed at `652bff52`. Separate-context
+  candidate review and owner Human QA are not claimed. The evidence log
+  preserves failed attempts.
 
 ## Desired Behavior
 
@@ -73,9 +74,9 @@ Inspect the current source, its callers/composition and relevant tests. Demonstr
 
 ## Acceptance Criteria
 
-- [ ] The assigned Reconciler stance aligns source, Spec state, projections, docs and next gate with what actually happened.
-- [ ] It does not manufacture completion, discard unresolved material or create a universal handoff.
-- [ ] The named scenario is observed in a fresh or otherwise independent context: A cold reader can follow the existing owners to the exact achieved output and next action.
+- [x] The assigned Reconciler stance aligns source, Spec state, projections, docs and next gate with what actually happened.
+- [x] It does not manufacture completion, discard unresolved material or create a universal handoff.
+- [x] The named scenario is observed in a fresh or otherwise independent context: A cold reader can follow the existing owners to the exact achieved output and next action.
 - [ ] `workbench/wiki/skill-reconciler.md` accurately distinguishes verified current behavior from remaining intended behavior, links the current source and governing owners, and is reachable from `workbench/wiki/MEMORY.md`.
 - [ ] Relevant targeted tests/scenarios, Wiki validation, the required full suite, Workbench self-drift pre/post receipts and separate-context review are recorded at their proper gates; no unrun check is reported as passing.
 
@@ -115,6 +116,12 @@ once, while Reconciler owns achieved-state consistency and cold read-back. The
 assigned Spec declares no Matt counterpart, so no upstream import is warranted.
 Existing TK-01J remains the sole slice; no global identity was allocated.
 
+[Verification receipt](proof/verification.json) records the exact 51-command
+union, focused red/green, failed attempts, one fresh reader and its limits.
+[Pre self-drift](proof/self-drift-pre.json) and
+[post self-drift](proof/self-drift-post.json) retain the same seven findings
+and `cleanUpdate: false`. This is not a clean whole-Workbench update.
+
 Docs checked; no update needed in controls, templates, manifest or skill catalog:
 the stance purpose, public authority and lifecycle contract are unchanged. The
 canonical skill source supplies the installed bundle; there is no duplicate
@@ -130,9 +137,11 @@ template skill to edit. MEMORY is deliberately reserved to the coordinator.
 | 2026-10-01 | TK-01J | Rebuild source and command regression | Red commit 3c243888: 5 failures because entry lacks linked pinned observations; green ef80692c: 5/5 focused checks and 3/3 delivery checks. Catalog found missing explicit ADR path; source corrected at 1e403cbb and catalog plus focused checks passed. These execute Git observations, not model judgment | Reconciler source/reference updated; individual article drafted; controls/templates/catalog unchanged because public contract and purpose are unchanged | Full suite and durable fresh-reader proof still pending; coordinator MEMORY route and independent review open |
 | 2026-10-01 | TK-01J | First fresh-context continuation observation | Separate read-only context followed ordinary routes and identified ef80692c, in-progress state and next action. It found dirty owner updates, an untracked article, no Task receipt and no MEMORY link; no tests or remote proof inferred. Native CLI launch separately failed before model initialization with read-only app-server state | Add Task receipt and commit the updated owners/article; reserve MEMORY to coordinator | One observation only; not independent candidate review, owner QA, repeated trials or reliability proof |
 
+| 2026-10-01 | TK-01J | Exact required union and history/drift verification | All 51 distinct current AGENTS/RUNBOOK commands passed at 652bff5200197a1ea9385e1c5fdc0c3ab0d4c196; focused 5/5, delivery 3/3 and Wiki validation pass. Installer has two case-insensitive-platform skips. Full first-published append-only history check CLEAN. Pre/post self-drift retain seven findings and cleanUpdate false; guardrail remains 78/100. See proof/verification.json for commands, failures, reruns and limits | Source/reference, article, Spec, native Task receipt and generated projections reconciled; shared MEMORY untouched | Coordinator route, independent candidate review, owner QA and main promotion remain outside this achieved draft; GitHub API Forbidden requires parent publication if direct PR creation is unavailable |
+
 ## Completion Result
 
-Achieved source at `1e403cbbb06be60a2c43fb489709e05453fbf2d3`: Reconciler now compares pinned achieved output with existing owners, preserves governed dispositions and unresolved evidence, and names the exact review and inability boundary. Five focused regression checks and three delivery-skill checks pass. This is an in-progress draft, not completed delivery. One fresh-context interpretation and corrective read-back are recorded; they do not establish repeated reliability or approval. Full verification, the coordinator-owned MEMORY route and independent candidate review remain open; no Human QA or merge is claimed.
+Achieved source at `1e403cbbb06be60a2c43fb489709e05453fbf2d3`: Reconciler now compares pinned achieved output with existing owners, preserves governed dispositions and unresolved evidence, and names the exact review and inability boundary. Five focused regression checks and three delivery-skill checks pass. This is an in-progress draft, not completed delivery. One fresh-context interpretation and corrective read-back are recorded; they do not establish repeated reliability or approval. The full required union passed at `652bff52`; the coordinator-owned MEMORY route and independent candidate review remain open. This branch is a tested draft, not completed delivery; no Human QA or merge is claimed.
 
 ## Supersession
 
