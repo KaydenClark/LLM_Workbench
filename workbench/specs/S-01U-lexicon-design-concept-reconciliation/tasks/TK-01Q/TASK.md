@@ -18,3 +18,9 @@ records actual checks. Root and generic Lexicon plus own Spec/Task proof only,
 with native projections. Whole ten acceptance criteria, owner QA and main remain
 open; no merge or carry TK-004Q work. Original planning constraints remain in
 Spec history and retain their dated scope.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | codex/s01u-tk01q-lexicon-reconciliation | 4f9416b4bf13e60aa19b1e8038c7ced3cee331c8 | none | 5 | Candidate 4f9416b4: 51/51 required commands; 4 additional targeted passes; validator sandbox failure diagnosed, unchanged suite passes 18/18 unsandboxed. Timed independent AI reader 24.91s. Final current-union verification pending. | Root/generic Lexicon, scoped source/coverage/reader/verification proof | Whole ten S01U criteria and owner QA/main open; final immutable review and union verification pending; no merge | 2ec72811efca6a8fed39023547c36c6cfa2e9715d366f1df4eabbb5c948f106a |

@@ -122,3 +122,32 @@ needs actual-claim assessment; Verified still cannot authorize deleting a card.
 An independent timed reader exercise, reported against an immutable candidate,
 must demonstrate these distinctions. Mechanical word and link checks support
 this seam but cannot substitute for that reader observation.
+
+## Final source-delta review
+
+Integration advanced during verification from the execution base to
+`25d3f4d23b3719693065336a4ba66349d0a95907`. A conflict-free disposable union
+of that integration tree and the tested lexical candidate has tree
+`7a7b29f50edda3c0fbfa20a2bacf3f701195ddd8` and local detached verification
+commit `445972e26b376f3b5646f3928bbe72fd26bfda86`. This is a verification
+fixture, not a merge into integration or main.
+
+Reopened availability, ownership, progress and continuity rows against that
+delta: the manifest adds GitHub coordination binding; Runbook adds its
+inspection/collision procedures. Tracker/validator source, accepted ADR-000N,
+readable model, foundation/successor contracts and Lexicon sources retain
+their prior meanings. DQC-000B revision 4 -> 7 and DQC-000C 5 -> 7 add related
+Specs without assessments; DQC-000D 5 -> 12 preserves new relations, uncertainty,
+specific affected-claim corrections and later re-evidence for the binding
+inspector. These reinforce the distinction between relation, assessment and
+actual capability; they do not turn their related Tasks into Verified or make
+Result writing/expanded view available. No fixed-taxonomy glossary additions
+follow from those cards. Their new source revisions are pinned in the source
+inventory. The union check results and their exact scope belong in the receipt.
+
+Validator test qualification: the real-room article check passed. Additional
+fixture tests initially failed because an unmanifested temporary room inherited
+the sandbox's synthetic parent `.git` root; an alternate temporary writable root
+had the same marker. The unchanged 18-case test passed outside that synthetic
+ancestry. Preserve the failed attempts and the environment qualification;
+no runtime/test repair is attributed to TK-01Q.

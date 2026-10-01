@@ -367,5 +367,25 @@
         "task_status": ""
       }
     ]
+  },
+  "final_source_delta": {
+    "integration": "25d3f4d23b3719693065336a4ba66349d0a95907",
+    "new_or_changed_concept_records": [
+      {
+        "path": "workbench/landmark-tracker/destination-questions/DQC-000B.json",
+        "blob": "5bd33daa41005c84d3d1ed4f84f69869cde8a458",
+        "disposition": "checked-unchanged family meaning; relations/corrections/re-evidence do not confer Verified or new runtime"
+      },
+      {
+        "path": "workbench/landmark-tracker/destination-questions/DQC-000C.json",
+        "blob": "c58832240f4c45de22a5e38f2c57537913d3d0f4",
+        "disposition": "checked-unchanged family meaning; relations/corrections/re-evidence do not confer Verified or new runtime"
+      },
+      {
+        "path": "workbench/landmark-tracker/destination-questions/DQC-000D.json",
+        "blob": "9fd62e4c5875cc8951bd04c2e2bf339bbb02ecf7",
+        "disposition": "checked-unchanged family meaning; relations/corrections/re-evidence do not confer Verified or new runtime"
+      }
+    ]
   }
 }
