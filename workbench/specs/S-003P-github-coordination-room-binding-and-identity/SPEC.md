@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Resolve an explicit GitHub coordination repository and room-scoped artifact identities from immutable repository sources.
 **Blockers:** No prerequisite blocks the first read-only binding slice. Native Issue mapping awaits the Issue graph seam. Live actor trust belongs to the assignment owner.
-**Latest event:** TK-004K claimed by codex-github-binding.
-**Next gate:** Close TK-004K with verification and documentation proof.
+**Latest event:** TK-004K closed with proof.
+**Next gate:** Final repaired-candidate full suite and independent immutable Task-PR integration review before containment. Later artifact lookup and Issue correspondence slices remain uncut, with whole-Spec and owner gates open.
 
 > **Citation anchors.** pre=`282dc043ab7dad92826a6d5447369238c35df0a3` post=`282dc043ab7dad92826a6d5447369238c35df0a3`.
 
@@ -97,6 +97,7 @@ This Spec owns capability requirements, open gates and proof. Shared operational
 | 2026-10-01 | S-003P/TK-004F | Collision identity recovered to TK-004I | S-003P/TK-004F@5e8803f673898dd0eb716446fba5f61881d6a106:workbench/specs/S-003P-github-coordination-room-binding-and-identity/tasks/TK-004F/TASK.md; retained S-00I/TK-004F@7a51c53a528ff4dba407042a4de860bc66bb2d66:workbench/specs/S-00I-folder-lifecycle-for-records/tasks/TK-004F/TASK.md | Director retains earlier S-00I identity and reserves TK-004I for later S-003P recovery | Identity repair only; no review or owner approval transferred. |
 
 | 2026-10-01 | review | Independent bounded mechanism PASS at2791caa13afcb5b304ea013c678856abbc0a2341, then native actual recovery at7be6a245 | Separate reviewer01a0f689-cb20-717c-97ff-213d82289036 independently passes55 commands including51 mandatory, installed27/27 and eight additional refusal probes, with exact remote2791 confirmed. Model unrecorded. Producer55/55, source/installed27/27, guardrails78/100 and seven inherited self-drift findings remain separately named. Native actual move preserves all17 existing evidence/header rows and originalF Task body/Receipt bytes except canonicalID/title and qualified immutable provenance. | Binding command acceptance is rechecked by public10/10 plus prior independent correction evidence; full artifact lookup, Issue correspondence and whole adapter acceptance remain open. | Actual repaired assembly still requires full exact-candidate suite and separate independent integration review; mechanism PASS transfers no wholeSpec/owner approval. |
+| 2026-10-01 | TK-004K | Task closed | Guarded native collision recovery red/green: old1fb remote table cases accept occupiedI, corrected2791 full55/55 and public/installed27/27 pass with independent mechanism PASS. Actual7be6a245 preserves all original Task body/Proof/Receipt bytes except canonicalID/title/qualified provenance, all17 existing Spec rows and every unrelated tracked file. Actual-source public27/27 PASS; original and failed histories remain recoverable. | Root/template Runbook recovery mode, original Task/Spec histories and immutable qualified provenance updated; existing move-task API and scope retained. | Exact repaired-assembly full55 and independent Task-PR integration review/containment pending. FullSpec artifact lookup/Issue correspondence/whole adapter acceptance and owner gates remain open. |
 
 ## Completion Result
 
