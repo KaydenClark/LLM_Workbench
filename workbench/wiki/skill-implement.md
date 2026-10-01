@@ -37,7 +37,8 @@ For example, an assigned filter Task can add tests showing a throwing stub fails
 implement the filter, pass tests for selection and unchanged input, document a
 usage example, and save a reviewable candidate. The
 [scenario protocol](../skills/implement/references/scenario.md) describes that
-evaluation; this example is not a report that an agent completed it.
+evaluation. The coordinator-observed run described below is reported separately
+from this illustrative example.
 
 The endpoint comes from the assignment. A draft-only run stops with a candidate
 and named pending gates. Normal scoped Task handback is distinct from the
@@ -71,8 +72,29 @@ and repaired source `58e8f0441e1a7222d0f64fd064e814978c495194` via `git show <sh
 [Focused checks](../../tools/test-implement-skill.mjs) failed at `3a30c15` and
 passed at `9d12d4c`. They check source obligations and exercise Git containment
 with unpublished and remotely contained commits. They do not prove model
-compliance. Configured-agent execution remains unobserved: the available host
-failed to initialize its app-server on read-only storage. No installed-behavior,
-repeated reliability, owner Human QA or new core-bundle count is claimed.
+compliance. The cloud host failed to initialize its app-server on read-only
+storage; those failed attempts remain preserved.
+
+The release coordinator subsequently reported observing one new synthetic
+Servitor run using Codex CLI 0.159.3 and configured gpt6.1sol with the public
+protocol and candidate source at `b38f4f7`. It loaded the Contract and assigned
+Task, claimed only the fixture Task, observed four stub-test failures before
+implementation, then passed 4/4 tests and produced README documentation, a
+native in-progress receipt, self-check and remotely contained draft candidate.
+The coordinator independently rechecked tests, doctor, receipt checksum, diff
+and Git containment locally. The unrelated Task and local/remote main and
+integration were unchanged; the assigned Task stayed in progress at its draft
+endpoint. Three pre-existing synthetic setup notices remained. An earlier
+Servitor attempt refused writes before implementation with zero changes; the
+successful retry used run-scoped access to only the disposable fixture Git
+directory and local bare origin, with no reported global configuration,
+authentication or security changes.
+
+This is attributed coordinator observation. The cloud producer and cloud
+behavior reviewer have not inspected the raw tool records or Git objects,
+which remain on Servitor. Explicit source loading in one synthetic fixture is
+not installed behavior, repeated reliability, whole-Task acceptance or owner
+Human QA. The owning Spec preserves exact reported commits, integrity checks,
+failed attempts and pending review. No new core-bundle count is claimed.
 The [owning Spec](../specs/S-01H-implement-skill-rebuild/SPEC.md) holds current
 acceptance and verification, including any later scenario result.
