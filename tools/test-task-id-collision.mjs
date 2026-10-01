@@ -133,8 +133,9 @@ try {
     catch (error) { regressions.push(new Error(`${name}: ${error.message}`, { cause: error })); }
     finally {
       for (const name of fs.readdirSync(room).filter(name => name.startsWith('TASKBOARD.md.tmp-'))) fs.unlinkSync(path.join(room, name));
-      const privateFile = path.join(room, 'workbench/wiki/private-fixture.md');
-      if (fs.existsSync(privateFile)) fs.unlinkSync(privateFile);
+      for (const file of ['workbench/wiki/private-fixture.md', 'workbench/wiki/private-*.md', `${oldDir}/asset-*.txt`, `${newDir}/asset-*.txt`]) {
+        const probe = path.join(room, file); if (fs.existsSync(probe)) fs.unlinkSync(probe);
+      }
       git('reset', '--hard', original);
     }
   };
@@ -158,6 +159,12 @@ try {
     assert.notEqual(output.status, 0); assert.match(output.stderr, /unhandled JSON path reference/);
     assert.deepEqual(snapshot(), prior);
   });
+  regression('unreadable JSON source', () => {
+    write('task-ref.json', '{"reference":'); const head = commit('unreadable JSON source');
+    const prior = snapshot(); const output = run(['--expected-head', head]);
+    assert.notEqual(output.status, 0); assert.match(output.stderr, /unreadable JSON source.*task-ref/);
+    assert.deepEqual(snapshot(), prior);
+  });
   regression('ignored external reference', () => {
     const file = 'workbench/wiki/private-fixture.md'; write('.gitignore', file+'\n');
     const head = commit('ignore private reference');
@@ -165,6 +172,17 @@ try {
     const prior = snapshot(); const output = run(['--expected-head', head]);
     assert.notEqual(output.status, 0); assert.match(output.stderr, /external rewrite source must be tracked.*private-fixture/);
     assert.equal(fs.readFileSync(path.join(room, file), 'utf8'), bytes); assert.deepEqual(snapshot(), prior);
+  });
+  for (const moving of [false, true]) regression(moving ? 'ignored moving glob name' : 'ignored external glob name', () => {
+    const file = moving ? `${oldDir}/asset-*.txt` : 'workbench/wiki/private-*.md';
+    const tracked = moving ? `${oldDir}/asset-tracked.txt` : 'workbench/wiki/private-tracked.md';
+    write(tracked, 'tracked peer bytes'); write('.gitignore', file.replace('*', '\\*')+'\n');
+    const head = commit('literal tracking guard');
+    const bytes = moving ? 'ignored carried bytes' : '[Task](../specs/S-003P-binding/tasks/TK-004F/TASK.md)\n';
+    write(file, bytes); const prior = snapshot(); const output = run(['--expected-head', head]);
+    assert.notEqual(output.status, 0);
+    assert.equal(fs.readFileSync(path.join(room, file), 'utf8'), bytes); assert.deepEqual(snapshot(), prior);
+    fs.unlinkSync(path.join(room, file));
   });
   for (const partial of [false, true]) regression(partial ? 'partial projection write rollback' : 'projection rename rollback', () => {
     const injector = path.join(os.tmpdir(), `collision-projection-${process.pid}.mjs`);
