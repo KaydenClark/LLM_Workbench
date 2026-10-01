@@ -1,0 +1,17 @@
+{
+  "status": "verification-pending",
+  "base": "d90785908b26517068a474bb88136c81995a2f18",
+  "initial_checks": {
+    "tracker_tests": "23/23 pass",
+    "public_demo_seconds": 2.39,
+    "projection": "current",
+    "article_validator": "valid",
+    "expanded_show": "invalid-invocation",
+    "result_write": "invalid-invocation"
+  },
+  "limits": [
+    "Whole ten acceptance criteria open",
+    "No owner QA or main",
+    "Independent timed readback and fixed-candidate full suite pending"
+  ]
+}

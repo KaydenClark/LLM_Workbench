@@ -9,7 +9,7 @@
 **Catalog description:** Audit the whole Lexicon against current design concepts and their governing sources, repair supported drift, and expose unresolved conflicts without promoting proposals or claiming undelivered behavior.
 **Blockers:** none for source inventory and independent reconciliation; overlapping workflow and ownership changes retain S-00P and S-00G gates.
 **Latest event:** TK-01Q claimed by codex.
-**Next gate:** Close TK-01Q with verification and documentation proof.
+**Next gate:** Verify TK-01Q scoped candidate and timed reader distinction; independent immutable review and branch/draft PR only. Whole audit and owner QA/main remain open.
 
 ## Current Execution Instruction — 2026-10-01
 
@@ -291,10 +291,15 @@ glossary. Completed knowledge follows existing reconciliation/lifecycle rules.
 
 | 2026-09-26 | none | Correct the prior rebase identity: actual parent of 49cf2fd85437165e0f60e1368441b24aa7e5b35f is be918f0c59158b121e41e97a64dfff3da97f2e53, not the earlier observed ebb01dc. Shared remote-tracking state advanced before rebase. | Verified immutable Git parent and three-file planning diff. S-00M reader and S-00V Task decomposition are inherited integration changes. The final 48-command suite already ran on this actual rebased tree; test results stand. | Corrected current receipt identity; earlier evidence remains with this explicit correction. | Final local review pending. Automatic approval review rejected GitHub push for lack of explicit external-publication authorization; branch remains local. |
 
+| 2026-10-01 | TK-01Q | Current delegation activates and claims only existing TK-01Q; owner codex and original planning history preserved. Native claim pushed fff103b8da212b737b9294579bc337c449899732 before Lexicon edits. | Fresh 124-ref scan found no active S-01U/Task; doctor zero blockers, seven attention findings. Actual Tracker 23/23, public demo 2.39s, live projection current, article valid; Result/expanded readable options refuse. | Root/generic Lexicon and [bounded coverage](tk01q-coverage.md); no runtime/source/schema/ADR or carry TK-004Q changes. | Full required suite, independent timed readback and immutable review pending. Whole audit and owner gates remain open; zero coordination hand-backs. |
+
 ## Completion Result
 
-Specification authored; capability implementation, semantic audit and owner QA
-remain pending. No acceptance box is satisfied merely by creating this file.
+TK-01Q has bounded root/template corrections and [claim coverage](tk01q-coverage.md)
+against [pinned sources](tk01q-sources.json). Verification is recorded in the
+[scoped receipt](tk01q-verification.json); whole-Lexicon inventory, comprehensive
+semantic audit, all ten acceptance criteria and owner QA remain open. This is
+not whole-Spec completion or a clean-update claim.
 
 ## Remaining Limitations Or Follow-Up Specs
 
