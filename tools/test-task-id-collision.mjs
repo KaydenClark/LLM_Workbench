@@ -126,5 +126,34 @@ try {
   try { refusal([], /rolled back.*injected publication failure/s, { env: { ...process.env, NODE_OPTIONS: `--import=${injection}` } }); } finally { fs.unlinkSync(injection); }
   fs.writeFileSync(injection, `import fs from 'node:fs'; const old=fs.renameSync; let failed=false; fs.renameSync=(from,to)=>{if(!failed && String(to).endsWith('/CATALOG.md')) {failed=true;throw new Error('injected projection failure');} return old(from,to);};`);
   try { refusal([], /rolled back.*injected projection failure/s, { env: { ...process.env, NODE_OPTIONS: `--import=${injection}` } }); } finally { fs.unlinkSync(injection); }
+  // Use a unique, done local Task so duplicate-ID refusal cannot mask a
+  // malformed-mode dispatch into ordinary retirement.
+  git('rm', '-r', 'workbench/specs/S-00I-folder-lifecycle-for-records'); commit('unique local retirement source');
+  const metadata = directory => fs.readdirSync(directory).sort().flatMap(name => {
+    const file = path.join(directory, name), stat = fs.lstatSync(file);
+    return stat.isDirectory() ? metadata(file) : [[path.relative(room, file), stat.mode, stat.isSymbolicLink() ? fs.readlinkSync(file) : fs.readFileSync(file).toString('base64')]];
+  });
+  const modeSnapshot = () => ({ state: snapshot(), metadata: metadata(path.join(room, '.git')) });
+  const modeRefusal = (args, pattern) => {
+    const prior = modeSnapshot();
+    const output = spawnSync(process.execPath, [cli, ...args, '--path', room, '--json'], { encoding: 'utf8', env: cliEnv });
+    assert.notEqual(output.status, 0, 'unsupported mode refuses before writing');
+    assert.match(output.stderr, pattern);
+    assert.deepEqual(modeSnapshot(), prior, 'mode refusal preserves tracked files and all Git metadata bytes/modes'); tests++;
+  };
+  const retirement = ['move-task', 'S-003P', '--task', 'TK-004F', '--to', 'retired'];
+  modeRefusal([...retirement, '--replacement', '', '--dry-run'], /replacement cannot be combined|replacement must name/);
+  modeRefusal([...retirement, '--dry-run'], /dry-run.*collision/);
+  modeRefusal([...retirement, '--replacement', ''], /replacement cannot be combined|replacement must name/);
+  modeRefusal(['render', '--dry-run'], /dry-run.*move-task/);
+  const { moveTaskRecord } = await import(cli);
+  for (const options of [{ dryRun: true }, { replacement: '' }]) {
+    const prior = modeSnapshot();
+    assert.throws(() => moveTaskRecord(room, 'S-003P', 'TK-004F', 'retired', options), /dry-run.*collision|replacement cannot be combined|replacement must name/);
+    assert.deepEqual(modeSnapshot(), prior, 'exported entry refuses unsupported modes without writes'); tests++;
+  }
+  const ordinary = spawnSync(process.execPath, [cli, ...retirement, '--path', room, '--json'], { encoding: 'utf8', env: cliEnv });
+  assert.equal(ordinary.status, 0, ordinary.stderr);
+  assert.ok(fs.existsSync(path.join(room, spec, 'tasks/retired/TK-004F/TASK.md')), 'supported ordinary retirement still writes'); tests++;
   console.log(`task-id-collision ${tests}/${tests} PASS`);
 } finally { fs.rmSync(room, { recursive: true, force: true }); }
