@@ -92,6 +92,22 @@ export function liveCitations(text) {
   return out;
 }
 
+// Interpret explicit prose before token shape: an extension can name either a
+// file or a hostname. The nearest semantic noun in the current prose fragment
+// supplies that distinction; URL spans are network references independently.
+function referenceKind(text, at, cited, urls) {
+  const tokenAt = text[at] === '`' ? at + 1 : at;
+  if (urls.some(([start, end]) => tokenAt >= start && tokenAt < end)) return 'network';
+  const prefix = text.slice(0, at).replace(/`$/, '');
+  // A cue describes this token only when immediately attached, optionally
+  // through named/called/at. Earlier prose nouns must not classify later code.
+  const cue = /\b(host(?:name)?s?|servers?|domains?|urls?|endpoints?|files?|paths?|modules?|filenames?|basenames?)\s+(?:(?:named|called|at)\s+)?$/i.exec(prefix)?.[1].toLowerCase();
+  if (cue) return /^(?:host|server|domain|url|endpoint)/.test(cue) ? 'network' : 'file';
+  if (cited.includes('/') || KNOWN_BASENAMES.has(cited)) return 'file';
+  if (/^\d+(?:\.\d+)+$/.test(cited)) return 'prose';
+  return KNOWN_FILE_EXTENSIONS.has(path.posix.extname(cited).toLowerCase()) ? 'file' : 'prose';
+}
+
 function scanParagraph(text, section) {
   const out = [];
   let lastPath = null;
@@ -109,16 +125,14 @@ function scanParagraph(text, section) {
     return ' '.repeat(tok.length);
   });
 
+  const urls = [...para.matchAll(/\b[a-z][a-z0-9+.-]*:\/\/[^\s`<>]+/gi)].map((m) => [m.index, m.index + m[0].length]);
   const marks = [...anchors];
   for (const m of para.matchAll(FULL)) {
-    // Git trees supply extensionless paths; punctuation alone must not turn
-    // an evidence token such as commitSHA:45 into a file citation.
     const cited = m[1];
-    // Numeric dotted values such as an IP address are not file citations.
-    // Explicit qualified paths and actual repository filenames still count.
-    const numericValue = /^\d+(?:\.\d+)+$/.test(cited);
-    if (cited.includes('/') || KNOWN_PATHS.has(cited)
-        || (cited.includes('.') && (!numericValue || KNOWN_BASENAMES.has(cited)))) {
+    const kind = referenceKind(para, m.index, cited, urls);
+    // Explicit line-number syntax remains an unresolved citation unless prose
+    // identifies it as a network reference or an ordinary numeric endpoint.
+    if (kind === 'file' || (kind !== 'network' && cited.includes('.') && !/^\d+(?:\.\d+)+$/.test(cited))) {
       marks.push({ at: m.index, end: m.index + m[0].length, kind: 'full', cited, from: Number(m[2]), to: Number(m[3] ?? m[2]) });
     }
   }
@@ -127,11 +141,7 @@ function scanParagraph(text, section) {
   // shorthand that follows it.
   for (const m of para.matchAll(PATH_ONLY)) {
     const cited = m[1] ?? m[2];
-    // Known repository file types establish scope even for a missing target,
-    // so a later shorthand cannot silently validate the preceding file.
-    // Version/domain values without a file suffix remain ordinary prose.
-    if (cited.includes('/') || KNOWN_BASENAMES.has(cited)
-        || KNOWN_FILE_EXTENSIONS.has(path.posix.extname(cited).toLowerCase())) {
+    if (referenceKind(para, m.index, cited, urls) === 'file') {
       marks.push({ at: m.index, kind: 'path', cited });
     }
   }
