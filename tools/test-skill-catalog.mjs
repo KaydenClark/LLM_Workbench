@@ -577,6 +577,20 @@ assert.match(carry, /Do not answer one with a new framework/,
   'carry must forbid answering a hand-back with a new framework');
 assert.match(carry, /Stopping\s+before an already-authorized step/,
   'carry must name stopping short of the authorized endpoint as the failure it removes');
+// S-01C: recovery reads the Task record, not only the Spec, because an
+// interrupted run leaves its trace in the Task's receipt rows; delivery
+// composes `save` so the endpoint is a proven remote recovery point, not a
+// local close. RUNBOOK routes "Deliver assigned work" through carry with
+// implement, review and save, and the skill must say so itself.
+assertIncludesAll(carry, [
+  '`TASK.md`',
+  'receipt',
+  'node workbench/tools/spec-workbench.mjs receipt S-### --task TK-###',
+  '`/save`',
+  'git merge-base --is-ancestor'
+], 'carry must resume from the Task record and compose save with containment proof');
+assert.match(carry, /pending recovery, never (a )?confirmation|never confirmation/,
+  'carry must treat a failed or unavailable push as pending recovery');
 
 const codeReview = read('workbench/skills/code-review/SKILL.md');
 assertIncludesAll(codeReview, [

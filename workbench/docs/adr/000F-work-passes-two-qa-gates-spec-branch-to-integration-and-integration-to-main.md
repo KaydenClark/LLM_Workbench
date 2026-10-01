@@ -102,8 +102,8 @@ remains the operative gate for every candidate; the Director's approval of an
 assembled Spec is that review. The terminal verification in
 [ADR-000G](000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md)
 reads through these gates. AGENTS implements the current roles and
-pre-integration route after S-00P TK-002; RUNBOOK's comprehensive workflow
-procedure rewrite remains S-00P TK-003 work. The board lanes themselves belong to proposed
+pre-integration route after S-00P TK-002. RUNBOOK carries the delivered
+Task-record workflow procedures from S-00P TK-003. The board lanes themselves belong to proposed
 [ADR-000E](proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md)
 and its separately assigned board delivery work; this reconciliation does not
 claim that the destination lanes are implemented.
@@ -139,3 +139,12 @@ reviewed delivery has resolved AGENTS' gap. This correction preserves the
 original two-gate rationale, owner-confirmed SCR role chain, owner-only main
 promotion, flexible Human QA and direct-Task destination design. It records no
 owner approval or whole-Spec completion.
+
+TK-004C reconciles the earlier pending Runbook consequence, preserved at
+`git show 3b5b76bfd62aa98118cb73cc4947e0658f4040c6:workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md`.
+TK-003's reviewed delivery proof in the linked S-00P
+records PR #241 and candidate `3b82f6ab5fc5e90a60963405698806d16b915963`,
+contained in integration `66815b4e4d0a35802d28c3a470921c00692f8d0d`.
+The [Runbook lifecycle procedures](../../../RUNBOOK.md#spec-lifecycle-and-retrieval)
+now carry that delivery. This resolves the procedure-documentation gap;
+owner Human QA, main promotion and whole-Spec closure remain separate gates.

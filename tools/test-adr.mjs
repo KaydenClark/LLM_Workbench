@@ -877,6 +877,10 @@ function assertWorkflowMeaning(corpus) {
   requires(f, /owner chooses when to QA/, 'owner chooses Human QA timing');
   requires(f, /not the only permitted time/, 'version cadence is not exclusive');
   requires(f, /failed Human QA[\s\S]*Align[\s\S]*appropriate scope/i, 'failed QA returns at implicated scope');
+  const consequences = f.match(/\nConsequences:([\s\S]*?)\nProvenance:/)?.[1];
+  assert.ok(consequences, 'ADR-000F retains its operational consequences');
+  assert.doesNotMatch(consequences.replace(/\s+/g, ' '), /RUNBOOK[^.]*\b(?:remains|pending|awaits)\b[^.]*TK-003/i, 'active ADR-000F must not present delivered TK-003 Runbook procedures as pending');
+  requires(consequences, /RUNBOOK carries the delivered Task-record workflow procedures from S-00P TK-003/, 'ADR-000F reflects achieved Runbook procedure delivery');
   const i = records.get('000I').body;
   requires(i, /Folder location is the source of lifecycle truth/, 'folder lifecycle');
   requires(i, /`archive`[\s\S]*permanent[\s\S]*never cleared/i, 'ADR archive is permanent');
@@ -938,6 +942,7 @@ test('workflow checks reject substantive and literal-route mutations with accept
     ['Dispatcher QA', '000F', 'Dispatcher verifies the whole\nSpec', 'Worker verifies the whole\nSpec'],
     ['postintegration review', '000F', 'before it combines', 'after it combines'],
     ['exclusive QA cadence', '000F', 'not the only permitted time', 'the only permitted time'],
+    ['delivered Runbook presented as pending', '000F', 'Task-record workflow procedures from S-00P TK-003.', "Task-record workflow procedures from S-00P TK-003. RUNBOOK's comprehensive workflow procedure rewrite remains S-00P TK-003 work."],
     ['ADR archive clearing', '000I', 'never cleared', 'cleared after main'],
     ['Task lifecycle conflation', '000I', 'is distinct from folder lifecycle', 'is the folder lifecycle'],
     ['premature capture', '000I', 'then `complete`, features Wiki capture', 'features Wiki capture, then `complete`'],

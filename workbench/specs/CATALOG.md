@@ -47,7 +47,7 @@ Derived from stable specs; includes completed history.
 | [S-015 - Portable v3 Release Audit Recovery](S-015-portable-v3-release-audit-recovery/SPEC.md) | Make generated v3 controls and Genesis validation enforce one operable manifest-declared spec lane before release. | complete |
 | [S-01A - handoff skill rebuild](S-01A-handoff-skill-rebuild/SPEC.md) | Transfer one objective to a named destination in readable Markdown. | active |
 | [S-01B - promote skill rebuild](S-01B-promote-skill-rebuild/SPEC.md) | Move selected supported working claims into their existing durable owners. | active |
-| [S-01C - carry skill rebuild](S-01C-carry-skill-rebuild/SPEC.md) | Carry assigned work to its authorized endpoint and make genuine owner hand-backs visible. | planned |
+| [S-01C - carry skill rebuild](S-01C-carry-skill-rebuild/SPEC.md) | Carry assigned work to its authorized endpoint and make genuine owner hand-backs visible. | active |
 | [S-01D - adoption skill rebuild](S-01D-adoption-skill-rebuild/SPEC.md) | Bring an existing project into the Workbench once while preserving room truth. | active |
 | [S-01E - checkpoint skill rebuild](S-01E-checkpoint-skill-rebuild/SPEC.md) | Keep the retired checkpoint command as an accurate compatibility route. | active |
 | [S-01F - code-review skill rebuild](S-01F-code-review-skill-rebuild/SPEC.md) | Review an immutable candidate against the repository and capability contracts. | active |
