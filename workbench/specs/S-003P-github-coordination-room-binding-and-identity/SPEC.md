@@ -3,13 +3,13 @@
 **Spec ID:** S-003P
 **Status:** active
 **Priority:** 1
-**Owner:** unassigned
+**Owner:** codex-github-binding
 **Stance:** Builder
 **Updated:** 2026-10-01
 **Catalog description:** Resolve an explicit GitHub coordination repository and room-scoped artifact identities from immutable repository sources.
 **Blockers:** No prerequisite blocks the first read-only binding slice. Native Issue mapping awaits the Issue graph seam. Live actor trust belongs to the assignment owner.
-**Latest event:** TK-004A cut and Spec activated through convert-tasks under owner implementation continuation.
-**Next gate:** Claim and deliver TK-004A with public red/green and installed-inspector proof; artifact mapping and Issue operations remain later slices.
+**Latest event:** TK-004A claimed by codex-github-binding.
+**Next gate:** Close TK-004A with verification and documentation proof.
 
 > **Citation anchors.** pre=`282dc043ab7dad92826a6d5447369238c35df0a3` post=`282dc043ab7dad92826a6d5447369238c35df0a3`.
 

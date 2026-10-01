@@ -3,7 +3,7 @@
 **Task ID:** TK-004A
 **Spec ID:** S-003P
 **Slice:** Inspect an explicit GitHub room binding at an immutable source revision
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: A read-only public command resolves committed room binding at an exact commit, rejects malformed input with named errors and leaves the checkout unchanged.
