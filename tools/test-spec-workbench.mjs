@@ -247,7 +247,7 @@ assert.ok(
   Object.is(SLICE_STATUSES, TASK_STATUSES),
   'the lifecycle commands and the Task record reader share one exported closed status set'
 );
-assert.deepEqual([...TASK_STATUSES], ['ready', 'in-progress', 'blocked', 'done', 'deferred']);
+assert.deepEqual([...TASK_STATUSES], ['ready', 'in-progress', 'blocked', 'needs-review', 'done', 'deferred']);
 
 assert.deepEqual(
   parseCliArgs(['next', '--json']),

@@ -3,13 +3,13 @@
 **Spec ID:** S-01X
 **Status:** active
 **Priority:** 1
-**Owner:** codex-servitor-pr-resolution
+**Owner:** codex-s01x-stage2
 **Stance:** Builder
-**Updated:** 2026-09-30
+**Updated:** 2026-10-01
 **Catalog description:** Replace the Markdown Spec summary with a generated six-lane implementation board, shared lane selection and title-first room-core sitrep.
 **Blockers:** S-01W first identity/consumer delivery is contained in integration; its claimed assembled QA remains separate. Direct-Task coverage awaits its source-home contract.
-**Latest event:** TK-003S closed with proof.
-**Next gate:** Confirm existing acceptance and cut the GitHub composition extension after its Issue-graph and operational-snapshot seams are verified; Projects requirement remains open.
+**Latest event:** TK-004N closed with proof.
+**Next gate:** Review final TK-004N closeout delta on current integration; then confirm existing acceptance and cut the GitHub composition extension after its Issue-graph and operational-snapshot seams are verified. Projects requirement and whole-Spec acceptance remain open.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 
@@ -240,6 +240,58 @@ live Actuality after lane release.
 
 - [ ] GitHub composition records a reproducible coordination snapshot, source/freshness/conflicts and preserves six lanes without using Issue closure as assessment; Project policy/access remains explicit.
 
+## Bounded stage2 preparation (TK-004N)
+
+TK-004N is closed with bounded source proof on the released lane. Source
+`needs-review` is accepted for Task records and legacy rows; ordinary To-do
+selection and claim do not consume it. A Spec explicitly awaiting review can
+project Needs review when every child is either Needs review or Complete;
+Complete still requires every child done. This does not derive a passed
+assembled review, owner approval or Spec completion from child state.
+
+Preview cards expose `requiredQA` as boundary labels, never verdicts or
+approval state. A Task in Needs review names `assembled-spec-review`, following
+E-4C's later SCR-1/SCR-7 refinement; this adds no separate destination-level
+Task approval. Non-complete Spec cards name `assembled-spec-review` and
+`owner-human-qa`. The existing report/gate readers remain the evidence owners.
+Authored next actions, including failed Human QA corrective actions, remain
+visible without being reset by green tests.
+
+The coordinator released minimal planned parsing and the read-only review
+selector/CLI seam after M source freeze `9cf0d216acc73c9cacfd66cbd6b136fcf4ece5db`.
+The reader now accepts a planned identity/title intent without Tasks, with null
+unknown metadata and deterministic unknown-priority ordering. Public
+`next --review --json` returns separate `review` and `excluded` collections.
+It applies dependency, capability, lifecycle, competing-claim and parent/child
+controls without writing source or approval state. Ordinary next is unchanged.
+
+The coordinator also released the narrow prospective-active validation guard.
+`convertSpecSlices` now parses prospective active bytes before any mutation;
+minimal planned packets must satisfy the existing strict active contract first.
+Public red `d58b86bf` and the 56/57 checkpoint at `041f7744` retain the
+activation failure. The guarded public fixture run passes all 57 groups.
+Expanded qualified-dependency controls follow the existing resolver's exact
+stored spelling and do not widen identity semantics. Final whole51 results
+must accompany the immutable candidate; earlier per-command reruns are not
+represented as one whole-suite PASS. Independent review remains pending.
+Independent review of `53935612` failed with two P2 findings despite its
+51-command and 57-group passes: duplicate Status fields bypassed prospective
+activation validation, and a Spec-only delivered blocker depended on unrelated
+Task token discovery. Public red `fc41f477` preserves both failures (57/59).
+TK-004N corrects these under the coordinator's narrow release: reject ambiguous
+Status and require parsed active state before writes; discover Spec blocker
+tokens through the existing delivered resolver. Focused correction proof is
+59/59. Exact `b4e59c21dd97488980e883a66940538b8fcf625c` passed one whole
+51-command run and independent bounded source review, as reported by the
+Director. Both P2 findings are resolved; the failed review and all six earlier
+Receipts remain intact. Native close records that proof without approving the
+whole Spec. Final closeout delta/current-target review follows assembly on
+`25d3f4d23b3719693065336a4ba66349d0a95907` and a new frozen required union.
+
+Default Markdown/CATALOG behavior, preview protections and all prior failed
+review evidence remain. Root/template rollout and direct Task homes remain
+outside this slice; no whole-Spec acceptance is checked.
+
 ## Testing Seams
 
 TK-003O implements only the temporary public `render --format json` preview,
@@ -316,6 +368,17 @@ occurs during this planning authoring.
 | 2026-09-30 | review | Review verdict: fail at 559f785760c33dc4da50ab620cc109e5bfcb7e25 [0c9575e2055c] #3 | P2 source-qualified calculation correction: preserve valid peer complete-on-integration diagnostics when another active Spec has malformed Priority or table status, and refuse a Task declaring another existing parent Spec consistently in preview, next and claim without writes. Three committed red regressions at84d1a7a independently reproduce both review findings4149623596 and4149623602. No runtime eligibility expansion or stage2 delivery. | Codex automated separate-context review5372316366, independently reproduced at350c by Servitor | 1 |
 | 2026-09-30 | TK-003S | Correct live public red-test provenance without rewriting historical FAIL3 | The earlier FAIL3 row names local scratch 84d1a7a, which was not published. Reachable public red commit 2e191c01fd5d98e6da5c3d4c3ebbc599483456d2 is titled Reproduce postmerge diagnostics and declared Task parent review findings and directly follows integration 983af08d603c852b36ae69f31823815614cd6a60. Its test file is byte-identical to the scratch source, with three reproduced failures before the correction. Live Task and projection references now name the public commit | Prior FAIL3 and historical receipts remain untouched. Source calculation still filters only known malformed active Specs and propagates unexpected errors | Full frozen verification and fresh independent correction review remain before integration |
 | 2026-09-30 | TK-003S | Task closed | Exact published source 838565dc0fed6791e548e2f563985797439bff4d: all51 required commands PASS (48 AGENTS plus3 RUNBOOK), taskboard JSON39/39 and diagnostics36/36 PASS. Reachable public red2e191c01fd5d98e6da5c3d4c3ebbc599483456d2 reproduces three failures, independently confirmed. Malformed active Priority/table-status/row-record collision preserves valid peer diagnostics; declared foreign parent refuses preview/next/claim with prior bytes and refs preserved; normalized equivalent identity remains eligible; unexpected errors still propagate. Actual first-published append-only history CLEAN. Existing seven self-drift attention findings and guardrail78/100 remain; no clean-update, installed-distribution or reliability claim. | Shared calculation and parent-ownership validation, focused behavior controls, obsolete global source-shape assertion corrected, live Task and projection cite full published red2e191c01 SHA. Historical FAIL3 scratch84d1a7a citation preserved with appended truthful correction; prior Tasks, FAILs and receipts retained. | Fresh independent exact-final-head review required before integration. All nine whole-S01X acceptance criteria and owner Human QA remain open; stage2 review vocabulary/Backlog, direct/orphan Task home, sitrep and root/template rollout remain separate work. S01W assembled QA is unchanged. |
+| 2026-10-01 | TK-004N | Bounded stage2 helper checkpoint; Task remains in progress | Public red d9e18f98: eight expected failures,39 prior groups passed. Candidate2150baa9: exact51 required command coverage green after affected spec-workbench rerun, including49 public groups; frozen50/51 obsolete status-array failure and earlier exploratory41/51 dirty-runtime failures retained in Receipt. Append-only regression suite, demo, default Markdown/no-write/collision controls pass. Prior19 S01X rows and five done Task records byte-preserved; guardrails78/100 and same7 drift attention findings remain. | Source Task needs-review; child review gate; requirement-only assembled-Spec/owner QA visibility; owning Task/Spec proof. Shared CLI/parser/report unchanged. | Minimal Backlog and next --review consumer assembly await coordinator release. Fresh independent draft review pending. No full stage2, ownerQA or wholeSpec completion claim. |
+| 2026-10-01 | TK-004N | Correct checkpoint evidence formatting | Final actual-history check on 70216217981d808c7c360ad8262730b0c56c13cf failed because the new helper entry was serialized as comma-separated text rather than a Markdown row. Correct formatting and rerun; original malformed text remains below as explicit history. Earlier 19 evidence rows and completed Task bytes are unchanged. | Evidence formatting only; no runtime or test change | Serialized consumer assembly and independent review remain pending. |
+| 2026-10-01 | TK-004N | Task closed | Verified source b4e59c21dd97488980e883a66940538b8fcf625c clean and actual remote tip matched before close. One frozen required51/51 PASS; public59/59; demo0.46s; append-only CLEAN. Director reports independent sourcePASS: both prior P2 resolved,51/59/demo/18 close tests/both Git suites and combined coexistence pass; all six prior Receipts valid. Preserve539 independentFAIL and redfc41f47757/59. Review scope is bounded TK004N source only. | RUNBOOK and template mirror; S01X bounded stage2 contract, native Task evidence and independent-review corrections. | Final closeout delta/current-target review and release-coordinator merge slot pending. Current integration25d3f4d23b3719693065336a4ba66349d0a95907 will be assembled and the frozen union rerun. Existing7 drift findings and78/100 guardrails remain. No wholeSpec/root rollout/ownerQA claim. |
+
+## Checkpoint formatting history
+
+The following malformed entry was published at `70216217981d808c7c360ad8262730b0c56c13cf`. It is retained verbatim as historical text; the correctly formatted evidence row above is the live reading.
+
+```text
+2026-10-01,TK-004N,Bounded stage2 helper checkpoint; Task remains in progress,Public red d9e18f98: eight expected failures,39 prior groups passed. Candidate2150baa9: exact51 required command coverage green after affected spec-workbench rerun, including49 public groups; frozen50/51 obsolete status-array failure and earlier exploratory41/51 dirty-runtime failures retained in Receipt. Append-only regression suite, demo, default Markdown/no-write/collision controls pass. Prior19 S01X rows and five done Task records byte-preserved; guardrails78/100 and same7 drift attention findings remain.,Source Task needs-review; child review gate; requirement-only assembled-Spec/owner QA visibility; owning Task/Spec proof. Shared CLI/parser/report unchanged.,Minimal Backlog and next --review consumer assembly await coordinator release. Fresh independent draft review pending. No full stage2, ownerQA or wholeSpec completion claim.
+```
 
 ## Completion Result
 
