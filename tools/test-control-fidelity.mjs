@@ -469,3 +469,40 @@ test('the Task workflow contract rejects removed obligations and regressed appro
     assert.throws(() => taskWorkflowContract(mutated), { name: 'AssertionError' }, regression);
   }
 });
+
+// Supporting documentation checks; the composed round-trip test executes the
+// examples and challenges state/refusal behavior against the installed CLI.
+function runbookWorkflowContract(content) {
+  const lifecycle = content.split('### Spec Lifecycle And Retrieval\n')[1]?.split('### Architecture Decision Records')[0] ?? '';
+  for (const [claim, expression] of [
+    ['inspected review digest', /verdict S-001[^\n]*--candidate "\[SHA\]" --digest "\[DIGEST\]" --result pass/],
+    ['immutable candidate can differ from HEAD', /need not equal HEAD/],
+    ['owner main verification before completion', /git fetch origin main\nnode workbench\/tools\/spec-workbench\.mjs complete S-001/],
+    ['capture after completion', /After complete, author capability knowledge[^.]*features/],
+    ['normal whole-Spec retirement after capture', /normal closure route is complete -> feature capture -> `retire-spec`[\s\S]*whole Spec and its Tasks together/],
+    ['owner finding differs from approval', /Finding and destination-change examples[\s\S]*alternatives to explicit approval/],
+    ['same capability after discard', /createCorrectiveTasks[\s\S]*programmatic API, not a[\s\S]*CLI/],
+    ['delivered dependency', /S-001:delivered[\s\S]*content-bound PASS[\s\S]*Fetch[\s\S]*integration/],
+    ['whole directory recovery', /compare all recovered bytes, including sibling proof/]
+  ]) assert.match(lifecycle, expression, claim);
+  assert.doesNotMatch(lifecycle, /candidate.*must equal HEAD|capture-features|create-corrective\.mjs/);
+}
+
+test('Runbook preserves digest binding, main-before-closure and authored feature capture', () => {
+  runbookWorkflowContract(read(root, 'RUNBOOK.md'));
+});
+
+test('Runbook contract detects operationally consequential guidance regressions', () => {
+  const current = read(root, 'RUNBOOK.md');
+  for (const [before, after] of [
+    ['--digest "[DIGEST]" --result pass', '--result pass'],
+    ['git fetch origin main\nnode workbench/tools/spec-workbench.mjs complete S-001', 'node workbench/tools/spec-workbench.mjs complete S-001'],
+    ['After complete, author capability knowledge', 'Before closure, keep temporary task state'],
+    ['normal closure route is complete -> feature capture -> `retire-spec`', 'move Tasks before approval to avoid a stale digest'],
+    ['programmatic API, not a', 'automatic create-corrective'],
+    ['compare all recovered bytes, including sibling proof', 'inspect the primary record only']
+  ]) {
+    assert.ok(current.includes(before), `mutation targets current instructions: ${before}`);
+    assert.throws(() => runbookWorkflowContract(current.replace(before, after)), { name: 'AssertionError' });
+  }
+});

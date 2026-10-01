@@ -3,7 +3,7 @@
 LLM Workbench is a reusable control-doc template for AI-agent projects. It gives
 a new or existing repository the files an agent needs before it starts changing
 code: always-on operating rules, a compact product map, on-demand capability
-specs, a hot execution projection, operational commands, and durable proof.
+specs, Task records, a hot execution projection, operational commands, and durable proof.
 
 Use it when you want agents to work from the same local source of truth instead
 of relying on chat history or one-off instructions.
@@ -23,7 +23,8 @@ The blank, copyable templates live in `templates/`:
   owner, blocker, latest event, and next gate.
 - `templates/SPEC.md` - concise on-demand capability work packet. Copy it to a
   manifest-declared `workbench/specs/S-###-slug/SPEC.md`; it owns detailed requirements, decisions,
-  acceptance, evidence, completion, and supersession.
+  acceptance, evidence, completion, and supersession. Active Tasks carry their own
+  `tasks/TK-###/TASK.md` state, Packet and Receipt; retained done tables are history.
 - `templates/RUNBOOK.md` - setup, run, test, build, troubleshooting, recovery,
   and evaluation procedure.
 - `templates/README.md` - a blank, user-facing product README for the target
@@ -130,17 +131,25 @@ docs look like. Copy from `templates/`, not from the root.
    `templates/LEXICON.md`, `templates/TASKBOARD.md`, `templates/RUNBOOK.md`,
    `templates/README.md`, and `templates/SPEC.md` into the target project; copy
    `templates/wiki/MEMORY.project.md` in as `workbench/wiki/MEMORY.md` (the room brain);
-   initialize `workbench/manifest.json` and create its declared `workbench/specs/` lane for stable work
+   initialize `workbench/manifest.json` and create its declared `workbench/specs/` lane for bounded work
    packets and copy `workbench/tools/spec-workbench.mjs` when using the local interface.
 2. Replace bracketed placeholders with project-specific paths, commands, rules,
    and task items. For Claude Code, also copy `templates/.claude/settings.json`
    and fill it from the same edit scope to enforce the boundary mechanically.
 3. Keep `AGENTS.md` as the always-loaded operating system; normal selection runs
-   `spec-workbench next` and loads one returned spec.
+   `spec-workbench next` and loads one returned Spec and Task record. Follow
+   [Runbook lifecycle](RUNBOOK.md#spec-lifecycle-and-retrieval) for claim,
+   red/green work, Receipt, self-check and hand-back.
 4. Keep Blueprint product-level, Lexicon definition-only, Taskboard hot, and
    detailed capability truth in specs.
-5. Append proof to the owning spec and require a <1-minute demo artifact for
-   milestones so acceptance rests on product truth, not passing tests alone.
+5. Preserve Task proof and Spec evidence with a <1-minute product demo. The
+   Dispatcher verifies the assembled destination; a separate Director reviews
+   the immutable integration candidate. The current Task-PR exception is
+   described in AGENTS, not a separate Task approval ceremony.
+6. The owner chooses Human QA timing and explicitly approves per-Spec delivered
+   content. Only the owner promotes to main. Main verification precedes
+   `complete`; routed features Wiki capture follows complete and precedes
+   retirement/discard. A green suite, merge or observation is not owner approval.
 
 The templates are intentionally plain Markdown so they work with Codex, Claude,
 or any other agent that reads repository instructions.
@@ -156,7 +165,7 @@ hand, copy `templates/GENESIS.md` alongside the control templates and hand the
 agent the prompt plus GENESIS. GENESIS walks the agent through framing the
 prompt, writing `BLUEPRINT.md`, choosing an architecture, scaffolding the
 smallest thing that runs, filling `AGENTS.md` scopes and `RUNBOOK.md` commands,
-and seeding the first stable spec plus hot projection - then defines what a
+and seeding the first Spec and Task packet plus hot projection - then defines what a
 finished bootstrap must prove.
 GENESIS runs once; after handoff AGENTS plus the progressive spec flow govern.
 
@@ -245,8 +254,10 @@ remaining cross-device/private-service acceptance stay with
 To pull later harness improvements into a downstream project, follow that
 project's `RUNBOOK.md` -> Upgrading The Harness: re-copy only changed template
 sections, keep the project's filled-in specifics, bump the stamp, re-verify, and
-record the upgrade in a dedicated spec. Completed spec evidence remains at its
-stable path; stale claims are diagnosed per `AGENTS.md` -> Long Session Control.
+record the upgrade in a dedicated Spec. Completed evidence remains reachable
+through link-safe lifecycle moves and immutable Git anchors; post-completion
+capability knowledge belongs in the routed features Wiki before retirement or
+discard. Stale claims are diagnosed per `AGENTS.md` -> Long Session Control.
 
 The upgrade path is a loop, not a one-way copy. Downstream projects record where
 the harness helped or hurt in their `WORKBENCH_FEEDBACK.md` (legacy copies may still be named `HARNESS_FEEDBACK.md`); those lessons are
@@ -353,9 +364,15 @@ MIT. See `LICENSE`.
 ## Ordinary Agent Entry
 
 Follow AGENTS.md -> RUNBOOK.md -> LEXICON.md, then the assigned SPEC and only
-its relevant owners. Builder, Auditor, Reviewer and Reconciler are assigned
+its Task record and relevant owners. Roles assign Director/Dispatcher/Worker
+responsibility; Builder, Auditor, Reviewer and Reconciler are assigned
 stances within existing authority. Work autonomously inside the assigned task;
-independent review is required before integration. The setup-only Round One
+Worker self-check returns to Dispatcher whole-Spec QA, and separate-context
+Director review is required before integration. Failed review preserves original
+proof and creates corrective Tasks. Existing failed Human QA stays in its
+corrective cycle until the owner resolves it. See the Runbook for exact
+content-bound review, main-before-complete and capture/recovery procedures.
+The setup-only Round One
 proof returns in chat; feedback reporting follows it in the declared lane.
 
 Version 3.2.1 adds project-evidence preparation and source-linked Genesis.
