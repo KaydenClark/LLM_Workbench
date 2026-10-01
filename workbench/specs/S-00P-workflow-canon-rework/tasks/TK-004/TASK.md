@@ -3,11 +3,36 @@
 **Task ID:** TK-004
 **Spec ID:** S-00P
 **Slice:** Rewrite `LEXICON.md` and reconcile ADR-000F, ADR-000G and ADR-000I
-**Status:** blocked
+**Status:** done
 **Blockers:** TK-002
 **Destination:** spec-acceptance: S-00P Acceptance Criteria
 **Planned verification:** Red: semantic assertions against Lexicon definitions and the resolved active ADR decision/owner chain fail for the named contradiction or missing definition; green: released ADR dispositions match confirmed source claims, literal owner/Context Map links resolve, register/history match their sources, and targeted tests pass. Lifecycle status alone is not proof.
 **Stance:** Builder
+**Proof:** Status-independent semantic red after accepted fixture migration; green ADR40/40 with18 accepted-status-preserving decision/owner/route mutations, wiki14/14, controls20/20, ledger5/5, nativeADRvalidateempty. Supported G/I migration fixture, currentcorpus57records/intra40files83edges/acceptedSpec26files31edges. Demo308ms; originalG/I proposals retained except move-only links; all24 publishedSpecrows and neighbors preserved; ledger exacttenArtifactpointer substitutions. DirectappendonlyCLEAN/citations15of15. Source committed/pushed56b459da; required51 on finalclosed immutablecandidate pending before review/integrationdelivery. Prior final1a939865 full51/51 and independent entireTaskPASS retained; forward integration282dc043 preserves Q/DQC/Tracker bytes, currentcorpus58 with unchanged40/83 and26/31 pins. New frozen-head51/freshreview pending.
+
+## Execution Reconciliation (2026-10-01)
+
+Current execution base is integration `76932f5ba7643a55fa140320cb86550ab7fc99bb`,
+containing TK-002's exact reviewed candidate `8c2c880b` through PR #238.
+Native claim selected this Task and published `5d743b4f`; the authoring-time
+blocked/release/gap clauses below are historical planning constraints. Current
+owner direction releases this packet's language, ADR and test lanes. The
+Director additionally releases link-only current G/I routes in S-00I and
+retired S-00H Specs, and only ten ledger `result.artifact` pointer values.
+Preserve every historical/evidence cell, question, answer and provenance claim.
+
+ADR-000F is already accepted. Dispose G/I from source-backed settled WF/SCR
+claims, retaining historical premises and unanswered interviews. ADR-000A now
+requires amendment first for the same architectural decision: widen Packet in
+the existing ADR-000H with identity/reasons preserved; do not allocate a new
+successor merely to avoid amendment. The current preservation rule supersedes
+this packet's earlier mandatory-successor instruction. Actual main verification,
+content-bound review and feature-capture behavior is delivered; describe it
+from current runtime rather than retaining historical implementation disclaimers.
+
+Task self-check/hand-back and the actual Task-PR bootstrap exception apply;
+independent exact-candidate integration review remains required. Generic control
+mirrors belong to TK-005. Owner QA/main and release remain outside this Task.
 
 ## Objective And Acceptance Contribution
 
@@ -44,8 +69,8 @@ supply lineage only; the Task must remain executable from committed owners.
 Required decision sources:
 
 - `workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md`: assembled-Spec boundary, Human QA and unresolved failure return language. Accepted on 2026-09-26 by the SCR reconciliation (owner-approved 2026-09-24); this Task keeps it consistent rather than re-accepting it, and its direct-Task route stays destination design until reconciled with the operative gate.
-- `workbench/docs/adr/proposed/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md`: Blueprint/Spec altitude conflict, sequence and September 24 correction.
-- `workbench/docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md`: opposite retention rules, historical stable-path and held deletion claims.
+- `workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md`: Blueprint/Spec altitude conflict, sequence and September 24 correction.
+- `workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md`: opposite retention rules, historical stable-path and held deletion claims.
 - `workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md`: required Packet members and preservation of accepted body.
 - `workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md` and `workbench/docs/adr/0037-independent-review-at-integration.md`: whole-record succession, reachable history, operational ownership and existing pre-integration review gate.
 - `workbench/tools/adr.mjs`, `tools/test-adr.mjs` and `tools/test-wiki.mjs`: effective lifecycle, validation, literal links, register/history generation and existing Lexicon checks.
@@ -174,3 +199,10 @@ these through claim-level confirmation, released paths, literal-link checks,
 immutable proof and preserved historical bodies. Parsing, validation, source
 review and green tests do not establish owner approval, Human QA success or
 agent-outcome improvement.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | codex/s00p-tk004-workflow-language | 5d743b4fda292ad772d2505aa3732c83d719fa81 | ahead 0 behind 0 | 3 | Fresh doctor exit0; native nextTK004 and claimedpublished5d743b4f from reviewed integration76932f5; preguardrail78/100; preselfdrift7/cleanUpdatefalse. Targeted red/green pending Worker. | Prior TK002 reviewPASS/full51/PR238 containment and explicit public destination authority appended to S00P; currentTK004 execution reconciliation preserves earlier planning. | Worker source-backed semantic red/green, exactADR disposition/literalpointer inventory; frozen51 and fresh independent TaskPR review/integration containment pending; ownerQA/main remain open. | ce089459594ac8b137be22facf5090759e25e7e21e56db7d4f5501632550430e |
+| 2 | codex/s00p-tk004-workflow-language | 56b459dac8574cc96af353c3da6a790809546f28 | ahead 0 behind 0 | 0 | Status-independent semantic red after accepted fixture migration; green ADR40/40 with18 accepted-status-preserving decision/owner/route mutations, wiki14/14, controls20/20, ledger5/5, nativeADRvalidateempty. Supported G/I migration fixture, currentcorpus57records/intra40files83edges/acceptedSpec26files31edges. Demo308ms; originalG/I proposals retained except move-only links; all24 publishedSpecrows and neighbors preserved; ledger exacttenArtifactpointer substitutions. DirectappendonlyCLEAN/citations15of15. Source committed/pushed56b459da; required51 on finalclosed immutablecandidate pending before review/integrationdelivery. | Lexicon workflow meanings/routes; G/I existing-basename accepted records, F operational premise and H correctiveWikiPacket amendment; generatedADRregister/history; onlyreleased neighbor/tenledgerPointer links. Originalproposals and evidencehistory retained. Templates deliberately deferredTK005; noWikiContent/routers/skills/manifest/runtime edits. | Exact finalcandidate full51 and separatecontext review/TaskPR integrationcontainment pending; TK003/TK005 and ownerQA/main remain open; guardrail78 and seven knownselfdrift findings prevent outcome/cleanupdate claim. | b61f3d7c2f5b076c242b17fcf63bf52456699c2031cf1a9803b85633759fdb28 |
