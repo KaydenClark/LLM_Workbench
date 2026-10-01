@@ -457,31 +457,14 @@ export function recordReviewVerdict(rootDir, specId, options = {}) {
   const cells = [date, 'review', `Review verdict: ${result} at ${candidate} [${digest12}] #${ordinal}`, findings, reviewer, remainingGap];
   const row = `| ${cells.map(escapeMarkdownTableCell).join(' | ')} |`;
   const updated = appendEvidence(spec.content, row);
-  atomicWrite(spec.filePath, updated);
-
-  // S-00J TK-003: folded into this verb rather than a separate `correct`
-  // command, so a caller cannot record a failed verdict and forget the
-  // corrective-Task step - the handoff's "same call" design. The verdict
-  // row is written first (immediately above), so createCorrectiveTasks
-  // re-reads it from disk as the exact row it names in each Task's Planned
-  // verification, rather than a caller-supplied guess at its own position.
-  //
-  // Row-then-Tasks recovery: if the process dies in the gap between the
-  // atomicWrite above and the createCorrectiveTasks call below, the Spec's
-  // evidence log already durably carries the fail verdict row but no
-  // corrective Task exists for it yet - a state indistinguishable from a
-  // fail verdict recorded by some other path that never called this
-  // function through to the end. Recovery is simply calling
-  // createCorrectiveTasks(root, specId, { candidate, findings }) again (or
-  // re-running this same verdict command is not an option, since a second
-  // `verdict` call would append a second row - the recovery call is to the
-  // narrower seam): the duplicate-row check below finds no existing Task
-  // naming this row yet, so it proceeds exactly as if this call had reached
-  // it the first time.
-  let correctiveTasks;
-  if (result === 'fail') {
-    correctiveTasks = createCorrectiveTasks(root, specId, { candidate, findings }).created;
-  }
+  // The row is visible while the existing anchor reader plans its Tasks.
+  // A synchronous write failure removes only this operation's new artifacts
+  // and restores the exact pre-call Spec, so the same public call can retry.
+  // A process death after the row but before any Task lands still uses the
+  // narrower anchor-based seam; asynchronous termination mid-batch remains
+  // an explicit recovery limit rather than a claimed rollback guarantee.
+  const correctiveTasks = appendCorrectiveEvidence(root, spec, updated,
+    result === 'fail' ? () => createCorrectiveTasks(root, specId, { candidate, findings }).created : null);
 
   return { specId: spec.id, candidate, result, findings, reviewer, date, remainingGap, digest, digest12, ordinal, row, ...(correctiveTasks ? { correctiveTasks } : {}) };
 }
@@ -596,12 +579,8 @@ export function recordOwnerApproval(rootDir, specId, options = {}) {
   const cells = [date, 'owner-qa', `Owner QA: ${result} at ${candidate} [${digest12}] #${ordinal}`, findingsCell, owner, remainingGap];
   const row = `| ${cells.map(escapeMarkdownTableCell).join(' | ')} |`;
   const updated = appendEvidence(spec.content, row);
-  atomicWrite(spec.filePath, updated);
-
-  let correctiveTasks;
-  if (result === 'finding' && !returnToAlign) {
-    correctiveTasks = createCorrectiveTasks(root, specId, { candidate, findings: findingsInput }).created;
-  }
+  const correctiveTasks = appendCorrectiveEvidence(root, spec, updated,
+    result === 'finding' && !returnToAlign ? () => createCorrectiveTasks(root, specId, { candidate, findings: findingsInput }).created : null);
 
   return { specId: spec.id, candidate, owner, result, findings: findingsCell, date, remainingGap, digest, digest12, ordinal, row, integrationContainment, ...(correctiveTasks ? { correctiveTasks } : {}) };
 }
@@ -741,21 +720,7 @@ export function createCorrectiveTasks(rootDir, specId, options = {}) {
     staged.push({ id, filePath, content, slice: findingText });
   }
 
-  // Only once every record in the batch is already known good does the
-  // write loop run. A disk failure partway through THIS loop (as opposed to
-  // the row-then-Tasks gap `recordReviewVerdict` documents above) leaves a
-  // genuine partial set on disk with no automatic resume: the row-ordinal
-  // duplicate check above only refuses a second call once at least one
-  // matching Task has landed, so recovering from a partial batch means
-  // completing or removing the partial `tasks/<id>/` directories by hand
-  // before createCorrectiveTasks is called again for this same row.
-  const created = [];
-  for (const item of staged) {
-    assertSafeWritePath(root, item.filePath);
-    fs.mkdirSync(path.dirname(item.filePath), { recursive: true });
-    atomicWrite(item.filePath, item.content);
-    created.push({ id: item.id, filePath: path.relative(root, item.filePath).split(path.sep).join('/'), slice: item.slice });
-  }
+  const created = writeCorrectiveBatch(root, staged);
 
   return { specId, candidate, verdictRow: { ordinal: rowOrdinal, date: verdictDate }, created };
 }
@@ -818,15 +783,86 @@ function createOrphanCorrectiveTasks(root, specId, { candidate, items, wikiClaim
     staged.push({ id, filePath, content, slice: findingText });
   }
 
-  const created = [];
-  for (const item of staged) {
-    assertSafeWritePath(root, item.filePath);
-    fs.mkdirSync(path.dirname(item.filePath), { recursive: true });
-    atomicWrite(item.filePath, item.content);
-    created.push({ id: item.id, filePath: path.relative(root, item.filePath).split(path.sep).join('/'), slice: item.slice });
-  }
+  const created = writeCorrectiveBatch(root, staged);
 
   return { specId, candidate, wikiClaim: destination, created };
+}
+
+// TK-004O: private recovery helpers for new corrective artifacts only. Never
+// remove a pre-existing directory, overwrite a destination, or recursively
+// remove unexpected contents. A rollback failure is visible with the original
+// failure, rather than claiming a clean retry when interference remains.
+function writeCorrectiveBatch(root, staged) {
+  for (const item of staged) {
+    assertSafeWritePath(root, item.filePath);
+    if (fs.existsSync(path.dirname(item.filePath))) throw new Error(`Corrective Task destination already exists: ${item.filePath}`);
+  }
+  const ownedDirectories = [];
+  const ownedFiles = [];
+  try {
+    for (const item of staged) {
+      const missing = [];
+      let dir = path.dirname(item.filePath);
+      while (!fs.existsSync(dir)) { missing.push(dir); dir = path.dirname(dir); }
+      for (const directory of missing.reverse()) {
+        fs.mkdirSync(directory);
+        const stat = fs.lstatSync(directory);
+        ownedDirectories.push({path:directory,dev:stat.dev,ino:stat.ino});
+      }
+      assertSafeWritePath(root, item.filePath);
+      ownedFiles.push(item.filePath, `${item.filePath}.tmp-${process.pid}`);
+      atomicWrite(item.filePath, item.content);
+    }
+  } catch (error) {
+    try {
+      for (const directory of ownedDirectories) {
+        const stat=fs.lstatSync(directory.path);
+        if (!stat.isDirectory() || stat.dev!==directory.dev || stat.ino!==directory.ino) throw new Error(`Corrective rollback directory changed: ${directory.path}`);
+      }
+      for (const file of ownedFiles.reverse()) {
+        if (!fs.existsSync(file)) continue;
+        assertSafeWritePath(root,file);
+        fs.unlinkSync(file);
+      }
+      for (const directory of ownedDirectories.reverse()) fs.rmdirSync(directory.path);
+    } catch (rollbackError) {
+      const failure=new AggregateError([error,rollbackError], `Corrective batch failed (${error.message}); bounded rollback also failed (${rollbackError.message}). Preserve remaining artifacts for explicit recovery.`);
+      failure.correctiveRollbackIncomplete=true;
+      throw failure;
+    }
+    throw error;
+  }
+  return staged.map(item=>({id:item.id,filePath:path.relative(root,item.filePath).split(path.sep).join('/'),slice:item.slice}));
+}
+
+function appendCorrectiveEvidence(root, spec, updated, createTasks) {
+  assertSafeWritePath(root,spec.filePath);
+  const temporary=`${spec.filePath}.tmp-${process.pid}`;
+  if (fs.existsSync(temporary)) throw new Error(`Corrective evidence temporary destination already exists: ${temporary}`);
+  try {
+    atomicWrite(spec.filePath,updated);
+    return createTasks ? createTasks() : undefined;
+  } catch (error) {
+    // If interference prevents removing a new Task directory, keep its
+    // durable anchor visible. Restoring the Spec would orphan that partial
+    // state and make recovery less trustworthy.
+    if (error.correctiveRollbackIncomplete) throw error;
+    try {
+      assertSafeWritePath(root,spec.filePath);
+      const current=fs.readFileSync(spec.filePath,'utf8');
+      if (current!==spec.content && current!==updated && current!==`${updated}\n`) throw new Error('Spec changed during corrective evidence rollback');
+      if (fs.existsSync(temporary)) {assertSafeWritePath(root,temporary);fs.unlinkSync(temporary);}
+      if (current!==spec.content) {
+        // Rollback is byte restoration, including a file without a final
+        // newline; the general atomic writer intentionally normalizes that.
+        fs.writeFileSync(temporary,spec.content,{flag:'wx'});
+        fs.renameSync(temporary,spec.filePath);
+      }
+    } catch (rollbackError) {
+      throw new AggregateError([error,rollbackError], `Corrective evidence failed (${error.message}); bounded rollback also failed (${rollbackError.message}). Preserve remaining evidence for explicit recovery.`);
+    }
+    throw error;
+  }
 }
 
 function requiredString(value, message) {
