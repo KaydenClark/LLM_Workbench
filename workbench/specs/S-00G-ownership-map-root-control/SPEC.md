@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Deliver the Ownership map as the eighth root file and Core routing artifact, with queryable responsibility routes and coordinated root-surface consumers.
 **Blockers:** No unresolved activation prerequisite. Q24B field shape/disposition placement and later concept coverage remain implementation decisions under the locked guards.
-**Latest event:** TK-001 closed with proof.
-**Next gate:** Complete TK-002.
+**Latest event:** TK-002 claimed by codex-s00g.
+**Next gate:** Close TK-002 with verification and documentation proof.
 
 > **Citation anchors.** pre=`c0ac60a179235ef22fa6ea81aec74735087e06e5` post=`c0ac60a179235ef22fa6ea81aec74735087e06e5`.
 
