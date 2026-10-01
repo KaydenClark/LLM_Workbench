@@ -2256,7 +2256,8 @@ export function moveSpecDirectory(rootDir, specId, folder) {
 //     (both absent, not either alone) - "nothing to carry" into its own
 //     historical record, the Task analogue of refusing an incomplete Spec.
 export function moveTaskRecord(rootDir, specId, taskId, folder, options = {}) {
-  if (options.replacement) return recoverTaskCollision(rootDir, specId, taskId, folder, options);
+  if (Object.hasOwn(options, 'replacement')) return recoverTaskCollision(rootDir, specId, taskId, folder, options);
+  if (options.dryRun) throw new Error('move-task --dry-run requires the collision recovery replacement mode');
   const root = path.resolve(rootDir);
   if (!TASK_LIFECYCLE_FOLDERS.includes(folder)) {
     throw new Error(`move-task refuses folder "${folder}"; the closed set is ${TASK_LIFECYCLE_FOLDERS.join(', ')}`);
@@ -4004,6 +4005,7 @@ function toCamel(value) {
 
 async function main() {
   const { command, id, options } = parseCliArgs(process.argv.slice(2));
+  if (options.dryRun && command !== 'move-task') throw new Error('--dry-run is supported only by move-task collision recovery');
   const root = options.path ?? process.cwd();
   let result;
   let doctorRun;

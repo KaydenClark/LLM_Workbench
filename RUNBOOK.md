@@ -1113,7 +1113,9 @@ node workbench/tools/spec-workbench.mjs move-task S-003P --task TK-004F \
   --reason "Director retains earlier S-00I identity" --dry-run --json
 ```
 
-`--dry-run` validates and reports without writes. After independent review of the
+`--dry-run` validates collision recovery and reports without writes. An empty
+replacement is refused. Ordinary retirement and other verbs refuse `--dry-run`
+before any mutation. After independent review of the
 mechanism and plan, repeat the identical command without `--dry-run`; it stages
 one guarded move and its live Markdown references/projections, without a commit.
 The original Receipt bytes, done status and append-only Spec rows stay intact;
