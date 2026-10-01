@@ -43,6 +43,7 @@ const SHORT = /`:(\d+)(?:-(\d+))?`/g;
 const PATH_ONLY = /`([A-Za-z0-9_.][A-Za-z0-9_./-]*)`|(?<![`/\w.-])([A-Za-z0-9_.][A-Za-z0-9_./-]*\/[A-Za-z0-9_./-]+)(?![`\w])/g;
 const KNOWN_PATHS = new Set(execFileSync('git', ['ls-tree', '-r', '--name-only', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim().split('\n'));
 const KNOWN_BASENAMES = new Set([...KNOWN_PATHS].map((file) => path.posix.basename(file)));
+const KNOWN_FILE_EXTENSIONS = new Set([...KNOWN_PATHS].map((file) => path.posix.extname(file).toLowerCase()).filter(Boolean));
 const GIT_SHOW = /git show\s+[0-9a-f]{7,40}:[A-Za-z0-9_./-]+/g;
 const ANCHOR = /\*\*Citation anchors\.\*\*\s*pre=`([0-9a-f]{7,40})`\s*post=`([0-9a-f]{7,40})`/;
 // Pre-change sections describe the tree the work started from. Documentation
@@ -113,7 +114,11 @@ function scanParagraph(text, section) {
     // Git trees supply extensionless paths; punctuation alone must not turn
     // an evidence token such as commitSHA:45 into a file citation.
     const cited = m[1];
-    if (cited.includes('/') || cited.includes('.') || KNOWN_PATHS.has(cited)) {
+    // Numeric dotted values such as an IP address are not file citations.
+    // Explicit qualified paths and actual repository filenames still count.
+    const numericValue = /^\d+(?:\.\d+)+$/.test(cited);
+    if (cited.includes('/') || KNOWN_PATHS.has(cited)
+        || (cited.includes('.') && (!numericValue || KNOWN_BASENAMES.has(cited)))) {
       marks.push({ at: m.index, end: m.index + m[0].length, kind: 'full', cited, from: Number(m[2]), to: Number(m[3] ?? m[2]) });
     }
   }
@@ -122,9 +127,11 @@ function scanParagraph(text, section) {
   // shorthand that follows it.
   for (const m of para.matchAll(PATH_ONLY)) {
     const cited = m[1] ?? m[2];
-    // A dotted prose/version value is not a path. Bare repository filenames
-    // still establish scope; qualified paths remain visible even if absent.
-    if (cited.includes('/') || KNOWN_BASENAMES.has(cited)) {
+    // Known repository file types establish scope even for a missing target,
+    // so a later shorthand cannot silently validate the preceding file.
+    // Version/domain values without a file suffix remain ordinary prose.
+    if (cited.includes('/') || KNOWN_BASENAMES.has(cited)
+        || KNOWN_FILE_EXTENSIONS.has(path.posix.extname(cited).toLowerCase())) {
       marks.push({ at: m.index, kind: 'path', cited });
     }
   }
