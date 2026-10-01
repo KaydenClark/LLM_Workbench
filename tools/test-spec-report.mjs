@@ -353,7 +353,7 @@ function headingShadowSpec(id) {
   try {
     blueprintAndBoard(root);
     writeAt(root, 'specs/S-708-fixture/SPEC.md', headingShadowSpec('S-708'));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
 
     const report = assembleSpecReport(root, 'S-708', { candidate });
 
@@ -382,7 +382,7 @@ function headingShadowSpec(id) {
     writeAt(root, 'specs/S-701-fixture/SPEC.md', tableSpec({
       id: 'S-701', taskStatus: 'ready', checked: false, completion: 'Pending.'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
 
     const report = assembleSpecReport(root, 'S-701', { candidate });
 
@@ -413,7 +413,7 @@ function headingShadowSpec(id) {
       id: 'S-702', taskStatus: 'done', checked: true, completion: 'Delivered the fixture capability.',
       evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
 
     const report = assembleSpecReport(root, 'S-702', { candidate });
 
@@ -547,7 +547,7 @@ function headingShadowSpec(id) {
     const before = fs.readFileSync(path.join(root, specPath), 'utf8');
     const doctorBefore = doctor(root);
 
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
     const report = assembleSpecReport(root, 'S-704', { candidate });
     assert.equal(report.status, 'complete');
     assert.equal(report.complete, true);
@@ -577,7 +577,7 @@ function headingShadowSpec(id) {
       id: 'S-705', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
     const cliPath = path.resolve('workbench/tools/spec-workbench.mjs');
 
     const jsonResult = spawnSync('node', [cliPath, 'report', 'S-705', '--candidate', candidate, '--json', '--path', root], { encoding: 'utf8' });
@@ -642,7 +642,7 @@ function headingShadowSpec(id) {
       id: 'S-710', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
     }));
-    const staleCandidate = headSha(root);
+    const staleCandidate = commitFixture(root);
     // Advance HEAD with an empty commit: no file changes, so the Spec's
     // content digest is unaffected even though HEAD itself has moved.
     execFileSync('git', ['-C', root, 'commit', '--quiet', '--allow-empty', '-m', 'advance past the reviewed candidate']);
@@ -652,7 +652,7 @@ function headingShadowSpec(id) {
     const verdict = recordReviewVerdict(root, 'S-710', {
       candidate: staleCandidate, result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
-    assert.equal(verdict.candidate, staleCandidate, 'the candidate SHA is recorded exactly as given - an audit trail, no longer a binding');
+    assert.equal(verdict.candidate, staleCandidate, 'the candidate SHA is recorded exactly as given and contains the reviewed content');
     assert.ok(fs.readFileSync(path.join(root, specPath), 'utf8').includes(verdict.row), 'a candidate that is no longer HEAD is accepted: content binds, location does not');
 
     // The report, read from this same checkout (now on `currentHead`, a
@@ -737,7 +737,7 @@ function headingShadowSpec(id) {
       id: 'S-718', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
     const before = fs.readFileSync(path.join(root, specPath), 'utf8');
 
     assert.throws(
@@ -791,7 +791,7 @@ function headingShadowSpec(id) {
       id: 'S-711', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
     }));
-    const firstCandidate = headSha(root);
+    const firstCandidate = commitFixture(root);
 
     const passResult = recordReviewVerdict(root, 'S-711', {
       candidate: firstCandidate, result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
@@ -817,7 +817,7 @@ function headingShadowSpec(id) {
     // update/rewrite entry point offered at all: only recordReviewVerdict,
     // which only ever appends.
     execFileSync('git', ['-C', root, 'commit', '--quiet', '--allow-empty', '-m', 'a fresh candidate for the second review']);
-    const secondCandidate = headSha(root);
+    const secondCandidate = commitFixture(root);
     assert.notEqual(secondCandidate, firstCandidate);
 
     const failResult = recordReviewVerdict(root, 'S-711', {
@@ -895,7 +895,7 @@ function headingShadowSpec(id) {
     const before = fs.readFileSync(path.join(root, specPath), 'utf8');
     const sliceTableBefore = before.slice(before.indexOf('## Vertical Implementation Slices'), before.indexOf('## Acceptance Criteria'));
     const doctorBefore = doctor(root);
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
 
     recordReviewVerdict(root, 'S-713', { candidate, result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)' });
 
@@ -933,7 +933,7 @@ function headingShadowSpec(id) {
       id: 'S-714', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
     const cliPath = path.resolve('workbench/tools/spec-workbench.mjs');
 
     const reportResult = spawnSync('node', [cliPath, 'report', 'S-714', '--candidate', candidate, '--json', '--path', root], { encoding: 'utf8' });
@@ -1004,7 +1004,7 @@ function headingShadowSpec(id) {
       id: 'TK-002', specId: 'S-719', slice: 'Second slice', status: 'in-progress', blockers: 'none',
       destination: 'spec-acceptance: S-719 Acceptance Criteria', plannedVerification: 'Red: X; green: Y'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
     const cliPath = path.resolve('workbench/tools/spec-workbench.mjs');
 
     const verdict = recordReviewVerdict(root, 'S-719', {
@@ -1050,7 +1050,7 @@ function headingShadowSpec(id) {
       id: 'S-720', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
     const before = fs.readFileSync(path.join(root, specPath), 'utf8');
 
     assert.throws(
@@ -1094,7 +1094,7 @@ function headingShadowSpec(id) {
   initGitRoot(root);
   try {
     blueprintAndBoard(root);
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
     const specPath = 'specs/S-721-fixture/SPEC.md';
     writeAt(root, specPath, tableSpec({
       id: 'S-721', taskStatus: 'done', checked: true, completion: 'Delivered.',
@@ -1185,7 +1185,7 @@ function headingShadowSpec(id) {
       id: 'S-722', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
 
     const verdict = recordReviewVerdict(root, 'S-722', {
       candidate, result: 'fail', findings: 'Missing input validation; Stale doc reference',
@@ -1250,7 +1250,7 @@ function headingShadowSpec(id) {
       id: 'S-723', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
 
     const verdict = recordReviewVerdict(root, 'S-723', {
       candidate, result: 'fail',
@@ -1297,7 +1297,7 @@ function headingShadowSpec(id) {
   initGitRoot(root);
   try {
     blueprintAndBoard(root);
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
     const specPath = 'specs/S-724-fixture/SPEC.md';
     writeAt(root, specPath, tableSpec({
       id: 'S-724', taskStatus: 'done', checked: true, completion: 'Delivered.',
@@ -1343,7 +1343,7 @@ function headingShadowSpec(id) {
       id: 'S-725', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
 
     recordReviewVerdict(root, 'S-725', {
       candidate, result: 'fail', findings: 'Missing input validation; Stale doc reference',
@@ -1387,7 +1387,7 @@ function headingShadowSpec(id) {
       id: 'S-726', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
 
     const verdict = recordReviewVerdict(root, 'S-726', {
       candidate, result: 'pass', findings: 'Cosmetic note only, not a real defect',
@@ -1503,7 +1503,7 @@ function headingShadowSpec(id) {
     writeAt(root, 'specs/S-740-fixture/SPEC.md', tableSpec({
       id: 'S-740', taskStatus: 'ready', checked: false, completion: 'Pending.'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
 
     const specGate = gate(root, { spec: 'S-740', candidate });
     assert.equal(specGate.mode, 'spec-candidate');
@@ -1524,7 +1524,7 @@ function headingShadowSpec(id) {
       evidenceRow: '| 2026-09-18 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
     }));
     recordReviewVerdict(root, 'S-740', {
-      candidate: headSha(root), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+      candidate: commitFixture(root), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
 
     // S-00J TK-005 as repaired by S-00U F2: a passed review verdict is what
@@ -1561,7 +1561,7 @@ function headingShadowSpec(id) {
     writeAt(root, 'specs/S-741-fixture/SPEC.md', tableSpec({
       id: 'S-741', taskStatus: 'ready', checked: false, completion: 'Pending.'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
     const cliPath = path.resolve('workbench/tools/spec-workbench.mjs');
 
     const refused = spawnSync('node', [cliPath, 'gate', '--spec', 'S-741', '--candidate', candidate, '--json', '--path', root], { encoding: 'utf8' });
@@ -1616,7 +1616,7 @@ function headingShadowSpec(id) {
       id: 'TK-002', specId, slice: 'Second slice', status: 'done', blockers: 'none',
       destination: `spec-acceptance: ${specId} Acceptance Criteria`, proof: 'landed'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
     const baseline = assembleSpecReport(root, specId, { candidate }).specDigest;
 
     // Appending a Receipt row to the Task's own TASK.md leaves the digest
@@ -1757,7 +1757,7 @@ function headingShadowSpec(id) {
       id: 'S-745', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
 
     const first = recordReviewVerdict(root, 'S-745', {
       candidate, result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
