@@ -92,7 +92,7 @@ try {
   refusal([], /discarded on an observed remote tip/); git('update-ref', '-d', 'refs/remotes/origin/discarded');
   write('workbench/specs/S-00I-lifecycle/tasks/TK-004I/TASK.md', taskBytes('S-00I').replaceAll('TK-004F', 'TK-004I')); commit('local occupied replacement');
   refusal(currentArgs(), /occupied by a record/); git('reset', '--hard', original);
-  write('workbench/specs/S-00I-lifecycle/tasks/TK-004J/TASK.md', taskBytes('S-00I').replaceAll('TK-004F', 'TK-004J').replace('**Task ID:** TK-004J', '**Task ID:** TK-004J\n**Former ID:** TK-0004i'));
+  write('workbench/specs/S-00I-lifecycle/tasks/TK-0004I/TASK.md', taskBytes('S-00I').replaceAll('TK-004F', 'TK-0004I').replace('**Task ID:** TK-0004I', '**Task ID:** TK-0004I\n**Former ID:** TK-004i'));
   commit('local replacement alias'); refusal(currentArgs(), /occupied by a record or alias/); git('reset', '--hard', original);
   // One failed publication after git mv must restore the original bytes AND index.
   const injection = path.join(os.tmpdir(), `collision-inject-${process.pid}.mjs`);

@@ -487,14 +487,15 @@ Collision identity recovery is an exceptional `move-task` mode for an already
 published done Task in an open Spec. First fetch all remote tips and obtain the
 Director disposition naming the earlier identity and centrally reserved replacement.
 Freeze the clean candidate and unchanged original Task bytes. Supply the exact
-reviewed commit revisions and SHA256 of the source Task:
+reviewed commit revisions and SHA256 of the source Task. The example selectors
+below are generic; set them and the shell variables from the room disposition:
 
 ```bash
-node workbench/tools/spec-workbench.mjs move-task "[SPEC_ID]" --task "[TASK_ID]" \
-  --replacement "[RESERVED_TASK_ID]" --expected-head "[CANDIDATE_SHA]" \
-  --task-hash "[SOURCE_TASK_SHA256]" --source-revision "[ORIGINAL_SOURCE_SHA]" \
-  --collision-spec "[EARLIER_SPEC_ID]" --collision-revision "[EARLIER_SOURCE_SHA]" \
-  --collision-path "[EARLIER_TASK_PATH]" --reason "[DIRECTOR_DISPOSITION]" \
+node workbench/tools/spec-workbench.mjs move-task S-001 --task TK-000A \
+  --replacement TK-000B --expected-head "$EXPECTED_HEAD" \
+  --task-hash "$TASK_HASH" --source-revision "$SOURCE_SHA" \
+  --collision-spec S-002 --collision-revision "$COLLISION_SHA" \
+  --collision-path "$EARLIER_TASK_PATH" --reason "$DIRECTOR_REASON" \
   --dry-run --json
 ```
 
