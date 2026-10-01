@@ -79,11 +79,21 @@ candidate. Main and carry remain untouched.
 
 Git publication works in this saved Workbench; `gh pr list --head
 codex/s01r-tk01i-reviewer-rebuild --json number,url,isDraft` returned GraphQL
-`Forbidden`. If draft creation is likewise unavailable, parent Servitor can
-open the draft from the verified public branch. No API bypass is required.
+`Forbidden`. The connected GitHub app then succeeded and created
+[draft PR #259](https://github.com/KaydenClark/LLM_Workbench/pull/259), initially
+at 514bf0da519ee399ece22d13a4853c638969b927. It is unapproved/unmerged and
+reported mergeable false; coordinator assembly remains open. This was an
+authorized connector fallback, not a permission bypass. The CLI refusal
+remains historical evidence, not a current draft-creation blocker.
 
 The observed remote integration advanced to `25d3f4d23b3719693065336a4ba66349d0a95907`;
 its required AGENTS/RUNBOOK command blocks are unchanged and reviewer source,
 S-01R records and MEMORY have no overlapping changes. This branch does not
 claim to have tested the new integration runtime assembly. Main remained
 `6f3a60e695dfd320e75190e828a5a3e939cc80a3`.
+
+After the proof-only update, final source regression, Wiki validation and doctor
+passed. The 15 citation checks and direct append-only checker also passed. A
+concurrent final report briefly encountered a transient citation-test fixture;
+when that test cleaned up, the report and drift read-back succeeded sequentially.
+The final report names no verdict or owner approval.
