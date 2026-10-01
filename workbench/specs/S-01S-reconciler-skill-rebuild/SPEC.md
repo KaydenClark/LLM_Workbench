@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Leave achieved work and its existing truth owners consistent for continuation.
 **Blockers:** none for assigned implementation; separate immutable review and raw scenario verification remain delivery gates.
-**Latest event:** Same TK-01J replacement-object correction passed all 51 required commands and focused 9/9 checks at 6c85b1aa480f1c356aa82884a8bf7d423fc15047; prior independent FAIL remains preserved.
-**Next gate:** Verify the routed current-base assembly, then obtain fresh independent review of the immutable candidate. Original raw scenario verification remains open.
+**Latest event:** Coordinator command-set overstatement corrected: original run48required+3additional; missing3nowpass separately. Parent reports independent actual51/51 on prior finalhead; narrow correction review pending.
+**Next gate:** Separate narrow exact-head review of the evidence correction; behavioral evidence assessment and remaining native acceptance gates stay open.
 
 > **Citation anchors.** pre=`d90785908b26517068a474bb88136c81995a2f18` post=`5433310e`.
 
