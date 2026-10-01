@@ -1,0 +1,171 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-006L",
+  "revision": 5,
+  "title": "Which skills own destination question card mechanics and the grilling-completion exit?",
+  "question": "Which skills own destination question card mechanics and the grilling-completion exit?",
+  "answer": "GX-2: One focused DQC primitive owns shared card mechanics: find, create or group the right DQC, preserve locked-question lineage and corrections, link ADRs, Specs, Tasks and other artifacts, and record evidence-backed progress assessments. The existing workflow skills decide when to call it and what their own step proves, and are updated to compose it. No dedicated DQC review skill. Domain-modeling stays available but is not required in this flow.\nGX-3: /to-dqc is the grilling-completion skill: it inspects every locked grilling answer and groups it into a suitable existing DQC, or creates a separate one when it evolves independently, preserving source question identity and corrections. /dqc is the reusable primitive for card operations and evidence-backed assessment, called by /to-dqc and by the mapping, planning, implementation, review and verification skills once those are updated.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: GX-2, GX-3 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "GX-2 create workbench/skills (new DQC primitive; mapping, planning, implementation, review and verification skills): A reusable card primitive that the workflow skills compose. | GX-3 create workbench/skills/to-dqc/SKILL.md; workbench/skills/dqc/SKILL.md: The grilling-completion skill and the card primitive, by these names.",
+    "home": "workbench/skills (new DQC primitive; mapping, planning, implementation, review and verification skills); workbench/skills/to-dqc/SKILL.md; workbench/skills/dqc/SKILL.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [
+    "GX-1..GX-3 (ledger note): the step meanings in these answers conflict with S-01T, LEXICON.md and workbench/tools/landmark-tracker.mjs, which say the steps describe documentation progress, never Task status or implementation effort; reconcile before Canon changes.",
+    "No Spec owns the /to-dqc or /dqc skills yet; naming one is a Director action (2026-10-01 backfill handoff)."
+  ],
+  "sources": [
+    {
+      "id": "GX-2",
+      "revision": "56b459da"
+    },
+    {
+      "id": "GX-3",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "GX-2",
+      "revision": "56b459da",
+      "reason": "Ledger row GX-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "GX-3",
+      "revision": "56b459da",
+      "reason": "Ledger row GX-3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Which skills own destination question card mechanics and the grilling-completion exit?",
+    "question": "Which skills own destination question card mechanics and the grilling-completion exit?",
+    "sources": [
+      {
+        "id": "GX-2",
+        "revision": "56b459da"
+      },
+      {
+        "id": "GX-3",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:36.746Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:36.746Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: a card written from ledger rows that postdate the 2026-09-26 draft grouping, grilling ledger at 56b459da.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:36.781Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "GX-2: One focused DQC primitive owns shared card mechanics: find, create or group the right DQC, preserve locked-question lineage and corrections, link ADRs, Specs, Tasks and other artifacts, and record evidence-backed progress assessments. The existing workflow skills decide when to call it and what their own step proves, and are updated to compose it. No dedicated DQC review skill. Domain-modeling stays available but is not required in this flow.\nGX-3: /to-dqc is the grilling-completion skill: it inspects every locked grilling answer and groups it into a suitable existing DQC, or creates a separate one when it evolves independently, preserving source question identity and corrections. /dqc is the reusable primitive for card operations and evidence-backed assessment, called by /to-dqc and by the mapping, planning, implementation, review and verification skills once those are updated."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: GX-2, GX-3 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "GX-2 create workbench/skills (new DQC primitive; mapping, planning, implementation, review and verification skills): A reusable card primitive that the workflow skills compose. | GX-3 create workbench/skills/to-dqc/SKILL.md; workbench/skills/dqc/SKILL.md: The grilling-completion skill and the card primitive, by these names.",
+            "home": "workbench/skills (new DQC primitive; mapping, planning, implementation, review and verification skills); workbench/skills/to-dqc/SKILL.md; workbench/skills/dqc/SKILL.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:36.817Z",
+      "reason": "Ledger row GX-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "GX-2",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:36.858Z",
+      "reason": "Ledger row GX-3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "GX-3",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:36.903Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,208 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-004F",
+  "revision": 6,
+  "title": "How should failed Human QA return work to alignment or correction?",
+  "question": "How should failed Human QA return work to alignment or correction?",
+  "answer": "WF-9: Delivery repeats recursively. A failed Human QA result returns to Align and the design-concept/delivery loop at the appropriate scope.\nWF-8G: Route by scope and destination, not Task count. A gap against an existing Spec destination is fixed with reopened or corrective Tasks, even when several are needed. A new Spec is only for a distinct scoped objective with its own destination, such as investigating why the journey missed something. TASK.md holds active work state and TASKBOARD projects it; a Spec is open if it has Tasks on the board.\nWF-12: 'I want every spec completed before we call this done.' The rollout must complete the Blueprint rework and every Spec needed to establish the full workflow. The reworked Blueprint describes every rung and the full recursive Spec/Task loop (Create Spec -> Create Tasks -> Complete and Reconcile Tasks -> Verify Whole Spec -> Corrective Tasks -> Repeat Until Approved -> Integrate Spec). Future Blueprint capabilities outside that scope need no Specs now.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-9, WF-8G, WF-12 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WF-9 update BLUEPRINT.md: Describes the recursive loop and the return from failed Human QA to Align at the right scope. | WF-9 update RUNBOOK.md and templates/RUNBOOK.md: Human QA failure procedure; owned by S-00P TK-003 and TK-005. | WF-8G update BLUEPRINT.md: States the scope-and-destination rule for Tasks versus new Specs. | WF-8G update AGENTS.md (documentation ownership table) and templates/AGENTS.md: Active work state moves from SPEC.md to TASK.md, with TASKBOARD as projection; owned by S-00P TK-002 and TK-005. | WF-8G update LEXICON.md (Spec, Task rows) and templates/LEXICON.md: Spec as objective with a destination; Task as the open work item; owned by S-00P TK-004. | WF-8G update workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md: TASK.md owns active work state and the board projects it. | WF-12 update BLUEPRINT.md: Describes every rung and the full recursive Spec/Task delivery loop (S-00P TK-001). | WF-12 update workbench/specs/S-00P-workflow-canon-rework/SPEC.md: Carries the controls rewrite (AGENTS, RUNBOOK, LEXICON, templates) that completes the workflow. | WF-12 update workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md: Release Spec: all rollout Specs (S-00H, S-00I, S-00J, S-00P) complete before v4.0.0; exemption 1 records the reduced delivery route.",
+    "home": "BLUEPRINT.md; RUNBOOK.md and templates/RUNBOOK.md; AGENTS.md (documentation ownership table) and templates/AGENTS.md; LEXICON.md (Spec, Task rows) and templates/LEXICON.md; workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md; workbench/specs/S-00P-workflow-canon-rework/SPEC.md; workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "WF-9",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-8G",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-12",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WF-9",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-9 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-8G",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-8G (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-12",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-12 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should failed Human QA return work to alignment or correction?",
+    "question": "How should failed Human QA return work to alignment or correction?",
+    "sources": [
+      {
+        "id": "WF-9",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-8G",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-12",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:26.354Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:26.354Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 106 of the 2026-09-26 grouping (\"Verification, QA and correction\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The workflow is recursive: return to the appropriate scope of understanding and delivery rather than treating a failed evaluation as a release ritual.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:26.380Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WF-9: Delivery repeats recursively. A failed Human QA result returns to Align and the design-concept/delivery loop at the appropriate scope.\nWF-8G: Route by scope and destination, not Task count. A gap against an existing Spec destination is fixed with reopened or corrective Tasks, even when several are needed. A new Spec is only for a distinct scoped objective with its own destination, such as investigating why the journey missed something. TASK.md holds active work state and TASKBOARD projects it; a Spec is open if it has Tasks on the board.\nWF-12: 'I want every spec completed before we call this done.' The rollout must complete the Blueprint rework and every Spec needed to establish the full workflow. The reworked Blueprint describes every rung and the full recursive Spec/Task loop (Create Spec -> Create Tasks -> Complete and Reconcile Tasks -> Verify Whole Spec -> Corrective Tasks -> Repeat Until Approved -> Integrate Spec). Future Blueprint capabilities outside that scope need no Specs now."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-9, WF-8G, WF-12 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WF-9 update BLUEPRINT.md: Describes the recursive loop and the return from failed Human QA to Align at the right scope. | WF-9 update RUNBOOK.md and templates/RUNBOOK.md: Human QA failure procedure; owned by S-00P TK-003 and TK-005. | WF-8G update BLUEPRINT.md: States the scope-and-destination rule for Tasks versus new Specs. | WF-8G update AGENTS.md (documentation ownership table) and templates/AGENTS.md: Active work state moves from SPEC.md to TASK.md, with TASKBOARD as projection; owned by S-00P TK-002 and TK-005. | WF-8G update LEXICON.md (Spec, Task rows) and templates/LEXICON.md: Spec as objective with a destination; Task as the open work item; owned by S-00P TK-004. | WF-8G update workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md: TASK.md owns active work state and the board projects it. | WF-12 update BLUEPRINT.md: Describes every rung and the full recursive Spec/Task delivery loop (S-00P TK-001). | WF-12 update workbench/specs/S-00P-workflow-canon-rework/SPEC.md: Carries the controls rewrite (AGENTS, RUNBOOK, LEXICON, templates) that completes the workflow. | WF-12 update workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md: Release Spec: all rollout Specs (S-00H, S-00I, S-00J, S-00P) complete before v4.0.0; exemption 1 records the reduced delivery route.",
+            "home": "BLUEPRINT.md; RUNBOOK.md and templates/RUNBOOK.md; AGENTS.md (documentation ownership table) and templates/AGENTS.md; LEXICON.md (Spec, Task rows) and templates/LEXICON.md; workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md; workbench/specs/S-00P-workflow-canon-rework/SPEC.md; workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:26.405Z",
+      "reason": "Ledger row WF-9 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-9",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:26.435Z",
+      "reason": "Ledger row WF-8G (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-8G",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:26.464Z",
+      "reason": "Ledger row WF-12 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-12",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:26.494Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

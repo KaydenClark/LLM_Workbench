@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000B",
-  "revision": 7,
+  "revision": 9,
   "title": "GitHub Issues as the required live coordination authority",
   "question": "Which owner holds live assignment, the active Worker, operational holds and the next hand-back during normal delivery, and how does that authority replace pushed Task-branch claims without two claim authorities?",
   "answer": "GitHub Issues is required live coordination for normal delivery, not an optional mirror. Issues own live assignment, the active Worker, operational holds and the next hand-back through bounded trusted operations; the request, Contract and assigned Spec and Task keep scope, requirements, acceptance and permission; native pull requests and exact commits express candidate and review activity through Workbench gates; repository evidence owners keep receipts, acceptance and owner approval. Directors resolve assignment races and the owner-designated coordinator Vespar breaks v4 ties. ADR-000O's pushed Task-branch remote-tip claim is superseded for v4 only at a separately reviewed cutover that leaves exactly one active claim authority. Issue prose, an assignee or status alone, labels and bot messages never enlarge authority, prove exclusivity or manufacture independent review or QA. Visible error and pending state and refusal of unverifiable unsafe assignments or writes are required; no atomic lock, custom scheduler or second queue.",
@@ -44,6 +44,10 @@
     {
       "id": "AGENTS.md",
       "revision": "065a7ce4436e46ae6726985b567b6b94ed94660c"
+    },
+    {
+      "id": "PW-6",
+      "revision": "56b459da"
     }
   ],
   "landmarks": [
@@ -81,6 +85,22 @@
       "revision": "9f5bd5ab",
       "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
       "assessment": null
+    },
+    {
+      "type": "grilling-question",
+      "id": "PW-6",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-6 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 9
+      }
     }
   ],
   "claims": [
@@ -342,6 +362,37 @@
             "type": "spec",
             "id": "S-003V",
             "revision": "9f5bd5ab"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:06.624Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 070 (\"How should a claim become visible to other instances?\") carries this card's destination; its only row, PW-6, is the pushed Task-branch claim surface this card replaces at the reviewed cutover. Related as lineage and assessed from its ledger status only; the ledger still records PW-6 as locked.",
+      "changes": [
+        {
+          "field": "source",
+          "from": null,
+          "to": {
+            "id": "PW-6",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "at": "2026-10-01T23:49:06.633Z",
+      "reason": "Ledger row PW-6 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-6",
+            "revision": "56b459da"
           }
         }
       ]

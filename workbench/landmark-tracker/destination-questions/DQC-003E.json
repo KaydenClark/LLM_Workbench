@@ -1,0 +1,128 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-003E",
+  "revision": 4,
+  "title": "Who selects the normal stance for an assignment?",
+  "question": "Who selects the normal stance for an assignment?",
+  "answer": "WB-16: Normal task stance is set in the assigned SPEC and TASK; the agent does not choose or record its own. A stance decision may arise only once work enters troubleshooting mode, and what happens there is outside this grilling session's scope.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-16 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WB-16 update AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md: Normal stance is set in the assigned SPEC and TASK, not selected or recorded by the arriving agent; troubleshooting stance policy is outside the contract. | WB-16 update templates/SPEC.md and Spec/TASK records: Spec and Task records carry a Stance field. | WB-16 create workbench/docs/adr/0036-stances-change-method-not-authority.md: SPEC and TASK assign normal stance; troubleshooting policy deferred.",
+    "home": "AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md; templates/SPEC.md and Spec/TASK records; workbench/docs/adr/0036-stances-change-method-not-authority.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "WB-16",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 4
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WB-16",
+      "revision": "56b459da",
+      "reason": "Ledger row WB-16 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Who selects the normal stance for an assignment?",
+    "question": "Who selects the normal stance for an assignment?",
+    "sources": [
+      {
+        "id": "WB-16",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:22.874Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:22.874Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 079 of the 2026-09-26 grouping (\"Stances and useful autonomy\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The assigned Spec and Task set the normal stance rather than the arriving agent choosing its own.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:22.895Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WB-16: Normal task stance is set in the assigned SPEC and TASK; the agent does not choose or record its own. A stance decision may arise only once work enters troubleshooting mode, and what happens there is outside this grilling session's scope."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-16 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WB-16 update AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md: Normal stance is set in the assigned SPEC and TASK, not selected or recorded by the arriving agent; troubleshooting stance policy is outside the contract. | WB-16 update templates/SPEC.md and Spec/TASK records: Spec and Task records carry a Stance field. | WB-16 create workbench/docs/adr/0036-stances-change-method-not-authority.md: SPEC and TASK assign normal stance; troubleshooting policy deferred.",
+            "home": "AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md; templates/SPEC.md and Spec/TASK records; workbench/docs/adr/0036-stances-change-method-not-authority.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:22.915Z",
+      "reason": "Ledger row WB-16 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WB-16",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:22.939Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

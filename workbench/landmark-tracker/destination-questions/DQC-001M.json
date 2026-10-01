@@ -1,0 +1,128 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-001M",
+  "revision": 4,
+  "title": "How does information ownership vary with scope?",
+  "question": "How does information ownership vary with scope?",
+  "answer": "FND-Q21B: An altitude is a scope, not a file. Boundaries, Requirements, Acceptance and Evidence have owners at all three scopes; Destination (Blueprint, Spec) and Work state (Spec, Task) at two. Gaps are declared with a route. Boundaries splits inside one row: permission limits arrive by inherits, product exclusions by refines. Refined 2026-09-22 (Option B): the Taskboard is first-class as the project-wide representation of work state; TASKBOARD.json summarizes the Spec and Task records that author it.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q21B (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "FND-Q21B create workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json: Six scoped rows with per-scope owners, declared gaps with routes, and the Taskboard as representation owner with a summarizes relation. | FND-Q21B update LEXICON.md Boundaries wording and templates/LEXICON.md: Does not read as if a Spec could narrow a safety boundary.",
+    "home": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json; LEXICON.md Boundaries wording and templates/LEXICON.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "FND-Q21B",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 4
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "FND-Q21B",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q21B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How does information ownership vary with scope?",
+    "question": "How does information ownership vary with scope?",
+    "sources": [
+      {
+        "id": "FND-Q21B",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:18.525Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:18.525Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 033 of the 2026-09-26 grouping (\"Entry, authority and ownership\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: An altitude is a scope, not a file. Requirements, acceptance, evidence and boundaries can have owners at several scopes; permission limits and product exclusions use different relationships.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:18.539Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "FND-Q21B: An altitude is a scope, not a file. Boundaries, Requirements, Acceptance and Evidence have owners at all three scopes; Destination (Blueprint, Spec) and Work state (Spec, Task) at two. Gaps are declared with a route. Boundaries splits inside one row: permission limits arrive by inherits, product exclusions by refines. Refined 2026-09-22 (Option B): the Taskboard is first-class as the project-wide representation of work state; TASKBOARD.json summarizes the Spec and Task records that author it."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q21B (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "FND-Q21B create workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json: Six scoped rows with per-scope owners, declared gaps with routes, and the Taskboard as representation owner with a summarizes relation. | FND-Q21B update LEXICON.md Boundaries wording and templates/LEXICON.md: Does not read as if a Spec could narrow a safety boundary.",
+            "home": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json; LEXICON.md Boundaries wording and templates/LEXICON.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:18.552Z",
+      "reason": "Ledger row FND-Q21B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q21B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:18.568Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

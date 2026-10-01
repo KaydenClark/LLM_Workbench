@@ -1,0 +1,256 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-004K",
+  "revision": 7,
+  "title": "When is it safe to discard reconciled Spec and Task records?",
+  "question": "When is it safe to discard reconciled Spec and Task records?",
+  "answer": "WF-8F: Specs and Tasks are transient working artifacts, not product documentation. Once their useful content is turned into readable durable documentation and the exact change is verified on main, they are retired and discarded. The Wiki stores the reconciled retired Spec and later corrective Tasks update it; Blueprint, Wiki and Taskboard are the enduring and navigational surfaces.\nE-11: Derived, never authored on the board: complete record in a live folder = ready to capture; in retired/ (ADR-000I) = captured, ready to delete; deleted = card drops. 'The state should show that we are good to move forward, not the taskboard. Updating that it's ready only to wipe it is pointless.' sitrep reports Complete as two counts.\nWF-8D: After a completed Task's results and needed proof are reconciled into the owning Spec, the Task is retired: its branch and worktree are deleted after verified containment, it leaves the hot Taskboard and ordinary pickup, and its TASK.md survives only as retired history reachable by an explicit historical route.\nWF-8E: A Spec closes only after separate-context Spec review passes and owner Human QA on integration confirms the destination is actually there. It is then reconciled into the Wiki and retired. No Git merge closes it automatically; main promotion stays a separate owner action.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-8F, E-11, WF-8D, WF-8E (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WF-8F update BLUEPRINT.md: Blueprint owns direction, Wiki owns readable current capability knowledge, Taskboard projects active work, ADRs own decisions, source/tests own proof, Git keeps history. | WF-8F update LEXICON.md (Spec and 'SPEC and TASK' rows) and templates/LEXICON.md: Stop calling the Spec the durable capability owner; owned by S-00P TK-004. | WF-8F update AGENTS.md (documentation ownership table) and templates/AGENTS.md: Remove durable-Spec ownership wording; owned by S-00P TK-002 and TK-005. | WF-8F update workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md: Discard gated on verified main; never archive Specs or Tasks. | WF-8F update workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md: Reconciled under S-00P TK-004 to the transient lifecycle. | E-11 create board Spec (TASKBOARD.json board): Complete-card substate derived from record state/folder. | E-11 create workbench/skills/sitrep/SKILL.md: Reports Complete as two counts (ready to capture, ready to delete).",
+    "home": "BLUEPRINT.md; LEXICON.md (Spec and 'SPEC and TASK' rows) and templates/LEXICON.md; AGENTS.md (documentation ownership table) and templates/AGENTS.md; workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md; workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md; board Spec (TASKBOARD.json board); workbench/skills/sitrep/SKILL.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "FND-Q07",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-8F",
+      "revision": "56b459da"
+    },
+    {
+      "id": "E-11",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-8D",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-8E",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 7
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WF-8F",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-8F (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "E-11",
+      "revision": "56b459da",
+      "reason": "Ledger row E-11 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-8D",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-8D (locked) at 56b459da, related as the successor of superseded FND-Q07; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-8E",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-8E (locked) at 56b459da, related as the successor of superseded FND-Q07; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "When is it safe to discard reconciled Spec and Task records?",
+    "question": "When is it safe to discard reconciled Spec and Task records?",
+    "sources": [
+      {
+        "id": "FND-Q07",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-8F",
+        "revision": "56b459da"
+      },
+      {
+        "id": "E-11",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-8D",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-8E",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:27.133Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:27.133Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 111 of the 2026-09-26 grouping (\"Durable knowledge and retirement\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The recorded evolution separates retirement from discard: useful truth must be captured and the exact change verified on main before final removal, with recovery retained in Git. Superseded lineage kept as sources and represented by successors: FND-Q07 (successor WF-8D, WF-8E, WF-8F).",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:27.159Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WF-8F: Specs and Tasks are transient working artifacts, not product documentation. Once their useful content is turned into readable durable documentation and the exact change is verified on main, they are retired and discarded. The Wiki stores the reconciled retired Spec and later corrective Tasks update it; Blueprint, Wiki and Taskboard are the enduring and navigational surfaces.\nE-11: Derived, never authored on the board: complete record in a live folder = ready to capture; in retired/ (ADR-000I) = captured, ready to delete; deleted = card drops. 'The state should show that we are good to move forward, not the taskboard. Updating that it's ready only to wipe it is pointless.' sitrep reports Complete as two counts.\nWF-8D: After a completed Task's results and needed proof are reconciled into the owning Spec, the Task is retired: its branch and worktree are deleted after verified containment, it leaves the hot Taskboard and ordinary pickup, and its TASK.md survives only as retired history reachable by an explicit historical route.\nWF-8E: A Spec closes only after separate-context Spec review passes and owner Human QA on integration confirms the destination is actually there. It is then reconciled into the Wiki and retired. No Git merge closes it automatically; main promotion stays a separate owner action."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-8F, E-11, WF-8D, WF-8E (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WF-8F update BLUEPRINT.md: Blueprint owns direction, Wiki owns readable current capability knowledge, Taskboard projects active work, ADRs own decisions, source/tests own proof, Git keeps history. | WF-8F update LEXICON.md (Spec and 'SPEC and TASK' rows) and templates/LEXICON.md: Stop calling the Spec the durable capability owner; owned by S-00P TK-004. | WF-8F update AGENTS.md (documentation ownership table) and templates/AGENTS.md: Remove durable-Spec ownership wording; owned by S-00P TK-002 and TK-005. | WF-8F update workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md: Discard gated on verified main; never archive Specs or Tasks. | WF-8F update workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md: Reconciled under S-00P TK-004 to the transient lifecycle. | E-11 create board Spec (TASKBOARD.json board): Complete-card substate derived from record state/folder. | E-11 create workbench/skills/sitrep/SKILL.md: Reports Complete as two counts (ready to capture, ready to delete).",
+            "home": "BLUEPRINT.md; LEXICON.md (Spec and 'SPEC and TASK' rows) and templates/LEXICON.md; AGENTS.md (documentation ownership table) and templates/AGENTS.md; workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md; workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md; board Spec (TASKBOARD.json board); workbench/skills/sitrep/SKILL.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:27.185Z",
+      "reason": "Ledger row WF-8F (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-8F",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:27.216Z",
+      "reason": "Ledger row E-11 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "E-11",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:27.246Z",
+      "reason": "Ledger row WF-8D (locked) at 56b459da, related as the successor of superseded FND-Q07; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-8D",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:27.278Z",
+      "reason": "Ledger row WF-8E (locked) at 56b459da, related as the successor of superseded FND-Q07; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-8E",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:27.309Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

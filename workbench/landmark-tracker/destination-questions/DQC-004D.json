@@ -1,0 +1,248 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-004D",
+  "revision": 7,
+  "title": "What does owner Human QA evaluate, and where does it happen?",
+  "question": "What does owner Human QA evaluate, and where does it happen?",
+  "answer": "FND-Q14: Two named gates. Spec QA gate: working branch into integration, triggered by the merge request; it checks every Task in the Spec is done and the branch is up to Spec, passing merges and failing denies. Human QA gate: integration into main; integration is the Human QA branch where the owner decides if work is ready or needs more. Human QA is not a release ceremony and is not batched by release.\nWF-8: Tasks use red/green TDD, make relevant tests green, exercise what was built to confirm it works, and preserve proof before handoff. A separate context checks the assembled Spec. Integration is the assembled surface for owner Human QA, which can return work to Align before owner-only main promotion.\nWF-9: Delivery repeats recursively. A failed Human QA result returns to Align and the design-concept/delivery loop at the appropriate scope.\nSCR-6: Two acts by two parties. The Director approves each Spec its Dispatcher carries (a pass lets the Spec branch merge into integration and moves its card to Complete) and coordinates across Dispatchers. Owner Human QA comes after the Director has approved every Spec in the version or escalated blockers, and ends in the owner-only integration to main merge. What Human QA consists of is project-specific; here it is the owner monitoring, asking the Director questions and starting the next steps. Closure (features Wiki capture, record deletion) follows verification on main.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q14, WF-8, WF-9, SCR-6 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "FND-Q14 update workbench/docs/adr/proposed/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md: Records the two gates as an accepted decision (S-00P TK-004). | FND-Q14 update workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md: Owns the Spec QA gate at the Spec branch into integration and requires recorded owner Human QA approval before closure. | FND-Q14 update AGENTS.md (Git Rules, Human QA) and templates/AGENTS.md: Name the Spec QA gate and the integration-to-main Human QA gate (S-00P TK-002, TK-005). | FND-Q14 update BLUEPRINT.md (Desired Lifecycle): Describes Spec review into integration and owner Human QA before main. | WF-8 update BLUEPRINT.md: States the QA/Verify duty at Task, Spec and integration altitudes. | WF-8 update workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md: Spec QA gate and corrective-Task return path at the assembled-Spec level. | WF-8 update AGENTS.md (Engineering And Verification, Work Selection) and templates/AGENTS.md: Task proof duties and assembled-Spec review replace the Spec-embedded ticket procedure; owned by S-00P TK-002 and TK-005. | WF-8 update RUNBOOK.md and templates/RUNBOOK.md: Procedures for Task verification, assembled-Spec review and Human QA; owned by S-00P TK-003 and TK-005. | WF-9 update BLUEPRINT.md: Describes the recursive loop and the return from failed Human QA to Align at the right scope. | WF-9 update RUNBOOK.md and templates/RUNBOOK.md: Human QA failure procedure; owned by S-00P TK-003 and TK-005. | SCR-6 update workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md: Human QA's normal cadence follows the Director's approval of the version's Specs or escalated blockers; the owner chooses when to QA; approval stays per Spec and content-bound; closure follows the S-00J closure-capture contract order. | SCR-6 update BLUEPRINT.md (Desired Lifecycle): Human QA's version cadence is the described default, not the only permitted time; the owner chooses when to QA, approval is recorded per Spec, and closure follows main verification. | SCR-6 update AGENTS.md and RUNBOOK.md (integration review gate, Human QA, lifecycle) plus templates mirrors: Human QA wording states the version cadence as default, owner-selected timing and per-Spec recorded approval (S-00P TK-002).",
+    "home": "workbench/docs/adr/proposed/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md; workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md; AGENTS.md (Git Rules, Human QA) and templates/AGENTS.md; BLUEPRINT.md (Desired Lifecycle); BLUEPRINT.md; AGENTS.md (Engineering And Verification, Work Selection) and templates/AGENTS.md; RUNBOOK.md and templates/RUNBOOK.md; workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md; AGENTS.md and RUNBOOK.md (integration review gate, Human QA, lifecycle) plus templates mirrors",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "FND-Q14",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-8",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-9",
+      "revision": "56b459da"
+    },
+    {
+      "id": "SCR-6",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 7
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "FND-Q14",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q14 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-8",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-8 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-9",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-9 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "SCR-6",
+      "revision": "56b459da",
+      "reason": "Ledger row SCR-6 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What does owner Human QA evaluate, and where does it happen?",
+    "question": "What does owner Human QA evaluate, and where does it happen?",
+    "sources": [
+      {
+        "id": "FND-Q14",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-8",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-9",
+        "revision": "56b459da"
+      },
+      {
+        "id": "SCR-6",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:26.021Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:26.021Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 104 of the 2026-09-26 grouping (\"Verification, QA and correction\"), with SCR-6 added because they postdate the draft and carry the same destination, grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Integration is the assembled surface for owner evaluation of the destination; it can reveal missing understanding and return work to Align.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:26.046Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "FND-Q14: Two named gates. Spec QA gate: working branch into integration, triggered by the merge request; it checks every Task in the Spec is done and the branch is up to Spec, passing merges and failing denies. Human QA gate: integration into main; integration is the Human QA branch where the owner decides if work is ready or needs more. Human QA is not a release ceremony and is not batched by release.\nWF-8: Tasks use red/green TDD, make relevant tests green, exercise what was built to confirm it works, and preserve proof before handoff. A separate context checks the assembled Spec. Integration is the assembled surface for owner Human QA, which can return work to Align before owner-only main promotion.\nWF-9: Delivery repeats recursively. A failed Human QA result returns to Align and the design-concept/delivery loop at the appropriate scope.\nSCR-6: Two acts by two parties. The Director approves each Spec its Dispatcher carries (a pass lets the Spec branch merge into integration and moves its card to Complete) and coordinates across Dispatchers. Owner Human QA comes after the Director has approved every Spec in the version or escalated blockers, and ends in the owner-only integration to main merge. What Human QA consists of is project-specific; here it is the owner monitoring, asking the Director questions and starting the next steps. Closure (features Wiki capture, record deletion) follows verification on main."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q14, WF-8, WF-9, SCR-6 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "FND-Q14 update workbench/docs/adr/proposed/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md: Records the two gates as an accepted decision (S-00P TK-004). | FND-Q14 update workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md: Owns the Spec QA gate at the Spec branch into integration and requires recorded owner Human QA approval before closure. | FND-Q14 update AGENTS.md (Git Rules, Human QA) and templates/AGENTS.md: Name the Spec QA gate and the integration-to-main Human QA gate (S-00P TK-002, TK-005). | FND-Q14 update BLUEPRINT.md (Desired Lifecycle): Describes Spec review into integration and owner Human QA before main. | WF-8 update BLUEPRINT.md: States the QA/Verify duty at Task, Spec and integration altitudes. | WF-8 update workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md: Spec QA gate and corrective-Task return path at the assembled-Spec level. | WF-8 update AGENTS.md (Engineering And Verification, Work Selection) and templates/AGENTS.md: Task proof duties and assembled-Spec review replace the Spec-embedded ticket procedure; owned by S-00P TK-002 and TK-005. | WF-8 update RUNBOOK.md and templates/RUNBOOK.md: Procedures for Task verification, assembled-Spec review and Human QA; owned by S-00P TK-003 and TK-005. | WF-9 update BLUEPRINT.md: Describes the recursive loop and the return from failed Human QA to Align at the right scope. | WF-9 update RUNBOOK.md and templates/RUNBOOK.md: Human QA failure procedure; owned by S-00P TK-003 and TK-005. | SCR-6 update workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md: Human QA's normal cadence follows the Director's approval of the version's Specs or escalated blockers; the owner chooses when to QA; approval stays per Spec and content-bound; closure follows the S-00J closure-capture contract order. | SCR-6 update BLUEPRINT.md (Desired Lifecycle): Human QA's version cadence is the described default, not the only permitted time; the owner chooses when to QA, approval is recorded per Spec, and closure follows main verification. | SCR-6 update AGENTS.md and RUNBOOK.md (integration review gate, Human QA, lifecycle) plus templates mirrors: Human QA wording states the version cadence as default, owner-selected timing and per-Spec recorded approval (S-00P TK-002).",
+            "home": "workbench/docs/adr/proposed/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md; workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md; AGENTS.md (Git Rules, Human QA) and templates/AGENTS.md; BLUEPRINT.md (Desired Lifecycle); BLUEPRINT.md; AGENTS.md (Engineering And Verification, Work Selection) and templates/AGENTS.md; RUNBOOK.md and templates/RUNBOOK.md; workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md; AGENTS.md and RUNBOOK.md (integration review gate, Human QA, lifecycle) plus templates mirrors",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:26.073Z",
+      "reason": "Ledger row FND-Q14 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q14",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:26.103Z",
+      "reason": "Ledger row WF-8 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-8",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:26.131Z",
+      "reason": "Ledger row WF-9 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-9",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:26.160Z",
+      "reason": "Ledger row SCR-6 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "SCR-6",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:26.189Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

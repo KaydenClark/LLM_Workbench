@@ -1,0 +1,264 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-005O",
+  "revision": 7,
+  "title": "Who controls integration delivery and promotion to main?",
+  "question": "Who controls integration delivery and promotion to main?",
+  "answer": "V3-6: Verified work reaches public integration; one integration to main PR is left open for Kayden's approval and \"is never merged by the implementation agent\".\nV3-24C: Verified public integration, followed by one open integration-to-main PR for Kayden to approve.\nU313-0: No. main is not updated until the v3.1.3 build is done.\nBPR-8F1: Asking whether a candidate is ready for main authorizes an independent release review and a verdict only, not merge or publication. Kayden keeps approval and merge authority for integration to main. An agent may create the release PR only when explicitly asked, and Kayden still approves and merges it.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-6, V3-24C, U313-0, BPR-8F1 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "V3-6 update AGENTS.md (Git Rules) and templates/AGENTS.md: Only the owner merges integration into main; agents may merge below integration. | V3-6 update CLAUDE.md: States the integration target and that only the owner merges integration to main. | V3-6 update workbench/specs/S-014-workbench-release-candidate/SPEC.md: Records the v3 exact-head integration-to-main promotion PR choreography as historical. | V3-24C update AGENTS.md (Git Rules, Branch Completion) and templates/AGENTS.md: Agents merge below integration; only the owner merges integration into main. | V3-24C update workbench/specs/S-014-workbench-release-candidate/SPEC.md: Owns the open integration-to-main promotion PR after S-021 lands. | V3-24C create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Hands the pushed integration candidate to S-014. | U313-0 update workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (Decisions And Contracts): 'v3.1.3 does not publish': work is delivered to the declared integration branch; whether integration reaches main is the owner's call. | BPR-8F1 update RUNBOOK.md (task routing 'Review a candidate or readiness'; Independent Review Boundaries) and templates/RUNBOOK.md: Readiness review is review-only; only Kayden approves and merges main. | BPR-8F1 update AGENTS.md (Git Rules) and templates/AGENTS.md: Only the owner merges integration into main. | BPR-8F1 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Whole-Workbench readiness review never authorizes a main merge.",
+    "home": "AGENTS.md (Git Rules) and templates/AGENTS.md; CLAUDE.md; workbench/specs/S-014-workbench-release-candidate/SPEC.md; AGENTS.md (Git Rules, Branch Completion) and templates/AGENTS.md; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (Decisions And Contracts); RUNBOOK.md (task routing 'Review a candidate or readiness'; Independent Review Boundaries) and templates/RUNBOOK.md; workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-6",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-24C",
+      "revision": "56b459da"
+    },
+    {
+      "id": "U313-0",
+      "revision": "56b459da"
+    },
+    {
+      "id": "U313-4",
+      "revision": "56b459da"
+    },
+    {
+      "id": "U313-6",
+      "revision": "56b459da"
+    },
+    {
+      "id": "BPR-8F1",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 7
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "V3-6",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-6 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-24C",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-24C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "U313-0",
+      "revision": "56b459da",
+      "reason": "Ledger row U313-0 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "BPR-8F1",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-8F1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Who controls integration delivery and promotion to main?",
+    "question": "Who controls integration delivery and promotion to main?",
+    "sources": [
+      {
+        "id": "V3-6",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-24C",
+        "revision": "56b459da"
+      },
+      {
+        "id": "U313-0",
+        "revision": "56b459da"
+      },
+      {
+        "id": "U313-4",
+        "revision": "56b459da"
+      },
+      {
+        "id": "U313-6",
+        "revision": "56b459da"
+      },
+      {
+        "id": "BPR-8F1",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:31.939Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:31.939Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 142 of the 2026-09-26 grouping (\"Updates, drift and release evidence\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Agents deliver reviewed assigned work to integration; the owner controls integration-to-main. Historical requests to worry about unrelated release scope were withdrawn. Not related: U313-4 (withdrawn); U313-6 (withdrawn).",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:31.970Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "V3-6: Verified work reaches public integration; one integration to main PR is left open for Kayden's approval and \"is never merged by the implementation agent\".\nV3-24C: Verified public integration, followed by one open integration-to-main PR for Kayden to approve.\nU313-0: No. main is not updated until the v3.1.3 build is done.\nBPR-8F1: Asking whether a candidate is ready for main authorizes an independent release review and a verdict only, not merge or publication. Kayden keeps approval and merge authority for integration to main. An agent may create the release PR only when explicitly asked, and Kayden still approves and merges it."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-6, V3-24C, U313-0, BPR-8F1 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "V3-6 update AGENTS.md (Git Rules) and templates/AGENTS.md: Only the owner merges integration into main; agents may merge below integration. | V3-6 update CLAUDE.md: States the integration target and that only the owner merges integration to main. | V3-6 update workbench/specs/S-014-workbench-release-candidate/SPEC.md: Records the v3 exact-head integration-to-main promotion PR choreography as historical. | V3-24C update AGENTS.md (Git Rules, Branch Completion) and templates/AGENTS.md: Agents merge below integration; only the owner merges integration into main. | V3-24C update workbench/specs/S-014-workbench-release-candidate/SPEC.md: Owns the open integration-to-main promotion PR after S-021 lands. | V3-24C create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Hands the pushed integration candidate to S-014. | U313-0 update workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (Decisions And Contracts): 'v3.1.3 does not publish': work is delivered to the declared integration branch; whether integration reaches main is the owner's call. | BPR-8F1 update RUNBOOK.md (task routing 'Review a candidate or readiness'; Independent Review Boundaries) and templates/RUNBOOK.md: Readiness review is review-only; only Kayden approves and merges main. | BPR-8F1 update AGENTS.md (Git Rules) and templates/AGENTS.md: Only the owner merges integration into main. | BPR-8F1 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Whole-Workbench readiness review never authorizes a main merge.",
+            "home": "AGENTS.md (Git Rules) and templates/AGENTS.md; CLAUDE.md; workbench/specs/S-014-workbench-release-candidate/SPEC.md; AGENTS.md (Git Rules, Branch Completion) and templates/AGENTS.md; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (Decisions And Contracts); RUNBOOK.md (task routing 'Review a candidate or readiness'; Independent Review Boundaries) and templates/RUNBOOK.md; workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:32.000Z",
+      "reason": "Ledger row V3-6 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-6",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:32.037Z",
+      "reason": "Ledger row V3-24C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-24C",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:32.073Z",
+      "reason": "Ledger row U313-0 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "U313-0",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:32.109Z",
+      "reason": "Ledger row BPR-8F1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-8F1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:32.146Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

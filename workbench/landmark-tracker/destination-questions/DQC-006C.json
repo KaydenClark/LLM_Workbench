@@ -1,0 +1,208 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-006C",
+  "revision": 6,
+  "title": "How do step distributions aggregate across cards, landmarks and the Workbench?",
+  "question": "How do step distributions aggregate across cards, landmarks and the Workbench?",
+  "answer": "LD-24: A Task can appear under every related destination question but counts once in the shared landmark percentage breakdown. Preserve all relationships without duplicate contribution.\nLD-25: First version: each distinct item contributes equally regardless of type. Evolve weighting later as Tracker usefulness is proven; not a permanent invariant.\nLD-27: Each distinct item contributes one total unit, split into step fractions when mixed. Sum contributions per step, divide by distinct item count. Same calculation for destination questions, landmarks, Workbench-wide views; shared items count once.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: LD-24, LD-25, LD-27 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "LD-24 update workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/): A shared identity counts once within an aggregate while every relationship stays visible. | LD-25 update workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/): Each distinct item contributes one equal unit regardless of type. | LD-27 update workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/): Sum step contributions and divide by distinct item count, for every scope.",
+    "home": "workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "LD-24",
+      "revision": "56b459da"
+    },
+    {
+      "id": "LD-25",
+      "revision": "56b459da"
+    },
+    {
+      "id": "LD-27",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "LD-24",
+      "revision": "56b459da",
+      "reason": "Ledger row LD-24 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "LD-25",
+      "revision": "56b459da",
+      "reason": "Ledger row LD-25 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "LD-27",
+      "revision": "56b459da",
+      "reason": "Ledger row LD-27 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How do step distributions aggregate across cards, landmarks and the Workbench?",
+    "question": "How do step distributions aggregate across cards, landmarks and the Workbench?",
+    "sources": [
+      {
+        "id": "LD-24",
+        "revision": "56b459da"
+      },
+      {
+        "id": "LD-25",
+        "revision": "56b459da"
+      },
+      {
+        "id": "LD-27",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:35.295Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:35.295Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: a card written from ledger rows that postdate the 2026-09-26 draft grouping, grilling ledger at 56b459da.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:35.330Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "LD-24: A Task can appear under every related destination question but counts once in the shared landmark percentage breakdown. Preserve all relationships without duplicate contribution.\nLD-25: First version: each distinct item contributes equally regardless of type. Evolve weighting later as Tracker usefulness is proven; not a permanent invariant.\nLD-27: Each distinct item contributes one total unit, split into step fractions when mixed. Sum contributions per step, divide by distinct item count. Same calculation for destination questions, landmarks, Workbench-wide views; shared items count once."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: LD-24, LD-25, LD-27 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "LD-24 update workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/): A shared identity counts once within an aggregate while every relationship stays visible. | LD-25 update workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/): Each distinct item contributes one equal unit regardless of type. | LD-27 update workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/): Sum step contributions and divide by distinct item count, for every scope.",
+            "home": "workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:35.365Z",
+      "reason": "Ledger row LD-24 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "LD-24",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:35.405Z",
+      "reason": "Ledger row LD-25 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "LD-25",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:35.448Z",
+      "reason": "Ledger row LD-27 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "LD-27",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:35.489Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

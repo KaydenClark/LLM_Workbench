@@ -1,0 +1,168 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000R",
+  "revision": 5,
+  "title": "How should tools and skills resolve relocated support paths?",
+  "question": "How should tools and skills resolve relocated support paths?",
+  "answer": "V3-13: Every one of the 12 core skills resolves any project support path through workbench/manifest.json; a skill that does not touch support records remains behaviorally unchanged.\nV3-12C: No. Genesis writes only v3 paths; Adoption and update recognize legacy inputs during a one-time migration, then the manifest becomes the sole path authority.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-13, V3-12C (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "V3-13 update workbench/specs/S-021-portable-workbench-v3/SPEC.md TK-005: The planning-to-delivery core skills resolve every support path through the manifest. | V3-13 create workbench/tools/workbench-paths.mjs: One reader through which consumers resolve lanes and collections; nothing hardcodes a support path. | V3-13 update tools/test-skill-catalog.mjs: Checks core skills name manifest authority for support paths. | V3-13 update RUNBOOK.md (V3 support-root check): States that every consumer resolves lanes and collections through the manifest reader. | V3-12C update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts): Forbids permanent dual sources; Adoption and upgrades perform one migration. | V3-12C update workbench/tools/workbench-layout.mjs: init writes only the current layout; an older manifest is reported as needing a one-time migrate. | V3-12C create tools/workbench-adoption.mjs: Recognizes legacy lanes (specs, Wiki, feedback, grilling diary, handoffs) once and moves them. | V3-12C create tools/workbench-upgrade.mjs: Moves a v2-root room onto the v3 support root once.",
+    "home": "workbench/specs/S-021-portable-workbench-v3/SPEC.md TK-005; workbench/tools/workbench-paths.mjs; tools/test-skill-catalog.mjs; RUNBOOK.md (V3 support-root check); workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts); workbench/tools/workbench-layout.mjs; tools/workbench-adoption.mjs; tools/workbench-upgrade.mjs",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-13",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-12C",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "V3-13",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-13 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-12C",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-12C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should tools and skills resolve relocated support paths?",
+    "question": "How should tools and skills resolve relocated support paths?",
+    "sources": [
+      {
+        "id": "V3-13",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-12C",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:16.984Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:16.984Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 011 of the 2026-09-26 grouping (\"Layout, manifest and path evolution\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Support-path consumers read the manifest. Legacy locations are migration inputs, not permanent parallel authorities.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:16.995Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "V3-13: Every one of the 12 core skills resolves any project support path through workbench/manifest.json; a skill that does not touch support records remains behaviorally unchanged.\nV3-12C: No. Genesis writes only v3 paths; Adoption and update recognize legacy inputs during a one-time migration, then the manifest becomes the sole path authority."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-13, V3-12C (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "V3-13 update workbench/specs/S-021-portable-workbench-v3/SPEC.md TK-005: The planning-to-delivery core skills resolve every support path through the manifest. | V3-13 create workbench/tools/workbench-paths.mjs: One reader through which consumers resolve lanes and collections; nothing hardcodes a support path. | V3-13 update tools/test-skill-catalog.mjs: Checks core skills name manifest authority for support paths. | V3-13 update RUNBOOK.md (V3 support-root check): States that every consumer resolves lanes and collections through the manifest reader. | V3-12C update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts): Forbids permanent dual sources; Adoption and upgrades perform one migration. | V3-12C update workbench/tools/workbench-layout.mjs: init writes only the current layout; an older manifest is reported as needing a one-time migrate. | V3-12C create tools/workbench-adoption.mjs: Recognizes legacy lanes (specs, Wiki, feedback, grilling diary, handoffs) once and moves them. | V3-12C create tools/workbench-upgrade.mjs: Moves a v2-root room onto the v3 support root once.",
+            "home": "workbench/specs/S-021-portable-workbench-v3/SPEC.md TK-005; workbench/tools/workbench-paths.mjs; tools/test-skill-catalog.mjs; RUNBOOK.md (V3 support-root check); workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts); workbench/tools/workbench-layout.mjs; tools/workbench-adoption.mjs; tools/workbench-upgrade.mjs",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:17.007Z",
+      "reason": "Ledger row V3-13 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-13",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:17.018Z",
+      "reason": "Ledger row V3-12C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-12C",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:17.030Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

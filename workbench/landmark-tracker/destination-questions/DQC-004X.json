@@ -1,0 +1,168 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-004X",
+  "revision": 5,
+  "title": "How should Adoption preserve an existing project’s truth and history?",
+  "question": "How should Adoption preserve an existing project’s truth and history?",
+  "answer": "V3-14: A lossless, manifest-backed v3 Workbench for an existing project, preserving project truth and history while removing only proven obsolete local shadows.\nV3-14A: Inventory and classify first; preserve durable specs, Wiki, feedback, and checkpoints; move known records with history where practical; stop on conflicting destinations or unclear ownership instead of overwriting.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-14, V3-14A (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "V3-14 update templates/ADOPTION.md: Adoption migrates an existing project onto the manifest-backed support root without losing records or history. | V3-14 create tools/workbench-adoption.mjs: Bounded migrate seam that moves known records, refuses collisions, and writes a recovery record. | V3-14 update RUNBOOK.md (V3 Adoption migration check): Documents the Adoption migration and its checks. | V3-14 update workbench/specs/S-021-portable-workbench-v3/SPEC.md TK-003: Lossless Adoption of one mixed existing project. | V3-14A update templates/ADOPTION.md: Inventory and classify before migrating; stop and reconcile collisions instead of overwriting. | V3-14A update tools/workbench-adoption.mjs: Legacy lane table; refuses an existing support root or any legacy collision before mutation. | V3-14A update RUNBOOK.md (V3 Adoption migration check): States the command refuses collisions before mutation.",
+    "home": "templates/ADOPTION.md; tools/workbench-adoption.mjs; RUNBOOK.md (V3 Adoption migration check); workbench/specs/S-021-portable-workbench-v3/SPEC.md TK-003",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-14",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-14A",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "V3-14",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-14 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-14A",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-14A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should Adoption preserve an existing project’s truth and history?",
+    "question": "How should Adoption preserve an existing project’s truth and history?",
+    "sources": [
+      {
+        "id": "V3-14",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-14A",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:29.003Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:29.003Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 125 of the 2026-09-26 grouping (\"Genesis, Adoption and the reference Template\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Inventory and classify mixed inputs first, move known records recoverably, and stop on conflicting destinations or unclear ownership instead of overwriting.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:29.030Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "V3-14: A lossless, manifest-backed v3 Workbench for an existing project, preserving project truth and history while removing only proven obsolete local shadows.\nV3-14A: Inventory and classify first; preserve durable specs, Wiki, feedback, and checkpoints; move known records with history where practical; stop on conflicting destinations or unclear ownership instead of overwriting."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-14, V3-14A (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "V3-14 update templates/ADOPTION.md: Adoption migrates an existing project onto the manifest-backed support root without losing records or history. | V3-14 create tools/workbench-adoption.mjs: Bounded migrate seam that moves known records, refuses collisions, and writes a recovery record. | V3-14 update RUNBOOK.md (V3 Adoption migration check): Documents the Adoption migration and its checks. | V3-14 update workbench/specs/S-021-portable-workbench-v3/SPEC.md TK-003: Lossless Adoption of one mixed existing project. | V3-14A update templates/ADOPTION.md: Inventory and classify before migrating; stop and reconcile collisions instead of overwriting. | V3-14A update tools/workbench-adoption.mjs: Legacy lane table; refuses an existing support root or any legacy collision before mutation. | V3-14A update RUNBOOK.md (V3 Adoption migration check): States the command refuses collisions before mutation.",
+            "home": "templates/ADOPTION.md; tools/workbench-adoption.mjs; RUNBOOK.md (V3 Adoption migration check); workbench/specs/S-021-portable-workbench-v3/SPEC.md TK-003",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:29.058Z",
+      "reason": "Ledger row V3-14 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-14",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:29.090Z",
+      "reason": "Ledger row V3-14A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-14A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:29.123Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

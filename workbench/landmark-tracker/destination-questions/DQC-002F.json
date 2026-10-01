@@ -1,0 +1,208 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-002F",
+  "revision": 6,
+  "title": "What establishes that an idea has become a shared design concept?",
+  "question": "What establishes that an idea has become a shared design concept?",
+  "answer": "WF-2: An owner idea starts Align through grilling; owner and agent explicitly confirm a shared design concept, then blueprint it. Workflow: Idea -> Align through grilling -> confirmed design concept -> Blueprint -> recursive delivery loop.\nFND-Q01: The workflow starts when the owner brings an idea and runs six phases: Idea -> Align (grilling to a shared design concept) -> Scope (Blueprint plus Specs, updating ADRs and docs) -> Plan (decompose into Tasks) -> Implement (loop over Tasks, tracked on TASKBOARD) -> Verify (to Spec and/or human QA). Destination is in BLUEPRINT, the Journey is a SPEC, each walked Path is a TASK. Prototype is optional, not a standard phase.\nBPR-R1: The prior chat 'failed at the beginning' because it never actually started a grilling session. Had it started correctly, stopping the grilling session would have been the endpoint. The handoff should then carry the owner-authorized task and authority plus all needed context from the grilling notepad.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-2, FND-Q01, BPR-R1 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WF-2 update BLUEPRINT.md: Workflow opens with Idea -> Align (grilling) -> confirmed shared design concept -> Blueprint. | WF-2 update LEXICON.md (new Align and design concept rows) and templates/LEXICON.md: Align replaces Explore as the term; S-00P TK-004 owns defining Align and design concept. | FND-Q01 update BLUEPRINT.md (Desired Experience And Behavior, Desired Lifecycle): States the idea-to-verified-completion ladder with Align, Scope, Plan, Implement, Verify; prototype optional; Blueprint is the Destination, Spec the Journey, Task the Path (S-00P TK-001). | FND-Q01 update workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md: Names the six owner phases in place of Explore/Prototype/Implement and treats Prototype as optional (S-00P TK-004). | FND-Q01 update AGENTS.md, RUNBOOK.md, LEXICON.md (workflow rewrite): Controls describe the same six-phase workflow (S-00P TK-002 to TK-004). | FND-Q01 update templates/BLUEPRINT.md, templates/AGENTS.md, templates/RUNBOOK.md, templates/LEXICON.md: Generic mirror of the reworked workflow (S-00P TK-005). | BPR-R1 update workbench/skills/grilling/SKILL.md: Explicit user direction to stop or hand off ends the interview; hand-off exit composes a Markdown handoff with the exact requested job. | BPR-R1 update workbench/skills/handoff/SKILL.md: State the exact job and endpoint; mentioning make-it-so or carry cannot expand it; carry inherited authorization and notepad context.",
+    "home": "BLUEPRINT.md; LEXICON.md (new Align and design concept rows) and templates/LEXICON.md; BLUEPRINT.md (Desired Experience And Behavior, Desired Lifecycle); workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md; AGENTS.md, RUNBOOK.md, LEXICON.md (workflow rewrite); templates/BLUEPRINT.md, templates/AGENTS.md, templates/RUNBOOK.md, templates/LEXICON.md; workbench/skills/grilling/SKILL.md; workbench/skills/handoff/SKILL.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "WF-2",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q01",
+      "revision": "56b459da"
+    },
+    {
+      "id": "BPR-R1",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WF-2",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q01",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q01 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "BPR-R1",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-R1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What establishes that an idea has become a shared design concept?",
+    "question": "What establishes that an idea has become a shared design concept?",
+    "sources": [
+      {
+        "id": "WF-2",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q01",
+        "revision": "56b459da"
+      },
+      {
+        "id": "BPR-R1",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:20.065Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:20.065Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 052 of the 2026-09-26 grouping (\"Alignment and durable promotion\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: An owner idea begins Align; owner and agent explicitly confirm the resulting understanding before it guides the next workflow stage.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:20.082Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WF-2: An owner idea starts Align through grilling; owner and agent explicitly confirm a shared design concept, then blueprint it. Workflow: Idea -> Align through grilling -> confirmed design concept -> Blueprint -> recursive delivery loop.\nFND-Q01: The workflow starts when the owner brings an idea and runs six phases: Idea -> Align (grilling to a shared design concept) -> Scope (Blueprint plus Specs, updating ADRs and docs) -> Plan (decompose into Tasks) -> Implement (loop over Tasks, tracked on TASKBOARD) -> Verify (to Spec and/or human QA). Destination is in BLUEPRINT, the Journey is a SPEC, each walked Path is a TASK. Prototype is optional, not a standard phase.\nBPR-R1: The prior chat 'failed at the beginning' because it never actually started a grilling session. Had it started correctly, stopping the grilling session would have been the endpoint. The handoff should then carry the owner-authorized task and authority plus all needed context from the grilling notepad."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-2, FND-Q01, BPR-R1 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WF-2 update BLUEPRINT.md: Workflow opens with Idea -> Align (grilling) -> confirmed shared design concept -> Blueprint. | WF-2 update LEXICON.md (new Align and design concept rows) and templates/LEXICON.md: Align replaces Explore as the term; S-00P TK-004 owns defining Align and design concept. | FND-Q01 update BLUEPRINT.md (Desired Experience And Behavior, Desired Lifecycle): States the idea-to-verified-completion ladder with Align, Scope, Plan, Implement, Verify; prototype optional; Blueprint is the Destination, Spec the Journey, Task the Path (S-00P TK-001). | FND-Q01 update workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md: Names the six owner phases in place of Explore/Prototype/Implement and treats Prototype as optional (S-00P TK-004). | FND-Q01 update AGENTS.md, RUNBOOK.md, LEXICON.md (workflow rewrite): Controls describe the same six-phase workflow (S-00P TK-002 to TK-004). | FND-Q01 update templates/BLUEPRINT.md, templates/AGENTS.md, templates/RUNBOOK.md, templates/LEXICON.md: Generic mirror of the reworked workflow (S-00P TK-005). | BPR-R1 update workbench/skills/grilling/SKILL.md: Explicit user direction to stop or hand off ends the interview; hand-off exit composes a Markdown handoff with the exact requested job. | BPR-R1 update workbench/skills/handoff/SKILL.md: State the exact job and endpoint; mentioning make-it-so or carry cannot expand it; carry inherited authorization and notepad context.",
+            "home": "BLUEPRINT.md; LEXICON.md (new Align and design concept rows) and templates/LEXICON.md; BLUEPRINT.md (Desired Experience And Behavior, Desired Lifecycle); workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md; AGENTS.md, RUNBOOK.md, LEXICON.md (workflow rewrite); templates/BLUEPRINT.md, templates/AGENTS.md, templates/RUNBOOK.md, templates/LEXICON.md; workbench/skills/grilling/SKILL.md; workbench/skills/handoff/SKILL.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:20.098Z",
+      "reason": "Ledger row WF-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-2",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:20.117Z",
+      "reason": "Ledger row FND-Q01 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q01",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:20.136Z",
+      "reason": "Ledger row BPR-R1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-R1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:20.155Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,608 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-005P",
+  "revision": 16,
+  "title": "Which older release and continuity commitments remain live obligations?",
+  "question": "Which older release and continuity commitments remain live obligations?",
+  "answer": "FND-Q16: Specs, Tasks, DQCs, notepads and handoffs are transient scaffolding. Once their useful content reaches durable owners and the intended result exists, the implementation and its maintained documentation become the continuing reference and the scaffolding is no longer needed. Obsolete release promises become historical or superseded; still-needed obligations remain reachable until resolved. Correct or expand existing ADRs rather than add slightly different decisions; a new ADR must add a valuable architectural lens or layer and explain why the decision was made.\nV3-18: Implement directly in the public LLM Workbench repository from current integration; do not wait on or route through unfinished Forge producer work.\nV3-18A: Directly on an isolated codex/ branch from refreshed origin/integration in LLM Workbench.\nV3-18B: One. Skills, templates, guidebook edits, focused tools, migrations, and proof ship in LLM Workbench; there is no [the owner's private skills repository] PR.\nV3-20: It authorizes the minimum complete single-repository v3 runway and preserves Kayden's owner-only promotion gate.\nV3-20A: Promote the settled diary into the owning docs/spec, implement through red/green slices from refreshed integration, verify exact pushed heads, perform independent review, reconcile obsolete PR #42 after replacement proof, and open the final integration-to-main PR.\nV3-20B: Merging to main, changing visibility or credentials, editing the private skills repository, importing Foundry machinery, broad guidebook or skill-catalog redesign, and claiming release without source/test/fresh-exercise proof.\nV3-24A: The workbench/ layout and manifest; the 12-skill missing-only brand-new-install contract; updates to existing setup/upgrade instructions and affected paths; focused deterministic checks; one fresh Genesis proof; and one existing-project Adoption proof.\nU313-1: Yes - all six land in v3.1.3, TK-005 first.\nU313-1A: All six: TK-001, TK-002, TK-003, TK-005, TK-006, TK-007. Order starts at TK-005.\nU313-1B: This session owns all six.\nE-6: Two new v4 build Specs added to S-00O's build list, not folded into S-00P. Final order ('Yes, lets do it'): (1) WBID Spec (uppercase width 4 allocator, dual-form lookup, ADR-0041 amendment); (2) board Spec (TASKBOARD.json, lanes, lane function, sitrep; ADR-000E and ADR-0013 amendments); (3) S-00P TK-002..TK-005 rewriting controls once around the new board; (4) S-00O release.\nWB-11: Build only the four stance skills, the reduced ordinary entry route (AGENTS.md -> RUNBOOK.md -> LEXICON.md), and the feedback-report workflow and format in the existing feedback lane before running the first report. Implement it step by step.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q16, V3-18, V3-18A, V3-18B, V3-20, V3-20A, V3-20B, V3-24A, U313-1, U313-1A, U313-1B, E-6, WB-11 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "FND-Q16 update workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Own the shared scaffolding lifecycle and amendment-first ADR rule, with rationale; preserve unresolved obligations, permanent ADR history and existing cleanup gates. | FND-Q16 update workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md, workbench/docs/adr/0054-direct-promotion-into-durable-owners.md, workbench/docs/adr/000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md: Apply the shared principle to Spec/Task closure, notes/handoffs and DQCs through their existing decision owners. | FND-Q16 update AGENTS.md, LEXICON.md, RUNBOOK.md and their templates/ mirrors: Align Spec/Task terminology and ADR authoring guidance with the amended decisions. | V3-18 update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts): Portable work is authored directly in LLM Workbench from current integration; no Forge publication step. | V3-18B update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts, Non-Goals): No private skills-repository change is part of the capability. | V3-18B update tools/test-skill-catalog.mjs: Fails if the catalog depends on [the owner's private skills repository]. | V3-20 create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Scope and Non-Goals limit the runway to the minimum v3 capability in LLM Workbench only; merging integration into main is a non-goal. | V3-20 update AGENTS.md (Git Rules) and templates/AGENTS.md: Only the owner merges integration into main. | V3-20A create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Promoted capability with six dependency-ordered red/green tickets (TK-001..TK-006) and independent review of the exact pushed candidate. | V3-20A update workbench/specs/S-014-workbench-release-candidate/SPEC.md: Resumes its exact-head audit, status and integration-to-main promotion PR after the S-021 candidate lands. | V3-20A retire GitHub PR #42: Closed unmerged after replacement proof exists. | V3-20B create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Non-Goals list each exclusion: main merge, credentials/visibility/private skills repo, Foundry machinery, full catalog or guidebook rewrite, unproven outcome claims. | V3-24A create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Acceptance and TK-001..TK-006 cover the layout, manifest, 12-skill core, focused checks, fresh Genesis and Adoption proofs. | V3-24A create workbench/manifest.json: Single machine-readable authority for layout and skill policy. | U313-1 update workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (Decisions And Contracts; ticket table Blockers column): Withdraws 'every ticket blocked pending owner direction'; all six land in v3.1.3 with TK-005 declared first. | U313-1A update workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (ticket table): All six tickets unblocked; the other five declare TK-005 as blocker, so TK-005 runs first. Further ordering is the implementing agent's. | U313-1B update workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (header Owner and ticket owners): S-045 owned by the Claude session for all six tickets; Codex's S-046 lane untouched. | E-6 create WBID Spec: Allocator + dual-form lookup + ADR-0041 amendment; first in v4 build order. | E-6 create board Spec (TASKBOARD.json board): Second in v4 build order. | E-6 update workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md: Build list and order include both new Specs before S-00P TK-002 and the release. | E-6 update workbench/specs/S-00P-workflow-canon-rework/SPEC.md: TK-002..TK-005 depend on the board Spec. | WB-11 create workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md TK-001: One ticket builds route and stances, runs Round One, then delivers feedback reporting and continuation. | WB-11 create workbench/feedback/REPORT_FORMAT.md: Report format in the feedback lane. | WB-11 create workbench/skills/builder, auditor, reviewer, reconciler: The four stance skills.",
+    "home": "workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md; workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md, workbench/docs/adr/0054-direct-promotion-into-durable-owners.md, workbench/docs/adr/000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md; AGENTS.md, LEXICON.md, RUNBOOK.md and their templates/ mirrors; workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts); workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts, Non-Goals); tools/test-skill-catalog.mjs; workbench/specs/S-021-portable-workbench-v3/SPEC.md; AGENTS.md (Git Rules) and templates/AGENTS.md; workbench/specs/S-014-workbench-release-candidate/SPEC.md; GitHub PR #42; workbench/manifest.json; workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (Decisions And Contracts; ticket table Blockers column); workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (ticket table); workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (header Owner and ticket owners); WBID Spec; board Spec (TASKBOARD.json board); workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md; workbench/specs/S-00P-workflow-canon-rework/SPEC.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md TK-001; workbench/feedback/REPORT_FORMAT.md; workbench/skills/builder, auditor, reviewer, reconciler",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "FND-Q16",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-18",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-18A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-18B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-20",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-20A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-20B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-24A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "U313-1",
+      "revision": "56b459da"
+    },
+    {
+      "id": "U313-1A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "U313-1B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "E-6",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WB-11",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 16
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "FND-Q16",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q16 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-18",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-18 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-18A",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-18A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-18B",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-18B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-20",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-20 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 7
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-20A",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-20A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 8
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-20B",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-20B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 9
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-24A",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-24A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 10
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "U313-1",
+      "revision": "56b459da",
+      "reason": "Ledger row U313-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 11
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "U313-1A",
+      "revision": "56b459da",
+      "reason": "Ledger row U313-1A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 12
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "U313-1B",
+      "revision": "56b459da",
+      "reason": "Ledger row U313-1B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 13
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "E-6",
+      "revision": "56b459da",
+      "reason": "Ledger row E-6 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 14
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WB-11",
+      "revision": "56b459da",
+      "reason": "Ledger row WB-11 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 15
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Which older release and continuity commitments remain live obligations?",
+    "question": "Which older release and continuity commitments remain live obligations?",
+    "sources": [
+      {
+        "id": "FND-Q16",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-18",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-18A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-18B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-20",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-20A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-20B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-24A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "U313-1",
+        "revision": "56b459da"
+      },
+      {
+        "id": "U313-1A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "U313-1B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "E-6",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WB-11",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:32.179Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:32.179Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 143 of the 2026-09-26 grouping (\"Updates, drift and release evidence\"), grilling ledger at 56b459da.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:32.210Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "FND-Q16: Specs, Tasks, DQCs, notepads and handoffs are transient scaffolding. Once their useful content reaches durable owners and the intended result exists, the implementation and its maintained documentation become the continuing reference and the scaffolding is no longer needed. Obsolete release promises become historical or superseded; still-needed obligations remain reachable until resolved. Correct or expand existing ADRs rather than add slightly different decisions; a new ADR must add a valuable architectural lens or layer and explain why the decision was made.\nV3-18: Implement directly in the public LLM Workbench repository from current integration; do not wait on or route through unfinished Forge producer work.\nV3-18A: Directly on an isolated codex/ branch from refreshed origin/integration in LLM Workbench.\nV3-18B: One. Skills, templates, guidebook edits, focused tools, migrations, and proof ship in LLM Workbench; there is no [the owner's private skills repository] PR.\nV3-20: It authorizes the minimum complete single-repository v3 runway and preserves Kayden's owner-only promotion gate.\nV3-20A: Promote the settled diary into the owning docs/spec, implement through red/green slices from refreshed integration, verify exact pushed heads, perform independent review, reconcile obsolete PR #42 after replacement proof, and open the final integration-to-main PR.\nV3-20B: Merging to main, changing visibility or credentials, editing the private skills repository, importing Foundry machinery, broad guidebook or skill-catalog redesign, and claiming release without source/test/fresh-exercise proof.\nV3-24A: The workbench/ layout and manifest; the 12-skill missing-only brand-new-install contract; updates to existing setup/upgrade instructions and affected paths; focused deterministic checks; one fresh Genesis proof; and one existing-project Adoption proof.\nU313-1: Yes - all six land in v3.1.3, TK-005 first.\nU313-1A: All six: TK-001, TK-002, TK-003, TK-005, TK-006, TK-007. Order starts at TK-005.\nU313-1B: This session owns all six.\nE-6: Two new v4 build Specs added to S-00O's build list, not folded into S-00P. Final order ('Yes, lets do it'): (1) WBID Spec (uppercase width 4 allocator, dual-form lookup, ADR-0041 amendment); (2) board Spec (TASKBOARD.json, lanes, lane function, sitrep; ADR-000E and ADR-0013 amendments); (3) S-00P TK-002..TK-005 rewriting controls once around the new board; (4) S-00O release.\nWB-11: Build only the four stance skills, the reduced ordinary entry route (AGENTS.md -> RUNBOOK.md -> LEXICON.md), and the feedback-report workflow and format in the existing feedback lane before running the first report. Implement it step by step."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q16, V3-18, V3-18A, V3-18B, V3-20, V3-20A, V3-20B, V3-24A, U313-1, U313-1A, U313-1B, E-6, WB-11 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "FND-Q16 update workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Own the shared scaffolding lifecycle and amendment-first ADR rule, with rationale; preserve unresolved obligations, permanent ADR history and existing cleanup gates. | FND-Q16 update workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md, workbench/docs/adr/0054-direct-promotion-into-durable-owners.md, workbench/docs/adr/000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md: Apply the shared principle to Spec/Task closure, notes/handoffs and DQCs through their existing decision owners. | FND-Q16 update AGENTS.md, LEXICON.md, RUNBOOK.md and their templates/ mirrors: Align Spec/Task terminology and ADR authoring guidance with the amended decisions. | V3-18 update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts): Portable work is authored directly in LLM Workbench from current integration; no Forge publication step. | V3-18B update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts, Non-Goals): No private skills-repository change is part of the capability. | V3-18B update tools/test-skill-catalog.mjs: Fails if the catalog depends on [the owner's private skills repository]. | V3-20 create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Scope and Non-Goals limit the runway to the minimum v3 capability in LLM Workbench only; merging integration into main is a non-goal. | V3-20 update AGENTS.md (Git Rules) and templates/AGENTS.md: Only the owner merges integration into main. | V3-20A create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Promoted capability with six dependency-ordered red/green tickets (TK-001..TK-006) and independent review of the exact pushed candidate. | V3-20A update workbench/specs/S-014-workbench-release-candidate/SPEC.md: Resumes its exact-head audit, status and integration-to-main promotion PR after the S-021 candidate lands. | V3-20A retire GitHub PR #42: Closed unmerged after replacement proof exists. | V3-20B create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Non-Goals list each exclusion: main merge, credentials/visibility/private skills repo, Foundry machinery, full catalog or guidebook rewrite, unproven outcome claims. | V3-24A create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Acceptance and TK-001..TK-006 cover the layout, manifest, 12-skill core, focused checks, fresh Genesis and Adoption proofs. | V3-24A create workbench/manifest.json: Single machine-readable authority for layout and skill policy. | U313-1 update workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (Decisions And Contracts; ticket table Blockers column): Withdraws 'every ticket blocked pending owner direction'; all six land in v3.1.3 with TK-005 declared first. | U313-1A update workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (ticket table): All six tickets unblocked; the other five declare TK-005 as blocker, so TK-005 runs first. Further ordering is the implementing agent's. | U313-1B update workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (header Owner and ticket owners): S-045 owned by the Claude session for all six tickets; Codex's S-046 lane untouched. | E-6 create WBID Spec: Allocator + dual-form lookup + ADR-0041 amendment; first in v4 build order. | E-6 create board Spec (TASKBOARD.json board): Second in v4 build order. | E-6 update workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md: Build list and order include both new Specs before S-00P TK-002 and the release. | E-6 update workbench/specs/S-00P-workflow-canon-rework/SPEC.md: TK-002..TK-005 depend on the board Spec. | WB-11 create workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md TK-001: One ticket builds route and stances, runs Round One, then delivers feedback reporting and continuation. | WB-11 create workbench/feedback/REPORT_FORMAT.md: Report format in the feedback lane. | WB-11 create workbench/skills/builder, auditor, reviewer, reconciler: The four stance skills.",
+            "home": "workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md; workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md, workbench/docs/adr/0054-direct-promotion-into-durable-owners.md, workbench/docs/adr/000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md; AGENTS.md, LEXICON.md, RUNBOOK.md and their templates/ mirrors; workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts); workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts, Non-Goals); tools/test-skill-catalog.mjs; workbench/specs/S-021-portable-workbench-v3/SPEC.md; AGENTS.md (Git Rules) and templates/AGENTS.md; workbench/specs/S-014-workbench-release-candidate/SPEC.md; GitHub PR #42; workbench/manifest.json; workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (Decisions And Contracts; ticket table Blockers column); workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (ticket table); workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (header Owner and ticket owners); WBID Spec; board Spec (TASKBOARD.json board); workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md; workbench/specs/S-00P-workflow-canon-rework/SPEC.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md TK-001; workbench/feedback/REPORT_FORMAT.md; workbench/skills/builder, auditor, reviewer, reconciler",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:32.241Z",
+      "reason": "Ledger row FND-Q16 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q16",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:32.278Z",
+      "reason": "Ledger row V3-18 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-18",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:32.315Z",
+      "reason": "Ledger row V3-18A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-18A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:32.351Z",
+      "reason": "Ledger row V3-18B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-18B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:32.387Z",
+      "reason": "Ledger row V3-20 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-20",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:32.425Z",
+      "reason": "Ledger row V3-20A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-20A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "at": "2026-10-01T23:49:32.464Z",
+      "reason": "Ledger row V3-20B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-20B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 10,
+      "at": "2026-10-01T23:49:32.501Z",
+      "reason": "Ledger row V3-24A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-24A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 11,
+      "at": "2026-10-01T23:49:32.537Z",
+      "reason": "Ledger row U313-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "U313-1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 12,
+      "at": "2026-10-01T23:49:32.575Z",
+      "reason": "Ledger row U313-1A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "U313-1A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 13,
+      "at": "2026-10-01T23:49:32.613Z",
+      "reason": "Ledger row U313-1B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "U313-1B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 14,
+      "at": "2026-10-01T23:49:32.650Z",
+      "reason": "Ledger row E-6 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "E-6",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 15,
+      "at": "2026-10-01T23:49:32.686Z",
+      "reason": "Ledger row WB-11 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WB-11",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 16,
+      "at": "2026-10-01T23:49:32.724Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

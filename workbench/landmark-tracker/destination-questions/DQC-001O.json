@@ -1,0 +1,210 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-001O",
+  "revision": 6,
+  "title": "Where should architectural, capability and execution-local decisions be recorded?",
+  "question": "Where should architectural, capability and execution-local decisions be recorded?",
+  "answer": "FND-Q21C: Four tiers: ADR for a consequential cross-cutting choice with rationale; Spec for a scoped capability choice; Task body (not the Receipt) for an execution-local choice; a change to what a Core type owns is always an ADR naming OWNERSHIP.json in canonicalized_in. A durable Task choice escalates at close, listed as a remaining gap until then. Editing a Contract or routing artifact is Task work, not a tier. The owns-vs-content rule lives in OWNERSHIP.json.\nBPR-5A: Blueprint holds durable whole-product outcomes and constraints. Specs hold scoped, testable capability requirements. ADRs hold accepted cross-cutting architectural choices from consequential tradeoffs. A whole-product client requirement can sit in the Blueprint without an ADR; implementation specifics and acceptance go in Specs; an ADR exists only for the architectural choice and why.\nTT-Q12: First clause: settled answers route by the whole ownership map (FND-Q21): definitions to the Lexicon, obligations to root controls, scoped capability choices to a Spec, cross-cutting choices to an ADR. Owner: locked answers go 'in some state of durable in the contract, docs, or specs' / 'in their durable places'.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q21C, BPR-5A (locked); TT-Q12 (partially answered; the open part is an uncertainty). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "FND-Q21C create workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json (Decisions row and change rule): The Decisions row carries the four-tier rule; the map carries the owns-vs-content change rule. | FND-Q21C update TASK.md body section (shape owned by the S-00H successor) and workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md: Execution-local choices live in the Task body; Receipt gains no decision field. | FND-Q21C update workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md: Spec QA can refuse a Spec whose closed Tasks still name an unescalated durable choice. | BPR-5A update LEXICON.md (Artifact Ownership Schema: Destination, Requirements, Decisions rows) and templates/LEXICON.md: Route whole-product outcomes to Blueprint, scoped requirements to Specs, consequential cross-cutting choices to ADRs. | BPR-5A create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Decisions And Contracts and Blueprint rebuild contract apply this placement rule. | BPR-5A create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Specs own scoped delivery; the Blueprint is not a decision ledger. | TT-Q12 update LEXICON.md (Artifact ownership schema) and templates/LEXICON.md: Routes each kind of settled answer to its owner. | TT-Q12 update AGENTS.md (Documentation Ownership And Proof) and templates/AGENTS.md: Locked answers are promoted to their durable owners. | TT-Q12 update Ownership map from S-00G (workbench/specs/S-00G-ownership-map-root-control/SPEC.md): Carries the type-level routing rows.",
+    "home": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json (Decisions row and change rule); TASK.md body section (shape owned by the S-00H successor) and workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md; workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md; LEXICON.md (Artifact Ownership Schema: Destination, Requirements, Decisions rows) and templates/LEXICON.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md; workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md; LEXICON.md (Artifact ownership schema) and templates/LEXICON.md; AGENTS.md (Documentation Ownership And Proof) and templates/AGENTS.md; Ownership map from S-00G (workbench/specs/S-00G-ownership-map-root-control/SPEC.md)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [
+    "TT-Q12 (partially answered): the evidence threshold before promotion is open; reading \"locked\" as that threshold is an interpretation, not an owner ruling."
+  ],
+  "sources": [
+    {
+      "id": "FND-Q21C",
+      "revision": "56b459da"
+    },
+    {
+      "id": "BPR-5A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "TT-Q12",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "FND-Q21C",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q21C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "BPR-5A",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-5A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "TT-Q12",
+      "revision": "56b459da",
+      "reason": "Ledger row TT-Q12 (partially-answered) at 56b459da; assessed Aligning from its status only.",
+      "assessment": {
+        "contributions": {
+          "Aligning": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Where should architectural, capability and execution-local decisions be recorded?",
+    "question": "Where should architectural, capability and execution-local decisions be recorded?",
+    "sources": [
+      {
+        "id": "FND-Q21C",
+        "revision": "56b459da"
+      },
+      {
+        "id": "BPR-5A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "TT-Q12",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:18.640Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:18.640Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 035 of the 2026-09-26 grouping (\"Entry, authority and ownership\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Cross-cutting decisions belong in ADRs, scoped decisions in Specs and execution-local decisions in Task bodies. Durable Task choices must be reconciled at closeout.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:18.654Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "FND-Q21C: Four tiers: ADR for a consequential cross-cutting choice with rationale; Spec for a scoped capability choice; Task body (not the Receipt) for an execution-local choice; a change to what a Core type owns is always an ADR naming OWNERSHIP.json in canonicalized_in. A durable Task choice escalates at close, listed as a remaining gap until then. Editing a Contract or routing artifact is Task work, not a tier. The owns-vs-content rule lives in OWNERSHIP.json.\nBPR-5A: Blueprint holds durable whole-product outcomes and constraints. Specs hold scoped, testable capability requirements. ADRs hold accepted cross-cutting architectural choices from consequential tradeoffs. A whole-product client requirement can sit in the Blueprint without an ADR; implementation specifics and acceptance go in Specs; an ADR exists only for the architectural choice and why.\nTT-Q12: First clause: settled answers route by the whole ownership map (FND-Q21): definitions to the Lexicon, obligations to root controls, scoped capability choices to a Spec, cross-cutting choices to an ADR. Owner: locked answers go 'in some state of durable in the contract, docs, or specs' / 'in their durable places'."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q21C, BPR-5A (locked); TT-Q12 (partially answered; the open part is an uncertainty). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "FND-Q21C create workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json (Decisions row and change rule): The Decisions row carries the four-tier rule; the map carries the owns-vs-content change rule. | FND-Q21C update TASK.md body section (shape owned by the S-00H successor) and workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md: Execution-local choices live in the Task body; Receipt gains no decision field. | FND-Q21C update workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md: Spec QA can refuse a Spec whose closed Tasks still name an unescalated durable choice. | BPR-5A update LEXICON.md (Artifact Ownership Schema: Destination, Requirements, Decisions rows) and templates/LEXICON.md: Route whole-product outcomes to Blueprint, scoped requirements to Specs, consequential cross-cutting choices to ADRs. | BPR-5A create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Decisions And Contracts and Blueprint rebuild contract apply this placement rule. | BPR-5A create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Specs own scoped delivery; the Blueprint is not a decision ledger. | TT-Q12 update LEXICON.md (Artifact ownership schema) and templates/LEXICON.md: Routes each kind of settled answer to its owner. | TT-Q12 update AGENTS.md (Documentation Ownership And Proof) and templates/AGENTS.md: Locked answers are promoted to their durable owners. | TT-Q12 update Ownership map from S-00G (workbench/specs/S-00G-ownership-map-root-control/SPEC.md): Carries the type-level routing rows.",
+            "home": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json (Decisions row and change rule); TASK.md body section (shape owned by the S-00H successor) and workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md; workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md; LEXICON.md (Artifact Ownership Schema: Destination, Requirements, Decisions rows) and templates/LEXICON.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md; workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md; LEXICON.md (Artifact ownership schema) and templates/LEXICON.md; AGENTS.md (Documentation Ownership And Proof) and templates/AGENTS.md; Ownership map from S-00G (workbench/specs/S-00G-ownership-map-root-control/SPEC.md)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:18.668Z",
+      "reason": "Ledger row FND-Q21C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q21C",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:18.684Z",
+      "reason": "Ledger row BPR-5A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-5A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:18.700Z",
+      "reason": "Ledger row TT-Q12 (partially-answered) at 56b459da; assessed Aligning from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "TT-Q12",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:18.716Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,200 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-001A",
+  "revision": 5,
+  "title": "What should skill verification report, and which copies should it inspect?",
+  "question": "What should skill verification report, and which copies should it inspect?",
+  "answer": "V3-9B: No content comparison occurs in normal setup; explicit skill update is the synchronization boundary.\nPW-3: 'We already locked in a version of 1. When we update the workbenches, we update the skills. LLM_Workbench owns the skills it needs to. We store them all in workbench/skills.' Core skills are tracked in every room at workbench/skills and replaced by the ordinary Workbench update; no provider home, personal catalog or bootstrap is on the critical path.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-9B, PW-3 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "V3-9B update LEXICON.md (Normal setup, Explicit skill update rows) and templates/LEXICON.md: Setup never replaces content; only the explicit update does. | V3-9B update RUNBOOK.md (Skills lane check): update requires --explicit-update and backs up changed core skills.",
+    "home": "LEXICON.md (Normal setup, Explicit skill update rows) and templates/LEXICON.md; RUNBOOK.md (Skills lane check)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-9",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-9A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-9B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-22B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "RB-Q6",
+      "revision": "56b459da"
+    },
+    {
+      "id": "PW-3",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "V3-9B",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-9B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "PW-3",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-3 (locked) at 56b459da, related as the successor of superseded V3-9, V3-9A, V3-22B, RB-Q6; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What should skill verification report, and which copies should it inspect?",
+    "question": "What should skill verification report, and which copies should it inspect?",
+    "sources": [
+      {
+        "id": "V3-9",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-9A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-9B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-22B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "RB-Q6",
+        "revision": "56b459da"
+      },
+      {
+        "id": "PW-3",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:17.665Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:17.665Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 021 of the 2026-09-26 grouping (\"Skills carried by the room\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The later model inspects the room’s lane and adapters rather than global installed copies. Earlier presence-only assumptions must not hide receipt or content drift. Superseded lineage kept as sources and represented by successors: V3-9 (successor PW-3); V3-9A (successor PW-3); V3-22B (successor PW-3); RB-Q6 (successor PW-3).",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:17.677Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "V3-9B: No content comparison occurs in normal setup; explicit skill update is the synchronization boundary.\nPW-3: 'We already locked in a version of 1. When we update the workbenches, we update the skills. LLM_Workbench owns the skills it needs to. We store them all in workbench/skills.' Core skills are tracked in every room at workbench/skills and replaced by the ordinary Workbench update; no provider home, personal catalog or bootstrap is on the critical path."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-9B, PW-3 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "V3-9B update LEXICON.md (Normal setup, Explicit skill update rows) and templates/LEXICON.md: Setup never replaces content; only the explicit update does. | V3-9B update RUNBOOK.md (Skills lane check): update requires --explicit-update and backs up changed core skills.",
+            "home": "LEXICON.md (Normal setup, Explicit skill update rows) and templates/LEXICON.md; RUNBOOK.md (Skills lane check)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:17.690Z",
+      "reason": "Ledger row V3-9B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-9B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:17.703Z",
+      "reason": "Ledger row PW-3 (locked) at 56b459da, related as the successor of superseded V3-9, V3-9A, V3-22B, RB-Q6; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-3",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:17.717Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

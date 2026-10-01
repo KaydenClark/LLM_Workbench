@@ -1,0 +1,232 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000F",
+  "revision": 6,
+  "title": "Where should the authoritative skill copies for a room live?",
+  "question": "Where should the authoritative skill copies for a room live?",
+  "answer": "PW-3: 'We already locked in a version of 1. When we update the workbenches, we update the skills. LLM_Workbench owns the skills it needs to. We store them all in workbench/skills.' Core skills are tracked in every room at workbench/skills and replaced by the ordinary Workbench update; no provider home, personal catalog or bootstrap is on the critical path.\nPW-3A: 'Move its sources to workbench/skills, and give templates what it needs to.' The 21-skill source moves from root skills/ to workbench/skills and root skills/ is removed; templates gain what Genesis and update-harness need to lay down and refresh the lane. A root skills/ becomes a doctor finding.\nPW-4: 'If we need it, it should be included in workbench/skills. But we should keep [the owner's private skills repository] as a backup of all of the skills, and a place every workbench can publish skills to that they create.' The Contract names only skills that ship in the lane. The specific candidate list was not confirmed.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: PW-3, PW-3A, PW-4 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "PW-3 create workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md: Records the seventh lane, tracked adapters and update-only replacement. | PW-3 retire workbench/docs/adr/archive/0017-workbench-support-directory-has-six-lanes.md: The six-lane ADR is marked superseded. | PW-3 update workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md: Core tracked per room on the ADR-0031 managed model. | PW-3 update workbench/manifest.json: Declares lanes.skills and the reshaped skillPolicy. | PW-3 create .claude/skills and .agents/skills: Tracked adapters into workbench/skills. | PW-3 update LEXICON.md, RUNBOOK.md (+ templates mirrors): Support lane, Normal setup, Explicit skill update rows and skills lane procedure. | PW-3 create workbench/specs/S-00V-portable-workbench/SPEC.md TK-001: Owns the lane build. | PW-3A create workbench/skills/: Holds the producer's skill source; no root skills/ directory remains. | PW-3A update templates/GENESIS.md, templates/ADOPTION.md: Genesis and Adoption lay down the lane from the release checkout. | PW-3A update workbench/tools/spec-workbench.mjs doctor: A root skills/ directory is reported as a finding. | PW-3A update RUNBOOK.md, README.md: Describe the lane instead of root skills/.",
+    "home": "workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md; workbench/docs/adr/archive/0017-workbench-support-directory-has-six-lanes.md; workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md; workbench/manifest.json; .claude/skills and .agents/skills; LEXICON.md, RUNBOOK.md (+ templates mirrors); workbench/specs/S-00V-portable-workbench/SPEC.md TK-001; workbench/skills/; templates/GENESIS.md, templates/ADOPTION.md; workbench/tools/spec-workbench.mjs doctor; RUNBOOK.md, README.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-3",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-21",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-21C",
+      "revision": "56b459da"
+    },
+    {
+      "id": "PW-3",
+      "revision": "56b459da"
+    },
+    {
+      "id": "PW-3A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "PW-4",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "PW-3",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "PW-3A",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-3A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "PW-4",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-4 (locked) at 56b459da, related as the successor of superseded V3-3, V3-21, V3-21C; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Where should the authoritative skill copies for a room live?",
+    "question": "Where should the authoritative skill copies for a room live?",
+    "sources": [
+      {
+        "id": "V3-3",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-21",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-21C",
+        "revision": "56b459da"
+      },
+      {
+        "id": "PW-3",
+        "revision": "56b459da"
+      },
+      {
+        "id": "PW-3A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "PW-4",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:06.474Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:06.474Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 015 of the 2026-09-26 grouping (\"Skills carried by the room\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Early provider-home installation was replaced by release-owned copies in workbench/skills inside every room, including the producer. Superseded lineage kept as sources and represented by successors: V3-3 (successor PW-3, PW-3A, PW-4); V3-21 (successor PW-3, PW-3A, PW-4); V3-21C (successor PW-3, PW-4).",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:06.517Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "PW-3: 'We already locked in a version of 1. When we update the workbenches, we update the skills. LLM_Workbench owns the skills it needs to. We store them all in workbench/skills.' Core skills are tracked in every room at workbench/skills and replaced by the ordinary Workbench update; no provider home, personal catalog or bootstrap is on the critical path.\nPW-3A: 'Move its sources to workbench/skills, and give templates what it needs to.' The 21-skill source moves from root skills/ to workbench/skills and root skills/ is removed; templates gain what Genesis and update-harness need to lay down and refresh the lane. A root skills/ becomes a doctor finding.\nPW-4: 'If we need it, it should be included in workbench/skills. But we should keep [the owner's private skills repository] as a backup of all of the skills, and a place every workbench can publish skills to that they create.' The Contract names only skills that ship in the lane. The specific candidate list was not confirmed."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: PW-3, PW-3A, PW-4 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "PW-3 create workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md: Records the seventh lane, tracked adapters and update-only replacement. | PW-3 retire workbench/docs/adr/archive/0017-workbench-support-directory-has-six-lanes.md: The six-lane ADR is marked superseded. | PW-3 update workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md: Core tracked per room on the ADR-0031 managed model. | PW-3 update workbench/manifest.json: Declares lanes.skills and the reshaped skillPolicy. | PW-3 create .claude/skills and .agents/skills: Tracked adapters into workbench/skills. | PW-3 update LEXICON.md, RUNBOOK.md (+ templates mirrors): Support lane, Normal setup, Explicit skill update rows and skills lane procedure. | PW-3 create workbench/specs/S-00V-portable-workbench/SPEC.md TK-001: Owns the lane build. | PW-3A create workbench/skills/: Holds the producer's skill source; no root skills/ directory remains. | PW-3A update templates/GENESIS.md, templates/ADOPTION.md: Genesis and Adoption lay down the lane from the release checkout. | PW-3A update workbench/tools/spec-workbench.mjs doctor: A root skills/ directory is reported as a finding. | PW-3A update RUNBOOK.md, README.md: Describe the lane instead of root skills/.",
+            "home": "workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md; workbench/docs/adr/archive/0017-workbench-support-directory-has-six-lanes.md; workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md; workbench/manifest.json; .claude/skills and .agents/skills; LEXICON.md, RUNBOOK.md (+ templates mirrors); workbench/specs/S-00V-portable-workbench/SPEC.md TK-001; workbench/skills/; templates/GENESIS.md, templates/ADOPTION.md; workbench/tools/spec-workbench.mjs doctor; RUNBOOK.md, README.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:06.527Z",
+      "reason": "Ledger row PW-3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-3",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:06.538Z",
+      "reason": "Ledger row PW-3A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-3A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:06.548Z",
+      "reason": "Ledger row PW-4 (locked) at 56b459da, related as the successor of superseded V3-3, V3-21, V3-21C; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-4",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:06.557Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

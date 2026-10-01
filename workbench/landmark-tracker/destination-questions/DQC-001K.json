@@ -1,0 +1,208 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-001K",
+  "revision": 6,
+  "title": "How do accepted Blueprint claims constrain work outside the Contract?",
+  "question": "How do accepted Blueprint claims constrain work outside the Contract?",
+  "answer": "ACC-3: Contract = AGENTS.md, RUNBOOK.md and LEXICON.md, read on every run, plus the assigned Spec; the Blueprint is a routed artifact the Contract directs agents to by intent. The Contract and the other routing artifacts make the Blueprint's claims binding: the Blueprint describes how the project should work with the Workbench, and the Workbench proves those claims by running the project.\nBPR-1: Each artifact has one job. BLUEPRINT.md is the 'future state and grand design' of the finished product; active ADRs are authoritative cross-cutting decisions with their reasoning; Specs detail the capabilities that move verified Actuality toward the Blueprint within ADR limits; AGENTS owns behavior and authority, RUNBOOK operation, LEXICON shared language and navigation. Formula: Blueprint target + active ADRs + verified Actuality -> Specs.\nWF-1: The Blueprint owns the product destination and user journey (the whole of \"counting to 100\"); each Spec is the PRD-shaped smaller destination derived from it. The Workbench Contract, not the Blueprint, owns the agreement (instructions, authority, boundaries, language, process, completion, verification). LLM_Workbench's Blueprint maps the Workbench product; each project blueprints its own product; the template supplies only the reusable shape.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: ACC-3 (answered in chat, recovered from the owner's own messages); BPR-1, WF-1 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "ACC-3 update workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md: Accepted three-carrier Contract and Blueprint routing; also state that the Contract and routing artifacts make the Blueprint's accepted claims binding, proved by running the project. | ACC-3 update AGENTS.md Authority Order: Root control now routes Blueprint as destination; generic template mirror remains later implementation work. | ACC-3 update LEXICON.md Workbench Contract row: Root definition now names three carriers plus assigned Spec; generic template mirror remains later implementation work. | BPR-1 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Record the ownership split: Blueprint is the destination narrative, not status, catalog or ADR inventory; active ADR decisions are Canon; the Lexicon owns the only Context Map; Specs own scoped delivery. | BPR-1 update AGENTS.md (Authority Order, State Resolution) and templates/AGENTS.md: State that active ADR decisions are architectural Canon and the Blueprint describes the desired finished product without status or catalogs. | BPR-1 update LEXICON.md (Artifact Ownership Schema) and templates/LEXICON.md: Route each question type to its single owning artifact under this split. | BPR-1 create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Carry the ownership model as a capability with the full question disposition. | WF-1 update BLUEPRINT.md: States the product-level destination and journey; each Spec is the PRD-shaped smaller destination; the Contract, not the Blueprint, owns the operating agreement. | WF-1 update templates/BLUEPRINT.md: Stays a generic reusable shape; each project fills its own product destination. | WF-1 update workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md: Reconciled (accepted, amended or superseded) under S-00P TK-004 so it no longer claims the Blueprint owns the future-facing PRD function. | WF-1 update LEXICON.md (Blueprint, Spec rows) and templates/LEXICON.md: Blueprint defined as the product destination; Spec as the PRD-shaped scoped destination.",
+    "home": "workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md; AGENTS.md Authority Order; LEXICON.md Workbench Contract row; workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md; AGENTS.md (Authority Order, State Resolution) and templates/AGENTS.md; LEXICON.md (Artifact Ownership Schema) and templates/LEXICON.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md; BLUEPRINT.md; templates/BLUEPRINT.md; workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md; LEXICON.md (Blueprint, Spec rows) and templates/LEXICON.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "ACC-3",
+      "revision": "56b459da"
+    },
+    {
+      "id": "BPR-1",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-1",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "ACC-3",
+      "revision": "56b459da",
+      "reason": "Ledger row ACC-3 (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "BPR-1",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-1",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How do accepted Blueprint claims constrain work outside the Contract?",
+    "question": "How do accepted Blueprint claims constrain work outside the Contract?",
+    "sources": [
+      {
+        "id": "ACC-3",
+        "revision": "56b459da"
+      },
+      {
+        "id": "BPR-1",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-1",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:18.333Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:18.333Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 031 of the 2026-09-26 grouping (\"Entry, authority and ownership\"), grilling ledger at 56b459da.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:18.346Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "ACC-3: Contract = AGENTS.md, RUNBOOK.md and LEXICON.md, read on every run, plus the assigned Spec; the Blueprint is a routed artifact the Contract directs agents to by intent. The Contract and the other routing artifacts make the Blueprint's claims binding: the Blueprint describes how the project should work with the Workbench, and the Workbench proves those claims by running the project.\nBPR-1: Each artifact has one job. BLUEPRINT.md is the 'future state and grand design' of the finished product; active ADRs are authoritative cross-cutting decisions with their reasoning; Specs detail the capabilities that move verified Actuality toward the Blueprint within ADR limits; AGENTS owns behavior and authority, RUNBOOK operation, LEXICON shared language and navigation. Formula: Blueprint target + active ADRs + verified Actuality -> Specs.\nWF-1: The Blueprint owns the product destination and user journey (the whole of \"counting to 100\"); each Spec is the PRD-shaped smaller destination derived from it. The Workbench Contract, not the Blueprint, owns the agreement (instructions, authority, boundaries, language, process, completion, verification). LLM_Workbench's Blueprint maps the Workbench product; each project blueprints its own product; the template supplies only the reusable shape."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: ACC-3 (answered in chat, recovered from the owner's own messages); BPR-1, WF-1 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "ACC-3 update workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md: Accepted three-carrier Contract and Blueprint routing; also state that the Contract and routing artifacts make the Blueprint's accepted claims binding, proved by running the project. | ACC-3 update AGENTS.md Authority Order: Root control now routes Blueprint as destination; generic template mirror remains later implementation work. | ACC-3 update LEXICON.md Workbench Contract row: Root definition now names three carriers plus assigned Spec; generic template mirror remains later implementation work. | BPR-1 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Record the ownership split: Blueprint is the destination narrative, not status, catalog or ADR inventory; active ADR decisions are Canon; the Lexicon owns the only Context Map; Specs own scoped delivery. | BPR-1 update AGENTS.md (Authority Order, State Resolution) and templates/AGENTS.md: State that active ADR decisions are architectural Canon and the Blueprint describes the desired finished product without status or catalogs. | BPR-1 update LEXICON.md (Artifact Ownership Schema) and templates/LEXICON.md: Route each question type to its single owning artifact under this split. | BPR-1 create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Carry the ownership model as a capability with the full question disposition. | WF-1 update BLUEPRINT.md: States the product-level destination and journey; each Spec is the PRD-shaped smaller destination; the Contract, not the Blueprint, owns the operating agreement. | WF-1 update templates/BLUEPRINT.md: Stays a generic reusable shape; each project fills its own product destination. | WF-1 update workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md: Reconciled (accepted, amended or superseded) under S-00P TK-004 so it no longer claims the Blueprint owns the future-facing PRD function. | WF-1 update LEXICON.md (Blueprint, Spec rows) and templates/LEXICON.md: Blueprint defined as the product destination; Spec as the PRD-shaped scoped destination.",
+            "home": "workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md; AGENTS.md Authority Order; LEXICON.md Workbench Contract row; workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md; AGENTS.md (Authority Order, State Resolution) and templates/AGENTS.md; LEXICON.md (Artifact Ownership Schema) and templates/LEXICON.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md; BLUEPRINT.md; templates/BLUEPRINT.md; workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md; LEXICON.md (Blueprint, Spec rows) and templates/LEXICON.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:18.360Z",
+      "reason": "Ledger row ACC-3 (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "ACC-3",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:18.376Z",
+      "reason": "Ledger row BPR-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:18.391Z",
+      "reason": "Ledger row WF-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:18.406Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

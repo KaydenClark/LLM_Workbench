@@ -1,0 +1,168 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-005J",
+  "revision": 5,
+  "title": "Which fresh-room and existing-room exercises complement those fixtures?",
+  "question": "Which fresh-room and existing-room exercises complement those fixtures?",
+  "answer": "V3-17B: One fresh Genesis, one mixed existing-project Adoption, and one v2 update fixture from clean recoverable starting points.\nV3-24A: The workbench/ layout and manifest; the 12-skill missing-only brand-new-install contract; updates to existing setup/upgrade instructions and affected paths; focused deterministic checks; one fresh Genesis proof; and one existing-project Adoption proof.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-17B, V3-24A (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "V3-17B update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Verification Procedure) and TK-006: Runs fresh Genesis, mixed Adoption and v2 update fixtures from clean recoverable starting points. | V3-24A create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Acceptance and TK-001..TK-006 cover the layout, manifest, 12-skill core, focused checks, fresh Genesis and Adoption proofs. | V3-24A create workbench/manifest.json: Single machine-readable authority for layout and skill policy.",
+    "home": "workbench/specs/S-021-portable-workbench-v3/SPEC.md (Verification Procedure) and TK-006; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/manifest.json",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-17B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-24A",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "V3-17B",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-17B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-24A",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-24A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Which fresh-room and existing-room exercises complement those fixtures?",
+    "question": "Which fresh-room and existing-room exercises complement those fixtures?",
+    "sources": [
+      {
+        "id": "V3-17B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-24A",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:31.042Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:31.042Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 137 of the 2026-09-26 grouping (\"Updates, drift and release evidence\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The v3 scope required fresh Genesis, mixed-project Adoption and a recoverable legacy-update exercise.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:31.073Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "V3-17B: One fresh Genesis, one mixed existing-project Adoption, and one v2 update fixture from clean recoverable starting points.\nV3-24A: The workbench/ layout and manifest; the 12-skill missing-only brand-new-install contract; updates to existing setup/upgrade instructions and affected paths; focused deterministic checks; one fresh Genesis proof; and one existing-project Adoption proof."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-17B, V3-24A (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "V3-17B update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Verification Procedure) and TK-006: Runs fresh Genesis, mixed Adoption and v2 update fixtures from clean recoverable starting points. | V3-24A create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Acceptance and TK-001..TK-006 cover the layout, manifest, 12-skill core, focused checks, fresh Genesis and Adoption proofs. | V3-24A create workbench/manifest.json: Single machine-readable authority for layout and skill policy.",
+            "home": "workbench/specs/S-021-portable-workbench-v3/SPEC.md (Verification Procedure) and TK-006; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/manifest.json",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:31.102Z",
+      "reason": "Ledger row V3-17B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-17B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:31.137Z",
+      "reason": "Ledger row V3-24A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-24A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:31.172Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

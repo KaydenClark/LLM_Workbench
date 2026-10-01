@@ -1,0 +1,216 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-001E",
+  "revision": 6,
+  "title": "What place should carry have in the delivery workflow?",
+  "question": "What place should carry have in the delivery workflow?",
+  "answer": "REC-01: carry (chosen from carry, escort, own, finish).\nREC-02: 17th core skill (chosen over local-only outside the bundle, or contract text in AGENTS.md).\nU313-2: TK-005 first, then install carry via whatever route it defines. No hand-copy workaround.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: REC-01, REC-02, U313-2 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "REC-01 create workbench/skills/carry/SKILL.md: The skill is named carry. | REC-01 update workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts): 'The name is carry. Owner decision, 2026-09-07, from four candidates.' | REC-02 update workbench/manifest.json skillPolicy and workbench/tools/workbench-layout.mjs coreSkills: carry is a required core skill; the bundle grows from sixteen to seventeen. | REC-02 update skills README, LEXICON.md, templates/GENESIS.md and tools/test-skill-catalog.mjs: Counts and catalog pin seventeen skills including carry. | REC-02 update workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts): 'carry is a core-bundle skill, not a repo-local one.' | U313-2 update workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md TK-005 then TK-001: TK-005 decides the root route; TK-001 implements it; carry is installed only through that route. | U313-2 update tools/core-skill-installer.mjs: Installer is the route used to place carry in the discovery roots, with its marker.",
+    "home": "workbench/skills/carry/SKILL.md; workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts); workbench/manifest.json skillPolicy and workbench/tools/workbench-layout.mjs coreSkills; skills README, LEXICON.md, templates/GENESIS.md and tools/test-skill-catalog.mjs; workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md TK-005 then TK-001; tools/core-skill-installer.mjs",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "REC-01",
+      "revision": "56b459da"
+    },
+    {
+      "id": "REC-02",
+      "revision": "56b459da"
+    },
+    {
+      "id": "U313-2",
+      "revision": "56b459da"
+    },
+    {
+      "id": "U313-3",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "REC-01",
+      "revision": "56b459da",
+      "reason": "Ledger row REC-01 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "REC-02",
+      "revision": "56b459da",
+      "reason": "Ledger row REC-02 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "U313-2",
+      "revision": "56b459da",
+      "reason": "Ledger row U313-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What place should carry have in the delivery workflow?",
+    "question": "What place should carry have in the delivery workflow?",
+    "sources": [
+      {
+        "id": "REC-01",
+        "revision": "56b459da"
+      },
+      {
+        "id": "REC-02",
+        "revision": "56b459da"
+      },
+      {
+        "id": "U313-2",
+        "revision": "56b459da"
+      },
+      {
+        "id": "U313-3",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:17.903Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:17.903Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 025 of the 2026-09-26 grouping (\"Skills carried by the room\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The owner chose the name carry and made it a core skill; its installation was to use the supported route, not hand copying. Work scope comes from the assigned Spec and vertical slice. Not related: U313-3 (withdrawn).",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:17.916Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "REC-01: carry (chosen from carry, escort, own, finish).\nREC-02: 17th core skill (chosen over local-only outside the bundle, or contract text in AGENTS.md).\nU313-2: TK-005 first, then install carry via whatever route it defines. No hand-copy workaround."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: REC-01, REC-02, U313-2 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "REC-01 create workbench/skills/carry/SKILL.md: The skill is named carry. | REC-01 update workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts): 'The name is carry. Owner decision, 2026-09-07, from four candidates.' | REC-02 update workbench/manifest.json skillPolicy and workbench/tools/workbench-layout.mjs coreSkills: carry is a required core skill; the bundle grows from sixteen to seventeen. | REC-02 update skills README, LEXICON.md, templates/GENESIS.md and tools/test-skill-catalog.mjs: Counts and catalog pin seventeen skills including carry. | REC-02 update workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts): 'carry is a core-bundle skill, not a repo-local one.' | U313-2 update workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md TK-005 then TK-001: TK-005 decides the root route; TK-001 implements it; carry is installed only through that route. | U313-2 update tools/core-skill-installer.mjs: Installer is the route used to place carry in the discovery roots, with its marker.",
+            "home": "workbench/skills/carry/SKILL.md; workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts); workbench/manifest.json skillPolicy and workbench/tools/workbench-layout.mjs coreSkills; skills README, LEXICON.md, templates/GENESIS.md and tools/test-skill-catalog.mjs; workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md TK-005 then TK-001; tools/core-skill-installer.mjs",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:17.928Z",
+      "reason": "Ledger row REC-01 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "REC-01",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:17.942Z",
+      "reason": "Ledger row REC-02 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "REC-02",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:17.956Z",
+      "reason": "Ledger row U313-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "U313-2",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:17.971Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

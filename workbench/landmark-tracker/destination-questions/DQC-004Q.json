@@ -1,0 +1,160 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-004Q",
+  "revision": 4,
+  "title": "When should working material be promoted instead of copied into a checkpoint?",
+  "question": "When should working material be promoted instead of copied into a checkpoint?",
+  "answer": "PW-5: Promote-before-end is the goal for almost every session: promote settled claims, append the receipt, push, let the notepad die. With an amendment: 'we can have the notepads and handoffs stay if needed... we should be able to commit them for a bit if we need to, undoing the lock on them never being committed.' Committed notes are transport, not evidence; privacy rules stand; ADR-0051 stays optional.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: PW-5 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "PW-5 update AGENTS.md Session Records (+ templates/AGENTS.md): Allows temporary commits of notes and handoffs in place of 'Live notes and handoffs stay untracked'; states the promote-before-end exit rule. | PW-5 update workbench/sessions/.gitignore: Allow temporary commits of notepads/handoffs. | PW-5 update LEXICON.md Packet row: Does not describe notes as always untracked. | PW-5 create new ADR narrowing ADR-0051 / ADR-0040 / ADR-0028: Notes may be committed temporarily as transport. | PW-5 update RUNBOOK.md and tools/test-workbench-round-trip.mjs: Neither asserts 'the notepad never enters the commit'. | PW-5 update workbench/specs/S-00V-portable-workbench/SPEC.md: Slice: notes may travel.",
+    "home": "AGENTS.md Session Records (+ templates/AGENTS.md); workbench/sessions/.gitignore; LEXICON.md Packet row; new ADR narrowing ADR-0051 / ADR-0040 / ADR-0028; RUNBOOK.md and tools/test-workbench-round-trip.mjs; workbench/specs/S-00V-portable-workbench/SPEC.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-11",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-11A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-11B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-13B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "PW-5",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 4
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "PW-5",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-5 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "When should working material be promoted instead of copied into a checkpoint?",
+    "question": "When should working material be promoted instead of copied into a checkpoint?",
+    "sources": [
+      {
+        "id": "V3-11",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-11A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-11B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-13B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "PW-5",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:28.116Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:28.116Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 117 of the 2026-09-26 grouping (\"Continuity, notes, handoffs and transport\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Earlier checkpoint-copying practice was replaced by direct reconciliation of supported claims into durable owners, with useful unresolved context retained. Superseded lineage kept as sources and represented by successors: V3-11 (no ledger successor; the card's current rows carry it); V3-11A (no ledger successor; the card's current rows carry it); V3-11B (no ledger successor; the card's current rows carry it); V3-13B (no ledger successor; the card's current rows carry it).",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:28.143Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "PW-5: Promote-before-end is the goal for almost every session: promote settled claims, append the receipt, push, let the notepad die. With an amendment: 'we can have the notepads and handoffs stay if needed... we should be able to commit them for a bit if we need to, undoing the lock on them never being committed.' Committed notes are transport, not evidence; privacy rules stand; ADR-0051 stays optional."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: PW-5 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "PW-5 update AGENTS.md Session Records (+ templates/AGENTS.md): Allows temporary commits of notes and handoffs in place of 'Live notes and handoffs stay untracked'; states the promote-before-end exit rule. | PW-5 update workbench/sessions/.gitignore: Allow temporary commits of notepads/handoffs. | PW-5 update LEXICON.md Packet row: Does not describe notes as always untracked. | PW-5 create new ADR narrowing ADR-0051 / ADR-0040 / ADR-0028: Notes may be committed temporarily as transport. | PW-5 update RUNBOOK.md and tools/test-workbench-round-trip.mjs: Neither asserts 'the notepad never enters the commit'. | PW-5 update workbench/specs/S-00V-portable-workbench/SPEC.md: Slice: notes may travel.",
+            "home": "AGENTS.md Session Records (+ templates/AGENTS.md); workbench/sessions/.gitignore; LEXICON.md Packet row; new ADR narrowing ADR-0051 / ADR-0040 / ADR-0028; RUNBOOK.md and tools/test-workbench-round-trip.mjs; workbench/specs/S-00V-portable-workbench/SPEC.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:28.170Z",
+      "reason": "Ledger row PW-5 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-5",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:28.201Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

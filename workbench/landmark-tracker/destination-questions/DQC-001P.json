@@ -1,0 +1,168 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-001P",
+  "revision": 5,
+  "title": "Where should the ownership map live, and what information may it contain?",
+  "question": "Where should the ownership map live, and what information may it contain?",
+  "answer": "FND-Q22A: Yes. The ownership map owns the maintained record of artifact classes, responsibilities, scopes, routes and relations, and answers where a truth belongs, including the Blueprint -> Spec -> Task relationships the other controls do not answer. It routes to the artifacts holding claims and never copies them or tracks live card instances. The Taskboard is a derived projection that summarizes Spec and Task records.\nFND-Q23A: A separate map is needed: OWNERSHIP.json at the repository root as the eighth root file, a Core routing artifact outside the three-file Contract; root placement never implies Contract membership. The ownership schema leaves LEXICON.md, which keeps shared language and routes ownership questions to the map. ADR-0013 must be superseded. On 2026-09-22 the \"root control\" label was dropped: it is the Ownership map, a routing artifact.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q22A, FND-Q23A (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "FND-Q22A create workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json: Map holds classes, responsibilities, scopes, routes and relations only; query results return routes, never claim text. | FND-Q22A update workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md: Accepted with the routes-not-claims boundary. | FND-Q23A create OWNERSHIP.json (repo root) and templates/OWNERSHIP.json: The ownership map exists at root as a routing artifact, outside the Contract. | FND-Q23A update workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md: Accepted: eight root files; Contract membership separate from root placement; file list names TASKBOARD.json per E-1. | FND-Q23A retire workbench/docs/adr/0013-seven-file-workbench-contract.md: Archived as superseded; its seven-file, no-eighth-control rule no longer holds. | FND-Q23A update workbench/specs/S-00G-ownership-map-root-control/SPEC.md and workbench/specs/CATALOG.md: Title, catalog description and outcome do not call it a \"root control\". | FND-Q23A update Root-surface consumers: workbench/tools/workbench-layout.mjs, tools/control-fidelity.mjs, their tests, RUNBOOK.md, templates/ADOPTION.md: They know about the eighth root file.",
+    "home": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json; workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md; OWNERSHIP.json (repo root) and templates/OWNERSHIP.json; workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md; workbench/docs/adr/0013-seven-file-workbench-contract.md; workbench/specs/S-00G-ownership-map-root-control/SPEC.md and workbench/specs/CATALOG.md; Root-surface consumers: workbench/tools/workbench-layout.mjs, tools/control-fidelity.mjs, their tests, RUNBOOK.md, templates/ADOPTION.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "FND-Q22A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q23A",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "FND-Q22A",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q22A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q23A",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q23A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Where should the ownership map live, and what information may it contain?",
+    "question": "Where should the ownership map live, and what information may it contain?",
+    "sources": [
+      {
+        "id": "FND-Q22A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q23A",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:18.731Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:18.731Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 036 of the 2026-09-26 grouping (\"Entry, authority and ownership\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The later proposal places a separate OWNERSHIP.json at root as a routed artifact. It owns classes, scopes and routes, not copied claims or live card instances.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:18.745Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "FND-Q22A: Yes. The ownership map owns the maintained record of artifact classes, responsibilities, scopes, routes and relations, and answers where a truth belongs, including the Blueprint -> Spec -> Task relationships the other controls do not answer. It routes to the artifacts holding claims and never copies them or tracks live card instances. The Taskboard is a derived projection that summarizes Spec and Task records.\nFND-Q23A: A separate map is needed: OWNERSHIP.json at the repository root as the eighth root file, a Core routing artifact outside the three-file Contract; root placement never implies Contract membership. The ownership schema leaves LEXICON.md, which keeps shared language and routes ownership questions to the map. ADR-0013 must be superseded. On 2026-09-22 the \"root control\" label was dropped: it is the Ownership map, a routing artifact."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q22A, FND-Q23A (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "FND-Q22A create workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json: Map holds classes, responsibilities, scopes, routes and relations only; query results return routes, never claim text. | FND-Q22A update workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md: Accepted with the routes-not-claims boundary. | FND-Q23A create OWNERSHIP.json (repo root) and templates/OWNERSHIP.json: The ownership map exists at root as a routing artifact, outside the Contract. | FND-Q23A update workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md: Accepted: eight root files; Contract membership separate from root placement; file list names TASKBOARD.json per E-1. | FND-Q23A retire workbench/docs/adr/0013-seven-file-workbench-contract.md: Archived as superseded; its seven-file, no-eighth-control rule no longer holds. | FND-Q23A update workbench/specs/S-00G-ownership-map-root-control/SPEC.md and workbench/specs/CATALOG.md: Title, catalog description and outcome do not call it a \"root control\". | FND-Q23A update Root-surface consumers: workbench/tools/workbench-layout.mjs, tools/control-fidelity.mjs, their tests, RUNBOOK.md, templates/ADOPTION.md: They know about the eighth root file.",
+            "home": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json; workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md; OWNERSHIP.json (repo root) and templates/OWNERSHIP.json; workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md; workbench/docs/adr/0013-seven-file-workbench-contract.md; workbench/specs/S-00G-ownership-map-root-control/SPEC.md and workbench/specs/CATALOG.md; Root-surface consumers: workbench/tools/workbench-layout.mjs, tools/control-fidelity.mjs, their tests, RUNBOOK.md, templates/ADOPTION.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:18.760Z",
+      "reason": "Ledger row FND-Q22A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q22A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:18.777Z",
+      "reason": "Ledger row FND-Q23A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q23A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:18.795Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

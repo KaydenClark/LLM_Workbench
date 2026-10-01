@@ -1,0 +1,130 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-002J",
+  "revision": 4,
+  "title": "What evidence is sufficient before promoting a settled answer?",
+  "question": "What evidence is sufficient before promoting a settled answer?",
+  "answer": "TT-Q12: First clause: settled answers route by the whole ownership map (FND-Q21): definitions to the Lexicon, obligations to root controls, scoped capability choices to a Spec, cross-cutting choices to an ADR. Owner: locked answers go 'in some state of durable in the contract, docs, or specs' / 'in their durable places'.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: TT-Q12 (partially answered; the open part is an uncertainty). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "TT-Q12 update LEXICON.md (Artifact ownership schema) and templates/LEXICON.md: Routes each kind of settled answer to its owner. | TT-Q12 update AGENTS.md (Documentation Ownership And Proof) and templates/AGENTS.md: Locked answers are promoted to their durable owners. | TT-Q12 update Ownership map from S-00G (workbench/specs/S-00G-ownership-map-root-control/SPEC.md): Carries the type-level routing rows.",
+    "home": "LEXICON.md (Artifact ownership schema) and templates/LEXICON.md; AGENTS.md (Documentation Ownership And Proof) and templates/AGENTS.md; Ownership map from S-00G (workbench/specs/S-00G-ownership-map-root-control/SPEC.md)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [
+    "TT-Q12 (partially answered): the evidence threshold before promotion is open; reading \"locked\" as that threshold is an interpretation, not an owner ruling."
+  ],
+  "sources": [
+    {
+      "id": "TT-Q12",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 4
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "TT-Q12",
+      "revision": "56b459da",
+      "reason": "Ledger row TT-Q12 (partially-answered) at 56b459da; assessed Aligning from its status only.",
+      "assessment": {
+        "contributions": {
+          "Aligning": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What evidence is sufficient before promoting a settled answer?",
+    "question": "What evidence is sufficient before promoting a settled answer?",
+    "sources": [
+      {
+        "id": "TT-Q12",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:20.472Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:20.472Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 056 of the 2026-09-26 grouping (\"Alignment and durable promotion\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The ledger answers where claims go but explicitly leaves the evidence threshold partly unresolved.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:20.489Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "TT-Q12: First clause: settled answers route by the whole ownership map (FND-Q21): definitions to the Lexicon, obligations to root controls, scoped capability choices to a Spec, cross-cutting choices to an ADR. Owner: locked answers go 'in some state of durable in the contract, docs, or specs' / 'in their durable places'."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: TT-Q12 (partially answered; the open part is an uncertainty). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "TT-Q12 update LEXICON.md (Artifact ownership schema) and templates/LEXICON.md: Routes each kind of settled answer to its owner. | TT-Q12 update AGENTS.md (Documentation Ownership And Proof) and templates/AGENTS.md: Locked answers are promoted to their durable owners. | TT-Q12 update Ownership map from S-00G (workbench/specs/S-00G-ownership-map-root-control/SPEC.md): Carries the type-level routing rows.",
+            "home": "LEXICON.md (Artifact ownership schema) and templates/LEXICON.md; AGENTS.md (Documentation Ownership And Proof) and templates/AGENTS.md; Ownership map from S-00G (workbench/specs/S-00G-ownership-map-root-control/SPEC.md)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:20.506Z",
+      "reason": "Ledger row TT-Q12 (partially-answered) at 56b459da; assessed Aligning from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "TT-Q12",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:20.526Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,208 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000T",
+  "revision": 6,
+  "title": "Which layout changes require a new version contract?",
+  "question": "Which layout changes require a new version contract?",
+  "answer": "V3-12: Treat the breaking support-path move as LLM Workbench v3 while keeping the implementation limited to this portable layout contract.\nV3-12A: Yes. \"Moving stable support paths and changing skill installation ownership is a major layout contract.\"\nREC-03: Bump to v3.1.3: freeze v3.1.2 at sixteen in supportedLegacy and set the room's manifest to v3.1.3.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-12, V3-12A, REC-03 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "V3-12 create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Records the v3 capability: v3.0.0 with a dogfooded workbench/ support root. | V3-12 update README.md: Publishes the v3 setup contract. | V3-12A update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts): Records that the breaking stable-path change is v3 and that Genesis creates only v3. | V3-12A update LEXICON.md (v3.0.0 row): Defines v3.0.0 as the portable-layout candidate (S-021). | V3-12A update workbench/manifest.json: workbenchVersion carries a v3 label. | REC-03 update workbench/tools/workbench-layout.mjs supportedLegacy: v3.1.2 frozen at the sixteen-skill policy; v3.1.3 carries the seventeen-skill policy. | REC-03 update workbench/manifest.json: Stamps the room v3.1.3 for this release. | REC-03 update workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts; Dependencies And Blockers): Withdraws 'lands in v3.1.2'; records the v3.1.3 decision and the rejected alternatives.",
+    "home": "workbench/specs/S-021-portable-workbench-v3/SPEC.md; README.md; workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts); LEXICON.md (v3.0.0 row); workbench/manifest.json; workbench/tools/workbench-layout.mjs supportedLegacy; workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts; Dependencies And Blockers)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-12",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-12A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "REC-03",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "V3-12",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-12 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-12A",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-12A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "REC-03",
+      "revision": "56b459da",
+      "reason": "Ledger row REC-03 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Which layout changes require a new version contract?",
+    "question": "Which layout changes require a new version contract?",
+    "sources": [
+      {
+        "id": "V3-12",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-12A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "REC-03",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:17.101Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:17.101Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 013 of the 2026-09-26 grouping (\"Layout, manifest and path evolution\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Breaking support paths and installation ownership motivated the major v3 change. Historical version labels and supported legacy bundles remain meaningful.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:17.113Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "V3-12: Treat the breaking support-path move as LLM Workbench v3 while keeping the implementation limited to this portable layout contract.\nV3-12A: Yes. \"Moving stable support paths and changing skill installation ownership is a major layout contract.\"\nREC-03: Bump to v3.1.3: freeze v3.1.2 at sixteen in supportedLegacy and set the room's manifest to v3.1.3."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-12, V3-12A, REC-03 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "V3-12 create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Records the v3 capability: v3.0.0 with a dogfooded workbench/ support root. | V3-12 update README.md: Publishes the v3 setup contract. | V3-12A update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts): Records that the breaking stable-path change is v3 and that Genesis creates only v3. | V3-12A update LEXICON.md (v3.0.0 row): Defines v3.0.0 as the portable-layout candidate (S-021). | V3-12A update workbench/manifest.json: workbenchVersion carries a v3 label. | REC-03 update workbench/tools/workbench-layout.mjs supportedLegacy: v3.1.2 frozen at the sixteen-skill policy; v3.1.3 carries the seventeen-skill policy. | REC-03 update workbench/manifest.json: Stamps the room v3.1.3 for this release. | REC-03 update workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts; Dependencies And Blockers): Withdraws 'lands in v3.1.2'; records the v3.1.3 decision and the rejected alternatives.",
+            "home": "workbench/specs/S-021-portable-workbench-v3/SPEC.md; README.md; workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts); LEXICON.md (v3.0.0 row); workbench/manifest.json; workbench/tools/workbench-layout.mjs supportedLegacy; workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts; Dependencies And Blockers)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:17.124Z",
+      "reason": "Ledger row V3-12 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-12",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:17.136Z",
+      "reason": "Ledger row V3-12A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-12A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:17.148Z",
+      "reason": "Ledger row REC-03 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "REC-03",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:17.160Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

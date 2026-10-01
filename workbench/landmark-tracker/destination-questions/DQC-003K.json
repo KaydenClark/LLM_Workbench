@@ -1,0 +1,248 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-003K",
+  "revision": 7,
+  "title": "Which record authors work state, and what does the board project?",
+  "question": "Which record authors work state, and what does the board project?",
+  "answer": "FND-Q02: TASKBOARD.md is the sole live project-management and Kanban view of the Frontier. It mostly renders active Specs and Tasks (priority, what is hot, progress, lanes, blockers) and holds no irreplaceable detail; Specs and Tasks own that. Agents update or regenerate it as Tasks move, and completed verified Specs and Tasks disappear so the board clears.\nFND-Q02A: The underlying Specs and Tasks own substantive progress, issues, evidence and recoverable context; TASKBOARD.md renders and summarizes them and should hold as little irreplaceable context as possible. Sitrep must be able to read only the board for a complete active picture. Correction: do not call the board the navigation view. It is the Kanban and project-management view; it links to Tasks only because everything is navlinked. The Lexicon keeps the Context Map and Navlink hub role.\nFND-Q21B: An altitude is a scope, not a file. Boundaries, Requirements, Acceptance and Evidence have owners at all three scopes; Destination (Blueprint, Spec) and Work state (Spec, Task) at two. Gaps are declared with a route. Boundaries splits inside one row: permission limits arrive by inherits, product exclusions by refines. Refined 2026-09-22 (Option B): the Taskboard is first-class as the project-wide representation of work state; TASKBOARD.json summarizes the Spec and Task records that author it.\nFND-Q22A: Yes. The ownership map owns the maintained record of artifact classes, responsibilities, scopes, routes and relations, and answers where a truth belongs, including the Blueprint -> Spec -> Task relationships the other controls do not answer. It routes to the artifacts holding claims and never copies them or tracks live card instances. The Taskboard is a derived projection that summarizes Spec and Task records.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q02, FND-Q02A, FND-Q21B, FND-Q22A (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "FND-Q02 update workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md: Accepted decision that the Frontier is the active landscape and TASKBOARD renders it (S-00P TK-004). | FND-Q02 update LEXICON.md (Taskboard / Hot projection / Work state rows): Taskboard is the Kanban and project-management view that projects Spec and Task state; completed work leaves the board. | FND-Q02 update TASKBOARD.md and templates/TASKBOARD.md: Board shows active Specs and Tasks only, rendered from their owners, and clears when work is verified complete. | FND-Q02A update workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md: Board renders Spec and Task state and authors none; says Kanban/project-management view, not navigation view (S-00P TK-004). | FND-Q02A update LEXICON.md (Taskboard row, Context Map section) and templates/LEXICON.md: Taskboard is the Kanban/project-management view; the Lexicon remains the Context Map and Navlink hub. | FND-Q02A update TASK.md records (ADR-000H) and workbench/tools/spec-workbench.mjs render: Work state is authored in Spec/TASK.md and projected to the board, never authored on it. | FND-Q21B create workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json: Six scoped rows with per-scope owners, declared gaps with routes, and the Taskboard as representation owner with a summarizes relation. | FND-Q21B update LEXICON.md Boundaries wording and templates/LEXICON.md: Does not read as if a Spec could narrow a safety boundary. | FND-Q22A create workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json: Map holds classes, responsibilities, scopes, routes and relations only; query results return routes, never claim text. | FND-Q22A update workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md: Accepted with the routes-not-claims boundary.",
+    "home": "workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md; LEXICON.md (Taskboard / Hot projection / Work state rows); TASKBOARD.md and templates/TASKBOARD.md; LEXICON.md (Taskboard row, Context Map section) and templates/LEXICON.md; TASK.md records (ADR-000H) and workbench/tools/spec-workbench.mjs render; workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json; LEXICON.md Boundaries wording and templates/LEXICON.md; workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "FND-Q02",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q02A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q21B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q22A",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 7
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "FND-Q02",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q02 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q02A",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q02A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q21B",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q21B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q22A",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q22A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Which record authors work state, and what does the board project?",
+    "question": "Which record authors work state, and what does the board project?",
+    "sources": [
+      {
+        "id": "FND-Q02",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q02A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q21B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q22A",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:23.501Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:23.501Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 085 of the 2026-09-26 grouping (\"Taskboard and work representation\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Specs and Tasks own substantive state and evidence. The board is a generated representation with minimal irreplaceable content, not the Context Map.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:23.522Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "FND-Q02: TASKBOARD.md is the sole live project-management and Kanban view of the Frontier. It mostly renders active Specs and Tasks (priority, what is hot, progress, lanes, blockers) and holds no irreplaceable detail; Specs and Tasks own that. Agents update or regenerate it as Tasks move, and completed verified Specs and Tasks disappear so the board clears.\nFND-Q02A: The underlying Specs and Tasks own substantive progress, issues, evidence and recoverable context; TASKBOARD.md renders and summarizes them and should hold as little irreplaceable context as possible. Sitrep must be able to read only the board for a complete active picture. Correction: do not call the board the navigation view. It is the Kanban and project-management view; it links to Tasks only because everything is navlinked. The Lexicon keeps the Context Map and Navlink hub role.\nFND-Q21B: An altitude is a scope, not a file. Boundaries, Requirements, Acceptance and Evidence have owners at all three scopes; Destination (Blueprint, Spec) and Work state (Spec, Task) at two. Gaps are declared with a route. Boundaries splits inside one row: permission limits arrive by inherits, product exclusions by refines. Refined 2026-09-22 (Option B): the Taskboard is first-class as the project-wide representation of work state; TASKBOARD.json summarizes the Spec and Task records that author it.\nFND-Q22A: Yes. The ownership map owns the maintained record of artifact classes, responsibilities, scopes, routes and relations, and answers where a truth belongs, including the Blueprint -> Spec -> Task relationships the other controls do not answer. It routes to the artifacts holding claims and never copies them or tracks live card instances. The Taskboard is a derived projection that summarizes Spec and Task records."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q02, FND-Q02A, FND-Q21B, FND-Q22A (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "FND-Q02 update workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md: Accepted decision that the Frontier is the active landscape and TASKBOARD renders it (S-00P TK-004). | FND-Q02 update LEXICON.md (Taskboard / Hot projection / Work state rows): Taskboard is the Kanban and project-management view that projects Spec and Task state; completed work leaves the board. | FND-Q02 update TASKBOARD.md and templates/TASKBOARD.md: Board shows active Specs and Tasks only, rendered from their owners, and clears when work is verified complete. | FND-Q02A update workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md: Board renders Spec and Task state and authors none; says Kanban/project-management view, not navigation view (S-00P TK-004). | FND-Q02A update LEXICON.md (Taskboard row, Context Map section) and templates/LEXICON.md: Taskboard is the Kanban/project-management view; the Lexicon remains the Context Map and Navlink hub. | FND-Q02A update TASK.md records (ADR-000H) and workbench/tools/spec-workbench.mjs render: Work state is authored in Spec/TASK.md and projected to the board, never authored on it. | FND-Q21B create workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json: Six scoped rows with per-scope owners, declared gaps with routes, and the Taskboard as representation owner with a summarizes relation. | FND-Q21B update LEXICON.md Boundaries wording and templates/LEXICON.md: Does not read as if a Spec could narrow a safety boundary. | FND-Q22A create workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json: Map holds classes, responsibilities, scopes, routes and relations only; query results return routes, never claim text. | FND-Q22A update workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md: Accepted with the routes-not-claims boundary.",
+            "home": "workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md; LEXICON.md (Taskboard / Hot projection / Work state rows); TASKBOARD.md and templates/TASKBOARD.md; LEXICON.md (Taskboard row, Context Map section) and templates/LEXICON.md; TASK.md records (ADR-000H) and workbench/tools/spec-workbench.mjs render; workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json; LEXICON.md Boundaries wording and templates/LEXICON.md; workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:23.543Z",
+      "reason": "Ledger row FND-Q02 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q02",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:23.567Z",
+      "reason": "Ledger row FND-Q02A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q02A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:23.592Z",
+      "reason": "Ledger row FND-Q21B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q21B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:23.618Z",
+      "reason": "Ledger row FND-Q22A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q22A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:23.643Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

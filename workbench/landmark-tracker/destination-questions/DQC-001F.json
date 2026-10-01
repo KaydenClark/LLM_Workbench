@@ -1,0 +1,208 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-001F",
+  "revision": 6,
+  "title": "What must an agent read on ordinary entry?",
+  "question": "What must an agent read on ordinary entry?",
+  "answer": "WB-2: Keep the seven-control Workbench Contract. Shrink ordinary entry to AGENTS.md, RUNBOOK.md and LEXICON.md; the Lexicon routes to other owners only when the task needs them. Blueprint is not default reading but is consulted for architecture or cross-cutting direction. The selected SPEC.md stays mandatory after selection because it delegates the work's scope and verification.\nBPR-2: Only AGENTS.md, RUNBOOK.md and LEXICON.md are universal reading on every run; Blueprint and ADRs are not universal startup context and are reached by routing. LEXICON.md owns the single Context Map, RUNBOOK.md owns the ordinary entry procedure and points to it, and AGENTS.md requires traverse-don't-search without duplicating the map.\nFND-Q22: The Contract is AGENTS.md, RUNBOOK.md and LEXICON.md, read every run, plus the assigned Spec after selection. CLAUDE.md is a host adapter, not a carrier. The Contract routes by intent to Routed artifacts (Blueprint, Taskboard, Ownership map, README, Specs, Tasks, Wiki, ADRs and more), which are not all loaded. Core is the Contract plus the routing artifacts. ADR-0033 is superseded, not amended.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-2, BPR-2, FND-Q22 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WB-2 update AGENTS.md (opening paragraph) and templates/AGENTS.md: Ordinary entry is AGENTS -> RUNBOOK -> LEXICON; assigned SPEC mandatory after selection; Blueprint only for architecture or cross-cutting direction. | WB-2 create workbench/docs/adr/0035-reduced-entry-and-assigned-autonomy.md: Accepted decision keeping the seven-control Contract and the reduced entry route. | WB-2 update RUNBOOK.md (Ordinary Entry) and LEXICON.md routing, with template mirrors: Runbook entry procedure and Lexicon routing send agents to other owners only when the task needs them. | BPR-2 update LEXICON.md (Task Routing / Context Map entry routes) and templates/LEXICON.md: Hold the one Context Map from needs to owning artifacts. | BPR-2 update RUNBOOK.md (entry procedure) and templates/RUNBOOK.md: Own ordinary entry AGENTS -> RUNBOOK -> LEXICON and direct agents to the Lexicon map. | BPR-2 update AGENTS.md (opening, Traverse Don't Search) and templates/AGENTS.md: Require traversal from the entry route and link to the map without copying it. | BPR-2 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: State that the Lexicon owns the only Context Map. | FND-Q22 update workbench/docs/adr/proposed/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md: Accepted: the Contract is the claim set carried by three root controls plus the assigned Spec. | FND-Q22 retire workbench/docs/adr/0033-workbench-contract-is-a-claim-set.md: Archived as superseded by ADR-000C; live links repointed. | FND-Q22 update LEXICON.md (Workbench Contract row, Routed artifacts, Core) and templates/LEXICON.md: Contract row names the three carriers plus assigned Spec instead of seven root controls; Routed artifacts and Core defined. | FND-Q22 update AGENTS.md and templates/AGENTS.md: Entry and authority text match the three-carrier Contract and routing by intent.",
+    "home": "AGENTS.md (opening paragraph) and templates/AGENTS.md; workbench/docs/adr/0035-reduced-entry-and-assigned-autonomy.md; RUNBOOK.md (Ordinary Entry) and LEXICON.md routing, with template mirrors; LEXICON.md (Task Routing / Context Map entry routes) and templates/LEXICON.md; RUNBOOK.md (entry procedure) and templates/RUNBOOK.md; AGENTS.md (opening, Traverse Don't Search) and templates/AGENTS.md; workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md; workbench/docs/adr/proposed/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md; workbench/docs/adr/0033-workbench-contract-is-a-claim-set.md; LEXICON.md (Workbench Contract row, Routed artifacts, Core) and templates/LEXICON.md; AGENTS.md and templates/AGENTS.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "WB-2",
+      "revision": "56b459da"
+    },
+    {
+      "id": "BPR-2",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q22",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WB-2",
+      "revision": "56b459da",
+      "reason": "Ledger row WB-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "BPR-2",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q22",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q22 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What must an agent read on ordinary entry?",
+    "question": "What must an agent read on ordinary entry?",
+    "sources": [
+      {
+        "id": "WB-2",
+        "revision": "56b459da"
+      },
+      {
+        "id": "BPR-2",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q22",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:17.984Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:17.984Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 026 of the 2026-09-26 grouping (\"Entry, authority and ownership\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Read AGENTS, Runbook and Lexicon universally, then the assigned Spec and relevant sources. Blueprint and ADRs are routed by need.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:17.998Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WB-2: Keep the seven-control Workbench Contract. Shrink ordinary entry to AGENTS.md, RUNBOOK.md and LEXICON.md; the Lexicon routes to other owners only when the task needs them. Blueprint is not default reading but is consulted for architecture or cross-cutting direction. The selected SPEC.md stays mandatory after selection because it delegates the work's scope and verification.\nBPR-2: Only AGENTS.md, RUNBOOK.md and LEXICON.md are universal reading on every run; Blueprint and ADRs are not universal startup context and are reached by routing. LEXICON.md owns the single Context Map, RUNBOOK.md owns the ordinary entry procedure and points to it, and AGENTS.md requires traverse-don't-search without duplicating the map.\nFND-Q22: The Contract is AGENTS.md, RUNBOOK.md and LEXICON.md, read every run, plus the assigned Spec after selection. CLAUDE.md is a host adapter, not a carrier. The Contract routes by intent to Routed artifacts (Blueprint, Taskboard, Ownership map, README, Specs, Tasks, Wiki, ADRs and more), which are not all loaded. Core is the Contract plus the routing artifacts. ADR-0033 is superseded, not amended."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-2, BPR-2, FND-Q22 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WB-2 update AGENTS.md (opening paragraph) and templates/AGENTS.md: Ordinary entry is AGENTS -> RUNBOOK -> LEXICON; assigned SPEC mandatory after selection; Blueprint only for architecture or cross-cutting direction. | WB-2 create workbench/docs/adr/0035-reduced-entry-and-assigned-autonomy.md: Accepted decision keeping the seven-control Contract and the reduced entry route. | WB-2 update RUNBOOK.md (Ordinary Entry) and LEXICON.md routing, with template mirrors: Runbook entry procedure and Lexicon routing send agents to other owners only when the task needs them. | BPR-2 update LEXICON.md (Task Routing / Context Map entry routes) and templates/LEXICON.md: Hold the one Context Map from needs to owning artifacts. | BPR-2 update RUNBOOK.md (entry procedure) and templates/RUNBOOK.md: Own ordinary entry AGENTS -> RUNBOOK -> LEXICON and direct agents to the Lexicon map. | BPR-2 update AGENTS.md (opening, Traverse Don't Search) and templates/AGENTS.md: Require traversal from the entry route and link to the map without copying it. | BPR-2 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: State that the Lexicon owns the only Context Map. | FND-Q22 update workbench/docs/adr/proposed/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md: Accepted: the Contract is the claim set carried by three root controls plus the assigned Spec. | FND-Q22 retire workbench/docs/adr/0033-workbench-contract-is-a-claim-set.md: Archived as superseded by ADR-000C; live links repointed. | FND-Q22 update LEXICON.md (Workbench Contract row, Routed artifacts, Core) and templates/LEXICON.md: Contract row names the three carriers plus assigned Spec instead of seven root controls; Routed artifacts and Core defined. | FND-Q22 update AGENTS.md and templates/AGENTS.md: Entry and authority text match the three-carrier Contract and routing by intent.",
+            "home": "AGENTS.md (opening paragraph) and templates/AGENTS.md; workbench/docs/adr/0035-reduced-entry-and-assigned-autonomy.md; RUNBOOK.md (Ordinary Entry) and LEXICON.md routing, with template mirrors; LEXICON.md (Task Routing / Context Map entry routes) and templates/LEXICON.md; RUNBOOK.md (entry procedure) and templates/RUNBOOK.md; AGENTS.md (opening, Traverse Don't Search) and templates/AGENTS.md; workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md; workbench/docs/adr/proposed/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md; workbench/docs/adr/0033-workbench-contract-is-a-claim-set.md; LEXICON.md (Workbench Contract row, Routed artifacts, Core) and templates/LEXICON.md; AGENTS.md and templates/AGENTS.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:18.011Z",
+      "reason": "Ledger row WB-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WB-2",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:18.025Z",
+      "reason": "Ledger row BPR-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-2",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:18.039Z",
+      "reason": "Ledger row FND-Q22 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q22",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:18.054Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

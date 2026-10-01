@@ -1,0 +1,290 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000K",
+  "revision": 8,
+  "title": "Which coordination machinery belongs outside the base Workbench?",
+  "question": "Which coordination machinery belongs outside the base Workbench?",
+  "answer": "V3-5: FUIDs, Job Orders, flights, Claims, Journal/CAS, Halls, sockets, Captain, CIC, scheduling and runtime visibility remain Foundry augmentation.\nV3-24: Make LLM Workbench good enough, current, and safely reusable in other projects while Foundry finishes; do not redesign it into Foundry or expand optional architecture.\nV3-24B: Broad guidebook taxonomy, Foundry runtime concepts, orchestration, generalized plugin/catalog architecture, unrelated pending skills, and aesthetic refactors.\nFND-Q17e: A coordinator comes later; first prove single-Task execution: \"There should be a coordinator, but that will be built in a little bit. Right now let's just prove that we can execute a task every single time consistently.\" Backlog after v4.\nWF-10: 'Its more B': there should be a coordinator, but it will be built later. 'Right now let's just prove that we can execute a task every single time consistently.' Future capabilities are planned on the Blueprint; not every Spec is built now.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-5, V3-24, V3-24B, WF-10 (locked); FND-Q17e (deferred, settled as later work). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "V3-5 update BLUEPRINT.md: States the portable Workbench does not import Foundry runtime machinery. | V3-5 create workbench/docs/adr/0015-workbench-base-and-foundry-capabilities.md: Workbench supplies the base; Foundry adds coordination. | V3-5 create workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md: Foundry is a downstream extension of the sole Workbench source. | V3-5 update LEXICON.md (Foundry row) and workbench/specs/S-021-portable-workbench-v3/SPEC.md (Non-Goals): Foundry defined as downstream extension; S-021 lists these concepts as non-goals. | V3-24 create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Outcome: ready to use in other projects while Foundry remains unfinished, without turning it into Foundry. | V3-24 update BLUEPRINT.md and templates/BLUEPRINT.md: Portable Workbench does not require Foundry or import its machinery. | V3-24B create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Non-Goals exclude Foundry machinery, orchestration, a generalized plugin/marketplace, pending-skill rewrites and guidebook reorganization. | FND-Q17e update BLUEPRINT.md (future direction): A coordinator/runner is planned future direction, not a v4 build obligation. | WF-10 update BLUEPRINT.md: Plans the coordinator as future scope; the current proof target is consistent single-Task execution. The coordinator gets no Spec in the current rollout.",
+    "home": "BLUEPRINT.md; workbench/docs/adr/0015-workbench-base-and-foundry-capabilities.md; workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md; LEXICON.md (Foundry row) and workbench/specs/S-021-portable-workbench-v3/SPEC.md (Non-Goals); workbench/specs/S-021-portable-workbench-v3/SPEC.md; BLUEPRINT.md and templates/BLUEPRINT.md; BLUEPRINT.md (future direction)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [
+    "FND-Q17e (deferred, backlog after v4): whether a portable unattended runner is required waits until single-Task execution is proven consistent."
+  ],
+  "sources": [
+    {
+      "id": "V3-5",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-24",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-24B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q17e",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-10",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 8
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "V3-5",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-5 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-24",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-24 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-24B",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-24B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q17e",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q17e (deferred) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-10",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-10 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 7
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Which coordination machinery belongs outside the base Workbench?",
+    "question": "Which coordination machinery belongs outside the base Workbench?",
+    "sources": [
+      {
+        "id": "V3-5",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-24",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-24B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q17e",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-10",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:16.575Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:16.575Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 003 of the 2026-09-26 grouping (\"Portable room and product boundaries\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Foundry flights, Job Orders, scheduling and similar machinery were excluded from the portable base. A coordinator was deferred while single-Task execution is proved.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:16.585Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "V3-5: FUIDs, Job Orders, flights, Claims, Journal/CAS, Halls, sockets, Captain, CIC, scheduling and runtime visibility remain Foundry augmentation.\nV3-24: Make LLM Workbench good enough, current, and safely reusable in other projects while Foundry finishes; do not redesign it into Foundry or expand optional architecture.\nV3-24B: Broad guidebook taxonomy, Foundry runtime concepts, orchestration, generalized plugin/catalog architecture, unrelated pending skills, and aesthetic refactors.\nFND-Q17e: A coordinator comes later; first prove single-Task execution: \"There should be a coordinator, but that will be built in a little bit. Right now let's just prove that we can execute a task every single time consistently.\" Backlog after v4.\nWF-10: 'Its more B': there should be a coordinator, but it will be built later. 'Right now let's just prove that we can execute a task every single time consistently.' Future capabilities are planned on the Blueprint; not every Spec is built now."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-5, V3-24, V3-24B, WF-10 (locked); FND-Q17e (deferred, settled as later work). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "V3-5 update BLUEPRINT.md: States the portable Workbench does not import Foundry runtime machinery. | V3-5 create workbench/docs/adr/0015-workbench-base-and-foundry-capabilities.md: Workbench supplies the base; Foundry adds coordination. | V3-5 create workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md: Foundry is a downstream extension of the sole Workbench source. | V3-5 update LEXICON.md (Foundry row) and workbench/specs/S-021-portable-workbench-v3/SPEC.md (Non-Goals): Foundry defined as downstream extension; S-021 lists these concepts as non-goals. | V3-24 create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Outcome: ready to use in other projects while Foundry remains unfinished, without turning it into Foundry. | V3-24 update BLUEPRINT.md and templates/BLUEPRINT.md: Portable Workbench does not require Foundry or import its machinery. | V3-24B create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Non-Goals exclude Foundry machinery, orchestration, a generalized plugin/marketplace, pending-skill rewrites and guidebook reorganization. | FND-Q17e update BLUEPRINT.md (future direction): A coordinator/runner is planned future direction, not a v4 build obligation. | WF-10 update BLUEPRINT.md: Plans the coordinator as future scope; the current proof target is consistent single-Task execution. The coordinator gets no Spec in the current rollout.",
+            "home": "BLUEPRINT.md; workbench/docs/adr/0015-workbench-base-and-foundry-capabilities.md; workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md; LEXICON.md (Foundry row) and workbench/specs/S-021-portable-workbench-v3/SPEC.md (Non-Goals); workbench/specs/S-021-portable-workbench-v3/SPEC.md; BLUEPRINT.md and templates/BLUEPRINT.md; BLUEPRINT.md (future direction)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:16.595Z",
+      "reason": "Ledger row V3-5 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-5",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:16.605Z",
+      "reason": "Ledger row V3-24 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-24",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:16.615Z",
+      "reason": "Ledger row V3-24B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-24B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:16.625Z",
+      "reason": "Ledger row FND-Q17e (deferred) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q17e",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:16.636Z",
+      "reason": "Ledger row WF-10 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-10",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:16.647Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

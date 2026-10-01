@@ -1,0 +1,208 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-003M",
+  "revision": 6,
+  "title": "Which board format and lanes should present implementation work?",
+  "question": "Which board format and lanes should present implementation work?",
+  "answer": "TRACK: Recorded as: 'Owner backed up to ADR-000E / TASKBOARD.md first.' The owner did not pick an option; he said 'we need to back way up', that the six lanes he specified should be the lanes on TASKBOARD.md, and asked what they were right now.\nE-1: Redirected answer: a generated TASKBOARD.json Agile Kanban board replaces TASKBOARD.md as the root contract artifact, with no TASKBOARD.md view. Six lanes (backlog, toDo, inProgress, blocked, needsReview, complete); cards keyed by WBID, no kind field; loose schema v1; owner = assignee; agents never write it. Complete cards 'stay until promoted to a durable place' and the record is deleted.\nE-6: Two new v4 build Specs added to S-00O's build list, not folded into S-00P. Final order ('Yes, lets do it'): (1) WBID Spec (uppercase width 4 allocator, dual-form lookup, ADR-0041 amendment); (2) board Spec (TASKBOARD.json, lanes, lane function, sitrep; ADR-000E and ADR-0013 amendments); (3) S-00P TK-002..TK-005 rewriting controls once around the new board; (4) S-00O release.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: TRACK, E-1, E-6 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "TRACK create New board Spec (TASKBOARD.json, six lanes), placed in workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md build order: The readable board track is worked before ADR-000B/C/D acceptance. | TRACK update workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md: Amend 000E to the locked E-1..E-11 board answers. | E-1 update workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md: Amended or superseded: the board is generated TASKBOARD.json with six lanes; Complete holds until capture and record deletion (replaces 'completed verified work leaves the board'). | E-1 update workbench/docs/adr/0013-seven-file-workbench-contract.md: Amended: the root artifact is TASKBOARD.json, not TASKBOARD.md. | E-1 update workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md: Its root file list names TASKBOARD.json instead of TASKBOARD.md. | E-1 create board Spec (TASKBOARD.json board): Owns the generator, card schema v1 and six lanes, listed in S-00O's build order. | E-1 create TASKBOARD.json (root) and templates/TASKBOARD.md: Generated TASKBOARD.json replaces TASKBOARD.md in the root and in templates. | E-1 update AGENTS.md, LEXICON.md, README.md (+ templates mirrors): Describe TASKBOARD.json as the generated board instead of the TASKBOARD.md projection. | E-6 create WBID Spec: Allocator + dual-form lookup + ADR-0041 amendment; first in v4 build order. | E-6 create board Spec (TASKBOARD.json board): Second in v4 build order. | E-6 update workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md: Build list and order include both new Specs before S-00P TK-002 and the release. | E-6 update workbench/specs/S-00P-workflow-canon-rework/SPEC.md: TK-002..TK-005 depend on the board Spec.",
+    "home": "New board Spec (TASKBOARD.json, six lanes), placed in workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md build order; workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md; workbench/docs/adr/0013-seven-file-workbench-contract.md; workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md; board Spec (TASKBOARD.json board); TASKBOARD.json (root) and templates/TASKBOARD.md; AGENTS.md, LEXICON.md, README.md (+ templates mirrors); WBID Spec; workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md; workbench/specs/S-00P-workflow-canon-rework/SPEC.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "TRACK",
+      "revision": "56b459da"
+    },
+    {
+      "id": "E-1",
+      "revision": "56b459da"
+    },
+    {
+      "id": "E-6",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "TRACK",
+      "revision": "56b459da",
+      "reason": "Ledger row TRACK (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "E-1",
+      "revision": "56b459da",
+      "reason": "Ledger row E-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "E-6",
+      "revision": "56b459da",
+      "reason": "Ledger row E-6 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Which board format and lanes should present implementation work?",
+    "question": "Which board format and lanes should present implementation work?",
+    "sources": [
+      {
+        "id": "TRACK",
+        "revision": "56b459da"
+      },
+      {
+        "id": "E-1",
+        "revision": "56b459da"
+      },
+      {
+        "id": "E-6",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:23.757Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:23.757Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 087 of the 2026-09-26 grouping (\"Taskboard and work representation\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The later direction is generated TASKBOARD.json with backlog, toDo, inProgress, blocked, needsReview and complete, replacing the Markdown view.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:23.779Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "TRACK: Recorded as: 'Owner backed up to ADR-000E / TASKBOARD.md first.' The owner did not pick an option; he said 'we need to back way up', that the six lanes he specified should be the lanes on TASKBOARD.md, and asked what they were right now.\nE-1: Redirected answer: a generated TASKBOARD.json Agile Kanban board replaces TASKBOARD.md as the root contract artifact, with no TASKBOARD.md view. Six lanes (backlog, toDo, inProgress, blocked, needsReview, complete); cards keyed by WBID, no kind field; loose schema v1; owner = assignee; agents never write it. Complete cards 'stay until promoted to a durable place' and the record is deleted.\nE-6: Two new v4 build Specs added to S-00O's build list, not folded into S-00P. Final order ('Yes, lets do it'): (1) WBID Spec (uppercase width 4 allocator, dual-form lookup, ADR-0041 amendment); (2) board Spec (TASKBOARD.json, lanes, lane function, sitrep; ADR-000E and ADR-0013 amendments); (3) S-00P TK-002..TK-005 rewriting controls once around the new board; (4) S-00O release."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: TRACK, E-1, E-6 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "TRACK create New board Spec (TASKBOARD.json, six lanes), placed in workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md build order: The readable board track is worked before ADR-000B/C/D acceptance. | TRACK update workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md: Amend 000E to the locked E-1..E-11 board answers. | E-1 update workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md: Amended or superseded: the board is generated TASKBOARD.json with six lanes; Complete holds until capture and record deletion (replaces 'completed verified work leaves the board'). | E-1 update workbench/docs/adr/0013-seven-file-workbench-contract.md: Amended: the root artifact is TASKBOARD.json, not TASKBOARD.md. | E-1 update workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md: Its root file list names TASKBOARD.json instead of TASKBOARD.md. | E-1 create board Spec (TASKBOARD.json board): Owns the generator, card schema v1 and six lanes, listed in S-00O's build order. | E-1 create TASKBOARD.json (root) and templates/TASKBOARD.md: Generated TASKBOARD.json replaces TASKBOARD.md in the root and in templates. | E-1 update AGENTS.md, LEXICON.md, README.md (+ templates mirrors): Describe TASKBOARD.json as the generated board instead of the TASKBOARD.md projection. | E-6 create WBID Spec: Allocator + dual-form lookup + ADR-0041 amendment; first in v4 build order. | E-6 create board Spec (TASKBOARD.json board): Second in v4 build order. | E-6 update workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md: Build list and order include both new Specs before S-00P TK-002 and the release. | E-6 update workbench/specs/S-00P-workflow-canon-rework/SPEC.md: TK-002..TK-005 depend on the board Spec.",
+            "home": "New board Spec (TASKBOARD.json, six lanes), placed in workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md build order; workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md; workbench/docs/adr/0013-seven-file-workbench-contract.md; workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md; board Spec (TASKBOARD.json board); TASKBOARD.json (root) and templates/TASKBOARD.md; AGENTS.md, LEXICON.md, README.md (+ templates mirrors); WBID Spec; workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md; workbench/specs/S-00P-workflow-canon-rework/SPEC.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:23.801Z",
+      "reason": "Ledger row TRACK (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "TRACK",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:23.826Z",
+      "reason": "Ledger row E-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "E-1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:23.851Z",
+      "reason": "Ledger row E-6 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "E-6",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:23.876Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

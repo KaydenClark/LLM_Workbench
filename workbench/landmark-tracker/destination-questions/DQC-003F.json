@@ -1,0 +1,168 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-003F",
+  "revision": 5,
+  "title": "How far should an agent investigate before asking the owner or stopping?",
+  "question": "How far should an agent investigate before asking the owner or stopping?",
+  "answer": "WB-6: The Workbench is autonomous within its standing authority. An arriving agent investigates the Contract, relevant ADRs, specs, task state, Wiki and project evidence, makes the best supported choice, and may construct the next decision from that evidence. Only when it cannot find a confident good next decision does it record the blocker and stop; the owner can open a grilling session on return. Platform safety and owner-only boundaries still apply.\nWB-15: It does not create a next task for itself. An agent picks up its assigned task and works it autonomously; if information is missing it investigates and resolves it within that task from project evidence. Only when it cannot is a separate new task needed for a new agent, and the current agent does not manufacture that queue item or treat its absence as routine blockage.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-6, WB-15 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WB-6 update AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md: Investigate through Contract, ADRs, specs, Wiki and evidence; if no confident next action, record the blocker in the existing work owner and stop. | WB-6 create workbench/docs/adr/0035-reduced-entry-and-assigned-autonomy.md: Accepted decision: investigate missing details within assigned work. | WB-6 update RUNBOOK.md (Ordinary Entry) and templates/RUNBOOK.md: Runbook says investigate within the task; do not invent a next task when blocked. | WB-15 update AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md: Record the blocker in the existing work owner and stop; do not create a next task for yourself or manufacture a queue item. | WB-15 create workbench/docs/adr/0035-reduced-entry-and-assigned-autonomy.md: 'Never manufacture the next task.'",
+    "home": "AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md; workbench/docs/adr/0035-reduced-entry-and-assigned-autonomy.md; RUNBOOK.md (Ordinary Entry) and templates/RUNBOOK.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "WB-6",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WB-15",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WB-6",
+      "revision": "56b459da",
+      "reason": "Ledger row WB-6 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WB-15",
+      "revision": "56b459da",
+      "reason": "Ledger row WB-15 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How far should an agent investigate before asking the owner or stopping?",
+    "question": "How far should an agent investigate before asking the owner or stopping?",
+    "sources": [
+      {
+        "id": "WB-6",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WB-15",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:22.961Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:22.961Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 080 of the 2026-09-26 grouping (\"Stances and useful autonomy\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Investigate Contract, ADRs, assigned work, Wiki and live evidence; make supported decisions within scope. Stop with a recorded blocker if no confident action remains.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:22.982Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WB-6: The Workbench is autonomous within its standing authority. An arriving agent investigates the Contract, relevant ADRs, specs, task state, Wiki and project evidence, makes the best supported choice, and may construct the next decision from that evidence. Only when it cannot find a confident good next decision does it record the blocker and stop; the owner can open a grilling session on return. Platform safety and owner-only boundaries still apply.\nWB-15: It does not create a next task for itself. An agent picks up its assigned task and works it autonomously; if information is missing it investigates and resolves it within that task from project evidence. Only when it cannot is a separate new task needed for a new agent, and the current agent does not manufacture that queue item or treat its absence as routine blockage."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-6, WB-15 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WB-6 update AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md: Investigate through Contract, ADRs, specs, Wiki and evidence; if no confident next action, record the blocker in the existing work owner and stop. | WB-6 create workbench/docs/adr/0035-reduced-entry-and-assigned-autonomy.md: Accepted decision: investigate missing details within assigned work. | WB-6 update RUNBOOK.md (Ordinary Entry) and templates/RUNBOOK.md: Runbook says investigate within the task; do not invent a next task when blocked. | WB-15 update AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md: Record the blocker in the existing work owner and stop; do not create a next task for yourself or manufacture a queue item. | WB-15 create workbench/docs/adr/0035-reduced-entry-and-assigned-autonomy.md: 'Never manufacture the next task.'",
+            "home": "AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md; workbench/docs/adr/0035-reduced-entry-and-assigned-autonomy.md; RUNBOOK.md (Ordinary Entry) and templates/RUNBOOK.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:23.002Z",
+      "reason": "Ledger row WB-6 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WB-6",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:23.026Z",
+      "reason": "Ledger row WB-15 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WB-15",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:23.050Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

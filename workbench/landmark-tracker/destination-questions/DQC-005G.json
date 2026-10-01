@@ -1,0 +1,168 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-005G",
+  "revision": 5,
+  "title": "When is a downstream room update authorized?",
+  "question": "When is a downstream room update authorized?",
+  "answer": "BPR-7C: No. LLM Workbench builds and maintains the reusable system and Workbench Template; it owns no portfolio rollout, automatic propagation, monitoring or automation suite. A real project Workbench is updated only when Kayden explicitly points LLM Workbench at it and asks; otherwise the project is left untouched. 'This is the plan until Kayden changes it.'\nBPR-7: The comprehensive ownership and routing repair is part of v3.2 and covers the full upstream LLM_Workbench source and generic templates, not only the newest Blueprint section. Downstream project Workbenches get it only through their own explicit update path; an upstream release alone does not change them.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-7C, BPR-7 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "BPR-7C update AGENTS.md (Template Upgrade Release Gate) and RUNBOOK.md: The producer release gate does not authorize other room updates or add an external prerequisite to project work. | BPR-7C create S-00B through S-00E SPEC.md Non-Goals: Exclude portfolio rollout and automation; a real project update needs a named target. | BPR-7 update workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md: Include the full ownership and routing repair in the v3.2.0 release scope. | BPR-7 create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Deliver the repair across root controls and their templates/ mirrors. | BPR-7 update AGENTS.md, RUNBOOK.md, LEXICON.md, BLUEPRINT.md and their templates/ mirrors: Agree on one ownership model and Context Map.",
+    "home": "AGENTS.md (Template Upgrade Release Gate) and RUNBOOK.md; S-00B through S-00E SPEC.md Non-Goals; workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md; AGENTS.md, RUNBOOK.md, LEXICON.md, BLUEPRINT.md and their templates/ mirrors",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "BPR-7C",
+      "revision": "56b459da"
+    },
+    {
+      "id": "BPR-7",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "BPR-7C",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-7C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "BPR-7",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-7 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "When is a downstream room update authorized?",
+    "question": "When is a downstream room update authorized?",
+    "sources": [
+      {
+        "id": "BPR-7C",
+        "revision": "56b459da"
+      },
+      {
+        "id": "BPR-7",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:30.517Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:30.517Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 134 of the 2026-09-26 grouping (\"Updates, drift and release evidence\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: An upstream release does not roll out automatically. The owner explicitly targets a project for update; the producer is not a portfolio monitoring system.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:30.547Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "BPR-7C: No. LLM Workbench builds and maintains the reusable system and Workbench Template; it owns no portfolio rollout, automatic propagation, monitoring or automation suite. A real project Workbench is updated only when Kayden explicitly points LLM Workbench at it and asks; otherwise the project is left untouched. 'This is the plan until Kayden changes it.'\nBPR-7: The comprehensive ownership and routing repair is part of v3.2 and covers the full upstream LLM_Workbench source and generic templates, not only the newest Blueprint section. Downstream project Workbenches get it only through their own explicit update path; an upstream release alone does not change them."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-7C, BPR-7 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "BPR-7C update AGENTS.md (Template Upgrade Release Gate) and RUNBOOK.md: The producer release gate does not authorize other room updates or add an external prerequisite to project work. | BPR-7C create S-00B through S-00E SPEC.md Non-Goals: Exclude portfolio rollout and automation; a real project update needs a named target. | BPR-7 update workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md: Include the full ownership and routing repair in the v3.2.0 release scope. | BPR-7 create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Deliver the repair across root controls and their templates/ mirrors. | BPR-7 update AGENTS.md, RUNBOOK.md, LEXICON.md, BLUEPRINT.md and their templates/ mirrors: Agree on one ownership model and Context Map.",
+            "home": "AGENTS.md (Template Upgrade Release Gate) and RUNBOOK.md; S-00B through S-00E SPEC.md Non-Goals; workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md; AGENTS.md, RUNBOOK.md, LEXICON.md, BLUEPRINT.md and their templates/ mirrors",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:30.576Z",
+      "reason": "Ledger row BPR-7C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-7C",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:30.611Z",
+      "reason": "Ledger row BPR-7 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-7",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:30.645Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

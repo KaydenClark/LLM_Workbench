@@ -1,0 +1,128 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-003D",
+  "revision": 4,
+  "title": "What common contract must every stance explain?",
+  "question": "What common contract must every stance explain?",
+  "answer": "WB-12: A stance never grants, removes or transfers authority; it only changes how the model behaves within authority set before adoption. Every stance defines Purpose, Method / Posture, Obligations, and Completion / Exit Condition, and may add intrinsic constraints (e.g. Reviewer evaluates rather than quietly repairs). Changing stance creates no handoff, so one task may move Builder -> Reviewer -> Builder -> Reconciler uninterrupted.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-12 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WB-12 create workbench/skills/builder, auditor, reviewer, reconciler (SKILL.md): Each stance has exactly the four sections: Purpose, Method / Posture, Obligations, Completion / Exit Condition. | WB-12 update AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md: A stance never grants, removes or transfers authority; changing stance alone creates no handoff. | WB-12 update LEXICON.md (Stance Terms) and templates/LEXICON.md: Stance defined as method within established authority, not identity or authority grant.",
+    "home": "workbench/skills/builder, auditor, reviewer, reconciler (SKILL.md); AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md; LEXICON.md (Stance Terms) and templates/LEXICON.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "WB-12",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 4
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WB-12",
+      "revision": "56b459da",
+      "reason": "Ledger row WB-12 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What common contract must every stance explain?",
+    "question": "What common contract must every stance explain?",
+    "sources": [
+      {
+        "id": "WB-12",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:22.785Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:22.785Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 078 of the 2026-09-26 grouping (\"Stances and useful autonomy\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Each defines purpose, method/posture, obligations and completion/exit conditions while remaining within previously established authority.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:22.806Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WB-12: A stance never grants, removes or transfers authority; it only changes how the model behaves within authority set before adoption. Every stance defines Purpose, Method / Posture, Obligations, and Completion / Exit Condition, and may add intrinsic constraints (e.g. Reviewer evaluates rather than quietly repairs). Changing stance creates no handoff, so one task may move Builder -> Reviewer -> Builder -> Reconciler uninterrupted."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-12 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WB-12 create workbench/skills/builder, auditor, reviewer, reconciler (SKILL.md): Each stance has exactly the four sections: Purpose, Method / Posture, Obligations, Completion / Exit Condition. | WB-12 update AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md: A stance never grants, removes or transfers authority; changing stance alone creates no handoff. | WB-12 update LEXICON.md (Stance Terms) and templates/LEXICON.md: Stance defined as method within established authority, not identity or authority grant.",
+            "home": "workbench/skills/builder, auditor, reviewer, reconciler (SKILL.md); AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md; LEXICON.md (Stance Terms) and templates/LEXICON.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:22.827Z",
+      "reason": "Ledger row WB-12 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WB-12",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:22.851Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

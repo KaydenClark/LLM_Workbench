@@ -1,0 +1,168 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-004Z",
+  "revision": 5,
+  "title": "What is the reference Template meant to provide?",
+  "question": "What is the reference Template meant to provide?",
+  "answer": "BPR-7B: Workbench Template: a copyable starter for a blank project. The owner copies it, starts a grilling session, and the Workbench guides project discovery, the project Blueprint and active ADRs, and Spec derivation. The Example-specific product story and CLI tour are not the template's role.\nFND-Q12: The Workbench_Template is the answer: each release must 'fully build a working template ... that a room can turn into its own project', and updating the Template to the new version is the release gate.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-7B (locked); FND-Q12 (answered in chat, recovered from the owner's own messages). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "BPR-7B create workbench/specs/S-00B-workbench-template-reformation/SPEC.md: Recast the named reference room as a copyable Workbench Template and prove the v3.2 ownership update there. | BPR-7B update AGENTS.md and README.md (Workbench_Template, formerly Example_Workbench): Name the reference repository Workbench_Template. | FND-Q12 update AGENTS.md (Template Upgrade Release Gate) and RUNBOOK.md procedure: Every new version must upgrade KaydenClark/Workbench_Template and pass its checks before release readiness. | FND-Q12 update workbench/specs/S-00F-template-upgrade-release-gate/SPEC.md: Owns the Template upgrade release gate capability. | FND-Q12 update Workbench_Template repository (external): Updated to each release and able to become a working project on its own (S-00E fresh-copy proof).",
+    "home": "workbench/specs/S-00B-workbench-template-reformation/SPEC.md; AGENTS.md and README.md (Workbench_Template, formerly Example_Workbench); AGENTS.md (Template Upgrade Release Gate) and RUNBOOK.md procedure; workbench/specs/S-00F-template-upgrade-release-gate/SPEC.md; Workbench_Template repository (external)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "BPR-7B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q12",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "BPR-7B",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-7B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q12",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q12 (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What is the reference Template meant to provide?",
+    "question": "What is the reference Template meant to provide?",
+    "sources": [
+      {
+        "id": "BPR-7B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q12",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:29.340Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:29.340Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 127 of the 2026-09-26 grouping (\"Genesis, Adoption and the reference Template\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: It is a copyable starter that a room can turn into its own project, not an Example-specific product story or CLI tour.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:29.369Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "BPR-7B: Workbench Template: a copyable starter for a blank project. The owner copies it, starts a grilling session, and the Workbench guides project discovery, the project Blueprint and active ADRs, and Spec derivation. The Example-specific product story and CLI tour are not the template's role.\nFND-Q12: The Workbench_Template is the answer: each release must 'fully build a working template ... that a room can turn into its own project', and updating the Template to the new version is the release gate."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-7B (locked); FND-Q12 (answered in chat, recovered from the owner's own messages). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "BPR-7B create workbench/specs/S-00B-workbench-template-reformation/SPEC.md: Recast the named reference room as a copyable Workbench Template and prove the v3.2 ownership update there. | BPR-7B update AGENTS.md and README.md (Workbench_Template, formerly Example_Workbench): Name the reference repository Workbench_Template. | FND-Q12 update AGENTS.md (Template Upgrade Release Gate) and RUNBOOK.md procedure: Every new version must upgrade KaydenClark/Workbench_Template and pass its checks before release readiness. | FND-Q12 update workbench/specs/S-00F-template-upgrade-release-gate/SPEC.md: Owns the Template upgrade release gate capability. | FND-Q12 update Workbench_Template repository (external): Updated to each release and able to become a working project on its own (S-00E fresh-copy proof).",
+            "home": "workbench/specs/S-00B-workbench-template-reformation/SPEC.md; AGENTS.md and README.md (Workbench_Template, formerly Example_Workbench); AGENTS.md (Template Upgrade Release Gate) and RUNBOOK.md procedure; workbench/specs/S-00F-template-upgrade-release-gate/SPEC.md; Workbench_Template repository (external)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:29.399Z",
+      "reason": "Ledger row BPR-7B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-7B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:29.435Z",
+      "reason": "Ledger row FND-Q12 (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q12",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:29.470Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

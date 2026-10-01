@@ -1,0 +1,168 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-004L",
+  "revision": 5,
+  "title": "What should a Wiki feature article explain, and when is it written?",
+  "question": "What should a Wiki feature article explain, and when is it written?",
+  "answer": "WF-8H: A new Wiki collection named 'features' (not 'capabilities'), rather than widening design-concepts: '1, but features. Once a spec is a feature and not just a specification, then it needs a wiki article.' The article is written at the WF-8E closure point, not a new gate. Completed Specs and Tasks become wiki articles describing the product; this is a v4 requirement.\nWF-8E: A Spec closes only after separate-context Spec review passes and owner Human QA on integration confirms the destination is actually there. It is then reconciled into the Wiki and retired. No Git merge closes it automatically; main promotion stays a separate owner action.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-8H, WF-8E (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WF-8H create workbench/wiki/features/ (with features/README.md): Collection for single-Spec feature articles, scoped narrowly enough to stay distinct from design-concepts. | WF-8H update workbench/wiki/design-concepts/README.md: Reconcile the 'owner alone authorizes' rule with routine agent authorship under an already-approved Spec. | WF-8H update workbench/manifest.json and templates/wiki: Declare the features collection and mirror it into the generic template. | WF-8H update retire-spec Wiki-type gate (S-00I TK-005 tooling): Accept a feature-typed article as a valid retirement target. | WF-8H update workbench/wiki/MEMORY.md: Route to feature articles. | WF-8E update BLUEPRINT.md: Fixes the order: assembled-Spec review -> integration -> owner Human QA -> close -> Wiki reconciliation -> SPEC.md retirement. | WF-8E update workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md: Records owner Human QA approval before Spec closure. | WF-8E update workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md: Retirement happens after Wiki reconciliation in the WF-8E order. | WF-8E update AGENTS.md (Work Selection And Lifecycle) and templates/AGENTS.md: Spec completion follows this order instead of a merge; owned by S-00P TK-002 and TK-005.",
+    "home": "workbench/wiki/features/ (with features/README.md); workbench/wiki/design-concepts/README.md; workbench/manifest.json and templates/wiki; retire-spec Wiki-type gate (S-00I TK-005 tooling); workbench/wiki/MEMORY.md; BLUEPRINT.md; workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md; workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md; AGENTS.md (Work Selection And Lifecycle) and templates/AGENTS.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "WF-8H",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-8E",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WF-8H",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-8H (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-8E",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-8E (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What should a Wiki feature article explain, and when is it written?",
+    "question": "What should a Wiki feature article explain, and when is it written?",
+    "sources": [
+      {
+        "id": "WF-8H",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-8E",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:27.339Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:27.339Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 112 of the 2026-09-26 grouping (\"Durable knowledge and retirement\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The owner chose a features collection for delivered product explanations, distinct from design concepts; writing it belongs to Spec reconciliation at closure.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:27.365Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WF-8H: A new Wiki collection named 'features' (not 'capabilities'), rather than widening design-concepts: '1, but features. Once a spec is a feature and not just a specification, then it needs a wiki article.' The article is written at the WF-8E closure point, not a new gate. Completed Specs and Tasks become wiki articles describing the product; this is a v4 requirement.\nWF-8E: A Spec closes only after separate-context Spec review passes and owner Human QA on integration confirms the destination is actually there. It is then reconciled into the Wiki and retired. No Git merge closes it automatically; main promotion stays a separate owner action."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-8H, WF-8E (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WF-8H create workbench/wiki/features/ (with features/README.md): Collection for single-Spec feature articles, scoped narrowly enough to stay distinct from design-concepts. | WF-8H update workbench/wiki/design-concepts/README.md: Reconcile the 'owner alone authorizes' rule with routine agent authorship under an already-approved Spec. | WF-8H update workbench/manifest.json and templates/wiki: Declare the features collection and mirror it into the generic template. | WF-8H update retire-spec Wiki-type gate (S-00I TK-005 tooling): Accept a feature-typed article as a valid retirement target. | WF-8H update workbench/wiki/MEMORY.md: Route to feature articles. | WF-8E update BLUEPRINT.md: Fixes the order: assembled-Spec review -> integration -> owner Human QA -> close -> Wiki reconciliation -> SPEC.md retirement. | WF-8E update workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md: Records owner Human QA approval before Spec closure. | WF-8E update workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md: Retirement happens after Wiki reconciliation in the WF-8E order. | WF-8E update AGENTS.md (Work Selection And Lifecycle) and templates/AGENTS.md: Spec completion follows this order instead of a merge; owned by S-00P TK-002 and TK-005.",
+            "home": "workbench/wiki/features/ (with features/README.md); workbench/wiki/design-concepts/README.md; workbench/manifest.json and templates/wiki; retire-spec Wiki-type gate (S-00I TK-005 tooling); workbench/wiki/MEMORY.md; BLUEPRINT.md; workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md; workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md; AGENTS.md (Work Selection And Lifecycle) and templates/AGENTS.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:27.392Z",
+      "reason": "Ledger row WF-8H (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-8H",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:27.422Z",
+      "reason": "Ledger row WF-8E (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-8E",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:27.453Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

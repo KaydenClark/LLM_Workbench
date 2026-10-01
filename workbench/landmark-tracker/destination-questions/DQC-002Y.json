@@ -1,0 +1,168 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-002Y",
+  "revision": 5,
+  "title": "How should missing host or Task capabilities become visible to the owner?",
+  "question": "How should missing host or Task capabilities become visible to the owner?",
+  "answer": "PW-7: 'When we lack something, flag the task as blocked or needs review so when I do sitrep I find it.' Mechanics were delegated: floor = Node 18+, Python 3.9+, git, gh authenticated with push rights, GitHub network, checked at session start (missing = all-effect doctor finding); other capabilities are optional and named by the Task.\nE-10: Yes: sitrep (Situation Report) returns as a core skill reading TASKBOARD.json, delivered with the board Spec. Shape: lead with what needs his attention: (1) needs his review, (2) what he can unblock, (3) in progress, (4) to do, each in priority order, in plain language: 'I don't want to be reading a bunch of WBID. I want to know what the specs and tasks actually are, what the progress actually is.'",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: PW-7, E-10 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "PW-7 update workbench/tools/spec-workbench.mjs doctor: Tracked host-floor check; missing item is an all-effect finding. | PW-7 update AGENTS.md (+ templates/AGENTS.md): Capability-blocked Task rule: set blocked or needs-review naming the missing capability. | PW-7 update RUNBOOK.md Prerequisites: Floor names gh with push rights and GitHub network. | PW-7 update workbench/specs/S-00V-portable-workbench/SPEC.md: Slice: host floor check and routing. | E-10 create workbench/skills/sitrep/SKILL.md: Core skill reading TASKBOARD.json with the owner's report order. | E-10 update workbench/manifest.json skillPolicy: sitrep listed as a required core skill. | E-10 create board Spec (TASKBOARD.json board): Delivers sitrep; cards carry human-readable titles and progress.",
+    "home": "workbench/tools/spec-workbench.mjs doctor; AGENTS.md (+ templates/AGENTS.md); RUNBOOK.md Prerequisites; workbench/specs/S-00V-portable-workbench/SPEC.md; workbench/skills/sitrep/SKILL.md; workbench/manifest.json skillPolicy; board Spec (TASKBOARD.json board)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "PW-7",
+      "revision": "56b459da"
+    },
+    {
+      "id": "E-10",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "PW-7",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-7 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "E-10",
+      "revision": "56b459da",
+      "reason": "Ledger row E-10 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should missing host or Task capabilities become visible to the owner?",
+    "question": "How should missing host or Task capabilities become visible to the owner?",
+    "sources": [
+      {
+        "id": "PW-7",
+        "revision": "56b459da"
+      },
+      {
+        "id": "E-10",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:22.271Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:22.271Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 073 of the 2026-09-26 grouping (\"Shared claims, host capabilities and coordination\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The owner wants missing capabilities surfaced as blocked or needs-review work that sitrep can expose; the recorded base-floor mechanism uses diagnostics.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:22.292Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "PW-7: 'When we lack something, flag the task as blocked or needs review so when I do sitrep I find it.' Mechanics were delegated: floor = Node 18+, Python 3.9+, git, gh authenticated with push rights, GitHub network, checked at session start (missing = all-effect doctor finding); other capabilities are optional and named by the Task.\nE-10: Yes: sitrep (Situation Report) returns as a core skill reading TASKBOARD.json, delivered with the board Spec. Shape: lead with what needs his attention: (1) needs his review, (2) what he can unblock, (3) in progress, (4) to do, each in priority order, in plain language: 'I don't want to be reading a bunch of WBID. I want to know what the specs and tasks actually are, what the progress actually is.'"
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: PW-7, E-10 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "PW-7 update workbench/tools/spec-workbench.mjs doctor: Tracked host-floor check; missing item is an all-effect finding. | PW-7 update AGENTS.md (+ templates/AGENTS.md): Capability-blocked Task rule: set blocked or needs-review naming the missing capability. | PW-7 update RUNBOOK.md Prerequisites: Floor names gh with push rights and GitHub network. | PW-7 update workbench/specs/S-00V-portable-workbench/SPEC.md: Slice: host floor check and routing. | E-10 create workbench/skills/sitrep/SKILL.md: Core skill reading TASKBOARD.json with the owner's report order. | E-10 update workbench/manifest.json skillPolicy: sitrep listed as a required core skill. | E-10 create board Spec (TASKBOARD.json board): Delivers sitrep; cards carry human-readable titles and progress.",
+            "home": "workbench/tools/spec-workbench.mjs doctor; AGENTS.md (+ templates/AGENTS.md); RUNBOOK.md Prerequisites; workbench/specs/S-00V-portable-workbench/SPEC.md; workbench/skills/sitrep/SKILL.md; workbench/manifest.json skillPolicy; board Spec (TASKBOARD.json board)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:22.318Z",
+      "reason": "Ledger row PW-7 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-7",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:22.340Z",
+      "reason": "Ledger row E-10 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "E-10",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:22.363Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

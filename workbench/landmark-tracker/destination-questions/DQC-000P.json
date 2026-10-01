@@ -1,0 +1,176 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000P",
+  "revision": 5,
+  "title": "How should support lanes and their collections be organized?",
+  "question": "How should support lanes and their collections be organized?",
+  "answer": "PW-3A: 'Move its sources to workbench/skills, and give templates what it needs to.' The 21-skill source moves from root skills/ to workbench/skills and root skills/ is removed; templates gain what Genesis and update-harness need to lay down and refresh the lane. A root skills/ becomes a doctor finding.\nPW-3: 'We already locked in a version of 1. When we update the workbenches, we update the skills. LLM_Workbench owns the skills it needs to. We store them all in workbench/skills.' Core skills are tracked in every room at workbench/skills and replaced by the ordinary Workbench update; no provider home, personal catalog or bootstrap is on the critical path.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: PW-3A, PW-3 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "PW-3A create workbench/skills/: Holds the producer's skill source; no root skills/ directory remains. | PW-3A update templates/GENESIS.md, templates/ADOPTION.md: Genesis and Adoption lay down the lane from the release checkout. | PW-3A update workbench/tools/spec-workbench.mjs doctor: A root skills/ directory is reported as a finding. | PW-3A update RUNBOOK.md, README.md: Describe the lane instead of root skills/.",
+    "home": "workbench/skills/; templates/GENESIS.md, templates/ADOPTION.md; workbench/tools/spec-workbench.mjs doctor; RUNBOOK.md, README.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-2",
+      "revision": "56b459da"
+    },
+    {
+      "id": "PW-3A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "PW-3",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "PW-3A",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-3A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "PW-3",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-3 (locked) at 56b459da, related as the successor of superseded V3-2; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should support lanes and their collections be organized?",
+    "question": "How should support lanes and their collections be organized?",
+    "sources": [
+      {
+        "id": "V3-2",
+        "revision": "56b459da"
+      },
+      {
+        "id": "PW-3A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "PW-3",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:16.863Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:16.863Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 009 of the 2026-09-26 grouping (\"Layout, manifest and path evolution\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The historical five-lane layout evolved through six lanes to the later skills lane. The manifest describes support structure rather than creating a second control root. Superseded lineage kept as sources and represented by successors: V3-2 (successor PW-3).",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:16.874Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "PW-3A: 'Move its sources to workbench/skills, and give templates what it needs to.' The 21-skill source moves from root skills/ to workbench/skills and root skills/ is removed; templates gain what Genesis and update-harness need to lay down and refresh the lane. A root skills/ becomes a doctor finding.\nPW-3: 'We already locked in a version of 1. When we update the workbenches, we update the skills. LLM_Workbench owns the skills it needs to. We store them all in workbench/skills.' Core skills are tracked in every room at workbench/skills and replaced by the ordinary Workbench update; no provider home, personal catalog or bootstrap is on the critical path."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: PW-3A, PW-3 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "PW-3A create workbench/skills/: Holds the producer's skill source; no root skills/ directory remains. | PW-3A update templates/GENESIS.md, templates/ADOPTION.md: Genesis and Adoption lay down the lane from the release checkout. | PW-3A update workbench/tools/spec-workbench.mjs doctor: A root skills/ directory is reported as a finding. | PW-3A update RUNBOOK.md, README.md: Describe the lane instead of root skills/.",
+            "home": "workbench/skills/; templates/GENESIS.md, templates/ADOPTION.md; workbench/tools/spec-workbench.mjs doctor; RUNBOOK.md, README.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:16.885Z",
+      "reason": "Ledger row PW-3A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-3A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:16.897Z",
+      "reason": "Ledger row PW-3 (locked) at 56b459da, related as the successor of superseded V3-2; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-3",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:16.908Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

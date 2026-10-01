@@ -1,0 +1,48 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000H",
+  "revision": 1,
+  "title": "How should incomplete setup report its result and recovery path?",
+  "question": "How should incomplete setup report its result and recovery path?",
+  "answer": null,
+  "confirmation": null,
+  "expectedResult": null,
+  "result": null,
+  "uncertainty": [
+    "V3-15B is superseded in part (the provider-home install); per its ledger note the truthful-partial-result principle still applies to lane and adapter failures, but no locked ledger row of its own carries it."
+  ],
+  "sources": [
+    {
+      "id": "V3-15B",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": null,
+  "related": [],
+  "claims": [],
+  "origin": {
+    "title": "How should incomplete setup report its result and recovery path?",
+    "question": "How should incomplete setup report its result and recovery path?",
+    "sources": [
+      {
+        "id": "V3-15B",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:06.614Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:06.614Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 124 of the 2026-09-26 grouping (\"Genesis, Adoption and the reference Template\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Earlier Genesis explicitly retained a truthful partial scaffold and remediation on failed installation. The later skill lane changes the failure scenario, not permission to claim unproved readiness. Superseded lineage kept as sources and represented by successors: V3-15B (successor PW-3).",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,168 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-005K",
+  "revision": 5,
+  "title": "What can a short demo prove, and which outcome claims remain unsupported?",
+  "question": "What can a short demo prove, and which outcome claims remain unsupported?",
+  "answer": "V3-17C: No. Prove both Codex and Claude user-scoped discovery paths deterministically and perform one cold-context resume; broader model-outcome trials are outside this interim release.\nV3-17D: Show the manifest and lanes, run the bounded layout/spec/skill checks, and demonstrate that an existing installed skill was preserved; make no model-outcome claim.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-17C, V3-17D (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "V3-17C update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Non-Goals, Acceptance Criteria): Requires both engine discovery-path checks and one cold-context resume; no claim of better model outcomes. | V3-17D update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Acceptance Criteria): The under-one-minute demo passes without an unsupported model-outcome claim. | V3-17D update RUNBOOK.md: Holds the installer and layout check commands the demo runs.",
+    "home": "workbench/specs/S-021-portable-workbench-v3/SPEC.md (Non-Goals, Acceptance Criteria); workbench/specs/S-021-portable-workbench-v3/SPEC.md (Acceptance Criteria); RUNBOOK.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-17C",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-17D",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "V3-17C",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-17C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-17D",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-17D (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What can a short demo prove, and which outcome claims remain unsupported?",
+    "question": "What can a short demo prove, and which outcome claims remain unsupported?",
+    "sources": [
+      {
+        "id": "V3-17C",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-17D",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:31.205Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:31.205Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 138 of the 2026-09-26 grouping (\"Updates, drift and release evidence\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Show layout, bounded checks and preservation in a small demo. Historical deterministic provider-discovery and cold-resume proof did not justify broader model-outcome claims.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:31.236Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "V3-17C: No. Prove both Codex and Claude user-scoped discovery paths deterministically and perform one cold-context resume; broader model-outcome trials are outside this interim release.\nV3-17D: Show the manifest and lanes, run the bounded layout/spec/skill checks, and demonstrate that an existing installed skill was preserved; make no model-outcome claim."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-17C, V3-17D (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "V3-17C update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Non-Goals, Acceptance Criteria): Requires both engine discovery-path checks and one cold-context resume; no claim of better model outcomes. | V3-17D update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Acceptance Criteria): The under-one-minute demo passes without an unsupported model-outcome claim. | V3-17D update RUNBOOK.md: Holds the installer and layout check commands the demo runs.",
+            "home": "workbench/specs/S-021-portable-workbench-v3/SPEC.md (Non-Goals, Acceptance Criteria); workbench/specs/S-021-portable-workbench-v3/SPEC.md (Acceptance Criteria); RUNBOOK.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:31.265Z",
+      "reason": "Ledger row V3-17C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-17C",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:31.301Z",
+      "reason": "Ledger row V3-17D (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-17D",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:31.336Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,195 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-005T",
+  "revision": 6,
+  "title": "How should context cost and agent outcomes be evaluated?",
+  "question": "How should context cost and agent outcomes be evaluated?",
+  "answer": "RB-Q3: Neither suggestion: \"No budget limit, but budget grading.\" Record artifact sizes on each project during each Workbench update and monitor them; aim for artifacts that say the same thing in fewer words and stay human-readable. The mechanism belongs to the audit/evaluation workbench, not LLM_Workbench.\nRB-Q3A: Scoped out rather than answered: \"This is the audit workbench's problem to grill. It would be something like C. LLM_Workbench doesnt actually do the workbench harness feedback reviews.\" Direction is roughly C (per-update size measurement plus a separate agent-outcome evaluation), owned elsewhere.\nFND-Q15: Out of LLM_Workbench scope: measurement belongs to the audit workbench. 'No budget limit, but budget grading'; 'This is the audit workbench's problem'. Earlier (2026-09-11) the owner held the question until the workflow and foundation were settled.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: RB-Q3, RB-Q3A (locked); FND-Q15 (answered in chat, recovered from the owner's own messages). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": null,
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "RB-Q3",
+      "revision": "56b459da"
+    },
+    {
+      "id": "RB-Q3A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q15",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "RB-Q3",
+      "revision": "56b459da",
+      "reason": "Ledger row RB-Q3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "RB-Q3A",
+      "revision": "56b459da",
+      "reason": "Ledger row RB-Q3A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q15",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q15 (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should context cost and agent outcomes be evaluated?",
+    "question": "How should context cost and agent outcomes be evaluated?",
+    "sources": [
+      {
+        "id": "RB-Q3",
+        "revision": "56b459da"
+      },
+      {
+        "id": "RB-Q3A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q15",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:33.320Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:33.320Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 147 of the 2026-09-26 grouping (\"Feedback and evaluation\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The owner chose budget grading rather than a hard limit; artifact sizes and outcome evaluation belong to the audit/evaluation workbench.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:33.352Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "RB-Q3: Neither suggestion: \"No budget limit, but budget grading.\" Record artifact sizes on each project during each Workbench update and monitor them; aim for artifacts that say the same thing in fewer words and stay human-readable. The mechanism belongs to the audit/evaluation workbench, not LLM_Workbench.\nRB-Q3A: Scoped out rather than answered: \"This is the audit workbench's problem to grill. It would be something like C. LLM_Workbench doesnt actually do the workbench harness feedback reviews.\" Direction is roughly C (per-update size measurement plus a separate agent-outcome evaluation), owned elsewhere.\nFND-Q15: Out of LLM_Workbench scope: measurement belongs to the audit workbench. 'No budget limit, but budget grading'; 'This is the audit workbench's problem'. Earlier (2026-09-11) the owner held the question until the workflow and foundation were settled."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: RB-Q3, RB-Q3A (locked); FND-Q15 (answered in chat, recovered from the owner's own messages). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:33.385Z",
+      "reason": "Ledger row RB-Q3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "RB-Q3",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:33.423Z",
+      "reason": "Ledger row RB-Q3A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "RB-Q3A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:33.460Z",
+      "reason": "Ledger row FND-Q15 (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q15",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:33.497Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-004N",
+  "revision": 4,
+  "title": "What must survive for a truthful cold continuation?",
+  "question": "What must survive for a truthful cold continuation?",
+  "answer": "WB-5: A cold start needs the Workbench Contract, the selected work packet and its linked owners, the exact achieved output or commit, current ticket/spec state, named verification, and the next executable action or blocker. An interrupted agent cannot be forced to save, but should record this state in existing owners as it works and promote a checkpoint when its session reasoning is material. No universal handoff artifact or duplicated truth.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-5 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WB-5 update AGENTS.md (Assigned Work And Stances, cold continuation paragraph) and templates/AGENTS.md: Cold continuation uses existing owners and lists the six items; no universal handoff artifact is required. | WB-5 create workbench/docs/adr/0035-reduced-entry-and-assigned-autonomy.md: Records continuation through existing truth owners; checkpoint only when session reasoning matters.",
+    "home": "AGENTS.md (Assigned Work And Stances, cold continuation paragraph) and templates/AGENTS.md; workbench/docs/adr/0035-reduced-entry-and-assigned-autonomy.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "WB-5",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 4
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WB-5",
+      "revision": "56b459da",
+      "reason": "Ledger row WB-5 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What must survive for a truthful cold continuation?",
+    "question": "What must survive for a truthful cold continuation?",
+    "sources": [
+      {
+        "id": "WB-5",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:27.622Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:27.622Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 114 of the 2026-09-26 grouping (\"Continuity, notes, handoffs and transport\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Preserve Contract and relevant packet routes, exact achieved result, current work state, named verification and a concrete next action or blocker in existing owners.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:27.649Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WB-5: A cold start needs the Workbench Contract, the selected work packet and its linked owners, the exact achieved output or commit, current ticket/spec state, named verification, and the next executable action or blocker. An interrupted agent cannot be forced to save, but should record this state in existing owners as it works and promote a checkpoint when its session reasoning is material. No universal handoff artifact or duplicated truth."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-5 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WB-5 update AGENTS.md (Assigned Work And Stances, cold continuation paragraph) and templates/AGENTS.md: Cold continuation uses existing owners and lists the six items; no universal handoff artifact is required. | WB-5 create workbench/docs/adr/0035-reduced-entry-and-assigned-autonomy.md: Records continuation through existing truth owners; checkpoint only when session reasoning matters.",
+            "home": "AGENTS.md (Assigned Work And Stances, cold continuation paragraph) and templates/AGENTS.md; workbench/docs/adr/0035-reduced-entry-and-assigned-autonomy.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:27.675Z",
+      "reason": "Ledger row WB-5 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WB-5",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:27.706Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

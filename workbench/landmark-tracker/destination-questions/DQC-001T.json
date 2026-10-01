@@ -1,0 +1,208 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-001T",
+  "revision": 6,
+  "title": "How should differences from the upstream ownership baseline be classified?",
+  "question": "How should differences from the upstream ownership baseline be classified?",
+  "answer": "FND-Q24B: A legacy room row that differs from upstream and carries no authored intent is a conflict until intent is declared. The owner chose S-00G's Option A: \"conflict - Every undeclared difference is a conflict until intent is declared. Safest, but the first upgrade of every legacy room stops on each such row.\" The companion placement question (whether a divergence disposition and any authorizing ADR citation live in the map or in the decision/report that owns the disposition) was not covered by this answer; S-00G's recommendation to keep it outside the map stays a recommendation. The field shape that carries the verdict without a status-shaped field is settled within S-00G at implementation under the Q23 guards. On 2026-09-22 he had ruled the question stays live under S-00G as an ownership-origin question.\nPW-2: FND-Q24B stays live under S-00G, relabeled an ownership-origin-model question. It is neither parked behind nor folded into Portable Workbench; the two are independent. The existing FND-Q24B handoff stays valid for a separate deep-dive chat. No priority order between them was set.\nFND-Q24: Two ownership origins (upstream Workbench, project-local) and three classifications (portable invariants and defaults, project bindings, optional extensions). A deliberate change to a baseline assignment is divergence and needs an explicit disposition. Define relationships, including primary ownership and supporting roles, rather than the full cross-product. \"An added row is a mechanical comparison fact\"; \"a core artifact type does not by itself prove compatibility.\" Renamed the Ownership origin model on 2026-09-22.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q24B, PW-2, FND-Q24 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "FND-Q24B update workbench/specs/S-00G-ownership-map-root-control/SPEC.md (Dependencies And Blockers tradeoff 1, TK-004): Records the decision and has TK-004's comparator treat an undeclared difference as a conflict; the field shape and the disposition placement are settled within S-00G at implementation. | PW-2 update workbench/specs/S-00G-ownership-map-root-control/SPEC.md: S-00G carries FND-Q24B as its gate, labeled an ownership-origin question, until the owner answers it. | PW-2 update LEXICON.md Ownership origin model row: Points to S-00G and FND-Q24B. | PW-2 update workbench/specs/S-00V-portable-workbench/SPEC.md: Non-Goal: FND-Q24B is independent of Portable Workbench. | FND-Q24 update LEXICON.md (Ownership origin model row) and templates/LEXICON.md: The term, the two origins and the retired \"portability model\" name are defined. | FND-Q24 update workbench/specs/S-00G-ownership-map-root-control/SPEC.md (TK-003, TK-004) and OWNERSHIP.json: Rows classified by origin and the three classifications; primary vs supporting roles expressible; a row-keyed JSON comparator for upgrades; S-00G does not describe FND-Q24 as open. | FND-Q24 update workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md: Does not carry FND-Q24 as open.",
+    "home": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md (Dependencies And Blockers tradeoff 1, TK-004); workbench/specs/S-00G-ownership-map-root-control/SPEC.md; LEXICON.md Ownership origin model row; workbench/specs/S-00V-portable-workbench/SPEC.md; LEXICON.md (Ownership origin model row) and templates/LEXICON.md; workbench/specs/S-00G-ownership-map-root-control/SPEC.md (TK-003, TK-004) and OWNERSHIP.json; workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "FND-Q24B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "PW-2",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q24",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "FND-Q24B",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q24B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "PW-2",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q24",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q24 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should differences from the upstream ownership baseline be classified?",
+    "question": "How should differences from the upstream ownership baseline be classified?",
+    "sources": [
+      {
+        "id": "FND-Q24B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "PW-2",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q24",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:19.014Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:19.014Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 040 of the 2026-09-26 grouping (\"Entry, authority and ownership\"), grilling ledger at 56b459da.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:19.029Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "FND-Q24B: A legacy room row that differs from upstream and carries no authored intent is a conflict until intent is declared. The owner chose S-00G's Option A: \"conflict - Every undeclared difference is a conflict until intent is declared. Safest, but the first upgrade of every legacy room stops on each such row.\" The companion placement question (whether a divergence disposition and any authorizing ADR citation live in the map or in the decision/report that owns the disposition) was not covered by this answer; S-00G's recommendation to keep it outside the map stays a recommendation. The field shape that carries the verdict without a status-shaped field is settled within S-00G at implementation under the Q23 guards. On 2026-09-22 he had ruled the question stays live under S-00G as an ownership-origin question.\nPW-2: FND-Q24B stays live under S-00G, relabeled an ownership-origin-model question. It is neither parked behind nor folded into Portable Workbench; the two are independent. The existing FND-Q24B handoff stays valid for a separate deep-dive chat. No priority order between them was set.\nFND-Q24: Two ownership origins (upstream Workbench, project-local) and three classifications (portable invariants and defaults, project bindings, optional extensions). A deliberate change to a baseline assignment is divergence and needs an explicit disposition. Define relationships, including primary ownership and supporting roles, rather than the full cross-product. \"An added row is a mechanical comparison fact\"; \"a core artifact type does not by itself prove compatibility.\" Renamed the Ownership origin model on 2026-09-22."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q24B, PW-2, FND-Q24 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "FND-Q24B update workbench/specs/S-00G-ownership-map-root-control/SPEC.md (Dependencies And Blockers tradeoff 1, TK-004): Records the decision and has TK-004's comparator treat an undeclared difference as a conflict; the field shape and the disposition placement are settled within S-00G at implementation. | PW-2 update workbench/specs/S-00G-ownership-map-root-control/SPEC.md: S-00G carries FND-Q24B as its gate, labeled an ownership-origin question, until the owner answers it. | PW-2 update LEXICON.md Ownership origin model row: Points to S-00G and FND-Q24B. | PW-2 update workbench/specs/S-00V-portable-workbench/SPEC.md: Non-Goal: FND-Q24B is independent of Portable Workbench. | FND-Q24 update LEXICON.md (Ownership origin model row) and templates/LEXICON.md: The term, the two origins and the retired \"portability model\" name are defined. | FND-Q24 update workbench/specs/S-00G-ownership-map-root-control/SPEC.md (TK-003, TK-004) and OWNERSHIP.json: Rows classified by origin and the three classifications; primary vs supporting roles expressible; a row-keyed JSON comparator for upgrades; S-00G does not describe FND-Q24 as open. | FND-Q24 update workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md: Does not carry FND-Q24 as open.",
+            "home": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md (Dependencies And Blockers tradeoff 1, TK-004); workbench/specs/S-00G-ownership-map-root-control/SPEC.md; LEXICON.md Ownership origin model row; workbench/specs/S-00V-portable-workbench/SPEC.md; LEXICON.md (Ownership origin model row) and templates/LEXICON.md; workbench/specs/S-00G-ownership-map-root-control/SPEC.md (TK-003, TK-004) and OWNERSHIP.json; workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:19.043Z",
+      "reason": "Ledger row FND-Q24B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q24B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:19.060Z",
+      "reason": "Ledger row PW-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-2",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:19.077Z",
+      "reason": "Ledger row FND-Q24 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q24",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:19.094Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,248 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000J",
+  "revision": 7,
+  "title": "Which dependencies must remain optional for a room to function?",
+  "question": "Which dependencies must remain optional for a room to function?",
+  "answer": "V3-7: It must remain fully set up without that repository; \"the instruction is to replace confusing bundled/project-local skill copies, not to make Kayden's private catalog mandatory.\"\nV3-7A: No. Genesis and Adoption complete from public Workbench-owned templates, tools, and any public Workbench-owned skill package.\nV3-7B: No. \"No substitution contract is needed because the public product does not validate or depend on Kayden's catalog at all.\"\nPW-4: 'If we need it, it should be included in workbench/skills. But we should keep [the owner's private skills repository] as a backup of all of the skills, and a place every workbench can publish skills to that they create.' The Contract names only skills that ship in the lane. The specific candidate list was not confirmed.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-7, V3-7A, V3-7B, PW-4 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "V3-7 update BLUEPRINT.md: A fresh room works without the personal catalog. | V3-7 create workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md: Personal catalog is only a backup and publication target, never on a room's critical path; doctor never reads it. | V3-7 create workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts): LLM Workbench does not depend on the owner's private skills repository. | V3-7A update workbench/skills/README.md: Documents the public Workbench-owned core skill source that setup uses. | V3-7A create workbench/specs/S-021-portable-workbench-v3/SPEC.md (Acceptance Criteria): Source and installed-skill contracts never depend on [the owner's private skills repository]. | V3-7A create workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md: Genesis and Adoption lay the lane down from the release checkout, not a catalog. | V3-7B create workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md: A fresh room must work without the personal catalog; no catalog substitution contract exists. | V3-7B create workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md: Doctor never reads the personal catalog. | PW-4 update workbench/specs/S-00V-portable-workbench/SPEC.md: Catalog-review Task: owner confirms which non-core skills join the lane, starting from the tentative list. | PW-4 update workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md: Names [the owner's private skills repository] as backup and publication target, never on the critical path. | PW-4 update RUNBOOK.md Portable Save, Promote And Room-Local Skills: Names the publication destination; publishing stays separately authorized.",
+    "home": "BLUEPRINT.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md; workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts); workbench/skills/README.md; workbench/specs/S-021-portable-workbench-v3/SPEC.md (Acceptance Criteria); workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md; workbench/specs/S-00V-portable-workbench/SPEC.md; RUNBOOK.md Portable Save, Promote And Room-Local Skills",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-7",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-7A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-7B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "PW-4",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 7
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "V3-7",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-7 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-7A",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-7A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-7B",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-7B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "PW-4",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-4 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Which dependencies must remain optional for a room to function?",
+    "question": "Which dependencies must remain optional for a room to function?",
+    "sources": [
+      {
+        "id": "V3-7",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-7A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-7B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "PW-4",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:16.505Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:16.505Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 002 of the 2026-09-26 grouping (\"Portable room and product boundaries\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The owner’s private skills catalog is not a setup prerequisite, and no substitute-catalog contract is needed. Public Workbench-owned material provides setup.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:16.516Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "V3-7: It must remain fully set up without that repository; \"the instruction is to replace confusing bundled/project-local skill copies, not to make Kayden's private catalog mandatory.\"\nV3-7A: No. Genesis and Adoption complete from public Workbench-owned templates, tools, and any public Workbench-owned skill package.\nV3-7B: No. \"No substitution contract is needed because the public product does not validate or depend on Kayden's catalog at all.\"\nPW-4: 'If we need it, it should be included in workbench/skills. But we should keep [the owner's private skills repository] as a backup of all of the skills, and a place every workbench can publish skills to that they create.' The Contract names only skills that ship in the lane. The specific candidate list was not confirmed."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-7, V3-7A, V3-7B, PW-4 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "V3-7 update BLUEPRINT.md: A fresh room works without the personal catalog. | V3-7 create workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md: Personal catalog is only a backup and publication target, never on a room's critical path; doctor never reads it. | V3-7 create workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts): LLM Workbench does not depend on the owner's private skills repository. | V3-7A update workbench/skills/README.md: Documents the public Workbench-owned core skill source that setup uses. | V3-7A create workbench/specs/S-021-portable-workbench-v3/SPEC.md (Acceptance Criteria): Source and installed-skill contracts never depend on [the owner's private skills repository]. | V3-7A create workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md: Genesis and Adoption lay the lane down from the release checkout, not a catalog. | V3-7B create workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md: A fresh room must work without the personal catalog; no catalog substitution contract exists. | V3-7B create workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md: Doctor never reads the personal catalog. | PW-4 update workbench/specs/S-00V-portable-workbench/SPEC.md: Catalog-review Task: owner confirms which non-core skills join the lane, starting from the tentative list. | PW-4 update workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md: Names [the owner's private skills repository] as backup and publication target, never on the critical path. | PW-4 update RUNBOOK.md Portable Save, Promote And Room-Local Skills: Names the publication destination; publishing stays separately authorized.",
+            "home": "BLUEPRINT.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md; workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts); workbench/skills/README.md; workbench/specs/S-021-portable-workbench-v3/SPEC.md (Acceptance Criteria); workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md; workbench/specs/S-00V-portable-workbench/SPEC.md; RUNBOOK.md Portable Save, Promote And Room-Local Skills",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:16.526Z",
+      "reason": "Ledger row V3-7 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-7",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:16.536Z",
+      "reason": "Ledger row V3-7A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-7A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:16.546Z",
+      "reason": "Ledger row V3-7B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-7B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:16.555Z",
+      "reason": "Ledger row PW-4 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-4",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:16.565Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

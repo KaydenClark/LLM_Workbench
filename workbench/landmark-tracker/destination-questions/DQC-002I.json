@@ -1,0 +1,250 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-002I",
+  "revision": 7,
+  "title": "How do confirmed answers reach durable owners?",
+  "question": "How do confirmed answers reach durable owners?",
+  "answer": "FND-Q13: A grilling answer does not enter Canon inline. Settled material is promoted through ordinary scoped work: a TASK when the change is small and localized, or a SPEC with Tasks when it affects many things. Updating the Lexicon will usually be one Task, which performs and verifies the Canon update under the Contract.\nTT-Q12: First clause: settled answers route by the whole ownership map (FND-Q21): definitions to the Lexicon, obligations to root controls, scoped capability choices to a Spec, cross-cutting choices to an ADR. Owner: locked answers go 'in some state of durable in the contract, docs, or specs' / 'in their durable places'.\nPW-10: 'In their durable places in the workbench, wherever that may be.' The agent drew the landing map: Lexicon term and renames; Blueprint sentence; AGENTS and RUNBOOK rules; ADRs for the skills lane, note transport and claim-on-branch; manifest and templates; and a new Portable Workbench Spec owning the Tasks.\nBPR-R3: This was a promotion and scoping handoff. The receiving chat should promote the grilling notepad into docs and Specs, using all the skills named for that process, so implementation could happen in a later step. It was not authorized to implement the promoted work in the same step.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q13, PW-10, BPR-R3 (locked); TT-Q12 (partially answered; the open part is an uncertainty). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "FND-Q13 update workbench/skills/grilling/SKILL.md and workbench/skills/promote/SKILL.md: Grilling never writes Canon during the interview; promotion runs as scoped Task or Spec work. | FND-Q13 update skills-pending/domain-modeling/SKILL.md ('Update CONTEXT.md inline'): If the skill enters core, it promotes through Task-based work and makes no inline Canon writes. | FND-Q13 update LEXICON.md Task row and workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md: Allow a spec-less Task for small promotion work (E-3 generalizes this). | TT-Q12 update LEXICON.md (Artifact ownership schema) and templates/LEXICON.md: Routes each kind of settled answer to its owner. | TT-Q12 update AGENTS.md (Documentation Ownership And Proof) and templates/AGENTS.md: Locked answers are promoted to their durable owners. | TT-Q12 update Ownership map from S-00G (workbench/specs/S-00G-ownership-map-root-control/SPEC.md): Carries the type-level routing rows. | PW-10 create workbench/specs/S-00V-portable-workbench/SPEC.md: Portable Workbench Spec owning the Tasks. | PW-10 update LEXICON.md, templates/LEXICON.md: Defines the Portable Workbench term and records the renames. | PW-10 update BLUEPRINT.md, AGENTS.md, RUNBOOK.md (+ templates mirrors): Sharpened quality sentence, note-tracking and capability rules, procedures. | PW-10 create ADRs superseding ADR-0017, amending ADR-0046, narrowing ADR-0051/0040, recording claim-on-branch: Each authored by the Task that makes the change. | PW-10 update workbench/manifest.json: lanes.skills and skillPolicy reshape. | BPR-R3 update workbench/skills/handoff/SKILL.md: Carry explicit exclusions: for 'create specifications; do not implement' the recipient authors the named specifications only. | BPR-R3 create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Durable record of the locked decisions (with S-00B to S-00E as the staged successors), leaving implementation to later Tasks.",
+    "home": "workbench/skills/grilling/SKILL.md and workbench/skills/promote/SKILL.md; skills-pending/domain-modeling/SKILL.md ('Update CONTEXT.md inline'); LEXICON.md Task row and workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md; LEXICON.md (Artifact ownership schema) and templates/LEXICON.md; AGENTS.md (Documentation Ownership And Proof) and templates/AGENTS.md; Ownership map from S-00G (workbench/specs/S-00G-ownership-map-root-control/SPEC.md); workbench/specs/S-00V-portable-workbench/SPEC.md; LEXICON.md, templates/LEXICON.md; BLUEPRINT.md, AGENTS.md, RUNBOOK.md (+ templates mirrors); ADRs superseding ADR-0017, amending ADR-0046, narrowing ADR-0051/0040, recording claim-on-branch; workbench/manifest.json; workbench/skills/handoff/SKILL.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [
+    "TT-Q12 (partially answered): the evidence threshold before promotion is open; reading \"locked\" as that threshold is an interpretation, not an owner ruling."
+  ],
+  "sources": [
+    {
+      "id": "FND-Q13",
+      "revision": "56b459da"
+    },
+    {
+      "id": "TT-Q12",
+      "revision": "56b459da"
+    },
+    {
+      "id": "PW-10",
+      "revision": "56b459da"
+    },
+    {
+      "id": "BPR-R3",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 7
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "FND-Q13",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q13 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "TT-Q12",
+      "revision": "56b459da",
+      "reason": "Ledger row TT-Q12 (partially-answered) at 56b459da; assessed Aligning from its status only.",
+      "assessment": {
+        "contributions": {
+          "Aligning": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "PW-10",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-10 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "BPR-R3",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-R3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How do confirmed answers reach durable owners?",
+    "question": "How do confirmed answers reach durable owners?",
+    "sources": [
+      {
+        "id": "FND-Q13",
+        "revision": "56b459da"
+      },
+      {
+        "id": "TT-Q12",
+        "revision": "56b459da"
+      },
+      {
+        "id": "PW-10",
+        "revision": "56b459da"
+      },
+      {
+        "id": "BPR-R3",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:20.340Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:20.340Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 055 of the 2026-09-26 grouping (\"Alignment and durable promotion\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Settled material is reconciled through scoped authorized work, using a small Task or a larger Spec as appropriate and routing each kind of claim to its owner.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:20.357Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "FND-Q13: A grilling answer does not enter Canon inline. Settled material is promoted through ordinary scoped work: a TASK when the change is small and localized, or a SPEC with Tasks when it affects many things. Updating the Lexicon will usually be one Task, which performs and verifies the Canon update under the Contract.\nTT-Q12: First clause: settled answers route by the whole ownership map (FND-Q21): definitions to the Lexicon, obligations to root controls, scoped capability choices to a Spec, cross-cutting choices to an ADR. Owner: locked answers go 'in some state of durable in the contract, docs, or specs' / 'in their durable places'.\nPW-10: 'In their durable places in the workbench, wherever that may be.' The agent drew the landing map: Lexicon term and renames; Blueprint sentence; AGENTS and RUNBOOK rules; ADRs for the skills lane, note transport and claim-on-branch; manifest and templates; and a new Portable Workbench Spec owning the Tasks.\nBPR-R3: This was a promotion and scoping handoff. The receiving chat should promote the grilling notepad into docs and Specs, using all the skills named for that process, so implementation could happen in a later step. It was not authorized to implement the promoted work in the same step."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q13, PW-10, BPR-R3 (locked); TT-Q12 (partially answered; the open part is an uncertainty). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "FND-Q13 update workbench/skills/grilling/SKILL.md and workbench/skills/promote/SKILL.md: Grilling never writes Canon during the interview; promotion runs as scoped Task or Spec work. | FND-Q13 update skills-pending/domain-modeling/SKILL.md ('Update CONTEXT.md inline'): If the skill enters core, it promotes through Task-based work and makes no inline Canon writes. | FND-Q13 update LEXICON.md Task row and workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md: Allow a spec-less Task for small promotion work (E-3 generalizes this). | TT-Q12 update LEXICON.md (Artifact ownership schema) and templates/LEXICON.md: Routes each kind of settled answer to its owner. | TT-Q12 update AGENTS.md (Documentation Ownership And Proof) and templates/AGENTS.md: Locked answers are promoted to their durable owners. | TT-Q12 update Ownership map from S-00G (workbench/specs/S-00G-ownership-map-root-control/SPEC.md): Carries the type-level routing rows. | PW-10 create workbench/specs/S-00V-portable-workbench/SPEC.md: Portable Workbench Spec owning the Tasks. | PW-10 update LEXICON.md, templates/LEXICON.md: Defines the Portable Workbench term and records the renames. | PW-10 update BLUEPRINT.md, AGENTS.md, RUNBOOK.md (+ templates mirrors): Sharpened quality sentence, note-tracking and capability rules, procedures. | PW-10 create ADRs superseding ADR-0017, amending ADR-0046, narrowing ADR-0051/0040, recording claim-on-branch: Each authored by the Task that makes the change. | PW-10 update workbench/manifest.json: lanes.skills and skillPolicy reshape. | BPR-R3 update workbench/skills/handoff/SKILL.md: Carry explicit exclusions: for 'create specifications; do not implement' the recipient authors the named specifications only. | BPR-R3 create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Durable record of the locked decisions (with S-00B to S-00E as the staged successors), leaving implementation to later Tasks.",
+            "home": "workbench/skills/grilling/SKILL.md and workbench/skills/promote/SKILL.md; skills-pending/domain-modeling/SKILL.md ('Update CONTEXT.md inline'); LEXICON.md Task row and workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md; LEXICON.md (Artifact ownership schema) and templates/LEXICON.md; AGENTS.md (Documentation Ownership And Proof) and templates/AGENTS.md; Ownership map from S-00G (workbench/specs/S-00G-ownership-map-root-control/SPEC.md); workbench/specs/S-00V-portable-workbench/SPEC.md; LEXICON.md, templates/LEXICON.md; BLUEPRINT.md, AGENTS.md, RUNBOOK.md (+ templates mirrors); ADRs superseding ADR-0017, amending ADR-0046, narrowing ADR-0051/0040, recording claim-on-branch; workbench/manifest.json; workbench/skills/handoff/SKILL.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:20.375Z",
+      "reason": "Ledger row FND-Q13 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q13",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:20.395Z",
+      "reason": "Ledger row TT-Q12 (partially-answered) at 56b459da; assessed Aligning from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "TT-Q12",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:20.415Z",
+      "reason": "Ledger row PW-10 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-10",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:20.435Z",
+      "reason": "Ledger row BPR-R3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-R3",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:20.454Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

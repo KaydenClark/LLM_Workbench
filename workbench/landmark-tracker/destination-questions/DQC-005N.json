@@ -1,0 +1,208 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-005N",
+  "revision": 6,
+  "title": "How should release identities preserve earlier evidence and bundle history?",
+  "question": "How should release identities preserve earlier evidence and bundle history?",
+  "answer": "WB-8: This is continuing LLM Workbench work under the v3.1.1 direction, not a pivot away from an abandoned candidate. Existing v3.1 work, specs and proof are the baseline to continue and improve. The provisional label does not publish a version, create a release claim, or rewrite historical evidence.\nREC-03: Bump to v3.1.3: freeze v3.1.2 at sixteen in supportedLegacy and set the room's manifest to v3.1.3.\nREC-04: Yes - rooms are on v3.1.2.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-8, REC-03, REC-04 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WB-8 create workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md: Outcome states v3.1.1 continues the preserved v3.1 candidate; no publication claimed. | WB-8 create workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md: 'Continue v3.1 as v3.1.1'; preserve historical release proof. | WB-8 update BLUEPRINT.md and templates/BLUEPRINT.md: Direction continues v3.1 as v3.1.1 without rewriting proof (per S-027 question map). | REC-03 update workbench/tools/workbench-layout.mjs supportedLegacy: v3.1.2 frozen at the sixteen-skill policy; v3.1.3 carries the seventeen-skill policy. | REC-03 update workbench/manifest.json: Stamps the room v3.1.3 for this release. | REC-03 update workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts; Dependencies And Blockers): Withdraws 'lands in v3.1.2'; records the v3.1.3 decision and the rejected alternatives. | REC-04 update workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts; Dependencies And Blockers): Records that rooms outside the repo ran v3.1.2 on 2026-09-07, so freezing v3.1.2 prevents a live break, not a theoretical one.",
+    "home": "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md; workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md; BLUEPRINT.md and templates/BLUEPRINT.md; workbench/tools/workbench-layout.mjs supportedLegacy; workbench/manifest.json; workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts; Dependencies And Blockers)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "WB-8",
+      "revision": "56b459da"
+    },
+    {
+      "id": "REC-03",
+      "revision": "56b459da"
+    },
+    {
+      "id": "REC-04",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WB-8",
+      "revision": "56b459da",
+      "reason": "Ledger row WB-8 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "REC-03",
+      "revision": "56b459da",
+      "reason": "Ledger row REC-03 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "REC-04",
+      "revision": "56b459da",
+      "reason": "Ledger row REC-04 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should release identities preserve earlier evidence and bundle history?",
+    "question": "How should release identities preserve earlier evidence and bundle history?",
+    "sources": [
+      {
+        "id": "WB-8",
+        "revision": "56b459da"
+      },
+      {
+        "id": "REC-03",
+        "revision": "56b459da"
+      },
+      {
+        "id": "REC-04",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:31.736Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:31.736Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 141 of the 2026-09-26 grouping (\"Updates, drift and release evidence\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Continue prior work without silently relabeling its proof; recorded bundle/version changes preserve older supported identities.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:31.766Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WB-8: This is continuing LLM Workbench work under the v3.1.1 direction, not a pivot away from an abandoned candidate. Existing v3.1 work, specs and proof are the baseline to continue and improve. The provisional label does not publish a version, create a release claim, or rewrite historical evidence.\nREC-03: Bump to v3.1.3: freeze v3.1.2 at sixteen in supportedLegacy and set the room's manifest to v3.1.3.\nREC-04: Yes - rooms are on v3.1.2."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-8, REC-03, REC-04 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WB-8 create workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md: Outcome states v3.1.1 continues the preserved v3.1 candidate; no publication claimed. | WB-8 create workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md: 'Continue v3.1 as v3.1.1'; preserve historical release proof. | WB-8 update BLUEPRINT.md and templates/BLUEPRINT.md: Direction continues v3.1 as v3.1.1 without rewriting proof (per S-027 question map). | REC-03 update workbench/tools/workbench-layout.mjs supportedLegacy: v3.1.2 frozen at the sixteen-skill policy; v3.1.3 carries the seventeen-skill policy. | REC-03 update workbench/manifest.json: Stamps the room v3.1.3 for this release. | REC-03 update workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts; Dependencies And Blockers): Withdraws 'lands in v3.1.2'; records the v3.1.3 decision and the rejected alternatives. | REC-04 update workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts; Dependencies And Blockers): Records that rooms outside the repo ran v3.1.2 on 2026-09-07, so freezing v3.1.2 prevents a live break, not a theoretical one.",
+            "home": "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md; workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md; BLUEPRINT.md and templates/BLUEPRINT.md; workbench/tools/workbench-layout.mjs supportedLegacy; workbench/manifest.json; workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts; Dependencies And Blockers)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:31.797Z",
+      "reason": "Ledger row WB-8 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WB-8",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:31.833Z",
+      "reason": "Ledger row REC-03 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "REC-03",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:31.869Z",
+      "reason": "Ledger row REC-04 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "REC-04",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:31.905Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,168 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-005L",
+  "revision": 5,
+  "title": "What complete cycle on another room establishes workflow mission success?",
+  "question": "What complete cycle on another room establishes workflow mission success?",
+  "answer": "WF-11: Mission success is one full cycle on another workbench: LLM_Workbench creates or updates it, a grilling session runs, the contract and Specs are created or updated, Tasks are created and executed correctly, and the Spec is verified and on integration for owner review. 'Once that cycle is complete on another workbench we will say mission success.'\nWF-12: 'I want every spec completed before we call this done.' The rollout must complete the Blueprint rework and every Spec needed to establish the full workflow. The reworked Blueprint describes every rung and the full recursive Spec/Task loop (Create Spec -> Create Tasks -> Complete and Reconcile Tasks -> Verify Whole Spec -> Corrective Tasks -> Repeat Until Approved -> Integrate Spec). Future Blueprint capabilities outside that scope need no Specs now.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-11, WF-12 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WF-11 update workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md TK-004: Run one full WF-11 cycle on another workbench as the v4 exit run, with pass or fail evidence per rung. | WF-11 update workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md TK-005: Release receipt records the WF-11 cycle result before readiness is claimed. | WF-12 update BLUEPRINT.md: Describes every rung and the full recursive Spec/Task delivery loop (S-00P TK-001). | WF-12 update workbench/specs/S-00P-workflow-canon-rework/SPEC.md: Carries the controls rewrite (AGENTS, RUNBOOK, LEXICON, templates) that completes the workflow. | WF-12 update workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md: Release Spec: all rollout Specs (S-00H, S-00I, S-00J, S-00P) complete before v4.0.0; exemption 1 records the reduced delivery route.",
+    "home": "workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md TK-004; workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md TK-005; BLUEPRINT.md; workbench/specs/S-00P-workflow-canon-rework/SPEC.md; workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "WF-11",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-12",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WF-11",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-11 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-12",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-12 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What complete cycle on another room establishes workflow mission success?",
+    "question": "What complete cycle on another room establishes workflow mission success?",
+    "sources": [
+      {
+        "id": "WF-11",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-12",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:31.370Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:31.370Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 139 of the 2026-09-26 grouping (\"Updates, drift and release evidence\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Create or update the room, grill, establish Contract/Specs, execute Tasks and reach a verified Spec on integration for owner review.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:31.400Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WF-11: Mission success is one full cycle on another workbench: LLM_Workbench creates or updates it, a grilling session runs, the contract and Specs are created or updated, Tasks are created and executed correctly, and the Spec is verified and on integration for owner review. 'Once that cycle is complete on another workbench we will say mission success.'\nWF-12: 'I want every spec completed before we call this done.' The rollout must complete the Blueprint rework and every Spec needed to establish the full workflow. The reworked Blueprint describes every rung and the full recursive Spec/Task loop (Create Spec -> Create Tasks -> Complete and Reconcile Tasks -> Verify Whole Spec -> Corrective Tasks -> Repeat Until Approved -> Integrate Spec). Future Blueprint capabilities outside that scope need no Specs now."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-11, WF-12 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WF-11 update workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md TK-004: Run one full WF-11 cycle on another workbench as the v4 exit run, with pass or fail evidence per rung. | WF-11 update workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md TK-005: Release receipt records the WF-11 cycle result before readiness is claimed. | WF-12 update BLUEPRINT.md: Describes every rung and the full recursive Spec/Task delivery loop (S-00P TK-001). | WF-12 update workbench/specs/S-00P-workflow-canon-rework/SPEC.md: Carries the controls rewrite (AGENTS, RUNBOOK, LEXICON, templates) that completes the workflow. | WF-12 update workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md: Release Spec: all rollout Specs (S-00H, S-00I, S-00J, S-00P) complete before v4.0.0; exemption 1 records the reduced delivery route.",
+            "home": "workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md TK-004; workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md TK-005; BLUEPRINT.md; workbench/specs/S-00P-workflow-canon-rework/SPEC.md; workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:31.430Z",
+      "reason": "Ledger row WF-11 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-11",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:31.466Z",
+      "reason": "Ledger row WF-12 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-12",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:31.501Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

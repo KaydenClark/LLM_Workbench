@@ -1,0 +1,128 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000L",
+  "revision": 4,
+  "title": "Where must host-specific knowledge live when another instance needs it?",
+  "question": "Where must host-specific knowledge live when another instance needs it?",
+  "answer": "PW-8: 'This is what the wiki is for.' Owner-machine-only truth a cloud agent would need goes into the room's Wiki (MEMORY.md router), not host memory. Host auto-memory stays a per-machine convenience the Workbench never depends on.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: PW-8 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "PW-8 update workbench/wiki/ (articles + MEMORY.md router): Holds the project truth a fresh agent needs from host memory and the personal catalog. | PW-8 update workbench/specs/S-00V-portable-workbench/SPEC.md: Wiki audit Task over ~/.claude project memory and the personal catalog.",
+    "home": "workbench/wiki/ (articles + MEMORY.md router); workbench/specs/S-00V-portable-workbench/SPEC.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "PW-8",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 4
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "PW-8",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-8 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Where must host-specific knowledge live when another instance needs it?",
+    "question": "Where must host-specific knowledge live when another instance needs it?",
+    "sources": [
+      {
+        "id": "PW-8",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:16.656Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:16.656Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 004 of the 2026-09-26 grouping (\"Portable room and product boundaries\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Shared owner-machine knowledge belongs in the room’s Wiki, routed through its MEMORY page; host auto-memory is only a convenience.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:16.666Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "PW-8: 'This is what the wiki is for.' Owner-machine-only truth a cloud agent would need goes into the room's Wiki (MEMORY.md router), not host memory. Host auto-memory stays a per-machine convenience the Workbench never depends on."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: PW-8 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "PW-8 update workbench/wiki/ (articles + MEMORY.md router): Holds the project truth a fresh agent needs from host memory and the personal catalog. | PW-8 update workbench/specs/S-00V-portable-workbench/SPEC.md: Wiki audit Task over ~/.claude project memory and the personal catalog.",
+            "home": "workbench/wiki/ (articles + MEMORY.md router); workbench/specs/S-00V-portable-workbench/SPEC.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:16.676Z",
+      "reason": "Ledger row PW-8 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-8",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:16.687Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

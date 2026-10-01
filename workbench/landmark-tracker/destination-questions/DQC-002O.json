@@ -1,0 +1,208 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-002O",
+  "revision": 6,
+  "title": "How should expected context size influence Task planning?",
+  "question": "How should expected context size influence Task planning?",
+  "answer": "RB-Q2B: A declared host context unit of 200k tokens: \"One number 200k seems easier.\" It is a planning goalpost during Plan (work that will not comfortably finish inside it becomes a Spec), \"a good goalpost, not a gate or blocker\". It grows over time, so it is recorded in workbench/manifest.json with provenance, not in control prose.\nRB-Q2: Suggested A with sub-answer (ii): TASK.md is the single execution-slice artifact (context, branch and receipt unit); no level beneath Task; Ticket stays retired. Receipt is append-only, one row per run. \"A is an aspiration, not a rule or a guarantee.\" New sizing rule: a Task expected to need more than one context unit should be a Spec that Tasks are cut from. He stated the unit as 250k tokens (revised to 200k in RB-Q2B).\nFND-Q03: A Task is the smallest bounded work that fits one useful context; work expected to exceed one context unit (about 200k tokens, 'a goalpost, not a gate') is a Spec with Tasks. A context ends when its Task is complete and cleaned up: one Chat does one Task, then ends. The next context loads the Contract plus the Task (its Spec acceptance, optional handoff or notepad).",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: RB-Q2B, RB-Q2 (locked); FND-Q03 (answered in chat, recovered from the owner's own messages). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "RB-Q2B update workbench/manifest.json (contextUnit): Declares 200000 tokens with decision date, source, alternatives and reason. | RB-Q2B update workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md: Sizing guidance reads the declared value, never restates it. | RB-Q2B update workbench/tools/workbench-layout.mjs (manifest validation): Validates the contextUnit declaration. | RB-Q2 update workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md: Single execution-slice artifact, append-only per-run receipt, Spec-not-Task sizing rule. | RB-Q2 update LEXICON.md (Task, Task receipt rows) and templates/LEXICON.md: Task and receipt definitions match. | FND-Q03 update workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md (What a Task carries in and out; One Task, one context): Packet (TASK.md, Spec acceptance lines, cited paths, Contract; optional handoff/notepad) and per-run Receipt; work over one context unit becomes a Spec with Tasks. | FND-Q03 update workbench/manifest.json (contextUnit): Declares the 200k context unit with provenance as a planning goalpost, never a gate. | FND-Q03 update LEXICON.md (Task, Packet, Task receipt, Chat, Director rows) and templates/LEXICON.md: One Chat works one Task, completes and cleans up, then ends; a director starts the next unblocked Task. | FND-Q03 update workbench/skills/carry/SKILL.md: Carry works one Task per Chat or acts as director behaviour, never a whole Spec in one Chat (TT-Q4 consequence).",
+    "home": "workbench/manifest.json (contextUnit); workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md; workbench/tools/workbench-layout.mjs (manifest validation); LEXICON.md (Task, Task receipt rows) and templates/LEXICON.md; workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md (What a Task carries in and out; One Task, one context); LEXICON.md (Task, Packet, Task receipt, Chat, Director rows) and templates/LEXICON.md; workbench/skills/carry/SKILL.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "RB-Q2B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "RB-Q2",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q03",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "RB-Q2B",
+      "revision": "56b459da",
+      "reason": "Ledger row RB-Q2B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "RB-Q2",
+      "revision": "56b459da",
+      "reason": "Ledger row RB-Q2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q03",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q03 (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should expected context size influence Task planning?",
+    "question": "How should expected context size influence Task planning?",
+    "sources": [
+      {
+        "id": "RB-Q2B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "RB-Q2",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q03",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:21.052Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:21.052Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 061 of the 2026-09-26 grouping (\"Specs, Tasks and execution contexts\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The recorded 200k context unit is a planning goalpost with provenance, not a hard gate; work that will not fit should be decomposed through a Spec.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:21.070Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "RB-Q2B: A declared host context unit of 200k tokens: \"One number 200k seems easier.\" It is a planning goalpost during Plan (work that will not comfortably finish inside it becomes a Spec), \"a good goalpost, not a gate or blocker\". It grows over time, so it is recorded in workbench/manifest.json with provenance, not in control prose.\nRB-Q2: Suggested A with sub-answer (ii): TASK.md is the single execution-slice artifact (context, branch and receipt unit); no level beneath Task; Ticket stays retired. Receipt is append-only, one row per run. \"A is an aspiration, not a rule or a guarantee.\" New sizing rule: a Task expected to need more than one context unit should be a Spec that Tasks are cut from. He stated the unit as 250k tokens (revised to 200k in RB-Q2B).\nFND-Q03: A Task is the smallest bounded work that fits one useful context; work expected to exceed one context unit (about 200k tokens, 'a goalpost, not a gate') is a Spec with Tasks. A context ends when its Task is complete and cleaned up: one Chat does one Task, then ends. The next context loads the Contract plus the Task (its Spec acceptance, optional handoff or notepad)."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: RB-Q2B, RB-Q2 (locked); FND-Q03 (answered in chat, recovered from the owner's own messages). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "RB-Q2B update workbench/manifest.json (contextUnit): Declares 200000 tokens with decision date, source, alternatives and reason. | RB-Q2B update workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md: Sizing guidance reads the declared value, never restates it. | RB-Q2B update workbench/tools/workbench-layout.mjs (manifest validation): Validates the contextUnit declaration. | RB-Q2 update workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md: Single execution-slice artifact, append-only per-run receipt, Spec-not-Task sizing rule. | RB-Q2 update LEXICON.md (Task, Task receipt rows) and templates/LEXICON.md: Task and receipt definitions match. | FND-Q03 update workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md (What a Task carries in and out; One Task, one context): Packet (TASK.md, Spec acceptance lines, cited paths, Contract; optional handoff/notepad) and per-run Receipt; work over one context unit becomes a Spec with Tasks. | FND-Q03 update workbench/manifest.json (contextUnit): Declares the 200k context unit with provenance as a planning goalpost, never a gate. | FND-Q03 update LEXICON.md (Task, Packet, Task receipt, Chat, Director rows) and templates/LEXICON.md: One Chat works one Task, completes and cleans up, then ends; a director starts the next unblocked Task. | FND-Q03 update workbench/skills/carry/SKILL.md: Carry works one Task per Chat or acts as director behaviour, never a whole Spec in one Chat (TT-Q4 consequence).",
+            "home": "workbench/manifest.json (contextUnit); workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md; workbench/tools/workbench-layout.mjs (manifest validation); LEXICON.md (Task, Task receipt rows) and templates/LEXICON.md; workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md (What a Task carries in and out; One Task, one context); LEXICON.md (Task, Packet, Task receipt, Chat, Director rows) and templates/LEXICON.md; workbench/skills/carry/SKILL.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:21.088Z",
+      "reason": "Ledger row RB-Q2B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "RB-Q2B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:21.109Z",
+      "reason": "Ledger row RB-Q2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "RB-Q2",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:21.129Z",
+      "reason": "Ledger row FND-Q03 (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q03",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:21.151Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

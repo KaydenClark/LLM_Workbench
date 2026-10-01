@@ -1,0 +1,176 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-002D",
+  "revision": 5,
+  "title": "How should retired ADR history remain reachable?",
+  "question": "How should retired ADR history remain reachable?",
+  "answer": "ACC-5: Navigate from completed or historical capability links to the Wiki feature article first; the article links archived ADRs as sources. Keep the archive. S-024 already has an article; create one for S-022 while stating that its historical release packet is blocked, not completed.\nWF-8F: Specs and Tasks are transient working artifacts, not product documentation. Once their useful content is turned into readable durable documentation and the exact change is verified on main, they are retired and discarded. The Wiki stores the reconciled retired Spec and later corrective Tasks update it; Blueprint, Wiki and Taskboard are the enduring and navigational surfaces.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: ACC-5, WF-8F (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "ACC-5 update workbench/wiki/design-concepts/spec-S-024-governance-core-and-diagnostics.md: Routes to active ADR-000C and archived ADR-0033 as sources. | ACC-5 create workbench/wiki/design-concepts/spec-S-022-llm-workbench-v3-1-release.md: Historical article routes to current release owners and archived Contract source without claiming S-022 complete. | ACC-5 update workbench/wiki/MEMORY.md, LEXICON.md: Wiki-first feature navigation; archived ADRs retained.",
+    "home": "workbench/wiki/design-concepts/spec-S-024-governance-core-and-diagnostics.md; workbench/wiki/design-concepts/spec-S-022-llm-workbench-v3-1-release.md; workbench/wiki/MEMORY.md, LEXICON.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "BPR-6A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "ACC-5",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-8F",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "ACC-5",
+      "revision": "56b459da",
+      "reason": "Ledger row ACC-5 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-8F",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-8F (locked) at 56b459da, related as the successor of superseded BPR-6A; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should retired ADR history remain reachable?",
+    "question": "How should retired ADR history remain reachable?",
+    "sources": [
+      {
+        "id": "BPR-6A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "ACC-5",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-8F",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:19.890Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:19.890Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 050 of the 2026-09-26 grouping (\"Blueprint and architectural decision records\"), grilling ledger at 56b459da. Superseded lineage kept as sources and represented by successors: BPR-6A (successor WF-8F).",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:19.906Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "ACC-5: Navigate from completed or historical capability links to the Wiki feature article first; the article links archived ADRs as sources. Keep the archive. S-024 already has an article; create one for S-022 while stating that its historical release packet is blocked, not completed.\nWF-8F: Specs and Tasks are transient working artifacts, not product documentation. Once their useful content is turned into readable durable documentation and the exact change is verified on main, they are retired and discarded. The Wiki stores the reconciled retired Spec and later corrective Tasks update it; Blueprint, Wiki and Taskboard are the enduring and navigational surfaces."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: ACC-5, WF-8F (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "ACC-5 update workbench/wiki/design-concepts/spec-S-024-governance-core-and-diagnostics.md: Routes to active ADR-000C and archived ADR-0033 as sources. | ACC-5 create workbench/wiki/design-concepts/spec-S-022-llm-workbench-v3-1-release.md: Historical article routes to current release owners and archived Contract source without claiming S-022 complete. | ACC-5 update workbench/wiki/MEMORY.md, LEXICON.md: Wiki-first feature navigation; archived ADRs retained.",
+            "home": "workbench/wiki/design-concepts/spec-S-024-governance-core-and-diagnostics.md; workbench/wiki/design-concepts/spec-S-022-llm-workbench-v3-1-release.md; workbench/wiki/MEMORY.md, LEXICON.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:19.922Z",
+      "reason": "Ledger row ACC-5 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "ACC-5",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:19.940Z",
+      "reason": "Ledger row WF-8F (locked) at 56b459da, related as the successor of superseded BPR-6A; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-8F",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:19.959Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,208 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-001I",
+  "revision": 6,
+  "title": "Which artifacts constitute the Workbench Contract?",
+  "question": "Which artifacts constitute the Workbench Contract?",
+  "answer": "FND-Q22: The Contract is AGENTS.md, RUNBOOK.md and LEXICON.md, read every run, plus the assigned Spec after selection. CLAUDE.md is a host adapter, not a carrier. The Contract routes by intent to Routed artifacts (Blueprint, Taskboard, Ownership map, README, Specs, Tasks, Wiki, ADRs and more), which are not all loaded. Core is the Contract plus the routing artifacts. ADR-0033 is superseded, not amended.\nFND-Q23A: A separate map is needed: OWNERSHIP.json at the repository root as the eighth root file, a Core routing artifact outside the three-file Contract; root placement never implies Contract membership. The ownership schema leaves LEXICON.md, which keeps shared language and routes ownership questions to the map. ADR-0013 must be superseded. On 2026-09-22 the \"root control\" label was dropped: it is the Ownership map, a routing artifact.\nACC-3: Contract = AGENTS.md, RUNBOOK.md and LEXICON.md, read on every run, plus the assigned Spec; the Blueprint is a routed artifact the Contract directs agents to by intent. The Contract and the other routing artifacts make the Blueprint's claims binding: the Blueprint describes how the project should work with the Workbench, and the Workbench proves those claims by running the project.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q22, FND-Q23A (locked); ACC-3 (answered in chat, recovered from the owner's own messages). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "FND-Q22 update workbench/docs/adr/proposed/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md: Accepted: the Contract is the claim set carried by three root controls plus the assigned Spec. | FND-Q22 retire workbench/docs/adr/0033-workbench-contract-is-a-claim-set.md: Archived as superseded by ADR-000C; live links repointed. | FND-Q22 update LEXICON.md (Workbench Contract row, Routed artifacts, Core) and templates/LEXICON.md: Contract row names the three carriers plus assigned Spec instead of seven root controls; Routed artifacts and Core defined. | FND-Q22 update AGENTS.md and templates/AGENTS.md: Entry and authority text match the three-carrier Contract and routing by intent. | FND-Q23A create OWNERSHIP.json (repo root) and templates/OWNERSHIP.json: The ownership map exists at root as a routing artifact, outside the Contract. | FND-Q23A update workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md: Accepted: eight root files; Contract membership separate from root placement; file list names TASKBOARD.json per E-1. | FND-Q23A retire workbench/docs/adr/0013-seven-file-workbench-contract.md: Archived as superseded; its seven-file, no-eighth-control rule no longer holds. | FND-Q23A update workbench/specs/S-00G-ownership-map-root-control/SPEC.md and workbench/specs/CATALOG.md: Title, catalog description and outcome do not call it a \"root control\". | FND-Q23A update Root-surface consumers: workbench/tools/workbench-layout.mjs, tools/control-fidelity.mjs, their tests, RUNBOOK.md, templates/ADOPTION.md: They know about the eighth root file. | ACC-3 update workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md: Accepted three-carrier Contract and Blueprint routing; also state that the Contract and routing artifacts make the Blueprint's accepted claims binding, proved by running the project. | ACC-3 update AGENTS.md Authority Order: Root control now routes Blueprint as destination; generic template mirror remains later implementation work. | ACC-3 update LEXICON.md Workbench Contract row: Root definition now names three carriers plus assigned Spec; generic template mirror remains later implementation work.",
+    "home": "workbench/docs/adr/proposed/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md; workbench/docs/adr/0033-workbench-contract-is-a-claim-set.md; LEXICON.md (Workbench Contract row, Routed artifacts, Core) and templates/LEXICON.md; AGENTS.md and templates/AGENTS.md; OWNERSHIP.json (repo root) and templates/OWNERSHIP.json; workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md; workbench/docs/adr/0013-seven-file-workbench-contract.md; workbench/specs/S-00G-ownership-map-root-control/SPEC.md and workbench/specs/CATALOG.md; Root-surface consumers: workbench/tools/workbench-layout.mjs, tools/control-fidelity.mjs, their tests, RUNBOOK.md, templates/ADOPTION.md; workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md; AGENTS.md Authority Order; LEXICON.md Workbench Contract row",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "FND-Q22",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q23A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "ACC-3",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "FND-Q22",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q22 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q23A",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q23A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "ACC-3",
+      "revision": "56b459da",
+      "reason": "Ledger row ACC-3 (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Which artifacts constitute the Workbench Contract?",
+    "question": "Which artifacts constitute the Workbench Contract?",
+    "sources": [
+      {
+        "id": "FND-Q22",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q23A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "ACC-3",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:18.190Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:18.190Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 029 of the 2026-09-26 grouping (\"Entry, authority and ownership\"), grilling ledger at 56b459da.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:18.203Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "FND-Q22: The Contract is AGENTS.md, RUNBOOK.md and LEXICON.md, read every run, plus the assigned Spec after selection. CLAUDE.md is a host adapter, not a carrier. The Contract routes by intent to Routed artifacts (Blueprint, Taskboard, Ownership map, README, Specs, Tasks, Wiki, ADRs and more), which are not all loaded. Core is the Contract plus the routing artifacts. ADR-0033 is superseded, not amended.\nFND-Q23A: A separate map is needed: OWNERSHIP.json at the repository root as the eighth root file, a Core routing artifact outside the three-file Contract; root placement never implies Contract membership. The ownership schema leaves LEXICON.md, which keeps shared language and routes ownership questions to the map. ADR-0013 must be superseded. On 2026-09-22 the \"root control\" label was dropped: it is the Ownership map, a routing artifact.\nACC-3: Contract = AGENTS.md, RUNBOOK.md and LEXICON.md, read on every run, plus the assigned Spec; the Blueprint is a routed artifact the Contract directs agents to by intent. The Contract and the other routing artifacts make the Blueprint's claims binding: the Blueprint describes how the project should work with the Workbench, and the Workbench proves those claims by running the project."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q22, FND-Q23A (locked); ACC-3 (answered in chat, recovered from the owner's own messages). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "FND-Q22 update workbench/docs/adr/proposed/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md: Accepted: the Contract is the claim set carried by three root controls plus the assigned Spec. | FND-Q22 retire workbench/docs/adr/0033-workbench-contract-is-a-claim-set.md: Archived as superseded by ADR-000C; live links repointed. | FND-Q22 update LEXICON.md (Workbench Contract row, Routed artifacts, Core) and templates/LEXICON.md: Contract row names the three carriers plus assigned Spec instead of seven root controls; Routed artifacts and Core defined. | FND-Q22 update AGENTS.md and templates/AGENTS.md: Entry and authority text match the three-carrier Contract and routing by intent. | FND-Q23A create OWNERSHIP.json (repo root) and templates/OWNERSHIP.json: The ownership map exists at root as a routing artifact, outside the Contract. | FND-Q23A update workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md: Accepted: eight root files; Contract membership separate from root placement; file list names TASKBOARD.json per E-1. | FND-Q23A retire workbench/docs/adr/0013-seven-file-workbench-contract.md: Archived as superseded; its seven-file, no-eighth-control rule no longer holds. | FND-Q23A update workbench/specs/S-00G-ownership-map-root-control/SPEC.md and workbench/specs/CATALOG.md: Title, catalog description and outcome do not call it a \"root control\". | FND-Q23A update Root-surface consumers: workbench/tools/workbench-layout.mjs, tools/control-fidelity.mjs, their tests, RUNBOOK.md, templates/ADOPTION.md: They know about the eighth root file. | ACC-3 update workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md: Accepted three-carrier Contract and Blueprint routing; also state that the Contract and routing artifacts make the Blueprint's accepted claims binding, proved by running the project. | ACC-3 update AGENTS.md Authority Order: Root control now routes Blueprint as destination; generic template mirror remains later implementation work. | ACC-3 update LEXICON.md Workbench Contract row: Root definition now names three carriers plus assigned Spec; generic template mirror remains later implementation work.",
+            "home": "workbench/docs/adr/proposed/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md; workbench/docs/adr/0033-workbench-contract-is-a-claim-set.md; LEXICON.md (Workbench Contract row, Routed artifacts, Core) and templates/LEXICON.md; AGENTS.md and templates/AGENTS.md; OWNERSHIP.json (repo root) and templates/OWNERSHIP.json; workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md; workbench/docs/adr/0013-seven-file-workbench-contract.md; workbench/specs/S-00G-ownership-map-root-control/SPEC.md and workbench/specs/CATALOG.md; Root-surface consumers: workbench/tools/workbench-layout.mjs, tools/control-fidelity.mjs, their tests, RUNBOOK.md, templates/ADOPTION.md; workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md; AGENTS.md Authority Order; LEXICON.md Workbench Contract row",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:18.216Z",
+      "reason": "Ledger row FND-Q22 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q22",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:18.232Z",
+      "reason": "Ledger row FND-Q23A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q23A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:18.246Z",
+      "reason": "Ledger row ACC-3 (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "ACC-3",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:18.261Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

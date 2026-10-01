@@ -1,0 +1,216 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-004W",
+  "revision": 6,
+  "title": "What must a fresh Genesis leave behind?",
+  "question": "What must a fresh Genesis leave behind?",
+  "answer": "V3-15A: Manifest and required lane directories exist; the first durable spec is created; lanes without records remain explicitly empty.\nPW-3A: 'Move its sources to workbench/skills, and give templates what it needs to.' The 21-skill source moves from root skills/ to workbench/skills and root skills/ is removed; templates gain what Genesis and update-harness need to lay down and refresh the lane. A root skills/ becomes a doctor finding.\nPW-3: 'We already locked in a version of 1. When we update the workbenches, we update the skills. LLM_Workbench owns the skills it needs to. We store them all in workbench/skills.' Core skills are tracked in every room at workbench/skills and replaced by the ordinary Workbench update; no provider home, personal catalog or bootstrap is on the critical path.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-15A, PW-3A, PW-3 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "V3-15A update workbench/tools/workbench-layout.mjs (init): Writes the manifest and every lane and collection, adding a placeholder to an empty directory. | V3-15A update templates/GENESIS.md: Lanes without records stay declared and empty; the first spec is created under workbench/specs/. | V3-15A update RUNBOOK.md (V3 support-root check): Readiness requires one actionable first spec at its manifest-declared path. | PW-3A create workbench/skills/: Holds the producer's skill source; no root skills/ directory remains. | PW-3A update templates/GENESIS.md, templates/ADOPTION.md: Genesis and Adoption lay down the lane from the release checkout. | PW-3A update workbench/tools/spec-workbench.mjs doctor: A root skills/ directory is reported as a finding. | PW-3A update RUNBOOK.md, README.md: Describe the lane instead of root skills/.",
+    "home": "workbench/tools/workbench-layout.mjs (init); templates/GENESIS.md; RUNBOOK.md (V3 support-root check); workbench/skills/; templates/GENESIS.md, templates/ADOPTION.md; workbench/tools/spec-workbench.mjs doctor; RUNBOOK.md, README.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-15",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-15A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "PW-3A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "PW-3",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "V3-15A",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-15A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "PW-3A",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-3A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "PW-3",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-3 (locked) at 56b459da, related as the successor of superseded V3-15; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What must a fresh Genesis leave behind?",
+    "question": "What must a fresh Genesis leave behind?",
+    "sources": [
+      {
+        "id": "V3-15",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-15A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "PW-3A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "PW-3",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:28.815Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:28.815Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 123 of the 2026-09-26 grouping (\"Genesis, Adoption and the reference Template\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: A filled room with declared support structure and its first durable work; skill setup evolved to laying down the in-room lane. Superseded lineage kept as sources and represented by successors: V3-15 (successor PW-3).",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:28.844Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "V3-15A: Manifest and required lane directories exist; the first durable spec is created; lanes without records remain explicitly empty.\nPW-3A: 'Move its sources to workbench/skills, and give templates what it needs to.' The 21-skill source moves from root skills/ to workbench/skills and root skills/ is removed; templates gain what Genesis and update-harness need to lay down and refresh the lane. A root skills/ becomes a doctor finding.\nPW-3: 'We already locked in a version of 1. When we update the workbenches, we update the skills. LLM_Workbench owns the skills it needs to. We store them all in workbench/skills.' Core skills are tracked in every room at workbench/skills and replaced by the ordinary Workbench update; no provider home, personal catalog or bootstrap is on the critical path."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-15A, PW-3A, PW-3 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "V3-15A update workbench/tools/workbench-layout.mjs (init): Writes the manifest and every lane and collection, adding a placeholder to an empty directory. | V3-15A update templates/GENESIS.md: Lanes without records stay declared and empty; the first spec is created under workbench/specs/. | V3-15A update RUNBOOK.md (V3 support-root check): Readiness requires one actionable first spec at its manifest-declared path. | PW-3A create workbench/skills/: Holds the producer's skill source; no root skills/ directory remains. | PW-3A update templates/GENESIS.md, templates/ADOPTION.md: Genesis and Adoption lay down the lane from the release checkout. | PW-3A update workbench/tools/spec-workbench.mjs doctor: A root skills/ directory is reported as a finding. | PW-3A update RUNBOOK.md, README.md: Describe the lane instead of root skills/.",
+            "home": "workbench/tools/workbench-layout.mjs (init); templates/GENESIS.md; RUNBOOK.md (V3 support-root check); workbench/skills/; templates/GENESIS.md, templates/ADOPTION.md; workbench/tools/spec-workbench.mjs doctor; RUNBOOK.md, README.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:28.872Z",
+      "reason": "Ledger row V3-15A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-15A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:28.904Z",
+      "reason": "Ledger row PW-3A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-3A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:28.937Z",
+      "reason": "Ledger row PW-3 (locked) at 56b459da, related as the successor of superseded V3-15; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-3",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:28.970Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

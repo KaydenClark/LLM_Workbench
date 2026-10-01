@@ -1,0 +1,208 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-005H",
+  "revision": 6,
+  "title": "What real Template upgrade must each Workbench version prove?",
+  "question": "What real Template upgrade must each Workbench version prove?",
+  "answer": "BPR-7A: Every Workbench version must be proved by successfully updating Example_Workbench (now Workbench Template) to that version. Genesis for a project with no Blueprint should seed a starting Blueprint and a prepared grilling notepad grounded in the project's evidence, and an update should not silently treat an existing Blueprint as owner-validated. Those mechanisms are future capabilities and must not be claimed before built and verified.\nFND-Q12: The Workbench_Template is the answer: each release must 'fully build a working template ... that a room can turn into its own project', and updating the Template to the new version is the release gate.\nBPR-7B1: For v3.2 it is enough that LLM Workbench applies the newly settled ownership and routing rules to update Workbench Template successfully. Fresh-copy personalization, prepared project grilling, Genesis completion and validation of a personalized Workbench are future capabilities; v3.2 must not claim them.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-7A, BPR-7B1 (locked); FND-Q12 (answered in chat, recovered from the owner's own messages). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "BPR-7A update AGENTS.md (Template Upgrade Release Gate): Every new version must update Workbench_Template before release readiness; producer-only rule, deliberately not mirrored into templates/. | BPR-7A update RUNBOOK.md (Template Upgrade Release Gate): Own the procedure for the installed-upgrade proof. | BPR-7A update workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md: Record the Workbench Template update proof for v3.2.0. | BPR-7A create workbench/specs/S-00C-project-evidence-and-blueprint-grilling/SPEC.md: Future capability: prepare a project-informed Blueprint grilling record from verified evidence. | FND-Q12 update AGENTS.md (Template Upgrade Release Gate) and RUNBOOK.md procedure: Every new version must upgrade KaydenClark/Workbench_Template and pass its checks before release readiness. | FND-Q12 update workbench/specs/S-00F-template-upgrade-release-gate/SPEC.md: Owns the Template upgrade release gate capability. | FND-Q12 update Workbench_Template repository (external): Updated to each release and able to become a working project on its own (S-00E fresh-copy proof). | BPR-7B1 create workbench/specs/S-00B-workbench-template-reformation/SPEC.md: Acceptance is a successful Workbench Template update with the new rules, with no personalization claim. | BPR-7B1 update workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md: v3.2.0 release proof is the template update; no future personalization is claimed.",
+    "home": "AGENTS.md (Template Upgrade Release Gate); RUNBOOK.md (Template Upgrade Release Gate); workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md; workbench/specs/S-00C-project-evidence-and-blueprint-grilling/SPEC.md; AGENTS.md (Template Upgrade Release Gate) and RUNBOOK.md procedure; workbench/specs/S-00F-template-upgrade-release-gate/SPEC.md; Workbench_Template repository (external); workbench/specs/S-00B-workbench-template-reformation/SPEC.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "BPR-7A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q12",
+      "revision": "56b459da"
+    },
+    {
+      "id": "BPR-7B1",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "BPR-7A",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-7A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q12",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q12 (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "BPR-7B1",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-7B1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What real Template upgrade must each Workbench version prove?",
+    "question": "What real Template upgrade must each Workbench version prove?",
+    "sources": [
+      {
+        "id": "BPR-7A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q12",
+        "revision": "56b459da"
+      },
+      {
+        "id": "BPR-7B1",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:30.677Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:30.677Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 135 of the 2026-09-26 grouping (\"Updates, drift and release evidence\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Every version must successfully update the existing reference Template under the settled rules; a fresh generated scaffold alone is insufficient.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:30.707Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "BPR-7A: Every Workbench version must be proved by successfully updating Example_Workbench (now Workbench Template) to that version. Genesis for a project with no Blueprint should seed a starting Blueprint and a prepared grilling notepad grounded in the project's evidence, and an update should not silently treat an existing Blueprint as owner-validated. Those mechanisms are future capabilities and must not be claimed before built and verified.\nFND-Q12: The Workbench_Template is the answer: each release must 'fully build a working template ... that a room can turn into its own project', and updating the Template to the new version is the release gate.\nBPR-7B1: For v3.2 it is enough that LLM Workbench applies the newly settled ownership and routing rules to update Workbench Template successfully. Fresh-copy personalization, prepared project grilling, Genesis completion and validation of a personalized Workbench are future capabilities; v3.2 must not claim them."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-7A, BPR-7B1 (locked); FND-Q12 (answered in chat, recovered from the owner's own messages). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "BPR-7A update AGENTS.md (Template Upgrade Release Gate): Every new version must update Workbench_Template before release readiness; producer-only rule, deliberately not mirrored into templates/. | BPR-7A update RUNBOOK.md (Template Upgrade Release Gate): Own the procedure for the installed-upgrade proof. | BPR-7A update workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md: Record the Workbench Template update proof for v3.2.0. | BPR-7A create workbench/specs/S-00C-project-evidence-and-blueprint-grilling/SPEC.md: Future capability: prepare a project-informed Blueprint grilling record from verified evidence. | FND-Q12 update AGENTS.md (Template Upgrade Release Gate) and RUNBOOK.md procedure: Every new version must upgrade KaydenClark/Workbench_Template and pass its checks before release readiness. | FND-Q12 update workbench/specs/S-00F-template-upgrade-release-gate/SPEC.md: Owns the Template upgrade release gate capability. | FND-Q12 update Workbench_Template repository (external): Updated to each release and able to become a working project on its own (S-00E fresh-copy proof). | BPR-7B1 create workbench/specs/S-00B-workbench-template-reformation/SPEC.md: Acceptance is a successful Workbench Template update with the new rules, with no personalization claim. | BPR-7B1 update workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md: v3.2.0 release proof is the template update; no future personalization is claimed.",
+            "home": "AGENTS.md (Template Upgrade Release Gate); RUNBOOK.md (Template Upgrade Release Gate); workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md; workbench/specs/S-00C-project-evidence-and-blueprint-grilling/SPEC.md; AGENTS.md (Template Upgrade Release Gate) and RUNBOOK.md procedure; workbench/specs/S-00F-template-upgrade-release-gate/SPEC.md; Workbench_Template repository (external); workbench/specs/S-00B-workbench-template-reformation/SPEC.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:30.737Z",
+      "reason": "Ledger row BPR-7A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-7A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:30.773Z",
+      "reason": "Ledger row FND-Q12 (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q12",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:30.809Z",
+      "reason": "Ledger row BPR-7B1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-7B1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:30.844Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

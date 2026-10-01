@@ -1,0 +1,288 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000X",
+  "revision": 8,
+  "title": "How do skill versions relate to Workbench releases?",
+  "question": "How do skill versions relate to Workbench releases?",
+  "answer": "V3-8: The checked-out LLM Workbench release owns the bundled versions. Normal setup is presence-only; an explicitly authorized skill update backs up changed destinations and synchronizes the required core to the exact bundled versions.\nV3-8A: No. No separate release dependency is required; the bundled skill sources version with LLM Workbench.\nV3-8B: Yes, so no second repository or publication gate is required.\nV3-13C: Together in the same LLM Workbench v3 candidate so no external skills-repository dependency exists.\nREC-03: Bump to v3.1.3: freeze v3.1.2 at sixteen in supportedLegacy and set the room's manifest to v3.1.3.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-8, V3-8A, V3-8B, V3-13C, REC-03 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "V3-8 update LEXICON.md (Core skill bundle, Normal setup, Explicit skill update rows) and templates/LEXICON.md: Define release-owned core versions and the explicit update that backs up and replaces changed skills. | V3-8 update tools/workbench-skills.mjs; RUNBOOK.md (Skills lane check): install/verify/update --explicit-update/rollback with a receipt naming release, commit and per-skill hash. | V3-8 update workbench/manifest.json (skillPolicy): Records setup and update policy. | V3-8A create workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md: The skills lane is owned and versioned by LLM Workbench. | V3-8A update tools/workbench-skills.mjs receipt (.workbench-skills.json): Receipt records the source release and commit for each installed core skill. | V3-8B create workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts): No Forge publication step or private skills-repository change is part of the capability. | V3-8B update workbench/skills and tools/workbench-skills.mjs: Skill sources and installer ship in the same LLM Workbench release. | V3-13C update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts): No Forge publication step or private skills-repository change is part of the capability; skills and layout land in one candidate. | REC-03 update workbench/tools/workbench-layout.mjs supportedLegacy: v3.1.2 frozen at the sixteen-skill policy; v3.1.3 carries the seventeen-skill policy. | REC-03 update workbench/manifest.json: Stamps the room v3.1.3 for this release. | REC-03 update workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts; Dependencies And Blockers): Withdraws 'lands in v3.1.2'; records the v3.1.3 decision and the rejected alternatives.",
+    "home": "LEXICON.md (Core skill bundle, Normal setup, Explicit skill update rows) and templates/LEXICON.md; tools/workbench-skills.mjs; RUNBOOK.md (Skills lane check); workbench/manifest.json (skillPolicy); workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md; tools/workbench-skills.mjs receipt (.workbench-skills.json); workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts); workbench/skills and tools/workbench-skills.mjs; workbench/tools/workbench-layout.mjs supportedLegacy; workbench/manifest.json; workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts; Dependencies And Blockers)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-8",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-8A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-8B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-13C",
+      "revision": "56b459da"
+    },
+    {
+      "id": "REC-03",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 8
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "V3-8",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-8 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-8A",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-8A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-8B",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-8B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-13C",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-13C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "REC-03",
+      "revision": "56b459da",
+      "reason": "Ledger row REC-03 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 7
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How do skill versions relate to Workbench releases?",
+    "question": "How do skill versions relate to Workbench releases?",
+    "sources": [
+      {
+        "id": "V3-8",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-8A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-8B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-13C",
+        "revision": "56b459da"
+      },
+      {
+        "id": "REC-03",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:17.392Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:17.392Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 018 of the 2026-09-26 grouping (\"Skills carried by the room\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The checked-out Workbench release owns its bundled skill versions and installer behavior; a second repository release is not required.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:17.404Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "V3-8: The checked-out LLM Workbench release owns the bundled versions. Normal setup is presence-only; an explicitly authorized skill update backs up changed destinations and synchronizes the required core to the exact bundled versions.\nV3-8A: No. No separate release dependency is required; the bundled skill sources version with LLM Workbench.\nV3-8B: Yes, so no second repository or publication gate is required.\nV3-13C: Together in the same LLM Workbench v3 candidate so no external skills-repository dependency exists.\nREC-03: Bump to v3.1.3: freeze v3.1.2 at sixteen in supportedLegacy and set the room's manifest to v3.1.3."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-8, V3-8A, V3-8B, V3-13C, REC-03 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "V3-8 update LEXICON.md (Core skill bundle, Normal setup, Explicit skill update rows) and templates/LEXICON.md: Define release-owned core versions and the explicit update that backs up and replaces changed skills. | V3-8 update tools/workbench-skills.mjs; RUNBOOK.md (Skills lane check): install/verify/update --explicit-update/rollback with a receipt naming release, commit and per-skill hash. | V3-8 update workbench/manifest.json (skillPolicy): Records setup and update policy. | V3-8A create workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md: The skills lane is owned and versioned by LLM Workbench. | V3-8A update tools/workbench-skills.mjs receipt (.workbench-skills.json): Receipt records the source release and commit for each installed core skill. | V3-8B create workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts): No Forge publication step or private skills-repository change is part of the capability. | V3-8B update workbench/skills and tools/workbench-skills.mjs: Skill sources and installer ship in the same LLM Workbench release. | V3-13C update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts): No Forge publication step or private skills-repository change is part of the capability; skills and layout land in one candidate. | REC-03 update workbench/tools/workbench-layout.mjs supportedLegacy: v3.1.2 frozen at the sixteen-skill policy; v3.1.3 carries the seventeen-skill policy. | REC-03 update workbench/manifest.json: Stamps the room v3.1.3 for this release. | REC-03 update workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts; Dependencies And Blockers): Withdraws 'lands in v3.1.2'; records the v3.1.3 decision and the rejected alternatives.",
+            "home": "LEXICON.md (Core skill bundle, Normal setup, Explicit skill update rows) and templates/LEXICON.md; tools/workbench-skills.mjs; RUNBOOK.md (Skills lane check); workbench/manifest.json (skillPolicy); workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md; tools/workbench-skills.mjs receipt (.workbench-skills.json); workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts); workbench/skills and tools/workbench-skills.mjs; workbench/tools/workbench-layout.mjs supportedLegacy; workbench/manifest.json; workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts; Dependencies And Blockers)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:17.415Z",
+      "reason": "Ledger row V3-8 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-8",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:17.428Z",
+      "reason": "Ledger row V3-8A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-8A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:17.440Z",
+      "reason": "Ledger row V3-8B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-8B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:17.453Z",
+      "reason": "Ledger row V3-13C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-13C",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:17.466Z",
+      "reason": "Ledger row REC-03 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "REC-03",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:17.479Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

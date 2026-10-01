@@ -1,0 +1,170 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000G",
+  "revision": 5,
+  "title": "What does next mean, and which work should it offer?",
+  "question": "What does next mean, and which work should it offer?",
+  "answer": "E-5: Confirmed the agent's proposal: one shared lane function for render, next and doctor; next offers only To do cards (cards with unfinished dependsOn visible but not offered); next --review lists Needs review; doctor never blocks on needsReview or Backlog; Blocked stays attention; a Spec's lane is derived from its Tasks, never hand-set.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: E-5 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "TT-Q5 update AGENTS.md (Work Selection And Lifecycle) and templates/AGENTS.md: 'next' names the tool's next eligible Task, and keeps that meaning through the S-00P TK-002 rewrite. | E-5 update workbench/tools/spec-workbench.mjs: Shared lane function; next reads To do; next --review; doctor non-blocking on needsReview/Backlog; derived Spec lane. | E-5 update RUNBOOK.md Spec Lifecycle And Retrieval (+ templates/RUNBOOK.md): Document next, next --review and lane behavior. | E-5 create board Spec (TASKBOARD.json board): Owns this tooling.",
+    "home": "AGENTS.md (Work Selection And Lifecycle) and templates/AGENTS.md; workbench/tools/spec-workbench.mjs; RUNBOOK.md Spec Lifecycle And Retrieval (+ templates/RUNBOOK.md); board Spec (TASKBOARD.json board)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [
+    "TT-Q5 (open, no owner answer): What does next mean: next eligible Ticket (now Task), next action inside current work, or owner recommendation? AGENTS.md Work Selection supplies the working meaning; that is the existing rule, not an owner ruling."
+  ],
+  "sources": [
+    {
+      "id": "TT-Q5",
+      "revision": "56b459da"
+    },
+    {
+      "id": "E-5",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "TT-Q5",
+      "revision": "56b459da",
+      "reason": "Ledger row TT-Q5 (open) at 56b459da; assessed Aligning from its status only.",
+      "assessment": {
+        "contributions": {
+          "Aligning": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "E-5",
+      "revision": "56b459da",
+      "reason": "Ledger row E-5 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What does next mean, and which work should it offer?",
+    "question": "What does next mean, and which work should it offer?",
+    "sources": [
+      {
+        "id": "TT-Q5",
+        "revision": "56b459da"
+      },
+      {
+        "id": "E-5",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:06.567Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:06.567Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 071 of the 2026-09-26 grouping (\"Shared claims, host capabilities and coordination\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The ledger preserves an unanswered vocabulary question alongside the later board rule: only eligible To do work is offered, with a separate review view.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:06.577Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "E-5: Confirmed the agent's proposal: one shared lane function for render, next and doctor; next offers only To do cards (cards with unfinished dependsOn visible but not offered); next --review lists Needs review; doctor never blocks on needsReview or Backlog; Blocked stays attention; a Spec's lane is derived from its Tasks, never hand-set."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: E-5 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "TT-Q5 update AGENTS.md (Work Selection And Lifecycle) and templates/AGENTS.md: 'next' names the tool's next eligible Task, and keeps that meaning through the S-00P TK-002 rewrite. | E-5 update workbench/tools/spec-workbench.mjs: Shared lane function; next reads To do; next --review; doctor non-blocking on needsReview/Backlog; derived Spec lane. | E-5 update RUNBOOK.md Spec Lifecycle And Retrieval (+ templates/RUNBOOK.md): Document next, next --review and lane behavior. | E-5 create board Spec (TASKBOARD.json board): Owns this tooling.",
+            "home": "AGENTS.md (Work Selection And Lifecycle) and templates/AGENTS.md; workbench/tools/spec-workbench.mjs; RUNBOOK.md Spec Lifecycle And Retrieval (+ templates/RUNBOOK.md); board Spec (TASKBOARD.json board)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:06.586Z",
+      "reason": "Ledger row TT-Q5 (open) at 56b459da; assessed Aligning from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "TT-Q5",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:06.595Z",
+      "reason": "Ledger row E-5 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "E-5",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:06.605Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

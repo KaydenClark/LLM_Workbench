@@ -1,0 +1,376 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-004B",
+  "revision": 10,
+  "title": "When is separate-context review required, and what unit does it inspect?",
+  "question": "When is separate-context review required, and what unit does it inspect?",
+  "answer": "WB-4: Independent review is required only when work is ready to merge into integration: the proposed integration candidate gets a separate-context review before branches combine. That reviewer checks the candidate and its evidence, which is enough to challenge consequential claims, code changes and report recommendations. Earlier review, verification and audit are supports, not mandatory independent ceremonies.\nWF-8B: No per-Task independent-review ceremony just because it is a Task. Ordinary verification and proof are mandatory: red/green TDD, relevant tests green, exercising what was built, and preserved proof before handoff.\nWF-8C: Keep a separate-context review whose unit is the assembled Spec and the combined result of its Tasks. A failed review is diagnostic, not blame: state what is wrong, create new corrective Tasks under the still-open Spec, update the Taskboard, execute and prove them, then present a fresh immutable Spec candidate. Passing lets the Spec branch move toward integration.\nSCR-2: When every Task in a Spec is complete. The unit is the assembled Spec and the combined Actuality and proof its Tasks produced; the check is whether the Spec's local destination was reached and moves the product toward the Blueprint destination. It has two agent checks: the Dispatcher's whole-Spec Verify/QA, then the Director's separate-context approval.\nSCR-5: Nobody runs an approval gate per Task. The Worker self-verifies and hands back; the Dispatcher consumes the report, updates the view of Actuality and chooses the next step, for a Spec-scoped and a direct Blueprint Task alike. Merge or sequencing is coordination and containment, not destination-level QA.\nSCR-7: Neither. Do not QA every Task and do not add a second reviewer for grouped brick-laying slices. Run toward the local destination the Spec describes, then do whole-Spec QA. A Task ends after its one attempt; if it missed, do not reopen it, create a new Task.\nWF-8: Tasks use red/green TDD, make relevant tests green, exercise what was built to confirm it works, and preserve proof before handoff. A separate context checks the assembled Spec. Integration is the assembled surface for owner Human QA, which can return work to Align before owner-only main promotion.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-4, WF-8B, WF-8C, SCR-2, SCR-5, SCR-7, WF-8 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WB-4 update AGENTS.md (Git Rules, integration review paragraph) and templates/AGENTS.md: A separate-context reviewer checks the immutable candidate before branches combine into integration; earlier review is support, not a mandatory ceremony. | WB-4 create workbench/docs/adr/0037-independent-review-at-integration.md: Accepted decision: independent review at the integration merge; changed candidates need fresh review. | WB-4 update workbench/skills/implement and workbench/skills/code-review: Implementation and review skills point to the integration review gate. | WF-8B update AGENTS.md (Engineering And Verification, integration review gate) and templates/AGENTS.md: Task proof is mandatory; separate-context review is required for the assembled Spec, not each Task; owned by S-00P TK-002 and TK-005. | WF-8C update workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md: Assembled-Spec report, verdict bound to candidate SHA, corrective Tasks under the still-open Spec. | WF-8C update AGENTS.md (integration review gate) and templates/AGENTS.md: Names the assembled-Spec review and corrective-Task loop; owned by S-00P TK-002 and TK-005. | WF-8C update RUNBOOK.md and templates/RUNBOOK.md: Procedure for a failed Spec review and fresh candidate; owned by S-00P TK-003 and TK-005. | SCR-2 update BLUEPRINT.md (Desired Lifecycle): Dispatcher whole-Spec QA then Director separate-context approval of the assembled Spec before it combines into integration. | SCR-2 update workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md: Spec QA gate held by the Dispatcher and Director. | SCR-5 update BLUEPRINT.md (Desired Lifecycle): Merge is containment; the Dispatcher reads the report. | SCR-5 update workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md: Records the rule. | SCR-7 update workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md: Rejects per-Task and per-slice gates.",
+    "home": "AGENTS.md (Git Rules, integration review paragraph) and templates/AGENTS.md; workbench/docs/adr/0037-independent-review-at-integration.md; workbench/skills/implement and workbench/skills/code-review; AGENTS.md (Engineering And Verification, integration review gate) and templates/AGENTS.md; workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md; AGENTS.md (integration review gate) and templates/AGENTS.md; RUNBOOK.md and templates/RUNBOOK.md; BLUEPRINT.md (Desired Lifecycle); workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "WB-4",
+      "revision": "56b459da"
+    },
+    {
+      "id": "BPR-8F",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-8B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-8C",
+      "revision": "56b459da"
+    },
+    {
+      "id": "SCR-2",
+      "revision": "56b459da"
+    },
+    {
+      "id": "SCR-5",
+      "revision": "56b459da"
+    },
+    {
+      "id": "SCR-7",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-8",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 10
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WB-4",
+      "revision": "56b459da",
+      "reason": "Ledger row WB-4 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-8B",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-8B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-8C",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-8C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "SCR-2",
+      "revision": "56b459da",
+      "reason": "Ledger row SCR-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "SCR-5",
+      "revision": "56b459da",
+      "reason": "Ledger row SCR-5 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 7
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "SCR-7",
+      "revision": "56b459da",
+      "reason": "Ledger row SCR-7 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 8
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-8",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-8 (locked) at 56b459da, related as the successor of superseded BPR-8F; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 9
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "When is separate-context review required, and what unit does it inspect?",
+    "question": "When is separate-context review required, and what unit does it inspect?",
+    "sources": [
+      {
+        "id": "WB-4",
+        "revision": "56b459da"
+      },
+      {
+        "id": "BPR-8F",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-8B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-8C",
+        "revision": "56b459da"
+      },
+      {
+        "id": "SCR-2",
+        "revision": "56b459da"
+      },
+      {
+        "id": "SCR-5",
+        "revision": "56b459da"
+      },
+      {
+        "id": "SCR-7",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-8",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:25.625Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:25.625Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 102 of the 2026-09-26 grouping (\"Verification, QA and correction\"), with SCR-2, SCR-5, SCR-7 added because they postdate the draft and carry the same destination, grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The independent gate checks the assembled Spec and immutable integration candidate. Earlier per-Task review wording was superseded. Superseded lineage kept as sources and represented by successors: BPR-8F (successor WF-8, WF-8B).",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:25.651Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WB-4: Independent review is required only when work is ready to merge into integration: the proposed integration candidate gets a separate-context review before branches combine. That reviewer checks the candidate and its evidence, which is enough to challenge consequential claims, code changes and report recommendations. Earlier review, verification and audit are supports, not mandatory independent ceremonies.\nWF-8B: No per-Task independent-review ceremony just because it is a Task. Ordinary verification and proof are mandatory: red/green TDD, relevant tests green, exercising what was built, and preserved proof before handoff.\nWF-8C: Keep a separate-context review whose unit is the assembled Spec and the combined result of its Tasks. A failed review is diagnostic, not blame: state what is wrong, create new corrective Tasks under the still-open Spec, update the Taskboard, execute and prove them, then present a fresh immutable Spec candidate. Passing lets the Spec branch move toward integration.\nSCR-2: When every Task in a Spec is complete. The unit is the assembled Spec and the combined Actuality and proof its Tasks produced; the check is whether the Spec's local destination was reached and moves the product toward the Blueprint destination. It has two agent checks: the Dispatcher's whole-Spec Verify/QA, then the Director's separate-context approval.\nSCR-5: Nobody runs an approval gate per Task. The Worker self-verifies and hands back; the Dispatcher consumes the report, updates the view of Actuality and chooses the next step, for a Spec-scoped and a direct Blueprint Task alike. Merge or sequencing is coordination and containment, not destination-level QA.\nSCR-7: Neither. Do not QA every Task and do not add a second reviewer for grouped brick-laying slices. Run toward the local destination the Spec describes, then do whole-Spec QA. A Task ends after its one attempt; if it missed, do not reopen it, create a new Task.\nWF-8: Tasks use red/green TDD, make relevant tests green, exercise what was built to confirm it works, and preserve proof before handoff. A separate context checks the assembled Spec. Integration is the assembled surface for owner Human QA, which can return work to Align before owner-only main promotion."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-4, WF-8B, WF-8C, SCR-2, SCR-5, SCR-7, WF-8 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WB-4 update AGENTS.md (Git Rules, integration review paragraph) and templates/AGENTS.md: A separate-context reviewer checks the immutable candidate before branches combine into integration; earlier review is support, not a mandatory ceremony. | WB-4 create workbench/docs/adr/0037-independent-review-at-integration.md: Accepted decision: independent review at the integration merge; changed candidates need fresh review. | WB-4 update workbench/skills/implement and workbench/skills/code-review: Implementation and review skills point to the integration review gate. | WF-8B update AGENTS.md (Engineering And Verification, integration review gate) and templates/AGENTS.md: Task proof is mandatory; separate-context review is required for the assembled Spec, not each Task; owned by S-00P TK-002 and TK-005. | WF-8C update workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md: Assembled-Spec report, verdict bound to candidate SHA, corrective Tasks under the still-open Spec. | WF-8C update AGENTS.md (integration review gate) and templates/AGENTS.md: Names the assembled-Spec review and corrective-Task loop; owned by S-00P TK-002 and TK-005. | WF-8C update RUNBOOK.md and templates/RUNBOOK.md: Procedure for a failed Spec review and fresh candidate; owned by S-00P TK-003 and TK-005. | SCR-2 update BLUEPRINT.md (Desired Lifecycle): Dispatcher whole-Spec QA then Director separate-context approval of the assembled Spec before it combines into integration. | SCR-2 update workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md: Spec QA gate held by the Dispatcher and Director. | SCR-5 update BLUEPRINT.md (Desired Lifecycle): Merge is containment; the Dispatcher reads the report. | SCR-5 update workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md: Records the rule. | SCR-7 update workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md: Rejects per-Task and per-slice gates.",
+            "home": "AGENTS.md (Git Rules, integration review paragraph) and templates/AGENTS.md; workbench/docs/adr/0037-independent-review-at-integration.md; workbench/skills/implement and workbench/skills/code-review; AGENTS.md (Engineering And Verification, integration review gate) and templates/AGENTS.md; workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md; AGENTS.md (integration review gate) and templates/AGENTS.md; RUNBOOK.md and templates/RUNBOOK.md; BLUEPRINT.md (Desired Lifecycle); workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:25.676Z",
+      "reason": "Ledger row WB-4 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WB-4",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:25.708Z",
+      "reason": "Ledger row WF-8B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-8B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:25.737Z",
+      "reason": "Ledger row WF-8C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-8C",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:25.766Z",
+      "reason": "Ledger row SCR-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "SCR-2",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:25.795Z",
+      "reason": "Ledger row SCR-5 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "SCR-5",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:25.825Z",
+      "reason": "Ledger row SCR-7 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "SCR-7",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "at": "2026-10-01T23:49:25.856Z",
+      "reason": "Ledger row WF-8 (locked) at 56b459da, related as the successor of superseded BPR-8F; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-8",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 10,
+      "at": "2026-10-01T23:49:25.885Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

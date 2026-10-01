@@ -1,0 +1,248 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-001L",
+  "revision": 7,
+  "title": "What responsibilities and artifact types must the ownership map cover?",
+  "question": "What responsibilities and artifact types must the ownership map cover?",
+  "answer": "FND-Q18: The owner chose the recommended first terrain: artifact ownership and Workbench Contract boundaries, starting with the scope relationship among Blueprint, Spec and Task before allocating the full responsibility inventory or designing any map.\nFND-Q21: Answered through its sub-questions: comprehensive type-level coverage answered by query (FND-Q21A); six scoped rows, with the Taskboard first-class as the project-wide representation of work state (FND-Q21B); a four-tier Decisions rule (FND-Q21C); 21 single-owner rows plus a 28th Representation/monitoring row, so the inventory is 28, owner-locked (FND-Q21D).\nFND-Q21A: Yes. Blueprint -> Spec -> Task is only an example. The schema is an exhaustive type-level framework for every Core artifact type, its relationships and ownership interactions, so a fresh agent with no prior context can use the Workbench as intended. Instances keep their facts in their own artifacts. It is queried, not read whole, and sits outside the Contract. Reconfirmed 2026-09-22; the map also needs rows for OWNERSHIP.json and TASKBOARD.json.\nFND-Q21D: The 21 single-owner rows stand as one bundle with the four proposal-017 repairs and three proposal-024 additions (Navigation is an ordered pair, Lexicon Context Map then OWNERSHIP.json; Evaluation owns method, Evidence owns results; distinct question strings for Provenance, History, Delivery, Release). On 2026-09-22 he added a 28th row, Representation/monitoring (Frontier view), owned by TASKBOARD.json, sitrep and README. The inventory is 28, owner-locked.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q18, FND-Q21, FND-Q21A, FND-Q21D (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "FND-Q21 create workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json: The map carries the 28 responsibility rows as allocated by FND-Q21A-D; S-00G does not describe FND-Q21 as open. | FND-Q21 update LEXICON.md (Artifact Ownership Schema) and templates/LEXICON.md: The Lexicon carries no draft allocation and routes ownership questions to OWNERSHIP.json. | FND-Q21A create workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json: Exhaustive type-level map answered by query, including rows for OWNERSHIP.json and TASKBOARD.json; S-00G does not describe the allocation as open. | FND-Q21A update workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md: Accepted: the ownership map is an exhaustive type-level framework answered by structured query. | FND-Q21D create workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json: 28 rows: 21 single-owner, 6 scoped, 1 representation, with distinct question strings and the ordered Navigation pair. | FND-Q21D update LEXICON.md Context Map and templates/LEXICON.md: The Lexicon Context Map is the first route and points to OWNERSHIP.json. | FND-Q21D create sitrep core skill (board Spec, blocked-obligations decision-015): sitrep is the read-out owner of the representation row.",
+    "home": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json; LEXICON.md (Artifact Ownership Schema) and templates/LEXICON.md; workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md; LEXICON.md Context Map and templates/LEXICON.md; sitrep core skill (board Spec, blocked-obligations decision-015)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "FND-Q18",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q21",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q21A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q21D",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 7
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "FND-Q18",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q18 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q21",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q21 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q21A",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q21A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q21D",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q21D (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What responsibilities and artifact types must the ownership map cover?",
+    "question": "What responsibilities and artifact types must the ownership map cover?",
+    "sources": [
+      {
+        "id": "FND-Q18",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q21",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q21A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q21D",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:18.420Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:18.420Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 032 of the 2026-09-26 grouping (\"Entry, authority and ownership\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Coverage is type-level and comprehensive, with the owner-locked scoped and single-owner responsibility inventory. Instances retain their facts in their own records.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:18.435Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "FND-Q18: The owner chose the recommended first terrain: artifact ownership and Workbench Contract boundaries, starting with the scope relationship among Blueprint, Spec and Task before allocating the full responsibility inventory or designing any map.\nFND-Q21: Answered through its sub-questions: comprehensive type-level coverage answered by query (FND-Q21A); six scoped rows, with the Taskboard first-class as the project-wide representation of work state (FND-Q21B); a four-tier Decisions rule (FND-Q21C); 21 single-owner rows plus a 28th Representation/monitoring row, so the inventory is 28, owner-locked (FND-Q21D).\nFND-Q21A: Yes. Blueprint -> Spec -> Task is only an example. The schema is an exhaustive type-level framework for every Core artifact type, its relationships and ownership interactions, so a fresh agent with no prior context can use the Workbench as intended. Instances keep their facts in their own artifacts. It is queried, not read whole, and sits outside the Contract. Reconfirmed 2026-09-22; the map also needs rows for OWNERSHIP.json and TASKBOARD.json.\nFND-Q21D: The 21 single-owner rows stand as one bundle with the four proposal-017 repairs and three proposal-024 additions (Navigation is an ordered pair, Lexicon Context Map then OWNERSHIP.json; Evaluation owns method, Evidence owns results; distinct question strings for Provenance, History, Delivery, Release). On 2026-09-22 he added a 28th row, Representation/monitoring (Frontier view), owned by TASKBOARD.json, sitrep and README. The inventory is 28, owner-locked."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q18, FND-Q21, FND-Q21A, FND-Q21D (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "FND-Q21 create workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json: The map carries the 28 responsibility rows as allocated by FND-Q21A-D; S-00G does not describe FND-Q21 as open. | FND-Q21 update LEXICON.md (Artifact Ownership Schema) and templates/LEXICON.md: The Lexicon carries no draft allocation and routes ownership questions to OWNERSHIP.json. | FND-Q21A create workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json: Exhaustive type-level map answered by query, including rows for OWNERSHIP.json and TASKBOARD.json; S-00G does not describe the allocation as open. | FND-Q21A update workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md: Accepted: the ownership map is an exhaustive type-level framework answered by structured query. | FND-Q21D create workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json: 28 rows: 21 single-owner, 6 scoped, 1 representation, with distinct question strings and the ordered Navigation pair. | FND-Q21D update LEXICON.md Context Map and templates/LEXICON.md: The Lexicon Context Map is the first route and points to OWNERSHIP.json. | FND-Q21D create sitrep core skill (board Spec, blocked-obligations decision-015): sitrep is the read-out owner of the representation row.",
+            "home": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json; LEXICON.md (Artifact Ownership Schema) and templates/LEXICON.md; workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md; LEXICON.md Context Map and templates/LEXICON.md; sitrep core skill (board Spec, blocked-obligations decision-015)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:18.448Z",
+      "reason": "Ledger row FND-Q18 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q18",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:18.464Z",
+      "reason": "Ledger row FND-Q21 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q21",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:18.479Z",
+      "reason": "Ledger row FND-Q21A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q21A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:18.494Z",
+      "reason": "Ledger row FND-Q21D (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q21D",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:18.510Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-003H",
+  "revision": 4,
+  "title": "What makes a workflow step worth requiring?",
+  "question": "What makes a workflow step worth requiring?",
+  "answer": "WB-10: A required step must name its immediate delivery value and leave a checkable artifact, decision or risk reduction. When that value is uncertain, keep the step optional and visible for review until the owner can grill it; do not silently make it mandatory or discard it.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-10 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WB-10 create workbench/docs/adr/0034-required-steps-must-enable-delivery.md: Accepted decision: imposed steps need immediate delivery value and a checkable output. | WB-10 update AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md: Required steps name delivery value; uncertain steps stay optional and visible for owner review. | WB-10 update BLUEPRINT.md and templates/BLUEPRINT.md: Canonicalized product principle per ADR-0034.",
+    "home": "workbench/docs/adr/0034-required-steps-must-enable-delivery.md; AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md; BLUEPRINT.md and templates/BLUEPRINT.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "WB-10",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 4
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WB-10",
+      "revision": "56b459da",
+      "reason": "Ledger row WB-10 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What makes a workflow step worth requiring?",
+    "question": "What makes a workflow step worth requiring?",
+    "sources": [
+      {
+        "id": "WB-10",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:23.160Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:23.160Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 082 of the 2026-09-26 grouping (\"Stances and useful autonomy\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: A required step names immediate delivery value and leaves a checkable artifact, decision or risk reduction; uncertain-value practices remain optional and visible.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:23.180Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WB-10: A required step must name its immediate delivery value and leave a checkable artifact, decision or risk reduction. When that value is uncertain, keep the step optional and visible for review until the owner can grill it; do not silently make it mandatory or discard it."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-10 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WB-10 create workbench/docs/adr/0034-required-steps-must-enable-delivery.md: Accepted decision: imposed steps need immediate delivery value and a checkable output. | WB-10 update AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md: Required steps name delivery value; uncertain steps stay optional and visible for owner review. | WB-10 update BLUEPRINT.md and templates/BLUEPRINT.md: Canonicalized product principle per ADR-0034.",
+            "home": "workbench/docs/adr/0034-required-steps-must-enable-delivery.md; AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md; BLUEPRINT.md and templates/BLUEPRINT.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:23.201Z",
+      "reason": "Ledger row WB-10 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WB-10",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:23.225Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

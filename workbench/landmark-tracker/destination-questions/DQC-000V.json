@@ -1,0 +1,224 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000V",
+  "revision": 6,
+  "title": "How should supported providers discover the room’s skills?",
+  "question": "How should supported providers discover the room’s skills?",
+  "answer": "WB-3: Package all four as portable stance skills. A stance says how an agent performs one task with the authority, responsibilities, good practices and composing skills suited to that work. Loading a stance never spawns a sub-agent; Builder, for example, must make sure review and verification happen. Keep cross-provider discovery: a stance stored under ~/.agents/skills/stances/ also needs a flat top-level symlink for Claude's one-level scan.\nPW-3A: 'Move its sources to workbench/skills, and give templates what it needs to.' The 21-skill source moves from root skills/ to workbench/skills and root skills/ is removed; templates gain what Genesis and update-harness need to lay down and refresh the lane. A root skills/ becomes a doctor finding.\nPW-3: 'We already locked in a version of 1. When we update the workbenches, we update the skills. LLM_Workbench owns the skills it needs to. We store them all in workbench/skills.' Core skills are tracked in every room at workbench/skills and replaced by the ordinary Workbench update; no provider home, personal catalog or bootstrap is on the critical path.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-3, PW-3A, PW-3 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WB-3 create workbench/skills/builder, auditor, reviewer, reconciler (SKILL.md each): Four portable stance skills ship flat in the core bundle for both providers. | WB-3 create workbench/docs/adr/0036-stances-change-method-not-authority.md: Accepted decision: four stances; nested install needs a flat symlink for one-level discovery; loading never spawns an agent. | WB-3 update AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md; LEXICON.md (Stance Terms): Controls name the four stances as portable behavior skills that never spawn an agent. | PW-3A create workbench/skills/: Holds the producer's skill source; no root skills/ directory remains. | PW-3A update templates/GENESIS.md, templates/ADOPTION.md: Genesis and Adoption lay down the lane from the release checkout. | PW-3A update workbench/tools/spec-workbench.mjs doctor: A root skills/ directory is reported as a finding. | PW-3A update RUNBOOK.md, README.md: Describe the lane instead of root skills/.",
+    "home": "workbench/skills/builder, auditor, reviewer, reconciler (SKILL.md each); workbench/docs/adr/0036-stances-change-method-not-authority.md; AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md; LEXICON.md (Stance Terms); workbench/skills/; templates/GENESIS.md, templates/ADOPTION.md; workbench/tools/spec-workbench.mjs doctor; RUNBOOK.md, README.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-9",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-9A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WB-3",
+      "revision": "56b459da"
+    },
+    {
+      "id": "PW-3A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "PW-3",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WB-3",
+      "revision": "56b459da",
+      "reason": "Ledger row WB-3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "PW-3A",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-3A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "PW-3",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-3 (locked) at 56b459da, related as the successor of superseded V3-9, V3-9A; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should supported providers discover the room’s skills?",
+    "question": "How should supported providers discover the room’s skills?",
+    "sources": [
+      {
+        "id": "V3-9",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-9A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WB-3",
+        "revision": "56b459da"
+      },
+      {
+        "id": "PW-3A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "PW-3",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:17.230Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:17.230Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 016 of the 2026-09-26 grouping (\"Skills carried by the room\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Discovery moved from user-scope checks to tracked adapters into the room’s skill lane. One-level scanning constraints remain part of the historical discovery problem. Superseded lineage kept as sources and represented by successors: V3-9 (successor PW-3); V3-9A (successor PW-3).",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:17.241Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WB-3: Package all four as portable stance skills. A stance says how an agent performs one task with the authority, responsibilities, good practices and composing skills suited to that work. Loading a stance never spawns a sub-agent; Builder, for example, must make sure review and verification happen. Keep cross-provider discovery: a stance stored under ~/.agents/skills/stances/ also needs a flat top-level symlink for Claude's one-level scan.\nPW-3A: 'Move its sources to workbench/skills, and give templates what it needs to.' The 21-skill source moves from root skills/ to workbench/skills and root skills/ is removed; templates gain what Genesis and update-harness need to lay down and refresh the lane. A root skills/ becomes a doctor finding.\nPW-3: 'We already locked in a version of 1. When we update the workbenches, we update the skills. LLM_Workbench owns the skills it needs to. We store them all in workbench/skills.' Core skills are tracked in every room at workbench/skills and replaced by the ordinary Workbench update; no provider home, personal catalog or bootstrap is on the critical path."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-3, PW-3A, PW-3 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WB-3 create workbench/skills/builder, auditor, reviewer, reconciler (SKILL.md each): Four portable stance skills ship flat in the core bundle for both providers. | WB-3 create workbench/docs/adr/0036-stances-change-method-not-authority.md: Accepted decision: four stances; nested install needs a flat symlink for one-level discovery; loading never spawns an agent. | WB-3 update AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md; LEXICON.md (Stance Terms): Controls name the four stances as portable behavior skills that never spawn an agent. | PW-3A create workbench/skills/: Holds the producer's skill source; no root skills/ directory remains. | PW-3A update templates/GENESIS.md, templates/ADOPTION.md: Genesis and Adoption lay down the lane from the release checkout. | PW-3A update workbench/tools/spec-workbench.mjs doctor: A root skills/ directory is reported as a finding. | PW-3A update RUNBOOK.md, README.md: Describe the lane instead of root skills/.",
+            "home": "workbench/skills/builder, auditor, reviewer, reconciler (SKILL.md each); workbench/docs/adr/0036-stances-change-method-not-authority.md; AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md; LEXICON.md (Stance Terms); workbench/skills/; templates/GENESIS.md, templates/ADOPTION.md; workbench/tools/spec-workbench.mjs doctor; RUNBOOK.md, README.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:17.252Z",
+      "reason": "Ledger row WB-3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WB-3",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:17.265Z",
+      "reason": "Ledger row PW-3A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-3A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:17.278Z",
+      "reason": "Ledger row PW-3 (locked) at 56b459da, related as the successor of superseded V3-9, V3-9A; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-3",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:17.290Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

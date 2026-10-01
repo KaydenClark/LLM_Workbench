@@ -1,0 +1,288 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-005D",
+  "revision": 8,
+  "title": "How should an update reconcile the producer’s current-facing drift?",
+  "question": "How should an update reconcile the producer’s current-facing drift?",
+  "answer": "V3-19: Repair the current integration baseline and preserve historical evidence before claiming the v3 release candidate.\nV3-19A: Supersede its obsolete project-local skill ownership through a new linked capability record; never rewrite its completed historical evidence.\nV3-19B: Reconcile its stale claim against the actual 46-commit integration candidate before release-gate proof.\nU313-8: Fold one correcting row into S-045 naming the false claim, the completed specs carrying it, and the measurement that disproves it. No new spec.\nBPR-7: The comprehensive ownership and routing repair is part of v3.2 and covers the full upstream LLM_Workbench source and generic templates, not only the newest Blueprint section. Downstream project Workbenches get it only through their own explicit update path; an upstream release alone does not change them.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-19, V3-19A, V3-19B, U313-8, BPR-7 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "V3-19 update workbench/specs/S-021-portable-workbench-v3/SPEC.md: Records the baseline repairs (S-011, S-014, PR #42, red catalog test) as prerequisites the v3 runway must clear first. | V3-19 update workbench/specs/S-014-workbench-release-candidate/SPEC.md: Reconciles its current state to live refs while its append-only evidence rows stay unchanged. | V3-19A update workbench/specs/S-011-agent-skills-adoption/SPEC.md: Marks its status superseded for skill ownership, distribution and completion only; historical proof stays intact. | V3-19A create workbench/specs/S-021-portable-workbench-v3/SPEC.md: New linked capability that names 'Supersedes: S-011 skill ownership/distribution/completion contract only'. | V3-19B update workbench/specs/S-014-workbench-release-candidate/SPEC.md: Reconciles current state, blocker and ticket status to the exact integration refs; release work waits until the S-021 v3 candidate reaches integration. | U313-8 update workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (append-only evidence, correcting row): One row names the false claim, every completed spec carrying it, and the disproving measurement; the completed specs' own rows stay unedited. | BPR-7 update workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md: Include the full ownership and routing repair in the v3.2.0 release scope. | BPR-7 create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Deliver the repair across root controls and their templates/ mirrors. | BPR-7 update AGENTS.md, RUNBOOK.md, LEXICON.md, BLUEPRINT.md and their templates/ mirrors: Agree on one ownership model and Context Map.",
+    "home": "workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/specs/S-014-workbench-release-candidate/SPEC.md; workbench/specs/S-011-agent-skills-adoption/SPEC.md; workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (append-only evidence, correcting row); workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md; AGENTS.md, RUNBOOK.md, LEXICON.md, BLUEPRINT.md and their templates/ mirrors",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-19",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-19A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-19B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "U313-8",
+      "revision": "56b459da"
+    },
+    {
+      "id": "BPR-7",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 8
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "V3-19",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-19 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-19A",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-19A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-19B",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-19B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "U313-8",
+      "revision": "56b459da",
+      "reason": "Ledger row U313-8 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "BPR-7",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-7 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 7
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should an update reconcile the producer’s current-facing drift?",
+    "question": "How should an update reconcile the producer’s current-facing drift?",
+    "sources": [
+      {
+        "id": "V3-19",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-19A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-19B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "U313-8",
+        "revision": "56b459da"
+      },
+      {
+        "id": "BPR-7",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:30.002Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:30.002Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 131 of the 2026-09-26 grouping (\"Updates, drift and release evidence\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Repair stale live control and claim state against actual evidence while preserving completed historical results. Producer and generic templates are both in scope when their shared contract changes.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:30.031Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "V3-19: Repair the current integration baseline and preserve historical evidence before claiming the v3 release candidate.\nV3-19A: Supersede its obsolete project-local skill ownership through a new linked capability record; never rewrite its completed historical evidence.\nV3-19B: Reconcile its stale claim against the actual 46-commit integration candidate before release-gate proof.\nU313-8: Fold one correcting row into S-045 naming the false claim, the completed specs carrying it, and the measurement that disproves it. No new spec.\nBPR-7: The comprehensive ownership and routing repair is part of v3.2 and covers the full upstream LLM_Workbench source and generic templates, not only the newest Blueprint section. Downstream project Workbenches get it only through their own explicit update path; an upstream release alone does not change them."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-19, V3-19A, V3-19B, U313-8, BPR-7 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "V3-19 update workbench/specs/S-021-portable-workbench-v3/SPEC.md: Records the baseline repairs (S-011, S-014, PR #42, red catalog test) as prerequisites the v3 runway must clear first. | V3-19 update workbench/specs/S-014-workbench-release-candidate/SPEC.md: Reconciles its current state to live refs while its append-only evidence rows stay unchanged. | V3-19A update workbench/specs/S-011-agent-skills-adoption/SPEC.md: Marks its status superseded for skill ownership, distribution and completion only; historical proof stays intact. | V3-19A create workbench/specs/S-021-portable-workbench-v3/SPEC.md: New linked capability that names 'Supersedes: S-011 skill ownership/distribution/completion contract only'. | V3-19B update workbench/specs/S-014-workbench-release-candidate/SPEC.md: Reconciles current state, blocker and ticket status to the exact integration refs; release work waits until the S-021 v3 candidate reaches integration. | U313-8 update workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (append-only evidence, correcting row): One row names the false claim, every completed spec carrying it, and the disproving measurement; the completed specs' own rows stay unedited. | BPR-7 update workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md: Include the full ownership and routing repair in the v3.2.0 release scope. | BPR-7 create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Deliver the repair across root controls and their templates/ mirrors. | BPR-7 update AGENTS.md, RUNBOOK.md, LEXICON.md, BLUEPRINT.md and their templates/ mirrors: Agree on one ownership model and Context Map.",
+            "home": "workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/specs/S-014-workbench-release-candidate/SPEC.md; workbench/specs/S-011-agent-skills-adoption/SPEC.md; workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (append-only evidence, correcting row); workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md; AGENTS.md, RUNBOOK.md, LEXICON.md, BLUEPRINT.md and their templates/ mirrors",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:30.060Z",
+      "reason": "Ledger row V3-19 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-19",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:30.094Z",
+      "reason": "Ledger row V3-19A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-19A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:30.128Z",
+      "reason": "Ledger row V3-19B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-19B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:30.162Z",
+      "reason": "Ledger row U313-8 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "U313-8",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:30.196Z",
+      "reason": "Ledger row BPR-7 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-7",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:30.230Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

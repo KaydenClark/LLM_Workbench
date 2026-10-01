@@ -1,0 +1,170 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-003J",
+  "revision": 5,
+  "title": "How should extended guidebooks be routed and when is a broader library justified?",
+  "question": "How should extended guidebooks be routed and when is a broader library justified?",
+  "answer": "V3-23B: Root RUNBOOK.md remains the authoritative index; AGENTS.md may approve bounded subordinate guidebooks when a procedure genuinely needs one.\nV3-23C: Defer a general guidebook reorganization. This release updates the existing Genesis, Adoption, upgrade, skill, and Runbook instructions and adds only a task-sized guide when required for immediate usability. The owner later placed it in the backlog after v4.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-23B (locked); V3-23C (deferred, settled as later work). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "V3-23B update RUNBOOK.md and templates/RUNBOOK.md: Remains the authoritative procedure index. | V3-23B update LEXICON.md (Procedures route; Wiki article and guidebook row) and templates/LEXICON.md: A linked Wiki guidebook may hold an extended procedure; it cannot authorize work. | V3-23B update workbench/manifest.json (collections.guidebooks = workbench/wiki/guidebooks): Declares the guidebook collection. | V3-23B update AGENTS.md and templates/AGENTS.md: States that AGENTS.md may approve a bounded subordinate guidebook when a procedure genuinely needs one.",
+    "home": "RUNBOOK.md and templates/RUNBOOK.md; LEXICON.md (Procedures route; Wiki article and guidebook row) and templates/LEXICON.md; workbench/manifest.json (collections.guidebooks = workbench/wiki/guidebooks); AGENTS.md and templates/AGENTS.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [
+    "V3-23C (deferred, backlog after v4): which broad guidebook library should eventually exist is not settled; only task-sized guides are added for immediate usability."
+  ],
+  "sources": [
+    {
+      "id": "V3-23B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-23C",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "V3-23B",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-23B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-23C",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-23C (deferred) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should extended guidebooks be routed and when is a broader library justified?",
+    "question": "How should extended guidebooks be routed and when is a broader library justified?",
+    "sources": [
+      {
+        "id": "V3-23B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-23C",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:23.387Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:23.387Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 084 of the 2026-09-26 grouping (\"Stances and useful autonomy\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Runbook remains the procedure index; bounded guidebooks may support genuinely larger procedures. A broad library was deferred beyond the immediate release.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:23.408Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "V3-23B: Root RUNBOOK.md remains the authoritative index; AGENTS.md may approve bounded subordinate guidebooks when a procedure genuinely needs one.\nV3-23C: Defer a general guidebook reorganization. This release updates the existing Genesis, Adoption, upgrade, skill, and Runbook instructions and adds only a task-sized guide when required for immediate usability. The owner later placed it in the backlog after v4."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-23B (locked); V3-23C (deferred, settled as later work). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "V3-23B update RUNBOOK.md and templates/RUNBOOK.md: Remains the authoritative procedure index. | V3-23B update LEXICON.md (Procedures route; Wiki article and guidebook row) and templates/LEXICON.md: A linked Wiki guidebook may hold an extended procedure; it cannot authorize work. | V3-23B update workbench/manifest.json (collections.guidebooks = workbench/wiki/guidebooks): Declares the guidebook collection. | V3-23B update AGENTS.md and templates/AGENTS.md: States that AGENTS.md may approve a bounded subordinate guidebook when a procedure genuinely needs one.",
+            "home": "RUNBOOK.md and templates/RUNBOOK.md; LEXICON.md (Procedures route; Wiki article and guidebook row) and templates/LEXICON.md; workbench/manifest.json (collections.guidebooks = workbench/wiki/guidebooks); AGENTS.md and templates/AGENTS.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:23.429Z",
+      "reason": "Ledger row V3-23B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-23B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:23.453Z",
+      "reason": "Ledger row V3-23C (deferred) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-23C",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:23.477Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}

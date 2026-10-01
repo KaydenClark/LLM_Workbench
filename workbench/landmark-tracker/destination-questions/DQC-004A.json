@@ -1,0 +1,208 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-004A",
+  "revision": 6,
+  "title": "What must a worker prove before handing off a Task result?",
+  "question": "What must a worker prove before handing off a Task result?",
+  "answer": "WF-8: Tasks use red/green TDD, make relevant tests green, exercise what was built to confirm it works, and preserve proof before handoff. A separate context checks the assembled Spec. Integration is the assembled surface for owner Human QA, which can return work to Align before owner-only main promotion.\nWF-8B: No per-Task independent-review ceremony just because it is a Task. Ordinary verification and proof are mandatory: red/green TDD, relevant tests green, exercising what was built, and preserved proof before handoff.\nSCR-1: No separate-context QA or approval gate on a Task. A Task is a small one-time instruction: do the bounded step, update proof that Actuality moved closer to the destination, report back, end. The Worker self-checks that its claims are valid and backed by proof before hand-back; destination-level QA waits until the Spec is assembled.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-8, WF-8B, SCR-1 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WF-8 update BLUEPRINT.md: States the QA/Verify duty at Task, Spec and integration altitudes. | WF-8 update workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md: Spec QA gate and corrective-Task return path at the assembled-Spec level. | WF-8 update AGENTS.md (Engineering And Verification, Work Selection) and templates/AGENTS.md: Task proof duties and assembled-Spec review replace the Spec-embedded ticket procedure; owned by S-00P TK-002 and TK-005. | WF-8 update RUNBOOK.md and templates/RUNBOOK.md: Procedures for Task verification, assembled-Spec review and Human QA; owned by S-00P TK-003 and TK-005. | WF-8B update AGENTS.md (Engineering And Verification, integration review gate) and templates/AGENTS.md: Task proof is mandatory; separate-context review is required for the assembled Spec, not each Task; owned by S-00P TK-002 and TK-005. | SCR-1 update BLUEPRINT.md (Desired Lifecycle): The labeled interpretation states that a Task has no review or approval gate and its Worker self-checks; the verbatim source map keeps its 'Review Task' step, read as the Worker's self-check and hand-back. | SCR-1 update workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md: Records no Task gate as an accepted decision. | SCR-1 update AGENTS.md and RUNBOOK.md (integration review gate, Human QA, lifecycle) plus templates mirrors: Controls stop describing per-Task review (S-00P TK-002, TK-003, TK-005).",
+    "home": "BLUEPRINT.md; workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md; AGENTS.md (Engineering And Verification, Work Selection) and templates/AGENTS.md; RUNBOOK.md and templates/RUNBOOK.md; AGENTS.md (Engineering And Verification, integration review gate) and templates/AGENTS.md; BLUEPRINT.md (Desired Lifecycle); workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md; AGENTS.md and RUNBOOK.md (integration review gate, Human QA, lifecycle) plus templates mirrors",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "WF-8",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-8B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "SCR-1",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WF-8",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-8 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-8B",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-8B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "SCR-1",
+      "revision": "56b459da",
+      "reason": "Ledger row SCR-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What must a worker prove before handing off a Task result?",
+    "question": "What must a worker prove before handing off a Task result?",
+    "sources": [
+      {
+        "id": "WF-8",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-8B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "SCR-1",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:25.463Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:25.463Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 101 of the 2026-09-26 grouping (\"Verification, QA and correction\"), with SCR-1 added because they postdate the draft and carry the same destination, grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Use red/green TDD, relevant checks, an exercise of the built behavior and preserved evidence. Task status alone is insufficient.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:25.488Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WF-8: Tasks use red/green TDD, make relevant tests green, exercise what was built to confirm it works, and preserve proof before handoff. A separate context checks the assembled Spec. Integration is the assembled surface for owner Human QA, which can return work to Align before owner-only main promotion.\nWF-8B: No per-Task independent-review ceremony just because it is a Task. Ordinary verification and proof are mandatory: red/green TDD, relevant tests green, exercising what was built, and preserved proof before handoff.\nSCR-1: No separate-context QA or approval gate on a Task. A Task is a small one-time instruction: do the bounded step, update proof that Actuality moved closer to the destination, report back, end. The Worker self-checks that its claims are valid and backed by proof before hand-back; destination-level QA waits until the Spec is assembled."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-8, WF-8B, SCR-1 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WF-8 update BLUEPRINT.md: States the QA/Verify duty at Task, Spec and integration altitudes. | WF-8 update workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md: Spec QA gate and corrective-Task return path at the assembled-Spec level. | WF-8 update AGENTS.md (Engineering And Verification, Work Selection) and templates/AGENTS.md: Task proof duties and assembled-Spec review replace the Spec-embedded ticket procedure; owned by S-00P TK-002 and TK-005. | WF-8 update RUNBOOK.md and templates/RUNBOOK.md: Procedures for Task verification, assembled-Spec review and Human QA; owned by S-00P TK-003 and TK-005. | WF-8B update AGENTS.md (Engineering And Verification, integration review gate) and templates/AGENTS.md: Task proof is mandatory; separate-context review is required for the assembled Spec, not each Task; owned by S-00P TK-002 and TK-005. | SCR-1 update BLUEPRINT.md (Desired Lifecycle): The labeled interpretation states that a Task has no review or approval gate and its Worker self-checks; the verbatim source map keeps its 'Review Task' step, read as the Worker's self-check and hand-back. | SCR-1 update workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md: Records no Task gate as an accepted decision. | SCR-1 update AGENTS.md and RUNBOOK.md (integration review gate, Human QA, lifecycle) plus templates mirrors: Controls stop describing per-Task review (S-00P TK-002, TK-003, TK-005).",
+            "home": "BLUEPRINT.md; workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md; AGENTS.md (Engineering And Verification, Work Selection) and templates/AGENTS.md; RUNBOOK.md and templates/RUNBOOK.md; AGENTS.md (Engineering And Verification, integration review gate) and templates/AGENTS.md; BLUEPRINT.md (Desired Lifecycle); workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md; AGENTS.md and RUNBOOK.md (integration review gate, Human QA, lifecycle) plus templates mirrors",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:25.513Z",
+      "reason": "Ledger row WF-8 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-8",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:25.540Z",
+      "reason": "Ledger row WF-8B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-8B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:25.570Z",
+      "reason": "Ledger row SCR-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "SCR-1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:25.598Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    }
+  ]
+}
