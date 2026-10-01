@@ -2719,7 +2719,7 @@ function recoverTaskCollision(rootDir, specId, taskId, folder, options) {
       content = appendEvidence(content, `| ${today()} | ${escapeCell(specId + '/' + taskId)} | Collision identity recovered to ${options.replacement} | ${escapeCell(provenance)} | ${escapeCell(options.reason)} | Identity repair only; no review or owner approval transferred. |`);
     }
     if (content !== original) {
-      if (!file.startsWith(oldDir + path.sep) && !git('ls-files', '--', relative(file))) fail(`external rewrite source must be tracked: ${relative(file)}`);
+      if (!file.startsWith(oldDir + path.sep) && !git('--literal-pathspecs', 'ls-files', '--', relative(file))) fail(`external rewrite source must be tracked: ${relative(file)}`);
       assertSafeWritePath(root, file); assertSafeWritePath(root, destination); writes.set(destination, content);
     }
   }
@@ -2747,7 +2747,7 @@ function recoverTaskCollision(rootDir, specId, taskId, folder, options) {
     originals.set(file, fs.existsSync(file) ? { bytes: fs.readFileSync(file), mode: fs.statSync(file).mode & 0o777 } : null);
   }
   for (const file of moving) {
-    if (!git('ls-files', '--error-unmatch', '--', relative(file))) fail('moving files must be tracked');
+    if (!git('--literal-pathspecs', 'ls-files', '--', relative(file))) fail(`moving files must be tracked: ${relative(file)}`);
   }
   const indexPath = path.resolve(root, git('rev-parse', '--git-path', 'index'));
   const indexStat = fs.lstatSync(indexPath);
