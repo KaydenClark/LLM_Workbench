@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000D",
-  "revision": 10,
+  "revision": 12,
   "title": "GitHub-backed room binding and fresh-host continuation",
   "question": "How does a room bind to its GitHub coordination repository and artifact identities, and how does a fresh host recover an assignment without the originating chat?",
   "answer": "A room binds to its GitHub coordination repository and artifact identities (legacy Spec-qualified Tasks, aliases, immutable source) through supported access, with credentials kept untracked; managed adapter and skills are delivered by setup and upgrade and proved in a freshly installed room. A fresh host recovers packet, objective, scope, branch, exact SHA, proof, gap and next action from the Issue and repository owners alone, without the originating chat. Identity reuses S-01W.",
@@ -125,8 +125,8 @@
     },
     {
       "key": "C4",
-      "text": "The candidate provides a read-only committed-manifest binding inspector; trusted access and native artifact/Issue correspondence remain open.",
-      "revision": 10,
+      "text": "Corrected candidate checks isolate ambient Git environment and refuse locally missing promised objects without transport or Git metadata writes; full final-candidate review, trusted access and native artifact/Issue correspondence remain open.",
+      "revision": 12,
       "evidence": [
         {
           "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8",
@@ -139,12 +139,20 @@
         {
           "ref": "workbench/docs/github-coordination.md@de53544083201d66e76c7f56a95b975911ec8ed5",
           "revision": 10
+        },
+        {
+          "ref": "workbench/tools/github-coordination.mjs@f4345681f59301539dd05a957c001818d77dde4d",
+          "revision": 12
         }
       ],
       "affected": [
         {
           "revision": 9,
           "assessment": "The read-only binding mechanism now exists on a candidate; authenticated access and artifact mapping remain unplanned."
+        },
+        {
+          "revision": 11,
+          "assessment": "Read-only source claims need Git environment isolation and no-lazy-fetch proof, not only dirty-checkout checks."
         }
       ]
     }
@@ -413,6 +421,40 @@
           "field": "claim-evidence",
           "claim": "C4",
           "to": "workbench/docs/github-coordination.md@de53544083201d66e76c7f56a95b975911ec8ed5"
+        }
+      ]
+    },
+    {
+      "revision": 11,
+      "at": "2026-10-01T08:39:06.115Z",
+      "reason": "Preserve independently reproduced inspector safety failures and corrective understanding",
+      "changes": [
+        {
+          "field": "correction",
+          "to": "The initial inspector source and7-test installed proof did not establish the complete read-only boundary: exact394 review reproduced ambient Git repository substitution and promisor fetch/object writes. Native corrective Tasks preserve the original Task and failure."
+        },
+        {
+          "field": "claim-affected",
+          "claim": "C4",
+          "assessment": "Read-only source claims need Git environment isolation and no-lazy-fetch proof, not only dirty-checkout checks."
+        }
+      ]
+    },
+    {
+      "revision": 12,
+      "at": "2026-10-01T08:39:06.199Z",
+      "reason": "Re-evidence the corrected committed inspector without implying live Issue access or delivery",
+      "changes": [
+        {
+          "field": "claim",
+          "claim": "C4",
+          "from": "The candidate provides a read-only committed-manifest binding inspector; trusted access and native artifact/Issue correspondence remain open.",
+          "to": "Corrected candidate checks isolate ambient Git environment and refuse locally missing promised objects without transport or Git metadata writes; full final-candidate review, trusted access and native artifact/Issue correspondence remain open."
+        },
+        {
+          "field": "claim-evidence",
+          "claim": "C4",
+          "to": "workbench/tools/github-coordination.mjs@f4345681f59301539dd05a957c001818d77dde4d"
         }
       ]
     }

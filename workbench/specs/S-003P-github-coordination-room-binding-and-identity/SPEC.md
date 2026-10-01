@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Resolve an explicit GitHub coordination repository and room-scoped artifact identities from immutable repository sources.
 **Blockers:** No prerequisite blocks the first read-only binding slice. Native Issue mapping awaits the Issue graph seam. Live actor trust belongs to the assignment owner.
-**Latest event:** TK-004H closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** Native TK-004F/G/H corrections self-checked and closed, preserving TK-004A and exact394 FAIL. Full assembled candidate and fresh independent review remain.
+**Next gate:** Run the full frozen-candidate suite and obtain independent Task-PR integration review before containment. Later artifact-identity/Issue slices remain uncut; full Spec and owner gates remain open.
 
 > **Citation anchors.** pre=`282dc043ab7dad92826a6d5447369238c35df0a3` post=`282dc043ab7dad92826a6d5447369238c35df0a3`.
 

@@ -2437,8 +2437,8 @@
         },
         {
           "key": "C4",
-          "text": "The candidate provides a read-only committed-manifest binding inspector; trusted access and native artifact/Issue correspondence remain open.",
-          "revision": 10,
+          "text": "Corrected candidate checks isolate ambient Git environment and refuse locally missing promised objects without transport or Git metadata writes; full final-candidate review, trusted access and native artifact/Issue correspondence remain open.",
+          "revision": 12,
           "status": "supported",
           "evidence": [
             {
@@ -2452,6 +2452,10 @@
             {
               "ref": "workbench/docs/github-coordination.md@de53544083201d66e76c7f56a95b975911ec8ed5",
               "revision": 10
+            },
+            {
+              "ref": "workbench/tools/github-coordination.mjs@f4345681f59301539dd05a957c001818d77dde4d",
+              "revision": 12
             }
           ],
           "affectedBy": [
@@ -2463,6 +2467,14 @@
               ],
               "reason": "First implementation slice updates the prior gap while preserving concept origin, prior evidence and no live-access claim.",
               "assessment": "The read-only binding mechanism now exists on a candidate; authenticated access and artifact mapping remain unplanned."
+            },
+            {
+              "revision": 11,
+              "changed": [
+                "correction"
+              ],
+              "reason": "Preserve independently reproduced inspector safety failures and corrective understanding",
+              "assessment": "Read-only source claims need Git environment isolation and no-lazy-fetch proof, not only dirty-checkout checks."
             }
           ]
         }
@@ -2528,9 +2540,14 @@
           "revision": 9,
           "text": "The initial statement that binding is wholly unplanned is historical. Candidate de535440 implements a metadata-only committed-manifest binding inspector, with source and receipt-backed local installed tests. Trusted authenticated access, native artifact mapping and cross-host operation remain open.",
           "reason": "First implementation slice updates the prior gap while preserving concept origin, prior evidence and no live-access claim."
+        },
+        {
+          "revision": 11,
+          "text": "The initial inspector source and7-test installed proof did not establish the complete read-only boundary: exact394 review reproduced ambient Git repository substitution and promisor fetch/object writes. Native corrective Tasks preserve the original Task and failure.",
+          "reason": "Preserve independently reproduced inspector safety failures and corrective understanding"
         }
       ],
-      "revision": 10,
+      "revision": 12,
       "history": [
         {
           "revision": 1,
@@ -2767,6 +2784,40 @@
               "field": "claim-evidence",
               "claim": "C4",
               "to": "workbench/docs/github-coordination.md@de53544083201d66e76c7f56a95b975911ec8ed5"
+            }
+          ]
+        },
+        {
+          "revision": 11,
+          "at": "2026-10-01T08:39:06.115Z",
+          "reason": "Preserve independently reproduced inspector safety failures and corrective understanding",
+          "changes": [
+            {
+              "field": "correction",
+              "to": "The initial inspector source and7-test installed proof did not establish the complete read-only boundary: exact394 review reproduced ambient Git repository substitution and promisor fetch/object writes. Native corrective Tasks preserve the original Task and failure."
+            },
+            {
+              "field": "claim-affected",
+              "claim": "C4",
+              "assessment": "Read-only source claims need Git environment isolation and no-lazy-fetch proof, not only dirty-checkout checks."
+            }
+          ]
+        },
+        {
+          "revision": 12,
+          "at": "2026-10-01T08:39:06.199Z",
+          "reason": "Re-evidence the corrected committed inspector without implying live Issue access or delivery",
+          "changes": [
+            {
+              "field": "claim",
+              "claim": "C4",
+              "from": "The candidate provides a read-only committed-manifest binding inspector; trusted access and native artifact/Issue correspondence remain open.",
+              "to": "Corrected candidate checks isolate ambient Git environment and refuse locally missing promised objects without transport or Git metadata writes; full final-candidate review, trusted access and native artifact/Issue correspondence remain open."
+            },
+            {
+              "field": "claim-evidence",
+              "claim": "C4",
+              "to": "workbench/tools/github-coordination.mjs@f4345681f59301539dd05a957c001818d77dde4d"
             }
           ]
         }
