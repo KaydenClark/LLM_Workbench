@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Resolve an explicit GitHub coordination repository and room-scoped artifact identities from immutable repository sources.
 **Blockers:** No prerequisite blocks the first read-only binding slice. Native Issue mapping awaits the Issue graph seam. Live actor trust belongs to the assignment owner.
-**Latest event:** Native TK-004F/G/H corrections self-checked and closed, preserving TK-004A and exact394 FAIL. Full assembled candidate and fresh independent review remain.
-**Next gate:** Run the full frozen-candidate suite and obtain independent Task-PR integration review before containment. Later artifact-identity/Issue slices remain uncut; full Spec and owner gates remain open.
+**Latest event:** Exact5e inspector corrections pass54/54, while independent review identifies a cross-Spec TK-004F collision. Director disposition retains S-00I identity and assigns a narrow native recovery Task.
+**Next gate:** Implement and independently review TK-004K guarded move-task recovery before applying the reserved replacement TK-004I, then independently review the actual repaired assembly before integration. Later artifact-identity/Issue slices and owner gates remain open.
 
 > **Citation anchors.** pre=`282dc043ab7dad92826a6d5447369238c35df0a3` post=`282dc043ab7dad92826a6d5447369238c35df0a3`.
 
@@ -89,6 +89,9 @@ This Spec owns capability requirements, open gates and proof. Shared operational
 
 | 2026-10-01 | TK-004F/G/H | Expand final verification to the full documented union | Producer historical51-command runs covered AGENTS48 plus inspector, Tracker test and rebuild. RUNBOOK additionally requires team-coordination, team-coordination-demo and socket-contract checks. Final assembled verification will run all54 unique commands; earlier named command results remain preserved and are not a full RUNBOOK-union claim. | Verification scope clarified without weakening gates. | Full54 frozen-candidate results and independent exact-candidate review pending. |
 | 2026-10-01 | coordination | Director collision disposition and replacement reservation | Earlier S-00I/TK-004F claim7a51c53a528ff4dba407042a4de860bc66bb2d66 retains its identity. TK-004I is centrally reserved solely for later S-003P/TK-004F recovery from exact5e8803f673898dd0eb716446fba5f61881d6a106, with qualified immutable provenance and no collisional Former ID alias. TK-004J is reserved for the narrow native recovery mechanism implementation. | Existing first-published rows, original Task and receipts remain preserved. | Native dry-run/refusal/rollback proof and independent mechanism plus actual repair review before integration, no identity mutation yet. |
+| 2026-10-01 | review | Review verdict: fail at 5e8803f673898dd0eb716446fba5f61881d6a106 [60f5a7e1490b] #2 | P1: Repair later S-003P/TK-004F native identity collision with earlier published S-00I/TK-004F through a guarded move-task transaction preserving immutable history and Receipt bytes. | codex-github-binding self-check, corroborating independent exact5e review and Director collision disposition, not independent approval | 1 |
+
+| 2026-10-01 | coordination | Preserve reservation authoring correction at f8051a8ed93c90e549ee1fa1b51e3b0d4835836c | Publishing J alongside I consumed J in native reference inventory. Director retained that published row and centrally reserved K after fresh origin inventory. Native exact5e FAIL allocated only TK-004K, with no allocator override. | Independent exact5e review confirms all three earlier defects corrected and54/54 PASS, with collision alone blocking integration. | Mechanism review precedes actual F-to-I repair; no identity mutation or approval transfer yet. |
 
 ## Completion Result
 
