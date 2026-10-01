@@ -9,7 +9,7 @@
 **Catalog description:** Perform one assigned Task within its declared scope and return a verified, recoverable result.
 **Blockers:** none for staged implementation; managed installation awaits release bundle identity.
 **Latest event:** TK-002Z claimed by codex-s002e-worker.
-**Next gate:** Close TK-002Z with verification and documentation proof.
+**Next gate:** Verify and publish TK-002Z for separate immutable-candidate review; managed installation remains gated.
 
 > **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`b00a2e338436ef7b281b0cc53e74f891af32f18c`.
 
@@ -40,6 +40,18 @@ At the pre anchor, LEXICON.md defines Director, Dispatcher and Worker; BLUEPRINT
 - Role scope composes with assigned stance; neither grants authority beyond the request and project controls. Reviewer/Auditor stance adoption alone never makes a prior participant independent.
 - GPT_OS Captain, Planner and Engineer informed the model as examples, not copied policy. Do not import model allocation, scheduling, permanent departments or an external repository prerequisite.
 - Reuse existing Reviewer and Auditor capability owners. Preserve existing Tasks and proof; cut no new execution Task in this planning change.
+
+### Authorized staged boundary (2026-10-01)
+
+The overnight assignment activates only a Spec-local candidate, focused test,
+Task evidence and [individual Wiki explanation](../../wiki/skill-worker-role.md).
+Load [the staged Worker entry](candidate/worker/SKILL.md) explicitly for evaluation.
+It is not an installed or managed-discovery entry. No manifest, discovery adapter,
+root control, layout, frozen v3.2.1 or Factory changes are authorized here.
+Templates need no mirror for this staged artifact: no portable root rule changes.
+The coordinator reserves the MEMORY index hunk for serial assembly. Source tests
+cannot satisfy installed-behavior acceptance. Those full-capability boxes remain
+open while the bounded Task can produce a reviewable candidate.
 
 ## Non-Goals
 

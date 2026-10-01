@@ -26,3 +26,9 @@ Stop at immutable candidate ready for separate independent review; no self-appro
 - Exercise an actual configured agent on an assigned branch with red/green proof,
   conflicting-writer and out-of-scope refusals, exact output/tests/docs/gaps.
 - Record verification and all installation/publication limits truthfully.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | codex/s002e-worker-candidate | 648e00f2bf66e15073ecce85c6b87be85fb5b29f | none | 3 | Source contract red: missing candidate ENOENT; green: node tools/test-worker-role.mjs; Wiki validation passed. Full suite and configured-session-agent scenario running. | Staged Worker entry and skill-worker-role.md; MEMORY router reserved for coordinator. | Independent review; managed bundle identity/install; full verification pending. gh API Forbidden; standalone codex app-server read-only initialization failed. | 426f869ef5519e37d285388f4dd7f00c282f4e0aa663d90f8d6b7574583caafd |
