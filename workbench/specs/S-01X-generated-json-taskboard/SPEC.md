@@ -259,6 +259,15 @@ Expanded qualified-dependency controls follow the existing resolver's exact
 stored spelling and do not widen identity semantics. Final whole51 results
 must accompany the immutable candidate; earlier per-command reruns are not
 represented as one whole-suite PASS. Independent review remains pending.
+Independent review of `53935612` failed with two P2 findings despite its
+51-command and 57-group passes: duplicate Status fields bypassed prospective
+activation validation, and a Spec-only delivered blocker depended on unrelated
+Task token discovery. Public red `fc41f477` preserves both failures (57/59).
+TK-004N corrects these under the coordinator's narrow release: reject ambiguous
+Status and require parsed active state before writes; discover Spec blocker
+tokens through the existing delivered resolver. Focused correction proof is
+59/59; final current-base whole-suite proof and separate review follow.
+
 Default Markdown/CATALOG behavior, preview protections and all prior failed
 review evidence remain. Root/template rollout and direct Task homes remain
 outside this slice; no whole-Spec acceptance is checked.

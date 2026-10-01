@@ -671,7 +671,12 @@ export function convertSpecSlices(rootDir, id, options = {}) {
     throw new Error(`${id} is ${spec.status}, not active; only an active Spec is converted and a completed Spec's historical table is never rewritten${route}`);
   }
   if (activating) {
-    parseSpecPacket(updateFields(spec.content, { Status: 'active' }), spec.filePath, root, { recordBacked: spec.recordBacked });
+    // Updating the first field must not leave a later parsed Status authoritative.
+    const statusFields = [...spec.content.matchAll(/^\*\*([^*]+):\*\*\s*(.+)$/gm)]
+      .filter(match => match[1].trim() === 'Status');
+    if (statusFields.length !== 1) throw new Error(`${id} has ambiguous Status fields; activation writes nothing`);
+    const prospective = parseSpecPacket(updateFields(spec.content, { Status: 'active' }), spec.filePath, root, { recordBacked: spec.recordBacked });
+    if (prospective.status !== 'active') throw new Error(`${id} prospective activation is not active; activation writes nothing`);
   }
   const specDir = path.dirname(spec.filePath);
   const tasksDir = path.join(specDir, 'tasks');
@@ -1576,7 +1581,7 @@ function satisfiedIds(spec, completed) {
 //     closure-capture transition contract; `reviewedDelivery` below).
 // Any other qualifier is never added, so it fails closed as unmet; doctor
 // names it (`unknown-blocker-qualifier`). T0 is evaluated only for a Spec
-// some slice actually names with `:delivered`, so a room that never uses the
+// a Spec or slice actually names with `:delivered`, so a room that never uses the
 // token pays nothing for it. Resolution only reads: working-tree records,
 // local Git objects and the local declared integration ref. It never writes,
 // fetches or moves a ref; fetching before relying on it is procedure.
@@ -1590,6 +1595,7 @@ function satisfiedBlockers(specs) {
   const wanted = new Set();
   for (const spec of specs) {
     const tokens = [
+      ...splitBlockers(spec.blockers),
       ...spec.rows.filter((row) => row.status !== 'done').flatMap((row) => splitBlockers(row.blockers)),
       ...spec.records.filter((task) => taskStatus(task) !== 'done').flatMap((task) => task.blockers)
     ];
