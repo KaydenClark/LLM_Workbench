@@ -12,15 +12,23 @@
     "Verified"
   ],
   "workbench": {
-    "items": 5,
-    "denominator": 5,
+    "items": 13,
+    "denominator": 13,
     "status": "incomplete",
     "counted": [
       "dqc:DQC-000A",
       "dqc:DQC-000B",
       "dqc:DQC-000C",
       "dqc:DQC-000D",
-      "dqc:DQC-000E"
+      "dqc:DQC-000E",
+      "spec:S-01X",
+      "spec:S-003P",
+      "spec:S-003Q",
+      "spec:S-003R",
+      "spec:S-003S",
+      "spec:S-003T",
+      "spec:S-003U",
+      "spec:S-003V"
     ],
     "numerators": {
       "Idea": 0,
@@ -34,8 +42,8 @@
     },
     "distribution": {
       "Idea": 0,
-      "Aligning": 17,
-      "Confirmed": 63,
+      "Aligning": 6.538462,
+      "Confirmed": 24.230769,
       "Mapped": 0,
       "Planned": 0,
       "Journey": 0,
@@ -43,7 +51,15 @@
       "Verified": 0
     },
     "unassessed": [
-      "dqc:DQC-000A"
+      "dqc:DQC-000A",
+      "spec:S-01X",
+      "spec:S-003P",
+      "spec:S-003Q",
+      "spec:S-003R",
+      "spec:S-003S",
+      "spec:S-003T",
+      "spec:S-003U",
+      "spec:S-003V"
     ],
     "unknown": [],
     "invalid": [],
@@ -72,6 +88,40 @@
           "Idea": 0,
           "Aligning": 17,
           "Confirmed": 63,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        }
+      },
+      "spec": {
+        "items": 8,
+        "status": "incomplete",
+        "counted": [
+          "spec:S-01X",
+          "spec:S-003P",
+          "spec:S-003Q",
+          "spec:S-003R",
+          "spec:S-003S",
+          "spec:S-003T",
+          "spec:S-003U",
+          "spec:S-003V"
+        ],
+        "numerators": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "distribution": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
           "Mapped": 0,
           "Planned": 0,
           "Journey": 0,
@@ -159,9 +209,105 @@
         "revision": 4,
         "holder": "DQC-000E",
         "itemRevision": null
+      },
+      {
+        "key": "spec:S-01X",
+        "type": "spec",
+        "id": "S-01X",
+        "state": "unassessed",
+        "contributions": null,
+        "basis": null,
+        "evidence": [],
+        "revision": null,
+        "holder": null,
+        "itemRevision": "9f5bd5ab"
+      },
+      {
+        "key": "spec:S-003P",
+        "type": "spec",
+        "id": "S-003P",
+        "state": "unassessed",
+        "contributions": null,
+        "basis": null,
+        "evidence": [],
+        "revision": null,
+        "holder": null,
+        "itemRevision": "9f5bd5ab"
+      },
+      {
+        "key": "spec:S-003Q",
+        "type": "spec",
+        "id": "S-003Q",
+        "state": "unassessed",
+        "contributions": null,
+        "basis": null,
+        "evidence": [],
+        "revision": null,
+        "holder": null,
+        "itemRevision": "9f5bd5ab"
+      },
+      {
+        "key": "spec:S-003R",
+        "type": "spec",
+        "id": "S-003R",
+        "state": "unassessed",
+        "contributions": null,
+        "basis": null,
+        "evidence": [],
+        "revision": null,
+        "holder": null,
+        "itemRevision": "9f5bd5ab"
+      },
+      {
+        "key": "spec:S-003S",
+        "type": "spec",
+        "id": "S-003S",
+        "state": "unassessed",
+        "contributions": null,
+        "basis": null,
+        "evidence": [],
+        "revision": null,
+        "holder": null,
+        "itemRevision": "9f5bd5ab"
+      },
+      {
+        "key": "spec:S-003T",
+        "type": "spec",
+        "id": "S-003T",
+        "state": "unassessed",
+        "contributions": null,
+        "basis": null,
+        "evidence": [],
+        "revision": null,
+        "holder": null,
+        "itemRevision": "9f5bd5ab"
+      },
+      {
+        "key": "spec:S-003U",
+        "type": "spec",
+        "id": "S-003U",
+        "state": "unassessed",
+        "contributions": null,
+        "basis": null,
+        "evidence": [],
+        "revision": null,
+        "holder": null,
+        "itemRevision": "9f5bd5ab"
+      },
+      {
+        "key": "spec:S-003V",
+        "type": "spec",
+        "id": "S-003V",
+        "state": "unassessed",
+        "contributions": null,
+        "basis": null,
+        "evidence": [],
+        "revision": null,
+        "holder": null,
+        "itemRevision": "9f5bd5ab"
       }
     ],
-    "unassessedPercent": 20
+    "unassessedPercent": 69.230769
   },
   "landmarks": [
     {
@@ -176,14 +322,22 @@
         "DQC-000E"
       ],
       "aggregate": {
-        "items": 4,
-        "denominator": 4,
-        "status": "complete",
+        "items": 12,
+        "denominator": 12,
+        "status": "incomplete",
         "counted": [
           "dqc:DQC-000B",
           "dqc:DQC-000C",
           "dqc:DQC-000D",
-          "dqc:DQC-000E"
+          "dqc:DQC-000E",
+          "spec:S-01X",
+          "spec:S-003P",
+          "spec:S-003Q",
+          "spec:S-003R",
+          "spec:S-003S",
+          "spec:S-003T",
+          "spec:S-003U",
+          "spec:S-003V"
         ],
         "numerators": {
           "Idea": 0,
@@ -197,15 +351,24 @@
         },
         "distribution": {
           "Idea": 0,
-          "Aligning": 21.25,
-          "Confirmed": 78.75,
+          "Aligning": 7.083333,
+          "Confirmed": 26.25,
           "Mapped": 0,
           "Planned": 0,
           "Journey": 0,
           "Review": 0,
           "Verified": 0
         },
-        "unassessed": [],
+        "unassessed": [
+          "spec:S-01X",
+          "spec:S-003P",
+          "spec:S-003Q",
+          "spec:S-003R",
+          "spec:S-003S",
+          "spec:S-003T",
+          "spec:S-003U",
+          "spec:S-003V"
+        ],
         "unknown": [],
         "invalid": [],
         "bySourceType": {
@@ -232,6 +395,40 @@
               "Idea": 0,
               "Aligning": 21.25,
               "Confirmed": 78.75,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            }
+          },
+          "spec": {
+            "items": 8,
+            "status": "incomplete",
+            "counted": [
+              "spec:S-01X",
+              "spec:S-003P",
+              "spec:S-003Q",
+              "spec:S-003R",
+              "spec:S-003S",
+              "spec:S-003T",
+              "spec:S-003U",
+              "spec:S-003V"
+            ],
+            "numerators": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            },
+            "distribution": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
               "Mapped": 0,
               "Planned": 0,
               "Journey": 0,
@@ -307,8 +504,105 @@
             "revision": 4,
             "holder": "DQC-000E",
             "itemRevision": null
+          },
+          {
+            "key": "spec:S-01X",
+            "type": "spec",
+            "id": "S-01X",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": null,
+            "itemRevision": "9f5bd5ab"
+          },
+          {
+            "key": "spec:S-003P",
+            "type": "spec",
+            "id": "S-003P",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": null,
+            "itemRevision": "9f5bd5ab"
+          },
+          {
+            "key": "spec:S-003Q",
+            "type": "spec",
+            "id": "S-003Q",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": null,
+            "itemRevision": "9f5bd5ab"
+          },
+          {
+            "key": "spec:S-003R",
+            "type": "spec",
+            "id": "S-003R",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": null,
+            "itemRevision": "9f5bd5ab"
+          },
+          {
+            "key": "spec:S-003S",
+            "type": "spec",
+            "id": "S-003S",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": null,
+            "itemRevision": "9f5bd5ab"
+          },
+          {
+            "key": "spec:S-003T",
+            "type": "spec",
+            "id": "S-003T",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": null,
+            "itemRevision": "9f5bd5ab"
+          },
+          {
+            "key": "spec:S-003U",
+            "type": "spec",
+            "id": "S-003U",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": null,
+            "itemRevision": "9f5bd5ab"
+          },
+          {
+            "key": "spec:S-003V",
+            "type": "spec",
+            "id": "S-003V",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": null,
+            "itemRevision": "9f5bd5ab"
           }
-        ]
+        ],
+        "unassessedPercent": 66.666667
       },
       "origin": {
         "title": "GitHub Coordination",
@@ -382,6 +676,150 @@
       "state": "assessed",
       "holders": [],
       "relatedBy": []
+    },
+    {
+      "key": "spec:S-01X",
+      "type": "spec",
+      "id": "S-01X",
+      "resolution": "room",
+      "state": "unassessed",
+      "holders": [
+        {
+          "dqc": "DQC-000C",
+          "itemRevision": "9f5bd5ab",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "assessment": null
+        }
+      ],
+      "relatedBy": [
+        "DQC-000C"
+      ]
+    },
+    {
+      "key": "spec:S-003P",
+      "type": "spec",
+      "id": "S-003P",
+      "resolution": "room",
+      "state": "unassessed",
+      "holders": [
+        {
+          "dqc": "DQC-000D",
+          "itemRevision": "9f5bd5ab",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "assessment": null
+        }
+      ],
+      "relatedBy": [
+        "DQC-000D"
+      ]
+    },
+    {
+      "key": "spec:S-003Q",
+      "type": "spec",
+      "id": "S-003Q",
+      "resolution": "room",
+      "state": "unassessed",
+      "holders": [
+        {
+          "dqc": "DQC-000C",
+          "itemRevision": "9f5bd5ab",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "assessment": null
+        }
+      ],
+      "relatedBy": [
+        "DQC-000C"
+      ]
+    },
+    {
+      "key": "spec:S-003R",
+      "type": "spec",
+      "id": "S-003R",
+      "resolution": "room",
+      "state": "unassessed",
+      "holders": [
+        {
+          "dqc": "DQC-000B",
+          "itemRevision": "9f5bd5ab",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "assessment": null
+        }
+      ],
+      "relatedBy": [
+        "DQC-000B"
+      ]
+    },
+    {
+      "key": "spec:S-003S",
+      "type": "spec",
+      "id": "S-003S",
+      "resolution": "room",
+      "state": "unassessed",
+      "holders": [
+        {
+          "dqc": "DQC-000B",
+          "itemRevision": "9f5bd5ab",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "assessment": null
+        }
+      ],
+      "relatedBy": [
+        "DQC-000B"
+      ]
+    },
+    {
+      "key": "spec:S-003T",
+      "type": "spec",
+      "id": "S-003T",
+      "resolution": "room",
+      "state": "unassessed",
+      "holders": [
+        {
+          "dqc": "DQC-000D",
+          "itemRevision": "9f5bd5ab",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "assessment": null
+        }
+      ],
+      "relatedBy": [
+        "DQC-000D"
+      ]
+    },
+    {
+      "key": "spec:S-003U",
+      "type": "spec",
+      "id": "S-003U",
+      "resolution": "room",
+      "state": "unassessed",
+      "holders": [
+        {
+          "dqc": "DQC-000D",
+          "itemRevision": "9f5bd5ab",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "assessment": null
+        }
+      ],
+      "relatedBy": [
+        "DQC-000D"
+      ]
+    },
+    {
+      "key": "spec:S-003V",
+      "type": "spec",
+      "id": "S-003V",
+      "resolution": "room",
+      "state": "unassessed",
+      "holders": [
+        {
+          "dqc": "DQC-000B",
+          "itemRevision": "9f5bd5ab",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "assessment": null
+        }
+      ],
+      "relatedBy": [
+        "DQC-000B"
+      ]
     }
   ],
   "reconciliation": [],
@@ -628,11 +1066,14 @@
         "revision": 4
       },
       "distribution": {
-        "items": 1,
-        "denominator": 1,
-        "status": "complete",
+        "items": 4,
+        "denominator": 4,
+        "status": "incomplete",
         "counted": [
-          "dqc:DQC-000B"
+          "dqc:DQC-000B",
+          "spec:S-003R",
+          "spec:S-003S",
+          "spec:S-003V"
         ],
         "numerators": {
           "Idea": 0,
@@ -646,15 +1087,19 @@
         },
         "distribution": {
           "Idea": 0,
-          "Aligning": 20,
-          "Confirmed": 80,
+          "Aligning": 5,
+          "Confirmed": 20,
           "Mapped": 0,
           "Planned": 0,
           "Journey": 0,
           "Review": 0,
           "Verified": 0
         },
-        "unassessed": [],
+        "unassessed": [
+          "spec:S-003R",
+          "spec:S-003S",
+          "spec:S-003V"
+        ],
         "unknown": [],
         "invalid": [],
         "bySourceType": {
@@ -684,6 +1129,35 @@
               "Review": 0,
               "Verified": 0
             }
+          },
+          "spec": {
+            "items": 3,
+            "status": "incomplete",
+            "counted": [
+              "spec:S-003R",
+              "spec:S-003S",
+              "spec:S-003V"
+            ],
+            "numerators": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            },
+            "distribution": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            }
           }
         },
         "contributions": [
@@ -703,10 +1177,78 @@
             "revision": 4,
             "holder": "DQC-000B",
             "itemRevision": null
+          },
+          {
+            "key": "spec:S-003R",
+            "type": "spec",
+            "id": "S-003R",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": null,
+            "itemRevision": "9f5bd5ab"
+          },
+          {
+            "key": "spec:S-003S",
+            "type": "spec",
+            "id": "S-003S",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": null,
+            "itemRevision": "9f5bd5ab"
+          },
+          {
+            "key": "spec:S-003V",
+            "type": "spec",
+            "id": "S-003V",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": null,
+            "itemRevision": "9f5bd5ab"
           }
-        ]
+        ],
+        "unassessedPercent": 75
       },
-      "related": [],
+      "related": [
+        {
+          "type": "spec",
+          "id": "S-003R",
+          "key": "spec:S-003R",
+          "revision": "9f5bd5ab",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "resolution": "room",
+          "state": "unassessed",
+          "assessment": null
+        },
+        {
+          "type": "spec",
+          "id": "S-003S",
+          "key": "spec:S-003S",
+          "revision": "9f5bd5ab",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "resolution": "room",
+          "state": "unassessed",
+          "assessment": null
+        },
+        {
+          "type": "spec",
+          "id": "S-003V",
+          "key": "spec:S-003V",
+          "revision": "9f5bd5ab",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "resolution": "room",
+          "state": "unassessed",
+          "assessment": null
+        }
+      ],
       "relatedBy": [],
       "lineage": {
         "key": "dqc:DQC-000B",
@@ -714,7 +1256,29 @@
         "id": "DQC-000B",
         "resolution": "tracker",
         "state": "assessed",
-        "related": []
+        "related": [
+          {
+            "key": "spec:S-003R",
+            "type": "spec",
+            "id": "S-003R",
+            "resolution": "room",
+            "state": "unassessed"
+          },
+          {
+            "key": "spec:S-003S",
+            "type": "spec",
+            "id": "S-003S",
+            "resolution": "room",
+            "state": "unassessed"
+          },
+          {
+            "key": "spec:S-003V",
+            "type": "spec",
+            "id": "S-003V",
+            "resolution": "room",
+            "state": "unassessed"
+          }
+        ]
       },
       "claims": [
         {
@@ -843,7 +1407,7 @@
         "at": "2026-10-01T01:54:49.239Z"
       },
       "corrections": [],
-      "revision": 4,
+      "revision": 7,
       "history": [
         {
           "revision": 1,
@@ -964,6 +1528,54 @@
               "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
             }
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-01T05:56:08.029Z",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "changes": [
+            {
+              "field": "related",
+              "from": null,
+              "to": {
+                "type": "spec",
+                "id": "S-003R",
+                "revision": "9f5bd5ab"
+              }
+            }
+          ]
+        },
+        {
+          "revision": 6,
+          "at": "2026-10-01T05:56:08.126Z",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "changes": [
+            {
+              "field": "related",
+              "from": null,
+              "to": {
+                "type": "spec",
+                "id": "S-003S",
+                "revision": "9f5bd5ab"
+              }
+            }
+          ]
+        },
+        {
+          "revision": 7,
+          "at": "2026-10-01T05:56:08.205Z",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "changes": [
+            {
+              "field": "related",
+              "from": null,
+              "to": {
+                "type": "spec",
+                "id": "S-003V",
+                "revision": "9f5bd5ab"
+              }
+            }
+          ]
         }
       ]
     },
@@ -1005,11 +1617,13 @@
         "revision": 5
       },
       "distribution": {
-        "items": 1,
-        "denominator": 1,
-        "status": "complete",
+        "items": 3,
+        "denominator": 3,
+        "status": "incomplete",
         "counted": [
-          "dqc:DQC-000C"
+          "dqc:DQC-000C",
+          "spec:S-01X",
+          "spec:S-003Q"
         ],
         "numerators": {
           "Idea": 0,
@@ -1023,15 +1637,18 @@
         },
         "distribution": {
           "Idea": 0,
-          "Aligning": 40,
-          "Confirmed": 60,
+          "Aligning": 13.333333,
+          "Confirmed": 20,
           "Mapped": 0,
           "Planned": 0,
           "Journey": 0,
           "Review": 0,
           "Verified": 0
         },
-        "unassessed": [],
+        "unassessed": [
+          "spec:S-01X",
+          "spec:S-003Q"
+        ],
         "unknown": [],
         "invalid": [],
         "bySourceType": {
@@ -1061,6 +1678,34 @@
               "Review": 0,
               "Verified": 0
             }
+          },
+          "spec": {
+            "items": 2,
+            "status": "incomplete",
+            "counted": [
+              "spec:S-01X",
+              "spec:S-003Q"
+            ],
+            "numerators": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            },
+            "distribution": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            }
           }
         },
         "contributions": [
@@ -1080,10 +1725,56 @@
             "revision": 5,
             "holder": "DQC-000C",
             "itemRevision": null
+          },
+          {
+            "key": "spec:S-01X",
+            "type": "spec",
+            "id": "S-01X",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": null,
+            "itemRevision": "9f5bd5ab"
+          },
+          {
+            "key": "spec:S-003Q",
+            "type": "spec",
+            "id": "S-003Q",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": null,
+            "itemRevision": "9f5bd5ab"
           }
-        ]
+        ],
+        "unassessedPercent": 66.666667
       },
-      "related": [],
+      "related": [
+        {
+          "type": "spec",
+          "id": "S-003Q",
+          "key": "spec:S-003Q",
+          "revision": "9f5bd5ab",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "resolution": "room",
+          "state": "unassessed",
+          "assessment": null
+        },
+        {
+          "type": "spec",
+          "id": "S-01X",
+          "key": "spec:S-01X",
+          "revision": "9f5bd5ab",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "resolution": "room",
+          "state": "unassessed",
+          "assessment": null
+        }
+      ],
       "relatedBy": [],
       "lineage": {
         "key": "dqc:DQC-000C",
@@ -1091,7 +1782,22 @@
         "id": "DQC-000C",
         "resolution": "tracker",
         "state": "assessed",
-        "related": []
+        "related": [
+          {
+            "key": "spec:S-003Q",
+            "type": "spec",
+            "id": "S-003Q",
+            "resolution": "room",
+            "state": "unassessed"
+          },
+          {
+            "key": "spec:S-01X",
+            "type": "spec",
+            "id": "S-01X",
+            "resolution": "room",
+            "state": "unassessed"
+          }
+        ]
       },
       "claims": [
         {
@@ -1242,7 +1948,7 @@
           "reason": "Independent review of 9617819 found claim evidence that did not state the claimed requirements; append corrected evidence."
         }
       ],
-      "revision": 5,
+      "revision": 7,
       "history": [
         {
           "revision": 1,
@@ -1395,6 +2101,38 @@
               "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8"
             }
           ]
+        },
+        {
+          "revision": 6,
+          "at": "2026-10-01T05:56:08.285Z",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "changes": [
+            {
+              "field": "related",
+              "from": null,
+              "to": {
+                "type": "spec",
+                "id": "S-003Q",
+                "revision": "9f5bd5ab"
+              }
+            }
+          ]
+        },
+        {
+          "revision": 7,
+          "at": "2026-10-01T05:56:08.364Z",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "changes": [
+            {
+              "field": "related",
+              "from": null,
+              "to": {
+                "type": "spec",
+                "id": "S-01X",
+                "revision": "9f5bd5ab"
+              }
+            }
+          ]
         }
       ]
     },
@@ -1415,8 +2153,8 @@
       },
       "result": null,
       "uncertainty": [
-        "The supported binding and access route for rooms is unplanned; no GitHub adapter exists at 065a7ce.",
-        "Installed-room and cross-host proof (Claude cloud, Codex cloud, local) has not been run."
+        "Installed-room and cross-host proof (Claude cloud, Codex cloud, local) has not been run.",
+        "Read-only manifest binding is implemented on candidate de535440; trusted access, artifact/Issue correspondence and cross-host capability are still open."
       ],
       "landmarks": [
         "LMK-000A"
@@ -1435,11 +2173,14 @@
         "revision": 5
       },
       "distribution": {
-        "items": 1,
-        "denominator": 1,
-        "status": "complete",
+        "items": 4,
+        "denominator": 4,
+        "status": "incomplete",
         "counted": [
-          "dqc:DQC-000D"
+          "dqc:DQC-000D",
+          "spec:S-003P",
+          "spec:S-003T",
+          "spec:S-003U"
         ],
         "numerators": {
           "Idea": 0,
@@ -1453,15 +2194,19 @@
         },
         "distribution": {
           "Idea": 0,
-          "Aligning": 25,
-          "Confirmed": 75,
+          "Aligning": 6.25,
+          "Confirmed": 18.75,
           "Mapped": 0,
           "Planned": 0,
           "Journey": 0,
           "Review": 0,
           "Verified": 0
         },
-        "unassessed": [],
+        "unassessed": [
+          "spec:S-003P",
+          "spec:S-003T",
+          "spec:S-003U"
+        ],
         "unknown": [],
         "invalid": [],
         "bySourceType": {
@@ -1491,6 +2236,35 @@
               "Review": 0,
               "Verified": 0
             }
+          },
+          "spec": {
+            "items": 3,
+            "status": "incomplete",
+            "counted": [
+              "spec:S-003P",
+              "spec:S-003T",
+              "spec:S-003U"
+            ],
+            "numerators": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            },
+            "distribution": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            }
           }
         },
         "contributions": [
@@ -1510,10 +2284,78 @@
             "revision": 5,
             "holder": "DQC-000D",
             "itemRevision": null
+          },
+          {
+            "key": "spec:S-003P",
+            "type": "spec",
+            "id": "S-003P",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": null,
+            "itemRevision": "9f5bd5ab"
+          },
+          {
+            "key": "spec:S-003T",
+            "type": "spec",
+            "id": "S-003T",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": null,
+            "itemRevision": "9f5bd5ab"
+          },
+          {
+            "key": "spec:S-003U",
+            "type": "spec",
+            "id": "S-003U",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": null,
+            "itemRevision": "9f5bd5ab"
           }
-        ]
+        ],
+        "unassessedPercent": 75
       },
-      "related": [],
+      "related": [
+        {
+          "type": "spec",
+          "id": "S-003P",
+          "key": "spec:S-003P",
+          "revision": "9f5bd5ab",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "resolution": "room",
+          "state": "unassessed",
+          "assessment": null
+        },
+        {
+          "type": "spec",
+          "id": "S-003T",
+          "key": "spec:S-003T",
+          "revision": "9f5bd5ab",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "resolution": "room",
+          "state": "unassessed",
+          "assessment": null
+        },
+        {
+          "type": "spec",
+          "id": "S-003U",
+          "key": "spec:S-003U",
+          "revision": "9f5bd5ab",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "resolution": "room",
+          "state": "unassessed",
+          "assessment": null
+        }
+      ],
       "relatedBy": [],
       "lineage": {
         "key": "dqc:DQC-000D",
@@ -1521,7 +2363,29 @@
         "id": "DQC-000D",
         "resolution": "tracker",
         "state": "assessed",
-        "related": []
+        "related": [
+          {
+            "key": "spec:S-003P",
+            "type": "spec",
+            "id": "S-003P",
+            "resolution": "room",
+            "state": "unassessed"
+          },
+          {
+            "key": "spec:S-003T",
+            "type": "spec",
+            "id": "S-003T",
+            "resolution": "room",
+            "state": "unassessed"
+          },
+          {
+            "key": "spec:S-003U",
+            "type": "spec",
+            "id": "S-003U",
+            "resolution": "room",
+            "state": "unassessed"
+          }
+        ]
       },
       "claims": [
         {
@@ -1573,8 +2437,8 @@
         },
         {
           "key": "C4",
-          "text": "The supported binding and access mechanism is not yet planned.",
-          "revision": 4,
+          "text": "Corrected candidate checks isolate ambient Git environment and refuse locally missing promised objects without transport or Git metadata writes; full final-candidate review, trusted access and native artifact/Issue correspondence remain open.",
+          "revision": 12,
           "status": "supported",
           "evidence": [
             {
@@ -1584,9 +2448,35 @@
             {
               "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8",
               "revision": 5
+            },
+            {
+              "ref": "workbench/docs/github-coordination.md@de53544083201d66e76c7f56a95b975911ec8ed5",
+              "revision": 10
+            },
+            {
+              "ref": "workbench/tools/github-coordination.mjs@f4345681f59301539dd05a957c001818d77dde4d",
+              "revision": 12
             }
           ],
-          "affectedBy": []
+          "affectedBy": [
+            {
+              "revision": 9,
+              "changed": [
+                "uncertainty",
+                "correction"
+              ],
+              "reason": "First implementation slice updates the prior gap while preserving concept origin, prior evidence and no live-access claim.",
+              "assessment": "The read-only binding mechanism now exists on a candidate; authenticated access and artifact mapping remain unplanned."
+            },
+            {
+              "revision": 11,
+              "changed": [
+                "correction"
+              ],
+              "reason": "Preserve independently reproduced inspector safety failures and corrective understanding",
+              "assessment": "Read-only source claims need Git environment isolation and no-lazy-fetch proof, not only dirty-checkout checks."
+            }
+          ]
         }
       ],
       "reconciliation": [],
@@ -1645,9 +2535,19 @@
           "revision": 5,
           "text": "Revision 4 cited ADR-000Q@1e19342 for C1, C3 and C4, but that revision stated neither untracked credentials and room binding, nor managed adapter and skills with installed-room proof, nor the unplanned binding mechanism; corrected evidence is ADR-000Q@471a0f0.",
           "reason": "Independent review of 9617819 found claim evidence that did not state the claimed requirements; append corrected evidence."
+        },
+        {
+          "revision": 9,
+          "text": "The initial statement that binding is wholly unplanned is historical. Candidate de535440 implements a metadata-only committed-manifest binding inspector, with source and receipt-backed local installed tests. Trusted authenticated access, native artifact mapping and cross-host operation remain open.",
+          "reason": "First implementation slice updates the prior gap while preserving concept origin, prior evidence and no live-access claim."
+        },
+        {
+          "revision": 11,
+          "text": "The initial inspector source and7-test installed proof did not establish the complete read-only boundary: exact394 review reproduced ambient Git repository substitution and promisor fetch/object writes. Native corrective Tasks preserve the original Task and failure.",
+          "reason": "Preserve independently reproduced inspector safety failures and corrective understanding"
         }
       ],
-      "revision": 5,
+      "revision": 12,
       "history": [
         {
           "revision": 1,
@@ -1792,6 +2692,132 @@
               "field": "claim-evidence",
               "claim": "C4",
               "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8"
+            }
+          ]
+        },
+        {
+          "revision": 6,
+          "at": "2026-10-01T05:56:08.445Z",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "changes": [
+            {
+              "field": "related",
+              "from": null,
+              "to": {
+                "type": "spec",
+                "id": "S-003P",
+                "revision": "9f5bd5ab"
+              }
+            }
+          ]
+        },
+        {
+          "revision": 7,
+          "at": "2026-10-01T05:56:08.526Z",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "changes": [
+            {
+              "field": "related",
+              "from": null,
+              "to": {
+                "type": "spec",
+                "id": "S-003T",
+                "revision": "9f5bd5ab"
+              }
+            }
+          ]
+        },
+        {
+          "revision": 8,
+          "at": "2026-10-01T05:56:08.605Z",
+          "reason": "Owner-directed GitHub coordination capability map; related Spec is a delivery owner, not implementation or documentation Verified proof.",
+          "changes": [
+            {
+              "field": "related",
+              "from": null,
+              "to": {
+                "type": "spec",
+                "id": "S-003U",
+                "revision": "9f5bd5ab"
+              }
+            }
+          ]
+        },
+        {
+          "revision": 9,
+          "at": "2026-10-01T05:56:08.685Z",
+          "reason": "First implementation slice updates the prior gap while preserving concept origin, prior evidence and no live-access claim.",
+          "changes": [
+            {
+              "field": "uncertainty",
+              "from": null,
+              "to": "Read-only manifest binding is implemented on candidate de535440; trusted access, artifact/Issue correspondence and cross-host capability are still open."
+            },
+            {
+              "field": "uncertainty",
+              "from": "The supported binding and access route for rooms is unplanned; no GitHub adapter exists at 065a7ce.",
+              "to": null
+            },
+            {
+              "field": "correction",
+              "to": "The initial statement that binding is wholly unplanned is historical. Candidate de535440 implements a metadata-only committed-manifest binding inspector, with source and receipt-backed local installed tests. Trusted authenticated access, native artifact mapping and cross-host operation remain open."
+            },
+            {
+              "field": "claim-affected",
+              "claim": "C4",
+              "assessment": "The read-only binding mechanism now exists on a candidate; authenticated access and artifact mapping remain unplanned."
+            }
+          ]
+        },
+        {
+          "revision": 10,
+          "at": "2026-10-01T05:56:08.764Z",
+          "reason": "Reconcile the specifically affected binding claim against the immutable procedure; retain previous evidence and do not assess live access as passed.",
+          "changes": [
+            {
+              "field": "claim",
+              "claim": "C4",
+              "from": "The supported binding and access mechanism is not yet planned.",
+              "to": "The candidate provides a read-only committed-manifest binding inspector; trusted access and native artifact/Issue correspondence remain open."
+            },
+            {
+              "field": "claim-evidence",
+              "claim": "C4",
+              "to": "workbench/docs/github-coordination.md@de53544083201d66e76c7f56a95b975911ec8ed5"
+            }
+          ]
+        },
+        {
+          "revision": 11,
+          "at": "2026-10-01T08:39:06.115Z",
+          "reason": "Preserve independently reproduced inspector safety failures and corrective understanding",
+          "changes": [
+            {
+              "field": "correction",
+              "to": "The initial inspector source and7-test installed proof did not establish the complete read-only boundary: exact394 review reproduced ambient Git repository substitution and promisor fetch/object writes. Native corrective Tasks preserve the original Task and failure."
+            },
+            {
+              "field": "claim-affected",
+              "claim": "C4",
+              "assessment": "Read-only source claims need Git environment isolation and no-lazy-fetch proof, not only dirty-checkout checks."
+            }
+          ]
+        },
+        {
+          "revision": 12,
+          "at": "2026-10-01T08:39:06.199Z",
+          "reason": "Re-evidence the corrected committed inspector without implying live Issue access or delivery",
+          "changes": [
+            {
+              "field": "claim",
+              "claim": "C4",
+              "from": "The candidate provides a read-only committed-manifest binding inspector; trusted access and native artifact/Issue correspondence remain open.",
+              "to": "Corrected candidate checks isolate ambient Git environment and refuse locally missing promised objects without transport or Git metadata writes; full final-candidate review, trusted access and native artifact/Issue correspondence remain open."
+            },
+            {
+              "field": "claim-evidence",
+              "claim": "C4",
+              "to": "workbench/tools/github-coordination.mjs@f4345681f59301539dd05a957c001818d77dde4d"
             }
           ]
         }
