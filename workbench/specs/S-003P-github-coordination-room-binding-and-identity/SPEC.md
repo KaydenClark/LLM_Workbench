@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Resolve an explicit GitHub coordination repository and room-scoped artifact identities from immutable repository sources.
 **Blockers:** No prerequisite blocks the first read-only binding slice. Native Issue mapping awaits the Issue graph seam. Live actor trust belongs to the assignment owner.
-**Latest event:** TK-004H claimed by codex-github-binding.
-**Next gate:** Close TK-004H with verification and documentation proof.
+**Latest event:** TK-004H closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`282dc043ab7dad92826a6d5447369238c35df0a3` post=`282dc043ab7dad92826a6d5447369238c35df0a3`.
 
@@ -85,6 +85,7 @@ This Spec owns capability requirements, open gates and proof. Shared operational
 | 2026-10-01 | TK-004G | Correct premature Receipt1 green claim | Actual initial dirty-source result7/8: installed-source identity refusal, not8/8. Committed5f3ce522 rerun passes8/8 including exact managed hash and invocation. Public redcce88dc6 and all prior rows preserved. | Lazy-fetch procedure and regression current. | Full assembled suite and independent review still pending. |
 | 2026-10-01 | TK-004G | Task closed | Promisor regression expectedredcce88dc6, committed5f3ce522 inspector8/8 including fresh installed hash/invocation and absent promised commit/tree/blob refusal without transport or any Git metadata change. Receipt1 premature8/8 corrected append-only by Receipt2 and Spec evidence. | Binding procedure states no lazy fetch, optional locks and fail-closed Git compatibility. | TK004F environment and TK004H route remain. Required full final assembly suite and independent review/integration pending, no fullSpec or ownerQA claim. |
 | 2026-10-01 | TK-004F | Task closed | Redaa32ff2f foreign ambient Git environment resolved incorrectly. Greend337006d10/10 inspector tests including receipt-backed installed hash/invocation, selector/object-store/config isolation, true linked worktrees and promised-object no-write checks. | Existing binding procedure updated; active claim/control authority unchanged. | TK004H entry route and full final assembled suite/independent review/integration remain; full Spec and owner gates open. |
+| 2026-10-01 | TK-004H | Task closed | Independent394 missing-route evidence answered by RUNBOOK -> existing adapter procedure -> existing public command read-back; control-fidelity checks PASS. Behavior and generic claim workflow unchanged. | RUNBOOK now routes the optional binding procedure without duplicating its command contract. | Required full assembled candidate suite and independent review before integration. Later artifact identity, Issue and actor-dependent slices uncut; full Spec acceptance and owner gates remain open. |
 
 ## Completion Result
 
