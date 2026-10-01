@@ -9,13 +9,13 @@
 **Planned verification:** Answers evidence row 37 (fail verdict at 9430252fff64b952d7f4f9311d5008d10f26b891 on 2026-10-01): P1 Preserve the Contract authority boundary in generic AGENTS and generated rooms: Blueprint is product destination and cross-cutting architecture owner, not instruction authority
 
 **Stance:** Builder
-**Proof:** TK004B source self-check ba108907: original generic authorityRED fidelity22/23 plus actual productionGenesis generated-room exit1; corrected fidelity23/23 with six authority mutations and root/generic boundaries, productionGenesis five filledAGENTS assertions/installedproduct redgreen/no-write proof refusals exit0/demo3.047s sourcea2a51d51e53a22220ebff93231d4020b7a720052. Syntax/diffcheckPASS. Final immutable required51 and combinedTask5+4B fresh integration review remain currentSpec gate; originalTask5/943FAIL preserved.
+**Proof:** Delivered with Task5PR242/TK004BPR243: exact reviewedc49f0cc33e2a99c9120bab8fc66055f06992080c required51/51/fresh entirecombined21path scopedPASS, fetchedintegration3b5b76bfd62aa98118cb73cc4947e0658f4040c6 contains it; actualtip guardedcleanup complete. OriginalauthorityRED fidelity22/23/actualGenesisgeneratedexit1 thenGREEN23/23/sixmutations/fivefilledAGENTSassertions/installeddemo3.047s retained. OriginalTask5/943wholeSpecFAIL/Receipts preserved; TK004C currentness and fresh whole-Spec/finaldelivery gate owned S00P, no ownerQA/main claim.
 
 ## Scope And Verification
 
 Director released templateAGENTS instruction-authority correction plus existing control-fidelity/generated-room assertions only. Mirror the root Contract carriers and assignedSpec bounded delegate generically; Blueprint remains product destination/cross-cutting architecture owner. Prove inherited generic authority RED, then corrected source and actual Genesis generated-room authority GREEN with meaningful negative mutations. No runtime/ADR/skill/Wiki edits.
 
-The branch starts at fetched integration66815b4e4d0a35802d28c3a470921c00692f8d0d and assembles published unlanded Task5 checkpointc5a890ff below integration without history rewrite. Entire combined Task5+TK004B candidate needs fresh immutable separate-context review and required51, with live citation mutation isolated. Original Task5/943FAIL remain preserved; TK004C ADR currentness is explicitly pending. Scoped Task-PR delivery does not claim whole-Spec PASS or ownerQA/main.
+The branch starts at fetched integration66815b4e4d0a35802d28c3a470921c00692f8d0d and assembles published unlanded Task5 checkpointc5a890ff below integration without history rewrite. The entire combined Task5+TK004B candidate received fresh immutable separate-context scoped PASS and required51 at c49f0cc33e2a99c9120bab8fc66055f06992080c, with live citation mutation isolated; actual reviewed integration delivery is named above. Original Task5/943FAIL remain preserved; TK004C ADR currentness is explicitly pending. Scoped Task-PR delivery does not claim whole-Spec PASS or ownerQA/main.
 
 ## Receipt
 
