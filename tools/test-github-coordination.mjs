@@ -5,6 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 import test from 'node:test';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -132,7 +133,9 @@ test('receipt-backed fresh installation delivers and runs the same binding inspe
     const installation = spawnSync(process.execPath, [path.join(root, 'tools/workbench-tools.mjs'), 'install', '--project', room], { encoding: 'utf8' });
     assert.equal(installation.status, 0, installation.stdout);
     const receipt = JSON.parse(fs.readFileSync(path.join(room, 'workbench/tools/.workbench-tools.json')));
-    assert.ok(receipt.tools['github-coordination.mjs']);
+    const installedTool = path.join(room, 'workbench/tools/github-coordination.mjs');
+    assert.equal(receipt.files['github-coordination.mjs'], createHash('sha256').update(fs.readFileSync(installedTool)).digest('hex'));
+    assert.equal(receipt.source.commit, git(root, 'rev-parse', 'HEAD'));
     const installed = run(room, installedRevision, path.join(room, 'workbench/tools/github-coordination.mjs'));
     assert.equal(installed.status, 0, installed.stdout);
     assert.deepEqual(installed.report, run(room, installedRevision).report);
