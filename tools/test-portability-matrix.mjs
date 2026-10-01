@@ -53,14 +53,17 @@ function retiredContent(file, content) {
   if (file !== 'workbench/wiki/grilling-destination-audit-ledger.json') return content;
   const ledger = JSON.parse(content);
   if (ledger.schema !== 'grilling-destination-ledger/1' || !Array.isArray(ledger.questions)) return content;
-  const historical = /\bearlier\b[^.]*\bproposals?\s+are\s+(?:superseded|unselected)(?:\s+or\s+(?:superseded|unselected))?\./gi;
+  // Recognize nominal path proposals only; nearby history markers must never
+  // hide an instruction or a different path in the same sentence/parenthesis.
+  const historical = /\bearlier\s+(?:status-folder\s+and\s+)?workbench\/(?:grilling|handoffs)\/?\s+proposals?\s+are\s+(?:superseded|unselected)(?:\s+or\s+(?:superseded|unselected))?\./gi;
+  const proposed = /\(\s*workbench\/(?:grilling|handoffs)\/?\s+proposed\s*\)/gi;
   const legacyLane = /workbench\/(?:grilling|handoffs)\b/g;
   for (const row of ledger.questions) {
     if (row.status !== 'locked' || typeof row.answer !== 'string' || typeof row.notes !== 'string'
       || RETIRED.some(({ pattern }) => pattern.test(row.answer))) continue;
     if (!row.notes.match(historical)) continue;
     if (typeof row.question === 'string') {
-      row.question = row.question.replace(/\([^()]*\bproposed\b[^()]*\)/gi, (proposal) => proposal.replace(legacyLane, '[historical lane]'));
+      row.question = row.question.replace(proposed, (proposal) => proposal.replace(legacyLane, '[historical lane]'));
     }
     row.notes = row.notes.replace(historical, (history) => history.replace(legacyLane, '[historical lane]'));
   }
@@ -88,6 +91,35 @@ test('historical ledger proposals remain recoverable while active retired routes
   assert.equal(retired.test(retiredContent('workbench/wiki/another.json', encode(row))), true);
   const privateHistory = encode({ ...row, notes: 'Earlier /Users/private/workbench/grilling/ proposals are superseded or unselected.' });
   assert.equal(RETIRED.find(({ label }) => label === 'private home path').pattern.test(retiredContent(file, privateHistory)), true, 'historical classification never masks private paths');
+});
+
+test('historical markers never mask operational text surrounding a legacy path', () => {
+  const file = 'workbench/wiki/grilling-destination-audit-ledger.json';
+  const encode = (row) => JSON.stringify({ schema: 'grilling-destination-ledger/1', questions: [row] });
+  for (const lane of ['grilling', 'handoffs']) {
+    const retired = RETIRED.find(({ label }) => label === `v3.0 ${lane} lane`).pattern;
+    const legacyPath = `workbench/${lane}/`;
+    const row = {
+      status: 'locked', question: `Which root (${legacyPath} proposed)?`,
+      answer: 'Use workbench/landmark-tracker/.',
+      notes: `Earlier status-folder and ${legacyPath} proposals are superseded or unselected.`
+    };
+    assert.equal(retired.test(retiredContent(file, encode(row))), false, `${lane} nominal history remains recoverable`);
+    assert.equal(retired.test(retiredContent(file, encode({ ...row, question: `Which root (workbench/${lane} proposed)?` }))), false, `${lane} historical token without trailing slash`);
+    for (const changed of [
+      { ...row, question: `Which root (the old name was proposed; now use ${legacyPath})?` },
+      { ...row, question: `Which root (${legacyPath} proposed; now use ${legacyPath})?` },
+      { ...row, question: `Which root (${legacyPath}live proposed)?` },
+      { ...row, question: `${row.question} Now use ${legacyPath}.` },
+      { ...row, notes: `Earlier the old name was proposed; now use ${legacyPath} proposals are superseded or unselected.` },
+      { ...row, notes: `Earlier use ${legacyPath} proposals are superseded or unselected.` },
+      { ...row, notes: `Earlier ${legacyPath} proposals are superseded or unselected; now use ${legacyPath}.` },
+      { ...row, notes: `${row.notes} Now use ${legacyPath}.` },
+      { ...row, answer: `Use ${legacyPath}.` },
+      { ...row, progress: { evidence: `Live root is ${legacyPath}.` } },
+      { ...row, result: [{ artifact: legacyPath }] }
+    ]) assert.equal(retired.test(retiredContent(file, encode(changed))), true, JSON.stringify(changed));
+  }
 });
 
 test('tracked paths never differ only by case, and lanes must be lowercase without spaces or backslashes', () => {
