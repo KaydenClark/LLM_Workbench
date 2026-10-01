@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000E",
-  "revision": 3,
+  "revision": 4,
   "title": "Extended GitHub outage recovery (deferred from v4)",
   "question": "How does delivery continue and recover through an extended GitHub outage or lost coordination state?",
   "answer": "Extended GitHub outage recovery is deferred off the v4 critical path. v4 still requires basic visible error and pending state and refusal of unverifiable unsafe assignments or writes; extended recovery waits for a post-v4 capability.",
@@ -31,9 +31,43 @@
   "landmarks": [
     "LMK-000A"
   ],
-  "assessment": null,
+  "assessment": {
+    "contributions": {
+      "Confirmed": 1
+    },
+    "basis": "Two named claims, both owner-settled and recorded in proposed ADR-000Q.",
+    "evidence": [
+      "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+    ],
+    "revision": 4
+  },
   "related": [],
-  "claims": [],
+  "claims": [
+    {
+      "key": "C1",
+      "text": "Extended GitHub outage recovery is deferred off the v4 critical path and this card is its reachable destination until a post-v4 capability owns it.",
+      "revision": 4,
+      "evidence": [
+        {
+          "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8",
+          "revision": 4
+        }
+      ],
+      "affected": []
+    },
+    {
+      "key": "C2",
+      "text": "v4 still requires visible error and pending state and refusal of unverifiable unsafe assignments or writes.",
+      "revision": 4,
+      "evidence": [
+        {
+          "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8",
+          "revision": 4
+        }
+      ],
+      "affected": []
+    }
+  ],
   "origin": {
     "title": "Extended GitHub outage recovery (deferred from v4)",
     "question": "How does delivery continue and recover through an extended GitHub outage or lost coordination state?",
@@ -98,6 +132,42 @@
             "home": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md; this card until a post-v4 capability Spec is allocated",
             "revision": 3
           }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T01:56:35.885Z",
+      "reason": "Name the documentation claims and assess against the committed proposed ADR.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": {
+            "Confirmed": 1
+          }
+        },
+        {
+          "field": "claim",
+          "claim": "C1",
+          "from": null,
+          "to": "Extended GitHub outage recovery is deferred off the v4 critical path and this card is its reachable destination until a post-v4 capability owns it."
+        },
+        {
+          "field": "claim",
+          "claim": "C2",
+          "from": null,
+          "to": "v4 still requires visible error and pending state and refusal of unverifiable unsafe assignments or writes."
+        },
+        {
+          "field": "claim-evidence",
+          "claim": "C1",
+          "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+        },
+        {
+          "field": "claim-evidence",
+          "claim": "C2",
+          "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
         }
       ]
     }
