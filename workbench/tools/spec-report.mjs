@@ -148,6 +148,17 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
 // S-00J TK-01S: exported unchanged so `completeSpec` verifies the Spec's
 // committed content on the default branch with this one digest rule; it
 // adds no second normalization.
+// Immutable candidate reads use the selected repository's real objects. Caller
+// Git selectors, replacement refs and promisor fetches cannot substitute bytes
+// or turn this read-only verification into network/object-store writes.
+function candidateGit(root, args) {
+  const environment = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('GIT_')));
+  return spawnSync('git', ['--no-lazy-fetch', '--no-optional-locks', '-C', root, ...args], {
+    encoding: 'utf8', timeout: 10000, maxBuffer: 16 * 1024 * 1024,
+    env: { ...environment, GIT_NO_REPLACE_OBJECTS: '1', GIT_TERMINAL_PROMPT: '0' }
+  });
+}
+
 export function computeSpecDigest(root, spec, candidate = null) {
   const specDir = path.dirname(spec.filePath);
   // Each entry is hashed as its name, then its byte length, then its own
@@ -168,7 +179,7 @@ export function computeSpecDigest(root, spec, candidate = null) {
   }
   let relativeDir = path.relative(root, specDir).split(path.sep).join('/');
   function committed(args) {
-    const result = spawnSync('git', args, { cwd: root, encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
+    const result = candidateGit(root, args);
     if (result.status !== 0) throw new Error(`Cannot read committed content for ${spec.id} at ${candidate}: ${result.stderr?.trim() || result.error?.message || 'Git read failed'}`);
     return result.stdout;
   }
@@ -229,7 +240,7 @@ function committedSpecDirectory(root, spec, candidate, relativeDir, committed) {
   const sourceDir = `${specsPrefix}/${basename}`;
   const sourceFile = `${sourceDir}/SPEC.md`;
   const missing = (ref, file) => committed(['ls-tree', '-z', ref, '--', file]) === '';
-  const ancestor = (older, newer) => spawnSync('git', ['merge-base', '--is-ancestor', older, newer], { cwd: root }).status === 0;
+  const ancestor = (older, newer) => candidateGit(root, ['merge-base', '--is-ancestor', older, newer]).status === 0;
   const parentsOf = ref => committed(['rev-list', '--parents', '-n', '1', ref]).trim().split(' ').slice(1);
   const latestAddition = (ref, file) => {
     // Default log hides additions made by merge commits. Per-parent history
@@ -604,7 +615,7 @@ export function recordOwnerApproval(rootDir, specId, options = {}) {
 // S-00J TK-01T: exported unchanged so the `S-###:delivered` resolver checks
 // integration containment with this one reader.
 export function isAncestorOfBranch(root, sha, branch) {
-  const result = spawnSync('git', ['-C', root, 'merge-base', '--is-ancestor', sha, branch], { encoding: 'utf8' });
+  const result = candidateGit(root, ['merge-base', '--is-ancestor', sha, branch]);
   return result.status === 0;
 }
 
@@ -827,7 +838,7 @@ function requiredString(value, message) {
 // commit object in this repository, never a checkout or a blob read -
 // matching the "exists" half of "current candidate" the handoff names.
 function commitExists(root, sha) {
-  const result = spawnSync('git', ['-C', root, 'cat-file', '-e', `${sha}^{commit}`], { encoding: 'utf8' });
+  const result = candidateGit(root, ['cat-file', '-e', `${sha}^{commit}`]);
   return result.status === 0;
 }
 
@@ -1256,7 +1267,7 @@ function candidateBinding(root, sha) {
 // its full commit SHA, or `null` when it does not resolve to a commit in
 // this repository - never a throw, matching "inform, never refuse".
 function resolveCommitSha(root, ref) {
-  const result = spawnSync('git', ['-C', root, 'rev-parse', `${ref}^{commit}`], { encoding: 'utf8' });
+  const result = candidateGit(root, ['rev-parse', `${ref}^{commit}`]);
   return result.status === 0 ? result.stdout.trim() : null;
 }
 

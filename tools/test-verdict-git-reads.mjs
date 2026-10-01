@@ -34,6 +34,26 @@ try{
  process.env.GIT_DIR=path.join(peer,'.git');process.env.GIT_WORK_TREE=peer;refusal(empty,'Inherited peer selectors');
  for(const key of Object.keys(process.env))if(key.startsWith('GIT_'))delete process.env[key];
  assert.equal(assembleSpecReport(root,'S-701',{candidate:good}).candidate.matchesContent,true,'ordinary local committed reads still work');
+ for(const missing of ['commit','tree','blob']){
+  const parent=fs.mkdtempSync(path.join(os.tmpdir(),'verdict-promisor-'));const room=path.join(parent,'room');
+  try{
+   git(parent,'clone','--no-hardlinks',root,room);git(room,'config','remote.origin.promisor','true');git(room,'config','remote.origin.partialclonefilter','blob:none');
+   const tripwire=path.join(parent,'transport-called');const transport=path.join(parent,'upload-pack');
+   fs.writeFileSync(transport,`#!/bin/sh\necho invoked > '${tripwire}'\nexec git-upload-pack "$@"\n`,{mode:0o755});git(room,'config','remote.origin.uploadpack',transport);
+   const object=missing==='commit'?good:git(room,'rev-parse',good+(missing==='tree'?'^{tree}':':specs/S-701-fixture/SPEC.md'));
+   fs.unlinkSync(path.join(room,'.git/objects',object.slice(0,2),object.slice(2)));
+   const snapshot=()=>{const files={};function walk(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){const p=path.join(dir,e.name);if(e.isDirectory())walk(p);else files[path.relative(room,p)]=fs.readFileSync(p).toString('hex');}}walk(path.join(room,'.git'));return files;};
+   const before=snapshot();const specPath=path.join(room,'specs/S-701-fixture/SPEC.md');const bytes=fs.readFileSync(specPath);
+   const report=assembleSpecReport(room,'S-701',{candidate:good});
+   assert.notEqual(report.candidate.matchesContent,true,`missing ${missing} cannot bind content`);
+   for(const result of ['pass','fail'])assert.throws(()=>recordReviewVerdict(room,'S-701',{candidate:good,result,findings:result==='pass'?'none':'Synthetic defect',reviewer:'separate fixture context'}),/candidate|repository|committed/);
+   assert.equal(gate(room,{spec:'S-701',candidate:good}).refused,true);
+   assert.equal(fs.existsSync(tripwire),false,`missing ${missing} must not invoke transport`);
+   assert.deepEqual(snapshot(),before,`missing ${missing} must preserve Git metadata`);
+   assert.deepEqual(fs.readFileSync(specPath),bytes,`missing ${missing} must preserve Spec bytes`);
+  }finally{fs.rmSync(parent,{recursive:true,force:true});}
+ }
+
  console.log('ok - replacement objects and inherited Git selectors cannot substitute named candidate bytes; PASS/FAIL/gate refuse without writes');
 }finally{
  for(const key of Object.keys(process.env))if(key.startsWith('GIT_'))delete process.env[key];Object.assign(process.env,saved);

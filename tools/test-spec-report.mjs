@@ -1,3 +1,4 @@
+import './test-verdict-git-reads.mjs';
 #!/usr/bin/env node
 // S-00J TK-001: the assembled-Spec report a separate-context reviewer calls
 // against one Spec and a named candidate SHA.
