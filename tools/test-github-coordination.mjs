@@ -29,8 +29,8 @@ function commit(room) {
   git(room, 'add', '.'); git(room, 'commit', '-qm', 'Fixture source');
   return git(room, 'rev-parse', 'HEAD');
 }
-function run(room, revision, executable = tool, extra = []) {
-  const result = spawnSync(process.execPath, [executable, 'inspect', '--project', room, '--revision', revision, ...extra], { encoding: 'utf8' });
+function run(room, revision, executable = tool, extra = [], environment = {}) {
+  const result = spawnSync(process.execPath, [executable, 'inspect', '--project', room, '--revision', revision, ...extra], { encoding: 'utf8', env: { ...process.env, ...environment } });
   return { ...result, report: result.stdout ? JSON.parse(result.stdout) : null };
 }
 function clean(room) { fs.rmSync(room, { recursive: true, force: true }); }
@@ -177,4 +177,43 @@ test('missing promised commit, tree and blob refuse without transport or Git met
       } finally { clean(parent); }
     }
   } finally { clean(source.room); }
+});
+
+test('ambient Git selectors and configuration cannot redirect the explicit project', () => {
+  const original = fixture();
+  const foreignValue = manifest(); foreignValue.githubCoordination.repository = 'Other/Repo';
+  const foreign = fixture(foreignValue);
+  try {
+    const metadata = path.join(foreign.room, '.git');
+    const overrides = [
+      { GIT_DIR: metadata, GIT_WORK_TREE: original.room },
+      { GIT_DIR: metadata, GIT_COMMON_DIR: metadata, GIT_WORK_TREE: original.room },
+      { GIT_OBJECT_DIRECTORY: path.join(metadata, 'objects') },
+      { GIT_ALTERNATE_OBJECT_DIRECTORIES: path.join(metadata, 'objects') }
+    ];
+    for (const environment of overrides) {
+      const result = run(original.room, foreign.revision, tool, [], environment);
+      assert.equal(result.status, 1, 'Foreign Git environment must not provide source objects');
+      assert.equal(result.report.error.code, 'invalid-source-revision');
+    }
+    const result = run(original.room, original.revision, tool, [], {
+      GIT_CONFIG_COUNT: '1', GIT_CONFIG_KEY_0: 'core.worktree', GIT_CONFIG_VALUE_0: foreign.room
+    });
+    assert.equal(result.status, 0, result.stdout);
+    assert.equal(result.report.repository, 'Example/Room');
+  } finally { clean(original.room); clean(foreign.room); }
+});
+
+test('real linked worktrees keep their own root and committed source after environment isolation', () => {
+  const source = fixture();
+  const parent = fs.mkdtempSync(path.join(os.tmpdir(), 'github-linked-'));
+  const linked = path.join(parent, 'room');
+  try {
+    git(source.room, 'worktree', 'add', '--detach', linked, source.revision);
+    assert.equal(fs.statSync(path.join(linked, '.git')).isFile(), true);
+    const result = run(linked, source.revision);
+    assert.equal(result.status, 0, result.stdout);
+    assert.equal(result.report.repository, 'Example/Room');
+    assert.equal(result.report.source.commit, source.revision);
+  } finally { clean(parent); clean(source.room); }
 });
