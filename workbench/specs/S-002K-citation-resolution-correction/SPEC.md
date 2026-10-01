@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Correct three independently reproduced citation-checker defects without reopening completed S-045.
 **Blockers:** none
-**Latest event:** TK-003Y closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** TK-003Z claimed by codex-servitor-pr-resolution.
+**Next gate:** Close TK-003Z with verification and documentation proof.
 
 ## Outcome
 
