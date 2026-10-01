@@ -1,15 +1,15 @@
 # S-01P - builder skill rebuild
 
 **Spec ID:** S-01P
-**Status:** planned
+**Status:** active
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
 **Updated:** 2026-09-24
 **Catalog description:** Deliver the assigned result with useful verification and truthful documentation.
-**Blockers:** none for planning; implementation is not assigned.
-**Latest event:** Per-skill destination extracted from the oversized Skills Wiki packet and current core inventory.
-**Next gate:** Review this skill's existing behavior, then activate TK-01G for this skill only.
+**Blockers:** none for assigned implementation; behavioral proof, coordinator router write and independent review remain delivery gates.
+**Latest event:** Owner assigned S-01P; existing TK-01G converted with the native activation command after refreshing remote claims.
+**Next gate:** Claim TK-01G, repair only supported Builder gaps, and prepare an immutable candidate for independent review.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -53,7 +53,6 @@ No other skill rebuild is a blanket prerequisite. Check current controls and the
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-01G | Audit builder, deliver the smallest supported source/documentation change and prove the routed article | ready | none | pending |
 
 ### TK-01G - Deliver the builder skill destination
 
