@@ -97,6 +97,14 @@ it does not redefine acceptance. After interruption, the Runbook supplies the
 recovery procedure while the Spec, source and saved context supply what to
 recover. Execution and recovery therefore remain separate jobs.
 
+### GitHub Coordination Binding Inspection
+
+Follow the [GitHub coordination adapter procedure](workbench/docs/github-coordination.md)
+for read-only inspection of an explicit committed repository binding at an exact
+source SHA. It reports live access as unverified. This optional metadata command
+adds no Issue assignment or claim authority; ADR-000O remains operative until
+the separately reviewed cutover.
+
 ### Role And Stance Coordination
 
 [Role model and capability owners](workbench/wiki/design-concepts/roles-and-stances.md).
@@ -1084,6 +1092,46 @@ node workbench/tools/spec-workbench.mjs move-task S-001 --task TK-001 --to retir
 node workbench/tools/spec-workbench.mjs move-spec S-001 --to retired
 node workbench/tools/spec-workbench.mjs retire-spec S-001 --wiki workbench/wiki/features/greeting.md
 ```
+
+Collision identity recovery is an exceptional `move-task` mode for an already
+published done Task in an open Spec. First fetch all remote tips and obtain the
+Director disposition naming the earlier identity and centrally reserved replacement.
+Freeze the clean candidate and the unchanged original Task bytes. This room's
+2026-10-01 example retains S-00I/TK-004F and assigns its later S-003P record
+TK-004I. Replay historical examples only in a disposable checkout containing the
+original record; a completed recovery does not authorize another move. Set the exact
+`EXPECTED_HEAD`, original `SOURCE_SHA`, earlier `COLLISION_SHA`, and SHA256
+`TASK_HASH` from those reviewed inputs; the original source is recoverable with
+`git show SOURCE_SHA:workbench/specs/S-003P-github-coordination-room-binding-and-identity/tasks/TK-004F/TASK.md`.
+
+```bash
+node workbench/tools/spec-workbench.mjs move-task S-003P --task TK-004F \
+  --replacement TK-004I --expected-head "$EXPECTED_HEAD" --task-hash "$TASK_HASH" \
+  --source-revision "$SOURCE_SHA" --collision-spec S-00I \
+  --collision-revision "$COLLISION_SHA" \
+  --collision-path workbench/specs/S-00I-folder-lifecycle-for-records/tasks/TK-004F/TASK.md \
+  --reason "Director retains earlier S-00I identity" --dry-run --json
+```
+
+`--dry-run` validates collision recovery and reports without writes. An empty
+replacement is refused. Ordinary retirement and other verbs refuse `--dry-run`
+before any mutation. After independent review of the
+mechanism and plan, repeat the identical command without `--dry-run`; it stages
+one guarded move and its live Markdown references/projections, without a commit.
+The original Receipt bytes, done status and append-only Spec rows stay intact;
+qualified immutable provenance replaces a colliding Former ID alias. Reference
+reservations are allowed, but current/retired records, aliases and discard entries
+at observed remote tips refuse an occupied replacement. Pending close evidence,
+linked paths, dirty state, mismatched inputs and unsupported JSON path references
+refuse before writes. Git environment overrides must be removed; GIT_PAGER is
+allowed. Missing Git objects are not fetched by this operation.
+
+A process or I/O failure restores touched files and the original Git index. A
+rollback failure reports its pinned recovery commit and leaves the tree for
+inspection. This does not guarantee recovery after power loss or coordinate
+concurrent writers. Commit and independently review the actual repaired assembly;
+identity repair transfers no review, acceptance or owner approval. Ordinary
+retirement keeps using `--to retired` with no replacement options.
 
 Commit and preserve the retirement result. Its latest incarnation and entire
 current directory must reach the declared default branch, observed by a fresh

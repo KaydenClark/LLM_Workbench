@@ -26,10 +26,9 @@ Draft only. TK-01G remains in progress. Before acceptance/merge:
 - Obtain separate exact review of this evidence/current-base candidate and
   record its verdict. The parent reports prior source-only review PASS; it does
   not cover this amendment.
-- Have the coordinator serialize the single MEMORY router hunk supplied in
-  `proof/memory-route.patch`, then validate and re-review the resulting candidate.
+- Review the coordinator-applied sole MEMORY route and refreshed current integration assembly; the prepared patch remains historical evidence.
 
-Branch: `codex/s01p-tk01g-current-base`. Target: integration. No merge or main update is requested. Owner Human QA and
+Branch: `codex/s01p-builder-route-assembly`. Target: integration. No merge or main update is requested. Owner Human QA and
 repeated behavioral reliability remain separate gates.
 
 Original candidate `74dd407aef68d63c597637dab9b7cfe9706f7243` is preserved; this assembly starts from integration `d90785908b26517068a474bb88136c81995a2f18`.

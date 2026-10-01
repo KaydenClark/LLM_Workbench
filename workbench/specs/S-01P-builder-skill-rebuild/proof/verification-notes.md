@@ -92,3 +92,7 @@ the original branch still at `74dd407a`, and no authored changes to shared
 controls, runtime, manifest or templates relative to integration `d9078590`.
 Only the S-01P rows differ in the generated Taskboard and catalog. These local
 checks do not inspect or validate the producer's raw behavioral traces.
+
+## Coordinator routing amendment (2026-10-01)
+
+The earlier sections record the source author's historical checkout and receipts. Coordinator commit 3b0451ce2330325da9390663f1614b2b27285828 applied the sole Builder article link in workbench/wiki/MEMORY.md. Routing is now present; the prepared patch and old missing-route receipts remain historical. The current Spec and native projection describe the routed article. Current integration assembly verification and separate exact-head review remain required. Raw behavioral evidence assessment is still held; TK-01G remains in progress and all acceptance remains unchecked.
