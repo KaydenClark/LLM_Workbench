@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-10-01
 **Catalog description:** Challenge candidate correctness, downstream impact and consequential claims.
-**Blockers:** none for implementation; independent review and coordinator-owned Wiki routing remain delivery gates.
+**Blockers:** none for implementation; independent evidence assessment and exact-head review remain delivery gates.
 **Latest event:** TK-01I source, article and public scenario implemented; required union and scoped checks pass. Independent review remains pending.
-**Next gate:** Coordinator assembles the reserved MEMORY route and current integration changes, then obtains separate independent review of the new immutable candidate.
+**Next gate:** Verify the current integration and sole MEMORY route assembly, then obtain separate independent review of the new immutable candidate.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`02a30100443e725cbb1baad6fe5e771bfe85f648`.
 
@@ -30,8 +30,7 @@ The prior Skills Wiki packet grouped the whole core inventory into one completio
   fresh-context run observed actionable findings, evidence limits and target
   preservation; [scenario evidence](proof/scenario-observation.md) records its
   exact fixture pins, commands and limits.
-- The individual article exists; its sole MEMORY route is explicitly reserved
-  to the coordinator. Until that hunk is assembled, routing acceptance is open.
+- The individual article exists and is reachable through the sole MEMORY index, applied by the coordinator in this assembly.
 - Required-suite evidence and pre/post self-drift are recorded in
   [delivery proof](proof/README.md). Independent review of this implementation,
   integration containment, owner Human QA and main remain separate open gates.
@@ -124,7 +123,7 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane. When ther
 
 ## Completion Result
 
-Draft implementation on existing TK-01I is verified with 51 required commands, three scoped checks and one public fresh-context scenario. MEMORY route and independent review of the final assembly remain open. No integration delivery, owner Human QA or main promotion is claimed.
+Draft implementation on existing TK-01I is verified with 51 required commands, three scoped checks and one public fresh-context scenario. The sole MEMORY index now routes the Reviewer article. Independent review of the final assembly remains open. No integration delivery, owner Human QA or main promotion is claimed.
 
 ## Supersession
 

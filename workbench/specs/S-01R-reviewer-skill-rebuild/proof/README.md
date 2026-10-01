@@ -97,3 +97,7 @@ passed. The 15 citation checks and direct append-only checker also passed. A
 concurrent final report briefly encountered a transient citation-test fixture;
 when that test cleaned up, the report and drift read-back succeeded sequentially.
 The final report names no verdict or owner approval.
+
+## Coordinator current assembly (2026-10-01)
+
+The prior sections describe the source author's checkout and historical gates. Coordinator assembly starts from f02de933f484d210314245dc4196403c65b6b9de and merges integration 25d3f4d23b3719693065336a4ba66349d0a95907. The sole MEMORY index now routes skill-reviewer.md; source, original receipts and scenario records are preserved. Current Spec/projection describe the applied route. The first insertion attempt refused a mismatched index label before any owned edit; merge-only f4499cdb and its interrupted sweep are retained, not a passing route assembly. The inherited runtime assembly requires fresh checks and separate immutable review. TK-01I stays in progress; no acceptance, owner Human QA, integration delivery, main promotion or raw-evidence independent inspection is asserted.
