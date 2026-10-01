@@ -9,7 +9,7 @@
 **Catalog description:** Replace the Markdown Spec summary with a generated six-lane implementation board, shared lane selection and title-first room-core sitrep.
 **Blockers:** S-01W first identity/consumer delivery is contained in integration; its claimed assembled QA remains separate. Direct-Task coverage awaits its source-home contract.
 **Latest event:** TK-004N helper candidate verified; serialized consumer assembly remains pending.
-**Next gate:** Release prospective-active packet validation in convertSpecSlices, then freeze and run full51 before independent candidate review.
+**Next gate:** Freeze bounded stage2 candidate and run whole51 plus public fixtures before independent candidate review.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 
@@ -250,14 +250,15 @@ unknown metadata and deterministic unknown-priority ordering. Public
 It applies dependency, capability, lifecycle, competing-claim and parent/child
 controls without writing source or approval state. Ordinary next is unchanged.
 
-One activation validation hunk is still awaiting coordinator release:
-`convertSpecSlices` must validate prospective active bytes before writes, because
-its current planned/pre-cut route can otherwise create an invalid active
-packet. Public red `d58b86bf` preserves the consumer failures; implementation
-has 54/55 original consumer groups passing with this activation failure still
-open. Expanded qualified-dependency fixture correction follows the existing
-resolver's exact stored spelling and does not widen identity semantics.
-No final frozen whole-suite PASS is claimed until that source gap is repaired.
+The coordinator also released the narrow prospective-active validation guard.
+`convertSpecSlices` now parses prospective active bytes before any mutation;
+minimal planned packets must satisfy the existing strict active contract first.
+Public red `d58b86bf` and the 56/57 checkpoint at `041f7744` retain the
+activation failure. The guarded public fixture run passes all 57 groups.
+Expanded qualified-dependency controls follow the existing resolver's exact
+stored spelling and do not widen identity semantics. Final whole51 results
+must accompany the immutable candidate; earlier per-command reruns are not
+represented as one whole-suite PASS. Independent review remains pending.
 Default Markdown/CATALOG behavior, preview protections and all prior failed
 review evidence remain. Root/template rollout and direct Task homes remain
 outside this slice; no whole-Spec acceptance is checked.

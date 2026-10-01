@@ -670,6 +670,9 @@ export function convertSpecSlices(rootDir, id, options = {}) {
       : '';
     throw new Error(`${id} is ${spec.status}, not active; only an active Spec is converted and a completed Spec's historical table is never rewritten${route}`);
   }
+  if (activating) {
+    parseSpecPacket(updateFields(spec.content, { Status: 'active' }), spec.filePath, root, { recordBacked: spec.recordBacked });
+  }
   const specDir = path.dirname(spec.filePath);
   const tasksDir = path.join(specDir, 'tasks');
   // S-01L TK-002P: a planned record-backed Spec - to-spec's shape, a `tasks/`
