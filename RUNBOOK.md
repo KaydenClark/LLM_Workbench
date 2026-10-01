@@ -2088,8 +2088,13 @@ The old prose saying working day was inaccurate. Historical GPT_OS local-day
 Preflight and ref-deduplication rules remain scoped historical requirements,
 not an automatically imported Workbench algorithm.
 
-Author small ADRs for independently changing consequential decisions with real
-alternatives or reversal cost. Binding rules stay in current owners. A semantic
+[ADR-000A](workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md)
+owns the amendment-first decision rule. Correct or expand the existing ADR
+when refining the same architectural
+decision; preserve its identity, rationale and consequential alternatives.
+Create a new ADR only when it adds a valuable distinct architectural lens or
+layer, with the reasons for that decision and real alternatives or reversal
+cost. Binding rules stay in current owners. A semantic
 review checks agreement; text presence alone cannot establish fidelity.
 Portable record parsing treats LF, CRLF and CR as syntax variations; read-only
 validation never normalizes files as a side effect.

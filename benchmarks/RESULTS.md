@@ -80,3 +80,14 @@ outcome trials, controls/prior/candidate comparison, recent real outcome
 evidence, and uncertainty estimates. This documentation change adds no agent
 outcome evidence and makes no reliability claim. The S-00G evidence log names
 the verified candidate commit and checks after save.
+
+## 2026-09-30 FND-Q16 existing ADR reconciliation
+
+Guardrail audit using `node tools/audit-guardrails.mjs --path .` measured
+**78/100 before** at `065a7ce4436e46ae6726985b567b6b94ed94660c` and
+**78/100 after** on the amendment candidate tree. Criteria remain unchanged:
+static contract 20/20, drift resistance 25/25, benchmark discipline 25/25,
+outcome evidence 8/30. Remaining recommendations are repeated real outcome
+trials, controls/prior/candidate comparison, recent real evidence and uncertainty
+estimates. These documentation amendments establish no agent outcome improvement.
+S-00P records the immutable candidate verification and self-drift limits.

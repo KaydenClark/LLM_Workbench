@@ -151,8 +151,12 @@ explicitly bounded historical evidence.
    completed specs from the hot Taskboard immediately.
 
 Do not read the full Blueprint, Taskboard, completed specs, or proof archive for
-normal selection. Use the Lexicon routing section to find task-relevant owners. A spec is a durable capability; a task is a temporary slice.
-Later change creates a linked superseding spec rather than rewriting history.
+normal selection. Use the Lexicon routing section to find task-relevant owners.
+
+A Spec and its Tasks are delivery scaffolding. Preserve them while needed;
+after verified delivery and reconciliation, the implementation and maintained
+documentation hold the enduring capability knowledge. Later changes create
+a new linked spec instead of rewriting a completed result.
 
 ## Engineering And Verification
 

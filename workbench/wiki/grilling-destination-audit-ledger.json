@@ -34,13 +34,13 @@
       "REC-04"
     ],
     "status_tally": {
-      "locked": 237,
+      "locked": 238,
       "superseded": 26,
       "deferred": 2,
       "withdrawn": 6,
       "answered-in-chat": 10,
       "not-a-question": 1,
-      "open": 9,
+      "open": 8,
       "partially-answered": 3
     }
   },
@@ -6876,25 +6876,39 @@
       "counted": true,
       "topic": "Live vs historical release claims",
       "question": "Which release or continuity claims should remain live obligations, and which should become explicitly historical or superseded?",
-      "status": "open",
-      "answer": "Open - no owner answer.",
-      "answered": "",
-      "reason": "Not recorded.",
+      "status": "locked",
+      "answer": "Specs, Tasks, DQCs, notepads and handoffs are transient scaffolding. Once their useful content reaches durable owners and the intended result exists, the implementation and its maintained documentation become the continuing reference and the scaffolding is no longer needed. Obsolete release promises become historical or superseded; still-needed obligations remain reachable until resolved. Correct or expand existing ADRs rather than add slightly different decisions; a new ADR must add a valuable architectural lens or layer and explain why the decision was made.",
+      "answered": "2026-09-30 owner answer, explicit readback confirmation, and approval to amend existing ADRs",
+      "reason": "Owner: scaffolding helps reach the real destination; the implemented thing and its documentation are better afterward. Existing decisions should be corrected rather than duplicated with slightly different ones.",
       "result": [
         {
-          "artifact": "TASKBOARD.md projection and the affected Specs (S-014, S-022, S-050, S-052), README.md and LEXICON.md release wording",
-          "action": "none",
-          "effect": "Would decide which v3.x release and continuity Specs stay live and which are marked historical or superseded."
+          "artifact": "workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md",
+          "action": "update",
+          "effect": "Own the shared scaffolding lifecycle and amendment-first ADR rule, with rationale; preserve unresolved obligations, permanent ADR history and existing cleanup gates."
+        },
+        {
+          "artifact": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md, workbench/docs/adr/0054-direct-promotion-into-durable-owners.md, workbench/docs/adr/000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md",
+          "action": "update",
+          "effect": "Apply the shared principle to Spec/Task closure, notes/handoffs and DQCs through their existing decision owners."
+        },
+        {
+          "artifact": "AGENTS.md, LEXICON.md, RUNBOOK.md and their templates/ mirrors",
+          "action": "update",
+          "effect": "Align Spec/Task terminology and ADR authoring guidance with the amended decisions."
         }
       ],
       "related": [
         "FND-Q07"
       ],
       "aliases": [],
-      "notes": "Audit-origin question. Report option A (retire S-014/S-022 as superseded, keep S-050/S-052) and gap-triage remark are agent suggestions. A bounded search of the owner's own transcript messages on 2026-09-24 found no answer. The 2026-09-23 triage v2 classed it as agent-carryable, not an owner decision.",
+      "notes": "Audit-origin question. Report option A (retire S-014/S-022 as superseded, keep S-050/S-052) and gap-triage remark are agent suggestions. A bounded search of the owner's own transcript messages on 2026-09-24 found no answer. The 2026-09-23 triage v2 classed it as agent-carryable, not an owner decision. Owner answered and confirmed 2026-09-30. Earlier suggestions remain history; no specific old Spec is completed or deleted by this answer. The existing progress field remains the historical reading at progress_assessment.commit, not the current decision or delivery state.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[15]",
-        "workbench/feedback/REPORT-foundation-question-review-2026-09-11.md FND-Q16"
+        "workbench/feedback/REPORT-foundation-question-review-2026-09-11.md FND-Q16",
+        "workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md",
+        "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+        "workbench/docs/adr/0054-direct-promotion-into-durable-owners.md",
+        "workbench/docs/adr/000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md"
       ],
       "progress": {
         "status": "no-build-obligation",
