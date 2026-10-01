@@ -7,7 +7,7 @@
 **Stance:** Builder
 **Updated:** 2026-10-01
 **Catalog description:** Make a separate context review the assembled Spec against its Task results, route a failed review into corrective Tasks under the still-open Spec, keep `integration` as the owner's Human QA surface, and refuse to close a Spec without a passed review and recorded owner approval.
-**Blockers:** TK-004D/TK-004E correct reproduced candidate-content binding. Separate close and corrective-batch recovery findings remain serial implementation work; original owner Human QA/main gates are unapproved.
+**Blockers:** TK-004M corrects the independent replacement-object finding before fresh review. Separate close and corrective-batch recovery remain owned engineering work; owner Human QA/main gates are unapproved.
 **Latest event:** TK-004M claimed by codex-v4-verdict.
 **Next gate:** Close TK-004M with verification and documentation proof.
 
@@ -397,6 +397,8 @@ TK-005.
 | 2026-10-01 | TK-004D | Task closed | Candidate-content public CLI red/green; report checks pass; lifecycle39/39 exit0. Original50/51 failed fixture preserved and corrected; final51 and independent review pending. | S00J dated correction and report field descriptions. | TK004E final verification, independent exact-head review and integration containment remain. |
 | 2026-10-01 | TK-004E | Task closed | Public PASS/FAIL candidate-content refusals preserve bytes; existing report checks and lifecycle39/39 exit0; valid normalized reviews and corrective FAIL supported. Final51/review/containment pending. | S00J dated runtime correction and report binding fields; test fixtures commit actual candidates. | Final51, independent exact-candidate review and integration containment pending. Separate close/batch recovery corrections and actual owner QA/main stay open. |
 | 2026-10-01 | review | Review verdict: fail at 02a5212a143b6d3641a9b7652c8b100c12a54b7c [55d0a92812e6] #10 | P1: Git replacement objects let a named empty candidate impersonate committed Spec content and accept PASS or FAIL verdicts and gates. Disable replacement semantics and inherited repository selectors and object transport for bounded committed-content reads before writing. | Independent review context 01a0f686-0291-71d7-a754-53a5027ad029 reported by Director to coordinator | 1 |
+
+| 2026-10-01 | TK-004M | Immutable candidate Git reader correction verified | Public red `b039c397` reproduces replacement refs making an empty commit impersonate Spec content. Source `9cf0d216acc73c9cacfd66cbd6b136fcf4ece5db`: replacement and inherited GIT_DIR/GIT_WORK_TREE cases refuse PASS/FAIL and gate without Spec/Task writes. Missing promisor commit/tree/blob refuse without transport and preserve every Git metadata byte. All51 required commands PASS at exact clean source; focused report and previous binding regressions PASS. Intermediate shebang composition failure retained and corrected | Scoped candidateGit applies selected repository semantics, no replacements or lazy fetch, caller Git selector isolation and optional-lock suppression to candidate resolution/content/ancestry readers. Owned source comments document the boundary; existing tests retain normalization, non-HEAD and retired lifecycle behavior. No root/template procedure or bundle changes | Native receipt/closure, exact independent successor review and integration containment pending. Separate partial-write recovery and owner QA/main gates remain open. No CI or clean-update claim |
 
 ## Completion Result
 
