@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Leave achieved work and its existing truth owners consistent for continuation.
 **Blockers:** none for assigned implementation; coordinator owns the shared MEMORY route.
-**Latest event:** Existing TK-01J activated under the overnight full-v4 directive after a fresh 125-ref ownership scan found no active S-01S packet or Task claim.
-**Next gate:** Claim TK-01J, demonstrate the supported gap, and return an immutable tested draft for independent review.
+**Latest event:** TK-01J claimed by codex-s01s-tk01j.
+**Next gate:** Close TK-01J with verification and documentation proof.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
