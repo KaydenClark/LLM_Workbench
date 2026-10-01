@@ -82,3 +82,13 @@ the proposed single hunk remains unapplied and reserved to that writer. No
 receipt or reported trial is promoted into acceptance or a native review verdict.
 Read the additional current-base suite and drift receipts for this amendment;
 the original 52-command result remains historical proof of the initial candidate.
+
+The refreshed suite on evidence candidate
+`00c1cff52784a28305a8bacd4fc9c3f078e68236` passed all 52 commands.
+Current-base pre/post drift receipts retain the same seven pre-existing findings,
+with `cleanUpdate: false`; the current-base guardrail score is still 78/100.
+Local preservation checks found all six original Spec evidence rows unchanged,
+the original branch still at `74dd407a`, and no authored changes to shared
+controls, runtime, manifest or templates relative to integration `d9078590`.
+Only the S-01P rows differ in the generated Taskboard and catalog. These local
+checks do not inspect or validate the producer's raw behavioral traces.
