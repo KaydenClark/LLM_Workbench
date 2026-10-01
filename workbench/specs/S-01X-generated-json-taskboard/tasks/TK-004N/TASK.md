@@ -3,12 +3,13 @@
 **Task ID:** TK-004N
 **Spec ID:** S-01X
 **Slice:** Bounded stage2 review vocabulary, child gates and Backlog preparation
-**Status:** in-progress
+**Status:** done
 **Blockers:** none
 **Destination:** spec-acceptance: S-01X shared lane calculation and required QA visibility
 **Planned verification:** Public red/green fixtures for source needs-review, ordinary selection separation, child review gates and requiredQA visibility; exact 51-command suite. Minimal Backlog and next --review consumer assembly require coordinator seam release.
 
 **Stance:** Builder
+**Proof:** Verified source b4e59c21dd97488980e883a66940538b8fcf625c clean and actual remote tip matched before close. One frozen required51/51 PASS; public59/59; demo0.46s; append-only CLEAN. Director reports independent sourcePASS: both prior P2 resolved,51/59/demo/18 close tests/both Git suites and combined coexistence pass; all six prior Receipts valid. Preserve539 independentFAIL and redfc41f47757/59. Review scope is bounded TK004N source only.
 
 ## Scope
 
@@ -19,11 +20,11 @@ Prepare task-record.mjs and taskboard.mjs behavior independently. Required QA la
 - [x] Source needs-review projects without ordinary dispatch or claim.
 - [x] Child review gating and required QA remain source-derived without approval claims.
 - [x] Minimal Backlog and review consumer integration are assembled after seam release and proved through public fixtures.
-- [ ] Exact required suite, red/green evidence and independent draft review packet are preserved.
+- [x] Exact required suite, red/green evidence and independent draft review packet are preserved.
 
 ## Boundaries
 
-No direct Blueprint Task home, root/template JSON switch, manifest/bundle publication, identity widening, S01W/TK002R QA, Factory, ownerQA or whole-Spec completion. Main and original writer branches remain unchanged. This Task stays in progress pending final frozen verification and independent candidate review; this bounded source is not whole-Spec delivery.
+No direct Blueprint Task home, root/template JSON switch, manifest/bundle publication, identity widening, S01W/TK002R QA, Factory, ownerQA or whole-Spec completion. Main and original writer branches remain unchanged. This bounded Task closed from clean pushed source after independent source PASS. Final closeout delta/current-target review remains separate; this is not whole-Spec delivery.
 
 ## Receipt
 
@@ -35,3 +36,4 @@ No direct Blueprint Task home, root/template JSON switch, manifest/bundle public
 | 4 | codex/s01x-stage2-candidate | d58b86bf5a1e746db8450c1f720765e097cff5e2 | none | 7 | Public consumer red d58b86bf:55 groups,48 PASS7 expected FAIL. Released reader/selector implementation54/55 PASS with prospective-active validation failure. Expanded57-group run55 PASS2 FAIL: activation gap plus an unsupported qualified alias expectation, corrected to existing stored-spelling semantics. No final frozen whole51 PASS claimed. Sandboxed subprocess stdin hung even for cat; independently approved identical host probe and fixtures execute normally. | RUNBOOK and generic mirror describe minimal planned reader and separate review/excluded response; S01X records remaining activation hunk and original failed evidence | Await coordinator release for read-only prospective-active parseSpecPacket validation at convertSpecSlices entry. Then focused green, frozen final whole51 and independent review. No close/gate/move/report-Git edits or wholeSpec/ownerQA claim. | 804887c0cc10866dc459eea5bedc67f80bf777689954fd4268175788bde340c9 |
 | 5 | codex/s01x-stage2-candidate | 041f7744438fbb80d3bd2acab573ae2f10b8ddaf | none | 3 | Guarded public union 57/57 PASS. Prior041f7744438fbb80d3bd2acab573ae2f10b8ddaf checkpoint56/57 retains activation failure; d58b86bf consumer red and all earlier failed evidence preserved. Coordinator released only prospective-active parseSpecPacket before mutation. Final whole51 will run on frozen candidate and accompany immutable review packet; no aggregate rerun substituted. | S01X bounded stage2 contract and Task acceptance; RUNBOOK and mirror already describe released consumers. | Frozen whole51 and independent candidate review pending. No ownerQA or wholeSpec completion; no main, bundle or root JSON rollout. | 7e5c5864b05db5d8d7542c850e591e2c9cf4dbc0848a2c775d51e67afb4ca321 |
 | 6 | codex/s01x-stage2-candidate | fc41f47706fccf8d06e6421a1895f4eb0062e99a | none | 2 | Independent53935612 review FAIL with two P2 findings despite whole51 and57 public passes: duplicateStatus activation bypass and Spec-only delivered token discovery. Public redfc41f47706fccf8d06e6421a1895f4eb0062e99a has57PASS2FAIL. Narrow released corrections pass59/59 public groups including duplicate field variants, read-only refs/source, unrelated-Task independence, capability and containment controls; existing remote-claim controls pass. Prior receipts and failures retained. | S01X independent failed review and bounded corrective proof. | Merge freshly fetched current integrationd90785908b26517068a474bb88136c81995a2f18 preserving landed close/verdict fixes; freeze successor, rerun whole51/public union and obtain separate review. No ownerQA or wholeSpec claim. | 50f3bffca655a5467db14feb462b6bfb25d001e8e299d2141dbc0da2b485ad7a |
+| 7 | codex/s01x-stage2-candidate | b4e59c21dd97488980e883a66940538b8fcf625c | ahead 0 behind 0 | 0 | Verified source b4e59c21dd97488980e883a66940538b8fcf625c clean and actual remote tip matched before close. One frozen required51/51 PASS; public59/59; demo0.46s; append-only CLEAN. Director reports independent sourcePASS: both prior P2 resolved,51/59/demo/18 close tests/both Git suites and combined coexistence pass; all six prior Receipts valid. Preserve539 independentFAIL and redfc41f47757/59. Review scope is bounded TK004N source only. | RUNBOOK and template mirror; S01X bounded stage2 contract, native Task evidence and independent-review corrections. | Final closeout delta/current-target review and release-coordinator merge slot pending. Current integration25d3f4d23b3719693065336a4ba66349d0a95907 will be assembled and the frozen union rerun. Existing7 drift findings and78/100 guardrails remain. No wholeSpec/root rollout/ownerQA claim. | a8516703d2301916b03e58ef9fdde7d9344175f742daab10ea2ba6256053dd95 |

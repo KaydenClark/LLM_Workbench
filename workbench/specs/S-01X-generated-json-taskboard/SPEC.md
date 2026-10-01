@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Replace the Markdown Spec summary with a generated six-lane implementation board, shared lane selection and title-first room-core sitrep.
 **Blockers:** S-01W first identity/consumer delivery is contained in integration; its claimed assembled QA remains separate. Direct-Task coverage awaits its source-home contract.
-**Latest event:** TK-004N helper candidate verified; serialized consumer assembly remains pending.
-**Next gate:** Freeze bounded stage2 candidate and run whole51 plus public fixtures before independent candidate review.
+**Latest event:** TK-004N closed with proof.
+**Next gate:** Review final TK-004N closeout delta on current integration; remaining whole-Spec acceptance stays pending.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 
@@ -227,7 +227,7 @@ live Actuality after lane release.
 
 ## Bounded stage2 preparation (TK-004N)
 
-TK-004N is in progress on the released task-record/taskboard lane. Source
+TK-004N is closed with bounded source proof on the released lane. Source
 `needs-review` is accepted for Task records and legacy rows; ordinary To-do
 selection and claim do not consume it. A Spec explicitly awaiting review can
 project Needs review when every child is either Needs review or Complete;
@@ -266,7 +266,12 @@ Task token discovery. Public red `fc41f477` preserves both failures (57/59).
 TK-004N corrects these under the coordinator's narrow release: reject ambiguous
 Status and require parsed active state before writes; discover Spec blocker
 tokens through the existing delivered resolver. Focused correction proof is
-59/59; final current-base whole-suite proof and separate review follow.
+59/59. Exact `b4e59c21dd97488980e883a66940538b8fcf625c` passed one whole
+51-command run and independent bounded source review, as reported by the
+Director. Both P2 findings are resolved; the failed review and all six earlier
+Receipts remain intact. Native close records that proof without approving the
+whole Spec. Final closeout delta/current-target review follows assembly on
+`25d3f4d23b3719693065336a4ba66349d0a95907` and a new frozen required union.
 
 Default Markdown/CATALOG behavior, preview protections and all prior failed
 review evidence remain. Root/template rollout and direct Task homes remain
@@ -350,6 +355,7 @@ occurs during this planning authoring.
 | 2026-09-30 | TK-003S | Task closed | Exact published source 838565dc0fed6791e548e2f563985797439bff4d: all51 required commands PASS (48 AGENTS plus3 RUNBOOK), taskboard JSON39/39 and diagnostics36/36 PASS. Reachable public red2e191c01fd5d98e6da5c3d4c3ebbc599483456d2 reproduces three failures, independently confirmed. Malformed active Priority/table-status/row-record collision preserves valid peer diagnostics; declared foreign parent refuses preview/next/claim with prior bytes and refs preserved; normalized equivalent identity remains eligible; unexpected errors still propagate. Actual first-published append-only history CLEAN. Existing seven self-drift attention findings and guardrail78/100 remain; no clean-update, installed-distribution or reliability claim. | Shared calculation and parent-ownership validation, focused behavior controls, obsolete global source-shape assertion corrected, live Task and projection cite full published red2e191c01 SHA. Historical FAIL3 scratch84d1a7a citation preserved with appended truthful correction; prior Tasks, FAILs and receipts retained. | Fresh independent exact-final-head review required before integration. All nine whole-S01X acceptance criteria and owner Human QA remain open; stage2 review vocabulary/Backlog, direct/orphan Task home, sitrep and root/template rollout remain separate work. S01W assembled QA is unchanged. |
 | 2026-10-01 | TK-004N | Bounded stage2 helper checkpoint; Task remains in progress | Public red d9e18f98: eight expected failures,39 prior groups passed. Candidate2150baa9: exact51 required command coverage green after affected spec-workbench rerun, including49 public groups; frozen50/51 obsolete status-array failure and earlier exploratory41/51 dirty-runtime failures retained in Receipt. Append-only regression suite, demo, default Markdown/no-write/collision controls pass. Prior19 S01X rows and five done Task records byte-preserved; guardrails78/100 and same7 drift attention findings remain. | Source Task needs-review; child review gate; requirement-only assembled-Spec/owner QA visibility; owning Task/Spec proof. Shared CLI/parser/report unchanged. | Minimal Backlog and next --review consumer assembly await coordinator release. Fresh independent draft review pending. No full stage2, ownerQA or wholeSpec completion claim. |
 | 2026-10-01 | TK-004N | Correct checkpoint evidence formatting | Final actual-history check on 70216217981d808c7c360ad8262730b0c56c13cf failed because the new helper entry was serialized as comma-separated text rather than a Markdown row. Correct formatting and rerun; original malformed text remains below as explicit history. Earlier 19 evidence rows and completed Task bytes are unchanged. | Evidence formatting only; no runtime or test change | Serialized consumer assembly and independent review remain pending. |
+| 2026-10-01 | TK-004N | Task closed | Verified source b4e59c21dd97488980e883a66940538b8fcf625c clean and actual remote tip matched before close. One frozen required51/51 PASS; public59/59; demo0.46s; append-only CLEAN. Director reports independent sourcePASS: both prior P2 resolved,51/59/demo/18 close tests/both Git suites and combined coexistence pass; all six prior Receipts valid. Preserve539 independentFAIL and redfc41f47757/59. Review scope is bounded TK004N source only. | RUNBOOK and template mirror; S01X bounded stage2 contract, native Task evidence and independent-review corrections. | Final closeout delta/current-target review and release-coordinator merge slot pending. Current integration25d3f4d23b3719693065336a4ba66349d0a95907 will be assembled and the frozen union rerun. Existing7 drift findings and78/100 guardrails remain. No wholeSpec/root rollout/ownerQA claim. |
 
 ## Checkpoint formatting history
 
