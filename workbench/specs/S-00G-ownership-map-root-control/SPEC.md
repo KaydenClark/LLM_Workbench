@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Deliver the Ownership map as the eighth root file and Core routing artifact, with queryable responsibility routes and coordinated root-surface consumers.
 **Blockers:** No unresolved activation prerequisite. Q24B field shape/disposition placement and later concept coverage remain implementation decisions under the locked guards.
-**Latest event:** TK-001 claimed by codex-s00g.
-**Next gate:** Close TK-001 with verification and documentation proof.
+**Latest event:** TK-001 closed with proof.
+**Next gate:** Complete TK-002.
 
 > **Citation anchors.** pre=`c0ac60a179235ef22fa6ea81aec74735087e06e5` post=`c0ac60a179235ef22fa6ea81aec74735087e06e5`.
 
@@ -267,6 +267,7 @@ ownership route move. `RUNBOOK.md` gains the query procedure at that point.
 | 2026-10-01 | 574df962fcfdd8045ec4dd405ba7f548216f7d4a | Reproduced faithful prospective activation before live metadata edits | Public `convert-tasks S-00G --activate` in a disposable clone first refused stale prose with a byte-identical inventory; after only resolved metadata reconciliation it preserved four IDs/plans and TK-001 -> TK-002 -> TK-003 -> TK-004, with no Proof fields. [Literal original header/rows and results](activation-migration-2026-10-01.json). | No converter change; no human precondition invented. Implementation, full verification and independent review remain open. |
 
 | 2026-10-01 | 311001ae4d8debdebbb1be74c689f53c6e1f9583 | TK-001 schema/reader proved at source and installed seam | Missing-module and embedded-claim red tests; 4/4 focused tests; 52/52 exact AGENTS/RUNBOOK union in clean clone; installed runtime bytes and verify valid; separate reader review no remaining findings. [Detailed evidence](reader-proof-2026-10-01.json). | Reader milestone only. Seven inherited self-drift findings and 78/100 guardrails unchanged; no outcome improvement, final query, template, whole-Spec approval or owner QA claimed. Zero coordination hand-backs in this run. |
+| 2026-10-01 | TK-001 | Task closed | Reader/schema and concrete routes 4/4; full required union 52/52 at 311001ae4d8debdebbb1be74c689f53c6e1f9583; installed matching runtime verified; independent TK-001 review no findings. See reader-proof-2026-10-01.json. | SPEC.md, declared schema, reader proof and preserved migration evidence updated. | TK-002 consumer sweep, TK-003 generic template, TK-004 query/comparator and S01U coverage coordination. |
 
 ## Completion Result
 
