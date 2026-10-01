@@ -407,3 +407,65 @@ test('feedback formats require a disposition and owning evidence route', () => {
     assert.match(content, /owning Spec/, relative);
   }
 });
+
+// TK-002 checks the root Contract now; TK-005 owns the generic mirror.
+// Keep this scoped to operational sections so historical/rationale mentions
+// elsewhere cannot satisfy a missing instruction in the cold-start route.
+function taskWorkflowContract(content) {
+  const lifecycle = content.split('## Work Selection And Lifecycle\n')[1]?.split('\n## ')[0] ?? '';
+  const git = content.split('## Git Rules\n')[1]?.split('\n## ')[0] ?? '';
+  const rules = [
+    ['Task-record state', lifecycle, /`TASK\.md`[^\n]*state and proof/],
+    ['Spec-ID claim signature', lifecycle, /`claim S-### --agent NAME`[\s\S]*selects[^.]*eligible Task/],
+    ['Worker hand-back', lifecycle, /Worker self-checks[\s\S]*Dispatcher[\s\S]*no separate Task approval/],
+    ['Task proof receipt', lifecycle, /receipt S-### --task TK-###[\s\S]*--tests[\s\S]*--docs[\s\S]*--remaining-gap/],
+    ['Scoped Task close', lifecycle, /close S-###[\s\S]*--proof[\s\S]*--docs[\s\S]*--remaining-gap/],
+    ['Dispatcher assembled QA', lifecycle, /Dispatcher[^.]*whole-Spec QA[^.]*assembled Spec/],
+    ['Separate Director review', lifecycle, /separate Director context[\s\S]*immutable[\s\S]*report S-### --candidate SHA/],
+    ['Corrective return', lifecycle, /failed assembled review[\s\S]*corrective Task[^.]*finding[\s\S]*preserve[^.]*`TASK\.md`[\s\S]*fresh immutable candidate/],
+    ['Completion prerequisites', lifecycle, /reviewed delivery on integration -> owner approval -> verification on main -> `complete`/],
+    ['Capture before cleanup', lifecycle, /After `complete`[^.]*features[^.]*before retirement or discard/],
+    ['Delivered blocker', lifecycle, /`S-###:delivered`[\s\S]*content-bound[\s\S]*fetch integration/],
+    ['Owner-decision blocker', lifecycle, /`owner:<decision>`[^.]*removed/],
+    ['Blocker diagnostics', lifecycle, /`blocked-without-blocker`[\s\S]*`unknown-blocker-qualifier`/],
+    ['Current branch exception', git, /S-00O[\s\S]*exemption 2[\s\S]*Task PR[^.]*`integration`[\s\S]*separate-context review/],
+    ['Flexible owner QA', git, /milestones[\s\S]*accumulated work[\s\S]*exhausted Specs[\s\S]*valued Spec[\s\S]*Director escalation/],
+    ['Failed QA retained', git, /does not reset a failed Human QA gate/],
+    ['Owner-only main', git, /only the owner merges `integration` into `main`/]
+  ];
+  for (const [claim, section, pattern] of rules) assert.match(section, pattern, claim);
+  assert.doesNotMatch(lifecycle, /claim\s+(?:TASK\.md|[^\n`]*\/TASK\.md)/, 'claim takes a Spec ID, not a Task path');
+  assert.doesNotMatch(`${lifecycle}\n${git}`, /Every Task requires separate-context approval|Human QA occurs only at version completion/, 'no extra Task approval or version-only QA gate');
+  const runtime = read(root, 'workbench/tools/spec-workbench.mjs');
+  const supported = new Set(runtime.match(/Usage: spec-workbench\.mjs ([^ ]+)/)[1].split('|'));
+  for (const match of content.matchAll(/spec-workbench\.mjs[ \t]+([a-z][a-z-]*)/g)) {
+    assert.ok(supported.has(match[1]), `documented runtime command ${match[1]} exists`);
+  }
+}
+
+test('AGENTS routes real Task records through assembled review, corrective return and owner closure', () => {
+  taskWorkflowContract(read(root, 'AGENTS.md'));
+});
+
+test('the Task workflow contract rejects removed obligations and regressed approval/command instructions', () => {
+  const agents = read(root, 'AGENTS.md');
+  taskWorkflowContract(agents);
+  const removals = ['Task-record state', 'Dispatcher assembled QA', 'Corrective return', 'Completion prerequisites', 'Capture before cleanup', 'Flexible owner QA'];
+  const mutations = [
+    ['Task-record state', '`TASK.md` carries active state and proof', '`TASK.md` is optional context'],
+    ['Dispatcher assembled QA', 'whole-Spec QA against the assembled Spec', 'checks the latest Task only'],
+    ['Corrective return', 'failed assembled review', 'unrelated optional review'],
+    ['Completion prerequisites', 'reviewed delivery on integration -> owner approval -> verification on main -> `complete`', 'reviewed delivery on integration -> `complete`'],
+    ['Capture before cleanup', 'After `complete`, capture current capability knowledge in the manifest-declared\nfeatures collection before retirement or discard.', 'Capture is optional after cleanup.'],
+    ['Flexible owner QA', 'at useful milestones', 'only at version completion']
+  ];
+  assert.deepEqual(mutations.map(([claim]) => claim), removals);
+  for (const [claim, before, after] of mutations) {
+    assert.ok(agents.includes(before), `${claim}: mutation must change actual instructions`);
+    assert.throws(() => taskWorkflowContract(agents.replace(before, after)), { name: 'AssertionError' }, claim);
+  }
+  for (const regression of ['Every Task requires separate-context approval.', 'Human QA occurs only at version completion.', '`node workbench/tools/spec-workbench.mjs capture-features S-###`']) {
+    const mutated = agents.replace('## Git Rules\n', `## Git Rules\n\n${regression}\n`);
+    assert.throws(() => taskWorkflowContract(mutated), { name: 'AssertionError' }, regression);
+  }
+});

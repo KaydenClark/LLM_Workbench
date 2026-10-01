@@ -3,13 +3,13 @@
 **Spec ID:** S-00P
 **Status:** active
 **Priority:** 1
-**Owner:** DISPATCHER
+**Owner:** codex-s00p-dispatcher
 **Stance:** Builder
-**Updated:** 2026-09-30
+**Updated:** 2026-10-01
 **Catalog description:** Rewrite `BLUEPRINT.md` now to describe every rung of the governing workflow and the full recursive Spec/Task loop, then rewrite AGENTS, RUNBOOK, LEXICON and the `templates/` mirror once S-00H, S-00I and S-00J make the commands they describe real, and reconcile ADR-000F, ADR-000G and ADR-000I.
-**Blockers:** TK-002 onward wait on S-00I and S-00J; S-00J TK-01T will let TK-002 consume their reviewed integration delivery (`S-###:delivered`) instead of final `complete`. S-00H is complete and retired; TK-001 is done and landed.
-**Latest event:** TK-003N closed with proof.
-**Next gate:** Complete TK-002.
+**Blockers:** TK-002 consumes S-00I:delivered and S-00J:delivered; both are satisfied on integration 07edccc5. TK-003/TK-004 follow TK-002, then TK-005 follows both. Owner Human QA and main verification remain final closure gates.
+**Latest event:** TK-002 repaired-attempt closure evidence identity corrected after independent review FAIL at 1151b3f5.
+**Next gate:** Verify final repaired TK-002 candidate with full suite and fresh independent review, then explicitly authorized PUBLIC-origin publication and integration containment; TK-003/TK-004 follow containment. Owner QA/main remain final closure gates.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`f84b4691be7cd3abf7cdf719942ca6efaec0c617`.
 
@@ -79,7 +79,7 @@ At the pre anchor:
    including the intended nested branch topology and the coordinator as future
    scope, without any current status appearing in the file.
 2. After phase two, `AGENTS.md` describes work selection and lifecycle on Task
-   records, Task review before Spec-branch merge, assembled-Spec QA, the
+   records, Task self-check and hand-back before containment, assembled-Spec QA, the
    corrective-Task return path, owner Human QA on `integration`, retirement
    after reconciliation, and
    the Git topology that is actually in force; `RUNBOOK.md` names only commands
@@ -108,9 +108,11 @@ Observation or monitoring is not recorded approval. Owner-only promotion to
 [closure-capture transition contract](../S-00J-spec-qa-gate-at-integration/SPEC.md): reviewed delivery on integration,
 owner approval, verification on `main`, then `complete`; features Wiki capture
 follows `complete` at the closure point (not a precondition of it) and precedes
-every transient-record cleanup. Current completion and retirement commands still implement the older
-per-Spec approval mechanism; describe that gap explicitly until S-00J/S-00I
-supply the corrected behavior. Do not invent commands or mark the gap delivered.
+every transient-record cleanup. The delivered runtime binds per-Spec review
+and owner approval to current content, verifies main content before `complete`,
+and requires features capture before transient cleanup. Flexible owner QA timing
+is accepted; it is not a batch-approval command. Use the supported operations
+and preserve failed QA findings.
 
 The pending SCR candidate `e318f144247d4288d2364f8103c78069d64aa919`
 contains useful role/diagram changes but is not integrated or approved here.
@@ -137,40 +139,27 @@ separate-context review before integration remaining the operative gate until
 TK-002 rewrites `AGENTS.md`. The `AGENTS.md`, `RUNBOOK.md` and template control
 wording stays with TK-002, TK-003 and TK-005.
 
-### Delivery prerequisites (repair planned in S-00J TK-01T)
+### Current delivery prerequisites
 
-The current resolver satisfies an S-ID blocker only for a `complete` or
-`superseded` Spec; it cannot express reviewed integration delivery separately
-from final closure. This is verified at
-`git show 89d4042fb8931b9d720af75bffea1c28803d72aa:workbench/tools/spec-workbench.mjs`
-(`satisfiedIds` and `completeSpec`). Removing I/J from TK-002 today would
-bypass that gate. Keep all existing blocker fields. S-00J TK-01T adds the
-content-bound `S-###:delivered` blocker (T0 of the contract) and converts
-TK-002's S-00I/S-00J blockers to it in that same reviewed change; S-00O's
-release blockers stay plain and keep requiring final `complete`.
+S-00J TK-01T and TK-02J delivered the content-bound `S-###:delivered`
+blocker. S-00I and S-00J have reviewed integration delivery at the execution
+base `07edccc57b8f75613ad1d09203a3e414d867b90c`; `next` selects TK-002 and
+native `claim` succeeds after fetching integration. Delivery requires all Tasks
+done, acceptance checked, a current PASS whose immutable candidate is contained
+in the declared integration branch and whose committed digest matches. Final
+`complete` remains a separate owner QA/main gate. Plain Spec blockers still
+require complete or superseded; `owner:<decision>` requires an explicit removal.
+The historical prerequisite plans and evidence below retain their dated scope.
 
-Proposed sequence: S-00J supplies bound reviewed-delivery/closure semantics;
-S-00I composes main verification, features capture and recovery with them;
-S-00P rewrites controls against those verified commands; S-00O performs its
-expanded release and real Template-upgrade proof. A prerequisite receipt must
-identify the immutable candidate, relevant delivered capability/proof, separate
-Director verdict and integration containment. An open or failed Human QA finding
-must stay visible and must block any capability whose actual delivery it
-invalidates. It must not be erased by a passing source review.
-
-Recommend an explicit delivery prerequisite distinct from a completion
-prerequisite, with missing/stale/uncontained/failed proof refusing selection
-and claim. S-00J owns the exact supported representation and stable-seam tests;
-this paragraph selects no new schema or CLI. Preserve existing completion
-blocker behavior, owner approval and main-verification closure gates. S-00O
-owns release scope/readiness and any change to its bootstrap exemptions.
-
-Execution order remains TK-002 -> TK-003 and TK-004 -> TK-005. TK-002 needs
-both the supported prerequisite repair and Director release of controls/test
-paths. TK-004 additionally needs disposition of unresolved ADR decisions.
-Shared projections, ledger, Wiki routers, manifest and IDs remain with the
-Director or their released lane. This Dispatcher is the sole writer of this
-Spec; Workers return one Task's proof at a time.
+Execution order remains TK-002 -> TK-003 and TK-004 -> TK-005. The current
+owner request releases these Tasks' controls, tests, ADRs and templates to this
+Dispatcher. One durable writer maintains this Spec, Task state and generated
+projections; Workers return one Task's proof at a time. Claude's skill Specs,
+skills, Wiki, ledger and manifest are excluded. S-00O exemption 2 remains in
+force: each Task lands as its own immutable reviewed PR into integration;
+nested Task-to-Spec branches remain destination design. Review is separate
+context; this Dispatcher and its Workers cannot approve their own candidates.
+No owner QA, main promotion, release or other-room upgrade is supplied here.
 
 ## Decisions And Contracts
 
@@ -252,9 +241,10 @@ closure order supersedes this earlier wording:
   Blueprint rework, delivered through only the Specs needed to establish it.
 
 **Phase rule.** TK-001 may land before any tool exists because the Blueprint
-carries no current status. TK-002 onward may not land until S-00H, S-00I and
-S-00J are `complete`, because the controls must describe only commands and
-records that exist. The `AGENTS.md` stable-path rule is retired by S-00I
+carries no current status. TK-002 requires S-00H complete plus S-00I and
+S-00J reviewed integration delivery, enforced by its `:delivered` blockers,
+because controls describe only commands and records that exist. The
+`AGENTS.md` stable-path rule is retired by S-00I
 TK-004 in the same change that makes moves link-safe; TK-002 preserves that
 change and does not re-retire it.
 
@@ -262,8 +252,9 @@ change and does not re-retire it.
 ADR-000G and ADR-000I so each matches the locked answers above. The builder
 chooses between amendment and supersession within those answers; the register
 must end with none of the three `proposed`, ADR-000H's Packet member widened
-for the corrective case WF-8A added (an amendment or successor record, since
-accepted bodies are not rewritten), and every `canonicalized_in` owner named
+for the corrective case WF-8A added through ADR-000A's amendment-first rule
+for the same architectural decision, preserving its identity and reasons, and
+every `canonicalized_in` owner named
 by the records actually carrying the rule.
 
 **Dogfood boundary.** TK-001 keeps the eight-heading contract shared with
@@ -287,10 +278,10 @@ generic and `[BRACKETED]`.
 
 ## Dependencies And Blockers
 
-TK-001 has no blocker. TK-002 waits on TK-001 and on S-00H, S-00I and S-00J
-reaching `complete`; `claim` resolves whole completed Spec IDs, so the
-dependency is expressed at Spec granularity. TK-003 and TK-004 wait on
-TK-002; TK-005 waits on both.
+TK-001 has no blocker. TK-002 depends on TK-001 and S-00H completion and
+S-00I:delivered/S-00J:delivered reviewed integration delivery. The native
+resolver and claim enforce those Task fields. TK-003 and TK-004 wait on TK-002;
+TK-005 waits on both.
 
 ## Vertical Implementation Slices
 
@@ -333,8 +324,9 @@ Preserve the stable-path retirement S-00I TK-004 made. Every command named
 must exist. S-00H TK-004 will already have removed the word `Ticket` from
 the controls, so the red test is not a vocabulary sweep: it is an assertion
 at the control-fidelity seam that Work Selection And Lifecycle names
-`TASK.md` as the record `claim` takes and describes Task review before
-Spec-branch merge, assembled-Spec QA and the corrective-Task return path.
+`TASK.md` as the state/proof record selected by `claim S-###` and describes Worker self-check and hand-back before containment, assembled-Spec
+QA and the corrective-Task return path. The current SCR role chain supersedes
+the historical per-Task separate approval requirement.
 `TASK.md`, `assembled Spec` and `corrective Task` occur zero times in
 `AGENTS.md` at the pre anchor, and
 S-00H TK-004 changes vocabulary only, so the assertion stays false until
@@ -385,7 +377,7 @@ template with its reason.
 ## Acceptance Criteria
 
 - [x] `BLUEPRINT.md` names every rung, the three altitudes, the full recursive loop, the intended topology, reconciliation and retirement, and the coordinator as future scope, with no current status, and passes the Blueprint contract test including its new rung assertion.
-- [ ] `AGENTS.md`, `RUNBOOK.md` and `LEXICON.md` describe the Task-record workflow, Task review before Spec-branch merge, assembled-Spec QA, the corrective-Task return path, Human QA closure, reconciliation and retirement, naming only commands and records that exist, proven by the command-existence sweep.
+- [ ] `AGENTS.md`, `RUNBOOK.md` and `LEXICON.md` describe the Task-record workflow, Task self-check and hand-back before containment, assembled-Spec QA, the corrective-Task return path, Human QA closure, reconciliation and retirement, naming only commands and records that exist, proven by the command-existence sweep.
 - [ ] S-00H's repository-wide `Ticket` sweep still passes after phase two, and no control or template instructs the embedded-row route; this verifies S-00H's result rather than owning it a second time.
 - [ ] ADR-000F, ADR-000G and ADR-000I are each accepted, amended or superseded, the register is regenerated, and no active record contradicts a locked WF answer.
 - [ ] `templates/` mirrors the reworked controls, generic and `[BRACKETED]`, and a freshly generated room speaks the new workflow.
@@ -412,9 +404,9 @@ Run the targeted test for the touched seam, then the full verification suite
 named in `AGENTS.md`, then `node workbench/tools/spec-workbench.mjs doctor`.
 Capture the guardrail baseline before TK-002 and record the after-score,
 remaining recommendations and outcome limitation after TK-005. The current S-00O exemption remains a documented compatibility constraint
-until its owner reconciles it. Workers hand back without a separate Task
-approval ceremony; no integration merge occurs before the Director reviews
-the assembled immutable candidate.
+until its owner reconciles it. Workers hand back without a separate Task approval ceremony. Under S-00O
+exemption 2 each integration Task candidate still requires separate-context
+review; whole-Spec acceptance needs an assembled immutable review.
 
 ## Documentation Impact
 
@@ -449,6 +441,18 @@ workflow. No other owner changes.
 | 2026-09-30 | TK-003N | Task closed | Baseline exact fad42375a2f9f093913e5782f8a6297a5ce54bdb: doctor selection render-drift names TASKBOARD; ordinary render changes only S-00P TK-002 effective blocked to ready after reviewed integration containment. Focused exact e930213e8ba83ad79cf4e18c50e40e58c410e619: render idempotent and clean; doctor exit 0 (seven existing attention findings); Task gate refused false; test-spec-citation-anchors and test-check-append-only pass. Existing TK-002..TK-005 and CATALOG byte-identical; S-00I byte-identical, bound PASS7 digest bd96878bafc545a7809f118b94b8978e51057f6f66f1449a4a6c6b55ada69d40 preserved. Required frozen-candidate full51 and independent review remain publication/integration gates. | Generated TASKBOARD refreshed; owning maintenance Task and Spec evidence only. No controls, templates, runtime or identity QA changes; CATALOG unchanged. | Independent exact-candidate Task PR review and integration delivery pending; wider S-00P TK-002..TK-005 remain open; no owner approval or Spec completion. |
 
 | 2026-09-30 | none | FND-Q16 owner-approved amendment of existing decisions | Candidate `fe0bb3a258d468b215afbc964bab759e29cbbd0f`, base `065a7ce4436e46ae6726985b567b6b94ed94660c`: required 48-command suite 47 pass / 1 fail. The sole failure is test-portability-matrix: the ledger names historical `workbench/grilling`; reproduced identically in a clean base checkout, not introduced here. Independent substantive review of this source found no actionable findings and reproduced test-adr 38/38 plus ledger 5/5. ADR cross-link inventory observed 40 files / 77 links; criteria retained. Guardrail audit 78/100 before and after; repeated real trials, controls/prior/candidate comparison, recent evidence and uncertainty remain missing, so no agent-outcome claim. Read-only self-drift pre at base and post at candidate both retain stale S-00Q task claim dated 2026-09-19 plus historical seed/provenance limitations; cleanUpdate false. Bounded semantic read-back confirms unchanged QA/closure/discard gates, retained unresolved obligations and permanent ADR/checkpoint history; only FND-Q16 and its status tally changed in the ledger, with the pinned historical progress assessment preserved. | ADR-000A owns the shared scaffolding lifecycle and amendment-first rule; ADR-000F/0054/000N apply it to their scopes. AGENTS/LEXICON/RUNBOOK and generic mirrors agree. Ledger FND-Q16 locked; no new ADR, Task, runtime behavior, deletion, version stamp or release. | Exact final evidence-candidate review and integration containment pending; baseline portability failure and existing self-drift remain. Wider S-00P Tasks and owner Human QA remain open. |
+
+| 2026-10-01 | TK-002 | Phase-two execution and current-gate reconciliation | Native claim published at 699ca112 from integration 07edccc5; I/J:delivered resolve. Control-fidelity red 18/20 (missing Task-record state), green 20/20 with removal/regression mutations. Portability base red 3/4: explicitly superseded ledger proposal treated as live route; released test-only classification green 5/5, with answer/question/notes/result/progress/private-path negative controls. Disposable CLI demo 5.16s: real claim, progress/final Receipt, close, failed content-bound verdict and corrective Task, fresh report/PASS simulation, and missing-owner-approval complete refusal. Citation 15/15, append-only all cases pass; full committed-candidate suite remains pending | AGENTS workflow rewrite is this Task deliverable; Spec current prerequisites/roles/claim signature reconciled to later SCR and delivered runtime, historical rows preserved. Templates deliberately deferred to TK-005; Wiki/ledger bytes unchanged | Guardrail 78/100 before/after; remaining repeated real trials, controls/prior/candidate comparison, recent evidence and uncertainty are absent. Self-drift retains S-00Q stale claim and six historical seed/provenance findings, cleanUpdate false. No agent-outcome, clean-update, owner QA, main or whole-Spec completion claim; integration review pending. Zero owner coordination hand-backs. |
+| 2026-10-01 | TK-002 | Task closed | Control-fidelity red18/20 then green20/20 with9 contract mutations; spec-workbench39/39, spec-report, branch-closeout8/8, argument12/12; disposable cold-start and corrective-return demo6.39s with stale-digest/Task-path/unclaimed-close/owner-main/retirement refusals and original Task proof preserved. Full51/51 at immutable bf06376df5ccf298e94849a1363c4b2fdc74f07f; baseline portability3/4 corrected narrowly to5/5 with active-route/privacy negative cases. Guardrail78/100 before/after; self-drift7 known findings and cleanUpdatefalse retained. | AGENTS current Task-record, review/correction, blocker grammar and closure instructions rewritten; S-00P current dependency/role/claim text reconciled. Templates deliberately deferred to TK-005; historical rows preserved; no Wiki/skills/ledger/manifest change. | Independent final-candidate review, PUBLIC origin publication approval and integration containment pending; TK-003..005 and owner QA/main remain open. No clean-update or agent-outcome claim. Git state at close: unpushed (ahead 1 behind 0 of origin/codex/s00p-tk002-workflow-controls); recorded reason: Local unpushed review-ready checkpoint because automatic approval review refused public-origin egress before execution; no transport retry. Local-only bf06376d has full51/51 proof. Exact final public-destination approval remains required before push and integration delivery. |
+
+| 2026-10-01 | TK-002 | Publication refused before execution; local candidate verified | Automatic approval review rejected the combined git add/commit/push before execution: "The command commits and pushes repository contents to the public origin, but the trusted request authorizes integration delivery without specifying this public destination or authorizing exposure of these files; the push is therefore unapproved sensitive egress." No alternate transport or public push retry. Safer local-only commit bf06376df5ccf298e94849a1363c4b2fdc74f07f succeeded; full required RUNBOOK suite 51/51 at that immutable SHA, including append-only validation. Final Task-candidate suite and independent review follow administrative close | Six scoped files: AGENTS, control-fidelity and portability tests, owning Spec/TK-002 and generated TASKBOARD. Ignored notes, private recovery, Wiki, skills and manifest excluded. Initial native claim publication699ca112 previously succeeded; source update is not remotely recovered or delivered | Explicit PUBLIC KaydenClark/LLM_Workbench branch publication remains an authorization gate; Director will request only that action against the reviewable payload. Task closed with truthful git-state-reason, not a delivery claim. Owner QA/main and all remaining Spec acceptance remain open; zero routine owner coordination hand-backs. |
+
+| 2026-10-01 | TK-002 | Independent Task candidate review FAIL; same Task acceptance correction | Exact BASE 07edccc57b8f75613ad1d09203a3e414d867b90c / HEAD 2c9c7727fcd3986b642ccfa41573cdd44fed3e63: one proven P2 at git show 2c9c7727:tools/test-portability-matrix.mjs, helper masking of an entire proposed parenthesis suppresses an active stale route inside it. Independent reproduction observed rawDetects=true/classifiedDetects=false for a locked row question "Which root (the old name was proposed; now use workbench/grilling/)?". Reviewer confirmed focused control 20/20, portability 5/5, actual disposable demo and exact full 51/51; those do not settle the uncovered input. No other actionable finding | Original candidate, Proof and Receipt history retained; current Task explicitly in-progress for a fresh same-ID attempt under Spec Manager and Director release. No new Task, whole-Spec verdict, owner QA or delivery claim | Bound historical proposal span and add durable inside-parenthesis active-route negative before fresh full verification and independent review. Public publication remains refused; zero owner coordination hand-backs. |
+| 2026-10-01 | TK-002 | Task reclosed after independent review correction | Independent P2 at2c9c7727 preserved: active retired instruction inside proposed parentheses escaped classifier. Durable exact red exit1 before repair; bounded nominal-span helper green focused1/1 and matrix6/6. 26 new assertions:4 historical positives and22 active negatives across grilling/handoffs; existing9 negatives retained. Control-fidelity20/20, ledger5/5, syntax and diff-check pass. Earlier full51/51 at2c9c7727 remains historical; required full51 on this new final immutable candidate is pending before publication/delivery. | Existing TK-002 narrow portability test corrected within acceptance; prior Task Receipt/history and independent FAIL preserved. AGENTS bytes unchanged from prior candidate; ledger and all excluded lanes unchanged; shared Spec/Task/projection current. | Final repaired-candidate full51 and fresh independent review remain required; explicit PUBLIC KaydenClark/LLM_Workbench publication authorization and reviewed integration containment pending; TK-003..005 and owner QA/main remain open. Git state at close: dirty-tree (4 files: TASKBOARD.md, tools/test-portability-matrix.mjs, workbench/specs/S-00P-workflow-canon-rework/SPEC.md, workbench/specs/S-00P-workflow-canon-rework/tasks/TK-002/TASK.md) and unpushed (ahead 2 behind 0 of origin/codex/s00p-tk002-workflow-controls); recorded reason: Local unpushed review-ready correction because automatic approval review refused public-origin export before execution. No public transport retry or bypass; scoped targeted proof is named, new final full suite/review still pending and no delivery claimed. |
+
+| 2026-10-01 | TK-002 | Same-Task unlanded acceptance correction self-check | Exact reported active-route-in-parenthesis regression added first and fails with exit1. Narrow nominal proposal/history span repair: focused 1/1, portability 6/6; 26 new assertions cover 4 historical positives and 22 active negatives across both legacy lanes, with 9 existing negatives retained. Controls 20/20, ledger 5/5, syntax and diff-check pass. Temporary old/current helper comparison corrected 10 false acceptances among 12 negative cases; actual ledger 298 rows unchanged, LD-22 rejected proposal retained | Only portability test source changed from failed candidate; AGENTS unchanged. Native progress and close Receipt rows append to the original chain. Independent FAIL at 2c9c7727 and its 51/51 historical proof remain unchanged | New final committed-candidate full51 and fresh independent review pending; public export remains refused and no retry occurred. Scoped Task closed with truthful unpushed reason; no integration delivery, whole-Spec PASS, owner QA/main or clean-update claim. Zero owner coordination hand-backs. |
+
+| 2026-10-01 | TK-002 | Independent repaired candidate FAIL and closure-event identity correction | Exact BASE 07edccc57b8f75613ad1d09203a3e414d867b90c / HEAD 1151b3f51484484226ced1500114b99c100ca222: required RUNBOOK full suite 50/51, sole failure test-check-append-only. Fresh independent review FAIL for one P2: the second same-date Task closed row shadows the original Date/Task/Event identity in the first-published checker. No other actionable finding; reviewer independently verified corrected portability 6/6, controls 20/20, ledger 5/5 and disposable demo 6.13s. Direct checker reproduced the same original-row rewrite finding | Director released only the latest repaired-attempt Event label: now Task reclosed after independent review correction. Original first closure at 2c9c7727 and both Receipt chains are byte-preserved; frozen 1151b3f5 retains the colliding variant. No checker, runtime or behavior change, history rewrite or waiver. This append records the failed candidate and reason for the distinct attempt identity | New immutable candidate full51 and fresh entire-diff independent review required before publication and integration containment. Public-origin refusal remains; no retry. TK-003..005 and owner QA/main remain open; no whole-Spec PASS, clean-update or outcome claim. Zero routine owner coordination hand-backs. |
 
 ## Completion Result
 

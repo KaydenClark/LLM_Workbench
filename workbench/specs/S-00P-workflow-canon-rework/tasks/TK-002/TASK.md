@@ -3,11 +3,29 @@
 **Task ID:** TK-002
 **Spec ID:** S-00P
 **Slice:** Rewrite `AGENTS.md` to the Task-record workflow using only commands that exist
-**Status:** blocked
+**Status:** done
 **Blockers:** TK-001, S-00H, S-00I:delivered, S-00J:delivered
 **Destination:** spec-acceptance: S-00P Acceptance Criteria
 **Planned verification:** Red/green contract regressions in `tools/test-control-fidelity.mjs`, exact command/argument checks against `workbench/tools/spec-workbench.mjs`, and a disposable-room cold-start walkthrough; preserve guardrail and self-drift before/after receipts. These are execution plans, not achieved proof.
 **Stance:** Builder
+**Proof:** Independent P2 at2c9c7727 preserved: active retired instruction inside proposed parentheses escaped classifier. Durable exact red exit1 before repair; bounded nominal-span helper green focused1/1 and matrix6/6. 26 new assertions:4 historical positives and22 active negatives across grilling/handoffs; existing9 negatives retained. Control-fidelity20/20, ledger5/5, syntax and diff-check pass. Earlier full51/51 at2c9c7727 remains historical; required full51 on this new final immutable candidate is pending before publication/delivery.
+
+## Execution Reconciliation (2026-10-01 UTC)
+
+The current owner request and Director release authorize this Task's named
+AGENTS/control-test lane. Native claim selected this record at `699ca112` after
+fetching integration; S-00I:delivered and S-00J:delivered are satisfied at base
+`07edccc57b8f75613ad1d09203a3e414d867b90c`. The September 26 packet below is
+planning history where it says execution is blocked, a lane is unreleased or
+main/capture behavior is unavailable. Current source implements content-bound
+review/owner approval, main-before-complete verification and feature capture
+before cleanup. The latest SCR role chain governs; S-00O exemption 2 still
+requires immutable independent review of this Task's integration candidate.
+The Dispatcher also owns the Director-released test-portability-matrix lane,
+limited to structured historical proposal classification with active-route and
+privacy negative checks; no ledger bytes change. Worker source/proof hand-back
+is recorded in the owning Spec; full candidate verification and native close
+follow before review. Templates remain TK-005's staged mirror obligation.
 
 ## Objective And Destination
 
@@ -171,3 +189,16 @@ remain historical; planning observations read at base
 reconciliation of conflicting S-00P review/closure wording. Packet-only checks
 are whitespace validation, unchanged Status/Blockers and a one-file diff;
 assembled planning verification belongs to the Dispatcher.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | codex/s00p-tk002-workflow-controls | 699ca112d33e7a2042f49efbfa766f6c12d60099 | ahead 0 behind 0 | 4 | Portability baseline red 3/4 at 07edccc5; narrow structured historical proposal handling green 5/5 with active-path/private-path negative cases. Worker AGENTS contract and disposable behavior proof in progress. | S-00P current prerequisite/role/closure text reconciled to delivered I/J behavior; historical evidence preserved. AGENTS rewrite in progress. | TK-002 Worker proof, full frozen-candidate suite and independent review; TK-003..005 and owner QA/main remain open. | 9290c61995dfe011ef89157463a7204a3e991613a35fa27e91b6c86b4b2a6864 |
+| 2 | codex/s00p-tk002-workflow-controls | bf06376df5ccf298e94849a1363c4b2fdc74f07f | ahead 1 behind 0 | 0 | Control-fidelity red18/20 then green20/20 with9 contract mutations; spec-workbench39/39, spec-report, branch-closeout8/8, argument12/12; disposable cold-start and corrective-return demo6.39s with stale-digest/Task-path/unclaimed-close/owner-main/retirement refusals and original Task proof preserved. Full51/51 at immutable bf06376df5ccf298e94849a1363c4b2fdc74f07f; baseline portability3/4 corrected narrowly to5/5 with active-route/privacy negative cases. Guardrail78/100 before/after; self-drift7 known findings and cleanUpdatefalse retained. | AGENTS current Task-record, review/correction, blocker grammar and closure instructions rewritten; S-00P current dependency/role/claim text reconciled. Templates deliberately deferred to TK-005; historical rows preserved; no Wiki/skills/ledger/manifest change. | Independent final-candidate review, PUBLIC origin publication approval and integration containment pending; TK-003..005 and owner QA/main remain open. No clean-update or agent-outcome claim. Git state at close: unpushed (ahead 1 behind 0 of origin/codex/s00p-tk002-workflow-controls); recorded reason: Local unpushed review-ready checkpoint because automatic approval review refused public-origin egress before execution; no transport retry. Local-only bf06376d has full51/51 proof. Exact final public-destination approval remains required before push and integration delivery. | 9baa06a84f4cdf9a0f00f1fc94e9ad43dcbf0374d39e0e956b0075d238a7d8f7 |
+| 3 | codex/s00p-tk002-workflow-controls | 2c9c7727fcd3986b642ccfa41573cdd44fed3e63 | ahead 2 behind 0 | 4 | Fresh same-Task acceptance correction: exact independent P2 durable red exit1, then focused1/1 and portability6/6 green; 26 new table assertions across both legacy lanes (4 historical positives and22 active negatives), existing9 negatives preserved. Control-fidelity20/20, ledger5/5, syntax and diff check pass. Final frozen-candidate full51 and fresh independent review pending. | Portability checker recognizes only whole nominal legacy-path proposed parentheses and nominal superseded/unselected history sentences. Exact failed head2c9c7727 and independent review retained; no ledger or AGENTS source change. | Final full51, fresh immutable separate-context review, explicit public-origin export authorization and integration containment pending. | 1237cc7033467a0f41f4f771af41f999bdc01a4e25705ca4f38f507db5d46830 |
+| 4 | codex/s00p-tk002-workflow-controls | 2c9c7727fcd3986b642ccfa41573cdd44fed3e63 | ahead 2 behind 0 | 4 | Independent P2 at2c9c7727 preserved: active retired instruction inside proposed parentheses escaped classifier. Durable exact red exit1 before repair; bounded nominal-span helper green focused1/1 and matrix6/6. 26 new assertions:4 historical positives and22 active negatives across grilling/handoffs; existing9 negatives retained. Control-fidelity20/20, ledger5/5, syntax and diff-check pass. Earlier full51/51 at2c9c7727 remains historical; required full51 on this new final immutable candidate is pending before publication/delivery. | Existing TK-002 narrow portability test corrected within acceptance; prior Task Receipt/history and independent FAIL preserved. AGENTS bytes unchanged from prior candidate; ledger and all excluded lanes unchanged; shared Spec/Task/projection current. | Final repaired-candidate full51 and fresh independent review remain required; explicit PUBLIC KaydenClark/LLM_Workbench publication authorization and reviewed integration containment pending; TK-003..005 and owner QA/main remain open. Git state at close: dirty-tree (4 files: TASKBOARD.md, tools/test-portability-matrix.mjs, workbench/specs/S-00P-workflow-canon-rework/SPEC.md, workbench/specs/S-00P-workflow-canon-rework/tasks/TK-002/TASK.md) and unpushed (ahead 2 behind 0 of origin/codex/s00p-tk002-workflow-controls); recorded reason: Local unpushed review-ready correction because automatic approval review refused public-origin export before execution. No public transport retry or bypass; scoped targeted proof is named, new final full suite/review still pending and no delivery claimed. | f259afb014178c20eefce39519440a67e04e1eb4a957736d4181c9e62501f0d1 |
+
+## Unlanded Review Correction (2026-10-01 UTC)
+
+Independent exact-head review failed candidate `2c9c7727fcd3986b642ccfa41573cdd44fed3e63` for one proven P2: the portability classifier masked an active retired route inside a parenthesis that also said proposed. This is an unmet TK-002 acceptance requirement before integration, so the Director released a fresh attempt of this same Task. The record returns explicitly to in-progress; prior Proof and checksum-linked Receipt rows remain unchanged as that earlier attempt. No whole-Spec verdict, owner QA, delivery or publication is inferred. The correction lane remains test-portability-matrix only; source controls and all excluded lanes remain unchanged.
