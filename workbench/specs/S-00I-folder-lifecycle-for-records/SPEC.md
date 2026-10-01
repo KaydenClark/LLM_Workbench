@@ -3,13 +3,13 @@
 **Spec ID:** S-00I
 **Status:** active
 **Priority:** 3
-**Owner:** codex-close-recovery
+**Owner:** codex-close-directory-recovery
 **Stance:** Builder
 **Updated:** 2026-10-01
 **Catalog description:** Express ADR, Spec and Task lifecycle by folder location, reconcile completed Specs and Tasks into readable durable owners before retiring them, and discard retired records only through a verified gate; permanent `archive` is never cleared.
 **Blockers:** none; S-00H is `complete` (integration `49c671e`).
-**Latest event:** TK-004F interrupted-close runtime correction closed natively after remote-verified source0d4ad14a passed51/51 and12public recovery cases. Earlier independent fail verdict and all Task receipts are retained; final metadata validation and parent review remain separate.
-**Next gate:** Finish final metadata-only exact51 validation, publish the unchanged-identity draft Task PR, then obtain parent independent exact-head review and serial shared-file assembly with S-00J binding correction before integration. Owner Human QA remains ongoing and unapproved; main promotion and Spec completion remain gated.
+**Latest event:** TK-004L claimed by codex-close-directory-recovery.
+**Next gate:** Close TK-004L with verification and documentation proof.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
