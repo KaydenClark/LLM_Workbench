@@ -3,7 +3,7 @@
 **Task ID:** TK-004F
 **Spec ID:** S-003P
 **Slice:** P1: Isolate Git repository and configuration environment - public394 CLI with GIT_DIR/GIT_WORK_TREE resolves a foreign binding instead of refusing its SHA.
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-003P Acceptance Criteria
