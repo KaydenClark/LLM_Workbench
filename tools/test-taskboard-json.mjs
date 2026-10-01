@@ -187,6 +187,33 @@ if (process.argv.includes('--demo')) {
     assert.deepEqual(card.requiredQA, []);
   }));
 
+  test('review requirements and failed Human QA next action stay visible without satisfying dependencies', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA', status: 'needs-review', extra: '**Next action:** Failed Human QA: preserve findings and finish corrective work.' });
+    task(root, a, { id: 'TK-00AA', status: 'needs-review', blockers: 'owner:choose-input', extra: '**Capabilities:** browser' });
+    const b = spec(root, { id: 'S-00AB' });
+    task(root, b, { id: 'TK-00AB', blockers: 'TK-00AA' });
+    const board = preview(root), before = sourceSnapshot(root);
+    assert.match(board.lanes.needsReview[a.id].nextAction, /^Failed Human QA:/);
+    assert.deepEqual(board.lanes.needsReview['TK-00AA'].dependencies, ['owner:choose-input']);
+    assert.ok(board.lanes.toDo['TK-00AB']);
+    assert.equal(selected(root, '--local', '--capabilities', 'none'), null);
+    assert.deepEqual(sourceSnapshot(root), before);
+  }));
+
+  test('new review vocabulary preserves typo refusal and prior preview bytes', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA' });
+    const file = task(root, a, { id: 'TK-00AA', status: 'needs-review' });
+    preview(root);
+    put(root, file, fs.readFileSync(path.join(root, file), 'utf8').replace('**Status:** needs-review', '**Status:** needs-reveiw'));
+    const before = sourceSnapshot(root);
+    for (const args of [['render', '--format', 'json'], ['next', '--local'], ['claim', a.id, '--agent', 'fixture', '--local']]) {
+      const result = command(root, ...args);
+      assert.equal(result.status, 1);
+      assert.match(result.stderr, /invalid status/);
+      assert.deepEqual(sourceSnapshot(root), before);
+    }
+  }));
+
   test('ordinary next offers To-do rather than in-progress work without writing source or preview', () => withRoom(root => {
     const a = spec(root, { id: 'S-00AA', priority: 0 });
     task(root, a, { id: 'TK-00AA', status: 'in-progress' });

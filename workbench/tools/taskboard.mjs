@@ -2,7 +2,7 @@ import { compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.m
 
 export const TASKBOARD_LANES = Object.freeze(['backlog', 'toDo', 'inProgress', 'blocked', 'needsReview', 'complete']);
 const SPEC_STATES = new Set(['planned', 'active', 'blocked', 'needs-review', 'complete', 'superseded']);
-const TASK_LANES = Object.freeze({ ready: 'toDo', 'in-progress': 'inProgress', blocked: 'blocked', done: 'complete', deferred: 'backlog' });
+const TASK_LANES = Object.freeze({ ready: 'toDo', 'in-progress': 'inProgress', blocked: 'blocked', 'needs-review': 'needsReview', done: 'complete', deferred: 'backlog' });
 
 // Source-qualified calculation shared by preview and execution consumers.
 // Dependencies and capability facts come from existing source resolvers; the
@@ -21,7 +21,8 @@ export function taskboardTaskEntry(spec, task, { resolvedStatus = task.status, d
     key: `${visibleIdKey(spec.id)}/${visibleIdKey(task.id)}`,
     specId: spec.id, id: task.id, title: task.slice, priority,
     lane, status: resolvedStatus, dependenciesMet,
-    eligible: lane === 'toDo' && resolvedStatus === 'ready' && dependenciesMet
+    eligible: lane === 'toDo' && resolvedStatus === 'ready' && dependenciesMet,
+    reviewEligible: lane === 'needsReview' && dependenciesMet
   };
 }
 
@@ -70,6 +71,9 @@ export function buildTaskboard(specs, { resolveTask = () => ({}) } = {}) {
         progress: null, nextAction: taskAction({ ...child, status: entry.status }, retired),
         cleanupState: lane === 'complete' ? (retired ? 'readyToDelete' : 'readyToCapture') : null
       });
+      // An explicit review state names a required candidate boundary, not a
+      // universal Task approval ceremony or evidence that review passed.
+      card.requiredQA = lane === 'needsReview' ? ['independent-candidate-review'] : [];
       card.specId = child.specId;
       add(child.id, lane, card, child.relativePath);
     }
@@ -81,6 +85,11 @@ export function buildTaskboard(specs, { resolveTask = () => ({}) } = {}) {
       nextAction: spec.nextGate,
       cleanupState: lane === 'complete' ? (spec.lifecycleFolder ? 'readyToDelete' : 'readyToCapture') : null
     });
+    // Destination-level QA obligations remain visible during delivery. These
+    // labels are requirements only; verdict and owner-approval evidence stays
+    // in the existing report/gate readers, never inferred from a board lane.
+    card.requiredQA = ['complete', 'superseded'].includes(spec.status) && lane === 'complete'
+      ? [] : ['assembled-spec-review', 'owner-human-qa'];
     add(spec.id, lane, card, spec.relativePath);
   }
   const board = { schemaVersion: 1, lanes: Object.fromEntries(TASKBOARD_LANES.map(lane => [lane, {}])) };
@@ -95,7 +104,8 @@ function specLane(spec, children) {
   if (spec.status === 'blocked') return 'blocked';
   const allDone = children.every(child => child.lane === 'complete');
   if (allDone && ['complete', 'superseded'].includes(spec.status)) return 'complete';
-  if (allDone && spec.status === 'needs-review') return 'needsReview';
+  const allReviewReady = children.every(child => ['needsReview', 'complete'].includes(child.lane));
+  if (allReviewReady && spec.status === 'needs-review') return 'needsReview';
   if (children.some(child => child.lane === 'inProgress')) return 'inProgress';
   if (children.some(child => child.lane === 'toDo') || children.length === 0) return 'toDo';
   if (children.some(child => child.lane === 'blocked')) return 'blocked';
@@ -143,6 +153,7 @@ function dateField(value, title) {
   return date;
 }
 function taskAction(task, retired) {
+  if (task.status === 'needs-review') return 'Obtain the required independent candidate review.';
   if (task.status === 'done') return retired ? 'Ready to delete through the lifecycle gates.' : 'Ready to capture through the lifecycle gates.';
   if (task.status === 'blocked') return 'Resolve the recorded blockers.';
   if (task.status === 'deferred') return 'Reconcile the deferred slice before execution.';
