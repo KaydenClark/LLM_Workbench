@@ -5,11 +5,11 @@
 **Priority:** 1
 **Owner:** codex-servitor-pr-resolution
 **Stance:** Builder
-**Updated:** 2026-09-30
+**Updated:** 2026-10-01
 **Catalog description:** Correct three independently reproduced citation-checker defects without reopening completed S-045.
 **Blockers:** none
-**Latest event:** TK-003U closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** TK-003Y claimed by codex-servitor-pr-resolution.
+**Next gate:** Close TK-003Y with verification and documentation proof.
 
 ## Outcome
 

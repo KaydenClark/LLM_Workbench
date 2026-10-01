@@ -3,7 +3,7 @@
 **Task ID:** TK-003Y
 **Spec ID:** S-002K
 **Slice:** P2 file-token classification correction: an explicitly missing bare filename such as missing-review-target.mjs must replace prior valid scope and refuse rather than validate tools/test-diagnostics.mjs. Also numeric endpoint127.0.0.1:8080 must not be a file citation, while digit-leading actual filenames remain enforced. Independent full51 and focused10 passed but twelve corpus probes proved both regressions. Add durable full-pipeline reds and bounded correction. Preserve completed TK003U and its Receipt, prior three fixes, historical S045 anchor/status and evidence.
-**Status:** ready
+**Status:** in-progress
 **Blockers:** none
 **Destination:** spec-acceptance: S-002K Acceptance Criteria
 **Planned verification:** Answers evidence row 5 (fail verdict at b0fc8909995d98b0d2e72c2dbea28fdf626bd305 on 2026-10-01): P2 file-token classification correction: an explicitly missing bare filename such as missing-review-target.mjs must replace prior valid scope and refuse rather than validate tools/test-diagnostics.mjs. Also numeric endpoint127.0.0.1:8080 must not be a file citation, while digit-leading actual filenames remain enforced. Independent full51 and focused10 passed but twelve corpus probes proved both regressions. Add durable full-pipeline reds and bounded correction. Preserve completed TK003U and its Receipt, prior three fixes, historical S045 anchor/status and evidence.
