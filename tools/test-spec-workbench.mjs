@@ -6168,7 +6168,9 @@ function commitAll(dir, message) {
       writeAt(dir, blockerPath, deliveryBlockerSpec({ ...blocker, description: 'Delivers the fixture capability (never committed at the candidate).' }));
     }
     if (verdict === 'pass') {
-      recordReviewVerdict(dir, 'S-9E0', { candidate, result: 'pass', findings: 'none', reviewer: 'Fixture reviewer (separate context)' });
+      const record = () => recordReviewVerdict(dir, 'S-9E0', { candidate, result: 'pass', findings: 'none', reviewer: 'Fixture reviewer (separate context)' });
+      if (reviewUncommitted) assert.throws(record, /does not contain the reviewed committed content/, 'uncommitted delivery cannot acquire a verdict in the first place');
+      else record();
     } else if (verdict === 'fail') {
       // Written directly so no corrective Task changes the blocker's own
       // Task set: this isolates the verdict result as the one missing fact.
