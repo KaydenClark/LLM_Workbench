@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-000C",
-  "revision": 4,
+  "revision": 5,
   "title": "GitHub Issue graph and composed coordination views",
   "question": "How do GitHub Issues and Projects represent Spec, Task, Landmark and DQC relationships and progress without forcing a tree, confusing concept Issue closure with assessment, or inventing completion?",
   "answer": "GitHub Projects, the generated Taskboard and the generated Landmark Tracker are composed views, never authority. The Issue graph carries Spec-Task hierarchy, direct or ungrouped Tasks and overlapping Landmark and DQC membership as a graph, keeps native blocking links distinct from semantic relations and generated content distinct from human content, and never treats concept Issue closure as an assessment. Views keep exactly six implementation lanes and the eight steps Idea, Aligning, Confirmed, Mapped, Planned, Journey, Review and Verified with true fractions, denominators, provenance and explicit missing or invalid states, record their coordination snapshot, freshness and conflicts, keep Tracker and execution views separate, and invent no percentages. The six-lane board reuses S-01X.",
@@ -58,11 +58,11 @@
       "Aligning": 0.4,
       "Confirmed": 0.6
     },
-    "basis": "Five named claims: C1-C3 are owner-accepted requirements recorded in proposed ADR-000Q; C4 and C5 are open alignment.",
+    "basis": "Five named claims: C1-C3 are owner-accepted requirements and C4-C5 open alignment, all stated in proposed ADR-000Q at 471a0f0. Fractions unchanged; evidence corrected.",
     "evidence": [
-      "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+      "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8"
     ],
-    "revision": 4
+    "revision": 5
   },
   "related": [],
   "claims": [
@@ -86,6 +86,10 @@
         {
           "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8",
           "revision": 4
+        },
+        {
+          "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8",
+          "revision": 5
         }
       ],
       "affected": []
@@ -110,6 +114,10 @@
         {
           "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8",
           "revision": 4
+        },
+        {
+          "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8",
+          "revision": 5
         }
       ],
       "affected": []
@@ -281,6 +289,38 @@
           "field": "claim-evidence",
           "claim": "C5",
           "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T03:19:37.413Z",
+      "reason": "Independent review of 9617819 found claim evidence that did not state the claimed requirements; append corrected evidence.",
+      "changes": [
+        {
+          "field": "correction",
+          "to": "Revision 4 cited ADR-000Q@1e19342 for C2 and C4, but that revision stated neither ungrouped Tasks with generated versus human content nor the undecided Project view requirement; corrected evidence is ADR-000Q@471a0f0."
+        },
+        {
+          "field": "assessment",
+          "from": {
+            "Aligning": 0.4,
+            "Confirmed": 0.6
+          },
+          "to": {
+            "Aligning": 0.4,
+            "Confirmed": 0.6
+          }
+        },
+        {
+          "field": "claim-evidence",
+          "claim": "C2",
+          "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8"
+        },
+        {
+          "field": "claim-evidence",
+          "claim": "C4",
+          "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8"
         }
       ]
     }

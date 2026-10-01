@@ -119,11 +119,11 @@
           "Aligning": 0.4,
           "Confirmed": 0.6
         },
-        "basis": "Five named claims: C1-C3 are owner-accepted requirements recorded in proposed ADR-000Q; C4 and C5 are open alignment.",
+        "basis": "Five named claims: C1-C3 are owner-accepted requirements and C4-C5 open alignment, all stated in proposed ADR-000Q at 471a0f0. Fractions unchanged; evidence corrected.",
         "evidence": [
-          "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+          "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8"
         ],
-        "revision": 4,
+        "revision": 5,
         "holder": "DQC-000C",
         "itemRevision": null
       },
@@ -136,11 +136,11 @@
           "Aligning": 0.25,
           "Confirmed": 0.75
         },
-        "basis": "Four named claims: C1-C3 are owner-accepted requirements recorded as cutover preconditions or consequences in proposed ADR-000Q; C4 is open alignment.",
+        "basis": "Four named claims: C1-C3 are owner-accepted requirements and C4 open alignment, all stated in proposed ADR-000Q at 471a0f0. Fractions unchanged; evidence corrected.",
         "evidence": [
-          "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+          "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8"
         ],
-        "revision": 4,
+        "revision": 5,
         "holder": "DQC-000D",
         "itemRevision": null
       },
@@ -267,11 +267,11 @@
               "Aligning": 0.4,
               "Confirmed": 0.6
             },
-            "basis": "Five named claims: C1-C3 are owner-accepted requirements recorded in proposed ADR-000Q; C4 and C5 are open alignment.",
+            "basis": "Five named claims: C1-C3 are owner-accepted requirements and C4-C5 open alignment, all stated in proposed ADR-000Q at 471a0f0. Fractions unchanged; evidence corrected.",
             "evidence": [
-              "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+              "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8"
             ],
-            "revision": 4,
+            "revision": 5,
             "holder": "DQC-000C",
             "itemRevision": null
           },
@@ -284,11 +284,11 @@
               "Aligning": 0.25,
               "Confirmed": 0.75
             },
-            "basis": "Four named claims: C1-C3 are owner-accepted requirements recorded as cutover preconditions or consequences in proposed ADR-000Q; C4 is open alignment.",
+            "basis": "Four named claims: C1-C3 are owner-accepted requirements and C4 open alignment, all stated in proposed ADR-000Q at 471a0f0. Fractions unchanged; evidence corrected.",
             "evidence": [
-              "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+              "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8"
             ],
-            "revision": 4,
+            "revision": 5,
             "holder": "DQC-000D",
             "itemRevision": null
           },
@@ -998,11 +998,11 @@
           "Aligning": 0.4,
           "Confirmed": 0.6
         },
-        "basis": "Five named claims: C1-C3 are owner-accepted requirements recorded in proposed ADR-000Q; C4 and C5 are open alignment.",
+        "basis": "Five named claims: C1-C3 are owner-accepted requirements and C4-C5 open alignment, all stated in proposed ADR-000Q at 471a0f0. Fractions unchanged; evidence corrected.",
         "evidence": [
-          "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+          "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8"
         ],
-        "revision": 4
+        "revision": 5
       },
       "distribution": {
         "items": 1,
@@ -1073,11 +1073,11 @@
               "Aligning": 0.4,
               "Confirmed": 0.6
             },
-            "basis": "Five named claims: C1-C3 are owner-accepted requirements recorded in proposed ADR-000Q; C4 and C5 are open alignment.",
+            "basis": "Five named claims: C1-C3 are owner-accepted requirements and C4-C5 open alignment, all stated in proposed ADR-000Q at 471a0f0. Fractions unchanged; evidence corrected.",
             "evidence": [
-              "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+              "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8"
             ],
-            "revision": 4,
+            "revision": 5,
             "holder": "DQC-000C",
             "itemRevision": null
           }
@@ -1116,6 +1116,10 @@
             {
               "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8",
               "revision": 4
+            },
+            {
+              "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8",
+              "revision": 5
             }
           ],
           "affectedBy": []
@@ -1142,6 +1146,10 @@
             {
               "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8",
               "revision": 4
+            },
+            {
+              "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8",
+              "revision": 5
             }
           ],
           "affectedBy": []
@@ -1227,8 +1235,14 @@
         "revision": 1,
         "at": "2026-10-01T01:55:00.045Z"
       },
-      "corrections": [],
-      "revision": 4,
+      "corrections": [
+        {
+          "revision": 5,
+          "text": "Revision 4 cited ADR-000Q@1e19342 for C2 and C4, but that revision stated neither ungrouped Tasks with generated versus human content nor the undecided Project view requirement; corrected evidence is ADR-000Q@471a0f0.",
+          "reason": "Independent review of 9617819 found claim evidence that did not state the claimed requirements; append corrected evidence."
+        }
+      ],
+      "revision": 5,
       "history": [
         {
           "revision": 1,
@@ -1349,6 +1363,38 @@
               "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
             }
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-01T03:19:37.413Z",
+          "reason": "Independent review of 9617819 found claim evidence that did not state the claimed requirements; append corrected evidence.",
+          "changes": [
+            {
+              "field": "correction",
+              "to": "Revision 4 cited ADR-000Q@1e19342 for C2 and C4, but that revision stated neither ungrouped Tasks with generated versus human content nor the undecided Project view requirement; corrected evidence is ADR-000Q@471a0f0."
+            },
+            {
+              "field": "assessment",
+              "from": {
+                "Aligning": 0.4,
+                "Confirmed": 0.6
+              },
+              "to": {
+                "Aligning": 0.4,
+                "Confirmed": 0.6
+              }
+            },
+            {
+              "field": "claim-evidence",
+              "claim": "C2",
+              "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8"
+            },
+            {
+              "field": "claim-evidence",
+              "claim": "C4",
+              "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8"
+            }
+          ]
         }
       ]
     },
@@ -1382,11 +1428,11 @@
           "Aligning": 0.25,
           "Confirmed": 0.75
         },
-        "basis": "Four named claims: C1-C3 are owner-accepted requirements recorded as cutover preconditions or consequences in proposed ADR-000Q; C4 is open alignment.",
+        "basis": "Four named claims: C1-C3 are owner-accepted requirements and C4 open alignment, all stated in proposed ADR-000Q at 471a0f0. Fractions unchanged; evidence corrected.",
         "evidence": [
-          "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+          "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8"
         ],
-        "revision": 4
+        "revision": 5
       },
       "distribution": {
         "items": 1,
@@ -1457,11 +1503,11 @@
               "Aligning": 0.25,
               "Confirmed": 0.75
             },
-            "basis": "Four named claims: C1-C3 are owner-accepted requirements recorded as cutover preconditions or consequences in proposed ADR-000Q; C4 is open alignment.",
+            "basis": "Four named claims: C1-C3 are owner-accepted requirements and C4 open alignment, all stated in proposed ADR-000Q at 471a0f0. Fractions unchanged; evidence corrected.",
             "evidence": [
-              "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+              "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8"
             ],
-            "revision": 4,
+            "revision": 5,
             "holder": "DQC-000D",
             "itemRevision": null
           }
@@ -1487,6 +1533,10 @@
             {
               "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8",
               "revision": 4
+            },
+            {
+              "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8",
+              "revision": 5
             }
           ],
           "affectedBy": []
@@ -1513,6 +1563,10 @@
             {
               "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8",
               "revision": 4
+            },
+            {
+              "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8",
+              "revision": 5
             }
           ],
           "affectedBy": []
@@ -1526,6 +1580,10 @@
             {
               "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8",
               "revision": 4
+            },
+            {
+              "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8",
+              "revision": 5
             }
           ],
           "affectedBy": []
@@ -1582,8 +1640,14 @@
         "revision": 1,
         "at": "2026-10-01T01:55:00.096Z"
       },
-      "corrections": [],
-      "revision": 4,
+      "corrections": [
+        {
+          "revision": 5,
+          "text": "Revision 4 cited ADR-000Q@1e19342 for C1, C3 and C4, but that revision stated neither untracked credentials and room binding, nor managed adapter and skills with installed-room proof, nor the unplanned binding mechanism; corrected evidence is ADR-000Q@471a0f0.",
+          "reason": "Independent review of 9617819 found claim evidence that did not state the claimed requirements; append corrected evidence."
+        }
+      ],
+      "revision": 5,
       "history": [
         {
           "revision": 1,
@@ -1691,6 +1755,43 @@
               "field": "claim-evidence",
               "claim": "C4",
               "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+            }
+          ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-01T03:19:37.476Z",
+          "reason": "Independent review of 9617819 found claim evidence that did not state the claimed requirements; append corrected evidence.",
+          "changes": [
+            {
+              "field": "correction",
+              "to": "Revision 4 cited ADR-000Q@1e19342 for C1, C3 and C4, but that revision stated neither untracked credentials and room binding, nor managed adapter and skills with installed-room proof, nor the unplanned binding mechanism; corrected evidence is ADR-000Q@471a0f0."
+            },
+            {
+              "field": "assessment",
+              "from": {
+                "Aligning": 0.25,
+                "Confirmed": 0.75
+              },
+              "to": {
+                "Aligning": 0.25,
+                "Confirmed": 0.75
+              }
+            },
+            {
+              "field": "claim-evidence",
+              "claim": "C1",
+              "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8"
+            },
+            {
+              "field": "claim-evidence",
+              "claim": "C3",
+              "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8"
+            },
+            {
+              "field": "claim-evidence",
+              "claim": "C4",
+              "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8"
             }
           ]
         }
