@@ -33,3 +33,9 @@ mapping, native Issue IDs, trusted actors, writes and the claim cutover remain
 outside this Task. The current ADR-000O claim reader stays operative. Shared
 workflow controls/templates are deferred to their existing S-00P/cutover owner;
 this Task adds an optional inspector without changing the generic workflow.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | codex/github-coordination-binding | 99643c226fbb0a6b921eeb7e2337eca1742864f7 | ahead 0 behind 0 | 5 | Public CLI expected red exit1 for missing inspector; six source/refusal/no-write cases green6/6 after implementation; installed and full-suite proof pending. | Binding procedure authored; generic workflow controls/templates deferred because inspector is optional and does not change claims. | Installed inspector, full frozen-candidate checks and independent integration review pending; no native Issue operations or cutover. | 1177a12fbb920bedec1597148530847a2878c166489c674d699ddf0f4f3fea9a |
