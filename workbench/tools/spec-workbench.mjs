@@ -2411,6 +2411,8 @@ function recoverTaskCollision(rootDir, specId, taskId, folder, options) {
     if (result.error || result.status !== 0) fail(`Git ${args[0]} failed (output omitted)`);
     return result.stdout.trimEnd();
   };
+  if (!fs.lstatSync(root).isDirectory() || fs.lstatSync(root).isSymbolicLink()
+      || fs.realpathSync(git('rev-parse', '--show-toplevel')) !== fs.realpathSync(root)) fail('project root must be the ordinary Git working-tree root');
   for (const name of ['expectedHead', 'sourceRevision', 'collisionRevision']) {
     if (!/^[0-9a-f]{40}$/.test(options[name] ?? '')) fail(`${name} requires an exact lowercase commit revision`);
     if (git('rev-parse', '--verify', `${options[name]}^{commit}`) !== options[name]) fail(`${name} is not an exact commit revision`);
@@ -2492,6 +2494,10 @@ function recoverTaskCollision(rootDir, specId, taskId, folder, options) {
     }
   }
   if (discardedLabels(root, 'TK').some(id => visibleIdKey(id) === key)) fail('replacement identity is occupied by a discard');
+  for (const orphan of loadCorrectiveTasks(root)) {
+    if ([orphan.id, orphan.formerId].some(id => id && visibleIdKey(id) === key)) fail('replacement identity is occupied by a corrective record or alias');
+    if (visibleIdKey(orphan.id) === visibleIdKey(taskId)) fail('collision has an additional corrective holder');
+  }
   for (const ref of git('for-each-ref', '--format=%(refname)', 'refs/remotes').split('\n').filter(Boolean)) {
     // Pre-manifest tips retain the same legacy lane inventory as next-id.
     // A present but malformed manifest still refuses instead of guessing.
@@ -2506,6 +2512,10 @@ function recoverTaskCollision(rootDir, specId, taskId, folder, options) {
     const result = spawnSync('git', ['--no-lazy-fetch', '--no-optional-locks', '-C', root, 'grep', '-h', '-E', '^\\*\\*(Task ID|Former ID):\\*\\*', ref, '--', ...lanes], { encoding: 'utf8', maxBuffer: REF_READ_MAX_BUFFER, env: { ...process.env, GIT_NO_REPLACE_OBJECTS: '1' } });
     if (result.error || ![0, 1].includes(result.status)) fail('cannot inspect remote replacement records');
     if ([...result.stdout.matchAll(/\bTK-[0-9A-Za-z]+\b/g)].some(match => visibleIdKey(match[0]) === key)) fail('replacement identity is occupied on an observed remote tip');
+    for (const file of git('ls-tree', '-r', '--name-only', ref, '--', ...lanes).split('\n').filter(file => file.endsWith('/SPEC.md'))) {
+      const packet = parseSpecPacket(blob(ref, file).toString('utf8'), path.join(root, file), root, { recordBacked: true });
+      if (packet.rows.some(row => visibleIdKey(row.id) === key)) fail('replacement identity is occupied by an observed remote slice');
+    }
     for (const lane of lanes) {
       const discardPath = `${lane}/DISCARDS.md`;
       if (git('ls-tree', '--name-only', ref, '--', discardPath)
