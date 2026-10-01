@@ -13,7 +13,7 @@ evidence and original branches are retained.
 Validation: durable failing and passing source-contract test commits, Wiki
 validation, exact AGENTS suite plus RUNBOOK additions and focused test receipts
 under `workbench/specs/S-01P-builder-skill-rebuild/proof/`. Read `suite-results.json`
-for exact commands and exits. Self-drift receipts and a bounded semantic check
+for the original commands and exits; `suite-currentbase-results.json` records the refreshed current-base run. Self-drift receipts and a bounded semantic check
 preserve pre-existing findings; the guardrail score remains 78/100. These checks
 are not fresh-agent behavioral validation.
 
@@ -29,7 +29,7 @@ Draft only. TK-01G remains in progress. Before acceptance/merge:
 - Have the coordinator serialize the single MEMORY router hunk supplied in
   `proof/memory-route.patch`, then validate and re-review the resulting candidate.
 
-Target: integration. No merge or main update is requested. Owner Human QA and
+Branch: `codex/s01p-tk01g-current-base`. Target: integration. No merge or main update is requested. Owner Human QA and
 repeated behavioral reliability remain separate gates.
 
 Original candidate `74dd407aef68d63c597637dab9b7cfe9706f7243` is preserved; this assembly starts from integration `d90785908b26517068a474bb88136c81995a2f18`.

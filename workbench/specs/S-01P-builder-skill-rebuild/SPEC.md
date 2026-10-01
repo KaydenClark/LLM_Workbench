@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Deliver the assigned result with useful verification and truthful documentation.
 **Blockers:** none for assigned evidence update; coordinator router write, evidence assessment and separate exact-candidate review remain delivery gates.
-**Latest event:** Coordinator-reported Servitor observations attributed to tested source 74dd407a; current-base assembly preserves the original candidate and awaits refreshed checks and exact review.
-**Next gate:** Refresh full checks on current-base evidence candidate, then coordinator-owned MEMORY route and separate exact-candidate review; do not close or merge yet.
+**Latest event:** Coordinator-reported Servitor observations attributed to tested source 74dd407a; all 52 refreshed verification commands passed on the current-base evidence candidate; separate exact review remains pending.
+**Next gate:** Coordinator-owned MEMORY route assembly and separate exact-candidate review of the evidence/current-base update; do not close or merge yet.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`82cd8d1fbc79cb871429439a059be792bc59c137`.
 
@@ -107,6 +107,8 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane. When ther
 
 | 2026-10-01 | TK-01G producer observations | Parent and release coordinator relayed two fresh Servitor trials from separate observer `01a0f166`, using source `74dd407aef68d63c597637dab9b7cfe9706f7243`; limited attributed update authorized | `proof/producer-observations.md`: producer reports genuine red to 2/2 green at local candidate `504dfa1023a241be42dcf213f97bef800561c7f0`, and red to 13/13 behavior green with required module still failing `ERR_MODULE_NOT_FOUND` exit 1 at `0d232bc95b89df9e9ebb988c4d1b302144c5247a`; this context checked only the matching Builder hash, not raw traces or fixture commits | Both reportedly maintained scoped records, in-progress receipts and truthful exact handbacks; no spawn or push events observed; seven setup/launch failures retained; untracked collector artifact prevents any clean-final-tree claim | Raw evidence remains producer-local; no independent author inspection, reliability, installed discovery, acceptance, closure or Human QA claim; prior source-only review PASS is parent-reported and does not review this update |
 | 2026-10-01 | TK-01G current-base assembly | Preserved original branch and candidate; assembled on integration `d90785908b26517068a474bb88136c81995a2f18` in separate branch `codex/s01p-tk01g-current-base` at `9b132fed1d138cce3308cdda1cec5d159857ec7f` | Merge applied cleanly; Builder source unchanged and matching reported hash; shared runtime changes are inherited from integration, not authored in this Task | Historical proof retained; coordinator's single MEMORY hunk remains unapplied here | Refreshed full checks and separate review of the updated immutable candidate remain required; no merge into integration or main |
+
+| 2026-10-01 | TK-01G current-base verification | Refreshed source-proof checks on evidence candidate `00c1cff52784a28305a8bacd4fc9c3f078e68236`, assembled from integration `d90785908b26517068a474bb88136c81995a2f18` | `proof/suite-currentbase-results.json`: all 48 exact AGENTS commands, three additional RUNBOOK commands and the focused Builder contract test passed; Wiki validation, citation-anchor check, whitespace check and MEMORY patch application check passed; six prior evidence rows and unchanged Builder hash checked locally | Coordinator confirms later serialized MEMORY assembly; `proof/pr-body.md` updated for the preserved-original/current-base branches; no acceptance checkboxes changed | Separate exact-candidate review remains pending; reported trials are not author-inspected raw evidence; no closure, native verdict, Human QA, integration or main claim |
 
 ## Completion Result
 
