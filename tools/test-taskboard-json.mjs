@@ -130,6 +130,92 @@ if (process.argv.includes('--demo')) {
   });
 } else {
 
+  test('minimal planned intent renders Backlog with unknown metadata and never enters dispatch', () => withRoom(root => {
+    const file = 'workbench/specs/S-00AA-fixture/SPEC.md';
+    put(root, file, '# S-00AA - Keep a future capability discoverable.\n\n**Spec ID:** S-00AA\n**Status:** planned\n');
+    const known = spec(root, { id: 'S-00AB', status: 'planned', priority: 5 });
+    const board = preview(root), card = board.lanes.backlog['S-00AA'];
+    assert.deepEqual(Object.keys(board.lanes.backlog), [known.id, 'S-00AA']);
+    assert.equal(card.priority, null); assert.equal(card.assignee, null);
+    assert.equal(card.nextAction, null); assert.equal(card.startDate, null);
+    assert.equal(command(root, 'render').status, 0);
+    assert.equal(command(root, 'doctor').status, 0);
+    const before = sourceSnapshot(root);
+    assert.equal(selected(root, '--local'), null);
+    assert.deepEqual(selected(root, '--review', '--local').review, []);
+    assert.deepEqual(sourceSnapshot(root), before);
+    put(root, file, fs.readFileSync(path.join(root, file), 'utf8').replace('**Status:** planned', '**Status:** active'));
+    const invalid = sourceSnapshot(root);
+    assert.equal(command(root, 'render', '--format', 'json').status, 1);
+    assert.deepEqual(sourceSnapshot(root), invalid);
+  }));
+
+  test('minimal Backlog preserves precut work but refuses invalid active conversion before writes', () => withRoom(root => {
+    const a = { id: 'S-00AA', dir: 'workbench/specs/S-00AA-fixture' };
+    put(root, a.dir+'/SPEC.md', '# S-00AA - Keep the future work.\n\n**Spec ID:** S-00AA\n**Status:** planned\n');
+    const file = task(root, a, { id: 'TK-00AA' });
+    assert.ok(preview(root).lanes.toDo['TK-00AA']);
+    assert.equal(command(root, 'render').status, 0);
+    assert.equal(command(root, 'doctor').status, 0);
+    assert.equal(selected(root, '--local'), null);
+    const before = sourceSnapshot(root);
+    assert.equal(command(root, 'convert-tasks', a.id, '--activate').status, 1);
+    assert.deepEqual(sourceSnapshot(root), before);
+    put(root, file, fs.readFileSync(path.join(root, file), 'utf8').replace('**Status:** ready', '**Status:** typo'));
+    assert.equal(command(root, 'render', '--format', 'json').status, 1);
+  }));
+
+  test('next --review lists source-qualified Spec and Task cards in shared order, separately from ordinary next', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA', title: 'Zebra assembly', status: 'needs-review' });
+    task(root, a, { id: 'TK-00AA', title: 'Alpha review', status: 'needs-review' });
+    task(root, a, { id: 'TK-00AB', status: 'done', extra: '**Proof:** Prior delivery' });
+    const b = spec(root, { id: 'S-00AB' }); task(root, b, { id: 'TK-00AC', title: 'Urgent To-do', extra: '**Priority:** 0' });
+    const board = preview(root), before = sourceSnapshot(root);
+    const result = selected(root, '--review', '--local');
+    assert.deepEqual(result.review.map(x => x.taskId ?? x.specId), ['TK-00AA', 'S-00AA']);
+    assert.ok(result.review.every(x => board.lanes.needsReview[x.taskId ?? x.specId]));
+    assert.deepEqual(result.excluded, []);
+    assert.equal(selected(root, '--local').taskId, 'TK-00AC');
+    assert.deepEqual(sourceSnapshot(root), before);
+    // The boolean flag must not consume a following --json or --local flag.
+    const reordered = spawnSync(process.execPath, [tool, 'next', '--review', '--json', '--local', '--path', root], { encoding: 'utf8' });
+    assert.equal(reordered.status, 0, reordered.stderr);
+    assert.equal(JSON.parse(reordered.stdout).review.length, 2);
+  }));
+
+  test('review dependency and capability exclusions remain visible and cannot be bypassed through the parent', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA', status: 'needs-review' });
+    task(root, a, { id: 'TK-00AA', status: 'needs-review', blockers: 'owner:choose-input' });
+    task(root, a, { id: 'TK-00AB', status: 'needs-review', extra: '**Capabilities:** browser' });
+    const before = sourceSnapshot(root), result = selected(root, '--review', '--local', '--capabilities', 'none');
+    assert.deepEqual(result.review, []);
+    assert.ok(result.excluded.some(x => x.taskId === 'TK-00AA' && x.reason === 'dependencies'));
+    assert.ok(result.excluded.some(x => x.taskId === 'TK-00AB' && x.reason === 'capabilities'));
+    assert.ok(result.excluded.some(x => x.taskId === null && x.reason === 'children'));
+    assert.deepEqual(sourceSnapshot(root), before);
+  }));
+
+  test('review preserves numeric Task scopes while preview still refuses flat collisions', () => withRoom(root => {
+    for (const id of ['S-00AA', 'S-00AB']) {
+      const a = spec(root, { id }); task(root, a, { id: 'TK-001', status: 'needs-review' });
+    }
+    const before = sourceSnapshot(root), result = selected(root, '--review', '--local');
+    assert.deepEqual(result.review.map(x => [x.specId, x.taskId]), [['S-00AA','TK-001'], ['S-00AB','TK-001']]);
+    assert.equal(command(root, 'render', '--format', 'json').status, 1);
+    assert.deepEqual(sourceSnapshot(root), before);
+  }));
+
+  test('review excludes retired/planned owners and unfinished parents without rewriting source', () => withRoom(root => {
+    for (const [id, status, retired] of [['S-00AA','planned',false],['S-00AB','complete',true],['S-00AC','needs-review',false]]) {
+      const a = spec(root, { id, status, retired });
+      task(root, a, { id: 'TK-'+id.slice(2), status: 'needs-review' });
+      if (id === 'S-00AC') task(root, a, { id: 'TK-00AD', status: 'ready' });
+    }
+    const before = sourceSnapshot(root), result = selected(root, '--review', '--local');
+    assert.deepEqual(result.review.map(x => [x.specId,x.taskId]), [['S-00AC','TK-00AC']]);
+    assert.deepEqual(sourceSnapshot(root), before);
+  }));
+
   test('source needs-review is visible and never offered or claimed as ordinary To-do', () => withRoom(root => {
     const a = spec(root, { id: 'S-00AA' });
     const file = task(root, a, { id: 'TK-00AA', status: 'needs-review' });
@@ -449,6 +535,18 @@ if (process.argv.includes('--demo')) {
       assert.equal(selected(clones[2]), null);
       const before = sourceSnapshot(clones[2]); assert.equal(command(clones[2], 'claim', 'S-aa', '--agent', 'gamma').status, 1);
       assert.deepEqual(sourceSnapshot(clones[2]), before);
+      const observer = clones[2];
+      for (const id of ['TK-00AA','TK-00AB']) {
+        const file = path.join(observer, a.dir, 'tasks', id, 'TASK.md');
+        fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('**Status:** ready', '**Status:** needs-review'));
+      }
+      const parentFile = path.join(observer, a.file);
+      fs.writeFileSync(parentFile, fs.readFileSync(parentFile, 'utf8').replace('**Status:** active', '**Status:** needs-review'));
+      const reviewBefore = sourceSnapshot(observer), reviews = selected(observer, '--review');
+      assert.deepEqual(reviews.review, []);
+      assert.equal(reviews.excluded.filter(x => x.reason === 'claimed').length, 2);
+      assert.ok(reviews.excluded.some(x => x.taskId === null && x.reason === 'children'));
+      assert.deepEqual(sourceSnapshot(observer), reviewBefore);
       assert.equal(git(root, 'ls-remote', 'origin', 'refs/heads/integration').split(/\s/)[0], base);
     } finally { fs.rmSync(scratch, {recursive:true,force:true}); }
   }));
