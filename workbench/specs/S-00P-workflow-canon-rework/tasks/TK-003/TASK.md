@@ -9,6 +9,46 @@
 **Planned verification:** Red: a disposable-room lifecycle run driven by the documented procedure fails an observable transition or refusal required below; green: the same run reaches its verified project destination, preserves corrective and recovery evidence, and every documented command has an executed result. Command-existence and phrase checks are supporting checks only.
 **Stance:** Builder
 
+## Execution Reconciliation (2026-10-01)
+
+Current execution base is integration `c1ee83e16c172ac3715ecde3de441a56a41711d5`,
+containing reviewed TK-002 and TK-004 delivery through PR #238 and PR #239.
+Native claim selects TK-003; earlier blocked/release/completion-proposal clauses
+below are historical packet authoring, superseded by the current owner request,
+Director's exact lane release and delivered S-00I/S-00J behavior. Per-Spec
+content-bound review, actual main verification, feature capture and link-safe
+retirement/discard are implemented; trace current source and do not describe
+those mechanisms as still missing. Direct Blueprint Task storage and destination
+board/worktree automation remain separate unimplemented design.
+
+Worker edits only Runbook/README and the two released test seams. Dispatcher
+owns Spec/Task/projections and supplies current state and proof. Generic mirrors
+follow in TK-005. The current Task-PR bootstrap exception and pre-integration
+review gate apply; review or a fixture approval supplies no owner QA/main act.
+Every changed example must have executed proof with the actual delivered flags,
+and document-driven behavioral red/green needs an actual product and recovery
+scenario, not only command or phrase matching.
+
+## Source Self-Check (2026-10-01)
+
+Worker returned the four released source paths frozen at claimed input
+`3251303153422efd2bb7ce6b0b6a6b0d11051489`. The documented verdict omission
+failed actual stale-report refusal before edits; corrected examples execute
+against installed fixture runtime with the inspected digest. Continuous product,
+corrective review, fixture QA/main, complete then capture, whole-directory
+retirement/disposal and fresh-clone byte recovery passed; 25 examples executed
+in 25.539 seconds. Control fidelity 22/22 and spec-report passed; focused
+spec-workbench and immutable final full51 remain pending at this source checkpoint.
+
+Normal cleanup remains after complete/capture. An optional Task move is isolated
+from normal retirement because its path changes the content digest; the runtime
+constraint is not authority to advance accepted cleanup. Post-discard corrective
+creation uses the actual export API, then standalone claim/close and feature
+provenance. Standalone receipt is unsupported and its no-write refusal is proved;
+Spec-bound corrective Receipt is exercised. No runtime change is included.
+Fixture reviewer/owner/main records prove mechanics only. TK-005 mirrors these
+sections; real installed-room release proof and owner QA/main remain open.
+
 ## Outcome
 
 A fresh Worker can follow `RUNBOOK.md` to execute one Task and report proof;
@@ -139,14 +179,14 @@ approval, production branch deletion or external room as test data.
 
 ## Acceptance And Hand-Back
 
-- [ ] Runbook and README describe the delivered Task-record route, latest role
+- [x] Runbook and README describe the delivered Task-record route, latest role
   boundaries, corrective cycle, flexible owner QA and main-before-capture
   closure without an invented command or a separate Task approval gate.
-- [ ] Every changed command example has executable proof; the full composed
+- [x] Every changed command example has executable proof; the full composed
   lifecycle fixture has red then green evidence and tests observable behavior.
-- [ ] The demo shows a working project and recoverable lifecycle evidence;
+- [x] The demo shows a working project and recoverable lifecycle evidence;
   negative checks preserve state and unmerged work on refusal.
-- [ ] Template upgrade and self-drift obligations remain intact; generic mirror
+- [x] Template upgrade and self-drift obligations remain intact; generic mirror
   work is explicitly returned to TK-005 with the changed sections identified.
 - [ ] Worker returns immutable SHA, paths, tests/results, docs, remaining gaps
   and known limitations to Dispatcher. Dispatcher updates shared Spec state,
@@ -179,3 +219,9 @@ Preserve exact owner arrow/brace notation when used, with provenance and a
 separate labeled prose interpretation; do not reconstruct missing source
 notation and call it exact. No command runs, approval, product demo or lifecycle
 completion is asserted by this packet.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | codex/s00p-tk003-workflow-procedures | 3251303153422efd2bb7ce6b0b6a6b0d11051489 | ahead 0 behind 0 | 3 | Freshdoctor exit0 attention7; native next/claim Task3 published3251303 from reviewedintegrationc1ee83e; preguardrail78/selfdrift7. Documentation-driven executable stale-review-digest red pending freshWorker. | PriorTask4 exactb9 PASS/full51/PR239 containment appended; currentTask3execution reconciliation preserves authoringhistory and deliveredmechanisms. | Actual document-derived product/lifecycle/corrective/recovery redgreen and everychangedexample; final51/freshreview/integrationcontainment; Task5/ownerQA/main open. | 1f820fa6bfcc2c0ffb31fe1085e32a8eb80c62b3306cea1ce2d03dbc787e1eb8 |

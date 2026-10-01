@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 // The composed Workbench round trip, mechanically and provider-free:
-// Genesis from this candidate -> planning checkpoint pushed (spec, claim,
-// reconciled owner) -> forced interruption -> fresh clone resumes from
-// repository state only -> red/green slice -> close -> render -> doctor ->
-// push -> remote read-back, with Foundry absent throughout.
+// Candidate Genesis -> record-backed claim -> interrupted/fresh-clone resume ->
+// actual greeting red/green -> documented review/owner corrective cycles ->
+// main-verified closure -> feature capture -> whole-Spec retirement/discard ->
+// exact fresh-clone recovery. Review/owner acts are local fixture data only.
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
@@ -16,7 +16,55 @@ import { templatePlaceholders } from '../workbench/tools/template-placeholders.m
 const sourceProduct = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(fs.readFileSync(path.join(sourceProduct, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const DATE = '2026-09-04';
+const started = Date.now();
 const transcript = [];
+const documentedLifecycle = fs.readFileSync(path.join(sourceProduct, 'RUNBOOK.md'), 'utf8')
+  .split('### Spec Lifecycle And Retrieval')[1].split('### Architecture Decision Records')[0];
+const executedRecipes = new Set();
+// Execute the Runbook's actual examples with concrete fixture values, without
+// a shell. Only quoted strings, plain arguments and named placeholders occur.
+function recipe(cwd, verb, values = {}, expectStatus = 0, variant = '') {
+  const commands = documentedLifecycle.replace(/\\\n/g, ' ').split('\n')
+    .filter(line => line.startsWith(`node workbench/tools/spec-workbench.mjs ${verb} `) || line === `node workbench/tools/spec-workbench.mjs ${verb}`);
+  const command = commands.find(line => !variant || (variant === 'plain' ? !line.includes('--finding') && !line.includes('--destination-change') && !line.includes('--activate') && !line.includes('--task') : line.includes(variant)));
+  assert.ok(command, `Runbook supplies an executable ${verb} ${variant} example`);
+  const tokens = command.match(/"[^"]*"|'[^']*'|\[[^\]]*\]|[^\s]+/g).map(token => token.replace(/^(["'])(.*)\1$/, '$2'));
+  const defaults = { 'S-001': 'S-001', 'TK-001': 'TK-001', '[SHA]': values.candidate,
+    '[DIGEST]': values.digest, '[INTEGRATION SHA]': values.candidate, '[WHO]': 'Simulated fixture owner; not Human QA',
+    '[FINDINGS OR none]': values.findings ?? 'none', '[FINDINGS]': values.findings ?? 'Missing punctuation coverage',
+    '[SEPARATE CONTEXT, MODEL AND MODE]': 'Simulated fixture Director; machinery only',
+    '[NAMED VERIFICATION]': 'node --test tests/hello.test.mjs PASS; actual greeting observed',
+    '[DOCS UPDATED OR Docs checked; no update needed + reason]': 'README usage checked; no update needed',
+    '[GAP OR none]': 'none', '[TESTS RUN AND RESULT]': 'node --test tests/hello.test.mjs PASS',
+    '[DOCS TOUCHED OR none]': 'README.md', '[TEXT]': 'Simulated owner changes destination; no real approval', 'pass|fail': values.result ?? 'pass', ...values };
+  const args = tokens.slice(1).map(token => defaults[token] ?? token);
+  // Legacy examples have grouped optional alternatives. They remain parseable
+  // for the red proof; the corrected procedure uses separate actual commands.
+  assert.ok(args.every(arg => arg !== undefined), `${verb}: every placeholder has a fixture value`);
+  executedRecipes.add(command);
+  return run(cwd, process.execPath, args, expectStatus);
+}
+function refusedRecipe(cwd, verb, values, reason, variant = '') {
+  const before = { files: directoryBytes(cwd), head: git(cwd, 'rev-parse', 'HEAD'), index: git(cwd, 'ls-files', '--stage'), refs: git(cwd, 'for-each-ref', '--format=%(refname) %(objectname)') };
+  const output = recipe(cwd, verb, values, 1, variant);
+  assert.match(transcript.at(-1), reason);
+  assert.deepEqual({ files: directoryBytes(cwd), head: git(cwd, 'rev-parse', 'HEAD'), index: git(cwd, 'ls-files', '--stage'), refs: git(cwd, 'for-each-ref', '--format=%(refname) %(objectname)') }, before, `${verb} refusal preserves files, index, HEAD and refs`);
+  return output;
+}
+function directoryBytes(root) {
+  const bytes = {};
+  function walk(relative) {
+    for (const entry of fs.readdirSync(path.join(root, relative), { withFileTypes: true })) {
+      if (!relative && entry.name === '.git') continue;
+      const child = path.posix.join(relative, entry.name);
+      if (entry.isDirectory()) walk(child);
+      else bytes[child] = entry.isSymbolicLink() ? `link:${fs.readlinkSync(path.join(root, child))}` : fs.readFileSync(path.join(root, child)).toString('base64');
+    }
+  }
+  walk('');
+  return bytes;
+}
+
 // A scrubbed environment: no Foundry, deployment, or host lane variables reach
 // any child process, and PATH is the only inherited value. HOME is a fresh
 // empty directory of its own rather than the shared system temp directory,
@@ -93,6 +141,8 @@ try {
   run(remote, 'git', ['init', '-q', '--bare', '-b', 'main']);
   fs.mkdirSync(first);
   git(first, 'init', '-q', '-b', 'main');
+  git(first, 'config', 'user.name', 'Simulated Round Trip');
+  git(first, 'config', 'user.email', 'round-trip@example.invalid');
   git(first, 'remote', 'add', 'origin', remote);
   // Genesis establishes the declared integration branch from the default
   // branch and pushes it, so the review gate has a merge target from the start.
@@ -121,7 +171,7 @@ try {
   node(first, tool(first), 'render');
   const readiness = JSON.parse(node(first, path.join(first, 'workbench', 'tools', 'workbench-layout.mjs'), 'validate', '--project', first, '--genesis'));
   assert.equal(readiness.status, 'valid', JSON.stringify(readiness));
-  node(first, tool(first), 'doctor');
+  recipe(first, 'doctor');
 
   // ---- S-00H TK-004 follow-up: the finished room speaks Task, not Ticket --
   // Sweep the generated room's own controls (embedded with this candidate's
@@ -171,28 +221,40 @@ try {
   const promoted = JSON.parse(node(first, path.join(first, 'workbench/tools/sessions.mjs'), 'promote', '--from', note.note, '--revision', '2', '--entries', 'decision-001', '--to', owner, '--expected', createHash('sha256').update(beforeOwner).digest('hex'), '--content', 'workbench/sessions/handoffs/greeting-draft.md'));
   assert.equal(promoted.status, 'promoted');
   assert.equal(promoted.destination.sha256, createHash('sha256').update(authored).digest('hex'));
-  // S-00V TK-01L: this room coordinates through origin, where claim would cut
-  // and push a task branch. This proof resumes a checkpoint committed on main,
-  // so the planner claims locally (said so on stderr); converting the round
-  // trip to claim by pushing is TK-01N's ends-clean gate.
-  node(first, tool(first), 'claim', 'S-001', '--agent', 'planner', '--local');
+  // Coordinated claim publishes the ready Task record on a Task branch to
+  // this fixture's local bare origin; the fresh clone resumes that exact SHA.
+  recipe(first, 'convert-tasks', {}, 0, 'plain');
+  assert.ok(fs.existsSync(path.join(first, 'workbench/specs/S-001-greeting/tasks/TK-001/TASK.md')));
+  const planned = path.join(workspace, 'planned-alternative');
+  fs.cpSync(first, planned, { recursive: true });
+  fs.rmSync(path.join(planned, 'workbench/specs/S-001-greeting/tasks'), { recursive: true });
+  write(planned, owner, authored.replace('**Status:** active', '**Status:** planned'));
+  recipe(planned, 'convert-tasks', {}, 0, '--activate');
+  assert.equal(JSON.parse(node(planned, tool(planned), 'show', 'S-001', '--json')).status, 'active');
+  git(first, 'switch', '-q', '-c', 'codex/greeting');
+  git(first, 'add', '-A');
+  git(first, 'commit', '-q', '-m', 'Persist the ready record-backed product room');
+  git(first, 'push', '-q', '-u', 'origin', 'codex/greeting');
+  recipe(first, 'claim', { codex: 'simulated-fixture-worker' });
   node(first, tool(first), 'render');
   git(first, 'add', '-A');
   const tracked = git(first, 'ls-files');
   assert.match(tracked, /workbench\/specs\/S-001-greeting\/SPEC\.md/, 'the reconciled owner is tracked');
   assert.doesNotMatch(tracked, /workbench\/sessions\/(?:notepads\/work|handoffs)\/greeting/, 'source and draft stay local');
   assert.doesNotMatch(tracked, /workbench\/sessions\/grilling\/greeting/, 'the live notepad never enters the commit');
-  git(first, 'commit', '-q', '-m', 'Planning checkpoint: S-001 claimed');
-  git(first, 'push', '-q', 'origin', 'main');
+  git(first, 'commit', '-q', '--allow-empty', '-m', 'Planning checkpoint: S-001 claimed');
+  git(first, 'push', '-q', '-u', 'origin', 'codex/greeting');
   const planningSha = git(first, 'rev-parse', 'HEAD');
-  assert.equal(git(first, 'ls-remote', 'origin', 'main').split('\t')[0], planningSha, 'the planning checkpoint is remotely recoverable');
+  assert.equal(git(first, 'ls-remote', 'origin', 'codex/greeting').split('\t')[0], planningSha, 'the planning checkpoint is remotely recoverable');
 
   // ---- Interruption: the planning context is destroyed --------------------
   fs.rmSync(first, { recursive: true, force: true });
   assert.equal(fs.existsSync(first), false);
 
   // ---- Resume from a fresh clone using repository state only -------------
-  git(workspace, 'clone', '-q', remote, second);
+  git(workspace, 'clone', '-q', '--branch', 'codex/greeting', remote, second);
+  git(second, 'config', 'user.name', 'Simulated Round Trip');
+  git(second, 'config', 'user.email', 'round-trip@example.invalid');
   assert.equal(git(second, 'rev-parse', 'HEAD'), planningSha);
   assert.equal(fs.existsSync(path.join(second, 'workbench', 'sessions', 'grilling', 'greeting-2026-09-04.md')), false, 'the untracked notepad did not travel');
   assert.match(fs.readFileSync(path.join(second, owner), 'utf8'), /Greet by name; default to World/, 'the reconciled claim travels in its owner');
@@ -205,7 +267,7 @@ try {
   const recovered = JSON.parse(node(second, tool(second), 'show', 'S-001', '--json'));
   assert.equal(recovered.tasks[0].id, 'TK-001');
   assert.equal(recovered.tasks[0].status, 'in-progress', 'explicit source/show recovers the claim without the original chat');
-  assert.match(node(second, tool(second), 'show', 'S-001'), /Greet by name; default to World|Greet by name from the command line/);
+  assert.match(recipe(second, 'show'), /Greet by name; default to World|Greet by name from the command line/);
 
   // ---- Red/green slice ----------------------------------------------------
   write(second, 'tests/hello.test.mjs', "import assert from 'node:assert/strict';\nimport test from 'node:test';\nimport { greet } from '../src/hello.mjs';\ntest('greets by name', () => { assert.equal(greet('World'), 'Hello, World!'); });\n");
@@ -213,6 +275,7 @@ try {
   transcript.push(`$ node --test tests/hello.test.mjs (red)\n${red.stdout}${red.stderr}`);
   assert.notEqual(red.status, 0, 'the slice test is red before the implementation exists');
   assert.match(`${red.stdout}${red.stderr}`, /hello\.mjs/, 'the red run fails on the missing implementation, not on the harness');
+  recipe(second, 'receipt', { '[TESTS RUN AND RESULT]': 'FAIL missing src/hello.mjs', '[GAP OR none]': 'Implement greeting' });
   write(second, 'src/hello.mjs', "export function greet(name = 'World') { return `Hello, ${name}!`; }\nif (process.argv[1] && process.argv[1].endsWith('hello.mjs')) console.log(greet(process.argv[2]));\n");
   run(second, process.execPath, ['--test', 'tests/hello.test.mjs']);
   assert.equal(run(second, process.execPath, ['src/hello.mjs', 'World']).trim(), 'Hello, World!');
@@ -220,19 +283,239 @@ try {
   // ---- Commit and push, close, render, doctor, push, read back -----------
   // S-00M TK-003: close refuses a dirty or unpushed tree, so the slice is
   // committed and pushed before its completion is claimed.
+  refusedRecipe(second, 'close', {}, /dirty|uncommitted/i);
   git(second, 'add', '-A');
   git(second, 'commit', '-q', '-m', 'S-001/TK-001: greet by name');
-  git(second, 'push', '-q', 'origin', 'main');
-  node(second, tool(second), 'close', 'S-001', '--proof', 'node --test tests/hello.test.mjs red then green; node src/hello.mjs World prints Hello, World!', '--docs', 'README.md usage retained; RUNBOOK.md commands executed', '--remaining-gap', 'none');
+  refusedRecipe(second, 'close', {}, /unpushed|ahead/i);
+  git(second, 'push', '-q', 'origin', 'codex/greeting');
+  recipe(second, 'receipt');
+  git(second, 'add', '-A');
+  git(second, 'commit', '-q', '-m', 'Preserve in-progress Receipt before close');
+  git(second, 'push', '-q', 'origin', 'codex/greeting');
+  recipe(second, 'close');
   node(second, tool(second), 'render');
   node(second, tool(second), 'doctor');
   git(second, 'add', '-A');
   git(second, 'commit', '-q', '-m', 'Close S-001/TK-001 with proof');
-  git(second, 'push', '-q', 'origin', 'main');
+  git(second, 'push', '-q', 'origin', 'codex/greeting');
   const finalSha = git(second, 'rev-parse', 'HEAD');
-  assert.equal(git(second, 'ls-remote', 'origin', 'main').split('\t')[0], finalSha, 'the proof is remotely recoverable');
+  assert.equal(git(second, 'ls-remote', 'origin', 'codex/greeting').split('\t')[0], finalSha, 'the proof is remotely recoverable');
   assert.notEqual(finalSha, planningSha);
-  assert.match(fs.readFileSync(path.join(second, 'workbench', 'specs', 'S-001-greeting', 'SPEC.md'), 'utf8'), /\| TK-001 \| .* \| done \| none \| node --test tests\/hello\.test\.mjs red then green/);
+  let originalTask = 'workbench/specs/S-001-greeting/tasks/TK-001/TASK.md';
+  assert.match(fs.readFileSync(path.join(second, originalTask), 'utf8'), /\*\*Status:\*\* done/);
+  const report = JSON.parse(node(second, tool(second), 'report', 'S-001', '--candidate', finalSha, '--json'));
+  const originalSpec = fs.readFileSync(path.join(second, owner), 'utf8');
+  write(second, owner, originalSpec + '\n## Decisions\n\nPreserve named greeting punctuation.\n');
+  // Red at the actual content-bound seam: the old Runbook omits --digest,
+  // so a verdict silently rebinds to new content instead of refusing the
+  // stale report. With the corrected example, this refuses before any write.
+  refusedRecipe(second, 'verdict', { candidate: finalSha, digest: report.specDigest }, /does not match/, '--result');
+  write(second, owner, originalSpec);
+
+
+  // The same documented examples now drive a continuous lifecycle. All
+  // reviewer/owner decisions below are simulated data in this local room.
+  const read = relative => fs.readFileSync(path.join(second, relative), 'utf8');
+  const commit = message => { git(second, 'add', '-A'); git(second, 'commit', '-q', '-m', message); return git(second, 'rev-parse', 'HEAD'); };
+  const publish = () => { const branch = git(second, 'branch', '--show-current'); git(second, 'push', '-q', '-u', 'origin', branch); git(second, 'fetch', '-q', 'origin'); };
+  const checkpoint = step => console.log(`demo - ${step}; HEAD ${git(second, 'rev-parse', '--short', 'HEAD')}`);
+  const inspect = () => JSON.parse(recipe(second, 'report', { candidate: git(second, 'rev-parse', 'HEAD') }, 0, '--json'));
+  const originalBytes = read(originalTask);
+  const failed = JSON.parse(recipe(second, 'verdict', { candidate: finalSha, digest: report.specDigest, findings: 'Empty names need the default greeting' }, 0, '--result fail'));
+  assert.equal(failed.correctiveTasks.length, 1);
+  assert.equal(read(originalTask), originalBytes, 'failed review preserves original Task and Receipt bytes');
+  const repairId = failed.correctiveTasks[0].id;
+  commit('Persist simulated failed review and its corrective Task'); publish();
+  const selected = JSON.parse(recipe(second, 'next'));
+  assert.equal(selected.taskId, repairId);
+  recipe(second, 'claim');
+  write(second, 'tests/hello.test.mjs', read('tests/hello.test.mjs') + "test('empty name uses default', () => { assert.equal(greet(''), 'Hello, World!'); });\n");
+  run(second, process.execPath, ['--test', 'tests/hello.test.mjs'], 1);
+  recipe(second, 'receipt', { 'TK-001': repairId, '[TESTS RUN AND RESULT]': 'FAIL empty name did not use World', '[GAP OR none]': 'Repair empty input' });
+  write(second, 'src/hello.mjs', "export function greet(name = 'World') { return `Hello, ${name.trim() || 'World'}!`; }\nif (process.argv[1] && process.argv[1].endsWith('hello.mjs')) console.log(greet(process.argv[2]));\n");
+  run(second, process.execPath, ['--test', 'tests/hello.test.mjs']);
+  assert.equal(run(second, process.execPath, ['src/hello.mjs', '']).trim(), 'Hello, World!');
+  recipe(second, 'receipt', { 'TK-001': repairId });
+  write(second, owner, read(owner).replace('- [ ] `node src/hello.mjs World` prints a greeting.', '- [x] `node src/hello.mjs World` prints a greeting; empty names use World.').replace('Pending.', 'Named and empty greetings pass the actual CLI tests.'));
+  commit('Repair the greeting and check assembled acceptance'); publish();
+  recipe(second, 'close');
+  commit('Persist the corrective Task close'); publish();
+  assert.equal(read(originalTask), originalBytes);
+  write(second, 'workbench/specs/S-001-greeting/tasks/TK-001/assets/example.txt', 'World\n');
+  commit('Preserve Task sibling asset before review'); publish();
+  let assembled = inspect();
+  assert.equal(assembled.complete, true);
+  let candidate = git(second, 'rev-parse', 'HEAD');
+  // Candidate need not equal HEAD when substantive content is unchanged.
+  git(second, 'commit', '-q', '--allow-empty', '-m', 'Administrative checkpoint after immutable report');
+  recipe(second, 'report', { candidate });
+  refusedRecipe(second, 'complete', {}, /review verdict|earlier content/);
+  recipe(second, 'verdict', { candidate, digest: assembled.specDigest }, 0, '--result pass');
+  assert.equal(JSON.parse(recipe(second, 'gate', { candidate }, 0, '--spec')).refused, false);
+  assert.equal(JSON.parse(recipe(second, 'gate', {}, 0, '--task')).mode, 'task-pr');
+  refusedRecipe(second, 'approve', { candidate }, /not contained/, 'plain');
+  commit('Persist fresh simulated Director PASS'); publish();
+  const lane = git(second, 'branch', '--show-current');
+  git(second, 'switch', '-q', 'integration');
+  git(second, 'merge', '-q', '--no-ff', lane, '-m', 'Deliver reviewed greeting in the fixture'); publish();
+  assert.equal(git(second, 'merge-base', candidate, 'origin/integration'), candidate);
+  checkpoint('reviewed integration delivery (fixture)');
+  refusedRecipe(second, 'complete', {}, /owner Human QA approval/);
+  candidate = git(second, 'rev-parse', 'HEAD');
+  // A destination change is an observation/finding, not an approval or new Task.
+  const taskCount = inspect().tasks.length;
+  recipe(second, 'approve', { candidate }, 0, '--destination-change');
+  assert.equal(inspect().tasks.length, taskCount);
+  refusedRecipe(second, 'complete', {}, /owner Human QA|finding|earlier content/);
+  commit('Preserve simulated owner destination-change observation'); publish();
+  candidate = git(second, 'rev-parse', 'HEAD');
+  const qa = JSON.parse(recipe(second, 'approve', { candidate, findings: 'Explain empty greeting input in usage' }, 0, '--finding'));
+  assert.equal(qa.result, 'finding'); assert.equal(qa.correctiveTasks.length, 1);
+  const qaTask = qa.correctiveTasks[0].id;
+  assert.equal(read(originalTask), originalBytes);
+  commit('Preserve simulated owner finding and corrective work'); publish();
+  assert.equal(JSON.parse(recipe(second, 'next')).taskId, qaTask);
+  recipe(second, 'claim');
+  write(second, 'README.md', read('README.md') + '\nAn empty or all-space name greets World. See workbench/wiki/MEMORY.md.\n');
+  recipe(second, 'receipt', { 'TK-001': qaTask });
+  run(second, process.execPath, ['--test', 'tests/hello.test.mjs']);
+  commit('Explain the verified empty greeting'); publish(); recipe(second, 'close');
+  commit('Persist owner-finding correction'); publish();
+  assembled = inspect(); candidate = git(second, 'rev-parse', 'HEAD');
+  recipe(second, 'verdict', { candidate, digest: assembled.specDigest }, 0, '--result pass');
+  commit('Preserve simulated review after owner finding'); publish();
+  const correctedLane = git(second, 'branch', '--show-current');
+  git(second, 'switch', '-q', 'integration');
+  if (correctedLane !== 'integration') git(second, 'merge', '-q', '--no-ff', correctedLane, '-m', 'Deliver the fixture owner-finding correction');
+  publish(); candidate = git(second, 'rev-parse', 'HEAD');
+  const approval = JSON.parse(recipe(second, 'approve', { candidate }, 0, 'plain'));
+  assert.equal(approval.result, 'approve');
+  commit('Preserve explicit simulated approval of S-001 only'); publish();
+  refusedRecipe(second, 'complete', {}, /not contained in origin\/main/);
+  const approvedCandidate = candidate;
+  const promoteMain = message => { git(second, 'switch', '-q', 'main'); git(second, 'merge', '-q', '--no-ff', 'integration', '-m', message); git(second, 'push', '-q', 'origin', 'main'); run(second, 'git', ['fetch', 'origin', 'main']); git(second, 'switch', '-q', 'integration'); };
+  promoteMain('Simulated fixture owner promotes approved content to main');
+  assert.equal(git(second, 'merge-base', approvedCandidate, 'origin/main'), approvedCandidate);
+  recipe(second, 'complete'); recipe(second, 'render'); recipe(second, 'doctor');
+  recipe(second, 'render', {}, 0, '--format json');
+  assert.ok(fs.existsSync(path.join(second, 'TASKBOARD.preview.json')), 'documented preview renders its actual output');
+  assert.equal(inspect().status, 'complete');
+  checkpoint('main-verified complete; no production owner approval');
+  commit('Preserve completion before feature capture');
+  const feature = 'workbench/wiki/features/greeting.md';
+  const historical = 'workbench/specs/retired/S-001-greeting/SPEC.md';
+  refusedRecipe(second, 'retire-spec', {}, /found no Wiki note|features article/);
+  write(second, feature, `---\ntype: feature\nstatus: active\nsensitivity: normal\nknowledge_role: curated\nprovenance:\n  - fixture closure capture, ${DATE}\nsource_paths:\n  - ${historical}\n  - src/hello.mjs\n  - tests/hello.test.mjs\nlast_verified: ${DATE}\n---\n\n# Greeting\n\nA caller receives a predictable greeting.\n\n## What It Does\n\nNamed callers are greeted; an empty name uses World.\n\n## Why It Matters\n\nCommand-line callers receive readable output.\n\n## Limits\n\nString names only. Fixture reviewer and owner records prove mechanics only.\n\n## Evidence and Sources\n\n- [Closure](../../specs/retired/S-001-greeting/SPEC.md).\n- src/hello.mjs and tests/hello.test.mjs prove the behavior.\n`);
+  commit('Write unrouted fixture features capture');
+  refusedRecipe(second, 'retire-spec', {}, /not linked/);
+  write(second, 'workbench/wiki/MEMORY.md', read('workbench/wiki/MEMORY.md') + '\n- [Greeting](features/greeting.md)\n');
+  commit('Route readable feature knowledge after complete');
+  node(second, path.join(second, 'workbench/tools/wiki.mjs'), 'validate');
+  // Folder-only move alternative is exercised on an isolated clone; the main
+  // scenario uses the reconciliation-owning retirement command instead.
+  publish();
+  const alternative = path.join(workspace, 'move-alternative');
+  git(workspace, 'clone', '-q', '--branch', 'integration', remote, alternative);
+  recipe(alternative, 'move-spec');
+  assert.ok(fs.existsSync(path.join(alternative, historical)));
+  // A branch with new unmerged proof must survive retirement cleanup.
+  git(second, 'branch', 'codex/S-001-unmerged-proof');
+  git(second, 'switch', '-q', 'codex/S-001-unmerged-proof');
+  write(second, 'unmerged-proof.txt', 'Keep this unmerged result.\n');
+  const unmerged = commit('Preserve an unmerged independent result');
+  git(second, 'switch', '-q', 'integration');
+  const retirement = JSON.parse(recipe(second, 'retire-spec'));
+  assert.equal(retirement.route, historical);
+  assert.equal(git(second, 'rev-parse', 'codex/S-001-unmerged-proof'), unmerged);
+  assert.ok(retirement.unmergedBranchesNamingSpec.includes('codex/S-001-unmerged-proof'));
+  run(second, 'git', ['branch', '-d', 'codex/S-001-unmerged-proof'], 1);
+  assert.equal(git(second, 'rev-parse', 'codex/S-001-unmerged-proof'), unmerged, 'safe branch deletion refuses unmerged proof');
+  const retiredDir = 'workbench/specs/retired/S-001-greeting';
+  commit('Preserve reconciled retirement'); publish();
+  refusedRecipe(second, 'discard', {}, /not verified contained|not contained|directory content/, 'plain');
+  promoteMain('Simulated owner preserves retirement on fixture main');
+  refusedRecipe(second, 'discard', {}, /complete reference scan/, 'plain');
+  // Reconcile the legacy generated Blueprint catalog into destination prose.
+  // The durable feature router now answers capability lookup.
+  write(second, 'BLUEPRINT.md', `# Round Trip - Blueprint\n\n${stamp}\n\n## Product Map\n\nA tiny CLI greets named and empty callers.\n`);
+  commit('Reconcile current Blueprint pointer before disposal'); publish();
+  // Optional Task folder move/disposal is an independent clone alternative,
+  // after closure/capture/whole-Spec retirement. It cannot repair or invalidate
+  // the primary room's owner approval. Its own local bare remote isolates refs.
+  const taskAlternative = path.join(workspace, 'task-alternative');
+  const alternativeRemote = path.join(workspace, 'task-alternative.git');
+  git(workspace, 'clone', '-q', '--bare', remote, alternativeRemote);
+  git(workspace, 'clone', '-q', '--branch', 'integration', alternativeRemote, taskAlternative);
+  git(taskAlternative, 'config', 'user.name', 'Simulated alternate fixture');
+  git(taskAlternative, 'config', 'user.email', 'round-trip@example.invalid');
+  const altCommit = message => { git(taskAlternative, 'add', '-A'); git(taskAlternative, 'commit', '-q', '-m', message); };
+  const alternativeRead = relative => fs.readFileSync(path.join(taskAlternative, relative), 'utf8');
+  const beforeMoveDigest = JSON.parse(recipe(taskAlternative, 'report', { candidate: git(taskAlternative, 'rev-parse', 'HEAD') }, 0, '--json')).specDigest;
+  write(taskAlternative, 'README.md', alternativeRead('README.md') + `\n[Temporary proof](${retiredDir}/tasks/TK-001/TASK.md).\n`);
+  altCommit('Preserve optional Task live-link probe');
+  recipe(taskAlternative, 'move-task');
+  const taskDir = `${retiredDir}/tasks/retired/TK-001`;
+  assert.match(alternativeRead('README.md'), /tasks\/retired\/TK-001\/TASK.md/);
+  assert.equal(alternativeRead(`${taskDir}/TASK.md`), originalBytes);
+  const afterMove = JSON.parse(recipe(taskAlternative, 'report', { candidate: git(taskAlternative, 'rev-parse', 'HEAD') }, 0, '--json'));
+  assert.notEqual(afterMove.specDigest, beforeMoveDigest, 'optional individual Task path move participates in the assembled digest');
+  assert.equal(afterMove.latestOwnerApproval, null, 'a Task move must not silently claim earlier approval still binds');
+  write(taskAlternative, 'README.md', alternativeRead('README.md').replace(/\n\[Temporary proof\].*\n/, '\n'));
+  altCommit('Reconcile optional Task link after move');
+  refusedRecipe(taskAlternative, 'discard', {}, /not verified contained|directory content/, '--task');
+  git(taskAlternative, 'push', '-q', 'origin', 'integration');
+  git(taskAlternative, 'switch', '-q', 'main');
+  git(taskAlternative, 'merge', '-q', '--no-ff', 'integration', '-m', 'Simulated alternative owner preserves retired Task directory on main');
+  git(taskAlternative, 'push', '-q', 'origin', 'main');
+  run(taskAlternative, 'git', ['fetch', 'origin', 'main']);
+  git(taskAlternative, 'switch', '-q', 'integration');
+  const taskBytes = directoryBytes(path.join(taskAlternative, taskDir));
+  const taskDiscard = JSON.parse(recipe(taskAlternative, 'discard', {}, 0, '--task'));
+  assert.equal(taskDiscard.recoveryCommand, `git checkout ${taskDiscard.recoveryCommit} -- ${taskDir}`);
+  altCommit('Preserve Task disposal recovery identity in alternative only');
+  git(taskAlternative, 'push', '-q', 'origin', 'integration');
+  const taskRecovery = path.join(workspace, 'task-recovery-clone');
+  git(workspace, 'clone', '-q', '--branch', 'integration', alternativeRemote, taskRecovery);
+  git(taskRecovery, ...taskDiscard.recoveryCommand.split(' ').slice(1));
+  assert.deepEqual(directoryBytes(path.join(taskRecovery, taskDir)), taskBytes);
+  // Primary approval remains intact; its normal whole-Spec retirement moved
+  // the directory only after complete and readable feature capture.
+  assert.equal(inspect().latestOwnerApproval.candidate, approvedCandidate);
+  const specBytes = directoryBytes(path.join(second, retiredDir));
+  const specDiscard = JSON.parse(recipe(second, 'discard', {}, 0, 'plain'));
+  assert.equal(specDiscard.recoveryCommand, `git checkout ${specDiscard.recoveryCommit} -- ${retiredDir}`);
+  commit('Preserve Spec disposal and durable feature source'); publish();
+  const clean = path.join(workspace, 'discovery-clone');
+  git(workspace, 'clone', '-q', '--branch', 'integration', remote, clean);
+  assert.equal(fs.existsSync(path.join(clean, historical)), false);
+  assert.match(fs.readFileSync(path.join(clean, feature), 'utf8'), /Named callers are greeted/);
+  assert.equal(JSON.parse(node(clean, path.join(clean, 'workbench/tools/spec-workbench.mjs'), 'next', '--json')), null);
+  const recoveredClone = path.join(workspace, 'recovery-clone');
+  git(workspace, 'clone', '-q', '--branch', 'integration', remote, recoveredClone);
+  git(recoveredClone, ...specDiscard.recoveryCommand.split(' ').slice(1));
+  assert.deepEqual(directoryBytes(path.join(recoveredClone, retiredDir)), specBytes);
+  assert.equal(fs.readFileSync(path.join(recoveredClone, retiredDir, 'tasks/TK-001/TASK.md'), 'utf8'), originalBytes);
+  checkpoint('capture, link-safe retirement, discard and exact fresh-clone directory recovery');
+  // No CLI exists for orphan creation. Exercise and disclose the real export,
+  // then use actual CLI claim/close and challenge unsupported standalone receipt.
+  const orphan = JSON.parse(run(second, process.execPath, ['--input-type=module', '-e', `import { createCorrectiveTasks } from './workbench/tools/spec-report.mjs'; console.log(JSON.stringify(createCorrectiveTasks(process.cwd(), 'S-001', { candidate: '${git(second, 'rev-parse', 'HEAD')}', findings: 'Clarify string-only greeting inputs', wikiClaim: '${feature}#Limits' })));`]));
+  const orphanId = orphan.created[0].id;
+  commit('Preserve post-discard Wiki-claim corrective Task'); publish();
+  node(second, tool(second), 'claim', orphanId, '--agent', 'simulated-fixture-worker');
+  write(second, feature, read(feature).replace('String names only.', 'Only string names are supported; other input types are outside this CLI.'));
+  // The receipt CLI remains Spec-bound; claim/close are delivered standalone.
+  const beforeOrphanReceipt = directoryBytes(second);
+  run(second, process.execPath, ['workbench/tools/spec-workbench.mjs', 'receipt', orphanId, '--task', orphanId, '--tests', 'PASS', '--docs', feature, '--remaining-gap', 'none'], 1);
+  assert.deepEqual(directoryBytes(second), beforeOrphanReceipt, 'unsupported standalone Receipt refuses without writing');
+  commit('Clarify durable feature claim without restoring the Spec'); publish();
+  node(second, tool(second), 'close', orphanId, '--proof', 'String-only implementation and feature Limits agree', '--docs', feature, '--remaining-gap', 'none');
+  assert.equal(fs.existsSync(path.join(second, historical)), false);
+  assert.match(read(feature), /corrective Task closed/);
+  // Every changed fenced CLI example must have been executed. Read-only and
+  // optional alternatives cannot escape this coverage by mere phrase matching.
+  const allRecipes = documentedLifecycle.replace(/\\\n/g, ' ').split('\n').filter(line => line.startsWith('node workbench/tools/spec-workbench.mjs '));
+  assert.deepEqual(allRecipes.filter(command => !executedRecipes.has(command)), [], 'every changed lifecycle CLI example has an executed result');
+  checkpoint(`post-discard claim correction; ${executedRecipes.size} documentation examples executed`);
 
   // ---- Foundry absence -----------------------------------------------------
   const clonePaths = git(second, 'ls-files');
@@ -242,8 +525,9 @@ try {
   for (const memory of ['.claude', '.codex']) {
     assert.equal(fs.existsSync(path.join(env.HOME, memory)), false, `the round trip neither read nor created host memory under HOME/${memory}`);
   }
-  console.log(`ok - mechanical round trip: planning ${planningSha.slice(0, 7)} interrupted, resumed from a clean clone, proof ${finalSha.slice(0, 7)} read back with Foundry absent`);
+  console.log(`ok - documented lifecycle ${(Date.now() - started) / 1000}s; mechanical round trip: planning ${planningSha.slice(0, 7)} interrupted, resumed from a clean clone, proof ${finalSha.slice(0, 7)} read back with Foundry absent`);
 } finally {
+  if (process.argv.includes('--transcript')) console.log(transcript.join('\n'));
   fs.rmSync(workspace, { recursive: true, force: true });
   fs.rmSync(home, { recursive: true, force: true });
 }
