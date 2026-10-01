@@ -130,7 +130,9 @@ test('inherited Git repository and index selectors cannot redirect an observatio
   fs.writeFileSync(index, 'not a Git index; retain byte-for-byte\n');
   const environment = { GIT_DIR: path.join(foreign, '.git'), GIT_WORK_TREE: foreign, GIT_COMMON_DIR: path.join(foreign, '.git'), GIT_INDEX_FILE: index };
   const redirected = spawnSync('git', ['rev-parse', '--show-toplevel'], { cwd: dir, env: { ...process.env, ...environment }, encoding: 'utf8' });
-  assert.equal(redirected.stdout.trim(), foreign, 'unprotected Git really selects the other repository');
+  assert.equal(redirected.status, 0, redirected.stderr);
+  // Git canonicalizes aliases such as macOS /var -> /private/var.
+  assert.equal(fs.realpathSync(redirected.stdout.trim()), fs.realpathSync(foreign), 'unprotected Git really selects the other repository');
   const before = git('status', '--porcelain=v1');
   const pin = observe('pin', environment);
   assert.equal(pin.status, 0, pin.stderr);
