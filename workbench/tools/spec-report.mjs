@@ -24,10 +24,10 @@
 // working tree, then names the candidate it was asked about, its full commit
 // SHA once `git rev-parse <sha>^{commit}` resolves it in the room's own
 // repository, and whether the working tree's own HEAD is that same commit -
-// so a reviewer can see when the two differ, and so an abbreviated candidate
-// still compares correctly against a full HEAD SHA. It never checks out or
-// reads a blob from the named SHA; a review of a moved candidate is TK-002's
-// refusal, not this slice's.
+// so a reviewer can see when the two differ. Normalized committed content
+// equality is exposed separately from HEAD equality; the report remains
+// informational even when that content is missing or differs. No checkout is
+// changed. Verdict and gate refuse missing or mismatched candidate content.
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -59,6 +59,7 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
   const completionResult = section(spec.content, 'Completion Result').trim();
   const candidate = candidateSha ? candidateBinding(root, candidateSha) : null;
   const specDigest = computeSpecDigest(root, spec);
+  if (candidate) Object.assign(candidate, candidateContentBinding(root, spec, candidateSha, specDigest));
   const verdicts = parseVerdicts(evidence);
   const latestVerdict = latestVerdictFor(verdicts, specDigest);
   // S-00J TK-005: owner Human QA on `integration`, read the same way a
@@ -195,6 +196,15 @@ export function computeSpecDigest(root, spec, candidate = null) {
     addEntry(name, stripReceiptSection(content));
   }
   return hash.digest('hex');
+}
+
+function candidateContentBinding(root, spec, candidate, currentDigest) {
+  try {
+    const contentDigest = computeSpecDigest(root, spec, candidate);
+    return { contentDigest, matchesContent: contentDigest === currentDigest, contentError: null };
+  } catch (error) {
+    return { contentDigest: null, matchesContent: false, contentError: error.message };
+  }
 }
 
 // S-00U TK-003K: a retirement changes the lookup path, not the approved
@@ -342,8 +352,8 @@ function stripEvidenceRows(content) {
 // `integration`, and a merge commit that never equals the reviewed tip).
 // TK-004 redefines it to bind to the Spec's assembled CONTENT instead
 // (`computeSpecDigest` above): the given candidate SHA must still exist in
-// this repository (`git cat-file -e`) as an audit trail of what the
-// reviewer actually looked at, but the digest - not the SHA - is what a
+// this repository (`git cat-file -e`) and contain the normalized reviewed
+// content. The digest - not equality with HEAD - is what a
 // later reader matches against. Reusing a review after the Spec's content
 // moves on is still refused (a stale --digest), exactly as reusing one after
 // the candidate SHA moved on used to be.
@@ -403,6 +413,10 @@ export function recordReviewVerdict(rootDir, specId, options = {}) {
     throw new Error(`The digest ${givenDigest.slice(0, 12)} named for candidate ${candidate} on ${specId} does not match this working tree's current content digest ${currentDigest.slice(0, 12)}; the Spec's content has changed since that digest was computed. Read a fresh --digest from a new report before recording this verdict, or omit --digest to record against the current content.`);
   }
   const digest = givenDigest ?? currentDigest;
+  const committed = candidateContentBinding(root, spec, candidate, digest);
+  if (!committed.matchesContent) {
+    throw new Error(`Candidate ${candidate} does not contain the reviewed committed content for ${spec.id}: ${committed.contentError ?? `candidate digest ${committed.contentDigest.slice(0, 12)} differs from reviewed content digest ${digest.slice(0, 12)}`}. Commit the assembled content and review that immutable candidate before recording a verdict.`);
+  }
   const digest12 = digest.slice(0, 12);
 
   // Review corrective (Medium): with exact-HEAD gone, a second same-day
@@ -1292,7 +1306,7 @@ export function formatSpecReport(report) {
   lines.push(`Spec digest: ${report.specDigest.slice(0, 12)}`);
   const c = report.candidate;
   lines.push(c
-    ? `Candidate ${c.sha} (resolved ${c.resolvedSha ?? 'none'}) exists=${c.existsInRepository} matchesHead=${c.matchesHead} (head ${c.headSha ?? 'none'})`
+    ? `Candidate ${c.sha} (resolved ${c.resolvedSha ?? 'none'}) exists=${c.existsInRepository} matchesHead=${c.matchesHead} matchesContent=${c.matchesContent} (head ${c.headSha ?? 'none'}; committed digest ${c.contentDigest ?? 'unavailable'}${c.contentError ? `; ${c.contentError}` : ''})`
     : 'Candidate: none named');
   const v = report.latestVerdict;
   lines.push(v ? `Verdict: ${v.result} at ${v.candidate} by ${v.reviewer} (${v.date}) [digest ${v.digest}]` : 'Verdict: none for this candidate');
