@@ -64,6 +64,33 @@ invent percentages. DQC and Landmark relationships stay a graph: a card may
 belong to several Landmarks or none, and native GitHub blocking links stay
 distinct from semantic relations.
 
+## Representation, setup and continuation requirements
+
+These requirements are part of the same owner-accepted direction. They bind
+the capabilities that implement this decision; none is implemented yet.
+
+- **Issue graph.** The Issue graph carries the Spec-Task hierarchy and also
+  direct or ungrouped Tasks that have no parent Spec. Generated content (text
+  a Workbench tool writes and regenerates) stays distinct from human-authored
+  content, so regeneration never overwrites a person's edit and a person's
+  edit is never mistaken for generated state.
+- **Room binding.** A room binds to its GitHub coordination repository and to
+  its artifact identities - including legacy Spec-qualified Task labels,
+  aliases and the immutable source revision - through supported access only.
+  Credentials stay untracked, consistent with the `AGENTS.md` Safety And
+  Change Control rule against committing secrets or generated credentials.
+  The binding and access mechanism is not yet planned.
+- **Setup and upgrade.** Setup and upgrade deliver the managed GitHub adapter
+  and the skills that use it as Workbench-managed artifacts, and are proved in
+  a freshly installed room, not only in this source repository.
+- **Continuation.** A fresh host recovers the packet, objective, scope,
+  branch, exact SHA, proof, gap and next action from the Issue and repository
+  owners alone, without the originating chat; this is proved across hosts
+  (Claude cloud, Codex cloud and a local machine).
+- **Project view.** Whether v4 requires a GitHub Project view if Projects
+  cannot be used through supported access is not yet decided; the generated
+  Taskboard and Tracker remain composed views either way.
+
 ## Rationale retained from ADR-000O
 
 ADR-000O's reasons still hold and constrain the successor:
