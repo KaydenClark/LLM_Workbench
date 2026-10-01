@@ -231,7 +231,9 @@ Output: a `RUNBOOK.md` that reproduces the project's existing green run.
 ### Phase 6 - Seed specs and render the TASKBOARD
 
 Port coherent live capabilities into stable specs. Put only one-context active
-slices in their implementation tables, preserve completed history in the owning
+slices in compatibility tables or existing Task records. Convert unfinished
+table rows with `convert-tasks` before record-backed execution; do not convert
+a Spec twice or discard existing records. Preserve completed history in the owning
 spec or a cold archive, and render `TASKBOARD.md` from active spec metadata. Add
 an evidence row recording that Adoption ran and what moved where.
 

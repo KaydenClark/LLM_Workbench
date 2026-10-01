@@ -10,8 +10,9 @@ and the current state (prototype, in production, internal tool, etc.).]
 
 ## How This Project Is Run
 
-This repository is governed by a small set of control documents. Read them
-before changing anything:
+This repository is governed by a small set of control documents. Start with
+AGENTS -> Runbook Ordinary Entry -> Lexicon Task Routing -> the assigned Spec
+and Task; load the other owners below when the operation needs them:
 
 - [`AGENTS.md`](AGENTS.md) - how agents behave here: authority order, read/edit
   scope, the task-selection loop, documentation ownership, and proof rules.
@@ -63,6 +64,18 @@ For **Claude Code**, keep the one-line `CLAUDE.md` containing exactly
 (`validate --genesis`) rejects any other bridge, so do not replace it with a
 generated `/init` file. Other agents should be pointed at `AGENTS.md` as their
 entry point.
+
+The ordinary route is AGENTS -> Runbook -> Lexicon -> assigned Spec and
+Task record, without reading every control. TASK.md owns Task state and proof;
+its Spec owns acceptance and append-only evidence. A Worker self-checks and
+hands back, the Dispatcher owns whole-Spec QA, and a separate Director reviews
+the immutable integration candidate. Follow the room's declared branch route.
+
+The owner chooses useful Human QA timing and explicitly approves per-Spec
+delivered content. Only the owner promotes integration into the default branch.
+Verified main content precedes `complete`, followed by authored Wiki feature
+capture, link-safe retirement and guarded discard/recovery. Tests and merges
+do not constitute owner approval.
 
 Every completed task must leave proof in its final response and owning spec's
 append-only evidence log. Milestone specs additionally require a short demo

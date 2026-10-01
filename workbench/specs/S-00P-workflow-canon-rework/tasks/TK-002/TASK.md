@@ -201,4 +201,6 @@ assembled planning verification belongs to the Dispatcher.
 
 ## Unlanded Review Correction (2026-10-01 UTC)
 
+**Historical attempt.** The text below describes failed2c9 and its unlanded correction at that time; current Status/Proof above records subsequent exact8c2 review and PR238 integration delivery. Earlier publication rejection is preserved history; the owner later explicitly authorized the public destination and actual push/merge succeeded. No current retry or in-progress assignment is implied.
+
 Independent exact-head review failed candidate `2c9c7727fcd3986b642ccfa41573cdd44fed3e63` for one proven P2: the portability classifier masked an active retired route inside a parenthesis that also said proposed. This is an unmet TK-002 acceptance requirement before integration, so the Director released a fresh attempt of this same Task. The record returns explicitly to in-progress; prior Proof and checksum-linked Receipt rows remain unchanged as that earlier attempt. No whole-Spec verdict, owner QA, delivery or publication is inferred. The correction lane remains test-portability-matrix only; source controls and all excluded lanes remain unchanged.

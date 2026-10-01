@@ -28,6 +28,18 @@
 
 [Describe how the product should be created, updated, repaired, validated and deployed.]
 
+Keep the product journey distinct from the Contract's operating rules. Align
+through inquiry to an explicitly confirmed design concept, then Blueprint the
+product destination; an optional prototype checks plausibility before scoped
+Spec destinations and thin Tasks deliver it. Preserve any owner source diagram
+verbatim with provenance and label prose interpretation separately. Describe
+intended branch topology as destination; the controls govern the route actually
+available. Worker self-check and hand-back feed Dispatcher whole-Spec QA and
+separate Director review; owner evaluation returns failed findings to the
+implicated scope. Verified main content precedes completion, then durable
+feature capture, reconciliation and recoverable transient cleanup. This generic
+shape neither invents a product journey nor declares current delivery status.
+
 ## Non-Goals
 
 [State what the desired product intentionally is not. Adapt headings to the product and omit a genuinely inapplicable section rather than inventing boilerplate.]
