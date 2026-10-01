@@ -54,7 +54,7 @@ No prerequisite blocks the first read-only binding slice. Native Issue mapping a
 
 ## Acceptance Criteria
 
-- [ ] A read-only public command resolves committed room binding at an exact commit, rejects malformed input with named errors and leaves the checkout unchanged.
+- [x] A read-only public command resolves committed room binding at an exact commit, rejects malformed input with named errors and leaves the checkout unchanged.
 - [ ] Artifact lookup distinguishes identically labelled legacy Tasks in different Specs and resolves supported former spellings without choosing an ambiguous record.
 - [ ] Moves and retirement retain room/artifact/Issue correspondence and immutable source references.
 - [ ] The adapter is registered in the managed runtime and its delivered seams work from a receipt-backed fresh-room installation.
@@ -95,6 +95,8 @@ This Spec owns capability requirements, open gates and proof. Shared operational
 
 | 2026-10-01 | review | Independent mechanism FAIL at1fb97872ac44c10ab69c1d1791980bb1cb510c66, preserved | Reviewer01a0f689-cb20-717c-97ff-213d82289036 independently reproduces P1 omitted current-manifest and legacy table-backed replacement identities and P2 unexecuted Runbook example. Public22/22 plus six additional refusal controls pass; mandatory suite was incomplete at early handback. Producer exact1fb54/55 independently names the same round-trip failure. | In-progress TK-004K corrects both findings without reopening done records; originalF and receipts unchanged. | No mechanism approval or actual repair at1fb; fresh corrected mechanism review then separate actual repaired assembly review required. |
 | 2026-10-01 | S-003P/TK-004F | Collision identity recovered to TK-004I | S-003P/TK-004F@5e8803f673898dd0eb716446fba5f61881d6a106:workbench/specs/S-003P-github-coordination-room-binding-and-identity/tasks/TK-004F/TASK.md; retained S-00I/TK-004F@7a51c53a528ff4dba407042a4de860bc66bb2d66:workbench/specs/S-00I-folder-lifecycle-for-records/tasks/TK-004F/TASK.md | Director retains earlier S-00I identity and reserves TK-004I for later S-003P recovery | Identity repair only; no review or owner approval transferred. |
+
+| 2026-10-01 | review | Independent bounded mechanism PASS at2791caa13afcb5b304ea013c678856abbc0a2341, then native actual recovery at7be6a245 | Separate reviewer01a0f689-cb20-717c-97ff-213d82289036 independently passes55 commands including51 mandatory, installed27/27 and eight additional refusal probes, with exact remote2791 confirmed. Model unrecorded. Producer55/55, source/installed27/27, guardrails78/100 and seven inherited self-drift findings remain separately named. Native actual move preserves all17 existing evidence/header rows and originalF Task body/Receipt bytes except canonicalID/title and qualified immutable provenance. | Binding command acceptance is rechecked by public10/10 plus prior independent correction evidence; full artifact lookup, Issue correspondence and whole adapter acceptance remain open. | Actual repaired assembly still requires full exact-candidate suite and separate independent integration review; mechanism PASS transfers no wholeSpec/owner approval. |
 
 ## Completion Result
 
