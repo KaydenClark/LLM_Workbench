@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Make a separate context review the assembled Spec against its Task results, route a failed review into corrective Tasks under the still-open Spec, keep `integration` as the owner's Human QA surface, and refuse to close a Spec without a passed review and recorded owner approval.
 **Blockers:** TK-004M corrects the independent replacement-object finding before fresh review. Separate close and corrective-batch recovery remain owned engineering work; owner Human QA/main gates are unapproved.
-**Latest event:** TK-004M claimed by codex-v4-verdict.
-**Next gate:** Close TK-004M with verification and documentation proof.
+**Latest event:** TK-004M closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -399,6 +399,7 @@ TK-005.
 | 2026-10-01 | review | Review verdict: fail at 02a5212a143b6d3641a9b7652c8b100c12a54b7c [55d0a92812e6] #10 | P1: Git replacement objects let a named empty candidate impersonate committed Spec content and accept PASS or FAIL verdicts and gates. Disable replacement semantics and inherited repository selectors and object transport for bounded committed-content reads before writing. | Independent review context 01a0f686-0291-71d7-a754-53a5027ad029 reported by Director to coordinator | 1 |
 
 | 2026-10-01 | TK-004M | Immutable candidate Git reader correction verified | Public red `b039c397` reproduces replacement refs making an empty commit impersonate Spec content. Source `9cf0d216acc73c9cacfd66cbd6b136fcf4ece5db`: replacement and inherited GIT_DIR/GIT_WORK_TREE cases refuse PASS/FAIL and gate without Spec/Task writes. Missing promisor commit/tree/blob refuse without transport and preserve every Git metadata byte. All51 required commands PASS at exact clean source; focused report and previous binding regressions PASS. Intermediate shebang composition failure retained and corrected | Scoped candidateGit applies selected repository semantics, no replacements or lazy fetch, caller Git selector isolation and optional-lock suppression to candidate resolution/content/ancestry readers. Owned source comments document the boundary; existing tests retain normalization, non-HEAD and retired lifecycle behavior. No root/template procedure or bundle changes | Native receipt/closure, exact independent successor review and integration containment pending. Separate partial-write recovery and owner QA/main gates remain open. No CI or clean-update claim |
+| 2026-10-01 | TK-004M | Task closed | Verified source 9cf0d216acc73c9cacfd66cbd6b136fcf4ece5db passed all 51 required checks and focused Git replacement, ambient selector, and missing promisor object probes; source committed and pushed before this close. Independent successor review remains pending. | Updated owned verdict candidate-content implementation, bounded Git reads, regression fixtures and source verification record. | Independent exact successor review and integration containment pending. Separate corrective-batch partial-write recovery and owner QA/main approval remain open. |
 
 ## Completion Result
 
