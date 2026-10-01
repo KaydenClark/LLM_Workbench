@@ -327,3 +327,37 @@ test('dotted non-path values do not replace a scoped file for shorthand', () => 
   const bare = liveCitations('## Desired Behavior\n\n`' + basename + '` governs this; see `:12`.');
   assert.equal(bare[0].cited, basename, 'a genuine repository basename still establishes scope');
 });
+
+// The child runs the same complete checker against a disposable corpus entry.
+// Skip only these wrappers in that child, keeping all enforcement tests active.
+function runCitationCorpusFixture(text) {
+  const folder = fs.mkdtempSync(path.join(SPECS, 'S-0990-citation-fixture-'));
+  try {
+    fs.writeFileSync(path.join(folder, 'SPEC.md'), '# Synthetic citation fixture\n\n' + text);
+    try {
+      const output = execFileSync(process.execPath, [fileURLToPath(import.meta.url)], {
+        cwd: root, encoding: 'utf8', env: { ...process.env, WORKBENCH_CITATION_CORPUS_CHILD: '1' },
+        stdio: ['ignore', 'pipe', 'pipe'],
+      });
+      return { status: 0, output };
+    } catch (error) {
+      return { status: error.status, output: String(error.stdout ?? '') + String(error.stderr ?? '') };
+    }
+  } finally { fs.rmSync(folder, { recursive: true, force: true }); }
+}
+const CORPUS_CHILD = process.env.WORKBENCH_CITATION_CORPUS_CHILD === '1';
+
+test('a missing bare filename resets prior scope and refuses through the full checker', { skip: CORPUS_CHILD }, () => {
+  const head = git(['rev-parse', 'HEAD']).trim();
+  const result = runCitationCorpusFixture('> **Citation anchors.** pre=`' + head + '` post=`' + head + '`.\n\n## Desired Behavior\n\n`tools/test-diagnostics.mjs` then `missing-review-target.mjs`; see `:12`.\n');
+  assert.notEqual(result.status, 0, 'a missing target must not validate the preceding file');
+  assert.match(result.output, /missing-review-target\.mjs:12.*names no unique path/);
+});
+
+test('a numeric endpoint remains ordinary documentation through the full checker', { skip: CORPUS_CHILD }, () => {
+  const head = git(['rev-parse', 'HEAD']).trim();
+  for (const anchors of ['', '> **Citation anchors.** pre=`' + head + '` post=`' + head + '`.\n\n']) {
+    const result = runCitationCorpusFixture(anchors + '## Desired Behavior\n\nConnect to `127.0.0.1:8080`.\n');
+    assert.equal(result.status, 0, result.output);
+  }
+});
