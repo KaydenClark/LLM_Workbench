@@ -143,3 +143,38 @@ test('receipt-backed fresh installation delivers and runs the same binding inspe
     assert.equal(run(room, revision).report.repository, 'Example/Room');
   } finally { clean(room); }
 });
+
+function gitFiles(directory) {
+  return Object.fromEntries(fs.readdirSync(directory, { recursive: true })
+    .filter(file => fs.statSync(path.join(directory, file)).isFile())
+    .sort().map(file => [file, createHash('sha256').update(fs.readFileSync(path.join(directory, file))).digest('hex')]));
+}
+
+test('missing promised commit, tree and blob refuse without transport or Git metadata writes', () => {
+  const source = fixture();
+  try {
+    for (const missing of ['commit', 'tree', 'blob']) {
+      const parent = fs.mkdtempSync(path.join(os.tmpdir(), 'github-promisor-'));
+      const room = path.join(parent, 'room');
+      try {
+        git(parent, 'clone', '-q', '--no-hardlinks', source.room, room);
+        git(room, 'config', 'remote.origin.promisor', 'true');
+        git(room, 'config', 'remote.origin.partialclonefilter', 'blob:none');
+        const tripwire = path.join(parent, 'transport-called');
+        const transport = path.join(parent, 'upload-pack');
+        fs.writeFileSync(transport, `#!/bin/sh\necho transport > '${tripwire}'\nexec git-upload-pack "$@"\n`, { mode: 0o755 });
+        git(room, 'config', 'remote.origin.uploadpack', transport);
+        const object = missing === 'commit' ? source.revision
+          : git(room, 'rev-parse', source.revision + (missing === 'tree' ? '^{tree}' : ':workbench/manifest.json'));
+        const metadata = path.join(room, '.git');
+        fs.unlinkSync(path.join(metadata, 'objects', object.slice(0, 2), object.slice(2)));
+        const before = gitFiles(metadata);
+        const result = run(room, source.revision);
+        assert.equal(result.status, 1, `Missing ${missing} must refuse`);
+        assert.equal(result.report.error.code, missing === 'commit' ? 'invalid-source-revision' : 'invalid-source-manifest');
+        assert.equal(fs.existsSync(tripwire), false, `Missing ${missing} must not invoke transport`);
+        assert.deepEqual(gitFiles(metadata), before, `Missing ${missing} must preserve all Git metadata`);
+      } finally { clean(parent); }
+    }
+  } finally { clean(source.room); }
+});
