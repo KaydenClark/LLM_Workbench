@@ -341,7 +341,7 @@ try {
   // acceptance, filled Completion Result) - the same content completeSpec is
   // about to see.
   recordReviewVerdict(root, 'S-001', {
-    candidate: headSha(root), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+    candidate: integratedFixtureCandidate(root), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
   });
   // S-00J TK-005: complete now also refuses without a recorded owner Human
   // QA approval bound to the same current content. This fixture room
@@ -2760,7 +2760,7 @@ function wikiClaimFixture() {
     // longer matches.
     writeAt(gateRoot, 'workbench/specs/S-801-fixture/SPEC.md', completableSpec('S-801'));
     recordReviewVerdict(gateRoot, 'S-801', {
-      candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+      candidate: integratedFixtureCandidate(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
     const s801Path = path.join(gateRoot, 'workbench/specs/S-801-fixture/SPEC.md');
     fs.writeFileSync(s801Path, fs.readFileSync(s801Path, 'utf8').replace('Proves the complete gate.', 'Proves the complete gate (edited after review).'));
@@ -2796,7 +2796,7 @@ function wikiClaimFixture() {
     // gate above. No verdict at all for the owner-qa row.
     writeAt(gateRoot, 'workbench/specs/S-804-fixture/SPEC.md', completableSpec('S-804'));
     recordReviewVerdict(gateRoot, 'S-804', {
-      candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+      candidate: integratedFixtureCandidate(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
     assert.throws(
       () => completeSpec(gateRoot, 'S-804', { date: '2026-09-18' }),
@@ -2811,13 +2811,13 @@ function wikiClaimFixture() {
     // approval, isolating the approval-gap check from the review-gap check.
     writeAt(gateRoot, 'workbench/specs/S-805-fixture/SPEC.md', completableSpec('S-805'));
     recordReviewVerdict(gateRoot, 'S-805', {
-      candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+      candidate: integratedFixtureCandidate(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
     recordOwnerApproval(gateRoot, 'S-805', { candidate: integratedFixtureCandidate(gateRoot), owner: 'Kayden Clark', result: 'approve' });
     const s805Path = path.join(gateRoot, 'workbench/specs/S-805-fixture/SPEC.md');
     fs.writeFileSync(s805Path, fs.readFileSync(s805Path, 'utf8').replace('Proves the complete gate.', 'Proves the complete gate (edited after owner approval).'));
     recordReviewVerdict(gateRoot, 'S-805', {
-      candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Sonnet 5 (separate context)'
+      candidate: integratedFixtureCandidate(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Sonnet 5 (separate context)'
     });
     assert.throws(
       () => completeSpec(gateRoot, 'S-805', { date: '2026-09-18' }),
@@ -2854,7 +2854,7 @@ function wikiClaimFixture() {
     // nothing else different.
     writeAt(gateRoot, 'workbench/specs/S-803-fixture/SPEC.md', completableSpec('S-803'));
     recordReviewVerdict(gateRoot, 'S-803', {
-      candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+      candidate: integratedFixtureCandidate(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
     const s803Candidate = integratedFixtureCandidate(gateRoot);
     recordOwnerApproval(gateRoot, 'S-803', { candidate: s803Candidate, owner: 'Kayden Clark', result: 'approve' });
@@ -6168,7 +6168,9 @@ function commitAll(dir, message) {
       writeAt(dir, blockerPath, deliveryBlockerSpec({ ...blocker, description: 'Delivers the fixture capability (never committed at the candidate).' }));
     }
     if (verdict === 'pass') {
-      recordReviewVerdict(dir, 'S-9E0', { candidate, result: 'pass', findings: 'none', reviewer: 'Fixture reviewer (separate context)' });
+      const record = () => recordReviewVerdict(dir, 'S-9E0', { candidate, result: 'pass', findings: 'none', reviewer: 'Fixture reviewer (separate context)' });
+      if (reviewUncommitted) assert.throws(record, /does not contain the reviewed committed content/, 'uncommitted delivery cannot acquire a verdict in the first place');
+      else record();
     } else if (verdict === 'fail') {
       // Written directly so no corrective Task changes the blocker's own
       // Task set: this isolates the verdict result as the one missing fact.
