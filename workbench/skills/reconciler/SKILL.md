@@ -34,7 +34,8 @@ observe facts; the agent still has to judge whether those facts support a claim.
 Split mixed claims and route each once using `/to-docs`: capability requirements,
 acceptance and evidence to the assigned Spec; active Task state and receipts to
 its TASK.md; meanings and procedures to their existing control owners; durable
-explanation to the Wiki; decision rationale to the manifest's ADR collection.
+explanation to the Wiki; decision rationale to the manifest's ADR collection
+(`workbench/docs/adr/` in this layout).
 Link other readers to that owner. Render projections from the actual Spec/Task
 records only after supported owner updates. Respect an assigned shared writer:
 return the exact proposed correction and evidence to that writer.
