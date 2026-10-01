@@ -18,6 +18,7 @@ import { completeSpec, doctor, gate, nextWork, render, retireSpec } from '../wor
 import { readTaskRecord } from '../workbench/tools/task-record.mjs';
 import { appendReceiptRowToContent } from '../workbench/tools/task-receipt.mjs';
 import { RUNTIME_TOOLS } from '../workbench/tools/workbench-layout.mjs';
+import './test-verdict-candidate-binding.mjs';
 
 function initGitRoot(dir) {
   execFileSync('git', ['init', '--quiet', dir]);
