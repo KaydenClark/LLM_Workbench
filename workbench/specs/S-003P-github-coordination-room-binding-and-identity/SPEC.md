@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Resolve an explicit GitHub coordination repository and room-scoped artifact identities from immutable repository sources.
 **Blockers:** No prerequisite blocks the first read-only binding slice. Native Issue mapping awaits the Issue graph seam. Live actor trust belongs to the assignment owner.
-**Latest event:** Exact5e inspector corrections pass54/54, while independent review identifies a cross-Spec TK-004F collision. Director disposition retains S-00I identity and assigns a narrow native recovery Task.
-**Next gate:** Implement and independently review TK-004K guarded move-task recovery before applying the reserved replacement TK-004I, then independently review the actual repaired assembly before integration. Later artifact-identity/Issue slices and owner gates remain open.
+**Latest event:** TK-004K claimed by codex-github-binding.
+**Next gate:** Close TK-004K with verification and documentation proof.
 
 > **Citation anchors.** pre=`282dc043ab7dad92826a6d5447369238c35df0a3` post=`282dc043ab7dad92826a6d5447369238c35df0a3`.
 
