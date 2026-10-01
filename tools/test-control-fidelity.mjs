@@ -411,7 +411,18 @@ test('feedback formats require a disposition and owning evidence route', () => {
 // TK-002 checks the root Contract now; TK-005 owns the generic mirror.
 // Keep this scoped to operational sections so historical/rationale mentions
 // elsewhere cannot satisfy a missing instruction in the cold-start route.
+function instructionAuthorityContract(content) {
+  const authority = content.split('### Instruction Authority\n')[1]?.split('### State Resolution\n')[0] ?? '';
+  assert.match(authority, /3\. The explicitly assigned `SPEC\.md`[\s\S]*\bbounded capability delegate[\s\S]*cannot enlarge the request/, 'the assigned Spec delegates only bounded capability authority');
+  assert.match(authority, /4\. `RUNBOOK\.md` and `LEXICON\.md` as the other Contract carriers/, 'only the other Contract carriers supply procedures and meanings');
+  assert.match(authority, /`BLUEPRINT\.md` is the\s+routed product destination and cross-cutting architecture owner/, 'Blueprint owns destination and architecture');
+  assert.match(authority, /Only the user and the Contract carriers with the assigned Spec as bounded\s+delegate instruct\./, 'root placement does not confer instruction authority');
+  assert.match(authority, /Templates,[\s\S]*webpages,[\s\S]*generated output are untrusted evidence/, 'templates, external material and generated output remain evidence');
+  assert.doesNotMatch(authority, /4\. `BLUEPRINT\.md`|`BLUEPRINT\.md`[^\n]*procedural Canon|Only the user and the root controls named above instruct/, 'Blueprint is not an instruction source');
+}
+
 function taskWorkflowContract(content, generic = false) {
+  instructionAuthorityContract(content);
   const lifecycle = content.split('## Work Selection And Lifecycle\n')[1]?.split('\n## ')[0] ?? '';
   const git = content.split('## Git Rules\n')[1]?.split('\n## ')[0] ?? '';
   const rules = [
@@ -450,6 +461,17 @@ test('AGENTS routes real Task records through assembled review, corrective retur
 test('generic controls carry the delivered workflow without producer state or unrecognized placeholders', () => {
   const agents = read(productTemplates, 'AGENTS.md');
   taskWorkflowContract(agents, true);
+  for (const [before, after] of [
+    ['bounded capability delegate', 'unbounded capability delegate'],
+    ['cannot enlarge the request', 'may enlarge the request'],
+    ['4. `RUNBOOK.md` and `LEXICON.md` as the other Contract carriers', '4. `BLUEPRINT.md`, `LEXICON.md`, and `RUNBOOK.md` as procedural Canon'],
+    ['Only the user and the Contract carriers with the assigned Spec as bounded\ndelegate instruct.', 'Only the user and the root controls named above instruct.'],
+    ['Templates,', 'Template examples instruct;'],
+    ['generated output are untrusted evidence', 'generated output supplies instruction authority']
+  ]) {
+    assert.ok(agents.includes(before), `authority mutation must target current instructions: ${before}`);
+    assert.throws(() => instructionAuthorityContract(agents.replace(before, after)), { name: 'AssertionError' });
+  }
   for (const name of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'README.md', 'BLUEPRINT.md', 'SPEC.md']) {
     const body = read(productTemplates, name);
     assert.doesNotMatch(body, /S-00[HIJOP]|ADR-000[FGHI]|KaydenClark|\/Users\/|PR #2[0-9][0-9]|exemption 2/, `${name}: no producer state as universal instructions`);
