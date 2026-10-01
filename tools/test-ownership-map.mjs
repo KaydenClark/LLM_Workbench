@@ -39,3 +39,19 @@ test('closed schema rejects duplicate/missing keys, claim text, status and embed
     assert.throws(() => validateOwnership(map));
   }
 });
+
+test('concrete routes reach files and headings; instance ownership is recorded outside the map', () => {
+  const map = readOwnership(root);
+  assert.deepEqual(map.relations.find(r => r.name === 'owns').instance_edge,
+    { artifact: 'Spec', path: 'workbench/specs/[SPEC]/SPEC.md' });
+  for (const route of [...map.rows.flatMap(row => row.routes), ...map.relations.map(r => r.instance_edge)]) {
+    if (route.path.includes('[') || route.path === 'TASKBOARD.json') continue;
+    const [file, fragment] = route.path.split('#');
+    assert.ok(fs.existsSync(path.join(root, file)), route.path);
+    if (fragment) {
+      const headings = [...fs.readFileSync(path.join(root, file), 'utf8').matchAll(/^#{1,6} (.+)$/gm)]
+        .map(m => m[1].toLowerCase().replace(/[^a-z0-9 -]/g, '').replace(/ /g, '-'));
+      assert.ok(headings.includes(fragment), route.path);
+    }
+  }
+});
