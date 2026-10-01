@@ -3,7 +3,7 @@
 **Task ID:** TK-01G
 **Spec ID:** S-01P
 **Slice:** Audit builder, deliver the smallest supported source/documentation change and prove the routed article
-**Status:** ready
+**Status:** in-progress
 **Blockers:** none
 **Destination:** spec-acceptance: S-01P Acceptance Criteria
 

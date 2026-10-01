@@ -3,13 +3,13 @@
 **Spec ID:** S-01P
 **Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** codex-s01p-builder
 **Stance:** Builder
-**Updated:** 2026-09-24
+**Updated:** 2026-10-01
 **Catalog description:** Deliver the assigned result with useful verification and truthful documentation.
 **Blockers:** none for assigned implementation; behavioral proof, coordinator router write and independent review remain delivery gates.
-**Latest event:** Owner assigned S-01P; existing TK-01G converted with the native activation command after refreshing remote claims.
-**Next gate:** Claim TK-01G, repair only supported Builder gaps, and prepare an immutable candidate for independent review.
+**Latest event:** TK-01G claimed by codex-s01p-builder.
+**Next gate:** Close TK-01G with verification and documentation proof.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
