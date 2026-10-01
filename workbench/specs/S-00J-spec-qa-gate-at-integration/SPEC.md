@@ -3,13 +3,13 @@
 **Spec ID:** S-00J
 **Status:** active
 **Priority:** 3
-**Owner:** codex-v4-verdict-binding
+**Owner:** codex-v4-verdict
 **Stance:** Builder
 **Updated:** 2026-10-01
 **Catalog description:** Make a separate context review the assembled Spec against its Task results, route a failed review into corrective Tasks under the still-open Spec, keep `integration` as the owner's Human QA surface, and refuse to close a Spec without a passed review and recorded owner approval.
 **Blockers:** TK-004D/TK-004E correct reproduced candidate-content binding. Separate close and corrective-batch recovery findings remain serial implementation work; original owner Human QA/main gates are unapproved.
-**Latest event:** TK-004E closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** TK-004M claimed by codex-v4-verdict.
+**Next gate:** Close TK-004M with verification and documentation proof.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
