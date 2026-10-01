@@ -126,6 +126,72 @@ try {
   try { refusal([], /rolled back.*injected publication failure/s, { env: { ...process.env, NODE_OPTIONS: `--import=${injection}` } }); } finally { fs.unlinkSync(injection); }
   fs.writeFileSync(injection, `import fs from 'node:fs'; const old=fs.renameSync; let failed=false; fs.renameSync=(from,to)=>{if(!failed && String(to).endsWith('/CATALOG.md')) {failed=true;throw new Error('injected projection failure');} return old(from,to);};`);
   try { refusal([], /rolled back.*injected projection failure/s, { env: { ...process.env, NODE_OPTIONS: `--import=${injection}` } }); } finally { fs.unlinkSync(injection); }
+  // Run new postdelivery probes independently so red exposes every gap.
+  const regressions = [];
+  const regression = (name, check) => {
+    try { check(); tests++; }
+    catch (error) { regressions.push(new Error(`${name}: ${error.message}`, { cause: error })); }
+    finally {
+      for (const name of fs.readdirSync(room).filter(name => name.startsWith('TASKBOARD.md.tmp-'))) fs.unlinkSync(path.join(room, name));
+      const privateFile = path.join(room, 'workbench/wiki/private-fixture.md');
+      if (fs.existsSync(privateFile)) fs.unlinkSync(privateFile);
+      git('reset', '--hard', original);
+    }
+  };
+  regression('foreign qualified references', () => {
+    const file = `${spec}/SPEC.md`;
+    const line = `Foreign: S-00I/TK-004F; local: S-003P/TK-004F; alias: S-0003P/TK-004F; bare: TK-004F; foreign path: ${foreignPath}.`;
+    write(file, fs.readFileSync(path.join(room, file), 'utf8').replace('## Acceptance Criteria', line+'\n\n## Acceptance Criteria'));
+    const head = commit('qualified references'); const foreign = fs.readFileSync(path.join(room, foreignPath));
+    const output = run(['--expected-head', head]); assert.equal(output.status, 0, output.stderr);
+    const expected = line.replace('local: S-003P/TK-004F', 'local: S-003P/TK-004I').replace('alias: S-0003P/TK-004F', 'alias: S-0003P/TK-004I').replace('bare: TK-004F', 'bare: TK-004I');
+    assert.ok(fs.readFileSync(path.join(room, file), 'utf8').includes(expected), 'foreign qualifiers/paths stay intact while selected-owner and bare labels update');
+    assert.deepEqual(fs.readFileSync(path.join(room, foreignPath)), foreign);
+  });
+  for (const [name, encode] of [
+    ['escaped JSON slashes', text => text.replaceAll('/', '\\/')],
+    ['escaped JSON unicode', text => text.replaceAll('/', '\\u002f')],
+    ['escaped JSON keys', () => JSON.stringify({ [`${oldDir}/TASK.md`]: 'indexed reference' }).replaceAll('/', '\\/')]
+  ]) regression(name, () => {
+    write('task-ref.json', encode(JSON.stringify({ taskPath: `${oldDir}/TASK.md` })));
+    const head = commit(name); const prior = snapshot(); const output = run(['--expected-head', head]);
+    assert.notEqual(output.status, 0); assert.match(output.stderr, /unhandled JSON path reference/);
+    assert.deepEqual(snapshot(), prior);
+  });
+  regression('ignored external reference', () => {
+    const file = 'workbench/wiki/private-fixture.md'; write('.gitignore', file+'\n');
+    const head = commit('ignore private reference');
+    const bytes = '[Task](../specs/S-003P-binding/tasks/TK-004F/TASK.md)\n'; write(file, bytes);
+    const prior = snapshot(); const output = run(['--expected-head', head]);
+    assert.notEqual(output.status, 0); assert.match(output.stderr, /external rewrite source must be tracked.*private-fixture/);
+    assert.equal(fs.readFileSync(path.join(room, file), 'utf8'), bytes); assert.deepEqual(snapshot(), prior);
+  });
+  for (const partial of [false, true]) regression(partial ? 'partial projection write rollback' : 'projection rename rollback', () => {
+    const injector = path.join(os.tmpdir(), `collision-projection-${process.pid}.mjs`);
+    const hook = partial
+      ? `const write=fs.writeFileSync; let fired=false; fs.writeFileSync=(file,...args)=>{if(!fired && String(file).includes('TASKBOARD.md.tmp-')){fired=true;write(file,'partial bytes',{flag:'w'});throw new Error('injected partial projection write');}return write(file,...args);};`
+      : `const rename=fs.renameSync; let fired=false; fs.renameSync=(from,to,...args)=>{if(!fired && String(to).endsWith('/TASKBOARD.md')){fired=true;throw new Error('injected projection rename');}return rename(from,to,...args);};`;
+    fs.writeFileSync(injector, `import fs from 'node:fs'; ${hook}`);
+    try {
+      const prior = snapshot(); const output = run([], { env: { ...cliEnv, NODE_OPTIONS: `--import=${injector}` } });
+      assert.notEqual(output.status, 0); assert.match(output.stderr, /publication rolled back.*injected/s);
+      assert.deepEqual(snapshot(), prior); assert.deepEqual(fs.readdirSync(room).filter(name => name.startsWith('TASKBOARD.md.tmp-')), []);
+      const retry = run(); assert.equal(retry.status, 0, retry.stderr);
+    } finally { fs.unlinkSync(injector); }
+  });
+  regression('pre-existing projection temporary', () => {
+    write('.gitignore', 'TASKBOARD.md.tmp-*\n'); const head = commit('ignore pre-existing temporary');
+    const injector = path.join(os.tmpdir(), `collision-preexisting-${process.pid}.mjs`);
+    fs.writeFileSync(injector, `import fs from 'node:fs'; fs.writeFileSync('TASKBOARD.md.tmp-'+process.pid,'preserve pre-existing bytes',{mode:0o600});`);
+    try {
+      const output = run(['--expected-head', head], { cwd: room, env: { ...cliEnv, NODE_OPTIONS: `--import=${injector}` } });
+      assert.notEqual(output.status, 0); assert.match(output.stderr, /EEXIST/);
+      const temporaries = fs.readdirSync(room).filter(name => name.startsWith('TASKBOARD.md.tmp-')); assert.equal(temporaries.length, 1);
+      assert.equal(fs.readFileSync(path.join(room, temporaries[0]), 'utf8'), 'preserve pre-existing bytes');
+      assert.equal(fs.statSync(path.join(room, temporaries[0])).mode & 0o777, 0o600);
+    } finally { fs.unlinkSync(injector); }
+  });
+  if (regressions.length) throw new AggregateError(regressions, regressions.map(error => error.message).join('\n'));
   // Use a unique, done local Task so duplicate-ID refusal cannot mask a
   // malformed-mode dispatch into ordinary retirement.
   git('rm', '-r', 'workbench/specs/S-00I-folder-lifecycle-for-records'); commit('unique local retirement source');
