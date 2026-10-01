@@ -2493,16 +2493,24 @@ function recoverTaskCollision(rootDir, specId, taskId, folder, options) {
   }
   if (discardedLabels(root, 'TK').some(id => visibleIdKey(id) === key)) fail('replacement identity is occupied by a discard');
   for (const ref of git('for-each-ref', '--format=%(refname)', 'refs/remotes').split('\n').filter(Boolean)) {
-    let lane;
-    try { lane = JSON.parse(blob(ref, 'workbench/manifest.json')).lanes?.specs; }
-    catch { fail('cannot inspect an observed remote manifest'); }
-    if (typeof lane !== 'string' || path.isAbsolute(lane) || lane.split('/').some(part => !part || part === '.' || part === '..')) fail('observed remote Spec lane is invalid');
-    const result = spawnSync('git', ['--no-lazy-fetch', '--no-optional-locks', '-C', root, 'grep', '-h', '-E', '^\\*\\*(Task ID|Former ID):\\*\\*', ref, '--', lane], { encoding: 'utf8', maxBuffer: REF_READ_MAX_BUFFER, env: { ...process.env, GIT_NO_REPLACE_OBJECTS: '1' } });
+    // Pre-manifest tips retain the same legacy lane inventory as next-id.
+    // A present but malformed manifest still refuses instead of guessing.
+    let lanes = [...new Set([resolveSpecsRoot(root).specsPrefix, 'specs'])];
+    if (git('ls-tree', '--name-only', ref, '--', 'workbench/manifest.json')) {
+      let lane;
+      try { lane = JSON.parse(blob(ref, 'workbench/manifest.json')).lanes?.specs; }
+      catch { fail('cannot inspect an observed remote manifest'); }
+      if (typeof lane !== 'string' || path.isAbsolute(lane) || lane.split('/').some(part => !part || part === '.' || part === '..')) fail('observed remote Spec lane is invalid');
+      lanes = [lane];
+    }
+    const result = spawnSync('git', ['--no-lazy-fetch', '--no-optional-locks', '-C', root, 'grep', '-h', '-E', '^\\*\\*(Task ID|Former ID):\\*\\*', ref, '--', ...lanes], { encoding: 'utf8', maxBuffer: REF_READ_MAX_BUFFER, env: { ...process.env, GIT_NO_REPLACE_OBJECTS: '1' } });
     if (result.error || ![0, 1].includes(result.status)) fail('cannot inspect remote replacement records');
     if ([...result.stdout.matchAll(/\bTK-[0-9A-Za-z]+\b/g)].some(match => visibleIdKey(match[0]) === key)) fail('replacement identity is occupied on an observed remote tip');
-    const discardPath = `${lane}/DISCARDS.md`;
-    if (git('ls-tree', '--name-only', ref, '--', discardPath)
-        && [...blob(ref, discardPath).toString('utf8').matchAll(/\bTK-[0-9A-Za-z]+\b/g)].some(match => visibleIdKey(match[0]) === key)) fail('replacement identity is discarded on an observed remote tip');
+    for (const lane of lanes) {
+      const discardPath = `${lane}/DISCARDS.md`;
+      if (git('ls-tree', '--name-only', ref, '--', discardPath)
+          && [...blob(ref, discardPath).toString('utf8').matchAll(/\bTK-[0-9A-Za-z]+\b/g)].some(match => visibleIdKey(match[0]) === key)) fail('replacement identity is discarded on an observed remote tip');
+    }
   }
   const newDir = path.join(path.dirname(oldDir), options.replacement);
   assertSafeReadPath(root, newDir);

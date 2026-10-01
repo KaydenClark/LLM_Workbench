@@ -94,6 +94,10 @@ try {
   refusal(currentArgs(), /occupied by a record/); git('reset', '--hard', original);
   write('workbench/specs/S-00I-lifecycle/tasks/TK-0004I/TASK.md', taskBytes('S-00I').replaceAll('TK-004F', 'TK-0004I').replace('**Task ID:** TK-0004I', '**Task ID:** TK-0004I\n**Former ID:** TK-004i'));
   commit('local replacement alias'); refusal(currentArgs(), /occupied by a record or alias/); git('reset', '--hard', original);
+  git('rm', 'workbench/manifest.json'); const legacy = commit('pre-manifest remote tip');
+  git('update-ref', 'refs/remotes/origin/legacy', legacy); git('reset', '--hard', original);
+  const legacyBefore = snapshot(); result = run(['--dry-run']); assert.equal(result.status, 0, result.stderr); assert.deepEqual(snapshot(), legacyBefore); tests++;
+  git('update-ref', '-d', 'refs/remotes/origin/legacy');
   // One failed publication after git mv must restore the original bytes AND index.
   const injection = path.join(os.tmpdir(), `collision-inject-${process.pid}.mjs`);
   fs.writeFileSync(injection, `import fs from 'node:fs'; const old=fs.renameSync; let failed=false; fs.renameSync=(from,to)=>{if(!failed && String(to).endsWith('/TK-004I/TASK.md')) {failed=true;throw new Error('injected publication failure');} return old(from,to);};`);
