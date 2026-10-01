@@ -3,7 +3,7 @@
 **Task ID:** TK-005
 **Spec ID:** S-00P
 **Slice:** Mirror the reworked controls into `templates/`
-**Status:** blocked
+**Status:** in-progress
 **Blockers:** TK-003, TK-004
 **Destination:** spec-acceptance: S-00P Acceptance Criteria
 **Planned verification:** Red: candidate-derived fresh-room guidance fails an observable product-workflow checkpoint or generic-template check; green: the same room delivers its bounded project result through the installed Workbench and the mirrored controls remain generic. Phrase and command-existence checks support behavioral proof.
