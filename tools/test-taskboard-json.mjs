@@ -130,6 +130,63 @@ if (process.argv.includes('--demo')) {
   });
 } else {
 
+  test('source needs-review is visible and never offered or claimed as ordinary To-do', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA' });
+    const file = task(root, a, { id: 'TK-00AA', status: 'needs-review' });
+    const board = preview(root);
+    assert.ok(board.lanes.needsReview['TK-00AA']);
+    assert.match(board.lanes.needsReview['TK-00AA'].nextAction, /review/i);
+    assert.deepEqual(board.lanes.needsReview['TK-00AA'].requiredQA, ['independent-candidate-review']);
+    assert.equal(command(root, 'render').status, 0);
+    const before = sourceSnapshot(root);
+    assert.equal(selected(root, '--local'), null);
+    const refused = command(root, 'claim', a.id, '--agent', 'fixture', '--local');
+    assert.equal(refused.status, 1);
+    assert.deepEqual(sourceSnapshot(root), before);
+    assert.match(fs.readFileSync(path.join(root, file), 'utf8'), /Status:\*\* needs-review/);
+    const doctor = command(root, 'doctor');
+    assert.equal(doctor.status, 0, doctor.stdout + doctor.stderr);
+  }));
+
+  test('Spec review permits review-ready children but does not manufacture completion or approval', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA', status: 'needs-review' });
+    task(root, a, { id: 'TK-00AA', status: 'needs-review' });
+    task(root, a, { id: 'TK-00AB', status: 'done', extra: '**Proof:** Fixture proof' });
+    const board = preview(root), card = board.lanes.needsReview[a.id];
+    assert.ok(card);
+    assert.deepEqual(card.progress, { complete: 1, total: 2 });
+    assert.deepEqual(card.requiredQA, ['assembled-spec-review', 'owner-human-qa']);
+    assert.equal(board.lanes.complete[a.id], undefined);
+    assert.equal(card.approver, null);
+  }));
+
+  for (const status of ['ready', 'in-progress', 'blocked', 'deferred']) {
+    test(`unfinished ${status} child prevents a Spec review lane`, () => withRoom(root => {
+      const a = spec(root, { id: 'S-00AA', status: 'needs-review' });
+      task(root, a, { id: 'TK-00AA', status: 'needs-review' });
+      task(root, a, { id: 'TK-00AB', status, blockers: status === 'blocked' ? 'owner:choose-input' : 'none' });
+      const board = preview(root);
+      assert.equal(board.lanes.needsReview[a.id], undefined);
+      assert.equal(board.lanes.complete[a.id], undefined);
+    }));
+  }
+
+  test('declared Complete with a review child stays out of Complete and retains contradictory-state diagnosis', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA', status: 'complete' });
+    task(root, a, { id: 'TK-00AA', status: 'needs-review' });
+    assert.equal(preview(root).lanes.complete[a.id], undefined);
+    assert.equal(command(root, 'render').status, 0);
+    const findings = JSON.parse(command(root, 'doctor').stdout);
+    assert.ok(findings.some(item => item.code === 'contradictory-state' && item.specId === a.id));
+  }));
+
+  test('direct Task completion adds no mandatory Task review ceremony', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA' });
+    task(root, a, { id: 'TK-00AA', status: 'done', extra: '**Proof:** Self-check handed back' });
+    const card = preview(root).lanes.complete['TK-00AA'];
+    assert.deepEqual(card.requiredQA, []);
+  }));
+
   test('ordinary next offers To-do rather than in-progress work without writing source or preview', () => withRoom(root => {
     const a = spec(root, { id: 'S-00AA', priority: 0 });
     task(root, a, { id: 'TK-00AA', status: 'in-progress' });
