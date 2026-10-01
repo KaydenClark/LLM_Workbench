@@ -165,6 +165,53 @@ if (process.argv.includes('--demo')) {
     assert.equal(command(root, 'render', '--format', 'json').status, 1);
   }));
 
+  test('activation refuses duplicate Status fields without changing any source', () => withRoom(root => {
+    const a = { id: 'S-00AA', dir: 'workbench/specs/S-00AA-fixture' };
+    for (const duplicate of ['**Status:** planned', '** Status:** planned', '**Status :** planned']) {
+      put(root, a.dir+'/SPEC.md', `# S-00AA - Keep the future work.\n\n**Spec ID:** S-00AA\n**Status:** planned\n${duplicate}\n`);
+      task(root, a, { id: 'TK-00AA' });
+      const before = sourceSnapshot(root);
+      const result = command(root, 'convert-tasks', a.id, '--activate');
+      assert.equal(result.status, 1, duplicate);
+      assert.deepEqual(sourceSnapshot(root), before);
+    }
+  }));
+
+  test('Spec delivered dependency resolves independently of unrelated Tasks and preserves child capability gates', () => withRoom(root => {
+    const delivered = spec(root, { id: 'S-00AA' });
+    task(root, delivered, { id: 'TK-00AA', status: 'done', extra: '**Proof:** Fixture delivery' });
+    const file = path.join(root, delivered.file);
+    fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('- [ ] Actual', '- [x] Actual') + '\n## Append-Only Evidence And Execution Log\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n');
+    const dependent = spec(root, { id: 'S-00AB', status: 'needs-review' });
+    const dependentFile = path.join(root, dependent.file);
+    fs.writeFileSync(dependentFile, fs.readFileSync(dependentFile, 'utf8').replace('**Blockers:** none', '**Blockers:** S-00AA:delivered'));
+    initializeGitRoom(root);
+    const candidate = fixtureGit(root, 'rev-parse', 'HEAD');
+    const verdict = command(root, 'verdict', delivered.id, '--candidate', candidate, '--result', 'pass', '--findings', 'none', '--reviewer', 'Independent fixture reviewer');
+    assert.equal(verdict.status, 0, verdict.stderr);
+    fixtureGit(root, 'add', '.'); fixtureGit(root, 'commit', '--quiet', '-m', 'Record fixture review');
+    fixtureGit(root, 'branch', '-f', 'integration', 'HEAD');
+    const before = gitSnapshot(root);
+    const withoutTask = selected(root, '--review', '--local');
+    assert.ok(withoutTask.review.some(x => x.specId === dependent.id && x.taskId === null));
+    assert.deepEqual(gitSnapshot(root), before);
+    const unrelated = spec(root, { id: 'S-00AC' });
+    task(root, unrelated, { id: 'TK-00AC', blockers: 'S-00AA:delivered' });
+    assert.deepEqual(selected(root, '--review', '--local'), withoutTask);
+    fs.rmSync(path.join(root, unrelated.dir), { recursive: true });
+    const child = task(root, dependent, { id: 'TK-00AB', status: 'needs-review', extra: '**Capabilities:** browser' });
+    const gatedBefore = gitSnapshot(root), gated = selected(root, '--review', '--local', '--capabilities', 'none');
+    assert.ok(gated.excluded.some(x => x.taskId === 'TK-00AB' && x.reason === 'capabilities'));
+    assert.ok(gated.excluded.some(x => x.specId === dependent.id && x.taskId === null && x.reason === 'children'));
+    assert.deepEqual(gitSnapshot(root), gatedBefore);
+    fs.rmSync(path.dirname(path.join(root, child)), { recursive: true });
+    // Containment remains necessary even with a valid PASS verdict.
+    fixtureGit(root, 'update-ref', '-d', 'refs/heads/integration');
+    const uncontainedBefore = gitSnapshot(root), uncontained = selected(root, '--review', '--local');
+    assert.ok(uncontained.excluded.some(x => x.specId === dependent.id && x.reason === 'dependencies'));
+    assert.deepEqual(gitSnapshot(root), uncontainedBefore);
+  }));
+
   test('next --review lists source-qualified Spec and Task cards in shared order, separately from ordinary next', () => withRoom(root => {
     const a = spec(root, { id: 'S-00AA', title: 'Zebra assembly', status: 'needs-review' });
     task(root, a, { id: 'TK-00AA', title: 'Alpha review', status: 'needs-review' });
