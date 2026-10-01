@@ -3,13 +3,13 @@
 **Spec ID:** S-01H
 **Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** codex-s01h
 **Stance:** Builder
-**Updated:** 2026-09-24
+**Updated:** 2026-10-01
 **Catalog description:** Deliver one eligible assigned Task through red/green and verified recovery.
 **Blockers:** none for planning; implementation is not assigned.
-**Latest event:** Per-skill destination extracted from the oversized Skills Wiki packet and current core inventory.
-**Next gate:** Review this skill's existing behavior, then activate TK-00Y for this skill only.
+**Latest event:** TK-00Y claimed by codex-s01h.
+**Next gate:** Close TK-00Y with verification and documentation proof.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 

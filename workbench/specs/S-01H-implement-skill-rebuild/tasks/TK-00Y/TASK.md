@@ -3,6 +3,6 @@
 **Task ID:** TK-00Y
 **Spec ID:** S-01H
 **Slice:** Audit implement, deliver the smallest supported source/documentation change and prove the routed article
-**Status:** ready
+**Status:** in-progress
 **Blockers:** none
 **Destination:** spec-acceptance: S-01H Acceptance Criteria
