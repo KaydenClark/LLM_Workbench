@@ -8,10 +8,10 @@
 **Updated:** 2026-10-01
 **Catalog description:** Deliver one eligible assigned Task through red/green and verified recovery.
 **Blockers:** Configured-agent scenario pending: available host cannot initialize app-server on read-only storage.
-**Latest event:** TK-00Y claimed by codex-s01h.
+**Latest event:** Source, article and focused proof prepared; required suite passed; configured-agent scenario remains open.
 **Next gate:** Run configured-agent scenario through existing authorized host; review immutable candidate before integration.
 
-> **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
+> **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`58e8f0441e1a7222d0f64fd064e814978c495194`.
 
 ## Outcome
 
@@ -64,7 +64,7 @@ Inspect the current source, its callers/composition and relevant tests. Demonstr
 
 ## Acceptance Criteria
 
-- [ ] The individual Wiki article records the supported upstream relationship and its practical local effect against a pinned source, with uncertainty visible.
+- [x] The individual Wiki article records the supported upstream relationship and its practical local effect against a pinned source, with uncertainty visible.
 
 - [ ] The skill resolves the current Task, shows a relevant failing check, implements the smallest change, runs required proof and updates owners.
 - [ ] It does not self-approve integration, skip documentation or silently widen a Task.
@@ -92,6 +92,10 @@ Maintain `workbench/wiki/skill-implement.md` and its sole router entry alongside
 | 2026-09-24 | planning verification | Skill-sized ownership and routing checked on the isolated candidate | All 47 required AGENTS commands passed; Wiki validation and exact 21 core plus one proposed entry coverage passed; doctor has no blocking finding; pre/post self-drift at 4940233 retained the same seven pre-existing findings and cleanUpdate false | No skill source or new article authored in this planning pass | Immutable separate-context review and actual skill behavior remain open |
 
 | 2026-10-01 | TK-00Y | Refreshed ownership at integration `95176a4f216cc3d684301a355d6d23369ab275a1`, descendant of supplied `3b5b76bf`; native activation retained existing TK-00Y and coordinated claim published `1bb4cf0` | No live competing claim or matching remote branch observed. Red `3a30c15`: focused checks fail missing Task-record recovery and containment; green `9d12d4c`: 2/2 pass, including real Git unpublished/descendant containment fixture | Implement now resumes Task receipts, records in-progress proof, composes save, self-checks and bounds owner handback; individual article and scenario protocol authored | Fresh configured-agent proof blocked before execution: codex exec failed to initialize in-process app-server on read-only filesystem. No credentials copied or access expanded. Independent review and publication remain pending |
+
+| 2026-10-01 | TK-00Y | Repaired catalog compatibility and verified clean source `58e8f0441e1a7222d0f64fd064e814978c495194` | Initial suite on `588c87a` failed the catalog literal for assigned stable SPEC; the interrupted attempt is not a passing gate. Restored the established wording while clarifying stable identity rather than fixed location. All 51 distinct commands from the current AGENTS full suite and RUNBOOK Full verification plus test-implement-skill, test-delivery-skills, Wiki validation and diff check passed: 55/55 on a clean tree. Focused tests are source-contract and Git fixture proof, not agent behavior | Source/catalog compatibility restored without editing shared tests; article links source, scenario, controls and exact upstream comparison | Configured-agent scenario and separate-context review remain open; Task remains in progress |
+| 2026-10-01 | TK-00Y | Self-drift and bounded semantic self-check | Pre receipt at `95176a4` and post at `588c87a` both cleanUpdate false, with identical seven pre-existing findings: stale S-00Q claim, five stale seeds, unverified provenance. Guardrail 78/100 before and after; outstanding recommendations concern repeated real outcome trials, controls/prior/candidate comparison and uncertainty. Semantic review checked Task ownership, generated projections, manifest/discovery, source callers and documented completion gates; no new shared-control or schema requirement | Docs checked; no update needed in controls, generic templates, manifest or core inventory: they already define Task receipts, review and save. Only owning source, article, Spec/Task and necessary generated routing changed. No new bundle-count or installed-behavior claim | Global drift remains with its existing owners; this is not a clean-update or reliability claim |
+| 2026-10-01 | TK-00Y | Pinned upstream comparison and assembly handback | Read mattpocock/skills at `d81f3a183412e71a5b1e84ca21bc1a35eea03a60`, actual path skills/engineering/implement/SKILL.md. It prescribes supplied work, TDD where possible, regular checks, full suite, review and commit. Workbench adds assigned Task recovery, required red/green, receipts, documentation, scoped handback and verified remote recovery. No exact-copy ancestry asserted. Both normal and ephemeral configured Codex startup failed before scenario execution on read-only app-server storage; GitHub CLI API returned Forbidden | Article marks behavioral proof partial; repeatable scenario protocol prepared. PR237 `f12e6928` only appends Draft-wiki alignment in S01H; preserve that append on assembly when it lands, retaining existing TK-00Y and proof | No new IDs allocated. No new owner decision made; coordinator single grilling record was not reachable here, so parent must reconcile this factual handback there. Publication requires existing-owner route if API remains unavailable |
 
 ## Completion Result
 

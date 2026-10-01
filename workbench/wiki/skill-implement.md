@@ -67,7 +67,7 @@ required red/green contract.
 ## Evidence and limits
 
 Source comparison uses Workbench pre-change `95176a4f216cc3d684301a355d6d23369ab275a1`
-and repaired source `9d12d4c` via `git show <sha>:workbench/skills/implement/SKILL.md`.
+and repaired source `58e8f0441e1a7222d0f64fd064e814978c495194` via `git show <sha>:workbench/skills/implement/SKILL.md`.
 [Focused checks](../../tools/test-implement-skill.mjs) failed at `3a30c15` and
 passed at `9d12d4c`. They check source obligations and exercise Git containment
 with unpublished and remotely contained commits. They do not prove model
