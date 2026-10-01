@@ -96,6 +96,7 @@ test('Genesis readiness requires the filled router and wiki contract files', () 
       fs.writeFileSync(path.join(project, control), `# ${control}\n\n> Generated from LLM Workbench ${VERSION}.\n\n## Purpose\n\nFilled.\n${regions}`);
     }
     fs.writeFileSync(path.join(project, 'CLAUDE.md'), '@AGENTS.md\n');
+    fs.copyFileSync(path.join(root, 'OWNERSHIP.json'), path.join(project, 'OWNERSHIP.json')); // Valid JSON beside prose fixture.
     const specDir = path.join(project, 'workbench', 'specs', 'S-001-first');
     fs.mkdirSync(specDir);
     fs.writeFileSync(path.join(specDir, 'SPEC.md'), `# S-001 - First\n\n> Generated from LLM Workbench ${VERSION}.\n\n**Spec ID:** S-001\n**Status:** active\n**Priority:** 0\n**Owner:** fixture\n**Updated:** 2026-09-04\n**Catalog description:** First.\n**Blockers:** none\n**Latest event:** Captured.\n**Next gate:** Claim TK-001.\n\n## Outcome\n\nOne.\n\n## Vertical Implementation Slices\n\n| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-001 | First | ready | none | pending |\n\n## Acceptance Criteria\n\n- [ ] Done.\n\n## Completion Result\n\nPending.\n`);

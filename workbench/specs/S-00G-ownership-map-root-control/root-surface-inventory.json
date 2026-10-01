@@ -128,7 +128,7 @@
       "sha256": "0932d2204ac83db5a33341f0b4667179979c0d7252013074272887dbcb8bed17",
       "kind": "array",
       "disposition": "bounded-subset",
-      "reason": "Markdown link-validation fixture, not complete setup. JSON routing has its own schema/reader tests."
+      "reason": "Markdown-only fixture initialization loop; valid OWNERSHIP.json is copied separately in the same Genesis readiness fixture."
     },
     {
       "file": "tools/test-workbench-layout.mjs",
