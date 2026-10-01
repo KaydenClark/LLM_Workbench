@@ -18,7 +18,7 @@ import { validateWiki } from './wiki.mjs';
 import { ARTIFACT_ID_MIN_WIDTH, allocateArtifactId, compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
 import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseFormerId, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
 import { appendReceiptRow, readReceiptFromFile } from './task-receipt.mjs';
-import { buildTaskboard, taskboardTaskEntry, compareTaskboardEntries } from './taskboard.mjs';
+import { buildTaskboard, taskboardTaskEntry, taskboardSpecLane, compareTaskboardEntries } from './taskboard.mjs';
 import { assembleSpecReport, computeSpecDigest, formatSpecReport, isAncestorOfBranch, recordOwnerApproval, recordReviewVerdict } from './spec-report.mjs';
 
 // One closed status vocabulary for an execution slice, owned by the record
@@ -71,6 +71,13 @@ export function nextSelection(rootDir, options = {}) {
   if (discardedReferences(root).length) return { result: null, coordination: null };
   const context = coordinationContext(root, { specsPrefix: resolveSpecsRoot(root).specsPrefix, local: options.local === true, fetch: options.fetch !== false });
   const session = capabilitySession(root, options);
+  if (options.review === true) {
+    const { review, excluded, remoteClaimed } = selectReviewWork([...loadSpecs(root), ...loadRetiredSpecs(root)], { session, remoteClaims: context.claims });
+    const coordination = publicCoordination(context, remoteClaimed);
+    const result = { review, excluded };
+    if (context.mode === 'remote') result.coordination = coordination;
+    return { result, coordination };
+  }
   const { candidate, capabilityBlocked, remoteClaimed } = selectWork([...loadSpecs(rootDir), ...loadRetiredSpecs(rootDir)], { session, remoteClaims: context.claims });
   let result = candidate ?? selectOrphanCorrectiveCandidate(loadCorrectiveTasks(rootDir).filter((task) => !context.claims?.has(`${task.specId}/${task.id}`)));
   if (capabilityBlocked.length > 0) result = result ? { ...result, capabilityBlocked } : { specId: null, taskId: null, capabilityBlocked };
@@ -196,6 +203,57 @@ function selectWork(specs, { specId, session = null, remoteClaims = null } = {})
   if (candidates.length === 0) return { candidate: null, capabilityBlocked, remoteClaimed };
   const { cardTitle: _cardTitle, ...result } = candidates[0];
   return { candidate: result, capabilityBlocked, remoteClaimed };
+}
+
+// Review is a read-only offering, not a claim or a verdict. Source-qualified
+// identities keep numeric Task labels local even when flat preview must refuse.
+function selectReviewWork(specs, { session, remoteClaims }) {
+  const completed = satisfiedBlockers(specs);
+  const review = [], excluded = [], remoteClaimed = [];
+  for (const spec of specs) {
+    if (spec.lifecycleFolder || !['active', 'needs-review'].includes(spec.status)) continue;
+    const satisfied = satisfiedIds(spec, completed);
+    const slices = slicesOf(spec);
+    const entries = slices.map(slice => taskboardEntryForSlice(spec, slice, satisfied, session));
+    let childExcluded = false;
+    for (const [index, slice] of slices.entries()) {
+      const entry = entries[index];
+      if (entry.lane !== 'needsReview') continue;
+      const card = { specId: spec.id, taskId: slice.id, title: entry.title, priority: entry.priority,
+        path: slice.record?.relativePath ?? spec.relativePath, status: entry.status,
+        requiredQA: ['assembled-spec-review'] };
+      let exclusion = null;
+      if (!entry.reviewEligible) exclusion = { reason: 'dependencies', dependencies: slice.blockerIds };
+      const claimedOn = remoteClaims?.get(`${spec.id}/${slice.id}`);
+      if (!exclusion && claimedOn) {
+        const refs = [...claimedOn].sort();
+        exclusion = { reason: 'claimed', refs };
+        remoteClaimed.push({ specId: spec.id, taskId: slice.id, refs });
+      }
+      if (!exclusion && slice.capabilities.length > 0) {
+        const missing = session.missing(slice.capabilities);
+        if (missing.names.length) exclusion = { reason: 'capabilities', missing: missing.names, detail: missing.reason };
+      }
+      if (exclusion) { excluded.push({ ...card, ...exclusion }); childExcluded = true; }
+      else review.push(card);
+    }
+    // Include retained done table rows and retired Tasks in the same child gate
+    // used by preview, without offering those historical records themselves.
+    const historical = spec.recordBacked ? spec.rows : [];
+    const historicalEntries = [...historical, ...(spec.retiredRecords ?? [])].map(task =>
+      taskboardTaskEntry(spec, { ...task, specId: spec.id }, { dependenciesMet: true }));
+    const lane = taskboardSpecLane(spec, [...entries, ...historicalEntries]);
+    if (spec.status !== 'needs-review') continue;
+    const card = { specId: spec.id, taskId: null, title: spec.title, priority: spec.priority,
+      path: spec.relativePath, status: spec.status, requiredQA: ['assembled-spec-review', 'owner-human-qa'] };
+    if (lane !== 'needsReview' || childExcluded) excluded.push({ ...card, reason: 'children' });
+    else if (!blockersSatisfied(spec.blockers, satisfied)) excluded.push({ ...card, reason: 'dependencies', dependencies: splitBlockers(spec.blockers) });
+    else review.push(card);
+  }
+  const compare = (a, b) => compareTaskboardEntries({ ...a, id: a.taskId ?? a.specId }, { ...b, id: b.taskId ?? b.specId });
+  review.sort(compare); excluded.sort(compare);
+  remoteClaimed.sort((a,b) => compareVisibleIds(a.specId,b.specId) || compareVisibleIds(a.taskId,b.taskId));
+  return { review, excluded, remoteClaimed };
 }
 
 // S-00I TK-005: `findSpec` reaches a retired Spec only once the active
@@ -3772,6 +3830,7 @@ export function parseCliArgs(argv) {
     else if (arg === '--host') options.host = true;
     else if (arg === '--activate') options.activate = true;
     else if (arg === '--local') options.local = true;
+    else if (arg === '--review') options.review = true;
     else if (arg.startsWith('--')) options[toCamel(arg.slice(2))] = rest[++optionIndex];
     else throw new Error(`Unknown argument: ${arg}`);
   }
@@ -3791,11 +3850,12 @@ function toCamel(value) {
 
 async function main() {
   const { command, id, options } = parseCliArgs(process.argv.slice(2));
+  if (options.review && command !== 'next') throw new Error('--review is supported only by next');
   const root = options.path ?? process.cwd();
   let result;
   let doctorRun;
   let coordination = null;
-  if (command === 'next') ({ result, coordination } = nextSelection(root, { capabilities: options.capabilities, local: options.local }));
+  if (command === 'next') ({ result, coordination } = nextSelection(root, { capabilities: options.capabilities, local: options.local, review: options.review }));
   else if (command === 'next-id') result = nextIdentity(root, id, options);
   else if (command === 'show') result = showSpec(root, id);
   else if (command === 'claim') result = claimWork(root, id, { ...options, capabilityProbes: undefined });

@@ -905,6 +905,23 @@ automatically satisfied; remove it only after the authorized decision resolves
 it. Investigate `blocked-without-blocker` and `unknown-blocker-qualifier` rather
 than bypassing them.
 
+
+`next --review --json` is a separate read-only review offering. Its `review`
+array contains eligible Spec and Task cards; `excluded` keeps dependency,
+capability, competing-claim and child-gate exclusions visible. It uses the
+source-qualified identity, so legacy numeric Task labels remain Spec-scoped.
+Default `next` still offers only eligible To-do work. Neither review visibility
+nor eligibility records a verdict, independent approval or owner Human QA.
+`--review` is accepted only by `next`; it never turns `claim` into a review action.
+
+A minimal Backlog Spec needs its matching title (which may carry the one-sentence
+intent), `Spec ID`, and explicit `Status: planned`. Other metadata and the
+Task set may be absent. Unknown priority remains null and sorts after known
+priorities in JSON; missing people/dates are not invented. Existing pre-cut
+Tasks are preserved. Before activation, expand the packet to the full active
+Spec contract and supply executable Tasks. The default Markdown board remains
+in use; `render --format json` still writes only `TASKBOARD.preview.json`.
+
 For an active table-backed Spec, this one-shot migration precedes its first
 record-backed claim. Omit conversion when `tasks/` already exists. It converts
 unfinished rows, retaining done rows as history; a second conversion refuses.

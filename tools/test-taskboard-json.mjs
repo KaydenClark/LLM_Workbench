@@ -216,6 +216,27 @@ if (process.argv.includes('--demo')) {
     assert.deepEqual(sourceSnapshot(root), before);
   }));
 
+  test('review uses qualified dependency semantics and normalized completed identities', () => withRoom(root => {
+    const completed = spec(root, { id: 'S-00AA', status: 'complete' });
+    const a = spec(root, { id: 'S-00AB', status: 'needs-review' });
+    task(root, a, { id: 'TK-001', status: 'done', extra: '**Proof:** Prior proof' });
+    task(root, a, { id: 'TK-002', status: 'needs-review', blockers: 'S-aa, TK-0001' });
+    task(root, a, { id: 'TK-003', status: 'needs-review', blockers: 'S-00AA:delivered' });
+    task(root, a, { id: 'TK-004', status: 'needs-review', blockers: 'S-00AA:unknown' });
+    const before = sourceSnapshot(root), result = selected(root, '--review', '--local');
+    assert.deepEqual(result.review.map(x => x.taskId), ['TK-002','TK-003']);
+    assert.ok(result.excluded.some(x => x.taskId === 'TK-004' && x.reason === 'dependencies'));
+    assert.ok(result.excluded.some(x => x.specId === a.id && x.taskId === null && x.reason === 'children'));
+    assert.deepEqual(sourceSnapshot(root), before);
+  }));
+
+  test('empty review Spec cannot hide malformed priority behind an empty child set', () => withRoom(root => {
+    spec(root, { id: 'S-00AA', status: 'needs-review', priority: 'invalid' });
+    const before = sourceSnapshot(root), result = command(root, 'next', '--review', '--local');
+    assert.equal(result.status, 1); assert.match(result.stderr, /invalid priority/);
+    assert.deepEqual(sourceSnapshot(root), before);
+  }));
+
   test('source needs-review is visible and never offered or claimed as ordinary To-do', () => withRoom(root => {
     const a = spec(root, { id: 'S-00AA' });
     const file = task(root, a, { id: 'TK-00AA', status: 'needs-review' });
@@ -487,7 +508,7 @@ if (process.argv.includes('--demo')) {
     task(root, a, { id: 'TK-00AA', specId: b.id });
     put(root,'TASKBOARD.preview.json','preserve prior output\n'); initializeGitRoom(root);
     const before = gitSnapshot(root);
-    for (const args of [['render','--format','json'], ['next','--local'], ['claim',a.id,'--agent','fixture','--local']]) {
+    for (const args of [['render','--format','json'], ['next','--local'], ['next','--review','--local'], ['claim',a.id,'--agent','fixture','--local']]) {
       const result=command(root,...args);
       assert.equal(result.status,1, `${args[0]} must refuse the declared parent mismatch`);
       assert.match(result.stderr,/names S-00BB, expected parent S-00AA/);

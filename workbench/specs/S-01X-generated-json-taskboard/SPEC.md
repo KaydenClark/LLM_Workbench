@@ -9,7 +9,7 @@
 **Catalog description:** Replace the Markdown Spec summary with a generated six-lane implementation board, shared lane selection and title-first room-core sitrep.
 **Blockers:** S-01W first identity/consumer delivery is contained in integration; its claimed assembled QA remains separate. Direct-Task coverage awaits its source-home contract.
 **Latest event:** TK-004N helper candidate verified; serialized consumer assembly remains pending.
-**Next gate:** Coordinator release for minimal Backlog and next --review assembly; independent draft-candidate review.
+**Next gate:** Release prospective-active packet validation in convertSpecSlices, then freeze and run full51 before independent candidate review.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 
@@ -242,10 +242,22 @@ Task approval. Non-complete Spec cards name `assembled-spec-review` and
 Authored next actions, including failed Human QA corrective actions, remain
 visible without being reset by green tests.
 
-Minimal one-sentence Backlog parsing and public `next --review` assembly are
-still pending the coordinator's serialized parser/CLI lane release. The helper
-exposes dependency-qualified `reviewEligible` for that assembly, but does not
-claim capability or remote-claim filtering for an unimplemented review command.
+The coordinator released minimal planned parsing and the read-only review
+selector/CLI seam after M source freeze `9cf0d216acc73c9cacfd66cbd6b136fcf4ece5db`.
+The reader now accepts a planned identity/title intent without Tasks, with null
+unknown metadata and deterministic unknown-priority ordering. Public
+`next --review --json` returns separate `review` and `excluded` collections.
+It applies dependency, capability, lifecycle, competing-claim and parent/child
+controls without writing source or approval state. Ordinary next is unchanged.
+
+One activation validation hunk is still awaiting coordinator release:
+`convertSpecSlices` must validate prospective active bytes before writes, because
+its current planned/pre-cut route can otherwise create an invalid active
+packet. Public red `d58b86bf` preserves the consumer failures; implementation
+has 54/55 original consumer groups passing with this activation failure still
+open. Expanded qualified-dependency fixture correction follows the existing
+resolver's exact stored spelling and does not widen identity semantics.
+No final frozen whole-suite PASS is claimed until that source gap is repaired.
 Default Markdown/CATALOG behavior, preview protections and all prior failed
 review evidence remain. Root/template rollout and direct Task homes remain
 outside this slice; no whole-Spec acceptance is checked.

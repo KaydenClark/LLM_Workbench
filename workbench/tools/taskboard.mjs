@@ -16,7 +16,7 @@ export function taskboardTaskEntry(spec, task, { resolvedStatus = task.status, d
     throw taskboardSourceError(`${task.id} names ${declaredParent}, expected parent ${spec.id}`);
   }
   const priority = fields.Priority === undefined ? spec.priority : Number(fields.Priority);
-  if (!Number.isInteger(priority) || priority < 0) throw taskboardSourceError(`${task.id} has invalid priority`);
+  if (!(priority === null && spec.status === 'planned') && (!Number.isInteger(priority) || priority < 0)) throw taskboardSourceError(`${task.id} has invalid priority`);
   return {
     key: `${visibleIdKey(spec.id)}/${visibleIdKey(task.id)}`,
     specId: spec.id, id: task.id, title: task.slice, priority,
@@ -35,7 +35,7 @@ function taskboardSourceError(message) {
 }
 
 export function compareTaskboardEntries(a, b) {
-  return a.priority - b.priority || compareText(a.title, b.title)
+  return (a.priority ?? Infinity) - (b.priority ?? Infinity) || compareText(a.title, b.title)
     || compareVisibleIds(a.id, b.id) || compareVisibleIds(a.specId ?? a.id, b.specId ?? b.id);
 }
 
@@ -54,7 +54,7 @@ export function buildTaskboard(specs, { resolveTask = () => ({}) } = {}) {
   }
   for (const spec of specs) {
     if (!SPEC_STATES.has(spec.status)) throw new Error(`taskboard-source: ${spec.id} has invalid status ${spec.status}`);
-    if (!Number.isFinite(spec.priority) || spec.priority < 0) throw new Error(`taskboard-source: ${spec.id} has invalid priority`);
+    if (!(spec.priority === null && spec.status === 'planned') && (!Number.isFinite(spec.priority) || spec.priority < 0)) throw new Error(`taskboard-source: ${spec.id} has invalid priority`);
     const children = [
       ...spec.rows.map(row => ({ ...row, specId: spec.id, relativePath: spec.relativePath })),
       ...spec.records,
@@ -77,7 +77,7 @@ export function buildTaskboard(specs, { resolveTask = () => ({}) } = {}) {
       card.specId = child.specId;
       add(child.id, lane, card, child.relativePath);
     }
-    const lane = specLane(spec, childEntries);
+    const lane = taskboardSpecLane(spec, childEntries);
     const card = makeCard({
       title: spec.title, priority: spec.priority, content: spec.content,
       assignee: spec.owner, dependencies: spec.blockers, sourceLinks: [spec.relativePath],
@@ -99,7 +99,10 @@ export function buildTaskboard(specs, { resolveTask = () => ({}) } = {}) {
   return board;
 }
 
-function specLane(spec, children) {
+export function taskboardSpecLane(spec, children) {
+  if (!(spec.priority === null && spec.status === 'planned') && (!Number.isInteger(spec.priority) || spec.priority < 0)) {
+    throw taskboardSourceError(`${spec.id} has invalid priority`);
+  }
   if (spec.status === 'planned') return 'backlog';
   if (spec.status === 'blocked') return 'blocked';
   const allDone = children.every(child => child.lane === 'complete');
@@ -117,7 +120,7 @@ function makeCard({ title, priority, content, assignee, dependencies, sourceLink
   const fields = sourceFields(content);
   if (typeof title !== 'string' || !title.trim()) throw new Error('taskboard-source: a card needs its readable source title');
   const sourcePriority = fields.Priority === undefined ? priority : Number(fields.Priority);
-  if (!Number.isInteger(sourcePriority) || sourcePriority < 0) throw new Error(`taskboard-source: ${title} has invalid priority`);
+  if (sourcePriority !== null && (!Number.isInteger(sourcePriority) || sourcePriority < 0)) throw new Error(`taskboard-source: ${title} has invalid priority`);
   const startDate = dateField(fields['Start date'], title);
   const dueDate = dateField(fields['Due date'], title);
   if (startDate && dueDate && dueDate < startDate) throw new Error(`taskboard-source: ${title} has a due date before its start date`);
