@@ -1,7 +1,8 @@
 # S-[###] - [CAPABILITY_TITLE]
 
-> Generated from LLM Workbench v[HARNESS_VERSION]. Copy this file to the stable
-> path `workbench/specs/S-[###]-[slug]/SPEC.md`; never move it between status folders.
+> Generated from LLM Workbench v[HARNESS_VERSION]. Copy this file to
+> `workbench/specs/S-[###]-[slug]/SPEC.md`; lifecycle moves use the link-safe
+> `move-spec` operation after its gates pass, never a manual folder move.
 
 **Spec ID:** S-[###]
 **Status:** planned
@@ -9,7 +10,10 @@
 **Owner:** [owner]
 **Stance:** Builder
 **Updated:** [YYYY-MM-DD]
-**Catalog description:** [One sentence for the Blueprint catalog.]
+**Catalog description:** [ONE-SENTENCE DESCRIPTION OF WHAT THIS PROJECT DOES AND FOR WHOM.]
+
+The catalog description summarizes this capability in the Spec catalog; it
+does not generate a catalog inside the product Blueprint.
 **Blockers:** none
 **Latest event:** Spec captured.
 **Next gate:** Refine and activate the first eligible slice.
@@ -51,7 +55,10 @@
 
 ## Vertical Implementation Slices
 
-Tasks are temporary tracer bullets within this stable capability record.
+Tasks are temporary tracer bullets reaching or repairing this scoped destination.
+This table is a compatibility seed: before record-backed execution, convert
+unfinished rows with `convert-tasks` as the Runbook describes. Once `tasks/`
+exists, TASK.md owns active Task state; retain only done table rows as history.
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|

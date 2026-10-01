@@ -14,12 +14,23 @@ import { fileURLToPath } from 'node:url';
 import { templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
 
 const sourceProduct = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+// Closed test-only input: arbitrary files cannot become executable recipes.
+const invocation = process.argv.slice(2).filter(arg => arg !== '--transcript');
+const guidance = invocation.length === 0 ? 'RUNBOOK.md'
+  : invocation.length === 2 && invocation[0] === '--guidance' ? invocation[1] : null;
+if (!['RUNBOOK.md', 'templates/RUNBOOK.md'].includes(guidance)) {
+  console.error('Usage: test-workbench-round-trip.mjs [--guidance RUNBOOK.md|templates/RUNBOOK.md] [--transcript]');
+  process.exit(1);
+}
+const guidanceFile = path.join(sourceProduct, guidance);
+assert.ok(fs.lstatSync(guidanceFile).isFile() && !fs.lstatSync(guidanceFile).isSymbolicLink(), 'guidance is an ordinary shipped control');
+const genericGuidance = guidance === 'templates/RUNBOOK.md';
 const VERSION = JSON.parse(fs.readFileSync(path.join(sourceProduct, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const DATE = '2026-09-04';
 const started = Date.now();
 const transcript = [];
-const documentedLifecycle = fs.readFileSync(path.join(sourceProduct, 'RUNBOOK.md'), 'utf8')
-  .split('### Spec Lifecycle And Retrieval')[1].split('### Architecture Decision Records')[0];
+const documentedLifecycle = fs.readFileSync(guidanceFile, 'utf8')
+  .split('### Spec Lifecycle And Retrieval')[1].split(genericGuidance ? '### Visible Identifiers' : '### Architecture Decision Records')[0];
 const executedRecipes = new Set();
 // Execute the Runbook's actual examples with concrete fixture values, without
 // a shell. Only quoted strings, plain arguments and named placeholders occur.
@@ -36,8 +47,19 @@ function recipe(cwd, verb, values = {}, expectStatus = 0, variant = '') {
     '[NAMED VERIFICATION]': 'node --test tests/hello.test.mjs PASS; actual greeting observed',
     '[DOCS UPDATED OR Docs checked; no update needed + reason]': 'README usage checked; no update needed',
     '[GAP OR none]': 'none', '[TESTS RUN AND RESULT]': 'node --test tests/hello.test.mjs PASS',
-    '[DOCS TOUCHED OR none]': 'README.md', '[TEXT]': 'Simulated owner changes destination; no real approval', 'pass|fail': values.result ?? 'pass', ...values };
-  const args = tokens.slice(1).map(token => defaults[token] ?? token);
+    '[DOCS TOUCHED OR none]': 'README.md', '[TEXT]': 'Simulated owner changes destination; no real approval', 'pass|fail': values.result ?? 'pass',
+    'SHA': values.candidate, 'DIGEST': values.digest, 'INTEGRATION_SHA': values.candidate,
+    '[owner]': 'Simulated fixture owner/reviewer; not Human QA',
+    '[command/check]': 'node --test tests/hello.test.mjs PASS; actual greeting observed',
+    '[Docs to update, or why no update is needed]': 'README usage checked; no update needed',
+    '[Known limit or linked follow-up]': 'none', '[product tradeoff]': 'Simulated owner destination change', ...values };
+  const args = tokens.slice(1).map(token => defaults[token] ?? token).map((token, index, args) => {
+    if (!genericGuidance) return token;
+    if (args[index - 1] === '--findings' || args[index - 1] === '--finding') return values.findings ?? (command.includes('--result fail') ? 'Missing punctuation coverage' : 'none');
+    if (args[index - 1] === '--tests') return values['[TESTS RUN AND RESULT]'] ?? token;
+    if (args[index - 1] === '--remaining-gap') return values['[GAP OR none]'] ?? token;
+    return token;
+  });
   // Legacy examples have grouped optional alternatives. They remain parseable
   // for the red proof; the corrected procedure uses separate actual commands.
   assert.ok(args.every(arg => arg !== undefined), `${verb}: every placeholder has a fixture value`);
@@ -402,13 +424,13 @@ try {
   assert.equal(inspect().status, 'complete');
   checkpoint('main-verified complete; no production owner approval');
   commit('Preserve completion before feature capture');
-  const feature = 'workbench/wiki/features/greeting.md';
+  const feature = `workbench/wiki/features/${genericGuidance ? 'capability' : 'greeting'}.md`;
   const historical = 'workbench/specs/retired/S-001-greeting/SPEC.md';
   refusedRecipe(second, 'retire-spec', {}, /found no Wiki note|features article/);
   write(second, feature, `---\ntype: feature\nstatus: active\nsensitivity: normal\nknowledge_role: curated\nprovenance:\n  - fixture closure capture, ${DATE}\nsource_paths:\n  - ${historical}\n  - src/hello.mjs\n  - tests/hello.test.mjs\nlast_verified: ${DATE}\n---\n\n# Greeting\n\nA caller receives a predictable greeting.\n\n## What It Does\n\nNamed callers are greeted; an empty name uses World.\n\n## Why It Matters\n\nCommand-line callers receive readable output.\n\n## Limits\n\nString names only. Fixture reviewer and owner records prove mechanics only.\n\n## Evidence and Sources\n\n- [Closure](../../specs/retired/S-001-greeting/SPEC.md).\n- src/hello.mjs and tests/hello.test.mjs prove the behavior.\n`);
   commit('Write unrouted fixture features capture');
   refusedRecipe(second, 'retire-spec', {}, /not linked/);
-  write(second, 'workbench/wiki/MEMORY.md', read('workbench/wiki/MEMORY.md') + '\n- [Greeting](features/greeting.md)\n');
+  write(second, 'workbench/wiki/MEMORY.md', read('workbench/wiki/MEMORY.md') + `\n- [Greeting](features/${path.basename(feature)})\n`);
   commit('Route readable feature knowledge after complete');
   node(second, path.join(second, 'workbench/tools/wiki.mjs'), 'validate');
   // Folder-only move alternative is exercised on an isolated clone; the main
@@ -525,7 +547,7 @@ try {
   for (const memory of ['.claude', '.codex']) {
     assert.equal(fs.existsSync(path.join(env.HOME, memory)), false, `the round trip neither read nor created host memory under HOME/${memory}`);
   }
-  console.log(`ok - documented lifecycle ${(Date.now() - started) / 1000}s; mechanical round trip: planning ${planningSha.slice(0, 7)} interrupted, resumed from a clean clone, proof ${finalSha.slice(0, 7)} read back with Foundry absent`);
+  console.log(`ok - ${guidance} documented lifecycle ${(Date.now() - started) / 1000}s; mechanical round trip: planning ${planningSha.slice(0, 7)} interrupted, resumed from a clean clone, proof ${finalSha.slice(0, 7)} read back with Foundry absent`);
 } finally {
   if (process.argv.includes('--transcript')) console.log(transcript.join('\n'));
   fs.rmSync(workspace, { recursive: true, force: true });

@@ -179,6 +179,89 @@ function assertNoStage(destination) {
   assert.equal(fs.readdirSync(parent).some(name => name.startsWith(prefix)), false, 'failed derivation leaves no staging directory');
 }
 
+// Follow the candidate controls in an actually derived, receipt-backed room.
+// Genesis still seeds a table: record conversion must be an explicit step in
+// the guidance, rather than silently performed by this fixture.
+function drivePond(release, destination, base) {
+  const started = Date.now();
+  const transcript = [];
+  const execute = (program, args, expect = 0) => {
+    const result = spawnSync(program, args, { cwd: destination, encoding: 'utf8' });
+    transcript.push(`$ ${program === process.execPath ? 'node' : program} ${args.join(' ')}\n${result.stdout}${result.stderr}`);
+    assert.equal(result.status, expect, transcript.at(-1));
+    return result.stdout.trim();
+  };
+  const cli = (...args) => execute(process.execPath, ['workbench/tools/spec-workbench.mjs', ...args]);
+  const publish = message => {
+    commit(destination, message);
+    git(destination, 'push', '-u', 'origin', 'codex/pond');
+  };
+  const origin = path.join(base, 'pond-origin.git');
+  command('git', ['init', '--bare', origin]);
+  git(destination, 'remote', 'add', 'origin', origin);
+  git(destination, 'config', 'user.name', 'Pond Fixture');
+  git(destination, 'config', 'user.email', 'pond-fixture@invalid.example');
+  git(destination, 'push', 'origin', 'main', 'integration');
+  git(destination, 'switch', '-c', 'codex/pond', 'integration');
+  cli('doctor');
+  assert.equal(JSON.parse(cli('next', '--json')).taskId, 'TK-001');
+  cli('show', 'S-001');
+  const guidance = fs.readFileSync(path.join(destination, 'RUNBOOK.md'), 'utf8');
+  if (guidance.includes('node workbench/tools/spec-workbench.mjs convert-tasks S-001')) {
+    cli('convert-tasks', 'S-001');
+    publish('Convert the seeded table into Task records');
+  }
+  cli('claim', 'S-001', '--agent', 'pond-fixture');
+  const task = path.join(destination, 'workbench/specs/S-001-ambient-pond/tasks/TK-001/TASK.md');
+  assert.ok(fs.existsSync(task), 'following fresh-room guidance must claim a real TASK.md, not only an embedded row');
+  assert.match(fs.readFileSync(task, 'utf8'), /\*\*Status:\*\* in-progress/);
+  console.log(`demo - installed source ${release.commit}; record-backed pond claim`);
+  // Product RED/GREEN is independent of the structural guidance checkpoint.
+  write(path.join(destination, 'src/pond.mjs'), 'export function pond() { return null; }\n');
+  write(path.join(destination, 'tests/pond.test.mjs'), "import assert from 'node:assert/strict';\nimport test from 'node:test';\nimport { pond } from '../src/pond.mjs';\ntest('renders a pond and responds to a visitor', () => {\n  assert.deepEqual(pond('Kay'), { view: 'Pond: ~~~ puffer ~~~', response: 'Puffer greets Kay.' });\n});\n");
+  execute(process.execPath, ['--test', 'tests/pond.test.mjs'], 1);
+  console.log('demo - pond product RED: missing render and visitor response');
+  cli('receipt', 'S-001', '--task', 'TK-001', '--tests', 'pond render/response RED', '--docs', 'README.md checked', '--remaining-gap', 'Implement pond interaction');
+  write(path.join(destination, 'src/pond.mjs'), "export function pond(visitor = 'visitor') {\n  if (typeof visitor !== 'string' || !visitor.trim()) throw new TypeError('visitor must be nonempty text');\n  return { view: 'Pond: ~~~ puffer ~~~', response: `Puffer greets ${visitor.trim()}.` };\n}\nif (process.argv[1]?.endsWith('pond.mjs')) console.log(JSON.stringify(pond(process.argv[2])));\n");
+  execute(process.execPath, ['--test', 'tests/pond.test.mjs']);
+  const output = JSON.parse(execute(process.execPath, ['src/pond.mjs', 'Kay']));
+  assert.deepEqual(output, { view: 'Pond: ~~~ puffer ~~~', response: 'Puffer greets Kay.' });
+  console.log(`demo - pond product GREEN: ${JSON.stringify(output)}`);
+  cli('receipt', 'S-001', '--task', 'TK-001', '--tests', 'node --test tests/pond.test.mjs PASS; actual pond output observed', '--docs', 'README.md checked; no update needed', '--remaining-gap', 'none');
+  const specFile = path.join(destination, 'workbench/specs/S-001-ambient-pond/SPEC.md');
+  let spec = fs.readFileSync(specFile, 'utf8');
+  spec = spec.replace('- [ ] The pond renders and responds to a visitor.', '- [x] The pond renders and responds to a visitor.');
+  spec = spec.replace('## Completion Result\n\nPending.', '## Completion Result\n\nThe installed room renders its pond and greets Kay.');
+  write(specFile, spec);
+  publish('Deliver actual pond and preserve red/green Receipt');
+  cli('close', 'S-001', '--proof', 'pond test PASS and observed view/response', '--docs', 'README checked; no update needed', '--remaining-gap', 'none');
+  publish('Preserve pond Task close and evidence');
+  assert.match(fs.readFileSync(task, 'utf8'), /\*\*Status:\*\* done/);
+  assert.match(fs.readFileSync(task, 'utf8'), /pond render\/response RED/);
+  const candidate = git(destination, 'rev-parse', 'HEAD');
+  const report = JSON.parse(cli('report', 'S-001', '--candidate', candidate, '--json'));
+  assert.equal(report.complete, true);
+  write(specFile, fs.readFileSync(specFile, 'utf8') + '\n## Decisions\n\nVisitor response is bounded to local text.\n');
+  const snapshot = () => ({
+    files: Object.fromEntries(fs.readdirSync(destination, { recursive: true, withFileTypes: true }).filter(entry => entry.isFile() && !path.relative(destination, entry.parentPath ?? entry.path).startsWith('.git')).map(entry => { const file = path.join(entry.parentPath ?? entry.path, entry.name); return [path.relative(destination, file), sha256(file)]; })),
+    head: git(destination, 'rev-parse', 'HEAD'), index: git(destination, 'ls-files', '--stage'), refs: git(destination, 'for-each-ref', '--format=%(refname) %(objectname)')
+  });
+  const before = snapshot();
+  const verdict = guidance.replace(/\\\n/g, ' ').split('\n').find(line => line.startsWith('node workbench/tools/spec-workbench.mjs verdict S-001') && line.includes('--result pass'));
+  assert.ok(verdict, 'the generated room supplies the separate-review checkpoint');
+  const args = verdict.match(/"[^"]*"|\[[^\]]*\]|[^\s]+/g).slice(1).map(token => token.replace(/^"(.*)"$/, '$1'));
+  const concrete = args.map((token, index) => args[index - 1] === '--candidate' ? candidate : args[index - 1] === '--digest' ? report.specDigest : args[index - 1] === '--findings' ? 'none' : args[index - 1] === '--reviewer' ? 'Simulated fixture Director; not independent approval' : token);
+  execute(process.execPath, concrete, 1);
+  assert.match(transcript.at(-1), /does not match/);
+  assert.deepEqual(snapshot(), before, 'stale inspected digest refusal preserves product, Task, files/index/HEAD/refs');
+  execute(process.execPath, ['workbench/tools/spec-workbench.mjs', 'verdict', 'S-001', '--candidate', 'f'.repeat(40), '--digest', report.specDigest, '--result', 'pass', '--findings', 'none', '--reviewer', 'Simulated fixture'], 1);
+  assert.deepEqual(snapshot(), before, 'missing candidate refusal preserves state');
+  const record = { candidateSource: git(repoRoot, 'rev-parse', 'HEAD'), installedSource: release.commit, pond: output, task: 'done', reportComplete: report.complete, refusal: 'stale digest and missing candidate; bytes/index/HEAD/refs preserved', elapsedSeconds: (Date.now() - started) / 1000, transcript };
+  if (process.env.WORKBENCH_POND_PROOF) json(process.env.WORKBENCH_POND_PROOF, record);
+  console.log(`demo - pond Task closed; report complete; stale/missing proof refused without writes; ${record.elapsedSeconds}s (fixture mechanics only)`);
+  return { cli, execute, publish, transcript, started, task };
+}
+
 const suiteRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'genesis-decisions-suite-'));
 const release = makeRelease(suiteRoot);
 
@@ -222,6 +305,8 @@ const release = makeRelease(suiteRoot);
   const installed = JSON.parse(fs.readFileSync(path.join(destination, 'workbench', 'tools', '.workbench-tools.json')));
   assert.equal(installed.source.commit, release.commit);
   assertNoStage(destination);
+
+  drivePond(release, destination, f.root);
 
   // S-00H TK-004 follow-up: the fresh-room regression must sweep what a
   // generated room actually reads for guidance - its own controls (drafted

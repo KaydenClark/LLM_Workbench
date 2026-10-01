@@ -7,7 +7,7 @@
 **Stance:** Builder
 **Updated:** 2026-10-01
 **Catalog description:** Rewrite `BLUEPRINT.md` now to describe every rung of the governing workflow and the full recursive Spec/Task loop, then rewrite AGENTS, RUNBOOK, LEXICON and the `templates/` mirror once S-00H, S-00I and S-00J make the commands they describe real, and reconcile ADR-000F, ADR-000G and ADR-000I.
-**Blockers:** TK-002 consumes S-00I:delivered and S-00J:delivered; both are satisfied on integration 07edccc5. TK-003/TK-004 follow TK-002, then TK-005 follows both. Owner Human QA and main verification remain final closure gates.
+**Blockers:** TK-002/TK-003/TK-004 are reviewed and contained in integration; TK-005 executes from66815b4 with satisfied Task prerequisites. Whole-Spec integration review/delivery and owner QA/main formal closure remain distinct gates.
 **Latest event:** TK-005 claimed by codex-s00p-dispatcher.
 **Next gate:** Close TK-005 with verification and documentation proof.
 
@@ -139,19 +139,26 @@ separate-context review before integration remaining the operative gate until
 TK-002 rewrites `AGENTS.md`. The `AGENTS.md`, `RUNBOOK.md` and template control
 wording stays with TK-002, TK-003 and TK-005.
 
-### Current delivery prerequisites
+### Delivery prerequisites and execution state (2026-10-01)
 
 S-00J TK-01T and TK-02J delivered the content-bound `S-###:delivered`
-blocker. S-00I and S-00J have reviewed integration delivery at the execution
-base `07edccc57b8f75613ad1d09203a3e414d867b90c`; `next` selects TK-002 and
-native `claim` succeeds after fetching integration. Delivery requires all Tasks
-done, acceptance checked, a current PASS whose immutable candidate is contained
-in the declared integration branch and whose committed digest matches. Final
-`complete` remains a separate owner QA/main gate. Plain Spec blockers still
-require complete or superseded; `owner:<decision>` requires an explicit removal.
-The historical prerequisite plans and evidence below retain their dated scope.
+blocker. At the historical TK-002 execution base
+`07edccc57b8f75613ad1d09203a3e414d867b90c`, `next` selected TK-002 and native
+claim succeeded after fetching satisfied S-00I/S-00J delivery. TK-002, TK-004
+and TK-003 have since landed through reviewed PR #238, #239 and #241. Current
+TK-005 executes from fetched integration
+`66815b4e4d0a35802d28c3a470921c00692f8d0d`, with both Task blockers satisfied.
+Their exact review/merge/containment identities are preserved in evidence below.
 
-Execution order remains TK-002 -> TK-003 and TK-004 -> TK-005. The current
+Whole-Spec integration delivery requires all Tasks done, acceptance checked,
+a current PASS whose immutable candidate is contained in the declared
+integration branch and whose committed digest matches. Final `complete`
+remains a separate actual owner QA/main gate. Plain Spec blockers still require
+complete or superseded; `owner:<decision>` requires explicit removal. Historical
+prerequisite plans retain their dated scope; they are not pending current work.
+
+The dependency order is TK-002 -> TK-003 and TK-004 -> TK-005; the first three
+are delivered and TK-005 is the remaining executing slice. The current
 owner request releases these Tasks' controls, tests, ADRs and templates to this
 Dispatcher. One durable writer maintains this Spec, Task state and generated
 projections; Workers return one Task's proof at a time. Claude's skill Specs,
@@ -298,6 +305,19 @@ content and fit under the existing headings; the template's shape does not
 change in phase one. TK-005 mirrors every control change into `templates/`,
 generic and `[BRACKETED]`.
 
+### TK-005 generic mirror dispositions
+
+| Source owner / template | Disposition |
+|---|---|
+| AGENTS selection, roles, review/correction and closure | Actual record conversion/claim/Receipt/self-check, Dispatcher QA, separate Director review, owner-selected QA, main-before-complete and capture-before-cleanup mirrored. Declared room branches/temporary exceptions remain generic; no producer S-00O exception or failed-QA state is universalized. |
+| Producer release and self-drift duties | Conditional producer reference-room upgrade preserves pinned source/prior commits, installed bytes/full suite/recovery, independent review, remote containment and fresh clone. Existing receipt plus semantic drift obligations remain; external rooms are no ordinary-work prerequisite. |
+| RUNBOOK lifecycle and closeout | Supported concrete commands, inspected digest, corrective return, approval versus findings, complete then authored capture, whole-Spec retirement/recovery and optional-move binding mirrored. Generic SHA/DIGEST symbols mean inspected values; standalone corrective receipt is explicitly unsupported. All25 examples execute through test-only shipped-guidance fixture. |
+| LEXICON and README | Scoped destination/Task/Packet/review/QA/retention meanings and progressive routes mirrored; producer ADR IDs/provenance/state omitted. Existing compatible Align/concept/role definitions remain. |
+| BLUEPRINT | Shared eight headings and product placeholders retained, generic workflow invariants added. Producer journey/source map is untouched and deliberately not copied or reconstructed. |
+| SPEC and TASKBOARD | Retired stable-path/permanent scaffolding premises corrected; record conversion explicit and catalog/projection ownership accurate. Durable feature knowledge remains after transient cleanup. |
+| GENESIS and ADOPTION | Real seeded-table compatibility and one-shot conversion explained; existing product/control/record/history preserved. Generation is not falsely described as already record-backed. |
+| CLAUDE adapter | No templates/CLAUDE.md exists at input or output; real generated/adopted bridge remains exactly @AGENTS.md plus newline. No invented template file or root-adapter edit. Observational root fidelity mismatch remains outside lane and is not a clean-update/approval claim. |
+
 ## Non-Goals
 
 - Implementing `TASK.md`, folder lifecycle, the Spec QA gate or any command.
@@ -312,10 +332,12 @@ generic and `[BRACKETED]`.
 
 ## Dependencies And Blockers
 
-TK-001 has no blocker. TK-002 depends on TK-001 and S-00H completion and
-S-00I:delivered/S-00J:delivered reviewed integration delivery. The native
-resolver and claim enforce those Task fields. TK-003 and TK-004 wait on TK-002;
-TK-005 waits on both.
+The accepted dependency graph is TK-001 -> TK-002 -> TK-003/TK-004 -> TK-005.
+TK-002 also names S-00H completion and S-00I:delivered/S-00J:delivered; native
+resolver and claim enforce those Task fields. Those upstream and TK-002/003/004
+prerequisites are now satisfied on the current execution base. TK-005 is the
+remaining source slice; whole-Spec integration delivery and actual owner
+QA/main formal closure are separate subsequent gates.
 
 ## Vertical Implementation Slices
 
@@ -418,6 +440,16 @@ template with its reason.
 - [ ] The guardrail baseline is captured before phase two and the after-score recorded with no criterion weakened.
 - [ ] The full verification suite passes and `doctor` is clean.
 
+**Verification meaning for the doctor criterion.** The command's registered
+success condition is exit0 with no `all` or `selection` blockers; `attention`
+findings stay visible without blocking, as AGENTS defines. This is the bounded
+meaning of doctor success above, not a Workbench clean-update claim. The
+separate S-00K self-drift result remains `cleanUpdate: false` for seven known
+out-of-lane findings (S-00Q stale claim, five stale seed identities and historical
+manifest provenance). They are preserved; a green suite/doctor does not repair
+them. Final independent review must assess this interpretation and the exact
+verification evidence before scoped integration delivery.
+
 ## Testing Seams
 
 `tools/test-blueprint-contract.mjs` for the Blueprint; the control-fidelity
@@ -501,6 +533,10 @@ workflow. No other owner changes.
 | 2026-10-01 | TK-003 | Documented procedure behavioral red and source self-check | At input 3251303153422efd2bb7ce6b0b6a6b0d11051489 the actual Runbook verdict without inspected digest returned exit0/new PASS after substantive Decisions changed, failing expected exit1/no-write. Corrected recipe supplies inspected digest and refuses without changing files/index/HEAD/refs. Continuous actual disposable product lifecycle green: 25 documented examples executed, real greeting red/green and output, proof-preserving corrective review, fixture owner finding/destination-change versus explicit approval, main refusal/verification, complete then capture then whole-directory retirement/discard, asset/proof/Receipt recovery from fresh clone and post-discard Wiki corrective close. Demo 25.539seconds. Control fidelity22/22, spec-report, syntax and diff checks passed; spec-workbench focused run and immutable final full51 pending | Runbook/README and two released tests only. Normal accepted closure/capture-before-retirement order preserved; optional Task move/disposal exercised in separate clone. Task path changes the digest, so individual relocation invalidates prior content-bound approval; runtime refusal does not authorize earlier cleanup. Wiki corrective creation is delivered export API; claim/close support standalone Task ID, but receipt CLI refuses Unknown spec ID without writing. Source templates mirror follows TK-005; real-room upgrade/self-drift obligations retained | All reviewer/owner/main acts in fixture are mechanical test data, not production approval. Final required51, separate-context exact-head review and integration containment remain; TK-005 and whole-Spec review/owner QA/main remain open. Pre guardrail78/100 and seven existing self-drift findings retained; no clean-update/outcome/release claim. Zero routine owner coordination hand-backs. |
 | 2026-10-01 | TK-003 | Task closed | Document-driven stale-verdict RED at claimed3251303 preserved; corrected continuous installed disposable lifecycle green, 25 actual command examples, greeting product red/green, corrective review and fixture QA/main, complete then feature capture then whole-directory retirement/discard with fresh-clone byte recovery, standalone Wiki corrective claim/close and unsupported receipt no-write refusal; demo25.539s. node tools/test-control-fidelity.mjs PASS22/22; node tools/test-spec-report.mjs PASS; syntax/diff checks PASS. Focused test-spec-workbench and immutable final required51 pending; no production approval. | RUNBOOK/README actual Task procedure and orientation corrected; documented inspected digest, accepted closure order, optional move binding and unsupported standalone Receipt. Generic mirrors TK005; upgrade release and self-drift obligations retained. | Final required51 and fresh independent exact-head integration review/containment pending; TK005 and whole-Spec acceptance/review, owner QA/main and release/installed-room proof remain open. Guardrail78 and seven existing self-drift findings retained; no clean-update/outcome claim. |
 
+| 2026-10-01 | TK-003 | Fresh independent review and actual integration delivery | Exact BASE c1ee83e16c172ac3715ecde3de441a56a41711d5 / HEAD 3b82f6ab5fc5e90a60963405698806d16b915963: required full51/51 process exit0; direct first-published append-only CLEAN; citations15/15; targeted controls22/22, spec-workbench39/39 and report passed. Fresh entire-eight-path independent review PASS with no actionable findings; reviewer reran actual25-example lifecycle27.663seconds. PR #241 merged; fetched integration66815b4e4d0a35802d28c3a470921c00692f8d0d contains exact reviewed head, actual-tip checks preceded local/remote guarded cleanup | Runbook/README and two test seams delivered; original red, source self-check, native close and Receipt remain exact historical checkpoints. Accepted normal complete→feature capture→whole-Spec retirement order preserved. Optional move digest constraint and unsupported standalone corrective receipt disclosed, no runtime expansion | TK-005 native claimed from fresh fetched integration; generic mirrors, whole-Spec report/content-bound verdict and final exact-head integration review remain. Owner QA/main/formal closure unapproved; guardrail78 and seven existing self-drift findings unchanged, no clean-update/outcome/release claim. Zero routine owner coordination hand-backs. |
+
+| 2026-10-01 | TK-005 | Frozen generic mirror and installed-room behavioral self-check | At claimed7108cd92 candidate-derived Genesis guidance changed only embedded row on claim; expected actual TASK.md assertion failed exit1 before template edits. Correct conversion guidance green; receipt-pinned installed source27cb67257cf72e4b49f25147fd34d203bd8aa2cb produced real pond red then green visible view/visitor response, retained red/green Receipt, close/assembled report and stale-digest/missing-candidate no-write refusals preserving files/index/HEAD/refs, demo3.136seconds. Durable generic guidance25 actual examples24.436seconds; default root25examples24.448seconds. Controls23/23, Blueprint/vocabulary/evaluator/fidelity/syntax/diff passed. Genuine clean Adoption snapshot4083ca7c28c4f6e0166518a3f9c0b2e7923dc32f preserved product/control bytes/history and installed real Task discovery/claim | Nine generic templates and four existing tests only; test-only closed guidance parameter explicitly released, no runtime changes. Section dispositions above preserve eight-heading generic Blueprint without copying producer journey/map, actual room exception boundaries, accepted cleanup order and actual receipt limitations. Generated/adopted adapter exact; absent CLAUDE template stays absent. Current-tree Adoption correctly refused uncommitted templates; guard preserved, no fake source pin | Canonical committed-source Adoption and source full51 pending before final assembled acceptance; native Task close/content-bound whole-Spec report/verdict/fresh final-head review/integration containment remain. Fixture approval/main prove mechanics only. Owner QA/main/formal complete, installed release/external-room proof separate; baseline guardrail78/seven drift findings retained and no clean-update/outcome claim. Zero routine owner coordination hand-backs. |
+
 ## Completion Result
 
 Pending.
@@ -510,6 +546,14 @@ Pending.
 Spec-branch tooling and the coordinator are described as destination and
 delivered by later Specs derived from the reworked Blueprint. Any Wiki
 design-concept article remains optional owner-directed work.
+
+Verified procedure limits remain explicit: an individual Task relocation changes
+the review digest, so the normal accepted route retires the complete captured
+Spec directory together. Standalone Wiki corrective creation is a delivered
+export API and claim/close work by Task ID, but the receipt CLI remains
+Spec-bound; no runtime enhancement is delivered by this documentation Spec.
+The generic mirror must preserve those actual boundaries.
+
 
 S-00J TK-01T and TK-02J added public blocker grammar that S-00P's control
 rewrite must describe (TK-002 AGENTS, TK-003 RUNBOOK, TK-004 LEXICON, TK-005

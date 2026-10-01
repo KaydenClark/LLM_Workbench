@@ -9,6 +9,56 @@
 **Planned verification:** Red: candidate-derived fresh-room guidance fails an observable product-workflow checkpoint or generic-template check; green: the same room delivers its bounded project result through the installed Workbench and the mirrored controls remain generic. Phrase and command-existence checks support behavioral proof.
 **Stance:** Builder
 
+## Execution Reconciliation (2026-10-01)
+
+Current base is reviewed integration
+`66815b4e4d0a35802d28c3a470921c00692f8d0d`, containing TK-002, TK-004 and
+TK-003 reviewed delivery (PR #238, #239 and #241). Native selection and claim
+resolve both Task blockers. Earlier held dependencies and unreleased-lane
+statements below describe packet authoring; current owner request and Director
+release authorize the exact listed templates/tests for this Task. Delivered
+S-00I/S-00J commands, current controls and accepted ADRs are the mirror source.
+Do not describe actual main verification or features capture as unimplemented.
+
+One fresh Worker owns the listed templates and three test seams. Director
+additionally releases `tools/test-workbench-round-trip.mjs` for a narrow
+validated test-only guidance input, so actual generic template command examples
+reuse the continuous lifecycle fixture rather than relying on root guidance or
+a duplicate harness. Its default root behavior remains verified. Dispatcher
+alone authors Spec/Task/projections and whole-Spec state. No runtime, skill,
+Wiki, manifest, ADR or producer-root edit is released to Worker. Public scoped
+publication and reviewed integration merges are explicitly owner-authorized;
+owner QA, main, release and external-room updates remain separate gates.
+Generic controls distinguish a room's declared route from destination topology;
+producer S-00O exception and current failed QA are never universalized.
+
+The accepted normal closure order remains complete then feature capture then
+whole-Spec retirement. Individual Task relocation changes the content digest;
+standalone Wiki corrective claim/close exist but its receipt CLI is unsupported.
+Preserve and explain those verified procedure constraints. Template Blueprint
+keeps generic eight-heading structure/product placeholders; never copy the
+producer product journey or reconstruct its source map as a generic diagram.
+
+## Source Self-Check (2026-10-01 checkpoint)
+
+Thirteen released paths are frozen at input7108cd92: nine templates and four
+tests, with exact hashes in the Worker handback. Actual generated-guidance red
+(no TASK.md after table claim) precedes template edits; conversion fixes it.
+Receipt-pinned installed source27cb67257cf72e4b49f25147fd34d203bd8aa2cb proves
+pond red/green, real Task Receipt/close/assembled report, no-write stale/missing
+proof refusals and3.136second demo. Generic durable guidance fixture executes
+all25 examples in24.436seconds; default unchanged25examples24.448seconds.
+Controls23/23, Blueprint/vocabulary/evaluator/fidelity/syntax/diff passed.
+Clean exact Adoption snapshot4083ca7c28c4f6e0166518a3f9c0b2e7923dc32f preserves
+room-owned product/control/history and installed record claim. Canonical source
+Adoption requires committed templates and remains pending at this checkpoint.
+
+The source-to-template dispositions are in S-00P. templates/CLAUDE.md is absent
+at input/output; actual generated/adopted adapter stays @AGENTS.md plus newline.
+No runtime, skill, Wiki or root-control change is included. Provider-free fixture
+reviewer/owner/main actions prove mechanics only; final assembled verification
+and integration review are tracked in S-00P, actual owner QA/main remain separate.
+
 ## Outcome
 
 A fresh project receives copy-ready controls that describe the delivered
@@ -153,3 +203,9 @@ Source scope is S-00P/TK-005 at
 September 26 Delivery Reconciliation in the working SPEC and this assignment;
 its newer role, QA and closure direction supersedes earlier per-Task review
 wording. Historical evidence and pending decision lineage remain intact.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | codex/s00p-tk005-template-workflow | 7108cd92f83b36a29bc5d3627519b6829d09e59e | ahead 0 behind 0 | 3 | Fresh doctor exit0/no blocking; native next and claim7108cd9 from integration66815b4 after reviewed Task3 containment. Pre guardrail78/self-drift7. Source-pinned fresh-room product/guidance red pending new Worker. | Prior Task3 exact PASS/full51/PR241 actual integration containment appended; current Task3 Proof and Task5 execution reconciliation updated. Worker generic template and three test lanes only. | Actual candidate-template installed room behavior and example inventory; final51/whole-Spec QA/content-bound verdict/fresh exact-head review and integration containment; owner QA/main remain open. | 1fd6d8a09d8281056612a2a092cf3e3177241bbe8652a3e17dd39792b2eb289d |
