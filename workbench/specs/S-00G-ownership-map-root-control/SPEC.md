@@ -3,13 +3,13 @@
 **Spec ID:** S-00G
 **Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** codex-s00g
 **Stance:** Builder
 **Updated:** 2026-10-01
 **Catalog description:** Deliver the Ownership map as the eighth root file and Core routing artifact, with queryable responsibility routes and coordinated root-surface consumers.
 **Blockers:** No unresolved activation prerequisite. Q24B field shape/disposition placement and later concept coverage remain implementation decisions under the locked guards.
-**Latest event:** Disposable native activation reproduced the stale-blocker refusal with no writes; faithful metadata reconciliation preserves four legacy IDs, dependency edges and verification plans. See activation-migration-2026-10-01.json.
-**Next gate:** Native activation and TK-001 claim/publication, then useful schema/reader, proved consumer sweep, generic template and populated routes-only query in existing Task order.
+**Latest event:** TK-001 claimed by codex-s00g.
+**Next gate:** Close TK-001 with verification and documentation proof.
 
 > **Citation anchors.** pre=`c0ac60a179235ef22fa6ea81aec74735087e06e5` post=`c0ac60a179235ef22fa6ea81aec74735087e06e5`.
 
