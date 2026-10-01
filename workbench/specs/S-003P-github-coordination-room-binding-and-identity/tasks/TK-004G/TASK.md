@@ -3,7 +3,7 @@
 **Task ID:** TK-004G
 **Spec ID:** S-003P
 **Slice:** P1: Disable promisor lazy fetch - public394 missing-manifest fixture fetches and adds four Git pack files despite the read-only contract.
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-003P Acceptance Criteria
