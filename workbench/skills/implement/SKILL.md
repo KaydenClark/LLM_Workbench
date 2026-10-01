@@ -3,7 +3,8 @@ name: implement
 description: Implement one eligible Workbench task through verified remote recovery.
 ---
 
-Implement one eligible task from the assigned `SPEC.md`. One invocation
+Implement one eligible task from the assigned stable `SPEC.md`. Stability names its identity, not a fixed folder;
+resolve its current route through the manifest and native lifecycle tools. One invocation
 owns one task and one durable writer lane.
 
 For v3 work, `workbench/manifest.json` is the support-path authority; the
