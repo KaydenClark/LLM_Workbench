@@ -189,10 +189,12 @@ approval, production branch deletion or external room as test data.
   negative checks preserve state and unmerged work on refusal.
 - [x] Template upgrade and self-drift obligations remain intact; generic mirror
   work is explicitly returned to TK-005 with the changed sections identified.
-- [ ] Worker returns immutable SHA, paths, tests/results, docs, remaining gaps
+- [x] Worker returns immutable SHA, paths, tests/results, docs, remaining gaps
   and known limitations to Dispatcher. Dispatcher updates shared Spec state,
   evaluates whole-Spec acceptance, runs the required assembled full suite and
   obtains separate Director review before integration delivery.
+
+Achieved Task-level hand-back, required51, independent review and containment are named in current Proof above. Whole-Spec acceptance was assessed with TK-005 remaining; final assembled-Spec verdict/delivery status is owned by S-00P report/gate/evidence, and no whole-Spec or owner approval follows from this Task checklist.
 
 Task self-check is not whole-Spec approval. Do not mark S-00P complete, record
 owner approval, merge main, or run a full suite to certify this draft packet.

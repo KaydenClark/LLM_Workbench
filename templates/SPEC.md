@@ -10,9 +10,10 @@
 **Owner:** [owner]
 **Stance:** Builder
 **Updated:** [YYYY-MM-DD]
-**Catalog description:** [ONE-SENTENCE DESCRIPTION OF WHAT THIS PROJECT DOES AND FOR WHOM.]
+**Catalog description:** [One sentence for the Blueprint catalog.]
 
-The catalog description summarizes this capability in the Spec catalog; it
+The legacy placeholder name is retained for Genesis vocabulary compatibility.
+Fill it with a description of this capability for the Spec catalog; it
 does not generate a catalog inside the product Blueprint.
 **Blockers:** none
 **Latest event:** Spec captured.
