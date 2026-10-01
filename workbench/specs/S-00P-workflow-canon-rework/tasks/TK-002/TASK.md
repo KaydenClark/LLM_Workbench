@@ -3,7 +3,7 @@
 **Task ID:** TK-002
 **Spec ID:** S-00P
 **Slice:** Rewrite `AGENTS.md` to the Task-record workflow using only commands that exist
-**Status:** blocked
+**Status:** in-progress
 **Blockers:** TK-001, S-00H, S-00I:delivered, S-00J:delivered
 **Destination:** spec-acceptance: S-00P Acceptance Criteria
 **Planned verification:** Red/green contract regressions in `tools/test-control-fidelity.mjs`, exact command/argument checks against `workbench/tools/spec-workbench.mjs`, and a disposable-room cold-start walkthrough; preserve guardrail and self-drift before/after receipts. These are execution plans, not achieved proof.

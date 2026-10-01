@@ -3,13 +3,13 @@
 **Spec ID:** S-00P
 **Status:** active
 **Priority:** 1
-**Owner:** DISPATCHER
+**Owner:** codex-s00p-dispatcher
 **Stance:** Builder
-**Updated:** 2026-09-30
+**Updated:** 2026-10-01
 **Catalog description:** Rewrite `BLUEPRINT.md` now to describe every rung of the governing workflow and the full recursive Spec/Task loop, then rewrite AGENTS, RUNBOOK, LEXICON and the `templates/` mirror once S-00H, S-00I and S-00J make the commands they describe real, and reconcile ADR-000F, ADR-000G and ADR-000I.
 **Blockers:** TK-002 onward wait on S-00I and S-00J; S-00J TK-01T will let TK-002 consume their reviewed integration delivery (`S-###:delivered`) instead of final `complete`. S-00H is complete and retired; TK-001 is done and landed.
-**Latest event:** TK-003N closed with proof.
-**Next gate:** Complete TK-002.
+**Latest event:** TK-002 claimed by codex-s00p-dispatcher.
+**Next gate:** Close TK-002 with verification and documentation proof.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`f84b4691be7cd3abf7cdf719942ca6efaec0c617`.
 
