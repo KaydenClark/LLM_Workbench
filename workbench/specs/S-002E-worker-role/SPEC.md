@@ -1,15 +1,15 @@
 # S-002E - Worker Role
 
 **Spec ID:** S-002E
-**Status:** planned
+**Status:** active
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
 **Updated:** 2026-09-27
 **Catalog description:** Perform one assigned Task within its declared scope and return a verified, recoverable result.
-**Blockers:** none for specification; implementation awaits flight launch and assignment.
-**Latest event:** Owner confirmed the minimum role/stance buildout; this Spec records one capability without cutting Tasks.
-**Next gate:** At flight launch, inspect live Actuality and plan small Tasks within this Spec.
+**Blockers:** none for staged implementation; managed installation awaits release bundle identity.
+**Latest event:** Authorized staged Worker slice planned as TK-002Z from live integration 95176a4.
+**Next gate:** Claim and verify TK-002Z, then hand immutable candidate to separate review.
 
 > **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`b00a2e338436ef7b281b0cc53e74f891af32f18c`.
 
@@ -51,7 +51,7 @@ Coordinate shared controls, discovery and branch procedure with [Workflow Canon 
 
 ## Vertical Implementation Slices
 
-No Tasks cut. At flight launch/Spec activation, use current Actuality to plan small complete-path slices and safe parallel groups. The empty tasks directory keeps this planned capability record-backed.
+[TK-002Z](tasks/TK-002Z/TASK.md) stages one complete Worker entry/explanation/proof slice. Managed discovery and bundle installation remain release-owned; no successor Task is invented for that gated work.
 
 ## Acceptance Criteria
 
