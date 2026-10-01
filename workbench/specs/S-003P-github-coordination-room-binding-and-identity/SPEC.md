@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Resolve an explicit GitHub coordination repository and room-scoped artifact identities from immutable repository sources.
 **Blockers:** No prerequisite blocks the first read-only binding slice. Native Issue mapping awaits the Issue graph seam. Live actor trust belongs to the assignment owner.
-**Latest event:** TK-004A claimed by codex-github-binding.
-**Next gate:** Close TK-004A with verification and documentation proof.
+**Latest event:** TK-004A inspector implemented with public red/green and 7/7 source/receipt-backed installed tests; final verification and independent review pending.
+**Next gate:** Run the full frozen-candidate suite, then obtain independent review before integration and Task close; later identity/Issue slices remain uncut.
 
 > **Citation anchors.** pre=`282dc043ab7dad92826a6d5447369238c35df0a3` post=`282dc043ab7dad92826a6d5447369238c35df0a3`.
 
@@ -76,6 +76,8 @@ This Spec owns capability requirements, open gates and proof. Shared operational
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-10-01 | none | Owner-directed capability capture from integration 282dc043ab7dad92826a6d5447369238c35df0a3; reviewed concept seed PR235. | Planning only; runtime proof not claimed. | Capability owner authored; generic operational template changes deferred to implemented seams/cutover, because no operative workflow changes here. | Acceptance unchecked; unresolved choices and later independent review preserved. |
+
+| 2026-10-01 | TK-004A | Candidate de53544083201d66e76c7f56a95b975911ec8ed5 implements an optional committed-manifest binding inspector; native claim99643c2 is pushed. | Public red: absent inspector exits1. Green: 7/7 including immutable source, refusal/no-write and receipt-backed installed command/hash; live repository demo resolves metadata with access unverified. Full initial run45/49 exposed stale Taskboard after Receipt; regenerate and rerun final candidate. | Procedure, manifest declaration and managed registration; workflow/templates unchanged because no active service or claim rule changes. Native DQC links preserve origins/evidence. | Final full suite and independent integration review; native Issue operations, artifact mapping, actor policy and cutover remain. No Human QA/main or clean-update claim. |
 
 ## Completion Result
 
