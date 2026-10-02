@@ -128,6 +128,10 @@ copying its evidence log here.
 
 [Decision Records and the Concept Map](design-concepts/decision-records-and-the-concept-map.md) explains how the Blueprint, Destination Decision Records, ADRs, landmarks and Specs fit together, how a DDR differs from an ADR, and how landmarks and Specs form the map at two scales with the Destination Packet linking an agent to it.
 
+## The Workflow Verbs
+
+[The Workflow Verbs](design-concepts/workflow-verbs.md) explains the eight workflow verbs, Journey and the loop, and which verb writes each kind of artifact.
+
 ## Roles And Stances
 
 [Roles and stances](design-concepts/roles-and-stances.md) explains scope versus job and routes to each separately owned capability.
