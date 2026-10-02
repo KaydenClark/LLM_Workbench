@@ -103,7 +103,14 @@ if (!process.argv.includes('--close-recovery-only')) {
       if (scenario === 'malformed') fs.writeFileSync(tp, published.replace(/^\*\*Close pending:\*\* .+$/m, '**Close pending:** invalid-json'));
       if (scenario === 'tamper') fs.writeFileSync(tp, published.replace('original docs |', 'altered docs |'));
       if (scenario === 'ambiguous') fs.writeFileSync(other, published.replaceAll('TK-002', 'TK-003'));
-      if (scenario === 'conflict') fs.writeFileSync(sp, beforeSpec.replace('\n## Completion Result', '\n| 2026-10-01 | TK-002 | Task closed | unrelated proof | unrelated docs | none |\n\n## Completion Result'));
+      // The conflicting row must share the pending row's identity, including
+      // the date `close` stamped from the live clock; a literal date stops
+      // conflicting once the calendar moves past it.
+      if (scenario === 'conflict') {
+        const stamped = JSON.parse(published.match(/^\*\*Close pending:\*\* (.+)$/m)[1]).row.split(' | ')[0].slice(2);
+        assert.match(stamped, /^\d{4}-\d{2}-\d{2}$/, 'conflict: pending row carries its stamped date');
+        fs.writeFileSync(sp, beforeSpec.replace('\n## Completion Result', `\n| ${stamped} | TK-002 | Task closed | unrelated proof | unrelated docs | none |\n\n## Completion Result`));
+      }
       // S-00I TK-004L: preserve a published operation across lifecycle changes.
       // Public move-task is deliberately allowed; close must recover its exact
       // retired target without moving it back or selecting the other claim.
