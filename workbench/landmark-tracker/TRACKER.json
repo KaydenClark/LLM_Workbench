@@ -35792,11 +35792,11 @@
       "id": "DQC-000B",
       "title": "GitHub Issues as the required live coordination authority",
       "question": "Which owner holds live assignment, the active Worker, operational holds and the next hand-back during normal delivery, and how does that authority replace pushed Task-branch claims without two claim authorities?",
-      "answer": "GitHub Issues is required live coordination for normal delivery, not an optional mirror. Issues own live assignment, the active Worker, operational holds and the next hand-back through bounded trusted operations; the request, Contract and assigned Spec and Task keep scope, requirements, acceptance and permission; native pull requests and exact commits express candidate and review activity through Workbench gates; repository evidence owners keep receipts, acceptance and owner approval. Directors resolve assignment races and the owner-designated coordinator Vespar breaks v4 ties. ADR-000O's pushed Task-branch remote-tip claim is superseded for v4 only at a separately reviewed cutover that leaves exactly one active claim authority. Issue prose, an assignee or status alone, labels and bot messages never enlarge authority, prove exclusivity or manufacture independent review or QA. Visible error and pending state and refusal of unverifiable unsafe assignments or writes are required; no atomic lock, custom scheduler or second queue.",
+      "answer": "GitHub Issues is required live coordination for normal delivery, not an optional mirror. Issues own live assignment, the active Worker, operational holds and the next hand-back through bounded trusted operations; the request, Contract and assigned Spec and Task keep scope, requirements, acceptance and permission; native pull requests and exact commits express candidate and review activity through Workbench gates; repository evidence owners keep receipts, acceptance and owner approval. Directors resolve assignment races and the owner-designated coordinator Vespar breaks v4 ties. ADR-000O's pushed Task-branch remote-tip claim is superseded for v4 only at a separately reviewed cutover that leaves exactly one active claim authority. Issue prose, an assignee or status alone, labels and bot messages never enlarge authority, prove exclusivity or manufacture independent review or QA. Visible error and pending state and refusal of unverifiable unsafe assignments or writes are required; no atomic lock, custom scheduler or second queue. Trusted Issue operations use the owner's own GitHub account in v4, and only structured records authored by the room's configured account count. A Director's race ruling or the coordinator's v4 tie-break is a structured Issue record. Verified Issue write access is part of the minimum capability for any host that takes a Task. One active claim authority applies per item of work, not per room or project (owner, 2026-10-02).",
       "answered": true,
       "confirmation": {
-        "basis": "Owner approved superseding ADR-000O and settled required Issue coordination, Director race resolution with the Vespar tie-break, and the ownership split; relayed as settled in the 2026-10-01 coordinating assignment. Trusted actor identities and migration mechanics are not confirmed.",
-        "revision": 3
+        "basis": "Owner approved superseding ADR-000O and settled required Issue coordination, Director race resolution with the Vespar tie-break, and the ownership split; relayed as settled in the 2026-10-01 coordinating assignment. The owner decided the trusted actor policy, structured Issue records, the write floor and per-item claim authority on 2026-10-02. Migration mechanics are not confirmed.",
+        "revision": 10
       },
       "expectedResult": {
         "change": "Record the accepted destination, retained ADR-000O rationale, one-authority cutover conditions and current gaps in a proposed superseding ADR; later reconcile the shared controls and S-00V through their owners and plan the claim capability in a separately assigned Spec.",
@@ -35805,7 +35805,6 @@
       },
       "result": null,
       "uncertainty": [
-        "Trusted actor mechanics are open: which GitHub identities (owner account, GitHub App or per-agent accounts) perform trusted Issue operations, and how Director race outcomes and Vespar tie-breaks are attributed verifiably.",
         "GitHub write capability is unverified: on 2026-10-01 the Claude cloud Workbench session read Issues and pull requests through the GitHub connector, the gh CLI token was invalid, and no write was probed.",
         "Migration of in-progress pushed Task-branch claims (S-00V TK-01L runtime) into Issue assignment is unplanned."
       ],
@@ -36165,13 +36164,54 @@
         },
         {
           "key": "C5",
-          "text": "The trusted GitHub actor identities for Issue operations, and verifiable attribution of Director and Vespar decisions, are not yet settled.",
-          "revision": 4,
+          "text": "Trusted Issue operations use the owner's own GitHub account, a Director's race ruling or the coordinator's v4 tie-break is a structured Issue record, and only structured records authored by the room's configured account count.",
+          "revision": 10,
           "status": "supported",
           "evidence": [
             {
               "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8",
               "revision": 4
+            },
+            {
+              "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@71e716e57245f4da0f567813dced6eda7716e1dd",
+              "revision": 11
+            }
+          ],
+          "affectedBy": [
+            {
+              "revision": 10,
+              "changed": [
+                "answer",
+                "confirmation",
+                "uncertainty"
+              ],
+              "reason": "Owner decided the trusted actor policy, the write floor and per-item claim authority on 2026-10-02.",
+              "assessment": "The owner decided the trusted actor policy and verifiable attribution on 2026-10-02, so the earlier claim that they were not yet settled no longer holds."
+            }
+          ]
+        },
+        {
+          "key": "C6",
+          "text": "One active claim authority applies per item of work, not per room or project; an agent claims one item of work.",
+          "revision": 10,
+          "status": "supported",
+          "evidence": [
+            {
+              "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@71e716e57245f4da0f567813dced6eda7716e1dd",
+              "revision": 10
+            }
+          ],
+          "affectedBy": []
+        },
+        {
+          "key": "C7",
+          "text": "Verified Issue write access is part of the minimum capability for any host that takes a Task; a host without it refuses claims and transitions.",
+          "revision": 10,
+          "status": "supported",
+          "evidence": [
+            {
+              "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@71e716e57245f4da0f567813dced6eda7716e1dd",
+              "revision": 10
             }
           ],
           "affectedBy": []
@@ -36241,7 +36281,7 @@
         "at": "2026-10-01T01:54:49.239Z"
       },
       "corrections": [],
-      "revision": 9,
+      "revision": 11,
       "history": [
         {
           "revision": 1,
@@ -36441,6 +36481,73 @@
               }
             }
           ]
+        },
+        {
+          "revision": 10,
+          "at": "2026-10-02T09:46:18.229Z",
+          "reason": "Owner decided the trusted actor policy, the write floor and per-item claim authority on 2026-10-02.",
+          "changes": [
+            {
+              "field": "answer",
+              "from": "GitHub Issues is required live coordination for normal delivery, not an optional mirror. Issues own live assignment, the active Worker, operational holds and the next hand-back through bounded trusted operations; the request, Contract and assigned Spec and Task keep scope, requirements, acceptance and permission; native pull requests and exact commits express candidate and review activity through Workbench gates; repository evidence owners keep receipts, acceptance and owner approval. Directors resolve assignment races and the owner-designated coordinator Vespar breaks v4 ties. ADR-000O's pushed Task-branch remote-tip claim is superseded for v4 only at a separately reviewed cutover that leaves exactly one active claim authority. Issue prose, an assignee or status alone, labels and bot messages never enlarge authority, prove exclusivity or manufacture independent review or QA. Visible error and pending state and refusal of unverifiable unsafe assignments or writes are required; no atomic lock, custom scheduler or second queue.",
+              "to": "GitHub Issues is required live coordination for normal delivery, not an optional mirror. Issues own live assignment, the active Worker, operational holds and the next hand-back through bounded trusted operations; the request, Contract and assigned Spec and Task keep scope, requirements, acceptance and permission; native pull requests and exact commits express candidate and review activity through Workbench gates; repository evidence owners keep receipts, acceptance and owner approval. Directors resolve assignment races and the owner-designated coordinator Vespar breaks v4 ties. ADR-000O's pushed Task-branch remote-tip claim is superseded for v4 only at a separately reviewed cutover that leaves exactly one active claim authority. Issue prose, an assignee or status alone, labels and bot messages never enlarge authority, prove exclusivity or manufacture independent review or QA. Visible error and pending state and refusal of unverifiable unsafe assignments or writes are required; no atomic lock, custom scheduler or second queue. Trusted Issue operations use the owner's own GitHub account in v4, and only structured records authored by the room's configured account count. A Director's race ruling or the coordinator's v4 tie-break is a structured Issue record. Verified Issue write access is part of the minimum capability for any host that takes a Task. One active claim authority applies per item of work, not per room or project (owner, 2026-10-02)."
+            },
+            {
+              "field": "confirmation",
+              "from": "Owner approved superseding ADR-000O and settled required Issue coordination, Director race resolution with the Vespar tie-break, and the ownership split; relayed as settled in the 2026-10-01 coordinating assignment. Trusted actor identities and migration mechanics are not confirmed.",
+              "to": "Owner approved superseding ADR-000O and settled required Issue coordination, Director race resolution with the Vespar tie-break, and the ownership split; relayed as settled in the 2026-10-01 coordinating assignment. The owner decided the trusted actor policy, structured Issue records, the write floor and per-item claim authority on 2026-10-02. Migration mechanics are not confirmed."
+            },
+            {
+              "field": "uncertainty",
+              "from": "Trusted actor mechanics are open: which GitHub identities (owner account, GitHub App or per-agent accounts) perform trusted Issue operations, and how Director race outcomes and Vespar tie-breaks are attributed verifiably.",
+              "to": null
+            },
+            {
+              "field": "claim",
+              "claim": "C5",
+              "from": "The trusted GitHub actor identities for Issue operations, and verifiable attribution of Director and Vespar decisions, are not yet settled.",
+              "to": "Trusted Issue operations use the owner's own GitHub account, a Director's race ruling or the coordinator's v4 tie-break is a structured Issue record, and only structured records authored by the room's configured account count."
+            },
+            {
+              "field": "claim",
+              "claim": "C6",
+              "from": null,
+              "to": "One active claim authority applies per item of work, not per room or project; an agent claims one item of work."
+            },
+            {
+              "field": "claim",
+              "claim": "C7",
+              "from": null,
+              "to": "Verified Issue write access is part of the minimum capability for any host that takes a Task; a host without it refuses claims and transitions."
+            },
+            {
+              "field": "claim-evidence",
+              "claim": "C6",
+              "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@71e716e57245f4da0f567813dced6eda7716e1dd"
+            },
+            {
+              "field": "claim-evidence",
+              "claim": "C7",
+              "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@71e716e57245f4da0f567813dced6eda7716e1dd"
+            },
+            {
+              "field": "claim-affected",
+              "claim": "C5",
+              "assessment": "The owner decided the trusted actor policy and verifiable attribution on 2026-10-02, so the earlier claim that they were not yet settled no longer holds."
+            }
+          ]
+        },
+        {
+          "revision": 11,
+          "at": "2026-10-02T09:46:18.345Z",
+          "reason": "Record the promoted decision record as evidence for the settled actor-policy claim.",
+          "changes": [
+            {
+              "field": "claim-evidence",
+              "claim": "C5",
+              "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@71e716e57245f4da0f567813dced6eda7716e1dd"
+            }
+          ]
         }
       ]
     },
@@ -36448,11 +36555,11 @@
       "id": "DQC-000C",
       "title": "GitHub Issue graph and composed coordination views",
       "question": "How do GitHub Issues and Projects represent Spec, Task, Landmark and DQC relationships and progress without forcing a tree, confusing concept Issue closure with assessment, or inventing completion?",
-      "answer": "GitHub Projects, the generated Taskboard and the generated Landmark Tracker are composed views, never authority. The Issue graph carries Spec-Task hierarchy, direct or ungrouped Tasks and overlapping Landmark and DQC membership as a graph, keeps native blocking links distinct from semantic relations and generated content distinct from human content, and never treats concept Issue closure as an assessment. Views keep exactly six implementation lanes and the eight steps Idea, Aligning, Confirmed, Mapped, Planned, Journey, Review and Verified with true fractions, denominators, provenance and explicit missing or invalid states, record their coordination snapshot, freshness and conflicts, keep Tracker and execution views separate, and invent no percentages. The six-lane board reuses S-01X.",
+      "answer": "GitHub Projects, the generated Taskboard and the generated Landmark Tracker are composed views, never authority. The Issue graph carries Spec-Task hierarchy, direct or ungrouped Tasks and overlapping Landmark and DQC membership as a graph, keeps native blocking links distinct from semantic relations and generated content distinct from human content, and never treats concept Issue closure as an assessment. Views keep exactly six implementation lanes and the eight steps Idea, Aligning, Confirmed, Mapped, Planned, Journey, Review and Verified with true fractions, denominators, provenance and explicit missing or invalid states, record their coordination snapshot, freshness and conflicts, keep Tracker and execution views separate, and invent no percentages. The six-lane board reuses S-01X. GitHub Projects are optional presentation: v4 may ship with the generated Taskboard and Tracker as its only composed views (owner, 2026-10-02).",
       "answered": true,
       "confirmation": {
-        "basis": "The ownership split naming Projects, Taskboard and Tracker as composed views, and these representation requirements, are owner-accepted direction relayed as settled on 2026-10-01. Project availability and the direct-Task home are not confirmed.",
-        "revision": 3
+        "basis": "Owner-accepted direction relayed as settled on 2026-10-01 (the ownership split naming Projects, Taskboard and Tracker as composed views, and these representation requirements), and the owner's decision of 2026-10-02 that GitHub Projects are optional presentation. The home for direct or ungrouped Tasks is not confirmed.",
+        "revision": 8
       },
       "expectedResult": {
         "change": "Record the composed-view boundary in the proposed superseding ADR; later plan the Issue graph and view capabilities, reusing S-01X, S-001Z, S-002A and S-002B, in separately assigned Specs.",
@@ -36462,7 +36569,6 @@
       "result": null,
       "uncertainty": [
         "GitHub Projects capability is unverified: on 2026-10-01 no GitHub connector Projects route was available and the gh CLI token was invalid.",
-        "If Projects cannot be used through supported access, whether v4 may ship with the generated Taskboard and Tracker as its only composed views is an open owner decision.",
         "The home for direct or ungrouped Tasks awaits the Director disposition recorded in the S-00O assigned capability map."
       ],
       "landmarks": [
@@ -36710,8 +36816,8 @@
         },
         {
           "key": "C4",
-          "text": "Whether v4 requires a GitHub Project view if Projects cannot be used through supported access is not yet decided.",
-          "revision": 4,
+          "text": "GitHub Projects are optional presentation; v4 may ship with the generated Taskboard and Tracker as its only composed views.",
+          "revision": 8,
           "status": "supported",
           "evidence": [
             {
@@ -36721,9 +36827,24 @@
             {
               "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@471a0f0a7fcd7adeb2a7f3ff7dbf41da0504a7f8",
               "revision": 5
+            },
+            {
+              "ref": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@71e716e57245f4da0f567813dced6eda7716e1dd",
+              "revision": 9
             }
           ],
-          "affectedBy": []
+          "affectedBy": [
+            {
+              "revision": 8,
+              "changed": [
+                "answer",
+                "confirmation",
+                "uncertainty"
+              ],
+              "reason": "Owner decided on 2026-10-02 that GitHub Projects are optional presentation for v4.",
+              "assessment": "The owner decided on 2026-10-02 that Projects are optional presentation, so the earlier claim that the Projects requirement was undecided no longer holds."
+            }
+          ]
         },
         {
           "key": "C5",
@@ -36813,7 +36934,7 @@
           "reason": "Independent review of 9617819 found claim evidence that did not state the claimed requirements; append corrected evidence."
         }
       ],
-      "revision": 7,
+      "revision": 9,
       "history": [
         {
           "revision": 1,
@@ -36996,6 +37117,51 @@
                 "id": "S-01X",
                 "revision": "9f5bd5ab"
               }
+            }
+          ]
+        },
+        {
+          "revision": 8,
+          "at": "2026-10-02T09:46:18.563Z",
+          "reason": "Owner decided on 2026-10-02 that GitHub Projects are optional presentation for v4.",
+          "changes": [
+            {
+              "field": "answer",
+              "from": "GitHub Projects, the generated Taskboard and the generated Landmark Tracker are composed views, never authority. The Issue graph carries Spec-Task hierarchy, direct or ungrouped Tasks and overlapping Landmark and DQC membership as a graph, keeps native blocking links distinct from semantic relations and generated content distinct from human content, and never treats concept Issue closure as an assessment. Views keep exactly six implementation lanes and the eight steps Idea, Aligning, Confirmed, Mapped, Planned, Journey, Review and Verified with true fractions, denominators, provenance and explicit missing or invalid states, record their coordination snapshot, freshness and conflicts, keep Tracker and execution views separate, and invent no percentages. The six-lane board reuses S-01X.",
+              "to": "GitHub Projects, the generated Taskboard and the generated Landmark Tracker are composed views, never authority. The Issue graph carries Spec-Task hierarchy, direct or ungrouped Tasks and overlapping Landmark and DQC membership as a graph, keeps native blocking links distinct from semantic relations and generated content distinct from human content, and never treats concept Issue closure as an assessment. Views keep exactly six implementation lanes and the eight steps Idea, Aligning, Confirmed, Mapped, Planned, Journey, Review and Verified with true fractions, denominators, provenance and explicit missing or invalid states, record their coordination snapshot, freshness and conflicts, keep Tracker and execution views separate, and invent no percentages. The six-lane board reuses S-01X. GitHub Projects are optional presentation: v4 may ship with the generated Taskboard and Tracker as its only composed views (owner, 2026-10-02)."
+            },
+            {
+              "field": "confirmation",
+              "from": "The ownership split naming Projects, Taskboard and Tracker as composed views, and these representation requirements, are owner-accepted direction relayed as settled on 2026-10-01. Project availability and the direct-Task home are not confirmed.",
+              "to": "Owner-accepted direction relayed as settled on 2026-10-01 (the ownership split naming Projects, Taskboard and Tracker as composed views, and these representation requirements), and the owner's decision of 2026-10-02 that GitHub Projects are optional presentation. The home for direct or ungrouped Tasks is not confirmed."
+            },
+            {
+              "field": "uncertainty",
+              "from": "If Projects cannot be used through supported access, whether v4 may ship with the generated Taskboard and Tracker as its only composed views is an open owner decision.",
+              "to": null
+            },
+            {
+              "field": "claim",
+              "claim": "C4",
+              "from": "Whether v4 requires a GitHub Project view if Projects cannot be used through supported access is not yet decided.",
+              "to": "GitHub Projects are optional presentation; v4 may ship with the generated Taskboard and Tracker as its only composed views."
+            },
+            {
+              "field": "claim-affected",
+              "claim": "C4",
+              "assessment": "The owner decided on 2026-10-02 that Projects are optional presentation, so the earlier claim that the Projects requirement was undecided no longer holds."
+            }
+          ]
+        },
+        {
+          "revision": 9,
+          "at": "2026-10-02T09:46:18.679Z",
+          "reason": "Record the promoted decision record as evidence for the Projects claim.",
+          "changes": [
+            {
+              "field": "claim-evidence",
+              "claim": "C4",
+              "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@71e716e57245f4da0f567813dced6eda7716e1dd"
             }
           ]
         }
