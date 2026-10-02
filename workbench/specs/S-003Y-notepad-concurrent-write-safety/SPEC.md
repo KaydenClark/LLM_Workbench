@@ -26,7 +26,7 @@ A notepad belongs to its objective and every context working that objective writ
 At the pre anchor:
 
 - In `workbench/tools/notepads.mjs`, `loadForWrite` reads the note and compares the caller's `--revision` with the note's revision before the update is built. The write then goes through `publish`, which calls `writeSafeFile` without the exclusive option, and `writeSafeFile` in `workbench/tools/workbench-paths.mjs` publishes with an unconditional `renameSync`. The check and the publication are separate steps, so two writers that read the same revision both pass the check and the last rename wins.
-- The accepted decision [A notepad belongs to its objective and every chat working that objective writes to it](../../docs/adr/000L-a-notepad-belongs-to-its-objective-and-every-chat-working-that-objective-writes-to-it.md) records a reproduction of 2026-09-15: twelve barrier-synchronized appends at revision 1 returned nine `appended` responses at revision 2, and the resulting note held one entry. It also records that plain backgrounded launches do not reproduce it, because process start-up stagger lets the first rename land before the others read.
+- The accepted decision [A notepad belongs to its objective and every chat working that objective writes to it](../../docs/adr/000L-a-notepad-belongs-to-its-objective-and-every-chat-working-that-objective-writes-to-it.md) records a reproduction of 2026-09-15: twelve barrier-synchronized appends at revision 1 returned nine `appended` responses at revision 2, and the resulting note held one entry.
 - `tools/test-notepads.mjs` has no concurrency case.
 - The `notepad` skill states its writer rule as one writer and keeps a "check, not a lock" paragraph, as the accepted decision requires while the defect stands.
 - A failed write leaves the previous valid record unchanged; that property already exists and must be kept.
@@ -39,7 +39,7 @@ No implementation or agent-outcome proof for this capability is claimed by this 
 2. A response of `appended` (or the equivalent success of another write) is true: the entry or change is present in the note at the stated revision. A response is never a success for a write that was overwritten.
 3. The guard is a real compare-and-swap or a short critical section inside the runtime. It is not a lease or lock held by the writing chat and adds no mandatory coordination service, so standalone local operation is unchanged.
 4. A guard cannot wedge a note: a writer that stops mid-write leaves the previous valid record in place and does not block later writers indefinitely.
-5. The reproduction is a regression test. Racing writers spin to a common wall-clock barrier before calling the write, because plain launches do not show the loss; the test is red before the fix and green after.
+5. The reproduction is a regression test. The recorded reproduction used barrier-synchronized writers, so the racing writers here wait on a common barrier before calling the write and the test does not depend on process start-up timing; it is red before the fix and green after.
 6. Other record writers that publish through the same `writeSafeFile` path and carry a revision, including the Landmark Tracker's, are inspected for the same check-then-act shape. A finding is recorded; it is fixed here only if it shares the repaired seam.
 
 ## Decisions And Contracts

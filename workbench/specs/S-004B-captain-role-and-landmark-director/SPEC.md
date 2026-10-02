@@ -25,7 +25,7 @@ The owner confirmed that the integration role is the Captain and a landmark's ro
 
 At the pre anchor:
 
-- The skills lane `workbench/skills/` holds 27 skills, including `director`, `dispatcher`, `spec-planner` and `spec-manager`. There is no `captain` skill and no `worker` skill.
+- The skills lane `workbench/skills/` holds 26 skills, including `director`, `dispatcher`, `spec-planner` and `spec-manager`. There is no `captain` skill and no `worker` skill.
 - `workbench/skills/director/SKILL.md` states the Director's scope as the whole project and its integration branch, coordinating Spec-bound Dispatchers and cross-Spec work. That is the scope the accepted decision gives the Captain.
 - The root `LEXICON.md` already carries one sentence per role in the accepted ladder and says that today's controls and the director skill still use Director for the integration role, which becomes the Captain, and that no worker role skill exists yet.
 - `AGENTS.md` still carries role detail; moving it out belongs to the Contract rewrite.
