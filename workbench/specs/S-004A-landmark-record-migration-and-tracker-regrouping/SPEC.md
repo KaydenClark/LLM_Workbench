@@ -26,7 +26,7 @@ The owner retired the landmark JSON record: with the Destination Decision Record
 At the pre anchor:
 
 - There are 24 landmark records in `workbench/landmark-tracker/landmarks/`, each with schema `landmark-tracker/landmark@1` and the fields `id` (for example `LMK-000A`), `revision`, `title`, `summary`, `importance`, `origin` and `history`.
-- Membership is carried by the cards, not the landmark record: each Destination Question Card in `workbench/landmark-tracker/destination-questions/` names its landmarks in a `landmarks` field. The generated `TRACKER.json` holds 24 landmarks, 171 cards and 444 items.
+- Membership is carried by the cards, not the landmark record: each Destination Question Card in `workbench/landmark-tracker/destination-questions/` names its landmarks in a `landmarks` field. The generated `TRACKER.json` holds 24 landmarks, 171 question records (the cards) and 444 items.
 - `workbench/tools/landmark-tracker.mjs` owns the card and landmark operations and the generated Tracker; `workbench/tools/landmark-wiki.mjs` validates a readable Landmark Wiki article. The manifest declares both collections under `landmarkTracker`.
 - There is no `LANDMARK.md` artifact yet; it is the subject of [LANDMARK.md Artifact And Lane Runtime](../S-003Z-landmark-md-artifact-and-lane-runtime/SPEC.md).
 - [Landmark Records](../S-002A-landmark-records/SPEC.md), [Landmark Tracker View](../S-001Z-landmark-tracker-view/SPEC.md) and [Destination Question Cards](../S-002B-destination-question-cards/SPEC.md) own the current seams and are at their owner gates.
