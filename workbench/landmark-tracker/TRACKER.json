@@ -38800,7 +38800,11 @@
         "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: PW-3 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
         "revision": 3
       },
-      "expectedResult": null,
+      "expectedResult": {
+        "change": "V3-15B update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Desired Behavior): A blocked skill installation or path collision leaves a truthful recoverable partial result with exact remediation. | V3-15B create tools/core-skill-installer.mjs: Reports blocked or partial status with remediation text. | V3-15B create workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md: Genesis readiness fails closed on a missing lane receipt or broken adapter instead.",
+        "home": "workbench/specs/S-021-portable-workbench-v3/SPEC.md (Desired Behavior); tools/core-skill-installer.mjs; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md",
+        "revision": 7
+      },
       "result": null,
       "uncertainty": [
         "V3-15B is superseded in part (the provider-home install); per its ledger note the truthful-partial-result principle still applies to lane and adapter failures, but no locked ledger row of its own carries it."
@@ -39001,9 +39005,14 @@
           "revision": 6,
           "text": "The first backfill capture (revision 1) named PW-3 as the successor of V3-15B but left the card with no relation, answer or assessment, unlike every other card holding a superseded row. Separate-context review of candidate 3d584a81 found the inconsistency; the uniform rule now applies: PW-3 is related and answers the superseded provider-home part, and the surviving truthful-partial-result principle stays an uncertainty.",
           "reason": "Correct the inconsistent first capture after separate-context review."
+        },
+        {
+          "revision": 7,
+          "text": "Revision 7 left Expected result empty because the card has no non-superseded row of its own. Separate-context review of 2b94f0b7 found that inconsistent with the lane rule. For a card whose only row is superseded, Expected result comes from that row's own ledger result items, which name this destination and its ADR-000M fail-closed replacement; PW-3's results stay with the cards that carry the skills lane.",
+          "reason": "Record the Expected result the ledger already names for V3-15B, after separate-context review."
         }
       ],
-      "revision": 6,
+      "revision": 7,
       "history": [
         {
           "revision": 1,
@@ -39082,6 +39091,26 @@
             {
               "field": "correction",
               "to": "The first backfill capture (revision 1) named PW-3 as the successor of V3-15B but left the card with no relation, answer or assessment, unlike every other card holding a superseded row. Separate-context review of candidate 3d584a81 found the inconsistency; the uniform rule now applies: PW-3 is related and answers the superseded provider-home part, and the surviving truthful-partial-result principle stays an uncertainty."
+            }
+          ]
+        },
+        {
+          "revision": 7,
+          "at": "2026-10-02T00:09:45.293Z",
+          "reason": "Record the Expected result the ledger already names for V3-15B, after separate-context review.",
+          "changes": [
+            {
+              "field": "expectedResult",
+              "from": null,
+              "to": {
+                "change": "V3-15B update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Desired Behavior): A blocked skill installation or path collision leaves a truthful recoverable partial result with exact remediation. | V3-15B create tools/core-skill-installer.mjs: Reports blocked or partial status with remediation text. | V3-15B create workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md: Genesis readiness fails closed on a missing lane receipt or broken adapter instead.",
+                "home": "workbench/specs/S-021-portable-workbench-v3/SPEC.md (Desired Behavior); tools/core-skill-installer.mjs; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md",
+                "revision": 7
+              }
+            },
+            {
+              "field": "correction",
+              "to": "Revision 7 left Expected result empty because the card has no non-superseded row of its own. Separate-context review of 2b94f0b7 found that inconsistent with the lane rule. For a card whose only row is superseded, Expected result comes from that row's own ledger result items, which name this destination and its ADR-000M fail-closed replacement; PW-3's results stay with the cards that carry the skills lane."
             }
           ]
         }
