@@ -33,6 +33,8 @@
 | [000U](000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md) | Landmarks are LANDMARK.md artifacts one size above Specs | accepted | 2026-10-02 | LEXICON.md |
 | [000V](000V-captain-director-dispatcher-and-worker-scope-work-and-role-skills-own-each-job.md) | Captain, Director, Dispatcher and Worker scope work and role skills own each job | accepted | 2026-10-02 | LEXICON.md |
 | [000W](000W-contract-carriers-are-briefs-that-point-to-skills-and-authority-flows-through-the-pointer.md) | Contract carriers are briefs that point to skills and authority flows through the pointer | accepted | 2026-10-02 | LEXICON.md |
+| [000X](000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md) | The workflow is eight verbs and each verb writes the plane its claims live on | accepted | 2026-10-02 | LEXICON.md, BLUEPRINT.md |
+| [000Y](000Y-a-locked-and-confirmed-answer-is-promoted-without-further-ceremony.md) | A locked and confirmed answer is promoted without further ceremony | accepted | 2026-10-02 | LEXICON.md |
 | [0013](archive/0013-seven-file-workbench-contract.md) | The portable Workbench has seven root files | superseded | 2026-09-04 | BLUEPRINT.md, LEXICON.md |
 | [0015](0015-workbench-base-and-foundry-capabilities.md) | Workbench supplies the base and Foundry adds coordination | accepted | 2026-09-04 | BLUEPRINT.md |
 | [0017](archive/0017-workbench-support-directory-has-six-lanes.md) | The Workbench support directory has six lowercase lanes | superseded | 2026-09-04 | BLUEPRINT.md, RUNBOOK.md |

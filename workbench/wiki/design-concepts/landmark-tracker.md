@@ -105,6 +105,11 @@ Review, Verified**. They concern understanding reaching its documented
 destination. Completing a Task or creating a Wiki file alone cannot establish
 that the knowledge is correct and durable.
 
+The owner has since confirmed the workflow verbs Idea, Align, Confirm, Map, Plan,
+Implement, Review and Verify as the official names for these steps, with Journey
+only the loop-level name and not a stage (see [The Workflow Verbs](workflow-verbs.md)).
+The Tracker still prints the earlier names above until the Tracker work changes them.
+
 Each distinct related item contributes one unit total in the first version.
 An item with mixed progress splits its unit across the relevant steps. For each
 step, sum those contributions and divide by the number of distinct items.
@@ -216,3 +221,4 @@ we can build on while answers, inventory and detailed destinations evolve.
   assessment and record-move recovery as the remaining delivery.
 - 2026-10-01: Landmark Wiki pages restated as evolving synthesis with the name-and-context identifier rule, from the owner-confirmed Wiki definition (the decision record "The Wiki is the evolving synthesis every agent reads and updates").
 - 2026-10-02: Added the accepted change that turns landmarks into `LANDMARK.md` artifacts one size above Specs and their JSON records into question cards, from the owner-confirmed grilling of 2026-10-02.
+- 2026-10-02: Noted the owner-confirmed workflow verbs as the official step names, with the Tracker's own labels still to change, from the owner-confirmed grilling of 2026-10-02.
