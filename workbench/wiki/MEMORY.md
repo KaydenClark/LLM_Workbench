@@ -124,6 +124,10 @@ That article is this capability's durable owner, reconciled from
 this route preserves the retired Spec's historical reachability without
 copying its evidence log here.
 
+## Decision Records
+
+[Decision Records and the Concept Map](design-concepts/decision-records-and-the-concept-map.md) explains how the Blueprint, Destination Decision Records, ADRs, landmarks and Specs fit together, and how a DDR differs from an ADR.
+
 ## Roles And Stances
 
 [Roles and stances](design-concepts/roles-and-stances.md) explains scope versus job and routes to each separately owned capability.
