@@ -39,8 +39,8 @@ the directions we go, record the choices we made along the way.
   choice, how the system is built, with its rationale.
 - **Landmarks and Specs** are built on those choices. A landmark is an evolving
   account of a feature or framework pillar; a Spec delivers one scoped
-  capability. The Blueprint, DDRs, landmarks and Specs together form the concept
-  map, which is a different thing from the Lexicon's Context Map: that one routes
+  capability. The Blueprint, the decision records (DDRs and ADRs), landmarks and
+  Specs together form the concept map, which is a different thing from the Lexicon's Context Map: that one routes
   questions to owners. The owner said all of them are built on the consequential
   choices, and also that the Blueprint cannot be built from DDRs and ADRs.
   Inference: this page reads the first as true of landmarks and Specs and the
@@ -51,7 +51,7 @@ the directions we go, record the choices we made along the way.
 One test: would the decision still hold if the architecture were rebuilt
 differently? If yes, it is a DDR. If it is how the system is built, it is an
 ADR. One decision may need both; they link rather than merge. The owner's
-example from the grilling: that agents operate the Workbench by pressing buttons
+example from the grilling: that agents push buttons on the Workbench
 is a destination choice, so it is a DDR.
 
 A Spec keeps the scoped, testable acceptance for one capability; neither kind of

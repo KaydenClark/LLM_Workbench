@@ -8,13 +8,13 @@ canonicalized_in:
 
 ## Decision
 
-Every kind of record the Workbench keeps answers the same kinds of read with
-the same words, so an agent asks a notepad, a Destination Question Card, a
+Every kind of record the Workbench keeps is to answer the same kinds of read
+with the same words, so an agent asks a notepad, a Destination Question Card, a
 landmark, a Spec, an ADR or a DDR the same way. Create, Read, Update and Delete
 remain the frame every tool answers
 ([ADR-0003](0003-full-crud-with-artifact-conditions.md) and the Wiki schema's
-contract); what varies from one tool to the next is the kind of read. The five
-words:
+contract); what varies from one tool to the next is which kind of each
+operation it needs and, for Read, which kind of read. The five words:
 
 - **list**: the records that exist.
 - **show**: one whole record. `get` is an accepted synonym, meaning fetch one
@@ -58,13 +58,14 @@ Docker's `inspect` returns a whole detailed record.
 
 Consequences: the Lexicon carries the five definitions. A tool gains the words
 when a Spec touches it; this record renames nothing. The ADR and DDR tools have
-no read command at the time of this record, so the Decision Record tooling Spec
-gives them these words. Whether `search` attaches the linked corrections to a
+no read command at the time of this record, so the Decision Record tooling Spec is
+the natural place to give them these words; that scope is not decided here. Whether `search` attaches the linked corrections to a
 result, as the notepad's topic read does, is undecided. The template mirror of the Read words row waits for the same
 Spec, so a template does not promise words its tools lack.
 
 Provenance: owner-confirmed grilling of 2026-10-01 under the objective
 "ddr-and-control-surface", which asked whether the AI community has a standard
 read set for a store read by many agents and then set the words above. The
-sources above were read on 2026-10-01; the Letta documentation and the CoALA
-paper could not be read through the research tool and are not relied on.
+sources above were read on 2026-10-01, except the LangGraph store reference,
+which was taken from search results; the Letta documentation and the CoALA paper
+could not be read through the research tool and are not relied on.
