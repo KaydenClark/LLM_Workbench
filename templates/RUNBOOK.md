@@ -237,7 +237,11 @@ Filesystem discovery is distinct from configured-host invocation. `doctor` also 
 names a branch that resolves locally or on a remote; the Genesis readiness
 gate fails closed on the same two conditions. When that branch resolves and
 the spec `next` would select is already complete there, `doctor` reports
-`complete-on-integration` (attention) without hiding the work. Decision records live in
+`complete-on-integration` (attention) without hiding the work. `doctor`
+reports `detached-head` and `untracked-controls` (scope `git`, attention,
+effect `none`) for a detached HEAD and for untracked files under the root
+controls, the ADR collection or the spec lane; neither blocks, because `close`
+refuses the false completion claim itself. Decision records live in
 `workbench/docs/adr/`; an accepted record names the control that carries its
 operational owners in `canonicalized_in`. Active accepted decision claims are
 architectural Canon. `register` derives active `REGISTER.md` and complete
@@ -364,6 +368,23 @@ node workbench/tools/spec-workbench.mjs close S-001 \
 node workbench/tools/spec-workbench.mjs render
 node workbench/tools/spec-workbench.mjs doctor
 ```
+
+`close` reads repository state before it writes anything and refuses a claim
+the repository contradicts, naming what it found: `dirty-tree` lists anything
+`git status --porcelain` shows, untracked files included, and `unpushed` means
+no remote-tracking ref contains HEAD, naming the upstream distance or the
+missing upstream, gone upstream, detached HEAD or absent remote. The refusal
+names its own remediation: commit and push, or rerun with
+`--git-state-reason "<why>"` (one line) when the state is a truthful
+exception. The observed state and the reason are then appended to the
+remaining gap that the final Receipt row and the Spec evidence row record, so
+a reviewer reads what was waived. A reason on a clean, pushed tree is refused
+rather than dropped; where Git state is unknown (no Git, not a repository)
+nothing is refused and a given reason is recorded beside `unknown`. `close`
+also refuses a Spec with no in-progress Task (`has no in-progress task to
+close; claim one first`) rather than closing a ready Task nobody claimed. An
+orphan corrective Task closed by its own ID (`close TK-###`) does not run the
+Git-state check.
 
 Commit and publish the closure evidence and projections too; verify the remote
 SHA. TASK.md owns Task state/proof, SPEC.md owns requirements/acceptance/evidence

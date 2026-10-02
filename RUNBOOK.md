@@ -975,6 +975,23 @@ node workbench/tools/spec-workbench.mjs render
 node workbench/tools/spec-workbench.mjs doctor
 ```
 
+`close` reads repository state before it writes anything and refuses a claim
+the repository contradicts, naming what it found: `dirty-tree` lists anything
+`git status --porcelain` shows, untracked files included, and `unpushed` means
+no remote-tracking ref contains HEAD, naming the upstream distance or the
+missing upstream, gone upstream, detached HEAD or absent remote. The refusal
+names its own remediation: commit and push, or rerun with
+`--git-state-reason "<why>"` (one line) when the state is a truthful
+exception. The observed state and the reason are then appended to the
+remaining gap that the final Receipt row and the Spec evidence row record, so
+a reviewer reads what was waived. A reason on a clean, pushed tree is refused
+rather than dropped; where Git state is unknown (no Git, not a repository)
+nothing is refused and a given reason is recorded beside `unknown`. `close`
+also refuses a Spec with no in-progress Task (`has no in-progress task to
+close; claim one first`) rather than closing a ready Task nobody claimed. An
+orphan corrective Task closed by its own ID (`close TK-###`) does not run the
+Git-state check.
+
 Commit and publish the closure evidence and projections too; verify the remote
 SHA. TASK.md owns Task state/proof, SPEC.md owns requirements/acceptance/evidence
 and its next gate, and generated TASKBOARD.md/CATALOG.md cannot satisfy either.
@@ -1848,8 +1865,19 @@ spec, manifest, or projection can choose whether its own finding blocks.
 | `all` | `doctor` exits 1; `next` and `claim` refuse to read the layout | `invalid-manifest`, `upgrade-required`, `invalid-lane`, `unsafe-lane`, `invalid-collection`, `missing-collection`, `invalid-skill-policy`, `invalid-wiki-profile`, `sessions-not-ignored`, `tools-receipt-missing`, `tools-receipt-drift`, and the Genesis readiness codes |
 | `selection` | `doctor` exits 1 until repaired; selection is unsafe | `malformed-spec`, `duplicate-id`, `invalid-state`, `contradictory-state`, `unstable-path`, `missing-evidence`, `render-drift`, `broken-render-target`, `row-record-collision`, `receipt-corrupt` |
 | `selected-slice` | `doctor` reports it and exits 0; `next` excludes the slice; `claim` refuses it by name | `blocked-slice` |
-| `none` (attention) | reported, exit 0, never hides work | `stale-claim`, `broken-link`, `complete-on-integration`, `stale-register`, `stale-note`, `stale-skill`, `skill-generation-unknown`, `room-brain-unrouted`, `stale-stamp`, `stale-seed`, `unverified-provenance`, and the ADR and wiki findings until their tools ship |
+| `none` (attention) | reported, exit 0, never hides work | `stale-claim`, `broken-link`, `complete-on-integration`, `stale-register`, `stale-note`, `stale-skill`, `skill-generation-unknown`, `room-brain-unrouted`, `stale-stamp`, `stale-seed`, `unverified-provenance`, `detached-head` and `untracked-controls` (scope `git`), and the ADR and wiki findings until their tools ship |
 | `none` (error) | reported, exit 0, never hides work; the Genesis gate fails closed on the same condition | `integration-branch-undeclared`, `integration-branch-missing` (scope `git`), and the error-severity ADR and wiki findings |
+
+The two attention codes in scope `git` surface the repository state a
+completion claim can hide. `detached-head` reports a detached HEAD, a
+legitimate inspection state that blocks nothing; switch to a branch before
+committing work you intend to deliver. `untracked-controls` names untracked
+files under the root controls, the ADR collection or the spec lane (ten by
+name, then a count); commit or remove them before claiming the work done. A
+room that has never been committed carries it until its first commit.
+Neither is reported when Git state is unknown, and neither changes `doctor`'s
+exit code or `next`'s selection: the false claim itself is refused at `close`
+(see [Spec Lifecycle And Retrieval](#spec-lifecycle-and-retrieval)).
 
 `doctor --json` prints the findings with their `severity`, `scope`, and
 `blocks` fields. The plain output groups them by that effect and is read from

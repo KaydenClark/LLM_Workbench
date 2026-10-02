@@ -190,7 +190,11 @@ While a Task is in progress, record meaningful tests, documentation and gaps
 with `receipt`. Commit and push the verified candidate and Receipt before
 `close`, checking that the remote branch names the local SHA; close refuses a
 dirty or unpushed tree unless `--git-state-reason TEXT` explicitly records why.
-Commit and publish the resulting close evidence and projections as well:
+`--git-state-reason` writes the observed state and the reason into the Receipt
+row and the Spec evidence row, where a reviewer reads what was waived. `doctor`
+reports `detached-head` and `untracked-controls` (untracked control, ADR or
+Spec files) without blocking. Commit and publish the resulting close evidence
+and projections as well:
 
 ```bash
 node workbench/tools/spec-workbench.mjs receipt S-### --task TK-### \
@@ -205,9 +209,10 @@ node workbench/tools/spec-workbench.mjs doctor
 
 `close` closes the first in-progress Task in that Spec, appending its final
 Receipt and Spec evidence before marking the record done. It does not select
-a ready Task or complete the Spec. One writer must ensure the claimed Task is
-the one being closed; do not close unrelated work. A Receipt records live Git
-facts and stated checks; it is neither review nor owner approval.
+a ready Task or complete the Spec, and refuses a Spec with no in-progress Task.
+One writer must ensure the claimed Task is the one being closed; do not close
+unrelated work. A Receipt records live Git facts and stated checks; it is
+neither review nor owner approval.
 
 Dependencies remain explicit: plain Spec IDs require `complete` or
 `superseded`, and plain Task IDs require done. `S-###:delivered` instead requires
