@@ -126,7 +126,7 @@ copying its evidence log here.
 
 ## Decision Records
 
-[Decision Records and the Concept Map](design-concepts/decision-records-and-the-concept-map.md) explains how the Blueprint, Destination Decision Records, ADRs, landmarks and Specs fit together, and how a DDR differs from an ADR.
+[Decision Records and the Concept Map](design-concepts/decision-records-and-the-concept-map.md) explains how the Blueprint, Destination Decision Records, ADRs, landmarks and Specs fit together, how a DDR differs from an ADR, and how landmarks and Specs form the map at two scales with the Destination Packet linking an agent to it.
 
 ## Roles And Stances
 

@@ -570,8 +570,9 @@ test('every intra-ADR link in the real corpus resolves literally, and the re-cou
   // TK-004 adds six decision-route edges; retained proposal history remains linked.
   // ADR-000R (the Wiki definition) links its two partially superseded records.
   // ADR-000S (Destination Decision Records) and ADR-000T (the read words) add two linked records.
-  assert.equal(filesWithLink, 43, 're-count of ADR files carrying an intra-ADR link at this candidate');
-  assert.equal(totalLinks, 92, 're-count of total intra-ADR link edges at this candidate');
+  // ADR-000U (landmarks), ADR-000V (roles) and ADR-000W (Contract carriers) add three linked records.
+  assert.equal(filesWithLink, 46, 're-count of ADR files carrying an intra-ADR link at this candidate');
+  assert.equal(totalLinks, 105, 're-count of total intra-ADR link edges at this candidate');
 });
 
 // S-00I TK-001 review correction: a link is validated literally, never
@@ -897,7 +898,7 @@ function assertWorkflowMeaning(corpus) {
   const lexicon = controls.get('LEXICON.md');
   for (const [term, pattern] of [
     ['Blueprint', /desired finished product/],
-    ['Packet', /Spec acceptance lines[\s\S]*or the reconciled Wiki claim/],
+    ['Destination Packet', /Spec acceptance lines[\s\S]*or the reconciled Wiki claim/],
     ['Align', /shared design concept explicitly confirmed by owner and agent/],
     ['Design concept', /exists between participants/],
     ['Spec', /scoped objective with its own destination/],

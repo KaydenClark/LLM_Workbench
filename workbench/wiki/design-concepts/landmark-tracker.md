@@ -13,7 +13,7 @@ source_paths:
   - workbench/landmark-tracker/README.md
 parent: none
 authorized_by: owner
-last_verified: 2026-10-01
+last_verified: 2026-10-02
 ---
 
 # Landmark Tracker
@@ -46,6 +46,17 @@ can begin before any specification and remain useful after several delivery
 efforts finish. Landmarks can overlap. They are not themselves implemented:
 Specs and Tasks deliver bounded work connected to them.
 
+That description is the landmark as it was first built. On 2026-10-02 the owner
+accepted a change ([the decision record "Landmarks are LANDMARK.md artifacts one size above Specs"](../../docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md)): a landmark becomes a `LANDMARK.md` artifact, a Spec
+with a much larger scope that says where the work goes and what success looks
+like. Landmarks and Specs become the map at two scales and Tasks the steps. A
+landmark forms when groupings appear in the question cards and destination
+decisions, parents its Specs, and retires into its Landmark Wiki page once
+reached. Landmarks no longer overlap through shared children: a Spec has at
+most one. The current JSON landmark records turn into question cards, because
+they were a way of nesting cards. None of this is installed yet; until the
+landmark Spec lands, the Tracker keeps grouping by the JSON records.
+
 **Tracker** generates the compact view of those records and their relationships.
 It monitors the documenting process; Taskboard monitors implementation. Existing
 artifacts and the grilling ledger retain their jobs. Workflow activity changes
@@ -54,6 +65,9 @@ There is no manually assigned overall card stage or card-reset lifecycle.
 
 **Landmark Wiki pages** are each landmark's evolving synthesis in readable
 Markdown: what its question cards add up to, updated whenever a card changes.
+Under the accepted change, a page's raw source is its landmark's `LANDMARK.md`;
+the page describes the landmark as it currently is without being the same
+document.
 Several Specs can contribute to one page. Identifiers on a page carry the
 artifact's name and context, as on every Wiki page; structured records and
 delivery evidence keep identity-bearing provenance, and readable source routes
@@ -186,6 +200,7 @@ we can build on while answers, inventory and detailed destinations evolve.
 - [Agent authority and continuity](../../../AGENTS.md)
 - [Available operations and delivery route](../../../RUNBOOK.md#landmark-tracker-accepted-design-and-available-operations)
 - [Tracker record procedure](../../landmark-tracker/README.md)
+- [Decision record: "Landmarks are LANDMARK.md artifacts one size above Specs"](../../docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md): the accepted change to the landmark record
 
 ## History
 
@@ -200,3 +215,4 @@ we can build on while answers, inventory and detailed destinations evolve.
   availability sentence now names them and leaves Landmark Wiki content
   assessment and record-move recovery as the remaining delivery.
 - 2026-10-01: Landmark Wiki pages restated as evolving synthesis with the name-and-context identifier rule, from the owner-confirmed Wiki definition (the decision record "The Wiki is the evolving synthesis every agent reads and updates").
+- 2026-10-02: Added the accepted change that turns landmarks into `LANDMARK.md` artifacts one size above Specs and their JSON records into question cards, from the owner-confirmed grilling of 2026-10-02.
