@@ -31,9 +31,10 @@ only relevant owners, and resolves routine details without asking the owner to
 repeat settled answers. A specification-only request stays specification-only
 through every composed skill and every receiving agent.
 
-One ladder carries an idea to delivered software, and an agent can always say
-which rung the work is on: an owner idea, Align through grilling, a confirmed
-design concept, the Blueprint, then recursive Spec and Task delivery.
+One workflow carries an idea to delivered software, and an agent can always say
+which verb the work is on: Idea, Align, Confirm, Map, Plan, Implement, Review or
+Verify. Map through Verify are one Journey, and the workflow loops back to Align
+after it. Delivery within it is recursive Spec and Task delivery.
 
 An owner may explore an idea in conversation before it is clear enough to
 Align. `grill-me`, brainstorming or wayfinding can open Align; a grilling
@@ -97,8 +98,8 @@ understanding as it evolves, in readable Markdown, naming every identifier it
 cites with the artifact's name and context; several Specs can contribute to
 one article. These records add no instruction authority.
 
-Documentation progresses through Idea, Aligning, Confirmed, Mapped, Planned,
-Journey, Review and Verified. Related items can contribute mixed fractions
+Documentation progresses through the workflow verbs Idea, Align, Confirm, Map,
+Plan, Implement, Review and Verify. Related items can contribute mixed fractions
 across those steps. Each distinct item contributes one unit total in the first
 version, and a shared item counts once per aggregate. A completed Task alone
 does not prove that the expected understanding reached its durable destination.

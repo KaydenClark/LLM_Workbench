@@ -430,8 +430,9 @@ test('every accepted-ADR-to-spec reference in the real corpus resolves literally
     if (countForRecord > 0) filesWithLink += 1;
   }
   // TK-004 activates G/I: G routes its S-00P decision owner; I routes S-00I/S-00J.
-  assert.equal(filesWithLink, 26, 're-count of accepted ADR files carrying a live Spec-path reference at this candidate');
-  assert.equal(totalLinks, 31, 're-count of total accepted-ADR-to-spec link edges at this candidate');
+  // ADR-000X (the workflow verbs) routes the two Landmark Tracker Specs it leaves with the Tracker work.
+  assert.equal(filesWithLink, 27, 're-count of accepted ADR files carrying a live Spec-path reference at this candidate');
+  assert.equal(totalLinks, 33, 're-count of total accepted-ADR-to-spec link edges at this candidate');
 });
 
 test('durable references distinguish tracked notepad templates from ignored live records', () => {
@@ -571,8 +572,9 @@ test('every intra-ADR link in the real corpus resolves literally, and the re-cou
   // ADR-000R (the Wiki definition) links its two partially superseded records.
   // ADR-000S (Destination Decision Records) and ADR-000T (the read words) add two linked records.
   // ADR-000U (landmarks), ADR-000V (roles) and ADR-000W (Contract carriers) add three linked records.
-  assert.equal(filesWithLink, 46, 're-count of ADR files carrying an intra-ADR link at this candidate');
-  assert.equal(totalLinks, 105, 're-count of total intra-ADR link edges at this candidate');
+  // ADR-000X (the workflow verbs) adds one linked record; ADR-000Y (promotion) links none.
+  assert.equal(filesWithLink, 47, 're-count of ADR files carrying an intra-ADR link at this candidate');
+  assert.equal(totalLinks, 109, 're-count of total intra-ADR link edges at this candidate');
 });
 
 // S-00I TK-001 review correction: a link is validated literally, never
