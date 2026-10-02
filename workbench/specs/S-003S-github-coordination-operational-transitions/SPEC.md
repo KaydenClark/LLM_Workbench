@@ -5,10 +5,10 @@
 **Priority:** 1
 **Owner:** unassigned
 **Stance:** Builder
-**Updated:** 2026-10-01
+**Updated:** 2026-10-02
 **Catalog description:** Report holds, hand-backs and review requests through trusted GitHub operations while repository owners retain substantive decisions and proof.
 **Blockers:** Consumes Issue graph and trusted assignment seams. Reuses S-00J/S-00I/S-00U gate/lifecycle evidence; no new review or approval authority. Extended recovery stays deferred.
-**Latest event:** Owner requested GitHub coordination implementation; this bounded capability owner is authored from reviewed concept sources.
+**Latest event:** Owner decisions of 2026-10-02 settled the trusted actor policy and the Projects requirement, recorded here and in the proposed GitHub coordination decision record. No Task is cut.
 **Next gate:** Activate only an independently executable slice from current Actuality; unresolved consequential choices keep dependent slices uncut.
 
 > **Citation anchors.** pre=`282dc043ab7dad92826a6d5447369238c35df0a3` post=`282dc043ab7dad92826a6d5447369238c35df0a3`.
@@ -36,7 +36,7 @@ At the pre anchor, PR235 concept sources are contained in integration. The propo
 
 - Scope and permission remain with the request, Contract and assigned Spec/Task. Issue metadata is coordination evidence, never blanket instruction authority.
 - Accepted concept lineage is LMK-000A and DQC-000B/000C/000D; extended outage recovery remains DQC-000E and is off the v4 critical path.
-- Exact actor trust and Projects availability/requirement are unresolved. Preserve these gates without blocking independent read-only work.
+- The owner decided on 2026-10-02 the trusted actor policy (trusted Issue operations use the owner's own GitHub account, a Director's race ruling or the coordinator's v4 tie-break is a structured Issue record, and only structured records from the room's configured account count) and that GitHub Projects are optional presentation for v4. The proposed GitHub coordination decision record holds the full decisions.
 - Source proof, installed behavior, integration containment, failed ongoing owner Human QA and owner-only main promotion are distinct.
 
 ## Non-Goals
@@ -80,6 +80,7 @@ This Spec owns capability requirements, open gates and proof. Shared operational
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-10-01 | none | Owner-directed capability capture from integration 282dc043ab7dad92826a6d5447369238c35df0a3; reviewed concept seed PR235. | Planning only; runtime proof not claimed. | Capability owner authored; generic operational template changes deferred to implemented seams/cutover, because no operative workflow changes here. | Acceptance unchecked; unresolved choices and later independent review preserved. |
+| 2026-10-02 | none | Owner decisions recorded: the trusted actor policy and optional Projects, as they bear on operational transitions. | Promotion only; no runtime proof claimed. | This Spec and the proposed GitHub coordination decision record. | No Task is cut; runtime and installed proof are not run. |
 
 ## Completion Result
 
