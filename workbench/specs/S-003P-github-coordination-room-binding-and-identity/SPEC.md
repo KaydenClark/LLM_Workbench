@@ -35,7 +35,7 @@ At the pre anchor, PR235 concept sources are contained in integration. The propo
 
 - Scope and permission remain with the request, Contract and assigned Spec/Task. Issue metadata is coordination evidence, never blanket instruction authority.
 - Accepted concept lineage is LMK-000A and DQC-000B/000C/000D; extended outage recovery remains DQC-000E and is off the v4 critical path.
-- Exact actor trust and Projects availability/requirement are unresolved. Preserve these gates without blocking independent read-only work.
+- The owner decided on 2026-10-02 the trusted actor policy: trusted Issue operations use the owner's own GitHub account, a Director's race ruling or the coordinator's v4 tie-break is a structured Issue record, and only structured records from the room's configured account count. The proposed GitHub coordination decision record holds the full decisions. Whether GitHub Projects are required for v4 remains open; preserve that gate without blocking independent read-only work.
 - Source proof, installed behavior, integration containment, failed ongoing owner Human QA and owner-only main promotion are distinct.
 
 ## Non-Goals

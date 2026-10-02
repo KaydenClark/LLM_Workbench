@@ -463,8 +463,8 @@
     ],
     "numerators": {
       "Idea": 0,
-      "Aligning": 22.133333,
-      "Confirmed": 412.866667,
+      "Aligning": 21.933333,
+      "Confirmed": 413.066667,
       "Mapped": 0,
       "Planned": 0,
       "Journey": 0,
@@ -473,8 +473,8 @@
     },
     "distribution": {
       "Idea": 0,
-      "Aligning": 4.984985,
-      "Confirmed": 92.987988,
+      "Aligning": 4.93994,
+      "Confirmed": 93.033033,
       "Mapped": 0,
       "Planned": 0,
       "Journey": 0,
@@ -673,8 +673,8 @@
         ],
         "numerators": {
           "Idea": 0,
-          "Aligning": 11.133333,
-          "Confirmed": 158.866667,
+          "Aligning": 10.933333,
+          "Confirmed": 159.066667,
           "Mapped": 0,
           "Planned": 0,
           "Journey": 0,
@@ -683,8 +683,8 @@
         },
         "distribution": {
           "Idea": 0,
-          "Aligning": 6.510721,
-          "Confirmed": 92.904483,
+          "Aligning": 6.393762,
+          "Confirmed": 93.021442,
           "Mapped": 0,
           "Planned": 0,
           "Journey": 0,
@@ -1037,14 +1037,13 @@
         "id": "DQC-000B",
         "state": "assessed",
         "contributions": {
-          "Aligning": 0.2,
-          "Confirmed": 0.8
+          "Confirmed": 1
         },
-        "basis": "Five named claims: C1-C4 carry scoped owner confirmation and are recorded in proposed ADR-000Q; C5 is open alignment. No destination owner is reconciled yet, so nothing is Mapped.",
+        "basis": "Seven named claims: C1-C4 carry the scoped owner confirmation of 2026-10-01 and C5-C7 carry the owner's decisions of 2026-10-02, all recorded in proposed ADR-000Q. Migration mechanics for in-flight claims and installed-room proof of Issue write access remain open uncertainties outside the named claims. No destination owner is reconciled yet, so nothing is Mapped.",
         "evidence": [
-          "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+          "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@65f3d309dc69483373a812c80625f7d6ef640194"
         ],
-        "revision": 4,
+        "revision": 12,
         "holder": "DQC-000B",
         "itemRevision": null
       },
@@ -8526,8 +8525,8 @@
         ],
         "numerators": {
           "Idea": 0,
-          "Aligning": 0.85,
-          "Confirmed": 4.15,
+          "Aligning": 0.65,
+          "Confirmed": 4.35,
           "Mapped": 0,
           "Planned": 0,
           "Journey": 0,
@@ -8536,8 +8535,8 @@
         },
         "distribution": {
           "Idea": 0,
-          "Aligning": 6.538462,
-          "Confirmed": 31.923077,
+          "Aligning": 5,
+          "Confirmed": 33.461538,
           "Mapped": 0,
           "Planned": 0,
           "Journey": 0,
@@ -8568,8 +8567,8 @@
             ],
             "numerators": {
               "Idea": 0,
-              "Aligning": 0.85,
-              "Confirmed": 3.15,
+              "Aligning": 0.65,
+              "Confirmed": 3.35,
               "Mapped": 0,
               "Planned": 0,
               "Journey": 0,
@@ -8578,8 +8577,8 @@
             },
             "distribution": {
               "Idea": 0,
-              "Aligning": 21.25,
-              "Confirmed": 78.75,
+              "Aligning": 16.25,
+              "Confirmed": 83.75,
               "Mapped": 0,
               "Planned": 0,
               "Journey": 0,
@@ -8656,14 +8655,13 @@
             "id": "DQC-000B",
             "state": "assessed",
             "contributions": {
-              "Aligning": 0.2,
-              "Confirmed": 0.8
+              "Confirmed": 1
             },
-            "basis": "Five named claims: C1-C4 carry scoped owner confirmation and are recorded in proposed ADR-000Q; C5 is open alignment. No destination owner is reconciled yet, so nothing is Mapped.",
+            "basis": "Seven named claims: C1-C4 carry the scoped owner confirmation of 2026-10-01 and C5-C7 carry the owner's decisions of 2026-10-02, all recorded in proposed ADR-000Q. Migration mechanics for in-flight claims and installed-room proof of Issue write access remain open uncertainties outside the named claims. No destination owner is reconciled yet, so nothing is Mapped.",
             "evidence": [
-              "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+              "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@65f3d309dc69483373a812c80625f7d6ef640194"
             ],
-            "revision": 4,
+            "revision": 12,
             "holder": "DQC-000B",
             "itemRevision": null
           },
@@ -35815,14 +35813,13 @@
       "assessment": {
         "state": "assessed",
         "contributions": {
-          "Aligning": 0.2,
-          "Confirmed": 0.8
+          "Confirmed": 1
         },
-        "basis": "Five named claims: C1-C4 carry scoped owner confirmation and are recorded in proposed ADR-000Q; C5 is open alignment. No destination owner is reconciled yet, so nothing is Mapped.",
+        "basis": "Seven named claims: C1-C4 carry the scoped owner confirmation of 2026-10-01 and C5-C7 carry the owner's decisions of 2026-10-02, all recorded in proposed ADR-000Q. Migration mechanics for in-flight claims and installed-room proof of Issue write access remain open uncertainties outside the named claims. No destination owner is reconciled yet, so nothing is Mapped.",
         "evidence": [
-          "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+          "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@65f3d309dc69483373a812c80625f7d6ef640194"
         ],
-        "revision": 4
+        "revision": 12
       },
       "distribution": {
         "items": 5,
@@ -35837,8 +35834,8 @@
         ],
         "numerators": {
           "Idea": 0,
-          "Aligning": 0.2,
-          "Confirmed": 1.8,
+          "Aligning": 0,
+          "Confirmed": 2,
           "Mapped": 0,
           "Planned": 0,
           "Journey": 0,
@@ -35847,8 +35844,8 @@
         },
         "distribution": {
           "Idea": 0,
-          "Aligning": 4,
-          "Confirmed": 36,
+          "Aligning": 0,
+          "Confirmed": 40,
           "Mapped": 0,
           "Planned": 0,
           "Journey": 0,
@@ -35871,8 +35868,8 @@
             ],
             "numerators": {
               "Idea": 0,
-              "Aligning": 0.2,
-              "Confirmed": 0.8,
+              "Aligning": 0,
+              "Confirmed": 1,
               "Mapped": 0,
               "Planned": 0,
               "Journey": 0,
@@ -35881,8 +35878,8 @@
             },
             "distribution": {
               "Idea": 0,
-              "Aligning": 20,
-              "Confirmed": 80,
+              "Aligning": 0,
+              "Confirmed": 100,
               "Mapped": 0,
               "Planned": 0,
               "Journey": 0,
@@ -35954,14 +35951,13 @@
             "id": "DQC-000B",
             "state": "assessed",
             "contributions": {
-              "Aligning": 0.2,
-              "Confirmed": 0.8
+              "Confirmed": 1
             },
-            "basis": "Five named claims: C1-C4 carry scoped owner confirmation and are recorded in proposed ADR-000Q; C5 is open alignment. No destination owner is reconciled yet, so nothing is Mapped.",
+            "basis": "Seven named claims: C1-C4 carry the scoped owner confirmation of 2026-10-01 and C5-C7 carry the owner's decisions of 2026-10-02, all recorded in proposed ADR-000Q. Migration mechanics for in-flight claims and installed-room proof of Issue write access remain open uncertainties outside the named claims. No destination owner is reconciled yet, so nothing is Mapped.",
             "evidence": [
-              "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@1e193425534191fd49f98482e8dd12e979a845a8"
+              "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@65f3d309dc69483373a812c80625f7d6ef640194"
             ],
-            "revision": 4,
+            "revision": 12,
             "holder": "DQC-000B",
             "itemRevision": null
           },
@@ -36281,7 +36277,7 @@
         "at": "2026-10-01T01:54:49.239Z"
       },
       "corrections": [],
-      "revision": 11,
+      "revision": 12,
       "history": [
         {
           "revision": 1,
@@ -36546,6 +36542,23 @@
               "field": "claim-evidence",
               "claim": "C5",
               "to": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md@65f3d309dc69483373a812c80625f7d6ef640194"
+            }
+          ]
+        },
+        {
+          "revision": 12,
+          "at": "2026-10-02T09:58:47.462Z",
+          "reason": "Reassess the card against its seven claims after the owner's 2026-10-02 decisions.",
+          "changes": [
+            {
+              "field": "assessment",
+              "from": {
+                "Aligning": 0.2,
+                "Confirmed": 0.8
+              },
+              "to": {
+                "Confirmed": 1
+              }
             }
           ]
         }
