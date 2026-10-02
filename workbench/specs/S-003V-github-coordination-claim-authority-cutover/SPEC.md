@@ -5,10 +5,10 @@
 **Priority:** 1
 **Owner:** unassigned
 **Stance:** Builder
-**Updated:** 2026-10-01
+**Updated:** 2026-10-02
 **Catalog description:** Replace remote-tip claims with Issue authority in one reversible reviewed transition that accounts for every outstanding claim.
-**Blockers:** Consumes trusted assignments, operations, continuation and installed setup proofs. Coordinates S-00P shared writers and S-00V remaining claim obligations. No cutover Task is cut until these seams and actor policy are verified.
-**Latest event:** Owner requested GitHub coordination implementation; this bounded capability owner is authored from reviewed concept sources.
+**Blockers:** Consumes trusted assignments, operations, continuation and installed setup proofs. Coordinates S-00P shared writers and S-00V remaining claim obligations. No cutover Task is cut until these seams are verified. The actor policy is decided (owner, 2026-10-02) and claim authority is per item of work.
+**Latest event:** Owner decisions of 2026-10-02 settled the actor policy and set claim authority per item of work, recorded here and in the proposed GitHub coordination decision record. No Task is cut.
 **Next gate:** Activate only an independently executable slice from current Actuality; unresolved consequential choices keep dependent slices uncut.
 
 > **Citation anchors.** pre=`282dc043ab7dad92826a6d5447369238c35df0a3` post=`282dc043ab7dad92826a6d5447369238c35df0a3`.
@@ -29,14 +29,16 @@ At the pre anchor, PR235 concept sources are contained in integration. The propo
 
 1. Inventory every in-progress remote-tip Task against the integration baseline; migrate its holder to an Issue assignment or record a Director release disposition.
 2. One reviewed integration candidate accepts ADR-000Q, archives/supersedes ADR-000O, reconciles operational controls and switches next/claim to the proven Issue seam together.
-3. At no integration commit are both mechanisms authoritative. After cutover unverifiable Issue authority refuses rather than falling back to branch claims.
+3. At no integration commit are both mechanisms authoritative for the same item of work. After cutover unverifiable Issue authority refuses rather than falling back to branch claims.
 4. Reverting the reviewed cutover restores ADR-000O as the sole authority; basic visible failures/pending remain required, extended recovery is deferred.
 
 ## Decisions And Contracts
 
 - Scope and permission remain with the request, Contract and assigned Spec/Task. Issue metadata is coordination evidence, never blanket instruction authority.
 - Accepted concept lineage is LMK-000A and DQC-000B/000C/000D; extended outage recovery remains DQC-000E and is off the v4 critical path.
-- Exact actor trust and Projects availability/requirement are unresolved. Preserve these gates without blocking independent read-only work.
+- The owner decided on 2026-10-02 that one active claim authority applies per item of work, not per room or project. Tasks and Specs are worked in parallel, and an agent claims one item of work. Whether a room may carry both mechanisms for different items during the transition is not settled by that decision; this Spec's cutover design decides it.
+- Verified Issue write access is part of the minimum capability for any host that takes a Task; a host without it refuses claims and transitions and does not fall back to branch claims.
+- Trusted Issue operations use the owner's own GitHub account, a Director's race ruling or the coordinator's v4 tie-break is a structured Issue record, and only structured records from the room's configured account count. In v4 the owner is the only user. GitHub Projects are optional presentation.
 - Source proof, installed behavior, integration containment, failed ongoing owner Human QA and owner-only main promotion are distinct.
 
 ## Non-Goals
@@ -50,7 +52,7 @@ Custom scheduler or atomic lock; a parallel local queue; extended outage recover
 - [GitHub Coordination Shared Continuation](../S-003T-github-coordination-shared-continuation/SPEC.md): consume its verified seam.
 - [GitHub Coordination Setup And Upgrade](../S-003U-github-coordination-setup-and-upgrade/SPEC.md): consume its verified seam.
 
-Consumes trusted assignments, operations, continuation and installed setup proofs. Coordinates S-00P shared writers and S-00V remaining claim obligations. No cutover Task is cut until these seams and actor policy are verified.
+Consumes trusted assignments, operations, continuation and installed setup proofs. Coordinates S-00P shared writers and S-00V remaining claim obligations. No cutover Task is cut until these seams are verified. The actor policy is decided (owner, 2026-10-02) and claim authority is per item of work.
 
 [Workbench v4 release](../S-00O-workbench-v4-0-0-release/SPEC.md) owns package/release ordering. S-01X retains the six-lane composed Taskboard destination. Consume immutable delivered seams rather than requiring peers' owner/main closure and creating a circular release dependency.
 
@@ -82,6 +84,7 @@ This Spec owns capability requirements, open gates and proof. Shared operational
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-10-01 | none | Owner-directed capability capture from integration 282dc043ab7dad92826a6d5447369238c35df0a3; reviewed concept seed PR235. | Planning only; runtime proof not claimed. | Capability owner authored; generic operational template changes deferred to implemented seams/cutover, because no operative workflow changes here. | Acceptance unchecked; unresolved choices and later independent review preserved. |
+| 2026-10-02 | none | Owner decisions recorded: claim authority is per item of work, the write floor, the actor policy, single-owner v4 scope. | Promotion only; no runtime proof claimed. | This Spec, the proposed GitHub coordination decision record, the v4 release Spec and the GitHub Coordination Wiki article. | Coexistence of both mechanisms for different items during the transition is undecided; no Task is cut. |
 
 ## Completion Result
 

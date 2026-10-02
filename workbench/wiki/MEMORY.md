@@ -137,6 +137,10 @@ copying its evidence log here.
 - [Spec Planner](skill-spec-planner.md): the Dispatcher's flight-launch stance; plan one assigned Spec from live Actuality into small complete-path Tasks with one writer per shared file and hand the plan to Spec Manager
 - [Spec Manager](skill-spec-manager.md): the Dispatcher's execution stance; dispatch Workers to ready non-conflicting Tasks, hold conflicting writes under one writer, assess hand-backs against their commits and report the assembled candidate to the Director
 
+## GitHub Coordination
+
+[GitHub coordination](design-concepts/github-coordination.md) explains the accepted move of live assignment to GitHub Issues, whose records count, the per-item claim rule and what is not built yet.
+
 ## Agent Operating Knowledge
 
 How agents are expected to work in this repository, and tool behavior that

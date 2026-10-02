@@ -41,6 +41,37 @@ The owner settled these choices; they are recorded here, not reopened:
 
 No atomic lock, custom scheduler or second queue is introduced.
 
+### Decided on 2026-10-02
+
+The owner answered these in a later grilling session. They settle the trusted
+actor, Projects and claim-granularity gaps this record listed as open:
+
+5. **Trusted identity.** Trusted Issue operations are performed through the
+   owner's own GitHub account. A role is assigned at the start of a chat and is
+   not forced by the GitHub identity. The Captain or Director approves if they
+   can; otherwise they mark it as needing human review and wait for the owner.
+   A Worker that ignores its assignment and acts as a Director is something the
+   Dispatcher and Director should notice.
+6. **Verifiable decisions.** A Director's assignment-race resolution and the
+   coordinator's v4 tie-break are structured Issue records. Prose, labels,
+   assignee and bot messages never count.
+7. **Which records count.** Only structured records authored by the room's
+   configured GitHub account count; everything else on an Issue is
+   information. In v4 that account is the owner's own. A room may name more
+   accounts later, and no allowlist or team machinery is built now.
+8. **Write floor.** Verified Issue write access is part of the minimum
+   capability for any host that takes a Task. A host without it may read,
+   recover and review, but refuses claims and transitions and does not fall
+   back to branch claims.
+9. **Claim granularity.** One active claim authority applies per item of work,
+   not per room or per project. Tasks and Specs are worked in parallel, and an
+   agent claims one item of work rather than the whole project.
+10. **Projects.** GitHub Projects are optional presentation. v4 may ship with
+    the generated Taskboard and Tracker as its only composed views. Issues stay
+    required (decision 1).
+11. **Audience.** In v4 the owner is the only person using the Workbench.
+    Nothing is designed for other people or a team now; it only has to work.
+
 ## Ownership split
 
 | Truth | Owner |
@@ -51,7 +82,7 @@ No atomic lock, custom scheduler or second queue is introduced.
 | Receipts, acceptance evidence, owner approval | Repository evidence owners |
 | Evolving understanding, answers, assessment and membership | DQC and Landmark records |
 | Consequential decisions | ADR owners |
-| Composed views | GitHub Projects, the generated Taskboard and the generated Landmark Tracker |
+| Composed views | The generated Taskboard and the generated Landmark Tracker; GitHub Projects where a room uses them |
 
 Arbitrary Issue prose, an assignee or status alone, labels and bot messages
 never enlarge authority, prove exclusivity, or manufacture independent review
@@ -87,9 +118,9 @@ the capabilities that implement this decision; none is implemented yet.
   branch, exact SHA, proof, gap and next action from the Issue and repository
   owners alone, without the originating chat; this is proved across hosts
   (Claude cloud, Codex cloud and a local machine).
-- **Project view.** Whether v4 requires a GitHub Project view if Projects
-  cannot be used through supported access is not yet decided; the generated
-  Taskboard and Tracker remain composed views either way.
+- **Project view.** GitHub Projects are optional presentation (decided
+  2026-10-02); v4 may ship with the generated Taskboard and Tracker as its
+  only composed views.
 
 ## Rationale retained from ADR-000O
 
@@ -133,8 +164,11 @@ Before the cutover may be reviewed:
 - a fresh host recovers the packet, objective, scope, branch, exact SHA,
   proof, gap and next action from the Issue and repository owners alone.
 
-At no commit on integration are both mechanisms authoritative. If Issue
-authority cannot be verified after cutover, `claim` refuses rather than
+At no commit on integration are both mechanisms authoritative for the same
+item of work; one active claim authority applies per item of work (decided
+2026-10-02). Whether a room may carry both mechanisms for different items
+during the transition is not settled here; the cutover Spec decides it. If
+Issue authority cannot be verified after cutover, `claim` refuses rather than
 silently falling back to branch claims. Reverting the reviewed cutover change
 restores ADR-000O as the sole authority.
 
@@ -157,8 +191,10 @@ At integration `065a7ce4436e46ae6726985b567b6b94ed94660c`:
   environment that day, GitHub connector reads of Issues and pull requests
   succeeded, the `gh` CLI token was invalid, and GitHub write and Projects
   capability were not verified.
-- The trusted actor identities for Issue operations, and how Director and
-  Vespar decisions are attributed verifiably, are not settled.
+- Trusted actor policy is decided (decisions 5 to 7 above), but no
+  adapter, structured-record format or validation exists. The GitHub
+  Coordination Trusted Assignments Spec (S-003R) defines the record's fields
+  and validation.
 - The home for direct or ungrouped Tasks awaits the Director disposition in
   the [S-00O](../../../specs/S-00O-workbench-v4-0-0-release/SPEC.md) assigned
   capability map.
@@ -182,6 +218,7 @@ own owner. Capability planning follows in later, separately assigned Specs.
 Provenance: owner direction recorded in two untracked handoffs dated
 2026-09-30 (written against `2780fe66754abf69b2ab6dea23337a7be0f6d801`) and
 relayed as settled in the 2026-10-01 coordinating assignment; the owner
-approved superseding ADR-000O. Concept lineage: Landmark LMK-000A (GitHub
+approved superseding ADR-000O. The owner settled the trusted actor, Projects
+and claim-granularity gaps in a grilling session on 2026-10-02. Concept lineage: Landmark LMK-000A (GitHub
 Coordination) and DQC-000B, DQC-000C, DQC-000D and DQC-000E in
 `workbench/landmark-tracker/`.
