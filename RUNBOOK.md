@@ -1444,19 +1444,23 @@ Visible note identifiers can be allocated without changing existing note paths:
 
 ```bash
 node workbench/tools/notepads.mjs allocate --prefix N --objective OBJECTIVE_KEY --title "TITLE"
-node workbench/tools/notepads.mjs read --id N-001 --view current
+node workbench/tools/notepads.mjs read --id N-000A --view current
 ```
 
 Choose the artifact type prefix explicitly (for example N for objective notes);
 it is the prefix in the visible ID, not another identity field. Markdown
 handoffs do not use the JSON-notepad ID allocator.
-Allocation uses alphabet `0-9 A-Z a-z`, starts at one with minimum width three,
-and grows without truncation. It chooses the first unoccupied label; identifiers
-do not encode chronology. Legacy numeric labels reserve their existing text and
-are never decoded as a base-62 allocation high-water mark or renamed. Prefixes
-have independent scopes within the room. Case-folded and leading-zero variants
-reserve the same value, so N-00A, N-00a and N-000A cannot be allocated twice.
-Those restrictions deliberately avoid aliases on case-insensitive filesystems.
+Allocation follows the shared artifact policy in Visible Identifiers above:
+uppercase `0-9A-Z`, minimum width four, at least one letter (`N-000A`), growing
+without truncation. It chooses the first unoccupied label; identifiers do not
+encode chronology. Legacy numeric, width-three and mixed-case labels (`N-001`,
+`N-00A`, `N-00a`) stay readable, reserve their identity and are never decoded
+as an allocation high-water mark or renamed. Prefixes have independent scopes
+within the room. Case-folded and leading-zero variants reserve the same value,
+so N-00A, N-00a and N-000A are one identity and cannot be allocated twice; two
+existing notes whose IDs alias one identity refuse allocation rather than
+choosing a winner. Those restrictions deliberately avoid aliases on
+case-insensitive filesystems.
 
 `--id` resolves through the local inventory, including legacy records whose
 filenames differ from their IDs. It refuses unmatched or ambiguous identifiers.

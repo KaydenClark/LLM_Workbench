@@ -116,17 +116,17 @@ allocation by name before anything is written. No runtime caller of
 `visible-ids.mjs` for installed rooms or scripts that import it, and its
 unit coverage is unchanged.
 
-Reconciled by S-01W TK-002R: the Runbook's Visible Identifiers procedure, the
-Lexicon's WBID entry, their generic template mirrors and the notepad skill's
-allocation wording now describe this delivery - the shared artifact policy,
-every spelling reserved, dual-form selection and `widen-id` with its
-`**Former ID:**` field. The read-only QA-time inventory ran on 2026-09-26 at
-`e89edac` over active, retired and corrective Spec and Task records, ADRs and
-the records held at every remote-tracking tip. It found no alias collision.
-It found 47 open Specs and 53 open Tasks still short of width four (28 of those
-Tasks are `widen-id`-eligible records); they keep their stored IDs until an
-agent starting substantive work on one runs `widen-id`, and nothing was
-renamed. Still not delivered: library callers of the `spec-report.mjs`
+Reconciled by S-01W TK-002R: the Runbook's Visible Identifiers and JSON
+Notepads procedures, the Lexicon's WBID entry, their generic template mirrors
+and the notepad skill's allocation wording now describe this delivery - the
+shared artifact policy, every spelling reserved, dual-form selection and
+`widen-id` with its `**Former ID:**` field. The read-only QA-time inventory
+read active, retired and corrective Spec and Task records, ADRs, local notes
+and the labels reserved at every remote-tracking tip. It found no alias
+collision between stored records, and listed the open Specs and Tasks still
+short of width four; they keep their stored IDs until an agent starting
+substantive work on one runs `widen-id`, and nothing was renamed. The S-01W
+evidence log holds the candidate and counts. Still not delivered: library callers of the `spec-report.mjs`
 functions that pass a selector straight through (rather than the CLI) still
 echo it where those functions return or record the caller's spelling.
 
