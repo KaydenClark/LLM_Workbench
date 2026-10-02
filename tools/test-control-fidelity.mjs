@@ -11,6 +11,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
+import { describe, registeredCodes } from '../workbench/tools/diagnostics.mjs';
 import { templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
 import { classifyLines, reportFidelity, summarizeMarkdown } from './control-fidelity.mjs';
 
@@ -560,4 +561,87 @@ test('Runbook contract detects operationally consequential guidance regressions'
     assert.ok(current.includes(before), `mutation targets current instructions: ${before}`);
     assert.throws(() => runbookWorkflowContract(current.replace(before, after)), { name: 'AssertionError' });
   }
+});
+
+// S-00M TK-004 (ADR-000J): `doctor` surfaces repository state and `close`
+// refuses a completion claim the repository contradicts. Both mechanisms are
+// documented where a cold-start agent reads them - AGENTS.md at its completion
+// obligations, the Runbook beside the codes and the close procedure - in the
+// root controls and their generic mirror. The Git-scope codes are read from
+// the registry, so a code added there fails here until both Runbooks name it.
+function gitScopeCodes() {
+  return registeredCodes().filter((code) => describe(code).scope === 'git');
+}
+
+function completionClaimAgentsContract(agents) {
+  // Prose wraps anywhere, so match against single-spaced text.
+  const lifecycle = (agents.split('## Work Selection And Lifecycle\n')[1]?.split('\n## ')[0] ?? '').replace(/\s+/g, ' ');
+  for (const [claim, expression] of [
+    ['dirty or unpushed refusal', /close refuses a dirty or unpushed tree unless `--git-state-reason TEXT`/],
+    ['recorded reason stays readable', /`--git-state-reason` writes the observed state and the reason into the Receipt row and the Spec evidence row/],
+    ['no in-progress Task refusal', /refuses a Spec with no in-progress Task/],
+    ['non-blocking Git-state findings', /`doctor` reports `detached-head` and `untracked-controls`[^.]* without blocking/]
+  ]) assert.match(lifecycle, expression, `AGENTS.md completion obligations: ${claim}`);
+}
+
+function completionClaimRunbookContract(runbook, { table }) {
+  const worker = (runbook.split('#### Worker: selection, implementation and hand-back\n')[1]?.split('\n#### ')[0] ?? '').replace(/\s+/g, ' ');
+  for (const [claim, expression] of [
+    ['dirty-tree refusal', /`dirty-tree`[^.]*`git status --porcelain`/],
+    ['unpushed refusal', /`unpushed`[^.]*no remote-tracking ref contains HEAD/],
+    ['remediation', /commit and push, or rerun with `--git-state-reason/],
+    ['reason readable in the record', /observed state and the reason [^.]*final Receipt row and the Spec evidence row/],
+    ['no in-progress Task refusal', /no in-progress Task/],
+    ['orphan corrective close gap', /`close TK-###`[^.]*does not run the Git-state check/]
+  ]) assert.match(worker, expression, `Runbook close procedure: ${claim}`);
+  for (const code of gitScopeCodes()) {
+    const { severity, blocks } = describe(code);
+    if (table) {
+      const label = blocks === 'none' ? `\`none\` (${severity})` : `\`${blocks}\``;
+      const row = runbook.split('\n').find((line) => line.startsWith(`| ${label} |`)) ?? '';
+      assert.ok(row.includes(`\`${code}\``), `blocking-effect row ${label} names ${code}`);
+    } else {
+      assert.ok(runbook.includes(`\`${code}\``), `generic Runbook names ${code}`);
+    }
+  }
+}
+
+test('the completion-claim mechanisms are documented in the root controls', () => {
+  assert.deepEqual(gitScopeCodes().filter((code) => describe(code).severity === 'attention'), ['detached-head', 'untracked-controls']);
+  completionClaimAgentsContract(read(root, 'AGENTS.md'));
+  completionClaimRunbookContract(read(root, 'RUNBOOK.md'), { table: true });
+});
+
+test('the completion-claim mechanisms are mirrored in the generic controls', () => {
+  completionClaimAgentsContract(read(productTemplates, 'AGENTS.md'));
+  completionClaimRunbookContract(read(productTemplates, 'RUNBOOK.md'), { table: false });
+});
+
+test('the completion-claim contract fails when a documented mechanism or Git-scope code is dropped', () => {
+  const agents = read(root, 'AGENTS.md');
+  for (const [before, after] of [
+    ['writes the observed state and the reason into the Receipt', 'may mention the state somewhere in the Receipt'],
+    ['and refuses a Spec with no in-progress Task.', 'and closes a ready Task when none is in progress.'],
+    ['reports `detached-head` and `untracked-controls`', 'reports Git state']
+  ]) {
+    assert.ok(agents.includes(before), `mutation targets current AGENTS.md text: ${before}`);
+    assert.throws(() => completionClaimAgentsContract(agents.replace(before, after)), { name: 'AssertionError' }, before);
+  }
+  const runbook = read(root, 'RUNBOOK.md');
+  for (const [before, after] of [
+    ['`dirty-tree` lists anything', 'it lists anything'],
+    ['no remote-tracking ref contains HEAD, naming', 'the branch is behind, naming'],
+    ['commit and push, or rerun with', 'rerun with'],
+    ['final Receipt row and the Spec evidence row record', 'run log records'],
+    ['also refuses a Spec with no in-progress Task', 'also refuses a Spec with nothing claimed'],
+    ['ID (`close TK-###`) does not run the', 'ID (`close TK-###`) runs the'],
+    ['`detached-head` and `untracked-controls` (scope `git`), and the ADR', 'and the ADR']
+  ]) {
+    assert.ok(runbook.includes(before), `mutation targets current RUNBOOK.md text: ${before}`);
+    assert.throws(() => completionClaimRunbookContract(runbook.replace(before, after), { table: true }), { name: 'AssertionError' }, before);
+  }
+  const generic = read(productTemplates, 'RUNBOOK.md');
+  const codes = 'reports `detached-head` and `untracked-controls` (scope `git`, attention,';
+  assert.ok(generic.includes(codes), 'mutation targets current generic Runbook text');
+  assert.throws(() => completionClaimRunbookContract(generic.replace(codes, 'reports Git state (attention,'), { table: false }), { name: 'AssertionError' });
 });
