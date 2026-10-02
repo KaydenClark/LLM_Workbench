@@ -1,0 +1,184 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-002H",
+  "revision": 6,
+  "title": "Where does optional prototyping belong, and when may its code carry forward?",
+  "question": "Where does optional prototyping belong, and when may its code carry forward?",
+  "answer": "WF-3: Research, brainstorming and wayfinding are allowed Align investigations to resolve a named uncertainty (Suggestion A minus prototypes). Prototypes are not an Align method now: 'right now it would come after we blueprint but before we spec to see if its plausible. we dont need to add it in right now.'\nWF-4: Suggestion A: prototype code may carry forward once it meets ordinary implementation and verification requirements. 'I would prefer it when we have an established project, but not when we are starting out fresh.' A fresh project can build something quick in a separate codebase, or build a proving stack and then move to the real stack. Prototyping stays optional, after Blueprint and before Spec.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-3, WF-4 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WF-3 update BLUEPRINT.md: Align allows research, brainstorming and wayfinding for a named uncertainty; an optional future Prototype step sits between Blueprint and Create Spec and is not in the standard flow now. | WF-4 update BLUEPRINT.md: Records the optional prototype step, the carry-forward rule, and the established-versus-fresh-project nuance.",
+    "home": "BLUEPRINT.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "WF-3",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-4",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000O"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WF-3",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-4",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-4 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Where does optional prototyping belong, and when may its code carry forward?",
+    "question": "Where does optional prototyping belong, and when may its code carry forward?",
+    "sources": [
+      {
+        "id": "WF-3",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-4",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:20.245Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:20.245Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 054 of the 2026-09-26 grouping (\"Alignment and durable promotion\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The recorded preference places prototyping after Blueprint and before Spec; reused code must meet ordinary implementation and verification requirements.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:20.262Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WF-3: Research, brainstorming and wayfinding are allowed Align investigations to resolve a named uncertainty (Suggestion A minus prototypes). Prototypes are not an Align method now: 'right now it would come after we blueprint but before we spec to see if its plausible. we dont need to add it in right now.'\nWF-4: Suggestion A: prototype code may carry forward once it meets ordinary implementation and verification requirements. 'I would prefer it when we have an established project, but not when we are starting out fresh.' A fresh project can build something quick in a separate codebase, or build a proving stack and then move to the real stack. Prototyping stays optional, after Blueprint and before Spec."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-3, WF-4 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WF-3 update BLUEPRINT.md: Align allows research, brainstorming and wayfinding for a named uncertainty; an optional future Prototype step sits between Blueprint and Create Spec and is not in the standard flow now. | WF-4 update BLUEPRINT.md: Records the optional prototype step, the carry-forward rule, and the established-versus-fresh-project nuance.",
+            "home": "BLUEPRINT.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:20.280Z",
+      "reason": "Ledger row WF-3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-3",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:20.301Z",
+      "reason": "Ledger row WF-4 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-4",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:20.321Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:59.514Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Grilling and Shared Understanding pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000O"
+          ]
+        }
+      ]
+    }
+  ]
+}

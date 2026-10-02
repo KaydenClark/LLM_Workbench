@@ -1,0 +1,224 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-002V",
+  "revision": 7,
+  "title": "How should branches and worktrees be cleaned up after delivery?",
+  "question": "How should branches and worktrees be cleaned up after delivery?",
+  "answer": "WF-7: Branches nest by delivery altitude: main contains integration; each Spec branch starts from integration; each Task branch starts from its Spec branch, preferably in its own worktree. Proven Task results merge into the Spec branch, and contained Task branches and worktrees are cleaned up after their results are preserved.\nWF-8D: After a completed Task's results and needed proof are reconciled into the owning Spec, the Task is retired: its branch and worktree are deleted after verified containment, it leaves the hot Taskboard and ordinary pickup, and its TASK.md survives only as retired history reachable by an explicit historical route.\nPW-9: 'End clean up.' Recorded as the agent's interpretation: proof is a run that ends clean. Extend the round-trip test to start with nothing outside the clone, claim by pushing, and end with everything promoted, pushed and nothing left on the instance; demos are one real cloud session and a two-instance parallel run.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-7, WF-8D, PW-9 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WF-7 update BLUEPRINT.md: Describes the nested integration -> Spec branch -> Task branch topology as the destination. | WF-7 update AGENTS.md (Git Rules, Branch Completion) and templates/AGENTS.md: Branch-per-Task from the Spec branch, merge into the Spec branch, cleanup after containment; owned by S-00P TK-002 and TK-005. | WF-7 update workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md: Bootstrap exemption 2: until Spec-branch tooling exists, each Task lands as its own PR into integration. | WF-8D update workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md: Task retirement by folder location after reconciliation; retired Tasks leave ordinary discovery. | WF-8D update workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md: Folder-lifecycle ADR reconciled under S-00P TK-004. | WF-8D update AGENTS.md (Branch Completion) and templates/AGENTS.md: Task branch and worktree cleanup after verified containment. | PW-9 update tools/test-workbench-round-trip.mjs: Cold-clone, ends-clean round trip as a release gate. | PW-9 update workbench/specs/S-00V-portable-workbench/SPEC.md: Acceptance: round-trip gate, real cloud session demo, two-instance demo.",
+    "home": "BLUEPRINT.md; AGENTS.md (Git Rules, Branch Completion) and templates/AGENTS.md; workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md; workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md; workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md; AGENTS.md (Branch Completion) and templates/AGENTS.md; tools/test-workbench-round-trip.mjs; workbench/specs/S-00V-portable-workbench/SPEC.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "WF-7",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-8D",
+      "revision": "56b459da"
+    },
+    {
+      "id": "PW-9",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000K"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WF-7",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-7 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-8D",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-8D (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "PW-9",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-9 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should branches and worktrees be cleaned up after delivery?",
+    "question": "How should branches and worktrees be cleaned up after delivery?",
+    "sources": [
+      {
+        "id": "WF-7",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-8D",
+        "revision": "56b459da"
+      },
+      {
+        "id": "PW-9",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:21.931Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:21.931Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 068 of the 2026-09-26 grouping (\"Specs, Tasks and execution contexts\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Cleanup follows preservation and verified containment of results; retiring a Task removes active execution surfaces while needed evidence remains reachable.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:21.951Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WF-7: Branches nest by delivery altitude: main contains integration; each Spec branch starts from integration; each Task branch starts from its Spec branch, preferably in its own worktree. Proven Task results merge into the Spec branch, and contained Task branches and worktrees are cleaned up after their results are preserved.\nWF-8D: After a completed Task's results and needed proof are reconciled into the owning Spec, the Task is retired: its branch and worktree are deleted after verified containment, it leaves the hot Taskboard and ordinary pickup, and its TASK.md survives only as retired history reachable by an explicit historical route.\nPW-9: 'End clean up.' Recorded as the agent's interpretation: proof is a run that ends clean. Extend the round-trip test to start with nothing outside the clone, claim by pushing, and end with everything promoted, pushed and nothing left on the instance; demos are one real cloud session and a two-instance parallel run."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-7, WF-8D, PW-9 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WF-7 update BLUEPRINT.md: Describes the nested integration -> Spec branch -> Task branch topology as the destination. | WF-7 update AGENTS.md (Git Rules, Branch Completion) and templates/AGENTS.md: Branch-per-Task from the Spec branch, merge into the Spec branch, cleanup after containment; owned by S-00P TK-002 and TK-005. | WF-7 update workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md: Bootstrap exemption 2: until Spec-branch tooling exists, each Task lands as its own PR into integration. | WF-8D update workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md: Task retirement by folder location after reconciliation; retired Tasks leave ordinary discovery. | WF-8D update workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md: Folder-lifecycle ADR reconciled under S-00P TK-004. | WF-8D update AGENTS.md (Branch Completion) and templates/AGENTS.md: Task branch and worktree cleanup after verified containment. | PW-9 update tools/test-workbench-round-trip.mjs: Cold-clone, ends-clean round trip as a release gate. | PW-9 update workbench/specs/S-00V-portable-workbench/SPEC.md: Acceptance: round-trip gate, real cloud session demo, two-instance demo.",
+            "home": "BLUEPRINT.md; AGENTS.md (Git Rules, Branch Completion) and templates/AGENTS.md; workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md; workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md; workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md; AGENTS.md (Branch Completion) and templates/AGENTS.md; tools/test-workbench-round-trip.mjs; workbench/specs/S-00V-portable-workbench/SPEC.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:21.970Z",
+      "reason": "Ledger row WF-7 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-7",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:21.991Z",
+      "reason": "Ledger row WF-8D (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-8D",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:22.013Z",
+      "reason": "Ledger row PW-9 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-9",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:22.036Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:57.719Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000K"
+          ]
+        }
+      ]
+    }
+  ]
+}

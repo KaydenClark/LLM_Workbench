@@ -1,0 +1,184 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000S",
+  "revision": 6,
+  "title": "How can an empty declared collection remain visible without implying content?",
+  "question": "How can an empty declared collection remain visible without implying content?",
+  "answer": "V3-11C: The manifest declares every lane and a minimal tracked placeholder preserves any required empty directory \"without implying that a record exists\".\nV3-15A: Manifest and required lane directories exist; the first durable spec is created; lanes without records remain explicitly empty.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-11C, V3-15A (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "V3-11C update workbench/manifest.json: Declares every lane and collection. | V3-11C update workbench/tools/workbench-layout.mjs: Writes .gitkeep placeholders and ignores them when counting records. | V3-11C create workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md: Schema 2 declares lanes and collections whether or not they hold records. | V3-15A update workbench/tools/workbench-layout.mjs (init): Writes the manifest and every lane and collection, adding a placeholder to an empty directory. | V3-15A update templates/GENESIS.md: Lanes without records stay declared and empty; the first spec is created under workbench/specs/. | V3-15A update RUNBOOK.md (V3 support-root check): Readiness requires one actionable first spec at its manifest-declared path.",
+    "home": "workbench/manifest.json; workbench/tools/workbench-layout.mjs; workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md; workbench/tools/workbench-layout.mjs (init); templates/GENESIS.md; RUNBOOK.md (V3 support-root check)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-11C",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-15A",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000B"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "V3-11C",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-11C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-15A",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-15A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How can an empty declared collection remain visible without implying content?",
+    "question": "How can an empty declared collection remain visible without implying content?",
+    "sources": [
+      {
+        "id": "V3-11C",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-15A",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:17.043Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:17.043Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 012 of the 2026-09-26 grouping (\"Layout, manifest and path evolution\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: A minimal tracked placeholder can retain an empty lane; Genesis need not fabricate records to fill it.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:17.054Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "V3-11C: The manifest declares every lane and a minimal tracked placeholder preserves any required empty directory \"without implying that a record exists\".\nV3-15A: Manifest and required lane directories exist; the first durable spec is created; lanes without records remain explicitly empty."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-11C, V3-15A (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "V3-11C update workbench/manifest.json: Declares every lane and collection. | V3-11C update workbench/tools/workbench-layout.mjs: Writes .gitkeep placeholders and ignores them when counting records. | V3-11C create workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md: Schema 2 declares lanes and collections whether or not they hold records. | V3-15A update workbench/tools/workbench-layout.mjs (init): Writes the manifest and every lane and collection, adding a placeholder to an empty directory. | V3-15A update templates/GENESIS.md: Lanes without records stay declared and empty; the first spec is created under workbench/specs/. | V3-15A update RUNBOOK.md (V3 support-root check): Readiness requires one actionable first spec at its manifest-declared path.",
+            "home": "workbench/manifest.json; workbench/tools/workbench-layout.mjs; workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md; workbench/tools/workbench-layout.mjs (init); templates/GENESIS.md; RUNBOOK.md (V3 support-root check)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:17.065Z",
+      "reason": "Ledger row V3-11C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-11C",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:17.077Z",
+      "reason": "Ledger row V3-15A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-15A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:17.089Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:53.460Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Portable Workbench pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000B"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-006G",
+  "revision": 6,
+  "title": "How do Tracker evidence links stay recoverable after their sources retire?",
+  "question": "How do Tracker evidence links stay recoverable after their sources retire?",
+  "answer": "LD-15: Use current identities and resolved paths for live navigation; retain immutable commit/path citations for historical proof. Existing move operations maintain live links and discard uses a recovery register. Tracker JSON integration must be built and verified. Ignored local notes are not protected by tracked Git history and must remain until their needed content is safely reconciled or transferred.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: LD-15 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "LD-15 update workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/): Uses current identities for navigation and immutable source revisions for proof.",
+    "home": "workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "LD-15",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000N",
+    "LMK-000X"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 4
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "LD-15",
+      "revision": "56b459da",
+      "reason": "Ledger row LD-15 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How do Tracker evidence links stay recoverable after their sources retire?",
+    "question": "How do Tracker evidence links stay recoverable after their sources retire?",
+    "sources": [
+      {
+        "id": "LD-15",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:35.965Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:35.965Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: a card written from ledger rows that postdate the 2026-09-26 draft grouping, grilling ledger at 56b459da.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:35.999Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "LD-15: Use current identities and resolved paths for live navigation; retain immutable commit/path citations for historical proof. Existing move operations maintain live links and discard uses a recovery register. Tracker JSON integration must be built and verified. Ignored local notes are not protected by tracked Git history and must remain until their needed content is safely reconciled or transferred."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: LD-15 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "LD-15 update workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/): Uses current identities for navigation and immutable source revisions for proof.",
+            "home": "workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:36.033Z",
+      "reason": "Ledger row LD-15 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "LD-15",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:36.073Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:59.358Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Durable Knowledge pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000N"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:02.678Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000N"
+          ],
+          "to": [
+            "LMK-000N",
+            "LMK-000X"
+          ]
+        }
+      ]
+    }
+  ]
+}
