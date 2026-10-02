@@ -32,7 +32,7 @@ the directions we go, record the choices we made along the way.
   headed in the long term, so that agents are not siloed from each other. It is
   written first and is not built from decisions afterward. It is not a router to
   the decisions and links no record that carries an identifier. This is the
-  accepted destination; the present Blueprint is longer and is being taken apart.
+  accepted destination; the present Blueprint is longer and is planned to be taken apart.
 - **A Destination Decision Record (DDR)** is a direction: one consequential
   choice about what the finished product must be or do, and why the owner chose
   it over the alternatives. An agent reads the DDRs to learn which way the
@@ -42,8 +42,9 @@ the directions we go, record the choices we made along the way.
 - **Landmarks and Specs** are built on those choices. A landmark is an evolving
   account of a feature or framework pillar; a Spec delivers one scoped
   capability. The Blueprint, DDRs, landmarks and Specs together form the concept
-  map, and all of them rest on the consequential choices the two decision
-  records hold.
+  map. Landmarks and Specs are built on the consequential choices the two
+  decision records hold; the Blueprint is written first and is not built from
+  them.
 
 ## Telling a DDR from an ADR
 
@@ -61,9 +62,11 @@ decision record replaces it.
 A DDR is atomic, like an ADR: one per consequential decision, never one per
 locked answer or per question card, so no one sorts through hundreds of answers
 to find what was decided and why. It is born when the owner confirms the
-decision, the same way an ADR is. Its layout and lifecycle are the ADR's: its
-own collection beside the ADRs, folder location as lifecycle, whole-record
-supersession, a derived register. A DDR that contradicts the Blueprint obliges
+decision, the same way an ADR is. Its layout and lifecycle are the ADR's, adapted
+where a destination record needs it: its own collection beside the ADRs, folder
+location as lifecycle, whole-record supersession, a derived register. The
+owner's limit is that a DDR must still serve as a destination record, not an
+architecture record. A DDR that contradicts the Blueprint obliges
 the Blueprint to be updated, the way an ADR changes the rest of the Contract.
 
 ## How the Wiki relates
@@ -82,9 +85,8 @@ below records the choice. Not yet installed: the DDR collection, its commands,
 and the accept, supersede and deprecate moves, all for a Decision Record tooling
 Spec that is not yet written. The first DDRs will come from taking the existing
 Blueprint apart; the owner grills those candidates first, and a later Spec
-drafts them into the proposed folder for review. Still undecided: what a
-landmark packet is, the transient destination chunk that leaves the Blueprint,
-and the details of the Blueprint's three-way split.
+drafts them into the proposed folder for review. How that decomposition sorts
+the Blueprint's content beyond the decisions is still open.
 
 ## Evidence and Sources
 

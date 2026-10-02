@@ -16,8 +16,10 @@ alternatives. They are siblings, both decision records, handled by one system.
 The DDR adapts the template where a destination record needs it; the concept is
 the ADR's.
 
-The owner settled these points in a grilling on 2026-10-01 and asked for them
-to be promoted:
+The owner confirmed these points in a grilling on 2026-10-01 and asked for
+them to be promoted. In point 2, the rules that one decision needing both
+records links them and that a Spec keeps scoped acceptance were presented with
+the test and not separately contested:
 
 1. A DDR is its own durable record type. A destination choice had no durable
    owner of its own: a Destination Question Card is scaffolding, the grilling
@@ -89,8 +91,17 @@ deprecate moves that the ADR tool lacks at the time of this record (it has
 the template mirrors belong to a Decision Record tooling Spec that is not yet
 authored. The Blueprint still carries decisions and links ADRs; taking it apart
 into DDRs and a short page is the grilling and Spec in point 8. The root
-Lexicon states the accepted destination; `templates/LEXICON.md` is not changed
-because a template should not describe a collection no room has.
+Lexicon states the accepted destination. `templates/LEXICON.md` is not changed
+here: its DDR terms and the Blueprint row's DDR language would describe a
+collection no room has, so those mirrors come with the Decision Record tooling
+Spec.
+
+This narrows [ADR-000A](000A-active-adr-decisions-and-destination-blueprints.md):
+its sentence that relevant active decisions may be linked inline from the
+Blueprint no longer holds, because the Blueprint links no record that carries an
+identifier. The rest of ADR-000A stands. The locked grilling answer on how ADRs
+appear in the Blueprint is narrowed the same way; the ledger records that when
+it is next maintained.
 
 Provenance: owner-confirmed grilling of 2026-10-01 under the objective
 "ddr-and-control-surface", which began when the owner proposed a sibling to the

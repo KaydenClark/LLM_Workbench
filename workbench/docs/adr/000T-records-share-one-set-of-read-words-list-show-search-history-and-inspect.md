@@ -27,8 +27,8 @@ words:
 `capture`, `new` and the rest) keep working and count as synonyms until a Spec
 renames each tool. The five words are defined once, in the Lexicon.
 
-No formal standard for this exists in the AI tooling community, but independent
-tools converge on the same kinds of read. The Model Context Protocol lists and
+The research found no formal standard for this in the AI tooling community, but
+independent tools converge on the same kinds of read. The Model Context Protocol lists and
 reads resources ([resources specification](https://modelcontextprotocol.io/specification/latest/server/resources)),
 and its reference memory server reads the whole graph, searches nodes and opens
 nodes by name ([memory server](https://github.com/modelcontextprotocol/servers/tree/main/src/memory)).
@@ -43,21 +43,26 @@ and RFC 7089 standardizes reading past states of a web resource
 ([Memento](https://www.rfc-editor.org/rfc/rfc7089)). The owner chose the
 Workbench's words from that convergence.
 
-Considered and rejected: inventing a vocabulary of the Workbench's own (the
-earlier proposal of recall, inspect, get and history); making `get` mean search
-(the AI tools use `get` to fetch by key and `search` to query, so a reader from
-those tools would be misled); two verbs for one whole-record read (the
-difference between a readable page and an exact fetch is already a `--json`
-flag, as the Landmark Tracker's `show` has it); replacing `inspect` with `show`
-(`show` already reads one whole record in the Spec tool and the Tracker, so
-that would flip its meaning); and Git-style `show` and `log` or REST verbs
-(neither has words for create and update, and REST does not fit a command line).
+Considered and rejected, each by the owner's choice in the grilling: inventing a
+vocabulary of the Workbench's own (the owner expected an existing standard);
+making `get` mean search (the AI tools use `get` to fetch by key and `search` to
+query, so a reader from those tools would be misled; the owner reversed it);
+two verbs for one whole-record read (the difference between a readable page and
+an exact fetch is already a `--json` flag, as the Landmark Tracker's `show` has
+it); and replacing `inspect` with `show` (`show` already reads one whole record
+in the Spec tool and the Tracker, so that would flip its meaning). Git-style
+`show` and `log` and REST verbs were set aside on the agent's assessment, which
+the owner did not contest: neither has words for create and update, and REST
+does not fit a command line. One departure is accepted knowingly: `inspect`
+means part of a record here, where Docker and kubectl use it for a whole
+detailed record.
 
 Consequences: the Lexicon carries the five definitions. A tool gains the words
 when a Spec touches it; this record renames nothing. The ADR and DDR tools have
 no read command at the time of this record, so the Decision Record tooling Spec
 gives them these words. Whether `search` attaches the linked corrections to a
-result, as the notepad's topic read does, is undecided.
+result, as the notepad's topic read does, is undecided. The template mirror of the Read words row waits for the same
+Spec, so a template does not promise words its tools lack.
 
 Provenance: owner-confirmed grilling of 2026-10-01 under the objective
 "ddr-and-control-surface", which asked whether the AI community has a standard
