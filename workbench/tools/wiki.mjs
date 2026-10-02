@@ -179,7 +179,7 @@ export function validateWiki(root, options = {}) {
     if (data.status === 'stale') findings.push(finding('stale-note', `${relative} is marked stale`, { note: relative }));
     if (file.startsWith(designConcepts + path.sep) && basename !== 'README') {
       if (data.type !== 'design-concept') findings.push(finding('invalid-note', `${relative} must declare type design-concept`, { note: relative }));
-      if (!data.authorized_by) findings.push(finding('invalid-note', `${relative} must record authorized_by (the owner directs creation)`, { note: relative }));
+      if (!data.authorized_by) findings.push(finding('invalid-note', `${relative} must record authorized_by (the authorizing operation or the owner)`, { note: relative }));
       if (data.parent === undefined) findings.push(finding('invalid-note', `${relative} must declare parent (a route or none)`, { note: relative }));
       for (const section of ['Evidence and Sources', 'History']) {
         if (!new RegExp(`^## ${section}$`, 'm').test(content)) findings.push(finding('invalid-note', `${relative} must end with a ${section} section`, { note: relative }));
@@ -207,7 +207,7 @@ export function validateWiki(root, options = {}) {
 // never outranks its inputs, and `last_verified` records the day normalize ran,
 // not a fact anyone checked. `type` is inferred from where the note actually
 // lives. A note in `archive/` is historical and is left alone, exactly as the
-// validator leaves it alone. An owner-directed design-concept article still
+// validator leaves it alone. A design-concept article still
 // needs its `authorized_by`, `parent`, and sections; normalize adds none of
 // them and `validate` keeps reporting them.
 export function normalizeWiki(root, options = {}) {

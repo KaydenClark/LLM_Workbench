@@ -289,6 +289,14 @@ afterward. Static coverage or token reduction is not agent-outcome evidence.
 
 Documentation is part of done; the implementing agent is documentation owner.
 
+Every use of the Workbench reads the Wiki and, when the work changed what a
+page says, updates that page on the same branch; the operation's own
+authority covers its Wiki update, with no per-page approval. End each Wiki
+update with a lint of the touched pages; the whole-Wiki lint runs at Spec
+review when the Spec's work is verified, and its findings become corrective
+Tasks. Identifiers on a page always carry the artifact's name and context.
+In chat, never refer to an artifact by its identifier alone.
+
 This authoring summary assigns documentation maintenance. The
 [Lexicon ownership schema](LEXICON.md#artifact-ownership-schema) defines the
 jobs and provides the question-to-owner routes and artifact boundaries. Keep
@@ -304,7 +312,7 @@ those routes consistent with these assignments when ownership changes.
 | commands and troubleshooting | `RUNBOOK.md` |
 | public usage | `README.md` |
 | active architectural decisions, rationale, alternatives, supersession | `workbench/docs/adr/` (`canonicalized_in` names operational owners) |
-| durable knowledge, design concepts, captured features and their routes | `workbench/wiki/` (`MEMORY.md` router, `SCHEMA.md` rules; post-completion knowledge in the manifest-declared `features` collection, never copied Task state) |
+| evolving synthesis, design concepts, capability and reference pages | `workbench/wiki/` (`MEMORY.md` router, `SCHEMA.md` rules; completed capabilities in the manifest-declared `features` collection, never copied Task state) |
 
 The agent changing a truth maintains its existing owner within the authorized
 scope: update definitions when meaning changes, procedures when operations

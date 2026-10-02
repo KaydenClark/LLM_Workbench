@@ -623,9 +623,10 @@ Keep live links current through supported move operations and retain immutable
 citations for historical proof. Ignored notes require their own retention or
 safe transfer until reconciliation; tracked Git history does not recover them.
 
-A Landmark Wiki page contains no WBIDs, including metadata and link targets.
-Keep identity-bearing provenance in the structured records and delivery evidence;
-use readable control or other identifier-free source routes in the article.
+A Landmark Wiki page is the landmark's evolving synthesis, updated whenever
+one of its question cards changes. Identifiers on it, as on every Wiki page,
+carry the artifact's name and context; the structured records keep
+identity-bearing provenance and delivery evidence.
 Ordinary feature explanations and cross-cutting design models retain their
 respective Wiki purposes. Collection/schema support must be delivered and
 verified before claiming those article types are available. Routine Wiki work

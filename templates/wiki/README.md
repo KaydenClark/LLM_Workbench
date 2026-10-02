@@ -9,7 +9,7 @@
 
 - `SCHEMA.md`, `AGENTS.md`, and `design-concepts/README.md` are the wiki
   contract: metadata, CRUD, sensitivity handling, portability, stale handling,
-  and the owner-directed Design Concept article shape. `workbench-layout.mjs
+  and the Design Concept article shape. `workbench-layout.mjs
   init` seeds them from a release checkout with the version, date, and project
   name filled in.
 - `MEMORY.project.md` is the `project` profile router. Copy it to

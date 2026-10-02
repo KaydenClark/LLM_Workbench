@@ -165,9 +165,9 @@ The provenance of every promoted and excluded memory file is in
 | [RUNBOOK.md](../../RUNBOOK.md) | Exact operating and verification commands |
 | `workbench/specs/` | Stable capability records, acceptance, evidence, and proof |
 | [docs/adr/REGISTER.md](../docs/adr/REGISTER.md) | The derived register of decision records |
-| [SCHEMA.md](SCHEMA.md) | Wiki CRUD, metadata, sensitivity, and freshness rules |
-| [design-concepts/](design-concepts/README.md) | Owner-directed articles explaining durable design models |
-| [features/](features/README.md) | Readable articles capturing each completed Spec's delivered capability (empty) |
+| [SCHEMA.md](SCHEMA.md) | What the Wiki is, its page kinds, ingest, lint, concurrency, metadata and freshness rules |
+| [design-concepts/](design-concepts/README.md) | Articles explaining durable design models and each landmark's evolving synthesis |
+| [features/](features/README.md) | One entity page per delivered capability (empty; the per-Spec articles below are to move here) |
 | [guidebooks/](guidebooks/) | Ordered procedures that outgrew the Runbook (empty) |
 
 ## Routing
@@ -175,11 +175,12 @@ The provenance of every promoted and excluded memory file is in
 | Question | Read first |
 |---|---|
 | How the Workbench is governed | [LEXICON.md](../../LEXICON.md) -> Governance Core, then `workbench/docs/adr/` |
+| What the Wiki is and how agents use it | [SCHEMA.md](SCHEMA.md), then the decision record [The Wiki is the evolving synthesis every agent reads and updates](../docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md) |
 | Why a layout, stance or entry-route decision was made | [docs/adr/REGISTER.md](../docs/adr/REGISTER.md) |
 
 This product repository keeps no personal, machine, or deployment notes; it is
-a `project` profile wiki. `guidebooks/` ships empty until the owner directs
-one; `design-concepts/` carries the owner-directed articles routed above;
+a `project` profile wiki. `guidebooks/` ships empty until a procedure outgrows
+the Runbook; `design-concepts/` carries the articles routed above;
 `features/` stays empty until a completed Spec is captured at its closure
 point.
 

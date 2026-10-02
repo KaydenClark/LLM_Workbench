@@ -43,7 +43,7 @@ nothing.
 | `workbench/specs/` | Stable capability records, acceptance, evidence, and proof |
 | [RUNBOOK.md](../../RUNBOOK.md) | Exact operating and verification commands |
 | [SCHEMA.md](SCHEMA.md) | Wiki CRUD, metadata, sensitivity, and freshness rules |
-| [design-concepts/](design-concepts/README.md) | Owner-directed articles explaining durable design models |
+| [design-concepts/](design-concepts/README.md) | Articles explaining durable design models and each landmark's evolving synthesis |
 | [features/](features/README.md) | Readable articles capturing each completed Spec's delivered capability |
 | [guidebooks/](guidebooks/) | Ordered procedures that outgrew the Runbook |
 

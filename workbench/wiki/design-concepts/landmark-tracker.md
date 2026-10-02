@@ -13,7 +13,7 @@ source_paths:
   - workbench/landmark-tracker/README.md
 parent: none
 authorized_by: owner
-last_verified: 2026-09-26
+last_verified: 2026-10-01
 ---
 
 # Landmark Tracker
@@ -52,16 +52,17 @@ artifacts and the grilling ledger retain their jobs. Workflow activity changes
 source records with reasons and evidence; the view reflects those changes.
 There is no manually assigned overall card stage or card-reset lifecycle.
 
-**Landmark Wiki pages** explain confirmed durable understanding coherently in
-readable Markdown. Several Specs can contribute to one explanation. These pages
-contain no Workbench identifiers, including metadata and link targets. Structured
-records and delivery evidence preserve identity-bearing provenance; readable
-source routes keep the explanation connected to its governing owners.
+**Landmark Wiki pages** are each landmark's evolving synthesis in readable
+Markdown: what its question cards add up to, updated whenever a card changes.
+Several Specs can contribute to one page. Identifiers on a page carry the
+artifact's name and context, as on every Wiki page; structured records and
+delivery evidence keep identity-bearing provenance, and readable source routes
+keep the explanation connected to its governing owners.
 
 ## Understanding before delivery
 
-DQCs and landmark records maintain the current account before a Spec, Task or
-Wiki article exists. Grilling notepads remain valuable as more historical and
+DQCs and landmark records keep the structured account; the Wiki summarizes
+them as they evolve, so a synthesis page can exist before any Spec or Task. Grilling notepads remain valuable as more historical and
 handoff-like context: they preserve how the understanding arose, the corrections
 that matter, and what another conversation needs to continue. They are retained
 while needed, not automatically discarded when a card is created.
@@ -198,3 +199,4 @@ we can build on while answers, inventory and detailed destinations evolve.
 - 2026-09-26: Distributions across source types and scopes landed; the
   availability sentence now names them and leaves Landmark Wiki content
   assessment and record-move recovery as the remaining delivery.
+- 2026-10-01: Landmark Wiki pages restated as evolving synthesis with the name-and-context identifier rule, from the owner-confirmed Wiki definition (the decision record "The Wiki is the evolving synthesis every agent reads and updates").

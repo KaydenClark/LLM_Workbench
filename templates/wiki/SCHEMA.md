@@ -16,10 +16,20 @@ last_verified: [YYYY-MM-DD]
 
 ## Purpose And Ownership
 
-The wiki is this project's durable, navlinked knowledge base. It compiles
-source-backed context so agents follow a concise map instead of rediscovering
-raw conversations and files. It routes to the live controls; it never copies
-them.
+The wiki is this project's evolving synthesis: a directory of agent-written
+Markdown that every agent reads and updates. It holds summaries, entity pages,
+concept pages, comparisons, an overview and the evolving synthesis of what the
+project is and how it works, in prose, so that handoffs stay instructions and
+notepads stay one-writer session records. Every use of the Workbench reads the
+wiki and, when the work changed what a page says, updates that page. It routes
+to the live controls; it never copies them.
+
+In Governance Plane terms a wiki page is Enduring Context, this schema is
+Canon, and the wiki's raw sources are the claims that played the Actuality
+role in the operation just performed, not whole artifacts. Destination
+Question Cards and landmark records keep the structured account with its
+lineage and identifiers; the wiki is what they are summarized into, updated
+whenever a card changes.
 
 The wiki is not a Governance Plane and owns none. A note may document
 Grounding or Enduring Context, but those are roles of claims in an operation,
@@ -46,6 +56,22 @@ Declared collections are `design-concepts/` (required to exist, may be empty),
 point; additive, may be empty), `guidebooks/` (ordered procedures), and
 `archive/` (historical, generated, superseded, and migration evidence). Every
 collection is flat; only `archive/` may nest. `MEMORY.md` is the only router.
+
+## Page Kinds
+
+Five kinds of page, mapped onto the collections below. This is a first cut
+and may be revised when something does not fit.
+
+- **Overview**: `MEMORY.md`, the router, carrying a one-line summary beside
+  every link so a reader can choose a page without opening it.
+- **Synthesis**: one evolving page per landmark, in `design-concepts/`,
+  summarizing that landmark's question cards and what they add up to.
+- **Entity pages**: one page per capability (`features/`), and per skill,
+  role, stance and tool (flat notes beside the router).
+- **Concept pages**: durable cross-cutting models, in `design-concepts/`,
+  and a page for any term that needs more than its Lexicon row.
+- **Comparisons**: filed back as a flat note when answering a question
+  produced one worth keeping.
 
 ## Required Properties
 
@@ -83,9 +109,14 @@ last_verified: YYYY-MM-DD
 
 - Create a note only when no existing active note owns the fact.
 - Keep every collection flat; do not add category indexes.
-- Do not create notes for one-off chat answers, temporary status, or tasks.
-- Design Concept articles are created only on the owner's direction; see
-  `design-concepts/README.md`.
+- Do not create notes for temporary status or tasks. A chat answer that
+  produced a durable summary, comparison or synthesis is filed as a page;
+  a passing answer is not.
+- Any agent, in any authorized operation, creates or updates the pages that
+  operation touched. The operation's own authority covers its wiki update;
+  no per-page approval exists. Only this schema needs the owner's explicit
+  say. Record the authorizing operation in a Design Concept article's
+  `authorized_by` and `History`; see `design-concepts/README.md`.
 - A features article is written for a completed Spec at its closure point,
   before its records are retired or discarded; see `features/README.md`.
 
@@ -99,6 +130,14 @@ last_verified: YYYY-MM-DD
 
 ## Update
 
+- Ingest at the exit of every operation. When a grilling session ends, a
+  Task closes, a Spec completes, a decision is accepted or material is
+  promoted, update every page that operation touched: the entity or concept
+  page, the landmark synthesis, the overview line. One ingest usually
+  touches several pages; expect that, not one.
+- Identifiers are welcome: they are how agents link and find artifacts. No
+  page references an identifier without the artifact's name or title and a
+  little context about what it is for.
 - Update the owning note rather than appending a second version elsewhere.
 - Refresh `last_verified` only for facts actually checked in the current task.
 - Label inferred claims with `Inference:` and dated claims with their date.
@@ -106,6 +145,23 @@ last_verified: YYYY-MM-DD
   source is verified.
 - Never copy live task rows, spec evidence, or generated Taskboard state into
   a note; link to the owner instead.
+
+## Lint
+
+Two cadences. At the end of every wiki update, lint the pages it touched:
+do they contradict a neighbor, is every claim still backed by its source,
+did the router get its summary line, was a concept mentioned that has no
+page. At Spec review, when the Spec's work is verified, lint the whole wiki
+the same way against the current controls and question cards. Findings
+become corrective Tasks. This is a reading job for an agent; the structural
+validator below keeps running on every change and does not replace it.
+
+## Concurrency
+
+The wiki is tracked in Git and updated on the agent's own branch like every
+other owned document; Git reconciles. There is no writer lane, revision
+stamp or lock. A same-paragraph collision between two lanes surfaces as a
+merge conflict that the lane landing second resolves by reading both.
 
 ## Stale Handling
 
@@ -159,5 +215,5 @@ allows - `status: partial`, `knowledge_role: derived`, a `provenance` line
 naming the normalization, the note's own path as `source_paths`, and
 `last_verified` set to the day it ran - and infers `type` from the note's
 location. Correct those values by hand afterwards; a Design Concept article
-still needs its owner-directed `authorized_by`, `parent`, and sections, and a
+still needs its `authorized_by`, `parent`, and sections, and a
 features article still needs its sections.
