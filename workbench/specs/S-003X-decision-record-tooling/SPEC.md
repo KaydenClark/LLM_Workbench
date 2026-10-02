@@ -11,7 +11,7 @@
 **Latest event:** Authored at the Map step from the owner-confirmed decision records of 2026-10-02; no Task is cut.
 **Next gate:** At Plan, inspect live Actuality and cut small Tasks within this Spec.
 
-> **Citation anchors.** pre=`cbb3d5b81c0081c45d92e0d284078ca13fd54c03` post=`cbb3d5b81c0081c45d92e0d284078ca13fd54c03`.
+> **Citation anchors.** pre=`cbb3d5b81c0081c45d92e0d284078ca13fd54c03` post=`5adcbaad3a960843ff6eb9e2181e4af98fae847f`.
 
 ## Outcome
 
@@ -36,7 +36,7 @@ No implementation or agent-outcome proof for this capability is claimed by this 
 ## Desired Behavior
 
 1. A manifest collection named `ddr` at `workbench/docs/ddr/` follows the ADR layout: accepted records at the top, `proposed/` for records not yet Canon, `archive/` for superseded and deprecated ones. A DDR carries a visible identifier made of the `DDR` prefix and a base-62 value, the frontmatter keys `date`, `supersedes` and `canonicalized_in`, and a free-prose body. Its register and history are derived from the folder listing and never edited by hand. The template may adapt where a destination record needs it; a DDR must serve a destination goal.
-2. A command writes the next DDR into `proposed/`, run at the same documentation step that writes an ADR, and refuses to overwrite an existing record.
+2. A command writes the next DDR into `proposed/`, run at the same documentation step that writes an ADR and composed by `to-docs` as an ADR is, and refuses to overwrite an existing record.
 3. The lifecycle moves exist for both kinds of record and follow the ADR lifecycle: a record moves out of `proposed/` to become accepted once corrections are reconciled; a superseded record is replaced by one successor that states the whole current decision and moves to `archive/`; a deprecated record ends without a successor and states why. No separate approval ceremony is added.
 4. An agent reads either kind of record with the five read words: `list` the records that exist, `show` one whole record (with `get` accepted as a synonym), `search` records by query, `history` how a record changed, and `inspect` a field or range of one record. Existing command names keep working.
 5. Validation enforces what the decision records fix: a DDR's `canonicalized_in` never names the Wiki, and a DDR that contradicts the Blueprint names the Blueprint in `canonicalized_in` so the Blueprint is updated with it.
@@ -48,7 +48,7 @@ No implementation or agent-outcome proof for this capability is claimed by this 
 - The five read words are the Workbench's own and are defined once in the Lexicon. `capture` is Create, not a read. This Spec renames each tool it touches to the words. See [Records share one set of read words](../../docs/adr/000T-records-share-one-set-of-read-words-list-show-search-history-and-inspect.md).
 - Lifecycle is folder location, per the ADR record on [record lifecycle by folder location](../../docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md). Visible identifiers follow the base-62 identifier decision in [ADR-0041](../../docs/adr/0041-visible-base62-workbench-identifiers.md).
 - Whether the DDR tooling reuses the ADR runtime or forks it is for the Plan step. Reuse is the recommendation of the accepted record, not a decision.
-- The tool does not encode when a decision record is born. The point at which a record is created is being settled by a separate owner grilling on the workflow verbs, which was not on integration at the pre anchor; the command only writes a `proposed/` record at whatever documentation step the Contract names.
+- The tool does not encode when a decision record is created. The accepted [workflow verbs decision](../../docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md) places the creation of decision records, ADRs and DDRs alike, at Map and narrows the earlier record's rule that a DDR is born when the owner confirms the decision. The accepted [promotion decision](../../docs/adr/000Y-a-locked-and-confirmed-answer-is-promoted-without-further-ceremony.md) has `to-docs` compose a DDR as it composes an ADR. The command only writes a `proposed/` record at the documentation step, run through `to-docs`.
 - The Wiki cites DDRs by name and context and has no page per DDR. The Wiki is the synthesis; the DDR owns the decision.
 
 Open, not decided here:
@@ -91,7 +91,7 @@ Run the targeted decision-record tests and the full AGENTS suite for the deliver
 
 ## Documentation Impact
 
-Maintain the Lexicon rows and the Runbook decision-record commands, mirror the generic rules in `templates/`, and update the [Decision Records and the Concept Map](../../wiki/design-concepts/decision-records-and-the-concept-map.md) article when delivery changes what it says. The two accepted decision records are history and are not rewritten; a later change goes through the lifecycle moves this Spec delivers.
+Maintain the Lexicon rows, the Runbook decision-record commands and the `to-docs` skill's route to the DDR command, mirror the generic rules in `templates/`, and update the [Decision Records and the Concept Map](../../wiki/design-concepts/decision-records-and-the-concept-map.md) article when delivery changes what it says. The two accepted decision records are history and are not rewritten; a later change goes through the lifecycle moves this Spec delivers.
 
 ## Append-Only Evidence And Execution Log
 
