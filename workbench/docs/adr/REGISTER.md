@@ -24,6 +24,7 @@
 | [000N](000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md) | Landmark Tracker connects evolving understanding to durable knowledge | accepted | 2026-09-26 | BLUEPRINT.md, LEXICON.md, AGENTS.md, RUNBOOK.md, workbench/specs/S-01T-landmark-tracker-foundation/SPEC.md |
 | [000O](000O-claims-are-pushed-on-the-task-branch-and-read-from-every-remote-tip.md) | Claims are pushed on the task branch and read from every remote tip | accepted | 2026-09-26 | workbench/specs/S-00V-portable-workbench/SPEC.md |
 | [000P](000P-roles-scope-work-and-stances-define-the-job.md) | Roles scope work and stances define the job | accepted | 2026-09-27 | AGENTS.md, LEXICON.md, BLUEPRINT.md, RUNBOOK.md |
+| [000R](000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md) | The Wiki is the evolving synthesis every agent reads and updates | accepted | 2026-10-01 | workbench/wiki/SCHEMA.md, LEXICON.md, AGENTS.md, BLUEPRINT.md, RUNBOOK.md |
 | [0015](0015-workbench-base-and-foundry-capabilities.md) | Workbench supplies the base and Foundry adds coordination | accepted | 2026-09-04 | BLUEPRINT.md |
 | [0018](0018-the-wiki-is-the-knowledge-base.md) | The wiki is the knowledge base and holds collections | accepted | 2026-09-04 | AGENTS.md, LEXICON.md |
 | [0020](0020-a-check-blocks-only-the-change-it-evaluates.md) | A check may block only the change it evaluates | accepted | 2026-09-04 | AGENTS.md, RUNBOOK.md |

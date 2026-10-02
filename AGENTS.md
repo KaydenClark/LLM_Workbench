@@ -395,7 +395,7 @@ those routes consistent with these assignments when ownership changes.
 | commands and troubleshooting | `RUNBOOK.md` |
 | public setup and usage | `README.md` |
 | active architectural decisions, rationale, alternatives, supersession | `workbench/docs/adr/` (`canonicalized_in` names operational owners) |
-| durable knowledge, design concepts and captured feature knowledge | `workbench/wiki/` (`MEMORY.md` router, `SCHEMA.md` rules; post-completion knowledge in the manifest-declared `features` collection, never copied task state) |
+| evolving synthesis, design concepts, capability and reference pages | `workbench/wiki/` (`MEMORY.md` router, `SCHEMA.md` rules; completed capabilities in the manifest-declared `features` collection, never copied task state) |
 
 The agent changing a truth maintains its existing owner within the authorized
 scope: update definitions when meaning changes, procedures when operations
@@ -430,6 +430,16 @@ the commit each row names and are never re-anchored, because they are
 append-only. `tools/test-spec-citation-anchors.mjs` holds specs from S-036
 forward to this; earlier specs are grandfathered, since retro-anchoring accepted
 records buys no reader anything.
+
+Every use of the Workbench reads the Wiki and, when the work changed what a
+page says, updates that page on the same branch; the operation's own
+authority covers its Wiki update, with no per-page approval. A grilling exit,
+Task close, Spec completion, accepted decision or promotion usually touches
+several pages. End each Wiki update with a lint of the touched pages; the
+whole-Wiki lint runs at Spec review when the Spec's work is verified, and its
+findings become corrective Tasks. Identifiers on a page always carry the
+artifact's name and context. In chat, never refer to an artifact by its
+identifier alone.
 
 If no docs change, record `Docs checked; no update needed` with the reason in
 the spec evidence. Final response proof must state: what changed, why, risks or
