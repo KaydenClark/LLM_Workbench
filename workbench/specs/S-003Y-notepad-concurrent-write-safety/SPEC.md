@@ -11,7 +11,7 @@
 **Latest event:** Authored at the Map step to give the unresolved runtime defect recorded in the accepted notepad-ownership decision an owning Spec; no Task is cut.
 **Next gate:** At Plan, inspect live Actuality and cut small Tasks within this Spec.
 
-> **Citation anchors.** pre=`cbb3d5b81c0081c45d92e0d284078ca13fd54c03` post=`cbb3d5b81c0081c45d92e0d284078ca13fd54c03`.
+> **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a`.
 
 ## Outcome
 
@@ -90,6 +90,7 @@ Reconcile the writer-rule statements in `AGENTS.md`, `LEXICON.md`, the `notepad`
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-10-02 | none | Authored at the Map step to own the defect recorded in the accepted notepad-ownership decision, at integration cbb3d5b81c0081c45d92e0d284078ca13fd54c03. | Map only; the pre-anchor write path was read, the race was not re-run. | This Spec. | Plan, the regression test, the guard and proof remain. |
+| 2026-10-02 | none | Re-verified and re-anchored at integration 5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a after four PRs landed. | Map only; the asserted counts, tool commands, collections and the S-00M status were re-read at that tip; no runtime proof claimed. | This Spec. | Plan, implementation and proof remain. |
 
 ## Completion Result
 

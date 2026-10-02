@@ -11,7 +11,7 @@
 **Latest event:** Authored at the Map step from the owner-confirmed role decision record of 2026-10-02; no Task is cut.
 **Next gate:** At Plan, inspect live Actuality and cut small Tasks within this Spec.
 
-> **Citation anchors.** pre=`cbb3d5b81c0081c45d92e0d284078ca13fd54c03` post=`cbb3d5b81c0081c45d92e0d284078ca13fd54c03`.
+> **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a`.
 
 ## Outcome
 
@@ -98,6 +98,7 @@ Maintain each role's sentence in `LEXICON.md`, the operating contract in the ski
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-10-02 | none | Authored at the Map step from the owner-confirmed role decision record of 2026-10-02 at integration cbb3d5b81c0081c45d92e0d284078ca13fd54c03. | Map only; the skills lane and Lexicon role rows were read, no runtime proof claimed. | This Spec. | Plan, implementation and behavioral proof remain; the Blueprint-level review owner and the skill-name compatibility are open. |
+| 2026-10-02 | none | Re-verified and re-anchored at integration 5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a after four PRs landed. | Map only; the asserted counts, tool commands, collections and the S-00M status were re-read at that tip; no runtime proof claimed. | This Spec. | Plan, implementation and proof remain. |
 
 ## Completion Result
 

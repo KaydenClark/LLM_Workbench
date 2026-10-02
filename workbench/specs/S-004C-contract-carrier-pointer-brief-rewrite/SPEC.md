@@ -11,7 +11,7 @@
 **Latest event:** Authored at the Map step from the owner-confirmed Contract-carrier decision record of 2026-10-02, which calls the rewrite its own work with its own Destination Packet; no Task is cut.
 **Next gate:** At Plan, inspect live Actuality, decide with the owner whether this stays one Spec, and cut small Tasks within it.
 
-> **Citation anchors.** pre=`cbb3d5b81c0081c45d92e0d284078ca13fd54c03` post=`cbb3d5b81c0081c45d92e0d284078ca13fd54c03`.
+> **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a`.
 
 ## Outcome
 
@@ -25,7 +25,7 @@ The owner adopted the AI Coding Dictionary definitions of AGENTS.md, progressive
 
 At the pre anchor:
 
-- `AGENTS.md` is 618 lines and 35,903 bytes, loaded on every turn; `RUNBOOK.md` is 2,393 lines and 138,342 bytes with 15 top-level and 41 second-level sections holding full procedures.
+- `AGENTS.md` is 623 lines and 36,213 bytes, loaded on every turn; `RUNBOOK.md` is 2,465 lines and 143,200 bytes with 15 top-level and 41 second-level sections holding full procedures.
 - The Instruction Authority list in `AGENTS.md` names the user request, `AGENTS.md` with platform limits, the assigned Spec as a bounded delegate, and the Runbook and Lexicon as the other Contract carriers. It does not name a pointed skill or a landmark.
 - The Contract's shape is depended on by code. Eleven runtime tools name `AGENTS.md` (`adr.mjs`, `claim-coordination.mjs`, `diagnostics.mjs`, `self-drift.mjs`, `sessions.mjs`, `spec-workbench.mjs`, `task-packet.mjs`, `task-receipt.mjs`, `template-placeholders.mjs`, `wiki.mjs`, `workbench-layout.mjs`), and tests under `tools/` and `evals/` mention `AGENTS.md` or `RUNBOOK.md`; Plan establishes which of them depend on the content rather than the name. Two tests extract the text between the `### Instruction Authority` and `### State Resolution` headings.
 - The root `LEXICON.md` states the accepted definitions of the carriers' jobs; the controls do not yet follow them.
@@ -67,7 +67,7 @@ Changing the meaning of any rule, the owner's approval or main-promotion authori
 
 - The role skills must exist first so role detail has a home: [Captain Role And Landmark Director](../S-004B-captain-role-and-landmark-director/SPEC.md) and [Worker Role](../S-002E-worker-role/SPEC.md). No line leaves `AGENTS.md` before its home exists.
 - [LANDMARK.md Artifact And Lane Runtime](../S-003Z-landmark-md-artifact-and-lane-runtime/SPEC.md) delivers the artifact whose delegate status the Instruction Authority list names; until then the list names only what exists.
-- [Workflow Canon Rework](../S-00P-workflow-canon-rework/SPEC.md) is the current owner of Contract rewrites and is at its owner gate. Two concurrent rewrites of `AGENTS.md` must not happen: [Completion Claims Against Repository State](../S-00M-completion-claims-against-repository-state/SPEC.md) already holds a Task until that Spec's `AGENTS.md` rewrite is contained in integration, and this rewrite follows the same rule. `AGENTS.md`, `RUNBOOK.md` and `LEXICON.md` are shared writers: one writer lane per file, coordinated with [Decision Record Tooling](../S-003X-decision-record-tooling/SPEC.md) and [Notepad Concurrent-Write Safety](../S-003Y-notepad-concurrent-write-safety/SPEC.md), which also touch them.
+- [Workflow Canon Rework](../S-00P-workflow-canon-rework/SPEC.md) is the current owner of Contract rewrites and is at its owner gate. [Completion Claims Against Repository State](../S-00M-completion-claims-against-repository-state/SPEC.md) has delivered its `AGENTS.md` change to integration and awaits owner Human QA. Two concurrent rewrites of `AGENTS.md` must not happen, so this rewrite starts from the integration text and follows the rule that one `AGENTS.md` change is contained in integration before the next begins. `AGENTS.md`, `RUNBOOK.md` and `LEXICON.md` are shared writers: one writer lane per file, coordinated with [Decision Record Tooling](../S-003X-decision-record-tooling/SPEC.md) and [Notepad Concurrent-Write Safety](../S-003Y-notepad-concurrent-write-safety/SPEC.md), which also touch them.
 - The [Ownership Map root control](../S-00G-ownership-map-root-control/SPEC.md) states each artifact's ownership; coordinate so the moved lines land in owners it names.
 - The tools and tests that read the Contract's structure must change with it. Treat them as part of this capability, not as a later cleanup.
 - The [release owner](../S-00O-workbench-v4-0-0-release/SPEC.md) retains release ordering, version, Template and owner gates. Whether this rewrite precedes the v4 release is not claimed here.
@@ -105,6 +105,7 @@ This Spec rewrites the Contract carriers and their `templates/` mirrors. Update 
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-10-02 | none | Authored at the Map step from the owner-confirmed Contract-carrier decision record of 2026-10-02 at integration cbb3d5b81c0081c45d92e0d284078ca13fd54c03. | Map only; the control sizes and the tools and tests that read them were counted, no runtime proof claimed. | This Spec. | Plan, implementation and proof remain; one-Spec-or-landmark and the line-landing check form are open. |
+| 2026-10-02 | none | Re-verified and re-anchored at integration 5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a after four PRs landed. | Map only; the asserted counts, tool commands, collections and the S-00M status were re-read at that tip; no runtime proof claimed. | This Spec. | Plan, implementation and proof remain. |
 
 ## Completion Result
 
