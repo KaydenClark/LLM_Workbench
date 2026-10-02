@@ -45,7 +45,9 @@ For accepted objective continuity and JSON direction, follow
 [ADR-0040](../docs/adr/0040-json-notepads-preserve-objective-continuity.md).
 Visible identifier semantics belong to
 [S-047](../specs/S-047-visible-workbench-identifiers/SPEC.md) and
-[ADR-0041](../docs/adr/0041-visible-base62-workbench-identifiers.md).
+[ADR-0041](../docs/adr/0041-visible-base62-workbench-identifiers.md); the
+uppercase width-four artifact policy, dual-form selection and `widen-id` belong
+to the [S-01W Uppercase Width-Four Workbench Artifact IDs Spec](../specs/S-01W-uppercase-width-four-workbench-artifact-ids/SPEC.md).
 Checkpoint rationale and retirement belong to
 [S-048](../specs/S-048-checkpoint-retirement/SPEC.md).
 The shared runtime is `workbench/tools/notepads.mjs`; its operations are
