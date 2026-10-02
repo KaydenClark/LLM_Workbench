@@ -26,9 +26,7 @@ Three layers, in order: the Blueprint, then Destination Decision Records, then
 ADRs. In the owner's words: describe the destination we want to reach, record
 the directions we go, record the choices we made along the way.
 
-- **The Blueprint** is the destination: what the product is, who it serves, its
-  promised outcomes and its non-goals, on one short high-level page. It is how a
-  project tells every agent, whatever task or Spec it is in, where the work is
+- **The Blueprint** is the destination. It is how a project tells every agent, whatever task or Spec it is in, where the work is
   headed in the long term, so that agents are not siloed from each other. It is
   written first and is not built from decisions afterward. It is not a router to
   the decisions and links no record that carries an identifier. This is the
@@ -42,9 +40,11 @@ the directions we go, record the choices we made along the way.
 - **Landmarks and Specs** are built on those choices. A landmark is an evolving
   account of a feature or framework pillar; a Spec delivers one scoped
   capability. The Blueprint, DDRs, landmarks and Specs together form the concept
-  map. Landmarks and Specs are built on the consequential choices the two
-  decision records hold; the Blueprint is written first and is not built from
-  them.
+  map, which is a different thing from the Lexicon's Context Map: that one routes
+  questions to owners. The owner said all of them are built on the consequential
+  choices, and also that the Blueprint cannot be built from DDRs and ADRs.
+  Inference: this page reads the first as true of landmarks and Specs and the
+  second as true of the Blueprint, which is written first.
 
 ## Telling a DDR from an ADR
 
@@ -80,7 +80,7 @@ its Lexicon row.
 ## Where this stands
 
 The destination is accepted and partly installed. The Lexicon defines the
-Decision Record, the DDR and the Blueprint's new role, and the decision record
+Decision Record, the DDR and the Blueprint's standing as a standalone page, and the decision record
 below records the choice. Not yet installed: the DDR collection, its commands,
 and the accept, supersede and deprecate moves, all for a Decision Record tooling
 Spec that is not yet written. The first DDRs will come from taking the existing

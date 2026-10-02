@@ -21,10 +21,11 @@ them to be promoted. In point 2, the rules that one decision needing both
 records links them and that a Spec keeps scoped acceptance were presented with
 the test and not separately contested:
 
-1. A DDR is its own durable record type. A destination choice had no durable
-   owner of its own: a Destination Question Card is scaffolding, the grilling
-   ledger is retained history, and the Blueprint is narrative with no
-   per-decision identity.
+1. A DDR is its own durable record type, not a Destination Question Card, a
+   Blueprint paragraph or a Wiki page. The reason offered when the owner chose
+   this: none of those is a durable per-decision owner. A card is scaffolding,
+   the grilling ledger is retained history, and the Blueprint is narrative with
+   no per-decision identity.
 2. The scope test: would the decision still hold if the architecture were
    rebuilt differently? If yes it is a DDR; if it is how the system is built it
    is an ADR. One decision may need both, in which case they link rather than
@@ -67,8 +68,9 @@ the test and not separately contested:
    forward-only from newly confirmed decisions; locked ledger rows and
    Destination Question Cards get a DDR only when next touched.
 9. A DDR gets a command that writes the next record into `proposed/`, as ADRs
-   have, run at the same documentation step that writes an ADR. The tooling
-   reuses the ADR runtime rather than forking it.
+   have, run at the same documentation step that writes an ADR. Whether the
+   tooling reuses the ADR runtime or forks it is for the tooling Spec; reuse is
+   the recommendation, not a decision here.
 
 Considered and rejected: leaving destination choices with the Destination
 Question Card, the Blueprint and the Wiki (none is a durable per-decision
@@ -89,8 +91,9 @@ takes the DDR row when it is installed. This record performs no delivery. The
 deprecate moves that the ADR tool lacks at the time of this record (it has
 `validate`, `normalize`, `register`, `new` and a one-time folder migration), and
 the template mirrors belong to a Decision Record tooling Spec that is not yet
-authored. The Blueprint still carries decisions and links ADRs; taking it apart
-into DDRs and a short page is the grilling and Spec in point 8. The root
+authored. The Blueprint still carries decisions and links ADRs; taking its
+decisions out into DDRs is the grilling and Spec in point 8, and how the rest of
+it is sorted is still open. The root
 Lexicon states the accepted destination. `templates/LEXICON.md` is not changed
 here: its DDR terms and the Blueprint row's DDR language would describe a
 collection no room has, so those mirrors come with the Decision Record tooling
