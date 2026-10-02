@@ -168,8 +168,8 @@ command or a code before the slice that implements it has landed.
       reason text is readable in the record afterward.
 - [x] The state reader reports unknown rather than throwing where Git is
       unavailable.
-- [ ] `AGENTS.md` and `RUNBOOK.md` describe both mechanisms.
-- [ ] The full verification suite passes and `doctor` carries no blocking
+- [x] `AGENTS.md` and `RUNBOOK.md` describe both mechanisms.
+- [x] The full verification suite passes and `doctor` carries no blocking
       finding.
 
 ## Testing Seams
@@ -188,6 +188,12 @@ named in `AGENTS.md`, then
 
 `AGENTS.md` and `RUNBOOK.md` at TK-004. ADR-000J's `canonicalized_in` already
 names this Spec as of its acceptance.
+
+TK-004 also mirrored both mechanisms into `templates/AGENTS.md` and
+`templates/RUNBOOK.md`, locked the wording in `tools/test-control-fidelity.mjs`
+against the diagnostics registry, and corrected the `close` section of
+`workbench/wiki/lifecycle-tool-behaviors.md`, which still said `close` falls
+back to a ready Task.
 
 ## Append-Only Evidence And Execution Log
 
@@ -208,6 +214,7 @@ names this Spec as of its acceptance.
 | 2026-09-26 | review | Review verdict: pass at eed0be931c3702b7fd88ddde80dc68b7dcc92398 [41918182b126] #3 | No blocking or should-fix findings over c9dccb9..eed0be9. Notes: the refusal runs before every write; the reason is readable in the Receipt and Spec evidence rows; a source comment calls the close dirty count exactly the Receipt Dirty count although the reader uses --untracked-files=all (the count difference is disclosed in the close evidence); orphan close TK-### bypasses the check (recorded gap); TK-004 deferred with free-text hold is tooling-consistent. Reviewer could not run fixture tests (sandbox EPERM); dispatcher suite 48/0 at eed0be9. | Codex gpt-5.5, codex exec -s read-only, separate context from the builder and dispatcher | 6 |
 | 2026-09-26 | b4ab9b0 | Drift reconciliation after TK-001 to TK-003 (Lane E, writer for this Spec after Lane D ended): six acceptance lines checked, the TK-004 Blockers cell set to S-00P TK-002 (it said none while the header and Next gate name that hold), and the Completion Result replaced (it still said Not started) | Each checked line cites its proving close row above: detached HEAD and untracked controls/ADR/spec-lane files reported by `doctor`, and both findings `attention`/`none` with unchanged exit code and `next --json`, from the TK-002 row (red at c261c96, green at f6e1f58); dirty-tree refusal, unpushed refusal, and the recorded reason read back from the Receipt and Spec evidence, from the TK-003 row (red at efb7227, green at 2baae9a); unknown rather than throwing where Git is absent, from the TK-001 row (green at 97bb945). Found by the Lane E post-merge drift review of PRs #159, #166 and #170 (Codex gpt-5.5 read-only) | TK-004's documentation line and the final suite-and-doctor line stay unchecked; Docs checked; no update needed: record-only change |
 | 2026-10-02 | 5adcbaa | TK-004 released: its hold on S-00P TK-002 is resolved, so the row moves from `deferred` to `ready` with Blockers `none` | `git fetch origin`; `git merge-base --is-ancestor 76932f5ba7643a55fa140320cb86550ab7fc99bb origin/integration` (S-00P TK-002's recorded integration containment of delivery PR #238) exited 0 at integration `5adcbaa`; S-00P TK-002 through TK-005 records read `done`, so the `AGENTS.md`, `RUNBOOK.md`, `LEXICON.md` and template rewrites the hold guarded against have landed. Release by claude-s00m-carry under the owner's 2026-10-02 instruction to carry S-00M to completion | Header Blockers, Latest event, Next gate and the TK-004 row updated; no other content changed. Docs checked; no update needed: record-only release |
+| 2026-10-02 | 6ffbcaa | TK-004 gates before close: both mechanisms documented in the root and generic controls, red then green | Red at 590794d plus the new tests: `node --test --test-name-pattern=completion-claim tools/test-control-fidelity.mjs` passed 0 of 2, both failing `AGENTS.md completion obligations: recorded reason stays readable` (the dirty-or-unpushed sentence S-00P TK-002 already wrote passed). Green at 6ffbcaa: same pattern 3/3, including a mutation test in which removing each of 3 AGENTS.md claims, 7 RUNBOOK.md claims and the generic Runbook's code list fails the contract; `node tools/test-control-fidelity.mjs` 26/26; `node workbench/tools/wiki.mjs validate` ok. Full AGENTS.md suite on the committed candidate 6ffbcaa (first line `dirty: []`): pass=48 fail=0. Guardrail `node tools/audit-guardrails.mjs --path .` 78/100 before (5adcbaa) and after (6ffbcaa), report identical apart from its path line; the remaining recommendations are the four Outcome-evidence items (real repeated outcome trials), and the static score claims nothing about agent outcomes. Self-drift `--phase pre` at 5adcbaa and `--phase post` at 6ffbcaa: the same 7 findings (S-00Q stale-claim, five stale-seed, unverified-provenance), cleanUpdate false, none introduced; the manual semantic check found no other current-facing text describing the retired ready-Task fallback | Docs: AGENTS.md (completion obligations), RUNBOOK.md (Worker close procedure; blocking-effect table `none` (attention) row and an explanation beneath it), the templates/AGENTS.md and templates/RUNBOOK.md mirrors, and the close section of workbench/wiki/lifecycle-tool-behaviors.md. RUNBOOK has no separate `close` options list, so `--git-state-reason "<why>"` is documented in the prose beside the close example rather than added to the routine example, which stays the clean, pushed close. TK-004 is a table row with no Task record, so `receipt` does not apply and this row carries its run evidence |
 
 ## Completion Result
 
@@ -220,25 +227,19 @@ agent willing to write the reason. ADR-000J accepts that cost. Whether a
 reviewer actually reads those recorded reasons is a review-practice question
 this Spec does not answer.
 
-TK-004 is held, not abandoned. S-00P TK-002 is rewriting `AGENTS.md` (with
-TK-003..TK-005 rewriting `RUNBOOK.md`, `LEXICON.md` and the templates) and is
-not yet contained in `integration`; editing the same controls now would
-collide with that rewrite. The wording TK-004 must land once it is contained,
-against the new text:
+The orphan corrective close path (`close TK-###`, `closeOrphanCorrectiveTask`
+in `workbench/tools/spec-workbench.mjs`) does not run the Git-state check, so
+a corrective Task anchored to a Wiki claim can still be closed on a dirty or
+unpushed tree. TK-003 recorded the gap and TK-004 documents it in both
+Runbooks; no Spec owns the repair yet.
 
-- `AGENTS.md`, at the completion obligations of Work Selection And Lifecycle:
-  `close` refuses on a dirty tree (anything `git status --porcelain` shows)
-  or an unpushed HEAD (no remote-tracking ref contains it) and on a Spec with
-  no in-progress Task; commit and push before closing, or record the state
-  with `--git-state-reason "<why>"`, which writes the observed state and the
-  reason into the Receipt row and the Spec evidence row for a reviewer to
-  read. `doctor` reports a detached HEAD and untracked control, ADR and spec
-  files without blocking.
-- `RUNBOOK.md`: `detached-head` and `untracked-controls` (scope `git`,
-  `attention`, blocking effect `none`) in the blocking-effect table's
-  `none (attention)` row and the diagnostics reference; the `close` options
-  list gains `--git-state-reason`, with the `dirty-tree` / `unpushed`
-  refusal, its remediation, and the no-in-progress-Task refusal.
+TK-003's smaller disclosed differences stand: the refusal lists every
+untracked file while the Receipt's Dirty column collapses untracked
+directories, so the two counts can differ although both are non-zero
+together; a reason given where Git state is unknown is recorded beside
+`unknown (<reason>)`; and `untracked-controls` reports a room's spec-lane
+`CATALOG.md` and `.gitkeep` files until its first commit. A table-backed Task
+has no Receipt, so its recorded reason lands only in the Spec evidence row.
 
 ## Supersession
 
