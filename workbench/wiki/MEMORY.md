@@ -179,8 +179,8 @@ The provenance of every promoted and excluded memory file is in
 | Why a layout, stance or entry-route decision was made | [docs/adr/REGISTER.md](../docs/adr/REGISTER.md) |
 
 This product repository keeps no personal, machine, or deployment notes; it is
-a `project` profile wiki. `guidebooks/` ships empty until the owner directs
-one; `design-concepts/` carries the owner-directed articles routed above;
+a `project` profile wiki. `guidebooks/` ships empty until a procedure outgrows
+the Runbook; `design-concepts/` carries the articles routed above;
 `features/` stays empty until a completed Spec is captured at its closure
 point.
 

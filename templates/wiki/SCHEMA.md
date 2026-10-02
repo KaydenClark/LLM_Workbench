@@ -215,5 +215,5 @@ allows - `status: partial`, `knowledge_role: derived`, a `provenance` line
 naming the normalization, the note's own path as `source_paths`, and
 `last_verified` set to the day it ran - and infers `type` from the note's
 location. Correct those values by hand afterwards; a Design Concept article
-still needs its owner-directed `authorized_by`, `parent`, and sections, and a
+still needs its `authorized_by`, `parent`, and sections, and a
 features article still needs its sections.
