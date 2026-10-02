@@ -20,7 +20,13 @@ Freeze existing checkpoints and citations as historical records. After active
 consumer migration, create no new checkpoint promotions. Preserve operational
 adoption/upgrade rollback in a separately declared recovery destination and keep
 legacy recovery references usable. Temporary handoffs do not become a replacement
-permanent checkpoint collection.
+permanent checkpoint collection. Notes and handoffs are temporary scaffolding
+under [ADR-000A](000A-active-adr-decisions-and-destination-blueprints.md), not
+the final documentation. Once their useful content is verified in its durable
+owners and no unresolved work or active transfer depends on the source, the
+reconciled note or handoff need not be retained. Preserving needed meaning,
+corrections and recovery references does not require keeping every temporary
+container forever.
 
 Considered alternatives: Deleting checkpoint history breaks citations and recovery. Making tracked
 handoffs the new destination merely renames the old mechanism. A privacy scan

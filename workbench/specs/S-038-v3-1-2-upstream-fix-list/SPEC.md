@@ -11,11 +11,13 @@
 **Latest event:** All eleven accepted items landed and their six owning specs are complete and contained in `integration`; the final disposition table and release account are recorded.
 **Next gate:** None. Publishing `integration` to `main` is owner-only and outside this spec.
 
-> **Citation anchors.** pre=`09bfff7` post=`8dfd1a8`. A bare `path:line` citation
-> reads at `pre` in Outcome, Why It Matters, Current Verified State and Desired
-> Behavior, and at `post` in every other live section. Evidence rows read at the
-> commit each row names and are never re-anchored, because they are append-only.
-> A `git show <sha>:path` citation is absolute and needs no declaration.
+> **Citation anchors.** pre=`09bfff7` post=`8dfd1a8`. A label before a citation names
+> its tree and wins: "shipped `:M`" reads at `post`, "base `:N`" at the `git show`
+> anchor that introduced the path. Unlabelled, a citation reads at `pre` in
+> Outcome, Why It Matters, Current Verified State, Desired Behavior and
+> Documentation Impact, and at `post` elsewhere; the shorthand `` `:N` `` reads
+> against the nearest path in scope. Evidence rows read at the commit each row
+> names and are never re-anchored, because they are append-only.
 
 ## Outcome
 

@@ -1,0 +1,144 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-004T",
+  "revision": 5,
+  "title": "How should optional private transport preserve cross-machine continuity?",
+  "question": "How should optional private transport preserve cross-machine continuity?",
+  "answer": "CAND-N: 2026-09-08: use optional private Git transport (workbench_sessions) with a stable Workbench identity, selected live collections, one writer per note, preserved conflicts and explicit remote confirmation; Git history retention accepted. 2026-09-21: 'Approved transport design remains settled. Clean up the failed audit first; then use the real PC handoff as a deployment-readiness test before any merge to main.' That interview authorized no test or cleanup.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: CAND-N (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "CAND-N create workbench/docs/adr/0051-optional-private-git-transport-for-session-continuity.md: Accepted transport decision, including accepted Git-history retention and non-authority of transported notes. | CAND-N update workbench/specs/S-052-private-session-transport/SPEC.md TK-004: Record the sequencing: clean up the failed audit, then the real Mac/Windows Claude/Codex handoff as the pre-main readiness test. | CAND-N update workbench/tools/session-transport.mjs; RUNBOOK.md session transport; AGENTS.md Session Records and templates/AGENTS.md: Sync helper and controls allow explicitly configured private sync of selected live collections.",
+    "home": "workbench/docs/adr/0051-optional-private-git-transport-for-session-continuity.md; workbench/specs/S-052-private-session-transport/SPEC.md TK-004; workbench/tools/session-transport.mjs; RUNBOOK.md session transport; AGENTS.md Session Records and templates/AGENTS.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "CAND-N",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000T"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 4
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "CAND-N",
+      "revision": "56b459da",
+      "reason": "Ledger row CAND-N (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should optional private transport preserve cross-machine continuity?",
+    "question": "How should optional private transport preserve cross-machine continuity?",
+    "sources": [
+      {
+        "id": "CAND-N",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:28.465Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:28.465Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 120 of the 2026-09-26 grouping (\"Continuity, notes, handoffs and transport\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The recorded design uses stable room identity, selected collections, one writer per note, preserved conflicts and explicit remote confirmation; local work stays independent.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:28.492Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "CAND-N: 2026-09-08: use optional private Git transport (workbench_sessions) with a stable Workbench identity, selected live collections, one writer per note, preserved conflicts and explicit remote confirmation; Git history retention accepted. 2026-09-21: 'Approved transport design remains settled. Clean up the failed audit first; then use the real PC handoff as a deployment-readiness test before any merge to main.' That interview authorized no test or cleanup."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: CAND-N (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "CAND-N create workbench/docs/adr/0051-optional-private-git-transport-for-session-continuity.md: Accepted transport decision, including accepted Git-history retention and non-authority of transported notes. | CAND-N update workbench/specs/S-052-private-session-transport/SPEC.md TK-004: Record the sequencing: clean up the failed audit, then the real Mac/Windows Claude/Codex handoff as the pre-main readiness test. | CAND-N update workbench/tools/session-transport.mjs; RUNBOOK.md session transport; AGENTS.md Session Records and templates/AGENTS.md: Sync helper and controls allow explicitly configured private sync of selected live collections.",
+            "home": "workbench/docs/adr/0051-optional-private-git-transport-for-session-continuity.md; workbench/specs/S-052-private-session-transport/SPEC.md TK-004; workbench/tools/session-transport.mjs; RUNBOOK.md session transport; AGENTS.md Session Records and templates/AGENTS.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:28.518Z",
+      "reason": "Ledger row CAND-N (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "CAND-N",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:28.550Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:50:01.383Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Session Transport pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000T"
+          ]
+        }
+      ]
+    }
+  ]
+}

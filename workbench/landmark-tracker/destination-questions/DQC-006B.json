@@ -1,0 +1,224 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-006B",
+  "revision": 7,
+  "title": "What do the eight documentation steps measure?",
+  "question": "What do the eight documentation steps measure?",
+  "answer": "LD-12: Cards represent destination concepts, distinct from constituent grilling prompts. Mixed progress shown as percentage distributions for questions and landmarks; no single card lane/reset lifecycle. Exact steps Idea, Aligning, Confirmed, Mapped, Planned, Journey, Review, Verified remain locked. Tracker generated; folder placement behavior needs reconciliation with corrected model.\nLD-23: Destination concept/documentation progress toward durable destination, displayed as per-step percentage distribution. Each related item contributes actual step or mixed fractions totaling one. Same calculation for landmarks/Workbench, with shared items counted once. Tracker additive/documentation; Taskboard implementation. No child-completion proxy or reset lifecycle.\nLD-26: Destination concept progress toward documentation destination, not child implementation completion. Wiki is agents brain and actual content is verified against expected durable knowledge.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: LD-12, LD-23, LD-26 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "LD-12 update workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/): Uses exactly Idea, Aligning, Confirmed, Mapped, Planned, Journey, Review, Verified as the step vocabulary. | LD-12 update workbench/wiki/design-concepts/landmark-tracker.md: Explains the steps as documentation progress. | LD-23 update workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/): Each related item contributes its step or mixed fractions totaling one. | LD-23 update workbench/wiki/design-concepts/landmark-tracker.md: Explains documentation progress, not child completion. | LD-26 update workbench/wiki/design-concepts/landmark-tracker.md: States the Wiki is the agents' brain and that delivery completion alone does not prove documentation. | LD-26 update workbench/specs/S-002A-landmark-records/SPEC.md: Expected-claim assessment checks actual Wiki content.",
+    "home": "workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/); workbench/wiki/design-concepts/landmark-tracker.md; workbench/specs/S-002A-landmark-records/SPEC.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "LD-12",
+      "revision": "56b459da"
+    },
+    {
+      "id": "LD-23",
+      "revision": "56b459da"
+    },
+    {
+      "id": "LD-26",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000X"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "LD-12",
+      "revision": "56b459da",
+      "reason": "Ledger row LD-12 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "LD-23",
+      "revision": "56b459da",
+      "reason": "Ledger row LD-23 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "LD-26",
+      "revision": "56b459da",
+      "reason": "Ledger row LD-26 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What do the eight documentation steps measure?",
+    "question": "What do the eight documentation steps measure?",
+    "sources": [
+      {
+        "id": "LD-12",
+        "revision": "56b459da"
+      },
+      {
+        "id": "LD-23",
+        "revision": "56b459da"
+      },
+      {
+        "id": "LD-26",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:35.072Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:35.072Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: a card written from ledger rows that postdate the 2026-09-26 draft grouping, grilling ledger at 56b459da.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:35.106Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "LD-12: Cards represent destination concepts, distinct from constituent grilling prompts. Mixed progress shown as percentage distributions for questions and landmarks; no single card lane/reset lifecycle. Exact steps Idea, Aligning, Confirmed, Mapped, Planned, Journey, Review, Verified remain locked. Tracker generated; folder placement behavior needs reconciliation with corrected model.\nLD-23: Destination concept/documentation progress toward durable destination, displayed as per-step percentage distribution. Each related item contributes actual step or mixed fractions totaling one. Same calculation for landmarks/Workbench, with shared items counted once. Tracker additive/documentation; Taskboard implementation. No child-completion proxy or reset lifecycle.\nLD-26: Destination concept progress toward documentation destination, not child implementation completion. Wiki is agents brain and actual content is verified against expected durable knowledge."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: LD-12, LD-23, LD-26 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "LD-12 update workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/): Uses exactly Idea, Aligning, Confirmed, Mapped, Planned, Journey, Review, Verified as the step vocabulary. | LD-12 update workbench/wiki/design-concepts/landmark-tracker.md: Explains the steps as documentation progress. | LD-23 update workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/): Each related item contributes its step or mixed fractions totaling one. | LD-23 update workbench/wiki/design-concepts/landmark-tracker.md: Explains documentation progress, not child completion. | LD-26 update workbench/wiki/design-concepts/landmark-tracker.md: States the Wiki is the agents' brain and that delivery completion alone does not prove documentation. | LD-26 update workbench/specs/S-002A-landmark-records/SPEC.md: Expected-claim assessment checks actual Wiki content.",
+            "home": "workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/); workbench/wiki/design-concepts/landmark-tracker.md; workbench/specs/S-002A-landmark-records/SPEC.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:35.139Z",
+      "reason": "Ledger row LD-12 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "LD-12",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:35.178Z",
+      "reason": "Ledger row LD-23 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "LD-23",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:35.217Z",
+      "reason": "Ledger row LD-26 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "LD-26",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:35.257Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:50:02.516Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000X"
+          ]
+        }
+      ]
+    }
+  ]
+}

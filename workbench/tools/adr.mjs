@@ -535,7 +535,7 @@ function splitLinkFragment(target) {
 // never rewritten. Exported for reuse: the logic is folder-move-generic (it
 // carries no ADR-specific assumption), and S-00I TK-003 reuses this exact
 // function for Spec directory moves rather than writing a second one.
-export function rewriteAdrLinks(content, oldDir, newDir, locations) {
+export function rewriteAdrLinks(content, oldDir, newDir, locations, { directoryTargets = new Set() } = {}) {
   let count = 0;
   const updated = content.replace(/(\[[^\]]*\]\()([^)]+)(\))/g, (whole, open, target, close) => {
     if (/^(?:https?:|mailto:)/.test(target)) return whole;
@@ -559,7 +559,19 @@ export function rewriteAdrLinks(content, oldDir, newDir, locations) {
     // self-link down to `SPEC.md` this way. Leave it exactly as written.
     if (newAbsolute === oldAbsolute && newDir === oldDir) return whole;
     const relative = path.relative(newDir, newAbsolute).split(path.sep).join('/');
-    const rebuilt = fragment !== undefined ? `${relative}#${fragment}` : relative;
+    // Preserve directory-route syntax and URI encoding when recomputing a
+    // moved target or referrer. In particular ./ names a directory; # alone
+    // would instead name a fragment in the referencing document.
+    // The option is supplied only by lifecycle moves: ADR migration and
+    // identity widening retain their existing file-link formatting.
+    const directory = directoryTargets.has(oldAbsolute);
+    const directoryRelative = relative || '.';
+    const encoded = /%[0-9a-f]{2}/i.test(rawPath)
+      ? directoryRelative.split('/').map(part => encodeURIComponent(part)
+        // encodeURIComponent leaves parentheses raw; Markdown uses them as delimiters.
+        .replaceAll('(', '%28').replaceAll(')', '%29')).join('/') : directoryRelative;
+    const route = directory ? `${encoded}${rawPath.endsWith('/') ? '/' : ''}` : relative;
+    const rebuilt = fragment !== undefined ? `${route}#${fragment}` : route;
     if (rebuilt === target) return whole;
     count += 1;
     return `${open}${rebuilt}${close}`;

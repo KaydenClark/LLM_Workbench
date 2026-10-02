@@ -9,7 +9,7 @@
   ],
   "counting": {
     "destination_audit_rows": 254,
-    "unique_question_ids": 251,
+    "unique_question_ids": 294,
     "reassessed_ids": [
       "CAND-N",
       "FND-Q20",
@@ -34,14 +34,14 @@
       "REC-04"
     ],
     "status_tally": {
-      "locked": 190,
-      "superseded": 25,
-      "open": 14,
-      "answered-in-chat": 10,
-      "withdrawn": 6,
-      "partially-answered": 3,
+      "locked": 238,
+      "superseded": 26,
       "deferred": 2,
-      "not-a-question": 1
+      "withdrawn": 6,
+      "answered-in-chat": 10,
+      "not-a-question": 1,
+      "open": 8,
+      "partially-answered": 3
     }
   },
   "field_guide": {
@@ -66,7 +66,7 @@
   "progress_assessment": {
     "commit": "6ae38b9dfc10144dff5481910c29f46ba09b1f8c",
     "date": "2026-09-24",
-    "method": "Each question's Result items were checked against the tree at this integration commit: the named artifact and section must exist and say what the Answer says (with any named templates/ mirror matching), and owning Spec and Task state was read from the Spec records and Task files, not the Taskboard projection. The 2026-09-23 destination-audit verdicts were used only as pointers, never copied. Superseded questions carry no obligation of their own and name their successor, so no question is counted twice. Evidence citations read at this commit; 'unverified:' marks a reading the assessor could not settle.",
+    "method": "Each question's Result items were checked against the tree at this integration commit: the named artifact and section must exist and say what the Answer says (with any named templates/ mirror matching), and owning Spec and Task state was read from the Spec records and Task files, not the Taskboard projection. The 2026-09-23 destination-audit verdicts were used only as pointers, never copied. Superseded questions carry no obligation of their own and name their successor, so no question is counted twice. Evidence citations read at this commit; 'unverified:' marks a reading the assessor could not settle. This is a historical assessment, not a live delivery dashboard. Later ROLE decisions are recorded with explicitly named baseline observations; current implementation state is owned by the linked Specs and generated Taskboard. The 2026-09-27 reconciliation does not re-certify the older row assessments. The 2026-09-29 FND-Q24B reading likewise names its own integration baseline. The 2026-09-29 ACC-1/2/4 row readings preserve their implementation gaps; ACC-5 navigation was delivered at integration merge 83ccb20c (PR #211), while the historical S-022 release packet remains blocked. These later readings do not recertify the 2026-09-24 baseline; the tally counts the current per-row readings, including these named later assessments. The 2026-09-30 readings of TT-Q9, ACC-3 and the GX family name integration 2780fe66 as their baseline. The 2026-09-30 LD family (35 landmark-definition questions) and SKW-1 were added from local grilling notes that the ledger had not yet carried, and are read against integration f373ec58.",
     "statuses": {
       "implemented-and-completed": "Every Result artifact exists at the pinned commit and says what the Answer says; any owning Spec or Task is complete.",
       "specced": "A Spec carries this answer, but no Task is cut for this part.",
@@ -76,12 +76,12 @@
       "no-build-obligation": "Open, withdrawn, superseded, deferred past v4, not a question, or no artifact change."
     },
     "tally": {
-      "implemented-and-completed": 107,
-      "specced": 6,
+      "implemented-and-completed": 131,
+      "specced": 8,
       "specced-and-tasked": 10,
-      "in-progress": 48,
-      "not-started": 30,
-      "no-build-obligation": 54
+      "in-progress": 63,
+      "not-started": 35,
+      "no-build-obligation": 51
     }
   },
   "families": [
@@ -174,6 +174,30 @@
       "name": "Recovered pre-notepad questions",
       "dates": "2026-09-07",
       "record": "recovered from transcript by the 2026-09-23 completeness audit"
+    },
+    {
+      "id": "ROLE",
+      "name": "Minimum role and stance buildout",
+      "dates": "2026-09-26 to 2026-09-27",
+      "record": "Owner-confirmed v4-role-groundwork inquiry; operational owners linked in each result"
+    },
+    {
+      "id": "GX",
+      "name": "Grilling exit and DQC workflow",
+      "dates": "2026-09-29",
+      "record": "Owner-confirmed v4 grilling-exit inquiry (three locked questions); no Canon, Tracker or skill source changed by the inquiry"
+    },
+    {
+      "id": "LD",
+      "name": "Landmark definition and Landmark Tracker",
+      "dates": "2026-09-24 to 2026-09-26",
+      "record": "landmark-definition-2026-09-24 (35 owner-confirmed questions; promoted to S-01T, ADR-000N and the design-concept Wiki article in PR #155)"
+    },
+    {
+      "id": "SKW",
+      "name": "Skill workflow redesign",
+      "dates": "2026-09-24",
+      "record": "skill-workflow-redesign-2026-09-24 (Q1 locked; Q2A-Q8 open, not recorded until answered)"
     }
   ],
   "questions": [
@@ -5243,7 +5267,7 @@
           "effect": "Record that the stable-path rule is retired and reachability comes from moves that rewrite links."
         },
         {
-          "artifact": "workbench/docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
+          "artifact": "workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
           "action": "update",
           "effect": "Accepted successor rule for where retired records live (S-00P TK-004)."
         }
@@ -6136,7 +6160,7 @@
           "effect": "States the idea-to-verified-completion ladder with Align, Scope, Plan, Implement, Verify; prototype optional; Blueprint is the Destination, Spec the Journey, Task the Path (S-00P TK-001)."
         },
         {
-          "artifact": "workbench/docs/adr/proposed/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
+          "artifact": "workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
           "action": "update",
           "effect": "Names the six owner phases in place of Explore/Prototype/Implement and treats Prototype as optional (S-00P TK-004)."
         },
@@ -6469,7 +6493,7 @@
           "effect": "Closed Specs and Tasks are reconciled into durable owners and retired by folder; discard only after verified main, clean reference scan and recoverable Git identity."
         },
         {
-          "artifact": "workbench/docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
+          "artifact": "workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
           "action": "update",
           "effect": "Carries no FND-Q07/Q08 hold or transient-archive clearing; matches the WF-8D/8E/8F retirement model (S-00P TK-004)."
         },
@@ -6852,25 +6876,39 @@
       "counted": true,
       "topic": "Live vs historical release claims",
       "question": "Which release or continuity claims should remain live obligations, and which should become explicitly historical or superseded?",
-      "status": "open",
-      "answer": "Open - no owner answer.",
-      "answered": "",
-      "reason": "Not recorded.",
+      "status": "locked",
+      "answer": "Specs, Tasks, DQCs, notepads and handoffs are transient scaffolding. Once their useful content reaches durable owners and the intended result exists, the implementation and its maintained documentation become the continuing reference and the scaffolding is no longer needed. Obsolete release promises become historical or superseded; still-needed obligations remain reachable until resolved. Correct or expand existing ADRs rather than add slightly different decisions; a new ADR must add a valuable architectural lens or layer and explain why the decision was made.",
+      "answered": "2026-09-30 owner answer, explicit readback confirmation, and approval to amend existing ADRs",
+      "reason": "Owner: scaffolding helps reach the real destination; the implemented thing and its documentation are better afterward. Existing decisions should be corrected rather than duplicated with slightly different ones.",
       "result": [
         {
-          "artifact": "TASKBOARD.md projection and the affected Specs (S-014, S-022, S-050, S-052), README.md and LEXICON.md release wording",
-          "action": "none",
-          "effect": "Would decide which v3.x release and continuity Specs stay live and which are marked historical or superseded."
+          "artifact": "workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md",
+          "action": "update",
+          "effect": "Own the shared scaffolding lifecycle and amendment-first ADR rule, with rationale; preserve unresolved obligations, permanent ADR history and existing cleanup gates."
+        },
+        {
+          "artifact": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md, workbench/docs/adr/0054-direct-promotion-into-durable-owners.md, workbench/docs/adr/000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md",
+          "action": "update",
+          "effect": "Apply the shared principle to Spec/Task closure, notes/handoffs and DQCs through their existing decision owners."
+        },
+        {
+          "artifact": "AGENTS.md, LEXICON.md, RUNBOOK.md and their templates/ mirrors",
+          "action": "update",
+          "effect": "Align Spec/Task terminology and ADR authoring guidance with the amended decisions."
         }
       ],
       "related": [
         "FND-Q07"
       ],
       "aliases": [],
-      "notes": "Audit-origin question. Report option A (retire S-014/S-022 as superseded, keep S-050/S-052) and gap-triage remark are agent suggestions. A bounded search of the owner's own transcript messages on 2026-09-24 found no answer. The 2026-09-23 triage v2 classed it as agent-carryable, not an owner decision.",
+      "notes": "Audit-origin question. Report option A (retire S-014/S-022 as superseded, keep S-050/S-052) and gap-triage remark are agent suggestions. A bounded search of the owner's own transcript messages on 2026-09-24 found no answer. The 2026-09-23 triage v2 classed it as agent-carryable, not an owner decision. Owner answered and confirmed 2026-09-30. Earlier suggestions remain history; no specific old Spec is completed or deleted by this answer. The existing progress field remains the historical reading at progress_assessment.commit, not the current decision or delivery state.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[15]",
-        "workbench/feedback/REPORT-foundation-question-review-2026-09-11.md FND-Q16"
+        "workbench/feedback/REPORT-foundation-question-review-2026-09-11.md FND-Q16",
+        "workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md",
+        "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+        "workbench/docs/adr/0054-direct-promotion-into-durable-owners.md",
+        "workbench/docs/adr/000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md"
       ],
       "progress": {
         "status": "no-build-obligation",
@@ -6951,7 +6989,7 @@
         "TT-Q1"
       ],
       "aliases": [],
-      "notes": "The 2026-09-19 refinement replaces decision-023's Journey/Path wording. Later reconciliation (2026-09-26): Landmark Tracker Foundation S-01T and accepted ADR-000N preserve the additive documentation/alignment Tracker beside implementation Taskboard, the ordinary Wiki-delivery boundary and explicit future collection support. This row retains its historical answer and pinned progress; the later durable owners govern the new design.",
+      "notes": "The 2026-09-19 refinement replaces decision-023's Journey/Path wording. Later reconciliation (2026-09-26): Landmark Tracker Foundation S-01T and accepted ADR-000N preserve the additive documentation/alignment Tracker beside implementation Taskboard, the ordinary Wiki-delivery boundary and explicit future collection support. This row retains its historical answer and pinned progress; the later durable owners govern the new design. 2026-09-27 integration reconciliation adds the accepted Lexicon definitions and generic mirror. Historical progress below is unchanged; S-00P records the bounded vocabulary delivery and remaining runtime/ADR obligations.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-023",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-037",
@@ -7230,7 +7268,7 @@
       "reason": "Not recorded as a stated reason. The owner gave a worked example (a webapp Blueprint yielding login-page, email-form and shopping-cart Specs). correction-006 separates Workbench branch QA from Human QA, so Human QA is not a release batch by default.",
       "result": [
         {
-          "artifact": "workbench/docs/adr/proposed/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
+          "artifact": "workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
           "action": "update",
           "effect": "Accepted record that Blueprint, Spec and Task are three altitudes of one delivery chain."
         },
@@ -7710,7 +7748,7 @@
           "effect": "REGISTER header shows a computed count of proposed records with a when-to-care hint; adr.mjs offers list --status (decision-064)."
         },
         {
-          "artifact": "workbench/docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
+          "artifact": "workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
           "action": "update",
           "effect": "Lifecycle by folder location for ADRs, Specs, Tasks: archive permanent, retired transient (decisions 040-041)."
         }
@@ -7851,13 +7889,14 @@
         "Ownership origin model (formerly \"portability model\")",
         "blocked-obligations-review FND-Q24 (2026-09-22 revisit)"
       ],
-      "notes": "The owner rejected the proposal-019 definition of core (11 classes x 27 responsibilities) and demoted the presence and type tests from deciders to facts. His success criterion moved to the Portable Workbench term and gained \"cleaning up after itself\" (PW decision-001). The divergence disposition needs its own closed set; ADR-000K dispositions do not fit. The field shape is FND-Q24B.",
+      "notes": "The owner rejected the proposal-019 definition of core (11 classes x 27 responsibilities) and demoted the presence and type tests from deciders to facts. His success criterion moved to the Portable Workbench term and gained \"cleaning up after itself\" (PW decision-001). The divergence disposition needs its own closed set; ADR-000K dispositions do not fit. The field shape is FND-Q24B. 2026-09-26 owner vocabulary for the map, offered as usable rather than locked: Producer:Product (or Maker:User) for Upstream:Downstream; Workbench:Project; LLM_Workbench:Workbench.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-066",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#proposal-019",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#finding-033",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-010",
-        "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-001"
+        "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-001",
+        "workbench/sessions/notepads/work/audit-ledger-reconciliation-2026-09-26.json#source_record-001"
       ],
       "progress": {
         "status": "in-progress",
@@ -7872,15 +7911,15 @@
       "counted": true,
       "topic": "Classifying project-vs-upstream row differences",
       "question": "If absence from the template does not classify a differing row, what does - and where is that classification authored (in OWNERSHIP.json, without a status-shaped field)?",
-      "status": "open",
-      "answer": "Open - no owner answer. On 2026-09-22 he ruled it stays live under S-00G as an ownership-origin question, not parked and not part of the Portable Workbench Spec.",
-      "answered": "",
-      "reason": "PW-2 (2026-09-22): \"OWNERSHIP.json is still being built, so FND-Q24B still needs an answer; it simply belongs to a different Spec.\"",
+      "status": "locked",
+      "answer": "A legacy room row that differs from upstream and carries no authored intent is a conflict until intent is declared. The owner chose S-00G's Option A: \"conflict - Every undeclared difference is a conflict until intent is declared. Safest, but the first upgrade of every legacy room stops on each such row.\" The companion placement question (whether a divergence disposition and any authorizing ADR citation live in the map or in the decision/report that owns the disposition) was not covered by this answer; S-00G's recommendation to keep it outside the map stays a recommendation. The field shape that carries the verdict without a status-shaped field is settled within S-00G at implementation under the Q23 guards. On 2026-09-22 he had ruled the question stays live under S-00G as an ownership-origin question.",
+      "answered": "2026-09-29, Director run in-chat answer",
+      "reason": "Owner: safest against a silent authority reroute; the cost of stopping legacy upgrades on each undeclared row is accepted.",
       "result": [
         {
-          "artifact": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md (TK-004)",
-          "action": "none",
-          "effect": "Owns the answer, decided within S-00G with an agent proposal first."
+          "artifact": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md (Dependencies And Blockers tradeoff 1, TK-004)",
+          "action": "update",
+          "effect": "Records the decision and has TK-004's comparator treat an undeclared difference as a conflict; the field shape and the disposition placement are settled within S-00G at implementation."
         }
       ],
       "related": [
@@ -7891,19 +7930,20 @@
       "aliases": [
         "blocked-obligations-review FND-Q24B"
       ],
-      "notes": "The 2026-09-22 revisit worded it: what field shape in OWNERSHIP.json classifies a project-vs-upstream row difference without a status-shaped field? Asked 2026-09-15 with proposal-026 (two authored facts: upstream strength, project intent; conflict computed) and an unanswered sub-fork (is an undeclared difference a conflict or a reportable finding?). The owner paused, then on 2026-09-15 said not to resume it automatically (directive-012). Handed off 2026-09-22 for a deep-dive.",
+      "notes": "The 2026-09-22 revisit worded it: what field shape in OWNERSHIP.json classifies a project-vs-upstream row difference without a status-shaped field? Asked 2026-09-15 with proposal-026 (two authored facts: upstream strength, project intent; conflict computed) and an unanswered sub-fork (is an undeclared difference a conflict or a reportable finding?). The owner paused, then on 2026-09-15 said not to resume it automatically (directive-012). Handed off 2026-09-22 for a deep-dive. 2026-09-29: the Director asked the owner in chat to choose among S-00G's three recorded options for the undeclared-difference sub-fork (A conflict, B reportable finding, C defer); he selected A. The 2026-09-15 proposal-026 shape (two authored facts, conflict computed) is not thereby accepted as schema; only the undeclared-difference policy is decided.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#proposal-026",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#current.questions (FND-Q24B)",
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-002",
         "workbench/sessions/handoffs/fnd-q24b-divergence-disposition-shape-2026-09-22.md",
-        "workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md"
+        "workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md",
+        "Owner in-chat answer to the Director tradeoff question, 2026-09-29 (Claude Director session 'Role model and reconciliation report'); recorded the same day in S-00G SPEC.md evidence"
       ],
       "progress": {
-        "status": "no-build-obligation",
-        "sub_label": "needs decision",
-        "evidence": "Decision status open; no owner answer.",
-        "gap": ""
+        "status": "specced",
+        "sub_label": "S-00G planned; TK-004 blocked on ADR-000B/C/D",
+        "evidence": "At integration 1450e7a8 (2026-09-29) S-00G SPEC.md carries the decision in Dependencies And Blockers tradeoff 1 and a dated evidence row; S-00G has no Task records, no OWNERSHIP.json exists and no comparator implements the verdict.",
+        "gap": "TK-004 must implement the conflict verdict for undeclared differences with a field shape that passes the Q23 guards, after ADR-000B/C/D acceptance; the disposition placement stays a recommendation until then."
       }
     },
     {
@@ -8754,15 +8794,15 @@
       "counted": true,
       "topic": "Chat, notepad and handoff continuity",
       "question": "What continuity relationship should hold among a chat, JSON Notepad, Markdown Scoped handoff, Spec, and Ticket (now Task)?",
-      "status": "answered-in-chat",
+      "status": "partially-answered",
       "answer": "A handoff is Markdown for a new Chat or agent; a notepad is the JSON working record; a notepad belongs to its objective, not to the Chat, model or host that created it (ADR-000L).",
       "answered": "2026-09-09 01:48 and 23:03 UTC chats (triage v2); ADR-000L direction owner-directed 2026-09-15 (TT note finding-032)",
       "reason": "The owner saw agents on some models read 'one writer per note' as one Chat per note while others appended across Chats; tying the note to its objective lets any context resume it.",
       "result": [
         {
-          "artifact": "ADR-000L 'notepad belongs to its objective' (proposed on PR #92)",
+          "artifact": "workbench/docs/adr/000L-a-notepad-belongs-to-its-objective-and-every-chat-working-that-objective-writes-to-it.md",
           "action": "create",
-          "effect": "A notepad belongs to its objective; writers are serialized, not exclusive."
+          "effect": "A notepad belongs to its objective; every context that can reach it resumes it, one writer at a time; ownership is decided, concurrency is not."
         },
         {
           "artifact": "AGENTS.md (Session Records) and templates/AGENTS.md",
@@ -8777,7 +8817,7 @@
         {
           "artifact": "workbench/skills/notepad/SKILL.md",
           "action": "update",
-          "effect": "Reword 'one writer per note' to one writer at a time."
+          "effect": "Keep the check-not-a-lock warning; say the writer rule bounds overlapping writes, not chat ownership; writer-neutral stale-revision; purpose-distinct creation rule."
         }
       ],
       "related": [
@@ -8788,16 +8828,16 @@
         "task-ticket-chat-workflow-clarification-2026-09-10 Q9",
         "workbench-foundation-rework-2026-09-11 TT-Q9"
       ],
-      "notes": "The TT note register records it as open; the answer recovered here settles it. The Spec and Task parts of the relationship are not stated beyond the Packet row (handoff and notepad join a Task's packet only when they exist).",
+      "notes": "The recovered answer settles notepad objective ownership and note/handoff formats. The Spec and Task parts of the relationship remain unstated beyond the Packet row (handoff and notepad join a Task packet only when they exist). 2026-09-30: ADR-000L accepted with unreachable-note capture, purpose-distinct creation and template mirrors delivered. Later independent review corrected the refusal description and the whole-question completion claim. The concurrent-write loss stays an open runtime gap with no owning Spec.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-032",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:31"
       ],
       "progress": {
         "status": "in-progress",
-        "sub_label": "AGENTS part done; ADR-000L absent",
-        "evidence": "AGENTS.md:396-399 notepads JSON, handoffs Markdown for a new chat; LEXICON.md:175 Notepad is objective-scoped. No ADR-000L in workbench/docs/adr/ or proposed/; workbench/skills/notepad/SKILL.md:57,87 still say 'one writer per note'. No Spec carries it.",
-        "gap": "ADR-000L (notepad belongs to its objective) not in repo; notepad skill wording not changed to one writer at a time; no owning Spec/Task."
+        "sub_label": "Objective ownership implemented; Spec and Task relationships open",
+        "evidence": "Integration 983af08d603c852b36ae69f31823815614cd6a60 contains accepted ADR-000L, root/template objective-ownership clauses and the notepad skill. This correction preserves those decisions and qualifies stale-revision as absent-or-mismatched input. The question notes still identify missing Spec and Task relationships beyond the Packet rule.",
+        "gap": "The Spec and Task continuity relationships beyond the Packet rule remain unstated. Preserve this open remainder pending a source-backed answer; this correction selects no runtime implementation."
       }
     },
     {
@@ -8959,7 +8999,7 @@
           "effect": "Stays a generic reusable shape; each project fills its own product destination."
         },
         {
-          "artifact": "workbench/docs/adr/proposed/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
+          "artifact": "workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
           "action": "update",
           "effect": "Reconciled (accepted, amended or superseded) under S-00P TK-004 so it no longer claims the Blueprint owns the future-facing PRD function."
         },
@@ -8978,7 +9018,7 @@
         "workbench-workflow-2026-09-10 Q1",
         "workbench-foundation-rework-2026-09-11 WF-1"
       ],
-      "notes": "Original wording: 'Does BLUEPRINT.md remain the single PRD-shaped destination artifact, rather than adding a separate PRD?' The owner objected to the shorthand 'no separate PRD' (correction-019); the replacement wording proposed there was withdrawn by correction-022 and must not be presented again. The allocation itself is settled. Supersedes the ADR-000G assumption that the Blueprint owns the future-facing PRD function.",
+      "notes": "Original wording: 'Does BLUEPRINT.md remain the single PRD-shaped destination artifact, rather than adding a separate PRD?' The owner objected to the shorthand 'no separate PRD' (correction-019); the replacement wording proposed there was withdrawn by correction-022 and must not be presented again. The allocation itself is settled. Supersedes the ADR-000G assumption that the Blueprint owns the future-facing PRD function. 2026-09-27 integration reconciliation adds the accepted Lexicon definitions and generic mirror. Historical progress below is unchanged; S-00P records the bounded vocabulary delivery and remaining runtime/ADR obligations.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[0]",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-067",
@@ -9024,7 +9064,7 @@
         "workbench-workflow-2026-09-10 Q2",
         "workbench-foundation-rework-2026-09-11 WF-2"
       ],
-      "notes": "Original wording: 'What starts an Explore phase, and what is the minimum exit artifact or decision?' Explore was renamed Align. proposal-011 (agent Suggestions A/B, including a drafted Blueprint delta as exit artifact) was not adopted; the answer comes from decision-067. The source note treats Lexicon promotion of Align as follow-on promotion work, not an open choice.",
+      "notes": "Original wording: 'What starts an Explore phase, and what is the minimum exit artifact or decision?' Explore was renamed Align. proposal-011 (agent Suggestions A/B, including a drafted Blueprint delta as exit artifact) was not adopted; the answer comes from decision-067. The source note treats Lexicon promotion of Align as follow-on promotion work, not an open choice. 2026-09-27 integration reconciliation adds the accepted Lexicon definitions and generic mirror. Historical progress below is unchanged; S-00P records the bounded vocabulary delivery and remaining runtime/ADR obligations.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[1]",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-067",
@@ -9193,7 +9233,7 @@
           "effect": "Spec described as an objective with a destination (mini-PRD) instead of a stable capability record; owned by S-00P TK-004."
         },
         {
-          "artifact": "workbench/docs/adr/proposed/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
+          "artifact": "workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
           "action": "update",
           "effect": "Reconciled under S-00P TK-004 against the three-altitude answer."
         }
@@ -9492,7 +9532,7 @@
           "effect": "Task retirement by folder location after reconciliation; retired Tasks leave ordinary discovery."
         },
         {
-          "artifact": "workbench/docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
+          "artifact": "workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
           "action": "update",
           "effect": "Folder-lifecycle ADR reconciled under S-00P TK-004."
         },
@@ -9608,7 +9648,7 @@
           "effect": "Discard gated on verified main; never archive Specs or Tasks."
         },
         {
-          "artifact": "workbench/docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
+          "artifact": "workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
           "action": "update",
           "effect": "Reconciled under S-00P TK-004 to the transient lifecycle."
         }
@@ -10598,7 +10638,7 @@
           "effect": "Reports Complete as two counts (ready to capture, ready to delete)."
         },
         {
-          "artifact": "workbench/docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
+          "artifact": "workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
           "action": "none",
           "effect": "ADR-000I keeps retired/ as the folder that marks captured records; the derived Complete substate relies on it."
         }
@@ -10625,20 +10665,20 @@
       "counted": true,
       "topic": "Timing of ADR-000B/C/D acceptance",
       "question": "Does ADR-000B/C/D acceptance land before or after the v4 PC handoff?",
-      "status": "open",
-      "answer": "Open - no owner answer.",
-      "answered": "",
-      "reason": "Not recorded.",
+      "status": "locked",
+      "answer": "Reconcile ADR-000B/C/D to the locked answers, then accept them now without another owner reread. A confirmed grilling Question / Answer / Why / Impact readback locks the ADR; to-docs authors it before Specs and Tasks.",
+      "answered": "2026-09-29 owner-confirmed grilling readback; explicit promotion authorization in the same chat",
+      "reason": "The owner confirmed the readbacks and chose Option A; the earlier board-track and PC-handoff timing readings were agent interpretations.",
       "result": [
         {
-          "artifact": "workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md, workbench/docs/adr/proposed/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md, workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md",
-          "action": "none",
-          "effect": "Once decided: moved out of proposed/ at the chosen time."
+          "artifact": "workbench/docs/adr/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md, workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md, workbench/docs/adr/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md",
+          "action": "update",
+          "effect": "Reconciled decisions are active; ADR-0013/0033 are superseded in archive."
         },
         {
           "artifact": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md",
-          "action": "none",
-          "effect": "Its Next gate records the chosen acceptance timing for 000B/C/D."
+          "action": "update",
+          "effect": "Acceptance gate cleared; map implementation remains."
         }
       ],
       "related": [
@@ -10648,18 +10688,23 @@
         "FND-Q23",
         "CAND-N"
       ],
-      "aliases": [],
-      "notes": "Owner's only related words: \"For ADR acceptances, I guess we need to talk about those, but if I just created them, then they should be correct\" (2026-09-23). This is a conditional view on accepting his own ADRs plus a wish to talk; it does not answer the timing. A gap-triage reading of 'now' is interpretation, and whether 000B/C/D count as ADRs he just created is not established.",
+      "aliases": [
+        "adr-000bcd-acceptance Q1"
+      ],
+      "notes": "Owner's only related words: \"For ADR acceptances, I guess we need to talk about those, but if I just created them, then they should be correct\" (2026-09-23). This is a conditional view on accepting his own ADRs plus a wish to talk; it does not answer the timing. A gap-triage reading of 'now' is interpretation, and whether 000B/C/D count as ADRs he just created is not established. 2026-09-29: asked in chat to choose among S-00G's recorded options for ADR-000B/C/D acceptance (A reconcile then accept now; B reconcile now, accept with the migration; C accept as written), the owner directed a fresh grilling instead of choosing (\"/handoff grilling this again I guess if you cant find the answers\"). The Director found no owner answer in this ledger or any local notepad and wrote the local handoff workbench/sessions/handoffs/grilling-adr-000bcd-acceptance-2026-09-29.md (untracked; not durable evidence). Status stays open. 2026-09-29: owner-confirmed readback supersedes the earlier open reading. The accepted decision and current delivery limit are in the linked ADRs and S-00G.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-1, current.next_action)",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#source_record-001",
-        "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md"
+        "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md",
+        "workbench/sessions/handoffs/grilling-adr-000bcd-acceptance-2026-09-29.md",
+        "workbench/specs/S-00G-ownership-map-root-control/SPEC.md",
+        "workbench/docs/adr/REGISTER.md"
       ],
       "progress": {
-        "status": "no-build-obligation",
-        "sub_label": "needs decision",
-        "evidence": "Decision status open; no owner answer. ADR-000B/C/D remain in workbench/docs/adr/proposed/ and S-00G SPEC.md:12 still gates on their acceptance.",
-        "gap": ""
+        "status": "in-progress",
+        "sub_label": "accepted 2026-09-29",
+        "evidence": "Three ADRs active, two predecessors archived, S-00G acceptance gate cleared.",
+        "gap": "Map and JSON Taskboard implementation remain assigned work. Integration containment is verified from Git, not by this ledger."
       }
     },
     {
@@ -10668,25 +10713,20 @@
       "counted": true,
       "topic": "Seven-vs-eight root file window",
       "question": "Is a window where accepted Canon says eight root files while AGENTS/LEXICON/BLUEPRINT say seven acceptable, or must acceptance and S-00G migration land together?",
-      "status": "open",
-      "answer": "Open - no owner answer.",
-      "answered": "",
-      "reason": "Not recorded.",
+      "status": "locked",
+      "answer": "The accepted eight-file destination may lead the current seven-file implementation. ADR-000B names TASKBOARD.json; AGENTS and LEXICON distinguish accepted destination from installed files.",
+      "answered": "2026-09-29 owner-confirmed grilling readback; explicit promotion authorization in the same chat",
+      "reason": "ADRs are accepted before Specs and Tasks by design; AGENTS State Resolution treats newer Canon as an implementation gap.",
       "result": [
         {
-          "artifact": "workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md",
-          "action": "none",
-          "effect": "Once decided: accepted with its file list naming TASKBOARD.json (per E-1)."
+          "artifact": "workbench/docs/adr/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md",
+          "action": "update",
+          "effect": "Names OWNERSHIP.json and TASKBOARD.json in the eight-file destination."
         },
         {
-          "artifact": "workbench/docs/adr/0013-seven-file-workbench-contract.md",
-          "action": "none",
-          "effect": "Archived as superseded when 000B is accepted."
-        },
-        {
-          "artifact": "AGENTS.md, LEXICON.md, BLUEPRINT.md (+ templates)",
-          "action": "none",
-          "effect": "Root-file count changes with or after acceptance, per the answer."
+          "artifact": "AGENTS.md, LEXICON.md",
+          "action": "update",
+          "effect": "Distinguish accepted architecture from current runtime and route implementation to S-00G and board work."
         }
       ],
       "related": [
@@ -10696,17 +10736,20 @@
         "FND-Q23A"
       ],
       "aliases": [],
-      "notes": "Since E-1 (2026-09-22), ACC-2 also covers TASKBOARD.md -> TASKBOARD.json in 000B's list. Owner's related words: \"For ADR acceptances, I guess we need to talk about those, but if I just created them, then they should be correct\" (2026-09-23); reading 'land in one change so no window opens' from them is interpretation.",
+      "notes": "Since E-1 (2026-09-22), ACC-2 also covers TASKBOARD.md -> TASKBOARD.json in 000B's list. Owner's related words: \"For ADR acceptances, I guess we need to talk about those, but if I just created them, then they should be correct\" (2026-09-23); reading 'land in one change so no window opens' from them is interpretation. 2026-09-29: asked in chat to choose among S-00G's recorded options for ADR-000B/C/D acceptance (A reconcile then accept now; B reconcile now, accept with the migration; C accept as written), the owner directed a fresh grilling instead of choosing (\"/handoff grilling this again I guess if you cant find the answers\"). The Director found no owner answer in this ledger or any local notepad and wrote the local handoff workbench/sessions/handoffs/grilling-adr-000bcd-acceptance-2026-09-29.md (untracked; not durable evidence). Status stays open. 2026-09-29: owner-confirmed readback supersedes the earlier open reading. The accepted decision and current delivery limit are in the linked ADRs and S-00G.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-2, current.next_action)",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#source_record-001",
-        "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md"
+        "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md",
+        "workbench/sessions/handoffs/grilling-adr-000bcd-acceptance-2026-09-29.md",
+        "workbench/specs/S-00G-ownership-map-root-control/SPEC.md",
+        "workbench/docs/adr/REGISTER.md"
       ],
       "progress": {
-        "status": "no-build-obligation",
-        "sub_label": "needs decision",
-        "evidence": "Decision status open; no owner answer. ADR-000B is still proposed and ADR-0013 (seven files) is still active in workbench/docs/adr/.",
-        "gap": ""
+        "status": "in-progress",
+        "sub_label": "accepted 2026-09-29",
+        "evidence": "Accepted ADR and controls now state the destination and gap.",
+        "gap": "The two JSON files and affected runtime/template consumers remain unimplemented. Integration containment is verified from Git, not by this ledger."
       }
     },
     {
@@ -10715,25 +10758,25 @@
       "counted": true,
       "topic": "Blueprint outside the Contract",
       "question": "With BLUEPRINT.md outside the Contract (000C), what keeps its claims from reading as non-binding?",
-      "status": "partially-answered",
-      "answer": "Contract = AGENTS.md, RUNBOOK.md and LEXICON.md, read on every run, plus the assigned Spec; the Blueprint is a routed artifact the Contract directs agents to by intent.",
-      "answered": "2026-09-23 01:24 UTC chat (triage v2); recorded as blocked-obligations-review decision-027",
-      "reason": "Inference: the owner's settled vocabulary (decision-024, correction-009) says Canon classifies accepted claims in context rather than by file, so a routed Blueprint's accepted claims still bind where they apply.",
+      "status": "answered-in-chat",
+      "answer": "Contract = AGENTS.md, RUNBOOK.md and LEXICON.md, read on every run, plus the assigned Spec; the Blueprint is a routed artifact the Contract directs agents to by intent. The Contract and the other routing artifacts make the Blueprint's claims binding: the Blueprint describes how the project should work with the Workbench, and the Workbench proves those claims by running the project.",
+      "answered": "2026-09-23 01:24 UTC chat (triage v2); recorded as blocked-obligations-review decision-027; binding-force part answered 2026-09-26 in the Director audit-ledger reconciliation chat",
+      "reason": "Owner, 2026-09-26: the routing artifacts carry the binding force, and running the project is the proof. This replaces the earlier inference from decision-024 and correction-009.",
       "result": [
         {
-          "artifact": "workbench/docs/adr/proposed/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md",
+          "artifact": "workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md",
           "action": "update",
-          "effect": "States the three-carrier Contract with the Blueprint as a routed artifact."
+          "effect": "Accepted three-carrier Contract and Blueprint routing; also state that the Contract and routing artifacts make the Blueprint's accepted claims binding, proved by running the project."
         },
         {
-          "artifact": "AGENTS.md Authority Order (+ templates/AGENTS.md)",
+          "artifact": "AGENTS.md Authority Order",
           "action": "update",
-          "effect": "Blueprint listed as a routed artifact, not a Contract carrier."
+          "effect": "Root control now routes Blueprint as destination; generic template mirror remains later implementation work."
         },
         {
-          "artifact": "LEXICON.md Workbench Contract row (+ templates/LEXICON.md)",
+          "artifact": "LEXICON.md Workbench Contract row",
           "action": "update",
-          "effect": "Contract = three carriers + assigned Spec."
+          "effect": "Root definition now names three carriers plus assigned Spec; generic template mirror remains later implementation work."
         }
       ],
       "related": [
@@ -10742,18 +10785,19 @@
         "FND-Q23"
       ],
       "aliases": [],
-      "notes": "Answered part: the Blueprint's place (a routed artifact outside the three-carrier Contract). Open part: what makes its accepted claims binding; the reason given is an inference from decision-024 and correction-009, and the gap triage proposed agent wording for owner confirmation.",
+      "notes": "Answered part: the Blueprint's place (a routed artifact outside the three-carrier Contract). Part open until 2026-09-26: what makes its accepted claims binding; the reason given is an inference from decision-024 and correction-009, and the gap triage proposed agent wording for owner confirmation. 2026-09-29: ADR-000C acceptance and root control wording resolve the carrier/routing part, but do not answer the separate binding-force question. That reading kept status partially-answered until the 2026-09-30 promotion below. 2026-09-30: the owner's 2026-09-26 clarification, recorded verbatim in the local audit-ledger reconciliation note, answers the binding-force part; status moves to answered-in-chat. ADR-000C and the Authority Order do not yet say that the routing artifacts carry the Blueprint's binding force or that running the project proves it.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-020",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-027",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-009",
-        "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md (ACC-3 row)"
+        "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md (ACC-3 row)",
+        "workbench/sessions/notepads/work/audit-ledger-reconciliation-2026-09-26.json#source_record-001"
       ],
       "progress": {
-        "status": "not-started",
-        "sub_label": "ADR-000C still proposed",
-        "evidence": "Answered part only. ADR-000C (workbench/docs/adr/proposed/000C, lines 10-18) states the three-carrier Contract but is not accepted, and no Spec carries the control update: S-00G SPEC.md:212-214 leaves AGENTS.md and BLUEPRINT.md to 'ADR acceptance, which is a separate step from this Spec'. AGENTS.md:22 still ranks BLUEPRINT.md as procedural Canon; LEXICON.md:204 still says seven root controls.",
-        "gap": "Accept ADR-000C; update AGENTS.md Authority Order and the LEXICON.md Workbench Contract row plus templates mirrors. The open part (what binds Blueprint claims) still needs an owner decision."
+        "status": "in-progress",
+        "sub_label": "ADR-000C accepted; binding-force wording not yet implemented",
+        "evidence": "ADR-000C is active. AGENTS.md and LEXICON.md carry the three-carrier definition and Blueprint route; S-00G records the implementation window. Integration containment is verified from Git, not by this ledger.",
+        "gap": "State in ADR-000C (or its operational owners) that the Contract and routing artifacts bind the Blueprint's accepted claims and that proof is running the project; mirror in templates."
       }
     },
     {
@@ -10762,20 +10806,20 @@
       "counted": true,
       "topic": "Routes-not-claims guardrail violation",
       "question": "What would a first violation of 000D's routes-not-claims guardrail look like, and what catches it?",
-      "status": "open",
-      "answer": "Open - no owner answer.",
-      "answered": "",
-      "reason": "Not recorded.",
+      "status": "locked",
+      "answer": "A map row or query result carrying claim text, an instance identifier, or a status-shaped field violates routes-not-claims. S-00G TK-004 checks query output and schema rejection.",
+      "answered": "2026-09-29 owner-confirmed grilling readback; explicit promotion authorization in the same chat",
+      "reason": "FND-Q23 locked accepted type rows, no instance IDs, no status fields, and route-only results.",
       "result": [
         {
-          "artifact": "workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md",
-          "action": "none",
-          "effect": "Once decided: names the violation shape and its check."
+          "artifact": "workbench/docs/adr/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md",
+          "action": "update",
+          "effect": "Names the violation shape and future check."
         },
         {
-          "artifact": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md TK-004",
-          "action": "none",
-          "effect": "Red test proving an ownership query returns routes, never claim text."
+          "artifact": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md",
+          "action": "update",
+          "effect": "TK-004 specifies the red query-output and schema checks."
         }
       ],
       "related": [
@@ -10784,42 +10828,44 @@
         "FND-Q23"
       ],
       "aliases": [],
-      "notes": "Gap triage calls it agent-answerable from decision-024/027 (Canon classifies claims in context; planes are lenses), with owner confirmation; no answer is recorded.",
+      "notes": "Gap triage calls it agent-answerable from decision-024/027 (Canon classifies claims in context; planes are lenses), with owner confirmation; no answer is recorded. 2026-09-29: owner-confirmed readback supersedes the earlier open reading. The accepted decision and current delivery limit are in the linked ADRs and S-00G.",
       "source_refs": [
-        "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-4)"
+        "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-4)",
+        "workbench/specs/S-00G-ownership-map-root-control/SPEC.md",
+        "workbench/docs/adr/REGISTER.md"
       ],
       "progress": {
-        "status": "no-build-obligation",
-        "sub_label": "needs decision",
-        "evidence": "Decision status open; no owner answer. ADR-000D is proposed and S-00G TK-004 is blocked.",
-        "gap": ""
+        "status": "in-progress",
+        "sub_label": "accepted 2026-09-29",
+        "evidence": "ADR-000D and S-00G TK-004 name the check.",
+        "gap": "The test, schema and query runtime have not been implemented. Integration containment is verified from Git, not by this ledger."
       }
     },
     {
       "id": "ACC-5",
       "family": "ACC",
       "counted": true,
-      "topic": "Repointing links in completed Specs",
-      "question": "May links to archived ADR-0013/0033 be repointed inside completed Specs S-024 and S-022?",
-      "status": "open",
-      "answer": "Open - no owner answer.",
-      "answered": "",
-      "reason": "Not recorded.",
+      "topic": "Wiki-first navigation for completed and historical capabilities",
+      "question": "After ADR-0013/0033 are archived, where should navigation for S-024 and historical S-022 lead?",
+      "status": "locked",
+      "answer": "Navigate from completed or historical capability links to the Wiki feature article first; the article links archived ADRs as sources. Keep the archive. S-024 already has an article; create one for S-022 while stating that its historical release packet is blocked, not completed.",
+      "answered": "2026-09-29 owner-confirmed grilling readback; explicit promotion authorization in the same chat",
+      "reason": "The Wiki carries the explanation and sources; agents should use it before digging through archives. The live S-022 Spec explicitly preserves unfinished acceptance.",
       "result": [
         {
-          "artifact": "workbench/specs/S-024-governance-core-adrs-and-diagnostics/SPEC.md:69 and workbench/specs/S-022-llm-workbench-v3-1-release/SPEC.md:97",
-          "action": "none",
-          "effect": "Links to ADR-0033 repointed or left, per the answer, once 0033 is archived."
+          "artifact": "workbench/wiki/design-concepts/spec-S-024-governance-core-and-diagnostics.md",
+          "action": "update",
+          "effect": "Routes to active ADR-000C and archived ADR-0033 as sources."
         },
         {
-          "artifact": "LEXICON.md Workbench Contract row",
-          "action": "none",
-          "effect": "Its ADR-0033 link repointed on archive."
+          "artifact": "workbench/wiki/design-concepts/spec-S-022-llm-workbench-v3-1-release.md",
+          "action": "create",
+          "effect": "Historical article routes to current release owners and archived Contract source without claiming S-022 complete."
         },
         {
-          "artifact": "workbench/docs/adr/REGISTER.md",
-          "action": "none",
-          "effect": "Shows 0013/0033 archived after 000B/C acceptance."
+          "artifact": "workbench/wiki/MEMORY.md, LEXICON.md",
+          "action": "update",
+          "effect": "Wiki-first feature navigation; archived ADRs retained."
         }
       ],
       "related": [
@@ -10828,17 +10874,19 @@
         "FND-Q23"
       ],
       "aliases": [],
-      "notes": "The question applies once ADR-0013 and ADR-0033 are archived after 000B/C acceptance. Owner's related words: \"For ADR acceptances, I guess we need to talk about those, but if I just created them, then they should be correct\" (2026-09-23). The gap-triage reading 'agents repoint links' is interpretation.",
+      "notes": "The question applies once ADR-0013 and ADR-0033 are archived after 000B/C acceptance. Owner's related words: \"For ADR acceptances, I guess we need to talk about those, but if I just created them, then they should be correct\" (2026-09-23). The gap-triage reading 'agents repoint links' is interpretation. 2026-09-29: owner-confirmed readback supersedes the earlier open reading. The accepted decision and current delivery limit are in the linked ADRs and S-00G. The original question proposed rewriting ADR links inside completed Specs. The owner corrected the destination to Wiki feature articles; S-022 is historical and blocked, so the new article states that limit.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-5)",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#source_record-001",
-        "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md"
+        "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md",
+        "workbench/specs/S-00G-ownership-map-root-control/SPEC.md",
+        "workbench/docs/adr/REGISTER.md"
       ],
       "progress": {
-        "status": "no-build-obligation",
-        "sub_label": "needs decision",
-        "evidence": "Decision status open; no owner answer. Premise not triggered: ADR-0013 and ADR-0033 are still active in workbench/docs/adr/ (REGISTER.md).",
-        "gap": ""
+        "status": "implemented-and-completed",
+        "sub_label": "Wiki navigation delivered 2026-09-29",
+        "evidence": "At integration merge 83ccb20c (PR #211), S-022 and S-024 feature articles and the Wiki-first route are present; archived ADRs remain linked as sources.",
+        "gap": "S-022 remains a blocked historical release packet; its release status is separate from this completed navigation result."
       }
     },
     {
@@ -11540,7 +11588,7 @@
         "E-2"
       ],
       "aliases": [],
-      "notes": "Refines TT-Q4 (Director with Dispatcher as alias) and E-2 (Director as whoever directs; the owner now). Verifier is not a term: the Dispatcher may dispatch its whole-Spec QA and owns the result.",
+      "notes": "Refines TT-Q4 (Director with Dispatcher as alias) and E-2 (Director as whoever directs; the owner now). Verifier is not a term: the Dispatcher may dispatch its whole-Spec QA and owns the result. ROLE-1 through ROLE-3 refine the roles with separate stance jobs and explicit current work scopes.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#decision-004",
         "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#correction-007"
@@ -11558,7 +11606,7 @@
       "counted": true,
       "topic": "Roles are not branches",
       "question": "Are Director, Dispatcher and Worker defined by their responsibilities independent of branch placement, with branches as work topology rather than role definitions?",
-      "status": "locked",
+      "status": "superseded",
       "answer": "Yes. Roles are defined by responsibility and approval boundary, not by Git branch placement. Branches attach to the work being accumulated; Director does not mean integration and Dispatcher does not mean Spec branch.",
       "answered": "2026-09-24, SCR note decision-005; readback confirmed decision-012",
       "reason": "Owner: 'we dont have responsibilities or roles tied to branches, branches are tied to work.'",
@@ -11570,18 +11618,19 @@
         }
       ],
       "related": [
-        "WF-7"
+        "WF-7",
+        "ROLE-3"
       ],
       "aliases": [],
-      "notes": "None.",
+      "notes": "Historical 2026-09-24 answer preserved. ROLE-3 explicitly relates role scope to project/integration, Spec/branch and Task; branch possession still grants no authority.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#decision-005"
       ],
       "progress": {
-        "status": "not-started",
-        "sub_label": "S-00P TK-002 blocked",
-        "evidence": "At 6ae38b9 BLUEPRINT.md still carried the restored 'Review Task' map step, 'Each completed Task receives review before its branch joins the Spec branch' and the 100/20/5 scale; LEXICON.md made Dispatcher an alias of Director; ADR-000F was proposed.",
-        "gap": "Promoted by the 2026-09-26 SCR reconciliation (owner-approved 2026-09-24) into BLUEPRINT.md, LEXICON.md, templates/LEXICON.md, accepted ADR-000F and S-00P; AGENTS.md, RUNBOOK.md and templates controls await S-00P TK-002, TK-003 and TK-005 (blocked on S-00I/S-00J)."
+        "status": "no-build-obligation",
+        "sub_label": "superseded by ROLE-3",
+        "evidence": "Owner confirmed ROLE-3 on 2026-09-27; original answer remains historical.",
+        "gap": ""
       }
     },
     {
@@ -11994,6 +12043,1617 @@
         "sub_label": null,
         "evidence": "S-049 SPEC.md:136-139 (Decisions And Contracts) and :169-171 (Dependencies And Blockers) record that the owner confirmed rooms outside the repository ran v3.1.2, so the freeze prevents a live break; S-049 complete.",
         "gap": ""
+      }
+    },
+    {
+      "id": "ROLE-1",
+      "family": "ROLE",
+      "counted": true,
+      "topic": "Role and stance separation",
+      "question": "How do Dispatcher, Spec Planner and Spec Manager relate?",
+      "status": "locked",
+      "answer": "Dispatcher is a role. Spec Planner and Spec Manager are distinct stances. Each of the three has its own Spec. A Dispatcher already has dispatch responsibility; a stance supplies the job-specific method and obligations.",
+      "answered": "2026-09-27 owner explicitly confirmed the readback",
+      "reason": "Minimum buildout for parallel Spec and Task rollout with shared decisions and progress reachable on integration.",
+      "result": [
+        {
+          "artifact": "LEXICON.md; AGENTS.md; BLUEPRINT.md; RUNBOOK.md; workbench/wiki/design-concepts/roles-and-stances.md",
+          "action": "update",
+          "effect": "Define role scopes and stance jobs, route the separate capability owners and preserve the reviewed integration boundary."
+        },
+        {
+          "artifact": "workbench/specs/S-002C-director-role/SPEC.md; workbench/specs/S-002D-dispatcher-role/SPEC.md; workbench/specs/S-002E-worker-role/SPEC.md; workbench/specs/S-002F-spec-planner-stance/SPEC.md; workbench/specs/S-002G-spec-manager-stance/SPEC.md",
+          "action": "create",
+          "effect": "One planned capability per role or stance; no new Task cut."
+        }
+      ],
+      "related": [],
+      "aliases": [
+        "v4-role-groundwork R1"
+      ],
+      "notes": "Current accepted decision. The progress block below is the historical baseline reading, not current implementation status; follow the linked Specs.",
+      "source_refs": [
+        "Owner-confirmed v4-role-groundwork R1, 2026-09-27"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "At baseline b00a2e338436ef7b281b0cc53e74f891af32f18c, no dedicated Director, Dispatcher, Worker, Spec Planner or Spec Manager operating entry existed; current capability owners above record subsequent planning.",
+        "gap": "Role/stance capability implementation and scenario proof remain; planning does not deliver those behaviors."
+      }
+    },
+    {
+      "id": "ROLE-2",
+      "family": "ROLE",
+      "counted": true,
+      "topic": "Parallel work within one Spec",
+      "question": "What defines a Dispatcher lane for the current minimum buildout?",
+      "status": "locked",
+      "answer": "Each Dispatcher works within one Spec. Using Spec Planner it creates small Tasks and groups them into parallel vertical slices, and may dispatch Workers to help write Tasks. Using Spec Manager it dispatches and monitors execution Workers. Director coordinates work across Specs.",
+      "answered": "2026-09-27 owner explicitly confirmed the readback",
+      "reason": "Minimum buildout for parallel Spec and Task rollout with shared decisions and progress reachable on integration.",
+      "result": [
+        {
+          "artifact": "LEXICON.md; AGENTS.md; BLUEPRINT.md; RUNBOOK.md; workbench/wiki/design-concepts/roles-and-stances.md",
+          "action": "update",
+          "effect": "Define role scopes and stance jobs, route the separate capability owners and preserve the reviewed integration boundary."
+        },
+        {
+          "artifact": "workbench/specs/S-002C-director-role/SPEC.md; workbench/specs/S-002D-dispatcher-role/SPEC.md; workbench/specs/S-002E-worker-role/SPEC.md; workbench/specs/S-002F-spec-planner-stance/SPEC.md; workbench/specs/S-002G-spec-manager-stance/SPEC.md",
+          "action": "create",
+          "effect": "One planned capability per role or stance; no new Task cut."
+        }
+      ],
+      "related": [],
+      "aliases": [
+        "v4-role-groundwork R2"
+      ],
+      "notes": "Current accepted decision. The progress block below is the historical baseline reading, not current implementation status; follow the linked Specs.",
+      "source_refs": [
+        "Owner-confirmed v4-role-groundwork R2, 2026-09-27"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "At baseline b00a2e338436ef7b281b0cc53e74f891af32f18c, no dedicated Director, Dispatcher, Worker, Spec Planner or Spec Manager operating entry existed; current capability owners above record subsequent planning.",
+        "gap": "Role/stance capability implementation and scenario proof remain; planning does not deliver those behaviors."
+      }
+    },
+    {
+      "id": "ROLE-3",
+      "family": "ROLE",
+      "counted": true,
+      "topic": "Scope and job",
+      "question": "How do roles, stances and branches fit together?",
+      "status": "locked",
+      "answer": "Role defines scope; stance defines the job within that scope. Director covers the whole project and integration, Dispatcher its assigned Spec and branch, Worker its assigned Task. Reviewer and Auditor are stances usable by Dispatcher, not additional roles. Branches express the scope of accumulated work.",
+      "answered": "2026-09-27 owner explicitly confirmed the readback",
+      "reason": "Minimum buildout for parallel Spec and Task rollout with shared decisions and progress reachable on integration.",
+      "result": [
+        {
+          "artifact": "LEXICON.md; AGENTS.md; BLUEPRINT.md; RUNBOOK.md; workbench/wiki/design-concepts/roles-and-stances.md",
+          "action": "update",
+          "effect": "Define role scopes and stance jobs, route the separate capability owners and preserve the reviewed integration boundary."
+        },
+        {
+          "artifact": "workbench/specs/S-002C-director-role/SPEC.md; workbench/specs/S-002D-dispatcher-role/SPEC.md; workbench/specs/S-002E-worker-role/SPEC.md; workbench/specs/S-002F-spec-planner-stance/SPEC.md; workbench/specs/S-002G-spec-manager-stance/SPEC.md",
+          "action": "create",
+          "effect": "One planned capability per role or stance; no new Task cut."
+        }
+      ],
+      "related": [
+        "SCR-4",
+        "SCR-4A"
+      ],
+      "aliases": [
+        "v4-role-groundwork R3"
+      ],
+      "notes": "Current accepted decision. The progress block below is the historical baseline reading, not current implementation status; follow the linked Specs.",
+      "source_refs": [
+        "Owner-confirmed v4-role-groundwork R3, 2026-09-27"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "At baseline b00a2e338436ef7b281b0cc53e74f891af32f18c, no dedicated Director, Dispatcher, Worker, Spec Planner or Spec Manager operating entry existed; current capability owners above record subsequent planning.",
+        "gap": "Role/stance capability implementation and scenario proof remain; planning does not deliver those behaviors."
+      }
+    },
+    {
+      "id": "ROLE-4",
+      "family": "ROLE",
+      "counted": true,
+      "topic": "Integration-first continuity",
+      "question": "What is being documented, specified and reconciled onto integration now?",
+      "status": "locked",
+      "answer": "Recover accepted v4 decisions and progress into their existing tracked owners so fresh agents can continue from integration. Separately specify Director, Dispatcher, Worker, Spec Planner and Spec Manager; reuse Reviewer/Auditor owners. Normal Task-branch merge requests target the Spec branch, then the independently reviewed Spec targets integration. Preserve the current release exception, owner Human QA and main boundary. Keep buildout minimal and defer new execution Tasks until flight launch; use GPT_OS roles as examples, not copied authority.",
+      "answered": "2026-09-27 owner explicitly confirmed the readback",
+      "reason": "Minimum buildout for parallel Spec and Task rollout with shared decisions and progress reachable on integration.",
+      "result": [
+        {
+          "artifact": "LEXICON.md; AGENTS.md; BLUEPRINT.md; RUNBOOK.md; workbench/wiki/design-concepts/roles-and-stances.md",
+          "action": "update",
+          "effect": "Define role scopes and stance jobs, route the separate capability owners and preserve the reviewed integration boundary."
+        },
+        {
+          "artifact": "workbench/specs/S-002C-director-role/SPEC.md; workbench/specs/S-002D-dispatcher-role/SPEC.md; workbench/specs/S-002E-worker-role/SPEC.md; workbench/specs/S-002F-spec-planner-stance/SPEC.md; workbench/specs/S-002G-spec-manager-stance/SPEC.md",
+          "action": "create",
+          "effect": "One planned capability per role or stance; no new Task cut."
+        }
+      ],
+      "related": [],
+      "aliases": [
+        "v4-role-groundwork R4"
+      ],
+      "notes": "Current accepted decision. The progress block below is the historical baseline reading, not current implementation status; follow the linked Specs.",
+      "source_refs": [
+        "Owner-confirmed v4-role-groundwork R4, 2026-09-27"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "At baseline b00a2e338436ef7b281b0cc53e74f891af32f18c, no dedicated Director, Dispatcher, Worker, Spec Planner or Spec Manager operating entry existed; current capability owners above record subsequent planning.",
+        "gap": "Role/stance capability implementation and scenario proof remain; planning does not deliver those behaviors."
+      }
+    },
+    {
+      "id": "GX-3",
+      "family": "GX",
+      "counted": true,
+      "topic": "Skill names and grilling endpoint",
+      "question": "What are the names and boundaries of the DQC and grilling-completion skills?",
+      "status": "locked",
+      "answer": "/to-dqc is the grilling-completion skill: it inspects every locked grilling answer and groups it into a suitable existing DQC, or creates a separate one when it evolves independently, preserving source question identity and corrections. /dqc is the reusable primitive for card operations and evidence-backed assessment, called by /to-dqc and by the mapping, planning, implementation, review and verification skills once those are updated.",
+      "answered": "2026-09-29, owner confirmed the readback (inquiry closed with names settled)",
+      "reason": "Names settled so grilling has a defined exit into the Tracker.",
+      "result": [
+        {
+          "artifact": "workbench/skills/to-dqc/SKILL.md; workbench/skills/dqc/SKILL.md",
+          "action": "create",
+          "effect": "The grilling-completion skill and the card primitive, by these names."
+        }
+      ],
+      "related": [
+        "GX-1",
+        "GX-2"
+      ],
+      "aliases": [
+        "v4-grilling-exit-workflow Q3"
+      ],
+      "notes": "The step meanings conflict with S-01T, LEXICON.md and workbench/tools/landmark-tracker.mjs, which say the steps describe documentation progress, never Task status or implementation effort; reconcile before Canon changes. The DQC and Landmark group (S-001Z, S-002A, S-002B) belongs to the owner's Codex lane. The inquiry itself authorized no Canon, Tracker or skill change.",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/v4-grilling-exit-workflow-2026-09-29.json#decision-003"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "At integration 2780fe66: no /to-dqc or /dqc skill in workbench/skills; S-01T and LEXICON.md keep the documentation-only step reading.",
+        "gap": "Owning Spec not yet named; the Codex DQC lane or a new Spec carries the skills and the step reconciliation."
+      }
+    },
+    {
+      "id": "GX-2",
+      "family": "GX",
+      "counted": true,
+      "topic": "DQC primitive versus calling skills",
+      "question": "What responsibility belongs in the new DQC skill versus the calling workflow skills?",
+      "status": "locked",
+      "answer": "One focused DQC primitive owns shared card mechanics: find, create or group the right DQC, preserve locked-question lineage and corrections, link ADRs, Specs, Tasks and other artifacts, and record evidence-backed progress assessments. The existing workflow skills decide when to call it and what their own step proves, and are updated to compose it. No dedicated DQC review skill. Domain-modeling stays available but is not required in this flow.",
+      "answered": "2026-09-29, owner confirmed the readback (inquiry closed with names settled)",
+      "reason": "Card mechanics live once; each workflow skill keeps ownership of what its own step proves.",
+      "result": [
+        {
+          "artifact": "workbench/skills (new DQC primitive; mapping, planning, implementation, review and verification skills)",
+          "action": "create",
+          "effect": "A reusable card primitive that the workflow skills compose."
+        }
+      ],
+      "related": [
+        "GX-1",
+        "GX-3"
+      ],
+      "aliases": [
+        "v4-grilling-exit-workflow Q2"
+      ],
+      "notes": "The step meanings conflict with S-01T, LEXICON.md and workbench/tools/landmark-tracker.mjs, which say the steps describe documentation progress, never Task status or implementation effort; reconcile before Canon changes. The DQC and Landmark group (S-001Z, S-002A, S-002B) belongs to the owner's Codex lane. The inquiry itself authorized no Canon, Tracker or skill change.",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/v4-grilling-exit-workflow-2026-09-29.json#decision-002"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "At integration 2780fe66: no /to-dqc or /dqc skill in workbench/skills; S-01T and LEXICON.md keep the documentation-only step reading.",
+        "gap": "Owning Spec not yet named; the Codex DQC lane or a new Spec carries the skills and the step reconciliation."
+      }
+    },
+    {
+      "id": "GX-1",
+      "family": "GX",
+      "counted": true,
+      "topic": "What makes a concept Confirmed",
+      "question": "What evidence makes a concept Confirmed after Align?",
+      "status": "locked",
+      "answer": "Aligned is a locked grilling answer with no Tracker card yet. At session completion each locked answer is added to an existing DQC, or to a new DQC where it evolves independently, which makes it Confirmed. Mapped uses selective ADRs from DQCs where warranted, then Specs as small destinations. Planned means ready Tasks. Journey means implementation. Review is distinct code and QA review with TDD proof. Verified compares delivered work against the DQC's expected understanding and result. Existing workflow skills maintain DQCs at each step, preferably through one focused DQC primitive; there is no DQC-specific review skill.",
+      "answered": "2026-09-29, owner confirmed the readback (inquiry closed with names settled)",
+      "reason": "The owner wants every locked answer to reach a card so progress toward each concept can be seen, with each workflow step leaving evidence on that card.",
+      "result": [
+        {
+          "artifact": "LEXICON.md (Align, DQC, Landmark Tracker rows); workbench/specs/S-01T-landmark-tracker-foundation/SPEC.md; workbench/landmark-tracker/README.md",
+          "action": "update",
+          "effect": "Define Aligned, Confirmed and the later steps as answered, reconciling the documentation-only step reading."
+        }
+      ],
+      "related": [
+        "GX-2",
+        "GX-3"
+      ],
+      "aliases": [
+        "v4-grilling-exit-workflow Q1"
+      ],
+      "notes": "The step meanings conflict with S-01T, LEXICON.md and workbench/tools/landmark-tracker.mjs, which say the steps describe documentation progress, never Task status or implementation effort; reconcile before Canon changes. The DQC and Landmark group (S-001Z, S-002A, S-002B) belongs to the owner's Codex lane. The inquiry itself authorized no Canon, Tracker or skill change.",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/v4-grilling-exit-workflow-2026-09-29.json#decision-001"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "At integration 2780fe66: no /to-dqc or /dqc skill in workbench/skills; S-01T and LEXICON.md keep the documentation-only step reading.",
+        "gap": "Owning Spec not yet named; the Codex DQC lane or a new Spec carries the skills and the step reconciliation."
+      }
+    },
+    {
+      "id": "LD-1",
+      "family": "LD",
+      "counted": true,
+      "topic": "Starting landmark inventory evolves through DQCs",
+      "question": "Are the ten draft landmarks the right cut (accept, merge, split, rename)?",
+      "status": "locked",
+      "answer": "Use the proposed 23 candidates as an evolving starting inventory. Add further landmarks as meaningful features or framework pillars emerge from DQCs. The count is not fixed, overlap is allowed, and detailed names/boundaries remain refinable.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-037, directive-002, correction-001)",
+      "reason": "The owner values discovering further landmarks through DQCs; eligibility is importance to the core path and a place in the Blueprint or contract, with overlap allowed.",
+      "result": [
+        {
+          "artifact": "workbench/wiki/design-concepts/landmark-tracker.md",
+          "action": "update",
+          "effect": "Lists the starting landmark candidates as a map of concepts, not a closed taxonomy or delivery claim."
+        },
+        {
+          "artifact": "BLUEPRINT.md (Landmark Tracker paragraphs)",
+          "action": "update",
+          "effect": "States that further landmarks emerge from DQCs."
+        }
+      ],
+      "related": [
+        "LD-1A",
+        "LD-1B",
+        "LD-31"
+      ],
+      "aliases": [
+        "landmark-definition Q1"
+      ],
+      "notes": "Revised wording during the session: What starting landmark inventory should guide us, and can further landmarks emerge from DQCs? Original question: are the ten draft landmarks the right cut. The 23-candidate set is a starting inventory; final titles and boundaries stay refinable. Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-037",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#directive-002",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#correction-001"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: BLUEPRINT.md, LEXICON.md (DQC, Landmark, Landmark Tracker, Landmark Wiki page rows) and the design-concept article workbench/wiki/design-concepts/landmark-tracker.md carry the answer; ADR-000N is active; S-01T records the foundation.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-2",
+      "family": "LD",
+      "counted": true,
+      "topic": "Landmark definition",
+      "question": "Is a Landmark the same object as the Blueprint ladder confirmed shared design concept, or a distinct term?",
+      "status": "locked",
+      "answer": "Codex definition (proposal-001) locked; landmark holds exploration before the canonical map; accepted direction reflected in the Blueprint.",
+      "answered": "2026-09-25, landmark-definition grilling (decision-004, directive-003)",
+      "reason": "The owner chose the Codex definition over his own draft; a landmark holds exploration before it is ready for the canonical map, so working answers stay visibly provisional.",
+      "result": [
+        {
+          "artifact": "LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows)",
+          "action": "update",
+          "effect": "Defines Landmark as an evolving account of a feature or framework pillar and its importance to the Workbench."
+        },
+        {
+          "artifact": "BLUEPRINT.md (Landmark Tracker paragraphs)",
+          "action": "update",
+          "effect": "Relates landmarks to the Blueprint: accepted direction is reflected there."
+        }
+      ],
+      "related": [
+        "LD-3",
+        "LD-18"
+      ],
+      "aliases": [
+        "landmark-definition Q2"
+      ],
+      "notes": "Revised wording during the session: How does the expanded evolving-alignment record relate to the shared design concept and canonical Blueprint? Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-004",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#directive-003"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: BLUEPRINT.md, LEXICON.md (DQC, Landmark, Landmark Tracker, Landmark Wiki page rows) and the design-concept article workbench/wiki/design-concepts/landmark-tracker.md carry the answer; ADR-000N is active; S-01T records the foundation.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-3",
+      "family": "LD",
+      "counted": true,
+      "topic": "A landmark is not a Spec or PRD",
+      "question": "Does a landmark need a PRD-shaped record of its own, or is destination-only documentation enough?",
+      "status": "locked",
+      "answer": "A landmark is an evolving feature/framework account, not a Spec or PRD. It has its own structured record alongside the readable Wiki explanation.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-027, decision-002, decision-023)",
+      "reason": "A concept can exist before delivery and stay useful after several Specs finish, so it needs its own record rather than a PRD.",
+      "result": [
+        {
+          "artifact": "LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows)",
+          "action": "update",
+          "effect": "Landmark row: not a Spec or PRD; never implemented itself."
+        },
+        {
+          "artifact": "workbench/docs/adr/000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md",
+          "action": "update",
+          "effect": "Records the landmark as its own structured record beside its readable Wiki explanation."
+        }
+      ],
+      "related": [
+        "LD-2",
+        "LD-7"
+      ],
+      "aliases": [
+        "landmark-definition Q3"
+      ],
+      "notes": "Reconciled to earlier owner confirmations (correction-011); not a new owner answer. Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-027",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-002",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-023",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#correction-011"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: BLUEPRINT.md, LEXICON.md (DQC, Landmark, Landmark Tracker, Landmark Wiki page rows) and the design-concept article workbench/wiki/design-concepts/landmark-tracker.md carry the answer; ADR-000N is active; S-01T records the foundation.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-4",
+      "family": "LD",
+      "counted": true,
+      "topic": "Four pieces and their jobs",
+      "question": "Where is a landmark documented: wiki design-concept article, Blueprint section, ledger entry, or a combination, and which is the owner?",
+      "status": "locked",
+      "answer": "Four pieces divide the jobs: Destination Questions preserve concept understanding and lineage; Landmarks connect the evolving feature/pillar account; Tracker generates the compact view; Wiki explains confirmed durable understanding in readable Markdown without WBIDs.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-028, decision-005, decision-023)",
+      "reason": "Inference: each piece answers a different reader need: concept lineage, the feature account, a compact view and a readable explanation.",
+      "result": [
+        {
+          "artifact": "workbench/docs/adr/000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md",
+          "action": "update",
+          "effect": "Records the four pieces: DQCs, landmarks, generated Tracker and Landmark Wiki pages."
+        },
+        {
+          "artifact": "LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows)",
+          "action": "update",
+          "effect": "Defines each piece."
+        }
+      ],
+      "related": [
+        "LD-22B",
+        "LD-28"
+      ],
+      "aliases": [
+        "landmark-definition Q4"
+      ],
+      "notes": "Revised wording during the session: How should persistent landmark records, landmark Wiki pages, the Blueprint and other routing artifacts divide their jobs? Original question asked where a landmark is documented; the four-piece answer supersedes the earlier single-home framing. Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-028",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-005",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-023"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: BLUEPRINT.md, LEXICON.md (DQC, Landmark, Landmark Tracker, Landmark Wiki page rows) and the design-concept article workbench/wiki/design-concepts/landmark-tracker.md carry the answer; ADR-000N is active; S-01T records the foundation.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-5",
+      "family": "LD",
+      "counted": true,
+      "topic": "Ledger and landmark records feed the Tracker without replacing sources",
+      "question": "How does the ledger carry landmarks: top-level landmarks[] plus one landmark per question, or many per question?",
+      "status": "locked",
+      "answer": "Keep the existing grilling sources. Destination Questions synthesize related source questions and preserve evolving understanding and lineage; landmarks connect that understanding around a feature or pillar; TRACKER.json projects the source records. Existing artifacts keep their jobs. Do not move or replace the grilling ledger. Exact link fields remain build design.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-030, decision-016, decision-009)",
+      "reason": "The owner selected an additive seam and corrected the earlier premise that the Tracker would replace the grilling ledger.",
+      "result": [
+        {
+          "artifact": "workbench/specs/S-01T-landmark-tracker-foundation/SPEC.md",
+          "action": "update",
+          "effect": "Keeps existing grilling sources; DQCs synthesize them with lineage; TRACKER.json projects the records."
+        },
+        {
+          "artifact": "workbench/wiki/grilling-destination-audit-ledger.json",
+          "action": "none",
+          "effect": "Stays in place as the grilling answer record; no migration."
+        }
+      ],
+      "related": [
+        "LD-22",
+        "LD-28"
+      ],
+      "aliases": [
+        "landmark-definition Q5"
+      ],
+      "notes": "Revised wording during the session: How should the existing grilling ledger and proposed landmark records feed the Landmark Board without duplicating question/answer authorship? decision-009 (move the ledger into TRACKER.json) was superseded by decision-016/030. Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-030",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-016",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-009"
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-002B",
+        "evidence": "At integration f373ec58: workbench/tools/landmark-tracker.mjs captures DQCs and rebuilds the generated TRACKER.json; workbench/landmark-tracker/ holds flat destination-questions/ (DQC-000A) and an empty landmarks/; DQC records carry source identities with revisions.",
+        "gap": "Linking ledger rows to DQCs at scale is S-002B delivery; only one DQC exists."
+      }
+    },
+    {
+      "id": "LD-6",
+      "family": "LD",
+      "counted": true,
+      "topic": "Landmarks and questions get WBIDs",
+      "question": "Does a landmark get a WBID or its own ID series?",
+      "status": "locked",
+      "answer": "Landmarks and questions both get WBIDs; legacy question labels stay readable.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-010)",
+      "reason": "Inference: ADR-0041 visible identifiers already give every durable record a stable ID; legacy question labels stay readable as history.",
+      "result": [
+        {
+          "artifact": "workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/)",
+          "action": "update",
+          "effect": "Allocates DQC- and LMK- identities for destination questions and landmarks."
+        }
+      ],
+      "related": [],
+      "aliases": [
+        "landmark-definition Q6"
+      ],
+      "notes": "Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-010"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: workbench/landmark-tracker/README.md declares DQC- and LMK- identities; DQC-000A exists.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-7",
+      "family": "LD",
+      "counted": true,
+      "topic": "No universal parent Spec per landmark",
+      "question": "Landmark-level Spec: does each landmark get one parent Spec that cuts child Specs, or do Specs only reference their landmark?",
+      "status": "locked",
+      "answer": "No universal parent Spec. A landmark is not a Spec or PRD and is not implemented itself. Bounded Specs and Tasks deliver work; several Specs may contribute to one landmark explanation. Links expose those contributions.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-031)",
+      "reason": "A concept can exist before delivery and remain useful after multiple delivery efforts.",
+      "result": [
+        {
+          "artifact": "LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows)",
+          "action": "update",
+          "effect": "Landmark row: bounded Specs and Tasks deliver; several Specs may contribute to one landmark."
+        }
+      ],
+      "related": [
+        "LD-3"
+      ],
+      "aliases": [
+        "landmark-definition Q7"
+      ],
+      "notes": "Revised wording during the session: How do bounded Specs and Tasks advance a landmark while preserving an alignment view across multiple delivery efforts? Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-031"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: BLUEPRINT.md, LEXICON.md (DQC, Landmark, Landmark Tracker, Landmark Wiki page rows) and the design-concept article workbench/wiki/design-concepts/landmark-tracker.md carry the answer; ADR-000N is active; S-01T records the foundation.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-8",
+      "family": "LD",
+      "counted": true,
+      "topic": "Pre-delivery understanding lives in DQCs and landmarks",
+      "question": "Who owns a locked answer that no Spec or Task carries until one exists: the landmark article, a Backlog Spec, or the ledger row alone?",
+      "status": "locked",
+      "answer": "Tracker, landmarks and Destination Question Cards (DQCs) are the place to maintain and consult that current understanding. DQCs and landmark records hold its substance; the generated Tracker presents it. Grilling notepads remain, but become more historical and handoff-like rather than the primary current account.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-036, correction-012)",
+      "reason": "Keep evolving understanding in the concept records while retaining the discussion history needed to explain and continue work (agent synthesis).",
+      "result": [
+        {
+          "artifact": "AGENTS.md (Session Records And Checkpoints)",
+          "action": "update",
+          "effect": "Workflow activity maintains current pre-delivery understanding in DQCs and landmark records; grilling notepads stay as history and handoff context."
+        },
+        {
+          "artifact": "LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows)",
+          "action": "update",
+          "effect": "DQC row holds unresolved understanding before a Spec exists."
+        }
+      ],
+      "related": [
+        "LD-29",
+        "LD-30"
+      ],
+      "aliases": [
+        "landmark-definition Q8"
+      ],
+      "notes": "Revised wording during the session: How are unresolved questions, working answers and confirmed but uncarried obligations preserved and made visible before a Spec exists? Owner corrected the first readback (correction-012) before confirming. Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-036",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#correction-012"
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-002B",
+        "evidence": "At integration f373ec58: AGENTS.md Session Records says workflow activity maintains DQCs and landmark records once the capability is available; the capture command exists.",
+        "gap": "Workflow composition that maintains DQCs (S-002B acceptance, GX-2 DQC primitive) is not delivered."
+      }
+    },
+    {
+      "id": "LD-9",
+      "family": "LD",
+      "counted": true,
+      "topic": "Two boards, not three",
+      "question": "Does a landmark appear on TASKBOARD.json, given E-3 limits cards to Specs and Tasks?",
+      "status": "locked",
+      "answer": "Two boards: Landmark Board (alignment) and Taskboard (delivery). No third grilling board.",
+      "answered": "2026-09-25, landmark-definition grilling (decision-003)",
+      "reason": "Owner: the Landmark Board answers how aligned the Journey is; the Taskboard answers delivery; a third grilling board is unnecessary if the landmark board is built correctly.",
+      "result": [
+        {
+          "artifact": "LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows)",
+          "action": "update",
+          "effect": "Frontier and Landmark Tracker rows: Taskboard projects implementation; Landmark Tracker shows documentation and alignment."
+        }
+      ],
+      "related": [
+        "LD-16"
+      ],
+      "aliases": [
+        "landmark-definition Q9"
+      ],
+      "notes": "Revised wording during the session: How do the Landmark Board and Taskboard cooperate as the two views of alignment and completion? Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-003"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: BLUEPRINT.md, LEXICON.md (DQC, Landmark, Landmark Tracker, Landmark Wiki page rows) and the design-concept article workbench/wiki/design-concepts/landmark-tracker.md carry the answer; ADR-000N is active; S-01T records the foundation.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-10",
+      "family": "LD",
+      "counted": true,
+      "topic": "Cards evolve; no reset or reopen lifecycle",
+      "question": "What does reaching a landmark mean for its article, its questions and its Specs?",
+      "status": "locked",
+      "answer": "Keep the evolving account and its source history. The generated view reflects current mixed documentation progress; cards are not reopened or reset as a completion lifecycle. Finished Specs do not automatically finish a landmark.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-033, correction-008)",
+      "reason": "These cards represent evolving related understanding, not a single implementation job.",
+      "result": [
+        {
+          "artifact": "workbench/wiki/design-concepts/landmark-tracker.md",
+          "action": "update",
+          "effect": "Explains that cards are a web of related items whose distribution changes; finished Specs do not finish a landmark."
+        }
+      ],
+      "related": [
+        "LD-12",
+        "LD-23"
+      ],
+      "aliases": [
+        "landmark-definition Q10"
+      ],
+      "notes": "Revised wording during the session: How should the evolving web of related items display changes over time, without imposing a reset/reopening lifecycle on dashboard cards? Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-033",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#correction-008"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: BLUEPRINT.md, LEXICON.md (DQC, Landmark, Landmark Tracker, Landmark Wiki page rows) and the design-concept article workbench/wiki/design-concepts/landmark-tracker.md carry the answer; ADR-000N is active; S-01T records the foundation.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-11",
+      "family": "LD",
+      "counted": true,
+      "topic": "Landmark and DQC stay distinct from Frontier",
+      "question": "Lexicon: define Landmark beside Map, Fog and Frontier (FND-Q17b), or fold it into an existing term?",
+      "status": "locked",
+      "answer": "Landmark and Destination Question have the approved distinct meanings; neither should be folded into Frontier. FND-Q17b records a ready-Task meaning of Frontier, while later discussion uses it more broadly for evolving understanding. Proposed reconciliation: retain the technical ready-Task meaning and describe the broader concept explicitly without silently redefining the term. Exact formal wording is not owner-confirmed.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-039)",
+      "reason": "A colloquial phrase should not silently alter an established operational concept.",
+      "result": [
+        {
+          "artifact": "LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows)",
+          "action": "update",
+          "effect": "Frontier keeps its ready-Task meaning; the Frontier row points to the Landmark Tracker for evolving understanding."
+        }
+      ],
+      "related": [
+        "LD-16"
+      ],
+      "aliases": [
+        "landmark-definition Q11"
+      ],
+      "notes": "Exact formal wording was not owner-confirmed. Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-039"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: BLUEPRINT.md, LEXICON.md (DQC, Landmark, Landmark Tracker, Landmark Wiki page rows) and the design-concept article workbench/wiki/design-concepts/landmark-tracker.md carry the answer; ADR-000N is active; S-01T records the foundation.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-1A",
+      "family": "LD",
+      "counted": true,
+      "topic": "Unpack agent bundles into seven candidates",
+      "question": "Should L6 and L7 be unpacked into Context Map, Agent Autonomy, Agent Stances, Skills, Notepads, Handoffs and Session Transport as candidate landmarks?",
+      "status": "locked",
+      "answer": "Agreed candidate grouping: Context Map, Agent Autonomy, Agent Stances, Skills, Notepads, Handoffs, Session Transport. Individual eligibility and detailed boundaries remain provisional; overall inventory remains open.",
+      "answered": "2026-09-25, landmark-definition grilling (decision-001)",
+      "reason": "Inference: the two broad bundles hid distinct concepts; the owner called the decomposition \"just better\" without further reason.",
+      "result": [
+        {
+          "artifact": "workbench/wiki/design-concepts/landmark-tracker.md",
+          "action": "update",
+          "effect": "Carries Context Map, Agent Autonomy, Agent Stances, Skills, Notepads, Handoffs and Session Transport as candidate landmarks."
+        }
+      ],
+      "related": [
+        "LD-1"
+      ],
+      "aliases": [
+        "landmark-definition Q1A"
+      ],
+      "notes": "Individual eligibility and boundaries stay provisional. Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-001"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: BLUEPRINT.md, LEXICON.md (DQC, Landmark, Landmark Tracker, Landmark Wiki page rows) and the design-concept article workbench/wiki/design-concepts/landmark-tracker.md carry the answer; ADR-000N is active; S-01T records the foundation.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-1B",
+      "family": "LD",
+      "counted": true,
+      "topic": "Artifact Types, Durable Knowledge and Wiki stay separate",
+      "question": "Should Artifact Types, Durable Knowledge and Wiki be three separate landmarks with the proposed distinct purposes?",
+      "status": "locked",
+      "answer": "Keep Artifact Types, Durable Knowledge and Wiki as separate landmark candidates. Overlap is acceptable; rigid boundaries are not required.",
+      "answered": "2026-09-25, landmark-definition grilling (decision-002)",
+      "reason": "Owner: landmarks may overlap because they are summaries of grilling directions established by the routing artifacts as a whole, not Specs or PRDs.",
+      "result": [
+        {
+          "artifact": "workbench/wiki/design-concepts/landmark-tracker.md",
+          "action": "update",
+          "effect": "Keeps Artifact Types, Durable Knowledge and Wiki as separate, overlapping candidates."
+        }
+      ],
+      "related": [
+        "LD-1"
+      ],
+      "aliases": [
+        "landmark-definition Q1B"
+      ],
+      "notes": "Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-002"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: BLUEPRINT.md, LEXICON.md (DQC, Landmark, Landmark Tracker, Landmark Wiki page rows) and the design-concept article workbench/wiki/design-concepts/landmark-tracker.md carry the answer; ADR-000N is active; S-01T records the foundation.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-12",
+      "family": "LD",
+      "counted": true,
+      "topic": "Eight documentation steps",
+      "question": "What lanes should the Landmark Tracker have, and what evidence or owner decision moves a card between them?",
+      "status": "locked",
+      "answer": "Cards represent destination concepts, distinct from constituent grilling prompts. Mixed progress shown as percentage distributions for questions and landmarks; no single card lane/reset lifecycle. Exact steps Idea, Aligning, Confirmed, Mapped, Planned, Journey, Review, Verified remain locked. Tracker generated; folder placement behavior needs reconciliation with corrected model.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-017, decision-015, decision-011)",
+      "reason": "Inference: the steps follow the owner workflow (Idea -> Align -> Map -> Journey -> QA) so a concept shows how far it has been pushed toward its documented destination.",
+      "result": [
+        {
+          "artifact": "workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/)",
+          "action": "update",
+          "effect": "Uses exactly Idea, Aligning, Confirmed, Mapped, Planned, Journey, Review, Verified as the step vocabulary."
+        },
+        {
+          "artifact": "workbench/wiki/design-concepts/landmark-tracker.md",
+          "action": "update",
+          "effect": "Explains the steps as documentation progress."
+        }
+      ],
+      "related": [
+        "LD-23",
+        "LD-27"
+      ],
+      "aliases": [
+        "landmark-definition Q12"
+      ],
+      "notes": "decision-015 replaced the earlier Built step with Journey before Review. GX-1 later gave step meanings that conflict with the documentation-only reading; see GX-1. Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-017",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-015",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-011"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: workbench/tools/landmark-tracker.mjs STEPS holds the eight steps in order; TRACKER.json lists them.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-13",
+      "family": "LD",
+      "counted": true,
+      "topic": "Changed answers expose affected claims",
+      "question": "How does a changed or reversed answer trigger assessment and reconciliation of affected artifacts without presuming every link is affected?",
+      "status": "locked",
+      "answer": "Preserve what changed, why, related artifacts and evidence-bearing alignment assessments. Assess which specific claims are affected rather than assuming every link is stale. Proposed mechanics: identify the changed claim, compare related durable statements, and record supported impact or no impact plus any reconciliation need.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-040)",
+      "reason": "A relationship alone does not establish a contradiction or a required edit.",
+      "result": [
+        {
+          "artifact": "workbench/specs/S-002A-landmark-records/SPEC.md",
+          "action": "update",
+          "effect": "Expected-claim assessment records supported impact or no impact for each affected durable claim."
+        }
+      ],
+      "related": [
+        "LD-10"
+      ],
+      "aliases": [
+        "landmark-definition Q13"
+      ],
+      "notes": "Revised wording during the session: How should changed constituent answers expose affected relationships and documentation needs in the Tracker, while source artifacts retain their own jobs? Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-040"
+      ],
+      "progress": {
+        "status": "specced",
+        "sub_label": "S-002A",
+        "evidence": "At integration f373ec58: S-002A names expected-claim assessment as remaining work.",
+        "gap": "Assessment mechanics are not delivered."
+      }
+    },
+    {
+      "id": "LD-14",
+      "family": "LD",
+      "counted": true,
+      "topic": "Working, confirmed and promoted answers are separate",
+      "question": "What are the boundaries between unresolved exploration, a working answer, a confirmed answer and promoted Canon?",
+      "status": "locked",
+      "answer": "A working answer is provisional. Explicit owner confirmation settles the scoped design answer. Confirmation does not itself authorize implementation or Canon promotion. Authorized reconciliation writes supported claims to their proper durable owners; Wiki explanation does not become an instruction source by being saved. Governance Planes classify claims in an operation.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-041)",
+      "reason": "Agreement, authority to act and maintenance of accepted project truth are separate.",
+      "result": [
+        {
+          "artifact": "AGENTS.md (Session Records And Checkpoints)",
+          "action": "update",
+          "effect": "Confirmation of understanding never grants implementation or promotion authority."
+        }
+      ],
+      "related": [],
+      "aliases": [
+        "landmark-definition Q14"
+      ],
+      "notes": "Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-041"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: AGENTS.md Session Records states confirmation never grants implementation or promotion authority; workbench/landmark-tracker/README.md repeats it for records.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-15",
+      "family": "LD",
+      "counted": true,
+      "topic": "Evidence links stay recoverable",
+      "question": "How do landmark evidence links remain recoverable after source sessions, Specs or Tasks retire or disappear?",
+      "status": "locked",
+      "answer": "Use current identities and resolved paths for live navigation; retain immutable commit/path citations for historical proof. Existing move operations maintain live links and discard uses a recovery register. Tracker JSON integration must be built and verified. Ignored local notes are not protected by tracked Git history and must remain until their needed content is safely reconciled or transferred.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-042)",
+      "reason": "Navigation must follow current records while proof preserves the version actually checked.",
+      "result": [
+        {
+          "artifact": "workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/)",
+          "action": "update",
+          "effect": "Uses current identities for navigation and immutable source revisions for proof."
+        },
+        {
+          "artifact": "RUNBOOK.md (move, retire and discard recovery)",
+          "action": "none",
+          "effect": "Existing move tools keep live links; discard uses the recovery register."
+        }
+      ],
+      "related": [],
+      "aliases": [
+        "landmark-definition Q15"
+      ],
+      "notes": "Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-042"
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-002A",
+        "evidence": "At integration f373ec58: workbench/tools/landmark-tracker.mjs captures DQCs and rebuilds the generated TRACKER.json; workbench/landmark-tracker/ holds flat destination-questions/ (DQC-000A) and an empty landmarks/; DQC sources carry ID@revision.",
+        "gap": "Tracker integration with move/discard link rewriting is not verified."
+      }
+    },
+    {
+      "id": "LD-16",
+      "family": "LD",
+      "counted": true,
+      "topic": "Sole-Taskboard language narrowed for two boards",
+      "question": "How should Frontier and the prior sole-Taskboard rule be revised for the two-board model?",
+      "status": "locked",
+      "answer": "Tracker monitors documentation and alignment; Taskboard monitors implementation. The earlier sole-board language must be reconciled to that accepted division while preserving historical answers.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-034)",
+      "reason": "The owner approved two complementary views and rejected replacement.",
+      "result": [
+        {
+          "artifact": "LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows)",
+          "action": "update",
+          "effect": "Frontier row narrowed: Taskboard for implementation, Landmark Tracker separately for documentation."
+        },
+        {
+          "artifact": "workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md",
+          "action": "update",
+          "effect": "Notes that its sole-view claim is superseded by the additive Tracker."
+        }
+      ],
+      "related": [
+        "LD-9",
+        "LD-11"
+      ],
+      "aliases": [
+        "landmark-definition Q16"
+      ],
+      "notes": "Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-034"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: BLUEPRINT.md, LEXICON.md (DQC, Landmark, Landmark Tracker, Landmark Wiki page rows) and the design-concept article workbench/wiki/design-concepts/landmark-tracker.md carry the answer; ADR-000N is active; S-01T records the foundation. Proposed ADR-000E carries the supersession note.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-17",
+      "family": "LD",
+      "counted": true,
+      "topic": "Compact view of concept syntheses",
+      "question": "How do we maintain a useful compact alignment view without turning every conversational detail into a mandatory tracking burden?",
+      "status": "locked",
+      "answer": "Show meaningful concept syntheses, relationships and step distributions, rather than a card for every conversational prompt. Keep readable explanations in the Wiki. Proposed presentation: concise title and distribution, with source lineage and assessments available on expansion.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-043)",
+      "reason": "The Tracker is a compact projection of meaningful concepts, not a card per conversational prompt.",
+      "result": [
+        {
+          "artifact": "workbench/specs/S-001Z-landmark-tracker-view/SPEC.md",
+          "action": "update",
+          "effect": "Shows concise titles and distributions with lineage and assessments on expansion."
+        }
+      ],
+      "related": [
+        "LD-31"
+      ],
+      "aliases": [
+        "landmark-definition Q17"
+      ],
+      "notes": "Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-043"
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-001Z",
+        "evidence": "At integration f373ec58: TRACKER.json is generated with per-scope distributions; S-001Z (view) is active with implementation off integration.",
+        "gap": "The readable Tracker view is not on integration."
+      }
+    },
+    {
+      "id": "LD-18",
+      "family": "LD",
+      "counted": true,
+      "topic": "What a landmark is for and how long it lives",
+      "question": "What is a landmark for, how long does it live, and where does its content end up (board role for grilling agents, retirement rule, Grounding direction model, Wiki as destination)?",
+      "status": "locked",
+      "answer": "A landmark is an evolving account of a Workbench feature or framework. It is never implemented itself: Specs and Tasks implement, and the landmark tracks them as they evolve. It must earn a place in the contract (for LLM_Workbench mostly its Blueprint). It has a Wiki page and durable place from the start, may never leave the board, and retires only when nothing lives solely on it. ADRs are routing and decision records, not the delivery path.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-006, correction-002, correction-003)",
+      "reason": "Owner: landmarks must be important enough to earn a place in the Blueprint, an ADR or the contract; Specs and Tasks implement, and the landmark keeps tracking them as they evolve.",
+      "result": [
+        {
+          "artifact": "BLUEPRINT.md (Landmark Tracker paragraphs)",
+          "action": "update",
+          "effect": "Landmarks are never implemented themselves and may never leave the board."
+        },
+        {
+          "artifact": "workbench/wiki/design-concepts/landmark-tracker.md",
+          "action": "update",
+          "effect": "A landmark has a Wiki page and durable place from the start; retirement only when nothing lives solely on it."
+        }
+      ],
+      "related": [
+        "LD-2",
+        "LD-20"
+      ],
+      "aliases": [
+        "landmark-definition Q18"
+      ],
+      "notes": "For LLM_Workbench most landmarks reach the Blueprint because its Blueprint defines what a workbench is; other rooms may differ. Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-006",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#correction-002",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#correction-003"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: BLUEPRINT.md, LEXICON.md (DQC, Landmark, Landmark Tracker, Landmark Wiki page rows) and the design-concept article workbench/wiki/design-concepts/landmark-tracker.md carry the answer; ADR-000N is active; S-01T records the foundation.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-19",
+      "family": "LD",
+      "counted": true,
+      "topic": "Direction heuristic vs claim-level Governance Planes",
+      "question": "How does the artifact-level direction heuristic (Blueprint=Canon, Specs/Tasks/Landmarks=Grounding and transient, room=Actuality) sit beside the accepted claim-level Governance Plane rule (LEXICON, ADR-000A)?",
+      "status": "locked",
+      "answer": "The artifact-level direction model is shorthand that collapses an artifact into its dominant claim. Governance Planes still classify claims only; ADR-000A is unchanged and the whole-artifact metaphor is withdrawn. \"Grounding is transient\" holds for Grounding claims.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-007)",
+      "reason": "Inference: the Canon/Grounding/Actuality direction model is shorthand; ADR-000A already classifies claims, not artifacts.",
+      "result": [
+        {
+          "artifact": "workbench/docs/adr/0001-planes-classify-operations-not-artifacts.md",
+          "action": "none",
+          "effect": "No change: planes still classify claims; the whole-artifact metaphor is withdrawn."
+        }
+      ],
+      "related": [],
+      "aliases": [
+        "landmark-definition Q19"
+      ],
+      "notes": "Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-007"
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: Every Result action is none; LEXICON Governance Core is unchanged.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-20",
+      "family": "LD",
+      "counted": true,
+      "topic": "Grilling primitive stays unaware of the Tracker",
+      "question": "Which skill owns the Landmark Board duties, given grilling is a primitive?",
+      "status": "locked",
+      "answer": "The grilling primitive stays unaware of landmarks and the Tracker; compound workflow activity owns reading and updating the landmark system. The grilling skill rebuild is untouched.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-008)",
+      "reason": "Inference: keeping the primitive reusable; compound workflow skills own reading and updating the landmark system.",
+      "result": [
+        {
+          "artifact": "workbench/skills/grilling/SKILL.md",
+          "action": "none",
+          "effect": "No Tracker machinery in the grilling primitive."
+        },
+        {
+          "artifact": "workbench/specs/S-002B-destination-question-cards/SPEC.md",
+          "action": "update",
+          "effect": "Workflow composition maintains DQCs while grilling stays independent."
+        }
+      ],
+      "related": [
+        "LD-21"
+      ],
+      "aliases": [
+        "landmark-definition Q20"
+      ],
+      "notes": "decision-014 moved update timing to workflow activity; GX-2 (2026-09-29) refines which skills do it. Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-008",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-014"
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-002B",
+        "evidence": "At integration f373ec58: workbench/skills/grilling has no Tracker calls; S-002B acceptance for workflow composition is unchecked.",
+        "gap": "Composition owner not delivered; GX-2 places it in existing workflow skills via a DQC primitive."
+      }
+    },
+    {
+      "id": "LD-21",
+      "family": "LD",
+      "counted": true,
+      "topic": "Tracker updates follow workflow events; Wiki is ordinary delivery",
+      "question": "When do landmark records and their Wiki pages get written: during a compound session, at the promote exit after confirmed answers, or both (and where do provisional answers live meanwhile)?",
+      "status": "locked",
+      "answer": "Tracker updates follow workflow events and ongoing alignment, deriving its view from source artifacts wherever possible. Wiki creation/update uses normal Spec/Task delivery during building; planning/review are also opportunities for Wiki reconciliation. No separate publishing ceremony.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-014, correction-007)",
+      "reason": "Owner: Wiki creation needs a Spec and Tasks like any other change, and each of those triggers its Tracker update; planning and review are good times too.",
+      "result": [
+        {
+          "artifact": "workbench/wiki/design-concepts/landmark-tracker.md",
+          "action": "update",
+          "effect": "Documentation is ordinary delivery with no separate publishing ceremony."
+        },
+        {
+          "artifact": "workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/)",
+          "action": "update",
+          "effect": "Derives the view from source records wherever possible."
+        }
+      ],
+      "related": [
+        "LD-20"
+      ],
+      "aliases": [
+        "landmark-definition Q21"
+      ],
+      "notes": "Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-014",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#correction-007"
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-002B",
+        "evidence": "At integration f373ec58: workbench/tools/landmark-tracker.mjs captures DQCs and rebuilds the generated TRACKER.json; workbench/landmark-tracker/ holds flat destination-questions/ (DQC-000A) and an empty landmarks/; TRACKER.json is regenerated by rebuild.",
+        "gap": "Event-driven updates from Spec/Task workflow are not wired."
+      }
+    },
+    {
+      "id": "LD-22",
+      "family": "LD",
+      "counted": true,
+      "topic": "Tracker storage and root",
+      "question": "Where and in what form do landmarks live so the tracker can track them (landmark folders or files, their contents, and relation to the landmark Wiki page), and what is the root path (workbench/grilling/ proposed)?",
+      "status": "locked",
+      "answer": "Use workbench/landmark-tracker/ with generated TRACKER.json and flat destination-questions/ and landmarks/ JSON records; Wiki explanations are Markdown. Earlier status-folder and root proposals are superseded or unselected.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-029, decision-012, decision-023)",
+      "reason": "Inference: one declared root with flat record folders keeps records easy for tools to find without status-folder moves.",
+      "result": [
+        {
+          "artifact": "workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/)",
+          "action": "update",
+          "effect": "workbench/landmark-tracker/ holds generated TRACKER.json and flat destination-questions/ and landmarks/ JSON records."
+        },
+        {
+          "artifact": "workbench/manifest.json (landmarkTracker block)",
+          "action": "update",
+          "effect": "Declares the Tracker root."
+        }
+      ],
+      "related": [
+        "LD-22A",
+        "LD-28"
+      ],
+      "aliases": [
+        "landmark-definition Q22"
+      ],
+      "notes": "Umbrella question answered by 22A, 22B and 28; earlier status-folder and workbench/grilling/ proposals are superseded or unselected. Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-029",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-012",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-023"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: workbench/landmark-tracker/ exists with TRACKER.json, destination-questions/ and landmarks/, declared by the manifest landmarkTracker block.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-22A",
+      "family": "LD",
+      "counted": true,
+      "topic": "Tracker root path",
+      "question": "What folder system and root path should hold the Landmark Tracker?",
+      "status": "locked",
+      "answer": "Current approved layout: workbench/landmark-tracker/ containing generated TRACKER.json and flat JSON destination-questions/ and landmarks/. Root from decision-012, question folder revised by decision-023.",
+      "answered": "2026-09-25, landmark-definition grilling (decision-012, revised by decision-023)",
+      "reason": "Inference: a dedicated root keeps the Tracker apart from the Wiki and the session records.",
+      "result": [
+        {
+          "artifact": "workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/)",
+          "action": "update",
+          "effect": "Root is workbench/landmark-tracker/."
+        }
+      ],
+      "related": [
+        "LD-22",
+        "LD-28"
+      ],
+      "aliases": [
+        "landmark-definition Q22A"
+      ],
+      "notes": "decision-023 replaced only the question status folders with flat destination-questions/. Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-012",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-023"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: workbench/landmark-tracker/README.md names the manifest-declared root.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-22B",
+      "family": "LD",
+      "counted": true,
+      "topic": "Landmark JSON vs readable Wiki page",
+      "question": "What does a landmark file hold, and how does it divide its job with its Wiki page?",
+      "status": "locked",
+      "answer": "Landmark files and question cards are JSON structured records; landmark files hold the evolving alignment account and links, cards own questions/answers/history. Wiki pages are human-presentable Markdown explanations containing understanding confirmed enough for durable KB, with no WBIDs. Wiki is how the owner reads about the project; JSON is difficult for him to read.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-013)",
+      "reason": "Owner: the Wiki is how he reads about the project; JSON is hard for him to read.",
+      "result": [
+        {
+          "artifact": "LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows)",
+          "action": "update",
+          "effect": "Landmark Wiki page row: readable Markdown of confirmed durable understanding without WBIDs."
+        },
+        {
+          "artifact": "workbench/tools/landmark-wiki.mjs; workbench/landmark-tracker/LANDMARK-WIKI.md",
+          "action": "update",
+          "effect": "Wiki-page tooling and procedure."
+        }
+      ],
+      "related": [
+        "LD-4"
+      ],
+      "aliases": [
+        "landmark-definition Q22B"
+      ],
+      "notes": "Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-013"
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-002A",
+        "evidence": "At integration f373ec58: landmark-wiki.mjs and LANDMARK-WIKI.md exist; landmarks/ is empty, so no landmark Wiki page exists yet.",
+        "gap": "Shared Wiki wiring remains in S-002A."
+      }
+    },
+    {
+      "id": "LD-23",
+      "family": "LD",
+      "counted": true,
+      "topic": "Destination questions measure documentation progress",
+      "question": "How should a question card derive its lane when multiple required linked Specs or Tasks are at different workflow stages?",
+      "status": "locked",
+      "answer": "Destination concept/documentation progress toward durable destination, displayed as per-step percentage distribution. Each related item contributes actual step or mixed fractions totaling one. Same calculation for landmarks/Workbench, with shared items counted once. Tracker additive/documentation; Taskboard implementation. No child-completion proxy or reset lifecycle.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-022, decision-016, correction-008)",
+      "reason": "Owner: the Tracker monitors documenting and the Taskboard implementation; cards are a web of related items, not a reset lifecycle.",
+      "result": [
+        {
+          "artifact": "workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/)",
+          "action": "update",
+          "effect": "Each related item contributes its step or mixed fractions totaling one."
+        },
+        {
+          "artifact": "workbench/wiki/design-concepts/landmark-tracker.md",
+          "action": "update",
+          "effect": "Explains documentation progress, not child completion."
+        }
+      ],
+      "related": [
+        "LD-24",
+        "LD-26",
+        "LD-27"
+      ],
+      "aliases": [
+        "landmark-definition Q23"
+      ],
+      "notes": "Which links count as required versus contextual, empty items and cycles stay build details. Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-022",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-016",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#correction-008"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: landmark-tracker.mjs computes per-scope distributions from source contributions (TK-01Y).",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-24",
+      "family": "LD",
+      "counted": true,
+      "topic": "Shared items count once",
+      "question": "When the same artifact is reachable through several destination questions, should it count once in a landmark percentage breakdown?",
+      "status": "locked",
+      "answer": "A Task can appear under every related destination question but counts once in the shared landmark percentage breakdown. Preserve all relationships without duplicate contribution.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-018)",
+      "reason": "Duplicate links should not distort percentages (agent rationale in the confirmed readback).",
+      "result": [
+        {
+          "artifact": "workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/)",
+          "action": "update",
+          "effect": "A shared identity counts once within an aggregate while every relationship stays visible."
+        }
+      ],
+      "related": [
+        "LD-27"
+      ],
+      "aliases": [
+        "landmark-definition Q24"
+      ],
+      "notes": "Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-018"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: landmark-tracker.mjs: a shared identity counts once in its scope.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-25",
+      "family": "LD",
+      "counted": true,
+      "topic": "Equal shares in the first version",
+      "question": "Should each distinct tracked item contribute equally to a question or landmark percentage distribution regardless of artifact type or implementation size?",
+      "status": "locked",
+      "answer": "First version: each distinct item contributes equally regardless of type. Evolve weighting later as Tracker usefulness is proven; not a permanent invariant.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-019)",
+      "reason": "Owner: weighting can evolve once the Tracker proves useful; this is a first-version choice, not an invariant.",
+      "result": [
+        {
+          "artifact": "workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/)",
+          "action": "update",
+          "effect": "Each distinct item contributes one equal unit regardless of type."
+        }
+      ],
+      "related": [
+        "LD-27"
+      ],
+      "aliases": [
+        "landmark-definition Q25"
+      ],
+      "notes": "Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-019"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: landmark-tracker.mjs gives each counted identity one unit.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-26",
+      "family": "LD",
+      "counted": true,
+      "topic": "Progress toward destination; Wiki is the agents' brain",
+      "question": "Should a landmark roll up the unique underlying item counts from its destination questions, or average the question percentage summaries?",
+      "status": "locked",
+      "answer": "Destination concept progress toward documentation destination, not child implementation completion. Wiki is agents brain and actual content is verified against expected durable knowledge.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-020, correction-009)",
+      "reason": "Owner: destination questions are tracking and proof of work; agents verify another agent's documentation by reading the Wiki against what should be durable.",
+      "result": [
+        {
+          "artifact": "workbench/wiki/design-concepts/landmark-tracker.md",
+          "action": "update",
+          "effect": "States the Wiki is the agents' brain and that delivery completion alone does not prove documentation."
+        },
+        {
+          "artifact": "workbench/specs/S-002A-landmark-records/SPEC.md",
+          "action": "update",
+          "effect": "Expected-claim assessment checks actual Wiki content."
+        }
+      ],
+      "related": [
+        "LD-23",
+        "LD-29"
+      ],
+      "aliases": [
+        "landmark-definition Q26"
+      ],
+      "notes": "Revised wording during the session: What progress does a destination question measure, and how does the Wiki provide durable knowledge and documentation verification? Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-020",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#correction-009"
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-002A",
+        "evidence": "At integration f373ec58: BLUEPRINT.md, LEXICON.md (DQC, Landmark, Landmark Tracker, Landmark Wiki page rows) and the design-concept article workbench/wiki/design-concepts/landmark-tracker.md carry the answer; ADR-000N is active; S-01T records the foundation.",
+        "gap": "Verification of Wiki content against expected durable knowledge (S-002A) is not delivered."
+      }
+    },
+    {
+      "id": "LD-27",
+      "family": "LD",
+      "counted": true,
+      "topic": "Fractional aggregation",
+      "question": "How do fractional workflow-step distributions aggregate for destination questions, landmarks and the Workbench?",
+      "status": "locked",
+      "answer": "Each distinct item contributes one total unit, split into step fractions when mixed. Sum contributions per step, divide by distinct item count. Same calculation for destination questions, landmarks, Workbench-wide views; shared items count once.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-021)",
+      "reason": "Inference: one rule for every scope keeps destination-question, landmark and Workbench views comparable.",
+      "result": [
+        {
+          "artifact": "workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/)",
+          "action": "update",
+          "effect": "Sum step contributions and divide by distinct item count, for every scope."
+        }
+      ],
+      "related": [
+        "LD-24",
+        "LD-25"
+      ],
+      "aliases": [
+        "landmark-definition Q27"
+      ],
+      "notes": "Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-021"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: landmark-tracker.mjs records numerator, denominator and distribution per scope; TRACKER.json shows them.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-28",
+      "family": "LD",
+      "counted": true,
+      "topic": "Four-piece model with flat folders",
+      "question": "Should destination-question JSON records live in one flat folder instead of the earlier open/locked/journey/retired folders, given mixed workflow-step progress and no reset lifecycle?",
+      "status": "locked",
+      "answer": "Four-piece model confirmed; flat destination-questions/ and landmarks/ JSON records. Workflow activities maintain sources and reasons/evidence; generated Tracker shows percentage distributions. Wiki readable durable Markdown without WBIDs, fed by several Specs. Landmark can precede and outlive Specs.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-023)",
+      "reason": "Inference: mixed step progress and no reset lifecycle make status folders meaningless, so records stay flat.",
+      "result": [
+        {
+          "artifact": "workbench/docs/adr/000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md",
+          "action": "update",
+          "effect": "Records the confirmed four-piece model."
+        },
+        {
+          "artifact": "workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/)",
+          "action": "update",
+          "effect": "Flat destination-questions/ and landmarks/ folders."
+        }
+      ],
+      "related": [
+        "LD-4",
+        "LD-22"
+      ],
+      "aliases": [
+        "landmark-definition Q28"
+      ],
+      "notes": "Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-023"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: ADR-000N active; flat folders exist under workbench/landmark-tracker/.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-29",
+      "family": "LD",
+      "counted": true,
+      "topic": "Expected result and Result",
+      "question": "Should each destination question record state the intended durable destination and expected knowledge so agents can verify the actual Wiki against it?",
+      "status": "locked",
+      "answer": "Unanswered questions need not know destination. Answered summary uses Expected result for intended durable change and destination if known. Delivery Spec/Task usually makes destination/Wiki change concrete; both records can carry relevant context. Result distinguishes achieved delivery outcome. Wiki changes use ordinary delivery.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-024)",
+      "reason": "Inference: separating intended durable change from achieved delivery lets agents check one against the other.",
+      "result": [
+        {
+          "artifact": "workbench/specs/S-002B-destination-question-cards/SPEC.md",
+          "action": "update",
+          "effect": "Answered DQCs carry Expected result; Result records achieved delivery."
+        },
+        {
+          "artifact": "workbench/wiki/design-concepts/landmark-tracker.md",
+          "action": "update",
+          "effect": "Explains Expected result."
+        }
+      ],
+      "related": [
+        "LD-8",
+        "LD-26"
+      ],
+      "aliases": [
+        "landmark-definition Q29"
+      ],
+      "notes": "Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-024"
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-002B",
+        "evidence": "At integration f373ec58: BLUEPRINT.md, LEXICON.md (DQC, Landmark, Landmark Tracker, Landmark Wiki page rows) and the design-concept article workbench/wiki/design-concepts/landmark-tracker.md carry the answer; ADR-000N is active; S-01T records the foundation.",
+        "gap": "DQC Expected result/Result fields in S-002B are off integration."
+      }
+    },
+    {
+      "id": "LD-30",
+      "family": "LD",
+      "counted": true,
+      "topic": "DQCs can exist without a landmark",
+      "question": "Can a destination question enter the Tracker before its landmark grouping has been identified?",
+      "status": "locked",
+      "answer": "Questions can be tracked without landmark; show no landmark. Early Idea/Aligning grouping can remain unsettled or change. Concept growth: grilling question -> destination question -> landmark if consequential enough. Main-project association tentative; record conversion and threshold unspecified.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-025)",
+      "reason": "Inference: concept growth runs grilling question -> destination question -> landmark if consequential enough, so no placeholder landmark is required.",
+      "result": [
+        {
+          "artifact": "workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/)",
+          "action": "update",
+          "effect": "capture creates a DQC before any landmark, Spec or Task."
+        },
+        {
+          "artifact": "workbench/wiki/design-concepts/landmark-tracker.md",
+          "action": "update",
+          "effect": "A DQC can appear with no landmark."
+        }
+      ],
+      "related": [
+        "LD-8"
+      ],
+      "aliases": [
+        "landmark-definition Q30"
+      ],
+      "notes": "Record conversion mechanics and the consequentialness threshold remain unspecified. Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-025"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration f373ec58: landmark-tracker README capture procedure creates a DQC before any landmark; DQC-000A has no landmark.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "LD-31",
+      "family": "LD",
+      "counted": true,
+      "topic": "Grouped summaries are destination questions",
+      "question": "Are conceptual groups of grilling-question summaries the destination questions?",
+      "status": "locked",
+      "answer": "Yes, owner identifies conceptual groups as destination questions. Retitle meaningfully and preserve source question IDs; exact example groupings/titles not final. Settled-question summary approved, without implementation or promotion authorization.",
+      "answered": "2026-09-26, landmark-definition grilling (decision-026, directive-005)",
+      "reason": "Owner: conceptual groupings of grilling questions are the destination questions, retitled meaningfully.",
+      "result": [
+        {
+          "artifact": "LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows)",
+          "action": "update",
+          "effect": "DQC row: a synthesis of related grilling questions preserving source lineage."
+        }
+      ],
+      "related": [
+        "LD-1",
+        "LD-17"
+      ],
+      "aliases": [
+        "landmark-definition Q31"
+      ],
+      "notes": "Example groupings (Q4/Q22B/Q28 pieces and jobs; Q5/Q9/Q23 relationship to existing Workbench) are illustrative, not final. Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-026",
+        "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#directive-005"
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-002B",
+        "evidence": "At integration f373ec58: LEXICON defines DQC; one DQC exists. A 147-card draft grouping of this ledger exists only in a local note.",
+        "gap": "Owner-confirmed groupings and their capture as DQCs."
+      }
+    },
+    {
+      "id": "SKW-1",
+      "family": "SKW",
+      "counted": true,
+      "topic": "Where the workflow begins",
+      "question": "Where does the workflow begin relative to idea exploration, Align and room setup?",
+      "status": "locked",
+      "answer": "Idea exploration may precede Align; grill-me, wayfinder or brainstorm can start Align; a grilling session starts with grill-me. Genesis and Adoption are first-time setup or update, not the governing workflow, and Genesis requires a grilling session afterward to form the Blueprint.",
+      "answered": "2026-09-24, skill-workflow-redesign grilling (decision-001)",
+      "reason": "Inference: setup frames a room once; the governing idea-to-delivery workflow is what every later change runs through, so it starts from the idea.",
+      "result": [
+        {
+          "artifact": "BLUEPRINT.md (Desired Lifecycle workflow map)",
+          "action": "update",
+          "effect": "Idea -> optional exploration -> Align through grill-me, wayfinding, brainstorming and research; setup and updates are separate."
+        }
+      ],
+      "related": [],
+      "aliases": [
+        "skill-workflow-redesign Q1"
+      ],
+      "notes": "Promoted to BLUEPRINT.md by PR #151 (24ee7228). Q2A-Q8 of the same note are open with no owner answer and are not ledger rows. Added 2026-09-30 from the local note.",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/skill-workflow-redesign-2026-09-24.json#decision-001",
+        "workbench/sessions/notepads/grilling/skill-workflow-redesign-2026-09-24.json#finding-003"
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "genesis wording",
+        "evidence": "At integration f373ec58: BLUEPRINT.md carries the idea-first workflow map with grill-me/wayfinding/brainstorm opening Align and setup kept separate.",
+        "gap": "Genesis requiring a follow-up grilling session is not stated in workbench/skills/genesis/SKILL.md."
       }
     }
   ]

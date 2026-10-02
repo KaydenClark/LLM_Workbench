@@ -1,0 +1,246 @@
+# S-003W - Wiki Evolving-Synthesis Migration
+
+**Spec ID:** S-003W
+**Status:** planned
+**Priority:** 1
+**Owner:** unassigned
+**Stance:** Builder
+**Updated:** 2026-10-01
+**Catalog description:** Bring the Wiki's files, tooling and records in line with the accepted definition of the Wiki as the evolving synthesis every agent reads and updates: link-safe note moves, per-Spec articles into the features collection, router summaries, the name-and-context identifier rule in place of the identifier ban, landmark synthesis pages, the ledger out of the Wiki, and the lint cadence as a procedure.
+**Blockers:** none
+**Latest event:** Spec captured from the owner-confirmed Wiki definition grilling of 2026-10-01 and the promotion that landed its Canon.
+**Next gate:** Refine and activate the first eligible slice.
+
+> **Citation anchors.** pre=`e72ff5bc78d8815d5911c604b76c2953c78ecb79` post=`e72ff5bc78d8815d5911c604b76c2953c78ecb79`.
+> Both name the Canon promotion commit on `claude/wiki-definition-canon`; post
+> moves forward when the first slice lands.
+
+## Outcome
+
+The Wiki looks and behaves like the definition in
+[The Wiki is the evolving synthesis every agent reads and updates](../../docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md):
+the router is an overview with a summary line per page; every delivered
+capability has its entity page in the features collection, named for what it
+delivers; each landmark has one evolving synthesis page summarizing its
+question cards; identifiers on any page carry the artifact's name and context
+and a validator checks that rule instead of banning identifiers; the grilling
+ledger lives outside the Wiki; and the two lint cadences exist as a Runbook
+procedure an agent can follow at the end of a Wiki update and at Spec review.
+
+## Why It Matters
+
+The definition is Canon as of the promotion commit, but the Wiki on disk still
+reflects the earlier confirmed-only model: fifty-one per-Spec summaries are
+filed as design concepts under the Spec's identifier, zero feature articles
+exist for fifty complete Specs, the router lists pages without summaries, the
+landmark validator refuses any identifier, the ledger JSON sits beside the
+Markdown pages, and no procedure says what a lint is. Until these move, every
+agent reading the schema meets a Wiki that contradicts it, and the
+documentation progress the Tracker measures cannot reach Verified.
+
+## Current Verified State
+
+Read at the pre anchor.
+
+- `workbench/wiki/design-concepts/` holds 55 files: the README, three model
+  articles (Landmark Tracker, Roles and Stances, Task Artifact and Lifecycle)
+  and 51 articles whose file names begin `spec-S-` and whose `type` is
+  `design-concept`; all 51 were created on 2026-09-18.
+- `workbench/wiki/features/` holds only `README.md`. The retirement gate in
+  `workbench/tools/spec-workbench.mjs` (`retire-spec --wiki`) accepts a
+  `type: feature` note only inside this collection.
+- `workbench/wiki/MEMORY.md` lists the 51 articles under "Individual Spec
+  Articles" as bare title links; no summary line accompanies them.
+- `workbench/tools/wiki.mjs` offers `validate` and `normalize` only. No
+  link-safe move operation exists for a Wiki note; `move-spec` and
+  `move-task` cover Spec and Task records only.
+- `workbench/tools/landmark-wiki.mjs validate` refuses any identifier in an
+  article (`landmark-wbid`) and any ambiguous hyphenated token
+  (`landmark-ambiguous`); `tools/test-landmark-wiki.mjs` holds it to that
+  rule; `workbench/landmark-tracker/LANDMARK-WIKI.md` documents it; the
+  Landmark Records Spec (S-002A) and the Landmark Tracker Foundation Spec
+  (S-01T, requirement 16) carry the no-identifier requirement.
+- `workbench/wiki/grilling-destination-audit-ledger.json` (298 questions)
+  lives in the Wiki lane; `tools/test-grilling-ledger.mjs` reads it at that
+  path; the router and several Specs link to it. Its rows LD-4 and LD-22B
+  record the confirmed-only Wiki model the owner has now superseded; the ten
+  questions of the 2026-10-01 Wiki grilling are not yet rows.
+- `workbench/landmark-tracker/landmarks/` holds 24 landmark records; none
+  has a synthesis page in the Wiki.
+- `RUNBOOK.md` has no procedure for the small lint at the end of a Wiki
+  update or the whole-Wiki lint at Spec review; `AGENTS.md` and
+  `workbench/wiki/SCHEMA.md` state the obligation and cadence.
+- The validator message for a Design Concept article still reads "must
+  record authorized_by (the owner directs creation)".
+
+## Desired Behavior
+
+1. A link-safe `wiki.mjs move-note` operation moves one Wiki note to another
+   collection and optionally renames it, rewrites every live Markdown link
+   to it across the controls, Wiki, Specs, Tasks, question cards and
+   landmark records, counts historical references it leaves alone, refuses
+   when the destination collection does not accept the note's type, and
+   writes nothing on refusal.
+2. Each of the 51 per-Spec articles becomes a feature article: moved into
+   the features collection, retyped `feature`, renamed for the capability it
+   delivers, given the four feature sections, with `source_paths` naming the
+   Spec's eventual retired route, and routed from the router with a summary
+   line. A Spec whose article moved stays retirable through it.
+3. The router carries a one-line summary beside every link, and the Wiki
+   validator reports a routed page without one as attention.
+4. The identifier rule on every page is name-and-context: the landmark
+   validator is reworked or retired so that an identifier accompanied by the
+   artifact's name passes and a bare identifier is reported; its usage note,
+   tests, Runtime registration and the two Specs that cite the old rule are
+   reconciled.
+5. Each landmark has one synthesis page in the design-concepts collection,
+   seeded from its question cards' current answers and routed from the
+   router; the Landmark Records Spec's expected-claim assessment reads these
+   pages.
+6. The grilling destination audit ledger gains the ten 2026-10-01 Wiki
+   questions as rows, marks LD-4 and LD-22B superseded naming their
+   replacements, and moves to the sessions lane with every link and the test
+   path rewritten. The owner has said the ledger is becoming question cards;
+   if that lands first, this slice records the move as unnecessary instead.
+7. The Runbook carries the two lint procedures: the small lint of touched
+   pages at the end of a Wiki update, and the whole-Wiki lint at Spec review
+   when the Spec's work is verified, each with the questions to ask and where
+   findings go (corrective Tasks).
+8. The Design Concept validator message names the authorizing operation
+   rather than the owner.
+
+## Decisions And Contracts
+
+- The definition itself is settled Canon in the decision record named above
+  and the Wiki schema; this Spec changes files, tools and records to match
+  it and reopens none of the ten answers.
+- Moves use the link-safe operation only; no manual folder move of a note.
+- Identifiers are never stripped from a page; a page that references one
+  without the artifact's name and context is repaired by adding them.
+- The 51 moved articles keep their `History` and `provenance`; the move is
+  recorded as a History line, not a rewrite.
+- Ledger rows are never deleted; supersession names the replacement row.
+
+## Non-Goals
+
+- Changing the definition, the schema's purpose section or the decision
+  record.
+- Writing the whole-Wiki lint as a tool; it is an agent reading procedure.
+- Converting the ledger into question cards; another owner holds that.
+- Authoring new design-concept model articles beyond landmark synthesis
+  pages.
+- Changing Spec or Task lifecycle commands.
+
+## Dependencies And Blockers
+
+- The Canon promotion commit (`claude/wiki-definition-canon`, short
+  `e72ff5bc`) must be on integration before slices land; its schema and
+  Lexicon text are what the validator and procedures implement.
+- Slice 6 depends on whether the ledger-to-cards conversion lands first; it
+  carries that check as its first step.
+
+## Vertical Implementation Slices
+
+Tasks are temporary tracer bullets reaching or repairing this scoped destination.
+This table is a compatibility seed: before record-backed execution, convert
+unfinished rows with `convert-tasks` as the Runbook describes. Once `tasks/`
+exists, TASK.md owns active Task state; retain only done table rows as history.
+
+| Task | Slice | Status | Blockers | Proof |
+|---|---|---|---|---|
+| TK-001 | Link-safe `wiki.mjs move-note` proven by moving one per-Spec article into features as a feature article with a router summary line | ready | none | pending |
+| TK-002 | Move and retype the remaining per-Spec articles; router summaries for every page; validator attention for a routed page without one | blocked | TK-001 | pending |
+| TK-003 | Name-and-context identifier validator in place of the identifier ban; usage note, tests, registration and citing Specs reconciled | ready | none | pending |
+| TK-004 | Landmark synthesis pages seeded from question cards for every landmark; assessment reads them | blocked | TK-003 | pending |
+| TK-005 | Ledger rows for the Wiki grilling, supersession of LD-4 and LD-22B, move to the sessions lane | ready | none | pending |
+| TK-006 | Lint procedures in the Runbook and the validator message fix | ready | none | pending |
+
+### TK-001 - Link-safe note move proven on one article
+
+**Stance:** Builder
+
+Add `move-note` to `workbench/tools/wiki.mjs` with a failing test first in
+`tools/test-wiki.mjs`: moving a note rewrites every live link, counts
+historical ones, refuses a type the destination collection does not accept,
+and writes nothing on refusal. Then move one per-Spec article (the one for
+Wiki Routing, Version Stamps And Safe Source Reads is a good first choice,
+since it is about the Wiki itself) into the features collection, retype it
+`feature`, rename it for its capability, add the four feature sections from
+its existing prose, and give its router entry a summary line. Prove with
+`wiki.mjs validate`, `doctor`, `retire-spec --wiki` dry acceptance of the
+moved note, and the test.
+
+## Acceptance Criteria
+
+- [ ] `wiki.mjs move-note` exists, is tested, rewrites live links, counts
+      historical references and refuses safely.
+- [ ] Every former per-Spec article is a feature article in the features
+      collection, named for its capability, routed with a summary line, and
+      the Spec it documents is retirable through it.
+- [ ] Every routed page has a summary line and the validator reports a
+      missing one as attention.
+- [ ] A page with an identifier beside the artifact's name passes the
+      identifier validator; a bare identifier is reported.
+- [ ] Every landmark has a routed synthesis page.
+- [ ] The ledger holds the ten Wiki-grilling rows, LD-4 and LD-22B read
+      superseded, and the file lives in the sessions lane with links and the
+      test path rewritten, or the slice records that the cards conversion
+      made the move unnecessary.
+- [ ] The Runbook carries both lint procedures.
+- [ ] `node tools/test-wiki.mjs`, `node tools/test-landmark-wiki.mjs`,
+      `node tools/test-grilling-ledger.mjs` and the full suite pass on the
+      assembled candidate.
+
+## Testing Seams
+
+- `tools/test-wiki.mjs`: `move-note` behavior, summary-line attention,
+  feature-article shape in the features collection.
+- `tools/test-landmark-wiki.mjs`: name-and-context rule replacing the ban.
+- `tools/test-grilling-ledger.mjs`: new rows, supersession, new path.
+- `tools/test-spec-workbench.mjs`: retirement through a moved feature article.
+
+## Verification Procedure
+
+```bash
+node tools/test-wiki.mjs
+node tools/test-landmark-wiki.mjs
+node tools/test-grilling-ledger.mjs
+node workbench/tools/wiki.mjs validate
+node workbench/tools/spec-workbench.mjs doctor
+```
+
+Then the full suite in `AGENTS.md`.
+
+## Documentation Impact
+
+- `workbench/wiki/MEMORY.md`: summary lines; moved article routes; ledger
+  route removed.
+- `workbench/wiki/features/README.md`: the moved articles as the first
+  entries; summary-line convention.
+- `RUNBOOK.md`: `move-note`, the two lint procedures, the ledger path, the
+  identifier validator's new rule; `templates/RUNBOOK.md` mirrors.
+- `workbench/landmark-tracker/LANDMARK-WIKI.md`: new rule.
+- The Landmark Records and Landmark Tracker Foundation Specs: evidence rows
+  noting the identifier rule change; their requirement text is history.
+- `templates/wiki/MEMORY.project.md`: summary-line convention.
+
+## Append-Only Evidence And Execution Log
+
+| Date | Task | Event | Verification | Docs | Remaining gap |
+|---|---|---|---|---|---|
+| 2026-10-01 | - | Spec captured | none run; planning only | this record | all slices |
+
+## Completion Result
+
+Pending.
+
+## Remaining Limitations Or Follow-Up Specs
+
+- The ledger-to-cards conversion is owned elsewhere; slice 6 adapts to it.
+- Feature capture for Specs completed after this migration follows the
+  schema's ingest rule and needs no slice here.
+
+## Supersession
+
+- Supersedes: none
+- Superseded by: none

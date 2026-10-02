@@ -429,9 +429,9 @@ test('every accepted-ADR-to-spec reference in the real corpus resolves literally
     totalLinks += countForRecord;
     if (countForRecord > 0) filesWithLink += 1;
   }
-  // S-00V TK-01L: ADR-000O adds one file and one link to S-00V.
-  assert.equal(filesWithLink, 23, 're-count of accepted ADR files carrying a live Spec-path reference at this candidate');
-  assert.equal(totalLinks, 27, 're-count of total accepted-ADR-to-spec link edges at this candidate');
+  // TK-004 activates G/I: G routes its S-00P decision owner; I routes S-00I/S-00J.
+  assert.equal(filesWithLink, 26, 're-count of accepted ADR files carrying a live Spec-path reference at this candidate');
+  assert.equal(totalLinks, 31, 're-count of total accepted-ADR-to-spec link edges at this candidate');
 });
 
 test('durable references distinguish tracked notepad templates from ignored live records', () => {
@@ -567,9 +567,12 @@ test('every intra-ADR link in the real corpus resolves literally, and the re-cou
     totalLinks += countForRecord;
     if (countForRecord > 0) filesWithLink += 1;
   }
-  // S-00V TK-01L: ADR-000O adds one file and one link (to ADR-0039).
-  assert.equal(filesWithLink, 36, 're-count of ADR files carrying an intra-ADR link at this candidate');
-  assert.equal(totalLinks, 65, 're-count of total intra-ADR link edges at this candidate');
+  // TK-004 adds six decision-route edges; retained proposal history remains linked.
+  // ADR-000R (the Wiki definition) links its two partially superseded records.
+  // ADR-000S (Destination Decision Records) and ADR-000T (the read words) add two linked records.
+  // ADR-000U (landmarks), ADR-000V (roles) and ADR-000W (Contract carriers) add three linked records.
+  assert.equal(filesWithLink, 46, 're-count of ADR files carrying an intra-ADR link at this candidate');
+  assert.equal(totalLinks, 105, 're-count of total intra-ADR link edges at this candidate');
 });
 
 // S-00I TK-001 review correction: a link is validated literally, never
@@ -835,4 +838,143 @@ test('missing and stale history are reported without rewriting history',()=>{
    if(state==='stale')assert.equal(fs.readFileSync(history,'utf8'),'stale history');
   }
  }finally{fs.rmSync(dir,{recursive:true,force:true});}
+});
+
+// TK-004 checks active decisions separately from retained proposal history.
+// Mutations keep each effective lifecycle unchanged: acceptance alone is not proof.
+function workflowCorpus() {
+  const records = listAdrs(root);
+  return {
+    records: new Map(['000F', '000G', '000H', '000I'].map(id => {
+      const record = records.find(item => item.name.startsWith(`${id}-`));
+      assert.ok(record, `missing ADR-${id}`);
+      return [id, { ...record, body: record.body.split('\n## Historical proposal')[0] }];
+    })),
+    controls: new Map(['LEXICON.md', 'AGENTS.md', 'RUNBOOK.md', 'BLUEPRINT.md'].map(file => [file, fs.readFileSync(path.join(root, file), 'utf8')]))
+  };
+}
+
+function assertWorkflowMeaning(corpus) {
+  const { records, controls } = corpus;
+  const requires = (text, pattern, claim) => assert.match(text.replace(/\s+/g, ' '), pattern, claim);
+  for (const [id, record] of records) {
+    assert.equal(record.status, 'accepted', `ADR-${id} must be an active accepted decision`);
+    assert.equal(record.folder, null, `ADR-${id} belongs in the active roster`);
+    for (const owner of ['AGENTS.md', 'LEXICON.md']) {
+      assert.ok(record.data.canonicalized_in.includes(owner), `ADR-${id} names ${owner}`);
+      assert.ok(controls.has(owner), `ADR-${id} owner ${owner} exists`);
+    }
+  }
+  const g = records.get('000G').body;
+  requires(g, /Blueprint owns the grand product destination/, 'Blueprint owns product altitude');
+  requires(g, /Spec is a PRD-shaped scoped objective with its own destination/, 'Spec owns the scoped PRD altitude');
+  requires(g, /active ADRs, verified Actuality and required evidence/, 'Spec derives from decisions and verified actuality');
+  requires(g, /Idea -> Align -> Scope -> Plan -> Implement -> Verify/, 'six confirmed phases');
+  requires(g, /prototype is optional, after the Blueprint and before a Spec/i, 'prototype position and optionality');
+  assert.doesNotMatch(g, /Blueprint[^.]*owns[^.]*PRD function/i, 'retired Blueprint PRD premise cannot be active');
+  const f = records.get('000F').body;
+  requires(f, /Dispatcher verifies the whole Spec/, 'Dispatcher owns whole-Spec QA');
+  requires(f, /Director then approves the immutable assembled candidate in a separate context before it combines into `integration`/, 'separate Director review precedes integration');
+  requires(f, /Worker self-checks[\s\S]*handing back/, 'Worker supplies self-check and proof');
+  requires(f, /bootstrap exemption 2/, 'operative Task PR exception remains explicit');
+  requires(f, /owner chooses when to QA/, 'owner chooses Human QA timing');
+  requires(f, /not the only permitted time/, 'version cadence is not exclusive');
+  requires(f, /failed Human QA[\s\S]*Align[\s\S]*appropriate scope/i, 'failed QA returns at implicated scope');
+  const consequences = f.match(/\nConsequences:([\s\S]*?)\nProvenance:/)?.[1];
+  assert.ok(consequences, 'ADR-000F retains its operational consequences');
+  assert.doesNotMatch(consequences.replace(/\s+/g, ' '), /RUNBOOK[^.]*\b(?:remains|pending|awaits)\b[^.]*TK-003/i, 'active ADR-000F must not present delivered TK-003 Runbook procedures as pending');
+  requires(consequences, /RUNBOOK carries the delivered Task-record workflow procedures from S-00P TK-003/, 'ADR-000F reflects achieved Runbook procedure delivery');
+  const i = records.get('000I').body;
+  requires(i, /Folder location is the source of lifecycle truth/, 'folder lifecycle');
+  requires(i, /`archive`[\s\S]*permanent[\s\S]*never cleared/i, 'ADR archive is permanent');
+  requires(i, /\*\*`retired`\*\* is a transient staging area/, 'retired is transient, distinct from permanent ADR archive');
+  requires(i, /reviewed delivery on `integration`, owner approval, verification on `main`, then `complete`, features Wiki capture, retirement and discard/, 'main precedes completion, capture precedes cleanup');
+  requires(i, /hold[\s\S]*lifted/i, 'superseded deletion hold resolved');
+  requires(i, /stable-path rule[\s\S]*retired/i, 'stable path premise retired');
+  requires(i, /Task progress \(`ready`, `in-progress`, `done`\) is distinct from folder lifecycle/, 'Task execution state distinct from folder lifecycle');
+  const h = records.get('000H').body;
+  requires(h, /corrective Task against a reconciled Wiki claim[\s\S]*replaces the discarded Spec acceptance lines/i, 'Packet supports Wiki corrective work without resurrection');
+  requires(h, /does not resurrect `SPEC.md`/, 'corrective Packet does not restore retired scaffolding');
+  const lexicon = controls.get('LEXICON.md');
+  for (const [term, pattern] of [
+    ['Blueprint', /desired finished product/],
+    ['Destination Packet', /Spec acceptance lines[\s\S]*or the reconciled Wiki claim/],
+    ['Align', /shared design concept explicitly confirmed by owner and agent/],
+    ['Design concept', /exists between participants/],
+    ['Spec', /scoped objective with its own destination/],
+    ['Task', /reaches or repairs a destination/],
+    ['Retired', /transient staging/],
+    ['Archive', /permanent[\s\S]*ADRs/i],
+    ['Assembled-Spec review', /Dispatcher[\s\S]*separate Director[\s\S]*before integration/],
+    ['Human QA', /owner-led[\s\S]*chooses[\s\S]*failed findings/],
+    ['Feature article', /manifest-declared `features` collection/],
+    ['Uncaptured complete', /complete[\s\S]*missing[\s\S]*capture/]
+  ]) {
+    const row = lexicon.split('\n').find(line => line.startsWith(`| **${term}** |`));
+    assert.ok(row, `Lexicon defines ${term}`);
+    requires(row, pattern, `Lexicon meaning of ${term}`);
+  }
+  requires(controls.get('AGENTS.md'), /Dispatcher owns whole-Spec QA[\s\S]*separate Director context reviews/, 'AGENTS carries review roles');
+  requires(controls.get('AGENTS.md'), /verification on main -> `complete`/, 'AGENTS carries closure order');
+  // A reader follows literal paths and fragments; basename fallback is unsafe.
+  for (const [file, text] of [['LEXICON.md', lexicon], ...[...records.values()].map(record => [record.relativePath, record.body])]) {
+    for (const match of text.matchAll(/\[[^\]]*\]\(([^)]+)\)/g)) {
+      const target = decodeURIComponent(match[1]);
+      if (/^(?:https?:|mailto:)/.test(target)) continue;
+      const [relative, fragment] = target.split('#');
+      const resolved = path.resolve(path.dirname(path.join(root, file)), relative || path.basename(file));
+      assert.ok(fs.existsSync(resolved), `${file} has missing literal route ${target}`);
+      if (!fragment || !resolved.endsWith('.md')) continue;
+      const content = controls.get(path.relative(root, resolved)) ?? fs.readFileSync(resolved, 'utf8');
+      const anchors = [...content.matchAll(/^#{1,6} (.+)$/gm)].map(match => match[1].toLowerCase().replace(/[^\p{L}\p{N}\s_-]/gu, '').replace(/\s/g, '-'));
+      assert.ok(anchors.includes(fragment), `${file} has missing literal heading ${target}`);
+    }
+  }
+}
+
+test('active workflow decisions and Lexicon meanings reconstruct the confirmed owner chain', () => {
+  assertWorkflowMeaning(workflowCorpus());
+});
+
+test('workflow checks reject substantive and literal-route mutations with accepted status retained', () => {
+  assertWorkflowMeaning(workflowCorpus());
+  const cases = [
+    ['Blueprint PRD', '000G', 'Blueprint owns the grand product destination', 'Blueprint owns the future-facing PRD function'],
+    ['Spec altitude', '000G', 'Spec is a PRD-shaped scoped objective with its own destination', 'Spec is only a task list'],
+    ['prototype standard', '000G', 'prototype is optional, after the Blueprint and before a Spec', 'prototype is a mandatory Align method'],
+    ['Dispatcher QA', '000F', 'Dispatcher verifies the whole\nSpec', 'Worker verifies the whole\nSpec'],
+    ['postintegration review', '000F', 'before it combines', 'after it combines'],
+    ['exclusive QA cadence', '000F', 'not the only permitted time', 'the only permitted time'],
+    ['delivered Runbook presented as pending', '000F', 'Task-record workflow procedures from S-00P TK-003.', "Task-record workflow procedures from S-00P TK-003. RUNBOOK's comprehensive workflow procedure rewrite remains S-00P TK-003 work."],
+    ['ADR archive clearing', '000I', 'never cleared', 'cleared after main'],
+    ['Task lifecycle conflation', '000I', 'is distinct from folder lifecycle', 'is the folder lifecycle'],
+    ['premature capture', '000I', 'then `complete`, features Wiki capture', 'features Wiki capture, then `complete`'],
+    ['permanent retirement', '000I', 'transient staging area', 'permanent archive'],
+    ['closure before main', '000I', 'verification on `main`, then `complete`', '`complete`, then verification on `main`'],
+    ['Packet loses Wiki', '000H', 'replaces the discarded Spec acceptance lines', 'requires the discarded Spec acceptance lines'],
+    ['lost ADR route', '000G', '(000F-', '(proposed/000F-']
+  ];
+  for (const [label, id, before, after] of cases) {
+    const corpus = workflowCorpus();
+    const record = corpus.records.get(id);
+    assert.ok(record.body.includes(before), `${label}: mutation must hit its real source`);
+    record.body = record.body.replace(before, after);
+    assert.equal(record.status, 'accepted');
+    assert.throws(() => assertWorkflowMeaning(corpus), undefined, label);
+  }
+  const missingOwner = workflowCorpus();
+  missingOwner.records.get('000G').data = { ...missingOwner.records.get('000G').data, canonicalized_in: ['BLUEPRINT.md'] };
+  assert.throws(() => assertWorkflowMeaning(missingOwner), undefined, 'missing operational owner with accepted lifecycle');
+  for (const [label, file, before, after] of [
+    ['Context Map route', 'LEXICON.md', '(RUNBOOK.md)', '(MISSING-RUNBOOK.md)'],
+    ['Context Map heading', 'LEXICON.md', '(#artifact-ownership-schema)', '(#missing-owner-heading)'],
+    ['Packet loses corrective claim', 'LEXICON.md', 'or the reconciled Wiki claim for corrective work', 'only the Spec'],
+    ['operational owner claim', 'AGENTS.md', 'Dispatcher owns whole-Spec QA', 'Worker owns whole-Spec QA']
+  ]) {
+    const corpus = workflowCorpus();
+    const content = corpus.controls.get(file);
+    assert.ok(content.includes(before), `${label}: mutation must hit its real source`);
+    corpus.controls.set(file, content.replace(before, after));
+    assert.throws(() => assertWorkflowMeaning(corpus), undefined, label);
+  }
 });

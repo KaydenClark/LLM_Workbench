@@ -10,10 +10,10 @@ source_paths:
   - AGENTS.md
   - RUNBOOK.md
   - LEXICON.md
-  - skills/builder/SKILL.md
-  - skills/auditor/SKILL.md
-  - skills/reviewer/SKILL.md
-  - skills/reconciler/SKILL.md
+  - workbench/skills/builder/SKILL.md
+  - workbench/skills/auditor/SKILL.md
+  - workbench/skills/reviewer/SKILL.md
+  - workbench/skills/reconciler/SKILL.md
   - tools/test-governance-core.mjs
   - tools/test-branch-closeout.mjs
   - tools/test-workbench-tools.mjs
@@ -65,10 +65,10 @@ refusals and external branch inventories must not be read as today's state.
 - [AGENTS.md](../../../AGENTS.md) — current owning source or verification seam.
 - [RUNBOOK.md](../../../RUNBOOK.md) — current owning source or verification seam.
 - [LEXICON.md](../../../LEXICON.md) — current owning source or verification seam.
-- [skills/builder/SKILL.md](../../../skills/builder/SKILL.md) — current owning source or verification seam.
-- [skills/auditor/SKILL.md](../../../skills/auditor/SKILL.md) — current owning source or verification seam.
-- [skills/reviewer/SKILL.md](../../../skills/reviewer/SKILL.md) — current owning source or verification seam.
-- [skills/reconciler/SKILL.md](../../../skills/reconciler/SKILL.md) — current owning source or verification seam.
+- [workbench/skills/builder/SKILL.md](../../skills/builder/SKILL.md) — current owning source or verification seam.
+- [workbench/skills/auditor/SKILL.md](../../skills/auditor/SKILL.md) — current owning source or verification seam.
+- [workbench/skills/reviewer/SKILL.md](../../skills/reviewer/SKILL.md) — current owning source or verification seam.
+- [workbench/skills/reconciler/SKILL.md](../../skills/reconciler/SKILL.md) — current owning source or verification seam.
 - [tools/test-governance-core.mjs](../../../tools/test-governance-core.mjs) — current owning source or verification seam.
 - [tools/test-branch-closeout.mjs](../../../tools/test-branch-closeout.mjs) — current owning source or verification seam.
 - [tools/test-workbench-tools.mjs](../../../tools/test-workbench-tools.mjs) — current owning source or verification seam.
@@ -77,3 +77,4 @@ refusals and external branch inventories must not be read as today's state.
 ## History
 
 - 2026-09-19: Created on owner direction as one article for this legacy Spec after reading its full record and checking named live sources. Evolved or superseded claims are identified explicitly. No Spec was moved, retired or discarded, and no retrospective Human QA is asserted.
+- 2026-09-30: Repaired live skill links and source_paths after relocation to workbench/skills; verified destinations only, without revalidating historical capability claims.

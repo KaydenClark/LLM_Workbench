@@ -56,8 +56,8 @@ remain visible and recoverable instead of becoming unsupported completion claims
 
 The root controls form the entry surface. This Blueprint describes the desired
 product, active ADR decisions explain cross-cutting architectural choices, the
-Lexicon connects meanings and owners, and the Wiki supplies readable current
-capability knowledge. [Claim-level ownership](workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md)
+Lexicon connects meanings and owners, and the Wiki is the evolving synthesis
+every agent reads and updates. [Claim-level ownership](workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md)
 keeps these surfaces coherent without making a whole file one kind of authority.
 
 Delivery is designed at three altitudes. The Blueprint is the product-level
@@ -71,10 +71,10 @@ corrective Task work however many Tasks it takes, and a distinct scoped
 objective with a destination of its own warrants a new Spec.
 
 Each of these truths has a durable owner, and no working file is one of them.
-The Blueprint owns product direction; the Wiki owns readable current capability
-knowledge; ADR records own consequential architectural decisions; source, tests
-and assets own implemented actuality and its proof; Git preserves recoverable
-history. `SPEC.md` and `TASK.md` are transient working artifacts that carry
+The Blueprint owns product direction; the Wiki owns the readable, evolving
+synthesis of what the project is and how it works; ADR records own
+consequential architectural decisions; source, tests and assets own
+implemented actuality and its proof; Git preserves recoverable history. `SPEC.md` and `TASK.md` are transient working artifacts that carry
 scope, state and evidence while their work is under way, and a later reader
 depends on the durable owners rather than on them.
 
@@ -87,14 +87,15 @@ a place in the Blueprint. They can overlap, begin before a Spec and remain
 useful after several Specs finish. Further landmarks emerge from DQCs, so an
 exhaustive inventory is never a prerequisite to building the foundation.
 
-DQCs and landmarks maintain the current account before a Spec, Task or Wiki
-article exists. Grilling notepads retain useful discussion history, corrections
+DQCs and landmarks keep the structured account; the Wiki summarizes them as
+they evolve. Grilling notepads retain useful discussion history, corrections
 and handoff context. Tracker generates a compact view of the related records
 and their documentation progress; Taskboard monitors implementation. Existing
 sources and owners keep their jobs. A DQC may remain ungrouped, with no
-landmark, until the developing concept suggests one. The Wiki explains confirmed
-durable understanding in readable Markdown without WBIDs; several Specs can
-contribute to one article. These records add no instruction authority.
+landmark, until the developing concept suggests one. The Wiki explains that
+understanding as it evolves, in readable Markdown, naming every identifier it
+cites with the artifact's name and context; several Specs can contribute to
+one article. These records add no instruction authority.
 
 Documentation progresses through Idea, Aligning, Confirmed, Mapped, Planned,
 Journey, Review and Verified. Related items can contribute mixed fractions
@@ -270,7 +271,9 @@ transient records discarded, with Git preserving recoverable history. A later
 gap against that same destination is a corrective Task that updates the
 reconciled record instead of reviving a closed Spec.
 
-Branch topology follows the work, never the role. A Spec branch is cut from the
+Branch topology expresses the scope of coordinated work: the Director covers
+the project and integration, each Dispatcher its assigned Spec branch, and each
+Worker its Task branch. A Spec branch is cut from the
 integration branch, each Task branch is cut from its Spec branch and worked in
 its own worktree, and proven Task results accumulate in the Spec branch until
 the assembled Spec is approved. No role works from main. As destination design
@@ -287,17 +290,29 @@ implicates, and the design-concept and delivery loop runs again from there. A
 defect is not by itself evidence that the shared design concept was wrong, and
 the loop is chosen at the scope the diagnosis supports.
 
-Parallel work is directed rather than improvised, and the coordinator is a
-chain of roles. Director, Dispatcher and Worker are roles defined by
-responsibility, not by branch, and the owner is the human above them, not the
-Director. The owner tells the Director to start a version; the Director starts
-a Dispatcher for each Spec, coordinates between them, approves each assembled
-Spec and escalates blockers to the owner. A Dispatcher plans its Spec, sends
-Workers to as many non-conflicting Tasks as can run in parallel, reads their
-reports, picks the next step and keeps a single durable writer for shared
-state. A Worker carries out one Task and hands back. That is the intended model
-beyond consistent single-Task execution, and no ordinary assignment depends on
-it.
+Parallel work is directed through scoped roles. The owner remains the human
+above the Director. The Director coordinates the whole project and integration,
+starts Dispatchers for assigned Specs, resolves cross-Spec dependencies and
+shared writers, and oversees independent review of assembled candidates. Each
+Dispatcher stays within its Spec and branch while Workers perform individual
+Tasks. A role defines that scope; a stance defines the job within it.
+
+A Dispatcher using Spec Planner inspects live Actuality at flight launch, cuts
+small Tasks and groups compatible work into parallel vertical slices. It may
+send Workers to help author Tasks. Using Spec Manager, it dispatches execution
+Workers, monitors results, coordinates containment and owns assembled-Spec
+verification. Reviewer and Auditor are stances it can use; neither changes its
+scope or makes it independent of work it carried. The normal delivery path is
+Task merge requests into the Spec branch, followed by an independently reviewed
+Spec merge request into integration. Release-specific bootstrap exceptions are
+explicit in their release owner, not silently confused with this destination.
+
+New Specs capture capability destinations without pre-cut Tasks. Task planning
+belongs to flight launch and activation against current Actuality. Accepted
+decisions and progress reach their tracked owners on integration as work
+proceeds, so a fresh agent can reconstruct the project without another chat,
+private cache or unmerged branch. No ordinary single-Task assignment requires
+a coordination system.
 
 The Workbench Template exercises the same update contract as a real installed
 room. Whole-product readiness examines the combined system before owner-controlled

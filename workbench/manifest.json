@@ -21,6 +21,10 @@
     "defaultBranch": "main",
     "integrationBranch": "integration"
   },
+  "githubCoordination": {
+    "schemaVersion": 1,
+    "repository": "KaydenClark/LLM_Workbench"
+  },
   "lanes": {
     "docs": "workbench/docs",
     "specs": "workbench/specs",
@@ -40,7 +44,8 @@
     "checkpoints": "workbench/sessions/checkpoints",
     "notepads": "workbench/sessions/notepads",
     "notepad-templates": "workbench/sessions/notepads/templates",
-    "recovery": "workbench/sessions/recovery"
+    "recovery": "workbench/sessions/recovery",
+    "features": "workbench/wiki/features"
   },
   "landmarkTracker": {
     "root": "workbench/landmark-tracker",
@@ -80,6 +85,10 @@
       "promote",
       "handoff",
       "grill-me",
+      "director",
+      "dispatcher",
+      "spec-planner",
+      "spec-manager",
       "builder",
       "auditor",
       "reviewer",

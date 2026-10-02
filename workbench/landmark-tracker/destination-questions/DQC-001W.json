@@ -1,0 +1,184 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-001W",
+  "revision": 6,
+  "title": "Which whole-product requirements belong in Blueprint rather than Specs or ADRs?",
+  "question": "Which whole-product requirements belong in Blueprint rather than Specs or ADRs?",
+  "answer": "BPR-5A: Blueprint holds durable whole-product outcomes and constraints. Specs hold scoped, testable capability requirements. ADRs hold accepted cross-cutting architectural choices from consequential tradeoffs. A whole-product client requirement can sit in the Blueprint without an ADR; implementation specifics and acceptance go in Specs; an ADR exists only for the architectural choice and why.\nWF-6: The Blueprint defines the product-level destination: count to 100. Each Spec is a mini-PRD, a scoped objective with its own destination, the next number to count to. Tasks do the counting. Stacked Specs together realize the Blueprint journey. TASKBOARD is the Kanban projection of progress and coordination, not truth or a second tracker.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-5A, WF-6 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "BPR-5A update LEXICON.md (Artifact Ownership Schema: Destination, Requirements, Decisions rows) and templates/LEXICON.md: Route whole-product outcomes to Blueprint, scoped requirements to Specs, consequential cross-cutting choices to ADRs. | BPR-5A create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Decisions And Contracts and Blueprint rebuild contract apply this placement rule. | BPR-5A create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Specs own scoped delivery; the Blueprint is not a decision ledger. | WF-6 update BLUEPRINT.md: Describes the three altitudes and stacked Specs realizing the Blueprint journey. | WF-6 update LEXICON.md (Spec row) and templates/LEXICON.md: Spec described as an objective with a destination (mini-PRD) instead of a stable capability record; owned by S-00P TK-004. | WF-6 update workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md: Reconciled under S-00P TK-004 against the three-altitude answer.",
+    "home": "LEXICON.md (Artifact Ownership Schema: Destination, Requirements, Decisions rows) and templates/LEXICON.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md; workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md; BLUEPRINT.md; LEXICON.md (Spec row) and templates/LEXICON.md; workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "BPR-5A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-6",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000F"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "BPR-5A",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-5A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-6",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-6 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Which whole-product requirements belong in Blueprint rather than Specs or ADRs?",
+    "question": "Which whole-product requirements belong in Blueprint rather than Specs or ADRs?",
+    "sources": [
+      {
+        "id": "BPR-5A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-6",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:19.290Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:19.290Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 043 of the 2026-09-26 grouping (\"Blueprint and architectural decision records\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Blueprint owns durable whole-product outcomes and constraints; Specs own scoped testable capability requirements; ADRs explain consequential cross-cutting choices.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:19.306Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "BPR-5A: Blueprint holds durable whole-product outcomes and constraints. Specs hold scoped, testable capability requirements. ADRs hold accepted cross-cutting architectural choices from consequential tradeoffs. A whole-product client requirement can sit in the Blueprint without an ADR; implementation specifics and acceptance go in Specs; an ADR exists only for the architectural choice and why.\nWF-6: The Blueprint defines the product-level destination: count to 100. Each Spec is a mini-PRD, a scoped objective with its own destination, the next number to count to. Tasks do the counting. Stacked Specs together realize the Blueprint journey. TASKBOARD is the Kanban projection of progress and coordination, not truth or a second tracker."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-5A, WF-6 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "BPR-5A update LEXICON.md (Artifact Ownership Schema: Destination, Requirements, Decisions rows) and templates/LEXICON.md: Route whole-product outcomes to Blueprint, scoped requirements to Specs, consequential cross-cutting choices to ADRs. | BPR-5A create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Decisions And Contracts and Blueprint rebuild contract apply this placement rule. | BPR-5A create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Specs own scoped delivery; the Blueprint is not a decision ledger. | WF-6 update BLUEPRINT.md: Describes the three altitudes and stacked Specs realizing the Blueprint journey. | WF-6 update LEXICON.md (Spec row) and templates/LEXICON.md: Spec described as an objective with a destination (mini-PRD) instead of a stable capability record; owned by S-00P TK-004. | WF-6 update workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md: Reconciled under S-00P TK-004 against the three-altitude answer.",
+            "home": "LEXICON.md (Artifact Ownership Schema: Destination, Requirements, Decisions rows) and templates/LEXICON.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md; workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md; BLUEPRINT.md; LEXICON.md (Spec row) and templates/LEXICON.md; workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:19.321Z",
+      "reason": "Ledger row BPR-5A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-5A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:19.339Z",
+      "reason": "Ledger row WF-6 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-6",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:19.357Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:54.606Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Artifact Types pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000F"
+          ]
+        }
+      ]
+    }
+  ]
+}

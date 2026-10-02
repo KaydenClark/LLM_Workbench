@@ -1,0 +1,232 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-002N",
+  "revision": 7,
+  "title": "What makes a Task a complete vertical execution slice?",
+  "question": "What makes a Task a complete vertical execution slice?",
+  "answer": "TT-Q2: Task is a canonical concept, not an alias. TASK.md becomes its own artifact: a bounded, executable thin vertical slice of a Spec that carries blocking relationships so Tasks can complete in parallel, built with the tracer skill and picked up task after task with high-fidelity context. Task was meant to replace Ticket completely. The folder lifecycle applies to Tasks with no exception.\nRB-Q2: Suggested A with sub-answer (ii): TASK.md is the single execution-slice artifact (context, branch and receipt unit); no level beneath Task; Ticket stays retired. Receipt is append-only, one row per run. \"A is an aspiration, not a rule or a guarantee.\" New sizing rule: a Task expected to need more than one context unit should be a Spec that Tasks are cut from. He stated the unit as 250k tokens (revised to 200k in RB-Q2B).\nFND-Q03: A Task is the smallest bounded work that fits one useful context; work expected to exceed one context unit (about 200k tokens, 'a goalpost, not a gate') is a Spec with Tasks. A context ends when its Task is complete and cleaned up: one Chat does one Task, then ends. The next context loads the Contract plus the Task (its Spec acceptance, optional handoff or notepad).",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: TT-Q2, RB-Q2 (locked); FND-Q03 (answered in chat, recovered from the owner's own messages). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "TT-Q2 create workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md: Accepted ADR: a Task is a standalone artifact. | TT-Q2 update workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md: Standalone TASK.md records live under tasks/<id>/, and slice generation produces them. | TT-Q2 update LEXICON.md (Task, TASK, Ticket rows) and templates/LEXICON.md: Task defined as the standalone execution slice; TASK no longer an alias for a Ticket. | TT-Q2 create workbench/skills/to-tasks/SKILL.md: Generates Task files instead of embedded Ticket rows. | RB-Q2 update workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md: Single execution-slice artifact, append-only per-run receipt, Spec-not-Task sizing rule. | RB-Q2 update LEXICON.md (Task, Task receipt rows) and templates/LEXICON.md: Task and receipt definitions match. | FND-Q03 update workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md (What a Task carries in and out; One Task, one context): Packet (TASK.md, Spec acceptance lines, cited paths, Contract; optional handoff/notepad) and per-run Receipt; work over one context unit becomes a Spec with Tasks. | FND-Q03 update workbench/manifest.json (contextUnit): Declares the 200k context unit with provenance as a planning goalpost, never a gate. | FND-Q03 update LEXICON.md (Task, Packet, Task receipt, Chat, Director rows) and templates/LEXICON.md: One Chat works one Task, completes and cleans up, then ends; a director starts the next unblocked Task. | FND-Q03 update workbench/skills/carry/SKILL.md: Carry works one Task per Chat or acts as director behaviour, never a whole Spec in one Chat (TT-Q4 consequence).",
+    "home": "workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md; workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md; LEXICON.md (Task, TASK, Ticket rows) and templates/LEXICON.md; workbench/skills/to-tasks/SKILL.md; LEXICON.md (Task, Task receipt rows) and templates/LEXICON.md; workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md (What a Task carries in and out; One Task, one context); workbench/manifest.json (contextUnit); LEXICON.md (Task, Packet, Task receipt, Chat, Director rows) and templates/LEXICON.md; workbench/skills/carry/SKILL.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "TT-Q2",
+      "revision": "56b459da"
+    },
+    {
+      "id": "RB-Q2",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q03",
+      "revision": "56b459da"
+    },
+    {
+      "id": "U313-3",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000K"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "TT-Q2",
+      "revision": "56b459da",
+      "reason": "Ledger row TT-Q2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "RB-Q2",
+      "revision": "56b459da",
+      "reason": "Ledger row RB-Q2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q03",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q03 (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What makes a Task a complete vertical execution slice?",
+    "question": "What makes a Task a complete vertical execution slice?",
+    "sources": [
+      {
+        "id": "TT-Q2",
+        "revision": "56b459da"
+      },
+      {
+        "id": "RB-Q2",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q03",
+        "revision": "56b459da"
+      },
+      {
+        "id": "U313-3",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:20.936Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:20.936Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 060 of the 2026-09-26 grouping (\"Specs, Tasks and execution contexts\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: TASK.md is the standalone bounded execution artifact; there is no smaller Ticket layer. Scope should produce useful progress within one context. Not related: U313-3 (withdrawn).",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:20.953Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "TT-Q2: Task is a canonical concept, not an alias. TASK.md becomes its own artifact: a bounded, executable thin vertical slice of a Spec that carries blocking relationships so Tasks can complete in parallel, built with the tracer skill and picked up task after task with high-fidelity context. Task was meant to replace Ticket completely. The folder lifecycle applies to Tasks with no exception.\nRB-Q2: Suggested A with sub-answer (ii): TASK.md is the single execution-slice artifact (context, branch and receipt unit); no level beneath Task; Ticket stays retired. Receipt is append-only, one row per run. \"A is an aspiration, not a rule or a guarantee.\" New sizing rule: a Task expected to need more than one context unit should be a Spec that Tasks are cut from. He stated the unit as 250k tokens (revised to 200k in RB-Q2B).\nFND-Q03: A Task is the smallest bounded work that fits one useful context; work expected to exceed one context unit (about 200k tokens, 'a goalpost, not a gate') is a Spec with Tasks. A context ends when its Task is complete and cleaned up: one Chat does one Task, then ends. The next context loads the Contract plus the Task (its Spec acceptance, optional handoff or notepad)."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: TT-Q2, RB-Q2 (locked); FND-Q03 (answered in chat, recovered from the owner's own messages). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "TT-Q2 create workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md: Accepted ADR: a Task is a standalone artifact. | TT-Q2 update workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md: Standalone TASK.md records live under tasks/<id>/, and slice generation produces them. | TT-Q2 update LEXICON.md (Task, TASK, Ticket rows) and templates/LEXICON.md: Task defined as the standalone execution slice; TASK no longer an alias for a Ticket. | TT-Q2 create workbench/skills/to-tasks/SKILL.md: Generates Task files instead of embedded Ticket rows. | RB-Q2 update workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md: Single execution-slice artifact, append-only per-run receipt, Spec-not-Task sizing rule. | RB-Q2 update LEXICON.md (Task, Task receipt rows) and templates/LEXICON.md: Task and receipt definitions match. | FND-Q03 update workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md (What a Task carries in and out; One Task, one context): Packet (TASK.md, Spec acceptance lines, cited paths, Contract; optional handoff/notepad) and per-run Receipt; work over one context unit becomes a Spec with Tasks. | FND-Q03 update workbench/manifest.json (contextUnit): Declares the 200k context unit with provenance as a planning goalpost, never a gate. | FND-Q03 update LEXICON.md (Task, Packet, Task receipt, Chat, Director rows) and templates/LEXICON.md: One Chat works one Task, completes and cleans up, then ends; a director starts the next unblocked Task. | FND-Q03 update workbench/skills/carry/SKILL.md: Carry works one Task per Chat or acts as director behaviour, never a whole Spec in one Chat (TT-Q4 consequence).",
+            "home": "workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md; workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md; LEXICON.md (Task, TASK, Ticket rows) and templates/LEXICON.md; workbench/skills/to-tasks/SKILL.md; LEXICON.md (Task, Task receipt rows) and templates/LEXICON.md; workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md (What a Task carries in and out; One Task, one context); workbench/manifest.json (contextUnit); LEXICON.md (Task, Packet, Task receipt, Chat, Director rows) and templates/LEXICON.md; workbench/skills/carry/SKILL.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:20.971Z",
+      "reason": "Ledger row TT-Q2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "TT-Q2",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:20.991Z",
+      "reason": "Ledger row RB-Q2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "RB-Q2",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:21.012Z",
+      "reason": "Ledger row FND-Q03 (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q03",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:21.032Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:57.410Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000K"
+          ]
+        }
+      ]
+    }
+  ]
+}

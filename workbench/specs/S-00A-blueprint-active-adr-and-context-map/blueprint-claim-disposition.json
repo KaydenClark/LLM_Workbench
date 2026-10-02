@@ -307,7 +307,7 @@
           "section": "Accepted V3.1 Direction",
           "text": "Invariants the release must preserve: exactly seven root controls, with the\nWorkbench Contract defined as the claims those controls and the assigned spec\nown ([ADR-0013](workbench/docs/adr/0013-seven-file-workbench-contract.md),\n[ADR-0033](workbench/docs/adr/0033-workbench-contract-is-a-claim-set.md));\n",
           "disposition": "relocate-claim",
-          "owner": "workbench/docs/adr/0033-workbench-contract-is-a-claim-set.md",
+          "owner": "workbench/docs/adr/archive/0033-workbench-contract-is-a-claim-set.md",
           "reason": "The seven-control claim-set contract is retained by ADR-0033 and ADR-0013."
         },
         {

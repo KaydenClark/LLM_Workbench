@@ -11,7 +11,7 @@ source_paths:
   - tools/test-control-fidelity.mjs
   - workbench/tools/template-placeholders.mjs
   - templates/ADOPTION.md
-  - skills/update-harness/SKILL.md
+  - workbench/skills/update-harness/SKILL.md
   - LEXICON.md
   - RUNBOOK.md
 parent: none
@@ -59,10 +59,11 @@ a review aid whose source generation and matching limits stay visible.
 - [tools/test-control-fidelity.mjs](../../../tools/test-control-fidelity.mjs) — current owning source or verification seam.
 - [workbench/tools/template-placeholders.mjs](../../../workbench/tools/template-placeholders.mjs) — current owning source or verification seam.
 - [templates/ADOPTION.md](../../../templates/ADOPTION.md) — current owning source or verification seam.
-- [skills/update-harness/SKILL.md](../../../skills/update-harness/SKILL.md) — current owning source or verification seam.
+- [workbench/skills/update-harness/SKILL.md](../../skills/update-harness/SKILL.md) — current owning source or verification seam.
 - [LEXICON.md](../../../LEXICON.md) — current owning source or verification seam.
 - [RUNBOOK.md](../../../RUNBOOK.md) — current owning source or verification seam.
 
 ## History
 
 - 2026-09-19: Created on owner direction as one article for this legacy Spec after reading its full record and checking named live sources. Evolved or superseded claims are identified explicitly. No Spec was moved, retired or discarded, and no retrospective Human QA is asserted.
+- 2026-09-30: Repaired live skill links and source_paths after relocation to workbench/skills; verified destinations only, without revalidating historical capability claims.

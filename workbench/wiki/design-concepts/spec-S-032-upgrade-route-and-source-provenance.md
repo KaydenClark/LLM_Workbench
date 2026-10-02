@@ -11,8 +11,8 @@ source_paths:
   - tools/workbench-adoption.mjs
   - tools/workbench-tools.mjs
   - workbench/tools/workbench-layout.mjs
-  - skills/update-harness/SKILL.md
-  - skills/adoption/SKILL.md
+  - workbench/skills/update-harness/SKILL.md
+  - workbench/skills/adoption/SKILL.md
   - RUNBOOK.md
   - tools/test-workbench-upgrade.mjs
   - tools/test-workbench-layout.mjs
@@ -62,8 +62,8 @@ recovery limits govern each real upgrade.
 - [tools/workbench-adoption.mjs](../../../tools/workbench-adoption.mjs) — current owning source or verification seam.
 - [tools/workbench-tools.mjs](../../../tools/workbench-tools.mjs) — current owning source or verification seam.
 - [workbench/tools/workbench-layout.mjs](../../../workbench/tools/workbench-layout.mjs) — current owning source or verification seam.
-- [skills/update-harness/SKILL.md](../../../skills/update-harness/SKILL.md) — current owning source or verification seam.
-- [skills/adoption/SKILL.md](../../../skills/adoption/SKILL.md) — current owning source or verification seam.
+- [workbench/skills/update-harness/SKILL.md](../../skills/update-harness/SKILL.md) — current owning source or verification seam.
+- [workbench/skills/adoption/SKILL.md](../../skills/adoption/SKILL.md) — current owning source or verification seam.
 - [RUNBOOK.md](../../../RUNBOOK.md) — current owning source or verification seam.
 - [tools/test-workbench-upgrade.mjs](../../../tools/test-workbench-upgrade.mjs) — current owning source or verification seam.
 - [tools/test-workbench-layout.mjs](../../../tools/test-workbench-layout.mjs) — current owning source or verification seam.
@@ -72,3 +72,4 @@ recovery limits govern each real upgrade.
 ## History
 
 - 2026-09-19: Created on owner direction as one article for this legacy Spec after reading its full record and checking named live sources. Evolved or superseded claims are identified explicitly. No Spec was moved, retired or discarded, and no retrospective Human QA is asserted.
+- 2026-09-30: Repaired live skill links and source_paths after relocation to workbench/skills; verified destinations only, without revalidating historical capability claims.

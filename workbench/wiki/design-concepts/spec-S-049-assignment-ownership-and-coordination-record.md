@@ -7,7 +7,7 @@ provenance:
   - Owner requested one durable Wiki article per Spec on 2026-09-19
 source_paths:
   - workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md
-  - skills/carry/SKILL.md
+  - workbench/skills/carry/SKILL.md
   - workbench/manifest.json
   - tools/test-skill-catalog.mjs
   - workbench/tools/workbench-layout.mjs
@@ -35,7 +35,7 @@ The original seventeenth-skill release froze v3.1.2 rather than redefining its b
 The source record was read at `bc370fe742d5ddb8348bf361fccea31205f6cee7` and the named current owners were inspected during article preparation. Historical tests are attributed to the original record, not claimed rerun here. Exact source recovery: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md`.
 
 - [workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md](../../../workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md)
-- [skills/carry/SKILL.md](../../../skills/carry/SKILL.md)
+- [workbench/skills/carry/SKILL.md](../../skills/carry/SKILL.md)
 - [workbench/manifest.json](../../../workbench/manifest.json)
 - [tools/test-skill-catalog.mjs](../../../tools/test-skill-catalog.mjs)
 - [workbench/tools/workbench-layout.mjs](../../../workbench/tools/workbench-layout.mjs)
@@ -43,3 +43,4 @@ The source record was read at `bc370fe742d5ddb8348bf361fccea31205f6cee7` and the
 ## History
 
 - 2026-09-19: Reconciled into one article on owner direction; source records and proof remain intact pending their lifecycle gates.
+- 2026-09-30: Repaired live skill links and source_paths after relocation to workbench/skills; verified destinations only, without revalidating historical capability claims.

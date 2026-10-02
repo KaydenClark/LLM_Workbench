@@ -1,0 +1,315 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000A",
+  "revision": 9,
+  "title": "Role scope and stance jobs for Spec delivery",
+  "question": "How do scoped roles and composable stances coordinate parallel Spec and Task delivery?",
+  "answer": "Role defines scope: Director covers project and integration, Dispatcher one Spec and its branch, Worker one Task. Spec Planner and Spec Manager are separate Dispatcher-usable stances with separate Specs. Planner prepares small parallel vertical slices and may use Workers to author Tasks; Manager dispatches and monitors execution. Reviewer and Auditor remain stances. Director coordinates cross-Spec work.",
+  "confirmation": {
+    "basis": "Owner explicitly confirmed ROLE-1 through ROLE-4 and the documentation/specification/integration endpoint on 2026-09-27.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "Keep accepted decisions and progress reachable on integration, separately specify the three roles and two missing stances, reuse Reviewer and Auditor owners, and defer new Tasks until flight launch.",
+    "home": "LEXICON.md; AGENTS.md; BLUEPRINT.md; RUNBOOK.md; workbench/wiki/design-concepts/roles-and-stances.md; workbench/specs/S-002C-director-role/SPEC.md through S-002G-spec-manager-stance/SPEC.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "ROLE-1",
+      "revision": null
+    },
+    {
+      "id": "ROLE-2",
+      "revision": null
+    },
+    {
+      "id": "ROLE-3",
+      "revision": null
+    },
+    {
+      "id": "ROLE-4",
+      "revision": null
+    },
+    {
+      "id": "SCR-4",
+      "revision": "56b459da"
+    },
+    {
+      "id": "SCR-4A",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000R"
+  ],
+  "assessment": null,
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "ROLE-1",
+      "revision": "56b459da",
+      "reason": "Ledger row ROLE-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "ROLE-2",
+      "revision": "56b459da",
+      "reason": "Ledger row ROLE-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "ROLE-3",
+      "revision": "56b459da",
+      "reason": "Ledger row ROLE-3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "ROLE-4",
+      "revision": "56b459da",
+      "reason": "Ledger row ROLE-4 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 7
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "SCR-4",
+      "revision": "56b459da",
+      "reason": "Ledger row SCR-4 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 8
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Role scope and stance jobs for Spec delivery",
+    "question": "How do scoped roles and composable stances coordinate parallel Spec and Task delivery?",
+    "sources": [
+      {
+        "id": "ROLE-1",
+        "revision": null
+      },
+      {
+        "id": "ROLE-2",
+        "revision": null
+      },
+      {
+        "id": "ROLE-3",
+        "revision": null
+      },
+      {
+        "id": "ROLE-4",
+        "revision": null
+      }
+    ],
+    "revision": 1,
+    "at": "2026-09-27T03:31:37.558Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-09-27T03:31:37.558Z",
+      "reason": "Owner confirmed minimum buildout and integration reconciliation; preserve current understanding in the available concept runtime",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-09-27T03:32:09.760Z",
+      "reason": "Confirmed design promoted to durable owners; implementation and independent delivery proof remain with the capability Specs",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "Role defines scope: Director covers project and integration, Dispatcher one Spec and its branch, Worker one Task. Spec Planner and Spec Manager are separate Dispatcher-usable stances with separate Specs. Planner prepares small parallel vertical slices and may use Workers to author Tasks; Manager dispatches and monitors execution. Reviewer and Auditor remain stances. Director coordinates cross-Spec work."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Owner explicitly confirmed ROLE-1 through ROLE-4 and the documentation/specification/integration endpoint on 2026-09-27."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "Keep accepted decisions and progress reachable on integration, separately specify the three roles and two missing stances, reuse Reviewer and Auditor owners, and defer new Tasks until flight launch.",
+            "home": "LEXICON.md; AGENTS.md; BLUEPRINT.md; RUNBOOK.md; workbench/wiki/design-concepts/roles-and-stances.md; workbench/specs/S-002C-director-role/SPEC.md through S-002G-spec-manager-stance/SPEC.md",
+            "revision": 2
+          }
+        },
+        {
+          "field": "correction",
+          "to": "The initial Reviewer role proposal and generalized multi-Spec Dispatcher lane were replaced by Reviewer stance and a one-Spec Dispatcher boundary."
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:37.398Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: SCR-4 (Director, Dispatcher and Worker) carries this card's role destination; SCR-4A is superseded by ROLE-3, already a source here.",
+      "changes": [
+        {
+          "field": "source",
+          "from": null,
+          "to": {
+            "id": "SCR-4",
+            "revision": "56b459da"
+          }
+        },
+        {
+          "field": "source",
+          "from": null,
+          "to": {
+            "id": "SCR-4A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:37.433Z",
+      "reason": "Ledger row ROLE-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "ROLE-1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:37.475Z",
+      "reason": "Ledger row ROLE-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "ROLE-2",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:37.517Z",
+      "reason": "Ledger row ROLE-3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "ROLE-3",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:37.559Z",
+      "reason": "Ledger row ROLE-4 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "ROLE-4",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:37.601Z",
+      "reason": "Ledger row SCR-4 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "SCR-4",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "at": "2026-10-01T23:50:00.979Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Agent Stances pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000R"
+          ]
+        }
+      ]
+    }
+  ]
+}

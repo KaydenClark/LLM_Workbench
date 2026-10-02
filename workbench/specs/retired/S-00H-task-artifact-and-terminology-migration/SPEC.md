@@ -78,7 +78,7 @@ understands it, because those identifiers remain readable exactly as written.
   [S-00P](../../S-00P-workflow-canon-rework/SPEC.md). Tasks do the counting
   toward a Spec's destination; scope and destination, not Task count, decide
   when a new Spec exists.
-  [ADR-000G](../../../docs/adr/proposed/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md)
+  [ADR-000G](../../../docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md)
   is `proposed`, still gives the Blueprint the PRD function the locked WF-1
   answer places in each Spec, and is evidence until S-00P TK-004 reconciles
   it; it does not instruct this Spec.

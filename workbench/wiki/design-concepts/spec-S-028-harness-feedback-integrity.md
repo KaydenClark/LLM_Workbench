@@ -12,7 +12,7 @@ source_paths:
   - tools/workbench-adoption.mjs
   - templates/feedback/REPORT_FORMAT.md
   - templates/ADOPTION.md
-  - skills/update-harness/SKILL.md
+  - workbench/skills/update-harness/SKILL.md
   - tools/test-guardrail-audit.mjs
   - tools/test-feedback-automation.mjs
   - tools/test-workbench-adoption.mjs
@@ -64,7 +64,7 @@ preservation without requiring an external project sweep.
 - [tools/workbench-adoption.mjs](../../../tools/workbench-adoption.mjs) — current owning source or verification seam.
 - [templates/feedback/REPORT_FORMAT.md](../../../templates/feedback/REPORT_FORMAT.md) — current owning source or verification seam.
 - [templates/ADOPTION.md](../../../templates/ADOPTION.md) — current owning source or verification seam.
-- [skills/update-harness/SKILL.md](../../../skills/update-harness/SKILL.md) — current owning source or verification seam.
+- [workbench/skills/update-harness/SKILL.md](../../skills/update-harness/SKILL.md) — current owning source or verification seam.
 - [tools/test-guardrail-audit.mjs](../../../tools/test-guardrail-audit.mjs) — current owning source or verification seam.
 - [tools/test-feedback-automation.mjs](../../../tools/test-feedback-automation.mjs) — current owning source or verification seam.
 - [tools/test-workbench-adoption.mjs](../../../tools/test-workbench-adoption.mjs) — current owning source or verification seam.
@@ -72,3 +72,4 @@ preservation without requiring an external project sweep.
 ## History
 
 - 2026-09-19: Created on owner direction as one article for this legacy Spec after reading its full record and checking named live sources. Evolved or superseded claims are identified explicitly. No Spec was moved, retired or discarded, and no retrospective Human QA is asserted.
+- 2026-09-30: Repaired live skill links and source_paths after relocation to workbench/skills; verified destinations only, without revalidating historical capability claims.

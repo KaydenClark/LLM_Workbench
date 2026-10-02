@@ -24,10 +24,10 @@
 // working tree, then names the candidate it was asked about, its full commit
 // SHA once `git rev-parse <sha>^{commit}` resolves it in the room's own
 // repository, and whether the working tree's own HEAD is that same commit -
-// so a reviewer can see when the two differ, and so an abbreviated candidate
-// still compares correctly against a full HEAD SHA. It never checks out or
-// reads a blob from the named SHA; a review of a moved candidate is TK-002's
-// refusal, not this slice's.
+// so a reviewer can see when the two differ. Normalized committed content
+// equality is exposed separately from HEAD equality; the report remains
+// informational even when that content is missing or differs. No checkout is
+// changed. Verdict and gate refuse missing or mismatched candidate content.
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -59,6 +59,7 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
   const completionResult = section(spec.content, 'Completion Result').trim();
   const candidate = candidateSha ? candidateBinding(root, candidateSha) : null;
   const specDigest = computeSpecDigest(root, spec);
+  if (candidate) Object.assign(candidate, candidateContentBinding(root, spec, candidateSha, specDigest));
   const verdicts = parseVerdicts(evidence);
   const latestVerdict = latestVerdictFor(verdicts, specDigest);
   // S-00J TK-005: owner Human QA on `integration`, read the same way a
@@ -147,6 +148,17 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
 // S-00J TK-01S: exported unchanged so `completeSpec` verifies the Spec's
 // committed content on the default branch with this one digest rule; it
 // adds no second normalization.
+// Immutable candidate reads use the selected repository's real objects. Caller
+// Git selectors, replacement refs and promisor fetches cannot substitute bytes
+// or turn this read-only verification into network/object-store writes.
+function candidateGit(root, args) {
+  const environment = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('GIT_')));
+  return spawnSync('git', ['--no-lazy-fetch', '--no-optional-locks', '-C', root, ...args], {
+    encoding: 'utf8', timeout: 10000, maxBuffer: 16 * 1024 * 1024,
+    env: { ...environment, GIT_NO_REPLACE_OBJECTS: '1', GIT_TERMINAL_PROMPT: '0' }
+  });
+}
+
 export function computeSpecDigest(root, spec, candidate = null) {
   const specDir = path.dirname(spec.filePath);
   // Each entry is hashed as its name, then its byte length, then its own
@@ -165,12 +177,13 @@ export function computeSpecDigest(root, spec, candidate = null) {
     hash.update(content);
     hash.update('\n');
   }
-  const relativeDir = path.relative(root, specDir).split(path.sep).join('/');
+  let relativeDir = path.relative(root, specDir).split(path.sep).join('/');
   function committed(args) {
-    const result = spawnSync('git', args, { cwd: root, encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
+    const result = candidateGit(root, args);
     if (result.status !== 0) throw new Error(`Cannot read committed content for ${spec.id} at ${candidate}: ${result.stderr?.trim() || result.error?.message || 'Git read failed'}`);
     return result.stdout;
   }
+  if (candidate) relativeDir = committedSpecDirectory(root, spec, candidate, relativeDir, committed);
   const specContent = candidate ? committed(['show', `${candidate}:${relativeDir}/SPEC.md`]) : spec.content;
   addEntry('SPEC.md', stripVolatileSpecFields(stripEvidenceRows(specContent)));
   let taskNames;
@@ -194,6 +207,79 @@ export function computeSpecDigest(root, spec, candidate = null) {
     addEntry(name, stripReceiptSection(content));
   }
   return hash.digest('hex');
+}
+
+function candidateContentBinding(root, spec, candidate, currentDigest) {
+  try {
+    const contentDigest = computeSpecDigest(root, spec, candidate);
+    return { contentDigest, matchesContent: contentDigest === currentDigest, contentError: null };
+  } catch (error) {
+    return { contentDigest: null, matchesContent: false, contentError: error.message };
+  }
+}
+
+// S-00U TK-003K: a retirement changes the lookup path, not the approved
+// candidate or digest. Only follow the one canonical active -> retired move,
+// proven by Git's staged rename or the latest committed destination addition.
+// Never search for another same-ID or same-digest record. In particular, a
+// removed/re-added source or destination is a new incarnation: an older
+// approval cannot prove it, even when somebody copies the old evidence rows.
+function committedSpecDirectory(root, spec, candidate, relativeDir, committed) {
+  const currentFile = `${relativeDir}/SPEC.md`;
+  const regularBlob = (ref, file) => {
+    const entries = committed(['ls-tree', '-z', ref, '--', file]).split('\0').filter(Boolean);
+    return entries.length === 1 && /^(100644|100755) blob [0-9a-f]+\t/.test(entries[0])
+      && entries[0].slice(entries[0].indexOf('\t') + 1) === file;
+  };
+  if (regularBlob(candidate, currentFile)) return relativeDir;
+
+  const refuse = () => { throw new Error(`Cannot prove the committed retirement source for ${spec.id} at ${candidate}`); };
+  const { specsPrefix } = resolveSpecsRoot(root);
+  const basename = path.posix.basename(relativeDir);
+  if (relativeDir !== `${specsPrefix}/retired/${basename}` || !basename.startsWith(`${spec.id}-`)) refuse();
+  const sourceDir = `${specsPrefix}/${basename}`;
+  const sourceFile = `${sourceDir}/SPEC.md`;
+  const missing = (ref, file) => committed(['ls-tree', '-z', ref, '--', file]) === '';
+  const ancestor = (older, newer) => candidateGit(root, ['merge-base', '--is-ancestor', older, newer]).status === 0;
+  const parentsOf = ref => committed(['rev-list', '--parents', '-n', '1', ref]).trim().split(' ').slice(1);
+  const latestAddition = (ref, file) => {
+    // Default log hides additions made by merge commits. Per-parent history
+    // exposes them, but an ordinary merge importing an existing path is not
+    // a new incarnation: at least one parent already carries that path.
+    const additions = committed(['log', '--full-history', '--topo-order', '-m', '--no-renames', '--diff-filter=A', '--format=%H', ref, '--', file]).trim().split('\n').filter(Boolean);
+    return [...new Set(additions)].find(sha => parentsOf(sha).every(parent => missing(parent, file)));
+  };
+  // A deletion anywhere on the candidate's surviving ancestry invalidates
+  // that incarnation, including a merge that restores another parent's old
+  // bytes. Parents predating the candidate are excluded, so ordinary delivery
+  // of a newly introduced Spec through a non-FF merge stays valid.
+  const deletedSince = (from, to, file) => committed(['log', '--ancestry-path', '--full-history', '-m', '--no-renames', '--diff-filter=D', '--format=%H', `${from}..${to}`, '--', file]).trim() !== '';
+  const isRename = (args) => {
+    const fields = committed(['diff', '--name-status', '-z', '--find-renames', ...args, '--', sourceFile, currentFile]).split('\0').filter(Boolean);
+    return fields.length === 3 && /^R\d+$/.test(fields[0]) && fields[1] === sourceFile && fields[2] === currentFile;
+  };
+  if (!regularBlob(candidate, sourceFile) || !missing(candidate, currentFile) || !ancestor(candidate, 'HEAD')) refuse();
+
+  let sourceParent;
+  if (regularBlob('HEAD', sourceFile) && missing('HEAD', currentFile)) {
+    // moveSpecDirectory stages the whole rename before its caller commits.
+    if (!isRename(['--cached', 'HEAD'])) refuse();
+    sourceParent = 'HEAD';
+  } else {
+    if (!missing('HEAD', sourceFile) || !regularBlob('HEAD', currentFile)) refuse();
+    const move = latestAddition('HEAD', currentFile);
+    if (!move) refuse();
+    if (deletedSince(move, 'HEAD', currentFile)) refuse();
+    const parents = parentsOf(move);
+    sourceParent = parents.find(parent => ancestor(candidate, parent)
+      && regularBlob(parent, sourceFile) && missing(parent, currentFile)
+      && missing(move, sourceFile) && regularBlob(move, currentFile)
+      && isRename([parent, move]));
+    if (!sourceParent) refuse();
+  }
+  const sourceAdded = latestAddition(sourceParent, sourceFile);
+  if (!sourceAdded || !ancestor(sourceAdded, candidate) || deletedSince(candidate, sourceParent, sourceFile)) refuse();
+  return sourceDir;
 }
 
 // Blanks the Spec header's `Updated`, `Latest event` and `Next gate` field
@@ -277,8 +363,8 @@ function stripEvidenceRows(content) {
 // `integration`, and a merge commit that never equals the reviewed tip).
 // TK-004 redefines it to bind to the Spec's assembled CONTENT instead
 // (`computeSpecDigest` above): the given candidate SHA must still exist in
-// this repository (`git cat-file -e`) as an audit trail of what the
-// reviewer actually looked at, but the digest - not the SHA - is what a
+// this repository (`git cat-file -e`) and contain the normalized reviewed
+// content. The digest - not equality with HEAD - is what a
 // later reader matches against. Reusing a review after the Spec's content
 // moves on is still refused (a stale --digest), exactly as reusing one after
 // the candidate SHA moved on used to be.
@@ -331,13 +417,18 @@ export function recordReviewVerdict(rootDir, specId, options = {}) {
   // this checkout's HEAD. A reviewer names the digest their own `report`
   // call showed them (`--digest`), refused when the working tree's own
   // current digest has since moved on; omitting `--digest` recomputes it
-  // fresh from the working tree instead, with nothing to compare against.
+  // fresh from the working tree. Both forms must also match the normalized
+  // Spec and Task content actually committed at the immutable candidate.
   const currentDigest = computeSpecDigest(root, spec);
   const givenDigest = options.digest ? String(options.digest).trim() : null;
   if (givenDigest && givenDigest !== currentDigest) {
     throw new Error(`The digest ${givenDigest.slice(0, 12)} named for candidate ${candidate} on ${specId} does not match this working tree's current content digest ${currentDigest.slice(0, 12)}; the Spec's content has changed since that digest was computed. Read a fresh --digest from a new report before recording this verdict, or omit --digest to record against the current content.`);
   }
   const digest = givenDigest ?? currentDigest;
+  const committed = candidateContentBinding(root, spec, candidate, digest);
+  if (!committed.matchesContent) {
+    throw new Error(`Candidate ${candidate} does not contain the reviewed committed content for ${spec.id}: ${committed.contentError ?? `candidate digest ${committed.contentDigest.slice(0, 12)} differs from reviewed content digest ${digest.slice(0, 12)}`}. Commit the assembled content and review that immutable candidate before recording a verdict.`);
+  }
   const digest12 = digest.slice(0, 12);
 
   // Review corrective (Medium): with exact-HEAD gone, a second same-day
@@ -524,7 +615,7 @@ export function recordOwnerApproval(rootDir, specId, options = {}) {
 // S-00J TK-01T: exported unchanged so the `S-###:delivered` resolver checks
 // integration containment with this one reader.
 export function isAncestorOfBranch(root, sha, branch) {
-  const result = spawnSync('git', ['-C', root, 'merge-base', '--is-ancestor', sha, branch], { encoding: 'utf8' });
+  const result = candidateGit(root, ['merge-base', '--is-ancestor', sha, branch]);
   return result.status === 0;
 }
 
@@ -747,7 +838,7 @@ function requiredString(value, message) {
 // commit object in this repository, never a checkout or a blob read -
 // matching the "exists" half of "current candidate" the handoff names.
 function commitExists(root, sha) {
-  const result = spawnSync('git', ['-C', root, 'cat-file', '-e', `${sha}^{commit}`], { encoding: 'utf8' });
+  const result = candidateGit(root, ['cat-file', '-e', `${sha}^{commit}`]);
   return result.status === 0;
 }
 
@@ -888,7 +979,7 @@ function latestOwnerApprovalFor(approvals, specDigest, root, spec) {
     // Retain those rows as history, but never treat one as valid authorization.
     try {
       if (computeSpecDigest(root, spec, approvals[index].candidate) === specDigest) return approvals[index];
-    } catch { /* Missing or moved historical content cannot prove approval. */ }
+    } catch { /* Missing content or an unproven lifecycle move cannot prove approval. */ }
   }
   return null;
 }
@@ -1176,7 +1267,7 @@ function candidateBinding(root, sha) {
 // its full commit SHA, or `null` when it does not resolve to a commit in
 // this repository - never a throw, matching "inform, never refuse".
 function resolveCommitSha(root, ref) {
-  const result = spawnSync('git', ['-C', root, 'rev-parse', `${ref}^{commit}`], { encoding: 'utf8' });
+  const result = candidateGit(root, ['rev-parse', `${ref}^{commit}`]);
   return result.status === 0 ? result.stdout.trim() : null;
 }
 
@@ -1227,7 +1318,7 @@ export function formatSpecReport(report) {
   lines.push(`Spec digest: ${report.specDigest.slice(0, 12)}`);
   const c = report.candidate;
   lines.push(c
-    ? `Candidate ${c.sha} (resolved ${c.resolvedSha ?? 'none'}) exists=${c.existsInRepository} matchesHead=${c.matchesHead} (head ${c.headSha ?? 'none'})`
+    ? `Candidate ${c.sha} (resolved ${c.resolvedSha ?? 'none'}) exists=${c.existsInRepository} matchesHead=${c.matchesHead} matchesContent=${c.matchesContent} (head ${c.headSha ?? 'none'}; committed digest ${c.contentDigest ?? 'unavailable'}${c.contentError ? `; ${c.contentError}` : ''})`
     : 'Candidate: none named');
   const v = report.latestVerdict;
   lines.push(v ? `Verdict: ${v.result} at ${v.candidate} by ${v.reviewer} (${v.date}) [digest ${v.digest}]` : 'Verdict: none for this candidate');

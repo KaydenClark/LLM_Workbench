@@ -11,7 +11,7 @@ source_paths:
   - tools/core-skill-installer.mjs
   - tools/workbench-adoption.mjs
   - tools/workbench-upgrade.mjs
-  - skills/update-harness/SKILL.md
+  - workbench/skills/update-harness/SKILL.md
   - tools/test-core-skill-installer.mjs
   - workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md
 parent: none
@@ -41,10 +41,11 @@ host limits are identified as such rather than promoted to fresh measurements.
 - [tools/core-skill-installer.mjs](../../../tools/core-skill-installer.mjs)
 - [tools/workbench-adoption.mjs](../../../tools/workbench-adoption.mjs)
 - [tools/workbench-upgrade.mjs](../../../tools/workbench-upgrade.mjs)
-- [skills/update-harness/SKILL.md](../../../skills/update-harness/SKILL.md)
+- [workbench/skills/update-harness/SKILL.md](../../skills/update-harness/SKILL.md)
 - [tools/test-core-skill-installer.mjs](../../../tools/test-core-skill-installer.mjs)
 - Historical record: `git show b38509df08e6e1f87f7b4cb6c8bea6f4789f92cb:workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md`.
 
 ## History
 
 - 2026-09-19: Created on explicit owner direction for one Wiki article per legacy Spec. Preserved useful knowledge, correction lineage and proof limitations; no source record retired or discarded.
+- 2026-09-30: Repaired live skill links and source_paths after relocation to workbench/skills; verified destinations only, without revalidating historical capability claims.

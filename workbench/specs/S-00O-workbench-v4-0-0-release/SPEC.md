@@ -9,7 +9,7 @@
 **Catalog description:** Reconcile the v4 build scope and delivery proof: WBID, JSON Taskboard, workflow controls, direct Blueprint Tasks and feature capture, followed by the preserved Template upgrade gate and full WF-11 project cycle.
 **Blockers:** Release execution remains blocked on the expanded build scope and delivery-versus-closure reconciliation. S-01W/S-01X are owned by Lane I and deliver identity then board; direct-Task ownership remains a proposal. No version bump or downstream update is authorized by the current planning assignment.
 **Latest event:** Lane I rebuilt the 2026-09-26 planning candidate on integration 1a6f6e0, renumbering its identity and board Specs to S-01W and S-01X. No release Task is claimed or completed.
-**Next gate:** Lane I delivers S-01W then S-01X; release Tasks TK-002..TK-005 stay blocked until S-00P is complete. Retain blocked release state until those dependencies are established.
+**Next gate:** Deliver remaining workflow and identity/board proof plus the linked GitHub Coordination capabilities and reviewed claim cutover. Release Tasks retain their S-00P blockers; version, Template, owner QA and main gates remain open.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -100,6 +100,13 @@ At the pre anchor:
 
 ## Decisions And Contracts
 
+### Audience for v4 - 2026-10-02
+
+The owner is the only person using the Workbench in v4. Nothing is designed
+for other people or a team now; the release only has to work. The owner tied
+this to the GitHub coordination capabilities below: trusted Issue operations
+use the owner's own GitHub account, and no multi-user trust model is built.
+
 ### Current release planning reconciliation — 2026-09-26
 
 Source comparison is pinned to `89d4042fb8931b9d720af75bffea1c28803d72aa`:
@@ -185,6 +192,24 @@ per-Task review ceremony WF-8B rejected; it applies because the merge target
 is `integration`, and it is what makes exemption 2 safe. The Template Upgrade
 Release Gate runs before any tag. Owner-only `main` promotion is unchanged.
 
+### Integration decision and progress reconciliation
+
+The [integration reconciliation receipt](INTEGRATION-RECONCILIATION.md) records
+the 2026-09-27 source inventory, current decision owners, off-integration work
+and unresolved gates. It distinguishes publishing decisions and existing
+progress from approving or merging unfinished implementation. This receipt is
+part of this release owner, not a second task queue.
+
+Minimum role and stance capability owners are
+[Director Role — S-002C](../S-002C-director-role/SPEC.md),
+[Dispatcher Role — S-002D](../S-002D-dispatcher-role/SPEC.md),
+[Worker Role — S-002E](../S-002E-worker-role/SPEC.md),
+[Spec Planner Stance — S-002F](../S-002F-spec-planner-stance/SPEC.md), and
+[Spec Manager Stance — S-002G](../S-002G-spec-manager-stance/SPEC.md).
+Reviewer and Auditor keep S-01R and S-01Q. Their task planning waits for flight
+launch; the current release bootstrap exception is retained until its named
+implementation gate is satisfied. Planning does not authorize a version bump.
+
 ### Assigned capability map
 
 | Unit | Owner | Blocks on | Endpoint |
@@ -205,6 +230,43 @@ The current Director assignment coordinates isolated lanes and a single writer
 per shared surface. Packet drafting is independent; implementation follows the
 dependency order and explicit Director lane releases.
 
+### GitHub Coordination package — owner continuation, 2026-10-01
+
+The owner includes required GitHub Issues coordination in v4 and requests
+implementation. The concept seed is contained through PR235 at integration
+`282dc043ab7dad92826a6d5447369238c35df0a3`; this is concept proof only.
+ADR-000Q remains proposed and ADR-000O remains operative until the separately
+reviewed cutover. This package adds no version bump, owner approval or main
+promotion. Existing release and Template proof gates remain open.
+
+| Capability | Owner | Consumable prerequisites |
+|---|---|---|
+| GitHub Coordination Room Binding And Identity | [S-003P](../S-003P-github-coordination-room-binding-and-identity/SPEC.md) | Independent first binding slice |
+| GitHub Coordination Issue Graph | [S-003Q](../S-003Q-github-coordination-issue-graph/SPEC.md) | S-003P |
+| GitHub Coordination Trusted Assignments | [S-003R](../S-003R-github-coordination-trusted-assignments/SPEC.md) | S-003P, S-003Q |
+| GitHub Coordination Operational Transitions | [S-003S](../S-003S-github-coordination-operational-transitions/SPEC.md) | S-003Q, S-003R |
+| GitHub Coordination Shared Continuation | [S-003T](../S-003T-github-coordination-shared-continuation/SPEC.md) | S-003P, S-003Q, S-003S |
+| GitHub Coordination Setup And Upgrade | [S-003U](../S-003U-github-coordination-setup-and-upgrade/SPEC.md) | S-003P |
+| GitHub Coordination Claim Authority Cutover | [S-003V](../S-003V-github-coordination-claim-authority-cutover/SPEC.md) | S-003R, S-003S, S-003T, S-003U |
+| Composed Taskboard and Project views | [S-01X](../S-01X-generated-json-taskboard/SPEC.md) | Issue graph + operational snapshot; Projects access/requirement unresolved |
+
+Only the binding Spec is activated for the first read-only Task by this
+continuation. Peers remain planned without Tasks. The owner decided the
+trusted actor policy on 2026-10-02: the owner's own GitHub account, structured
+Issue records, and only records from the room's configured account count. The
+hold on assignment-dependent work is lifted; the record's fields and validation
+are for S-003R to define. Projects availability and whether a Project is required remain open; no
+mandatory Project policy is invented. Extended outage recovery remains
+DQC-000E, with no v4 blocking edge. Basic visible failure/pending and migration
+correctness remain in active capability acceptance.
+
+S-00V's remaining remote-tip claim Tasks TK-01M/TK-01N/TK-01P retain their
+historical requirements and evidence. Their successor disposition belongs to
+the cutover Spec: no silent re-status, dropped claim or parallel authority.
+S-00P retains shared operational controls and templates. The first inspector
+adds no mandatory coordination dependency; controls are reconciled only once
+their implementing seams are real.
+
 ### Preserved answers and open items
 
 - **TT-Q10**, the form of a new Task identifier, was answered by the owner on
@@ -216,9 +278,10 @@ dependency order and explicit Director lane releases.
   product-level destination; each Spec is the PRD-shaped smaller destination
   derived from it), and no Spec or Blueprint in this release promotes the
   objected shorthand as a slogan.
-- **WF-10**: a coordinator for parallel pickup is the intended model and is
-  future Blueprint scope. The reworked Blueprint may describe it; no Spec is
-  created for it in this release.
+- **WF-10**: coordination was initially Blueprint-only scope. The owner
+  confirmed minimum role/stance specification on 2026-09-27 (ROLE-1..4),
+  superseding that planning exclusion. The separate capability owners below
+  specify it without launching flights or claiming implementation.
 
 ### Operational guidance, not design
 
@@ -413,6 +476,12 @@ workflow is owned by S-00P, not here.
 | 2026-09-26 | spec | Lane I (claude-lane-I) rebuilt unmerged S-00O planning candidate 34dfa2f onto integration 1a6f6e0: PR #161 had taken S-01U, so supported `next-id` re-allocated the identity Spec as S-01W and then the board Spec as S-01X; every reference in S-00O, S-01W, S-01X and the direct-Task proposal was renumbered and the stale Task-ID lease wording removed (no lease holds). | `next-id --prefix S` returned S-01W on clean integration 1a6f6e0 and, with both records present, the next free Spec ID after S-01X; render then doctor (no blocking finding) on the committed candidate and in a fresh clone of the pushed branch; the full suite, separate-context review and verdict are recorded by the landing PR's own evidence, not claimed here | This Spec, S-01W, S-01X, TASKBOARD.md, CATALOG.md | Identity then board delivery; release execution after S-00P completes |
 | 2026-09-26 | review | Review verdict: pass at aa4f0aa66b203e3d0a69751213f2f433db404148 [33efbfb68d3b] #1 | none. Earlier builds 6eac6cb, 78b94e5 and a6a511c failed review on evidence wording (S-00V draft-ID references since repointed by Lane F PR #173, an unverifiable PR claim, an untimed lease claim, and a phantom next-id reservation); each was corrected and aa4f0aa passed a delta review against the fully reviewed a6a511c. Full AGENTS suite 48/48 at aa4f0aa (read-only runner, dirty []); fresh-clone doctor no blocking finding with render idempotent. Reviewer ran doctor; did not rerun render or the suite (read-only sandbox). | codex exec gpt-5.5, read-only sandbox, separate context from the Lane I dispatcher | 4 |
 | 2026-09-26 | TK-003 | Lane I recorded five update-tool gaps from Lane C's S-01N update-harness scenario (candidate 2bf181f) as TK-003 prerequisites or known limits: no version/skill-policy stamp command, partial tools rollback dropping the earlier backup entry, no first-install skills rollback, an unrepairable stale-seed for an unseeded document, and pre-update tools verify stopping at tools-receipt-missing. | Read the S-01N evidence row at 2bf181f; no tool run by Lane I | This Spec (TK-003 section) | Each gap needs an owning delivery or a named known limit in the release receipt before TK-003 runs |
+
+| 2026-09-27 | none | Owner-confirmed integration reconciliation and minimum role groundwork | ROLE-1..4 confirmed; source inventory and scope dispositions in INTEGRATION-RECONCILIATION.md; new capability Specs contain no Tasks | Controls, generic mirrors, role model, capability owners and tracked progress | Runtime delivery, open owner choices, bootstrap exception, baseline self-drift and Human QA remain explicit; no clean-update or release-readiness claim |
+
+| 2026-09-27 | none | Verify role groundwork and decision reconciliation candidate b010449977348922159ef984ffe4d66a02f66e7c | All 48 AGENTS commands passed with clean unchanged HEAD; independent full-candidate review PASS; post self-drift retains seven baseline findings and guardrail78 | INTEGRATION-RECONCILIATION.md records method, source pins and limitations; evidence rows placed under Evidence Log | No runtime delivery, exhaustive historical assessment, clean-update or Human QA approval claim; final evidence candidate review and landing PR establish integration delivery |
+
+| 2026-10-02 | none | Owner decisions recorded: single-owner v4 audience; GitHub trusted actor policy, write floor and per-item claim authority carried into the GitHub coordination capability Specs and the proposed decision record | Promotion only; no runtime proof claimed | This Spec, the GitHub coordination Specs named, the proposed GitHub coordination decision record and the GitHub Coordination Wiki article | Structured-record fields and validation undefined; coexistence of both claim mechanisms for different items undecided; the Projects requirement is still open |
 
 ## Completion Result
 
