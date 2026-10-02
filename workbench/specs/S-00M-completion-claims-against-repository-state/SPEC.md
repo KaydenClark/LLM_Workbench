@@ -8,8 +8,8 @@
 **Updated:** 2026-10-02
 **Catalog description:** Make a completion claim unable to hide uncommitted or unpushed work, by surfacing Git state in `doctor` and refusing `close` unless the Receipt records the state and a reason.
 **Blockers:** none
-**Latest event:** TK-004 closed with proof.
-**Next gate:** Separate-context review of the assembled S-00M candidate, then merge its TK-004 Task PR into `integration`.
+**Latest event:** Reviewed integration delivery: PR #271 merged into `integration` as `cdea242`, containing the reviewed candidate `7d13499` (review pass #4) and its verdict row (`6840285`).
+**Next gate:** Owner Human QA on `integration`, then owner promotion to `main` and `complete S-00M`.
 
 > **Citation anchors.** pre=`87c1d45cd6c32ceea12e05590eae966c0d6d4ecf` post=`6154167f48a4ed2474713d043a9cac18833d6a2a`.
 
@@ -219,6 +219,7 @@ back to a ready Task.
 | 2026-10-02 | 6ffbcaa | TK-004 closed (restates the `close` row above in this table's five-column schema; that row put the Task ID under Commit and a sixth cell GitHub does not render) | Red at 590794d plus tests: node --test --test-name-pattern=completion-claim tools/test-control-fidelity.mjs 0/2 (AGENTS.md completion obligations: recorded reason stays readable). Green at 6ffbcaa: same pattern 3/3 with a mutation test over 3 AGENTS.md claims, 7 RUNBOOK.md claims and the generic code list; node tools/test-control-fidelity.mjs 26/26; wiki.mjs validate ok. Full AGENTS.md suite at 6ffbcaa (dirty: []): pass=48 fail=0. Guardrail 78/100 before and after; self-drift pre/post the same 7 pre-existing findings. Dogfood: this close ran clean and pushed at 2817d9d with no --git-state-reason and was not refused. | AGENTS.md and templates/AGENTS.md (completion obligations: recorded reason in Receipt and Spec evidence, no-in-progress refusal, non-blocking detached-head/untracked-controls); RUNBOOK.md and templates/RUNBOOK.md (close refusals dirty-tree/unpushed, remediation, unknown state, no-in-progress refusal, orphan close gap; both codes in the blocking-effect table and doctor prose); workbench/wiki/lifecycle-tool-behaviors.md close section; tools/test-control-fidelity.mjs locks the wording against the registry. Remaining gap: Orphan corrective close (close TK-###) still skips the Git-state check; no Spec owns the repair. Owner Human QA on integration and complete S-00M remain. |
 | 2026-10-02 | 5adcbaa | Carry hand-back: TK-004's resolved hold was invisible to selection, so the owner had to name S-00M to restart it | Occurrence: at selection, the owner's 2026-10-02 instruction to carry S-00M supplied routing the record should have carried. S-00P TK-002's delivery PR #238 had been contained in integration at `76932f5` since 2026-10-01, but `next` never offers a `deferred` row and the hold sat in free text. Cause (missing): the blocker grammar has no cross-Spec Task form. A plain `TK-###` resolves only against its own Spec's rows and records (`satisfiedIds` in `workbench/tools/spec-workbench.mjs`), and `S-00P:delivered` waits on the whole Spec's reviewed delivery, which S-00P has still not reached, so the dependency could not be recorded where `next` reads it. The board compounded it (incorrect projection): with no active Task, `render` labels a Spec `Acceptance / owner gate`, so TASKBOARD presented open authorized work as waiting on the owner | Correction: released by hand in this run (row above). The general repair, a cross-Spec Task blocker token or a board cell that names a `deferred` Task instead of the owner gate, belongs to the `spec-workbench.mjs` blocker grammar and `render`, which no active Spec owns; recorded here as that gap. No other hand-back so far in this run |
 | 2026-10-02 | review | Review verdict: pass at 7d13499a6bc063aa470343bc160a35511ba7ac95 [26c0a71e4a6c] #4 | No High, Medium or Low findings against base 5adcbaa. The reviewer ran git diff --stat, git diff and git diff --check against BASE, doctor (no blocking finding), report S-00M at the candidate (content matches, gaps 0), the completion-claim tests 3/3, wiki.mjs validate and check-append-only.py (clean), and confirmed the candidate is a fast-forward of integration; it judged the templates generic and the new tests non-vacuous. 12 older fixture tests in test-control-fidelity failed in its sandbox with EPERM on mkdtemp; builder full suite 48/48 at 6ffbcaa. | Codex gpt-5.5, codex exec -s read-only, separate context from the builder, on a detached checkout of the candidate | 3 |
+| 2026-10-02 | cdea242 | Reviewed integration delivery recorded, with the carry run's hand-back tally | PR #271 merged into `integration` as `cdea2427a7262834a6b8ced82df8b84dc2cd8dec` (parents `5adcbaa`, `6840285`) with `gh pr merge --merge --match-head-commit 68402859f0a3b93e701f1fc14dae94a1657b0b0a`. After `git fetch origin`, `git merge-base --is-ancestor` proved the reviewed candidate `7d13499a6bc063aa470343bc160a35511ba7ac95` and the verdict-row commit `68402859` ancestors of `origin/integration`; `gate --spec S-00M --candidate 7d13499` and `gate --task TK-004 --spec S-00M` were not refused before the merge. This follow-up rewrites the Completion Result, which the review digest binds, because it still named the review and merge as open, so it carries its own separate-context review | Header Latest event and Next gate now name the merged delivery and the owner gates that remain; the Completion Result names PR #271. Carry run tally: one coordination hand-back (the row naming TK-004's invisible hold); none arose during review, gating or merge. Docs: workbench/wiki/lifecycle-tool-behaviors.md gains the digest-bound Completion Result trap this follow-up hit |
 
 ## Completion Result
 
@@ -232,12 +233,12 @@ and the reason in the Receipt and Spec evidence rows, and refuse a Spec with no
 in-progress Task. TK-004 documents both mechanisms in `AGENTS.md`,
 `RUNBOOK.md` and their template mirrors, locked by
 `tools/test-control-fidelity.mjs`. TK-001 to TK-003 merged through PRs #159,
-#166 and #170; TK-004 is on `claude/s00m-tk004`, where the full suite passed
-48/48 at `6ffbcaa` and `doctor` carries no blocking finding.
+#166 and #170, and TK-004 through PR #271 (`integration` `cdea242`) after a
+separate-context review passed the assembled candidate `7d13499`. The full
+suite passed 48/48 at `6ffbcaa` and `doctor` carries no blocking finding.
 
-Still open: the separate-context review of the assembled candidate and its
-integration merge, then owner Human QA on `integration`, owner promotion to
-`main` and `complete S-00M`.
+Still open: owner Human QA on `integration`, owner promotion to `main` and
+`complete S-00M`.
 
 ## Remaining Limitations Or Follow-Up Specs
 
