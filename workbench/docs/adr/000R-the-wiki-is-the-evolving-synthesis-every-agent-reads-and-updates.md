@@ -1,11 +1,11 @@
 ---
 date: 2026-10-01
 canonicalized_in:
-  - workbench/wiki/SCHEMA.md
   - LEXICON.md
   - AGENTS.md
   - BLUEPRINT.md
   - RUNBOOK.md
+  - workbench/specs/S-003W-wiki-evolving-synthesis-migration/SPEC.md
 ---
 
 # The Wiki is the evolving synthesis every agent reads and updates
@@ -68,7 +68,8 @@ would defeat the identifiers' purpose, which is to let agents link and find);
 owner authorization per article (it made the Wiki a ceremony no workflow
 moment ever reached: fifty complete Specs and no feature article).
 
-Consequences: the Wiki schema carries the page kinds, the ingest moment, the
+Consequences: the Wiki schema (`workbench/wiki/SCHEMA.md`, the Wiki's own
+contract rather than a root control) carries the page kinds, the ingest moment, the
 identifier rule, the lint cadence and who writes; the Lexicon carries the
 Wiki, Design Concept article and Landmark Wiki page definitions; the agents
 file carries the read-and-update obligation; the Blueprint and Runbook state

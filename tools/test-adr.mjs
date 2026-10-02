@@ -568,8 +568,9 @@ test('every intra-ADR link in the real corpus resolves literally, and the re-cou
     if (countForRecord > 0) filesWithLink += 1;
   }
   // TK-004 adds six decision-route edges; retained proposal history remains linked.
-  assert.equal(filesWithLink, 40, 're-count of ADR files carrying an intra-ADR link at this candidate');
-  assert.equal(totalLinks, 83, 're-count of total intra-ADR link edges at this candidate');
+  // ADR-000R (the Wiki definition) links its two partially superseded records.
+  assert.equal(filesWithLink, 41, 're-count of ADR files carrying an intra-ADR link at this candidate');
+  assert.equal(totalLinks, 85, 're-count of total intra-ADR link edges at this candidate');
 });
 
 // S-00I TK-001 review correction: a link is validated literally, never
