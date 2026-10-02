@@ -100,6 +100,13 @@ At the pre anchor:
 
 ## Decisions And Contracts
 
+### Audience for v4 - 2026-10-02
+
+The owner is the only person using the Workbench in v4. Nothing is designed
+for other people or a team now; the release only has to work. The owner tied
+this to the GitHub coordination capabilities below: trusted Issue operations
+use the owner's own GitHub account, and no multi-user trust model is built.
+
 ### Current release planning reconciliation — 2026-09-26
 
 Source comparison is pinned to `89d4042fb8931b9d720af75bffea1c28803d72aa`:
@@ -244,9 +251,11 @@ promotion. Existing release and Template proof gates remain open.
 | Composed Taskboard and Project views | [S-01X](../S-01X-generated-json-taskboard/SPEC.md) | Issue graph + operational snapshot; Projects access/requirement unresolved |
 
 Only the binding Spec is activated for the first read-only Task by this
-continuation. Peers remain planned without Tasks. Trusted actor policy and
-verifiable Director/coordinator attribution hold assignment-dependent work.
-Projects availability and whether a Project is required remain open; no
+continuation. Peers remain planned without Tasks. The owner decided the
+trusted actor policy on 2026-10-02: the owner's own GitHub account, structured
+Issue records, and only records from the room's configured account count. The
+hold on assignment-dependent work is lifted; the record's fields and validation
+are for S-003R to define. Projects availability and whether a Project is required remain open; no
 mandatory Project policy is invented. Extended outage recovery remains
 DQC-000E, with no v4 blocking edge. Basic visible failure/pending and migration
 correctness remain in active capability acceptance.
@@ -471,6 +480,8 @@ workflow is owned by S-00P, not here.
 | 2026-09-27 | none | Owner-confirmed integration reconciliation and minimum role groundwork | ROLE-1..4 confirmed; source inventory and scope dispositions in INTEGRATION-RECONCILIATION.md; new capability Specs contain no Tasks | Controls, generic mirrors, role model, capability owners and tracked progress | Runtime delivery, open owner choices, bootstrap exception, baseline self-drift and Human QA remain explicit; no clean-update or release-readiness claim |
 
 | 2026-09-27 | none | Verify role groundwork and decision reconciliation candidate b010449977348922159ef984ffe4d66a02f66e7c | All 48 AGENTS commands passed with clean unchanged HEAD; independent full-candidate review PASS; post self-drift retains seven baseline findings and guardrail78 | INTEGRATION-RECONCILIATION.md records method, source pins and limitations; evidence rows placed under Evidence Log | No runtime delivery, exhaustive historical assessment, clean-update or Human QA approval claim; final evidence candidate review and landing PR establish integration delivery |
+
+| 2026-10-02 | none | Owner decisions recorded: single-owner v4 audience; GitHub trusted actor policy, write floor and per-item claim authority carried into the GitHub coordination capability Specs and the proposed decision record | Promotion only; no runtime proof claimed | This Spec, the GitHub coordination Specs named, the proposed GitHub coordination decision record and the GitHub Coordination Wiki article | Structured-record fields and validation undefined; coexistence of both claim mechanisms for different items undecided; the Projects requirement is still open |
 
 ## Completion Result
 
