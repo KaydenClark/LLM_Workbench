@@ -25,7 +25,7 @@ Specs scope a capability, but nothing yet scopes a direction made of several Spe
 
 At the pre anchor:
 
-- A landmark is a flat JSON record, one of 24 files in `workbench/landmark-tracker/landmarks/`, declared by the manifest's `landmarkTracker.collections.landmarks`. There is no `workbench/landmarks/` collection and no `LANDMARK.md` template.
+- A landmark is a flat JSON record, one of 24 JSON records in `workbench/landmark-tracker/landmarks/`, declared by the manifest's `landmarkTracker.collections.landmarks`. There is no `workbench/landmarks/` collection and no `LANDMARK.md` template.
 - `workbench/tools/spec-workbench.mjs` expects a Spec at `workbench/specs/S-###-slug/` (or under its `retired/` lifecycle folder) and reports `unstable-path` for any other location, so a Spec nested inside a landmark folder is refused today.
 - `move-spec` moves only an active-roster Spec at the top level of the specs lane, and its closed set of lifecycle folders is `retired`. There is no move into a landmark.
 - `report`, `verdict`, `gate`, `approve` and `complete` operate on Specs. There is no landmark review, verify or retire command.
