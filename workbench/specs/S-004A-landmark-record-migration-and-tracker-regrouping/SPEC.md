@@ -11,7 +11,7 @@
 **Latest event:** Authored at the Map step from the owner-confirmed landmark decision records of 2026-10-02; no Task is cut.
 **Next gate:** At Plan, after the artifact runtime and the Tracker lane's seams are verified, inspect live Actuality and cut small Tasks.
 
-> **Citation anchors.** pre=`cbb3d5b81c0081c45d92e0d284078ca13fd54c03` post=`cbb3d5b81c0081c45d92e0d284078ca13fd54c03`.
+> **Citation anchors.** pre=`cbb3d5b81c0081c45d92e0d284078ca13fd54c03` post=`5adcbaad3a960843ff6eb9e2181e4af98fae847f`.
 
 ## Outcome
 
@@ -54,7 +54,7 @@ Open, not decided here:
 
 - How a transformed record keeps its grouping role between the move and the creation of the `LANDMARK.md` that replaces it, and what a card's `landmarks` field points at in that interval. The accepted decision fixes the transformation and the destination but not the interval.
 - What happens to a landmark's `importance` and the Tracker's computed aggregates, which the `LANDMARK.md` shape does not carry as such.
-- Whether the Tracker's step names change in this work or in the separate Tracker rename that an in-flight owner decision on the workflow verbs would require.
+- Whether the Tracker's step names change in this work or in separate Tracker work. The accepted [workflow verbs decision](../../docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md) makes the workflow verbs the documentation steps and records that the Tracker's step list, tests, stored cards and Wiki page keep the earlier names until the Tracker work changes them; that is an implementation gap, not part of the landmark move.
 
 ## Non-Goals
 
@@ -104,7 +104,7 @@ Pending.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-Creating `LANDMARK.md` artifacts for the groupings that form is ordinary work under the artifact Spec, not a follow-up of this one. A Tracker step-name change, if the workflow-verbs decision lands, is its own change.
+Creating `LANDMARK.md` artifacts for the groupings that form is ordinary work under the artifact Spec, not a follow-up of this one. A Tracker step-name change to the workflow verbs is an implementation gap owned by the Tracker work, not by this Spec unless Plan includes it.
 
 ## Supersession
 
