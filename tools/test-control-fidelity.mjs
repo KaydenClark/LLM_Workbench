@@ -760,3 +760,25 @@ test('neither Lexicon calls the Workbench a harness, and Chat is distinguished f
     assert.match(termRow(content, 'Evaluation'), /Does this Workbench help agents/, `${relative} Evaluation row`);
   }
 });
+
+// S-004E: a dictionary term that needs more than its Lexicon row has a flat Wiki
+// entry, routed from MEMORY.md with a summary line, that links its Lexicon
+// row, its dictionary entry and an owning control.
+const AI_CODING_WIKI_ENTRIES = {
+  'dictionary-harness.md': 'harness', 'dictionary-session.md': 'session', 'dictionary-context.md': 'context',
+  'dictionary-context-window.md': 'context-window', 'dictionary-stateless.md': 'stateless', 'dictionary-stateful.md': 'stateful',
+  'dictionary-cache-tokens.md': 'cache-tokens', 'dictionary-non-determinism.md': 'non-determinism',
+};
+
+test('each AI Coding Dictionary Wiki entry is routed from MEMORY.md and links its row, its dictionary entry and its owners', () => {
+  const memory = read(root, 'workbench/wiki/MEMORY.md');
+  for (const [file, slug] of Object.entries(AI_CODING_WIKI_ENTRIES)) {
+    const page = read(root, `workbench/wiki/${file}`);
+    const routed = memory.split('\n').filter((line) => line.includes(`](${file})`));
+    assert.equal(routed.length, 1, `MEMORY.md routes ${file} once`);
+    assert.match(routed[0], /\]\([^)]+\):\s*\S/, `MEMORY.md gives ${file} a summary line`);
+    assert.ok(page.includes('(../../LEXICON.md)'), `${file} links the Lexicon`);
+    assert.ok(page.includes(`https://www.aihero.dev/ai-coding-dictionary/${slug}`), `${file} links its dictionary entry`);
+    assert.match(page, /\.\.\/\.\.\/AGENTS\.md|\.\.\/docs\/(adr|ddr)\//, `${file} links an owning control or decision record`);
+  }
+});
