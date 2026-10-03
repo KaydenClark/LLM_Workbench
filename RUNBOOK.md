@@ -1257,12 +1257,32 @@ are separate: record any gap in the assigned Spec.
 
 ```bash
 node workbench/tools/adr.mjs new --title "Decision title"
-node workbench/tools/adr.mjs validate
-node workbench/tools/adr.mjs normalize [--date YYYY-MM-DD]
-node workbench/tools/adr.mjs register
+node workbench/tools/adr.mjs new --kind ddr --title "Destination decision title"
+node workbench/tools/adr.mjs validate [--kind adr|ddr]
+node workbench/tools/adr.mjs normalize [--kind adr|ddr] [--date YYYY-MM-DD]
+node workbench/tools/adr.mjs register [--kind adr|ddr]
 node workbench/tools/adr.mjs migrate-folders
 node tools/test-adr.mjs
 ```
+
+Destination Decision Records (DDRs) are the ADR's sibling for destination
+choices, what the finished product must be or do
+([ADR-000S](workbench/docs/adr/000S-destination-decision-records-are-decision-records-beside-adrs.md)).
+The same tool serves both: `--kind ddr` selects the manifest-declared `ddr`
+collection (`workbench/docs/ddr/`), the `DDR` visible identifier and the
+destination template, and the layout and folder lifecycle are the ADR's.
+`new --kind ddr` writes `<id>-<slug>.md` into `ddr/proposed/` with the keys
+`date`, `supersedes` and `canonicalized_in` (default `BLUEPRINT.md`) and no
+`status`, and refuses a room whose manifest does not declare the collection
+(gain it with `workbench-layout.mjs migrate`). A DDR's `canonicalized_in` never
+names the Wiki, at any lifecycle; validation reports that, and each ADR rule
+described below applied to a DDR, as `invalid-ddr`. A DDR that changes or contradicts the
+Blueprint names `BLUEPRINT.md` in `canonicalized_in` so the Blueprint is
+updated with it; the validator cannot detect a contradiction, so that stays the
+author's obligation. `validate`, `normalize` and `register` without `--kind`
+act on every decision-record collection present; `register` then prints the
+ADR result with the DDR result under `ddr`. Doctor carries DDR findings beside
+the ADR ones, and the Spec and Task moves regenerate both registers.
 
 `new` allocates the next number by scanning the collection and its lifecycle
 folders and writes the record into `proposed/` with the standard sections and
@@ -1376,9 +1396,9 @@ Task proposals require the assigned spec and reserve labels from all specs in
 the Workbench. Both proposals also reserve retired and discarded labels and
 every Spec and Task ID held at a remote-tracking tip, so fetch first. Write the
 returned label only during authorized planning, then render and run doctor
-before requesting another. ADR `new` writes a proposed record through the
-existing exclusive-publication path and also reserves ADR labels held at every
-remote-tracking tip. Notepad `allocate` creates the note its returned ID names.
+before requesting another. ADR `new` (and `new --kind ddr` for a DDR) writes a
+proposed record through the existing exclusive-publication path and also
+reserves that kind's labels held at every remote-tracking tip. Notepad `allocate` creates the note its returned ID names.
 
 Specs, Tasks, ADRs and notepads share one artifact policy: a new label's suffix
 uses uppercase `0-9A-Z`, has minimum width four and contains at least one

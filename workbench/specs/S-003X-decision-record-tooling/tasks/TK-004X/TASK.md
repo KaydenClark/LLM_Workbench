@@ -17,7 +17,7 @@ Record with one command, `node workbench/tools/adr.mjs new --kind ddr --title
 `DDR` visible identifier and refuses to overwrite. `validate` checks ADRs and
 DDRs alike and refuses a DDR whose `canonicalized_in` names the Wiki;
 `register` derives each collection's `REGISTER.md` and `HISTORY.md` from its
-folder listing; `doctor` and `render` carry both. Every existing ADR command,
+folder listing; `doctor` and the Spec and Task moves carry both. Every existing ADR command,
 export and finding keeps its behavior.
 
 ## Scope
@@ -36,8 +36,9 @@ export and finding keeps its behavior.
   validator cannot detect; it is documented, and `BLUEPRINT.md` is an accepted
   owner.
 - `workbench/tools/diagnostics.mjs` registers `invalid-ddr`;
-  `workbench/tools/spec-workbench.mjs` doctor, render and the generated
-  projection list carry the DDR collection beside the ADR collection.
+  `workbench/tools/spec-workbench.mjs` doctor, the register regeneration in
+  the Spec and Task moves and the generated projection list carry the DDR
+  collection beside the ADR collection.
 - Documentation: the Runbook Architecture Decision Records section (DDR
   command, rules and findings), the generic `templates/RUNBOOK.md`, the
   `to-docs` skill's route to the DDR command, the narrowed generic Blueprint
@@ -53,7 +54,9 @@ export and finding keeps its behavior.
 - [ ] `validate` reports `invalid-ddr` for a DDR naming the Wiki in
       `canonicalized_in`, in any folder, and leaves ADR findings unchanged.
 - [ ] `register` writes the DDR register and history; `doctor` reports a
-      stale DDR register and `render` regenerates it.
+      stale DDR register and the Spec and Task moves regenerate it. (Corrected
+      at implementation: `render` regenerates no decision register, for ADRs
+      either; the moves and `adr.mjs register` do.)
 - [ ] Runbook, template mirrors, `to-docs` and the Wiki article agree with
       the shipped commands.
 
