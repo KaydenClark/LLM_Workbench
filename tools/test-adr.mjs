@@ -904,7 +904,7 @@ function assertWorkflowMeaning(corpus) {
   const lexicon = controls.get('LEXICON.md');
   for (const [term, pattern] of [
     // S-004G TK-006E: the Blueprint row describes the four-part short page and what the Blueprint is for.
-    ['Blueprint', /four-part short page[\s\S]*direction we want to head/],
+    ['Blueprint', /direction we want to head[\s\S]*four-part short page/],
     ['Destination Packet', /Spec acceptance lines[\s\S]*or the reconciled Wiki claim/],
     // S-004G TK-006D: the owner's confirmed Align meaning (the inquiry, usually grilling, in which an idea becomes a design concept the owner and the agents share).
     ['Align', /inquiry, usually grilling, in which an idea becomes a design concept the owner and the agents share/],
