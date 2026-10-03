@@ -8,8 +8,8 @@
 **Updated:** 2026-10-03
 **Catalog description:** Give a room one tool and one set of read words for both kinds of decision record, the ADR and the Destination Decision Record, with the lifecycle moves the ADR tool lacks.
 **Blockers:** none. The Codex Lexicon reconciliation branch TK-005A waited on landed through PR #281, so the Lexicon-mirror Task is ready. How a DDR records its single landmark is open, outside this acceptance, and waits on the landmark capability.
-**Latest event:** TK-005A claimed by claude-s003x-dispatcher.
-**Next gate:** Close TK-005A with verification and documentation proof.
+**Latest event:** TK-005A closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a`.
 
@@ -115,6 +115,7 @@ Maintain the Lexicon rows, the Runbook decision-record commands and the `to-docs
 | 2026-10-03 | TK-004Y | Review correction after close | Separate-context review of 97c44ba2 (Codex gpt-5.5, read-only) FAILED with one P2: the CLI accepted a positional record identifier for every command, so `validate ADR-000A` exited 0 and ignored it. Red 032faf81 (the refusal test fails), fix 5245e747 makes positional identifiers command-specific (accept, supersede, deprecate); test-adr 50/50. | No doc change: the Runbook already documents identifiers only on the move commands. | Full AGENTS suite and a fresh separate-context review of the corrected head precede the integration merge. |
 | 2026-10-03 | TK-004Z | Task closed | Red 0b0512cf (test-adr fails at import: no read-word exports). Green: test-adr 56/56 covering list, show and get, search, history and inspect for both kinds in text and JSON, their refusals, and unchanged existing commands; full AGENTS suite 48/48 on clean 4cd48973. TK-004Y PR #284 (review FAIL at 97c44ba2 corrected; fresh PASS at 6fb1de52) merged into integration as 5cfa987b before this close. | RUNBOOK and templates/RUNBOOK read-word commands, and the Wiki article Decision Records and the Concept Map updated. | TK-005A (Lexicon mirrors; its owner blocker is met since the Codex Lexicon branch landed in PR #281) remains; separate-context review of this Task's final head precedes its integration merge. |
 | 2026-10-03 | TK-005A | Owner blocker cleared | The owner-directed PR #281 (codex/lexicon-snag-recovery, merged 2026-10-03T13:09:58Z) carries the Codex Lexicon reconciliation tip e46d587b; `git merge-base --is-ancestor e46d587b origin/integration` succeeds at integration bbfcd37b and later. `owner:s01u-tk01q-lexicon-branch-landed` removed and TK-005A set ready; its remaining blockers are the four done tooling Tasks. | TK-005A record notes the clearance and that PR #281 already corrected the root Lexicon DDR row (861657d6). | TK-005A implementation, proof and review remain. |
+| 2026-10-03 | TK-005A | Task closed | Red 62c1cf50 (control-fidelity Lexicon vocabulary case fails). Green: control-fidelity, controls-vocabulary-sweep, blueprint-contract, evaluate-workbench and workbench-layout pass; templates evaluator 106.6/113 unchanged; full AGENTS suite 48/48 on clean b0730364. Owner blocker cleared with PR #281 evidence (e46d587b contained in integration). TK-004Z PR #287 (reviewed PASS at ec5e6d16) merged into integration as 23f42ab2 before this close. | LEXICON.md, templates/LEXICON.md and the Wiki article Decision Records and the Concept Map updated. | Whole-Spec QA and separate-context review of the assembled candidate remain; owner Human QA and main promotion are the owner's. |
 
 ## Completion Result
 
