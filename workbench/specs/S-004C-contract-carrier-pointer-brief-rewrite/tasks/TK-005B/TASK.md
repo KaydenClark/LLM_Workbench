@@ -3,9 +3,9 @@
 **Task ID:** TK-005B
 **Spec ID:** S-004C
 **Slice:** Record the pre-rewrite baseline and the dependency census
-**Status:** blocked
+**Status:** ready
 **Stance:** Builder
-**Blockers:** owner:runbook-decision-record-section-landed
+**Blockers:** none
 **Destination:** spec-acceptance: Every tool and test that read the old shape passes against the new one, and the full suite is green (the census names every reader this Spec must change), and the size and loaded-cost before-record of the brief acceptance line
 **Planned verification:** The census is reproducible: its commands are recorded and re-running them at the pinned SHA gives the same classification. `node tools/evaluate-workbench.mjs --path templates --include-controls` and the guardrail audit run read-only and their scores are recorded. A self-drift pre receipt exists. No tracked carrier changed (`git diff --stat` over `AGENTS.md`, `RUNBOOK.md`, `LEXICON.md` and `templates/` is empty). The full AGENTS suite passes on the committed candidate.
 
@@ -20,6 +20,14 @@ in another Spec: it clears when the Dispatcher removes it after confirming on
 `origin/integration` that Decision Record Tooling's TK-004X, TK-004Y and
 TK-004Z are done (they edit the Runbook decision-record section). Clearing it is
 not an owner decision.
+
+Blocker cleared on 2026-10-03 by the Spec's single writer (the Dispatcher): at
+`origin/integration` d7ffffe9 every Decision Record Tooling Task (TK-004W,
+TK-004X, TK-004Y, TK-004Z, TK-005A, TK-005X, TK-006K) is `done`, its Runbook
+decision-record section (`RUNBOOK.md` Architecture Decision Records and the
+Destination Decision Records text after it) is on integration, and TK-004Y and
+TK-004Z landed through PR #284 and PR #287. `owner:runbook-decision-record-section-landed`
+is removed and this Task is ready.
 
 ## Scope
 
