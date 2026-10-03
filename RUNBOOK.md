@@ -1261,9 +1261,32 @@ node workbench/tools/adr.mjs new --kind ddr --title "Destination decision title"
 node workbench/tools/adr.mjs validate [--kind adr|ddr]
 node workbench/tools/adr.mjs normalize [--kind adr|ddr] [--date YYYY-MM-DD]
 node workbench/tools/adr.mjs register [--kind adr|ddr]
+node workbench/tools/adr.mjs accept DDR-####
+node workbench/tools/adr.mjs supersede ADR-#### --by ADR-####
+node workbench/tools/adr.mjs deprecate DDR-#### --reason "Why it ends"
 node workbench/tools/adr.mjs migrate-folders
 node tools/test-adr.mjs
 ```
+
+The lifecycle moves work for both kinds; the identifier's `ADR-` or `DDR-`
+prefix selects the collection and resolves case-folded across its folders.
+`accept` moves a `proposed/` record to the top level once its corrections are
+reconciled, and refuses a record that would be invalid as accepted (no date or
+title, no or a nonexistent `canonicalized_in` owner, or a DDR naming the Wiki).
+`supersede` archives an accepted top-level record under exactly one accepted
+top-level successor of the same kind: the replaced record gains
+`superseded_by`, the successor's `supersedes` list gains the replaced record,
+and zero or several successors, a proposed or archived successor, a successor
+of the other kind, or the record itself are refused. `deprecate` archives an
+accepted top-level record with a one-line `deprecation_reason` and refuses an
+empty reason. Each move drops a leftover `status` key (the folder is the
+lifecycle), refuses a dirty Git tree so the candidate shows only the move,
+records the move as a `git mv` rename (a plain rename outside Git), rewrites
+live Markdown links to the moved record across the root controls, Wiki, skills,
+team templates, both decision-record collections and every Spec and Task
+record while leaving and counting references inside append-only evidence
+sections, regenerates both registers and stages the result. A refused move
+writes nothing. No separate approval ceremony is added.
 
 Destination Decision Records (DDRs) are the ADR's sibling for destination
 choices, what the finished product must be or do
