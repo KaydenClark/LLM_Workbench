@@ -41,12 +41,12 @@ prefix selects the kind. No separate approval ceremony is added.
 
 ## Acceptance
 
-- [ ] Each move works for an ADR and a DDR, and the register and history
+- [x] Each move works for an ADR and a DDR, and the register and history
       remain derived from the folder listing.
-- [ ] Supersession refuses zero or several successors and an unaccepted or
+- [x] Supersession refuses zero or several successors and an unaccepted or
       cross-kind successor; deprecation refuses an empty reason.
-- [ ] Every refusal leaves the tree byte-identical.
-- [ ] Runbook and template mirror describe the shipped moves.
+- [x] Every refusal leaves the tree byte-identical.
+- [x] Runbook and template mirror describe the shipped moves.
 
 ## Boundaries
 
@@ -54,3 +54,9 @@ No read word (TK-004Z). No `rejected` lifecycle folder or move. No change to
 an existing record's body. Serialized after TK-004X and before TK-004Z because
 all three edit `adr.mjs`, `tools/test-adr.mjs` and the Runbook section. No
 `LEXICON.md` or `templates/LEXICON.md` edit.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s003x-tk004y-lifecycle-moves | cbb7a44a9965742e1ed38ceabb635623da5eba70 | ahead 0 behind 0 | 0 | Red 55cbbe26: tools/test-adr.mjs exits 1 at import because adr.mjs exports no acceptRecord, supersedeRecord or deprecateRecord. Green: test-adr 50/50 (five new cases: accept for a DDR and an ADR with staged git rename, leftover status dropped, live links repaired and registers regenerated; supersede for a DDR and via CLI for an ADR with superseded_by, successor supersedes list, repaired live Spec link and an evidence-row reference left and counted; deprecate with its reason; fourteen refusals plus an invalid-accept, a dirty-tree and a repeated --by CLI refusal each leaving the tree byte-identical; a non-Git rename). Full AGENTS suite 48/48 on clean cbb7a44a, including test-spec-workbench and test-lifecycle-directory-links after planReferenceRewrite moved into adr.mjs. | RUNBOOK decision-record section (move commands and their refusals), templates/RUNBOOK command block and paragraph, Wiki article Decision Records and the Concept Map (moves installed). | Read words (TK-004Z) and Lexicon mirrors (TK-005A) remain; separate-context review of the final head pending. | 1629df81c303c4b3041ebbb50e8166c1325dfa4463b2087cd1458d96f740ea0e |
