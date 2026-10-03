@@ -213,3 +213,20 @@ test('every AGENTS.md# and RUNBOOK.md# link in a tracked file resolves', () => {
   assert.ok(checked > 100, `the scan found the inbound anchors (${checked})`);
   assert.deepEqual(broken, []);
 });
+
+// S-004C TK-005E (ADR-000W): an index row that points to a lane skill makes it
+// part of the Contract for its operation, so both Runbooks say that a change to
+// a pointed skill or to an index row is reviewed as a Contract change, and this
+// repository's own index resolves with no dangling skill pointer.
+test('the index says a pointed skill or index row change is reviewed as a Contract change', async () => {
+  for (const { label, runbook } of carriers) {
+    const index = headings(read(runbook)).find((heading) => heading.title === INDEX_HEADING);
+    assert.ok(index, `${label}: the index heading exists`);
+    assert.match(normalize(index.body), /a change to a skill an index row points to, or to an index row, is reviewed as a Contract change/i, `${label}: the index names the review care for a binding change`);
+  }
+  const { resolveSkillPointers } = await import('../workbench/tools/skill-inspection.mjs');
+  const manifest = JSON.parse(read('workbench/manifest.json'));
+  const resolved = resolveSkillPointers(manifest, root);
+  assert.equal(resolved.index, 'RUNBOOK.md#operations-index');
+  assert.deepEqual(resolved.dangling, [], 'no root index row points to a skill the lane lacks');
+});
