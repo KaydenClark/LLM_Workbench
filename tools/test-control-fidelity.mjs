@@ -673,3 +673,31 @@ test('both Lexicons carry the installed decision-record vocabulary, and the gene
     for (const line of termRows(template, term)) assert.doesNotMatch(line, /ADR-0|S-0|TK-0|workbench\/docs\/adr\/0|workbench\/specs\//, `templates/LEXICON.md ${term} stays generic`);
   }
 });
+
+// S-004E: each AI Coding Dictionary term the owner adopted has exactly one
+// Lexicon row, in an `AI Coding Terms` section, naming its dictionary entry
+// once; the generic Lexicon carries the same rows, and names no room-specific
+// record.
+const AI_CODING_TERMS = [
+  // Batch 1, 2026-10-03: the fifteen terms that collide with no existing row.
+  'Model', 'Parameters', 'Effort', 'Inference', 'Token', 'Next-token prediction', 'Non-determinism',
+  'Input tokens', 'Output tokens', 'Cache tokens', 'Stateless', 'Stateful', 'Agent', 'System prompt', 'Context window',
+];
+const dictionarySlug = (term) => term.toLowerCase().replace(/ /g, '-');
+
+test('both Lexicons carry each adopted AI Coding Terms row exactly once with one dictionary link', () => {
+  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
+    const content = read(root, relative);
+    assert.match(content, /^## AI Coding Terms$/m, `${relative} has the AI Coding Terms section`);
+    const section = content.split(/^## AI Coding Terms$/m)[1].split(/^## /m)[0];
+    assert.match(section, /no(t a)? live import|not a\s+live import/, `${relative} preamble states the no-live-import rule`);
+    for (const term of AI_CODING_TERMS) {
+      const rows = content.split('\n').filter((line) => line.startsWith(`| **${term}** `));
+      assert.equal(rows.length, 1, `${relative} has exactly one ${term} row`);
+      assert.ok(section.includes(rows[0]), `${relative} keeps the ${term} row inside AI Coding Terms`);
+      const links = rows[0].match(/https:\/\/www\.aihero\.dev\/ai-coding-dictionary\/[a-z-]+/g) || [];
+      assert.deepEqual(links, [`https://www.aihero.dev/ai-coding-dictionary/${dictionarySlug(term)}`], `${relative} ${term} links its dictionary entry once`);
+      if (relative.startsWith('templates/')) assert.doesNotMatch(rows[0], /ADR-0|S-0|TK-0|workbench\/specs\/|workbench\/wiki\//, `${relative} ${term} stays generic`);
+    }
+  }
+});
