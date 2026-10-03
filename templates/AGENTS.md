@@ -3,7 +3,8 @@
 > Generated from LLM Workbench v[HARNESS_VERSION].
 
 This always-loaded file owns how agents work. Ordinary entry follows
-`AGENTS.md` -> `RUNBOOK.md` -> `LEXICON.md`. Read the Runbook's entry procedure
+`AGENTS.md` -> the [`RUNBOOK.md` operations index](RUNBOOK.md#operations-index) -> `LEXICON.md`.
+Every session reads that index at entry, then the Runbook's entry procedure
 and the Lexicon's routing section, then only the owners relevant to the assigned
 task. The assigned `workbench/specs/S-###-slug/SPEC.md` is mandatory after selection. `BLUEPRINT.md` loads
 for architecture or cross-cutting product direction, not default orientation.
@@ -63,6 +64,8 @@ the owning controls, assigned spec, Wiki context, and referenced source or
 tests. Use the Lexicon's Context Map routes; do not begin ordinary orientation
 with a broad repository or history search. This reduces rediscovery and keeps
 the source owner visible.
+The Runbook operations index names each operation, when following it is worth
+it, and where its procedure lives; follow only the rows the task needs.
 
 When a route is missing, stale, or insufficient, use a bounded search to find
 the owner. Search within the selected source area as needed for implementation,

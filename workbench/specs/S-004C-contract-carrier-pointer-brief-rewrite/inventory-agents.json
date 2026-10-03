@@ -8,7 +8,7 @@
       "line": 3,
       "text": "This always-loaded file owns how agents work. Ordinary entry follows",
       "hash": "0b97d78a4cb74270d7d83ca9878ffa277811bff967a80d01d041b35932897edb",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17,16 +17,16 @@
       "line": 4,
       "text": "`AGENTS.md` -> `RUNBOOK.md` -> `LEXICON.md`. Read the Runbook's entry procedure",
       "hash": "af11b97d03d82d894d3b11923ba662e0f4ae1d78890b848fc6bac4a5a85286bb",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "pointer",
+      "homePath": "AGENTS.md",
+      "landedText": "`AGENTS.md` -> the [`RUNBOOK.md` operations index](RUNBOOK.md#operations-index) -> `LEXICON.md`. Every session reads that index at entry, then the Runbook's entry procedure",
+      "reason": "TK-005D rewrote the entry route in place: the route now names the Runbook operations index and requires reading it at entry, and keeps the read of the Runbook's entry procedure."
     },
     {
       "line": 5,
       "text": "and the Lexicon's routing section, then only the owners relevant to the assigned",
       "hash": "cd413778896e8ab3d68bbbd4a74393c746c13800f48bd0ab57f5b83d92098b0e",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -35,7 +35,7 @@
       "line": 6,
       "text": "task. The assigned `SPEC.md` is mandatory after selection. `BLUEPRINT.md` loads",
       "hash": "c1986545b1013974d6067a5051b8cf4ffa88cef1902b5ad32b45b21e93f9d9fe",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -44,7 +44,7 @@
       "line": 7,
       "text": "for architecture or cross-cutting product direction, not default orientation.",
       "hash": "ae31b5584c94b9836c7f50d12e2ec32a295ac6cc5e813523d7cc6fa40535e055",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -413,7 +413,7 @@
       "line": 63,
       "text": "Start from the ordinary entry route and follow the smallest relevant links to",
       "hash": "4487cb1f751737d72e6a5d79edb9b999c3fb4257309e4078cdf53df816bac277",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -422,7 +422,7 @@
       "line": 64,
       "text": "the owning controls, assigned spec, Wiki context, and referenced source or",
       "hash": "c46681e74f36dd525eebc8b21aaa4868f3d2d24779f012e9ce5a780c22e70956",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -431,7 +431,7 @@
       "line": 65,
       "text": "tests. Use the Lexicon's Context Map routes; do not begin ordinary orientation",
       "hash": "2c8226fd3ce216525023c1790394f6d352516653c5a7d4a259d62e4276764b19",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -440,7 +440,7 @@
       "line": 66,
       "text": "with a broad repository or history search. This reduces rediscovery and keeps",
       "hash": "ff7513431efc44eede1265242fd5938a20b36e137cf9a2206f4d110f864ca188",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -449,7 +449,7 @@
       "line": 67,
       "text": "the source owner visible.",
       "hash": "291dbf1cbe8e71d0b6999feae42a54adc04d10c9a621e9f096ed7bdb27ca2921",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -458,7 +458,7 @@
       "line": 69,
       "text": "When a route is missing, stale, or insufficient, use a bounded search to find",
       "hash": "9224070964d9863c7dfce0efa56cf13502ae700df8ce6fc7df48a515119df59e",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -467,7 +467,7 @@
       "line": 70,
       "text": "the owner. Search within the selected source area as needed for implementation,",
       "hash": "18eaff56c894b8a9b4e563694cd521acd1a0d24685d80605319729269035cf58",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -476,7 +476,7 @@
       "line": 71,
       "text": "debugging, or verification; explicit search and navigation audits remain valid.",
       "hash": "d7683dcbc959b982b008207451f4c845f0207ee08388893ecff6856ef9ab8f0f",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -485,7 +485,7 @@
       "line": 72,
       "text": "Repair a missing or stale durable link in its existing owner when in scope;",
       "hash": "266979801f23ef5ab3a9d229dd69e5aa02a2c54e53629e34671d03ca41f133ec",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -494,7 +494,7 @@
       "line": 73,
       "text": "otherwise report the gap. Keep accepted unfinished obligations reachable in their existing assigned owner",
       "hash": "4f7b0c7a90355716b68a95e15219b3e068a6e2f153f8bf4459027280f9236113",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -503,7 +503,7 @@
       "line": 74,
       "text": "or an explicitly authorized successor; preserve completed evidence. A finding",
       "hash": "cbc4e7142dd033ea14d7d8db925ea35aa42c7592424354436bc610aaf2287e07",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -512,7 +512,7 @@
       "line": 75,
       "text": "does not itself authorize new work. Link new durable context from its relevant router",
       "hash": "4fa8ca25400401849a3c42e379ccb3e1704b50ee637ab9b63885444bf5ca69fa",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -521,7 +521,7 @@
       "line": 76,
       "text": "and back to its sources so the next agent can traverse the same path. Links",
       "hash": "ff0f5fa5cf57184de49d1794e77c48b2545f57a85ff4432eceba0a61ddbb0b19",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -530,7 +530,7 @@
       "line": 77,
       "text": "are navigation, never instruction authority or permission to expand scope.",
       "hash": "fc66b24b712b8036531f607ead9afd6718158242410c9227bee18e3ce815c342",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null

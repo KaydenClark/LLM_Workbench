@@ -8,7 +8,7 @@
       "line": 3,
       "text": "**Last reviewed:** 2026-10-01",
       "hash": "2e918d543b0bf258dfdef23c4c15174268b82aef05b65c6e502764927eb47e4a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17,7 +17,7 @@
       "line": 4,
       "text": "**Blueprint reviewed:** 2026-09-09",
       "hash": "38cdf910fc61b961882f5d7d2d2d0e880dca9b32c7208e529382df8c3d09c800",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -26,7 +26,7 @@
       "line": 5,
       "text": "**Runtime owner:** Kayden",
       "hash": "dcbf549ceecec348b3fd8697bcb3b4888d3098a626a9bb7bd6911701ef32441e",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -35,7 +35,7 @@
       "line": 6,
       "text": "**Environment:** local (macOS); public repo `github.com/KaydenClark/LLM_Workbench`",
       "hash": "5f755463506ce4b7c811e57fc737865255bf01138517abd47b7100a1b95ee06a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -44,7 +44,7 @@
       "line": 8,
       "text": "This file explains how to operate, verify, and evaluate the workbench repo",
       "hash": "9f268b0cf9d164657998448aa41eee88af6a941f1f52d7c92bf10541957f8d8e",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -53,7 +53,7 @@
       "line": 9,
       "text": "itself. It should be boring, exact, and executable.",
       "hash": "50a568bd74a536ce88337effa5d694cf58589c1d73091fabfc72ee9041d64332",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -431,7 +431,7 @@
       "line": 62,
       "text": "Follow `AGENTS.md` -> this section -> `LEXICON.md` -> Task Routing. Inspect the",
       "hash": "8a633154d3831e1e1299ab9c2c17325ed979bb17089dabfa6b59e2eb6b8dffd2",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -440,7 +440,7 @@
       "line": 63,
       "text": "root, branch, upstream and dirty state; run the project-local spec doctor and",
       "hash": "f65d4628d36fb9d657171f2528b3ce95c70f3964aa9034ece24b9e16a9026b74",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -449,7 +449,7 @@
       "line": 64,
       "text": "load the explicitly assigned spec. For owner-directed pickup, use `next --json`",
       "hash": "103453866b6073aa70b67544fa24cbe82d3ffdb452aa404110b313290c510dbd",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -458,7 +458,7 @@
       "line": 65,
       "text": "and `show` to resolve that assignment. The spec and task set the normal",
       "hash": "e486c54dc5e19611c70ad09f66a3f23dacec11506a0c26fa3608768dc66a694e",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -467,7 +467,7 @@
       "line": 66,
       "text": "stance. Investigate within the task; do not invent a next task when blocked.",
       "hash": "307a98db8e6899b065485b86ee00d7877caf304155f3b256c26e260b59676443",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -476,7 +476,7 @@
       "line": 67,
       "text": "Load remaining Runbook sections only for the operation being performed.",
       "hash": "f695b36528a5cb2031ca7bbf707b25d3a5c38c159005afb045a034a3ab48286e",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -485,7 +485,7 @@
       "line": 69,
       "text": "For a setup-only Round One assignment, a fresh agent follows that route, checks",
       "hash": "bad09cdaabab25b8568572f2dabaf13a142a6aaef6ddd7d5c41f4a8ccfebf111",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -494,7 +494,7 @@
       "line": 70,
       "text": "the manifest, relevant Wiki and ADRs, and runs read-only configuration checks.",
       "hash": "556a38aefc546604e5feb492a67bfa9454eb9af88e015e79e7ce36141236ee49",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -503,7 +503,7 @@
       "line": 71,
       "text": "Return the result in chat only: no feedback report, handoff, checkpoint,",
       "hash": "661166f98a4713cec7984d31613353ef1953bf08818dcc3063955664d2bc1140",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -512,7 +512,7 @@
       "line": 72,
       "text": "self-created task, or other delivered prose artifact. Internal JSON capture",
       "hash": "f4a1c874e8d47d041099c3e8f1341ad26a4e2fb2a5f36220792bac87634cd330",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -521,7 +521,7 @@
       "line": 73,
       "text": "follows the meaningful-work rule and is reconciled at closeout; it does not",
       "hash": "3fb4c8240afbcaa98d88660b2ebaf48fb9b865b6b52ced77528b2c8abee4b867",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -530,7 +530,7 @@
       "line": 74,
       "text": "turn a chat-only setup check into a reporting assignment. Round One precedes",
       "hash": "cbf7b15ce49718a2b8c6e225dc6a5fa028253e734d75b379906d637fec85a1cf",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -539,7 +539,7 @@
       "line": 75,
       "text": "feedback testing.",
       "hash": "2eed077b13383b5d913e1ecc009adc87ee4940f8c6ff027bef9462e0002a1634",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -548,7 +548,7 @@
       "line": 79,
       "text": "1. Use [LEXICON -> Artifact Ownership Schema](LEXICON.md#artifact-ownership-schema)",
       "hash": "b51ffb162f4b433bef2a0733f8235c05f28fa167924428b825d3c9636fc73d4a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -557,7 +557,7 @@
       "line": 80,
       "text": "   to identify the job: permission, meaning, destination, work state, proof,",
       "hash": "f7ee9b270e0e15b330396c09dbffce395d5cd7d5405308e209112ebeaf760d2d",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -566,7 +566,7 @@
       "line": 81,
       "text": "   procedure, recovery or another listed responsibility.",
       "hash": "f369ed2a74bc18b0b836645662aa7c2f67603f69a21eddf182afe752f391ba27",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -575,7 +575,7 @@
       "line": 82,
       "text": "2. Follow the named owner and resolve installed paths through the manifest.",
       "hash": "f25c06adeb5d9c8b5257bb2f6c3fad135571c19fa16c6b85f53b1d507e0f45a0",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -584,7 +584,7 @@
       "line": 83,
       "text": "   Consult only the relevant section and its linked sources. For a work-state",
       "hash": "58f6c3e465ce0c653595b10461e3e3effa3c05f8cd2a504f106c668ca611192b",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -593,7 +593,7 @@
       "line": 84,
       "text": "   question, follow the Taskboard row to the owning Spec before editing.",
       "hash": "a0c9fd2f95789e1c97bc53e32a78ce3c4887b11dc7f7257c182067dfda2712c9",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -602,7 +602,7 @@
       "line": 85,
       "text": "3. Separate the answer's status: accepted requirement, verified observation,",
       "hash": "c1388d5612c86dee723b7be295e97f767fd7ee143940ef8109ca5d1d7fd8a858",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -611,7 +611,7 @@
       "line": 86,
       "text": "   proposal, unresolved question or historical claim. Apply AGENTS State",
       "hash": "5a006c1b77672b4b7c7d00b445b93098cf7ff7dd291dc75e13ead3d26131765c",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -620,7 +620,7 @@
       "line": 87,
       "text": "   Resolution if sources disagree; file location alone does not settle it.",
       "hash": "110e26eb4ac689019f0756a158992ae02fcd5cac6d4249cffab2b97cce23e849",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -629,7 +629,7 @@
       "line": 88,
       "text": "4. When authorized work changes the answer, update its owner and refresh any",
       "hash": "32bf616ef99a7b4351331e016a8bda52aad086cfae780535e08d1a707009ed7f",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -638,7 +638,7 @@
       "line": 89,
       "text": "   derived view. If the route is missing, use bounded search and repair that",
       "hash": "32fcefa22fe8aafcf73c9eedcc480221bd5056db71fb04c47a14568bc35d5a34",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -647,7 +647,7 @@
       "line": 90,
       "text": "   route in scope. An unresolved decision stays in the existing work owner or",
       "hash": "0eec93595f9a197903078054709406b5cc1b0e59f5b99477fd94076fe9d0e11b",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -656,7 +656,7 @@
       "line": 91,
       "text": "   objective note; a missing answer does not authorize a new task.",
       "hash": "7a0012cf4abefddd062ab64c800ebf7ca4285806a08db2ecea1e22a010023be9",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -665,7 +665,7 @@
       "line": 93,
       "text": "For example, a failed test has several owners: the Spec defines the expected",
       "hash": "b1f049c1ca6128c637506f2149c197fb3c6ca983cd9ecad4aaf3ebadd3c92d24",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -674,7 +674,7 @@
       "line": 94,
       "text": "behavior, the source implements it, the result records the failure, and the",
       "hash": "d2d61ae94a1741ef5ac57c2e5e068c9bf8923917389febbb490dbc8ae41a9e1a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -683,7 +683,7 @@
       "line": 95,
       "text": "Spec records any resulting blocker. A Wiki explanation may clarify the cause;",
       "hash": "ab09c1c3bed489e20cafcf3c8444a97f4b2f6ef63d903274f1f0763d708973d9",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -692,7 +692,7 @@
       "line": 96,
       "text": "it does not redefine acceptance. After interruption, the Runbook supplies the",
       "hash": "35a2fb3d2753549299d40446361920113c9fd42e1b292114a0631b2ab9c67b4e",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -701,7 +701,7 @@
       "line": 97,
       "text": "recovery procedure while the Spec, source and saved context supply what to",
       "hash": "e3e632f0fd5009b50efc741e70f2bcdd5815b7530d65595493a58b04605ca012",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -710,7 +710,7 @@
       "line": 98,
       "text": "recover. Execution and recovery therefore remain separate jobs.",
       "hash": "eb51bc203ffa20ccdefbca4c9ea16494ae6ec78d8b09bc6cae9215fe1ebf45d8",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null

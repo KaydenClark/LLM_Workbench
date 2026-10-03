@@ -11,6 +11,57 @@
 This file explains how to operate, verify, recover, and evaluate the project. It
 should be boring, exact, and executable.
 
+## Operations Index
+
+Every session reads this index at entry, then follows only the rows its task
+needs. Each row names an operation, when following it is worth it, and the
+stable pointer to where its procedure lives.
+
+| Operation | Follow when | Pointer |
+|---|---|---|
+| Enter a session | Every session start or resume: check root, branch and dirty state, run doctor and load the assigned Spec. | [Ordinary Entry](#ordinary-entry) |
+| Find the owner of a question | You need the file that owns a permission, meaning, work state, proof or procedure. | [Finding The Owner Of A Question](#finding-the-owner-of-a-question) |
+| Coordinate roles and stances | You plan, dispatch, monitor or verify work as a role or a named stance. | [Role And Stance Coordination](#role-and-stance-coordination) |
+| Choose the behavior for a request | A request arrives in ordinary language and you must pick the skills and endpoint it authorizes. | [Behavior Selection](#behavior-selection) |
+| Check prerequisites | A fresh machine or clone needs this project's required tools confirmed. | [Prerequisites](#prerequisites) |
+| Configure the environment | Local configuration or required variables must be created or checked. | [Environment Configuration](#environment-configuration) |
+| Install | You set up a fresh clone. | [Install](#install) |
+| Run locally | You start the project on a local machine. | [Run Locally](#run-locally) |
+| Run the tests | A change needs its fast check or the full verification. | [Test And Build](#test-and-build) |
+| Hold test coverage | You add or change tests, or judge whether coverage is enough. | [Test Coverage Policy](#test-coverage-policy) |
+| Run the Workbench runtime tools | You run doctor, selection, records, decision records or diagnostics from the installed tools lane. | [Workbench Lifecycle, Diagnostics, And Decision Records](#workbench-lifecycle-diagnostics-and-decision-records) |
+| Deliver a Spec through its lifecycle | You pick up, deliver, review or close an assigned Spec and its Tasks. | [Spec Lifecycle And Retrieval](#spec-lifecycle-and-retrieval) |
+| Work a Task as Worker | You select, claim, implement, self-check and hand back one Task. | [Worker: selection, implementation and hand-back](#worker-selection-implementation-and-hand-back) |
+| Review an assembled Spec | A Dispatcher assembles a candidate, or a separate Director reviews it before integration. | [Dispatcher and separate Director: assembled review](#dispatcher-and-separate-director-assembled-review) |
+| Record owner Human QA and complete | The owner approves delivered work, or main containment must be proven before `complete`. | [Owner: Human QA and main-before-complete](#owner-human-qa-and-main-before-complete) |
+| Capture, retire or recover a completed Spec | After `complete`: feature capture, retirement, discard or recovery. | [Documentation: feature capture, retirement and recovery](#documentation-feature-capture-retirement-and-recovery) |
+| Allocate a visible identifier | You need a new Spec, Task, note or other visible identifier. | [Visible Identifiers](#visible-identifiers) |
+| Use the Landmark Tracker | Concept understanding (DQCs, landmarks) changes, or the Tracker view is needed. | [Landmark Tracker: accepted design and available operations](#landmark-tracker-accepted-design-and-available-operations) |
+| Keep a JSON notepad | Meaningful work needs a local note created, resumed, appended, trimmed or cleaned up. | [JSON Notepads](#json-notepads) |
+| Read frozen history or recovery receipts | A legacy checkpoint is cited, or a recovery receipt or backup is needed. | [Frozen History And Operational Recovery](#frozen-history-and-operational-recovery) |
+| Transport sessions privately | Private session transport is configured and selected collections must sync. | [Optional Private Session Transport](#optional-private-session-transport) |
+| Save, promote or add a room-local skill | Authorized work must be saved to its owners, or the room adds its own skill. | [Portable Save, Promote And Room-Local Skills](#portable-save-promote-and-room-local-skills) |
+| Promote claims to an owner | Selected supported claims must reach their durable owner. | [Direct Owner Promotion](#direct-owner-promotion) |
+| Evaluate a harness change | You must show that a harness change is an improvement. | [Evaluation And Benchmarking](#evaluation-and-benchmarking) |
+| Transfer work through a handoff | Work goes to another agent or chat as a job, investigation, report or update. | [Handoff Transfer](#handoff-transfer) |
+| Improve against a benchmark | Agent rules, control docs, evaluation criteria or process change and need a baseline first. | [Benchmark-Driven Improvement](#benchmark-driven-improvement) |
+| Pick the claims to test | An evaluation must name the claim it tests. | [Claims To Test](#claims-to-test) |
+| Design an evaluation | You set up task-outcome scoring or trials. | [Evaluation Design](#evaluation-design) |
+| Run the evaluation commands | You run the static evaluator or the trial framework. | [Workbench Evaluation Commands](#workbench-evaluation-commands) |
+| Return harness feedback | A lesson about the harness rules belongs in the feedback return channel. | [Harness Feedback Loop](#harness-feedback-loop) |
+| Operate project data | The project has seed data, migrations, imports, local databases or generated feeds. | [Data Operations](#data-operations) |
+| Deploy or start services | The project has deployment, scheduled jobs or service startup. | [Deployment Or Startup](#deployment-or-startup) |
+| Branch, review, merge and clean up | You create a branch or PR, merge into integration, or delete a merged branch. | [Version-Control Procedures](#version-control-procedures) |
+| Upgrade the harness | The project moves to a newer Workbench version. | [Upgrading The Harness](#upgrading-the-harness) |
+| Write a manual harness feedback report | A setup-only Round One check succeeded and an assessment is assigned. | [Manual Harness Feedback Reports](#manual-harness-feedback-reports) |
+| Troubleshoot a known failure | A command fails with a symptom listed there. | [Troubleshooting](#troubleshooting) |
+| Recover or roll back | A change fails and its touched files must be restored or reverted. | [Recovery And Rollback](#recovery-and-rollback) |
+| Record operational proof | A command changed durable project state. | [Operational Proof](#operational-proof) |
+| Size and continue work | You size a Task or leave work a fresh context can resume. | [Evidence And Continuation Practices](#evidence-and-continuation-practices) |
+| Check the Workbench connection identity | The room's `workbenchId` is created, read or compared. | [Workbench connection identity](#workbench-connection-identity) |
+| Check configured-host capabilities | A host is set up, or its lanes, skill discovery or tool execution are in doubt. | [Configured-host capability checks](#configured-host-capability-checks) |
+| Review a candidate independently | A candidate needs separate-context review before integration. | [Independent Review Boundaries](#independent-review-boundaries) |
+
 ## Ordinary Entry
 
 Follow `AGENTS.md` -> this section -> `LEXICON.md` -> Task Routing. Inspect the
