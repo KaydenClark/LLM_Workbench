@@ -39,7 +39,7 @@ assert.ok(paragraphFile, 'the Blueprint Short Page spec must keep its paragraph 
 const paragraphs = JSON.parse(fs.readFileSync(paragraphFile, 'utf8'));
 assert.deepEqual(paragraphs.sources.map(s => s.path), ['BLUEPRINT.md', 'templates/BLUEPRINT.md'], 'the inventory covers the root Blueprint and its template');
 const HOME_KINDS = new Set(['short-page', 'decision-record', 'wiki', 'landmark', 'spec', 'skill', 'contract', 'generic-contract', 'generic-mirror']);
-const DISPOSITIONS = new Set(['relocate-claim', 'retired-shape', 'retired-claim', 'gap']);
+const DISPOSITIONS = new Set(['relocate-claim', 'replaced-claim', 'retired-shape', 'retired-claim', 'gap']);
 for (const source of paragraphs.sources) {
   const original = execFileSync('git', ['show', `${source.commit}:${source.path}`], { cwd: root, encoding: 'utf8' });
   assert.equal(source.claims.map(x => x.text).join(''), original, `${source.path}: the paragraph inventory must preserve every source byte in order`);
@@ -57,6 +57,11 @@ for (const source of paragraphs.sources) {
       assert.ok(fs.existsSync(path.join(root, home.owner)), `${claim.id}: home ${home.owner} must exist on the tree`);
     }
   }
+}
+// The corrective-work rules were replaced after this page was written (the Corrective Work Rules Spec), so a
+// passage that states the old corrective-Task rule is never recorded as merely moved.
+for (const claim of paragraphs.sources[0].claims.filter(c => /corrective Tasks?\b/i.test(c.text))) {
+  assert.equal(claim.disposition, 'replaced-claim', `${claim.id}: an old corrective-Task passage must be recorded as replaced, not relocated`);
 }
 // The template's generic workflow paragraph is split into one claim per sentence, each with a generic home,
 // and a claim with no generic home is a recorded gap, never silently dropped.

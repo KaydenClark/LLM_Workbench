@@ -324,7 +324,7 @@
         {
           "id": "root-015",
           "text": "Delivery is designed at three altitudes. The Blueprint is the product-level\ndestination and the journey that reaches it: the whole of counting to 100. A\nSpec is one scoped objective with its own destination, PRD-shaped, the next\nnumber to reach. Tasks do the counting; a Task is the bounded executable work\nthat advances a destination or repairs it. Stacked Specs realize the Blueprint\njourney. Scope and destination decide where work belongs, never how much work\nit turns out to be: a gap against a destination that already exists is\ncorrective Task work however many Tasks it takes, and a distinct scoped\nobjective with a destination of its own warrants a new Spec.\n\n",
-          "disposition": "relocate-claim",
+          "disposition": "replaced-claim",
           "owner": "workbench/wiki/design-concepts/delivery-altitudes.md",
           "homes": [
             {
@@ -341,9 +341,19 @@
               "kind": "decision-record",
               "owner": "workbench/docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md",
               "note": "The landmark is the size above Specs."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000M-working-artifacts-are-scaffolding-cleared-away-once-their-knowledge-is-kept.md",
+              "note": "A later gap against delivered work becomes a new Spec under its landmark or the Blueprint."
+            },
+            {
+              "kind": "spec",
+              "owner": "workbench/specs/S-004F-corrective-work-rules/SPEC.md",
+              "note": "The Corrective Work Rules Spec that replaced the old corrective-Task claim."
             }
           ],
-          "reason": "The altitude passage becomes a Wiki page; the decision stays an ADR.",
+          "reason": "The old claim that a gap against an existing destination is corrective Task work however many Tasks it takes is replaced, not carried: the owner's corrective-work answers (carried in the Corrective Work Rules Spec and the amended decision records) say a later gap against delivered work is a new Spec, and a miss found by a check continues the same Task unless the fix rewrites it. The rest of the altitude passage moves to the Wiki page and the altitudes decision. The altitude passage becomes a Wiki page; the decision stays an ADR.",
           "section": "Integrated System Design"
         },
         {
@@ -719,7 +729,7 @@
         {
           "id": "root-030",
           "text": "```text\nIdea\n  -> optional conversation to explore the idea\n  -> Align through grill-me, wayfinding, brainstorming and needed research\n  -> Confirm shared design concept\n  -> Blueprint the idea\n  -> {\n       Main branch\n         -> Integration branch\n              -> Spec branch {\n                   Create Spec\n                     -> Create Tasks\n                     -> Update Taskboard\n                     -> {\n                          Pick up a hot non-conflicting Task\n                            -> Create one Task branch/worktree from the Spec branch\n                            -> Implement\n                            -> QA / Verify\n                            -> Commit and push Task branch\n                            -> Review Task\n                            -> Merge Task into Spec branch\n                            -> Delete Task branch after containment\n                            -> Pick up next hot Task\n                            -> Repeat Tasks in parallel where they do not conflict\n                        }\n                     -> Repeat until the Spec is assembled\n                     -> Whole-Spec QA / Verify\n                     -> If findings: create corrective Tasks -> repeat Task loop\n                     -> If approved: merge Spec into Integration\n                 }\n              -> Owner Human QA on Integration\n              -> {\n                   Pass -> owner-only merge Integration into Main\n                   Fail -> return to Align\n                             -> revisit shared design concept / Blueprint as needed\n                             -> repeat delivery loop\n                 }\n     }\n```\n\n",
-          "disposition": "relocate-claim",
+          "disposition": "replaced-claim",
           "owner": "workbench/landmark-tracker/landmarks/LMK-000K.json",
           "homes": [
             {
@@ -733,7 +743,7 @@
               "note": "The map rewritten in the workflow verbs; the verbatim text stays recoverable at commit 482dc6beaa9fd4a0f85fe2f7c401781b0020c4ff."
             }
           ],
-          "reason": "Per the owner the map is rewritten in the workflow verbs and no longer kept verbatim.",
+          "reason": "The map is rewritten in the workflow verbs and no longer kept verbatim. Its line \"If findings: create corrective Tasks -> repeat Task loop\" is replaced, not carried: the amended two-gates decision says each finding is corrected by the same Task continuing unless the fix rewrites it. The other lines of the map are carried by the Wiki page.",
           "section": "Desired Lifecycle"
         },
         {
@@ -804,7 +814,7 @@
         {
           "id": "root-034",
           "text": "A Task has no review or approval gate. It is one attempt at one step: its\nWorker self-checks that its claims are valid and backed by proof before handing\nback, and the Dispatcher reads that report and chooses the next step. Merging a\nTask into its Spec branch is coordination and containment, not QA. A Task that\nmisses its step is not reopened and not discarded: its report stays in the Spec\nevidence as diagnostic proof, its `TASK.md` stays the record until the Spec is\ncleaned up into the features Wiki, its card returns to In progress, its\nworktree is removed, and a new Task, named for its objective, fixes what the\ncheck found. Work that stops unexpectedly leaves what it recorded as it went.\n\n",
-          "disposition": "relocate-claim",
+          "disposition": "replaced-claim",
           "owner": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
           "homes": [
             {
@@ -818,13 +828,13 @@
               "note": "The corrective-work rules are being reworked here; whichever lands first corrects the passage."
             }
           ],
-          "reason": "The Task gate passage is an accepted decision; the corrective rule is being changed by its own Spec.",
+          "reason": "The old model, a missed Task is not reopened and a new Task fixes it, is replaced, not carried: the amended two-gates decision says the same Task continues with an adjusted handoff, and only a fix that rewrites the Task gets a new one. The no-review-gate and containment claims are carried unchanged. The Task gate passage is an accepted decision; the corrective rule is being changed by its own Spec.",
           "section": "Desired Lifecycle"
         },
         {
           "id": "root-035",
           "text": "When the Spec is assembled, its Dispatcher verifies the whole Spec against its\nown destination and the combined results of its Tasks, doing that QA itself or\ndispatching it and owning the result. The Director then approves the immutable\nassembled candidate in a separate context before it combines into integration;\nneither the Dispatcher nor any agent that implemented a Task in the candidate\ncan give that approval. A check that fails diagnoses the gap and creates\ncorrective Tasks under the still-open Spec, and the fresh candidate is checked\nagain. An approved Spec branch merges into integration. On the board, Needs\nreview holds an assembled Spec waiting for the Director's approval, and\nComplete holds approved work waiting for closure.\n\n",
-          "disposition": "relocate-claim",
+          "disposition": "replaced-claim",
           "owner": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
           "homes": [
             {
@@ -836,9 +846,14 @@
               "kind": "decision-record",
               "owner": "workbench/docs/adr/0037-independent-review-at-integration.md",
               "note": "Independent review at integration."
+            },
+            {
+              "kind": "spec",
+              "owner": "workbench/specs/S-004F-corrective-work-rules/SPEC.md",
+              "note": "The Corrective Work Rules Spec that amended the corrective passage of the two-gates decision."
             }
           ],
-          "reason": "Assembled-Spec review is an accepted decision.",
+          "reason": "The old claim that a failed assembled check creates corrective Tasks under the still-open Spec is replaced, not carried: the amended two-gates decision says each finding is corrected under the open Spec by the same Task continuing unless the fix rewrites it. The Dispatcher QA and Director approval claims are carried unchanged. Assembled-Spec review is an accepted decision.",
           "section": "Desired Lifecycle"
         },
         {
@@ -859,7 +874,7 @@
         {
           "id": "root-037",
           "text": "No Git merge closes a Spec. After the reviewed delivery on integration and the\nowner's approval, the approved change is verified on the default branch; only\nthen is the Spec completed, its current capability knowledge captured into the\nfeatures Wiki at that closure point, the Spec and its Tasks retired, and the\ntransient records discarded, with Git preserving recoverable history. A later\ngap against that same destination is a corrective Task that updates the\nreconciled record instead of reviving a closed Spec.\n\n",
-          "disposition": "relocate-claim",
+          "disposition": "replaced-claim",
           "owner": "workbench/docs/ddr/000M-working-artifacts-are-scaffolding-cleared-away-once-their-knowledge-is-kept.md",
           "homes": [
             {
@@ -873,7 +888,7 @@
               "note": "Closure order: no merge closes a Spec."
             }
           ],
-          "reason": "Closure, capture and discard are accepted decisions.",
+          "reason": "The old claim that a later gap against a closed Spec is a corrective Task updating the reconciled record is replaced, not carried: the owner's answer, recorded in the scaffolding decision, is that a later gap against delivered work becomes a new Spec under its landmark or the Blueprint, never a revived Spec and never a correction anchored to a Wiki claim. The closure order and capture claims are carried unchanged. Closure, capture and discard are accepted decisions.",
           "section": "Desired Lifecycle"
         },
         {
@@ -924,7 +939,7 @@
         {
           "id": "root-040",
           "text": "Parallel work is directed through scoped roles. The owner remains the human\nabove the Director. The Director coordinates the whole project and integration,\nstarts Dispatchers for assigned Specs, resolves cross-Spec dependencies and\nshared writers, and oversees independent review of assembled candidates. Each\nDispatcher stays within its Spec and branch while Workers perform individual\nTasks. A role defines that scope; a stance defines the job within it.\n\n",
-          "disposition": "relocate-claim",
+          "disposition": "replaced-claim",
           "owner": "workbench/wiki/design-concepts/roles-and-stances.md",
           "homes": [
             {
@@ -943,7 +958,7 @@
               "note": "The role ladder adds the Captain; the Blueprint text saying the Director covers integration is stale."
             }
           ],
-          "reason": "Roles are an accepted decision with a Wiki page; the Blueprint text is stale against the Captain decision.",
+          "reason": "The old text that the Director covers integration is replaced, not carried: the accepted role decision gives integration to the Captain and moves role detail into the role skills. The scope and owner-above-Director claims move to the roles Wiki page and the accepted role decisions. Roles are an accepted decision with a Wiki page; the Blueprint text is stale against the Captain decision.",
           "section": "Desired Lifecycle"
         },
         {
@@ -979,7 +994,7 @@
         {
           "id": "root-042",
           "text": "New Specs capture capability destinations without pre-cut Tasks. Task planning\nbelongs to flight launch and activation against current Actuality. Accepted\ndecisions and progress reach their tracked owners on integration as work\nproceeds, so a fresh agent can reconstruct the project without another chat,\nprivate cache or unmerged branch. No ordinary single-Task assignment requires\na coordination system.\n\n",
-          "disposition": "relocate-claim",
+          "disposition": "replaced-claim",
           "owner": "workbench/docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md",
           "homes": [
             {
@@ -998,7 +1013,7 @@
               "note": "Many agents work one project in parallel; this carries the direction the old no-coordination-system lines contradicted."
             }
           ],
-          "reason": "Specs without pre-cut Tasks and continuity are accepted decisions; the no-coordination-system lines were wrong per the owner and go nowhere.",
+          "reason": "The old lines saying no ordinary assignment requires a coordination system are replaced, not carried: the owner said they were wrong because coordinated parallel work within a workbench is a goal, and the parallel-agents decision carries the direction. The specs-without-pre-cut-Tasks claim is carried by the workflow verbs decision. Specs without pre-cut Tasks and continuity are accepted decisions; the no-coordination-system lines were wrong per the owner and go nowhere.",
           "section": "Desired Lifecycle"
         },
         {
@@ -1074,7 +1089,7 @@
         {
           "id": "root-046",
           "text": "The Workbench is not a portfolio scheduler, autonomous source of permission,\nprovider-specific control plane, marketplace, transcript archive or proof that\nan agent always follows instructions. It does not require Foundry, a graph\nservice, a private catalog or network access for ordinary local work. It cannot\nguarantee capture after an immediate interruption or move a running process by\nsynchronizing files. Publication and unrelated project rollout are owner choices.\n\n",
-          "disposition": "relocate-claim",
+          "disposition": "replaced-claim",
           "owner": "BLUEPRINT.md",
           "homes": [
             {
@@ -1113,7 +1128,7 @@
               "note": "LLM Workbench owns what a workbench is."
             }
           ],
-          "reason": "The non-goals the owner confirmed stay on the short page. The network-access-for-ordinary-local-work non-goal is dropped: the owner called it wrong in round 1. The remaining clauses (portfolio scheduler, provider control plane, marketplace, immediate-interruption guarantee) are not carried by the confirmed page and have no decision-record home; they are recorded as dropped.",
+          "reason": "Replaced and dropped clauses: the network-access-for-ordinary-local-work non-goal is dropped because the owner called it wrong; the portfolio scheduler, provider control plane, marketplace and immediate-interruption clauses are not carried by the confirmed page and have no decision-record home. The confirmed non-goals stay on the short page.",
           "section": "Non-Goals"
         },
         {
