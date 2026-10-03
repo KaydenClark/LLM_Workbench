@@ -49,15 +49,15 @@ export and finding keeps its behavior.
 
 ## Acceptance
 
-- [ ] `new --kind ddr` writes a `DDR`-identified record into `ddr/proposed/`
+- [x] `new --kind ddr` writes a `DDR`-identified record into `ddr/proposed/`
       with the three frontmatter keys and refuses an existing path.
-- [ ] `validate` reports `invalid-ddr` for a DDR naming the Wiki in
+- [x] `validate` reports `invalid-ddr` for a DDR naming the Wiki in
       `canonicalized_in`, in any folder, and leaves ADR findings unchanged.
-- [ ] `register` writes the DDR register and history; `doctor` reports a
+- [x] `register` writes the DDR register and history; `doctor` reports a
       stale DDR register and the Spec and Task moves regenerate it. (Corrected
       at implementation: `render` regenerates no decision register, for ADRs
       either; the moves and `adr.mjs register` do.)
-- [ ] Runbook, template mirrors, `to-docs` and the Wiki article agree with
+- [x] Runbook, template mirrors, `to-docs` and the Wiki article agree with
       the shipped commands.
 
 ## Boundaries
@@ -67,3 +67,9 @@ landmark field on the DDR template: how a DDR records its landmark is open
 and waits on the LANDMARK.md capability. No DDR content from the Blueprint
 teardown, no root `BLUEPRINT.md` change, and no `LEXICON.md` or
 `templates/LEXICON.md` edit (the last Task).
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s003x-tk004x-ddr-runtime | 06ea023fd62935c4baf6055303d9103f6a47d299 | ahead 0 behind 0 | 0 | Red ba8202bf: tools/test-adr.mjs 40 pass 5 fail (new --kind ddr unknown, no DDR register, DDR naming the Wiki validated, undeclared-collection refusal and DDR remote reservation absent); tools/test-diagnostics.mjs 34 pass 2 fail (invalid-ddr unregistered). Green: test-adr 45/45 and test-diagnostics 36/36; test-visible-id-consumers, test-sessions, test-genesis-from-decisions, test-direct-promotion, test-governance-core, test-lifecycle-directory-links and test-self-drift pass; adr.mjs register on this room writes the empty DDR register and history with the ADR register byte-unchanged and validate reports decision records validated. Full AGENTS suite: 47/48 on 7d0cf583 (test-workbench-layout: the template Runbook's bracketed [--kind adr\|ddr] read as an unknown placeholder), fixed in 06ea023f; 48/48 on clean 06ea023f. | RUNBOOK decision-record section (DDR commands, rules, invalid-ddr, kind-less behavior) and new-label reservation sentence; templates/RUNBOOK command block and decision paragraph; to-docs skill DDR route; templates/BLUEPRINT.md narrowed instruction with template-placeholders.mjs vocabulary; Wiki article Decision Records and the Concept Map; TK-004X record corrected where it said render regenerates registers. | Accept, supersede and deprecate moves (TK-004Y), read words (TK-004Z) and the blocked Lexicon mirrors (TK-005A) remain; separate-context review of the final head pending. | 7a536bee7a837ed673ff1b2928bf268262ba7d29f51162e38c7675648345116f |
