@@ -5,7 +5,7 @@
 **Slice:** Read ADRs and DDRs with list, show, search, history and inspect
 **Status:** ready
 **Stance:** Builder
-**Blockers:** TK-004X
+**Blockers:** TK-004X, TK-004Y
 **Destination:** spec-acceptance: S-003X Acceptance Criteria box 4 (an agent can `list`, `show`, `search`, `history` and `inspect` an ADR and a DDR, and every existing command name still works)
 **Planned verification:** Red: new `tools/test-adr.mjs` cases fail because `list`, `show`, `get`, `search`, `history` and `inspect` are unknown commands. Green: in a fixture room holding accepted, proposed, superseded and deprecated ADRs and DDRs, each read word returns the expected records in text and `--json`; `get` equals `show`; `search` reports status and, for a superseded hit, its successor; `history` reports the lifecycle chain and the Git commits that touched the file across a lifecycle move, and says Git is unavailable outside a Git room; `inspect` returns a frontmatter field and a line range and refuses an unknown field or an out-of-range span; an unknown identifier fails visibly; `validate`, `normalize`, `register`, `new` and `migrate-folders` behave exactly as before. `test-adr` and the full AGENTS suite pass on the committed candidate.
 
@@ -47,6 +47,7 @@ prefix selects the kind. Reads never write.
 ## Boundaries
 
 No write behavior. No rename of an existing command. No read words for any
-other record tool. Serialized after TK-004Y because both edit `adr.mjs`,
-`tools/test-adr.mjs` and the Runbook section. No `LEXICON.md` or
+other record tool. Blocked on TK-004Y as well as TK-004X because all three
+edit `adr.mjs`, `tools/test-adr.mjs` and the Runbook section, so they run one
+at a time. No `LEXICON.md` or
 `templates/LEXICON.md` edit.
