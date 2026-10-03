@@ -1043,9 +1043,15 @@ function requireValue(value, message) {
   return String(value).trim();
 }
 
+// S-003X TK-004Y: the commands addressed to one record take its identifier
+// as their one positional argument. Every other command refuses a positional
+// argument, as before, so a stray identifier is never silently ignored.
+const ID_COMMANDS = Object.freeze(['accept', 'supersede', 'deprecate']);
+
 function parseArgs(argv) {
   const [command, ...rest] = argv;
   const options = {};
+  const positional = [];
   for (let index = 0; index < rest.length; index += 1) {
     const arg = rest[index];
     if (arg === '--json') options.json = true;
@@ -1053,9 +1059,12 @@ function parseArgs(argv) {
     // successors is refused instead of silently keeping the last one.
     else if (arg === '--by') (options.by ??= []).push(rest[++index]);
     else if (arg.startsWith('--')) options[arg.slice(2)] = rest[++index];
-    else if (options.id === undefined && /^(?:ADR|DDR)-[0-9A-Za-z]+$/i.test(arg)) options.id = arg;
-    else throw new Error(`Unknown argument: ${arg}`);
+    else positional.push(arg);
   }
+  if (ID_COMMANDS.includes(command)) {
+    if (positional.length > 1) throw new Error(`Unknown argument: ${positional[1]}`);
+    options.id = positional[0];
+  } else if (positional.length) throw new Error(`Unknown argument: ${positional[0]}`);
   return { command, options };
 }
 
