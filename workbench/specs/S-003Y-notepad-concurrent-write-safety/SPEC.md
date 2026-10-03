@@ -8,8 +8,8 @@
 **Updated:** 2026-10-03
 **Catalog description:** Make overlapping writes to one JSON notepad impossible to lose silently: every write response says truthfully whether its entry landed.
 **Blockers:** none for TK-005B (the guard and its barrier test) and TK-005C (the inspection of other writers). TK-005D (the skill, Contract and ownership-decision reconciliation) waits on TK-005B and coordinates the skill wording with S-00Y.
-**Latest event:** Planned on 2026-10-03 at integration 5fa2aab657c8492da22980bfd0d70571600071af: the race re-reproduced from a worker-thread barrier, three record-backed Tasks cut and the Spec activated; the guard is a per-revision publish token around the existing rename.
-**Next gate:** Claim and deliver TK-005B, then TK-005C and TK-005D; each Task PR needs a separate-context review of its immutable candidate before its integration merge.
+**Latest event:** TK-005B claimed by claude-fable-s003y.
+**Next gate:** Close TK-005B with verification and documentation proof.
 
 > **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a`.
 

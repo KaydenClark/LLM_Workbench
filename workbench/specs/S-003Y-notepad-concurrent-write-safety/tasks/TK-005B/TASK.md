@@ -3,7 +3,7 @@
 **Task ID:** TK-005B
 **Spec ID:** S-003Y
 **Slice:** Barrier regression test and compare-and-swap publish for every revision-guarded notepad write
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-003Y Acceptance Criteria box 1 (a barrier-synchronized race leaves exactly the entries whose writers were told they succeeded and every other writer received `stale-revision`), box 2 (the test is red against the pre-fix runtime, green after, and does not depend on process start-up timing), box 3 (an interrupted writer leaves the previous valid record and does not block later writers), box 4 (no lease, daemon or service) and the write-path half of box 5 (`append`, `current`, `trim` and `delete` are covered)
