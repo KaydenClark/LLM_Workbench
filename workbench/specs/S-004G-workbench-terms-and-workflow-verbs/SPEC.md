@@ -3,13 +3,13 @@
 **Spec ID:** S-004G
 **Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-lane-g
 **Stance:** Builder
 **Updated:** 2026-10-03
 **Catalog description:** Put the owner's Workbench terms and one row per workflow verb into the Lexicon, repair the rows that contradict the Blueprint teardown's locked answers, and record the changed Journey point of the workflow-verbs decision in a decision record.
 **Blockers:** none. The Lexicon rows take one writer at a time, so this Spec's first Task waits on the last Task of the AI Coding Dictionary Terms Spec. The `ddr` collection and the commands that write, accept and supersede a decision record are installed.
-**Latest event:** Planned and activated on 2026-10-03 by the Lexicon writer lane: five serial Tasks are cut (the Workbench term and artifact-kind rows; the workflow verb rows; the Blueprint and Foundry repairs; the decision record for the Journey correction; the controls inventory and the Workflow Verbs article).
-**Next gate:** The first Task, once the last Task of the AI Coding Dictionary Terms Spec is done.
+**Latest event:** TK-006C closed with proof.
+**Next gate:** Complete TK-006D.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 
@@ -103,9 +103,11 @@ Open, settled at Plan from project evidence unless it needs the owner:
 - Whether the Map verb shares the existing Map row with the noun or takes its own row.
 - How "delivered" is kept to one meaning: the Delivered verb (approved work on main), the Approve row's "delivered result", `AGENTS.md`'s "reviewed delivery on integration" and the `S-###:delivered` qualifier. A distinction in the rows is Plan's; renaming the public qualifier would change a public contract and is the owner's call.
 - Whether the Confirm row and `AGENTS.md`'s "Confirmation of understanding never grants implementation or promotion authority" speak of the same confirmation, and how they are reconciled, one writer per file.
-- How the Contract artifact and Routing artifact rows relate to the Workbench Contract row and the accepted three-carrier records (ADR-000C, ADR-000W). The owner deferred the Lexicon's own status ("we can debate lexicon later"), and the Runbook's belongs to the Contract carrier rewrite; this Spec states the distinction and changes neither record.
-- Whether the Scaffolding and Architecture artifact rows stay separate or one becomes the other's alias, without letting one word mean two things.
+- How the Contract artifact and Routing artifact rows relate to the Workbench Contract row and the accepted three-carrier records (ADR-000C, ADR-000W). The owner deferred the Lexicon's own status ("we can debate lexicon later"), and the Runbook's belongs to the Contract carrier rewrite; this Spec states the distinction and changes neither record. Settled by TK-006C: the Contract artifact row is defined by being loaded every turn and says the Workbench Contract row names a different thing (the binding claim set and its carriers); the owner's later Runbook and Lexicon statements are quoted on the Contract artifact row and the Routing artifact row leaves their kind to the Contract carrier rewrite, so neither record changes.
+- Whether the Scaffolding and Architecture artifact rows stay separate or one becomes the other's alias, without letting one word mean two things. Settled by TK-006C: they stay separate rows because the owner asked for each artifact kind to have its own; the Scaffolding row says it names the architecture artifacts taken together and the Architecture artifact row says it is one of them, so the two are one concept seen as a whole and as a single artifact.
 - Which plane, if any, the new verbs write at. The owner assigned planes to the first eight verbs only; this Spec assigns none.
+
+Settled at TK-006C: `templates/LEXICON.md` carries the Owner, Room, Scaffolding, three artifact-kind and Control rows and the retired Root controls row, with the producer owner's quotations left out. It carries no Workbench Template row: that term is LLM Workbench's own product (the producer and product decision), so a generic room has nothing to define there. This is the recorded exemption for that one row.
 
 ## Non-Goals
 
@@ -152,6 +154,7 @@ Run the targeted vocabulary, control-fidelity and decision-record tests and the 
 |---|---|---|---|---|---|
 | 2026-10-03 | none | Authored at the Map step from the owner's Workbench term, workflow-verb and workflow answers confirmed on 2026-10-03 in the Blueprint teardown, at integration 5cfa987bacb0f6a9273d93e8d989e34000d75ad9. | Map only; the quoted Lexicon rows, the workflow-verbs decision, the template Lexicon's rows, the `delivered` qualifier and the related Spec records were read at that tip; no runtime proof claimed. | This Spec and the generated Spec catalog. Docs checked; no Lexicon, decision-record or Wiki update is due until delivery, because a planned Spec changes no accepted meaning. | Plan, implementation and proof remain; six questions are open for Plan. |
 | 2026-10-03 | none | Plan: activated the Spec and cut five serial Tasks from live Actuality at integration f91bfd72; each Lexicon Task mirrors its generic rows into the template as it lands, and the last Task inventories the retired controls wording outside the Lexicon. The open questions are settled Task by Task, each recorded here with its evidence when its Task closes. | Plan only; the Lexicon rows, the workflow verbs decision, the decision-record commands and the DDR collection were read at that tip; no runtime proof claimed. | This Spec only. | Implementation and proof remain in the five Tasks. |
+| 2026-10-03 | TK-006C | Task closed | Red 9381d06f then green: test-control-fidelity 32/32, templates evaluator, full AGENTS suite 48/48 on clean 0120bfcc | LEXICON.md and templates/LEXICON.md carry the Workbench term rows and the retired controls wording is repaired in both; Spec settled questions recorded | Verb rows, Blueprint and Foundry repairs, decision record and controls inventory remain in four Tasks |
 
 ## Completion Result
 

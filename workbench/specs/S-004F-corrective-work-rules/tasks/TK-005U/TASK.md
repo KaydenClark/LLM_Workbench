@@ -21,7 +21,10 @@ free, and the rules go wherever the passages then live.
 
 `RUNBOOK.md` and `templates/RUNBOOK.md` passages named above, or the skill that
 carries them if the rewrite moved them, and the control-fidelity pins that read
-them. `owner:runbook-writer-turn` names a turn in another Spec's Runbook writer
+them: the `same capability after discard` pin on the `createCorrectiveTasks`
+"programmatic API, not a" sentence, the `orphan corrective close gap` pin on
+`close TK-###` and the `programmatic API, not a` phrase check, which describe
+the retired route and must change with the passages. `owner:runbook-writer-turn` names a turn in another Spec's Runbook writer
 lane, which the blocker grammar cannot express as a Task identifier.
 
 ## Acceptance
