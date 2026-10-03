@@ -3,7 +3,7 @@
 **Task ID:** TK-005W
 **Spec ID:** S-004F
 **Slice:** Correct the Blueprint's corrective passages unless the short page has already replaced them
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: The Blueprint's corrective passages and their test pins say the new rules or are already gone with the short page.
