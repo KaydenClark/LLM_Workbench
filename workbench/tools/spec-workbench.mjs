@@ -14,7 +14,7 @@ import { checkHostFloor, formatHostFloor } from './host-floor.mjs';
 import { capabilitySession } from './optional-capabilities.mjs';
 import { coordinationContext, publicCoordination, publishClaim } from './claim-coordination.mjs';
 import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, declaredGit, lanePath, liveRecordPath, markdownLinkTargets, readManifest } from './workbench-paths.mjs';
-import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenceSection, validateAdrs, writeDecisionRegisters } from './adr.mjs';
+import { parseFrontmatter, planReferenceRewrite, splitEvidenceSection, validateAdrs, writeDecisionRegisters } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { ARTIFACT_ID_MIN_WIDTH, allocateArtifactId, compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
 import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseFormerId, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
@@ -2157,6 +2157,8 @@ function collectSpecReferenceFiles(root, excludeDir) {
   walk(path.join(root, 'skills'), (name) => name.endsWith('.md'), true);
   walk(path.join(root, 'team templates'), (name) => name.endsWith('.md'));
   walk(collectionPath(root, 'adr'), (name) => name.endsWith('.md'));
+  // S-003X TK-004Y: links inside Destination Decision Records are repaired too.
+  walk(collectionPath(root, 'ddr'), (name) => name.endsWith('.md'));
   walk(resolveSpecsRoot(root).specsRoot, (name) => name === 'SPEC.md' || name === 'TASK.md');
   const seen = new Set();
   return files.filter((file) => {
@@ -2258,26 +2260,11 @@ function preflightReferenceWrites(root, files, locations, options = {}) {
   }
 }
 
-// The pure half of `rewriteReferenceFile`: computes the rewritten bytes for
-// `original` (read from wherever the caller holds it) as the file that will
-// live at `filePath`, records the counts in `totals` under that path, and
-// returns the new content, or null when no live match changed. `widen-id`
-// (S-01W TK-002O) plans every rewrite with this before it touches the tree, so
-// a refusal can never leave a partial mutation; the lifecycle moves keep
-// calling `rewriteReferenceFile` exactly as before.
-function planReferenceRewrite(root, filePath, original, oldDir, newDir, locations, totals, options = {}) {
-  const { prefix, evidence, suffix } = splitEvidenceSection(original);
-  const canonicalized = rewriteCanonicalizedIn(prefix, root, locations);
-  const rewrittenPrefix = rewriteAdrLinks(canonicalized.content, oldDir, newDir, locations, options);
-  const rewrittenSuffix = rewriteAdrLinks(suffix, oldDir, newDir, locations, options);
-  const skippedInEvidence = rewriteAdrLinks(evidence, oldDir, newDir, locations, options).count;
-  const relative = path.relative(root, filePath).split(path.sep).join('/');
-  if (skippedInEvidence > 0) totals.historicalReferencesLeft[relative] = (totals.historicalReferencesLeft[relative] ?? 0) + skippedInEvidence;
-  const rewritten = rewrittenPrefix.count + rewrittenSuffix.count + canonicalized.count;
-  if (rewritten === 0) return null;
-  totals.referencesRewritten[relative] = (totals.referencesRewritten[relative] ?? 0) + rewritten;
-  return rewrittenPrefix.content + evidence + rewrittenSuffix.content;
-}
+// The pure half of `rewriteReferenceFile` is `planReferenceRewrite` in
+// adr.mjs (moved there by S-003X TK-004Y so the decision-record moves share
+// it): it computes the rewritten bytes without touching the tree. `widen-id`
+// (S-01W TK-002O) plans every rewrite with it before it writes, so a refusal
+// can never leave a partial mutation.
 
 // S-00I TK-003: moves a completed Spec's whole directory (Task records and
 // all) from the top level into a `SPEC_LIFECYCLE_FOLDERS` folder, with `git
