@@ -12,15 +12,23 @@ import { pathToFileURL } from 'node:url';
 const FOUR_PART_NAMES = ['What it is', 'Who it serves', 'Promised outcomes', 'Non-goals'];
 
 export function isFourPartBlueprint(text) {
-  const lines = String(text ?? '').split('\n');
-  const at = FOUR_PART_NAMES.map(name => lines.reduce((found, line, i) => (line.trimEnd() === `## ${name}` ? [...found, i] : found), []));
+  // Headings inside a fenced code block or an HTML comment are not headings, and a comment is not text.
+  const lines = String(text ?? '').replace(/<!--[\s\S]*?-->/g, '').split('\n');
+  let fence = null;
+  const kinds = lines.map(line => {
+    const marker = line.trimStart().match(/^(```|~~~)/)?.[1] ?? null;
+    if (marker && (fence === null || fence === marker)) { fence = fence === null ? marker : null; return 'text'; }
+    if (fence !== null) return 'text';
+    if (/^## /.test(line)) return 'heading';
+    if (line.trim() === '' || line.trimStart().startsWith('#')) return 'blank';
+    return 'text';
+  });
+  const at = FOUR_PART_NAMES.map(name => lines.reduce((found, line, i) => (kinds[i] === 'heading' && line.trimEnd() === `## ${name}` ? [...found, i] : found), []));
   if (at.some(found => found.length !== 1)) return false;
   const starts = at.map(found => found[0]);
   if (starts.some((start, i) => i > 0 && start <= starts[i - 1])) return false;
   return starts.every(start => {
-    for (let i = start + 1; i < lines.length && !/^## /.test(lines[i]); i += 1) {
-      if (lines[i].trim() !== '' && !lines[i].trimStart().startsWith('#')) return true;
-    }
+    for (let i = start + 1; i < lines.length && kinds[i] !== 'heading'; i += 1) if (kinds[i] === 'text') return true;
     return false;
   });
 }

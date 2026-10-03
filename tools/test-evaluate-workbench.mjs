@@ -167,6 +167,19 @@ assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': duplicated}).score < 8, 'a part 
 const recased = FOUR_PART_BLUEPRINT.replace('## Promised outcomes', '## Promised Outcomes');
 assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': recased}).score < 8, 'the part headings are matched exactly, case included');
 assert.equal(modelOf({...fourPart, 'BLUEPRINT.md': FOUR_PART_BLUEPRINT + '\n## An extra section\n\nMore.\n'}).score, 8, 'a further section does not disturb a well-formed page');
+// Headings that only appear inside a fenced code block or an HTML comment are not the page's parts.
+const fenced = '# Fixture - Blueprint\n\n```markdown\n' + FOUR_PART_BLUEPRINT + '```\n';
+assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': fenced}).score < 8, 'fenced headings are not four-part sections');
+const tildeFenced = '# Fixture - Blueprint\n\n~~~markdown\n' + FOUR_PART_BLUEPRINT + '~~~\n';
+assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': tildeFenced}).score < 8, 'tilde-fenced headings are not four-part sections');
+const commented = '# Fixture - Blueprint\n\n<!--\n' + FOUR_PART_BLUEPRINT + '-->\n';
+assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': commented}).score < 8, 'commented headings are not four-part sections');
+const commentOnly = FOUR_PART_BLUEPRINT.replace('A finished product.', '<!-- a finished product -->');
+assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': commentOnly}).score < 8, 'an HTML comment is not section text');
+const codeBodied = FOUR_PART_BLUEPRINT.replace('A finished product.', '```text\nA finished product.\n```');
+assert.equal(modelOf({...fourPart, 'BLUEPRINT.md': codeBodied}).score, 8, 'a fenced block under a heading is section text');
+const crlf = FOUR_PART_BLUEPRINT.replace(/\n/g, '\r\n');
+assert.equal(modelOf({...fourPart, 'BLUEPRINT.md': crlf}).score, 8, 'a well-formed page with CRLF line endings is still the four-part page');
 const bareHeadings = {...fourPart, 'BLUEPRINT.md': FOUR_PART_HEADINGS.map(h => '## '+h+'\n').join('\n')};
 assert.ok(modelOf(bareHeadings).score <= 1.6, 'a page of bare headings earns no project-model credit beyond the Contract-only check');
 for (const [name, mutate] of [
