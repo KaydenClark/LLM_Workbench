@@ -777,6 +777,18 @@ test('the workflow verbs decision carries the Journey correction and no active r
   assert.match(workflow[1], /git show [0-9a-f]{7,40}:workbench\/docs\/adr\/000X-/, 'the amendment names where the earlier text reads');
 });
 
+
+// S-004G: the Workflow Verbs and Idea To Delivery Wiki pages state the open verb set, the delivery
+// workflow and Journey as the build loop, as the Lexicon and the amended decision do.
+test('the workflow Wiki pages state the delivery workflow and Journey as the build loop', () => {
+  for (const file of ['workflow-verbs.md', 'idea-to-delivery-workflow.md']) {
+    const page = read(root, `workbench/wiki/design-concepts/${file}`).replace(/\s+/g, ' ');
+    assert.doesNotMatch(page, /Journey \(Map, Plan, Implement, Review, Verify\)|Map, Plan, Implement, Review and Verify together are a \*\*Journey|Map through Verify together are one Journey/, `${file} still states the replaced Journey`);
+    assert.match(page, /Idea, Align, Confirm, Map, Plan, Journey, Approve, Delivered, Clean Up/, `${file} names the delivery workflow`);
+  }
+  assert.match(read(root, 'workbench/wiki/design-concepts/workflow-verbs.md').replace(/\s+/g, ' '), /Journey is the build loop: Implement, Check, Review and Verify, repeated until the confirmed concept is built/);
+});
+
 // S-004E: each AI Coding Dictionary term the owner adopted has exactly one
 // Lexicon row, in an `AI Coding Terms` section, naming its dictionary entry
 // once; the generic Lexicon carries the same rows, and names no room-specific
