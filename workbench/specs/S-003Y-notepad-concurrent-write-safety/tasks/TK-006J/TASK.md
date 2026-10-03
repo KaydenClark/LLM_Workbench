@@ -47,3 +47,9 @@ decision-record lifecycle rather than by editing accepted history.
 
 No runtime change. No edit to accepted ADR text. No claim of owner approval
 or Human QA.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s003y-tk006j-writer-rule | 564a483ab548996149a3130195cf3a2076494270 | ahead 1 behind 0 | 0 | Self-drift pre at 50116be7 and post at the candidate: both blocked, cleanUpdate false, the same 7 pre-existing attention findings (stale-claim S-00Q, five stale-seed, unverified-provenance); no new finding. Guardrail audit 78/100 before and after. Bounded semantic check: AGENTS Session Records, LEXICON Notepad row, RUNBOOK JSON Notepads and their templates mirrors keep one writer at a time and claim no more than refusal; grep of controls, templates, skills and Wiki finds no statement that overlapping writers both pass (the grill-me Wiki line is now dated). ADR-000Z accepted through adr.mjs new/accept, narrowing ADR-000L with its text unchanged; adr validate and wiki validate ok. test-adr red 54/2 on the link census (29->30 files, 119->120 edges), green 56/56 after the count bump; test-skills-lane 4/4, test-core-composition 2/2, test-wiki 14/14, test-control-fidelity 37/37, test-controls-vocabulary-sweep pass, test-notepads 57/57. | workbench/skills/notepad/SKILL.md writer paragraph; workbench/docs/adr/000Z (new, accepted) with REGISTER/HISTORY; workbench/wiki/skill-grill-me.md dated line; tools/test-adr.mjs census; S-003Y acceptance, Completion Result and limitations. AGENTS.md and LEXICON.md checked: no update needed, they already say one writer at a time and nothing more. | S-00Y's owner-gate review should read the changed skill paragraph; installed host skill copies not updated; the three follow-up seams named by TK-006I have no Spec yet; owner Human QA. | 39f39329c8da338cc1b4f7143d5b655410c9186a2a00b3c64fc0f1de468b185b |
