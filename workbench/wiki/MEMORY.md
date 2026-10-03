@@ -138,6 +138,9 @@ copying its evidence log here.
 
 [The Workflow Verbs](design-concepts/workflow-verbs.md) explains the eight workflow verbs, Journey and the loop, and which verb writes each kind of artifact.
 
+- [The Workflow From Idea To Delivery](design-concepts/idea-to-delivery-workflow.md): the owner's workflow map rewritten in the workflow verbs, with the QA gates, Human QA and closure in plain words
+- [The Three Altitudes Of Delivery](design-concepts/delivery-altitudes.md): Blueprint, Spec and Task as counting to 100, and what the Blueprint is for
+
 ## AI Coding Dictionary Entries
 
 The owner adopted terms from the AI Coding Dictionary on 2026-10-03; the [Lexicon's AI Coding Terms section](../../LEXICON.md) holds one row per term, and [AI Coding Dictionary Terms](../specs/S-004E-ai-coding-dictionary-terms/SPEC.md) owns delivery. These entries explain only the terms that need more than their row, in Workbench words, and authorize nothing.
@@ -191,7 +194,7 @@ The provenance of every promoted and excluded memory file is in
 | Go to | For |
 |---|---|
 | [AGENTS.md](../../AGENTS.md) | Authority, scope, safety, and the work loop |
-| [BLUEPRINT.md](../../BLUEPRINT.md) | Product destination, integrated design, cross-cutting qualities, and constraints |
+| [BLUEPRINT.md](../../BLUEPRINT.md) | What the product is, who it serves, the outcomes it promises and what it is not |
 | [LEXICON.md](../../LEXICON.md) | Shared terms, the Governance Core, the Artifact Ownership Schema, and design-concept routing |
 | [TASKBOARD.md](../../TASKBOARD.md) | Generated work-state view; follow each row to its owning Spec |
 | [RUNBOOK.md](../../RUNBOOK.md) | Exact operating and verification commands |
