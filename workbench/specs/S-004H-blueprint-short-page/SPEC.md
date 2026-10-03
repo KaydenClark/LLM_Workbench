@@ -15,7 +15,7 @@
 
 ## Outcome
 
-`BLUEPRINT.md` is the short page the owner confirmed on 2026-10-03: what LLM Workbench is, who it serves, the outcomes it promises and what it is not, in 631 words by `wc -w`. Every room's Blueprint, including the generic `templates/BLUEPRINT.md`, takes the same four-part shape. Nothing the current page says is lost on the way: its decisions live in decision records, its directions in the confirmed landmarks, its workflow map in the Workflow landmark and the Wiki, and its rules in the Contract. The tests, evaluators and guidance that assume eight sections change with the page.
+`BLUEPRINT.md` is the short page the owner confirmed on 2026-10-03: what LLM Workbench is, who it serves, the outcomes it promises and what it is not, in 607 words by `wc -w` once the withheld hosted-service non-goal is left out (631 with it). Every room's Blueprint, including the generic `templates/BLUEPRINT.md`, takes the same four-part shape. Nothing the current page says is lost on the way: its decisions live in decision records, its directions in the confirmed landmarks, its workflow map in the Workflow landmark and the Wiki, and its rules in the Contract. The tests, evaluators and guidance that assume eight sections change with the page.
 
 ## Why It Matters
 
@@ -171,7 +171,18 @@ Pending.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-Writing the DDRs from the teardown is Map work, possible now that the Decision Record Tooling has installed the collection. Carrying the workflow verbs into skills, controls, templates and the Landmark Tracker is a separate rollout with no Spec yet.
+Handed off at the swap, each to the writer that owns the file (this Spec edits none of them):
+
+- The Lexicon's Blueprint row (`LEXICON.md` and `templates/LEXICON.md`) still describes the eight sections; its meaning belongs to Workbench Terms And Workflow Verb Rows.
+- The Wiki router lines for the Blueprint (`workbench/wiki/MEMORY.md` and `templates/wiki/MEMORY.project.md`) still read "integrated design, constraints" and need entries for the two new design-concept pages, "The Workflow From Idea To Delivery" and "The Three Altitudes Of Delivery".
+- `AGENTS.md` and `templates/AGENTS.md` still call the Blueprint the "routed product destination and cross-cutting architecture owner" and the Documentation Ownership table calls it "cross-cutting product direction and invariants"; `tools/test-control-fidelity.mjs` pins the first. They belong to the Contract Carrier Pointer-Brief Rewrite, which also owns promoting the owner's explicit wording of the three rules that left the page (private content stays private, no record grants authority, the workbench never publishes or changes another project on its own) into `AGENTS.md` or the Runbook.
+- Accepted ADR 000G still links `BLUEPRINT.md#desired-lifecycle`, an anchor the short page no longer has; ADR 0042 already linked a `#core-navigation-contract` anchor that did not exist; and the historical Lexicon Design Concept Reconciliation Spec links `#integrated-system-design`. Accepted records change only by amendment, so these are recorded, not edited here.
+- The optional prototype has no generic mirror (no row in the generic Lexicon, Contract or Runbook, and no prototype skill in the skills lane); the paragraph inventory records it as a gap for the Lexicon writer.
+- The owner decides the withheld hosted-service non-goal (Dependencies And Blockers).
+- A changed managed byte under `templates/` and in `workbench/tools/template-placeholders.mjs` needs the release owner's bundle, version and install proof; the Template Upgrade Release Gate stays open for it.
+- Synthetic Markdown edge cases of the four-part recognition helper (for example headings wrapped in a raw HTML block) are not exhaustively handled; a later Task may harden it if a real Blueprint needs it.
+
+Writing the DDRs from the teardown is Map work, done. Carrying the workflow verbs into skills, controls, templates and the Landmark Tracker is a separate rollout with no Spec yet.
 
 ## Supersession
 
