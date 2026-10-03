@@ -3,13 +3,13 @@
 **Spec ID:** S-004C
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s004c-tk005b
+**Owner:** claude-s004c-tk005c
 **Stance:** Builder
 **Updated:** 2026-10-03
 **Catalog description:** Rewrite AGENTS.md as a short standing brief and RUNBOOK.md as an operations index of context pointers, with each operation's procedure and binding requirements in a tracked skill the carrier points to.
 **Blockers:** Implementation waits on gates recorded as Task blockers, none of them an owner decision on this Spec's content: a turn at the one `AGENTS.md` writer after the Corrective-Work Spec's `AGENTS.md` Task (the lifecycle Task), the Worker and Captain role skills (the role-detail Task only), the Lexicon writer's turn (the Lexicon Task only), and delivery of the `LANDMARK.md` artifact (the landmark-clause Task only).
-**Latest event:** TK-005B closed with proof.
-**Next gate:** Complete TK-005C.
+**Latest event:** TK-005C closed with proof.
+**Next gate:** Complete TK-005D.
 
 > **Citation anchors.** pre=`226212f1790badce0a5bdcd934d2e48e3981e05f` post=`226212f1790badce0a5bdcd934d2e48e3981e05f`.
 
@@ -159,6 +159,7 @@ This Spec rewrites the Contract carriers and their `templates/` mirrors. Update 
 | 2026-10-03 | none | Planned at integration 226212f1790badce0a5bdcd934d2e48e3981e05f: kept as one Spec under the Workbench artifacts landmark (derived from the locked landmark set, not a new owner answer), the Runbook-importance design and the line-landing check form recorded as Plan decisions, fifteen Tasks cut in a serial chain, and the Spec activated. | Plan only; control sizes, reader counts, inbound anchor counts, the skill lane and the blocker grammar were re-read at that tip, and a throwaway Task record exercised the blocker resolver and was discarded before commit; doctor and render run; no runtime proof of the rewrite is claimed. | This Spec and its fifteen Task records. | All implementation. Three sequencing gates clear only by removing an owner token (the Decision Record Tooling Runbook Tasks, the corrective-work AGENTS Task, the Lexicon writer's turn); the role skills and LANDMARK.md delivery clear by their own Specs. The Plan decisions stay open to owner redirect. |
 | 2026-10-03 | TK-005B | Sequencing blocker cleared | At `origin/integration` d7ffffe9 every Decision Record Tooling Task (TK-004W to TK-005A, TK-005X, TK-006K) is done and its Runbook decision-record section is on integration (TK-004Y PR #284, TK-004Z PR #287). `owner:runbook-decision-record-section-landed` removed and TK-005B set ready. Dispatcher pre-change receipts at d7ffffe9: self-drift pre 8 attention findings (stale-claim S-00Q, five stale-seed, unverified-provenance, detached-head), none about this Spec; `evaluate-workbench --path templates --include-controls` 106.6/113; Guardrail North-Star Audit 78/100. | TK-005B record notes the clearance. | TK-005B baseline and census remain; the role-detail Task waits on S-002E and S-004B delivery and the landmark-clause Task on S-003Z delivery. |
 | 2026-10-03 | TK-005B | Task closed | census.md records at d7ffffe9 the carrier sizes and loaded cost, section sizes by heading (root and template), guardrail baseline (106.6/113, 78/100), self-drift pre receipt with the bounded semantic check, 57 classified readers with the Tasks that must change each content-dependent one, 49 files and 31 inbound anchors all resolving, host-adapter facts, and the confirmed/corrected section map with audience split. Full AGENTS suite 48/48 on 66fb6967; carriers untouched. | census.md added in the Spec folder; no carrier, template, skill, tool or Wiki change. | none for this Task; findings for the Dispatcher are in census.md section 8 |
+| 2026-10-03 | TK-005C | Task closed | test-carrier-landing 17/17 green at 38f99d2d after red at 1538f807 (module absent); landing check on real carriers base d7ffffe9f44c96f2e43b1465b99ccb721942c4f8 to 38f99d2d: AGENTS.md and RUNBOOK.md 0 removed lines, ok; full suite 49/49 at 38f99d2d clean; guardrails 106.6/113 and 78/100 held | AGENTS.md Full suite block: added node tools/test-carrier-landing.mjs; RUNBOOK.md: new maintainer section Carrier line-landing check; inventory-agents.json and inventory-runbook.json scaffolded in the Spec folder; no templates change (maintainer-only check; templates/AGENTS.md has no Full suite block); Wiki checked, no page describes the check, no update needed | Inventories unclassified until each family Task classifies its lines; lines added after the pin are outside the pinned inventories; fence delimiters and table separators are not exempt |
 
 ## Completion Result
 
