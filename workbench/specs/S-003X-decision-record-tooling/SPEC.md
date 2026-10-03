@@ -8,8 +8,8 @@
 **Updated:** 2026-10-03
 **Catalog description:** Give a room one tool and one set of read words for both kinds of decision record, the ADR and the Destination Decision Record, with the lifecycle moves the ADR tool lacks.
 **Blockers:** none for the four tooling Tasks (TK-004W, TK-004X, TK-004Y, TK-004Z), which run in that order. The Lexicon-mirror Task TK-005A waits on the owner's unmerged Codex Lexicon reconciliation branch, which edits both Lexicons. How a DDR records its single landmark is open, outside this acceptance, and waits on the landmark capability.
-**Latest event:** TK-004Y closed with proof.
-**Next gate:** Complete TK-004Z.
+**Latest event:** TK-004Z closed with proof.
+**Next gate:** Complete TK-005A.
 
 > **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a`.
 
@@ -85,7 +85,7 @@ Cut at Plan on 2026-10-03 as record-backed Tasks under `tasks/`; each `TASK.md` 
 - [x] The manifest declares a `ddr` collection and a fresh project has `workbench/docs/ddr/` with its `proposed/` and `archive/` folders.
 - [x] The DDR command writes the next record into `proposed/` with a `DDR` visible identifier and refuses to overwrite an existing record.
 - [x] Accept, supersede and deprecate moves work for ADRs and DDRs by folder location, refuse a supersession without exactly one named successor and a deprecation without a stated reason, and leave the register and history derived from the folder listing.
-- [ ] An agent can `list`, `show`, `search`, `history` and `inspect` an ADR and a DDR, and every existing command name still works.
+- [x] An agent can `list`, `show`, `search`, `history` and `inspect` an ADR and a DDR, and every existing command name still works.
 - [x] Validation refuses a DDR whose `canonicalized_in` names the Wiki.
 - [ ] Source behavior, templates, the manifest declaration, Genesis and the update route agree, and updating a room that already holds ADRs adds the collection without altering its records.
 - [ ] Named verification and remaining limitations are recorded without claiming owner approval.
@@ -113,6 +113,7 @@ Maintain the Lexicon rows, the Runbook decision-record commands and the `to-docs
 | 2026-10-03 | TK-004X | Task closed | Red ba8202bf (test-adr 40/5, test-diagnostics 34/2). Green: test-adr 45/45, test-diagnostics 36/36 and the visible-id-consumers, sessions, genesis-from-decisions, direct-promotion, governance-core, lifecycle-directory-links and self-drift tests pass; this room's empty DDR register and history written with the ADR register unchanged; full AGENTS suite 48/48 on clean 06ea023f after a 47/48 run on 7d0cf583 exposed a bracketed flag read as a template placeholder. TK-004W PR #280 (reviewed PASS at 96f44379) merged into integration as 674855fd before this close. | RUNBOOK and templates/RUNBOOK decision-record commands and rules, to-docs DDR route, templates/BLUEPRINT.md narrowed instruction with its placeholder vocabulary, and the Wiki article Decision Records and the Concept Map updated. | TK-004Y (moves), TK-004Z (read words) and the blocked TK-005A remain; separate-context review of this Task's final head precedes its integration merge. |
 | 2026-10-03 | TK-004Y | Task closed | Red 55cbbe26 (test-adr fails at import: no move exports). Green: test-adr 50/50 covering accept, supersede and deprecate for both kinds, every refusal leaving the tree byte-identical, live-link repair with evidence rows left and counted, and a non-Git rename; full AGENTS suite 48/48 on clean cbb7a44a. TK-004X PR #282 (reviewed PASS at b6b20489) merged into integration as 226212f1 before this close; its review P3 (DDR register regeneration in moves only indirectly tested) is answered by this Task's DDR move tests, which assert the DDR register and history after each move. | RUNBOOK and templates/RUNBOOK decision-record move commands and refusals, and the Wiki article Decision Records and the Concept Map updated. | TK-004Z (read words) and TK-005A (Lexicon mirrors) remain; separate-context review of this Task's final head precedes its integration merge. |
 | 2026-10-03 | TK-004Y | Review correction after close | Separate-context review of 97c44ba2 (Codex gpt-5.5, read-only) FAILED with one P2: the CLI accepted a positional record identifier for every command, so `validate ADR-000A` exited 0 and ignored it. Red 032faf81 (the refusal test fails), fix 5245e747 makes positional identifiers command-specific (accept, supersede, deprecate); test-adr 50/50. | No doc change: the Runbook already documents identifiers only on the move commands. | Full AGENTS suite and a fresh separate-context review of the corrected head precede the integration merge. |
+| 2026-10-03 | TK-004Z | Task closed | Red 0b0512cf (test-adr fails at import: no read-word exports). Green: test-adr 56/56 covering list, show and get, search, history and inspect for both kinds in text and JSON, their refusals, and unchanged existing commands; full AGENTS suite 48/48 on clean 4cd48973. TK-004Y PR #284 (review FAIL at 97c44ba2 corrected; fresh PASS at 6fb1de52) merged into integration as 5cfa987b before this close. | RUNBOOK and templates/RUNBOOK read-word commands, and the Wiki article Decision Records and the Concept Map updated. | TK-005A (Lexicon mirrors; its owner blocker is met since the Codex Lexicon branch landed in PR #281) remains; separate-context review of this Task's final head precedes its integration merge. |
 
 ## Completion Result
 

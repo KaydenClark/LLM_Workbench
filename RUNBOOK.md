@@ -1264,6 +1264,11 @@ node workbench/tools/adr.mjs register [--kind adr|ddr]
 node workbench/tools/adr.mjs accept DDR-####
 node workbench/tools/adr.mjs supersede ADR-#### --by ADR-####
 node workbench/tools/adr.mjs deprecate DDR-#### --reason "Why it ends"
+node workbench/tools/adr.mjs list [--kind adr|ddr] [--status STATUS] [--json]
+node workbench/tools/adr.mjs show DDR-#### [--json]
+node workbench/tools/adr.mjs search "query" [--kind adr|ddr] [--json]
+node workbench/tools/adr.mjs history ADR-#### [--json]
+node workbench/tools/adr.mjs inspect DDR-#### --field canonicalized_in | --lines 1:12 [--json]
 node workbench/tools/adr.mjs migrate-folders
 node tools/test-adr.mjs
 ```
@@ -1287,6 +1292,22 @@ team templates, both decision-record collections and every Spec and Task
 record while leaving and counting references inside append-only evidence
 sections, regenerates both registers and stages the result. A refused move
 writes nothing. No separate approval ceremony is added.
+
+Both kinds answer the five read words the Lexicon defines, and reads never
+write. `list` gives the records that exist (both kinds unless `--kind` narrows
+it, optionally one `--status`), one tab-separated line each with identifier,
+status, date, title, path and, for a superseded record, its successor.
+`show` prints one whole record; `get` is its synonym. `search` finds records
+by a case-insensitive literal query over the whole file and prints each hit
+with its status and matching lines; a superseded hit names the successor that
+replaced it, and nothing else is attached. `history` gives how a record
+changed: its lifecycle chain (`supersedes`, `superseded_by`,
+`deprecation_reason`) and every Git commit that touched its file, followed
+across lifecycle moves; outside Git it reports the chain and says Git is
+unavailable. `inspect` gives part of a record: one `--field` (a frontmatter key,
+or `id`, `kind`, `status`, `folder`, `title`, `path`) or a 1-based inclusive
+`--lines` range, and refuses an unknown field or a span outside the record.
+Every read takes `--json`; an unknown identifier fails visibly.
 
 Destination Decision Records (DDRs) are the ADR's sibling for destination
 choices, what the finished product must be or do

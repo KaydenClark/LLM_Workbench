@@ -220,6 +220,11 @@ node workbench/tools/adr.mjs register
 node workbench/tools/adr.mjs accept DDR-####
 node workbench/tools/adr.mjs supersede ADR-#### --by ADR-####
 node workbench/tools/adr.mjs deprecate DDR-#### --reason "Why it ends"
+node workbench/tools/adr.mjs list
+node workbench/tools/adr.mjs show DDR-####
+node workbench/tools/adr.mjs search "query"
+node workbench/tools/adr.mjs history ADR-####
+node workbench/tools/adr.mjs inspect DDR-#### --field canonicalized_in
 ```
 
 `doctor` prints every registered finding with its severity and blocking
@@ -272,7 +277,12 @@ successor of the same kind and records `superseded_by` and `supersedes`;
 `deprecate` archives an accepted record with a one-line `deprecation_reason`.
 Each refuses a dirty Git tree, renames with `git mv`, repairs live links while
 leaving append-only evidence untouched, regenerates both registers, and writes
-nothing when it refuses.
+nothing when it refuses. Both kinds answer the five read words: `list` the
+records that exist, `show` one whole record (`get` is a synonym), `search`
+records by a literal query (a superseded hit names its successor), `history`
+the lifecycle chain and the Git commits that touched the record, and
+`inspect` one `--field` or a `--lines START:END` range. Reads never write and
+take `--json`.
 
 `permission-scope-drift` is reported when `.claude/settings.json` exists and
 withholds a manifest-declared authorship lane (no covering `Edit` `allow` rule,

@@ -1034,6 +1034,111 @@ export function deprecateRecord(root, id, reason) {
   return moveDecisionRecord(root, record, 'archive', edits, 'deprecate', { reason: text });
 }
 
+// S-003X TK-004Z: the five read words every record answers (ADR-000T), for
+// both kinds of decision record. Reads never write. `list` and `search` act
+// on every collection present unless `--kind` narrows them; `show` (with `get`
+// as its synonym), `history` and `inspect` address one record by identifier.
+function recordSummary(record, records = []) {
+  const summary = { id: record.id, kind: record.kind, status: record.status, folder: record.folder, date: record.data?.date ?? null, title: record.title, path: record.relativePath };
+  const successorName = typeof record.data?.superseded_by === 'string' ? record.data.superseded_by.trim() : '';
+  if (successorName) {
+    const successor = records.find((item) => item.name === successorName);
+    summary.successor = successor ? successor.id : successorName;
+  }
+  return summary;
+}
+
+function readKinds(root, kind) {
+  return kind === undefined ? presentKinds(root) : [recordKind(kind).kind];
+}
+
+// list: the records that exist.
+export function listRecords(root, options = {}) {
+  if (options.status !== undefined && !STATUSES.includes(options.status)) throw new Error(`--status must be one of ${STATUSES.join(', ')}`);
+  return readKinds(root, options.kind).flatMap((kind) => {
+    const records = listAdrs(root, { kind });
+    return records.filter((record) => options.status === undefined || record.status === options.status).map((record) => recordSummary(record, records));
+  });
+}
+
+// show: one whole record.
+export function showRecord(root, id) {
+  const record = resolveRecord(root, id);
+  return { ...recordSummary(record, listAdrs(root, { kind: record.kind })), frontmatter: record.data, content: fs.readFileSync(record.filePath, 'utf8') };
+}
+
+function recordLines(content) {
+  const lines = content.replace(/\r\n?/g, '\n').split('\n');
+  if (lines.length > 1 && lines.at(-1) === '') lines.pop();
+  return lines;
+}
+
+// search: records found by a case-insensitive literal query over the whole
+// file (title, frontmatter and body), each with its matching lines. A
+// superseded hit names its successor, so a replaced decision is never read
+// as current (the Plan decision; nothing else is attached to a result).
+export function searchRecords(root, query, options = {}) {
+  const text = typeof query === 'string' ? query.trim() : '';
+  if (!text) throw new Error('search needs a query');
+  const needle = text.toLowerCase();
+  return readKinds(root, options.kind).flatMap((kind) => {
+    const records = listAdrs(root, { kind });
+    return records.flatMap((record) => {
+      const matches = recordLines(fs.readFileSync(record.filePath, 'utf8'))
+        .map((line, index) => ({ line: index + 1, text: line }))
+        .filter((entry) => entry.text.toLowerCase().includes(needle));
+      return matches.length ? [{ ...recordSummary(record, records), matches }] : [];
+    });
+  });
+}
+
+// history: how a record changed. Its lifecycle chain (what it supersedes,
+// what superseded it, why it was deprecated) and every Git commit that
+// touched its file, followed across lifecycle moves. Outside Git the chain
+// alone is reported and Git is said to be unavailable.
+export function recordHistory(root, id) {
+  const record = resolveRecord(root, id);
+  const records = listAdrs(root, { kind: record.kind });
+  const named = (name) => ({ name, id: records.find((item) => item.name === name)?.id ?? null });
+  const supersedesValue = record.data?.supersedes;
+  const supersedes = (Array.isArray(supersedesValue) ? supersedesValue : (supersedesValue ? [supersedesValue] : [])).map(named);
+  const successor = typeof record.data?.superseded_by === 'string' && record.data.superseded_by.trim() ? named(record.data.superseded_by.trim()) : null;
+  const lifecycle = { status: record.status, folder: record.folder, supersedes, supersededBy: successor, deprecationReason: record.data?.deprecation_reason ?? null };
+  const inside = spawnSync('git', ['-C', root, 'rev-parse', '--is-inside-work-tree'], { encoding: 'utf8' });
+  let git;
+  if (inside.status !== 0 || inside.stdout.trim() !== 'true') {
+    git = { available: false, reason: 'not a Git working tree; only the lifecycle chain is known' };
+  } else {
+    const log = spawnSync('git', ['-C', root, 'log', '--follow', '--format=%H%x09%ad%x09%s', '--date=short', '--', record.relativePath], { encoding: 'utf8' });
+    if (log.status !== 0) throw new Error(`git log failed for ${record.relativePath}: ${(log.stderr || '').trim()}`);
+    git = { available: true, commits: log.stdout.split('\n').filter(Boolean).map((line) => { const [commit, date, ...subject] = line.split('\t'); return { commit, date, subject: subject.join('\t') }; }) };
+  }
+  return { ...recordSummary(record, records), lifecycle, git };
+}
+
+const DERIVED_FIELDS = Object.freeze(['id', 'kind', 'status', 'folder', 'title', 'path']);
+
+// inspect: part of a record, either one field (a frontmatter key or a derived
+// field: id, kind, status, folder, title, path) or a 1-based inclusive line
+// range of the file.
+export function inspectRecord(root, id, options = {}) {
+  if ((options.field === undefined) === (options.lines === undefined)) throw new Error('inspect needs exactly one of --field NAME or --lines START:END');
+  const record = resolveRecord(root, id);
+  if (options.field !== undefined) {
+    const field = String(options.field);
+    if (DERIVED_FIELDS.includes(field)) return { id: record.id, field, value: recordSummary(record)[field] };
+    if (record.data && Object.hasOwn(record.data, field)) return { id: record.id, field, value: record.data[field] };
+    throw new Error(`${record.id} has no field ${field}; frontmatter keys are ${Object.keys(record.data ?? {}).join(', ') || 'none'} and derived fields are ${DERIVED_FIELDS.join(', ')}`);
+  }
+  const match = /^(\d+)(?::(\d+))?$/.exec(String(options.lines));
+  if (!match) throw new Error('--lines must be START:END (or one line number), 1-based and inclusive');
+  const lines = recordLines(fs.readFileSync(record.filePath, 'utf8'));
+  const start = Number(match[1]);
+  const end = match[2] === undefined ? start : Number(match[2]);
+  if (start < 1 || end < start || end > lines.length) throw new Error(`--lines ${options.lines} is outside ${record.id}, which has ${lines.length} lines`);
+  return { id: record.id, lines: `${start}:${end}`, text: lines.slice(start - 1, end).join('\n') };
+}
+
 function cell(value) {
   return String(value).replaceAll('|', '\\|').replaceAll('\n', ' ');
 }
@@ -1043,10 +1148,10 @@ function requireValue(value, message) {
   return String(value).trim();
 }
 
-// S-003X TK-004Y: the commands addressed to one record take its identifier
-// as their one positional argument. Every other command refuses a positional
-// argument, as before, so a stray identifier is never silently ignored.
-const ID_COMMANDS = Object.freeze(['accept', 'supersede', 'deprecate']);
+// S-003X TK-004Y/TK-004Z: the commands addressed to one record take its
+// identifier as their one positional argument; `search` takes its query. Every
+// other command refuses a positional argument, as before.
+const ID_COMMANDS = Object.freeze(['accept', 'supersede', 'deprecate', 'show', 'get', 'history', 'inspect']);
 
 function parseArgs(argv) {
   const [command, ...rest] = argv;
@@ -1061,11 +1166,20 @@ function parseArgs(argv) {
     else if (arg.startsWith('--')) options[arg.slice(2)] = rest[++index];
     else positional.push(arg);
   }
-  if (ID_COMMANDS.includes(command)) {
+  if (command === 'search') options.query = positional.join(' ');
+  else if (ID_COMMANDS.includes(command)) {
     if (positional.length > 1) throw new Error(`Unknown argument: ${positional[1]}`);
     options.id = positional[0];
   } else if (positional.length) throw new Error(`Unknown argument: ${positional[0]}`);
   return { command, options };
+}
+
+function printRead(options, value, text) {
+  console.log(options.json ? JSON.stringify(value, null, 2) : text);
+}
+
+function summaryLine(record) {
+  return [record.id, record.status, record.date ?? '', record.title ?? '', record.path, ...(record.successor ? [`superseded by ${record.successor}`] : [])].join('\t');
 }
 
 if (isMainModule(import.meta.url)) {
@@ -1094,6 +1208,29 @@ if (isMainModule(import.meta.url)) {
       console.log(JSON.stringify(newAdr(root, options)));
     } else if (command === 'migrate-folders') {
       console.log(JSON.stringify(migrateLifecycleFolders(root), null, 2));
+    } else if (command === 'list') {
+      const records = listRecords(root, { kind: options.kind, status: options.status });
+      printRead(options, records, records.map(summaryLine).join('\n'));
+    } else if (command === 'show' || command === 'get') {
+      const record = showRecord(root, requireValue(options.id, `${command} needs a record identifier (ADR-... or DDR-...)`));
+      if (options.json) printRead(options, record);
+      else process.stdout.write(record.content);
+    } else if (command === 'search') {
+      const hits = searchRecords(root, options.query, { kind: options.kind });
+      printRead(options, hits, hits.map((hit) => [[hit.id, hit.status, hit.title ?? '', hit.path, ...(hit.successor ? [`superseded by ${hit.successor}`] : [])].join('\t'), ...hit.matches.map((match) => `  ${match.line}: ${match.text}`)].join('\n')).join('\n'));
+    } else if (command === 'history') {
+      const history = recordHistory(root, requireValue(options.id, 'history needs a record identifier (ADR-... or DDR-...)'));
+      const chain = [
+        `${history.id}\t${history.status}\t${history.path}`,
+        ...history.lifecycle.supersedes.map((item) => `supersedes ${item.id ?? item.name} (${item.name})`),
+        ...(history.lifecycle.supersededBy ? [`superseded by ${history.lifecycle.supersededBy.id ?? history.lifecycle.supersededBy.name} (${history.lifecycle.supersededBy.name})`] : []),
+        ...(history.lifecycle.deprecationReason ? [`deprecated: ${history.lifecycle.deprecationReason}`] : []),
+        ...(history.git.available ? history.git.commits.map((commit) => `${commit.commit}\t${commit.date}\t${commit.subject}`) : [`git: ${history.git.reason}`])
+      ];
+      printRead(options, history, chain.join('\n'));
+    } else if (command === 'inspect') {
+      const part = inspectRecord(root, requireValue(options.id, 'inspect needs a record identifier (ADR-... or DDR-...)'), { field: options.field, lines: options.lines });
+      printRead(options, part, part.text ?? (Array.isArray(part.value) ? part.value.join('\n') : String(part.value ?? '')));
     } else if (command === 'accept') {
       console.log(JSON.stringify(acceptRecord(root, requireValue(options.id, 'accept needs a record identifier (ADR-... or DDR-...)'))));
     } else if (command === 'supersede') {
@@ -1101,7 +1238,7 @@ if (isMainModule(import.meta.url)) {
     } else if (command === 'deprecate') {
       console.log(JSON.stringify(deprecateRecord(root, requireValue(options.id, 'deprecate needs a record identifier (ADR-... or DDR-...)'), options.reason)));
     } else {
-      throw new Error('Usage: adr.mjs validate [--kind adr|ddr] [--json] | normalize [--kind adr|ddr] [--date YYYY-MM-DD] [--json] | register [--kind adr|ddr] | new [--kind adr|ddr] --title "Decision title" [--date YYYY-MM-DD] | accept ID | supersede ID --by SUCCESSOR | deprecate ID --reason "Why" | migrate-folders');
+      throw new Error('Usage: adr.mjs list [--kind adr|ddr] [--status STATUS] [--json] | show|get ID [--json] | search QUERY [--kind adr|ddr] [--json] | history ID [--json] | inspect ID (--field NAME | --lines START:END) [--json] | validate [--kind adr|ddr] [--json] | normalize [--kind adr|ddr] [--date YYYY-MM-DD] [--json] | register [--kind adr|ddr] | new [--kind adr|ddr] --title "Decision title" [--date YYYY-MM-DD] | accept ID | supersede ID --by SUCCESSOR | deprecate ID --reason "Why" | migrate-folders');
     }
   } catch (error) {
     console.error(`error: ${error.message}`);

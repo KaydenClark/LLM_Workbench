@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
-import { ADR_LIFECYCLE_FOLDERS, ID_PATTERN, REGISTER_NAME, acceptRecord, deprecateRecord, listAdrs, localLinks, migrateLifecycleFolders, newAdr, normalizeAdrs, parseFrontmatter, renderRegister, stripFrontmatterKey, supersedeRecord, validateAdrs, validateDecisionRecords, writeDecisionRegisters, writeRegister } from '../workbench/tools/adr.mjs';
+import { ADR_LIFECYCLE_FOLDERS, ID_PATTERN, REGISTER_NAME, acceptRecord, deprecateRecord, inspectRecord, listAdrs, listRecords, localLinks, migrateLifecycleFolders, newAdr, normalizeAdrs, parseFrontmatter, recordHistory, renderRegister, searchRecords, showRecord, stripFrontmatterKey, supersedeRecord, validateAdrs, validateDecisionRecords, writeDecisionRegisters, writeRegister } from '../workbench/tools/adr.mjs';
 import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -1320,6 +1320,158 @@ test('a lifecycle move outside Git renames the record and still regenerates both
     assert.equal(result.usesGit, false);
     assert.equal(fs.existsSync(path.join(dir, result.to)), true);
     assert.match(fs.readFileSync(path.join(dir, 'workbench', 'docs', 'ddr', REGISTER_NAME), 'utf8'), /Outside Git \| accepted/);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// S-003X TK-004Z: the five read words (ADR-000T) for both kinds of decision
+// record, each in text and --json. Reads never write.
+function readRoom() {
+  const dir = lifecycleRoom();
+  supersedeRecord(dir, 'DDR-000A', 'DDR-000B');
+  gitCommitAll(dir, 'Supersede the first destination choice');
+  return dir;
+}
+
+function cliRead(dir, ...args) {
+  const result = spawnSync(process.execPath, [adrTool, ...args, '--path', dir], { cwd: dir, encoding: 'utf8' });
+  return result;
+}
+
+test('list names the records that exist for both kinds, narrows by kind and status, and refuses an unknown status', () => {
+  const dir = readRoom();
+  try {
+    const before = treeSnapshot(dir);
+    const all = listRecords(dir);
+    assert.deepEqual(all.map((record) => record.id), ['ADR-000A', 'ADR-000B', 'ADR-000C', 'DDR-000A', 'DDR-000B', 'DDR-000C']);
+    const superseded = all.find((record) => record.id === 'DDR-000A');
+    assert.equal(superseded.status, 'superseded');
+    assert.equal(superseded.folder, 'archive');
+    assert.equal(superseded.successor, 'DDR-000B');
+    assert.deepEqual(listRecords(dir, { kind: 'ddr', status: 'accepted' }).map((record) => record.id), ['DDR-000B']);
+    assert.deepEqual(listRecords(dir, { status: 'proposed' }).map((record) => record.id), ['ADR-000C', 'DDR-000C']);
+    assert.throws(() => listRecords(dir, { status: 'pending' }), /--status must be one of/);
+    const json = cliRead(dir, 'list', '--kind', 'adr', '--json');
+    assert.equal(json.status, 0, json.stderr);
+    assert.deepEqual(JSON.parse(json.stdout).map((record) => record.id), ['ADR-000A', 'ADR-000B', 'ADR-000C']);
+    const text = cliRead(dir, 'list');
+    assert.equal(text.status, 0, text.stderr);
+    assert.match(text.stdout, /^DDR-000A\tsuperseded\t2026-10-03\tDestination choice\tworkbench\/docs\/ddr\/archive\/000A-destination-choice\.md\tsuperseded by DDR-000B$/m);
+    assert.deepEqual(treeSnapshot(dir), before, 'list writes nothing');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('show returns one whole record, get is its synonym, and an unknown identifier fails visibly', () => {
+  const dir = readRoom();
+  try {
+    const shown = showRecord(dir, 'ddr-000b');
+    assert.equal(shown.id, 'DDR-000B');
+    assert.equal(shown.content, fs.readFileSync(path.join(dir, 'workbench', 'docs', 'ddr', '000B-better-destination-choice.md'), 'utf8'));
+    assert.deepEqual(shown.frontmatter.supersedes, ['000A-destination-choice.md']);
+    const show = cliRead(dir, 'show', 'ADR-000B');
+    const get = cliRead(dir, 'get', 'ADR-000B');
+    assert.equal(show.status, 0, show.stderr);
+    assert.equal(show.stdout, fs.readFileSync(path.join(dir, 'workbench', 'docs', 'adr', '000B-replacement-architecture.md'), 'utf8'), 'show prints the whole record');
+    assert.equal(get.stdout, show.stdout, 'get is a synonym of show');
+    assert.deepEqual(JSON.parse(cliRead(dir, 'get', 'ADR-000B', '--json').stdout), JSON.parse(cliRead(dir, 'show', 'ADR-000B', '--json').stdout));
+    const unknown = cliRead(dir, 'show', 'DDR-0ZZZ');
+    assert.equal(unknown.status, 1);
+    assert.match(unknown.stderr, /Unknown DDR identifier: DDR-0ZZZ/);
+    assert.equal(cliRead(dir, 'show').status, 1, 'show needs an identifier');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('search finds records by a literal case-insensitive query with their matching lines, status and a superseded hit\'s successor', () => {
+  const dir = readRoom();
+  try {
+    const hits = searchRecords(dir, 'DESTINATION CHOICE');
+    assert.deepEqual(hits.map((hit) => hit.id), ['DDR-000A', 'DDR-000B']);
+    const replaced = hits.find((hit) => hit.id === 'DDR-000A');
+    assert.equal(replaced.status, 'superseded');
+    assert.equal(replaced.successor, 'DDR-000B', 'a replaced decision is never handed back as current');
+    assert.ok(replaced.matches.some((match) => match.text === '# Destination choice' && match.line > 1));
+    assert.equal(hits.find((hit) => hit.id === 'DDR-000B').successor, undefined);
+    assert.deepEqual(searchRecords(dir, 'architecture', { kind: 'adr' }).map((hit) => hit.id), ['ADR-000A', 'ADR-000B', 'ADR-000C']);
+    assert.deepEqual(searchRecords(dir, 'no record says this'), []);
+    assert.throws(() => searchRecords(dir, '  '), /search needs a query/);
+    const text = cliRead(dir, 'search', 'better destination');
+    assert.equal(text.status, 0, text.stderr);
+    assert.match(text.stdout, /^DDR-000B\taccepted\tBetter destination choice\tworkbench\/docs\/ddr\/000B-better-destination-choice\.md$/m);
+    assert.match(text.stdout, /^  \d+: # Better destination choice$/m);
+    assert.deepEqual(JSON.parse(cliRead(dir, 'search', 'better destination', '--json').stdout).map((hit) => hit.id), ['DDR-000B']);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('history reports the lifecycle chain and the Git commits that touched a record across its lifecycle move, and says when Git is unavailable', () => {
+  const dir = readRoom();
+  try {
+    const history = recordHistory(dir, 'DDR-000A');
+    assert.equal(history.lifecycle.status, 'superseded');
+    assert.deepEqual(history.lifecycle.supersededBy, { name: '000B-better-destination-choice.md', id: 'DDR-000B' });
+    assert.equal(history.git.available, true);
+    assert.deepEqual(history.git.commits.map((commit) => commit.subject), ['Supersede the first destination choice', 'Seed the lifecycle room'], 'git log follows the record from archive/ back to where it was written');
+    const successor = recordHistory(dir, 'DDR-000B');
+    assert.deepEqual(successor.lifecycle.supersedes, [{ name: '000A-destination-choice.md', id: 'DDR-000A' }]);
+    const text = cliRead(dir, 'history', 'DDR-000A');
+    assert.equal(text.status, 0, text.stderr);
+    assert.match(text.stdout, /^superseded by DDR-000B \(000B-better-destination-choice\.md\)$/m);
+    assert.match(text.stdout, /^[0-9a-f]{40}\t\d{4}-\d{2}-\d{2}\tSeed the lifecycle room$/m);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+  const plain = fixture();
+  try {
+    const created = newAdr(plain, { kind: 'ddr', title: 'Outside Git', date: '2026-10-03' });
+    const history = recordHistory(plain, created.id);
+    assert.equal(history.git.available, false);
+    assert.match(history.git.reason, /not a Git working tree/);
+    assert.equal(history.lifecycle.status, 'proposed');
+  } finally {
+    fs.rmSync(plain, { recursive: true, force: true });
+  }
+});
+
+test('inspect returns one field or a line range of a record and refuses an unknown field, an out-of-range span or a missing selector', () => {
+  const dir = readRoom();
+  try {
+    assert.deepEqual(inspectRecord(dir, 'DDR-000B', { field: 'supersedes' }), { id: 'DDR-000B', field: 'supersedes', value: ['000A-destination-choice.md'] });
+    assert.deepEqual(inspectRecord(dir, 'DDR-000A', { field: 'status' }), { id: 'DDR-000A', field: 'status', value: 'superseded' });
+    assert.deepEqual(inspectRecord(dir, 'ADR-000A', { field: 'title' }), { id: 'ADR-000A', field: 'title', value: 'Current architecture' });
+    const lines = fs.readFileSync(path.join(dir, 'workbench', 'docs', 'adr', '000A-current-architecture.md'), 'utf8').split('\n');
+    assert.deepEqual(inspectRecord(dir, 'ADR-000A', { lines: '1:2' }), { id: 'ADR-000A', lines: '1:2', text: lines.slice(0, 2).join('\n') });
+    assert.equal(inspectRecord(dir, 'ADR-000A', { lines: '7' }).text, lines[6]);
+    assert.throws(() => inspectRecord(dir, 'ADR-000A', { field: 'owner' }), /has no field owner/);
+    assert.throws(() => inspectRecord(dir, 'ADR-000A', { lines: '0:2' }), /outside ADR-000A/);
+    assert.throws(() => inspectRecord(dir, 'ADR-000A', { lines: '3:99' }), /outside ADR-000A/);
+    assert.throws(() => inspectRecord(dir, 'ADR-000A', { lines: 'a:b' }), /START:END/);
+    assert.throws(() => inspectRecord(dir, 'ADR-000A', {}), /exactly one of --field NAME or --lines START:END/);
+    assert.throws(() => inspectRecord(dir, 'ADR-000A', { field: 'date', lines: '1:2' }), /exactly one of/);
+    const field = cliRead(dir, 'inspect', 'DDR-000B', '--field', 'canonicalized_in');
+    assert.equal(field.status, 0, field.stderr);
+    assert.equal(field.stdout, 'BLUEPRINT.md\n');
+    assert.equal(cliRead(dir, 'inspect', 'ADR-000A', '--lines', '1:2').stdout, `${lines.slice(0, 2).join('\n')}\n`);
+    assert.deepEqual(JSON.parse(cliRead(dir, 'inspect', 'DDR-000B', '--field', 'date', '--json').stdout), { id: 'DDR-000B', field: 'date', value: '2026-10-03' });
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('every existing decision-record command keeps its name and refuses a stray positional argument', () => {
+  const dir = readRoom();
+  try {
+    assert.equal(cliRead(dir, 'validate').status, 0);
+    assert.equal(cliRead(dir, 'register').status, 0);
+    assert.equal(cliRead(dir, 'normalize', '--date', '2026-10-03').status, 0);
+    const stray = cliRead(dir, 'validate', 'ADR-000A');
+    assert.equal(stray.status, 1);
+    assert.match(stray.stderr, /Unknown argument: ADR-000A/);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
