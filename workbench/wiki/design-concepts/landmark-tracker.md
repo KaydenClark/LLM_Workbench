@@ -244,3 +244,5 @@ distributions; updates reach their source owners and generated views are rebuilt
 - 2026-10-02: Noted the owner-confirmed workflow verbs as the official step names, with the Tracker's own labels still to change, from the owner-confirmed grilling of 2026-10-02.
 
 - 2026-10-02: Linked the owner-requested post-v4 shared browser backlog; no browser capability or v4 obligation is introduced.
+
+- 2026-10-03: Reconciled the recovered Lexicon family with the later Wiki, landmark and workflow decisions; retained the installed-validator mismatch, verification distinctions and DQC reconciliation boundary.
