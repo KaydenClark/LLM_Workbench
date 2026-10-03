@@ -736,6 +736,28 @@ test('both Lexicons define every workflow verb once and state the delivery workf
   }
 });
 
+
+// S-004G: the Blueprint row describes every room's Blueprint as the four-part
+// short page and says what the Blueprint is for, in the owner's confirmed
+// words; the Foundry row says what the owner said the Foundry is and keeps the
+// sole-source boundary.
+test('the Blueprint and Foundry rows carry the owner\'s confirmed answers and not the replaced ones', () => {
+  const rowOf = (content, term) => content.split('\n').find((line) => line.startsWith(`| **${term}** |`));
+  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
+    const blueprint = rowOf(read(root, relative), 'Blueprint');
+    assert.match(blueprint, /four-part short page \(what it is, who it serves, promised outcomes, non-goals\) for every room/, `${relative} Blueprint row names the short page`);
+    assert.match(blueprint, /Each sentence can serve as a map toward an implementation plan/, `${relative} Blueprint row says what it is for`);
+    assert.match(blueprint, /The Blueprint makes us ask questions; it does not give definite answers/, `${relative} Blueprint row`);
+    assert.doesNotMatch(blueprint, /The adaptable narrative of the desired finished product: destination, people, outcomes/, `${relative} Blueprint row drops the eight-section description`);
+    assert.match(blueprint, /not current status, an ADR or DDR inventory/, `${relative} Blueprint row keeps its boundaries`);
+  }
+  const foundry = rowOf(read(root, 'LEXICON.md'), 'Foundry');
+  assert.match(foundry, /autonomous factory of many rooms, each with a workbench producing work/, 'Foundry row says what the Foundry is');
+  assert.match(foundry, /the Foundry needs the workbench proven first/, 'Foundry row carries the confirmed sentence');
+  assert.match(foundry, /never its source, copy target, tool runtime, or prerequisite/, 'Foundry row keeps the sole-source boundary');
+  assert.doesNotMatch(foundry, /downstream coordination extension/, 'Foundry row drops the replaced description');
+});
+
 // S-004E: each AI Coding Dictionary term the owner adopted has exactly one
 // Lexicon row, in an `AI Coding Terms` section, naming its dictionary entry
 // once; the generic Lexicon carries the same rows, and names no room-specific
