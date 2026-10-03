@@ -206,7 +206,12 @@ function drivePond(release, destination, base) {
   cli('doctor');
   assert.equal(JSON.parse(cli('next', '--json')).taskId, 'TK-001');
   cli('show', 'S-001');
-  const guidance = fs.readFileSync(path.join(destination, 'RUNBOOK.md'), 'utf8');
+  // S-004C TK-005G: the Worker procedure lives in the lane skill the Runbook
+  // operations index points to; follow the room Runbook's pointers into the
+  // room's own lane and read what an agent following them reads.
+  const roomRunbook = fs.readFileSync(path.join(destination, 'RUNBOOK.md'), 'utf8');
+  const pointedSkills = [...new Set([...roomRunbook.matchAll(/\]\((workbench\/skills\/[a-z0-9-]+\/SKILL\.md)(?:#[a-z0-9-]+)?\)/g)].map((match) => match[1]))];
+  const guidance = [roomRunbook, ...pointedSkills.map((relative) => fs.readFileSync(path.join(destination, relative), 'utf8'))].join('\n');
   if (guidance.includes('node workbench/tools/spec-workbench.mjs convert-tasks S-001')) {
     cli('convert-tasks', 'S-001');
     publish('Convert the seeded table into Task records');

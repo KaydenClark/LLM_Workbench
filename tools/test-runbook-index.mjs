@@ -292,6 +292,74 @@ const FAMILIES = [
       ],
       moved: [/notepads\.mjs/, /notepad-templates/, /Landmark Tracker/, /sessions\/recovery/, /flush or delete/]
     }
+  },
+  {
+    task: 'TK-005G work selection, review and closure',
+    rows: [
+      {
+        operation: 'Work a Task as Worker', pointer: 'workbench/skills/implement/SKILL.md#worker-selection-implementation-and-hand-back',
+        section: 'Worker: selection, implementation and hand-back', stub: true,
+        carries: [
+          '`next --review --json` is a separate read-only review offering', 'node workbench/tools/spec-workbench.mjs convert-tasks S-001 --activate',
+          'node workbench/tools/spec-workbench.mjs claim S-001 --agent', '`close` reads repository state before it writes anything'
+        ]
+      },
+      {
+        operation: 'Review an assembled Spec', pointer: 'workbench/skills/dispatcher/SKILL.md#dispatcher-and-separate-director-assembled-review',
+        section: 'Dispatcher and separate Director: assembled review', stub: true,
+        carries: [
+          'An incomplete report is useful evidence, not approval', 'node workbench/tools/spec-workbench.mjs gate --spec S-001 --candidate "[SHA]"',
+          'Do not reuse the earlier PASS for changed content'
+        ]
+      },
+      {
+        operation: 'Record owner Human QA and complete', pointer: 'workbench/skills/director/SKILL.md#owner-human-qa-and-main-before-complete',
+        section: 'Owner: Human QA and main-before-complete', stub: true,
+        carries: ['Finding and destination-change examples', 'git fetch origin main', '`complete` requires all Tasks done, checked acceptance']
+      },
+      {
+        operation: 'Capture, retire or recover a completed Spec', pointer: 'workbench/skills/director/SKILL.md#documentation-feature-capture-retirement-and-recovery',
+        section: 'Documentation: feature capture, retirement and recovery', stub: { root: false, template: true },
+        carries: [
+          'There is no capture CLI', 'node workbench/tools/spec-workbench.mjs retire-spec S-001 --wiki',
+          'compare all recovered bytes, including sibling proof', 'A later gap against delivered work becomes a new Spec under its landmark'
+        ]
+      },
+      {
+        operation: 'Size and continue work', pointer: 'workbench/skills/to-tasks/SKILL.md#sizing-a-task',
+        section: 'Evidence And Continuation Practices', stub: false,
+        carries: ['Size a task so a fresh context can recover its inputs', 'There is no accepted universal byte or token threshold']
+      }
+    ],
+    agents: [
+      {
+        section: 'Work Selection And Lifecycle',
+        keeps: [
+          /workbench\/skills\/implement\/SKILL\.md#work-selection-and-lifecycle/, /RUNBOOK\.md#operations-index/, /Claim before editing/,
+          /single writer/, /editing the board cannot change an assignment or satisfy a gate/,
+          /`close` refuses a dirty or unpushed tree/, /`owner:<decision>` is never satisfied automatically/
+        ],
+        moved: [/--remaining-gap/, /`S-###:delivered`/, /closes the first in-progress Task/, /blocked-without-blocker/, /node workbench\/tools/]
+      },
+      {
+        section: 'Assembled Review And Corrective Return',
+        keeps: [
+          /workbench\/skills\/dispatcher\/SKILL\.md#assembled-review-and-corrective-return/, /Dispatcher owns whole-Spec QA/,
+          /separate Director context reviews the immutable assembled candidate/, /cannot supply independent approval/, /self-review never counts/,
+          /never silently cleared/, /Never clear a failed verdict with a green test/
+        ],
+        moved: [/report S-### --candidate SHA/, /--digest DIGEST/, /continue TK-###:/, /new Task:/]
+      },
+      {
+        section: 'Owner Closure And Reconciliation',
+        keeps: [
+          /workbench\/skills\/director\/SKILL\.md#owner-closure-and-reconciliation/,
+          /reviewed delivery on integration -> owner approval -> verification on main -> `complete`/,
+          /Only the owner promotes integration to main/, /never silently cleared/, /A merge alone closes neither Task nor Spec/
+        ],
+        moved: [/approve S-### --candidate SHA --owner NAME/, /retire-spec S-###/, /uncaptured-complete/, /git fetch origin main/]
+      }
+    ]
   }
 ];
 
@@ -318,7 +386,7 @@ for (const family of FAMILIES) {
         const section = all.find((heading) => heading.title === title);
         assert.ok(section, `${carrier.runbook}: the "${title}" heading survives`);
         assert.ok(links(section.body).includes(row.pointer), `${carrier.runbook}: "${title}" points to ${row.pointer}`);
-        if (row.stub) {
+        if (pick(row.stub, carrier.label)) {
           assert.doesNotMatch(section.body, /```/, `${carrier.runbook}: "${title}" keeps no procedure block`);
           assert.ok(normalize(section.body).length <= 700, `${carrier.runbook}: "${title}" is a sentence plus a pointer (${normalize(section.body).length} chars)`);
         }
@@ -326,11 +394,17 @@ for (const family of FAMILIES) {
     });
 
     test(`${carrier.label} ${family.task}: AGENTS keeps only the family's always-true lines`, () => {
-      const section = headings(read(carrier.agents)).find((heading) => heading.title === family.agents.section);
-      assert.ok(section, `${carrier.agents}: "${family.agents.section}" survives`);
-      const body = normalize(section.body);
-      for (const pattern of family.agents.keeps) assert.match(body, pattern, `${carrier.agents}: the brief keeps ${pattern}`);
-      for (const pattern of family.agents.moved) assert.doesNotMatch(body, pattern, `${carrier.agents}: ${pattern} moved behind its pointer`);
+      for (const brief of [family.agents].flat()) {
+        const section = headings(read(carrier.agents)).find((heading) => heading.title === brief.section);
+        assert.ok(section, `${carrier.agents}: "${brief.section}" survives`);
+        const body = normalize(section.body);
+        for (const pattern of brief.keeps) assert.match(body, pattern, `${carrier.agents} ${brief.section}: the brief keeps ${pattern}`);
+        for (const pattern of brief.moved) assert.doesNotMatch(body, pattern, `${carrier.agents} ${brief.section}: ${pattern} moved behind its pointer`);
+        for (const target of links(section.body)) {
+          const resolved = resolvePointer(carrier.agents, target);
+          assert.ok(resolved.ok, `${carrier.agents} ${brief.section}: ${target} resolves (${resolved.reason})`);
+        }
+      }
     });
   }
 

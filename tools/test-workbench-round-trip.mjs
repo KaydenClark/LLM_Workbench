@@ -29,8 +29,31 @@ const VERSION = JSON.parse(fs.readFileSync(path.join(sourceProduct, 'workbench',
 const DATE = '2026-09-04';
 const started = Date.now();
 const transcript = [];
-const documentedLifecycle = fs.readFileSync(guidanceFile, 'utf8')
+const lifecycleSection = fs.readFileSync(guidanceFile, 'utf8')
   .split('### Spec Lifecycle And Retrieval')[1].split(genericGuidance ? '### Visible Identifiers' : '### Architecture Decision Records')[0];
+// S-004C TK-005G: each role's lifecycle procedure lives in the lane skill the
+// Runbook section points to (a generated room lays its lane down from this
+// repository's lane). Follow every pointer in the section and read the pointed
+// skill section, up to its next heading of the same or a higher level, so the
+// executed recipes are the ones an agent following the pointer reads.
+function pointedSkillSection(relative, fragment) {
+  const file = path.join(sourceProduct, relative);
+  assert.ok(fs.lstatSync(file).isFile() && !fs.lstatSync(file).isSymbolicLink(), `${relative} is an ordinary lane skill`);
+  const slug = title => title.toLowerCase().replace(/[^\p{L}\p{N}\s_-]/gu, '').replace(/\s/g, '-');
+  const lines = fs.readFileSync(file, 'utf8').split('\n');
+  let fence = false; let start = -1; let level = 0;
+  for (let index = 0; index < lines.length; index += 1) {
+    if (/^\s*(```|~~~)/.test(lines[index])) fence = !fence;
+    const match = !fence && lines[index].match(/^(#{1,6}) (.+?)\s*$/);
+    if (!match) continue;
+    if (start < 0 && slug(match[2]) === fragment) { start = index; level = match[1].length; continue; }
+    if (start >= 0 && match[1].length <= level) return lines.slice(start + 1, index).join('\n');
+  }
+  assert.ok(start >= 0, `${relative}#${fragment} resolves`);
+  return lines.slice(start + 1).join('\n');
+}
+const documentedLifecycle = [lifecycleSection, ...[...lifecycleSection.matchAll(/\]\((workbench\/skills\/[a-z0-9-]+\/SKILL\.md)#([a-z0-9-]+)\)/g)]
+  .map(([, relative, fragment]) => pointedSkillSection(relative, fragment))].join('\n');
 const executedRecipes = new Set();
 // Execute the Runbook's actual examples with concrete fixture values, without
 // a shell. Only quoted strings, plain arguments and named placeholders occur.
@@ -424,7 +447,7 @@ try {
   assert.equal(inspect().status, 'complete');
   checkpoint('main-verified complete; no production owner approval');
   commit('Preserve completion before feature capture');
-  const feature = `workbench/wiki/features/${genericGuidance ? 'capability' : 'greeting'}.md`;
+  const feature = documentedLifecycle.match(/retire-spec S-001 --wiki (workbench\/wiki\/features\/[a-z-]+\.md)/)[1];
   const historical = 'workbench/specs/retired/S-001-greeting/SPEC.md';
   refusedRecipe(second, 'retire-spec', {}, /found no Wiki note|features article/);
   write(second, feature, `---\ntype: feature\nstatus: active\nsensitivity: normal\nknowledge_role: curated\nprovenance:\n  - fixture closure capture, ${DATE}\nsource_paths:\n  - ${historical}\n  - src/hello.mjs\n  - tests/hello.test.mjs\nlast_verified: ${DATE}\n---\n\n# Greeting\n\nA caller receives a predictable greeting.\n\n## What It Does\n\nNamed callers are greeted; an empty name uses World.\n\n## Why It Matters\n\nCommand-line callers receive readable output.\n\n## Limits\n\nString names only. Fixture reviewer and owner records prove mechanics only.\n\n## Evidence and Sources\n\n- [Closure](../../specs/retired/S-001-greeting/SPEC.md).\n- src/hello.mjs and tests/hello.test.mjs prove the behavior.\n`);

@@ -39,6 +39,63 @@ function read(base, relative) {
   return fs.readFileSync(path.join(base, relative), 'utf8');
 }
 
+// S-004C TK-005G: the work-selection, review and closure procedures live in
+// the lane skills the carriers point to. expandPointers inlines, at the end of
+// each carrier section, the body of every lane skill section that section links
+// to (its own headings flattened to text), so the contracts below read what an
+// agent following the pointer reads. A template carrier's lane links resolve
+// against this repository's lane, which a generated room's lane is laid from.
+function headingSlug(title) {
+  return title.toLowerCase().replace(/[^\p{L}\p{N}\s_-]/gu, '').replace(/\s/g, '-');
+}
+
+function skillSectionBody(relative, fragment) {
+  const lines = read(root, relative).split('\n');
+  let fence = false;
+  let start = -1;
+  let level = 0;
+  for (let index = 0; index < lines.length; index += 1) {
+    if (/^\s*(```|~~~)/.test(lines[index])) fence = !fence;
+    const match = !fence && lines[index].match(/^(#{1,6}) (.+?)\s*$/);
+    if (!match) continue;
+    if (start < 0 && headingSlug(match[2]) === fragment) { start = index; level = match[1].length; continue; }
+    if (start >= 0 && match[1].length <= level) return flatten(lines.slice(start + 1, index));
+  }
+  assert.ok(start >= 0, `${relative}#${fragment} resolves`);
+  return flatten(lines.slice(start + 1));
+}
+
+function flatten(lines) {
+  let fence = false;
+  return lines.map((line) => {
+    if (/^\s*(```|~~~)/.test(line)) fence = !fence;
+    return fence ? line : line.replace(/^#{1,6} /, '');
+  }).join('\n');
+}
+
+function expandPointers(text) {
+  const lines = text.split('\n');
+  const out = [];
+  let fence = false;
+  let pending = [];
+  const flush = () => {
+    const bodies = [];
+    for (const match of pending.join('\n').matchAll(/\]\((?:\.\.\/)*(workbench\/skills\/[a-z0-9-]+\/SKILL\.md)#([a-z0-9-]+)\)/g)) {
+      bodies.push(skillSectionBody(match[1], match[2]));
+    }
+    out.push(...pending);
+    if (bodies.length) out.push('', ...bodies.join('\n\n').split('\n'), '');
+    pending = [];
+  };
+  for (const line of lines) {
+    if (/^\s*(```|~~~)/.test(line)) fence = !fence;
+    if (!fence && /^#{1,6} /.test(line)) flush();
+    pending.push(line);
+  }
+  flush();
+  return out.join('\n');
+}
+
 function fill(content) {
   let filled = content;
   for (const placeholder of templatePlaceholders) filled = filled.replaceAll(placeholder, `filled ${placeholder.slice(1, -1).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()}`);
@@ -469,11 +526,11 @@ function taskWorkflowContract(content, generic = false) {
 }
 
 test('AGENTS routes real Task records through assembled review, corrective return and owner closure', () => {
-  taskWorkflowContract(read(root, 'AGENTS.md'));
+  taskWorkflowContract(expandPointers(read(root, 'AGENTS.md')));
 });
 
 test('generic controls carry the delivered workflow without producer state or unrecognized placeholders', () => {
-  const agents = read(productTemplates, 'AGENTS.md');
+  const agents = expandPointers(read(productTemplates, 'AGENTS.md'));
   taskWorkflowContract(agents, true);
   for (const [before, after] of [
     ['bounded capability delegate', 'unbounded capability delegate'],
@@ -509,8 +566,8 @@ test('generic controls carry the delivered workflow without producer state or un
     assert.ok(agents.includes(before), before);
     assert.throws(() => taskWorkflowContract(agents.replace(before, after), true), { name: 'AssertionError' });
   }
-  const runbook = read(productTemplates, 'RUNBOOK.md');
-  assert.match(runbook, /--candidate "SHA" --digest "DIGEST" --result pass/);
+  const runbook = expandPointers(read(productTemplates, 'RUNBOOK.md'));
+  assert.match(runbook, /--candidate "\[?SHA\]?" --digest "\[?DIGEST\]?" --result pass/);
   assert.match(runbook, /normal closure route is complete -> feature capture -> `retire-spec`/);
   assert.match(runbook, /receipt CLI remains Spec-bound[\s\S]*refuses a standalone Task ID/);
   for (const args of [['--guidance', '../../AGENTS.md'], ['--guidance'], ['--guidance', 'RUNBOOK.md', '--unknown']]) {
@@ -521,7 +578,7 @@ test('generic controls carry the delivered workflow without producer state or un
 });
 
 test('the Task workflow contract rejects removed obligations and regressed approval/command instructions', () => {
-  const agents = read(root, 'AGENTS.md');
+  const agents = expandPointers(read(root, 'AGENTS.md'));
   taskWorkflowContract(agents);
   const removals = ['Task-record state', 'Dispatcher assembled QA', 'Corrective return', 'Completion prerequisites', 'Capture before cleanup', 'Flexible owner QA'];
   const mutations = [
@@ -563,11 +620,11 @@ function runbookWorkflowContract(content) {
 }
 
 test('Runbook preserves digest binding, main-before-closure and authored feature capture', () => {
-  runbookWorkflowContract(read(root, 'RUNBOOK.md'));
+  runbookWorkflowContract(expandPointers(read(root, 'RUNBOOK.md')));
 });
 
 test('Runbook contract detects operationally consequential guidance regressions', () => {
-  const current = read(root, 'RUNBOOK.md');
+  const current = expandPointers(read(root, 'RUNBOOK.md'));
   for (const [before, after] of [
     ['--digest "[DIGEST]" --result pass', '--result pass'],
     ['git fetch origin main\nnode workbench/tools/spec-workbench.mjs complete S-001', 'node workbench/tools/spec-workbench.mjs complete S-001'],
@@ -626,17 +683,17 @@ function completionClaimRunbookContract(runbook, { table }) {
 
 test('the completion-claim mechanisms are documented in the root controls', () => {
   assert.deepEqual(gitScopeCodes().filter((code) => describe(code).severity === 'attention'), ['detached-head', 'untracked-controls']);
-  completionClaimAgentsContract(read(root, 'AGENTS.md'));
-  completionClaimRunbookContract(read(root, 'RUNBOOK.md'), { table: true });
+  completionClaimAgentsContract(expandPointers(read(root, 'AGENTS.md')));
+  completionClaimRunbookContract(expandPointers(read(root, 'RUNBOOK.md')), { table: true });
 });
 
 test('the completion-claim mechanisms are mirrored in the generic controls', () => {
-  completionClaimAgentsContract(read(productTemplates, 'AGENTS.md'));
-  completionClaimRunbookContract(read(productTemplates, 'RUNBOOK.md'), { table: false });
+  completionClaimAgentsContract(expandPointers(read(productTemplates, 'AGENTS.md')));
+  completionClaimRunbookContract(expandPointers(read(productTemplates, 'RUNBOOK.md')), { table: false });
 });
 
 test('the completion-claim contract fails when a documented mechanism or Git-scope code is dropped', () => {
-  const agents = read(root, 'AGENTS.md');
+  const agents = expandPointers(read(root, 'AGENTS.md'));
   for (const [before, after] of [
     ['writes the observed state and the reason into the Receipt', 'may mention the state somewhere in the Receipt'],
     ['and refuses a Spec with no in-progress Task.', 'and closes a ready Task when none is in progress.'],
@@ -645,7 +702,7 @@ test('the completion-claim contract fails when a documented mechanism or Git-sco
     assert.ok(agents.includes(before), `mutation targets current AGENTS.md text: ${before}`);
     assert.throws(() => completionClaimAgentsContract(agents.replace(before, after)), { name: 'AssertionError' }, before);
   }
-  const runbook = read(root, 'RUNBOOK.md');
+  const runbook = expandPointers(read(root, 'RUNBOOK.md'));
   for (const [before, after] of [
     ['`dirty-tree` lists anything', 'it lists anything'],
     ['no remote-tracking ref contains HEAD, naming', 'the branch is behind, naming'],
@@ -658,7 +715,7 @@ test('the completion-claim contract fails when a documented mechanism or Git-sco
     assert.ok(runbook.includes(before), `mutation targets current RUNBOOK.md text: ${before}`);
     assert.throws(() => completionClaimRunbookContract(runbook.replace(before, after), { table: true }), { name: 'AssertionError' }, before);
   }
-  const generic = read(productTemplates, 'RUNBOOK.md');
+  const generic = expandPointers(read(productTemplates, 'RUNBOOK.md'));
   const codes = 'reports `detached-head` and `untracked-controls` (scope `git`, attention,';
   assert.ok(generic.includes(codes), 'mutation targets current generic Runbook text');
   assert.throws(() => completionClaimRunbookContract(generic.replace(codes, 'reports Git state (attention,'), { table: false }), { name: 'AssertionError' });
@@ -921,7 +978,7 @@ test('each AI Coding Dictionary Wiki entry is routed from MEMORY.md and links it
 // against delivered work is a new Spec, never a correction anchored to a Wiki
 // claim - and no longer the rules they replace.
 test('AGENTS, its template and the to-tasks skill state the corrective-work rules and not the replaced ones', () => {
-  for (const [file, text] of [['AGENTS.md', read(root, 'AGENTS.md')], ['templates/AGENTS.md', read(productTemplates, 'AGENTS.md')]]) {
+  for (const [file, text] of [['AGENTS.md', expandPointers(read(root, 'AGENTS.md'))], ['templates/AGENTS.md', expandPointers(read(productTemplates, 'AGENTS.md'))]]) {
     const flat = text.replace(/\s+/g, ' ');
     for (const [claim, pattern] of [
       ['continue the same Task', /`continue TK-###: <what the check found and what the fix must do>` when the fix is more of the same work: the same Task continues with that adjusted handoff/],
