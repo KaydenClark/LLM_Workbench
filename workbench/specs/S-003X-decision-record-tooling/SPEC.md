@@ -8,8 +8,8 @@
 **Updated:** 2026-10-03
 **Catalog description:** Give a room one tool and one set of read words for both kinds of decision record, the ADR and the Destination Decision Record, with the lifecycle moves the ADR tool lacks.
 **Blockers:** none for the four tooling Tasks (TK-004W, TK-004X, TK-004Y, TK-004Z), which run in that order. The Lexicon-mirror Task TK-005A waits on the owner's unmerged Codex Lexicon reconciliation branch, which edits both Lexicons. How a DDR records its single landmark is open, outside this acceptance, and waits on the landmark capability.
-**Latest event:** TK-004W claimed by claude-s003x-dispatcher.
-**Next gate:** Close TK-004W with verification and documentation proof.
+**Latest event:** TK-004W closed with proof.
+**Next gate:** Complete TK-004X.
 
 > **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a`.
 
@@ -109,6 +109,7 @@ Maintain the Lexicon rows, the Runbook decision-record commands and the `to-docs
 | 2026-10-02 | none | Authored at the Map step from the owner-confirmed decision records of 2026-10-02 at integration cbb3d5b81c0081c45d92e0d284078ca13fd54c03. | Map only; no runtime proof claimed. | This Spec. | Plan, implementation and proof remain; the DDR landmark field and `search` corrections are open. |
 | 2026-10-02 | none | Re-verified and re-anchored at integration 5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a after four PRs landed. | Map only; the asserted counts, tool commands, collections and the S-00M status were re-read at that tip; no runtime proof claimed. | This Spec. | Plan, implementation and proof remain. |
 | 2026-10-03 | none | Planned at integration 2dcde6e90faed0937d7742fdac186db3c14e5e5b: Actuality inspected (adr.mjs commands, manifest and layout collection shapes, init and migrate, Genesis and Runbook text, template placeholders, diagnostics); Tasks TK-004W, TK-004X, TK-004Y, TK-004Z and TK-005A cut record-backed; the Spec activated; ADR-runtime reuse and the decision-record search result shape decided; the landmark field left open. | Plan only; doctor and render after the cut; guardrail baseline 78/100 and self-drift pre receipt (7 pre-existing attention findings; machineResult blocked, cleanUpdate false) captured at 2dcde6e9; no runtime proof claimed. | This Spec, its five TASK.md records, the generated projections and the Wiki article "Decision Records and the Concept Map" (names the delivering Specs; Wiki validated). | All implementation and proof remain; TK-005A is blocked on the unmerged Codex Lexicon reconciliation branch. |
+| 2026-10-03 | TK-004W | Task closed | Red aa51ade6 (test-workbench-layout 71/2: init declared no ddr; migrate added only features). Green at 333a6da7: test-workbench-layout 73/73 and the adoption, upgrade, landmark-tracker, round-trip, dogfood and control-fidelity tests pass; this room migrated to declare collections.ddr and validates; full AGENTS suite 48/48 on the clean candidate. Plan PR #279 (reviewed PASS at a560f6cf, suite 48/48) merged into integration as 1b5da601 before this close. | RUNBOOK support-root check, templates/RUNBOOK, templates/GENESIS readiness line and the Wiki article Decision Records and the Concept Map updated; update-harness skill checked, no change needed (it names additive collections generically). | TK-004X (DDR command, validation, register), TK-004Y, TK-004Z and the blocked TK-005A remain; separate-context review of this Task's final head precedes its integration merge. |
 
 ## Completion Result
 
