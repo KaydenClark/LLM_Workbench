@@ -86,7 +86,7 @@ Derived from stable specs; includes completed history.
 | [S-002E - Worker Role](S-002E-worker-role/SPEC.md) | Perform one assigned Task within its declared scope and return a verified, recoverable result. | planned |
 | [S-002F - Spec Planner Stance](S-002F-spec-planner-stance/SPEC.md) | Plan small Tasks and parallel vertical slices for one Spec from current Actuality when its flight launches. | active |
 | [S-002G - Spec Manager Stance](S-002G-spec-manager-stance/SPEC.md) | Dispatch and monitor planned Task work in parallel within one Spec, preserving proof and coordinated hand-back. | active |
-| [S-002H - Domain Modeling Skill for the Workbench](S-002H-domain-modeling-skill/SPEC.md) | Make active domain modeling precise and usable through the Workbench's Lexicon, Spec, ADR, Wiki, and authority boundaries. | planned |
+| [S-002H - Domain Modeling Skill for the Workbench](S-002H-domain-modeling-skill/SPEC.md) | Make active domain modeling precise and usable through the Workbench's Lexicon, Spec, ADR, Wiki, and authority boundaries. | active |
 | [S-002K - Resolve citation groups and file identity faithfully](S-002K-citation-resolution-correction/SPEC.md) | Correct three independently reproduced citation-checker defects without reopening completed S-045. | active |
 | [S-002L - skills draft wiki collection](S-002L-skills-draft-wiki-collection/SPEC.md) | Give the draft skills wiki a declared home, an index and one article template, so every skill's draft article has somewhere to go and its connection problems can be found by grep. | planned |
 | [S-002M - ask-workbench skill alignment](S-002M-ask-workbench-skill-alignment/SPEC.md) | Route a situation to the smallest appropriate Workbench skill or flow, then wait for the user to start it. | planned |
