@@ -64,3 +64,9 @@ to the `notepad` skill, `AGENTS.md`, `LEXICON.md` or the accepted
 ownership decision ADR-000L (TK-005D, which coordinates the skill with
 S-00Y and uses the decision-record lifecycle). No schema, ownership or
 `--revision` protocol change. No cross-host synchronization.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s003y-tk005b-notepad-cas | 32828062e96897a1d1b2245e25ad4bd582a95027 | ahead 3 behind 0 | 0 | Red 6cedbdf2: test-notepads 53 pass 4 fail (the race case: the note holds 1 entry but 4 writers were told appended; pre-fix demo at integration 5fa2aab6, six rounds of twelve racers: 3, 3, 6, 4, 5 and 4 appended, one entry each). Green 32828062: test-notepads 57/57; both barrier race cases pass 10/10 repeats; the same demo returns exactly 1 appended, 11 stale-revision, 1 entry, 0 lost every round; wiki validate ok; guardrail 78/100 before and after; self-drift pre 8 and post 9 attention findings (the added one is S-003Y/TK-005D blocked-slice waiting on TK-005B, which is this Task). Full AGENTS suite on 32828062 was started and had not finished when the session's usage limit ended. | RUNBOOK JSON Notepads paragraph (publish-token guard, ten-second reclaim, one-writer working rule), templates/RUNBOOK.md identical mirror, Wiki article skill-notepad.md (guard sentence replaces check-not-a-lock). | Full AGENTS suite result on the committed candidate not yet recorded; close, render, doctor, gate --task, separate-context review, PR into integration and merge remain. Skill, AGENTS/LEXICON and ADR-000L reconciliation are TK-005D; other writeSafeFile writers are TK-005C. | 4043599a128e1fedf455b452f80a2e75563a71f8a8ac94b2d923b946133464d2 |
