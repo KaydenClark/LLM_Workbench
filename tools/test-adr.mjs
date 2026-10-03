@@ -432,9 +432,11 @@ test('every accepted-ADR-to-spec reference in the real corpus resolves literally
   // TK-004 activates G/I: G routes its S-00P decision owner; I routes S-00I/S-00J.
   // ADR-000X (the workflow verbs) routes the two Landmark Tracker Specs it leaves with the Tracker work.
   // S-004F TK-005Q: each corrective-work amendment (ADR-000F, 000G, 000H, 000I, 000R, 000U) routes the Corrective Work Rules Spec.
-  assert.equal(filesWithLink, 29, 're-count of accepted ADR files carrying a live Spec-path reference at this candidate');
+  // S-003Y TK-006J: ADR-000Z (overlapping notepad writes are refused) routes the Notepad Concurrent-Write Safety Spec.
+  assert.equal(filesWithLink, 30, 're-count of accepted ADR files carrying a live Spec-path reference at this candidate');
   // S-004G TK-006F: the ADR-000X amendment routes the Workbench Terms And Workflow Verb Rows Spec.
-  assert.equal(totalLinks, 40, 're-count of total accepted-ADR-to-spec link edges at this candidate');
+  // S-003Y TK-006J: ADR-000Z links that Spec twice.
+  assert.equal(totalLinks, 42, 're-count of total accepted-ADR-to-spec link edges at this candidate');
 });
 
 test('durable references distinguish tracked notepad templates from ignored live records', () => {
@@ -576,10 +578,11 @@ test('every intra-ADR link in the real corpus resolves literally, and the re-cou
   // ADR-000U (landmarks), ADR-000V (roles) and ADR-000W (Contract carriers) add three linked records.
   // ADR-000X (the workflow verbs) adds one linked record; ADR-000Y (promotion) links none.
   // S-004F TK-005Q: the corrective-work amendments in ADR-000F, ADR-000G, ADR-000H, ADR-000I, ADR-000R and ADR-000U add seven edges to the destination records.
-  assert.equal(filesWithLink, 47, 're-count of ADR files carrying an intra-ADR link at this candidate');
+  // S-003Y TK-006J: ADR-000Z narrows ADR-000L, one more linked record and one more edge.
+  assert.equal(filesWithLink, 48, 're-count of ADR files carrying an intra-ADR link at this candidate');
   // S-004H TK-008C: ADR-000G's workflow-map route moved from the Blueprint's retired Desired Lifecycle to the workflow Wiki page, one more counted edge.
   // S-004G TK-006F: the ADR-000X amendment links ADR-000A and the release proof decision, two more edges.
-  assert.equal(totalLinks, 119, 're-count of total intra-ADR link edges at this candidate');
+  assert.equal(totalLinks, 120, 're-count of total intra-ADR link edges at this candidate');
 });
 
 // S-00I TK-001 review correction: a link is validated literally, never

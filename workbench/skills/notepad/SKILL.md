@@ -98,12 +98,14 @@ Every write names the revision you read. A missing or mismatched supplied
 revision is refused as `stale-revision`, naming the current one. The refusal
 does not prove a change or identify a writer: an omitted revision is refused
 on an unchanged fresh note, and your own older revision is refused too. Read
-the current note, supply its revision, and re-apply. This is a check, not a lock:
-it catches a sequential change while you were working. Two
-writers that both read the same revision at the same moment would both pass
-it, and the later write silently replaces the earlier one, so writes stay one
-writer at a time. That rule bounds overlapping writes, not which chat may own
-or resume the note. Every free-text field you supply is privacy-scanned before it can
+the current note, supply its revision, and re-apply. The check catches a
+sequential change while you were working, and the runtime also refuses an
+overlapping one: each write publishes only if the note still holds exactly what
+you read, so of two writers that read the same revision one lands and the other
+is refused `stale-revision`. No write is reported as landed unless it is in the
+note. Writes still stay one writer at a time, because a refused writer has to
+reread and re-apply. That rule bounds overlapping writes, not which chat may
+own or resume the note. Every free-text field you supply is privacy-scanned before it can
 reach the file; record a safe reference rather than a secret, credential, or
 raw private data.
 

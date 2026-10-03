@@ -102,6 +102,7 @@ next action must match what actually happened.
 
 ## Not covered here
 
-No new note kind, status, schema or collection. The concurrent-write race in
-the revision check is the runtime's known limit, not something this entry
-works around. Installed personal copies are not updated by this source.
+No new note kind, status, schema or collection, and no change to how note
+writes are guarded: the notepad runtime refuses an overlapping write as
+`stale-revision` rather than losing it, and this entry neither relies on nor
+works around that. Installed personal copies are not updated by this source.

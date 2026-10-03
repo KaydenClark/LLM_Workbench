@@ -32,6 +32,7 @@
 | [000W](000W-contract-carriers-are-briefs-that-point-to-skills-and-authority-flows-through-the-pointer.md) | Contract carriers are briefs that point to skills and authority flows through the pointer | accepted | 2026-10-02 | LEXICON.md |
 | [000X](000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md) | The workflow is eight verbs and each verb writes the plane its claims live on | accepted | 2026-10-02 | LEXICON.md, BLUEPRINT.md |
 | [000Y](000Y-a-locked-and-confirmed-answer-is-promoted-without-further-ceremony.md) | A locked and confirmed answer is promoted without further ceremony | accepted | 2026-10-02 | LEXICON.md |
+| [000Z](000Z-overlapping-notepad-writes-are-refused-not-lost.md) | Overlapping notepad writes are refused, not lost | accepted | 2026-10-03 | RUNBOOK.md |
 | [0015](0015-workbench-base-and-foundry-capabilities.md) | Workbench supplies the base and Foundry adds coordination | accepted | 2026-09-04 | BLUEPRINT.md |
 | [0018](0018-the-wiki-is-the-knowledge-base.md) | The wiki is the knowledge base and holds collections | accepted | 2026-09-04 | AGENTS.md, LEXICON.md |
 | [0020](0020-a-check-blocks-only-the-change-it-evaluates.md) | A check may block only the change it evaluates | accepted | 2026-09-04 | AGENTS.md, RUNBOOK.md |

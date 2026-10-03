@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-10-03
 **Catalog description:** Make overlapping writes to one JSON notepad impossible to lose silently: every write response says truthfully whether its entry landed.
-**Blockers:** none for TK-006I (the inspection of other writers) or TK-006J (the skill, Contract and ownership-decision reconciliation; its prerequisite TK-006H is done). TK-006J coordinates the skill wording with S-00Y.
-**Latest event:** TK-006I closed with proof.
-**Next gate:** Complete TK-006J.
+**Blockers:** none. TK-006H, TK-006I and TK-006J carry every acceptance line; the `notepad` skill wording changed under TK-006J is visible to Notepad Skill Rebuild (S-00Y) at its owner gate.
+**Latest event:** TK-006J closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a`.
 
@@ -72,13 +72,13 @@ Cut at Plan on 2026-10-03 as record-backed Tasks under `tasks/`; each `TASK.md` 
 
 ## Acceptance Criteria
 
-- [ ] A barrier-synchronized race of N writers at one revision leaves the note with exactly the entries whose writers were told they succeeded; every other writer received `stale-revision`.
-- [ ] The test fails against the pre-fix runtime and passes against the fixed one, and it does not depend on process start-up timing.
-- [ ] A writer interrupted mid-write leaves the previous valid record and does not block later writers.
-- [ ] The guard adds no lease, daemon or service, and a note works with no coordination configured.
-- [ ] Every write path that takes `--revision` is covered, and the inspection of other `writeSafeFile` writers is recorded.
-- [ ] Source, the `notepad` skill, the accepted ownership decision's description of the defect and the writer rule in the Contract agree after delivery.
-- [ ] Named verification and remaining limitations are recorded without claiming owner approval.
+- [x] A barrier-synchronized race of N writers at one revision leaves the note with exactly the entries whose writers were told they succeeded; every other writer received `stale-revision`.
+- [x] The test fails against the pre-fix runtime and passes against the fixed one, and it does not depend on process start-up timing.
+- [x] A writer interrupted mid-write leaves the previous valid record and does not block later writers.
+- [x] The guard adds no lease, daemon or service, and a note works with no coordination configured.
+- [x] Every write path that takes `--revision` is covered, and the inspection of other `writeSafeFile` writers is recorded.
+- [x] Source, the `notepad` skill, the accepted ownership decision's description of the defect and the writer rule in the Contract agree after delivery.
+- [x] Named verification and remaining limitations are recorded without claiming owner approval.
 
 ## Testing Seams
 
@@ -106,10 +106,12 @@ Reconcile the writer-rule statements in `AGENTS.md`, `LEXICON.md`, the `notepad`
 | 2026-10-03 | TK-006H | Separate-context review 3 (Codex gpt-5.5, read-only) of 7cfc196ee6923bd808420d5f65f358799f04f9fe: FAIL with one P1: the compare under the token checked only the revision number, so a writer that read a note at revision 1, after that note was deleted and a new one created at the same path at revision 1, would publish its stale copy over the new record. Corrected at e6b234921e1f64cf8cc4d5af698ca7ef1bb1be75: `append`, `current` and `trim` compare the exact bytes they read under the token, as `delete` already did. The nonce-directory staging, the delete move, reclaim serialization and the documentation were found sound. | test-notepads 57/57 and both race cases 5/5 repeats at e6b234921e1f64cf8cc4d5af698ca7ef1bb1be75; the delete-and-recreate case is proven by inspection of the byte compare, because no public seam can stall a writer between its read and its publish deterministically; full suite and review 4 follow. | RUNBOOK.md and templates/RUNBOOK.md (bytes, not revision number), this Spec's Plan decision, TK-006H scope. | Fresh separate-context review of the corrected head, PR merge into integration. |
 | 2026-10-03 | TK-006H | Separate-context review 4 (Codex gpt-5.5, read-only) of f2e699009e69d913f25211dfcc17174ab834372c: PASS with no findings; the reviewer found no path that can report a success for a write not in the file or remove a newer successful write, reclaim allows one rename winner, and the records describe the shipped guard. Full AGENTS suite 48/48 on clean f2e69900. This row and the regenerated projection are the only change after the reviewed head; PR #300 merges once a bounded confirmation review of that delta passes. | Full AGENTS suite 48/48 on f2e69900 (suite-s003y-6 log); test-notepads 57/57; both race cases 5/5 repeats. | This Spec evidence row and TASKBOARD.md. | PR #300 merge into integration, then TK-006I and TK-006J. |
 | 2026-10-03 | TK-006I | Task closed | Inspection-only: every revision- or hash-checked writeSafeFile writer classified at integration e1b193ce; none shares the notepad publish seam. Scratch barrier reproduction showed Landmark Tracker revise losing 7-10 of 12 writes told revised per round. test-landmark-tracker 23/23, test-sessions 8/8, test-session-transport 18/18, test-notepads 57/57. | S-003Y Remaining Limitations carries the classification and three named follow-up seams; Tracker README already states the not-a-lock limit, so no README or Wiki change. | Follow-up Specs not created: Landmark Tracker concurrent-write safety; Session transport resume against a live notepad writer (S-052 or linked); Promotion destination compare-and-swap. TK-006J remains. |
+| 2026-10-03 | TK-006J | Task closed | Skill writer paragraph describes the guard; ADR-000Z accepted, narrowing ADR-000L's defect statement by lifecycle; self-drift pre/post unchanged at 7 pre-existing findings; guardrail 78/100 before and after; test-adr 56/56 after census bump, test-skills-lane, test-core-composition, test-wiki, test-control-fidelity, test-controls-vocabulary-sweep, test-notepads green. | notepad SKILL.md, ADR-000Z with registers, skill-grill-me Wiki line, test-adr census, S-003Y Completion Result; AGENTS and LEXICON checked, no update needed. | S-00Y owner review of the changed paragraph; host skill copies; three named follow-up seams without Specs; owner Human QA. |
+| 2026-10-03 | TK-006J | Separate-context review 1 (Codex gpt-5.5, read-only) of 3a8030d30de1195123a336eea4d83a0f14a47f09: FAIL with one finding: `workbench/skills/grill-me/SKILL.md` Not covered here still called the concurrent-write race in the revision check the runtime's known limit. ADR-000Z, the notepad skill paragraph, the Contract agreement, the census bump and the evidence were found sound. Corrected in the same Task: that sentence now says the runtime refuses an overlapping write as `stale-revision` and grill-me neither relies on nor works around it. A wider sweep of skills, controls, templates and the Wiki found no other current-tense statement of the race; the RUNBOOK promotion paragraph's "sequential guards, not ... concurrent-write protection" is about `sessions.mjs promote` and stays accurate. | Skill and catalog tests and the full suite follow on the corrected candidate. | workbench/skills/grill-me/SKILL.md. | Fresh separate-context review of the corrected candidate, PR merge into integration. |
 
 ## Completion Result
 
-Pending.
+Overlapping writes to one notepad can no longer be lost silently. TK-006H added a compare-and-swap publish token to `notepads.mjs` for `append`, `current`, `trim` and `delete`. A writer publishes only if the note still holds exactly the bytes it read. Of writers that read the same revision, one lands and the rest are refused `stale-revision`, and an abandoned token is reclaimed after ten seconds. A barrier race test went red, then green (`tools/test-notepads.mjs`), after four separate-context reviews (PR #300). TK-006I inspected the other revision- or hash-checked `writeSafeFile` writers. None shares the repaired seam, and three separate seams are named below for their own follow-up Specs (PR #320). TK-006J reconciled the writer rule. The `notepad` skill now says an overlapping write is refused, not lost. [ADR-000Z](../../docs/adr/000Z-overlapping-notepad-writes-are-refused-not-lost.md) narrows ADR-000L's defect statement through the decision-record lifecycle and leaves ADR-000L's text unchanged. `AGENTS.md` and `LEXICON.md` keep "one writer at a time" unchanged, and a dated Wiki line no longer presents the pre-guard check as current. No owner approval or Human QA is claimed.
 
 ## Remaining Limitations Or Follow-Up Specs
 
@@ -122,6 +124,8 @@ TK-006I inspected them at integration `e1b193ce3df98ad243b405850dca8f7b783e038d`
 3. **Promotion destination compare-and-swap.** `sessions.mjs promote` re-reads the destination hash, then runs the backup and an unconditional `writeSafeFile`. Two promoters holding the same `--expected` hash can both pass, and the later one wins. If the earlier one's read-back fails, it restores the original bytes over the other promoter's write. The window is short and the tool documents itself as a single-writer operation on a Git-tracked owner, so this is the lowest of the three.
 
 Classified as no follow-up: the `spec-workbench.mjs` collision-recovery writer rechecks its expected HEAD, the source Task hash, a clean status and the Git index, and then publishes. It has the same check-then-act shape, but it runs only under the Contract's single durable writer for shared Spec state, and Git keeps the prior bytes. `adr.mjs`, `wiki.mjs`, `workbench-adoption.mjs`, the other `spec-workbench.mjs` writers and `workbench-layout.mjs` take no caller-supplied revision or hash. The layout identity write is already serialized by its own `wx` lock. `spec-report.mjs` `verdict` and `approve` check a content digest but publish through `atomicWrite`, not `writeSafeFile`, so they fall outside this inspection. They have the same shape under the same single-writer rule.
+
+TK-006J limits: the `notepad` skill paragraph changed after Notepad Skill Rebuild (S-00Y) reached its owner gate, so that Spec's owner review should read the new paragraph. The lane copy is the binding one. Installed host copies of the skill, such as a personal `~/.claude/skills/notepad`, are not updated here. Windows-host behavior of the token remains main-readiness testing.
 
 ## Supersession
 
