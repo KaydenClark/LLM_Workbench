@@ -1,0 +1,27 @@
+demo - reviewed integration delivery (fixture); HEAD 218479f
+demo - main-verified complete; no production owner approval; HEAD c44e315
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: git -c core.hooksPath=/dev/null -c user.name=Round Trip -c user.email=round-trip@example.invalid clone -q --branch integration /var/folders/h2/4pvfvm191m7gnfm51mvsf9m40000gn/T/workbench-round-trip-IVJprN/task-alternative.git /var/folders/h2/4pvfvm191m7gnfm51mvsf9m40000gn/T/workbench-round-trip-IVJprN/task-recovery-clone exited 128: git: warning: confstr() failed with code 5: couldn't get path of DARWIN_USER_TEMP_DIR; using /tmp instead
+fatal: update_ref failed for ref 'HEAD': cannot update ref 'refs/heads/integration': trying to write ref 'refs/heads/integration' with nonexistent object 372b686d547eed0f1608f6d3b44dd0f95a46fbdf
+
+
+128 !== 0
+
+    at run (file:///Users/kayden/Documents/Codex/2026-10-01/task/corrective-batch-recovery/tools/test-workbench-round-trip.mjs:101:10)
+    at git (file:///Users/kayden/Documents/Codex/2026-10-01/task/corrective-batch-recovery/tools/test-workbench-round-trip.mjs:106:10)
+    at file:///Users/kayden/Documents/Codex/2026-10-01/task/corrective-batch-recovery/tools/test-workbench-round-trip.mjs:500:3
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:646:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 128,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v26.3.0

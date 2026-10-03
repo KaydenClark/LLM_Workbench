@@ -3,12 +3,12 @@
 **Spec ID:** S-00J
 **Status:** active
 **Priority:** 3
-**Owner:** codex-v4-verdict
+**Owner:** codex-v4-corrective-batch
 **Stance:** Builder
 **Updated:** 2026-10-01
 **Catalog description:** Make a separate context review the assembled Spec against its Task results, route a failed review into corrective Tasks under the still-open Spec, keep `integration` as the owner's Human QA surface, and refuse to close a Spec without a passed review and recorded owner approval.
-**Blockers:** TK-004M corrects the independent replacement-object finding before fresh review. Separate close and corrective-batch recovery remain owned engineering work; owner Human QA/main gates are unapproved.
-**Latest event:** TK-004M closed with proof.
+**Blockers:** Independent immutable TK-004R successor review and integration containment remain. Original TK-004O done/FAIL history preserved; owner Human QA/main remain unapproved.
+**Latest event:** TK-004R closed with proof.
 **Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
@@ -337,6 +337,12 @@ evidence; the Task creation seam from S-00H; `spec-workbench.mjs complete`;
 the branch-closeout path covered by `tools/test-branch-closeout.mjs`; the
 manifest branch declaration; and the skill catalog and inspection tests.
 
+### Corrective batch write-failure recovery (2026-10-01)
+
+A synchronous failure while appending a fail verdict or an owner finding restores the exact pre-call Spec bytes after removing only newly created corrective Task files and empty directories. The same public invocation can then retry and produce the complete batch. The narrower `createCorrectiveTasks` seam and discarded Wiki-claim corrective batches receive the same bounded cleanup. A complete existing batch remains refused as a duplicate.
+
+Concurrent Spec edits, changed directories, modified or replaced published Task files, linked paths or unexpected directory contents are never overwritten or recursively removed. Incomplete rollback stays visibly failed and keeps any needed durable anchor for explicit recovery. Asynchronous process death during a partially published batch is outside this synchronous rollback guarantee; the row-before-any-Task case retains the narrower recovery seam. Historical and previously published evidence is preserved.
+
 ## Verification Procedure
 
 Run the targeted test for the touched seam, then the full verification suite
@@ -400,6 +406,10 @@ TK-005.
 
 | 2026-10-01 | TK-004M | Immutable candidate Git reader correction verified | Public red `b039c397` reproduces replacement refs making an empty commit impersonate Spec content. Source `9cf0d216acc73c9cacfd66cbd6b136fcf4ece5db`: replacement and inherited GIT_DIR/GIT_WORK_TREE cases refuse PASS/FAIL and gate without Spec/Task writes. Missing promisor commit/tree/blob refuse without transport and preserve every Git metadata byte. All51 required commands PASS at exact clean source; focused report and previous binding regressions PASS. Intermediate shebang composition failure retained and corrected | Scoped candidateGit applies selected repository semantics, no replacements or lazy fetch, caller Git selector isolation and optional-lock suppression to candidate resolution/content/ancestry readers. Owned source comments document the boundary; existing tests retain normalization, non-HEAD and retired lifecycle behavior. No root/template procedure or bundle changes | Native receipt/closure, exact independent successor review and integration containment pending. Separate partial-write recovery and owner QA/main gates remain open. No CI or clean-update claim |
 | 2026-10-01 | TK-004M | Task closed | Verified source 9cf0d216acc73c9cacfd66cbd6b136fcf4ece5db passed all 51 required checks and focused Git replacement, ambient selector, and missing promisor object probes; source committed and pushed before this close. Independent successor review remains pending. | Updated owned verdict candidate-content implementation, bounded Git reads, regression fixtures and source verification record. | Independent exact successor review and integration containment pending. Separate corrective-batch partial-write recovery and owner QA/main approval remain open. |
+| 2026-10-01 | TK-004O | Bounded corrective write recovery verified at committed current-base source | Source17029e39b233f4325b3962676baee1ec6fa07b90 includes delivered250/255 and passes exact full51 aggregate, report regressions and10publicfault groups. Red e5d5ab6c and intermediate fixture/unclean-source/generated-render failures retained. Eight IO failure cases preserve originalbytes and retry allfindings; two interference cases preserve unexpectedbytes and durableanchor with explicit incomplete failure. Actual history CLEAN, doctor zero blockers, postselfdrift baseline limits retained | Owned correctivebatch writers and dated S00J recoverycontract; requiredreporttest imports genuine publicregression. No global transaction, close/gate/identity/manifest/root/template changes | Receipt/close and separate finalimmutable review/integration pending. Async midbatch death is outside synchronous rollback guarantee; ownerQA/main remain unapproved |
+| 2026-10-01 | TK-004O | Task closed | Currentbase source17029e39 full51/51PASS and10publicfaultgroups. EightIOcasesrestoreexactbytes/retrycompletebatch; twointerferencecontrols preserveunexpectedbytes+anchor and reportincompleterecovery. Originalred andfailedrunsretained, finalindependentreviewpending. | Owned correctivebatch implementation, required publicreport regressions and dated S00J recoverycontract; root/template no change needed for private IO fix. | Final immutable independent review and integration containment pending. Async midbatch process termination remains outside synchronous rollback guarantee; owner Human QA/main unapproved. |
+| 2026-10-01 | review | Review verdict: fail at 2e9b8c7caa30032fc17e0ae44881822914116b63 [c4500a4020a2] #11 | P1: Bounded rollback deletes foreign modifications to the first published corrective TASK.md after second publication failure, then removes its FAIL anchor. Snapshot each owned published file and refuse deletion after mutation or replacement while preserving foreign bytes and the durable anchor. | Independent reviewer01a0f686, Director-reported exact-head review; model not supplied, separate context | 1 |
+| 2026-10-01 | TK-004R | Task closed | Committed source f767cb746ef6fc6c26f0f1b8e4446d8d6489827e full51/51 plus13publicfaultgroups PASS; current25d3 runtime assembly tested. Published9deec32d Receipt beforeclose. Original2e9 independentFAIL preserved; finalsuccessor reviewpending. | Owned synchronous recovery contract, foreign file identity/bytes regression, required suite receipts and native Taskboard. | Independent exact successor review and integration containment pending; asynchronous process death outside bounded rollback; ownerQA/main unapproved. |
 
 ## Completion Result
 

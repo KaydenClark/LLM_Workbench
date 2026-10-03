@@ -1,0 +1,371 @@
+{
+  "candidate": "db295c4e7f6df792e886465c4b0dfc14ab70d371",
+  "results": [
+    {
+      "index": 1,
+      "command": "node tools/test-spec-workbench.mjs",
+      "exit": 0,
+      "seconds": 280.74,
+      "log": "01-tools_test-spec-workbench.mjs.log"
+    },
+    {
+      "index": 2,
+      "command": "node tools/test-skill-catalog.mjs",
+      "exit": 0,
+      "seconds": 0.45,
+      "log": "02-tools_test-skill-catalog.mjs.log"
+    },
+    {
+      "index": 3,
+      "command": "node tools/test-skill-inspection.mjs",
+      "exit": 0,
+      "seconds": 0.13,
+      "log": "03-tools_test-skill-inspection.mjs.log"
+    },
+    {
+      "index": 4,
+      "command": "node tools/test-skills-lane.mjs",
+      "exit": 0,
+      "seconds": 4.42,
+      "log": "04-tools_test-skills-lane.mjs.log"
+    },
+    {
+      "index": 5,
+      "command": "node tools/test-core-composition.mjs",
+      "exit": 0,
+      "seconds": 3.59,
+      "log": "05-tools_test-core-composition.mjs.log"
+    },
+    {
+      "index": 6,
+      "command": "node tools/test-project-evidence.mjs",
+      "exit": 0,
+      "seconds": 1.52,
+      "log": "06-tools_test-project-evidence.mjs.log"
+    },
+    {
+      "index": 7,
+      "command": "node tools/test-genesis-from-decisions.mjs",
+      "exit": 0,
+      "seconds": 43.55,
+      "log": "07-tools_test-genesis-from-decisions.mjs.log"
+    },
+    {
+      "index": 8,
+      "command": "node tools/test-blueprint-contract.mjs",
+      "exit": 0,
+      "seconds": 0.12,
+      "log": "08-tools_test-blueprint-contract.mjs.log"
+    },
+    {
+      "index": 9,
+      "command": "node tools/test-session-transport.mjs",
+      "exit": 0,
+      "seconds": 36.52,
+      "log": "09-tools_test-session-transport.mjs.log"
+    },
+    {
+      "index": 10,
+      "command": "node tools/test-configured-host.mjs",
+      "exit": 0,
+      "seconds": 4.06,
+      "log": "10-tools_test-configured-host.mjs.log"
+    },
+    {
+      "index": 11,
+      "command": "node tools/test-core-skill-installer.mjs",
+      "exit": 0,
+      "seconds": 18.45,
+      "log": "11-tools_test-core-skill-installer.mjs.log"
+    },
+    {
+      "index": 12,
+      "command": "node tools/test-workbench-layout.mjs",
+      "exit": 0,
+      "seconds": 90.65,
+      "log": "12-tools_test-workbench-layout.mjs.log"
+    },
+    {
+      "index": 13,
+      "command": "node tools/test-workbench-adoption.mjs",
+      "exit": 0,
+      "seconds": 22.15,
+      "log": "13-tools_test-workbench-adoption.mjs.log"
+    },
+    {
+      "index": 14,
+      "command": "node tools/test-workbench-upgrade.mjs",
+      "exit": 0,
+      "seconds": 10.0,
+      "log": "14-tools_test-workbench-upgrade.mjs.log"
+    },
+    {
+      "index": 15,
+      "command": "node tools/test-workbench-tools.mjs",
+      "exit": 0,
+      "seconds": 18.24,
+      "log": "15-tools_test-workbench-tools.mjs.log"
+    },
+    {
+      "index": 16,
+      "command": "node tools/test-diagnostics.mjs",
+      "exit": 0,
+      "seconds": 66.6,
+      "log": "16-tools_test-diagnostics.mjs.log"
+    },
+    {
+      "index": 17,
+      "command": "node tools/test-adr.mjs",
+      "exit": 0,
+      "seconds": 22.32,
+      "log": "17-tools_test-adr.mjs.log"
+    },
+    {
+      "index": 18,
+      "command": "node tools/test-governance-core.mjs",
+      "exit": 0,
+      "seconds": 0.13,
+      "log": "18-tools_test-governance-core.mjs.log"
+    },
+    {
+      "index": 19,
+      "command": "node tools/test-branch-closeout.mjs",
+      "exit": 0,
+      "seconds": 9.39,
+      "log": "19-tools_test-branch-closeout.mjs.log"
+    },
+    {
+      "index": 20,
+      "command": "node tools/test-wiki.mjs",
+      "exit": 0,
+      "seconds": 8.26,
+      "log": "20-tools_test-wiki.mjs.log"
+    },
+    {
+      "index": 21,
+      "command": "node tools/test-sessions.mjs",
+      "exit": 0,
+      "seconds": 10.61,
+      "log": "21-tools_test-sessions.mjs.log"
+    },
+    {
+      "index": 22,
+      "command": "node tools/test-notepads.mjs",
+      "exit": 0,
+      "seconds": 25.14,
+      "log": "22-tools_test-notepads.mjs.log"
+    },
+    {
+      "index": 23,
+      "command": "node tools/test-visible-ids.mjs",
+      "exit": 0,
+      "seconds": 3.09,
+      "log": "23-tools_test-visible-ids.mjs.log"
+    },
+    {
+      "index": 24,
+      "command": "node tools/test-workbench-identity.mjs",
+      "exit": 0,
+      "seconds": 10.36,
+      "log": "24-tools_test-workbench-identity.mjs.log"
+    },
+    {
+      "index": 25,
+      "command": "node tools/test-visible-id-consumers.mjs",
+      "exit": 0,
+      "seconds": 33.57,
+      "log": "25-tools_test-visible-id-consumers.mjs.log"
+    },
+    {
+      "index": 26,
+      "command": "node tools/test-direct-promotion.mjs",
+      "exit": 0,
+      "seconds": 9.52,
+      "log": "26-tools_test-direct-promotion.mjs.log"
+    },
+    {
+      "index": 27,
+      "command": "node tools/test-workbench-round-trip.mjs",
+      "exit": 1,
+      "seconds": 62.46,
+      "log": "27-tools_test-workbench-round-trip.mjs.log"
+    },
+    {
+      "index": 28,
+      "command": "node tools/test-cross-provider-fixture.mjs",
+      "exit": 0,
+      "seconds": 7.24,
+      "log": "28-tools_test-cross-provider-fixture.mjs.log"
+    },
+    {
+      "index": 29,
+      "command": "node tools/test-portability-matrix.mjs",
+      "exit": 0,
+      "seconds": 1.82,
+      "log": "29-tools_test-portability-matrix.mjs.log"
+    },
+    {
+      "index": 30,
+      "command": "node tools/test-workbench-dogfood.mjs",
+      "exit": 0,
+      "seconds": 6.53,
+      "log": "30-tools_test-workbench-dogfood.mjs.log"
+    },
+    {
+      "index": 31,
+      "command": "node tools/test-evaluate-workbench.mjs",
+      "exit": 0,
+      "seconds": 1.01,
+      "log": "31-tools_test-evaluate-workbench.mjs.log"
+    },
+    {
+      "index": 32,
+      "command": "node tools/test-guardrail-audit.mjs",
+      "exit": 0,
+      "seconds": 0.47,
+      "log": "32-tools_test-guardrail-audit.mjs.log"
+    },
+    {
+      "index": 33,
+      "command": "node tools/test-context-tools.mjs",
+      "exit": 0,
+      "seconds": 0.77,
+      "log": "33-tools_test-context-tools.mjs.log"
+    },
+    {
+      "index": 34,
+      "command": "node tools/test-outcome-trials.mjs",
+      "exit": 0,
+      "seconds": 1.58,
+      "log": "34-tools_test-outcome-trials.mjs.log"
+    },
+    {
+      "index": 35,
+      "command": "node tools/test-eval-runner.mjs",
+      "exit": 0,
+      "seconds": 1.03,
+      "log": "35-tools_test-eval-runner.mjs.log"
+    },
+    {
+      "index": 36,
+      "command": "node tools/test-feedback-automation.mjs",
+      "exit": 0,
+      "seconds": 1.33,
+      "log": "36-tools_test-feedback-automation.mjs.log"
+    },
+    {
+      "index": 37,
+      "command": "node tools/test-symlink-invocation.mjs",
+      "exit": 0,
+      "seconds": 2.75,
+      "log": "37-tools_test-symlink-invocation.mjs.log"
+    },
+    {
+      "index": 38,
+      "command": "node tools/test-control-fidelity.mjs",
+      "exit": 0,
+      "seconds": 7.84,
+      "log": "38-tools_test-control-fidelity.mjs.log"
+    },
+    {
+      "index": 39,
+      "command": "node tools/test-spec-citation-anchors.mjs",
+      "exit": 0,
+      "seconds": 42.7,
+      "log": "39-tools_test-spec-citation-anchors.mjs.log"
+    },
+    {
+      "index": 40,
+      "command": "node tools/test-controls-vocabulary-sweep.mjs",
+      "exit": 0,
+      "seconds": 0.29,
+      "log": "40-tools_test-controls-vocabulary-sweep.mjs.log"
+    },
+    {
+      "index": 41,
+      "command": "node tools/test-spec-report.mjs",
+      "exit": 0,
+      "seconds": 62.04,
+      "log": "41-tools_test-spec-report.mjs.log"
+    },
+    {
+      "index": 42,
+      "command": "node tools/test-self-drift.mjs",
+      "exit": 0,
+      "seconds": 1.07,
+      "log": "42-tools_test-self-drift.mjs.log"
+    },
+    {
+      "index": 43,
+      "command": "node tools/test-feedback-inventory.mjs",
+      "exit": 0,
+      "seconds": 0.35,
+      "log": "43-tools_test-feedback-inventory.mjs.log"
+    },
+    {
+      "index": 44,
+      "command": "node tools/test-grilling-ledger.mjs",
+      "exit": 0,
+      "seconds": 0.28,
+      "log": "44-tools_test-grilling-ledger.mjs.log"
+    },
+    {
+      "index": 45,
+      "command": "python3 tools/test-check-append-only.py",
+      "exit": 0,
+      "seconds": 120.87,
+      "log": "45-tools_test-check-append-only.py.log"
+    },
+    {
+      "index": 46,
+      "command": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+      "exit": 0,
+      "seconds": 0.7,
+      "log": "46-evals_tasks_task_b_path_safety_test_grade.py.log"
+    },
+    {
+      "index": 47,
+      "command": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+      "exit": 0,
+      "seconds": 0.09,
+      "log": "47-tools_evaluate-workbench.mjs.log"
+    },
+    {
+      "index": 48,
+      "command": "node workbench/tools/spec-workbench.mjs doctor",
+      "exit": 0,
+      "seconds": 2.02,
+      "log": "48-workbench_tools_spec-workbench.mjs.log"
+    },
+    {
+      "index": 49,
+      "command": "node tools/test-taskboard-json.mjs",
+      "exit": 0,
+      "seconds": 50.8,
+      "log": "49-tools_test-taskboard-json.mjs.log"
+    },
+    {
+      "index": 50,
+      "command": "node tools/test-landmark-tracker.mjs",
+      "exit": 0,
+      "seconds": 21.23,
+      "log": "50-tools_test-landmark-tracker.mjs.log"
+    },
+    {
+      "index": 51,
+      "command": "node tools/test-lifecycle-directory-links.mjs",
+      "exit": 0,
+      "seconds": 3.96,
+      "log": "51-tools_test-lifecycle-directory-links.mjs.log"
+    }
+  ],
+  "reruns": [
+    {
+      "command": "node tools/test-workbench-round-trip.mjs",
+      "exit": 0,
+      "candidate": "db295c4e7f6df792e886465c4b0dfc14ab70d371",
+      "log": "batch-r-final-roundtrip-retry.log",
+      "note": "Original final sweep 50/51: local alternative-object clone could not write HEAD due nonexistent object. Exact command rerun unchanged source passed full documented lifecycle; original failure retained, no runtime fix or weaker check."
+    }
+  ]
+}
