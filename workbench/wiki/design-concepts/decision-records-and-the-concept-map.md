@@ -11,6 +11,7 @@ source_paths:
   - workbench/docs/adr/000S-destination-decision-records-are-decision-records-beside-adrs.md
   - workbench/docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md
   - workbench/specs/S-003X-decision-record-tooling/SPEC.md
+  - workbench/specs/S-003Z-landmark-md-artifact-and-lane-runtime/SPEC.md
 parent: none
 authorized_by: the owner's promotions of the 2026-10-01 and 2026-10-02 grillings
 last_verified: 2026-10-03
@@ -138,6 +139,9 @@ delivers them, and settles how a DDR records the one landmark it belongs to.
   the active-decision and delivery-chain rules this builds on.
 - [ADR-000R, The Wiki is the evolving synthesis every agent reads and updates](../../docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md):
   why the Wiki synthesizes rather than keeping a page per decision.
+- [Decision Record Tooling Spec (S-003X)](../../specs/S-003X-decision-record-tooling/SPEC.md)
+  and [LANDMARK.md Artifact And Lane Runtime Spec (S-003Z)](../../specs/S-003Z-landmark-md-artifact-and-lane-runtime/SPEC.md):
+  the planned delivery of the DDR tooling and of landmark artifacts.
 
 ## History
 
