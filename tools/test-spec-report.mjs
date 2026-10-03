@@ -2935,9 +2935,8 @@ function doneTaskWithDecisions({ id, specId, rows }) {
       render(root);
       assert.equal(doctor(root).filter((item) => item.blocks === 'all' || item.blocks === 'selection').length, 0, 'doctor accepts the new planned Spec beside the completed one');
       assert.equal(nextWork(root), null, 'a planned Spec is never offered before it is planned into Tasks');
-      const board = fs.readFileSync(path.join(root, 'TASKBOARD.md'), 'utf8');
-      assert.match(board, /S-7D5/, 'the new Spec is visible on the board');
-      assert.ok(!board.includes('wiki-claim'), 'no Task takes a Wiki claim as its destination');
+      assert.match(fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8'), /S-7D5/, 'the new Spec is listed in the catalog');
+      assert.ok(!fs.existsSync(path.join(root, 'specs/S-7D5-later-gap/tasks')), 'the new Spec holds no Task, and none takes a Wiki claim as its destination');
       console.log('ok - S-004F TK-005S: a fail verdict or owner finding against a complete, superseded or retired Spec, and any Wiki-claim anchor, is refused naming the new-Spec route; a later gap is carried by a new planned Spec that names the delivered Spec and cites Wiki evidence');
     } finally {
       fs.rmSync(root, { recursive: true, force: true });

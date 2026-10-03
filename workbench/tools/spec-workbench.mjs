@@ -1830,11 +1830,8 @@ function identityFindings(specs, retiredSpecs = []) {
   return findings;
 }
 
-// S-00I TK-006: exported so spec-report.mjs's `createCorrectiveTasks` can
-// place an orphan corrective Task (one whose owning Spec has been discarded,
-// so it has no Spec directory to live under at all) beneath the same specs
-// lane this resolves, without a second, possibly-drifting copy of this
-// manifest-aware lookup.
+// Exported so spec-report.mjs resolves the same specs lane, without a second,
+// possibly-drifting copy of this manifest-aware lookup.
 export function resolveSpecsRoot(root) {
   const manifestPath = path.join(root, 'workbench', 'manifest.json');
   if (!fs.existsSync(manifestPath)) return { specsRoot: path.join(root, 'specs'), specsPrefix: 'specs' };
