@@ -17,3 +17,4 @@
 | [000I](000I-many-agents-work-one-project-in-parallel-across-the-cloud-and-the-owner-s-devices.md) | Many agents work one project in parallel, across the cloud and the owner's devices | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000J](000J-the-behaviors-agents-need-ship-inside-every-room.md) | The behaviors agents need ship inside every room | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000K](000K-a-handoff-is-the-readable-map-to-the-high-fidelity-context.md) | A handoff is the readable map to the high-fidelity context | accepted | 2026-10-03 | BLUEPRINT.md |
+| [000L](000L-agents-work-the-workbench-through-one-action-controls.md) | Agents work the workbench through one-action controls | accepted | 2026-10-03 | BLUEPRINT.md |
