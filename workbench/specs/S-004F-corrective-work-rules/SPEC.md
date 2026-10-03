@@ -8,8 +8,8 @@
 **Updated:** 2026-10-03
 **Catalog description:** When a check finds a miss, the same Task continues with an adjusted handoff unless the fix rewrites it, and a later gap against delivered work becomes a new Spec under its landmark or the Blueprint instead of a correction anchored to a Wiki claim.
 **Blockers:** none for the first four Tasks. Three later Tasks wait on `owner:` tokens for another Spec's writer turn on the Runbook, the Lexicon and the Blueprint; each Dispatcher removes its token when that file is free.
-**Latest event:** TK-005S closed with proof.
-**Next gate:** Complete TK-005T.
+**Latest event:** TK-005T closed with proof.
+**Next gate:** Complete TK-005U.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 
@@ -125,6 +125,7 @@ Run the targeted spec-report, spec-workbench, control-fidelity and append-only t
 | 2026-10-03 | TK-005Q | Task closed | Full AGENTS suite on committed candidate 0dd04ec2 (47 of 48 first run; the one flake, test-spec-workbench, passed alone on that candidate); control-fidelity pin red then green; test-adr 56 pass; adr validate ok | DDR for the same-Task rule accepted; ADR-000F, 000G, 000H, 000I, 000R, 000U amended with git anchors; registers regenerated | none |
 | 2026-10-03 | TK-005R | Task closed | Full AGENTS suite 48 of 48 on committed candidate 9696c78d; red then green at recordReviewVerdict, recordOwnerApproval, createCorrectiveTasks, the Continuation section and the continued-Task re-close; append-only evidence and Receipt rows byte-identical in the fixtures | Docs checked; no control, Runbook or Lexicon update here: the rules reach AGENTS.md in TK-005T and the Wiki lifecycle page in TK-005S | none |
 | 2026-10-03 | TK-005S | Task closed | Full AGENTS suite 47 of 48 on committed candidate 87eae0f6 plus the one externally terminated command passing alone on it; refusal tests red then green at createCorrectiveTasks, recordReviewVerdict, recordOwnerApproval, claim and close; a later gap against a completed Spec carried by a new planned Spec fixture; wiki validate ok | Wiki lifecycle-tool-behaviors page updated and linted; no control, Runbook or Lexicon change here (TK-005T, TK-005U and TK-005V carry them) | none |
+| 2026-10-03 | TK-005T | Task closed | Full AGENTS suite 48 of 48 on committed candidate 086c4395; AGENTS, template and skill pins red then green; guardrail audit 78/100 before and after; self-drift pre and post equal (12 findings, none from this change); Wiki validate ok | AGENTS.md and templates/AGENTS.md corrective sections, to-tasks skill, control-fidelity pins; Spec Remaining Limitations lists README, Wiki schema and Lexicon-pin items for their owners | RUNBOOK, Lexicon rows, Blueprint passages, README and the Wiki schema line still state the replaced rules; TK-005U, TK-005V, TK-005W and their owners carry them |
 
 ## Completion Result
 
@@ -133,6 +134,8 @@ Pending.
 ## Remaining Limitations Or Follow-Up Specs
 
 The ledger's earlier answers stay as history; marking them replaced belongs with the decision record. Renaming the corrective commands or the `complete` status is not proposed here.
+
+Found while delivering TK-005T and not in this Spec's edit scope, so reported to their owners rather than started: `README.md` (the lifecycle summary sentence that says a failed review "creates corrective Tasks") and the Wiki schema `workbench/wiki/SCHEMA.md` with its generic mirror `templates/wiki/SCHEMA.md` (the lint paragraph that says findings "become corrective Tasks"; the schema takes only the owner's explicit say). ADR-000R point 9 already follows the new rule. `tools/test-adr.mjs` still pins the Lexicon Destination Packet row's `or the reconciled Wiki claim` wording, which TK-005V changes with the row.
 
 ## Supersession
 

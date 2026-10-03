@@ -66,7 +66,9 @@ planned Spec stay as they are.
      `Reconciler`), `Blockers` (`none`, or a comma-separated list of
      `S-###`/`TK-###` ids), and `Destination` (`spec-acceptance: <the
      Acceptance Criteria line this Task advances>`, or `wiki-claim: <the
-     reconciled claim>` for a corrective Task after retirement). Add
+     Wiki page>` only when the Task's own destination is producing that page; a
+     corrective Task never takes a Wiki claim as its destination, and a later
+     gap against delivered work is a new Spec, not a Task). Add
      `Planned verification` naming the check the Task expects to run. Add no
      table rows; a record-backed Spec's retained
      `Vertical Implementation Slices` table is completed history only. When
