@@ -8,8 +8,8 @@
 **Updated:** 2026-10-03
 **Catalog description:** Put the owner's Workbench terms and one row per workflow verb into the Lexicon, repair the rows that contradict the Blueprint teardown's locked answers, and record the changed Journey point of the workflow-verbs decision in a decision record.
 **Blockers:** none. The Lexicon rows take one writer at a time, so this Spec's first Task waits on the last Task of the AI Coding Dictionary Terms Spec. The `ddr` collection and the commands that write, accept and supersede a decision record are installed.
-**Latest event:** TK-006F closed with proof.
-**Next gate:** Complete TK-006G.
+**Latest event:** All five Tasks are closed: the Workbench term and artifact-kind rows, the workflow verb rows, the Blueprint and Foundry repairs, the amended workflow verbs decision and the Workflow Verbs article with the retired-controls inventory. One acceptance box stays open: recorded verification and limitations at assembled review.
+**Next gate:** Assembled-Spec review by a separate Director context and owner Human QA; the release proof decision's verb list needs a visible correction by its owner, and the controls wording outside the Lexicon waits for the Contract carrier rewrite.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 
@@ -109,6 +109,42 @@ Open, settled at Plan from project evidence unless it needs the owner:
 
 Settled at TK-006C: `templates/LEXICON.md` carries the Owner, Room, Scaffolding, three artifact-kind and Control rows and the retired Root controls row, with the producer owner's quotations left out. It carries no Workbench Template row: that term is LLM Workbench's own product (the producer and product decision), so a generic room has nothing to define there. This is the recorded exemption for that one row.
 
+## Retired Controls Wording Outside The Lexicon
+
+Inventory made by the Lexicon writer lane at integration be0450fe: every line that contains the word "control" or "controls" in `AGENTS.md`, `RUNBOOK.md`, `README.md`, `BLUEPRINT.md` (none) and the markdown files under `templates/` other than `templates/LEXICON.md`, found with a case-insensitive whole-word search on each file at that tree. The Lexicon itself is repaired and guarded by a test; these files belong to the [Contract Carrier Pointer-Brief Rewrite](../S-004C-contract-carrier-pointer-brief-rewrite/SPEC.md) and the other Specs that own them, so this Spec records the drift and does not write them. The owner's answer retires "root controls", and "controls" for files, as stale; a line is sorted below without reading its meaning in context, so the owner of each file confirms the sense of each "other" line when it edits the file. Line numbers read at that tree.
+
+- Uses the retired phrase "root control" or "root controls" (24 lines, drift awaiting the rewrite):
+  - `AGENTS.md` (1): lines 135.
+  - `RUNBOOK.md` (11): lines 528,687,688,690,725,748,791,867,1290,1930,2011.
+  - `templates/ADOPTION.md` (7): lines 42,75,163,183,254,328,334.
+  - `templates/AGENTS.md` (1): lines 124.
+  - `templates/GENESIS.md` (1): lines 7.
+  - `templates/RUNBOOK.md` (1): lines 299.
+  - `templates/wiki/AGENTS.md` (2): lines 25,32.
+- Other uses of "control" or "controls" (135 lines): some name a file (drift awaiting the rewrite), and some use the word in another sense, such as a mechanical check, a safeguard or a one-action tool, which the Control row now defines and which are not drift. Each is for the owner of the file to sort when it next edits the line:
+  - `AGENTS.md` (12): lines 64,93,127,146,152,195,315,364,380,495,507,515.
+  - `RUNBOOK.md` (39): lines 27,31,39,189,192,255,263,306,529,685,686,691,716,735,749,750,751,753,781,786,800,853,1057,1365,1418,1620,1858,1863,1932,1933,2004,2010,2032,2078,2090,2135,2136,2138,2372.
+  - `README.md` (14): lines 3,31,34,66,81,164,176,178,196,225,286,287,297,300.
+  - `templates/ADOPTION.md` (21): lines 3,7,32,111,161,200,201,244,262,263,265,267,269,270,271,273,318,320,321,322,354.
+  - `templates/AGENTS.md` (6): lines 62,91,138,180,397,407.
+  - `templates/GENESIS.md` (10): lines 3,18,51,110,121,337,342,354,385,397.
+  - `templates/README.md` (5): lines 13,30,37,58,69.
+  - `templates/RUNBOOK.md` (15): lines 250,252,254,301,303,479,829,1041,1046,1106,1152,1156,1290,1313,1387.
+  - `templates/WORKBENCH_FEEDBACK.md` (1): lines 8.
+  - `templates/wiki/MEMORY.project.md` (1): lines 25.
+  - `templates/wiki/MEMORY.root.md` (2): lines 22,60.
+  - `templates/wiki/README.md` (4): lines 36,42,45,46.
+  - `templates/wiki/SCHEMA.md` (4): lines 25,127,155,182.
+  - `templates/wiki/design-concepts/README.md` (1): lines 72.
+- Kept, because the word sits in a heading or a public name the owner's answer leaves until renamed on its own (Safety And Change Control, Long Session Control, version control, control-fidelity, access control and similar) (16 lines):
+  - `AGENTS.md` (4): lines 355,357,463,614.
+  - `RUNBOOK.md` (6): lines 246,248,778,785,787,2267.
+  - `README.md` (1): lines 260.
+  - `templates/ADOPTION.md` (1): lines 204.
+  - `templates/AGENTS.md` (2): lines 363,517.
+  - `templates/RUNBOOK.md` (1): lines 1234.
+  - `templates/wiki/SCHEMA.md` (1): lines 100.
+
 ## Non-Goals
 
 Rewriting the Workbench, Project, Portable Workbench, Evaluation or Harness rows (the AI Coding Dictionary Terms Spec owns them); carrying the verbs into skills, tools, templates beyond the Lexicon mirror, or the Landmark Tracker; renaming any command, status, tool, test, file or Spec slug; the Contract carrier rewrite; the Blueprint page itself; deciding the Runbook's or the Lexicon's artifact kind; implementing another capability.
@@ -127,13 +163,13 @@ No Tasks cut. At Plan, use current Actuality to cut small complete-path slices. 
 
 ## Acceptance Criteria
 
-- [ ] `LEXICON.md` has exactly one row each for Owner, Room, Workbench Template, Scaffolding, Contract artifact, Routing artifact, Architecture artifact, Control and Workflow verb, each stating the owner's confirmed meaning and its distinction from its neighbors.
-- [ ] Each of the fourteen workflow verbs has exactly one row stating its confirmed meaning, and the Workflow row states the open verb set and the delivery workflow Idea, Align, Confirm, Map, Plan, Journey, Approve, Delivered, Clean Up.
-- [ ] The Align, Workflow, Blueprint, Root controls and Foundry rows no longer contradict the owner's answers recorded above, and the Lexicon no longer uses "controls" for files except in public names and retired-name rows.
-- [ ] A decision record carries the Journey correction and the current verb decision, ADR-000X is narrowed or superseded for the changed points through the record lifecycle, and no active accepted decision claim still says Journey is Map, Plan, Implement, Review and Verify.
-- [ ] No row assigns a meaning the owner did not confirm; each open question above is answered in the Spec with its evidence or left recorded as open.
-- [ ] The template mirror carries the generic rows, or the exemption is recorded with its reason.
-- [ ] Current-facing uses of the retired "controls" wording outside the Lexicon are inventoried and either corrected or recorded as drift for the Contract carrier rewrite.
+- [x] `LEXICON.md` has exactly one row each for Owner, Room, Workbench Template, Scaffolding, Contract artifact, Routing artifact, Architecture artifact, Control and Workflow verb, each stating the owner's confirmed meaning and its distinction from its neighbors. Met by TK-006C; the control-fidelity case checks each row once in the root Lexicon (Workbench Template root only).
+- [x] Each of the fourteen workflow verbs has exactly one row stating its confirmed meaning, and the Workflow row states the open verb set and the delivery workflow Idea, Align, Confirm, Map, Plan, Journey, Approve, Delivered, Clean Up. Met by TK-006D; the Map verb shares the Map row.
+- [x] The Align, Workflow, Blueprint, Root controls and Foundry rows no longer contradict the owner's answers recorded above, and the Lexicon no longer uses "controls" for files except in public names and retired-name rows. Met by TK-006C, TK-006D and TK-006E; the retired-wording test excuses each kept use by exact text.
+- [x] A decision record carries the Journey correction and the current verb decision, ADR-000X is narrowed or superseded for the changed points through the record lifecycle, and no active accepted decision claim still says Journey is Map, Plan, Implement, Review and Verify. Met by TK-006F: ADR-000X is amended in place under the amendment-first rule and not superseded, because the owner asked that adding verbs supersede nothing; the test finds no active record stating the replaced Journey.
+- [x] No row assigns a meaning the owner did not confirm; each open question above is answered in the Spec with its evidence or left recorded as open. Met: the six open questions are answered in Decisions And Contracts with their evidence; renaming the `S-###:delivered` qualifier stays recorded as the owner's call.
+- [x] The template mirror carries the generic rows, or the exemption is recorded with its reason. Met: every row but Workbench Template and Foundry is mirrored, and the exemption for those two producer terms is recorded.
+- [x] Current-facing uses of the retired "controls" wording outside the Lexicon are inventoried and either corrected or recorded as drift for the Contract carrier rewrite. Met by TK-006G: inventoried in Retired Controls Wording Outside The Lexicon and recorded as drift for the Contract carrier rewrite.
 - [ ] Named verification and remaining limitations are recorded without claiming owner approval.
 
 ## Testing Seams
@@ -158,6 +194,7 @@ Run the targeted vocabulary, control-fidelity and decision-record tests and the 
 | 2026-10-03 | TK-006D | Task closed | Red 73e4610e then green: control-fidelity 33/33, test-adr 56/56, full suite on clean 75af5dbf all pass except one temp-directory race in test-spec-workbench that passes alone 59/59 | Lexicons carry the workflow verb rows; Align meaning check updated | Blueprint and Foundry repairs, decision record, controls inventory and Workflow Verbs article remain |
 | 2026-10-03 | TK-006E | Task closed | Red c0092e9c then green: control-fidelity 35/35, test-adr 56/56, full AGENTS suite 48/48 on clean ce96ae40 | Blueprint and Foundry rows repaired; the Wiki router routes the two delivery pages and names the four-part Blueprint | Decision record, controls inventory and Workflow Verbs article remain |
 | 2026-10-03 | TK-006F | Task closed | Red bb222f94 then green: control-fidelity 36/36, test-adr 56/56, full AGENTS suite 48/48 on clean ff89e6a0 | ADR-000X amended in place under ADR-000A's amendment-first rule: open verb set and the Journey correction; nothing superseded | Controls inventory, Workflow Verbs article and cold-reader probe remain; the release proof DDR needs a visible correction |
+| 2026-10-03 | TK-006G | Task closed | Red then green: control-fidelity 37/37, wiki validate, full AGENTS suite 48/48 on clean 71681b31, cold-reader probe answered | Workflow Verbs article rewritten for the open verb set, delivery workflow and Journey correction; retired controls wording inventoried in the Spec | Assembled review and owner Human QA; carrier rewrite handles the controls wording outside the Lexicon |
 
 ## Completion Result
 

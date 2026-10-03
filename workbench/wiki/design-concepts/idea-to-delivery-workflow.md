@@ -31,15 +31,16 @@ structured account.
 
 ## The loop in the verbs
 
-The workflow has eight verbs: Idea, Align, Confirm, Map, Plan, Implement,
-Review and Verify. The [Workflow Verbs](workflow-verbs.md) page explains them.
-Map through Verify together are one Journey, and the workflow loops back to
-Align after it:
+The delivery workflow reads Idea, Align, Confirm, Map, Plan, Journey, Approve,
+Delivered, Clean Up; the set of workflow verbs is open, and the
+[Workflow Verbs](workflow-verbs.md) page explains them. Journey is the build
+loop, Implement, Check, Review and Verify, with Map and Plan before it, and the
+workflow loops back to Align when the owner sends the result back at Approve:
 
 ```text
-Idea -> Align -> Confirm -> Journey (Map, Plan, Implement, Review, Verify)
-          ^                                                  |
-          +---------------- Human QA fails: back to Align ---+
+Idea -> Align -> Confirm -> Map -> Plan -> Journey -> Approve -> Delivered -> Clean Up
+          ^                                              |
+          +-------------- sent back at Approve ----------+
 ```
 
 The owner brings an idea. Before it is clear enough to Align, the owner may
