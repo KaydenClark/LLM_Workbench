@@ -3,7 +3,7 @@
 **Task ID:** TK-005A
 **Spec ID:** S-003X
 **Slice:** Mirror the installed DDR collection, terms and read words into the Lexicons
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-004W, TK-004X, TK-004Y, TK-004Z
 **Destination:** spec-acceptance: S-003X Acceptance Criteria box 6 (source behavior, templates, the manifest declaration, Genesis and the update route agree) for the Lexicon rows, and the Spec's Documentation Impact
