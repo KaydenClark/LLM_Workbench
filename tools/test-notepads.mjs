@@ -1332,8 +1332,12 @@ test('a held publish token refuses the write as stale-revision and leaves the no
     // An interrupted writer leaves its token behind. Once it is older than the
     // reclaim age the next writer removes it and proceeds; the previous valid
     // record was never touched.
+    // A stalled holder stages the bytes it was about to publish inside its
+    // token; reclaiming the token removes them, so they can never land late.
+    fs.writeFileSync(path.join(tokenDir, 'content'), JSON.stringify({ ...JSON.parse(before), revision: 2, title: 'Forged by a stalled writer' }));
     const abandoned = new Date(Date.now() - 60_000);
     fs.utimesSync(path.join(tokenDir, 'owner'), abandoned, abandoned);
+    fs.utimesSync(path.join(tokenDir, 'content'), abandoned, abandoned);
     fs.utimesSync(tokenDir, abandoned, abandoned);
     const reclaimed = appendEntry(dir, { note: created.note, revision: 1, kind: 'finding', topic: 'reclaimed', content: 'Lands after reclaim' });
     assert.equal(reclaimed.status, 'appended', JSON.stringify(reclaimed));
@@ -1342,6 +1346,8 @@ test('a held publish token refuses the write as stale-revision and leaves the no
     const stored = JSON.parse(fs.readFileSync(file, 'utf8'));
     assert.equal(stored.entries.length, 1);
     assert.equal(stored.entries[0].content, 'Lands after reclaim');
+    assert.equal(stored.title, 'Notepad runtime', 'the stalled writer\'s staged bytes were discarded with its token');
+    assert.ok(!fs.readdirSync(path.dirname(file)).some((name) => name.startsWith('.write-') || name.endsWith('.publish')), 'no staging or token directory outlives the write');
     assert.equal(validateNote(dir, created.note).status, 'valid');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
