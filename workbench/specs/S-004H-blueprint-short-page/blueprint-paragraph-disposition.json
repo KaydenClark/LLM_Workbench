@@ -1,0 +1,1598 @@
+{
+  "schemaVersion": 1,
+  "scope": "Paragraph-level disposition of the Blueprint and its template as they stood before the four-part swap. Historical text is evidence, not a second current control. Each claim names the homes that exist on the tree; a claim an accepted record already carries has no new text.",
+  "sources": [
+    {
+      "path": "BLUEPRINT.md",
+      "commit": "c10fb8dacb63b67e5c14bae8698e03bcb505d684",
+      "claims": [
+        {
+          "id": "root-001",
+          "text": "# LLM Workbench - Blueprint\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "The title is kept by the short page in the same form.",
+          "section": "title"
+        },
+        {
+          "id": "root-002",
+          "text": "## Product Destination\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "The eight-section heading retires with the shape; the four-part page replaces it.",
+          "section": "Product Destination"
+        },
+        {
+          "id": "root-003",
+          "text": "LLM Workbench is a portable operating harness through which a person can entrust\nan AI agent with a software project. The project itself carries enough product\nunderstanding, authority boundaries, working context and evidence for another\ncapable agent to continue it without the owner reconstructing the conversation.\n\n",
+          "disposition": "replaced-claim",
+          "owner": "BLUEPRINT.md",
+          "homes": [
+            {
+              "kind": "short-page",
+              "owner": "BLUEPRINT.md",
+              "note": "What it is"
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000T-the-workbench-is-an-agentic-management-system-not-a-harness.md",
+              "note": "The workbench is an agentic management system, not an operating harness; the old opening is replaced."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000H-the-context-lives-in-github-so-work-can-move-to-the-cloud-at-any-time.md",
+              "note": "Everything another agent needs to continue lives in the project repository."
+            }
+          ],
+          "reason": "The old opening, a portable operating harness, is replaced, not carried: the owner's harness answer says the workbench is an agentic management system and a harness means what it always has. The point that another capable agent can continue the project without the owner reconstructing the conversation is carried by the repository-context decision.",
+          "section": "Product Destination"
+        },
+        {
+          "id": "root-004",
+          "text": "## People And Problems Served\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "The eight-section heading retires with the shape; the four-part page replaces it.",
+          "section": "People And Problems Served"
+        },
+        {
+          "id": "root-005",
+          "text": "The owner supplies intent and consequential decisions. Agents turn that intent\ninto scoped, verified work and maintain the sources that make it understandable.\nThe Workbench serves both: it reduces repeated explanation and routine owner\ncoordination while keeping meaningful choices and publication under human control.\nA fresh collaborator can understand the product without reading its whole history.\n\n",
+          "disposition": "relocate-claim",
+          "owner": "BLUEPRINT.md",
+          "homes": [
+            {
+              "kind": "short-page",
+              "owner": "BLUEPRINT.md",
+              "note": "Who it serves"
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000C-confirming-a-concept-authorizes-the-agents-to-carry-it-to-its-endpoint.md",
+              "note": "Confirmation authorizes the agents; the owner supplies intent and decisions."
+            },
+            {
+              "kind": "contract",
+              "owner": "AGENTS.md",
+              "note": "Publication stays an owner choice: Git Rules (only the owner promotes integration to main) and Edit Scope."
+            }
+          ],
+          "reason": "People served move to the short page; the human-control line is carried by the Contract rules named.",
+          "section": "People And Problems Served"
+        },
+        {
+          "id": "root-006",
+          "text": "## Promised Outcomes\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "The eight-section heading retires with the shape; the four-part page replaces it.",
+          "section": "Promised Outcomes"
+        },
+        {
+          "id": "root-007",
+          "text": "An agent can find the right owner, reconstruct the desired result, select the\nappropriate behavior and finish the authorized assignment. Decisions retain their\nmeaning and corrections; unfinished work remains reachable. Verification states\nwhat actually happened, and delivery claims identify the achieved recovery boundary.\nThe owner can inspect both the product direction and the evidence behind progress.\n\n",
+          "disposition": "relocate-claim",
+          "owner": "BLUEPRINT.md",
+          "homes": [
+            {
+              "kind": "short-page",
+              "owner": "BLUEPRINT.md",
+              "note": "Promised outcomes"
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000V-gaps-are-flagged-never-faked.md",
+              "note": "Claims of done say what actually happened; gaps are flagged, never faked."
+            }
+          ],
+          "reason": "The promised outcomes are reduced to the short page outcomes; the recovery-boundary claim is Contract text.",
+          "section": "Promised Outcomes"
+        },
+        {
+          "id": "root-008",
+          "text": "## Desired Experience And Behavior\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "The eight-section heading retires with the shape; the four-part page replaces it.",
+          "section": "Desired Experience And Behavior"
+        },
+        {
+          "id": "root-009",
+          "text": "Ordinary language is sufficient to start deciding, specifying, building or\nhanding off. An agent follows the [Context Map](LEXICON.md#task-routing), loads\nonly relevant owners, and resolves routine details without asking the owner to\nrepeat settled answers. A specification-only request stays specification-only\nthrough every composed skill and every receiving agent.\n\n",
+          "disposition": "relocate-claim",
+          "owner": "BLUEPRINT.md",
+          "homes": [
+            {
+              "kind": "short-page",
+              "owner": "BLUEPRINT.md",
+              "note": "Promised outcomes"
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000C-confirming-a-concept-authorizes-the-agents-to-carry-it-to-its-endpoint.md",
+              "note": "Agents resolve what project evidence can answer instead of asking the owner to repeat settled answers."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0042-traverse-dont-search-is-core-workbench-navigation.md",
+              "note": "Traverse, do not search: follow the Context Map to the relevant owners."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0045-skill-composition-within-inherited-scope.md",
+              "note": "A specification-only request stays specification-only through composed skills."
+            }
+          ],
+          "reason": "Ordinary-language entry, the Context Map route and spec-only stay with their accepted records.",
+          "section": "Desired Experience And Behavior"
+        },
+        {
+          "id": "root-010",
+          "text": "One workflow carries an idea to delivered software, and an agent can always say\nwhich verb the work is on: Idea, Align, Confirm, Map, Plan, Implement, Review or\nVerify. Map through Verify are one Journey, and the workflow loops back to Align\nafter it. Delivery within it is recursive Spec and Task delivery.\n\n",
+          "disposition": "relocate-claim",
+          "owner": "workbench/docs/ddr/000A-the-workbench-aligns-to-the-owner-s-concept-and-delivers-on-it-recursively.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000A-the-workbench-aligns-to-the-owner-s-concept-and-delivers-on-it-recursively.md",
+              "note": "Align, confirm and deliver recursively; the loop returns to Align."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md",
+              "note": "The eight workflow verbs and the Journey."
+            },
+            {
+              "kind": "wiki",
+              "owner": "workbench/wiki/design-concepts/idea-to-delivery-workflow.md",
+              "note": "The verbs as a loop."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
+              "note": "Delivery within the Journey is Spec and Task delivery."
+            }
+          ],
+          "reason": "The verb list and the Journey are accepted decisions; the explanation moves to the Wiki.",
+          "section": "Desired Experience And Behavior"
+        },
+        {
+          "id": "root-011",
+          "text": "An owner may explore an idea in conversation before it is clear enough to\nAlign. `grill-me`, brainstorming or wayfinding can open Align; a grilling\nsession starts through `grill-me`. Align reaches for research as far as a named\nuncertainty requires, and ends when owner and agent explicitly confirm a shared\ndesign concept. That confirmed concept is what gets blueprinted, so nothing is\nspecified from an understanding the two have not agreed on. A prototype is\noptional rather than a standard rung: it sits after the Blueprint and before a\nSpec, where existing evidence cannot settle whether an approach is plausible,\nand prototype code carries forward into the product only once it meets the same\nimplementation and verification requirements as any other work.\n\n",
+          "disposition": "replaced-claim",
+          "owner": "workbench/docs/ddr/000B-only-a-confirmed-concept-is-mapped-planned-or-implemented.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000B-only-a-confirmed-concept-is-mapped-planned-or-implemented.md",
+              "note": "Only a confirmed concept is mapped, planned or implemented."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000D-prototype-needs-no-map-and-lands-nothing-in-enduring-context.md",
+              "note": "A prototype is optional and lands nothing in enduring context."
+            },
+            {
+              "kind": "wiki",
+              "owner": "workbench/wiki/design-concepts/idea-to-delivery-workflow.md",
+              "note": "Exploration, Align and Confirm in the verbs."
+            },
+            {
+              "kind": "skill",
+              "owner": "workbench/skills/grilling/SKILL.md",
+              "note": "How a grilling starts and how far research goes."
+            }
+          ],
+          "reason": "The old placement of an optional prototype after the Blueprint and before a Spec is replaced by the owner's later lock in the prototype decision (it can come before Confirm or between Confirm and Plan, and lands nothing in enduring context). The other claims, exploration before Align and what ends Align, are carried unchanged.",
+          "section": "Desired Experience And Behavior"
+        },
+        {
+          "id": "root-012",
+          "text": "Grilling records answers and corrections as they arrive. Working notes remain\ncompact and useful through interruption; a resumed agent checks live state and\ncontinues the same objective. A requested handoff is readable Markdown containing\nthe job, its boundaries, accessible context and one next action. Failed operations\nremain visible and recoverable instead of becoming unsupported completion claims.\n\n",
+          "disposition": "relocate-claim",
+          "owner": "workbench/docs/ddr/000V-gaps-are-flagged-never-faked.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000V-gaps-are-flagged-never-faked.md",
+              "note": "Failed operations stay visible instead of becoming unsupported completion claims."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000K-a-handoff-is-the-readable-map-to-the-high-fidelity-context.md",
+              "note": "A handoff is the readable map to the high-fidelity context."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0040-json-notepads-preserve-objective-continuity.md",
+              "note": "JSON notepads preserve objective continuity."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000L-a-notepad-belongs-to-its-objective-and-every-chat-working-that-objective-writes-to-it.md",
+              "note": "A notepad belongs to its objective."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0043-workbench-continuity-through-maintained-owners.md",
+              "note": "Continuity runs through maintained owners."
+            }
+          ],
+          "reason": "Grilling records, working notes and handoffs are accepted decisions.",
+          "section": "Desired Experience And Behavior"
+        },
+        {
+          "id": "root-013",
+          "text": "## Integrated System Design\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "The eight-section heading retires with the shape; the four-part page replaces it.",
+          "section": "Integrated System Design"
+        },
+        {
+          "id": "root-014",
+          "text": "The root controls form the entry surface. This Blueprint describes the desired\nproduct, active ADR decisions explain cross-cutting architectural choices, the\nLexicon connects meanings and owners, and the Wiki is the evolving synthesis\nevery agent reads and updates. [Claim-level ownership](workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md)\nkeeps these surfaces coherent without making a whole file one kind of authority.\n\n",
+          "disposition": "relocate-claim",
+          "owner": "workbench/wiki/design-concepts/decision-records-and-the-concept-map.md",
+          "homes": [
+            {
+              "kind": "wiki",
+              "owner": "workbench/wiki/design-concepts/decision-records-and-the-concept-map.md",
+              "note": "The root controls and how the artifact kinds fit together."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md",
+              "note": "Claim-level ownership and active ADR decisions."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md",
+              "note": "The root surface and Contract membership."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md",
+              "note": "The Contract as an obligation claim set."
+            }
+          ],
+          "reason": "Root controls and claim-level ownership are accepted decisions with a Wiki explanation.",
+          "section": "Integrated System Design"
+        },
+        {
+          "id": "root-015",
+          "text": "Delivery is designed at three altitudes. The Blueprint is the product-level\ndestination and the journey that reaches it: the whole of counting to 100. A\nSpec is one scoped objective with its own destination, PRD-shaped, the next\nnumber to reach. Tasks do the counting; a Task is the bounded executable work\nthat advances a destination or repairs it. Stacked Specs realize the Blueprint\njourney. Scope and destination decide where work belongs, never how much work\nit turns out to be: a gap against a destination that already exists is\ncorrective Task work however many Tasks it takes, and a distinct scoped\nobjective with a destination of its own warrants a new Spec.\n\n",
+          "disposition": "replaced-claim",
+          "owner": "workbench/wiki/design-concepts/delivery-altitudes.md",
+          "homes": [
+            {
+              "kind": "wiki",
+              "owner": "workbench/wiki/design-concepts/delivery-altitudes.md",
+              "note": "Counting to 100 and the three altitudes."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
+              "note": "Blueprint, Spec and Task are three altitudes of one delivery chain."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md",
+              "note": "The landmark is the size above Specs."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000M-working-artifacts-are-scaffolding-cleared-away-once-their-knowledge-is-kept.md",
+              "note": "A later gap against delivered work becomes a new Spec under its landmark or the Blueprint."
+            },
+            {
+              "kind": "spec",
+              "owner": "workbench/specs/S-004F-corrective-work-rules/SPEC.md",
+              "note": "The Corrective Work Rules Spec that replaced the old corrective-Task claim."
+            }
+          ],
+          "reason": "The old claim that a gap against an existing destination is corrective Task work however many Tasks it takes is replaced, not carried: the owner's corrective-work answers (carried in the Corrective Work Rules Spec and the amended decision records) say a later gap against delivered work is a new Spec, and a miss found by a check continues the same Task unless the fix rewrites it. The rest of the altitude passage moves to the Wiki page and the altitudes decision. The altitude passage becomes a Wiki page; the decision stays an ADR.",
+          "section": "Integrated System Design"
+        },
+        {
+          "id": "root-016",
+          "text": "Each of these truths has a durable owner, and no working file is one of them.\nThe Blueprint owns product direction; the Wiki owns the readable, evolving\nsynthesis of what the project is and how it works; ADR records own\nconsequential architectural decisions; source, tests and assets own\nimplemented actuality and its proof; Git preserves recoverable history. `SPEC.md` and `TASK.md` are transient working artifacts that carry\nscope, state and evidence while their work is under way, and a later reader\ndepends on the durable owners rather than on them.\n\n",
+          "disposition": "relocate-claim",
+          "owner": "workbench/docs/ddr/000M-working-artifacts-are-scaffolding-cleared-away-once-their-knowledge-is-kept.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000M-working-artifacts-are-scaffolding-cleared-away-once-their-knowledge-is-kept.md",
+              "note": "Working artifacts are scaffolding, cleared away once their knowledge is kept."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000G-every-kind-of-truth-has-one-maintained-home.md",
+              "note": "Every kind of truth has one maintained home."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md",
+              "note": "Durable owners and claim-level ownership."
+            }
+          ],
+          "reason": "The durable-owner list and the transient Specs and Tasks are accepted decisions.",
+          "section": "Integrated System Design"
+        },
+        {
+          "id": "root-017",
+          "text": "The [Landmark Tracker](workbench/wiki/design-concepts/landmark-tracker.md)\nconnects evolving understanding to durable explanations. Destination Question\nCards (DQCs) synthesize related grilling questions and preserve unresolved\nmatters, changes, expected results and evidence. Landmarks bring those concepts\ntogether around important features or framework pillars; their importance earns\na place in the Blueprint. They can overlap, begin before a Spec and remain\nuseful after several Specs finish. Further landmarks emerge from DQCs, so an\nexhaustive inventory is never a prerequisite to building the foundation.\n\n",
+          "disposition": "replaced-claim",
+          "owner": "workbench/wiki/design-concepts/landmark-tracker.md",
+          "homes": [
+            {
+              "kind": "wiki",
+              "owner": "workbench/wiki/design-concepts/landmark-tracker.md",
+              "note": "The Landmark Tracker, DQCs and landmarks."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md",
+              "note": "The Tracker connects evolving understanding to durable knowledge."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md",
+              "note": "Landmarks are LANDMARK.md artifacts one size above Specs."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000O-the-blueprint-is-a-high-level-summary-of-the-direction-and-makes-us-ask-questions.md",
+              "note": "A sentence big enough to need its own map becomes a landmark."
+            }
+          ],
+          "reason": "The old claim that a landmark's importance earns it a place in the Blueprint is replaced, not carried: the owner's landmark test runs the other way (a Blueprint sentence big enough to need its own map becomes a landmark) and is carried by the Blueprint decision. The Tracker description moves to its Wiki page.",
+          "section": "Integrated System Design"
+        },
+        {
+          "id": "root-018",
+          "text": "DQCs and landmarks keep the structured account; the Wiki summarizes them as\nthey evolve. Grilling notepads retain useful discussion history, corrections\nand handoff context. Tracker generates a compact view of the related records\nand their documentation progress; Taskboard monitors implementation. Existing\nsources and owners keep their jobs. A DQC may remain ungrouped, with no\nlandmark, until the developing concept suggests one. The Wiki explains that\nunderstanding as it evolves, in readable Markdown, naming every identifier it\ncites with the artifact's name and context; several Specs can contribute to\none article. These records add no instruction authority.\n\n",
+          "disposition": "relocate-claim",
+          "owner": "workbench/wiki/design-concepts/landmark-tracker.md",
+          "homes": [
+            {
+              "kind": "wiki",
+              "owner": "workbench/wiki/design-concepts/landmark-tracker.md",
+              "note": "DQCs, notepads, Tracker, Taskboard and Wiki roles."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md",
+              "note": "The Tracker decision."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md",
+              "note": "The Wiki is the evolving synthesis."
+            },
+            {
+              "kind": "contract",
+              "owner": "AGENTS.md",
+              "note": "No record or projection can manufacture authority: Instruction Authority and Session Records."
+            }
+          ],
+          "reason": "The Tracker, the Wiki and the no-authority rule have accepted homes.",
+          "section": "Integrated System Design"
+        },
+        {
+          "id": "root-019",
+          "text": "Documentation progresses through the workflow verbs Idea, Align, Confirm, Map,\nPlan, Implement, Review and Verify. Related items can contribute mixed fractions\nacross those steps. Each distinct item contributes one unit total in the first\nversion, and a shared item counts once per aggregate. A completed Task alone\ndoes not prove that the expected understanding reached its durable destination.\nWorkflow activity maintains the source records with reasons and evidence;\nTracker reflects the distribution instead of resetting cards or assigning a\nsingle overall stage. An answered question states its Expected result and the\ndurable home when known; Result names achieved delivery. Unanswered questions\nneed neither fabricated answers nor predetermined documentation destinations.\n\n",
+          "disposition": "relocate-claim",
+          "owner": "workbench/wiki/design-concepts/landmark-tracker.md",
+          "homes": [
+            {
+              "kind": "wiki",
+              "owner": "workbench/wiki/design-concepts/landmark-tracker.md",
+              "note": "Documentation progress across the verbs."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md",
+              "note": "The Tracker decision."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md",
+              "note": "The workflow verbs."
+            }
+          ],
+          "reason": "Documentation progress is explained on the Tracker page.",
+          "section": "Integrated System Design"
+        },
+        {
+          "id": "root-020",
+          "text": "The starting concept map spans the portable room and its workflow; shared\nunderstanding and its Tracker; implementation visibility; ownership, artifacts,\nknowledge and navigation; agent behavior; continuity; verification and feedback;\nand room creation, updates, relationships and boundaries. The linked readable\nmodel preserves the initial landmark titles as an evolving map. General release\nbehavior belongs to the workflow; a version rollout is delivery work.\n\n",
+          "disposition": "replaced-claim",
+          "owner": "workbench/landmark-tracker/landmarks/LMK-000K.json",
+          "homes": [
+            {
+              "kind": "landmark",
+              "owner": "workbench/landmark-tracker/landmarks/LMK-000K.json",
+              "note": "The starting landmark records, replaced by the confirmed seven-landmark set when the migration Spec lands."
+            },
+            {
+              "kind": "spec",
+              "owner": "workbench/specs/S-004A-landmark-record-migration-and-tracker-regrouping/SPEC.md",
+              "note": "Landmark record migration and Tracker regrouping."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+              "note": "Release behavior belongs to the workflow; no version-wide approval."
+            }
+          ],
+          "reason": "The old starting concept map is replaced, not carried: the owner locked a seven-landmark set to replace the 24-item starting inventory. The landmark records and the migration Spec are its homes until the migration lands.",
+          "section": "Integrated System Design"
+        },
+        {
+          "id": "root-021",
+          "text": "A manifest resolves the support collections, the managed local runtime and the\nmanaged core skills. Core skills compose reusable behavior within the caller's\nscope. The upstream-owned core ships inside every room in its skills lane,\nreached by both provider discovery adapters from a fresh clone, alongside\nroom-owned extensions in the same lane; a personal catalog is a backup and\npublication target that no room depends on\n([skills lane](workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md),\n[Core ownership](workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md)).\n\n",
+          "disposition": "relocate-claim",
+          "owner": "workbench/docs/ddr/000J-the-behaviors-agents-need-ship-inside-every-room.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000J-the-behaviors-agents-need-ship-inside-every-room.md",
+              "note": "The behaviors agents need ship inside every room."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000H-the-context-lives-in-github-so-work-can-move-to-the-cloud-at-any-time.md",
+              "note": "Everything a session needs lives in the project repository."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md",
+              "note": "Core skills ship in the skills lane."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md",
+              "note": "Core, personal, shared and room-local skill ownership."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0045-skill-composition-within-inherited-scope.md",
+              "note": "Skill composition within inherited scope."
+            }
+          ],
+          "reason": "The manifest, skills lane and personal catalog are accepted decisions.",
+          "section": "Integrated System Design"
+        },
+        {
+          "id": "root-022",
+          "text": "Local JSON notepads preserve working-session reasoning, source references and corrections.\nDQCs and landmarks carry the current evolving concept account; grilling notes\nincreasingly provide historical and handoff context.\nSupported settled claims move into their durable owners before cleanup. Optional\nprivate transport can carry selected live context across devices with explicit\nacknowledgment and conflict preservation; ordinary local work remains independent.\n\n",
+          "disposition": "relocate-claim",
+          "owner": "workbench/docs/adr/0040-json-notepads-preserve-objective-continuity.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0040-json-notepads-preserve-objective-continuity.md",
+              "note": "JSON notepads."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000L-a-notepad-belongs-to-its-objective-and-every-chat-working-that-objective-writes-to-it.md",
+              "note": "Notepad ownership."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0054-direct-promotion-into-durable-owners.md",
+              "note": "Direct promotion into durable owners."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0051-optional-private-git-transport-for-session-continuity.md",
+              "note": "Optional private Git transport."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0043-workbench-continuity-through-maintained-owners.md",
+              "note": "Continuity through maintained owners."
+            }
+          ],
+          "reason": "Notepads, promotion and optional transport are accepted decisions.",
+          "section": "Integrated System Design"
+        },
+        {
+          "id": "root-023",
+          "text": "Updating a target project and updating the canonical Workbench have different\ndrift boundaries. A Workbench update must inspect the Workbench's own controls,\nSpecs, projections, procedures, manifest, templates and managed artifacts for\nstale or contradictory current guidance before and after the update. A\nstructurally valid render or test run is not semantic freshness proof. The\nWorkbench is not updated successfully if a memoryless agent could still be\nmisdirected by an artifact that presents completed work as pending.\n\n",
+          "disposition": "relocate-claim",
+          "owner": "workbench/docs/adr/0055-workbench-update-requires-self-drift-check.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0055-workbench-update-requires-self-drift-check.md",
+              "note": "A workbench update requires a self-drift check."
+            }
+          ],
+          "reason": "The update drift boundary is an accepted decision.",
+          "section": "Integrated System Design"
+        },
+        {
+          "id": "root-024",
+          "text": "## Cross-Cutting Qualities And Constraints\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "The eight-section heading retires with the shape; the four-part page replaces it.",
+          "section": "Cross-Cutting Qualities And Constraints"
+        },
+        {
+          "id": "root-025",
+          "text": "Portability, safe autonomy, source fidelity and recoverability apply throughout.\nPlain files and small deterministic local tools support multiple configured hosts.\nThe system exposes compatibility and unavailable capabilities without silently\nreplacing personal work or claiming support from file presence alone.\n\n",
+          "disposition": "relocate-claim",
+          "owner": "workbench/docs/ddr/000H-the-context-lives-in-github-so-work-can-move-to-the-cloud-at-any-time.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000H-the-context-lives-in-github-so-work-can-move-to-the-cloud-at-any-time.md",
+              "note": "The context lives in the repository."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000C-confirming-a-concept-authorizes-the-agents-to-carry-it-to-its-endpoint.md",
+              "note": "Agents carry confirmed work without new owner gates."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000V-gaps-are-flagged-never-faked.md",
+              "note": "No support is claimed from file presence alone."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0052-node-javascript-remains-the-portable-runtime.md",
+              "note": "Node JavaScript remains the portable runtime."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0053-minimum-configured-host-capability-and-evidence-boundaries.md",
+              "note": "Minimum configured-host capability and evidence boundaries."
+            }
+          ],
+          "reason": "Portability, plain files and host capability are accepted decisions.",
+          "section": "Cross-Cutting Qualities And Constraints"
+        },
+        {
+          "id": "root-026",
+          "text": "Instructions, accepted design, verified behavior and historical evidence remain\ndistinguishable. Privacy covers working content and metadata. Unrelated changes,\noriginal decisions, corrections and completed evidence survive migration.\nA structural check proves only its boundary; claims of improved agent reliability\nrequire repeated controlled observations with uncertainty and failures preserved.\n\n",
+          "disposition": "relocate-claim",
+          "owner": "workbench/docs/ddr/000V-gaps-are-flagged-never-faked.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000V-gaps-are-flagged-never-faked.md",
+              "note": "Claims say what actually happened."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0027-instruction-authority-is-separate-from-state-resolution.md",
+              "note": "Instruction authority is separate from state resolution."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0001-planes-classify-operations-not-artifacts.md",
+              "note": "Planes classify operations, not artifacts."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0047-preservation-contracts-for-genesis-adoption-and-upgrade.md",
+              "note": "Preservation contracts for Genesis, adoption and upgrade."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0044-evidence-for-claims-of-improved-agent-outcomes.md",
+              "note": "Evidence for claims of improved agent outcomes."
+            },
+            {
+              "kind": "contract",
+              "owner": "AGENTS.md",
+              "note": "Privacy: Safety And Change Control (never commit secrets or private data)."
+            }
+          ],
+          "reason": "Distinguishable planes, privacy, migration survival and outcome evidence are accepted decisions; the privacy rule is Contract text.",
+          "section": "Cross-Cutting Qualities And Constraints"
+        },
+        {
+          "id": "root-027",
+          "text": "## Desired Lifecycle\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "The eight-section heading retires with the shape; the four-part page replaces it.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "root-028",
+          "text": "New projects receive a coherent starter; existing projects adopt or explicitly\nupdate it while preserving their product truth and deliberate local differences.\nGenesis is first-time setup and leads into grilling so a new room can form its\nBlueprint. Setup and updates are separate from the governing idea-to-delivery\nworkflow below.\n\n",
+          "disposition": "replaced-claim",
+          "owner": "workbench/docs/ddr/000S-setup-drafts-everything-it-can-and-grilling-confirms-it.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000S-setup-drafts-everything-it-can-and-grilling-confirms-it.md",
+              "note": "Setup drafts everything it can and grilling confirms it."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0047-preservation-contracts-for-genesis-adoption-and-upgrade.md",
+              "note": "Preservation contracts for Genesis, adoption and upgrade."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0050-visible-deliberate-control-divergence.md",
+              "note": "Visible deliberate control divergence."
+            }
+          ],
+          "reason": "The old line that Genesis leads into grilling so a new room can form its Blueprint is refined, not carried as written: the owner locked that setup drafts everything it can and grilling confirms it, never a blank Blueprint. The adoption and update claims are carried unchanged.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "root-029",
+          "text": "The owner can revisit this destination map when deciding where work belongs.\nArrows show progression; braces show loops and branches, including the return\nto Align after failed Human QA. The map is the owner's source, carried exactly\nas he confirmed it on 2026-09-24 (recorded by commit `482dc6b`, delivered by\nPR #151); it is kept verbatim, never normalized, and the prose after it is a\nseparately labeled interpretation:\n\n",
+          "disposition": "replaced-claim",
+          "owner": "workbench/landmark-tracker/landmarks/LMK-000K.json",
+          "homes": [
+            {
+              "kind": "landmark",
+              "owner": "workbench/landmark-tracker/landmarks/LMK-000K.json",
+              "note": "The workflow landmark that holds the map."
+            },
+            {
+              "kind": "wiki",
+              "owner": "workbench/wiki/design-concepts/idea-to-delivery-workflow.md",
+              "note": "The owner map rewritten in the workflow verbs."
+            }
+          ],
+          "reason": "The old rule that the owner map is carried exactly as confirmed, kept verbatim and never normalized, is replaced, not carried: the owner said the map moves to the Workflow landmark and the Wiki, rewritten in the workflow verbs, and is no longer kept verbatim.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "root-030",
+          "text": "```text\nIdea\n  -> optional conversation to explore the idea\n  -> Align through grill-me, wayfinding, brainstorming and needed research\n  -> Confirm shared design concept\n  -> Blueprint the idea\n  -> {\n       Main branch\n         -> Integration branch\n              -> Spec branch {\n                   Create Spec\n                     -> Create Tasks\n                     -> Update Taskboard\n                     -> {\n                          Pick up a hot non-conflicting Task\n                            -> Create one Task branch/worktree from the Spec branch\n                            -> Implement\n                            -> QA / Verify\n                            -> Commit and push Task branch\n                            -> Review Task\n                            -> Merge Task into Spec branch\n                            -> Delete Task branch after containment\n                            -> Pick up next hot Task\n                            -> Repeat Tasks in parallel where they do not conflict\n                        }\n                     -> Repeat until the Spec is assembled\n                     -> Whole-Spec QA / Verify\n                     -> If findings: create corrective Tasks -> repeat Task loop\n                     -> If approved: merge Spec into Integration\n                 }\n              -> Owner Human QA on Integration\n              -> {\n                   Pass -> owner-only merge Integration into Main\n                   Fail -> return to Align\n                             -> revisit shared design concept / Blueprint as needed\n                             -> repeat delivery loop\n                 }\n     }\n```\n\n",
+          "disposition": "replaced-claim",
+          "owner": "workbench/landmark-tracker/landmarks/LMK-000K.json",
+          "homes": [
+            {
+              "kind": "landmark",
+              "owner": "workbench/landmark-tracker/landmarks/LMK-000K.json",
+              "note": "The workflow landmark; the owner confirmed on 2026-10-03 that the map moves to it."
+            },
+            {
+              "kind": "wiki",
+              "owner": "workbench/wiki/design-concepts/idea-to-delivery-workflow.md",
+              "note": "The map rewritten in the workflow verbs; the verbatim text stays recoverable at commit 482dc6beaa9fd4a0f85fe2f7c401781b0020c4ff."
+            }
+          ],
+          "reason": "The map is rewritten in the workflow verbs and no longer kept verbatim. Its line \"If findings: create corrective Tasks -> repeat Task loop\" is replaced, not carried: the amended two-gates decision says each finding is corrected by the same Task continuing unless the fix rewrites it. The other lines of the map are carried by the Wiki page.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "root-031",
+          "text": "**Reading the map (interpretation, not source).** The prose below reads the\nmap through the owner's separate-context review answers of 2026-09-24, whose\nreadback he confirmed; accepted\n[ADR-000F](workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md)\nrecords the QA gates and roles. Where the map shows a per-Task `QA / Verify`\nand `Review Task` step, read the Worker's own self-check and hand-back, not a\nseparate review gate.\n\n",
+          "disposition": "relocate-claim",
+          "owner": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+              "note": "Two QA gates, roles and the reading of the per-Task steps."
+            }
+          ],
+          "reason": "The interpretation of the map is an accepted decision.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "root-032",
+          "text": "The Blueprint owns the grand destination and what counting to 100 means. A\nPRD-shaped Spec owns a local destination and its completion meaning, like\nreaching 1 through 5; it is derived from Blueprint needs, active ADRs, verified\nevidence, Actuality and project- or Spec-required checks. Thin executable Tasks\nadvance that Spec one brick at a time, each about 0.1 of the count. The\nTaskboard is a Kanban projection for progress and coordination; Specs and Tasks\nretain substantive state and evidence.\n\n",
+          "disposition": "relocate-claim",
+          "owner": "workbench/wiki/design-concepts/delivery-altitudes.md",
+          "homes": [
+            {
+              "kind": "wiki",
+              "owner": "workbench/wiki/design-concepts/delivery-altitudes.md",
+              "note": "Counting to 100 and the Taskboard as projection."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
+              "note": "The altitudes."
+            }
+          ],
+          "reason": "The altitude explanation moves to the Wiki.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "root-033",
+          "text": "Delivery then repeats one loop. A need in the Blueprint creates a Spec; the Spec\ncreates its Tasks; the Taskboard projects their state so the next hot Task is\nvisible without reading the whole board. A Dispatcher sends a Worker to that hot\nTask; the Worker implements it with red/green TDD, verifies the behavior that\nactually resulted, self-checks its claims and proof, updates its card and hands\nback the proven Task branch. The finished Task is reconciled into its Spec and\nthen retired out of ordinary discovery, its branch cleaned up once the Spec\nbranch contains it, and the next hot Task follows, until the Spec is assembled.\n\n",
+          "disposition": "relocate-claim",
+          "owner": "workbench/wiki/design-concepts/idea-to-delivery-workflow.md",
+          "homes": [
+            {
+              "kind": "wiki",
+              "owner": "workbench/wiki/design-concepts/idea-to-delivery-workflow.md",
+              "note": "The delivery loop."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
+              "note": "The altitudes."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+              "note": "The QA gates."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000P-roles-scope-work-and-stances-define-the-job.md",
+              "note": "Roles scope work."
+            }
+          ],
+          "reason": "The delivery loop is explained on the workflow page.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "root-034",
+          "text": "A Task has no review or approval gate. It is one attempt at one step: its\nWorker self-checks that its claims are valid and backed by proof before handing\nback, and the Dispatcher reads that report and chooses the next step. Merging a\nTask into its Spec branch is coordination and containment, not QA. A Task that\nmisses its step is not reopened and not discarded: its report stays in the Spec\nevidence as diagnostic proof, its `TASK.md` stays the record until the Spec is\ncleaned up into the features Wiki, its card returns to In progress, its\nworktree is removed, and a new Task, named for its objective, fixes what the\ncheck found. Work that stops unexpectedly leaves what it recorded as it went.\n\n",
+          "disposition": "replaced-claim",
+          "owner": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+              "note": "No Task has a review or approval gate; the missed-Task model."
+            },
+            {
+              "kind": "spec",
+              "owner": "workbench/specs/S-004F-corrective-work-rules/SPEC.md",
+              "note": "The corrective-work rules are being reworked here; whichever lands first corrects the passage."
+            }
+          ],
+          "reason": "The old model, a missed Task is not reopened and a new Task fixes it, is replaced, not carried: the amended two-gates decision says the same Task continues with an adjusted handoff, and only a fix that rewrites the Task gets a new one. The no-review-gate and containment claims are carried unchanged. The Task gate passage is an accepted decision; the corrective rule is being changed by its own Spec.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "root-035",
+          "text": "When the Spec is assembled, its Dispatcher verifies the whole Spec against its\nown destination and the combined results of its Tasks, doing that QA itself or\ndispatching it and owning the result. The Director then approves the immutable\nassembled candidate in a separate context before it combines into integration;\nneither the Dispatcher nor any agent that implemented a Task in the candidate\ncan give that approval. A check that fails diagnoses the gap and creates\ncorrective Tasks under the still-open Spec, and the fresh candidate is checked\nagain. An approved Spec branch merges into integration. On the board, Needs\nreview holds an assembled Spec waiting for the Director's approval, and\nComplete holds approved work waiting for closure.\n\n",
+          "disposition": "replaced-claim",
+          "owner": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+              "note": "The Spec QA gate and the Director approval."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0037-independent-review-at-integration.md",
+              "note": "Independent review at integration."
+            },
+            {
+              "kind": "spec",
+              "owner": "workbench/specs/S-004F-corrective-work-rules/SPEC.md",
+              "note": "The Corrective Work Rules Spec that amended the corrective passage of the two-gates decision."
+            }
+          ],
+          "reason": "The old claim that a failed assembled check creates corrective Tasks under the still-open Spec is replaced, not carried: the amended two-gates decision says each finding is corrected under the open Spec by the same Task continuing unless the fix rewrites it. The Dispatcher QA and Director approval claims are carried unchanged. Assembled-Spec review is an accepted decision.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "root-036",
+          "text": "The owner performs Human QA on integration, the surface where the destinations\nare genuinely there; what that Human QA consists of is each project's own\nchoice. Its normal cadence follows the Director's approval of the version's\nSpecs, or the Director's escalation of their blockers, and ends in the\nowner-only merge of integration into main. That cadence is the described\ndefault, not the only permitted time: the owner chooses when to QA, whether at\na useful milestone, for one valued Spec or on an important escalation.\nApproval is recorded per Spec and bound to the content the owner inspected;\nmonitoring or a passing review is not approval.\n\n",
+          "disposition": "relocate-claim",
+          "owner": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+              "note": "The Human QA gate and its timing."
+            }
+          ],
+          "reason": "Owner Human QA is an accepted decision.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "root-037",
+          "text": "No Git merge closes a Spec. After the reviewed delivery on integration and the\nowner's approval, the approved change is verified on the default branch; only\nthen is the Spec completed, its current capability knowledge captured into the\nfeatures Wiki at that closure point, the Spec and its Tasks retired, and the\ntransient records discarded, with Git preserving recoverable history. A later\ngap against that same destination is a corrective Task that updates the\nreconciled record instead of reviving a closed Spec.\n\n",
+          "disposition": "replaced-claim",
+          "owner": "workbench/docs/ddr/000M-working-artifacts-are-scaffolding-cleared-away-once-their-knowledge-is-kept.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000M-working-artifacts-are-scaffolding-cleared-away-once-their-knowledge-is-kept.md",
+              "note": "Working artifacts are cleared away once their knowledge is kept."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+              "note": "Closure order: no merge closes a Spec."
+            }
+          ],
+          "reason": "The old claim that a later gap against a closed Spec is a corrective Task updating the reconciled record is replaced, not carried: the owner's answer, recorded in the scaffolding decision, is that a later gap against delivered work becomes a new Spec under its landmark or the Blueprint, never a revived Spec and never a correction anchored to a Wiki claim. The closure order and capture claims are carried unchanged. Closure, capture and discard are accepted decisions.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "root-038",
+          "text": "Branch topology expresses the scope of coordinated work: the Director covers\nthe project and integration, each Dispatcher its assigned Spec branch, and each\nWorker its Task branch. A Spec branch is cut from the\nintegration branch, each Task branch is cut from its Spec branch and worked in\nits own worktree, and proven Task results accumulate in the Spec branch until\nthe assembled Spec is approved. No role works from main. As destination design\nfrom the same answers, a Task that advances the Blueprint directly, with no\nintermediate Spec destination, has its Task branch cut from integration and\nmerged back into it: the Dispatcher sends its Worker from integration, verifies\nthe result and merges it, and the Director checks it there. `AGENTS.md` owns the\noperative gate, and this destination route never bypasses its separate-context\nreview before branches combine into integration. A direct Task that outgrows\none context, or a run of them chasing one objective, becomes a Spec.\n\n",
+          "disposition": "replaced-claim",
+          "owner": "workbench/docs/adr/000P-roles-scope-work-and-stances-define-the-job.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000P-roles-scope-work-and-stances-define-the-job.md",
+              "note": "Roles scope work by branch."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+              "note": "Direct Blueprint Tasks as destination design."
+            },
+            {
+              "kind": "contract",
+              "owner": "AGENTS.md",
+              "note": "Git Rules: the operative route and gate."
+            }
+          ],
+          "reason": "The old text that the Director covers the project and integration is replaced, not carried: the accepted role decision gives integration to the Captain. The Spec-branch, Task-branch and direct-Blueprint-Task claims are carried unchanged.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "root-039",
+          "text": "Failed Human QA returns to Align at whatever scope the failure actually\nimplicates, and the design-concept and delivery loop runs again from there. A\ndefect is not by itself evidence that the shared design concept was wrong, and\nthe loop is chosen at the scope the diagnosis supports.\n\n",
+          "disposition": "relocate-claim",
+          "owner": "workbench/docs/ddr/000A-the-workbench-aligns-to-the-owner-s-concept-and-delivers-on-it-recursively.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000A-the-workbench-aligns-to-the-owner-s-concept-and-delivers-on-it-recursively.md",
+              "note": "The loop returns to Align."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+              "note": "A failed Human QA result returns to Align at the appropriate scope."
+            }
+          ],
+          "reason": "Failed Human QA returns to Align is an accepted decision.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "root-040",
+          "text": "Parallel work is directed through scoped roles. The owner remains the human\nabove the Director. The Director coordinates the whole project and integration,\nstarts Dispatchers for assigned Specs, resolves cross-Spec dependencies and\nshared writers, and oversees independent review of assembled candidates. Each\nDispatcher stays within its Spec and branch while Workers perform individual\nTasks. A role defines that scope; a stance defines the job within it.\n\n",
+          "disposition": "replaced-claim",
+          "owner": "workbench/wiki/design-concepts/roles-and-stances.md",
+          "homes": [
+            {
+              "kind": "wiki",
+              "owner": "workbench/wiki/design-concepts/roles-and-stances.md",
+              "note": "Roles and stances."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000P-roles-scope-work-and-stances-define-the-job.md",
+              "note": "Roles scope work and stances define the job."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000V-captain-director-dispatcher-and-worker-scope-work-and-role-skills-own-each-job.md",
+              "note": "The role ladder adds the Captain; the Blueprint text saying the Director covers integration is stale."
+            }
+          ],
+          "reason": "The old text that the Director covers integration is replaced, not carried: the accepted role decision gives integration to the Captain and moves role detail into the role skills. The scope and owner-above-Director claims move to the roles Wiki page and the accepted role decisions. Roles are an accepted decision with a Wiki page; the Blueprint text is stale against the Captain decision.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "root-041",
+          "text": "A Dispatcher using Spec Planner inspects live Actuality at flight launch, cuts\nsmall Tasks and groups compatible work into parallel vertical slices. It may\nsend Workers to help author Tasks. Using Spec Manager, it dispatches execution\nWorkers, monitors results, coordinates containment and owns assembled-Spec\nverification. Reviewer and Auditor are stances it can use; neither changes its\nscope or makes it independent of work it carried. The normal delivery path is\nTask merge requests into the Spec branch, followed by an independently reviewed\nSpec merge request into integration. Release-specific bootstrap exceptions are\nexplicit in their release owner, not silently confused with this destination.\n\n",
+          "disposition": "relocate-claim",
+          "owner": "workbench/docs/adr/000P-roles-scope-work-and-stances-define-the-job.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000P-roles-scope-work-and-stances-define-the-job.md",
+              "note": "Stances define the job."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0036-stances-change-method-not-authority.md",
+              "note": "Stances change method, not authority."
+            },
+            {
+              "kind": "skill",
+              "owner": "workbench/skills/spec-planner/SKILL.md",
+              "note": "Spec Planner stance."
+            },
+            {
+              "kind": "skill",
+              "owner": "workbench/skills/spec-manager/SKILL.md",
+              "note": "Spec Manager stance."
+            }
+          ],
+          "reason": "Stances are accepted decisions with skills.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "root-042",
+          "text": "New Specs capture capability destinations without pre-cut Tasks. Task planning\nbelongs to flight launch and activation against current Actuality. Accepted\ndecisions and progress reach their tracked owners on integration as work\nproceeds, so a fresh agent can reconstruct the project without another chat,\nprivate cache or unmerged branch. No ordinary single-Task assignment requires\na coordination system.\n\n",
+          "disposition": "replaced-claim",
+          "owner": "workbench/docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md",
+              "note": "Tasks are written at Plan, not at Map."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0043-workbench-continuity-through-maintained-owners.md",
+              "note": "Progress reaches tracked owners on integration."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000I-many-agents-work-one-project-in-parallel-across-the-cloud-and-the-owner-s-devices.md",
+              "note": "Many agents work one project in parallel; this carries the direction the old no-coordination-system lines contradicted."
+            }
+          ],
+          "reason": "The old lines saying no ordinary assignment requires a coordination system are replaced, not carried: the owner said they were wrong because coordinated parallel work within a workbench is a goal, and the parallel-agents decision carries the direction. The specs-without-pre-cut-Tasks claim is carried by the workflow verbs decision. Specs without pre-cut Tasks and continuity are accepted decisions; the no-coordination-system lines were wrong per the owner and go nowhere.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "root-043",
+          "text": "The Workbench Template exercises the same update contract as a real installed\nroom. Whole-product readiness examines the combined system before owner-controlled\npublication. Installation and remote delivery are verified where they occur.\n\n",
+          "disposition": "relocate-claim",
+          "owner": "workbench/docs/ddr/000P-llm-workbench-is-the-producer-and-the-workbench-template-is-its-product.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000P-llm-workbench-is-the-producer-and-the-workbench-template-is-its-product.md",
+              "note": "LLM Workbench is the producer and the Workbench Template is its product."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md",
+              "note": "A release is proven by the Template building a real product."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0053-minimum-configured-host-capability-and-evidence-boundaries.md",
+              "note": "Verify installation where it occurs."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+              "note": "The gates."
+            }
+          ],
+          "reason": "The Template exercising the update contract is a decision record.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "root-044",
+          "text": "Failures lead to investigation, the smallest supported repair and corrected\nrecords. Working context is saved before it can be lost; cleanups follow verified\nreconciliation. Each completed assignment leaves an executable continuation or\ntruthful completion without a new mandatory coordination system.\n\n",
+          "disposition": "relocate-claim",
+          "owner": "workbench/docs/ddr/000V-gaps-are-flagged-never-faked.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000V-gaps-are-flagged-never-faked.md",
+              "note": "Gaps are flagged and failures stay visible."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0043-workbench-continuity-through-maintained-owners.md",
+              "note": "Continuity through maintained owners."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0054-direct-promotion-into-durable-owners.md",
+              "note": "Direct promotion before cleanup."
+            }
+          ],
+          "reason": "Failure handling, saved context and cleanup after reconciliation are accepted decisions.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "root-045",
+          "text": "## Non-Goals\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "The eight-section heading retires with the shape; the four-part page replaces it.",
+          "section": "Non-Goals"
+        },
+        {
+          "id": "root-046",
+          "text": "The Workbench is not a portfolio scheduler, autonomous source of permission,\nprovider-specific control plane, marketplace, transcript archive or proof that\nan agent always follows instructions. It does not require Foundry, a graph\nservice, a private catalog or network access for ordinary local work. It cannot\nguarantee capture after an immediate interruption or move a running process by\nsynchronizing files. Publication and unrelated project rollout are owner choices.\n\n",
+          "disposition": "replaced-claim",
+          "owner": "BLUEPRINT.md",
+          "homes": [
+            {
+              "kind": "short-page",
+              "owner": "BLUEPRINT.md",
+              "note": "Non-goals: not a harness; not a source of permission; not proof that an agent always follows instructions"
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0027-instruction-authority-is-separate-from-state-resolution.md",
+              "note": "Not a source of permission: instruction authority."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0036-stances-change-method-not-authority.md",
+              "note": "Stances change method, not authority."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0023-mechanical-guarantees-and-agent-obligations.md",
+              "note": "Mechanical guarantees and agent obligations: not proof that an agent always follows instructions."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0015-workbench-base-and-foundry-capabilities.md",
+              "note": "The Foundry boundary."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md",
+              "note": "Foundry extends the workbench."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000R-llm-workbench-owns-what-a-workbench-is-the-project-owns-what-it-says-and-may-add-without-tearing-apart-what-works.md",
+              "note": "LLM Workbench owns what a workbench is."
+            }
+          ],
+          "reason": "Replaced and dropped clauses: the network-access-for-ordinary-local-work non-goal is dropped because the owner called it wrong; the portfolio scheduler, provider control plane, marketplace and immediate-interruption clauses are not carried by the confirmed page and have no decision-record home. The confirmed non-goals stay on the short page.",
+          "section": "Non-Goals"
+        },
+        {
+          "id": "root-047",
+          "text": "It does not become a hosted tracker, database, paid service, broad MCP server or\ngeneral project-management application. Personal task management and replacement\nof Command Information Center are outside its purpose. Startup context has no\npermanent Done lane or proof archive; historical tasks are not retrofitted into\nmanufactured specifications. The portable Workbench does not import Foundry\nFUIDs, Job Orders, flights, Claims, orchestration or CIC release machinery.\n",
+          "disposition": "gap",
+          "owner": "BLUEPRINT.md",
+          "homes": [
+            {
+              "kind": "short-page",
+              "owner": "BLUEPRINT.md",
+              "note": "Non-goals: not a project-management application or personal task manager; not a transcript or proof archive"
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0043-workbench-continuity-through-maintained-owners.md",
+              "note": "A transcript archive substitutes volume for maintained truth."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0040-json-notepads-preserve-objective-continuity.md",
+              "note": "No permanently growing transcript."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000M-working-artifacts-are-scaffolding-cleared-away-once-their-knowledge-is-kept.md",
+              "note": "No permanent proof archive; working artifacts are cleared away."
+            },
+            {
+              "kind": "spec",
+              "owner": "workbench/specs/S-004H-blueprint-short-page/SPEC.md",
+              "note": "The hosted-service, database and paid-service clause is withheld: it is an open owner item in Dependencies And Blockers."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md",
+              "note": "The Foundry boundary."
+            }
+          ],
+          "reason": "Partial gap: the project-management and transcript-archive non-goals stay on the short page, and the Foundry identifier clause is carried by the Foundry boundary decisions, but the clause that the workbench does not become a hosted tracker, database, paid service or broad MCP server has no decision-record home; the hosted-service line is withheld as an open owner item in the Spec, and the rest is not carried by the confirmed page. The project-management and transcript-archive non-goals stay on the short page; the hosted-service non-goal is an open owner item; the Foundry identifier clause is carried by the Foundry boundary decisions.",
+          "section": "Non-Goals"
+        }
+      ]
+    },
+    {
+      "path": "templates/BLUEPRINT.md",
+      "commit": "c10fb8dacb63b67e5c14bae8698e03bcb505d684",
+      "claims": [
+        {
+          "id": "tpl-001",
+          "text": "# [PROJECT_NAME] - Blueprint\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "The title is kept by the four-part template in the same form.",
+          "section": "title"
+        },
+        {
+          "id": "tpl-002",
+          "text": "## Product Destination\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "The eight-section heading retires with the shape; the four-part template replaces it.",
+          "section": "Product Destination"
+        },
+        {
+          "id": "tpl-003",
+          "text": "[Describe the desired finished product and how its parts form one useful whole.]\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "A bracketed placeholder of the eight-section template is replaced by the four-part placeholders.",
+          "section": "Product Destination"
+        },
+        {
+          "id": "tpl-004",
+          "text": "## People And Problems Served\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "The eight-section heading retires with the shape; the four-part template replaces it.",
+          "section": "People And Problems Served"
+        },
+        {
+          "id": "tpl-005",
+          "text": "[Name the people served, their important problems, and how the product changes their work or lives.]\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "A bracketed placeholder of the eight-section template is replaced by the four-part placeholders.",
+          "section": "People And Problems Served"
+        },
+        {
+          "id": "tpl-006",
+          "text": "## Promised Outcomes\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "The eight-section heading retires with the shape; the four-part template replaces it.",
+          "section": "Promised Outcomes"
+        },
+        {
+          "id": "tpl-007",
+          "text": "[Describe the durable results users should achieve, with concrete boundaries.]\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "A bracketed placeholder of the eight-section template is replaced by the four-part placeholders.",
+          "section": "Promised Outcomes"
+        },
+        {
+          "id": "tpl-008",
+          "text": "## Desired Experience And Behavior\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "The eight-section heading retires with the shape; the four-part template replaces it.",
+          "section": "Desired Experience And Behavior"
+        },
+        {
+          "id": "tpl-009",
+          "text": "[Describe how the product should feel and behave in its main situations, including failures and recovery.]\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "A bracketed placeholder of the eight-section template is replaced by the four-part placeholders.",
+          "section": "Desired Experience And Behavior"
+        },
+        {
+          "id": "tpl-010",
+          "text": "## Integrated System Design\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "The eight-section heading retires with the shape; the four-part template replaces it.",
+          "section": "Integrated System Design"
+        },
+        {
+          "id": "tpl-011",
+          "text": "[Explain how the major parts cooperate to deliver those outcomes. Describe the destination itself; link no record that carries an identifier (an ADR, DDR, Spec, Task or landmark), since decision records name this Blueprint in canonicalized_in instead.]\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "A bracketed placeholder of the eight-section template is replaced by the four-part placeholders.",
+          "section": "Integrated System Design"
+        },
+        {
+          "id": "tpl-012",
+          "text": "## Cross-Cutting Qualities And Constraints\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "The eight-section heading retires with the shape; the four-part template replaces it.",
+          "section": "Cross-Cutting Qualities And Constraints"
+        },
+        {
+          "id": "tpl-013",
+          "text": "[Describe qualities, client-wide requirements and constraints that apply across the product, including privacy/safety boundaries and the evidence required to claim verified behavior.]\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "A bracketed placeholder of the eight-section template is replaced by the four-part placeholders.",
+          "section": "Cross-Cutting Qualities And Constraints"
+        },
+        {
+          "id": "tpl-014",
+          "text": "## Desired Lifecycle\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "The eight-section heading retires with the shape; the four-part template replaces it.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "tpl-015",
+          "text": "[Describe how the product should be created, updated, repaired, validated and deployed.]\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "A bracketed placeholder of the eight-section template is replaced by the four-part placeholders.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "tpl-wf-01",
+          "text": "Keep the product journey distinct from the Contract's operating rules. ",
+          "disposition": "relocate-claim",
+          "owner": "templates/AGENTS.md",
+          "homes": [
+            {
+              "kind": "generic-contract",
+              "owner": "templates/AGENTS.md",
+              "note": "The generic Contract carries the operating rules."
+            },
+            {
+              "kind": "generic-mirror",
+              "owner": "templates/LEXICON.md",
+              "note": "The generic Lexicon routes questions to their owners (Task Routing, Ownership Rules)."
+            }
+          ],
+          "reason": "The Contract owns operating rules; the Blueprint does not restate them.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "tpl-wf-02",
+          "text": "Align\nthrough inquiry to an explicitly confirmed design concept, then Blueprint the\nproduct destination; ",
+          "disposition": "relocate-claim",
+          "owner": "templates/LEXICON.md",
+          "homes": [
+            {
+              "kind": "generic-mirror",
+              "owner": "templates/LEXICON.md",
+              "note": "Align and Design concept rows."
+            },
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000B-only-a-confirmed-concept-is-mapped-planned-or-implemented.md",
+              "note": "Only a confirmed concept is mapped, planned or implemented."
+            }
+          ],
+          "reason": "The generic Lexicon defines Align and the design concept.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "tpl-wf-03",
+          "text": "an optional prototype checks plausibility before scoped\nSpec destinations and thin Tasks deliver it. ",
+          "disposition": "gap",
+          "owner": "workbench/docs/ddr/000D-prototype-needs-no-map-and-lands-nothing-in-enduring-context.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000D-prototype-needs-no-map-and-lands-nothing-in-enduring-context.md",
+              "note": "Prototype needs no map and lands nothing in enduring context."
+            }
+          ],
+          "reason": "No generic mirror states the optional prototype: the generic Lexicon, Contract and Runbook have no prototype claim, and no prototype skill ships in the skills lane. The decision record carries it for LLM Workbench; whether a generic line is wanted is handed to the Lexicon writer and recorded as a gap, not invented here.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "tpl-wf-04",
+          "text": "Preserve any owner source diagram\nverbatim with provenance and label prose interpretation separately. ",
+          "disposition": "retired-claim",
+          "owner": "workbench/wiki/design-concepts/idea-to-delivery-workflow.md",
+          "homes": [
+            {
+              "kind": "wiki",
+              "owner": "workbench/wiki/design-concepts/idea-to-delivery-workflow.md",
+              "note": "The owner map is rewritten in the workflow verbs and no longer kept verbatim; the verbatim-diagram rule retires with it."
+            }
+          ],
+          "reason": "The owner replaced the keep-it-verbatim rule: the map is rewritten in the workflow verbs.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "tpl-wf-05",
+          "text": "Describe\nintended branch topology as destination; the controls govern the route actually\navailable. ",
+          "disposition": "relocate-claim",
+          "owner": "templates/AGENTS.md",
+          "homes": [
+            {
+              "kind": "generic-contract",
+              "owner": "templates/AGENTS.md",
+              "note": "Git Rules: the generic route and the topology as destination."
+            }
+          ],
+          "reason": "The generic Contract carries the branch route.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "tpl-wf-06",
+          "text": "Worker self-check and hand-back feed Dispatcher whole-Spec QA and\nseparate Director review; ",
+          "disposition": "relocate-claim",
+          "owner": "templates/AGENTS.md",
+          "homes": [
+            {
+              "kind": "generic-contract",
+              "owner": "templates/AGENTS.md",
+              "note": "Assigned Work And Stances and Work Selection And Lifecycle: Worker self-check and hand-back, Dispatcher whole-Spec QA, separate review."
+            },
+            {
+              "kind": "generic-mirror",
+              "owner": "templates/LEXICON.md",
+              "note": "Assembled-Spec review, Role and Worker rows."
+            }
+          ],
+          "reason": "The generic Contract and Lexicon carry the assembled review.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "tpl-wf-07",
+          "text": "owner evaluation returns failed findings to the\nimplicated scope. ",
+          "disposition": "relocate-claim",
+          "owner": "templates/AGENTS.md",
+          "homes": [
+            {
+              "kind": "generic-contract",
+              "owner": "templates/AGENTS.md",
+              "note": "Owner Closure And Reconciliation: a failed Human QA finding returns to the appropriate scope of Align."
+            },
+            {
+              "kind": "generic-mirror",
+              "owner": "templates/LEXICON.md",
+              "note": "Human QA row."
+            }
+          ],
+          "reason": "The generic Contract and Lexicon carry the return to Align.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "tpl-wf-08",
+          "text": "Verified main content precedes completion, then durable\nfeature capture, reconciliation and recoverable transient cleanup. ",
+          "disposition": "relocate-claim",
+          "owner": "templates/AGENTS.md",
+          "homes": [
+            {
+              "kind": "generic-contract",
+              "owner": "templates/AGENTS.md",
+              "note": "Owner Closure And Reconciliation: verification on main, complete, features capture, retire and discard."
+            },
+            {
+              "kind": "generic-mirror",
+              "owner": "templates/RUNBOOK.md",
+              "note": "The closure and retirement procedures."
+            }
+          ],
+          "reason": "The generic Contract and Runbook carry the closure order.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "tpl-wf-09",
+          "text": "This generic\nshape neither invents a product journey nor declares current delivery status.\n\n",
+          "disposition": "retired-claim",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part page asks each room to describe its own product; the reading note about the generic shape is replaced by the placeholders."
+            }
+          ],
+          "reason": "The reminder retires with the workflow paragraph; the four-part placeholders carry the same instruction.",
+          "section": "Desired Lifecycle"
+        },
+        {
+          "id": "tpl-017",
+          "text": "## Non-Goals\n\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "The eight-section heading retires with the shape; the four-part template replaces it.",
+          "section": "Non-Goals"
+        },
+        {
+          "id": "tpl-018",
+          "text": "[State what the desired product intentionally is not. Adapt headings to the product and omit a genuinely inapplicable section rather than inventing boilerplate.]\n",
+          "disposition": "retired-shape",
+          "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+          "homes": [
+            {
+              "kind": "decision-record",
+              "owner": "workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md",
+              "note": "The four-part short page replaces the eight-section shape for every room."
+            }
+          ],
+          "reason": "A bracketed placeholder of the eight-section template is replaced by the four-part placeholders.",
+          "section": "Non-Goals"
+        }
+      ]
+    }
+  ]
+}
