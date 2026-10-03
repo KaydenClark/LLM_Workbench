@@ -105,7 +105,8 @@ Grilling questions -> Destination Question Cards -> Landmarks when consequential
 ```
 
 This is growth of understanding, not a requirement that every question reach
-every level. Importance to the core path earns a place in the Blueprint. There
+every level. The Blueprint is a short summary of direction, and a Blueprint
+sentence big enough to need its own map becomes a landmark. There
 is no fixed inventory size or numerical threshold that must be settled first.
 
 ## Reading documentation progress
@@ -220,7 +221,7 @@ distributions; updates reach their source owners and generated views are rebuilt
 
 ## Evidence and Sources
 
-- [Product direction](../../../BLUEPRINT.md#integrated-system-design)
+- [Product direction](../../../BLUEPRINT.md)
 - [Definitions and information ownership](../../../LEXICON.md)
 - [Agent authority and continuity](../../../AGENTS.md)
 - [Available operations and delivery route](../../../RUNBOOK.md#landmark-tracker-accepted-design-and-available-operations)
@@ -245,4 +246,5 @@ distributions; updates reach their source owners and generated views are rebuilt
 
 - 2026-10-02: Linked the owner-requested post-v4 shared browser backlog; no browser capability or v4 obligation is introduced.
 
+- 2026-10-03: Restated how a landmark relates to the Blueprint (a Blueprint sentence big enough to need its own map becomes a landmark) and repointed the product-direction link to the four-part page, from the Blueprint Short Page work.
 - 2026-10-03: Reconciled the recovered Lexicon family with the later Wiki, landmark and workflow decisions; retained the installed-validator mismatch, verification distinctions and DQC reconciliation boundary.

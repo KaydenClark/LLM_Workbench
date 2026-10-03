@@ -35,7 +35,7 @@ the directions we go, record the choices we made along the way.
   headed in the long term, so that agents are not siloed from each other. It is
   written first and is not built from decisions afterward. It is not a router to
   the decisions and links no record that carries an identifier. This is the
-  accepted destination; the present Blueprint is longer and is planned to be taken apart.
+  accepted destination, and the Blueprint is now the four-part short page.
 - **A Destination Decision Record (DDR)** is a direction: one consequential
   choice about what the finished product must be or do, and why the owner chose
   it over the alternatives. An agent reads the DDRs to learn which way the
@@ -180,3 +180,4 @@ delivers them, and settles how a DDR records the one landmark it belongs to.
 - 2026-10-03: recorded the DDR tooling's delivery to integration.
 - 2026-10-03: replaced the claim that no DDR exists with the first teardown DDRs.
 - 2026-10-03: aligned when a DDR is written with the workflow-verbs decision (at Map, through `to-docs`).
+- 2026-10-03: recorded that the Blueprint is now the four-part short page, from the Blueprint Short Page work.

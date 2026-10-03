@@ -8,14 +8,14 @@
 **Updated:** 2026-10-03
 **Catalog description:** Replace the eight-section Blueprint with the owner-confirmed four-part short page, give every room's Blueprint that shape, and move the current page's decisions, workflow map and rules to their homes first so nothing is dropped.
 **Blockers:** none. The Decision Record Tooling (S-003X) installed the `ddr` collection and the 24 destination decision records are accepted (`workbench/docs/ddr/000A` to `000X`), so the root page swap is unblocked. One open owner item, the hosted-service non-goal, is withheld from the page rather than blocking it (see Dependencies And Blockers).
-**Latest event:** TK-008A closed with proof.
-**Next gate:** Complete TK-008C.
+**Latest event:** TK-008C closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 
 ## Outcome
 
-`BLUEPRINT.md` is the short page the owner confirmed on 2026-10-03: what LLM Workbench is, who it serves, the outcomes it promises and what it is not, in 631 words by `wc -w`. Every room's Blueprint, including the generic `templates/BLUEPRINT.md`, takes the same four-part shape. Nothing the current page says is lost on the way: its decisions live in decision records, its directions in the confirmed landmarks, its workflow map in the Workflow landmark and the Wiki, and its rules in the Contract. The tests, evaluators and guidance that assume eight sections change with the page.
+`BLUEPRINT.md` is the short page the owner confirmed on 2026-10-03: what LLM Workbench is, who it serves, the outcomes it promises and what it is not, in 607 words by `wc -w` once the withheld hosted-service non-goal is left out (631 with it). Every room's Blueprint, including the generic `templates/BLUEPRINT.md`, takes the same four-part shape. Nothing the current page says is lost on the way: its decisions live in decision records, its directions in the confirmed landmarks, its workflow map in the Workflow landmark and the Wiki, and its rules in the Contract. The tests, evaluators and guidance that assume eight sections change with the page.
 
 ## Why It Matters
 
@@ -164,6 +164,7 @@ Run the targeted Blueprint-contract, evaluator, guardrail-audit, Genesis and lay
 | 2026-10-03 | none | Authored at the Map step from the owner-confirmed Blueprint candidate of 2026-10-03 and the teardown's Blueprint answers, at integration 5cfa987bacb0f6a9273d93e8d989e34000d75ad9. | Map only; the quoted page is draft 6 as the review page's confirmed version showed it, compared word for word after extraction, with the approved efficiency clause applied; the Blueprint, template, tests, evaluator, audit, Genesis and layout tooling and the description lines were read at that tip; no runtime proof claimed. | This Spec and the generated Spec catalog. Docs checked; no Blueprint, template or Wiki update is due until delivery, because a planned Spec changes no accepted claim. | Plan, implementation and proof remain; the swap waits for the DDRs. |
 | 2026-10-03 | TK-005R | Task closed | Separate-context review of 72e2e624 PASSED against the written acceptance (after eight rounds that closed real holes and one accepted gap). Full AGENTS suite 48/48 on cfad0cbb. Guardrail audit 78/100 before and after; template evaluation 106.6/113 before and after, and 106.6/113 with a four-part Blueprint; remaining recommendations unchanged (outcome evidence 8/30: no real repeated outcome trials, so no agent-outcome claim). Four-part page and template score project model 8/8 and are destination-shaped; eight-part files score identically to origin/integration. | Docs checked; no update needed: tools and tests only, the Blueprint, template and Wiki change in later Tasks | Raw-HTML and other synthetic Markdown edge cases of isFourPartBlueprint are not exhaustively handled (named in the receipt); no known gap against the written acceptance |
 | 2026-10-03 | TK-008A | Task closed | Separate-context review of a91c0bcd PASSED against the written acceptance after three rounds (two found old rules recorded as moved though their accepted homes now state otherwise; fixed by marking replaced-claim paragraphs and adding a test that refuses to record a corrective-Task passage as relocated). Inventory byte-lossless against c10fb8da and every named home exists; wiki validate ok; full AGENTS suite 47/48 in a parallel run on 58a788eb with test-wiki passing alone (known concurrent manifest read race). | Created workbench/wiki/design-concepts/idea-to-delivery-workflow.md and delivery-altitudes.md; added blueprint-paragraph-disposition.json to the Spec folder; MEMORY.md router lines left to the router writer | Router entries for the two new pages; the optional-prototype claim has no generic mirror (recorded as a gap in the inventory) |
+| 2026-10-03 | TK-008C | Task closed | Separate-context review of 6ee6259b passed every check and raised one Medium (a wrong Remaining Limitations note on ADR 000G), fixed at fb77c605 and re-reviewed PASS. Root BLUEPRINT.md equals the owner-confirmed candidate except the one withheld hosted-service non-goal; template, contract test (47 retired checks carried or retired), Genesis guidance and repairs verified. Full AGENTS suite 48/48 on aec1761d. Guardrail audit 78/100 and template evaluation 106.6/113 before and after, remaining recommendations unchanged (outcome evidence 8/30, no agent-outcome claim); self-drift pre and post identical (12 findings, none new, machineResult blocked on pre-existing S-004G blocked slices). | BLUEPRINT.md, templates/BLUEPRINT.md, templates/GENESIS.md, templates/README.md, the to-docs skill line, four Wiki pages and the Spec's Remaining Limitations updated; Lexicon, router and AGENTS description lines handed off | Handed-off description lines and dangling anchors listed in the Spec's Remaining Limitations; hosted-service non-goal is an open owner item; release owner's bundle/version/install proof for changed managed bytes; owner Human QA and main promotion not requested; Spec not completed |
 
 ## Completion Result
 
@@ -171,7 +172,18 @@ Pending.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-Writing the DDRs from the teardown is Map work, possible now that the Decision Record Tooling has installed the collection. Carrying the workflow verbs into skills, controls, templates and the Landmark Tracker is a separate rollout with no Spec yet.
+Handed off at the swap, each to the writer that owns the file (this Spec edits none of them):
+
+- The Lexicon's Blueprint row (`LEXICON.md` and `templates/LEXICON.md`) still describes the eight sections; its meaning belongs to Workbench Terms And Workflow Verb Rows.
+- The Wiki router lines for the Blueprint (`workbench/wiki/MEMORY.md` and `templates/wiki/MEMORY.project.md`) still read "integrated design, constraints" and need entries for the two new design-concept pages, "The Workflow From Idea To Delivery" and "The Three Altitudes Of Delivery".
+- `AGENTS.md` and `templates/AGENTS.md` still call the Blueprint the "routed product destination and cross-cutting architecture owner" and the Documentation Ownership table calls it "cross-cutting product direction and invariants"; `tools/test-control-fidelity.mjs` pins the first. They belong to the Contract Carrier Pointer-Brief Rewrite, which also owns promoting the owner's explicit wording of the three rules that left the page (private content stays private, no record grants authority, the workbench never publishes or changes another project on its own) into `AGENTS.md` or the Runbook.
+- Accepted ADR 000G linked `BLUEPRINT.md#desired-lifecycle`, an anchor the short page no longer has, and a decision-record check refused it; this Spec re-pointed that one route to the workflow Wiki page and added an amendment note, with no change of decision and the ADR link census raised from 116 to 117. Still dangling and not edited here: ADR 0042's `#core-navigation-contract` anchor (it never existed) and the historical Lexicon Design Concept Reconciliation Spec's `#integrated-system-design` link; accepted records change only by amendment.
+- The optional prototype has no generic mirror (no row in the generic Lexicon, Contract or Runbook, and no prototype skill in the skills lane); the paragraph inventory records it as a gap for the Lexicon writer.
+- The owner decides the withheld hosted-service non-goal (Dependencies And Blockers).
+- A changed managed byte under `templates/` and in `workbench/tools/template-placeholders.mjs` needs the release owner's bundle, version and install proof; the Template Upgrade Release Gate stays open for it.
+- Synthetic Markdown edge cases of the four-part recognition helper (for example headings wrapped in a raw HTML block) are not exhaustively handled; a later Task may harden it if a real Blueprint needs it.
+
+Writing the DDRs from the teardown is Map work, done. Carrying the workflow verbs into skills, controls, templates and the Landmark Tracker is a separate rollout with no Spec yet.
 
 ## Supersession
 

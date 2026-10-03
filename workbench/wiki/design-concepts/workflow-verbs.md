@@ -64,8 +64,9 @@ and not the whole process.
 
 The Landmark Tracker still prints the earlier step names and its Specs and tests
 use them, and the [landmark tracker page](landmark-tracker.md) describes the
-tool as it is. The Blueprint's Desired Lifecycle map is kept as the owner
-confirmed it on 2026-09-24. The template copy of the Lexicon waits for the
+tool as it is. The owner's workflow map of 2026-09-24 no longer sits on the
+Blueprint: it moved to [the workflow page](idea-to-delivery-workflow.md),
+rewritten in these verbs. The template copy of the Lexicon waits for the
 Tracker work. Which skill owns which verb, and where separate-context review,
 owner Human QA and promotion to main sit among Review and Verify, are not yet
 decided.
@@ -77,7 +78,8 @@ decided.
 - [ADR-000Y, A locked and confirmed answer is promoted without further ceremony](../../docs/adr/000Y-a-locked-and-confirmed-answer-is-promoted-without-further-ceremony.md):
   what ends a grilling and what an answer needs before promotion.
 - [Lexicon](../../../LEXICON.md): the Workflow, Writer verb and Governance Plane definitions.
-- [Blueprint](../../../BLUEPRINT.md): the workflow sentence and the Desired Lifecycle map.
+- [Blueprint](../../../BLUEPRINT.md): the short page; its sentence on carrying a concept through the Journey.
+- [The Workflow From Idea To Delivery](idea-to-delivery-workflow.md): the owner's workflow map, rewritten in the verbs.
 - [Decision Records and the Concept Map](decision-records-and-the-concept-map.md):
   the artifacts the verbs write.
 
@@ -85,3 +87,5 @@ decided.
 
 - 2026-10-02: created in the promotion of the owner's 2026-10-02 grilling on the
   workflow verbs.
+- 2026-10-03: the Blueprint became the four-part short page and the owner's
+  workflow map moved to the workflow page, from the Blueprint Short Page work.

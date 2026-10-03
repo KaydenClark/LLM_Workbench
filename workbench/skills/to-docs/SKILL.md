@@ -14,8 +14,8 @@ lanes; do not create a root `specs/`, project-local `skills/` core shadow, or pa
 truth store. Authorized room-local extensions follow the Runbook ownership procedure.
 
 - accepted shared definitions -> `LEXICON.md`;
-- desired product destination, integrated design, qualities and non-goals ->
-  `BLUEPRINT.md`;
+- what the product is, who it serves, its promised outcomes and its
+  non-goals (the Blueprint's four parts) -> `BLUEPRINT.md`;
 - capability requirements, decisions, acceptance, proof, or completion -> the
   assigned `SPEC.md`;
 - active assignment, blocker, event, or next gate -> update the owning spec,
