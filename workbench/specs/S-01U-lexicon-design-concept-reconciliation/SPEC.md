@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-10-03
 **Catalog description:** Audit the whole Lexicon against current design concepts and their governing sources, repair supported drift, and expose unresolved conflicts without promoting proposals or claiming undelivered behavior.
-**Blockers:** none for source inventory and independent reconciliation; overlapping workflow and ownership changes retain S-00P and S-00G gates.
+**Blockers:** none for source inventory and independent reconciliation; overlapping workflow and ownership changes retain S-00P and S-00G gates. Recovery publication is held after October 3 automatic approval review rejected the GitHub push; explicit owner approval of this payload and destination is required.
 **Latest event:** October 1 TK-01Q branch recovered on current integration with later Canon retained; 55/55 fresh required and targeted checks pass. The Task-PR integration gate requires separate-context review of the final immutable commit.
-**Next gate:** Remaining whole-Lexicon inventory and semantic audit require a later bounded assignment; all ten whole-Spec criteria and owner QA/main remain open. The recovered Task lands through the independent Task-PR integration gate.
+**Next gate:** Obtain explicit owner approval to push the inspected recovery branch to KaydenClark/LLM_Workbench and merge its reviewed PR into integration. The remaining comprehensive audit requires a later bounded assignment; all ten whole-Spec criteria and owner QA/main remain open.
 
 ## Current Recovery Instruction — 2026-10-03
 
@@ -314,6 +314,8 @@ glossary. Completed knowledge follows existing reconciliation/lifecycle rules.
 
 | 2026-10-03 | TK-01Q | Recover the published October 1 branch on integration baseline 2dcde6e90faed0937d7742fdac186db3c14e5e5b under the owner's snag-fix request, superseding the old publication hold and no-merge endpoint for this recovery. | Candidate 394f30f51c07a3d7dd8a86e97a3c3fd2cccc9bea: 55/55 unique required/targeted checks pass after four clean-source initialization retries; 142 link targets, nine prior evidence rows, three Task receipts and three unchanged proof files checked. Pre/post self-drift retains seven findings and cleanUpdate false; guardrails 78/100. Final immutable review is outside its own bytes. | Root/generic Lexicon, scoped recovery/source/coverage proof, current Spec/Task gates and Tracker Wiki explanation. | Whole audit, all ten Spec criteria and owner QA/main remain open. Installed article validator still rejects identifiers permitted by ADR-000R; that existing migration and broader template changes retain their owners. No Dictionary Terms implementation or outcome claim. |
 
+| 2026-10-03 | TK-01Q | Automatic approval review rejected the recovery GitHub push before execution; no PR or integration merge occurred and no alternate publication route was attempted. | Rejection requires explicit owner authorization of the recovery payload for public KaydenClark/LLM_Workbench. Thirteen scoped documentation/proof/projection files inspected; no credential patterns or local notepad material. Separate-context reviewer passed ba0eed2a4e4d66683f4c45fb89b067a8b2934a39; this blocker-only record update requires fresh final-candidate confirmation. | Current Spec and recovery assessment record the publication gate; historical October 1 rejection remains separate dated evidence. | Only external publication/landing waits for approval; local recovery is reviewable. Full audit, owner QA/main and Dictionary Terms implementation remain open. |
+
 ## Completion Result
 
 The Landmark Tracker family Task is done; its October 1 proof is preserved
@@ -321,6 +323,9 @@ as historical evidence. Its recovered candidate now consumes the October 2
 Wiki, landmark and workflow decisions. [Recovery assessment](recovery-2026-10-03.md)
 records fresh verification and the integration gate. The former publication
 hold and no-merge instruction are superseded by the owner's October 3 request.
+A new automatic approval review rejected this recovery's push before execution;
+no PR or integration merge has occurred. Its explicit payload/destination
+approval requirement is the current publication gate.
 The whole-Lexicon inventory, comprehensive audit, all ten Spec acceptance
 criteria and owner QA/main gates remain open. This is neither whole-Spec
 completion nor a clean-update claim.
