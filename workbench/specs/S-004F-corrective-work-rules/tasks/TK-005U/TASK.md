@@ -39,3 +39,9 @@ No rule beyond the owner's two answers; no tooling change.
 ## Gate cleared
 
 `owner:runbook-writer-turn` was a sequencing gate this Spec's own planning created, not an owner decision. The Runbook writer is free: the Decision Record Tooling Spec (S-003X) has all its Tasks done on integration, and the Contract Carrier Pointer-Brief Rewrite (S-004C) is not running (all fifteen Tasks are still blocked at integration 88c82fc6). Cleared by the Director's direction of 2026-10-03; TK-005T is done (PR #311).
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s004f-tk005u | 5510c00ab082e75e1a2230bbce73185d631d2343 | ahead 0 behind 0 | 0 | Full AGENTS suite on committed candidate 5510c00a: 48 of 48 commands pass; tools/test-control-fidelity.mjs 35 pass with the retargeted Runbook pins (later-gap route, finding dispositions, standalone close refused, retired-sentence mutation checks); guardrail audit 78/100 unchanged; self-drift post findings are stale-claim, stale-seed and unverified-provenance only, none from this change; wiki validate ok | RUNBOOK.md and templates/RUNBOOK.md (close, verdict, owner-finding and later-gap passages), tools/test-control-fidelity.mjs pins | Lexicon rows (TK-005V), README and Wiki schema line still state the replaced rules | 53f7775ca52bc0c74a969e64e47d9f257764fbd7f583a1f3368ae0fb46f690a7 |
