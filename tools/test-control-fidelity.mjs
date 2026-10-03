@@ -673,3 +673,90 @@ test('both Lexicons carry the installed decision-record vocabulary, and the gene
     for (const line of termRows(template, term)) assert.doesNotMatch(line, /ADR-0|S-0|TK-0|workbench\/docs\/adr\/0|workbench\/specs\//, `templates/LEXICON.md ${term} stays generic`);
   }
 });
+
+// S-004E: each AI Coding Dictionary term the owner adopted has exactly one
+// Lexicon row, in an `AI Coding Terms` section, naming its dictionary entry
+// once; the generic Lexicon carries the same rows, and names no room-specific
+// record.
+const AI_CODING_TERMS = [
+  // Batch 1, 2026-10-03: the terms that collide with no existing row (the fifteen planned, plus Model provider,
+  // whose provider note is a distinction only).
+  'Model', 'Parameters', 'Effort', 'Inference', 'Token', 'Next-token prediction', 'Non-determinism', 'Model provider',
+  'Input tokens', 'Output tokens', 'Cache tokens', 'Stateless', 'Stateful', 'Agent', 'System prompt', 'Context window',
+  // Batch 1, the three that meet an existing Workbench word: Harness, Context and Session.
+  'Harness', 'Context', 'Session',
+  // Batch 2, 2026-10-03: adopted on the Blueprint teardown review page.
+  'Smart zone', 'Attention budget', 'Attention degradation', 'Automated check', 'Automated review', 'Human review',
+  'Grilling', 'Environment', 'Filesystem', 'Software factory',
+];
+const dictionarySlug = (term) => term.toLowerCase().replace(/ /g, '-');
+
+test('both Lexicons carry each adopted AI Coding Terms row exactly once with one dictionary link', () => {
+  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
+    const content = read(root, relative);
+    assert.match(content, /^## AI Coding Terms$/m, `${relative} has the AI Coding Terms section`);
+    const section = content.split(/^## AI Coding Terms$/m)[1].split(/^## /m)[0];
+    assert.match(section, /no(t a)? live import|not a\s+live import/, `${relative} preamble states the no-live-import rule`);
+    for (const term of AI_CODING_TERMS) {
+      const rows = content.split('\n').filter((line) => line.startsWith(`| **${term}** `));
+      assert.equal(rows.length, 1, `${relative} has exactly one ${term} row`);
+      assert.ok(section.includes(rows[0]), `${relative} keeps the ${term} row inside AI Coding Terms`);
+      const links = rows[0].match(/https:\/\/www\.aihero\.dev\/ai-coding-dictionary\/[a-z-]+/g) || [];
+      assert.deepEqual(links, [`https://www.aihero.dev/ai-coding-dictionary/${dictionarySlug(term)}`], `${relative} ${term} links its dictionary entry once`);
+      if (relative.startsWith('templates/')) assert.doesNotMatch(rows[0], /ADR-0|S-0|TK-0|workbench\/specs\/|workbench\/wiki\//, `${relative} ${term} stays generic`);
+    }
+  }
+});
+
+// S-004F TK-005Q: the owner's two corrective-work answers (a miss found by a
+// check continues the same Task unless the fix rewrites it; a later gap
+// against delivered work is a new Spec, never a correction anchored to a Wiki
+// claim) are carried by accepted decision records, and no accepted record
+// still states the rules they replace as current.
+test('accepted decision records carry the corrective-work rules and no longer state the replaced ones', () => {
+  const active = (directory) => fs.readdirSync(path.join(root, directory))
+    .filter((name) => /^[0-9A-Za-z]{4}-.*\.md$/.test(name))
+    .map((name) => [`${directory}/${name}`, read(root, `${directory}/${name}`).replace(/\s+/g, ' ')]);
+  const records = [...active('workbench/docs/adr'), ...active('workbench/docs/ddr')];
+  const replaced = [
+    ['a failing Spec review creates corrective Tasks', /Failing is diagnostic: it creates corrective Tasks/],
+    ['a missed Task is always replaced by a new Task', /its card returns to In progress, its worktree is removed, and a new Task named for its objective fixes it/],
+    ['a corrective Task uses its Wiki claim (three altitudes)', /A corrective Task against the same reconciled capability uses its Wiki claim/],
+    ['a corrective Task uses its Wiki claim (Task record)', /For a corrective Task against a reconciled Wiki claim, the maintained Wiki/],
+    ['a later repair loads its Wiki claim (lifecycle)', /A later repair against that reconciled destination loads and updates its Wiki claim/],
+    ['a failed landmark review produces corrective Tasks', /failed landmark review produces corrective Tasks, as a failed Spec review does/],
+    ['Wiki lint findings become corrective Tasks', /Findings become corrective Tasks/]
+  ];
+  for (const [file, text] of records) {
+    for (const [claim, pattern] of replaced) assert.doesNotMatch(text, pattern, `${file} still states as current: ${claim}`);
+  }
+  const sameTask = records.find(([file]) => /^workbench\/docs\/ddr\/[0-9A-Za-z]{4}-a-miss-found-by-a-check-continues-the-same-task/.test(file));
+  assert.ok(sameTask, 'an accepted destination decision record carries the same-Task answer');
+  assert.match(sameTask[1], /the same Task continues with an adjusted handoff/);
+  assert.match(sameTask[1], /A new Task is opened only when the fix changes the Task enough that it has to be rewritten/);
+  assert.match(sameTask[1], /If the fix is different than just continuing, and we have to rewrite the task\. then yes\. otherwise\. just use the same task, with an adjusted handoff\./);
+  for (const prefix of ['000F', '000G', '000H', '000I', '000R', '000U']) {
+    const [file, text] = records.find(([name]) => name.startsWith(`workbench/docs/adr/${prefix}-`));
+    assert.match(text, /\.\.\/ddr\/000[MY]-/, `${file} names the destination record that amended it`);
+  }
+});
+
+// S-004E: the owner's harness answer (2026-10-03): the Workbench is an agentic
+// management system a harness loads, never a harness; Room has always meant
+// project. Neither Lexicon calls the Workbench the operating harness, and a
+// Chat is distinguished from a session.
+test('neither Lexicon calls the Workbench a harness, and Chat is distinguished from a session', () => {
+  const termRow = (content, term) => content.split('\n').find((line) => line.startsWith(`| **${term}** `));
+  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
+    const content = read(root, relative);
+    assert.doesNotMatch(content, /operating harness|agent harness|harness around it|this harness/i, `${relative} must not call the Workbench a harness`);
+    assert.doesNotMatch(termRow(content, 'Workbench'), /A room:/, `${relative} Workbench row must not call the Workbench a room`);
+    assert.match(termRow(content, 'Workbench'), /agentic management system/, `${relative} Workbench row says what it is`);
+    assert.match(termRow(content, 'Workbench'), /Not a harness/, `${relative} Workbench row says what it is not`);
+    assert.match(termRow(content, 'Portable Workbench'), /agentic management system/, `${relative} Portable Workbench row`);
+    assert.match(termRow(content, 'Chat'), /not a session either/, `${relative} Chat row distinguishes a session`);
+    assert.match(termRow(content, 'Host portability'), /host" means the machine/, `${relative} Host portability row says which host`);
+    assert.match(termRow(content, 'Harness'), /The Workbench is not a harness/, `${relative} Harness row`);
+    assert.match(termRow(content, 'Evaluation'), /Does this Workbench help agents/, `${relative} Evaluation row`);
+  }
+});

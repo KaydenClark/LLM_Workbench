@@ -72,6 +72,8 @@ they are authored.
 - [Auditor: check named claims against pinned evidence](skill-auditor.md)
 - [Builder: deliver one assigned result with checkable proof](skill-builder.md)
 - [Reviewer: assess one eligible immutable candidate](skill-reviewer.md)
+- [Reconciler: compare governed claims against pinned evidence](skill-reconciler.md)
+- [Implement: deliver one assigned Task with checkable proof](skill-implement.md)
 - [Make-it-so: carry approved work to the endpoint the owner named](skill-make-it-so.md)
 - [Carry: take assigned work to its authorized endpoint](skill-carry.md) ([S-01C](../specs/S-01C-carry-skill-rebuild/SPEC.md))
 - [To-spec: turn a settled decision into one bounded Spec](skill-to-spec.md)

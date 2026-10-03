@@ -46,7 +46,7 @@ to be promoted:
    merges into integration as soon as its own review passes, so integration
    stays as current as possible. The whole-landmark review checks what has
    landed on integration against the landmark's destination; a failed landmark
-   review produces corrective Tasks, as a failed Spec review does, rather than
+   review is corrected by the corrective-work rules, as a failed Spec review is, rather than
    blocking a merge.
 6. **Review one size up.** A landmark is reviewed exactly like a Spec, one size
    up, adding a review layer. Tasks keep their own pull-request review. Before a
@@ -138,3 +138,7 @@ Provenance: owner-confirmed grilling of 2026-10-02 under the objective
 [ADR-000S](000S-destination-decision-records-are-decision-records-beside-adrs.md).
 The owner's earlier landmark definition of 2026-09-25, which made landmark
 files JSON, is superseded for the landmark record only.
+
+## Corrective-work correction
+
+The corrective-work Spec ([S-004F](../../specs/S-004F-corrective-work-rules/SPEC.md)) changes point 5's phrase that a failed landmark review produces corrective Tasks, under ADR-000A's amendment-first rule. The earlier text reads at `git show f91bfd72f41c4b471f1756781649375abb68d158:workbench/docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md`. A miss found by a check follows [the same-Task decision](../ddr/000Y-a-miss-found-by-a-check-continues-the-same-task-unless-the-fix-rewrites-it.md), and a later gap against delivered work follows [the scaffolding decision](../ddr/000M-working-artifacts-are-scaffolding-cleared-away-once-their-knowledge-is-kept.md); this record does not decide which applies to a given landmark finding. The rest of this decision is unchanged.

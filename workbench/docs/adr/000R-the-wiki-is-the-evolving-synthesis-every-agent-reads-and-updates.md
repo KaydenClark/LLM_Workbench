@@ -55,7 +55,7 @@ The settled answers:
    owner's explicit say.
 9. Lint runs twice: a small lint of the touched pages at the end of every
    Wiki update, and a whole-Wiki lint at Spec review when the Spec's work is
-   verified. Findings become corrective Tasks. The structural validator keeps
+   verified. Findings follow the corrective rule: the Task that wrote the page continues with an adjusted handoff unless the fix rewrites it. The structural validator keeps
    running on every change.
 10. The grilling destination audit ledger leaves the Wiki for the sessions
     lane as an interim home; it is being turned into question cards.
@@ -95,3 +95,7 @@ against Andrej Karpathy's "LLM Wiki" idea file (gist 442a6bf5). The
 comparison that preceded the grilling found fifty complete Specs with no
 feature article, fifty-one per-Spec articles filed as design concepts, and no
 ingest, query or semantic lint operation in the Workbench.
+
+## Lint-finding correction
+
+The corrective-work Spec ([S-004F](../../specs/S-004F-corrective-work-rules/SPEC.md)) changes point 9's sentence that whole-Wiki lint findings become corrective Tasks, under ADR-000A's amendment-first rule. The earlier text reads at `git show f91bfd72f41c4b471f1756781649375abb68d158:workbench/docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md`. Lint is a check, so its findings follow [the same-Task decision](../ddr/000Y-a-miss-found-by-a-check-continues-the-same-task-unless-the-fix-rewrites-it.md). The rest of this decision is unchanged.
