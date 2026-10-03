@@ -95,7 +95,7 @@ console.log(`ok - evaluator self-test passed; local score ${localScore}, single-
 // evidence at the owner that holds it, so the shape change moves no score.
 const FOUR_PART_BLUEPRINT = ['# Fixture - Blueprint', '', '## What it is', '', 'A finished product.', '', '## Who it serves', '', 'Its people.', '', '## Promised outcomes', '', '- A durable result.', '', '## Non-goals', '', '- Not a hosted service.', ''].join('\n');
 const EIGHT_SECTION_HEADINGS = ['Product Destination', 'Promised Outcomes', 'Integrated System Design', 'Cross-Cutting Qualities And Constraints'];
-const FOUR_PART_HEADINGS = ['What it is', 'Promised outcomes', 'Non-goals'];
+const FOUR_PART_HEADINGS = ['What it is', 'Who it serves', 'Promised outcomes', 'Non-goals'];
 const modelOf = files => scoreWorkbench(files).breakdown.find(x => x.id === 'project_model');
 const rootBlueprintIsFourPart = /^## What it is$/m.test(localFiles['BLUEPRINT.md']);
 const destinationModel = modelOf(localFiles);
@@ -124,8 +124,16 @@ for (const heading of FOUR_PART_HEADINGS) {
   const changed = {...fourPart, 'BLUEPRINT.md': FOUR_PART_BLUEPRINT.replace('## '+heading, '## Removed')};
   assert.ok(modelOf(changed).score < 8, 'the four-part heading "'+heading+'" must remain required');
 }
-const noWhoItServes = {...fourPart, 'BLUEPRINT.md': FOUR_PART_BLUEPRINT.replace('## Who it serves', '## Removed')};
-assert.equal(modelOf(noWhoItServes).score, 8, 'the people-served heading was never a scored check and stays unscored');
+// A heading with nothing under it is not a part of the page: each of the four, emptied in turn, loses credit,
+// and so does a page of bare headings.
+const emptied = (blueprint, heading) => blueprint.replace(new RegExp(`(## ${heading}\\n)\\n[^\\n]+\\n`), '$1');
+for (const heading of FOUR_PART_HEADINGS) {
+  const changed = {...fourPart, 'BLUEPRINT.md': emptied(FOUR_PART_BLUEPRINT, heading)};
+  assert.notEqual(changed['BLUEPRINT.md'], FOUR_PART_BLUEPRINT, 'emptying "'+heading+'" must change the fixture');
+  assert.ok(modelOf(changed).score < 8, 'the four-part section "'+heading+'" must carry text to earn credit');
+}
+const bareHeadings = {...fourPart, 'BLUEPRINT.md': FOUR_PART_HEADINGS.map(h => '## '+h+'\n').join('\n')};
+assert.ok(modelOf(bareHeadings).score <= 1.6, 'a page of bare headings earns no project-model credit beyond the Contract-only check');
 for (const [name, mutate] of [
   ['the Contract safety section', agents => agents.replace(/^## Safety And Change Control$/m, '## Removed')],
   ['the Contract privacy rule', agents => agents.replace(/private|privacy/gi, 'removed')],

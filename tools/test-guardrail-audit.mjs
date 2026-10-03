@@ -179,6 +179,15 @@ assert.equal(checked(fourPart,'version_contract'),true,'a four-part Blueprint is
 assert.equal(checked({...fourPart,'RUNBOOK.md':fourPart['RUNBOOK.md'].replace('**Blueprint reviewed:** 2026-07-12','**Blueprint reviewed:** 2025-01-01')},'fresh_control_docs'),false,'a four-part Blueprint keeps the recorded review date requirement');
 assert.equal(checked({...fourPart,'workbench/manifest.json':'{}'},'version_contract'),false);
 assert.equal(checked({...fourPart,'templates/AGENTS.md':'unstamped'},'version_contract'),false);
+// Recognition needs the whole shape: one four-part heading alone is not the short page.
+for (const missing of ['What it is', 'Who it serves', 'Promised outcomes', 'Non-goals']) {
+  const partial = {...fourPart, 'BLUEPRINT.md': fourPart['BLUEPRINT.md'].replace('## '+missing, '## Renamed')};
+  assert.equal(checked(partial,'fresh_control_docs'),false,'a Blueprint missing the four-part heading "'+missing+'" takes the legacy review-date check');
+  assert.equal(checked(partial,'version_contract'),false,'a Blueprint missing the four-part heading "'+missing+'" takes the legacy version-stamp check');
+}
+const oneHeading = {...modern,'BLUEPRINT.md':'# Blueprint\n\n## What it is\n\nA product.\n'};
+assert.equal(checked(oneHeading,'fresh_control_docs'),false,'a lone What it is heading is not destination-shaped');
+assert.equal(checked(oneHeading,'version_contract'),false);
 // A Blueprint with neither shape still takes the legacy path.
 const neither = {...modern,'BLUEPRINT.md':'# Blueprint\n\n## Overview\n\nA product.\n'};
 assert.equal(checked(neither,'fresh_control_docs'),false,'a Blueprint with neither destination shape falls back to the legacy review-date check');

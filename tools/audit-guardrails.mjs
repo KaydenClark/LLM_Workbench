@@ -295,7 +295,8 @@ function patternCheck(id, label, weight, haystack, pattern, evidence, action) {
 // A destination-shaped Blueprint is either the eight-section destination or the
 // four-part short page; neither carries a review date or a version stamp.
 function isDestinationBlueprint(text) {
-  return /^## (?:Product Destination|What it is)$/m.test(text);
+  return /^## Product Destination$/m.test(text)
+    || ['What it is', 'Who it serves', 'Promised outcomes', 'Non-goals'].every(name => new RegExp(`^## ${name}$`, 'm').test(text));
 }
 
 function controlDocsAreFresh(files, today, maxAgeDays) {
