@@ -220,13 +220,18 @@ candidate need not equal HEAD. Its content digest binds the assembled Spec and
 live/retired Task records; a changed candidate needs a fresh review. A Dispatcher
 or implementer cannot supply independent approval.
 
-A failed assembled review creates one corrective Task per attributable finding
-through `verdict ... --result fail`; preserve the original `TASK.md` and its
-completed proof, and keep the destination open. Findings name what failed and
-the evidence row the new Task answers. `next` selects that corrective work and
-`claim` makes it in-progress; repair, self-check and hand back, then assemble a
-fresh immutable candidate for whole-Spec QA and separate Director review.
-Do not silently reopen a done record or clear a failed verdict with a green test.
+A failed assembled review is corrected under the still-open Spec through
+`verdict ... --result fail`, one finding at a time. Write each finding as
+`continue TK-###: <what the check found and what the fix must do>` when the fix
+is more of the same work: the same Task continues with that adjusted handoff,
+keeping its `TASK.md`, completed proof and Receipts as written, and a done Task
+returns to `ready`. Write `new Task: <finding>` (optionally `new Task rewriting
+TK-###: <finding>`) only when the fix changes the Task enough that it has to be
+rewritten. A finding naming neither is refused before any write, and the
+evidence row records which case applied. `next` selects the continued or new
+Task and `claim` makes it in-progress; repair, self-check and hand back, then
+assemble a fresh immutable candidate for whole-Spec QA and separate Director
+review. Never clear a failed verdict with a green test.
 
 ### Owner Closure And Reconciliation
 
@@ -234,7 +239,8 @@ The closure sequence is reviewed delivery on integration -> owner approval -> ve
 Owner Human QA timing and findings follow Git Rules below; the approval is
 content-bound, recorded with `approve S-### --candidate SHA --owner NAME`
 only for the owner's actual approval of delivered integration content.
-`approve` with `--finding TEXT` creates corrective Tasks; with
+`approve` with `--finding TEXT` follows the same rule (each finding names
+`continue TK-###:` or `new Task:`); with
 `--destination-change TEXT` it records the return to Align without inventing
 Tasks. A failed Human QA finding returns to the appropriate scope of Align,
 design-concept and delivery work; it does not imply every defect changes design.
@@ -255,10 +261,12 @@ missing capture while the Spec remains complete. Reconcile surviving claims
 into their durable owners before `retire-spec S-### --wiki PATH`; use the
 link-safe folder operations, never manual moves. Discard only retired records
 after main containment, capture and the current-reference checks permit it;
-retain needed origins, corrections and recovery evidence. Later gaps against
-a reconciled capability use corrective Tasks anchored to its Wiki claim,
-without resurrecting a discarded Spec. See RUNBOOK for exact retirement,
-discard and recovery procedures.
+retain needed origins, corrections and recovery evidence. A later gap against
+delivered work becomes a new Spec under its landmark or the Blueprint, never a
+revived Spec and never a correction anchored to a Wiki claim; the Wiki is
+evidence for that Spec's direction and plan, not its destination, and the
+corrective commands refuse a complete, superseded or retired Spec. See RUNBOOK
+for exact retirement, discard and recovery procedures.
 
 Do not load the full Blueprint, Taskboard, completed specs, or proof archive for
 normal task selection. Read Blueprint for cross-cutting architecture; read the
@@ -268,7 +276,7 @@ vocabulary; read the Taskboard for an owner dashboard or collision review.
 A Spec and its Tasks are delivery scaffolding. Preserve them while needed;
 after verified delivery and reconciliation, the implementation and maintained
 documentation hold the enduring capability knowledge. Later changes create
-a new linked spec for a different destination; later gaps against a reconciled capability use corrective Tasks anchored to its Wiki claim.
+a new linked spec for a different destination or for a later gap against delivered work.
 
 ## Engineering And Verification
 
@@ -298,8 +306,8 @@ Every use of the Workbench reads the Wiki and, when the work changed what a
 page says, updates that page on the same branch; the operation's own
 authority covers its Wiki update, with no per-page approval. End each Wiki
 update with a lint of the touched pages; the whole-Wiki lint runs at Spec
-review when the Spec's work is verified, and its findings become corrective
-Tasks. Identifiers on a page always carry the artifact's name and context.
+review when the Spec's work is verified, and its findings follow the corrective
+rule in Assembled Review And Corrective Return. Identifiers on a page always carry the artifact's name and context.
 In chat, never refer to an artifact by its identifier alone.
 
 This authoring summary assigns documentation maintenance. The

@@ -434,7 +434,7 @@ function taskWorkflowContract(content, generic = false) {
     ['Scoped Task close', lifecycle, /close S-###[\s\S]*--proof[\s\S]*--docs[\s\S]*--remaining-gap/],
     ['Dispatcher assembled QA', lifecycle, /Dispatcher[^.]*whole-Spec QA[^.]*assembled Spec/],
     ['Separate Director review', lifecycle, /separate Director context[\s\S]*immutable[\s\S]*report S-### --candidate SHA/],
-    ['Corrective return', lifecycle, /failed assembled review[\s\S]*corrective Task[^.]*finding[\s\S]*preserve[^.]*`TASK\.md`[\s\S]*fresh immutable candidate/],
+    ['Corrective return', lifecycle, /failed assembled review[\s\S]*`continue TK-###:[\s\S]*`new Task:[\s\S]*refused before any write[\s\S]*fresh immutable candidate/],
     ['Completion prerequisites', lifecycle, /reviewed delivery on integration -> owner approval -> verification on main -> `complete`/],
     ['Capture before cleanup', lifecycle, /After `complete`[^.]*features[^.]*before retirement or discard/],
     ['Delivered blocker', lifecycle, /`S-###:delivered`[\s\S]*content-bound[\s\S]*fetch integration/],
@@ -781,4 +781,39 @@ test('each AI Coding Dictionary Wiki entry is routed from MEMORY.md and links it
     assert.ok(page.includes(`https://www.aihero.dev/ai-coding-dictionary/${slug}`), `${file} links its dictionary entry`);
     assert.match(page, /\.\.\/\.\.\/AGENTS\.md|\.\.\/docs\/(adr|ddr)\//, `${file} links an owning control or decision record`);
   }
+});
+
+// S-004F TK-005T: the two controls every session loads, their generic mirror and
+// the Task author's skill state the owner's corrective-work rules - a miss found
+// by a check continues the same Task unless the fix rewrites it; a later gap
+// against delivered work is a new Spec, never a correction anchored to a Wiki
+// claim - and no longer the rules they replace.
+test('AGENTS, its template and the to-tasks skill state the corrective-work rules and not the replaced ones', () => {
+  for (const [file, text] of [['AGENTS.md', read(root, 'AGENTS.md')], ['templates/AGENTS.md', read(productTemplates, 'AGENTS.md')]]) {
+    const flat = text.replace(/\s+/g, ' ');
+    for (const [claim, pattern] of [
+      ['continue the same Task', /`continue TK-###: <what the check found and what the fix must do>` when the fix is more of the same work: the same Task continues with that adjusted handoff/],
+      ['open a new Task only when the fix rewrites it', /`new Task: <finding>` \(optionally `new Task rewriting TK-###: <finding>`\) only when the fix changes the Task enough that it has to be rewritten/],
+      ['an undispositioned finding is refused', /A finding naming neither is refused before any write, and the evidence row records which case applied/],
+      ['owner findings follow the same rule', /`approve` with `--finding TEXT` follows the same rule/],
+      ['a later gap is a new Spec', /A later gap against delivered work becomes a new Spec under its landmark or the Blueprint, never a revived Spec and never a correction anchored to a Wiki claim/],
+      ['the Wiki is evidence, not the destination', /the Wiki is evidence for that Spec's direction and plan, not its destination/],
+      ['Wiki lint findings follow the rule', /its findings follow the corrective rule in Assembled Review And Corrective Return/]
+    ]) {
+      if (file === 'templates/AGENTS.md' && claim === 'the Wiki is evidence, not the destination') continue;
+      assert.match(flat, pattern, `${file}: ${claim}`);
+    }
+    for (const [claim, pattern] of [
+      ['one new Task per finding', /creates one corrective Task per attributable finding/],
+      ['approve --finding creates Tasks', /`approve` with `--finding TEXT` creates corrective Tasks/],
+      ['later gaps anchored to a Wiki claim', /use corrective Tasks anchored to its Wiki claim/],
+      ['lint findings become corrective Tasks', /findings become corrective Tasks/],
+      ['reopening is forbidden outright', /Do not silently reopen a done record/]
+    ]) assert.doesNotMatch(flat, pattern, `${file} still states: ${claim}`);
+  }
+  const toTasks = read(root, 'workbench/skills/to-tasks/SKILL.md').replace(/\s+/g, ' ');
+  assert.match(toTasks, /a corrective Task never takes a Wiki claim as its destination/);
+  assert.doesNotMatch(toTasks, /for a corrective Task after retirement/);
+  assert.equal(read(root, 'AGENTS.md').includes('## Assembled Review') || read(root, 'AGENTS.md').includes('### Assembled Review And Corrective Return'), true, 'the heading other records link to stays');
+  assert.match(read(root, 'AGENTS.md'), /### Owner Closure And Reconciliation/);
 });
