@@ -3,7 +3,7 @@
 **Task ID:** TK-008A
 **Spec ID:** S-004H
 **Slice:** Record where every paragraph of the current Blueprint goes, and write the Wiki pages that hold the workflow and the altitudes
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: Every paragraph of the current `BLUEPRINT.md` has a recorded home that exists at swap time, and a reviewer can follow each to it.
