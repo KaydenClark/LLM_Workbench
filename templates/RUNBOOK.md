@@ -1078,8 +1078,28 @@ Whole `delete` requires the source to be reconciled with no entries, unresolved
 items, next action, or active declared retainer. Unreadable live records block
 cleanup with named paths because retention cannot be established; repair or
 reconcile them without discarding their source bytes. This does not block other
-work or grant the tool authority to choose what is important. Writes and cleanup
-assume one writer per note; revision checks are not simultaneous-writer locks.
+work or grant the tool authority to choose what is important.
+
+Overlapping writers cannot lose an entry silently. Every write that takes
+`--revision` (`append`, `current`, `trim`, `delete`) publishes inside a
+per-revision publish token, the exclusive directory `.<note>.rev<N+1>.publish/`
+beside the note: the writer re-reads the note under that token and publishes
+only if it still holds exactly the bytes the writer read (not merely the same
+revision number, which a deleted and recreated note would repeat), so of two
+writers that read the same record exactly one succeeds and the other is refused `stale-revision`
+naming the revision on disk, with nothing of its write in the file. A success
+response is therefore true at the revision it states. The token is held for one
+publication only; it is not a lease, needs no service or configuration, and a
+writer that stops mid-write leaves the previous valid record in place. A token
+older than ten seconds is treated as abandoned and reclaimed by the next
+writer, so a crash never blocks a note. The bytes a writer is about to publish
+are staged inside its own token directory, so reclaiming the token removes
+them and a writer stalled past the reclaim age fails its rename and is refused,
+instead of publishing over a newer write; there is no gap between the
+ownership check and the publication. `delete` moves the note into the same
+place instead of unlinking the live path, so a stale cleanup fails rather than
+removing a newer write. One writer at a time remains the working rule: the
+guard makes an overlap honest, it does not merge concurrent changes.
 
 ### Benchmark-Driven Improvement
 

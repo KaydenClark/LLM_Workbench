@@ -90,16 +90,120 @@ try {
 
 console.log(`ok - evaluator self-test passed; local score ${localScore}, single-file baseline ${singleFileScore}`);
 
-const destinationModel = scoreWorkbench(localFiles).breakdown.find(x => x.id === 'project_model');
+// S-004H: the Blueprint is either the legacy eight-section destination or the
+// four-part short page. Each project-model check keeps its weight and finds its
+// evidence at the owner that holds it, so the shape change moves no score.
+const FOUR_PART_BLUEPRINT = ['# Fixture - Blueprint', '', '## What it is', '', 'A finished product.', '', '## Who it serves', '', 'Its people.', '', '## Promised outcomes', '', '- A durable result.', '', '## Non-goals', '', '- Not a hosted service.', ''].join('\n');
+const EIGHT_SECTION_HEADINGS = ['Product Destination', 'Promised Outcomes', 'Integrated System Design', 'Cross-Cutting Qualities And Constraints'];
+const FOUR_PART_HEADINGS = ['What it is', 'Who it serves', 'Promised outcomes', 'Non-goals'];
+const modelOf = files => scoreWorkbench(files).breakdown.find(x => x.id === 'project_model');
+const rootBlueprintIsFourPart = /^## What it is$/m.test(localFiles['BLUEPRINT.md']);
+const destinationModel = modelOf(localFiles);
 assert.equal(destinationModel.missing.length, 0, 'current destination model must be evaluated at its actual owners');
-for (const heading of ['Product Destination', 'Promised Outcomes', 'Integrated System Design', 'Cross-Cutting Qualities And Constraints']) {
+for (const heading of rootBlueprintIsFourPart ? FOUR_PART_HEADINGS : EIGHT_SECTION_HEADINGS) {
   const changed = {...localFiles, 'BLUEPRINT.md':localFiles['BLUEPRINT.md'].replace('## '+heading,'## Removed')};
-  assert.ok(scoreWorkbench(changed).breakdown.find(x=>x.id==='project_model').missing.length > 0, heading+' must remain required');
+  assert.ok(modelOf(changed).missing.length > 0, heading+' must remain required');
 }
 
+const templateBlueprintIsFourPart = /^## What it is$/m.test(localFiles['templates/BLUEPRINT.md']);
 const templateModel = Object.fromEntries(['AGENTS.md','BLUEPRINT.md'].map(name => [name,localFiles['templates/'+name]]));
-assert.equal(scoreWorkbench(templateModel).breakdown.find(x=>x.id==='project_model').score,8,'generic destination model retains every substantive constraint prompt');
-for (const terms of [/privacy|safety/gi,/verified|verification|evidence/gi]) {
-  const changed={...templateModel,'BLUEPRINT.md':templateModel['BLUEPRINT.md'].replace(terms,'removed')};
-  assert.ok(scoreWorkbench(changed).breakdown.find(x=>x.id==='project_model').score<8,'removing substantive constraint prompts must lose credit');
+assert.equal(modelOf(templateModel).score,8,'generic destination model retains every substantive constraint prompt');
+if (!templateBlueprintIsFourPart) {
+  for (const terms of [/privacy|safety/gi,/verified|verification|evidence/gi]) {
+    const changed={...templateModel,'BLUEPRINT.md':templateModel['BLUEPRINT.md'].replace(terms,'removed')};
+    assert.ok(modelOf(changed).score<8,'removing substantive constraint prompts must lose credit');
+  }
 }
+
+// The four-part short page plus the generic Contract scores the full project
+// model weight, and each piece of evidence it relies on is still required.
+const fourPart = {...Object.fromEntries(['AGENTS.md'].map(name => [name,localFiles['templates/'+name]])), 'BLUEPRINT.md': FOUR_PART_BLUEPRINT};
+assert.equal(modelOf(fourPart).score, 8, 'a four-part Blueprint must score the full project model at its actual owners');
+assert.deepEqual(modelOf(fourPart).missing, []);
+for (const heading of FOUR_PART_HEADINGS) {
+  const changed = {...fourPart, 'BLUEPRINT.md': FOUR_PART_BLUEPRINT.replace('## '+heading, '## Removed')};
+  assert.ok(modelOf(changed).score < 8, 'the four-part heading "'+heading+'" must remain required');
+}
+// The eight-section legacy shape keeps its credit, so the swap lands without a gap.
+const legacy = {...Object.fromEntries(['AGENTS.md'].map(name => [name,localFiles['templates/'+name]])), 'BLUEPRINT.md': EIGHT_SECTION_HEADINGS.map(h => '## '+h+'\n\nprivacy safety verified evidence manifest\n').join('\n') + '\n## Non-Goals\n\nprivacy safety\n'};
+// A heading with nothing under it is not a part of the page: each of the four, emptied in turn, loses credit,
+// and so does a page of bare headings.
+const emptied = (blueprint, heading) => blueprint.replace(new RegExp(`(## ${heading}\\n)\\n[^\\n]+\\n`), '$1');
+for (const heading of FOUR_PART_HEADINGS) {
+  const changed = {...fourPart, 'BLUEPRINT.md': emptied(FOUR_PART_BLUEPRINT, heading)};
+  assert.notEqual(changed['BLUEPRINT.md'], FOUR_PART_BLUEPRINT, 'emptying "'+heading+'" must change the fixture');
+  assert.ok(modelOf(changed).score < 8, 'the four-part section "'+heading+'" must carry text to earn credit');
+}
+// A section whose only body is a sub-heading has no text either; one with a sub-heading and then text does.
+for (const heading of FOUR_PART_HEADINGS) {
+  const subOnly = FOUR_PART_BLUEPRINT.replace(new RegExp(`(## ${heading}\\n)\\n[^\\n]+\\n`), '$1\n### Only a subheading\n');
+  assert.notEqual(subOnly, FOUR_PART_BLUEPRINT, 'the sub-heading-only fixture for "'+heading+'" must change the page');
+  assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': subOnly}).score < 8, 'a sub-heading alone is not text for "'+heading+'"');
+  const subThenText = FOUR_PART_BLUEPRINT.replace(new RegExp(`(## ${heading}\\n)\\n([^\\n]+\\n)`), '$1\n### A subheading\n\n$2');
+  assert.equal(modelOf({...fourPart, 'BLUEPRINT.md': subThenText}).score, 8, 'a sub-heading followed by text counts for "'+heading+'"');
+}
+// A page that declares the four-part shape is judged only as that page: an emptied part loses every
+// Blueprint-owned check at once, even beside a Contract whose own text could fill the gap, and legacy
+// section words cannot lend it credit.
+const BLUEPRINT_OWNED = ['integrated architecture', 'invariants', 'project promise', 'safety boundaries'];
+for (const heading of FOUR_PART_HEADINGS) {
+  const changed = {...fourPart, 'BLUEPRINT.md': emptied(FOUR_PART_BLUEPRINT, heading).replace('# Fixture - Blueprint\n', '# Fixture - Blueprint\n\nPrivacy and safety are verified with evidence; the manifest joins the major parts.\n')};
+  assert.deepEqual([...modelOf(changed).missing].sort(), BLUEPRINT_OWNED, 'an emptied "'+heading+'" part loses every Blueprint-owned check, not just one');
+}
+const mixed = {...fourPart, 'BLUEPRINT.md': FOUR_PART_BLUEPRINT + '\n' + legacy['BLUEPRINT.md'].replace('## Non-Goals', '## Non-Goals\n\n')};
+assert.equal(modelOf(mixed).score, 8, 'a complete four-part page plus extra sections is still judged as the four-part page');
+const mixedEmpty = {...fourPart, 'BLUEPRINT.md': emptied(FOUR_PART_BLUEPRINT, 'Non-goals') + '\n' + legacy['BLUEPRINT.md'].replace('## Non-Goals', '## Limits')};
+assert.ok(modelOf(mixedEmpty).score < 8, 'legacy sections appended to a four-part page with an empty part earn nothing');
+// The legacy headings differ from the four parts only in case ("Promised Outcomes", "Non-Goals"); a part that is
+// empty cannot be filled by a legacy section of the same name appended later, and a part must appear once, in order.
+for (const heading of FOUR_PART_HEADINGS) {
+  const withLegacy = {...fourPart, 'BLUEPRINT.md': emptied(FOUR_PART_BLUEPRINT, heading) + '\n## Promised Outcomes\n\nA result.\n\n## Non-Goals\n\nprivacy safety\n\n## What It Is\n\nA product.\n\n## Who It Serves\n\nPeople.\n'};
+  assert.ok(modelOf(withLegacy).score < 8, 'an emptied "'+heading+'" part cannot borrow a same-named legacy section appended later');
+}
+const reordered = FOUR_PART_BLUEPRINT.replace('## Who it serves', '## TEMP').replace('## Promised outcomes', '## Who it serves').replace('## TEMP', '## Promised outcomes');
+assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': reordered}).score < 8, 'the four parts must appear in order');
+const duplicated = FOUR_PART_BLUEPRINT + '\n## Non-goals\n\n- Again.\n';
+assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': duplicated}).score < 8, 'a part must appear once');
+const recased = FOUR_PART_BLUEPRINT.replace('## Promised outcomes', '## Promised Outcomes');
+assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': recased}).score < 8, 'the part headings are matched exactly, case included');
+assert.equal(modelOf({...fourPart, 'BLUEPRINT.md': FOUR_PART_BLUEPRINT + '\n## An extra section\n\nMore.\n'}).score, 8, 'a further section does not disturb a well-formed page');
+// Headings that only appear inside a fenced code block or an HTML comment are not the page's parts.
+const fenced = '# Fixture - Blueprint\n\n```markdown\n' + FOUR_PART_BLUEPRINT + '```\n';
+assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': fenced}).score < 8, 'fenced headings are not four-part sections');
+const tildeFenced = '# Fixture - Blueprint\n\n~~~markdown\n' + FOUR_PART_BLUEPRINT + '~~~\n';
+assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': tildeFenced}).score < 8, 'tilde-fenced headings are not four-part sections');
+const wrapped = fence => '# Fixture - Blueprint\n\n' + fence + 'markdown\n' + FOUR_PART_BLUEPRINT + fence + '\n';
+for (const [name, page] of [
+  ['a four-backtick fence', wrapped('````')],
+  ['a four-tilde fence', wrapped('~~~~')],
+  ['a five-backtick fence closed by a longer one', '# Fixture - Blueprint\n\n`````\n' + FOUR_PART_BLUEPRINT + '``````\n'],
+  ['a four-backtick fence holding a shorter fence', '# Fixture - Blueprint\n\n````\n```\n' + FOUR_PART_BLUEPRINT + '```\n````\n'],
+  ['an unclosed fence', '# Fixture - Blueprint\n\n```\n' + FOUR_PART_BLUEPRINT]
+]) {
+  assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': page}).score < 8, name+' hides the headings from the four-part page');
+}
+// A closing fence must match the opener's character and be at least as long, so a page that closes its code
+// block properly and then writes the four parts is the four-part page.
+const closedThenParts = '# Fixture - Blueprint\n\n````\ncode\n````\n\n' + FOUR_PART_BLUEPRINT.replace('# Fixture - Blueprint\n\n', '');
+assert.equal(modelOf({...fourPart, 'BLUEPRINT.md': closedThenParts}).score, 8, 'a properly closed code block before the parts does not hide them');
+const commented = '# Fixture - Blueprint\n\n<!--\n' + FOUR_PART_BLUEPRINT + '-->\n';
+assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': commented}).score < 8, 'commented headings are not four-part sections');
+const commentOnly = FOUR_PART_BLUEPRINT.replace('A finished product.', '<!-- a finished product -->');
+assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': commentOnly}).score < 8, 'an HTML comment is not section text');
+const codeBodied = FOUR_PART_BLUEPRINT.replace('A finished product.', '```text\nA finished product.\n```');
+assert.equal(modelOf({...fourPart, 'BLUEPRINT.md': codeBodied}).score, 8, 'a fenced block under a heading is section text');
+const crlf = FOUR_PART_BLUEPRINT.replace(/\n/g, '\r\n');
+assert.equal(modelOf({...fourPart, 'BLUEPRINT.md': crlf}).score, 8, 'a well-formed page with CRLF line endings is still the four-part page');
+const bareHeadings = {...fourPart, 'BLUEPRINT.md': FOUR_PART_HEADINGS.map(h => '## '+h+'\n').join('\n')};
+assert.ok(modelOf(bareHeadings).score <= 1.6, 'a page of bare headings earns no project-model credit beyond the Contract-only check');
+for (const [name, mutate] of [
+  ['the Contract safety section', agents => agents.replace(/^## Safety And Change Control$/m, '## Removed')],
+  ['the Contract privacy rule', agents => agents.replace(/private|privacy/gi, 'removed')],
+  ['the Contract ownership table', agents => agents.replace(/Documentation Ownership And Proof/g, 'Removed')],
+  ['the Contract verification section', agents => agents.replace(/^## Engineering And Verification$/m, '## Removed').replace(/verified|verification|evidence/gi, 'removed')]
+]) {
+  const changed = {...fourPart, 'AGENTS.md': mutate(fourPart['AGENTS.md'])};
+  assert.notEqual(changed['AGENTS.md'], fourPart['AGENTS.md'], name+' mutation must change the Contract');
+  assert.ok(modelOf(changed).score < 8, 'removing '+name+' must lose credit');
+}
+assert.equal(modelOf(legacy).score, 8, 'the eight-section destination keeps its credit');

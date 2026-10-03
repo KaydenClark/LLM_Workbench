@@ -8,8 +8,8 @@
 **Updated:** 2026-10-03
 **Catalog description:** Put the owner's agreed meanings for AI Coding Dictionary terms into the Lexicon, with a Wiki dictionary entry wherever a term needs more than its row, starting with nineteen model, harness and session terms.
 **Blockers:** none. The owner answered the harness question on 2026-10-03 (option (a) in Decisions And Contracts), so no row waits on an owner answer. Lexicon writes take one writer at a time; the owner's Codex Lexicon reconciliation landed in integration on 2026-10-03 (PR #281), and the Lexicon Design-Concept Reconciliation Spec stays active for its whole-Lexicon audit. The four Tasks run serially in this Spec's writer lane.
-**Latest event:** TK-006A closed with proof.
-**Next gate:** Complete TK-006B.
+**Latest event:** All four Tasks are closed (the thirty rows in both Lexicons, the harness reconciliation and the eight Wiki entries). One acceptance box stays open: the AGENTS.md, RUNBOOK.md and README.md harness lines wait for the Contract Carrier Pointer-Brief Rewrite.
+**Next gate:** Assembled-Spec review by a separate Director context and owner Human QA; the open acceptance box clears when the Contract carrier rewrite lands.
 
 > **Citation anchors.** pre=`817096e676992cf7ece72967ac8bbb064261a3ee` post=`817096e676992cf7ece72967ac8bbb064261a3ee`.
 
@@ -256,12 +256,12 @@ No Tasks cut. At Plan, use current Actuality to cut small complete-path slices. 
 
 ## Acceptance Criteria
 
-- [ ] Each of the nineteen batch-one terms and the ten batch-two terms has exactly one Lexicon row in the `AI Coding Terms` section, stating its agreed meaning in Workbench words and linking its dictionary entry, under a preamble naming the source, supply date and no-live-import rule.
-- [ ] No Lexicon row, template mirror row or current-facing control line uses a batch term for a different concept without an explicit distinction; the Workbench's self-description follows the owner's harness answer, and host, provider, session and context uses are reconciled as Desired Behavior 2 states.
-- [ ] Every term selected at Plan has a Wiki entry that passes `wiki.mjs validate`, is routed from `MEMORY.md` with a summary line, links its Lexicon row, dictionary entry and owning controls, and was linted as a touched page.
-- [ ] A mechanical comparison against the entries at the pinned commit finds no copied passage in any tracked file beyond a short attributed quotation.
-- [ ] The template mirror carries the generic rows, or the exemption is recorded with its reason.
-- [ ] A fresh agent given only the Lexicon and Wiki answers two probes with the Workbench meaning: why Claude Code and Claude.ai behave differently on the same model, and why the Workbench writes continuity to files.
+- [x] Each of the nineteen batch-one terms and the ten batch-two terms has exactly one Lexicon row in the `AI Coding Terms` section, stating its agreed meaning in Workbench words and linking its dictionary entry, under a preamble naming the source, supply date and no-live-import rule. Met by TK-005Y, TK-005Z and TK-006A; the control-fidelity case checks all thirty rows in both Lexicons.
+- [ ] No Lexicon row, template mirror row or current-facing control line uses a batch term for a different concept without an explicit distinction; the Workbench's self-description follows the owner's harness answer, and host, provider, session and context uses are reconciled as Desired Behavior 2 states. Open: both Lexicons are reconciled, but the `AGENTS.md`, `RUNBOOK.md` and `README.md` lines inventoried under Conflicting Control Lines still say harness for the Workbench until the Contract Carrier Pointer-Brief Rewrite lands.
+- [x] Every term selected at Plan has a Wiki entry that passes `wiki.mjs validate`, is routed from `MEMORY.md` with a summary line, links its Lexicon row, dictionary entry and owning controls, and was linted as a touched page. Met by TK-006B: eight entries, `wiki.mjs validate` clean, routed from MEMORY.md with a summary line each, linted as touched pages.
+- [x] A mechanical comparison against the entries at the pinned commit finds no copied passage in any tracked file beyond a short attributed quotation. Met by TK-006B: the longest shared word run between any tracked row or entry and the pinned entries is seven words (common phrases such as a list of harness parts).
+- [x] The template mirror carries the generic rows, or the exemption is recorded with its reason. Met: every row is mirrored without root-only links, quotes or identifiers.
+- [x] A fresh agent given only the Lexicon and Wiki answers two probes with the Workbench meaning: why Claude Code and Claude.ai behave differently on the same model, and why the Workbench writes continuity to files. Met by TK-006B: a fresh read-only Codex agent given only LEXICON.md and the dictionary Wiki entries answered both probes with the Workbench meanings and found no contradiction.
 - [ ] Named verification and remaining limitations are recorded without claiming owner approval.
 
 ## Testing Seams
@@ -288,6 +288,7 @@ This Spec changes `LEXICON.md` (a new section, reconciled rows and the Last revi
 | 2026-10-03 | TK-005Y | Task closed | Red f7b0d3ae then green: test-control-fidelity 28/28, templates evaluator, full AGENTS suite 48/48 on clean c1ec6fd4 | LEXICON.md and templates/LEXICON.md carry the AI Coding Terms section and fifteen rows; plan decisions recorded in the Spec | Harness reconciliation, batch two, Wiki entries and whole-Spec QA remain in the next three Tasks |
 | 2026-10-03 | TK-005Z | Task closed | Red 11d1321d then green: test-control-fidelity 30/30, full AGENTS suite 48/48 on clean 45efed10 | LEXICON.md and templates/LEXICON.md reconciled to the harness answer; conflicting AGENTS.md, RUNBOOK.md and README.md lines inventoried in the Spec for the Contract carrier rewrite | Batch two rows, Wiki entries and whole-Spec QA remain in the last two Tasks |
 | 2026-10-03 | TK-006A | Task closed | Red 8e23d299 then green: test-control-fidelity 30/30, full AGENTS suite 48/48 on clean d9038592 | LEXICON.md and templates/LEXICON.md carry the ten batch-two rows; separate-context review wording inventoried in the Spec, no conflicting line | Wiki entries, router and whole-Spec QA remain in the last Task |
+| 2026-10-03 | TK-006B | Task closed | Red e92b18ad then green: test-control-fidelity 31/31, wiki validate, full AGENTS suite 48/48 on clean cf3cfd09, no copied passage beyond seven words, two cold-reader probes answered | Eight dictionary Wiki entries and the MEMORY.md router section; Spec acceptance boxes checked with evidence except the open conflicting-control-lines box | Whole-Spec QA and separate Director review remain; the AGENTS.md, RUNBOOK.md and README.md harness lines wait for the Contract carrier rewrite |
 
 ## Completion Result
 
