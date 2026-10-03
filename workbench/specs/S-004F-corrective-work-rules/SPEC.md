@@ -1,15 +1,15 @@
 # S-004F - Corrective Work Rules
 
 **Spec ID:** S-004F
-**Status:** planned
+**Status:** active
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
 **Updated:** 2026-10-03
 **Catalog description:** When a check finds a miss, the same Task continues with an adjusted handoff unless the fix rewrites it, and a later gap against delivered work becomes a new Spec under its landmark or the Blueprint instead of a correction anchored to a Wiki claim.
-**Blockers:** none for specification. The Lexicon rows take one writer at a time (the owner's Codex Lexicon reconciliation landed in integration on 2026-10-03), and the `AGENTS.md` and Runbook lines coordinate with the Contract Carrier Pointer-Brief Rewrite. Implementation awaits Plan and assignment.
-**Latest event:** Authored at the Map step from the owner's two corrective-work answers, confirmed on 2026-10-03 in the Blueprint teardown; no Task is cut.
-**Next gate:** At Plan, inspect live Actuality, settle the open questions below from project evidence, and cut small Tasks, starting with the decision record that narrows the accepted records stating the old rules.
+**Blockers:** none for the first four Tasks. Three later Tasks wait on `owner:` tokens for another Spec's writer turn on the Runbook, the Lexicon and the Blueprint; each Dispatcher removes its token when that file is free.
+**Latest event:** Planned on 2026-10-03: the five open questions are settled below from project evidence and seven Tasks are cut.
+**Next gate:** Claim and deliver the decision records first, then the verdict path, the retired Wiki-claim route and the AGENTS corrective sections in order; each lands through its own reviewed pull request into `integration`.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 
@@ -58,13 +58,16 @@ The owner's two answers, both confirmed on the Blueprint teardown review page on
 - Unchanged by this Spec: the owner's confirmed answer that failed owner QA returns to Align at the scope the failure implicates, and that a defect is not proof the concept was wrong; the two QA gates; a destination change recorded as a return to Align.
 - Decision records are written at Map, per the accepted [workflow verbs decision](../../docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md), and composed by `to-docs` per the accepted [promotion decision](../../docs/adr/000Y-a-locked-and-confirmed-answer-is-promoted-without-further-ceremony.md). Whether the narrowing record is an ADR or a DDR follows the decision-record test and the owner's locked teardown rule that an ADR recording a destination choice becomes a DDR only when next touched.
 
-Open, settled at Plan from project evidence:
+**Plan decisions.** These settle the five questions the Map record left open. They are the planning agent's choices from project evidence, not owner answers, and none is presented as the owner's reason. The owner may change any of them at Align.
 
-- How a continued Task's status moves when the Task was already done, who judges whether a fix rewrites the Task (the owner did not say), and where its adjusted handoff lives: in its `TASK.md`, in a Markdown handoff the Task links, or both.
-- Whether an owner Human QA finding that keeps the destination follows rule 1. The owner's answer speaks of a check, and its confirmation names the verdict behavior; the owner-QA route shares the same tooling seam.
-- Whether whole-Wiki lint findings at Spec review, which `AGENTS.md` says become corrective Tasks, are a check whose findings follow rule 1.
-- Whether the `wiki-claim` destination type stays for a Task whose destination is producing a Wiki page rather than correcting delivered work, as the done TK-003B does.
-- How a new Spec for a later gap names the delivered work it builds on and the Wiki evidence it cites, without the Wiki becoming its destination.
+1. **Who judges, where the handoff lives, how status moves.** The recorder of the failed verdict or owner finding judges, per finding, whether the fix is more of the same work or rewrites the Task, because that person holds the finding; the owner did not name a judge. The finding is written `continue TK-###: <what the check found and what the fix must do>` or `new Task: <finding>` (optionally `new Task rewriting TK-###: ...`), a finding naming neither is refused before any write, and the Spec's own evidence row carries that text, so the record says which case applied. The adjusted handoff is the finding text, appended to the continued Task's own `TASK.md` in a `## Continuation` table (run, date, evidence row answered, adjusted handoff); no second handoff file is created. A continued done Task moves to `ready`; a Task already `ready`, `in-progress` or `needs-review` keeps its status; a `blocked` or `deferred` Task is refused. The Task's Receipt already records one row per run, so a continuation is another run: its earlier Receipt rows, Proof and Spec evidence rows stay byte-identical, its `Proof` field shows the latest closing proof, and a later close appends a distinct `Task closed (run N)` evidence row instead of conflicting with the first.
+2. **Owner Human QA findings that keep the destination follow rule 1.** The owner's answer speaks of a check, owner QA is a check, and `recordOwnerApproval` shares the verdict's corrective seam. A finding that changes the destination still records a return to Align and creates nothing.
+3. **Whole-Wiki lint findings at Spec review follow rule 1.** A lint finding is a miss found by a check, so it continues the Task that wrote the page unless the fix rewrites it; `AGENTS.md` stops saying such findings "become corrective Tasks".
+4. **The `wiki-claim` destination type stays.** It serves a Task whose destination is producing a Wiki page, as the done Task TK-003B in the Dispatcher Role Spec does. Only its use as the destination of corrective work retires, so `task-record.mjs` and `task-packet.mjs` keep parsing and resolving it.
+5. **A new Spec for a later gap.** It names the landmark or the Blueprint it sits under and the delivered Spec (or its retained name and approving date) in its own text, and cites Wiki pages as evidence for its direction and plan in Current Verified State. Its Tasks use `spec-acceptance` destinations. No landmark field exists in the Spec header yet, so this is prose until the landmark runtime lands. Delivered work is a Spec whose status is `complete` or `superseded`, or one that sits in the `retired` folder; for those the corrective commands refuse and name this route.
+6. **A standalone corrective record that already exists** is not deleted or migrated here. `next` stops selecting it and `claim` and `close` refuse it, naming the new-Spec route, while it still counts for identifier occupancy so no identifier collides.
+7. **Which decision records.** The same-Task answer is a destination decision, so it is a new destination decision record. The later-gap answer already sits in the accepted scaffolding decision record, which states that this Spec carries the change to the lifecycle and three-altitudes ADRs. A destination decision record cannot supersede an ADR, and the amendment-first rule asks that the existing ADR be corrected and the changed premise recorded, so ADR-000F, ADR-000G, ADR-000H, ADR-000I and ADR-000U are amended in place.
+8. **File ownership across Specs.** The Runbook, the Lexicon and the Blueprint each have another writer in turn, so their corrective lines are three separate Tasks that wait on `owner:` tokens rather than edits made here out of turn.
 
 ## Non-Goals
 
@@ -73,14 +76,22 @@ Changing the two QA gates, the Task-PR review, owner approval or main promotion;
 ## Dependencies And Blockers
 
 - `LEXICON.md` and `templates/LEXICON.md` have one writer at a time. The owner's Codex Lexicon reconciliation (Task TK-01Q of the [Lexicon Design-Concept Reconciliation](../S-01U-lexicon-design-concept-reconciliation/SPEC.md), from branch `codex/s01u-tk01q-lexicon-reconciliation`) landed in integration on 2026-10-03 through PR #281; that Spec stays active for its whole-Lexicon audit, so its later writes and this Spec's rows still take turns, as do the [AI Coding Dictionary Terms](../S-004E-ai-coding-dictionary-terms/SPEC.md) and [Workbench Terms And Workflow Verb Rows](../S-004G-workbench-terms-and-workflow-verbs/SPEC.md) Specs.
-- `AGENTS.md`, `RUNBOOK.md` and their mirrors are rewritten by the [Contract Carrier Pointer-Brief Rewrite](../S-004C-contract-carrier-pointer-brief-rewrite/SPEC.md). One writer per file: whichever lands first carries the corrective lines; if the rewrite lands first and moves a procedure into a skill, this Spec edits that skill instead.
+- `AGENTS.md`, `RUNBOOK.md` and their mirrors are rewritten by the [Contract Carrier Pointer-Brief Rewrite](../S-004C-contract-carrier-pointer-brief-rewrite/SPEC.md). One writer per file. The owner assigned the `AGENTS.md` turn to this Spec first (TK-005T), and that rewrite's Task for the review and closure sections waits for it to land and then moves the rules as they read. The Runbook and its mirror wait for that rewrite's writer turn (TK-005U); if the rewrite moves a procedure into a skill, TK-005U edits that skill instead.
 - The decision record that narrows the accepted records uses the accept, supersede and deprecate moves that [Decision Record Tooling](../S-003X-decision-record-tooling/SPEC.md) delivered on 2026-10-03, and its DDR collection if the record is a DDR.
 - If [Blueprint Short Page](../S-004H-blueprint-short-page/SPEC.md) lands first, the Blueprint's corrective passages and their pins in `tools/test-blueprint-contract.mjs` are already gone; otherwise this Spec corrects them under rules 1 to 5.
 - The [Workflow Canon Rework](../S-00P-workflow-canon-rework/SPEC.md) wrote the current corrective wording and is at its owner gate; this Spec does not reopen it and starts from the integration text.
 
 ## Vertical Implementation Slices
 
-No Tasks cut. At Plan, use current Actuality to cut small complete-path slices. A likely order: the decision record narrowing the accepted records; the verdict path continuing a Task, with its tests and the `AGENTS.md`, Runbook and Lexicon lines that describe it; the retirement of the Wiki-claim corrective route with the new-Spec route for later gaps; then the template mirrors, the `to-tasks` skill and the Wiki. The empty tasks directory keeps this planned capability record-backed.
+Seven Tasks live in `tasks/`, one record each; this section is a reading aid, not a second tracker. The first four run in order and the last three wait for a writer turn:
+
+1. TK-005Q: the decision records, the new same-Task record and the five ADR amendments.
+2. TK-005R: the verdict and owner-finding path that continues a Task or opens a new one, with its tests and the re-close identity.
+3. TK-005S: the retired Wiki-claim corrective route and the refusal for delivered Specs, with the later-gap fixture.
+4. TK-005T: the `AGENTS.md` corrective sections, their template mirror, the `to-tasks` skill and the Wiki pages that change.
+5. TK-005U: the Runbook and its template mirror, after the Runbook writer's turn.
+6. TK-005V: the Lexicon rows and their template mirror, after the Lexicon writer's turn.
+7. TK-005W: the Blueprint's corrective passages, unless the short page replaced them first.
 
 ## Acceptance Criteria
 
@@ -110,6 +121,7 @@ Run the targeted spec-report, spec-workbench, control-fidelity and append-only t
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-10-03 | none | Authored at the Map step from the owner's two corrective-work answers confirmed on 2026-10-03 in the Blueprint teardown, at integration 5cfa987bacb0f6a9273d93e8d989e34000d75ad9. | Map only; the quoted `AGENTS.md`, Runbook, Lexicon, template, Blueprint, decision-record and skill lines and the named runtime functions and tests were read at that tip; no runtime proof claimed. | This Spec and the generated Spec catalog. Docs checked; no control, Lexicon or Wiki update is due until delivery, because a planned Spec changes no accepted rule. | Plan, implementation and proof remain; the five open questions are for Plan. |
+| 2026-10-03 | none | Planned: the five open questions settled from project evidence and seven Tasks cut (TK-005Q to TK-005W) at integration 64c2c524. | Plan only; read `spec-report.mjs` (`recordReviewVerdict`, `recordOwnerApproval`, `createCorrectiveTasks`, `createOrphanCorrectiveTasks`), `spec-workbench.mjs` (`closeTask`, `finishRecordClose`, the standalone corrective claim, select and close paths), `task-record.mjs`, `task-receipt.mjs`, the accepted records and `tools/check-append-only.py` at that tip; no implementation or runtime proof claimed. | This Spec and the seven Task records. Docs checked; no control, Lexicon or Wiki update is due until delivery. | Implementation, proof and the three writer-turn Tasks remain. |
 
 ## Completion Result
 
