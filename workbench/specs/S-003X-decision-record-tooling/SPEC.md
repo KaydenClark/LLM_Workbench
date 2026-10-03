@@ -3,13 +3,13 @@
 **Spec ID:** S-003X
 **Status:** active
 **Priority:** 2
-**Owner:** claude
+**Owner:** claude-s003x-dispatcher
 **Stance:** Builder
 **Updated:** 2026-10-03
 **Catalog description:** Give a room one tool and one set of read words for both kinds of decision record, the ADR and the Destination Decision Record, with the lifecycle moves the ADR tool lacks.
 **Blockers:** none for the four tooling Tasks (TK-004W, TK-004X, TK-004Y, TK-004Z), which run in that order. The Lexicon-mirror Task TK-005A waits on the owner's unmerged Codex Lexicon reconciliation branch, which edits both Lexicons. How a DDR records its single landmark is open, outside this acceptance, and waits on the landmark capability.
-**Latest event:** Planned on 2026-10-03 at integration 2dcde6e90faed0937d7742fdac186db3c14e5e5b: five record-backed Tasks cut and the Spec activated; DDR tooling reuses the ADR runtime.
-**Next gate:** Claim and deliver TK-004W (the `ddr` collection), then TK-004X, TK-004Y and TK-004Z; each Task PR needs a separate-context review of its immutable candidate before its integration merge.
+**Latest event:** TK-004W claimed by claude-s003x-dispatcher.
+**Next gate:** Close TK-004W with verification and documentation proof.
 
 > **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a`.
 

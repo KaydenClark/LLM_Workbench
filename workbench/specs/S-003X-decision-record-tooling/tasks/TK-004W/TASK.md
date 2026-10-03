@@ -3,7 +3,7 @@
 **Task ID:** TK-004W
 **Spec ID:** S-003X
 **Slice:** Install the ddr collection in fresh and updated rooms
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-003X Acceptance Criteria box 1 (the manifest declares a `ddr` collection and a fresh project has `workbench/docs/ddr/` with its `proposed/` and `archive/` folders) and the update-route part of box 6 (updating a room that already holds ADRs adds the collection without altering its records)
