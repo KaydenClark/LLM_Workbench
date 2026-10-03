@@ -215,8 +215,8 @@ node workbench/tools/spec-workbench.mjs render
 node workbench/tools/spec-workbench.mjs doctor
 node workbench/tools/adr.mjs new --title "Decision title"
 node workbench/tools/adr.mjs new --kind ddr --title "Destination decision title"
-node workbench/tools/adr.mjs validate [--kind adr|ddr]
-node workbench/tools/adr.mjs register [--kind adr|ddr]
+node workbench/tools/adr.mjs validate
+node workbench/tools/adr.mjs register
 ```
 
 `doctor` prints every registered finding with its severity and blocking
@@ -259,8 +259,9 @@ with the keys `date`, `supersedes` and `canonicalized_in`, and refuses a room
 whose manifest does not declare the collection. A DDR's `canonicalized_in`
 never names the Wiki; validation reports that and the ADR rules applied to a
 DDR as `invalid-ddr`. A DDR that changes or contradicts the Blueprint names
-`BLUEPRINT.md` in `canonicalized_in`. `validate` and `register` without
-`--kind` act on every decision-record collection present.
+`BLUEPRINT.md` in `canonicalized_in`. `validate` and `register` act on every
+decision-record collection present; `--kind adr` or `--kind ddr` limits them to
+one.
 
 `permission-scope-drift` is reported when `.claude/settings.json` exists and
 withholds a manifest-declared authorship lane (no covering `Edit` `allow` rule,
