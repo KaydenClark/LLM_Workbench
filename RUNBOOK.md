@@ -8,6 +8,77 @@
 This file explains how to operate, verify, and evaluate the workbench repo
 itself. It should be boring, exact, and executable.
 
+## Operations Index
+
+Every session reads this index at entry, then follows only the rows its task
+needs. Each row names an operation, when following it is worth it, and the
+stable pointer to where its procedure lives.
+
+| Operation | Follow when | Pointer |
+|---|---|---|
+| Enter a session | Every session start or resume: check root, branch and dirty state, run doctor and load the assigned Spec. | [Ordinary Entry](#ordinary-entry) |
+| Find the owner of a question | You need the file that owns a permission, meaning, work state, proof or procedure. | [Finding The Owner Of A Question](#finding-the-owner-of-a-question) |
+| Inspect a GitHub coordination binding | A task asks what a committed repository binding says at an exact commit. | [GitHub Coordination Binding Inspection](#github-coordination-binding-inspection) |
+| Coordinate roles and stances | You plan, dispatch, monitor or verify work as a role or a named stance. | [Role And Stance Coordination](#role-and-stance-coordination) |
+| Choose the behavior for a request | A request arrives in ordinary language and you must pick the skills and endpoint it authorizes. | [Behavior Selection](#behavior-selection) |
+| Freeze a version label | You stamp or change a version label or the core bundle. | [Release Identity](#release-identity) |
+| Upgrade the reference Template for a release | A new Workbench version is being made release-ready. | [Template Upgrade Release Gate](#template-upgrade-release-gate) |
+| Check prerequisites | A fresh machine or clone needs its required tools confirmed. | [Prerequisites](#prerequisites) |
+| Install | You set up a fresh clone. | [Install](#install) |
+| Run locally | You run the evaluator and self-tests by hand. | [Run Locally](#run-locally) |
+| Run the tests | A change to tools, templates, specs or root docs needs its fast check or the full suite. | [Test And Build](#test-and-build) |
+| Prepare project evidence and Blueprint questions | Genesis or adoption needs evidence and Blueprint questions from a named evidence room. | [Prepare project evidence and Blueprint questions](#prepare-project-evidence-and-blueprint-questions) |
+| Derive a fresh room from recorded decisions | A release must prove a room regenerates from its recorded decisions. | [Derive a fresh room from recorded decisions](#derive-a-fresh-room-from-recorded-decisions) |
+| Check the skills lane | Core skills, their discovery roots or the lane receipt changed or look stale. | [Skills lane check](#skills-lane-check) |
+| Publish to the personal catalog | The owner asks to back up skills to, or take one from, the personal catalog. | [Personal catalog publication](#personal-catalog-publication) |
+| Check the support root | Genesis creates or validation checks a room's declared support root and lanes. | [V3 support-root check](#v3-support-root-check) |
+| Check the managed runtime tools | Runtime tools changed, or a room's installed copies need install, update or verification. | [Managed runtime tools check](#managed-runtime-tools-check) |
+| Classify a room's lifecycle route | Before choosing Genesis, adoption, upgrade or update for a room. | [Room lifecycle classification check](#room-lifecycle-classification-check) |
+| Check an adoption migration | An existing project is adopted into the support-root layout. | [V3 Adoption migration check](#v3-adoption-migration-check) |
+| Report control fidelity | After adoption or an update-harness run, compare a room's controls with the templates. | [Control fidelity report](#control-fidelity-report) |
+| Upgrade a v2 room explicitly | A v2-root room moves onto the support root, or that move needs recovery. | [V3 explicit upgrade and recovery check](#v3-explicit-upgrade-and-recovery-check) |
+| Check Workbench self-drift | Before and after any update to this Workbench. | [Workbench self-drift check](#workbench-self-drift-check) |
+| Check carrier line landing | A rewrite removes lines from `AGENTS.md` or `RUNBOOK.md` and must prove each landed. | [Carrier line-landing check](#carrier-line-landing-check) |
+| Deliver a Spec through its lifecycle | You pick up, deliver, review or close an assigned Spec and its Tasks. | [Spec Lifecycle And Retrieval](#spec-lifecycle-and-retrieval) |
+| Work a Task as Worker | You select, claim, implement, self-check and hand back one Task. | [Worker: selection, implementation and hand-back](#worker-selection-implementation-and-hand-back) |
+| Review an assembled Spec | A Dispatcher assembles a candidate, or a separate Director reviews it before integration. | [Dispatcher and separate Director: assembled review](#dispatcher-and-separate-director-assembled-review) |
+| Record owner Human QA and complete | The owner approves delivered work, or main containment must be proven before `complete`. | [Owner: Human QA and main-before-complete](#owner-human-qa-and-main-before-complete) |
+| Capture, retire or recover a completed Spec | After `complete`: feature capture, retirement, discard or recovery. | [Documentation: feature capture, retirement and recovery](#documentation-feature-capture-retirement-and-recovery) |
+| Record an architecture decision | A durable architectural decision is proposed, accepted, superseded or linked. | [Architecture Decision Records](#architecture-decision-records) |
+| Prove the composed round trip | Full verification runs, or the composed workflow changed. | [Composed round trip](#composed-round-trip) |
+| Check the portability and privacy matrix | A release matrix row or its privacy check changed. | [Portability and privacy matrix](#portability-and-privacy-matrix) |
+| Prove cross-provider resume | A release gate needs proof that another provider resumes from a clean clone. | [Cross-provider resume proof](#cross-provider-resume-proof) |
+| Allocate a visible identifier | You need a new Spec, Task, note or other visible identifier. | [Visible Identifiers](#visible-identifiers) |
+| Use the Landmark Tracker | Concept understanding (DQCs, landmarks) changes, or the Tracker view is needed. | [Landmark Tracker: accepted design and available operations](#landmark-tracker-accepted-design-and-available-operations) |
+| Keep a JSON notepad | Meaningful work needs a local note created, resumed, appended, trimmed or cleaned up. | [JSON Notepads](#json-notepads) |
+| Transfer work through a handoff | Work goes to another agent or chat as a job, investigation, report or update. | [Handoff Transfer](#handoff-transfer) |
+| Transport sessions privately | Private session transport is configured and selected collections must sync. | [Optional Private Session Transport](#optional-private-session-transport) |
+| Save, promote or add a room-local skill | Authorized work must be saved to its owners, or a room adds its own skill. | [Portable Save, Promote And Room-Local Skills](#portable-save-promote-and-room-local-skills) |
+| Promote claims to an owner | Selected supported claims must reach their durable owner. | [Direct Owner Promotion](#direct-owner-promotion) |
+| Read frozen checkpoints or recovery receipts | A legacy checkpoint is cited, or a recovery receipt or backup is needed. | [Frozen Checkpoint History And Operational Recovery](#frozen-checkpoint-history-and-operational-recovery) |
+| Validate the Wiki | A Wiki page changed, or doctor reports a Wiki finding. | [Wiki Validation](#wiki-validation) |
+| Repair installed state | doctor reports installed state that a room command rewrites. | [Installed State The Harness Wrote](#installed-state-the-harness-wrote) |
+| Read a diagnostic and its blocking effect | A runtime tool reports a finding and you need its severity and what it blocks. | [Diagnostics And Blocking Effects](#diagnostics-and-blocking-effects) |
+| Use the socket contract registry | Work touches the Foundry socket contract registry. | [Socket Contract Registry](#socket-contract-registry) |
+| Hold test coverage | You add or change tests for the evaluator and trial tooling. | [Test Coverage Policy](#test-coverage-policy) |
+| Evaluate a harness change | You must show that a harness change is an improvement. | [Evaluation And Benchmarking](#evaluation-and-benchmarking) |
+| Run the guardrail audit | A harness change needs its guardrail baseline and after-score. | [Guardrail North-Star Audit](#guardrail-north-star-audit) |
+| Pick the claims to test | An evaluation must name the claim it tests. | [Claims To Test](#claims-to-test) |
+| Design an evaluation | You set up task-outcome scoring or trials. | [Evaluation Design](#evaluation-design) |
+| Run the evaluation commands | You run the static rubric or the trial framework. | [Commands](#commands) |
+| Take in harness feedback | Feedback arrives from a downstream room. | [Harness Feedback Loop](#harness-feedback-loop) |
+| Run the automated feedback gate | Scheduled feedback automation runs or is configured. | [Automated Feedback Gate](#automated-feedback-gate) |
+| Record an automation run outcome | A scheduled run finished and its outcome must be recorded. | [Automation Run Outcomes](#automation-run-outcomes) |
+| Branch, review, merge and clean up | You create a branch or PR, merge into integration, or delete a merged branch. | [Version-Control Procedures](#version-control-procedures) |
+| Write a manual harness feedback report | A setup-only Round One check succeeded and an assessment is assigned. | [Manual Harness Feedback Reports](#manual-harness-feedback-reports) |
+| Troubleshoot a known failure | A command fails with a symptom listed there. | [Troubleshooting](#troubleshooting) |
+| Recover or roll back | A change fails and its touched files must be restored or reverted. | [Recovery And Rollback](#recovery-and-rollback) |
+| Record operational proof | A command changed durable project state. | [Operational Proof](#operational-proof) |
+| Size and continue work | You size a Task or leave work a fresh context can resume. | [Evidence And Continuation Practices](#evidence-and-continuation-practices) |
+| Check the Workbench connection identity | A room's `workbenchId` is created, read or compared. | [Workbench connection identity](#workbench-connection-identity) |
+| Check configured-host capabilities | A host is set up, or its lanes, skill discovery or tool execution are in doubt. | [Configured-host capability checks](#configured-host-capability-checks) |
+| Review a candidate independently | A candidate needs separate-context review before integration. | [Independent Review Boundaries](#independent-review-boundaries) |
+
 ## Release Identity
 
 A version label freezes when stamped, even before publication. A changed core
@@ -246,6 +317,7 @@ node tools/test-symlink-invocation.mjs
 node tools/test-control-fidelity.mjs
 node tools/test-spec-citation-anchors.mjs
 node tools/test-controls-vocabulary-sweep.mjs
+node tools/test-runbook-index.mjs
 node tools/test-spec-report.mjs
 node tools/test-self-drift.mjs
 node tools/test-feedback-inventory.mjs
