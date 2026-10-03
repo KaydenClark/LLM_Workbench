@@ -537,7 +537,8 @@ function runbookWorkflowContract(content) {
     ['capture after completion', /After complete, author capability knowledge[^.]*features/],
     ['normal whole-Spec retirement after capture', /normal closure route is complete -> feature capture -> `retire-spec`[\s\S]*whole Spec and its Tasks together/],
     ['owner finding differs from approval', /Finding and destination-change examples[\s\S]*alternatives to explicit approval/],
-    ['same capability after discard', /createCorrectiveTasks[\s\S]*programmatic API, not a[\s\S]*CLI/],
+    ['later gap is a new Spec', /later gap against delivered work becomes a new Spec[\s\S]*never a correction anchored\s+to a Wiki claim[\s\S]*`createCorrectiveTasks` refuse a Spec that is complete/],
+    ['finding dispositions', /`continue TK-###: <what the check found and what the fix\s+must do>`[\s\S]*`new Task: <finding>`[\s\S]*refused before any write/],
     ['delivered dependency', /S-001:delivered[\s\S]*content-bound PASS[\s\S]*Fetch[\s\S]*integration/],
     ['whole directory recovery', /compare all recovered bytes, including sibling proof/]
   ]) assert.match(lifecycle, expression, claim);
@@ -555,7 +556,7 @@ test('Runbook contract detects operationally consequential guidance regressions'
     ['git fetch origin main\nnode workbench/tools/spec-workbench.mjs complete S-001', 'node workbench/tools/spec-workbench.mjs complete S-001'],
     ['After complete, author capability knowledge', 'Before closure, keep temporary task state'],
     ['normal closure route is complete -> feature capture -> `retire-spec`', 'move Tasks before approval to avoid a stale digest'],
-    ['programmatic API, not a', 'automatic create-corrective'],
+    ['is never a correction anchored', 'is a correction anchored'],
     ['compare all recovered bytes, including sibling proof', 'inspect the primary record only']
   ]) {
     assert.ok(current.includes(before), `mutation targets current instructions: ${before}`);
@@ -592,7 +593,7 @@ function completionClaimRunbookContract(runbook, { table }) {
     ['remediation', /commit and push, or rerun with `--git-state-reason/],
     ['reason readable in the record', /observed state and the reason [^.]*final Receipt row and the Spec evidence row/],
     ['no in-progress Task refusal', /no in-progress Task/],
-    ['orphan corrective close gap', /`close TK-###`[^.]*does not run the Git-state check/]
+    ['standalone corrective close refused', /`close TK-###` refuses, because the standalone\s+corrective Task anchored to a Wiki claim is retired/]
   ]) assert.match(worker, expression, `Runbook close procedure: ${claim}`);
   for (const code of gitScopeCodes()) {
     const { severity, blocks } = describe(code);
@@ -634,7 +635,7 @@ test('the completion-claim contract fails when a documented mechanism or Git-sco
     ['commit and push, or rerun with', 'rerun with'],
     ['final Receipt row and the Spec evidence row record', 'run log records'],
     ['also refuses a Spec with no in-progress Task', 'also refuses a Spec with nothing claimed'],
-    ['ID (`close TK-###`) does not run the', 'ID (`close TK-###`) runs the'],
+    ['`close TK-###` refuses, because the standalone', '`close TK-###` runs, because the standalone'],
     ['`detached-head` and `untracked-controls` (scope `git`), and the ADR', 'and the ADR']
   ]) {
     assert.ok(runbook.includes(before), `mutation targets current RUNBOOK.md text: ${before}`);
