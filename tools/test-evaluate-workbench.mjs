@@ -172,6 +172,20 @@ const fenced = '# Fixture - Blueprint\n\n```markdown\n' + FOUR_PART_BLUEPRINT + 
 assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': fenced}).score < 8, 'fenced headings are not four-part sections');
 const tildeFenced = '# Fixture - Blueprint\n\n~~~markdown\n' + FOUR_PART_BLUEPRINT + '~~~\n';
 assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': tildeFenced}).score < 8, 'tilde-fenced headings are not four-part sections');
+const wrapped = fence => '# Fixture - Blueprint\n\n' + fence + 'markdown\n' + FOUR_PART_BLUEPRINT + fence + '\n';
+for (const [name, page] of [
+  ['a four-backtick fence', wrapped('````')],
+  ['a four-tilde fence', wrapped('~~~~')],
+  ['a five-backtick fence closed by a longer one', '# Fixture - Blueprint\n\n`````\n' + FOUR_PART_BLUEPRINT + '``````\n'],
+  ['a four-backtick fence holding a shorter fence', '# Fixture - Blueprint\n\n````\n```\n' + FOUR_PART_BLUEPRINT + '```\n````\n'],
+  ['an unclosed fence', '# Fixture - Blueprint\n\n```\n' + FOUR_PART_BLUEPRINT]
+]) {
+  assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': page}).score < 8, name+' hides the headings from the four-part page');
+}
+// A closing fence must match the opener's character and be at least as long, so a page that closes its code
+// block properly and then writes the four parts is the four-part page.
+const closedThenParts = '# Fixture - Blueprint\n\n````\ncode\n````\n\n' + FOUR_PART_BLUEPRINT.replace('# Fixture - Blueprint\n\n', '');
+assert.equal(modelOf({...fourPart, 'BLUEPRINT.md': closedThenParts}).score, 8, 'a properly closed code block before the parts does not hide them');
 const commented = '# Fixture - Blueprint\n\n<!--\n' + FOUR_PART_BLUEPRINT + '-->\n';
 assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': commented}).score < 8, 'commented headings are not four-part sections');
 const commentOnly = FOUR_PART_BLUEPRINT.replace('A finished product.', '<!-- a finished product -->');

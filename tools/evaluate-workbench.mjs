@@ -16,9 +16,16 @@ export function isFourPartBlueprint(text) {
   const lines = String(text ?? '').replace(/<!--[\s\S]*?-->/g, '').split('\n');
   let fence = null;
   const kinds = lines.map(line => {
-    const marker = line.trimStart().match(/^(```|~~~)/)?.[1] ?? null;
-    if (marker && (fence === null || fence === marker)) { fence = fence === null ? marker : null; return 'text'; }
-    if (fence !== null) return 'text';
+    // CommonMark fences: three or more backticks or tildes, closed only by the same character at least as long;
+    // an unclosed fence runs to the end of the page.
+    if (fence === null) {
+      const open = line.match(/^ {0,3}(`{3,}|~{3,})(.*)$/);
+      if (open && !(open[1][0] === '`' && open[2].includes('`'))) { fence = { char: open[1][0], length: open[1].length }; return 'text'; }
+    } else {
+      const close = line.match(/^ {0,3}(`{3,}|~{3,})[ \t]*$/);
+      if (close && close[1][0] === fence.char && close[1].length >= fence.length) fence = null;
+      return 'text';
+    }
     if (/^## /.test(line)) return 'heading';
     if (line.trim() === '' || line.trimStart().startsWith('#')) return 'blank';
     return 'text';

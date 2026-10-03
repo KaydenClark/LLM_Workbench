@@ -211,6 +211,8 @@ for (const empty of ['Promised outcomes', 'Non-goals']) {
 assert.equal(checked({...fourPart,'BLUEPRINT.md':fourPart['BLUEPRINT.md'].replace('## Promised outcomes','## Promised Outcomes')},'version_contract'),false,'the part headings are matched exactly, case included');
 const fencedPage = {...fourPart,'BLUEPRINT.md':'# Blueprint\n\n```markdown\n' + fourPart['BLUEPRINT.md'] + '```\n'};
 assert.equal(checked(fencedPage,'version_contract'),false,'headings inside a fenced code block are not a four-part Blueprint');
+const fourFence = {...fourPart,'BLUEPRINT.md':'# Blueprint\n\n````\n```\n' + fourPart['BLUEPRINT.md'] + '```\n````\n'};
+assert.equal(checked(fourFence,'version_contract'),false,'headings inside a four-backtick fence are not a four-part Blueprint');
 const oneHeading = {...modern,'BLUEPRINT.md':'# Blueprint\n\n## What it is\n\nA product.\n'};
 assert.equal(checked(oneHeading,'fresh_control_docs'),false,'a lone What it is heading is not destination-shaped');
 assert.equal(checked(oneHeading,'version_contract'),false);
