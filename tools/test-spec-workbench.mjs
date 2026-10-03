@@ -5963,7 +5963,7 @@ function commitAll(dir, message) {
 
     assert.ok(fs.existsSync(path.join(correctiveRetiredRoot, historicalRoute)), 'S-591 is genuinely retired before this proves the corrective route against it');
 
-    const receipt = createCorrectiveTasks(correctiveRetiredRoot, 'S-591', { candidate: 'deadbee3', findings: 'Missing edge case coverage' });
+    const receipt = createCorrectiveTasks(correctiveRetiredRoot, 'S-591', { candidate: 'deadbee3', findings: 'new Task: Missing edge case coverage' });
     assert.equal(receipt.created.length, 1);
     const created = receipt.created[0];
     assert.equal(created.filePath, `workbench/specs/retired/S-591-corrective-fixture/tasks/${created.id}/TASK.md`);
