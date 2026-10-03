@@ -5,6 +5,7 @@ sensitivity: normal
 knowledge_role: curated
 provenance:
   - S-01B TK-00S source change and fresh-context scenario, 2026-09-26
+  - S-004C TK-005F moved the Runbook procedure behind its index pointer into the skill, 2026-10-03
 source_paths:
   - workbench/skills/promote/SKILL.md
   - workbench/tools/sessions.mjs
@@ -13,7 +14,7 @@ source_paths:
   - tools/test-skill-catalog.mjs
   - tools/test-core-composition.mjs
   - RUNBOOK.md
-last_verified: 2026-09-26
+last_verified: 2026-10-03
 ---
 
 # Promote: move settled working claims into their durable owners
@@ -24,7 +25,7 @@ Use `promote` when a working note holds claims that are already settled and auth
 
 ## How it works
 
-The [skill](../skills/promote/SKILL.md) owns the judgment. The [direct owner promotion command](../../RUNBOOK.md#direct-owner-promotion) in the [shared runtime](../tools/sessions.mjs) owns the checked write.
+The [skill](../skills/promote/SKILL.md) owns the judgment. The [direct owner promotion command](../skills/promote/SKILL.md#command-reference), documented in the skill's command reference and run by the [shared runtime](../tools/sessions.mjs), owns the checked write.
 
 - **Only confirmed claims move.** The agent reads the note's current view, the selected entries and all their corrections and dependencies. It keeps open, tentative, withdrawn and superseded status as recorded. Pending meaning is read the way [notepad](skill-notepad.md) records it. A `source_record` whose readback is still listed in `current.unresolved` is pending, however settled it sounds. Only a `decision` entry records a confirmed owner answer. A mixed note promotes its confirmed claims and leaves the rest.
 - **One owner per claim.** `to-docs` picks exactly one durable owner for each accepted claim. When another owner needs the claim, it links to that owner instead of holding a second copy.
@@ -59,7 +60,7 @@ The command's hash and revision checks are sequential guards, not locks. Install
 ## Sources
 
 - [Promote source](../skills/promote/SKILL.md) and [runtime](../tools/sessions.mjs)
-- [Direct owner promotion procedure](../../RUNBOOK.md#direct-owner-promotion)
+- [Direct owner promotion procedure](../skills/promote/SKILL.md#command-reference), which the [Runbook](../../RUNBOOK.md#direct-owner-promotion) points to
 - [Individual delivery Spec](../specs/S-01B-promote-skill-rebuild/SPEC.md)
 - [Checkpoint retirement and direct promotion: S-048](../specs/S-048-checkpoint-retirement/SPEC.md)
 - [Notepad article](skill-notepad.md)

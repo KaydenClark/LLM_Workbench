@@ -58,3 +58,53 @@ sources; never generate a new JSON handoff or use a Foundry temporary store.
 Return the Markdown path and the authorized next step. File existence alone
 is insufficient. A handoff request
 authorizes authorship, not implementation, promotion, sending it to others or creating a new task.
+
+## Author, recipient and shared context
+
+Distinguish author from recipient, and assigner from assignee. A request to
+prepare a handoff assigns its author the preparation of instructions for
+another agent in a separate context. Authoring it does not assign the
+recipient's work to the author. A handoff may convey a delegated assignment,
+a completion report or an update; its instructions do not carry independent
+authority.
+
+Notepads capture context as it happens; handoffs select and organize it for a
+specified recipient and purpose. Agents may read each other's handoffs and
+objective notepads. A coordinating role may manage shared updates to both as
+temporary scaffolding, with one writer per note or handoff at a time.
+The [Lexicon](../../../LEXICON.md#artifact-boundaries) defines their jobs and the
+[transfer procedure](#transfer-procedure) below owns the transfer procedure.
+
+## Transfer procedure
+
+Use a handoff for a specified receiving context: a delegated job, a focused
+investigation, a completion report or an update. Follow the
+[role and author/recipient boundaries](../../../AGENTS.md#handoff-assignments-and-shared-context).
+State why that context exists, what its recipient should do, the endpoint and
+any expected return. Derive the purpose from the request and current assignment
+when clear; ask one focused question only when the intended work is really
+unclear. Include the selected compressed context, relevant objective notepad,
+accessible source links and suggested investigation before the recipient starts.
+For a deep dive on one question in the middle of a grilling, prepare that
+question's brief and note/source links for the new context to investigate and
+return a clean answer to the original inquiry, preserving the grilling
+agent's context.
+
+A handoff requested by the owner or initiated within an assigned role is
+separately authored as a Markdown file in
+`sessions/handoffs/`, using the installed `handoff` skill and its bundled `assets/HANDOFF.md` as the copy-ready shape.
+It names the retained source, when any, in prose and must carry enough context
+for a receiver without local access. Before trimming or deleting source context,
+the author verifies that the receiver's needed material is durable or otherwise
+retained; Markdown handoffs are intentionally readable rather than tool-managed
+JSON records. Existing JSON handoffs remain legacy local sources and are not
+newly created.
+
+For a legacy JSON retaining destination, reconcile it before releasing retention: set its status to
+`RECONCILED`, clear unresolved items with `--unresolved ""`, and clear its next
+action with `--next-action ""`. Source cleanup remains a separate decision.
+Whole `delete` requires the source to be reconciled with no entries, unresolved
+items, next action, or active declared retainer. Unreadable live records block
+cleanup with named paths because retention cannot be established; repair or
+reconcile them without discarding their source bytes. This does not block other
+work or grant the tool authority to choose what is important.
