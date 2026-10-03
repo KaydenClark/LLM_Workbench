@@ -45,6 +45,7 @@ function read(base, relative) {
 // to (its own headings flattened to text), so the contracts below read what an
 // agent following the pointer reads. A template carrier's lane links resolve
 // against this repository's lane, which a generated room's lane is laid from.
+// A brief line may also stay in the carrier, so a mutation replaces every copy.
 function headingSlug(title) {
   return title.toLowerCase().replace(/[^\p{L}\p{N}\s_-]/gu, '').replace(/\s/g, '-');
 }
@@ -564,7 +565,7 @@ test('generic controls carry the delivered workflow without producer state or un
     ['no separate Task approval', 'separate Task approval is mandatory']
   ]) {
     assert.ok(agents.includes(before), before);
-    assert.throws(() => taskWorkflowContract(agents.replace(before, after), true), { name: 'AssertionError' });
+    assert.throws(() => taskWorkflowContract(agents.replaceAll(before, after), true), { name: 'AssertionError' });
   }
   const runbook = expandPointers(read(productTemplates, 'RUNBOOK.md'));
   assert.match(runbook, /--candidate "\[?SHA\]?" --digest "\[?DIGEST\]?" --result pass/);
@@ -592,7 +593,7 @@ test('the Task workflow contract rejects removed obligations and regressed appro
   assert.deepEqual(mutations.map(([claim]) => claim), removals);
   for (const [claim, before, after] of mutations) {
     assert.ok(agents.includes(before), `${claim}: mutation must change actual instructions`);
-    assert.throws(() => taskWorkflowContract(agents.replace(before, after)), { name: 'AssertionError' }, claim);
+    assert.throws(() => taskWorkflowContract(agents.replaceAll(before, after)), { name: 'AssertionError' }, claim);
   }
   for (const regression of ['Every Task requires separate-context approval.', 'Human QA occurs only at version completion.', '`node workbench/tools/spec-workbench.mjs capture-features S-###`']) {
     const mutated = agents.replace('## Git Rules\n', `## Git Rules\n\n${regression}\n`);
@@ -634,7 +635,7 @@ test('Runbook contract detects operationally consequential guidance regressions'
     ['compare all recovered bytes, including sibling proof', 'inspect the primary record only']
   ]) {
     assert.ok(current.includes(before), `mutation targets current instructions: ${before}`);
-    assert.throws(() => runbookWorkflowContract(current.replace(before, after)), { name: 'AssertionError' });
+    assert.throws(() => runbookWorkflowContract(current.replaceAll(before, after)), { name: 'AssertionError' });
   }
 });
 
@@ -700,7 +701,7 @@ test('the completion-claim contract fails when a documented mechanism or Git-sco
     ['reports `detached-head` and `untracked-controls`', 'reports Git state']
   ]) {
     assert.ok(agents.includes(before), `mutation targets current AGENTS.md text: ${before}`);
-    assert.throws(() => completionClaimAgentsContract(agents.replace(before, after)), { name: 'AssertionError' }, before);
+    assert.throws(() => completionClaimAgentsContract(agents.replaceAll(before, after)), { name: 'AssertionError' }, before);
   }
   const runbook = expandPointers(read(root, 'RUNBOOK.md'));
   for (const [before, after] of [
@@ -713,12 +714,13 @@ test('the completion-claim contract fails when a documented mechanism or Git-sco
     ['`detached-head` and `untracked-controls` (scope `git`), and the ADR', 'and the ADR']
   ]) {
     assert.ok(runbook.includes(before), `mutation targets current RUNBOOK.md text: ${before}`);
-    assert.throws(() => completionClaimRunbookContract(runbook.replace(before, after), { table: true }), { name: 'AssertionError' }, before);
+    assert.throws(() => completionClaimRunbookContract(runbook.replaceAll(before, after), { table: true }), { name: 'AssertionError' }, before);
   }
   const generic = expandPointers(read(productTemplates, 'RUNBOOK.md'));
   const codes = 'reports `detached-head` and `untracked-controls` (scope `git`, attention,';
   assert.ok(generic.includes(codes), 'mutation targets current generic Runbook text');
-  assert.throws(() => completionClaimRunbookContract(generic.replace(codes, 'reports Git state (attention,'), { table: false }), { name: 'AssertionError' });
+  // The pointed implement skill also names the codes, so the mutation drops every mention.
+  assert.throws(() => completionClaimRunbookContract(generic.replaceAll(codes, 'reports Git state (attention,').replaceAll('`detached-head`', 'a detached HEAD'), { table: false }), { name: 'AssertionError' });
 });
 
 // S-003X TK-005A: the `ddr` collection, its commands and the read words are
