@@ -732,7 +732,7 @@ test('both Lexicons define every workflow verb once and state the delivery workf
     assert.doesNotMatch(rowsOf(content, 'Align')[0], /not itself implementation permission/, `${relative} Align row drops the old confirmation clause`);
     assert.match(rowsOf(content, 'Confirm')[0], /authorizes the agents to carry the concept to its endpoint/, `${relative} Confirm row`);
     assert.equal(content.split('\n').filter((line) => /^\| \*\*Map\*\* \|/.test(line)).length, 1, `${relative} keeps one Map row for noun and verb`);
-    assert.match(content.split('\n').find((line) => /^\| \*\*Map\*\* \|/.test(line)), /As a workflow verb, writing that direction: landmarks, Specs and decision records/, `${relative} Map row carries the verb`);
+    assert.match(content.split('\n').find((line) => /^\| \*\*Map\*\* \|/.test(line)), /As a workflow verb, Map is "Writing the direction to a destination: landmarks, Specs and decision records\."/, `${relative} Map row carries the verb`);
   }
 });
 
