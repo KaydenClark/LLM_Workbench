@@ -3,7 +3,7 @@
 **Task ID:** TK-005R
 **Spec ID:** S-004F
 **Slice:** Let a failed verdict or owner finding continue the named Task, or open a new Task when the fix rewrites it
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-005Q
 **Destination:** spec-acceptance: A failed verdict can continue an existing Task with an adjusted handoff or open a new Task when the fix rewrites it, the record says which, and the append-only check shows no earlier evidence or proof rewritten.
