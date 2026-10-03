@@ -37,3 +37,9 @@ No other Lexicon row changes here.
 ## Gate cleared
 
 `owner:lexicon-writer-turn` was a sequencing gate this Spec's own planning created, not an owner decision. The Lexicon turn is released: the Lexicon writer lane finished both of its Lexicon Specs, its last merge is PR #317 (e34c5eaa), contained in origin/integration. Cleared on the Director's direction of 2026-10-03; TK-005T is done (PR #311).
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s004f-tk005v | 56c9574906533c61c9f69743c672cf11dc50283a | ahead 0 behind 0 | 0 | Full AGENTS suite on committed candidate 56c95749: 48 of 48 commands pass; tools/test-adr.mjs Destination Packet pin retargeted (names no corrective Wiki-claim member, new mutation case 'Packet regains a corrective Wiki claim'), test-control-fidelity and test-controls-vocabulary-sweep pass; wiki validate ok | LEXICON.md and templates/LEXICON.md Task, Destination Packet/Packet and Assembled-Spec review rows; tools/test-adr.mjs pins | README line and the Wiki schema lint line still state the replaced rule (owner-scoped) | 34a10406ad63d7f45b2346765192e6349c1ca69f7e713c0070a2aa34266f7b7b |
