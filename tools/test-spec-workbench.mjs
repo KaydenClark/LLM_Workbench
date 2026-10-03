@@ -5900,11 +5900,13 @@ function commitAll(dir, message) {
 
 // ============================================================================
 // S-00J's deferred retired-folder case (its third acceptance line, named by
-// S-00I TK-005's own remaining-gap cell): a corrective Task created against a
-// retired (not discarded) Spec through `createCorrectiveTasks` writes
-// straight into that Spec's still-retired `tasks/` directory - never under
-// `tasks/retired/` (that folder holds a reconciled, *done* Task's own
-// history, not a fresh one), and never moves the Spec back out of `retired/`.
+// S-00I TK-005's own remaining-gap cell), as S-004F TK-005S leaves it: no
+// command creates a corrective Task inside a retired (not discarded) Spec -
+// `createCorrectiveTasks` refuses, naming the new-Spec route - but a record an
+// earlier release wrote straight into that Spec's still-retired `tasks/`
+// directory (never under `tasks/retired/`, which holds a reconciled, *done*
+// Task's own history) keeps selecting, claiming and closing without moving the
+// Spec back out of `retired/`.
 // ============================================================================
 {
   const correctiveRetiredRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-corrective-retired-'));

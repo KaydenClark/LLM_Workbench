@@ -3578,8 +3578,9 @@ export function discardRetiredSpec(rootDir, specId) {
   if (spec.lifecycleFolder !== 'retired') {
     throw new Error(`${specId} is retired in ${spec.lifecycleFolder}/, not retired/; discard refuses every folder but retired, and never archive`);
   }
-  // A retired Spec can acquire new corrective work. A stale projection is
-  // not evidence that those obligations are gone, even after main contains it.
+  // A retired Spec may still hold an open corrective record an earlier release
+  // wrote (no command creates one now). A stale projection is not evidence
+  // that those obligations are gone, even after main contains it.
   const unfinished = [
     ...slicesOf(spec).filter(task => task.declared !== 'done').map(task => task.id),
     ...(spec.retiredRecords ?? []).filter(task => taskStatus(task) !== 'done').map(task => task.id)
