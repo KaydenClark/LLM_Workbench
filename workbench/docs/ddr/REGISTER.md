@@ -12,3 +12,4 @@
 | [000D](000D-prototype-needs-no-map-and-lands-nothing-in-enduring-context.md) | Prototype needs no map and lands nothing in enduring context | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000E](000E-every-session-works-inside-its-smart-zone-and-spends-its-tokens-efficiently.md) | Every session works inside its smart zone and spends its tokens efficiently | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000F](000F-a-fresh-session-loads-only-the-context-its-work-needs.md) | A fresh session loads only the context its work needs | accepted | 2026-10-03 | BLUEPRINT.md |
+| [000G](000G-every-kind-of-truth-has-one-maintained-home.md) | Every kind of truth has one maintained home | accepted | 2026-10-03 | BLUEPRINT.md |
