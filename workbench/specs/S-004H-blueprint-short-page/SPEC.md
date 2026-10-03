@@ -8,8 +8,8 @@
 **Updated:** 2026-10-03
 **Catalog description:** Replace the eight-section Blueprint with the owner-confirmed four-part short page, give every room's Blueprint that shape, and move the current page's decisions, workflow map and rules to their homes first so nothing is dropped.
 **Blockers:** none. The Decision Record Tooling (S-003X) installed the `ddr` collection and the 24 destination decision records are accepted (`workbench/docs/ddr/000A` to `000X`), so the root page swap is unblocked. One open owner item, the hosted-service non-goal, is withheld from the page rather than blocking it (see Dependencies And Blockers).
-**Latest event:** TK-008B closed with proof.
-**Next gate:** Complete TK-008A.
+**Latest event:** TK-008A closed with proof.
+**Next gate:** Complete TK-008C.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 
@@ -163,6 +163,7 @@ Run the targeted Blueprint-contract, evaluator, guardrail-audit, Genesis and lay
 |---|---|---|---|---|---|
 | 2026-10-03 | none | Authored at the Map step from the owner-confirmed Blueprint candidate of 2026-10-03 and the teardown's Blueprint answers, at integration 5cfa987bacb0f6a9273d93e8d989e34000d75ad9. | Map only; the quoted page is draft 6 as the review page's confirmed version showed it, compared word for word after extraction, with the approved efficiency clause applied; the Blueprint, template, tests, evaluator, audit, Genesis and layout tooling and the description lines were read at that tip; no runtime proof claimed. | This Spec and the generated Spec catalog. Docs checked; no Blueprint, template or Wiki update is due until delivery, because a planned Spec changes no accepted claim. | Plan, implementation and proof remain; the swap waits for the DDRs. |
 | 2026-10-03 | TK-005R | Task closed | Separate-context review of 72e2e624 PASSED against the written acceptance (after eight rounds that closed real holes and one accepted gap). Full AGENTS suite 48/48 on cfad0cbb. Guardrail audit 78/100 before and after; template evaluation 106.6/113 before and after, and 106.6/113 with a four-part Blueprint; remaining recommendations unchanged (outcome evidence 8/30: no real repeated outcome trials, so no agent-outcome claim). Four-part page and template score project model 8/8 and are destination-shaped; eight-part files score identically to origin/integration. | Docs checked; no update needed: tools and tests only, the Blueprint, template and Wiki change in later Tasks | Raw-HTML and other synthetic Markdown edge cases of isFourPartBlueprint are not exhaustively handled (named in the receipt); no known gap against the written acceptance |
+| 2026-10-03 | TK-008A | Task closed | Separate-context review of a91c0bcd PASSED against the written acceptance after three rounds (two found old rules recorded as moved though their accepted homes now state otherwise; fixed by marking replaced-claim paragraphs and adding a test that refuses to record a corrective-Task passage as relocated). Inventory byte-lossless against c10fb8da and every named home exists; wiki validate ok; full AGENTS suite 47/48 in a parallel run on 58a788eb with test-wiki passing alone (known concurrent manifest read race). | Created workbench/wiki/design-concepts/idea-to-delivery-workflow.md and delivery-altitudes.md; added blueprint-paragraph-disposition.json to the Spec folder; MEMORY.md router lines left to the router writer | Router entries for the two new pages; the optional-prototype claim has no generic mirror (recorded as a gap in the inventory) |
 
 ## Completion Result
 
