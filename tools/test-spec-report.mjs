@@ -18,6 +18,7 @@ import { assembleSpecReport, createCorrectiveTasks, formatSpecReport, recordOwne
 import { completeSpec, doctor, gate, nextWork, render, retireSpec } from '../workbench/tools/spec-workbench.mjs';
 import { readTaskRecord } from '../workbench/tools/task-record.mjs';
 import { appendReceiptRowToContent } from '../workbench/tools/task-receipt.mjs';
+import { appendContinuationToContent, readContinuations } from '../workbench/tools/task-continuation.mjs';
 import { RUNTIME_TOOLS } from '../workbench/tools/workbench-layout.mjs';
 import './test-verdict-candidate-binding.mjs';
 
@@ -823,7 +824,7 @@ function headingShadowSpec(id) {
     assert.notEqual(secondCandidate, firstCandidate);
 
     const failResult = recordReviewVerdict(root, 'S-711', {
-      candidate: secondCandidate, result: 'fail', findings: 'Missing input validation; stale doc reference', reviewer: 'Claude Sonnet 5 (separate context)'
+      candidate: secondCandidate, result: 'fail', findings: 'new Task: Missing input validation; new Task: stale doc reference', reviewer: 'Claude Sonnet 5 (separate context)'
     });
     assert.equal(failResult.result, 'fail');
     assert.equal(failResult.remainingGap, '2', 'the remaining gap is the findings count when findings are not "none"');
@@ -846,7 +847,7 @@ function headingShadowSpec(id) {
     assert.equal(report.verdicts[0].candidate, firstCandidate);
     assert.equal(report.verdicts[1].result, 'fail');
     assert.equal(report.verdicts[1].candidate, secondCandidate);
-    assert.equal(report.verdicts[1].findings, 'Missing input validation; stale doc reference');
+    assert.equal(report.verdicts[1].findings, 'new Task: Missing input validation; new Task: stale doc reference');
     assert.equal(report.verdicts[1].reviewer, 'Claude Sonnet 5 (separate context)');
     assert.notEqual(report.specDigest.slice(0, 12), passResult.digest12, "the corrective Task the fail verdict created moved the Spec's own content digest past both recorded verdicts");
     assert.equal(report.latestVerdict, null, "neither the pass nor the fail verdict matches the Spec's current content once the corrective Task exists");
@@ -1102,12 +1103,12 @@ function headingShadowSpec(id) {
       id: 'S-721', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: [
         '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |',
-        `| 2026-09-18 | review | Review verdict: fail at ${candidate} [aaaaaaaaaaaa] #1 | Missing input validation; Stale doc reference | Claude Sonnet 5 (separate context) | 2 |`
+        `| 2026-09-18 | review | Review verdict: fail at ${candidate} [aaaaaaaaaaaa] #1 | new Task: Missing input validation; new Task: Stale doc reference | Claude Sonnet 5 (separate context) | 2 |`
       ].join('\n')
     }));
     const specBefore = fs.readFileSync(path.join(root, specPath), 'utf8');
 
-    const result = createCorrectiveTasks(root, 'S-721', { candidate, findings: 'Missing input validation; Stale doc reference' });
+    const result = createCorrectiveTasks(root, 'S-721', { candidate, findings: 'new Task: Missing input validation; new Task: Stale doc reference' });
 
     assert.equal(result.specId, 'S-721');
     assert.equal(result.candidate, candidate);
@@ -1190,7 +1191,7 @@ function headingShadowSpec(id) {
     const candidate = commitFixture(root);
 
     const verdict = recordReviewVerdict(root, 'S-722', {
-      candidate, result: 'fail', findings: 'Missing input validation; Stale doc reference',
+      candidate, result: 'fail', findings: 'new Task: Missing input validation; new Task: Stale doc reference',
       reviewer: 'Claude Sonnet 5 (separate context)'
     });
 
@@ -1256,7 +1257,7 @@ function headingShadowSpec(id) {
 
     const verdict = recordReviewVerdict(root, 'S-723', {
       candidate, result: 'fail',
-      findings: 'Missing validation on\nthe login form; Stale doc   reference',
+      findings: 'new Task: Missing validation on\nthe login form; new Task: Stale doc   reference',
       reviewer: 'Claude Sonnet 5 (separate context)'
     });
 
@@ -1305,7 +1306,7 @@ function headingShadowSpec(id) {
       id: 'S-724', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: [
         '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |',
-        `| 2026-09-18 | review | Review verdict: fail at ${candidate} [aaaaaaaaaaaa] #1 | Missing input validation; Stale doc reference | Claude Sonnet 5 (separate context) | 2 |`
+        `| 2026-09-18 | review | Review verdict: fail at ${candidate} [aaaaaaaaaaaa] #1 | new Task: Missing input validation; new Task: Stale doc reference | Claude Sonnet 5 (separate context) | 2 |`
       ].join('\n')
     }));
     const before = fs.readFileSync(path.join(root, specPath), 'utf8');
@@ -1348,14 +1349,14 @@ function headingShadowSpec(id) {
     const candidate = commitFixture(root);
 
     recordReviewVerdict(root, 'S-725', {
-      candidate, result: 'fail', findings: 'Missing input validation; Stale doc reference',
+      candidate, result: 'fail', findings: 'new Task: Missing input validation; new Task: Stale doc reference',
       reviewer: 'Claude Sonnet 5 (separate context)'
     });
     const specAfterFirst = fs.readFileSync(path.join(root, specPath), 'utf8');
     const tasksDirEntriesBefore = fs.readdirSync(path.join(root, 'specs/S-725-fixture/tasks')).sort();
 
     assert.throws(
-      () => createCorrectiveTasks(root, 'S-725', { candidate, findings: 'Missing input validation; Stale doc reference' }),
+      () => createCorrectiveTasks(root, 'S-725', { candidate, findings: 'new Task: Missing input validation; new Task: Stale doc reference' }),
       (error) => error instanceof Error
         && error.message.includes(candidate)
         && /row 2/.test(error.message)
@@ -1922,7 +1923,7 @@ function headingShadowSpec(id) {
     const candidate = commitFixture(root);
 
     const finding = recordOwnerApproval(root, 'S-762', {
-      candidate, owner: 'Kayden Clark', result: 'finding', findings: 'Missing empty-state copy; Stale screenshot in the README'
+      candidate, owner: 'Kayden Clark', result: 'finding', findings: 'new Task: Missing empty-state copy; new Task: Stale screenshot in the README'
     });
     assert.equal(finding.result, 'finding');
     assert.ok(Array.isArray(finding.correctiveTasks), 'a finding against the existing destination returns the corrective Tasks it created in the same operation');
@@ -2091,7 +2092,7 @@ function headingShadowSpec(id) {
     const movedCandidate = commitFixture(root);
     const findingResult = spawnSync('node', [
       cliPath, 'approve', 'S-765', '--candidate', movedCandidate, '--owner', 'Kayden Clark',
-      '--finding', 'The onboarding copy still references the old flow', '--json', '--path', root
+      '--finding', 'new Task: The onboarding copy still references the old flow', '--json', '--path', root
     ], { encoding: 'utf8' });
     assert.equal(findingResult.status, 0, `the approve verb exits 0 with a --finding given: ${findingResult.stderr}`);
     const findingParsed = JSON.parse(findingResult.stdout);
@@ -2220,7 +2221,7 @@ function headingShadowSpec(id) {
     // qualifying finding row by its own evidence-log position - unaffected
     // by the owner-qa row's own #<n> ordinal, a separate counter.
     const finding = recordOwnerApproval(root, 'S-767', {
-      candidate, owner: 'Kayden Clark', result: 'finding', findings: 'A late-breaking defect'
+      candidate, owner: 'Kayden Clark', result: 'finding', findings: 'new Task: A late-breaking defect'
     });
     assert.equal(finding.ordinal, 3, 'the ordinal keeps incrementing across approve and finding rows alike');
     assert.equal(finding.correctiveTasks.length, 1);
@@ -2695,5 +2696,169 @@ function doneTaskWithDecisions({ id, specId, rows }) {
     console.log('ok - S-00J TK-002N: owner approval checks containment against origin/<integration> when it exists (a lagging local branch cannot refuse, an unpushed local branch cannot approve), falls back to the local branch without a remote, never fetches, and the Spec report names the ref and SHA it resolved');
   } finally {
     for (const root of rooms) fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-004F TK-005R (DDR-000Y): a miss found by a check continues the same Task
+// with an adjusted handoff unless the fix rewrites it. Each finding of a fail
+// verdict or an owner QA finding names its disposition - `continue TK-###:
+// <what the check found and what the fix must do>` or `new Task: <finding>`
+// (optionally `new Task rewriting TK-###: ...`) - validated before any write,
+// and the Spec's own evidence row carries that text so the record says which
+// case applied. A continuation is appended to the Task's own `## Continuation`
+// table and moves a done Task to ready; its Receipt rows, Proof and every
+// earlier evidence row stay byte-identical.
+// ============================================================================
+{
+  const REVIEWER = 'Claude Opus 5 (separate context)';
+  const continuationRoom = (id) => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), `spec-report-continue-${id}-`));
+    initGitRoot(root);
+    blueprintAndBoard(root);
+    writeAt(root, `specs/${id}-fixture/SPEC.md`, recordBackedSpec(id).replace(
+      '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |',
+      '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |\n| 2026-09-18 | TK-002 | Task closed | tools/test-second.mjs pass | none | none |'
+    ));
+    const done = appendReceiptRowToContent(taskRecordFixture({
+      id: 'TK-002', specId: id, slice: 'Second slice', status: 'done', blockers: 'none',
+      destination: `spec-acceptance: ${id} Acceptance Criteria`, plannedVerification: 'Red: X; green: Y', proof: 'tools/test-second.mjs pass'
+    }), { branch: 'fixture', headSha: 'abc1234', upstream: 'origin/fixture', dirty: 0, testsRun: 'tools/test-second.mjs pass', docsTouched: 'none', remainingGap: 'none' });
+    writeAt(root, `specs/${id}-fixture/tasks/TK-002/TASK.md`, done);
+    writeAt(root, `specs/${id}-fixture/tasks/TK-003/TASK.md`, taskRecordFixture({
+      id: 'TK-003', specId: id, slice: 'Blocked slice', status: 'blocked', blockers: 'owner:fixture-turn',
+      destination: `spec-acceptance: ${id} Acceptance Criteria`
+    }));
+    return { root, specFile: path.join(root, `specs/${id}-fixture/SPEC.md`), taskFile: path.join(root, `specs/${id}-fixture/tasks/TK-002/TASK.md`), candidate: commitFixture(root) };
+  };
+  const evidenceRowsOf = (file) => fs.readFileSync(file, 'utf8').split('\n').filter((line) => /^\| \d{4}-\d{2}-\d{2} \|/.test(line));
+
+  // (1) A finding that continues a done Task.
+  {
+    const { root, specFile, taskFile, candidate } = continuationRoom('S-7C1');
+    try {
+      const rowsBefore = evidenceRowsOf(specFile);
+      const taskBefore = fs.readFileSync(taskFile, 'utf8');
+      const verdict = recordReviewVerdict(root, 'S-7C1', {
+        candidate, result: 'fail', reviewer: REVIEWER,
+        findings: 'continue TK-002: The error message omits the field name, so name the field in the message'
+      });
+      assert.deepEqual(verdict.correctiveTasks, [], 'a continuing finding opens no new Task');
+      assert.equal(verdict.continuedTasks.length, 1, 'the verdict returns the Task it continued');
+      assert.equal(verdict.continuedTasks[0].id, 'TK-002');
+      assert.equal(verdict.continuedTasks[0].run, 1, 'the first continuation is run 1');
+      assert.equal(fs.readdirSync(path.join(root, 'specs/S-7C1-fixture/tasks')).sort().join(','), 'TK-002,TK-003', 'no new Task directory is created');
+
+      const taskAfter = fs.readFileSync(taskFile, 'utf8');
+      const record = readTaskRecord(taskFile, root);
+      assert.equal(record.status, 'ready', 'a continued done Task moves to ready, so next, claim and close treat it as ordinary work');
+      assert.equal(record.proof, 'tools/test-second.mjs pass', 'the earlier Proof is kept as written');
+      assert.equal(taskAfter.slice(taskAfter.indexOf('## Receipt'), taskAfter.indexOf('## Continuation')).trim(), taskBefore.slice(taskBefore.indexOf('## Receipt')).trim(), 'the earlier Receipt rows are byte-identical');
+      assert.match(taskAfter, /## Continuation\n\n\| Run \| Date \| Answers \| Adjusted handoff \|\n\|---\|---\|---\|---\|\n\| 1 \| \d{4}-\d{2}-\d{2} \| evidence row 3 \(fail verdict at [0-9a-f]+ on \d{4}-\d{2}-\d{2}\) \| The error message omits the field name, so name the field in the message \|/);
+
+      const rowsAfter = evidenceRowsOf(specFile);
+      assert.deepEqual(rowsAfter.slice(0, rowsBefore.length), rowsBefore, 'every earlier evidence row is byte-identical (append-only)');
+      assert.equal(rowsAfter.length, rowsBefore.length + 1, 'only the verdict row is appended');
+      assert.match(rowsAfter.at(-1), /continue TK-002: The error message omits the field name, so name the field in the message/, 'the evidence row says which case applied');
+
+      assert.equal(nextWork(root).taskId, 'TK-002', 'next selects the continued Task like any other ready record');
+      render(root);
+      assert.equal(doctor(root).filter((item) => item.blocks === 'all' || item.blocks === 'selection').length, 0, 'doctor reports no blocking finding for a continued Task');
+
+      assert.throws(
+        () => createCorrectiveTasks(root, 'S-7C1', { candidate, findings: 'continue TK-002: The error message omits the field name, so name the field in the message' }),
+        /already/,
+        'a second call for the same evidence row is refused rather than appending a duplicate continuation'
+      );
+      assert.equal(fs.readFileSync(taskFile, 'utf8'), taskAfter, 'the refused repeat writes nothing');
+
+      // A second continuation of the same Task is another run, appended below the first.
+      const secondCandidate = commitFixture(root);
+      const second = recordReviewVerdict(root, 'S-7C1', {
+        candidate: secondCandidate, result: 'fail', reviewer: 'Claude Sonnet 5 (separate context)',
+        findings: 'continue TK-002: The field name is still missing on the second path, so fix that path too'
+      });
+      assert.equal(second.continuedTasks[0].run, 2);
+      const afterTwo = fs.readFileSync(taskFile, 'utf8');
+      assert.ok(afterTwo.includes(taskAfter.slice(taskAfter.indexOf('## Continuation')).trim()), 'the first continuation row is preserved verbatim');
+      assert.match(afterTwo, /\| 2 \| \d{4}-\d{2}-\d{2} \| evidence row 4 /);
+      console.log('ok - S-004F TK-005R: a fail verdict finding continues a done Task with an adjusted handoff, keeping its Receipt rows, Proof and every earlier evidence row byte-identical, and the evidence row says which case applied');
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  }
+
+  // (2) A finding whose fix rewrites the Task opens a new Task and names it.
+  {
+    const { root, specFile, taskFile, candidate } = continuationRoom('S-7C2');
+    try {
+      const taskBefore = fs.readFileSync(taskFile, 'utf8');
+      const verdict = recordReviewVerdict(root, 'S-7C2', {
+        candidate, result: 'fail', reviewer: REVIEWER,
+        findings: 'new Task rewriting TK-002: The parser must be rebuilt around the new grammar; new Task: Document the new grammar'
+      });
+      assert.equal(verdict.correctiveTasks.length, 2, 'each new-Task finding opens one Task');
+      assert.deepEqual(verdict.continuedTasks ?? [], []);
+      const [rewrite, plain] = verdict.correctiveTasks.map((task) => readTaskRecord(path.join(root, task.filePath), root));
+      assert.equal(rewrite.slice, 'The parser must be rebuilt around the new grammar', 'the Task is named for the finding, not for the disposition prefix');
+      assert.equal(rewrite.status, 'ready');
+      assert.match(rewrite.plannedVerification, /^Answers evidence row 3 \(fail verdict at [0-9a-f]+ on \d{4}-\d{2}-\d{2}\): The parser must be rebuilt around the new grammar \(rewrites TK-002\)$/, 'the new Task names the Task it rewrites');
+      assert.equal(plain.slice, 'Document the new grammar');
+      assert.doesNotMatch(plain.plannedVerification, /rewrites/);
+      assert.equal(fs.readFileSync(taskFile, 'utf8'), taskBefore, 'the rewritten Task keeps its record; a done record is never silently changed');
+      assert.match(evidenceRowsOf(specFile).at(-1), /new Task rewriting TK-002: The parser must be rebuilt around the new grammar; new Task: Document the new grammar/, 'the evidence row says which case applied');
+      console.log('ok - S-004F TK-005R: a finding whose fix rewrites the Task opens a new Task that names the Task it rewrites, and leaves the original record untouched');
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  }
+
+  // (3) Refusals happen before any write.
+  {
+    const { root, specFile, taskFile, candidate } = continuationRoom('S-7C3');
+    try {
+      const specBefore = fs.readFileSync(specFile, 'utf8');
+      const taskBefore = fs.readFileSync(taskFile, 'utf8');
+      const refuses = (label, findings, pattern) => {
+        assert.throws(() => recordReviewVerdict(root, 'S-7C3', { candidate, result: 'fail', reviewer: REVIEWER, findings }), pattern, label);
+        assert.equal(fs.readFileSync(specFile, 'utf8'), specBefore, `${label}: no verdict row is written`);
+        assert.equal(fs.readFileSync(taskFile, 'utf8'), taskBefore, `${label}: no Task is changed`);
+        assert.deepEqual(fs.readdirSync(path.join(root, 'specs/S-7C3-fixture/tasks')).sort(), ['TK-002', 'TK-003'], `${label}: no Task is created`);
+      };
+      refuses('a finding that names no disposition', 'Missing input validation', /names no disposition[\s\S]*continue TK-###[\s\S]*new Task/);
+      refuses('one undispositioned finding among valid ones', 'continue TK-002: Name the field; Stale doc reference', /"Stale doc reference" on S-7C3 names no disposition/);
+      refuses('a Task the Spec does not hold', 'continue TK-009: Name the field', /no Task record TK-009/);
+      refuses('a blocked Task', 'continue TK-003: Name the field', /TK-003 is blocked/);
+      refuses('a rewritten Task the Spec does not hold', 'new Task rewriting TK-009: Rebuild it', /no Task record TK-009/);
+      assert.throws(
+        () => recordOwnerApproval(root, 'S-7C3', { candidate, owner: 'Kayden Clark', result: 'finding', findings: 'Missing empty-state copy' }),
+        /names no disposition/,
+        'an owner QA finding follows the same rule'
+      );
+      console.log('ok - S-004F TK-005R: a finding naming no disposition, an unknown Task or a blocked Task is refused before any write');
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  }
+
+  // (4) The Continuation section is append-only and fails closed.
+  {
+    const base = taskRecordFixture({ id: 'TK-002', specId: 'S-7C4', slice: 'Slice', status: 'done', blockers: 'none', destination: 'spec-acceptance: S-7C4 Acceptance Criteria' });
+    const one = appendContinuationToContent(base, { date: '2026-10-03', answers: 'evidence row 3 (fail verdict at abc on 2026-10-03)', handoff: 'Cover the | pipe case' });
+    const two = appendContinuationToContent(one, { date: '2026-10-04', answers: 'evidence row 4 (fail verdict at def on 2026-10-04)', handoff: 'Cover the second case' });
+    assert.deepEqual(readContinuations(two).map((row) => [row.run, row.handoff]), [[1, 'Cover the | pipe case'], [2, 'Cover the second case']], 'rows read back in order with an escaped pipe intact');
+    assert.ok(two.startsWith(one.replace(/\n+$/, '\n')), 'a second row only appends to the first');
+    const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'continuation-module-'));
+    try {
+      fs.writeFileSync(path.join(scratch, 'TASK.md'), two);
+      assert.equal(readTaskRecord(path.join(scratch, 'TASK.md'), scratch).status, 'done', 'a record carrying a Continuation section still parses as a Task');
+    } finally {
+      fs.rmSync(scratch, { recursive: true, force: true });
+    }
+    assert.throws(() => readContinuations(two.replace('| 2 | 2026-10-04 |', '| 3 | 2026-10-04 |')), /Run must read 2 in order/, 'an out-of-sequence run is refused rather than repaired');
+    assert.throws(() => readContinuations(two.replace('| Run | Date | Answers | Adjusted handoff |', '| Run | Date |')), /malformed Continuation section/, 'a malformed header is refused');
+    assert.throws(() => appendContinuationToContent(base, { date: '2026-10-03', answers: 'x', handoff: '  ' }), /non-empty handoff/, 'an empty handoff is refused');
+    assert.deepEqual(readContinuations(base), [], 'a record with no Continuation section has none');
+    console.log('ok - S-004F TK-005R: the Continuation section appends in order, escapes cells, fails closed on a tampered or malformed table and leaves a record parseable');
   }
 }

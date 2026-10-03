@@ -7177,3 +7177,79 @@ function parseTaskRecordForTest(content) {
   }
 }
 // ---- S-01W TK-002O: explicit widen-id touch (end) ----
+
+// ============================================================================
+// S-004F TK-005R (DDR-000Y): a continued Task is ordinary work. After a fail
+// verdict continues a closed Task, `next` selects it, `claim` and `close`
+// work on it, and its second close appends a distinct `Task closed (run N)`
+// evidence row instead of conflicting with the first close recorded the same
+// day. Earlier Receipt rows and evidence rows stay byte-identical.
+// ============================================================================
+{
+  const continueRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'continued-task-close-'));
+  initGitRoot(continueRoot);
+  try {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    writeAt(continueRoot, 'BLUEPRINT.md', ['# Fixture Blueprint', '', '<!-- spec-catalog:start -->', '<!-- spec-catalog:end -->'].join('\n'));
+    writeAt(continueRoot, 'TASKBOARD.md', ['# Fixture Taskboard', '', '<!-- hot-specs:start -->', '<!-- hot-specs:end -->'].join('\n'));
+    writeAt(continueRoot, 'specs/S-7C5-continued/SPEC.md', recordBackedSpec('S-7C5').replace('**Updated:** 2026-07-12', `**Updated:** ${todayStr}`));
+    writeAt(continueRoot, 'specs/S-7C5-continued/tasks/TK-002/TASK.md', taskRecordFixture({
+      id: 'TK-002', specId: 'S-7C5', slice: 'Continued slice', status: 'in-progress', blockers: 'none',
+      destination: 'spec-acceptance: S-7C5 Acceptance Criteria'
+    }));
+    publishFixture(continueRoot);
+    const specPath = path.join(continueRoot, 'specs/S-7C5-continued/SPEC.md');
+    const taskPath = path.join(continueRoot, 'specs/S-7C5-continued/tasks/TK-002/TASK.md');
+    const closeWith = (proof) => closeTask(continueRoot, 'S-7C5', { proof, docs: 'Docs checked; no update needed', remainingGap: 'none', date: todayStr });
+    const closeRows = () => fs.readFileSync(specPath, 'utf8').split('\n').filter((line) => line.includes('| TK-002 | Task closed'));
+    const headSha = () => execFileSync('git', ['-C', continueRoot, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+
+    closeWith('first pass: tools/test-fixture.mjs');
+    publishFixture(continueRoot, 'first close');
+    const firstRows = closeRows();
+    assert.equal(firstRows.length, 1);
+    assert.equal(parseMarkdownTableRow(firstRows[0])[2], 'Task closed', 'the first close keeps its event');
+    const firstReceipt = readReceiptFromFile(taskPath);
+
+    recordReviewVerdict(continueRoot, 'S-7C5', {
+      candidate: headSha(), result: 'fail', reviewer: 'Fixture reviewer (separate context)',
+      findings: 'continue TK-002: The slice missed the empty case, so cover it with the same slice'
+    });
+    publishFixture(continueRoot, 'continue TK-002');
+    assert.equal(readTaskRecord(taskPath, continueRoot).status, 'ready');
+    const selected = nextWork(continueRoot);
+    assert.equal(selected.taskId, 'TK-002', 'next selects the continued Task');
+    claimWork(continueRoot, 'S-7C5', { agent: 'fixture', date: todayStr });
+    assert.equal(readTaskRecord(taskPath, continueRoot).status, 'in-progress', 'claim works on a continued Task');
+    publishFixture(continueRoot, 'claim continued');
+
+    closeWith('second pass: tools/test-fixture.mjs covers the empty case');
+    const rows = closeRows();
+    assert.equal(rows.length, 2, 'the second close appends a row instead of conflicting with the first');
+    assert.equal(rows[0], firstRows[0], 'the first close row is byte-identical');
+    assert.equal(parseMarkdownTableRow(rows[1])[2], 'Task closed (run 2)', 'the later close row carries its own identity');
+    const receipts = readReceiptFromFile(taskPath);
+    assert.equal(receipts.length, 2, 'the Receipt chain gained a row and still validates');
+    assert.deepEqual(receipts[0], firstReceipt[0], 'the earlier Receipt row is unchanged');
+    const record = readTaskRecord(taskPath, continueRoot);
+    assert.equal(record.status, 'done');
+    assert.equal(record.proof, 'second pass: tools/test-fixture.mjs covers the empty case', 'the Proof field shows the latest closing proof; earlier proof stays in the Receipt and evidence rows');
+    publishFixture(continueRoot, 'second close');
+
+    // A third pass counts from the rows already recorded.
+    recordReviewVerdict(continueRoot, 'S-7C5', {
+      candidate: headSha(), result: 'fail', reviewer: 'Fixture reviewer (separate context)',
+      findings: 'continue TK-002: The whitespace case is still missing, so cover it too'
+    });
+    publishFixture(continueRoot, 'continue again');
+    claimWork(continueRoot, 'S-7C5', { agent: 'fixture', date: todayStr });
+    publishFixture(continueRoot, 'claim again');
+    closeWith('third pass: whitespace case');
+    assert.equal(parseMarkdownTableRow(closeRows()[2])[2], 'Task closed (run 3)');
+    render(continueRoot);
+    assert.equal(doctor(continueRoot).filter((item) => item.blocks === 'all' || item.blocks === 'selection').length, 0, 'doctor reports no blocking finding after repeated closes');
+    console.log('ok - S-004F TK-005R: a continued Task is selected, claimed and closed like any other, and each later close appends a distinct Task closed (run N) evidence row');
+  } finally {
+    fs.rmSync(continueRoot, { recursive: true, force: true });
+  }
+}

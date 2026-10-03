@@ -484,7 +484,7 @@ export function closeTask(rootDir, id, options) {
       ...facts, testsRun: proof, docsTouched: docs, remainingGap: recordedGap
     }, task.record.filePath);
     const receipt = readReceipt(receipted, task.record.filePath).at(-1);
-    const row = `| ${[date, task.id, 'Task closed', receipt.testsRun, receipt.docsTouched, receipt.remainingGap].map(escapeCell).join(' | ')} |`;
+    const row = `| ${[date, task.id, closeEvent(spec.content, task.id), receipt.testsRun, receipt.docsTouched, receipt.remainingGap].map(escapeCell).join(' | ')} |`;
     // Validate the evidence destination before publishing the Task.
     appendEvidence(spec.content, row);
     const published = updateTaskFields(receipted, {
@@ -510,6 +510,17 @@ export function closeTask(rootDir, id, options) {
   content = appendEvidence(content, `| ${escapeCell(date)} | ${escapeCell(task.id)} | Task closed | ${escapeCell(proof)} | ${escapeCell(docs)} | ${escapeCell(recordedGap)} |`);
   atomicWrite(spec.filePath, content);
   return showSpec(rootDir, id);
+}
+
+// S-004F TK-005R (DDR-000Y): a Task a check found missed continues, so it can
+// close more than once. The first close keeps the event `Task closed`; each
+// later close is `Task closed (run N)`, N counting the close rows this Task
+// already has in the Spec's append-only log, so a second close on the same
+// day carries its own identity instead of conflicting with the first.
+const CLOSE_EVENT_PATTERN = /^Task closed(?: \(run \d+\))?$/;
+function closeEvent(specContent, taskId) {
+  const prior = evidenceRows(specContent).map(splitRow).filter((cells) => cells[1] === taskId && CLOSE_EVENT_PATTERN.test(cells[2])).length;
+  return prior === 0 ? 'Task closed' : `Task closed (run ${prior + 1})`;
 }
 
 // S-00I TK-004L: native inventory skips symlink directory entries. A close
@@ -558,7 +569,7 @@ function finishRecordClose(root, spec, task, slices) {
   const receipt = readReceipt(record.content, record.filePath).at(-1);
   const cells = splitRow(pending.row);
   if (cells.length !== 6 || !receipt || record.status !== 'done' || record.proof !== receipt.testsRun
-      || pending.receiptChecksum !== receipt.checksum || cells[1] !== task.id || cells[2] !== 'Task closed'
+      || pending.receiptChecksum !== receipt.checksum || cells[1] !== task.id || !CLOSE_EVENT_PATTERN.test(cells[2])
       || cells[3] !== receipt.testsRun || cells[4] !== receipt.docsTouched || cells[5] !== receipt.remainingGap) {
     throw new Error(`${task.id} pending close does not match its done Task and Receipt`);
   }
@@ -568,7 +579,7 @@ function finishRecordClose(root, spec, task, slices) {
   // is idempotent, even across separate CLI processes.
   const sameIdentity = evidenceRows(spec.content).filter((row) => {
     const existing = splitRow(row);
-    return existing[0] === date && existing[1] === task.id && existing[2] === 'Task closed';
+    return existing[0] === date && existing[1] === task.id && existing[2] === cells[2];
   });
   if (sameIdentity.length > 1 || (sameIdentity.length === 1 && sameIdentity[0] !== pending.row)) {
     throw new Error(`${task.id} pending close conflicts with existing Spec evidence`);

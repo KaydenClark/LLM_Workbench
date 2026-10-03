@@ -25,7 +25,8 @@ evidence row says which case applied.
   written by one reader) and the done to ready move for a continued done Task.
 - The re-close identity in `workbench/tools/spec-workbench.mjs`: `Task closed`
   for the first close and `Task closed (run N)` for a later one.
-- The `verdict` and `approve` command help text where it names corrective Tasks.
+- No command help text names corrective Tasks, so none changes; the finding grammar
+  is stated in the refusal message a finding with no disposition gets.
 - Tests at the stable seams above, including the append-only proof.
 
 ## Acceptance
