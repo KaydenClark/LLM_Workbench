@@ -312,10 +312,10 @@ Two corrections to the Task records follow. TK-005J's Outcome says its sections
 "are the sections the generic `templates/RUNBOOK.md` also carries": only Visible
 Identifiers, Landmark Tracker, Troubleshooting, Recovery And Rollback, Workbench
 connection identity and Configured-host capability checks are carried by
-heading; Architecture Decision Records, Wiki Validation, Installed State,
-Diagnostics And Blocking Effects and Socket Contract Registry are root-only
-headings whose generic text lives in the template's lifecycle, diagnostics and
-decision-records section. TK-005K's Outcome lists "prerequisites, install and
+heading; Architecture Decision Records, Wiki Validation and Diagnostics And
+Blocking Effects are root-only headings whose generic text lives in the
+template's lifecycle, diagnostics and decision-records section, and Installed
+State and Socket Contract Registry have only a passing mention in the template. TK-005K's Outcome lists "prerequisites, install and
 run" and evaluation, feedback and operational proof as maintainer-only, but the
 template carries Prerequisites, Install, Run Locally, Evaluation And
 Benchmarking, Claims To Test, Evaluation Design, Harness Feedback Loop, Manual
