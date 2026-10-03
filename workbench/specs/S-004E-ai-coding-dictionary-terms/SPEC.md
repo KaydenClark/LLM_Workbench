@@ -8,8 +8,8 @@
 **Updated:** 2026-10-03
 **Catalog description:** Put the owner's agreed meanings for AI Coding Dictionary terms into the Lexicon, with a Wiki dictionary entry wherever a term needs more than its row, starting with nineteen model, harness and session terms.
 **Blockers:** none. The owner answered the harness question on 2026-10-03 (option (a) in Decisions And Contracts), so no row waits on an owner answer. Lexicon writes take one writer at a time; the owner's Codex Lexicon reconciliation landed in integration on 2026-10-03 (PR #281), and the Lexicon Design-Concept Reconciliation Spec stays active for its whole-Lexicon audit. The four Tasks run serially in this Spec's writer lane.
-**Latest event:** TK-005Y closed with proof.
-**Next gate:** Complete TK-005Z.
+**Latest event:** TK-005Z claimed by claude-lane-g.
+**Next gate:** Close TK-005Z with verification and documentation proof.
 
 > **Citation anchors.** pre=`817096e676992cf7ece72967ac8bbb064261a3ee` post=`817096e676992cf7ece72967ac8bbb064261a3ee`.
 

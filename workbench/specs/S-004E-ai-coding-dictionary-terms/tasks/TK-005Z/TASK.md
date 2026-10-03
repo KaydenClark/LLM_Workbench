@@ -3,7 +3,7 @@
 **Task ID:** TK-005Z
 **Spec ID:** S-004E
 **Slice:** Reconcile Harness, Session and Context and the Workbench rows that called the Workbench a harness
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-005Y
 **Destination:** spec-acceptance: No Lexicon row, template mirror row or current-facing control line uses a batch term for a different concept without an explicit distinction; the Workbench self-description follows the owner harness answer, and host, provider, session and context uses are reconciled as Desired Behavior 2 states.
