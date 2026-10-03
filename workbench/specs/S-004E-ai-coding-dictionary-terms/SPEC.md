@@ -8,8 +8,8 @@
 **Updated:** 2026-10-03
 **Catalog description:** Put the owner's agreed meanings for AI Coding Dictionary terms into the Lexicon, with a Wiki dictionary entry wherever a term needs more than its row, starting with nineteen model, harness and session terms.
 **Blockers:** none. The owner answered the harness question on 2026-10-03 (option (a) in Decisions And Contracts), so no row waits on an owner answer. Lexicon writes take one writer at a time; the owner's Codex Lexicon reconciliation landed in integration on 2026-10-03 (PR #281), and the Lexicon Design-Concept Reconciliation Spec stays active for its whole-Lexicon audit. The four Tasks run serially in this Spec's writer lane.
-**Latest event:** TK-005Y closed with proof.
-**Next gate:** Complete TK-005Z.
+**Latest event:** TK-005Z closed with proof.
+**Next gate:** Complete TK-006A.
 
 > **Citation anchors.** pre=`817096e676992cf7ece72967ac8bbb064261a3ee` post=`817096e676992cf7ece72967ac8bbb064261a3ee`.
 
@@ -224,6 +224,20 @@ Decided at Plan, 2026-10-03, from project evidence (the dogfood boundary, the te
 
 Not proposed here, for the owner if wanted: renaming the `update-harness` skill, the `sessions` lane or the cross-provider tools. Each is a public name, and a rename is its own change.
 
+## Conflicting Control Lines Handed To The Contract Carrier Rewrite
+
+Inventory made by the Lexicon writer lane while delivering the harness reconciliation (Desired Behavior 4): every line that contains "harness" in `AGENTS.md`, `RUNBOOK.md` and `README.md`, read at integration b271f194 (`grep -n -i harness` on each file at that tree). Those three files belong to the [Contract Carrier Pointer-Brief Rewrite](../S-004C-contract-carrier-pointer-brief-rewrite/SPEC.md) and the [Corrective Work Rules](../S-004F-corrective-work-rules/SPEC.md) Spec in turn, so this Spec does not write them. The line numbers below read at that tree.
+
+Awaits the rewrite (the line uses "harness" for the Workbench or its rules, which the owner's answer retires):
+
+- `AGENTS.md`: 136 ("Harness design changes normally update both"), 360 ("Harness changes also capture the guardrail baseline") and 620 ("This harness does not define a house visual style").
+- `RUNBOOK.md`: 2060 ("the current harness"), 2065 ("a harness change"), 2071 ("the whole harness"), 2081 ("any harness rule"), 2153 (the Harness Feedback Loop heading), 2157 ("the harness rules themselves"), 2165 ("any other harness claim"), 2166 ("a new harness version"), 2345 (the Manual Harness Feedback Reports heading) and 2398 ("harness dialect").
+- `README.md`: 37 ("an older or foreign harness"), 41 ("this harness" and "the harness rules themselves"), 57 ("not part of the harness"), 78 (the heading "This Repo Dogfoods Its Own Harness"), 175 and 179 ("foreign harness", "the old harness"), 197 and 198 ("which harness version"), 236 ("the canonical harness"), 254 and 255 ("later harness improvements", "Upgrading The Harness"), 265 ("a new harness version") and 304 ("For harness changes").
+
+Kept, because each names a public artifact the owner's answer leaves until it is renamed on its own: the `update-harness` skill (`AGENTS.md` 370; `RUNBOOK.md` 29, 362 and 780), the legacy `HARNESS_FEEDBACK.md` file name (`RUNBOOK.md` 762, 2156 and 2196; `README.md` 263), the `[HARNESS_VERSION]` stamp placeholder (`README.md` 196), the Runbook's "Installed State The Harness Wrote" heading and its links (`RUNBOOK.md` 478, 1888 and 1936) and the "harness-shaped" room classification (`RUNBOOK.md` 688, 690, 693, 706, 708 and 717).
+
+The separate-context review wording of `AGENTS.md` (the Git Rules and Owner Human QA paragraphs) and `RUNBOOK.md` (the Template Upgrade Release Gate steps, the verdict command placeholders and the evaluation steps) is inventoried by the batch-two Task, which adds the Automated review row.
+
 ## Non-Goals
 
 Copying dictionary entry text; adopting dictionary entries the owner has not supplied; renaming any skill, tool, lane, collection or file; changing the meaning of any rule; a model, effort or cost policy; the Contract carrier rewrite beyond the conflicting lines in Desired Behavior 4; implementing another capability.
@@ -272,6 +286,7 @@ This Spec changes `LEXICON.md` (a new section, reconciled rows and the Last revi
 | 2026-10-03 | none | Map update at integration 5cfa987bacb0f6a9273d93e8d989e34000d75ad9: recorded the owner's harness answer of 2026-10-03 (option (a): the Workbench is an agentic management system and never a harness, harness keeps its dictionary meaning, and room has always meant project) in Decisions And Contracts, Desired Behavior 2, the dependencies and the header; appended batch 2, ten terms the owner adopted or confirmed on the Blueprint teardown review page on 2026-10-03; added one dated line to the inventory instead of rewriting it (29 supplied, 8 already addressed, 34 neither supplied nor defined). | Map only; each batch 2 meaning was taken from the owner's adopt or confirm answer as the teardown grilling recorded it, each batch 2 term was re-searched in the Lexicon, `AGENTS.md`, the Runbook, the ADRs, the Wiki, the skills lane and the templates at that tip, and the batch 2 table was compared for copied passages against the ten entries fetched at ed1ebed3975cba04ed5e74c6ca73659274beb754 outside the repository, which found no shared run longer than seven words (two short fragments of the owner-adopted wording, in Attention budget and Software factory, match entry phrases); no runtime proof claimed. | This Spec only. Docs checked; no Lexicon or Wiki update is due until delivery, because a planned Spec changes no accepted meaning. | Plan, implementation and proof remain for both batches; Wiki entry selection and the template mirror are open. |
 | 2026-10-03 | none | Plan: activated the Spec and cut four serial Tasks from live Actuality at integration f91bfd72, with the five Tasks of the Workbench Terms And Workflow Verb Rows Spec cut in the same pass so the identifiers are reserved together; settled the template mirror (mirror every row, generic), the Wiki entry form (flat `dictionary-<term>.md` notes, the provisional eight confirmed for batch one) and the handling of conflicting `AGENTS.md`, `RUNBOOK.md` and `README.md` lines (inventory and hand to the Contract Carrier Pointer-Brief Rewrite). | Plan only; the Lexicon, template Lexicon, Wiki router and schema, the DDR collection (the harness and room decisions among them) and the batch tables were read at that tip; no runtime proof claimed. | This Spec only. | Implementation and proof remain in the four Tasks. |
 | 2026-10-03 | TK-005Y | Task closed | Red f7b0d3ae then green: test-control-fidelity 28/28, templates evaluator, full AGENTS suite 48/48 on clean c1ec6fd4 | LEXICON.md and templates/LEXICON.md carry the AI Coding Terms section and fifteen rows; plan decisions recorded in the Spec | Harness reconciliation, batch two, Wiki entries and whole-Spec QA remain in the next three Tasks |
+| 2026-10-03 | TK-005Z | Task closed | Red 11d1321d then green: test-control-fidelity 30/30, full AGENTS suite 48/48 on clean 45efed10 | LEXICON.md and templates/LEXICON.md reconciled to the harness answer; conflicting AGENTS.md, RUNBOOK.md and README.md lines inventoried in the Spec for the Contract carrier rewrite | Batch two rows, Wiki entries and whole-Spec QA remain in the last two Tasks |
 
 ## Completion Result
 

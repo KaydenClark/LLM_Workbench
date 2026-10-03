@@ -683,6 +683,8 @@ const AI_CODING_TERMS = [
   // whose provider note is a distinction only).
   'Model', 'Parameters', 'Effort', 'Inference', 'Token', 'Next-token prediction', 'Non-determinism', 'Model provider',
   'Input tokens', 'Output tokens', 'Cache tokens', 'Stateless', 'Stateful', 'Agent', 'System prompt', 'Context window',
+  // Batch 1, the four that meet an existing Workbench word: Model provider and Harness, Context and Session.
+  'Model provider', 'Harness', 'Context', 'Session',
 ];
 const dictionarySlug = (term) => term.toLowerCase().replace(/ /g, '-');
 
@@ -733,5 +735,25 @@ test('accepted decision records carry the corrective-work rules and no longer st
   for (const prefix of ['000F', '000G', '000H', '000I', '000R', '000U']) {
     const [file, text] = records.find(([name]) => name.startsWith(`workbench/docs/adr/${prefix}-`));
     assert.match(text, /\.\.\/ddr\/000[MY]-/, `${file} names the destination record that amended it`);
+  }
+});
+
+// S-004E: the owner's harness answer (2026-10-03): the Workbench is an agentic
+// management system a harness loads, never a harness; Room has always meant
+// project. Neither Lexicon calls the Workbench the operating harness, and a
+// Chat is distinguished from a session.
+test('neither Lexicon calls the Workbench a harness, and Chat is distinguished from a session', () => {
+  const termRow = (content, term) => content.split('\n').find((line) => line.startsWith(`| **${term}** `));
+  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
+    const content = read(root, relative);
+    assert.doesNotMatch(content, /operating harness|agent harness|harness around it|this harness/i, `${relative} must not call the Workbench a harness`);
+    assert.doesNotMatch(termRow(content, 'Workbench'), /A room:/, `${relative} Workbench row must not call the Workbench a room`);
+    assert.match(termRow(content, 'Workbench'), /agentic management system/, `${relative} Workbench row says what it is`);
+    assert.match(termRow(content, 'Workbench'), /Not a harness/, `${relative} Workbench row says what it is not`);
+    assert.match(termRow(content, 'Portable Workbench'), /agentic management system/, `${relative} Portable Workbench row`);
+    assert.match(termRow(content, 'Chat'), /not a session either/, `${relative} Chat row distinguishes a session`);
+    assert.match(termRow(content, 'Host portability'), /host" means the machine/, `${relative} Host portability row says which host`);
+    assert.match(termRow(content, 'Harness'), /The Workbench is not a harness/, `${relative} Harness row`);
+    assert.match(termRow(content, 'Evaluation'), /Does this Workbench help agents/, `${relative} Evaluation row`);
   }
 });
