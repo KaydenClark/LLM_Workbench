@@ -1,0 +1,322 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-002K",
+  "revision": 10,
+  "title": "How does a grilling or handoff endpoint preserve the owner’s intended scope?",
+  "question": "How does a grilling or handoff endpoint preserve the owner’s intended scope?",
+  "answer": "BPR-R1: The prior chat 'failed at the beginning' because it never actually started a grilling session. Had it started correctly, stopping the grilling session would have been the endpoint. The handoff should then carry the owner-authorized task and authority plus all needed context from the grilling notepad.\nBPR-R3: This was a promotion and scoping handoff. The receiving chat should promote the grilling notepad into docs and Specs, using all the skills named for that process, so implementation could happen in a later step. It was not authorized to implement the promoted work in the same step.\nV3-20: It authorizes the minimum complete single-repository v3 runway and preserves Kayden's owner-only promotion gate.\nV3-20A: Promote the settled diary into the owning docs/spec, implement through red/green slices from refreshed integration, verify exact pushed heads, perform independent review, reconcile obsolete PR #42 after replacement proof, and open the final integration-to-main PR.\nV3-20B: Merging to main, changing visibility or credentials, editing the private skills repository, importing Foundry machinery, broad guidebook or skill-catalog redesign, and claiming release without source/test/fresh-exercise proof.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-R1, BPR-R3, V3-20, V3-20A, V3-20B (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "BPR-R1 update workbench/skills/grilling/SKILL.md: Explicit user direction to stop or hand off ends the interview; hand-off exit composes a Markdown handoff with the exact requested job. | BPR-R1 update workbench/skills/handoff/SKILL.md: State the exact job and endpoint; mentioning make-it-so or carry cannot expand it; carry inherited authorization and notepad context. | BPR-R3 update workbench/skills/handoff/SKILL.md: Carry explicit exclusions: for 'create specifications; do not implement' the recipient authors the named specifications only. | BPR-R3 create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Durable record of the locked decisions (with S-00B to S-00E as the staged successors), leaving implementation to later Tasks. | V3-20 create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Scope and Non-Goals limit the runway to the minimum v3 capability in LLM Workbench only; merging integration into main is a non-goal. | V3-20 update AGENTS.md (Git Rules) and templates/AGENTS.md: Only the owner merges integration into main. | V3-20A create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Promoted capability with six dependency-ordered red/green tickets (TK-001..TK-006) and independent review of the exact pushed candidate. | V3-20A update workbench/specs/S-014-workbench-release-candidate/SPEC.md: Resumes its exact-head audit, status and integration-to-main promotion PR after the S-021 candidate lands. | V3-20A retire GitHub PR #42: Closed unmerged after replacement proof exists. | V3-20B create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Non-Goals list each exclusion: main merge, credentials/visibility/private skills repo, Foundry machinery, full catalog or guidebook rewrite, unproven outcome claims.",
+    "home": "workbench/skills/grilling/SKILL.md; workbench/skills/handoff/SKILL.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md; workbench/specs/S-021-portable-workbench-v3/SPEC.md; AGENTS.md (Git Rules) and templates/AGENTS.md; workbench/specs/S-014-workbench-release-candidate/SPEC.md; GitHub PR #42",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "BPR-R1",
+      "revision": "56b459da"
+    },
+    {
+      "id": "BPR-R3",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-20",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-20A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-20B",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000O",
+    "LMK-000P"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 8
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "BPR-R1",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-R1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "BPR-R3",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-R3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-20",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-20 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-20A",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-20A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-20B",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-20B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 7
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How does a grilling or handoff endpoint preserve the owner’s intended scope?",
+    "question": "How does a grilling or handoff endpoint preserve the owner’s intended scope?",
+    "sources": [
+      {
+        "id": "BPR-R1",
+        "revision": "56b459da"
+      },
+      {
+        "id": "BPR-R3",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-20",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-20A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-20B",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:20.544Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:20.544Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 057 of the 2026-09-26 grouping (\"Alignment and durable promotion\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Starting grilling, stopping it, promotion/scoping and implementation are different endpoints. A handoff carries the actual task and authority rather than enlarging them.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:20.562Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "BPR-R1: The prior chat 'failed at the beginning' because it never actually started a grilling session. Had it started correctly, stopping the grilling session would have been the endpoint. The handoff should then carry the owner-authorized task and authority plus all needed context from the grilling notepad.\nBPR-R3: This was a promotion and scoping handoff. The receiving chat should promote the grilling notepad into docs and Specs, using all the skills named for that process, so implementation could happen in a later step. It was not authorized to implement the promoted work in the same step.\nV3-20: It authorizes the minimum complete single-repository v3 runway and preserves Kayden's owner-only promotion gate.\nV3-20A: Promote the settled diary into the owning docs/spec, implement through red/green slices from refreshed integration, verify exact pushed heads, perform independent review, reconcile obsolete PR #42 after replacement proof, and open the final integration-to-main PR.\nV3-20B: Merging to main, changing visibility or credentials, editing the private skills repository, importing Foundry machinery, broad guidebook or skill-catalog redesign, and claiming release without source/test/fresh-exercise proof."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-R1, BPR-R3, V3-20, V3-20A, V3-20B (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "BPR-R1 update workbench/skills/grilling/SKILL.md: Explicit user direction to stop or hand off ends the interview; hand-off exit composes a Markdown handoff with the exact requested job. | BPR-R1 update workbench/skills/handoff/SKILL.md: State the exact job and endpoint; mentioning make-it-so or carry cannot expand it; carry inherited authorization and notepad context. | BPR-R3 update workbench/skills/handoff/SKILL.md: Carry explicit exclusions: for 'create specifications; do not implement' the recipient authors the named specifications only. | BPR-R3 create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Durable record of the locked decisions (with S-00B to S-00E as the staged successors), leaving implementation to later Tasks. | V3-20 create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Scope and Non-Goals limit the runway to the minimum v3 capability in LLM Workbench only; merging integration into main is a non-goal. | V3-20 update AGENTS.md (Git Rules) and templates/AGENTS.md: Only the owner merges integration into main. | V3-20A create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Promoted capability with six dependency-ordered red/green tickets (TK-001..TK-006) and independent review of the exact pushed candidate. | V3-20A update workbench/specs/S-014-workbench-release-candidate/SPEC.md: Resumes its exact-head audit, status and integration-to-main promotion PR after the S-021 candidate lands. | V3-20A retire GitHub PR #42: Closed unmerged after replacement proof exists. | V3-20B create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Non-Goals list each exclusion: main merge, credentials/visibility/private skills repo, Foundry machinery, full catalog or guidebook rewrite, unproven outcome claims.",
+            "home": "workbench/skills/grilling/SKILL.md; workbench/skills/handoff/SKILL.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md; workbench/specs/S-021-portable-workbench-v3/SPEC.md; AGENTS.md (Git Rules) and templates/AGENTS.md; workbench/specs/S-014-workbench-release-candidate/SPEC.md; GitHub PR #42",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:20.579Z",
+      "reason": "Ledger row BPR-R1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-R1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:20.599Z",
+      "reason": "Ledger row BPR-R3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-R3",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:20.619Z",
+      "reason": "Ledger row V3-20 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-20",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:20.640Z",
+      "reason": "Ledger row V3-20A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-20A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:20.660Z",
+      "reason": "Ledger row V3-20B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-20B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:20.680Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "at": "2026-10-01T23:49:59.631Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Grilling and Shared Understanding pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000O"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 10,
+      "at": "2026-10-01T23:49:59.986Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Handoffs pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000O"
+          ],
+          "to": [
+            "LMK-000O",
+            "LMK-000P"
+          ]
+        }
+      ]
+    }
+  ]
+}

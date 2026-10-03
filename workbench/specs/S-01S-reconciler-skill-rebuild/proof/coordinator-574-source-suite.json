@@ -1,0 +1,415 @@
+{
+  "candidate": "abe2e8d30d0434be0309a05e8f8bb839a24312d9",
+  "results": [
+    {
+      "index": 1,
+      "command": "node tools/test-spec-workbench.mjs",
+      "exit": 0,
+      "seconds": 357.95,
+      "log": "01-tools_test-spec-workbench.mjs.log",
+      "logSha256": "f6794c64252fbb243dca43e81c1d48ba0d7e02b62fdad8da43590dd5ed50b3ee"
+    },
+    {
+      "index": 2,
+      "command": "node tools/test-skill-catalog.mjs",
+      "exit": 0,
+      "seconds": 0.88,
+      "log": "02-tools_test-skill-catalog.mjs.log",
+      "logSha256": "7114bc17b3bc4abfb2e1ca056f8c130ff69997ebb319d04ca78a00d432eb100d"
+    },
+    {
+      "index": 3,
+      "command": "node tools/test-skill-inspection.mjs",
+      "exit": 0,
+      "seconds": 0.27,
+      "log": "03-tools_test-skill-inspection.mjs.log",
+      "logSha256": "efd2e23e9a06c5638857300675d038850c99c025e7b4eea6589cfd440470b646"
+    },
+    {
+      "index": 4,
+      "command": "node tools/test-skills-lane.mjs",
+      "exit": 0,
+      "seconds": 11.43,
+      "log": "04-tools_test-skills-lane.mjs.log",
+      "logSha256": "07120b81fb630e7b2fe7ee3cb5c0411f9162e55de178aaab62483950ece12cd5"
+    },
+    {
+      "index": 5,
+      "command": "node tools/test-core-composition.mjs",
+      "exit": 0,
+      "seconds": 8.93,
+      "log": "05-tools_test-core-composition.mjs.log",
+      "logSha256": "ff197f120fccee1df427ed6160fe4fd9fbccf26c1dfd38c277e4654aed947465"
+    },
+    {
+      "index": 6,
+      "command": "node tools/test-project-evidence.mjs",
+      "exit": 0,
+      "seconds": 4.96,
+      "log": "06-tools_test-project-evidence.mjs.log",
+      "logSha256": "a28ed34f104848fc97c7958a62a473164ee4ae42a5e06acbcf751e2552062e87"
+    },
+    {
+      "index": 7,
+      "command": "node tools/test-genesis-from-decisions.mjs",
+      "exit": 0,
+      "seconds": 92.28,
+      "log": "07-tools_test-genesis-from-decisions.mjs.log",
+      "logSha256": "21b082879d11577b57e8e1e0a81885afb08e662810619877aa3fcea7c239996e"
+    },
+    {
+      "index": 8,
+      "command": "node tools/test-blueprint-contract.mjs",
+      "exit": 0,
+      "seconds": 0.19,
+      "log": "08-tools_test-blueprint-contract.mjs.log",
+      "logSha256": "fd1e113d4e53c6b7e4746a7c804bbc389fcffd6a3e17905564f10031c8d06ea1"
+    },
+    {
+      "index": 9,
+      "command": "node tools/test-session-transport.mjs",
+      "exit": 0,
+      "seconds": 48.95,
+      "log": "09-tools_test-session-transport.mjs.log",
+      "logSha256": "80a985976ec11c2230ad58cd132b2fb816135fe76b08f5ba8024485382eefe85"
+    },
+    {
+      "index": 10,
+      "command": "node tools/test-configured-host.mjs",
+      "exit": 0,
+      "seconds": 9.81,
+      "log": "10-tools_test-configured-host.mjs.log",
+      "logSha256": "541947cd77a31d34a89dfa14ba2713d0941a716ebff40458cc98d1fc3f9dace4"
+    },
+    {
+      "index": 11,
+      "command": "node tools/test-core-skill-installer.mjs",
+      "exit": 0,
+      "seconds": 43.11,
+      "log": "11-tools_test-core-skill-installer.mjs.log",
+      "logSha256": "027ca5c4092c1fcc11e47783354940f5beaa85b4678c713cafdeb6173f0b2845"
+    },
+    {
+      "index": 12,
+      "command": "node tools/test-workbench-layout.mjs",
+      "exit": 0,
+      "seconds": 156.51,
+      "log": "12-tools_test-workbench-layout.mjs.log",
+      "logSha256": "d2b5622cd00c82ddc95b942d332109ccca936da45e3023c0afca5795fe781d09"
+    },
+    {
+      "index": 13,
+      "command": "node tools/test-workbench-adoption.mjs",
+      "exit": 0,
+      "seconds": 34.71,
+      "log": "13-tools_test-workbench-adoption.mjs.log",
+      "logSha256": "8b26f45e3dc0a8dc1354dd57db9871295d2f612338de8f944b51156e449eb51a"
+    },
+    {
+      "index": 14,
+      "command": "node tools/test-workbench-upgrade.mjs",
+      "exit": 0,
+      "seconds": 16.65,
+      "log": "14-tools_test-workbench-upgrade.mjs.log",
+      "logSha256": "0816139732920bd98c05653a9be1a8b1d4c7629bdbe52b7eb9bcd57ac7393ac3"
+    },
+    {
+      "index": 15,
+      "command": "node tools/test-workbench-tools.mjs",
+      "exit": 0,
+      "seconds": 34.66,
+      "log": "15-tools_test-workbench-tools.mjs.log",
+      "logSha256": "960de1e0c0b56d356546464d80beede846d637fef8267dbcaad0b34482e666b2"
+    },
+    {
+      "index": 16,
+      "command": "node tools/test-diagnostics.mjs",
+      "exit": 0,
+      "seconds": 80.75,
+      "log": "16-tools_test-diagnostics.mjs.log",
+      "logSha256": "600457daff8faaefb1877329ecdeb26f1a0f7ffb89ca7c61931a450fc14af444"
+    },
+    {
+      "index": 17,
+      "command": "node tools/test-adr.mjs",
+      "exit": 0,
+      "seconds": 31.09,
+      "log": "17-tools_test-adr.mjs.log",
+      "logSha256": "241ef2c282d8056953be5ddd5f5762c97a2593c0a98ed8af09502079c6bb6463"
+    },
+    {
+      "index": 18,
+      "command": "node tools/test-governance-core.mjs",
+      "exit": 0,
+      "seconds": 0.33,
+      "log": "18-tools_test-governance-core.mjs.log",
+      "logSha256": "67d2bc2014908faabce6240ca5c6e5930efc3bf7df3a62c1268b95208488b9a6"
+    },
+    {
+      "index": 19,
+      "command": "node tools/test-branch-closeout.mjs",
+      "exit": 0,
+      "seconds": 9.57,
+      "log": "19-tools_test-branch-closeout.mjs.log",
+      "logSha256": "8cb3a95fee5fbc19530f5c182a2ede713ce89a744403965acbe1f8da8917fec9"
+    },
+    {
+      "index": 20,
+      "command": "node tools/test-wiki.mjs",
+      "exit": 0,
+      "seconds": 12.11,
+      "log": "20-tools_test-wiki.mjs.log",
+      "logSha256": "25bc9d970ebd56ef74775ee35b8b063b18fc5b1f96cb5ce966b4ad9fef6d1e6a"
+    },
+    {
+      "index": 21,
+      "command": "node tools/test-sessions.mjs",
+      "exit": 0,
+      "seconds": 12.97,
+      "log": "21-tools_test-sessions.mjs.log",
+      "logSha256": "019f9cf071f784ddd8dfc68449691ff55075a637a588f11e7012ab5e448908cb"
+    },
+    {
+      "index": 22,
+      "command": "node tools/test-notepads.mjs",
+      "exit": 0,
+      "seconds": 46.8,
+      "log": "22-tools_test-notepads.mjs.log",
+      "logSha256": "76e2cf882f3757e31aa0331224e1e98c3d382449e7f9230cde87e5ac3fd3d4ba"
+    },
+    {
+      "index": 23,
+      "command": "node tools/test-visible-ids.mjs",
+      "exit": 0,
+      "seconds": 4.04,
+      "log": "23-tools_test-visible-ids.mjs.log",
+      "logSha256": "a684c826806db31edc00f194f544d3c10a2324b5f9de8cca7a41a994e6c85763"
+    },
+    {
+      "index": 24,
+      "command": "node tools/test-workbench-identity.mjs",
+      "exit": 0,
+      "seconds": 19.47,
+      "log": "24-tools_test-workbench-identity.mjs.log",
+      "logSha256": "10647282cfcf375ffbb04b118ef7ef2915bc3eb4ba43b06df9f418628a7a3cd6"
+    },
+    {
+      "index": 25,
+      "command": "node tools/test-visible-id-consumers.mjs",
+      "exit": 0,
+      "seconds": 49.76,
+      "log": "25-tools_test-visible-id-consumers.mjs.log",
+      "logSha256": "323b66ed2a4ff60c5a5e7968a810dcf601c2418fd614cbfa36538fdab7b1e90e"
+    },
+    {
+      "index": 26,
+      "command": "node tools/test-direct-promotion.mjs",
+      "exit": 0,
+      "seconds": 16.25,
+      "log": "26-tools_test-direct-promotion.mjs.log",
+      "logSha256": "517a333ee1f94a91fc2d857800ae677c023c96562d62564f0d6ff474502a5db4"
+    },
+    {
+      "index": 27,
+      "command": "node tools/test-workbench-round-trip.mjs",
+      "exit": 0,
+      "seconds": 98.94,
+      "log": "27-tools_test-workbench-round-trip.mjs.log",
+      "logSha256": "dcb2b8feec3789627658a9ac3cac1566ec6fc0596f6a2f77930c86e7bd88b778"
+    },
+    {
+      "index": 28,
+      "command": "node tools/test-cross-provider-fixture.mjs",
+      "exit": 0,
+      "seconds": 9.15,
+      "log": "28-tools_test-cross-provider-fixture.mjs.log",
+      "logSha256": "4cedcdbf38344fc6d6bc454ef80a75dfef5b4fdd3ae6cfb205b0fd7af45544b5"
+    },
+    {
+      "index": 29,
+      "command": "node tools/test-portability-matrix.mjs",
+      "exit": 0,
+      "seconds": 1.79,
+      "log": "29-tools_test-portability-matrix.mjs.log",
+      "logSha256": "aa3acc1fd7585de8755f5c700fe760ff4ed43f4b4d7304c5b4056fb7976c6581"
+    },
+    {
+      "index": 30,
+      "command": "node tools/test-workbench-dogfood.mjs",
+      "exit": 0,
+      "seconds": 8.19,
+      "log": "30-tools_test-workbench-dogfood.mjs.log",
+      "logSha256": "5edca15bea0b229bb194025549b2ca7d1e9c08d549d28169904fa162f06c6ac2"
+    },
+    {
+      "index": 31,
+      "command": "node tools/test-evaluate-workbench.mjs",
+      "exit": 0,
+      "seconds": 1.47,
+      "log": "31-tools_test-evaluate-workbench.mjs.log",
+      "logSha256": "2f9a0468ee094a221fb6e84b551484e3ed279bb371f694dbc9993980bb6ab887"
+    },
+    {
+      "index": 32,
+      "command": "node tools/test-guardrail-audit.mjs",
+      "exit": 0,
+      "seconds": 0.65,
+      "log": "32-tools_test-guardrail-audit.mjs.log",
+      "logSha256": "373b04e4a2607c087192de6b9e5890b8340195fc3bd4c17b1a681168289d2051"
+    },
+    {
+      "index": 33,
+      "command": "node tools/test-context-tools.mjs",
+      "exit": 0,
+      "seconds": 0.6,
+      "log": "33-tools_test-context-tools.mjs.log",
+      "logSha256": "6f0f4a88425cd465e3f9b9fbb1ed61a07f4b6182d20fc71da78f8e39713af2a1"
+    },
+    {
+      "index": 34,
+      "command": "node tools/test-outcome-trials.mjs",
+      "exit": 0,
+      "seconds": 1.55,
+      "log": "34-tools_test-outcome-trials.mjs.log",
+      "logSha256": "e0ef32e1edb1645577979090997c74ea4e9c92c98a9da29a9f4d67c42f42498b"
+    },
+    {
+      "index": 35,
+      "command": "node tools/test-eval-runner.mjs",
+      "exit": 0,
+      "seconds": 1.24,
+      "log": "35-tools_test-eval-runner.mjs.log",
+      "logSha256": "419bf47a8c683370dac56456a05da467520cb2e244d98c73d2ff1606d3c8b78d"
+    },
+    {
+      "index": 36,
+      "command": "node tools/test-feedback-automation.mjs",
+      "exit": 0,
+      "seconds": 1.5,
+      "log": "36-tools_test-feedback-automation.mjs.log",
+      "logSha256": "841f64c4c0bb3461589e16e36202cc8ad61a5542f704c807193d3f1723e1ea12"
+    },
+    {
+      "index": 37,
+      "command": "node tools/test-symlink-invocation.mjs",
+      "exit": 0,
+      "seconds": 3.33,
+      "log": "37-tools_test-symlink-invocation.mjs.log",
+      "logSha256": "847b31f9e23a7ba45ae134c772d8cc1ae8db48d3d6222cf169d12724b5762195"
+    },
+    {
+      "index": 38,
+      "command": "node tools/test-control-fidelity.mjs",
+      "exit": 0,
+      "seconds": 7.73,
+      "log": "38-tools_test-control-fidelity.mjs.log",
+      "logSha256": "bb977018e505a94de87ce565dd416ead1b5fae58e05d6cbc835809f78b222739"
+    },
+    {
+      "index": 39,
+      "command": "node tools/test-spec-citation-anchors.mjs",
+      "exit": 0,
+      "seconds": 43.91,
+      "log": "39-tools_test-spec-citation-anchors.mjs.log",
+      "logSha256": "f21f63a18e28c7cf8662c73e1e19013d7d1a37542b309eac5ea4b2155a46821f"
+    },
+    {
+      "index": 40,
+      "command": "node tools/test-controls-vocabulary-sweep.mjs",
+      "exit": 0,
+      "seconds": 0.16,
+      "log": "40-tools_test-controls-vocabulary-sweep.mjs.log",
+      "logSha256": "db05db954d9a33d47fef93f1fec18d654061d4d34641e26e04ac91e667f5ead4"
+    },
+    {
+      "index": 41,
+      "command": "node tools/test-spec-report.mjs",
+      "exit": 0,
+      "seconds": 53.82,
+      "log": "41-tools_test-spec-report.mjs.log",
+      "logSha256": "1c737af2bad55cde173aede230aa4fa3e0250f372fc1039f5e46b0f84912ee52"
+    },
+    {
+      "index": 42,
+      "command": "node tools/test-self-drift.mjs",
+      "exit": 0,
+      "seconds": 0.98,
+      "log": "42-tools_test-self-drift.mjs.log",
+      "logSha256": "e6a16f43199f4c16067dd2b93c0d4b0f56bd9f89ab0669770c1415330e500f3d"
+    },
+    {
+      "index": 43,
+      "command": "node tools/test-feedback-inventory.mjs",
+      "exit": 0,
+      "seconds": 0.32,
+      "log": "43-tools_test-feedback-inventory.mjs.log",
+      "logSha256": "37d22545d0d02a263079661cc1392ce33ff71f6f54b57b6a5bdc6cb3c9cd55b4"
+    },
+    {
+      "index": 44,
+      "command": "node tools/test-grilling-ledger.mjs",
+      "exit": 0,
+      "seconds": 0.32,
+      "log": "44-tools_test-grilling-ledger.mjs.log",
+      "logSha256": "7896d1aaa29cd7ee891813d445f964b20ebe3d02ecb8d570c25de3db0c191431"
+    },
+    {
+      "index": 45,
+      "command": "python3 tools/test-check-append-only.py",
+      "exit": 0,
+      "seconds": 96.64,
+      "log": "45-tools_test-check-append-only.py.log",
+      "logSha256": "1c60a426838d1ccdac0d98496288fb9edd0cec4f0c2d781c2be92417d29fd934"
+    },
+    {
+      "index": 46,
+      "command": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+      "exit": 0,
+      "seconds": 0.72,
+      "log": "46-evals_tasks_task_b_path_safety_test_grade.py.log",
+      "logSha256": "bd0149c9b483b4ad4fa7e29309e544eda90aaccca0628e5235947f85beaa2195"
+    },
+    {
+      "index": 47,
+      "command": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+      "exit": 0,
+      "seconds": 0.12,
+      "log": "47-tools_evaluate-workbench.mjs.log",
+      "logSha256": "182ec5413c018fa89feccbcf2c3e0771b0c464479755e0699439caceef30d596"
+    },
+    {
+      "index": 48,
+      "command": "node workbench/tools/spec-workbench.mjs doctor",
+      "exit": 0,
+      "seconds": 1.27,
+      "log": "48-workbench_tools_spec-workbench.mjs.log",
+      "logSha256": "67da2ed411b60ec0dcb3f9d53cd8cdf4c1a060b38c8abeb6c29bc5af5675c7fd"
+    },
+    {
+      "index": 49,
+      "command": "node tools/test-taskboard-json.mjs",
+      "exit": 0,
+      "seconds": 44.85,
+      "log": "49-tools_test-taskboard-json.mjs.log",
+      "logSha256": "7627d022903904ad56555f033f5cfb3a54c8e2a0bdb16aa155e03bb89a27c7bb"
+    },
+    {
+      "index": 50,
+      "command": "node tools/test-landmark-tracker.mjs",
+      "exit": 0,
+      "seconds": 18.08,
+      "log": "50-tools_test-landmark-tracker.mjs.log",
+      "logSha256": "e4fefe25f1937afa8cc1b33b575074bb588b83493d5eaba3cb9e3e675622c979"
+    },
+    {
+      "index": 51,
+      "command": "node tools/test-lifecycle-directory-links.mjs",
+      "exit": 0,
+      "seconds": 2.86,
+      "log": "51-tools_test-lifecycle-directory-links.mjs.log",
+      "logSha256": "71a4445d93096b91c2fec064644bf0e16d30369ccac5718af1086ee724b2d056"
+    }
+  ],
+  "classification": "Producer51 command receipts at abe2 before bounded test-only path correction; final independent exact-head review required",
+  "base": "574df962fcfdd8045ec4dd405ba7f548216f7d4a"
+}

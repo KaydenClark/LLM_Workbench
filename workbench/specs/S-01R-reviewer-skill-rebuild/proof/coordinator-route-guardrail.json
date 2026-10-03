@@ -1,0 +1,325 @@
+{
+  "score": 78,
+  "maxScore": 100,
+  "status": "developing",
+  "categories": [
+    {
+      "id": "static_contract",
+      "label": "Static guardrail contract",
+      "weight": 20,
+      "score": 20,
+      "checks": [
+        {
+          "id": "static_rubric",
+          "label": "complete static control surfaces",
+          "weight": 0,
+          "passed": true,
+          "evidence": "static evaluator 113/113",
+          "action": "Close the highest-weight missing static evaluator criteria without weakening existing checks."
+        }
+      ]
+    },
+    {
+      "id": "drift_resistance",
+      "label": "Drift resistance",
+      "weight": 25,
+      "score": 25,
+      "checks": [
+        {
+          "id": "fresh_control_docs",
+          "label": "fresh root control documents",
+          "weight": 5,
+          "passed": true,
+          "evidence": "Control review dates remain within 45 days; destination Blueprint review is recorded in RUNBOOK, not embedded as product status.",
+          "action": "Review stale root control docs against live code and update their dates only after resolving any drift."
+        },
+        {
+          "id": "version_contract",
+          "label": "consistent harness version contract",
+          "weight": 5,
+          "passed": true,
+          "evidence": "The declared version owner and all version-bearing copyable controls agree with their contract; destination Blueprints intentionally carry no version stamp.",
+          "action": "Align the root harness version with version placeholders across all copyable control docs."
+        },
+        {
+          "id": "task_state",
+          "label": "no contradictory task status",
+          "weight": 5,
+          "passed": true,
+          "evidence": "A legacy task cannot be active and Done; a complete spec cannot remain hot or contain unfinished tasks.",
+          "action": "Resolve contradictory task status or spec lifecycle state and preserve completion evidence in the stable spec."
+        },
+        {
+          "id": "proof_freshness",
+          "label": "fresh taskboard proof",
+          "weight": 5,
+          "passed": true,
+          "evidence": "The hot taskboard update and newest spec evidence row are no more than 30 days old.",
+          "action": "Run current verification and append a dated spec evidence row with the real result and remaining gap."
+        },
+        {
+          "id": "retired_controls",
+          "label": "retired control docs stay retired",
+          "weight": 5,
+          "passed": true,
+          "evidence": "ROADMAP.md and GAMEPLAN.md are absent from the root control layer.",
+          "action": "Move unique live work into its assigned spec and generated Taskboard, then reconcile duplicate root planning files."
+        }
+      ]
+    },
+    {
+      "id": "benchmark_discipline",
+      "label": "Benchmark discipline",
+      "weight": 25,
+      "score": 25,
+      "checks": [
+        {
+          "id": "prechange_baseline",
+          "label": "pre-change guardrail baseline",
+          "weight": 5,
+          "passed": true,
+          "evidence": "A durable rule requires the benchmark baseline before a harness change.",
+          "action": "Require harness changes to capture the guardrail score before editing."
+        },
+        {
+          "id": "benchmark_delta",
+          "label": "benchmark movement in acceptance proof",
+          "weight": 5,
+          "passed": true,
+          "evidence": "Completion proof must report the before/after benchmark score or explain why no score can move.",
+          "action": "Make the before/after score and remaining recommendations part of harness-change acceptance."
+        },
+        {
+          "id": "evidence_layers",
+          "label": "static and outcome evidence stay distinct",
+          "weight": 5,
+          "passed": true,
+          "evidence": "The docs distinguish static coverage from causal agent-behavior evidence.",
+          "action": "State that static rubric success cannot substitute for repeated outcome trials."
+        },
+        {
+          "id": "append_only_results",
+          "label": "append-only benchmark result ledger",
+          "weight": 5,
+          "passed": true,
+          "evidence": "benchmarks/RESULTS.md is append-only and records remaining gaps.",
+          "action": "Create an append-only benchmark result ledger with proof, result, and remaining-gap fields."
+        },
+        {
+          "id": "north_star",
+          "label": "100-point north star is not the release gate",
+          "weight": 5,
+          "passed": true,
+          "evidence": "The perfect score is an aspirational improvement target; regression health remains a separate release gate.",
+          "action": "Define 100 as the deliberately hard north star while keeping regression checks as a separate minimum gate."
+        }
+      ]
+    },
+    {
+      "id": "outcome_evidence",
+      "label": "Outcome evidence",
+      "weight": 30,
+      "score": 8,
+      "checks": [
+        {
+          "id": "task_diversity",
+          "label": "two task domains including held-out work",
+          "weight": 8,
+          "passed": true,
+          "evidence": "2 eval task(s); held-out present: yes",
+          "action": "Add a deterministic held-out task in a second domain so template tuning cannot overfit the development task."
+        },
+        {
+          "id": "real_results",
+          "label": "real repeated outcome results",
+          "weight": 8,
+          "passed": false,
+          "evidence": "0 non-synthetic outcome result file(s)",
+          "action": "Run real repeated outcome trials and save the non-synthetic JSONL evidence."
+        },
+        {
+          "id": "candidate_comparison",
+          "label": "controls, prior version, and candidate compared",
+          "weight": 6,
+          "passed": false,
+          "evidence": "Real results must include no-template, generic, prior/current, and candidate conditions.",
+          "action": "Compare the candidate against both controls and the prior harness on the same tasks."
+        },
+        {
+          "id": "recent_results",
+          "label": "recent real outcome evidence",
+          "weight": 4,
+          "passed": false,
+          "evidence": "At least one non-synthetic outcome result is no more than 90 days old.",
+          "action": "Refresh the real outcome benchmark on the current candidate and record the tested ref and date."
+        },
+        {
+          "id": "uncertainty",
+          "label": "repeated trials with uncertainty",
+          "weight": 4,
+          "passed": false,
+          "evidence": "The real-result ledger reports repeated trials and uncertainty, not a one-off win.",
+          "action": "Score repeated trials, report the effect and confidence interval, and append the run to the ledger."
+        }
+      ]
+    }
+  ],
+  "recommendations": [
+    {
+      "category": "Outcome evidence",
+      "points": 8,
+      "action": "Run real repeated outcome trials and save the non-synthetic JSONL evidence.",
+      "evidence": "0 non-synthetic outcome result file(s)"
+    },
+    {
+      "category": "Outcome evidence",
+      "points": 6,
+      "action": "Compare the candidate against both controls and the prior harness on the same tasks.",
+      "evidence": "Real results must include no-template, generic, prior/current, and candidate conditions."
+    },
+    {
+      "category": "Outcome evidence",
+      "points": 4,
+      "action": "Refresh the real outcome benchmark on the current candidate and record the tested ref and date.",
+      "evidence": "At least one non-synthetic outcome result is no more than 90 days old."
+    },
+    {
+      "category": "Outcome evidence",
+      "points": 4,
+      "action": "Score repeated trials, report the effect and confidence interval, and append the run to the ledger.",
+      "evidence": "The real-result ledger reports repeated trials and uncertainty, not a one-off win."
+    }
+  ],
+  "staticEvaluation": {
+    "score": 113,
+    "maxScore": 113,
+    "breakdown": [
+      {
+        "id": "control_surfaces",
+        "label": "Core control surfaces",
+        "weight": 10,
+        "score": 10,
+        "passed": 5,
+        "total": 5,
+        "missing": []
+      },
+      {
+        "id": "authority_scope",
+        "label": "Authority, read, and edit scope",
+        "weight": 10,
+        "score": 10,
+        "passed": 4,
+        "total": 4,
+        "missing": []
+      },
+      {
+        "id": "project_model",
+        "label": "Project model and contracts",
+        "weight": 8,
+        "score": 8,
+        "passed": 5,
+        "total": 5,
+        "missing": []
+      },
+      {
+        "id": "active_work_state",
+        "label": "Active work state",
+        "weight": 9,
+        "score": 9,
+        "passed": 5,
+        "total": 5,
+        "missing": []
+      },
+      {
+        "id": "operations",
+        "label": "Operations and recovery",
+        "weight": 8,
+        "score": 8,
+        "passed": 5,
+        "total": 5,
+        "missing": []
+      },
+      {
+        "id": "verification_contract",
+        "label": "Verification contract",
+        "weight": 12,
+        "score": 12,
+        "passed": 6,
+        "total": 6,
+        "missing": []
+      },
+      {
+        "id": "documentation_ownership",
+        "label": "Documentation ownership",
+        "weight": 8,
+        "score": 8,
+        "passed": 4,
+        "total": 4,
+        "missing": []
+      },
+      {
+        "id": "executive_interface",
+        "label": "Executive interface",
+        "weight": 8,
+        "score": 8,
+        "passed": 4,
+        "total": 4,
+        "missing": []
+      },
+      {
+        "id": "product_acceptance",
+        "label": "Product-truth acceptance",
+        "weight": 5,
+        "score": 5,
+        "passed": 3,
+        "total": 3,
+        "missing": []
+      },
+      {
+        "id": "drift_control",
+        "label": "Long-session drift control",
+        "weight": 8,
+        "score": 8,
+        "passed": 4,
+        "total": 4,
+        "missing": []
+      },
+      {
+        "id": "collaboration",
+        "label": "Team coordination",
+        "weight": 8,
+        "score": 8,
+        "passed": 5,
+        "total": 5,
+        "missing": []
+      },
+      {
+        "id": "safety",
+        "label": "Safety and change control",
+        "weight": 8,
+        "score": 8,
+        "passed": 4,
+        "total": 4,
+        "missing": []
+      },
+      {
+        "id": "portability",
+        "label": "Tool portability",
+        "weight": 5,
+        "score": 5,
+        "passed": 3,
+        "total": 3,
+        "missing": []
+      },
+      {
+        "id": "asset_workflow",
+        "label": "Visual and asset guardrails",
+        "weight": 6,
+        "score": 6,
+        "passed": 5,
+        "total": 5,
+        "missing": []
+      }
+    ]
+  }
+}

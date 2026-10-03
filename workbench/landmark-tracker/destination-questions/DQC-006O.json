@@ -1,0 +1,162 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-006O",
+  "revision": 6,
+  "title": "What happens to a Task whose one attempt missed?",
+  "question": "What happens to a Task whose one attempt missed?",
+  "answer": "SCR-8: A Task that did not complete its run is not discarded: its TASK.md is the record until the Spec is cleaned up into the features Wiki. Its hand-back report stays as diagnostic proof in the Spec evidence. Its card returns to In progress and a new Task, named for its objective (the card title, not the WBID), fixes what the check found, starting fresh unless the Dispatcher deliberately builds on the old tip. The worktree is removed at hand-back; the missed branch is named in the Spec evidence and its deletion is covered by the Director's Spec approval. A Worker that stops unexpectedly leaves what it documented as it went; updating the card is part of finishing a Task.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: SCR-8 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "SCR-8 update BLUEPRINT.md (Desired Lifecycle): Missed Task handling in the loop. | SCR-8 create board Spec (TASKBOARD.json board): A missed Task card returns to In progress; cards show titles, not WBIDs.",
+    "home": "BLUEPRINT.md (Desired Lifecycle); board Spec (TASKBOARD.json board)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "SCR-8",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000H",
+    "LMK-000K"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 4
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "SCR-8",
+      "revision": "56b459da",
+      "reason": "Ledger row SCR-8 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What happens to a Task whose one attempt missed?",
+    "question": "What happens to a Task whose one attempt missed?",
+    "sources": [
+      {
+        "id": "SCR-8",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:37.246Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:37.246Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: a card written from ledger rows that postdate the 2026-09-26 draft grouping, grilling ledger at 56b459da.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:37.281Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "SCR-8: A Task that did not complete its run is not discarded: its TASK.md is the record until the Spec is cleaned up into the features Wiki. Its hand-back report stays as diagnostic proof in the Spec evidence. Its card returns to In progress and a new Task, named for its objective (the card title, not the WBID), fixes what the check found, starting fresh unless the Dispatcher deliberately builds on the old tip. The worktree is removed at hand-back; the missed branch is named in the Spec evidence and its deletion is covered by the Director's Spec approval. A Worker that stops unexpectedly leaves what it documented as it went; updating the card is part of finishing a Task."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: SCR-8 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "SCR-8 update BLUEPRINT.md (Desired Lifecycle): Missed Task handling in the loop. | SCR-8 create board Spec (TASKBOARD.json board): A missed Task card returns to In progress; cards show titles, not WBIDs.",
+            "home": "BLUEPRINT.md (Desired Lifecycle); board Spec (TASKBOARD.json board)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:37.316Z",
+      "reason": "Ledger row SCR-8 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "SCR-8",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:37.360Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:56.404Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000H"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:58.030Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000H"
+          ],
+          "to": [
+            "LMK-000H",
+            "LMK-000K"
+          ]
+        }
+      ]
+    }
+  ]
+}

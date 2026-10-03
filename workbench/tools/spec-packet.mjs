@@ -55,7 +55,11 @@ export function parseSpecPacket(content, filePath, root, options = {}) {
   if (!id || !/^S-[0-9A-Za-z]{3,}$/.test(id)) throw new Error(`${path.relative(root, filePath)} has an invalid or missing Spec ID`);
   const titleMatch = content.match(new RegExp(`^# ${id} - (.+)$`, 'm'));
   if (!titleMatch) throw new Error(`${id} has no matching title`);
-  const required = ['Status', 'Priority', 'Owner', 'Updated', 'Catalog description', 'Blockers', 'Latest event', 'Next gate'];
+  // Backlog may carry only its identity, explicit planned status and title intent.
+  // Activation must still satisfy the full active packet contract.
+  const planned = fields.Status === 'planned';
+  if (!titleMatch[1].trim()) throw new Error(`${id} has no title intent`);
+  const required = planned ? ['Status'] : ['Status', 'Priority', 'Owner', 'Updated', 'Catalog description', 'Blockers', 'Latest event', 'Next gate'];
   for (const name of required) if (!fields[name]) throw new Error(`${id} is missing ${name}`);
   const baseline = fields.Baseline ? parseBaselineRecord(fields.Baseline, id) : null;
   // `rows` are the slice-table rows embedded in this Spec's own Markdown, as
@@ -63,7 +67,7 @@ export function parseSpecPacket(content, filePath, root, options = {}) {
   // spec-workbench.mjs). The table's header cell wording is decorative and
   // varies by when the Spec was written; this scan never reads that header
   // text, only the `TK-###` row prefix, so any wording parses.
-  const rows = parseTaskRows(section(content, 'Vertical Implementation Slices'), id, options.recordBacked === true);
+  const rows = parseTaskRows(section(content, 'Vertical Implementation Slices'), id, options.recordBacked === true || planned);
   return {
     root,
     filePath,
@@ -72,13 +76,13 @@ export function parseSpecPacket(content, filePath, root, options = {}) {
     id,
     title: titleMatch[1].trim(),
     status: fields.Status,
-    priority: Number(fields.Priority),
-    owner: fields.Owner,
-    updated: fields.Updated,
-    description: fields['Catalog description'],
-    blockers: fields.Blockers,
-    latestEvent: fields['Latest event'],
-    nextGate: fields['Next gate'],
+    priority: fields.Priority === undefined && planned ? null : Number(fields.Priority),
+    owner: fields.Owner ?? null,
+    updated: fields.Updated ?? null,
+    description: fields['Catalog description'] ?? titleMatch[1].trim(),
+    blockers: fields.Blockers ?? 'none',
+    latestEvent: fields['Latest event'] ?? null,
+    nextGate: fields['Next gate'] ?? null,
     baseline,
     rows
   };

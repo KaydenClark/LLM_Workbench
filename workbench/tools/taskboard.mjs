@@ -2,7 +2,7 @@ import { compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.m
 
 export const TASKBOARD_LANES = Object.freeze(['backlog', 'toDo', 'inProgress', 'blocked', 'needsReview', 'complete']);
 const SPEC_STATES = new Set(['planned', 'active', 'blocked', 'needs-review', 'complete', 'superseded']);
-const TASK_LANES = Object.freeze({ ready: 'toDo', 'in-progress': 'inProgress', blocked: 'blocked', done: 'complete', deferred: 'backlog' });
+const TASK_LANES = Object.freeze({ ready: 'toDo', 'in-progress': 'inProgress', blocked: 'blocked', 'needs-review': 'needsReview', done: 'complete', deferred: 'backlog' });
 
 // Source-qualified calculation shared by preview and execution consumers.
 // Dependencies and capability facts come from existing source resolvers; the
@@ -16,12 +16,13 @@ export function taskboardTaskEntry(spec, task, { resolvedStatus = task.status, d
     throw taskboardSourceError(`${task.id} names ${declaredParent}, expected parent ${spec.id}`);
   }
   const priority = fields.Priority === undefined ? spec.priority : Number(fields.Priority);
-  if (!Number.isInteger(priority) || priority < 0) throw taskboardSourceError(`${task.id} has invalid priority`);
+  if (!(priority === null && spec.status === 'planned') && (!Number.isInteger(priority) || priority < 0)) throw taskboardSourceError(`${task.id} has invalid priority`);
   return {
     key: `${visibleIdKey(spec.id)}/${visibleIdKey(task.id)}`,
     specId: spec.id, id: task.id, title: task.slice, priority,
     lane, status: resolvedStatus, dependenciesMet,
-    eligible: lane === 'toDo' && resolvedStatus === 'ready' && dependenciesMet
+    eligible: lane === 'toDo' && resolvedStatus === 'ready' && dependenciesMet,
+    reviewEligible: lane === 'needsReview' && dependenciesMet
   };
 }
 
@@ -34,7 +35,7 @@ function taskboardSourceError(message) {
 }
 
 export function compareTaskboardEntries(a, b) {
-  return a.priority - b.priority || compareText(a.title, b.title)
+  return (a.priority ?? Infinity) - (b.priority ?? Infinity) || compareText(a.title, b.title)
     || compareVisibleIds(a.id, b.id) || compareVisibleIds(a.specId ?? a.id, b.specId ?? b.id);
 }
 
@@ -53,7 +54,7 @@ export function buildTaskboard(specs, { resolveTask = () => ({}) } = {}) {
   }
   for (const spec of specs) {
     if (!SPEC_STATES.has(spec.status)) throw new Error(`taskboard-source: ${spec.id} has invalid status ${spec.status}`);
-    if (!Number.isFinite(spec.priority) || spec.priority < 0) throw new Error(`taskboard-source: ${spec.id} has invalid priority`);
+    if (!(spec.priority === null && spec.status === 'planned') && (!Number.isFinite(spec.priority) || spec.priority < 0)) throw new Error(`taskboard-source: ${spec.id} has invalid priority`);
     const children = [
       ...spec.rows.map(row => ({ ...row, specId: spec.id, relativePath: spec.relativePath })),
       ...spec.records,
@@ -70,10 +71,13 @@ export function buildTaskboard(specs, { resolveTask = () => ({}) } = {}) {
         progress: null, nextAction: taskAction({ ...child, status: entry.status }, retired),
         cleanupState: lane === 'complete' ? (retired ? 'readyToDelete' : 'readyToCapture') : null
       });
+      // SCR-1/SCR-7 refine Task review to waiting for assembled Spec review;
+      // this never creates a separate destination-level Task approval.
+      card.requiredQA = lane === 'needsReview' ? ['assembled-spec-review'] : [];
       card.specId = child.specId;
       add(child.id, lane, card, child.relativePath);
     }
-    const lane = specLane(spec, childEntries);
+    const lane = taskboardSpecLane(spec, childEntries);
     const card = makeCard({
       title: spec.title, priority: spec.priority, content: spec.content,
       assignee: spec.owner, dependencies: spec.blockers, sourceLinks: [spec.relativePath],
@@ -81,6 +85,11 @@ export function buildTaskboard(specs, { resolveTask = () => ({}) } = {}) {
       nextAction: spec.nextGate,
       cleanupState: lane === 'complete' ? (spec.lifecycleFolder ? 'readyToDelete' : 'readyToCapture') : null
     });
+    // Destination-level QA obligations remain visible during delivery. These
+    // labels are requirements only; verdict and owner-approval evidence stays
+    // in the existing report/gate readers, never inferred from a board lane.
+    card.requiredQA = ['complete', 'superseded'].includes(spec.status) && lane === 'complete'
+      ? [] : ['assembled-spec-review', 'owner-human-qa'];
     add(spec.id, lane, card, spec.relativePath);
   }
   const board = { schemaVersion: 1, lanes: Object.fromEntries(TASKBOARD_LANES.map(lane => [lane, {}])) };
@@ -90,12 +99,16 @@ export function buildTaskboard(specs, { resolveTask = () => ({}) } = {}) {
   return board;
 }
 
-function specLane(spec, children) {
+export function taskboardSpecLane(spec, children) {
+  if (!(spec.priority === null && spec.status === 'planned') && (!Number.isInteger(spec.priority) || spec.priority < 0)) {
+    throw taskboardSourceError(`${spec.id} has invalid priority`);
+  }
   if (spec.status === 'planned') return 'backlog';
   if (spec.status === 'blocked') return 'blocked';
   const allDone = children.every(child => child.lane === 'complete');
   if (allDone && ['complete', 'superseded'].includes(spec.status)) return 'complete';
-  if (allDone && spec.status === 'needs-review') return 'needsReview';
+  const allReviewReady = children.every(child => ['needsReview', 'complete'].includes(child.lane));
+  if (allReviewReady && spec.status === 'needs-review') return 'needsReview';
   if (children.some(child => child.lane === 'inProgress')) return 'inProgress';
   if (children.some(child => child.lane === 'toDo') || children.length === 0) return 'toDo';
   if (children.some(child => child.lane === 'blocked')) return 'blocked';
@@ -107,7 +120,7 @@ function makeCard({ title, priority, content, assignee, dependencies, sourceLink
   const fields = sourceFields(content);
   if (typeof title !== 'string' || !title.trim()) throw new Error('taskboard-source: a card needs its readable source title');
   const sourcePriority = fields.Priority === undefined ? priority : Number(fields.Priority);
-  if (!Number.isInteger(sourcePriority) || sourcePriority < 0) throw new Error(`taskboard-source: ${title} has invalid priority`);
+  if (sourcePriority !== null && (!Number.isInteger(sourcePriority) || sourcePriority < 0)) throw new Error(`taskboard-source: ${title} has invalid priority`);
   const startDate = dateField(fields['Start date'], title);
   const dueDate = dateField(fields['Due date'], title);
   if (startDate && dueDate && dueDate < startDate) throw new Error(`taskboard-source: ${title} has a due date before its start date`);
@@ -143,6 +156,7 @@ function dateField(value, title) {
   return date;
 }
 function taskAction(task, retired) {
+  if (task.status === 'needs-review') return 'Await independent review of the assembled Spec.';
   if (task.status === 'done') return retired ? 'Ready to delete through the lifecycle gates.' : 'Ready to capture through the lifecycle gates.';
   if (task.status === 'blocked') return 'Resolve the recorded blockers.';
   if (task.status === 'deferred') return 'Reconcile the deferred slice before execution.';

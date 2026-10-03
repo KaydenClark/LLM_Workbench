@@ -1,0 +1,282 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000Z",
+  "revision": 9,
+  "title": "How should skill updates preserve locally changed content?",
+  "question": "How should skill updates preserve locally changed content?",
+  "answer": "V3-9B: No content comparison occurs in normal setup; explicit skill update is the synchronization boundary.\nV3-22A: No. Existing content is preserved unless the user explicitly authorizes a skill update.\nV3-22C: It backs up changed existing content and converges the required core to the exact versions bundled with the checked-out Workbench release.\nPW-3: 'We already locked in a version of 1. When we update the workbenches, we update the skills. LLM_Workbench owns the skills it needs to. We store them all in workbench/skills.' Core skills are tracked in every room at workbench/skills and replaced by the ordinary Workbench update; no provider home, personal catalog or bootstrap is on the critical path.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-9B, V3-22A, V3-22C, PW-3 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "V3-9B update LEXICON.md (Normal setup, Explicit skill update rows) and templates/LEXICON.md: Setup never replaces content; only the explicit update does. | V3-9B update RUNBOOK.md (Skills lane check): update requires --explicit-update and backs up changed core skills. | V3-22A update LEXICON.md (Explicit skill update row) and templates/LEXICON.md: Explicit update is the only path that may replace a core skill; routine setup and doctor cannot imply it. | V3-22A update workbench/manifest.json (skillPolicy.updates): Update policy requires an explicit request (workbench-update via --explicit-update). | V3-22A create tools/workbench-skills.mjs: update refuses without --explicit-update. | V3-22C update LEXICON.md (Explicit skill update row) and templates/LEXICON.md: Replace only changed core skills, back up the previous directories, record the rollback path in the receipt. | V3-22C update RUNBOOK.md (skills lane procedures) and templates/RUNBOOK.md: Update and rollback procedure for the lane. | V3-22C create tools/workbench-skills.mjs: update --explicit-update and rollback that accepts only a recorded backup. | PW-3 create workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md: Records the seventh lane, tracked adapters and update-only replacement. | PW-3 retire workbench/docs/adr/archive/0017-workbench-support-directory-has-six-lanes.md: The six-lane ADR is marked superseded. | PW-3 update workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md: Core tracked per room on the ADR-0031 managed model. | PW-3 update workbench/manifest.json: Declares lanes.skills and the reshaped skillPolicy. | PW-3 create .claude/skills and .agents/skills: Tracked adapters into workbench/skills. | PW-3 update LEXICON.md, RUNBOOK.md (+ templates mirrors): Support lane, Normal setup, Explicit skill update rows and skills lane procedure. | PW-3 create workbench/specs/S-00V-portable-workbench/SPEC.md TK-001: Owns the lane build.",
+    "home": "LEXICON.md (Normal setup, Explicit skill update rows) and templates/LEXICON.md; RUNBOOK.md (Skills lane check); LEXICON.md (Explicit skill update row) and templates/LEXICON.md; workbench/manifest.json (skillPolicy.updates); tools/workbench-skills.mjs; RUNBOOK.md (skills lane procedures) and templates/RUNBOOK.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md; workbench/docs/adr/archive/0017-workbench-support-directory-has-six-lanes.md; workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md; workbench/manifest.json; .claude/skills and .agents/skills; LEXICON.md, RUNBOOK.md (+ templates mirrors); workbench/specs/S-00V-portable-workbench/SPEC.md TK-001",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-9B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-22A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-22C",
+      "revision": "56b459da"
+    },
+    {
+      "id": "PW-3",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000G",
+    "LMK-000I"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 7
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "V3-9B",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-9B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-22A",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-22A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-22C",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-22C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "PW-3",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should skill updates preserve locally changed content?",
+    "question": "How should skill updates preserve locally changed content?",
+    "sources": [
+      {
+        "id": "V3-9B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-22A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-22C",
+        "revision": "56b459da"
+      },
+      {
+        "id": "PW-3",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:17.574Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:17.574Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 020 of the 2026-09-26 grouping (\"Skills carried by the room\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Replacing existing content requires an explicit update, with backup and convergence to the selected bundled version. Historical setup-presence policy is distinct from update behavior.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:17.587Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "V3-9B: No content comparison occurs in normal setup; explicit skill update is the synchronization boundary.\nV3-22A: No. Existing content is preserved unless the user explicitly authorizes a skill update.\nV3-22C: It backs up changed existing content and converges the required core to the exact versions bundled with the checked-out Workbench release.\nPW-3: 'We already locked in a version of 1. When we update the workbenches, we update the skills. LLM_Workbench owns the skills it needs to. We store them all in workbench/skills.' Core skills are tracked in every room at workbench/skills and replaced by the ordinary Workbench update; no provider home, personal catalog or bootstrap is on the critical path."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-9B, V3-22A, V3-22C, PW-3 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "V3-9B update LEXICON.md (Normal setup, Explicit skill update rows) and templates/LEXICON.md: Setup never replaces content; only the explicit update does. | V3-9B update RUNBOOK.md (Skills lane check): update requires --explicit-update and backs up changed core skills. | V3-22A update LEXICON.md (Explicit skill update row) and templates/LEXICON.md: Explicit update is the only path that may replace a core skill; routine setup and doctor cannot imply it. | V3-22A update workbench/manifest.json (skillPolicy.updates): Update policy requires an explicit request (workbench-update via --explicit-update). | V3-22A create tools/workbench-skills.mjs: update refuses without --explicit-update. | V3-22C update LEXICON.md (Explicit skill update row) and templates/LEXICON.md: Replace only changed core skills, back up the previous directories, record the rollback path in the receipt. | V3-22C update RUNBOOK.md (skills lane procedures) and templates/RUNBOOK.md: Update and rollback procedure for the lane. | V3-22C create tools/workbench-skills.mjs: update --explicit-update and rollback that accepts only a recorded backup. | PW-3 create workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md: Records the seventh lane, tracked adapters and update-only replacement. | PW-3 retire workbench/docs/adr/archive/0017-workbench-support-directory-has-six-lanes.md: The six-lane ADR is marked superseded. | PW-3 update workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md: Core tracked per room on the ADR-0031 managed model. | PW-3 update workbench/manifest.json: Declares lanes.skills and the reshaped skillPolicy. | PW-3 create .claude/skills and .agents/skills: Tracked adapters into workbench/skills. | PW-3 update LEXICON.md, RUNBOOK.md (+ templates mirrors): Support lane, Normal setup, Explicit skill update rows and skills lane procedure. | PW-3 create workbench/specs/S-00V-portable-workbench/SPEC.md TK-001: Owns the lane build.",
+            "home": "LEXICON.md (Normal setup, Explicit skill update rows) and templates/LEXICON.md; RUNBOOK.md (Skills lane check); LEXICON.md (Explicit skill update row) and templates/LEXICON.md; workbench/manifest.json (skillPolicy.updates); tools/workbench-skills.mjs; RUNBOOK.md (skills lane procedures) and templates/RUNBOOK.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md; workbench/docs/adr/archive/0017-workbench-support-directory-has-six-lanes.md; workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md; workbench/manifest.json; .claude/skills and .agents/skills; LEXICON.md, RUNBOOK.md (+ templates mirrors); workbench/specs/S-00V-portable-workbench/SPEC.md TK-001",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:17.599Z",
+      "reason": "Ledger row V3-9B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-9B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:17.612Z",
+      "reason": "Ledger row V3-22A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-22A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:17.626Z",
+      "reason": "Ledger row V3-22C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-22C",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:17.640Z",
+      "reason": "Ledger row PW-3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-3",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:17.653Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:55.100Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Updates pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000G"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "at": "2026-10-01T23:49:56.671Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Skills pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000G"
+          ],
+          "to": [
+            "LMK-000G",
+            "LMK-000I"
+          ]
+        }
+      ]
+    }
+  ]
+}

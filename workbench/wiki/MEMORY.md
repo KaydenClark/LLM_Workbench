@@ -45,7 +45,9 @@ For accepted objective continuity and JSON direction, follow
 [ADR-0040](../docs/adr/0040-json-notepads-preserve-objective-continuity.md).
 Visible identifier semantics belong to
 [S-047](../specs/S-047-visible-workbench-identifiers/SPEC.md) and
-[ADR-0041](../docs/adr/0041-visible-base62-workbench-identifiers.md).
+[ADR-0041](../docs/adr/0041-visible-base62-workbench-identifiers.md); the
+uppercase width-four artifact policy, dual-form selection and `widen-id` belong
+to the [S-01W Uppercase Width-Four Workbench Artifact IDs Spec](../specs/S-01W-uppercase-width-four-workbench-artifact-ids/SPEC.md).
 Checkpoint rationale and retirement belong to
 [S-048](../specs/S-048-checkpoint-retirement/SPEC.md).
 The shared runtime is `workbench/tools/notepads.mjs`; its operations are
@@ -70,6 +72,9 @@ they are authored.
 - [Promote: move settled working claims into their durable owners](skill-promote.md)
 - [Checkpoint: route a retired request to current continuity](skill-checkpoint.md)
 - [Auditor: check named claims against pinned evidence](skill-auditor.md)
+- [Builder: deliver one assigned result with checkable proof](skill-builder.md)
+- [Reviewer: assess one eligible immutable candidate](skill-reviewer.md)
+- [Reconciler: compare governed claims against pinned evidence](skill-reconciler.md)
 - [Make-it-so: carry approved work to the endpoint the owner named](skill-make-it-so.md)
 - [Carry: take assigned work to its authorized endpoint](skill-carry.md) ([S-01C](../specs/S-01C-carry-skill-rebuild/SPEC.md))
 - [To-spec: turn a settled decision into one bounded Spec](skill-to-spec.md)
@@ -126,6 +131,14 @@ That article is this capability's durable owner, reconciled from
 this route preserves the retired Spec's historical reachability without
 copying its evidence log here.
 
+## Decision Records
+
+[Decision Records and the Concept Map](design-concepts/decision-records-and-the-concept-map.md) explains how the Blueprint, Destination Decision Records, ADRs, landmarks and Specs fit together, how a DDR differs from an ADR, and how landmarks and Specs form the map at two scales with the Destination Packet linking an agent to it.
+
+## The Workflow Verbs
+
+[The Workflow Verbs](design-concepts/workflow-verbs.md) explains the eight workflow verbs, Journey and the loop, and which verb writes each kind of artifact.
+
 ## Roles And Stances
 
 [Roles and stances](design-concepts/roles-and-stances.md) explains scope versus job and routes to each separately owned capability.
@@ -134,6 +147,11 @@ copying its evidence log here.
 - [Dispatcher](skill-dispatcher.md): one Spec and its branch; plan its Tasks, dispatch Workers to one durable writer, verify the assembled Spec and hand the candidate to the Director
 - [Spec Planner](skill-spec-planner.md): the Dispatcher's flight-launch stance; plan one assigned Spec from live Actuality into small complete-path Tasks with one writer per shared file and hand the plan to Spec Manager
 - [Spec Manager](skill-spec-manager.md): the Dispatcher's execution stance; dispatch Workers to ready non-conflicting Tasks, hold conflicting writes under one writer, assess hand-backs against their commits and report the assembled candidate to the Director
+- [Worker](skill-worker-role.md): one assigned Task and one attempt; load its Spec, acceptance and write scope, refuse neighboring or conflicting writes, and hand the exact candidate and proof back to the Dispatcher (staged, not yet installed)
+
+## GitHub Coordination
+
+[GitHub coordination](design-concepts/github-coordination.md) explains the accepted move of live assignment to GitHub Issues, whose records count, the per-item claim rule and what is not built yet.
 
 ## Agent Operating Knowledge
 
@@ -167,9 +185,9 @@ The provenance of every promoted and excluded memory file is in
 | [RUNBOOK.md](../../RUNBOOK.md) | Exact operating and verification commands |
 | `workbench/specs/` | Stable capability records, acceptance, evidence, and proof |
 | [docs/adr/REGISTER.md](../docs/adr/REGISTER.md) | The derived register of decision records |
-| [SCHEMA.md](SCHEMA.md) | Wiki CRUD, metadata, sensitivity, and freshness rules |
-| [design-concepts/](design-concepts/README.md) | Owner-directed articles explaining durable design models |
-| [features/](features/README.md) | Readable articles capturing each completed Spec's delivered capability (empty) |
+| [SCHEMA.md](SCHEMA.md) | What the Wiki is, its page kinds, ingest, lint, concurrency, metadata and freshness rules |
+| [design-concepts/](design-concepts/README.md) | Articles explaining durable design models and each landmark's evolving synthesis |
+| [features/](features/README.md) | One entity page per delivered capability (empty; the per-Spec articles below are to move here) |
 | [guidebooks/](guidebooks/) | Ordered procedures that outgrew the Runbook (empty) |
 
 ## Routing
@@ -177,11 +195,12 @@ The provenance of every promoted and excluded memory file is in
 | Question | Read first |
 |---|---|
 | How the Workbench is governed | [LEXICON.md](../../LEXICON.md) -> Governance Core, then `workbench/docs/adr/` |
+| What the Wiki is and how agents use it | [SCHEMA.md](SCHEMA.md), then the decision record [The Wiki is the evolving synthesis every agent reads and updates](../docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md) |
 | Why a layout, stance or entry-route decision was made | [docs/adr/REGISTER.md](../docs/adr/REGISTER.md) |
 
 This product repository keeps no personal, machine, or deployment notes; it is
-a `project` profile wiki. `guidebooks/` ships empty until the owner directs
-one; `design-concepts/` carries the owner-directed articles routed above;
+a `project` profile wiki. `guidebooks/` ships empty until a procedure outgrows
+the Runbook; `design-concepts/` carries the articles routed above;
 `features/` stays empty until a completed Spec is captured at its closure
 point.
 

@@ -45,8 +45,134 @@ import { parseMarkdownTableRow } from '../workbench/tools/markdown-table.mjs';
 // S-00I TK-01U: features capture reads the Wiki validator and note frontmatter.
 import { validateWiki } from '../workbench/tools/wiki.mjs';
 import { parseFrontmatter } from '../workbench/tools/adr.mjs';
-import './test-lifecycle-directory-links.mjs';
-import './test-taskboard-json.mjs';
+if (!process.argv.includes('--close-recovery-only')) {
+  await import('./test-lifecycle-directory-links.mjs');
+  await import('./test-taskboard-json.mjs');
+}
+
+// S-00I TK-004F: public CLI interrupted close recovery. Each preload only
+// changes filesystem behavior in a disposable subprocess, never runtime source.
+{
+  const closeCli = fileURLToPath(new URL('../workbench/tools/spec-workbench.mjs', import.meta.url));
+  const cases = ['single', 'two', 'exit', 'cleanup', 'task-write', 'missing-log', 'tamper', 'ambiguous', 'conflict', 'malformed', 'hardlink', 'task-hardlink', 'linked-directory', 'retired-directory', 'retired-history', 'linked-retired-directory', 'linked-retired-root', 'file-directory'];
+  const caseOption = process.argv.indexOf('--close-recovery-case');
+  const selected = caseOption < 0 ? cases : [process.argv[caseOption + 1]];
+  assert.ok(selected.every(name => cases.includes(name)), 'close recovery case must name a known scenario');
+  for (const scenario of selected) {
+    const room = fs.mkdtempSync(path.join(os.tmpdir(), 'close-recovery-'));
+    try {
+      const git = (...args) => execFileSync('git', ['-C', room, ...args], { encoding: 'utf8' }).trim();
+      git('init', '--quiet'); git('config', 'user.name', 'Fixture'); git('config', 'user.email', 'fixture@example.invalid');
+      const specDir = path.join(room, 'specs/S-701-close');
+      fs.mkdirSync(path.join(specDir, 'tasks/TK-002'), { recursive: true });
+      const sp = path.join(specDir, 'SPEC.md');
+      fs.writeFileSync(sp, `# S-701 - Close fixture\n\n**Spec ID:** S-701\n**Status:** active\n**Priority:** 0\n**Owner:** fixture\n**Catalog description:** Fixture close recovery.\n**Updated:** 2026-10-01\n**Blockers:** none\n**Latest event:** fixture\n**Next gate:** fixture\n\n## Vertical Implementation Slices\n\n| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n\n## Acceptance Criteria\n\n- [x] fixture\n\n## Append-Only Evidence And Execution Log\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n\n## Completion Result\n\nFixture.\n`);
+      let tp = path.join(specDir, 'tasks/TK-002/TASK.md');
+      const other = path.join(specDir, 'tasks/TK-003/TASK.md');
+      const record = id => `# ${id} - Close fixture\n\n**Task ID:** ${id}\n**Spec ID:** S-701\n**Slice:** Close fixture\n**Status:** in-progress\n**Blockers:** none\n**Destination:** spec-acceptance: S-701 Acceptance Criteria\n`;
+      fs.writeFileSync(tp, record('TK-002'));
+      if (['two', 'ambiguous', 'linked-directory', 'retired-directory', 'retired-history', 'linked-retired-directory', 'linked-retired-root', 'file-directory'].includes(scenario)) {
+        fs.mkdirSync(path.dirname(other)); fs.writeFileSync(other, record('TK-003'));
+      }
+      git('add', '.'); git('commit', '--quiet', '-m', 'Fixture');
+      if (scenario === 'two') {
+        const earlier = spawnSync(process.execPath, [closeCli, 'receipt', 'S-701', '--path', room, '--task', 'TK-002', '--tests', 'earlier partial proof', '--docs', 'earlier docs', '--remaining-gap', 'still running', '--json'], { encoding: 'utf8' });
+        assert.equal(earlier.status, 0, earlier.stderr);
+      }
+      const beforeSpec = fs.readFileSync(sp, 'utf8');
+      const beforeTask = fs.readFileSync(tp, 'utf8');
+      const hook = path.join(room, '.git/fault.cjs');
+      const mode = scenario === 'cleanup' ? 'cleanup' : scenario === 'task-write' ? 'task' : 'spec';
+      fs.writeFileSync(hook, `const fs=require('node:fs');const rename=fs.renameSync;let tasks=0;fs.renameSync=function(a,b){const task=String(b).endsWith('/TASK.md');if(task)tasks++;if((${JSON.stringify(mode)}==='spec'&&String(b).endsWith('/SPEC.md'))||(${JSON.stringify(mode)}==='cleanup'&&task&&tasks===2)||(${JSON.stringify(mode)}==='task'&&task)){${scenario === 'exit' ? 'process.exit(91)' : "throw new Error('INJECTED_CLOSE_FAILURE')"};}return rename.apply(this,arguments)};`);
+      const run = (fault = false) => spawnSync(process.execPath, [...(fault ? ['--require', hook] : []), closeCli, 'close', 'S-701', '--path', room, '--proof', fault ? 'original proof $& | x' : 'retry replacement proof', '--docs', fault ? 'original docs' : 'retry replacement docs', '--remaining-gap', 'none', '--git-state-reason', 'Disposable recovery fixture', '--json'], { encoding: 'utf8' });
+      if (scenario === 'missing-log') fs.writeFileSync(sp, beforeSpec.replace('## Append-Only Evidence And Execution Log', '## Missing evidence log'));
+      if (scenario === 'task-hardlink') fs.linkSync(tp, path.join(room, '.git/task-link'));
+      if (scenario === 'hardlink') fs.linkSync(sp, path.join(room, '.git/spec-link'));
+      const first = run(true);
+      assert.notEqual(first.status, 0, `${scenario}: injected/preflight failure is visible`);
+      if (['task-write', 'missing-log', 'hardlink', 'task-hardlink'].includes(scenario)) {
+        assert.equal(fs.readFileSync(tp, 'utf8'), beforeTask, `${scenario}: no Task publication on refusal`);
+        if (scenario === 'task-write') assert.equal(run().status, 0, 'retry after failed first publication succeeds');
+        continue;
+      }
+      const published = fs.readFileSync(tp, 'utf8');
+      assert.match(published, /\*\*Status:\*\* done/, `${scenario}: Task is done after publication`);
+      const receipts = readReceiptFromFile(tp);
+      assert.equal(receipts.length, scenario === 'two' ? 2 : 1, `${scenario}: one intact Receipt`);
+      if (scenario !== 'cleanup') assert.equal(fs.readFileSync(sp, 'utf8'), beforeSpec, `${scenario}: failed Spec publication preserved original bytes`);
+      if (scenario === 'malformed') fs.writeFileSync(tp, published.replace(/^\*\*Close pending:\*\* .+$/m, '**Close pending:** invalid-json'));
+      if (scenario === 'tamper') fs.writeFileSync(tp, published.replace('original docs |', 'altered docs |'));
+      if (scenario === 'ambiguous') fs.writeFileSync(other, published.replaceAll('TK-002', 'TK-003'));
+      // The conflicting row must share the pending row's identity, including
+      // the date `close` stamped from the live clock; a literal date stops
+      // conflicting once the calendar moves past it.
+      if (scenario === 'conflict') {
+        const stamped = JSON.parse(published.match(/^\*\*Close pending:\*\* (.+)$/m)[1]).row.split(' | ')[0].slice(2);
+        assert.match(stamped, /^\d{4}-\d{2}-\d{2}$/, 'conflict: pending row carries its stamped date');
+        fs.writeFileSync(sp, beforeSpec.replace('\n## Completion Result', `\n| ${stamped} | TK-002 | Task closed | unrelated proof | unrelated docs | none |\n\n## Completion Result`));
+      }
+      // S-00I TK-004L: preserve a published operation across lifecycle changes.
+      // Public move-task is deliberately allowed; close must recover its exact
+      // retired target without moving it back or selecting the other claim.
+      if (['retired-directory', 'retired-history', 'linked-retired-directory', 'linked-retired-root'].includes(scenario)) {
+        if (scenario === 'retired-history') assert.equal(run().status, 0, 'finish before creating marker-free history');
+        git('add', '.'); git('commit', '--quiet', '-m', 'Published close state');
+        const moved = spawnSync(process.execPath, [closeCli, 'move-task', 'S-701', '--path', room, '--task', 'TK-002', '--to', 'retired', '--json'], { encoding: 'utf8' });
+        assert.equal(moved.status, 0, `public retirement succeeds: ${moved.stderr}`);
+        tp = path.join(specDir, 'tasks/retired/TK-002/TASK.md');
+        assert.equal(fs.existsSync(path.join(specDir, 'tasks/TK-002')), false, 'retirement removes active directory');
+      }
+      let unsafePath = null;
+      if (['linked-directory', 'linked-retired-directory', 'linked-retired-root', 'file-directory'].includes(scenario)) {
+        const target = scenario === 'linked-retired-root' ? path.dirname(path.dirname(tp)) : path.dirname(tp);
+        unsafePath = target;
+        const preserved = path.join(room, '.git/preserved-task');
+        fs.renameSync(target, preserved);
+        if (scenario === 'file-directory') {
+          fs.writeFileSync(target, 'An ordinary file cannot replace a Task directory.\n');
+          tp = path.join(preserved, 'TASK.md');
+        } else fs.symlinkSync(preserved, target, 'dir');
+      }
+      const snapshot = [fs.readFileSync(sp, 'utf8'), fs.readFileSync(tp, 'utf8'), fs.existsSync(other) ? fs.readFileSync(other, 'utf8') : null];
+      const indexBefore = fs.readFileSync(path.join(room, '.git/index'));
+      const headBefore = git('rev-parse', 'HEAD');
+      const unsafeBefore = unsafePath === null ? null : scenario === 'file-directory' ? fs.readFileSync(unsafePath, 'utf8') : fs.readlinkSync(unsafePath);
+      const retry = run();
+      if (['tamper', 'ambiguous', 'conflict', 'malformed', 'linked-directory', 'linked-retired-directory', 'linked-retired-root', 'file-directory'].includes(scenario)) {
+        assert.notEqual(retry.status, 0, `${scenario}: inconsistent recovery refuses`);
+        assert.deepEqual([fs.readFileSync(sp, 'utf8'), fs.readFileSync(tp, 'utf8'), fs.existsSync(other) ? fs.readFileSync(other, 'utf8') : null], snapshot, `${scenario}: refusal changes no record`);
+        if (unsafePath !== null) {
+          assert.match(retry.stderr, /unsafe close Task directory/, 'close-local preflight names unsafe directory');
+          assert.equal(scenario === 'file-directory' ? fs.readFileSync(unsafePath, 'utf8') : fs.readlinkSync(unsafePath), unsafeBefore, 'refusal preserves unsafe entry bytes or link');
+          assert.deepEqual(fs.readFileSync(path.join(room, '.git/index')), indexBefore, 'refusal preserves index bytes');
+          assert.equal(git('rev-parse', 'HEAD'), headBefore, 'refusal preserves history');
+        }
+        continue;
+      }
+      if (scenario === 'retired-history') {
+        assert.equal(retry.status, 0, retry.stderr);
+        assert.equal(fs.readFileSync(tp, 'utf8'), snapshot[1], 'marker-free retired history is unchanged');
+        assert.match(fs.readFileSync(other, 'utf8'), /\*\*Status:\*\* done/, 'marker-free history permits normal active close');
+        continue;
+      }
+      assert.equal(retry.status, 0, `${scenario}: retry recovers exact target: ${retry.stderr}`);
+      assert.equal(fs.readFileSync(tp, 'utf8'), snapshot[1].replace(/^\*\*Close pending:\*\* .+\r?\n?/m, ''), `${scenario}: only the temporary marker changes in the published Task`);
+      assert.deepEqual(readReceiptFromFile(tp), receipts, `${scenario}: retry preserves Receipt bytes and chain`);
+      const evidence = fs.readFileSync(sp, 'utf8');
+      assert.equal((evidence.match(/\| TK-002 \| Task closed \|/g) ?? []).length, 1, `${scenario}: one original close evidence row`);
+      assert.match(evidence, /original docs/, `${scenario}: original evidence recovered`);
+      assert.doesNotMatch(evidence, /retry replacement/, `${scenario}: retry inputs never replace published proof`);
+      assert.doesNotMatch(fs.readFileSync(tp, 'utf8'), /\*\*Close pending:\*\*/, `${scenario}: pending operation cleared after evidence`);
+      if (['two', 'retired-directory'].includes(scenario)) {
+        if (scenario === 'retired-directory') assert.equal(fs.existsSync(path.join(specDir, 'tasks/TK-002')), false, 'recovery never moves or reopens retired Task');
+        assert.match(fs.readFileSync(other, 'utf8'), /\*\*Status:\*\* in-progress/, 'retry never closes different claimed Task');
+        assert.equal(readReceiptFromFile(other).length, 0, 'other Task has no fabricated Receipt');
+      }
+    } finally { fs.rmSync(room, { recursive: true, force: true }); }
+  }
+  console.log('ok - public close recovers interrupted publication without wrong-target selection or duplicate proof');
+}
+if (process.argv.includes('--close-recovery-only')) process.exit(0);
 
 // `doctor`'s `stale-claim` rule (workbench/tools/spec-workbench.mjs) flags an
 // in-progress claim whose `Updated` date-only stamp is more than one day
@@ -128,7 +254,7 @@ assert.ok(
   Object.is(SLICE_STATUSES, TASK_STATUSES),
   'the lifecycle commands and the Task record reader share one exported closed status set'
 );
-assert.deepEqual([...TASK_STATUSES], ['ready', 'in-progress', 'blocked', 'done', 'deferred']);
+assert.deepEqual([...TASK_STATUSES], ['ready', 'in-progress', 'blocked', 'needs-review', 'done', 'deferred']);
 
 assert.deepEqual(
   parseCliArgs(['next', '--json']),
@@ -341,7 +467,7 @@ try {
   // acceptance, filled Completion Result) - the same content completeSpec is
   // about to see.
   recordReviewVerdict(root, 'S-001', {
-    candidate: headSha(root), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+    candidate: integratedFixtureCandidate(root), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
   });
   // S-00J TK-005: complete now also refuses without a recorded owner Human
   // QA approval bound to the same current content. This fixture room
@@ -2760,7 +2886,7 @@ function wikiClaimFixture() {
     // longer matches.
     writeAt(gateRoot, 'workbench/specs/S-801-fixture/SPEC.md', completableSpec('S-801'));
     recordReviewVerdict(gateRoot, 'S-801', {
-      candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+      candidate: integratedFixtureCandidate(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
     const s801Path = path.join(gateRoot, 'workbench/specs/S-801-fixture/SPEC.md');
     fs.writeFileSync(s801Path, fs.readFileSync(s801Path, 'utf8').replace('Proves the complete gate.', 'Proves the complete gate (edited after review).'));
@@ -2796,7 +2922,7 @@ function wikiClaimFixture() {
     // gate above. No verdict at all for the owner-qa row.
     writeAt(gateRoot, 'workbench/specs/S-804-fixture/SPEC.md', completableSpec('S-804'));
     recordReviewVerdict(gateRoot, 'S-804', {
-      candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+      candidate: integratedFixtureCandidate(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
     assert.throws(
       () => completeSpec(gateRoot, 'S-804', { date: '2026-09-18' }),
@@ -2811,13 +2937,13 @@ function wikiClaimFixture() {
     // approval, isolating the approval-gap check from the review-gap check.
     writeAt(gateRoot, 'workbench/specs/S-805-fixture/SPEC.md', completableSpec('S-805'));
     recordReviewVerdict(gateRoot, 'S-805', {
-      candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+      candidate: integratedFixtureCandidate(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
     recordOwnerApproval(gateRoot, 'S-805', { candidate: integratedFixtureCandidate(gateRoot), owner: 'Kayden Clark', result: 'approve' });
     const s805Path = path.join(gateRoot, 'workbench/specs/S-805-fixture/SPEC.md');
     fs.writeFileSync(s805Path, fs.readFileSync(s805Path, 'utf8').replace('Proves the complete gate.', 'Proves the complete gate (edited after owner approval).'));
     recordReviewVerdict(gateRoot, 'S-805', {
-      candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Sonnet 5 (separate context)'
+      candidate: integratedFixtureCandidate(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Sonnet 5 (separate context)'
     });
     assert.throws(
       () => completeSpec(gateRoot, 'S-805', { date: '2026-09-18' }),
@@ -2854,7 +2980,7 @@ function wikiClaimFixture() {
     // nothing else different.
     writeAt(gateRoot, 'workbench/specs/S-803-fixture/SPEC.md', completableSpec('S-803'));
     recordReviewVerdict(gateRoot, 'S-803', {
-      candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+      candidate: integratedFixtureCandidate(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
     const s803Candidate = integratedFixtureCandidate(gateRoot);
     recordOwnerApproval(gateRoot, 'S-803', { candidate: s803Candidate, owner: 'Kayden Clark', result: 'approve' });
@@ -6168,7 +6294,9 @@ function commitAll(dir, message) {
       writeAt(dir, blockerPath, deliveryBlockerSpec({ ...blocker, description: 'Delivers the fixture capability (never committed at the candidate).' }));
     }
     if (verdict === 'pass') {
-      recordReviewVerdict(dir, 'S-9E0', { candidate, result: 'pass', findings: 'none', reviewer: 'Fixture reviewer (separate context)' });
+      const record = () => recordReviewVerdict(dir, 'S-9E0', { candidate, result: 'pass', findings: 'none', reviewer: 'Fixture reviewer (separate context)' });
+      if (reviewUncommitted) assert.throws(record, /does not contain the reviewed committed content/, 'uncommitted delivery cannot acquire a verdict in the first place');
+      else record();
     } else if (verdict === 'fail') {
       // Written directly so no corrective Task changes the blocker's own
       // Task set: this isolates the verdict result as the one missing fact.

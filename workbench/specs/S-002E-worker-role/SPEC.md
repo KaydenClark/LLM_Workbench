@@ -1,17 +1,17 @@
 # S-002E - Worker Role
 
 **Spec ID:** S-002E
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** codex-s002e-worker
 **Stance:** Builder
-**Updated:** 2026-09-27
+**Updated:** 2026-10-03
 **Catalog description:** Perform one assigned Task within its declared scope and return a verified, recoverable result.
-**Blockers:** none for specification; implementation awaits flight launch and assignment.
-**Latest event:** Owner confirmed the minimum role/stance buildout; this Spec records one capability without cutting Tasks.
-**Next gate:** At flight launch, inspect live Actuality and plan small Tasks within this Spec.
+**Blockers:** none for staged implementation; managed installation awaits release bundle identity.
+**Latest event:** TK-002Z closed with proof.
+**Next gate:** Owner Human QA of the staged Worker entry on integration; the full-capability acceptance boxes stay open until managed discovery, bundle identity and installation land through the release owner (S-00O Workbench v4.0.0 Release).
 
-> **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`b00a2e338436ef7b281b0cc53e74f891af32f18c`.
+> **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`20bbe95`.
 
 ## Outcome
 
@@ -41,6 +41,18 @@ At the pre anchor, LEXICON.md defines Director, Dispatcher and Worker; BLUEPRINT
 - GPT_OS Captain, Planner and Engineer informed the model as examples, not copied policy. Do not import model allocation, scheduling, permanent departments or an external repository prerequisite.
 - Reuse existing Reviewer and Auditor capability owners. Preserve existing Tasks and proof; cut no new execution Task in this planning change.
 
+### Authorized staged boundary (2026-10-01)
+
+The overnight assignment activates only a Spec-local candidate, focused test,
+Task evidence and [individual Wiki explanation](../../wiki/skill-worker-role.md).
+Load [the staged Worker entry](candidate/worker/SKILL.md) explicitly for evaluation.
+It is not an installed or managed-discovery entry. No manifest, discovery adapter,
+root control, layout, frozen v3.2.1 or Factory changes are authorized here.
+Templates need no mirror for this staged artifact: no portable root rule changes.
+The coordinator reserves the MEMORY index hunk for serial assembly. Source tests
+cannot satisfy installed-behavior acceptance. Those full-capability boxes remain
+open while the bounded Task can produce a reviewable candidate.
+
 ## Non-Goals
 
 Full role taxonomy, portfolio scheduling, a generalized multi-Spec Dispatcher, automatic flight launch, new model/provider policy, changing owner Human QA, main promotion, implementing another capability or changing unrelated rooms.
@@ -51,7 +63,7 @@ Coordinate shared controls, discovery and branch procedure with [Workflow Canon 
 
 ## Vertical Implementation Slices
 
-No Tasks cut. At flight launch/Spec activation, use current Actuality to plan small complete-path slices and safe parallel groups. The empty tasks directory keeps this planned capability record-backed.
+[TK-002Z](tasks/TK-002Z/TASK.md) stages one complete Worker entry/explanation/proof slice. Managed discovery and bundle installation remain release-owned; no successor Task is invented for that gated work.
 
 ## Acceptance Criteria
 
@@ -82,3 +94,8 @@ Maintain the role or stance definition in LEXICON.md, the operating contract in 
 | Date | Task | Event | Evidence | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-27 | none | Planning only | Owner confirmed ROLE-1 through ROLE-4; no Task allocated or implementation claimed | This Spec and linked role model | Flight launch, Task planning, implementation and behavioral verification remain |
+
+| 2026-10-01 | TK-002Z | Authorized activation and claim | Fresh origin integration 95176a4 was planned/unassigned with no Tasks; native next-id, convert-tasks --activate and claim published 648e00f. Dirty planning/projection paths were committed before claim retry. | Staged boundary recorded; MEMORY hunk reserved for coordinator | Managed identity/install, final suite and independent review remain |
+| 2026-10-01 | TK-002Z | Staged source and actual configured-session scenario | Source contract red ENOENT then green; Wiki validation PASS. Scenario candidate 86842675d564b5d0cf98373ba10bdddee560ef1e; four allowed paths only, negative-input red/green, conflicting writer and out-of-scope requests refused, main unchanged and exact local-origin head verified. See tasks/TK-002Z/evidence/scenario.md and scenario.patch at 20bbe95. | Individual skill-worker-role.md; no root/template/managed changes | Explicit loading in one fixture is not managed installation or outcome reliability; no interrupted-process trial |
+| 2026-10-01 | TK-002Z | Candidate verification complete; no approval or merge | Full AGENTS/Runbook union 51/51 PASS serially at 89f7593; final-suite.json records commands. Initial 48/51 and transient untracked/parallel-fixture failures preserved, then resolved by committed-tree serial run. Source/scenario inspector and Wiki PASS; guardrail 78/100 pre/post. Raw self-drift receipts preserve seven baseline findings; S-00Q stale claim still blocks clean-update. | Staged entry, individual Wiki, Task evidence; no root/template/managed changes. MEMORY hunk reserved for coordinator. | Separate review, bundle identity/install, MEMORY routing; gh API Forbidden prevents draft PR here. Integration assembly must preserve newer S01C metadata. No installed behavior, owner QA, completion or repeated-outcome claim |
+| 2026-10-03 | TK-002Z | Task closed | Full AGENTS suite 48/48 PASS at d920826f (integration 226212f1 merged); tools/test-worker-role.mjs PASS; wiki validate ok; configured-session scenario evidence in tasks/TK-002Z/evidence | MEMORY.md router line for skill-worker-role.md; staged candidate/worker/SKILL.md and skill-worker-role.md from the Task | Managed discovery, bundle identity and installation remain release-owned; installed behavior and repeated outcomes unproved; owner Human QA pending |

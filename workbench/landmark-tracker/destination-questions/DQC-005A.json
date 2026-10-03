@@ -1,0 +1,184 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-005A",
+  "revision": 6,
+  "title": "How should project evidence prepare Blueprint grilling?",
+  "question": "How should project evidence prepare Blueprint grilling?",
+  "answer": "BPR-7A: Every Workbench version must be proved by successfully updating Example_Workbench (now Workbench Template) to that version. Genesis for a project with no Blueprint should seed a starting Blueprint and a prepared grilling notepad grounded in the project's evidence, and an update should not silently treat an existing Blueprint as owner-validated. Those mechanisms are future capabilities and must not be claimed before built and verified.\nBPR-7B2: Staged capability Specs: first a valid copyable Workbench Template; then project-evidence intake with a prepared Blueprint grilling notepad; then Genesis turning locked Blueprint and ADR decisions into Specs and a valid project Workbench; then fresh-copy end-to-end proof. Each stage proves its own seam, and the Blueprint keeps the full destination without claiming delivery.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-7A, BPR-7B2 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "BPR-7A update AGENTS.md (Template Upgrade Release Gate): Every new version must update Workbench_Template before release readiness; producer-only rule, deliberately not mirrored into templates/. | BPR-7A update RUNBOOK.md (Template Upgrade Release Gate): Own the procedure for the installed-upgrade proof. | BPR-7A update workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md: Record the Workbench Template update proof for v3.2.0. | BPR-7A create workbench/specs/S-00C-project-evidence-and-blueprint-grilling/SPEC.md: Future capability: prepare a project-informed Blueprint grilling record from verified evidence. | BPR-7B2 create workbench/specs/S-00B-workbench-template-reformation/SPEC.md: Stage 1: valid copyable Workbench Template. | BPR-7B2 create workbench/specs/S-00C-project-evidence-and-blueprint-grilling/SPEC.md: Stage 2: project-evidence intake and prepared Blueprint grilling. | BPR-7B2 create workbench/specs/S-00D-genesis-from-blueprint-and-adrs/SPEC.md: Stage 3: Genesis from locked Blueprint/ADR decisions plus Actuality into Specs and a valid room. | BPR-7B2 create workbench/specs/S-00E-fresh-template-project-proof/SPEC.md: Stage 4: fresh-copy end-to-end proof.",
+    "home": "AGENTS.md (Template Upgrade Release Gate); RUNBOOK.md (Template Upgrade Release Gate); workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md; workbench/specs/S-00C-project-evidence-and-blueprint-grilling/SPEC.md; workbench/specs/S-00B-workbench-template-reformation/SPEC.md; workbench/specs/S-00D-genesis-from-blueprint-and-adrs/SPEC.md; workbench/specs/S-00E-fresh-template-project-proof/SPEC.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "BPR-7A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "BPR-7B2",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000U"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "BPR-7A",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-7A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "BPR-7B2",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-7B2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should project evidence prepare Blueprint grilling?",
+    "question": "How should project evidence prepare Blueprint grilling?",
+    "sources": [
+      {
+        "id": "BPR-7A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "BPR-7B2",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:29.501Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:29.501Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 128 of the 2026-09-26 grouping (\"Genesis, Adoption and the reference Template\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Evidence intake prepares an informed grilling record and starting Blueprint; an existing Blueprint is not automatically treated as owner-validated.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:29.530Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "BPR-7A: Every Workbench version must be proved by successfully updating Example_Workbench (now Workbench Template) to that version. Genesis for a project with no Blueprint should seed a starting Blueprint and a prepared grilling notepad grounded in the project's evidence, and an update should not silently treat an existing Blueprint as owner-validated. Those mechanisms are future capabilities and must not be claimed before built and verified.\nBPR-7B2: Staged capability Specs: first a valid copyable Workbench Template; then project-evidence intake with a prepared Blueprint grilling notepad; then Genesis turning locked Blueprint and ADR decisions into Specs and a valid project Workbench; then fresh-copy end-to-end proof. Each stage proves its own seam, and the Blueprint keeps the full destination without claiming delivery."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-7A, BPR-7B2 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "BPR-7A update AGENTS.md (Template Upgrade Release Gate): Every new version must update Workbench_Template before release readiness; producer-only rule, deliberately not mirrored into templates/. | BPR-7A update RUNBOOK.md (Template Upgrade Release Gate): Own the procedure for the installed-upgrade proof. | BPR-7A update workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md: Record the Workbench Template update proof for v3.2.0. | BPR-7A create workbench/specs/S-00C-project-evidence-and-blueprint-grilling/SPEC.md: Future capability: prepare a project-informed Blueprint grilling record from verified evidence. | BPR-7B2 create workbench/specs/S-00B-workbench-template-reformation/SPEC.md: Stage 1: valid copyable Workbench Template. | BPR-7B2 create workbench/specs/S-00C-project-evidence-and-blueprint-grilling/SPEC.md: Stage 2: project-evidence intake and prepared Blueprint grilling. | BPR-7B2 create workbench/specs/S-00D-genesis-from-blueprint-and-adrs/SPEC.md: Stage 3: Genesis from locked Blueprint/ADR decisions plus Actuality into Specs and a valid room. | BPR-7B2 create workbench/specs/S-00E-fresh-template-project-proof/SPEC.md: Stage 4: fresh-copy end-to-end proof.",
+            "home": "AGENTS.md (Template Upgrade Release Gate); RUNBOOK.md (Template Upgrade Release Gate); workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md; workbench/specs/S-00C-project-evidence-and-blueprint-grilling/SPEC.md; workbench/specs/S-00B-workbench-template-reformation/SPEC.md; workbench/specs/S-00D-genesis-from-blueprint-and-adrs/SPEC.md; workbench/specs/S-00E-fresh-template-project-proof/SPEC.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:29.558Z",
+      "reason": "Ledger row BPR-7A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-7A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:29.591Z",
+      "reason": "Ledger row BPR-7B2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-7B2",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:29.624Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:01.702Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Genesis and Adoption pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000U"
+          ]
+        }
+      ]
+    }
+  ]
+}

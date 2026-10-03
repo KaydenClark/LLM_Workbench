@@ -1,0 +1,358 @@
+{
+  "schemaVersion": 1,
+  "task": "TK-01J",
+  "spec": "S-01S",
+  "base": "d90785908b26517068a474bb88136c81995a2f18",
+  "testedRevision": "652bff5200197a1ea9385e1c5fdc0c3ab0d4c196",
+  "sourceRevision": "1e403cbbb06be60a2c43fb489709e05453fbf2d3",
+  "requiredUnion": {
+    "source": "Current AGENTS full-suite and RUNBOOK full-verification fenced command blocks, deduplicated in first occurrence order",
+    "commandCount": 51,
+    "passedCommands": 51,
+    "results": [
+      {
+        "command": "node tools/test-spec-workbench.mjs",
+        "exitCode": 0,
+        "outputSha256": "2f019aba3b36dea999706c81d2f7663bee4e5f2789ce18cc194df59a6fb5fcad"
+      },
+      {
+        "command": "node tools/test-skill-catalog.mjs",
+        "exitCode": 0,
+        "outputSha256": "07d492e1ec6b48d509d5517e84d356570c87876ee53352c3b7cf3a71ce19eea9"
+      },
+      {
+        "command": "node tools/test-skill-inspection.mjs",
+        "exitCode": 0,
+        "outputSha256": "57518029ebb9c98d43caeed3accbb12ac8ee54d8182c3262844711dd1671d861"
+      },
+      {
+        "command": "node tools/test-skills-lane.mjs",
+        "exitCode": 0,
+        "outputSha256": "8b74f013e9485e4da25d926836ac22740f26caa91dfdff5266fbe1d846332046"
+      },
+      {
+        "command": "node tools/test-core-composition.mjs",
+        "exitCode": 0,
+        "outputSha256": "1b47e395bb4c8ddab94fcb579158c8031030286ce78d15d752ff4ccf787ddeed"
+      },
+      {
+        "command": "node tools/test-project-evidence.mjs",
+        "exitCode": 0,
+        "outputSha256": "a28ed34f104848fc97c7958a62a473164ee4ae42a5e06acbcf751e2552062e87"
+      },
+      {
+        "command": "node tools/test-genesis-from-decisions.mjs",
+        "exitCode": 0,
+        "outputSha256": "7ca0d75093610c2b721248e925f5ced7ad94e2178c448daeecd435b54e6a18c1"
+      },
+      {
+        "command": "node tools/test-blueprint-contract.mjs",
+        "exitCode": 0,
+        "outputSha256": "fd1e113d4e53c6b7e4746a7c804bbc389fcffd6a3e17905564f10031c8d06ea1"
+      },
+      {
+        "command": "node tools/test-session-transport.mjs",
+        "exitCode": 0,
+        "outputSha256": "f0ac3b3c466a71eed7040ba3006021f1c624900b3da5a6a388db21e6e9dd93c2"
+      },
+      {
+        "command": "node tools/test-configured-host.mjs",
+        "exitCode": 0,
+        "outputSha256": "540de0a7ff939d5ecddc479edb9a6b39d348b5615f66389b7a4c32766f9d7c83"
+      },
+      {
+        "command": "node tools/test-core-skill-installer.mjs",
+        "exitCode": 0,
+        "outputSha256": "8cc41a162bc61e3a99f89e6f89128a1da69dbda9d5c8a0480ec33ed95f83c9a9"
+      },
+      {
+        "command": "node tools/test-workbench-layout.mjs",
+        "exitCode": 0,
+        "outputSha256": "c36cca5d58fab777d1ad925245083fb02181594287bfe5a27ac2afd01e951c27"
+      },
+      {
+        "command": "node tools/test-workbench-adoption.mjs",
+        "exitCode": 0,
+        "outputSha256": "188083ac866a78da534653d656187408ef05703dad50e588a5e252cc56911fae"
+      },
+      {
+        "command": "node tools/test-workbench-upgrade.mjs",
+        "exitCode": 0,
+        "outputSha256": "c7480f331bcb4597ad8cb9872cd965b528112520b9a6544fec65af5c3c6a1af5"
+      },
+      {
+        "command": "node tools/test-workbench-tools.mjs",
+        "exitCode": 0,
+        "outputSha256": "d5970633896c891abd9fbff146e947aff7154494daa44c68cc64e280980b328a"
+      },
+      {
+        "command": "node tools/test-diagnostics.mjs",
+        "exitCode": 0,
+        "outputSha256": "88252e468acc00fce1f872f9ac65ab1b52541d0da1c200e5373eb72185e1bedd"
+      },
+      {
+        "command": "node tools/test-adr.mjs",
+        "exitCode": 0,
+        "outputSha256": "9f07cb2a1f6bf112f49e2b681c452715bd8ae25e935d216d8ac4beb6daf1b818"
+      },
+      {
+        "command": "node tools/test-governance-core.mjs",
+        "exitCode": 0,
+        "outputSha256": "ac90f3c0f980a3a8085a6d46e8fcefe00f568cad3d9b7bd329cdbe3ee6244103"
+      },
+      {
+        "command": "node tools/test-branch-closeout.mjs",
+        "exitCode": 0,
+        "outputSha256": "3ed7fd19213aa3d1c6955d7d93510b2a2ae9f6c3d4a3a05cefa88d193c7147fc"
+      },
+      {
+        "command": "node tools/test-wiki.mjs",
+        "exitCode": 0,
+        "outputSha256": "495c2077fc57de5085bc458aea49cfe2a97943cd5cb97088063a2dc8919319ed"
+      },
+      {
+        "command": "node tools/test-sessions.mjs",
+        "exitCode": 0,
+        "outputSha256": "7616989443541325334ad0242241eef45dbef34d1fe36093e6051912346686e1"
+      },
+      {
+        "command": "node tools/test-notepads.mjs",
+        "exitCode": 0,
+        "outputSha256": "bea9b8bd599ab0916d7104521d33052bc1e0071a974a568e1104b3815c9757b8"
+      },
+      {
+        "command": "node tools/test-visible-ids.mjs",
+        "exitCode": 0,
+        "outputSha256": "884c901efdf4b7eeb3c63b1e0215de65841af53ba711db14cafb72dacd28facb"
+      },
+      {
+        "command": "node tools/test-workbench-identity.mjs",
+        "exitCode": 0,
+        "outputSha256": "1040e75be4afd6ab20c8cd9a2858c619bff06248d89a8c4e8ff73a18b6be2a75"
+      },
+      {
+        "command": "node tools/test-visible-id-consumers.mjs",
+        "exitCode": 0,
+        "outputSha256": "a279cc44a12cef14f78c53e4f0fee8707c66a0e4bac6ca44ba9e821777958d1e"
+      },
+      {
+        "command": "node tools/test-direct-promotion.mjs",
+        "exitCode": 0,
+        "outputSha256": "f3036c4e58aa752ba71837cff75e0796f43a786e428a45456689cf404c1e95f2"
+      },
+      {
+        "command": "node tools/test-workbench-round-trip.mjs",
+        "exitCode": 0,
+        "outputSha256": "76a6ac5db6eed7b7f8875279f0043e785013e53dea1563bc33dfed20622f45a2"
+      },
+      {
+        "command": "node tools/test-cross-provider-fixture.mjs",
+        "exitCode": 0,
+        "outputSha256": "4cedcdbf38344fc6d6bc454ef80a75dfef5b4fdd3ae6cfb205b0fd7af45544b5"
+      },
+      {
+        "command": "node tools/test-portability-matrix.mjs",
+        "exitCode": 0,
+        "outputSha256": "4eedaa834d562fad9a11c0f1eea4fa8a155b02d758cb9a37ea151dba553c949f"
+      },
+      {
+        "command": "node tools/test-workbench-dogfood.mjs",
+        "exitCode": 0,
+        "outputSha256": "5edca15bea0b229bb194025549b2ca7d1e9c08d549d28169904fa162f06c6ac2"
+      },
+      {
+        "command": "node tools/test-evaluate-workbench.mjs",
+        "exitCode": 0,
+        "outputSha256": "2f9a0468ee094a221fb6e84b551484e3ed279bb371f694dbc9993980bb6ab887"
+      },
+      {
+        "command": "node tools/test-guardrail-audit.mjs",
+        "exitCode": 0,
+        "outputSha256": "373b04e4a2607c087192de6b9e5890b8340195fc3bd4c17b1a681168289d2051"
+      },
+      {
+        "command": "node tools/test-context-tools.mjs",
+        "exitCode": 0,
+        "outputSha256": "6f0f4a88425cd465e3f9b9fbb1ed61a07f4b6182d20fc71da78f8e39713af2a1"
+      },
+      {
+        "command": "node tools/test-outcome-trials.mjs",
+        "exitCode": 0,
+        "outputSha256": "e0ef32e1edb1645577979090997c74ea4e9c92c98a9da29a9f4d67c42f42498b"
+      },
+      {
+        "command": "node tools/test-eval-runner.mjs",
+        "exitCode": 0,
+        "outputSha256": "273c990e6fa749eefd829ac8d5b4d0a18932d4a75c616f5fbbb856a9c03032b8"
+      },
+      {
+        "command": "node tools/test-feedback-automation.mjs",
+        "exitCode": 0,
+        "outputSha256": "841f64c4c0bb3461589e16e36202cc8ad61a5542f704c807193d3f1723e1ea12"
+      },
+      {
+        "command": "node tools/test-symlink-invocation.mjs",
+        "exitCode": 0,
+        "outputSha256": "847b31f9e23a7ba45ae134c772d8cc1ae8db48d3d6222cf169d12724b5762195"
+      },
+      {
+        "command": "node tools/test-control-fidelity.mjs",
+        "exitCode": 0,
+        "outputSha256": "f337f50a8e9e3bf660dab51bfc69246855a32c2f3a9dc14fe7df2a53d54397b4"
+      },
+      {
+        "command": "node tools/test-spec-citation-anchors.mjs",
+        "exitCode": 0,
+        "outputSha256": "8cdfcd82c2fcf17efc4e3f82dfd534d8ce8140011c3c26249acca7774d011a47"
+      },
+      {
+        "command": "node tools/test-controls-vocabulary-sweep.mjs",
+        "exitCode": 0,
+        "outputSha256": "db05db954d9a33d47fef93f1fec18d654061d4d34641e26e04ac91e667f5ead4"
+      },
+      {
+        "command": "node tools/test-spec-report.mjs",
+        "exitCode": 0,
+        "outputSha256": "68113a14f232ceddb0025a5f3ddddefa32beccb63bc938b532cfe2ce930c260c"
+      },
+      {
+        "command": "node tools/test-self-drift.mjs",
+        "exitCode": 0,
+        "outputSha256": "e6a16f43199f4c16067dd2b93c0d4b0f56bd9f89ab0669770c1415330e500f3d"
+      },
+      {
+        "command": "node tools/test-feedback-inventory.mjs",
+        "exitCode": 0,
+        "outputSha256": "37d22545d0d02a263079661cc1392ce33ff71f6f54b57b6a5bdc6cb3c9cd55b4"
+      },
+      {
+        "command": "node tools/test-grilling-ledger.mjs",
+        "exitCode": 0,
+        "outputSha256": "790e008a32836cf7f2d06b210c6f50edb9b0357275a667a8c708b4c63a50bdf3"
+      },
+      {
+        "command": "python3 tools/test-check-append-only.py",
+        "exitCode": 0,
+        "outputSha256": "1c60a426838d1ccdac0d98496288fb9edd0cec4f0c2d781c2be92417d29fd934"
+      },
+      {
+        "command": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+        "exitCode": 0,
+        "outputSha256": "bd0149c9b483b4ad4fa7e29309e544eda90aaccca0628e5235947f85beaa2195"
+      },
+      {
+        "command": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+        "exitCode": 0,
+        "outputSha256": "41153aabe528f2f34c53e7e4d32a3f6b6b31615d8f4565b4dbe350a64bc9227b"
+      },
+      {
+        "command": "node workbench/tools/spec-workbench.mjs doctor",
+        "exitCode": 0,
+        "outputSha256": "67da2ed411b60ec0dcb3f9d53cd8cdf4c1a060b38c8abeb6c29bc5af5675c7fd"
+      },
+      {
+        "command": "node tools/test-team-coordination.mjs",
+        "exitCode": 0,
+        "outputSha256": "3e105068c0fd2ef9dc5edf775b2742b7144f6c00d66af20bb07ef495cb079840"
+      },
+      {
+        "command": "node tools/test-team-coordination-demo.mjs",
+        "exitCode": 0,
+        "outputSha256": "0fb9e546e326d750d8f92b13bc6dc93b017d4d097e79de0c05381a39879668da"
+      },
+      {
+        "command": "node tools/test-socket-contract.mjs",
+        "exitCode": 0,
+        "outputSha256": "b4e41aea140124647f3d1e0b81cb018939dfb21744358ef5b7807e88da1e5b99"
+      }
+    ]
+  },
+  "focused": {
+    "command": "node tools/test-reconciler-skill.mjs",
+    "redRevision": "3c243888",
+    "redResult": "5 failed: missing source route and executable pinned observations",
+    "greenRevision": "ef80692cc6e5335339dc1bcc51d27e411c163950",
+    "greenResult": "5 passed",
+    "finalRevision": "652bff5200197a1ea9385e1c5fdc0c3ab0d4c196",
+    "finalResult": "5 passed",
+    "limit": "One structural contract test plus four Git fixture scenarios execute the documented commands; not model reliability proof"
+  },
+  "additional": [
+    {
+      "command": "node tools/test-delivery-skills.mjs",
+      "result": "3 passed"
+    },
+    {
+      "command": "node workbench/tools/wiki.mjs validate",
+      "result": "exit 0"
+    },
+    {
+      "command": "python3 tools/check-append-only.py",
+      "result": "CLEAN; first-published evidence preserved"
+    },
+    {
+      "command": "git diff --check",
+      "result": "exit 0"
+    }
+  ],
+  "failedAttempts": [
+    {
+      "command": "node tools/test-skill-catalog.mjs",
+      "result": "failed missing explicit ADR route",
+      "resolution": "Restored manifest-resolved workbench/docs/adr example at 1e403cbb; final rerun passed"
+    },
+    {
+      "command": "node tools/test-core-skill-installer.mjs",
+      "result": "first two cases refused temporarily dirty source while catalog correction was being committed",
+      "resolution": "After commit: 29 passed, 2 platform skips; final full run passed"
+    },
+    {
+      "command": "codex exec --ephemeral --sandbox read-only",
+      "result": "failed before model initialization: read-only app-server state",
+      "resolution": "Separate fresh read-only context used; no credential or sandbox bypass"
+    }
+  ],
+  "platformLimits": [
+    "Core skill installer: two case-insensitive-filesystem cases skipped on this case-sensitive filesystem.",
+    "One fresh reader and one same-context corrective read-back; no repeated outcome trial, installed-provider-discovery trial, independent candidate review or owner Human QA."
+  ],
+  "freshContext": {
+    "context": "/root/s01s_fresh_reader",
+    "initialAchievedRevision": "ef80692cc6e5335339dc1bcc51d27e411c163950",
+    "initialObservation": "Cold reader followed ordinary entry to assigned Spec/Task, source and article; recovered output and next action, but observed dirty/untracked owner updates, absent Task receipt and missing MEMORY route. No tests or remote proof inferred.",
+    "correctionReadbackRevision": "915702cde86365849c893f6d2f0af8b087dd409d",
+    "correctionReadback": "Committed receipt and article recoverable; current Spec summaries still stale. Corrected at 652bff52 without altering historical rows.",
+    "freshTrialCount": 1,
+    "sameContextFollowups": 1,
+    "privateArtifactTransfer": false,
+    "limit": "Interpretation observation, not approval; original conversation-free input and result summaries retained locally; durable claims are reproduced here without private material."
+  },
+  "drift": {
+    "pre": "proof/self-drift-pre.json",
+    "post": "proof/self-drift-post.json",
+    "findingsUnchanged": true,
+    "findingCount": 7,
+    "cleanUpdate": false,
+    "semanticCheck": "Skill and Spec/Task now agree on achieved source and draft boundary; generated board/catalog derive from active owners. Root controls, runtime, manifest, templates, identity, carry and MEMORY unchanged. Missing article route remains an explicit coordinator action. Existing stale claim S-00Q and historical seed/provenance findings are preserved, not repaired outside this assignment."
+  },
+  "guardrail": {
+    "before": 78,
+    "after": 78,
+    "maximum": 100,
+    "remaining": "Real repeated outcomes, comparison with controls and prior harness, recent evidence and uncertainty reporting",
+    "limit": "Static checks and this single read-back do not establish outcome improvement."
+  },
+  "openGates": [
+    "Coordinator-owned MEMORY route",
+    "Separate-context review of final immutable candidate under current Task-PR exception and applicable assembled gate",
+    "Owner Human QA and owner-only main promotion; neither requested nor claimed"
+  ],
+  "publication": "Branch publication verified separately at handback; GitHub API is Forbidden, so draft PR may require parent Servitor. This receipt does not claim a created PR.",
+  "integrationDrift": {
+    "observedTip": "25d3f4d23b3719693065336a4ba66349d0a95907",
+    "branchBase": "d90785908b26517068a474bb88136c81995a2f18",
+    "requiredUnionUnchanged": true,
+    "reconcilerLaneOverlap": false,
+    "limit": "Integration advanced with PR 240 while this isolated candidate was tested. No rebase or assembly test is claimed. Parent must regenerate shared projections and review/test the assembled candidate, including coordinator MEMORY route."
+  }
+}

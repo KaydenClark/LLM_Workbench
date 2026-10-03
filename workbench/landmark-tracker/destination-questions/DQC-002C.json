@@ -1,0 +1,186 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-002C",
+  "revision": 6,
+  "title": "How should a decision be superseded or deprecated?",
+  "question": "How should a decision be superseded or deprecated?",
+  "answer": "BPR-6: ADRs are atomic decision units. Proposed has no Canon; accepted carries active architectural Canon; superseded is replaced by an explicit successor that states the complete current decision; deprecated ends Canon without a replacement and needs an explanation. The register separates active and historical records. Partial supersession is prohibited.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-6 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "BPR-6 update workbench/tools/adr.mjs and tools/test-adr.mjs: Validate proposed/accepted/superseded/deprecated, one whole-record successor, deprecation reason, and reject partial or broken supersession (S-00A TK-00A). | BPR-6 update RUNBOOK.md (ADR procedure) and templates/RUNBOOK.md: Document whole-record supersession and deprecation rules. | BPR-6 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Supersession replaces a whole record through one valid successor; deprecated records keep an explanation and no active Canon.",
+    "home": "workbench/tools/adr.mjs and tools/test-adr.mjs; RUNBOOK.md (ADR procedure) and templates/RUNBOOK.md; workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [
+    "FND-Q11 (open, no owner answer): Should the whole-record rule govern these older active records too, or is a clearly marked exception intended?"
+  ],
+  "sources": [
+    {
+      "id": "BPR-6",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q11",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000F"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "BPR-6",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-6 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q11",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q11 (open) at 56b459da; assessed Aligning from its status only.",
+      "assessment": {
+        "contributions": {
+          "Aligning": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should a decision be superseded or deprecated?",
+    "question": "How should a decision be superseded or deprecated?",
+    "sources": [
+      {
+        "id": "BPR-6",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q11",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:19.800Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:19.800Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 049 of the 2026-09-26 grouping (\"Blueprint and architectural decision records\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Atomic ADRs are replaced by complete successor decisions; deprecation ends active Canon without a successor and requires explanation.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:19.816Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "BPR-6: ADRs are atomic decision units. Proposed has no Canon; accepted carries active architectural Canon; superseded is replaced by an explicit successor that states the complete current decision; deprecated ends Canon without a replacement and needs an explanation. The register separates active and historical records. Partial supersession is prohibited."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-6 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "BPR-6 update workbench/tools/adr.mjs and tools/test-adr.mjs: Validate proposed/accepted/superseded/deprecated, one whole-record successor, deprecation reason, and reject partial or broken supersession (S-00A TK-00A). | BPR-6 update RUNBOOK.md (ADR procedure) and templates/RUNBOOK.md: Document whole-record supersession and deprecation rules. | BPR-6 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Supersession replaces a whole record through one valid successor; deprecated records keep an explanation and no active Canon.",
+            "home": "workbench/tools/adr.mjs and tools/test-adr.mjs; RUNBOOK.md (ADR procedure) and templates/RUNBOOK.md; workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:19.833Z",
+      "reason": "Ledger row BPR-6 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-6",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:19.853Z",
+      "reason": "Ledger row FND-Q11 (open) at 56b459da; assessed Aligning from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q11",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:19.872Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:54.833Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Artifact Types pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000F"
+          ]
+        }
+      ]
+    }
+  ]
+}

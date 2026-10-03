@@ -1,0 +1,224 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-001Z",
+  "revision": 7,
+  "title": "How is live status and release history kept out of the Blueprint?",
+  "question": "How is live status and release history kept out of the Blueprint?",
+  "answer": "BPR-8A: Blueprint contains no version history or release goals, live status or current health, implementation evidence, or generated Spec catalog. Version identity goes to the manifest and release Specs; current work and status to Specs and TASKBOARD; verification to tests and evidence; the full Spec inventory is manifest-derived. Blueprint keeps the destination and selective links.\nBPR-8E: When Kayden asks whether a candidate is ready for main, the independent reviewer checks the Blueprint boundary: destination narrative and whole-product constraints only; no version chronology, live status, Spec inventory, evidence or displaced ADR/Spec/Runbook content; ADR links selective, active and coherent; each new ADR has a recorded Blueprint relevance disposition. Mechanical checks support structure and links but cannot replace semantic review.\nBPR-5: Blueprint describes the destination: the coherent narrative of the finished product, its goals, what it solves, desired behavior, qualities and how the architectural parts work together. It excludes current activity, completion status, version goals, release mechanics and implementation evidence. It may summarize how active ADRs combine but is not a list of ADRs. Project-wide client requirements may belong there.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-8A, BPR-8E, BPR-5 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "BPR-8A update BLUEPRINT.md and templates/BLUEPRINT.md: Remove version, status, evidence and catalog material. | BPR-8A create tools/test-blueprint-contract.mjs: Mechanically check the destination-only shape. | BPR-8A update workbench/specs/CATALOG.md: Own the generated capability inventory instead of the Blueprint. | BPR-8E update RUNBOOK.md (Independent Review Boundaries, main-readiness) and templates/RUNBOOK.md: Require an explicit semantic pass/fail verdict on the Blueprint checklist; structure and link checks alone are insufficient. | BPR-8E create tools/test-blueprint-contract.mjs: Mechanical exclusions and link checks for the destination-only shape. | BPR-8E create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Blueprint Review Checklist for the main-readiness reviewer. | BPR-5 update BLUEPRINT.md and templates/BLUEPRINT.md: Rewrite as destination-only narrative with no status, version, evidence or catalog material. | BPR-5 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Define the Blueprint as the adaptable narrative of the desired finished product. | BPR-5 update AGENTS.md (State Resolution) and templates/AGENTS.md: The Blueprint carries no current status, release chronology or generated capability catalog. | BPR-5 update LEXICON.md (Blueprint term) and templates/LEXICON.md: Define Blueprint as destination narrative, not status, ADR inventory or proof archive.",
+    "home": "BLUEPRINT.md and templates/BLUEPRINT.md; tools/test-blueprint-contract.mjs; workbench/specs/CATALOG.md; RUNBOOK.md (Independent Review Boundaries, main-readiness) and templates/RUNBOOK.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md; workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md; AGENTS.md (State Resolution) and templates/AGENTS.md; LEXICON.md (Blueprint term) and templates/LEXICON.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "BPR-8A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "BPR-8E",
+      "revision": "56b459da"
+    },
+    {
+      "id": "BPR-5",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000F"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "BPR-8A",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-8A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "BPR-8E",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-8E (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "BPR-5",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-5 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How is live status and release history kept out of the Blueprint?",
+    "question": "How is live status and release history kept out of the Blueprint?",
+    "sources": [
+      {
+        "id": "BPR-8A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "BPR-8E",
+        "revision": "56b459da"
+      },
+      {
+        "id": "BPR-5",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:19.521Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:19.521Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 046 of the 2026-09-26 grouping (\"Blueprint and architectural decision records\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Work state, catalogs, verification and chronology belong to their existing owners. Semantic review checks the boundary; structural tests alone cannot establish it.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:19.537Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "BPR-8A: Blueprint contains no version history or release goals, live status or current health, implementation evidence, or generated Spec catalog. Version identity goes to the manifest and release Specs; current work and status to Specs and TASKBOARD; verification to tests and evidence; the full Spec inventory is manifest-derived. Blueprint keeps the destination and selective links.\nBPR-8E: When Kayden asks whether a candidate is ready for main, the independent reviewer checks the Blueprint boundary: destination narrative and whole-product constraints only; no version chronology, live status, Spec inventory, evidence or displaced ADR/Spec/Runbook content; ADR links selective, active and coherent; each new ADR has a recorded Blueprint relevance disposition. Mechanical checks support structure and links but cannot replace semantic review.\nBPR-5: Blueprint describes the destination: the coherent narrative of the finished product, its goals, what it solves, desired behavior, qualities and how the architectural parts work together. It excludes current activity, completion status, version goals, release mechanics and implementation evidence. It may summarize how active ADRs combine but is not a list of ADRs. Project-wide client requirements may belong there."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-8A, BPR-8E, BPR-5 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "BPR-8A update BLUEPRINT.md and templates/BLUEPRINT.md: Remove version, status, evidence and catalog material. | BPR-8A create tools/test-blueprint-contract.mjs: Mechanically check the destination-only shape. | BPR-8A update workbench/specs/CATALOG.md: Own the generated capability inventory instead of the Blueprint. | BPR-8E update RUNBOOK.md (Independent Review Boundaries, main-readiness) and templates/RUNBOOK.md: Require an explicit semantic pass/fail verdict on the Blueprint checklist; structure and link checks alone are insufficient. | BPR-8E create tools/test-blueprint-contract.mjs: Mechanical exclusions and link checks for the destination-only shape. | BPR-8E create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Blueprint Review Checklist for the main-readiness reviewer. | BPR-5 update BLUEPRINT.md and templates/BLUEPRINT.md: Rewrite as destination-only narrative with no status, version, evidence or catalog material. | BPR-5 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Define the Blueprint as the adaptable narrative of the desired finished product. | BPR-5 update AGENTS.md (State Resolution) and templates/AGENTS.md: The Blueprint carries no current status, release chronology or generated capability catalog. | BPR-5 update LEXICON.md (Blueprint term) and templates/LEXICON.md: Define Blueprint as destination narrative, not status, ADR inventory or proof archive.",
+            "home": "BLUEPRINT.md and templates/BLUEPRINT.md; tools/test-blueprint-contract.mjs; workbench/specs/CATALOG.md; RUNBOOK.md (Independent Review Boundaries, main-readiness) and templates/RUNBOOK.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md; workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md; AGENTS.md (State Resolution) and templates/AGENTS.md; LEXICON.md (Blueprint term) and templates/LEXICON.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:19.553Z",
+      "reason": "Ledger row BPR-8A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-8A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:19.570Z",
+      "reason": "Ledger row BPR-8E (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-8E",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:19.587Z",
+      "reason": "Ledger row BPR-5 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-5",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:19.605Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:54.719Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Artifact Types pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000F"
+          ]
+        }
+      ]
+    }
+  ]
+}

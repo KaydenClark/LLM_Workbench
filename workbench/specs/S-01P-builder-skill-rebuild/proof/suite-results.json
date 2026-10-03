@@ -1,0 +1,369 @@
+{
+  "source_candidate": "82cd8d1fbc79cb871429439a059be792bc59c137",
+  "checks": [
+    {
+      "command": "node tools/test-spec-workbench.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 44.22,
+      "output_sha256": "f1b1f523d373d6230bc066d2ab2126f5899a98a46c36550441ff3ea46c61f946"
+    },
+    {
+      "command": "node tools/test-skill-catalog.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 0.11,
+      "output_sha256": "1b84585b71e42ff621bbb971bb6b21542c4a9b0d54114c372be76a127be66f8b"
+    },
+    {
+      "command": "node tools/test-skill-inspection.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 0.06,
+      "output_sha256": "61642fa94fa93bca892f22a44d3d8cb5ce13cc6579991a57848b71739a6a4701"
+    },
+    {
+      "command": "node tools/test-skills-lane.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 1.56,
+      "output_sha256": "041be6e7daf06337f06a4090131920da40d6518cf69d14b1c6c9fe27ef0b7b94"
+    },
+    {
+      "command": "node tools/test-core-composition.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 1.29,
+      "output_sha256": "bc8d5e1f9020b0f10c397c50aa63a03f07d7411fb14731d28c21307053959a76"
+    },
+    {
+      "command": "node tools/test-project-evidence.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 0.64,
+      "output_sha256": "a28ed34f104848fc97c7958a62a473164ee4ae42a5e06acbcf751e2552062e87"
+    },
+    {
+      "command": "node tools/test-genesis-from-decisions.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 12.97,
+      "output_sha256": "0d5f32c544758f7e5c661af4ad63abf29340e1cdd8096c833e16cf347db41820"
+    },
+    {
+      "command": "node tools/test-blueprint-contract.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 0.05,
+      "output_sha256": "fd1e113d4e53c6b7e4746a7c804bbc389fcffd6a3e17905564f10031c8d06ea1"
+    },
+    {
+      "command": "node tools/test-session-transport.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 6.4,
+      "output_sha256": "69b5768db29e5cb82aee580c67c0124f892725ec0a23e6c992ac5dae433a81bd"
+    },
+    {
+      "command": "node tools/test-configured-host.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 1.57,
+      "output_sha256": "aed686d6e11318c3655703d14c44c7c268942e2f4cec4796eeb35e7d7cb37fc2"
+    },
+    {
+      "command": "node tools/test-core-skill-installer.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 5.76,
+      "output_sha256": "86b506464c9f370320abce1d175715bda9b3524c8e5be0a51ecaede3988f6773"
+    },
+    {
+      "command": "node tools/test-workbench-layout.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 21.29,
+      "output_sha256": "5c718a8cd824d5608310ce5b33b0f18598d4f4b63d202ceab8691f3b8389264f"
+    },
+    {
+      "command": "node tools/test-workbench-adoption.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 5.2,
+      "output_sha256": "b3ab7062ac170aa6f0fa5f71c046d7287ec4636f89ae942ded0cdf5c00495c72"
+    },
+    {
+      "command": "node tools/test-workbench-upgrade.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 3.67,
+      "output_sha256": "abfb4f274e637faca1377beb44605d5046976c77e797614fc413d2e969b043d7"
+    },
+    {
+      "command": "node tools/test-workbench-tools.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 4.22,
+      "output_sha256": "02c2c10b7c2079430fcdce1550abefea358cf576ae1fb0756b17a39a110a123d"
+    },
+    {
+      "command": "node tools/test-diagnostics.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 10.97,
+      "output_sha256": "a55f017598144d470f44c16ecf89282a11dc50506a521037eddc15ca179a27d5"
+    },
+    {
+      "command": "node tools/test-adr.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 4.26,
+      "output_sha256": "bbcb48168d4bfe79dc35aa3c50432dcfc4594ad8d7b83fc78ed7301d0ce6ce9f"
+    },
+    {
+      "command": "node tools/test-governance-core.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 0.06,
+      "output_sha256": "d4581e0d715101fa495e21434cbedf77fe355f8328de3ad352890bc6116e14ce"
+    },
+    {
+      "command": "node tools/test-branch-closeout.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 1.72,
+      "output_sha256": "4c35e3a749ab83db35c195dbad67831f85efd92761c059d6e4141bccb38abd3f"
+    },
+    {
+      "command": "node tools/test-wiki.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 1.94,
+      "output_sha256": "22e9c026a346fa6ad33c3caaa9c93d5055a4afd62f982be0be5a80d7e860ed4a"
+    },
+    {
+      "command": "node tools/test-sessions.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 1.66,
+      "output_sha256": "3f710d50b931d9b37def536451d2ab5fb1b65a60bf33d7a2d18a08bd9e681bfb"
+    },
+    {
+      "command": "node tools/test-notepads.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 5.35,
+      "output_sha256": "b121a78798e0c817e21f7ff8aaacaa6f4486ddb7a843c7eabcaf5a857f98f5fa"
+    },
+    {
+      "command": "node tools/test-visible-ids.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 0.87,
+      "output_sha256": "18c80a258564ae9dc1d16966a66575b4b8b34867aa8cd1269a8d98afc9cf4beb"
+    },
+    {
+      "command": "node tools/test-workbench-identity.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 2.06,
+      "output_sha256": "d5baa89ef9408108eaa1f343deb65223eb1f5bba43fcfd20888e3a0b97a604a1"
+    },
+    {
+      "command": "node tools/test-visible-id-consumers.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 6.32,
+      "output_sha256": "aa3d53d2941676c54c29319e8da90137daf68c63be2c8a2a3886e2c3ca0afd68"
+    },
+    {
+      "command": "node tools/test-direct-promotion.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 1.92,
+      "output_sha256": "829cfac7efeba01aea75289ba917366b23d9245d00a414292f7b1a3fd2187c99"
+    },
+    {
+      "command": "node tools/test-workbench-round-trip.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 9.87,
+      "output_sha256": "f87d275fd3a857ee72c9d6996423984b1c7d828d024e7a189b2a0efd762c54b1"
+    },
+    {
+      "command": "node tools/test-cross-provider-fixture.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 1.07,
+      "output_sha256": "4cedcdbf38344fc6d6bc454ef80a75dfef5b4fdd3ae6cfb205b0fd7af45544b5"
+    },
+    {
+      "command": "node tools/test-portability-matrix.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 0.33,
+      "output_sha256": "52301406d634642ccff4fb7b7dfe63a783cecb571993720c11b2bdd991891720"
+    },
+    {
+      "command": "node tools/test-workbench-dogfood.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 1.31,
+      "output_sha256": "5edca15bea0b229bb194025549b2ca7d1e9c08d549d28169904fa162f06c6ac2"
+    },
+    {
+      "command": "node tools/test-evaluate-workbench.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 0.3,
+      "output_sha256": "2f9a0468ee094a221fb6e84b551484e3ed279bb371f694dbc9993980bb6ab887"
+    },
+    {
+      "command": "node tools/test-guardrail-audit.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 0.12,
+      "output_sha256": "373b04e4a2607c087192de6b9e5890b8340195fc3bd4c17b1a681168289d2051"
+    },
+    {
+      "command": "node tools/test-context-tools.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 0.14,
+      "output_sha256": "6f0f4a88425cd465e3f9b9fbb1ed61a07f4b6182d20fc71da78f8e39713af2a1"
+    },
+    {
+      "command": "node tools/test-outcome-trials.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 0.31,
+      "output_sha256": "e0ef32e1edb1645577979090997c74ea4e9c92c98a9da29a9f4d67c42f42498b"
+    },
+    {
+      "command": "node tools/test-eval-runner.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 0.39,
+      "output_sha256": "1e00649663021f393198c9290a6eaa021118d679f92db37f204d13089287f073"
+    },
+    {
+      "command": "node tools/test-feedback-automation.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 0.19,
+      "output_sha256": "841f64c4c0bb3461589e16e36202cc8ad61a5542f704c807193d3f1723e1ea12"
+    },
+    {
+      "command": "node tools/test-symlink-invocation.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 0.61,
+      "output_sha256": "c5b2fc2ae64b4c2133bbef18208dff41ba5aff026a7a6ebbae29b3e184f77056"
+    },
+    {
+      "command": "node tools/test-control-fidelity.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 1.68,
+      "output_sha256": "a51cf397fdccc70aa5a2b8717c6bf17eed7549826d9810c903008dd83c2f9c81"
+    },
+    {
+      "command": "node tools/test-spec-citation-anchors.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 6.11,
+      "output_sha256": "0fa533256576608fbb6213b0252747cb26d0cbaa748476e1503a74574e02af5e"
+    },
+    {
+      "command": "node tools/test-controls-vocabulary-sweep.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 0.04,
+      "output_sha256": "db05db954d9a33d47fef93f1fec18d654061d4d34641e26e04ac91e667f5ead4"
+    },
+    {
+      "command": "node tools/test-spec-report.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 6.2,
+      "output_sha256": "48ee234d9d42dc5a41f2d53266d7c7b762a07e29de68d621a5a8a51c9e02aab8"
+    },
+    {
+      "command": "node tools/test-self-drift.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 0.17,
+      "output_sha256": "e6a16f43199f4c16067dd2b93c0d4b0f56bd9f89ab0669770c1415330e500f3d"
+    },
+    {
+      "command": "node tools/test-feedback-inventory.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 0.06,
+      "output_sha256": "37d22545d0d02a263079661cc1392ce33ff71f6f54b57b6a5bdc6cb3c9cd55b4"
+    },
+    {
+      "command": "node tools/test-grilling-ledger.mjs",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 0.06,
+      "output_sha256": "0c73ab5988d5bd70949807241fcb132d0103f4f90fcc75d06c2b960c6e787aba"
+    },
+    {
+      "command": "python3 tools/test-check-append-only.py",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 77.94,
+      "output_sha256": "1c60a426838d1ccdac0d98496288fb9edd0cec4f0c2d781c2be92417d29fd934"
+    },
+    {
+      "command": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 0.37,
+      "output_sha256": "bd0149c9b483b4ad4fa7e29309e544eda90aaccca0628e5235947f85beaa2195"
+    },
+    {
+      "command": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 0.04,
+      "output_sha256": "3d0626fb06d8ff87f9222770f75b4f13795d44057e597bab44eead3b0d4f4f07"
+    },
+    {
+      "command": "node workbench/tools/spec-workbench.mjs doctor",
+      "required_by": "AGENTS.md",
+      "exit_code": 0,
+      "seconds": 0.4,
+      "output_sha256": "0e6802680e277b429072a8ce49192a1a22b705913934293be7536fab1dd94f01"
+    },
+    {
+      "command": "node tools/test-team-coordination.mjs",
+      "required_by": "RUNBOOK.md",
+      "exit_code": 0,
+      "seconds": 0.03,
+      "output_sha256": "3e105068c0fd2ef9dc5edf775b2742b7144f6c00d66af20bb07ef495cb079840"
+    },
+    {
+      "command": "node tools/test-team-coordination-demo.mjs",
+      "required_by": "RUNBOOK.md",
+      "exit_code": 0,
+      "seconds": 0.03,
+      "output_sha256": "0fb9e546e326d750d8f92b13bc6dc93b017d4d097e79de0c05381a39879668da"
+    },
+    {
+      "command": "node tools/test-socket-contract.mjs",
+      "required_by": "RUNBOOK.md",
+      "exit_code": 0,
+      "seconds": 0.04,
+      "output_sha256": "b4e41aea140124647f3d1e0b81cb018939dfb21744358ef5b7807e88da1e5b99"
+    },
+    {
+      "command": "node tools/test-builder-skill.mjs",
+      "required_by": "S-01P",
+      "exit_code": 0,
+      "seconds": 0.04,
+      "output_sha256": "6598906b4305dad1996e3fe738ba59563cde46de48e96be4aa95dca96481f625"
+    }
+  ]
+}

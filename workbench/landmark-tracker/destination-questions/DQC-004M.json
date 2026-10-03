@@ -1,0 +1,202 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-004M",
+  "revision": 7,
+  "title": "How should later corrections maintain knowledge from a retired Spec?",
+  "question": "How should later corrections maintain knowledge from a retired Spec?",
+  "answer": "WF-8A: No reopen ceremony. A small corrective change against a retired Spec is a Task plus an update to the Wiki record of the reconciled retired Spec; SPEC.md is not resurrected, though a Spec branch may still carry the commit. 'What we wanted was the Spec, if that is right, then we are okay.'\nWF-8G: Route by scope and destination, not Task count. A gap against an existing Spec destination is fixed with reopened or corrective Tasks, even when several are needed. A new Spec is only for a distinct scoped objective with its own destination, such as investigating why the journey missed something. TASK.md holds active work state and TASKBOARD projects it; a Spec is open if it has Tasks on the board.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-8A, WF-8G (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WF-8A update LEXICON.md (Task row) and templates/LEXICON.md: Task widened so it can prove against a reconciled Wiki record, not only an active SPEC.md; owned by S-00P TK-004. | WF-8A update workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md: Packet membership widened for Tasks that prove against a Wiki record. | WF-8A update RUNBOOK.md and templates/RUNBOOK.md: Corrective-Task procedure after retirement; owned by S-00P TK-003 and TK-005. | WF-8A update workbench/wiki (features or design-concepts article of the retired Spec): A corrective Task updates the Wiki record that holds the reconciled retired Spec. | WF-8G update BLUEPRINT.md: States the scope-and-destination rule for Tasks versus new Specs. | WF-8G update AGENTS.md (documentation ownership table) and templates/AGENTS.md: Active work state moves from SPEC.md to TASK.md, with TASKBOARD as projection; owned by S-00P TK-002 and TK-005. | WF-8G update LEXICON.md (Spec, Task rows) and templates/LEXICON.md: Spec as objective with a destination; Task as the open work item; owned by S-00P TK-004. | WF-8G update workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md: TASK.md owns active work state and the board projects it.",
+    "home": "LEXICON.md (Task row) and templates/LEXICON.md; workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md; RUNBOOK.md and templates/RUNBOOK.md; workbench/wiki (features or design-concepts article of the retired Spec); BLUEPRINT.md; AGENTS.md (documentation ownership table) and templates/AGENTS.md; LEXICON.md (Spec, Task rows) and templates/LEXICON.md; workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "WF-8A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-8G",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000J",
+    "LMK-000N"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WF-8A",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-8A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-8G",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-8G (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should later corrections maintain knowledge from a retired Spec?",
+    "question": "How should later corrections maintain knowledge from a retired Spec?",
+    "sources": [
+      {
+        "id": "WF-8A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-8G",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:27.482Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:27.482Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 113 of the 2026-09-26 grouping (\"Durable knowledge and retirement\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: A small correction can be a Task plus an update to the reconciled Wiki explanation without resurrecting the old SPEC.md.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:27.508Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WF-8A: No reopen ceremony. A small corrective change against a retired Spec is a Task plus an update to the Wiki record of the reconciled retired Spec; SPEC.md is not resurrected, though a Spec branch may still carry the commit. 'What we wanted was the Spec, if that is right, then we are okay.'\nWF-8G: Route by scope and destination, not Task count. A gap against an existing Spec destination is fixed with reopened or corrective Tasks, even when several are needed. A new Spec is only for a distinct scoped objective with its own destination, such as investigating why the journey missed something. TASK.md holds active work state and TASKBOARD projects it; a Spec is open if it has Tasks on the board."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-8A, WF-8G (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WF-8A update LEXICON.md (Task row) and templates/LEXICON.md: Task widened so it can prove against a reconciled Wiki record, not only an active SPEC.md; owned by S-00P TK-004. | WF-8A update workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md: Packet membership widened for Tasks that prove against a Wiki record. | WF-8A update RUNBOOK.md and templates/RUNBOOK.md: Corrective-Task procedure after retirement; owned by S-00P TK-003 and TK-005. | WF-8A update workbench/wiki (features or design-concepts article of the retired Spec): A corrective Task updates the Wiki record that holds the reconciled retired Spec. | WF-8G update BLUEPRINT.md: States the scope-and-destination rule for Tasks versus new Specs. | WF-8G update AGENTS.md (documentation ownership table) and templates/AGENTS.md: Active work state moves from SPEC.md to TASK.md, with TASKBOARD as projection; owned by S-00P TK-002 and TK-005. | WF-8G update LEXICON.md (Spec, Task rows) and templates/LEXICON.md: Spec as objective with a destination; Task as the open work item; owned by S-00P TK-004. | WF-8G update workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md: TASK.md owns active work state and the board projects it.",
+            "home": "LEXICON.md (Task row) and templates/LEXICON.md; workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md; RUNBOOK.md and templates/RUNBOOK.md; workbench/wiki (features or design-concepts article of the retired Spec); BLUEPRINT.md; AGENTS.md (documentation ownership table) and templates/AGENTS.md; LEXICON.md (Spec, Task rows) and templates/LEXICON.md; workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:27.534Z",
+      "reason": "Ledger row WF-8A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-8A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:27.564Z",
+      "reason": "Ledger row WF-8G (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-8G",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:27.594Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:57.136Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Wiki pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000J"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:59.160Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Durable Knowledge pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000J"
+          ],
+          "to": [
+            "LMK-000J",
+            "LMK-000N"
+          ]
+        }
+      ]
+    }
+  ]
+}

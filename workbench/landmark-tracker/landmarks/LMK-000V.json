@@ -1,0 +1,26 @@
+{
+  "schema": "landmark-tracker/landmark@1",
+  "id": "LMK-000V",
+  "revision": 1,
+  "title": "Workbench Template",
+  "summary": "The reference room proves that the Workbench can be installed, used and upgraded outside its source repository.",
+  "importance": "A feature or framework pillar on the core path that deserves Blueprint representation, from the starting inventory the owner approved on 2026-09-26 (landmark-definition note decision-037); boundaries remain refinable and overlap is allowed.",
+  "origin": {
+    "title": "Workbench Template",
+    "summary": "The reference room proves that the Workbench can be installed, used and upgraded outside its source repository.",
+    "revision": 1,
+    "at": "2026-10-01T23:50:01.782Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:50:01.782Z",
+      "reason": "Owner-approved 2026-09-26 starting-inventory candidate; at least one backfilled card clearly belongs to it: DQC-004Z, DQC-005B, DQC-005H, DQC-005J.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    }
+  ]
+}

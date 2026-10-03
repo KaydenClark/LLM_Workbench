@@ -1,0 +1,3136 @@
+{
+  "schemaVersion": 1,
+  "operation": "workbench-self-drift",
+  "phase": "pre",
+  "sourceRevision": "9b132fed1d138cce3308cdda1cec5d159857ec7f",
+  "dirty": false,
+  "workbenchVersion": "v3.2.1",
+  "sourceIdentity": {
+    "repository": "https://github.com/KaydenClark/LLM_Workbench",
+    "release": "v3.1.0",
+    "commit": "57fb22fbbde012c1c8741d46558a9628fae28b82"
+  },
+  "sourceIdentityRole": "historical-adoption",
+  "seedIdentity": [
+    {
+      "artifact": "workbench/feedback/REPORT_FORMAT.md",
+      "targetState": "present",
+      "repository": null,
+      "release": "v3.1.4",
+      "commit": null,
+      "recordedHash": "f9b3725991fa0ddc05dc686479ba2174bfcad87dcf93df9d2f352b2c403129a3",
+      "observedHash": "1035b0f88438abfb01902a8bb032e55e031833ff314146d9698e0ffc6a727071",
+      "identityLimit": "Missing repository/commit fields remain unknown; matching bytes do not establish source generation"
+    },
+    {
+      "artifact": "workbench/sessions/notepads/templates/notepad.schema.json",
+      "targetState": "present",
+      "repository": null,
+      "release": "v3.1.4",
+      "commit": null,
+      "recordedHash": "2bdc47d139314642bc4b90e8e2d2e2a5e24cc4d258aaa90ec4d126def2be00c0",
+      "observedHash": "2bdc47d139314642bc4b90e8e2d2e2a5e24cc4d258aaa90ec4d126def2be00c0",
+      "identityLimit": "Missing repository/commit fields remain unknown; matching bytes do not establish source generation"
+    },
+    {
+      "artifact": "workbench/sessions/notepads/templates/work.example.json",
+      "targetState": "present",
+      "repository": null,
+      "release": "v3.1.4",
+      "commit": null,
+      "recordedHash": "7608eb9e6879fb564041011f6c09756de696b01a1292a48c2cee9e32c6b82376",
+      "observedHash": "7608eb9e6879fb564041011f6c09756de696b01a1292a48c2cee9e32c6b82376",
+      "identityLimit": "Missing repository/commit fields remain unknown; matching bytes do not establish source generation"
+    },
+    {
+      "artifact": "workbench/sessions/notepads/templates/grilling.example.json",
+      "targetState": "present",
+      "repository": null,
+      "release": "v3.1.4",
+      "commit": null,
+      "recordedHash": "4856b43d2f939a131172e24f455fca457b17508da505d56c89312d58906a2458",
+      "observedHash": "4856b43d2f939a131172e24f455fca457b17508da505d56c89312d58906a2458",
+      "identityLimit": "Missing repository/commit fields remain unknown; matching bytes do not establish source generation"
+    },
+    {
+      "artifact": "workbench/sessions/notepads/templates/handoff.example.json",
+      "targetState": "absent",
+      "repository": null,
+      "release": "v3.1.4",
+      "commit": null,
+      "recordedHash": "4923c44076344979732fc87ca4aadde82b3bf98914003e7e298084c67f67d1b7",
+      "observedHash": null,
+      "identityLimit": "Missing repository/commit fields remain unknown; matching bytes do not establish source generation"
+    }
+  ],
+  "inventory": [
+    {
+      "artifact": "workbench/manifest.json",
+      "classification": "current",
+      "sha256": "17279aa51f5477cc171ceee07cd4cc458d33aeed4609fd9865ef9e60cb9b2366",
+      "bytes": 2765,
+      "status": null
+    },
+    {
+      "artifact": "AGENTS.md",
+      "classification": "current",
+      "sha256": "b1dd211b0174cdfec4924f443e9d1541c8334569aa35d35c71b8a3d3221a748d",
+      "bytes": 35289,
+      "status": null
+    },
+    {
+      "artifact": "BLUEPRINT.md",
+      "classification": "current",
+      "sha256": "5d3d7697c754ce478b6ed573134d75bc61b6ab7b0d3b4c68a00566362764c96a",
+      "bytes": 20521,
+      "status": null
+    },
+    {
+      "artifact": "LEXICON.md",
+      "classification": "current",
+      "sha256": "1bfc27dd2011f40d2435a432e67017dd901f461c7acbbed75443f288bc0962b7",
+      "bytes": 51362,
+      "status": "active"
+    },
+    {
+      "artifact": "RUNBOOK.md",
+      "classification": "current",
+      "sha256": "2193389b876136b59e5a9a5f7336fcc1e9b3c0b1a52d394fc77dcd0ffac824ea",
+      "bytes": 134170,
+      "status": null
+    },
+    {
+      "artifact": "README.md",
+      "classification": "current",
+      "sha256": "1a762b2645a6dfbc700561ef9d7e21de915979e3e3e993361c02ad2a69aef2d5",
+      "bytes": 21015,
+      "status": null
+    },
+    {
+      "artifact": "TASKBOARD.md",
+      "classification": "current",
+      "sha256": "ab3f372452ac3e92e67c7ebd98a0f8f103fe81472b6ed34db47e69bd38d809b4",
+      "bytes": 16730,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/CATALOG.md",
+      "classification": "current",
+      "sha256": "a86cd127ae3a23c7c5fe96cb16d615c5b3432d8d9fc94fb0d6b722ab7dc7efd3",
+      "bytes": 32874,
+      "status": null
+    },
+    {
+      "artifact": "workbench/wiki/MEMORY.md",
+      "classification": "current",
+      "sha256": "0ffe71e5005219d49f071b640da7c1c64ceea02deba7cf1c3ae7910f22f17fbf",
+      "bytes": 16889,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/REGISTER.md",
+      "classification": "current",
+      "sha256": "d8c05cf6f599b6aba119d86ca5e454c41a8db6e9aa9f680447fa5d4e35655405",
+      "bytes": 11102,
+      "status": null
+    },
+    {
+      "artifact": "workbench/feedback/REPORT_FORMAT.md",
+      "classification": "current",
+      "sha256": "1035b0f88438abfb01902a8bb032e55e031833ff314146d9698e0ffc6a727071",
+      "bytes": 5564,
+      "status": null
+    },
+    {
+      "artifact": "workbench/.workbench-seed.json",
+      "classification": "current",
+      "sha256": "1777df0497022e7e0b7d6f09bc084b18e718b1fe0efaf785cc0edb5cc781a2dc",
+      "bytes": 1016,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md",
+      "classification": "historical",
+      "sha256": "e650be49dffa5c31f523b4c41cc65b461b0f452ea4bf74df7eddff6c1f214d7d",
+      "bytes": 52556,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/tasks/TK-003/TASK.md",
+      "classification": "historical",
+      "sha256": "4dd473256bf1590cc07102e2efdf086efb11fcc8df8db60be2045ee51b3436b3",
+      "bytes": 2443,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/tasks/TK-004/TASK.md",
+      "classification": "historical",
+      "sha256": "53c00c6b17c6c1ada402f0e3d7319c30a6e1bec29fc436828772769deac0fcf8",
+      "bytes": 5948,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/tasks/TK-007/TASK.md",
+      "classification": "historical",
+      "sha256": "484c9066a10a75a5bb71eb7879b17944bee910e7c2438eae182f802c10fecae4",
+      "bytes": 6009,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-001-progressive-disclosure/SPEC.md",
+      "classification": "historical",
+      "sha256": "d63fe494d859e6d2fa5f940acbc60f1f34a9f16691fbc6660cc12d48bae97f7b",
+      "bytes": 7445,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-001Z-landmark-tracker-view/SPEC.md",
+      "classification": "current",
+      "sha256": "3096973e10baf1b6100e9424cd7a85ce895c4956a00504630b6d0f351f95ee16",
+      "bytes": 14019,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-001Z-landmark-tracker-view/tasks/TK-002U/TASK.md",
+      "classification": "current",
+      "sha256": "5c5ece1fd26f3da5599bbb22dcbe960162ce6ed7c2317b5faa09760a054f9bb0",
+      "bytes": 7139,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-002-heldout-evaluation/SPEC.md",
+      "classification": "historical",
+      "sha256": "ae6ab781319ee10e7563328da41c9f9ecec705006b289882d12d9be74794b74d",
+      "bytes": 2884,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-002A-landmark-records/SPEC.md",
+      "classification": "current",
+      "sha256": "71e8dc088e57850583896b3a71d1e31bf036e11a2cfca997988db4edead17ce1",
+      "bytes": 20306,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-002A-landmark-records/tasks/TK-002T/TASK.md",
+      "classification": "current",
+      "sha256": "81d2be6c3daf01610cdb22f0d01a01e1538c24b3c7c611b789e763b20ec1287d",
+      "bytes": 11240,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-002A-landmark-records/tasks/TK-002W/TASK.md",
+      "classification": "current",
+      "sha256": "f10db3583273d806a5842ace29720e84a4cc93d06891bdf692f075b518b597ac",
+      "bytes": 4313,
+      "status": "deferred"
+    },
+    {
+      "artifact": "workbench/specs/S-002B-destination-question-cards/SPEC.md",
+      "classification": "current",
+      "sha256": "76a75d267ec711a420c8310337f11b1075f162450dedde62d9271548d125813f",
+      "bytes": 16897,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-002B-destination-question-cards/tasks/TK-002S/TASK.md",
+      "classification": "current",
+      "sha256": "226a67e89990d59066651fdf18b630b9eb468b0e13aedcf051077d5dc039fffe",
+      "bytes": 11149,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-002B-destination-question-cards/tasks/TK-002V/TASK.md",
+      "classification": "current",
+      "sha256": "d7af916fe24aca3df3d8bf8f3eb8898d3403c90ba0662f9204a23b6027bcca37",
+      "bytes": 5233,
+      "status": "deferred"
+    },
+    {
+      "artifact": "workbench/specs/S-002C-director-role/SPEC.md",
+      "classification": "current",
+      "sha256": "02035300f207a281c179c8b3716f9b58e5f52e7922cbe0af0859b5fb8c89b533",
+      "bytes": 31333,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-002C-director-role/tasks/TK-002X/TASK.md",
+      "classification": "current",
+      "sha256": "8b4000fbb84da78943255215eb2089f63cbc11d1feac9febdd20a8774682a56b",
+      "bytes": 15640,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-002C-director-role/tasks/TK-002Y/TASK.md",
+      "classification": "current",
+      "sha256": "f4b237c56fbe80492447da8bf6150ff8fc202b29edefd8a5d2be8c5181600b40",
+      "bytes": 10947,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-002D-dispatcher-role/SPEC.md",
+      "classification": "current",
+      "sha256": "f6cc8996d7b578d085505e46050f394b39f5c739d62ddd92ea9cdc764b1d8056",
+      "bytes": 24538,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-002D-dispatcher-role/tasks/TK-003A/TASK.md",
+      "classification": "current",
+      "sha256": "08cfc081eab0d5592a7ec1dcd307c2eaa65c21ae8a952e51916179b17d28b24a",
+      "bytes": 7226,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-002D-dispatcher-role/tasks/TK-003B/TASK.md",
+      "classification": "current",
+      "sha256": "ef717934f09ac0712a4641284cae28cf9ee206b88a7685a24007183b52c81c67",
+      "bytes": 7086,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-002E-worker-role/SPEC.md",
+      "classification": "planned",
+      "sha256": "1aab0b035face2729600544d9f923086d5dbd1d80bc7a023b310df5ad34c0aba",
+      "bytes": 7721,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-002F-spec-planner-stance/SPEC.md",
+      "classification": "current",
+      "sha256": "fd88a97ad4c975dbc85cba6467f883b2a0e5ad9ef507cfb6c34c29f9ee7ed7a4",
+      "bytes": 29868,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-002F-spec-planner-stance/tasks/TK-003D/TASK.md",
+      "classification": "current",
+      "sha256": "07d80fcb8a1eda77193de8b9376e44cecb19408df821e2738135eab8785a32b1",
+      "bytes": 7321,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-002F-spec-planner-stance/tasks/TK-003E/TASK.md",
+      "classification": "current",
+      "sha256": "124b429b24927b42f25975c5b217a2fbfada55978d489b389ab4b61b34c4c044",
+      "bytes": 5723,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-002F-spec-planner-stance/tasks/TK-003F/TASK.md",
+      "classification": "current",
+      "sha256": "465df26904f5c8e524e238e94ccebbad933b686cc37e48776d553234e6e81408",
+      "bytes": 6521,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-002G-spec-manager-stance/SPEC.md",
+      "classification": "current",
+      "sha256": "57f1cfccfff56983cb1edb13815bd9ec20ad634127c7f2fc4a4dee6bb453d29a",
+      "bytes": 30503,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-002G-spec-manager-stance/tasks/TK-003G/TASK.md",
+      "classification": "current",
+      "sha256": "38156b7703718a689a837c063b5e73e39b5e8cd400ca62f08c6b93a6126542ab",
+      "bytes": 8850,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-002G-spec-manager-stance/tasks/TK-003H/TASK.md",
+      "classification": "current",
+      "sha256": "0e724bb9c9486f8d6066573aa6a8a62f1f897a359c40f2e6dbcc237e3697a36a",
+      "bytes": 6846,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-002G-spec-manager-stance/tasks/TK-003I/TASK.md",
+      "classification": "current",
+      "sha256": "a42b11f61f3128b17796ac6901f7b45172242ad5602fa8ad943da47a5f369309",
+      "bytes": 7419,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-002H-domain-modeling-skill/SPEC.md",
+      "classification": "planned",
+      "sha256": "a1da3649587cc07ce50c1f32a4c458e060d127d05436892a44f58e0883f692e4",
+      "bytes": 15776,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-002K-citation-resolution-correction/SPEC.md",
+      "classification": "current",
+      "sha256": "b6a5117163024c3adf0fef8c9246b98ff992eb3642ec471bc4e730df8baa8966",
+      "bytes": 15379,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-002K-citation-resolution-correction/tasks/TK-003U/TASK.md",
+      "classification": "current",
+      "sha256": "7f1d923afa5b163bc5918442fafbc6fb07cddb7d5ffff92edd766cbd77df0a40",
+      "bytes": 3457,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-002K-citation-resolution-correction/tasks/TK-003Y/TASK.md",
+      "classification": "current",
+      "sha256": "c1551cbf6a3c02fa3a443f2e630cf9e79d6adcc4f1e802b23515639b62d74c3d",
+      "bytes": 4948,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-002K-citation-resolution-correction/tasks/TK-003Z/TASK.md",
+      "classification": "current",
+      "sha256": "e79cc48f013ab918dfaf7bfcf590ec3b8e119a27b123d72d5c6e5a7612da87d4",
+      "bytes": 3612,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-002L-skills-draft-wiki-collection/SPEC.md",
+      "classification": "planned",
+      "sha256": "9a40266b8bddb31c30851022aedd3d6f6be148ab32daf6d7e30e44f17d9b7206",
+      "bytes": 14403,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-002M-ask-workbench-skill-alignment/SPEC.md",
+      "classification": "planned",
+      "sha256": "364b6ce8cebfdb35a9e6748befd00025f3a48764f27f443de47b447d1db66be4",
+      "bytes": 12402,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-002N-brainstorm-skill-alignment/SPEC.md",
+      "classification": "planned",
+      "sha256": "6fa28b8d986a504ee41f7b082eae9c5fd65d523a74df3a59858de787a2b8d9e5",
+      "bytes": 10489,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-002O-sitrep-skill-alignment/SPEC.md",
+      "classification": "planned",
+      "sha256": "e26413d6cea6aa5058fe93f76911a5727a4048e0db7d91850bbcbab46ca7633c",
+      "bytes": 11116,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-002P-writing-for-agents-skill-adoption/SPEC.md",
+      "classification": "planned",
+      "sha256": "d8f353ff323c4e127b51f714ad2485e0d85ab021f7ce0a4764a8e82334d618f3",
+      "bytes": 15291,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-002Q-workbench-setup-step/SPEC.md",
+      "classification": "planned",
+      "sha256": "2e7255580eefcfb8827d1fe3648a035572bf444fe5ef54bdc4cc7f5b74d3d01b",
+      "bytes": 15151,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-002R-setup-pre-commit-skill-alignment/SPEC.md",
+      "classification": "planned",
+      "sha256": "e476485c3625a2be9e34c8e00edc65e429d8b190dde80b330d5d8382ba7a24cd",
+      "bytes": 10995,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-002S-setup-ts-deep-modules-skill-alignment/SPEC.md",
+      "classification": "planned",
+      "sha256": "33e497903cd3fcc5e6d2d17a6aa3119c5853f947517103903d726fffbd56d612",
+      "bytes": 9847,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-002T-implement-spec-skill-adoption/SPEC.md",
+      "classification": "planned",
+      "sha256": "4e962e5c003c22ad6f8a0d906a43ecd747cdde9ce76e361e72414918ec5d2289",
+      "bytes": 10330,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-002U-pr-skill-adoption/SPEC.md",
+      "classification": "planned",
+      "sha256": "d7290ff6b1bb3a2d137e1d05b8a1cd645da647b6a9969fa428c7879442217f04",
+      "bytes": 9686,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-002V-retro-skill-adoption/SPEC.md",
+      "classification": "planned",
+      "sha256": "acd4b2feb499d7c0e1c6699915d0dad268b304e2cb126d5938f1ef001750ca1f",
+      "bytes": 11167,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-002W-wayfinder-skill-alignment/SPEC.md",
+      "classification": "planned",
+      "sha256": "cdeef9c6494e0bd863fad5747c9cf4f25cb3f074aa88e4421814b30b995b8a56",
+      "bytes": 11521,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-002X-research-skill-alignment/SPEC.md",
+      "classification": "planned",
+      "sha256": "f5676f256d5875864dbcd29f4fc4e818eedad517271455e75ac07112bf4724f2",
+      "bytes": 11165,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-002Y-prototype-skill-alignment/SPEC.md",
+      "classification": "planned",
+      "sha256": "a923d54cc0fbe0905a69bfe857bf44d128d014f77af23f17aadf80dcb3e33ff9",
+      "bytes": 10804,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-002Z-design-an-interface-skill-alignment/SPEC.md",
+      "classification": "planned",
+      "sha256": "5047e9764194c065982802a01d0d87ee47ce1a0fed60cd2558b922b3068cbd7d",
+      "bytes": 10892,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-003-dungeon-friends-pilot/SPEC.md",
+      "classification": "planned",
+      "sha256": "14ae0dd1646358dccded755650f7310e07af7b783ab776f99e5aef32ab3d84d5",
+      "bytes": 1889,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-003A-teach-skill-alignment/SPEC.md",
+      "classification": "planned",
+      "sha256": "4655dc0007bc0cec7047bb095f08ca45860bc17144be51d0fcf808b87a01351e",
+      "bytes": 11823,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-003B-wizard-skill-alignment/SPEC.md",
+      "classification": "planned",
+      "sha256": "b8011c28683125dda495d21b8f267a9cd7220cba36cbb7a8b61eaad891203d5c",
+      "bytes": 9847,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-003C-wait-what-skill-adoption/SPEC.md",
+      "classification": "planned",
+      "sha256": "05b6101a7b2a05955afdc5f7045a4a4b969d888f4c430ea4decde05bcc6c43eb",
+      "bytes": 10698,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-003D-to-questionnaire-skill-adoption/SPEC.md",
+      "classification": "planned",
+      "sha256": "9b05ebe96f4c9831e642048f890622fb8d6d3a698563ed64efeec9212dbcef0d",
+      "bytes": 10354,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-003E-foundry-origin-skills-triage/SPEC.md",
+      "classification": "planned",
+      "sha256": "cfebcabc8fd9b9fe03f190c7d9423d4d3ff7874d0d275e4efd6a758766160e9f",
+      "bytes": 13125,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-003F-loop-me-skill-alignment/SPEC.md",
+      "classification": "planned",
+      "sha256": "8e6e301d8b839896a3222e6e36fdc4e5a57fc840e1af01d84d92a292a8037ff4",
+      "bytes": 9998,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-003G-improve-codebase-architecture-skill-alignment/SPEC.md",
+      "classification": "planned",
+      "sha256": "a4b36911b99dcc3afa9027fbd110de148ef6ee162870744021e71790e1db09c2",
+      "bytes": 9654,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-003H-diagnosing-bugs-skill-alignment/SPEC.md",
+      "classification": "planned",
+      "sha256": "d9d90c506e3bf20c5ad1c4ad19751d2d1c334227947461525670b50c017ed43d",
+      "bytes": 11103,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-003I-resolving-merge-conflicts-skill-alignment/SPEC.md",
+      "classification": "planned",
+      "sha256": "20b772bd5f34da27604f2413fb35eb579f5bf50569c03458cc5ea952c3f2b4de",
+      "bytes": 9600,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-003J-triage-skill-adoption/SPEC.md",
+      "classification": "planned",
+      "sha256": "20372685eeafeb82aed1df9cba9b242516b39a51438766d0e934239adf60458e",
+      "bytes": 11461,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-003K-harness-feedback-review-skill-family-alignment/SPEC.md",
+      "classification": "planned",
+      "sha256": "cba44c70fd20d52988680b99e3f4f351a805850ab0a0a02493a2038a5c441088",
+      "bytes": 12409,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-003L-ubiquitous-language-skill-alignment/SPEC.md",
+      "classification": "planned",
+      "sha256": "bc81423eaae781d297ab5e407cd4a3462b902649386db1f87e570a516c166c42",
+      "bytes": 11160,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-003M-codebase-design-skill-alignment/SPEC.md",
+      "classification": "planned",
+      "sha256": "533520e3f055c73c560f5b235914aee842e8507776a3b6469beb5e117fd54b55",
+      "bytes": 10300,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-003N-tdd-skill-alignment/SPEC.md",
+      "classification": "planned",
+      "sha256": "4d5c124763373d3d0bb14ff4ea072e0668142278a06bc108644cf277d9ca4b90",
+      "bytes": 10401,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-003O-lexicon-skill-alignment/SPEC.md",
+      "classification": "planned",
+      "sha256": "de9d49a7d938290c36f04f2950338646e0b6a24d12fb0f2f1602838c09d16b57",
+      "bytes": 11161,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-004-safe-direct-claim/SPEC.md",
+      "classification": "historical",
+      "sha256": "2c9fb8d30903cd509abaedbd7fada4ac179aab956114b598278019de26842f16",
+      "bytes": 2877,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-005-bootstrap-doc-alignment/SPEC.md",
+      "classification": "historical",
+      "sha256": "34fb680f8bf721626cd9881e0a9bc02bf381ca04b1a3e5e9cc25cfa370d8e0da",
+      "bytes": 2496,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-006-feedback-automation/SPEC.md",
+      "classification": "historical",
+      "sha256": "87f74ed14aeaac55332a03cd9f22302c54de58fe9c558c19f7ead05044492f95",
+      "bytes": 5397,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-007-feedback-helper-import/SPEC.md",
+      "classification": "historical",
+      "sha256": "96f81753891f409ab3fabfc4f977fbd736bcb4ecfc4d7f8d1e4e2df673add78f",
+      "bytes": 2489,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-008-windows-verification-portability/SPEC.md",
+      "classification": "historical",
+      "sha256": "58fe6e51e271be6485683500420c9e7d1c06b4134524aba08e9213c94325de04",
+      "bytes": 5063,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-009-git-write-constrained-adoption/SPEC.md",
+      "classification": "historical",
+      "sha256": "250f1913e2cc11a9178109a6d52ed4841845fe968c57ff2df995f7bfec1ffe02",
+      "bytes": 4127,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-00A-blueprint-active-adr-and-context-map/blueprint-claim-disposition.json",
+      "classification": "current",
+      "sha256": "321fcd31882d87ceff1a2836dc29cf39de540ee45d16efd89fd6feb079c5bc81",
+      "bytes": 134208,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md",
+      "classification": "historical",
+      "sha256": "19dc3a8512e73d77c3a953f144c7ad534d4a94ae521926e530192ee8932887cd",
+      "bytes": 17077,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-00B-workbench-template-reformation/SPEC.md",
+      "classification": "historical",
+      "sha256": "97dc78b385bf4809455836fb3680373d47fb04724e169dc84ad895db021f46dd",
+      "bytes": 8019,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-00C-project-evidence-and-blueprint-grilling/SPEC.md",
+      "classification": "historical",
+      "sha256": "421037548358a9d1bec3ec5940fb5e5e7cacd7f2a0d8faefd1bf9498e14f6620",
+      "bytes": 6348,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-00D-genesis-from-blueprint-and-adrs/SPEC.md",
+      "classification": "historical",
+      "sha256": "ce3c544a1e260dc96c6f9721cc35c282bec28d091bd08543a8f40459ddde7547",
+      "bytes": 7191,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-00E-fresh-template-project-proof/proof/builder-checks.json",
+      "classification": "current",
+      "sha256": "beb6f793749b5f3518ae27149503af2d7e2fb44eb649ba452adc311c2bdcaa9c",
+      "bytes": 27304,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-00E-fresh-template-project-proof/proof/continuation-checks.json",
+      "classification": "current",
+      "sha256": "83e9145a0332df6b53224d3f291ad03fdbc375e187445ab0287ad604aeeaf379",
+      "bytes": 13569,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-00E-fresh-template-project-proof/proof/derivation.json",
+      "classification": "current",
+      "sha256": "87f3be1bb0e983d8a6742a03837e5cb95a64026a7947632fa55094afe68fafd8",
+      "bytes": 8893,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-00E-fresh-template-project-proof/proof/identity-check.json",
+      "classification": "current",
+      "sha256": "deee75452d7ec1f4d90f81afe17071ee73150010815a92376b3ecb715bf99437",
+      "bytes": 412,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-00E-fresh-template-project-proof/proof/native-browser.json",
+      "classification": "current",
+      "sha256": "452fbe79f568561038c3fa98d1e0b215541e2360afded50d621f515385f53307",
+      "bytes": 15919,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-00E-fresh-template-project-proof/proof/production-result.json",
+      "classification": "current",
+      "sha256": "1672e6665e8a82ff6626fe2251c9f5775683e13d2c97282980636b0ccdffdf26",
+      "bytes": 718,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-00E-fresh-template-project-proof/PROOF.md",
+      "classification": "current",
+      "sha256": "711de8b9da01ad6c9e985d05d7021374f58d576786d16789a049272a150f5dde",
+      "bytes": 7626,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-00E-fresh-template-project-proof/SPEC.md",
+      "classification": "historical",
+      "sha256": "f00742495546bad903244832f90f17df30e65ca9231534bd86c40a38bbf8b9d3",
+      "bytes": 7322,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-00F-template-upgrade-release-gate/SPEC.md",
+      "classification": "historical",
+      "sha256": "f0dab89f4272f2342235431250a67f877281257f4eeb80569e65e342fa9ed449",
+      "bytes": 9448,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-00F-template-upgrade-release-gate/template-upgrade-proof.json",
+      "classification": "current",
+      "sha256": "6ab86610619ea7ce19354be756a903f1fcc27eec91635fce254feffc6e883df3",
+      "bytes": 6639,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-00G-ownership-map-root-control/PACKET-PLAN.md",
+      "classification": "current",
+      "sha256": "b09ac04d46a68f5a494635cf5a3eb68dbefa8cb4a541c533cefb1076ee03cdc3",
+      "bytes": 26979,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md",
+      "classification": "planned",
+      "sha256": "221c698165dd0b3706083dfdf141fec253ef0a0bc0dfeaeb97427e1aa511328d",
+      "bytes": 33710,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-00I-folder-lifecycle-for-records/DIRECTORY-LINK-VERIFICATION.md",
+      "classification": "current",
+      "sha256": "42d3032fe0661e18f953f8d7a70d43697d1d04e771a840b951cb44aeb205eee7",
+      "bytes": 8391,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-00I-folder-lifecycle-for-records/reviews/IMPLEMENTATION-89C938D.md",
+      "classification": "current",
+      "sha256": "be5494f14b57cb603f012d08561f1b7fb2b0ee7f8b03e12dc0372998facc8b5a",
+      "bytes": 1479,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md",
+      "classification": "current",
+      "sha256": "94bb4998f93d194001a41d432d79d50afc7268bce12ff2ca77d0f82a2dea50ab",
+      "bytes": 79892,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-00I-folder-lifecycle-for-records/tasks/TK-002/TASK.md",
+      "classification": "current",
+      "sha256": "6ebb53d36267c40ddff9508cac3960b1e80a3d7cf8c6f37ec1b227e1c748391c",
+      "bytes": 6574,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00I-folder-lifecycle-for-records/tasks/TK-003/TASK.md",
+      "classification": "current",
+      "sha256": "213ff2bf66007b636466d2f81d33ff83caedb25f7d6bb6e43f7d32d83c0b564a",
+      "bytes": 6875,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00I-folder-lifecycle-for-records/tasks/TK-003L/TASK.md",
+      "classification": "current",
+      "sha256": "884ce0f53e84d6721a2a0632bce737fdd0d33330a6e05b9cb394cda33995d821",
+      "bytes": 8868,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00I-folder-lifecycle-for-records/tasks/TK-003M/TASK.md",
+      "classification": "current",
+      "sha256": "f2ca3c44fc23ab131d69d930394634d674fe3e91b8fa882133936d72f4482815",
+      "bytes": 6264,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00I-folder-lifecycle-for-records/tasks/TK-004/TASK.md",
+      "classification": "current",
+      "sha256": "e5fcebe4a08a07c10d9174170c31cdef723d1d3d69d248d9537d5050ef98e951",
+      "bytes": 6222,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00I-folder-lifecycle-for-records/tasks/TK-004F/TASK.md",
+      "classification": "current",
+      "sha256": "74ac8e163bacb987630a00f207095f6a849e1d6b8839a7d97395b8d371c0e426",
+      "bytes": 4582,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00I-folder-lifecycle-for-records/tasks/TK-004L/TASK.md",
+      "classification": "current",
+      "sha256": "3106f0e5c47ad061a65284d91bc2565e9afe16891246496daf09787d51643c40",
+      "bytes": 4038,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00I-folder-lifecycle-for-records/tasks/TK-005/TASK.md",
+      "classification": "current",
+      "sha256": "735d6cdf03ed9ec3039328a5750dc5ed94af0327dd6c465fd2e101ac3088b08f",
+      "bytes": 7182,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00I-folder-lifecycle-for-records/tasks/TK-006/TASK.md",
+      "classification": "current",
+      "sha256": "102e21f10ea1a05b751c6832837b22e5e9d55e9b267e14098b7e40b647d65edf",
+      "bytes": 7820,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00I-folder-lifecycle-for-records/tasks/TK-01U/TASK.md",
+      "classification": "current",
+      "sha256": "1a07026fad6ba039a39e3d5e1f284433e4b8b6350c309c549d6f9fbf8d10c6bd",
+      "bytes": 20469,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00I-folder-lifecycle-for-records/tasks/TK-01V/TASK.md",
+      "classification": "current",
+      "sha256": "69f31b9e3458247fd2cdebb117f4704dfbabf3c094d6fa13e53a6db3bea66fee",
+      "bytes": 18180,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md",
+      "classification": "current",
+      "sha256": "58b4a5c83c658a66f690fa34bab20f9bce1b6daac0585e1c07c1a8a5d6304c66",
+      "bytes": 70026,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-00J-spec-qa-gate-at-integration/tasks/TK-002/TASK.md",
+      "classification": "current",
+      "sha256": "0934f2aafefe7001f68b19637f8e332c8d3bba03dcdd1851e0ee61a526024a73",
+      "bytes": 5602,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00J-spec-qa-gate-at-integration/tasks/TK-002N/TASK.md",
+      "classification": "current",
+      "sha256": "cbea12da0da183946353fb5bac505c83b12f46ec35f773ad11c75db8370c2f13",
+      "bytes": 7599,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00J-spec-qa-gate-at-integration/tasks/TK-003/TASK.md",
+      "classification": "current",
+      "sha256": "c9d50da1f36273698a5790d6fb88f1ecf366e9ff4d417071174e5b0b6daf6f4c",
+      "bytes": 5517,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00J-spec-qa-gate-at-integration/tasks/TK-004/TASK.md",
+      "classification": "current",
+      "sha256": "7863517c05957ad33d00b938331b41a5858f0c6df193f830f800ebd9cd42fcad",
+      "bytes": 6940,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00J-spec-qa-gate-at-integration/tasks/TK-004D/TASK.md",
+      "classification": "current",
+      "sha256": "f56178c2f56a76a2635da73e2b75030751d9cb0357be8acf84723e73f014ecf9",
+      "bytes": 2104,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00J-spec-qa-gate-at-integration/tasks/TK-004E/TASK.md",
+      "classification": "current",
+      "sha256": "e317abe4989f3ac8a2aca444b92ba9945e0f56dccfd1df982f4fcbbce818dca2",
+      "bytes": 2289,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00J-spec-qa-gate-at-integration/tasks/TK-004M/TASK.md",
+      "classification": "current",
+      "sha256": "21eec25dba666aa9ac17813b22bd9c7810c3b33fe21558435816228800eb827c",
+      "bytes": 3045,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00J-spec-qa-gate-at-integration/tasks/TK-005/TASK.md",
+      "classification": "current",
+      "sha256": "e10fc5b2d03e9109a13843c21f27befcdd1e5480a0c3c3bb48fdedb53e7d6a4e",
+      "bytes": 6049,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00J-spec-qa-gate-at-integration/tasks/TK-006/TASK.md",
+      "classification": "current",
+      "sha256": "1eedb2ffd0daf048a3c16f9cb0f6bd504d1e91e9cff5ca985ac4df0600f2e013",
+      "bytes": 5336,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00J-spec-qa-gate-at-integration/tasks/TK-01R/TASK.md",
+      "classification": "current",
+      "sha256": "1f3b0d7384edd0fd77717d35ef9b5259907e43b98df5eabdb47c23032453fad8",
+      "bytes": 12707,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00J-spec-qa-gate-at-integration/tasks/TK-01S/TASK.md",
+      "classification": "current",
+      "sha256": "f5c2b327d18cc1c66e264e6dc5faf6170f8ffbec69ea63b00f12a5a37b80011c",
+      "bytes": 16983,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00J-spec-qa-gate-at-integration/tasks/TK-01T/TASK.md",
+      "classification": "current",
+      "sha256": "e115162bccaf67eeddc794ca29deb23fc303ecaaf58632b68a4a900c1bc07af8",
+      "bytes": 11029,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00J-spec-qa-gate-at-integration/tasks/TK-02J/TASK.md",
+      "classification": "current",
+      "sha256": "79156c885b16253da6a1e67370dadde1915d121b66aef8f19c5db39d2de91f2b",
+      "bytes": 8236,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00K-workbench-self-drift-check/SPEC.md",
+      "classification": "current",
+      "sha256": "0ef02e60cb8f3b73b671946c692e64c194b4c40674a35426eedd00257c4a2da0",
+      "bytes": 23456,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-00K-workbench-self-drift-check/tasks/TK-001/TASK.md",
+      "classification": "current",
+      "sha256": "8cd272297349b76f7ef5e16b7659145dd4ddf27945e3db5f9b19525a2cf763cb",
+      "bytes": 1872,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00K-workbench-self-drift-check/tasks/TK-0SA/TASK.md",
+      "classification": "current",
+      "sha256": "561c9d70b7ce7bcdf5429a636da2f2a260796f10692b85895c48ef0f66a210b4",
+      "bytes": 1712,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00K-workbench-self-drift-check/tasks/TK-0SB/TASK.md",
+      "classification": "current",
+      "sha256": "de2683bf4bcb8c23d09299e506818fb32c745ebd6ffc6066a0e3f66993618fcd",
+      "bytes": 2016,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00K-workbench-self-drift-check/tasks/TK-0SC/TASK.md",
+      "classification": "current",
+      "sha256": "8a552a783b45eb004d9cb74ea80b862c79c743ac8dcdfce74cf912db4ee960c8",
+      "bytes": 2043,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00L-lexicon-freshness-repair/SPEC.md",
+      "classification": "historical",
+      "sha256": "9c99f12ac19f8eefd53931ef1b38216c3987a9191f38c589baf23fa770728c45",
+      "bytes": 12327,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-00M-completion-claims-against-repository-state/SPEC.md",
+      "classification": "current",
+      "sha256": "84a87a0ad46d2c99a83f2c72b8c509a077325fdaac40493f15e517d592e439c4",
+      "bytes": 31995,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-00N-feedback-finding-dispositions/SPEC.md",
+      "classification": "current",
+      "sha256": "4dedc58a366f43c509e029481c28aecc16fd1bd00b0a516a1739b9cc0de60978",
+      "bytes": 33325,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-00N-feedback-finding-dispositions/tasks/TK-001/TASK.md",
+      "classification": "current",
+      "sha256": "e48fac39407e043c1af8d33a6f0b8f484cd85ea70756d7f2903040c4f9fac134",
+      "bytes": 1541,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00N-feedback-finding-dispositions/tasks/TK-002/TASK.md",
+      "classification": "current",
+      "sha256": "b6ad1f398d6d2a93cb3cb1ad4347ab6b5da7a4d06dd57d398d80db470dc0c521",
+      "bytes": 1551,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00N-feedback-finding-dispositions/tasks/TK-003/TASK.md",
+      "classification": "current",
+      "sha256": "97d4ce25c68b772bee40b08048ddea0f093cc30eeba7362d0cc93e78049391c7",
+      "bytes": 1799,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00N-feedback-finding-dispositions/tasks/TK-004/TASK.md",
+      "classification": "current",
+      "sha256": "e2c5a6c90eff0cbb9f1457458482ffdbe08c1da003c7fe82309d3d3f08155503",
+      "bytes": 1977,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00N-feedback-finding-dispositions/tasks/TK-0SD/TASK.md",
+      "classification": "current",
+      "sha256": "6759c9072d110f581259e43b8cad6ed2a79d401964d3c1a2924150ad4fb1843f",
+      "bytes": 2070,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00O-workbench-v4-0-0-release/direct-blueprint-task-proposal.md",
+      "classification": "current",
+      "sha256": "22a67eb7f936fd98ca2b4319ff52a52a9469d759f22b2049e22ef70a9cd5b478",
+      "bytes": 13492,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-00O-workbench-v4-0-0-release/INTEGRATION-RECONCILIATION.md",
+      "classification": "current",
+      "sha256": "95adf7925261ea84d3c19b632428d2af4dad8eaac1405428283cdc1545c92e62",
+      "bytes": 24398,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md",
+      "classification": "blocked",
+      "sha256": "6ae3278b74ea5ccb7f1d39060cd22b624ca88157a67b7e0bf8cad695b7ca82c2",
+      "bytes": 45638,
+      "status": "blocked"
+    },
+    {
+      "artifact": "workbench/specs/S-00P-workflow-canon-rework/SPEC.md",
+      "classification": "current",
+      "sha256": "05c1b6b482b179010886b3178b800e5d6cd26fdb554fb955e257277061bfddf3",
+      "bytes": 90224,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-00P-workflow-canon-rework/tasks/TK-002/TASK.md",
+      "classification": "current",
+      "sha256": "ebb74e109cb227fe0dd44b447883580ec87fca630104f939a1bc5de5b1b7b096",
+      "bytes": 18754,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00P-workflow-canon-rework/tasks/TK-003/TASK.md",
+      "classification": "current",
+      "sha256": "a4eb59b3466f535f7de18400f58cf09e5558e26e28e116abf2404320f3a6745b",
+      "bytes": 18038,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00P-workflow-canon-rework/tasks/TK-003N/TASK.md",
+      "classification": "current",
+      "sha256": "ec42ebc3f322143e07bc3b00fd3a353d971ec2a197bca9bedc0dac56380656e5",
+      "bytes": 3539,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00P-workflow-canon-rework/tasks/TK-004/TASK.md",
+      "classification": "current",
+      "sha256": "f0b163268ced47e8100d8de64fa9d8a27134672228c0e4077b8f90917cd2fca7",
+      "bytes": 16775,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00P-workflow-canon-rework/tasks/TK-004B/TASK.md",
+      "classification": "current",
+      "sha256": "312fc9308d2a07e56beb54938abfb0a48a70f063f3661daeb0dec25a3f74f075",
+      "bytes": 5224,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00P-workflow-canon-rework/tasks/TK-004C/TASK.md",
+      "classification": "current",
+      "sha256": "15a39bd9c39688160c9cabf4fa05d2c370b3312018c4473dca6764ad455f8da7",
+      "bytes": 4910,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00P-workflow-canon-rework/tasks/TK-005/TASK.md",
+      "classification": "current",
+      "sha256": "d2520e298cfab16126d1c4011b870c9d5429ed907d2cd55055a33c46d0acb7e8",
+      "bytes": 16634,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00Q-legacy-completed-record-migration/MIGRATION_INVENTORY.json",
+      "classification": "current",
+      "sha256": "2dadc312a3d775f4e1cb72871617058cda4d8fb0249f1bd16ed09c4c56a54d7a",
+      "bytes": 434419,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-00Q-legacy-completed-record-migration/MIGRATION_MATRIX.md",
+      "classification": "current",
+      "sha256": "37cf1155159f64183879d4dcd84fdb8c059bf0957537955a7ad952b19a1b867a",
+      "bytes": 112266,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-00Q-legacy-completed-record-migration/SPEC.md",
+      "classification": "current",
+      "sha256": "d197909d14976dcc34ef132fbadb04f036749c8ba06c03e9eb823f395d1ff660",
+      "bytes": 22892,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-00Q-legacy-completed-record-migration/tasks/TK-0Q0/TASK.md",
+      "classification": "current",
+      "sha256": "bbae30611d2b3433264945f5ceec864dbfe3e9c95c94c29f817596f759b25713",
+      "bytes": 2580,
+      "status": "in-progress"
+    },
+    {
+      "artifact": "workbench/specs/S-00Q-legacy-completed-record-migration/tasks/TK-0Q1/TASK.md",
+      "classification": "blocked",
+      "sha256": "bd2cc9b335a03cdd6e94a97e1b2cf2877b5d177d0f618f0f3107ecc5a6688d71",
+      "bytes": 1930,
+      "status": "blocked"
+    },
+    {
+      "artifact": "workbench/specs/S-00Q-legacy-completed-record-migration/tasks/TK-0Q2/TASK.md",
+      "classification": "blocked",
+      "sha256": "ceb7476159cc8462498ec8badf9d7f4fd4895d73017a6381785251eb48869f93",
+      "bytes": 1837,
+      "status": "blocked"
+    },
+    {
+      "artifact": "workbench/specs/S-00Q-legacy-completed-record-migration/tasks/TK-0Q3/TASK.md",
+      "classification": "blocked",
+      "sha256": "34c717164f71aebaf2e9cd73232351e76d3ccf158a4b9f897726023166c813d4",
+      "bytes": 1668,
+      "status": "blocked"
+    },
+    {
+      "artifact": "workbench/specs/S-00Q-legacy-completed-record-migration/tasks/TK-0Q4/TASK.md",
+      "classification": "blocked",
+      "sha256": "539c649237fd33956fa6de21fe492963c5bce85b3e3653f64f1dc60ca3d444f8",
+      "bytes": 1957,
+      "status": "blocked"
+    },
+    {
+      "artifact": "workbench/specs/S-00Q-legacy-completed-record-migration/tasks/TK-0Q5/TASK.md",
+      "classification": "blocked",
+      "sha256": "8090eede029f970f1fd97f51ec02d39e2aa49f22a212ffa54b3d4275636e5e1e",
+      "bytes": 1936,
+      "status": "blocked"
+    },
+    {
+      "artifact": "workbench/specs/S-00Q-legacy-completed-record-migration/tasks/TK-0Q6/TASK.md",
+      "classification": "blocked",
+      "sha256": "1bebdae2bfde48ea3b9fabe38f3380df060ca7660445b3b5f2534fdec606c9b2",
+      "bytes": 1948,
+      "status": "blocked"
+    },
+    {
+      "artifact": "workbench/specs/S-00Q-legacy-completed-record-migration/tasks/TK-0Q7/TASK.md",
+      "classification": "blocked",
+      "sha256": "33f5a90adf434ad793e3ef1bcbe09984de5c21aa10e47b6ea5140b251f566bda",
+      "bytes": 1972,
+      "status": "blocked"
+    },
+    {
+      "artifact": "workbench/specs/S-00Q-legacy-completed-record-migration/tasks/TK-0Q8/TASK.md",
+      "classification": "blocked",
+      "sha256": "4ec11bb069bd7a412b6951e3d0abda16e2121ecc2411de0631de72752a12fc82",
+      "bytes": 1447,
+      "status": "blocked"
+    },
+    {
+      "artifact": "workbench/specs/S-00Q-legacy-completed-record-migration/tasks/TK-0Q9/TASK.md",
+      "classification": "blocked",
+      "sha256": "0897e6ec3d1944f64858c6c1b9f0fb8e3587b3da05b475a3ea6e0549bdd1cc77",
+      "bytes": 1773,
+      "status": "blocked"
+    },
+    {
+      "artifact": "workbench/specs/S-00R-core-skill-lifecycle-and-optional-source-disposition/SPEC.md",
+      "classification": "current",
+      "sha256": "7acb9aec7fbc145ab5de6a0364105eab8e745b5112ddc4734adbeeb249c92f9f",
+      "bytes": 12220,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-00R-core-skill-lifecycle-and-optional-source-disposition/tasks/TK-0R0/TASK.md",
+      "classification": "current",
+      "sha256": "81e15a503b3187f0c8b3db03a75d8756d4750653d2ea1e801344f4826b721e4e",
+      "bytes": 3311,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00R-core-skill-lifecycle-and-optional-source-disposition/tasks/TK-0R1/TASK.md",
+      "classification": "current",
+      "sha256": "a88c3c880af646a67dc0dcd5081314735512bcaa9ad251c1d31030e44ae2a323",
+      "bytes": 1678,
+      "status": "deferred"
+    },
+    {
+      "artifact": "workbench/specs/S-00R-core-skill-lifecycle-and-optional-source-disposition/tasks/TK-0R2/TASK.md",
+      "classification": "current",
+      "sha256": "ee2b7410158ff7444cc3e095cd49c400584a688e8aa56d1f53ebea96a90fc9a3",
+      "bytes": 2132,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00R-core-skill-lifecycle-and-optional-source-disposition/tasks/TK-0R3/TASK.md",
+      "classification": "current",
+      "sha256": "17570e169da2ffd6f5c4a94a2fc58c73ff31c832069f5dd66ad6a3d5ac36bbfd",
+      "bytes": 1403,
+      "status": "deferred"
+    },
+    {
+      "artifact": "workbench/specs/S-00S-feedback-representation-and-consumer-reconciliation/RECONCILIATION.md",
+      "classification": "current",
+      "sha256": "3d83d3e460b49a25c1c0c5a97723dcebd28c7bd07e298903814a6e308f37c4aa",
+      "bytes": 12483,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-00S-feedback-representation-and-consumer-reconciliation/representation-inventory.json",
+      "classification": "current",
+      "sha256": "d8047435dae1f3577102b1b5fa51afed9bf1aec90c0d739fbe10c51bbb307592",
+      "bytes": 57145,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-00S-feedback-representation-and-consumer-reconciliation/SPEC.md",
+      "classification": "current",
+      "sha256": "7b386f9d944076b77d07c2491da5e523a6969a3ef933c0a845e712c93b27c8ab",
+      "bytes": 15440,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-00S-feedback-representation-and-consumer-reconciliation/tasks/TK-0S0/TASK.md",
+      "classification": "current",
+      "sha256": "ad6ff0145e5d86127ac24df39446aa75bb530743a47edf42f56197c3de44215c",
+      "bytes": 1872,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00S-feedback-representation-and-consumer-reconciliation/tasks/TK-0S1/TASK.md",
+      "classification": "current",
+      "sha256": "19f4aeb9a43dd89c9a40323f93c3fccb321026d131c6578d1ccfcdc587cd0cb7",
+      "bytes": 2192,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00S-feedback-representation-and-consumer-reconciliation/tasks/TK-0S2/TASK.md",
+      "classification": "current",
+      "sha256": "dc448a170b591ea66bec99d364ccdd53ca4a94ba300d7caae9266b69f7564e31",
+      "bytes": 2045,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00T-lifecycle-discard-repair/SPEC.md",
+      "classification": "current",
+      "sha256": "2bdb8bb33db6c0ad8b445de9b4291bfce924e4df23475e3d4fa797fcc9f3dad1",
+      "bytes": 17912,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-00U-approval-binding-and-lifecycle-digest/SPEC.md",
+      "classification": "current",
+      "sha256": "6bce01d86ccd15256f21435b3255b6f36480c6073b4e10ac1d62d86f09262333",
+      "bytes": 12336,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-00U-approval-binding-and-lifecycle-digest/tasks/TK-003K/TASK.md",
+      "classification": "current",
+      "sha256": "b49e9d38f0c28503f18c723d19a45275ff9e43a63b2fbd0591e78ad4ece007dd",
+      "bytes": 7152,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00U-approval-binding-and-lifecycle-digest/VERIFICATION.md",
+      "classification": "current",
+      "sha256": "4a4bb78f1d08d033410f4c82b25e40c384b59f2d7dd54844958d2b654b0c4d1e",
+      "bytes": 6806,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-00V-portable-workbench/SPEC.md",
+      "classification": "current",
+      "sha256": "24f6979df23a9bc2f432410941b7ced46b724be7541e8f85ea6709d0e5ca3b18",
+      "bytes": 64075,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-00V-portable-workbench/tasks/TK-002M/TASK.md",
+      "classification": "current",
+      "sha256": "228f47263a554b13cc8667027417faed8d62b164015b7fc0323248d4e4db91b7",
+      "bytes": 3057,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00V-portable-workbench/tasks/TK-003J/TASK.md",
+      "classification": "current",
+      "sha256": "091b7fed6fd64c958622bbc182f15a1ef3d19819ae08cabe231d0e330e55dac7",
+      "bytes": 8232,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00V-portable-workbench/tasks/TK-00G/TASK.md",
+      "classification": "current",
+      "sha256": "ef9ecf1b82745b6f0bd62e8c7c56d0879decc6a2bc2959f0703144bc8e796df5",
+      "bytes": 6637,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00V-portable-workbench/tasks/TK-00H/TASK.md",
+      "classification": "current",
+      "sha256": "60471ef89012bc141022d739df2a62a121d68cb61ab32ccdef3a4c703664d1a1",
+      "bytes": 6876,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00V-portable-workbench/tasks/TK-00I/TASK.md",
+      "classification": "current",
+      "sha256": "ed613f3c21a9dca066f0813ba05e30028b52683516d3348fada600840c9c76bf",
+      "bytes": 10434,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00V-portable-workbench/tasks/TK-00J/TASK.md",
+      "classification": "current",
+      "sha256": "c8311b808ffd4c9231ea6726324d9180d335e5f980cfb7bce90065f069f69fdc",
+      "bytes": 4997,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00V-portable-workbench/tasks/TK-00K/TASK.md",
+      "classification": "current",
+      "sha256": "27823af5c84b5f85c98d89109bd661ef3c0d24ce22edfb99eb8695105d6225a1",
+      "bytes": 9564,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00V-portable-workbench/tasks/TK-01K/TASK.md",
+      "classification": "blocked",
+      "sha256": "6264afa2385577dbe3d3a00aea852868742a251bc7d35c8a57b0caa0c5b577cc",
+      "bytes": 3160,
+      "status": "blocked"
+    },
+    {
+      "artifact": "workbench/specs/S-00V-portable-workbench/tasks/TK-01L/TASK.md",
+      "classification": "current",
+      "sha256": "c5b6f229656a2ba7ebfceef21c8a0671eb0dbb4e61629bc815a7018f846235f3",
+      "bytes": 8903,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00V-portable-workbench/tasks/TK-01M/TASK.md",
+      "classification": "blocked",
+      "sha256": "2cbed271396979c014b3431df31f31bb1de69383181638c10729f19ff68fc15a",
+      "bytes": 1778,
+      "status": "blocked"
+    },
+    {
+      "artifact": "workbench/specs/S-00V-portable-workbench/tasks/TK-01N/TASK.md",
+      "classification": "blocked",
+      "sha256": "3b02d82ef94770b0e7b13e936447781afcb4c8a1cb72c4dadc014666d1576e68",
+      "bytes": 1603,
+      "status": "blocked"
+    },
+    {
+      "artifact": "workbench/specs/S-00V-portable-workbench/tasks/TK-01O/TASK.md",
+      "classification": "blocked",
+      "sha256": "0c8e3f59d24b341471a6d3449918cd61ee19a21a3b869d193c3c5315baff4c37",
+      "bytes": 1584,
+      "status": "blocked"
+    },
+    {
+      "artifact": "workbench/specs/S-00V-portable-workbench/tasks/TK-01P/TASK.md",
+      "classification": "blocked",
+      "sha256": "29799cd7f327852de4ec44088ef97fbf0636be9ced9c8cc01a1decc6cfef9eb9",
+      "bytes": 1862,
+      "status": "blocked"
+    },
+    {
+      "artifact": "workbench/specs/S-00V-portable-workbench/tasks/TK-01W/TASK.md",
+      "classification": "current",
+      "sha256": "beb639a9aead37ab9249bd3809122a2bd8066e2bcb986cc18ace1bee0e59a24e",
+      "bytes": 2781,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00V-portable-workbench/tasks/TK-02C/TASK.md",
+      "classification": "current",
+      "sha256": "f5dc368a4419aa7bca583db5e54a906ef11e18cea78be00453e746a03742ce2f",
+      "bytes": 3481,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00V-portable-workbench/tasks/TK-02E/TASK.md",
+      "classification": "current",
+      "sha256": "392d3296075af81ae119a796b02aa8100261e5f8dcb18e2fe02b7c34686f0c77",
+      "bytes": 3665,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md",
+      "classification": "planned",
+      "sha256": "106722ab77e8bb532dbca1c69017e2cacaf050ffc8587574edc88112271f6563",
+      "bytes": 16012,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-00W-concept-grilling-and-notepad-composition/tasks/TK-00L/TASK.md",
+      "classification": "blocked",
+      "sha256": "bb5ff994028f033e68a9f1bc2c9eb05cae84e568b16fde6c3e230d890a9f7abd",
+      "bytes": 1388,
+      "status": "blocked"
+    },
+    {
+      "artifact": "workbench/specs/S-00W-concept-grilling-and-notepad-composition/tasks/TK-00M/TASK.md",
+      "classification": "blocked",
+      "sha256": "66d802d0a60913d52d98bdd4b7e5bbe15b83d8f7a9734d9a680f6660340b31e0",
+      "bytes": 1414,
+      "status": "blocked"
+    },
+    {
+      "artifact": "workbench/specs/S-00W-concept-grilling-and-notepad-composition/tasks/TK-00N/TASK.md",
+      "classification": "blocked",
+      "sha256": "cd7641331af9f9986b5dd739c66458a678323b7d816b6ca85b3a56041c9a5156",
+      "bytes": 1599,
+      "status": "blocked"
+    },
+    {
+      "artifact": "workbench/specs/S-00X-grilling-skill-rebuild/SPEC.md",
+      "classification": "current",
+      "sha256": "5567814aed4baa8e815b0283c2d19f99790934dccf6a7ee89cfd88d85c6151a7",
+      "bytes": 14053,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-00Y-notepad-skill-rebuild/SPEC.md",
+      "classification": "current",
+      "sha256": "5c59d8d9116f64fd64267aab89e0ccf42e00a624cb267be34e43e0c048fedd73",
+      "bytes": 18243,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-00Y-notepad-skill-rebuild/tasks/TK-003T/TASK.md",
+      "classification": "current",
+      "sha256": "0e91706580fddc21e6c391b31c089f171b193a8647fdfe5d6982f2c1e154b20b",
+      "bytes": 4759,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-00Z-grill-me-skill-rebuild/SPEC.md",
+      "classification": "current",
+      "sha256": "9f569270aa55254b07763c22bdc1876c5bd531199f0bfdd640f3273815f21ef3",
+      "bytes": 16324,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-010-canonical-evaluator-entry/SPEC.md",
+      "classification": "historical",
+      "sha256": "ed72f8a385d425ded380f3fe7959ac95ff057a7f921187feb327a8c8a04e5d87",
+      "bytes": 2311,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-011-agent-skills-adoption/SPEC.md",
+      "classification": "historical",
+      "sha256": "a6076a54b2e6459dc9803d41f50eb13c16d0348248c99e1eb57b8eb036458ffe",
+      "bytes": 27696,
+      "status": "superseded"
+    },
+    {
+      "artifact": "workbench/specs/S-012-adoption-provenance-proof/SPEC.md",
+      "classification": "historical",
+      "sha256": "fdf0071b46d2b39613145dc1dcf15ebea1cd3be65b058d1ac54adce6e9c9cf27",
+      "bytes": 4514,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-013-automation-run-outcomes/SPEC.md",
+      "classification": "historical",
+      "sha256": "6a7b265272f3f2d5544592ef9830222b6fc44043ccafd6d274c5605a07396151",
+      "bytes": 7117,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-014-workbench-release-candidate/SPEC.md",
+      "classification": "blocked",
+      "sha256": "c0ae39d3ee1b22a817c2a6e01577d3e30755ade00f09eeabc0f802a1a24a45c7",
+      "bytes": 31684,
+      "status": "blocked"
+    },
+    {
+      "artifact": "workbench/specs/S-015-portable-v3-release-audit-recovery/SPEC.md",
+      "classification": "historical",
+      "sha256": "aa89452200ada6feb3a24645e5e1edcdc015d81ebfcad12f47e9417b7aa9090a",
+      "bytes": 18399,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-01A-handoff-skill-rebuild/SPEC.md",
+      "classification": "current",
+      "sha256": "8eceacd1f998bd2cbe35423c3b04948287e20723de19512cafe7487308f96aea",
+      "bytes": 19953,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-01B-promote-skill-rebuild/SPEC.md",
+      "classification": "current",
+      "sha256": "36c67317a3b6986bb2417056df61af3588c7f0025798d3f895c96f0c0b64e7b0",
+      "bytes": 17359,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-01C-carry-skill-rebuild/SPEC.md",
+      "classification": "current",
+      "sha256": "8d3b365d2458ba48010ce97394ffcf2e27ec4f561964929b02d7baf732e58e2e",
+      "bytes": 16730,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-01C-carry-skill-rebuild/tasks/TK-00T/TASK.md",
+      "classification": "current",
+      "sha256": "2fe692ae3c5c0665a03fec41445685ae971c0007b867a7128d75723c37588177",
+      "bytes": 2825,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-01D-adoption-skill-rebuild/SPEC.md",
+      "classification": "current",
+      "sha256": "83784ef1c6257f44ff66c89fe9ba09ccdf5702571289e6ea3f9605f61cf41e85",
+      "bytes": 19502,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-01E-checkpoint-skill-rebuild/SPEC.md",
+      "classification": "current",
+      "sha256": "be62ecf031e3359d52ab4f5fc32bbf5ba397dd4758f674e75cb5197663e67b41",
+      "bytes": 17280,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-01F-code-review-skill-rebuild/SPEC.md",
+      "classification": "current",
+      "sha256": "b37069344942bb5daa5890b6b5f963bcb286f9e367528331d4b2f85617f7e009",
+      "bytes": 16890,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-01G-genesis-skill-rebuild/SPEC.md",
+      "classification": "current",
+      "sha256": "093995c88fe0d00bb01094212dfb4d01bb3482a507c882d00c70d942364e5b5c",
+      "bytes": 19434,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-01H-implement-skill-rebuild/SPEC.md",
+      "classification": "planned",
+      "sha256": "fb7cfa424360dc30b12d5f5bec0844b29229d7890425b663f0d70fe90795435a",
+      "bytes": 8613,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-01I-make-it-so-skill-rebuild/SPEC.md",
+      "classification": "current",
+      "sha256": "f90141b1f9625eba25514ac25d9051e76e07eb14295214ebc6815e84a80f53a5",
+      "bytes": 17060,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-01J-to-docs-skill-rebuild/SPEC.md",
+      "classification": "current",
+      "sha256": "bd76a1ba0cffbeb3fd20579610d04270c7a881f32d5262542e4e29737c7d618c",
+      "bytes": 16223,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-01K-to-spec-skill-rebuild/SPEC.md",
+      "classification": "current",
+      "sha256": "92e7d2c74db8585e2a7bb370bfc52fe89c40eaa80cf02537984eb24d1e300408",
+      "bytes": 27611,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-01L-to-tasks-skill-rebuild/SPEC.md",
+      "classification": "current",
+      "sha256": "2d846c2d6ab5f922f392a04be09ef7efbc86bc9999a7f20c3c4c3220a481eb80",
+      "bytes": 41591,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-01M-tracer-bullet-skill-rebuild/SPEC.md",
+      "classification": "planned",
+      "sha256": "274cfa9b1e3ac28e1e75369a1d1db58689bd478fdbe22883adb242aca3d2fbe6",
+      "bytes": 8630,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-01N-update-harness-skill-rebuild/SPEC.md",
+      "classification": "planned",
+      "sha256": "cd96a96b25a756bf5d64bbb0e662153150596716509f457459626e11a09e4aba",
+      "bytes": 8447,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-01O-save-skill-rebuild/SPEC.md",
+      "classification": "current",
+      "sha256": "12f1be7cdc433895a5c3b120e0db6ee64eeab35765c6ca12c2996d955d14975c",
+      "bytes": 17479,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-01P-builder-skill-rebuild/proof/guardrails-post.json",
+      "classification": "current",
+      "sha256": "47a6fb510e7d9a8c0784f59dbb9308f6c2984ec00bfdc4ef4ea5bf83164e7693",
+      "bytes": 10810,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-01P-builder-skill-rebuild/proof/guardrails-pre.json",
+      "classification": "current",
+      "sha256": "47a6fb510e7d9a8c0784f59dbb9308f6c2984ec00bfdc4ef4ea5bf83164e7693",
+      "bytes": 10810,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-01P-builder-skill-rebuild/proof/pr-body.md",
+      "classification": "current",
+      "sha256": "b8f28e962fd1ed332328e5316626b40f4323da84228aca87ffae23bf48089699",
+      "bytes": 1731,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-01P-builder-skill-rebuild/proof/self-drift-baseline.json",
+      "classification": "current",
+      "sha256": "9aa1d831e967fd9524078db39d4497840327db76ac8620f1e17d154e0f83bbfb",
+      "bytes": 116474,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-01P-builder-skill-rebuild/proof/self-drift-final.json",
+      "classification": "current",
+      "sha256": "7d7b4b9ac159babfafeaf56edde90fcd60beff7436e50dc2a29a590b8359a664",
+      "bytes": 118409,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-01P-builder-skill-rebuild/proof/self-drift-post.json",
+      "classification": "current",
+      "sha256": "f08d12c4798f6ff43f44fa8934e40d4c2c005f4abe7f9ab33b8fb3295b817ade",
+      "bytes": 118549,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-01P-builder-skill-rebuild/proof/self-drift-pre.json",
+      "classification": "current",
+      "sha256": "9ca99f2618e34e7c1f4b482b0c27c330c10081304e8130d51829813386d3b6ef",
+      "bytes": 119128,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-01P-builder-skill-rebuild/proof/suite-results.json",
+      "classification": "current",
+      "sha256": "cff30c28d931515a251f7f741c9b282f6058228b02eeeb6335896a1b332d644b",
+      "bytes": 12549,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-01P-builder-skill-rebuild/proof/verification-notes.md",
+      "classification": "current",
+      "sha256": "3be76a58eb3ea9fcda27e0e16570b5ae751e6dd6b46ede7c69b586d51cc03233",
+      "bytes": 3985,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-01P-builder-skill-rebuild/SPEC.md",
+      "classification": "current",
+      "sha256": "f5cd05087af0d30281597b18d1838b4625a7e1d5e76602130ffb8b8ad3bba49a",
+      "bytes": 10970,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-01P-builder-skill-rebuild/tasks/TK-01G/TASK.md",
+      "classification": "current",
+      "sha256": "17a9eae9c8eba5eed5a1458e98568ef078cc4a4ad6581f22490d84530645e6d3",
+      "bytes": 655,
+      "status": "in-progress"
+    },
+    {
+      "artifact": "workbench/specs/S-01Q-auditor-skill-rebuild/SPEC.md",
+      "classification": "current",
+      "sha256": "52352a534f8062954ebc3c8ecb6c2b16aea91b1e57d973cd2060306f76e5fde2",
+      "bytes": 17044,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-01R-reviewer-skill-rebuild/SPEC.md",
+      "classification": "planned",
+      "sha256": "d09467e8fbe964b4acacb9fa5e52283e18c66901e4932661b368e50f25299e6a",
+      "bytes": 8719,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-01S-reconciler-skill-rebuild/SPEC.md",
+      "classification": "planned",
+      "sha256": "a861c9cffb8d166d187a204920237d216a9d23a9a2e9a8e2aa6d36be90bd6801",
+      "bytes": 8294,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-01T-landmark-tracker-foundation/planning-verification.json",
+      "classification": "current",
+      "sha256": "304a3a1cbb3a0a7ba04ecd46f991c80f2c0ef04e0c7835c0c4556dc2f72ebeb2",
+      "bytes": 27956,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-01T-landmark-tracker-foundation/SPEC.md",
+      "classification": "planned",
+      "sha256": "fa677f2000e0d011d9cf60f2b4cc12eacdc03292f1c48d492d1f6fa8d448c3f3",
+      "bytes": 47034,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-01T-landmark-tracker-foundation/tasks/TK-01X/TASK.md",
+      "classification": "current",
+      "sha256": "f1a515e739cdccd7bd0239dc1bcec056458b17955eca0f76be969c2bc0315099",
+      "bytes": 14566,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-01T-landmark-tracker-foundation/tasks/TK-01Y/TASK.md",
+      "classification": "current",
+      "sha256": "61bc7d78d01ab75b7b072787d91ba81abc0c8b1a9757d7320b781fe69481daad",
+      "bytes": 11891,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-01T-landmark-tracker-foundation/tasks/TK-01Z/TASK.md",
+      "classification": "current",
+      "sha256": "ebb60c3a35b832ab6360e5590bb54edb4426d59d9020484b2c350a8fab8e31e0",
+      "bytes": 4282,
+      "status": "deferred"
+    },
+    {
+      "artifact": "workbench/specs/S-01T-landmark-tracker-foundation/tasks/TK-02A/TASK.md",
+      "classification": "current",
+      "sha256": "336bddb2f9dbbd92d1ff7e11fce18cbe8536e1ec1a34dbc154547d3e5525212b",
+      "bytes": 2704,
+      "status": "deferred"
+    },
+    {
+      "artifact": "workbench/specs/S-01T-landmark-tracker-foundation/tasks/TK-02G/TASK.md",
+      "classification": "current",
+      "sha256": "adcc62f5086a6bdb925ef1bbc6e6a05d1cc2cd9ff289a4110f1d349ef53bdff3",
+      "bytes": 2517,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-01T-landmark-tracker-foundation/tasks/TK-02H/TASK.md",
+      "classification": "current",
+      "sha256": "8985df96ec73078a3178328cdc5e4311711259d7eeec9b53d76a4dbd503b2ead",
+      "bytes": 1641,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-01T-landmark-tracker-foundation/tasks/TK-02I/TASK.md",
+      "classification": "current",
+      "sha256": "9c488b652d9d983dd230ed4622d537fa8704f90ba3affc81d2a39e4e0ff94faa",
+      "bytes": 1821,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-01U-lexicon-design-concept-reconciliation/planning-verification.json",
+      "classification": "current",
+      "sha256": "51f37df8882503609b2b310bc90e077068eb008d9e1ef69cf4b5dd59bd97b389",
+      "bytes": 22072,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-01U-lexicon-design-concept-reconciliation/SPEC.md",
+      "classification": "planned",
+      "sha256": "d6c3a5d67a16f280b1be23841f8525605e4f44df4b3acf221bd3fb5e09b4828e",
+      "bytes": 20559,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/specs/S-01W-uppercase-width-four-workbench-artifact-ids/SPEC.md",
+      "classification": "current",
+      "sha256": "ad038ed440351256a15f4ed464a8c7db6c86ad0436ef701626066f67d261f6a5",
+      "bytes": 34129,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-01W-uppercase-width-four-workbench-artifact-ids/tasks/TK-002K/TASK.md",
+      "classification": "current",
+      "sha256": "53f2f9a55cce9ebb634cd87e5c104420dc9c4b58f93c3184ec62c97a65095ad8",
+      "bytes": 5913,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-01W-uppercase-width-four-workbench-artifact-ids/tasks/TK-002O/TASK.md",
+      "classification": "current",
+      "sha256": "041ab3060da8e109bc166660dfa95217b497def312a31bfad7d4997218777f27",
+      "bytes": 9193,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-01W-uppercase-width-four-workbench-artifact-ids/tasks/TK-002Q/TASK.md",
+      "classification": "current",
+      "sha256": "d331a0acc03ae625b9c52d113ef1cab9206a63fff37356dab1a771583a9f5592",
+      "bytes": 8742,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-01W-uppercase-width-four-workbench-artifact-ids/tasks/TK-02B/TASK.md",
+      "classification": "current",
+      "sha256": "e0cb1c3bedbe604b44854c84fa19e9bf77e314c9574a561e58f5b29363f4f1bb",
+      "bytes": 5492,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-01X-generated-json-taskboard/SPEC.md",
+      "classification": "current",
+      "sha256": "e05c82c48d072721bff7d1461c4070d4aae2757c9212973df66d2a746043c327",
+      "bytes": 37120,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-01X-generated-json-taskboard/tasks/TK-003O/TASK.md",
+      "classification": "current",
+      "sha256": "265e8a84cc59b37e1c31957f30396e9b4f77933b4c2cf3b4a518c90079abf14a",
+      "bytes": 5611,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-01X-generated-json-taskboard/tasks/TK-003P/TASK.md",
+      "classification": "current",
+      "sha256": "467d5596d74eb6d1c33d57ce034dc66390f226714d322181f339d091b71cc99f",
+      "bytes": 4512,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-01X-generated-json-taskboard/tasks/TK-003Q/TASK.md",
+      "classification": "current",
+      "sha256": "bae4102d738e1c3110b9864717cca3b88ccf9f29d1f077e78cafe7afc2105dbd",
+      "bytes": 5021,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-01X-generated-json-taskboard/tasks/TK-003R/TASK.md",
+      "classification": "current",
+      "sha256": "1e5ab9642106f60d5457ff073006adf856f708947b9a26512331848b42697099",
+      "bytes": 6725,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-01X-generated-json-taskboard/tasks/TK-003S/TASK.md",
+      "classification": "current",
+      "sha256": "adb6b3b54f8a8e52c13586b296c4c900797b74b4acfd82c94d18525207952cc7",
+      "bytes": 4126,
+      "status": "done"
+    },
+    {
+      "artifact": "workbench/specs/S-020-spec-native-team-coordination/SPEC.md",
+      "classification": "historical",
+      "sha256": "17b4c5c34cbeeb58d00db0972eb3f8fff0b78acdee78c33008cb30e4d024cf99",
+      "bytes": 14159,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
+      "classification": "historical",
+      "sha256": "32d128e4554b79ce3eab0faf26bbd2c51cd8700acc16854fec3cf1866d431b73",
+      "bytes": 24029,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-022-llm-workbench-v3-1-release/SPEC.md",
+      "classification": "blocked",
+      "sha256": "1cddf30ec84ec1db27d8f3adb2a907f095146d8f5f03b37bffc6819878c65c04",
+      "bytes": 17320,
+      "status": "blocked"
+    },
+    {
+      "artifact": "workbench/specs/S-023-manifest-schema-2-and-managed-runtime/SPEC.md",
+      "classification": "historical",
+      "sha256": "49e5ce5f51be5c2037a3342c18d049d412ba4e04f5dc55bc44c86335381e3854",
+      "bytes": 16157,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-024-governance-core-adrs-and-diagnostics/SPEC.md",
+      "classification": "historical",
+      "sha256": "3c086759555611a2d37442d1d461fa73577b57875e495610d957a0aa8230423f",
+      "bytes": 13802,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-025-portable-wiki-and-design-concepts/SPEC.md",
+      "classification": "historical",
+      "sha256": "260d645ac69ae6e6c7b6ca5634b4723ddad3c3e7ae582f48cdc7c6247705b3f5",
+      "bytes": 12674,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-026-workflow-composition-and-cold-resume/SPEC.md",
+      "classification": "historical",
+      "sha256": "a61f26fc9451e0420d3f7de781c1eb059a908d94c3cef5b6bcd6dd72a5a0d5e2",
+      "bytes": 12065,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md",
+      "classification": "historical",
+      "sha256": "20af37ee8e612bb8c07428aa15609fbb1fdbe61c38da2182785fda1f817b6832",
+      "bytes": 26126,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-028-harness-feedback-integrity/SPEC.md",
+      "classification": "historical",
+      "sha256": "4b1065da48b7f2024f44316c079ab9c1c5b59801975872dde93f67c7820caac6",
+      "bytes": 10025,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-029-declared-integration-branch/SPEC.md",
+      "classification": "historical",
+      "sha256": "02c6a5b5eaca5708f663a0ee726663839356dbc6d6fa312610f894caf574f2ae",
+      "bytes": 24698,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-030-permission-scope-matches-lanes/SPEC.md",
+      "classification": "historical",
+      "sha256": "d44f6625beff4fd609332b4531ca793d483794e2cff35f867dfaa6b873b35d85",
+      "bytes": 18410,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-031-installed-skill-generation/SPEC.md",
+      "classification": "historical",
+      "sha256": "0776e45336c8c2f4c4963d8ee1a4aa35bcc99a3299cecfa8de1f871b14526f9c",
+      "bytes": 16546,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-032-upgrade-route-and-source-provenance/SPEC.md",
+      "classification": "historical",
+      "sha256": "08778e24a437eb3f862f5252e951b02a7ba9394aac9c9da81e6a52c0a2916269",
+      "bytes": 19079,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-033-silent-gap-diagnostics/SPEC.md",
+      "classification": "historical",
+      "sha256": "bd1a85878c50345e9d018eb7bd9f4bb9771bea095ffa9437c702415f11f7c7b4",
+      "bytes": 15450,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-034-control-fidelity-report/SPEC.md",
+      "classification": "historical",
+      "sha256": "218136bb8a44f849e0e843fd912fdccf510fa385ac6906bbd9c7db2c255578da",
+      "bytes": 15410,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-035-workbench-v3-1-2-candidate/SPEC.md",
+      "classification": "historical",
+      "sha256": "d5b98b4e72e2f7663523538a8864087cc29d92e6ff8f599ce5c08312a985115f",
+      "bytes": 21725,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-036-v3-1-2-evidence-corrections/SPEC.md",
+      "classification": "historical",
+      "sha256": "c9c1e3f952870c1de392cec442d9ee2084fe019b3135a802d9d8f92950c74330",
+      "bytes": 26704,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-037-line-ending-agnostic-records/SPEC.md",
+      "classification": "historical",
+      "sha256": "62cd2b3dbe562319c21c906db68fa951f40cf5bca3aa02ad0441cced64d60d4a",
+      "bytes": 16780,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-038-v3-1-2-upstream-fix-list/SPEC.md",
+      "classification": "historical",
+      "sha256": "2e5251bbc89fc64c54476d7229af75dee7e57ea75ff45a51d39d2cfe2f5f57d7",
+      "bytes": 44035,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-039-installed-runtime-integrity/SPEC.md",
+      "classification": "historical",
+      "sha256": "c0e14b2ba353460044f1941ccc555969458a3b670730191567bdde0f0f230909",
+      "bytes": 46161,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-040-skill-gate-route-selection/SPEC.md",
+      "classification": "historical",
+      "sha256": "9ade41d487d01fe14d3900acf5c809ee758925f29801ae7be5acf1603906a2d4",
+      "bytes": 28283,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-041-recorded-baseline-availability/SPEC.md",
+      "classification": "historical",
+      "sha256": "83064d3153dfa418ccb9268bdcc86ba84326e92ffbe38e2c6f0dd008acadc126",
+      "bytes": 21702,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-042-installed-state-repair/SPEC.md",
+      "classification": "historical",
+      "sha256": "74b77a88f2015434d89ce666b06a15103647070c2269ecbc2be45695f22cc45e",
+      "bytes": 47492,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-043-diagnostic-output-legibility/SPEC.md",
+      "classification": "historical",
+      "sha256": "97d237a293710fa5888527a1ec4c0669bdecbe6dcec292e1649d4fcc6b053760",
+      "bytes": 18248,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-044-legacy-room-classification/SPEC.md",
+      "classification": "historical",
+      "sha256": "974c3158bd66a62b7162c1583768c4f150874a636b69e2f3e26f25f3f60165b3",
+      "bytes": 57175,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md",
+      "classification": "historical",
+      "sha256": "36b89580be192294fe9fe0ee15707ff6a7c0369e19de3567cfaa98ba0845aed4",
+      "bytes": 54397,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-046-json-notepad-foundation/continuity-result-2026-09-08.json",
+      "classification": "current",
+      "sha256": "2b296c7395227e56b9e3b1829b555d59793200dc6f7c84f3ab0d3205a390b76b",
+      "bytes": 9969,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-046-json-notepad-foundation/SPEC.md",
+      "classification": "historical",
+      "sha256": "69e89952f689f3f8049a6bb59fb8e127436956e0f19aa58a4c1ab25de835984f",
+      "bytes": 66452,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-047-visible-workbench-identifiers/consumer-inventory.json",
+      "classification": "current",
+      "sha256": "ace6ecfeee64d3fac778f732f27a0d331383f1e28b01c77ff05cc2ebdf5c57a0",
+      "bytes": 6117,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-047-visible-workbench-identifiers/SPEC.md",
+      "classification": "historical",
+      "sha256": "7888ccefa3fb28ef6d89ce924bb0e0abf303ee9d92568727e1ff5221e41a3a0d",
+      "bytes": 15450,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-048-checkpoint-retirement/checkpoint-disposition.md",
+      "classification": "current",
+      "sha256": "249a95e5fb5052bbd5b8c761c2abe66d8e1facfc23372a53518444e99d8aa748",
+      "bytes": 7490,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-048-checkpoint-retirement/checkpoint-inventory.json",
+      "classification": "current",
+      "sha256": "7ff489171bc9c7467a095a8ff282e75f512f7bc65d499b5e085f3d75bf4bfeea",
+      "bytes": 57861,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-048-checkpoint-retirement/direct-promotion-result.json",
+      "classification": "current",
+      "sha256": "92941b944c4d1b57aa0d474ca05c7e802fc8b50d0964b05f54ab4cee22a105cb",
+      "bytes": 1188,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-048-checkpoint-retirement/recovery-restoration-result.json",
+      "classification": "current",
+      "sha256": "49e4bb561e052a2474f4a700cdeccbe06e51c7eb1cda3a8eb6bd1ff64b86a533",
+      "bytes": 3164,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-048-checkpoint-retirement/SPEC.md",
+      "classification": "historical",
+      "sha256": "6541b444c4b2a4969237a63413b261fa73d3a6b9f47932fe02f0e7b90989065f",
+      "bytes": 17813,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md",
+      "classification": "historical",
+      "sha256": "03b3dddf7b6e3d4d6fe046678cdf882e8a08d6997f60ca12d79c2287fdbee631",
+      "bytes": 40774,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-050-workbench-v3-2-0-release/genesis-continuation-result.json",
+      "classification": "current",
+      "sha256": "1d351cda3df66011ce3c8c3e28ff6ac6aee8800d80ed2f92be50747a644dc36d",
+      "bytes": 3903,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "classification": "current",
+      "sha256": "439f97c33e1e49ffdcfc21fe45f0ce7fd65fed485bb4faa5d9a31c1b6739822e",
+      "bytes": 487050,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-050-workbench-v3-2-0-release/repair-integration-acceptance.json",
+      "classification": "current",
+      "sha256": "52707db1f35f8452211c78488592eb5ec8283fa5cb768af188bf963c4cbc6f24",
+      "bytes": 11926,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+      "classification": "current",
+      "sha256": "2d400262e31a20ca5d0b9f9a80862131b3abd067552163824d95c30a36cd00cf",
+      "bytes": 22935,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-051-core-skill-ownership-and-compatibility/installed-native-acceptance.json",
+      "classification": "current",
+      "sha256": "5053f8ef05d567a614f8a63ffc2ef34a8e4d209c0792d3d1002d30b9aea1b3bc",
+      "bytes": 13899,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-051-core-skill-ownership-and-compatibility/native-composition-result.json",
+      "classification": "current",
+      "sha256": "4d4cab74565c577b0f4b72d2324a832779e186bb70350bbe22bc36da30d9317a",
+      "bytes": 4144,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md",
+      "classification": "historical",
+      "sha256": "d39d6edca604c2d3eec662c4a19300be4a4efe7315a642f89b54180b5ab67376",
+      "bytes": 29499,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-051-core-skill-ownership-and-compatibility/tracked-core-migration.md",
+      "classification": "current",
+      "sha256": "4e869a837325e6dddf268f2755414a589b4a2814a516a029298333de22286e5b",
+      "bytes": 3007,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-052-private-session-transport/SPEC.md",
+      "classification": "current",
+      "sha256": "a1fadaab8e5f2cbb6778b2c5fc0df0b3ea73c095006525e236e52cf9511f32f8",
+      "bytes": 19556,
+      "status": "active"
+    },
+    {
+      "artifact": "workbench/specs/S-053-configured-host-capabilities/local-host-result.json",
+      "classification": "current",
+      "sha256": "82edb8c25b906fe42da403afd74cb1887a93f0d49275599b15fb16c387d7f5c9",
+      "bytes": 1960,
+      "status": null
+    },
+    {
+      "artifact": "workbench/specs/S-053-configured-host-capabilities/SPEC.md",
+      "classification": "historical",
+      "sha256": "17b9a0d9855d1848e95b28c0560a5f1d35f2c311c28877c3061a1f59e5ae6771",
+      "bytes": 11902,
+      "status": "complete"
+    },
+    {
+      "artifact": "workbench/specs/S-054-v3-2-1-review-boundary-integrity/SPEC.md",
+      "classification": "planned",
+      "sha256": "9dd720c2b9c760a9c5f0fc2508282699d94e6dbf073b79791daf213d70bc06bd",
+      "bytes": 10565,
+      "status": "planned"
+    },
+    {
+      "artifact": "workbench/docs/adr/0001-planes-classify-operations-not-artifacts.md",
+      "classification": "current",
+      "sha256": "5a4509b9fd626456c1cd6e649533aa301660a9c2783bcab682a382c9b32d56e7",
+      "bytes": 963,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0003-full-crud-with-artifact-conditions.md",
+      "classification": "current",
+      "sha256": "7055684faab54c575fee07ff0b73b9f590bd3b4975e389e26b274d6610350745",
+      "bytes": 770,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0005-machine-enforcement-requires-running-consumers.md",
+      "classification": "current",
+      "sha256": "41fad6100d3adf2e13f308b7fc5dd0981088db957c74e990cf49ad3fe46d7654",
+      "bytes": 761,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md",
+      "classification": "current",
+      "sha256": "1b584a20b67a42221e4f5a697e80ea493c32964cd8166eae7fc6455e23280920",
+      "bytes": 4501,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md",
+      "classification": "current",
+      "sha256": "cff44eefe8a05e646049ad65e66b7275179b3e561e209820f2f51fabda9644a2",
+      "bytes": 2158,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md",
+      "classification": "current",
+      "sha256": "b3de1a6635d4985f4148c1af28bb9c8dc890c231a9fe8ad2ed62a26c0e38a4a8",
+      "bytes": 2567,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md",
+      "classification": "current",
+      "sha256": "8f0956b37744f6d0a55e7b5307d2b4df212bf5e0f301189154ae650190e882a4",
+      "bytes": 2280,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+      "classification": "current",
+      "sha256": "154fe46a375c24d80c549aff84808822c018140a42913431a185b00699454f67",
+      "bytes": 9640,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md",
+      "classification": "current",
+      "sha256": "efb0427ea0a911102688e1676727e282268b0186910fa4b455a4e9ab40115cc0",
+      "bytes": 8593,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md",
+      "classification": "current",
+      "sha256": "06dee4cdd10e2507dda92a6b45f098fbf117c6ec5ceca214f1d0bc143f4823c1",
+      "bytes": 11425,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md",
+      "classification": "current",
+      "sha256": "af8222060179d28d1167eb362d38f04dfe01bb0bf15eda951448cbf017d26761",
+      "bytes": 8594,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/000J-completion-claims-are-checked-against-repository-state.md",
+      "classification": "current",
+      "sha256": "554fb4de5b8438a6ee830f1334ed13a3e7f46a6067e288205eeb15920210b1a6",
+      "bytes": 5055,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/000K-every-feedback-finding-carries-one-of-four-dispositions.md",
+      "classification": "current",
+      "sha256": "db2f4e8d91aa2b2ee8479d35ec6db7a0329841c2c66cabd8c2a654e20a14708f",
+      "bytes": 5219,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/000L-a-notepad-belongs-to-its-objective-and-every-chat-working-that-objective-writes-to-it.md",
+      "classification": "current",
+      "sha256": "4a27233981aef8f9e40b58f591fcc89add6eb4f0816dcb240c498af264cfc609",
+      "bytes": 6306,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md",
+      "classification": "current",
+      "sha256": "8055f77bb52ec3b0c97c0cae8c136707c8d162036833a9df6b09a604b92a05be",
+      "bytes": 3708,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md",
+      "classification": "current",
+      "sha256": "f352a1edce6dbc7e7f507e22e0979e5793471f4e6ae9fa56bde0251b1bc2f680",
+      "bytes": 6606,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/000O-claims-are-pushed-on-the-task-branch-and-read-from-every-remote-tip.md",
+      "classification": "current",
+      "sha256": "956567effd79404db85b22c8cf8bda5b664814e8dd6da08228c7a99bdf01411a",
+      "bytes": 5200,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/000P-roles-scope-work-and-stances-define-the-job.md",
+      "classification": "current",
+      "sha256": "8490ee4e353c6f0477fc49b2f69b02f41b54f14753dcfd642b2609e7a9ad8f7f",
+      "bytes": 2924,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0015-workbench-base-and-foundry-capabilities.md",
+      "classification": "current",
+      "sha256": "20dc4550f14bfae6615fc9c6dada5a34ad6bac2ab51f0db5ae7109453d099217",
+      "bytes": 862,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0018-the-wiki-is-the-knowledge-base.md",
+      "classification": "current",
+      "sha256": "6fb0e307a73400bd6b0ddb8384b685ef7f7659649c0453ddb95cd2201c7b52db",
+      "bytes": 955,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0020-a-check-blocks-only-the-change-it-evaluates.md",
+      "classification": "current",
+      "sha256": "8dedcf77b0dc8a4121143c126c74e14c2cc27871645687a1ed295adcc6da9960",
+      "bytes": 1093,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0023-mechanical-guarantees-and-agent-obligations.md",
+      "classification": "current",
+      "sha256": "aea6c7a77d4776c68a52a77b1760046100e09178ff1b94f1f5684af710a4b4d6",
+      "bytes": 1061,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md",
+      "classification": "current",
+      "sha256": "80f17df062be9b39886076eba47c40918f634d3823b73d9ad1f939188c4b923e",
+      "bytes": 3078,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0027-instruction-authority-is-separate-from-state-resolution.md",
+      "classification": "current",
+      "sha256": "5f649a9037137a5f8844001643bbd96d9896151e535716e6c0df435b43a26f9c",
+      "bytes": 1717,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0028-live-session-records-stay-untracked-and-checkpoints-are-durable.md",
+      "classification": "current",
+      "sha256": "9a191c18ebd5a9b6a40eeb6a3c8dadc351a79b0da49aa0d0459d6bd41fa8e3b4",
+      "bytes": 1818,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0029-diagnostics-carry-registered-blocking-semantics.md",
+      "classification": "current",
+      "sha256": "81f24fa10cb6cad400fc7da69f764f1539b9b007c5b1905fd0dd4693a6cc5a61",
+      "bytes": 1603,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0030-every-workbench-declares-a-design-concepts-collection.md",
+      "classification": "current",
+      "sha256": "a700eb65b8785b84962a5b54d4cd6cabca934dd24750535b8142e35304e955d1",
+      "bytes": 1715,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0031-runtime-tools-are-workbench-managed-in-the-tools-lane.md",
+      "classification": "current",
+      "sha256": "bd6d4a9dd4351ce4e355581afccf124f4ddf75b62331cd25f1012d380aa466af",
+      "bytes": 1965,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md",
+      "classification": "current",
+      "sha256": "c30b969dde966557f07406639369c2ef10c4b378514551351abd085039184254",
+      "bytes": 1375,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0034-required-steps-must-enable-delivery.md",
+      "classification": "current",
+      "sha256": "359330d0a48ce90c116bff51118e2376e427a5341dc74415348d266d37918074",
+      "bytes": 776,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0035-reduced-entry-and-assigned-autonomy.md",
+      "classification": "current",
+      "sha256": "036e0598004a9ed523a5309b58ff3e76e433f0892c37d54ccfea8045fc03e960",
+      "bytes": 1197,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0036-stances-change-method-not-authority.md",
+      "classification": "current",
+      "sha256": "4a5d29e58dea1ff2029e6b49ea28376cbe3bd16ecbb42fab0b765c79b9357982",
+      "bytes": 967,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0037-independent-review-at-integration.md",
+      "classification": "current",
+      "sha256": "113b6098a364218d71d42c02b6cab6a88b152df2058b1e64a00c2b9c6d0127b8",
+      "bytes": 1369,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md",
+      "classification": "current",
+      "sha256": "958406a52fee0a15e5121dac5a2800dae7cc2059772699bc19593e0c204982b7",
+      "bytes": 1116,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0039-the-integration-branch-is-a-manifest-declared-fact.md",
+      "classification": "current",
+      "sha256": "c9daa5477f2efd97fc1766656489a1bee2ecf88824069c2a62ca9f916fecefc6",
+      "bytes": 2058,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0040-json-notepads-preserve-objective-continuity.md",
+      "classification": "current",
+      "sha256": "a05ecba70111bb53e707f3d4ebbc7b8642ed9647860567e7477386293ed75532",
+      "bytes": 3015,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0041-visible-base62-workbench-identifiers.md",
+      "classification": "current",
+      "sha256": "b1070f8705164b79fc4e64dc41e88de894010b9fa6b86817d061d28d1da14b1b",
+      "bytes": 7694,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0042-traverse-dont-search-is-core-workbench-navigation.md",
+      "classification": "current",
+      "sha256": "4ef8a06dd3b2055eee749d8eb8088b32647188a2652daf7201397cffa9614b15",
+      "bytes": 2826,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0043-workbench-continuity-through-maintained-owners.md",
+      "classification": "current",
+      "sha256": "31201eea0cbe4f627af8efa3ccb36764e1a2935911c2b0874cde58b4c3892675",
+      "bytes": 1466,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0044-evidence-for-claims-of-improved-agent-outcomes.md",
+      "classification": "current",
+      "sha256": "73bbfcda33b54fcbc5fcced0fbbf15ca6977ad3f09d29b7e44046dbdcee585d3",
+      "bytes": 1381,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0045-skill-composition-within-inherited-scope.md",
+      "classification": "current",
+      "sha256": "1f9dcfed11c5917dd1e7d83a7e97ce0d478293de1723d2eec816f1b8be07ca7c",
+      "bytes": 1409,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md",
+      "classification": "current",
+      "sha256": "04e47f39921c19fcc0cc00b5ca6f9c4910b39597d01f5f9e46e8f9279c724228",
+      "bytes": 2571,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0047-preservation-contracts-for-genesis-adoption-and-upgrade.md",
+      "classification": "current",
+      "sha256": "b6f4cd60d54d205229512b1ad490acdb077cb6c11f0ab149207d36626a69be2a",
+      "bytes": 1362,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0048-identity-across-release-adoption-installed-bytes-and-runtime.md",
+      "classification": "current",
+      "sha256": "c81489d7c02f5d7d63beb7acd896dabe65f5831f0f2c9be861586556a804aa5b",
+      "bytes": 1420,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0049-unavailable-baseline-for-a-bounded-harness-only-change.md",
+      "classification": "current",
+      "sha256": "d5aa8a6f78eda26d6d4d0c41545848f9c0cc7dfb2b2d58056b8a18b2c6380af0",
+      "bytes": 1379,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0050-visible-deliberate-control-divergence.md",
+      "classification": "current",
+      "sha256": "f61792e6c2fe99a6361bb1a8664154b181ef4066a361fe38b93daf38e0654423",
+      "bytes": 1369,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0051-optional-private-git-transport-for-session-continuity.md",
+      "classification": "current",
+      "sha256": "cefa7aeacabb8f88d07b0eb12cc8f0f0b6900620e1b07a6107bc5460df0bc962",
+      "bytes": 2036,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0052-node-javascript-remains-the-portable-runtime.md",
+      "classification": "current",
+      "sha256": "41afce2c52397f1b58e4c337875514eb17512984802ba35ad31a1dc94019d053",
+      "bytes": 1311,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0053-minimum-configured-host-capability-and-evidence-boundaries.md",
+      "classification": "current",
+      "sha256": "fc6aeeb4e1fb190d411d872f05507613daa294714e8a2fbcd2480d4c543f2c4e",
+      "bytes": 1650,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0054-direct-promotion-into-durable-owners.md",
+      "classification": "current",
+      "sha256": "131a422f65b3838a6e915b4149d5f8983336faa1f39c2b214b015c7e17ddf5fd",
+      "bytes": 2773,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/0055-workbench-update-requires-self-drift-check.md",
+      "classification": "current",
+      "sha256": "f690db28997c90ec64cd008a84d18c76647516e136c892f29c528dc3adb5b338",
+      "bytes": 3058,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/archive/0002-binding-rules-stay-in-current-controls.md",
+      "classification": "historical",
+      "sha256": "2e66c75058abe0581ace78de4cb8628cafbbf527b95b2069ced6cd10f2da5439",
+      "bytes": 764,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/archive/0013-seven-file-workbench-contract.md",
+      "classification": "historical",
+      "sha256": "8977e61c36964a605a8306190e87c4b65c2e85b64608d725f0589899f2cb32fb",
+      "bytes": 865,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/archive/0017-workbench-support-directory-has-six-lanes.md",
+      "classification": "historical",
+      "sha256": "b45e6eed9da7682c1f855a7f5fb8e6f48084bea4bd4d652216beb66ca77f662c",
+      "bytes": 1014,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/archive/0025-planes-classify-claims-not-whole-artifacts.md",
+      "classification": "historical",
+      "sha256": "95509e2309df07099e411b5b3c280c7631b594d2827cd38a7d404218c95d7813",
+      "bytes": 1685,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/archive/0033-workbench-contract-is-a-claim-set.md",
+      "classification": "historical",
+      "sha256": "520f468ac6c8db49c00998819de3e264bafdab25d56c0ba26190ccdf5dd9ddb4",
+      "bytes": 1333,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/HISTORY.md",
+      "classification": "current",
+      "sha256": "aa238c4fc805e0339fd5408d9765d034ce6435b80385da6f272fe13b7740c135",
+      "bytes": 12480,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md",
+      "classification": "current",
+      "sha256": "2bb39bff6a19c3d1890da5e309dcde5d98731967b273fa54a8a4577c69f7f64f",
+      "bytes": 4053,
+      "status": null
+    },
+    {
+      "artifact": "workbench/docs/adr/proposed/000Q-github-issues-are-the-required-live-coordination-authority.md",
+      "classification": "current",
+      "sha256": "a27a47f7387800a1e0f05f767d8559cab5e799d9aba339db6229cb5ab9f28d06",
+      "bytes": 10040,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/adr.mjs",
+      "classification": "current",
+      "sha256": "1fec2252e3eafd86dfbc51907abf531482975971428fcdc9e86f519d12ecb6c3",
+      "bytes": 41620,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/claim-coordination.mjs",
+      "classification": "current",
+      "sha256": "e15e4d606cb704fc60f75710a023476e8bdf8c0c16e45a624e4a8903e72ae5fa",
+      "bytes": 14801,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/diagnostics.mjs",
+      "classification": "current",
+      "sha256": "dec8cfece34250538679dd580e19224c4db197b4a0d801831491264323c07c2e",
+      "bytes": 19995,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/host-floor.mjs",
+      "classification": "current",
+      "sha256": "db5bfeb569af46f0df464d5e614bd5fd25e9297f1aaf7a4a3dc7eecda6c7a193",
+      "bytes": 6806,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/landmark-tracker.mjs",
+      "classification": "current",
+      "sha256": "f196b51e693d0cffc75928abeed2e99765624ec16ad436e020f59dff27a7e0cd",
+      "bytes": 75941,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/landmark-wiki.mjs",
+      "classification": "current",
+      "sha256": "afc592697efe38d306ef77f69086bcd68307352a3e829d25aebf7f094b0627b2",
+      "bytes": 6970,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/markdown-table.mjs",
+      "classification": "current",
+      "sha256": "acca5cb04cecb0044c74aaa38f42d6f0e4e6addb26b45a744d14ca0b74487e6b",
+      "bytes": 929,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/notepads.mjs",
+      "classification": "current",
+      "sha256": "0362da906391f52143d726d59a528d3dabf8b695b4ef6892af9de22b23c2af92",
+      "bytes": 52036,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/optional-capabilities.mjs",
+      "classification": "current",
+      "sha256": "430df9d08ba18e4af2a389019b3b591f23ad9ae390801b2a39273878d05490be",
+      "bytes": 4886,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/privacy.mjs",
+      "classification": "current",
+      "sha256": "8731047bc626b7b7a539b04c674aac2ac19452e7103cebd53ccf336c32a3ad8b",
+      "bytes": 1389,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/project-evidence.mjs",
+      "classification": "current",
+      "sha256": "5fdfdce8f57b749b3be995a1f31ff9bf69ce4b6c6cf8690df9719661813eeca3",
+      "bytes": 13316,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/self-drift.mjs",
+      "classification": "current",
+      "sha256": "65b0480c6cdd0f0d372f6f38c0f8b3d665597d03dc74f770d6a53aaaf4e986d2",
+      "bytes": 11434,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/session-transport.mjs",
+      "classification": "current",
+      "sha256": "17172dcb489a2fa571551a605f3130fd20d6bc2a17d8cba8811ef39a8c2c5416",
+      "bytes": 27068,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/sessions.mjs",
+      "classification": "current",
+      "sha256": "81ac7eaaf34d16ae5af3301b15e40fdc5a64b442a0b19150fa82b24376ddb1c5",
+      "bytes": 14172,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/skill-inspection.mjs",
+      "classification": "current",
+      "sha256": "fa7fb23cc30543252f02b10192bf2e96a5c2281008447bcf05bc043dd08afc9e",
+      "bytes": 6955,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/spec-packet.mjs",
+      "classification": "current",
+      "sha256": "d6b615128448afb94278e9fa70979aead26310ee36738abdd0362e3bcb434399",
+      "bytes": 5593,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/spec-report.mjs",
+      "classification": "current",
+      "sha256": "bda0aee38de1247ea31e0fd36a07e1f66729713111f0538dbd81e787592207d4",
+      "bytes": 75879,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/spec-workbench.mjs",
+      "classification": "current",
+      "sha256": "fd38642d7334848d8f41681c1044fc4d790aa9ea92c970ab55e6db526086c990",
+      "bytes": 229231,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/task-packet.mjs",
+      "classification": "current",
+      "sha256": "f6f48ee1f014079f0fbc8ca94ee3abb39fb3abbe75f621e1b727f773a431e3f3",
+      "bytes": 11645,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/task-receipt.mjs",
+      "classification": "current",
+      "sha256": "aaefb6321bdd4568f1e850f885b0b8aaf56a2e4c383f8786c3df79b3a0ebb7c5",
+      "bytes": 14259,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/task-record.mjs",
+      "classification": "current",
+      "sha256": "3fa2771340d1b997521f5cf14999fc9541393dad16d9b5b7f207a4bd88c149c1",
+      "bytes": 17905,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/taskboard.mjs",
+      "classification": "current",
+      "sha256": "4d0c3ef1466cd99050b94cd03e6db3b05364de67ea535da6f89e37dd9dbda597",
+      "bytes": 10113,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/template-placeholders.mjs",
+      "classification": "current",
+      "sha256": "a36e3b6eaae84df9705b518ace10ec34111aadbe5ed5015de458cbfceb592050",
+      "bytes": 4259,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/visible-ids.mjs",
+      "classification": "current",
+      "sha256": "587b737001ec95a5bbee2f4f9b3920bacdb5b7e540f01da87ea8fe0b0ee4796f",
+      "bytes": 5462,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/wiki.mjs",
+      "classification": "current",
+      "sha256": "b8fb114514d57e4ef7335791ecbb1c73a6e59b52e84b6371df92e5eb255eaa5c",
+      "bytes": 17548,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/workbench-layout.mjs",
+      "classification": "current",
+      "sha256": "3e9352bbf04180396bb7f7b8c8148cbe7c0fd45aa19a445f3a2d1bfbf0e75e3f",
+      "bytes": 96849,
+      "status": null
+    },
+    {
+      "artifact": "workbench/tools/workbench-paths.mjs",
+      "classification": "current",
+      "sha256": "8099881a7c99c008184bda85a062ee5644548b869bed67a66c8e8ed75a6c2620",
+      "bytes": 15715,
+      "status": null
+    },
+    {
+      "artifact": "workbench/sessions/notepads/templates/grilling.example.json",
+      "classification": "current",
+      "sha256": "4856b43d2f939a131172e24f455fca457b17508da505d56c89312d58906a2458",
+      "bytes": 587,
+      "status": null
+    },
+    {
+      "artifact": "workbench/sessions/notepads/templates/notepad.schema.json",
+      "classification": "current",
+      "sha256": "2bdc47d139314642bc4b90e8e2d2e2a5e24cc4d258aaa90ec4d126def2be00c0",
+      "bytes": 2597,
+      "status": null
+    },
+    {
+      "artifact": "workbench/sessions/notepads/templates/work.example.json",
+      "classification": "current",
+      "sha256": "7608eb9e6879fb564041011f6c09756de696b01a1292a48c2cee9e32c6b82376",
+      "bytes": 562,
+      "status": null
+    },
+    {
+      "artifact": "templates/.claude/README.md",
+      "classification": "current",
+      "sha256": "f27b3de3bb661f84924b37158a60a0df0cfead426897568826b4b24e3562b95d",
+      "bytes": 3275,
+      "status": null
+    },
+    {
+      "artifact": "templates/.claude/settings.json",
+      "classification": "current",
+      "sha256": "fde667fc40e004f1578ff847a60a67224fc6d22b15bc2758fbd573152bf64001",
+      "bytes": 1377,
+      "status": null
+    },
+    {
+      "artifact": "templates/ADOPTION.md",
+      "classification": "current",
+      "sha256": "3e86653d52baf02a0b443ee223c6e632a1e4f1770df7114a2e7bf8cd2778d394",
+      "bytes": 21031,
+      "status": null
+    },
+    {
+      "artifact": "templates/AGENTS.md",
+      "classification": "current",
+      "sha256": "8ac3113b7e6522666030ec6f2ad5ef8cd05009e9e1af71bb309d7794c435bebf",
+      "bytes": 30023,
+      "status": null
+    },
+    {
+      "artifact": "templates/BLUEPRINT.md",
+      "classification": "current",
+      "sha256": "74bb75dd264912a261caebb4e31d560a5bfee47449818fc33540d4636d368c27",
+      "bytes": 2088,
+      "status": null
+    },
+    {
+      "artifact": "templates/feedback/REPORT_FORMAT.md",
+      "classification": "current",
+      "sha256": "6416cc65580e5e19c14f55ebc2f274a1ab5b3d93fd40c12a1c14124f574f684f",
+      "bytes": 5666,
+      "status": null
+    },
+    {
+      "artifact": "templates/GENESIS.md",
+      "classification": "current",
+      "sha256": "8008ebdda4c32df1ad3a185e2712f541e3fd0dab6512475a28d4bf9695a4ac28",
+      "bytes": 21898,
+      "status": null
+    },
+    {
+      "artifact": "templates/HANDOFF.md",
+      "classification": "current",
+      "sha256": "21c40ac51ffdc952785cee0dea9d92688dbb548d5fe30dfabd858b554575d246",
+      "bytes": 966,
+      "status": null
+    },
+    {
+      "artifact": "templates/LEXICON.md",
+      "classification": "current",
+      "sha256": "a399a5d2adab96f9abb6a5c124fbd79c23d9241f30e6df3ec75fbb595cddca17",
+      "bytes": 40186,
+      "status": "[active / partial / stale]"
+    },
+    {
+      "artifact": "templates/README.md",
+      "classification": "current",
+      "sha256": "f09ffd640d2fcf8ddad7496991e51fab8514c9faa026d8a8df499f05104b9ced",
+      "bytes": 4565,
+      "status": null
+    },
+    {
+      "artifact": "templates/RUNBOOK.md",
+      "classification": "current",
+      "sha256": "dd7a10892f5d10d379225a74f9dc31240ae1339a7f839622426d2da4013b7368",
+      "bytes": 73018,
+      "status": null
+    },
+    {
+      "artifact": "templates/sessions/notepads/templates/grilling.example.json",
+      "classification": "current",
+      "sha256": "4856b43d2f939a131172e24f455fca457b17508da505d56c89312d58906a2458",
+      "bytes": 587,
+      "status": null
+    },
+    {
+      "artifact": "templates/sessions/notepads/templates/handoff.example.json",
+      "classification": "current",
+      "sha256": "4923c44076344979732fc87ca4aadde82b3bf98914003e7e298084c67f67d1b7",
+      "bytes": 621,
+      "status": null
+    },
+    {
+      "artifact": "templates/sessions/notepads/templates/notepad.schema.json",
+      "classification": "current",
+      "sha256": "2bdc47d139314642bc4b90e8e2d2e2a5e24cc4d258aaa90ec4d126def2be00c0",
+      "bytes": 2597,
+      "status": null
+    },
+    {
+      "artifact": "templates/sessions/notepads/templates/work.example.json",
+      "classification": "current",
+      "sha256": "7608eb9e6879fb564041011f6c09756de696b01a1292a48c2cee9e32c6b82376",
+      "bytes": 562,
+      "status": null
+    },
+    {
+      "artifact": "templates/SPEC.md",
+      "classification": "planned",
+      "sha256": "e2ef6df496d048dc62c7c5993642a0868d843238a44813f2675bc31b5423187b",
+      "bytes": 2728,
+      "status": "planned"
+    },
+    {
+      "artifact": "templates/TASKBOARD.md",
+      "classification": "current",
+      "sha256": "7a28022567ff8a28412a125bcaa576ad0438694c80ba76827199fdcdcdaccd2e",
+      "bytes": 1441,
+      "status": null
+    },
+    {
+      "artifact": "templates/wiki/AGENTS.md",
+      "classification": "current",
+      "sha256": "a80d17957920f2e05fae0e2ae3517607cb947a039773d381a6d012ba140a4145",
+      "bytes": 1733,
+      "status": null
+    },
+    {
+      "artifact": "templates/wiki/design-concepts/README.md",
+      "classification": "current",
+      "sha256": "7b99390dbd87b73b34b929ad4ef87eefb14ac2a3e73d05bed87f3ea68656720f",
+      "bytes": 2464,
+      "status": null
+    },
+    {
+      "artifact": "templates/wiki/features/README.md",
+      "classification": "current",
+      "sha256": "e5af0f15ff86e554855851e2c28cca1007cbad67b0fc59847161879aca31749d",
+      "bytes": 2685,
+      "status": null
+    },
+    {
+      "artifact": "templates/wiki/MEMORY.project.md",
+      "classification": "current",
+      "sha256": "49c7db9eb898f5bd1cf58f1690fc5c6b941a928d0de441b9452bcd13ac62de49",
+      "bytes": 2665,
+      "status": null
+    },
+    {
+      "artifact": "templates/wiki/MEMORY.root.md",
+      "classification": "current",
+      "sha256": "4e2696f86ccfabf4f3dfd65cfd7076a3e8064a09861212f704f445d541d9ecf3",
+      "bytes": 2688,
+      "status": null
+    },
+    {
+      "artifact": "templates/wiki/README.md",
+      "classification": "current",
+      "sha256": "b5af606f0e85d97c2f1abd0bb036265592d88502c9abb17f03f32c7ff6fda668",
+      "bytes": 2565,
+      "status": null
+    },
+    {
+      "artifact": "templates/wiki/SCHEMA.md",
+      "classification": "current",
+      "sha256": "060cfddcdae27f2b977871691cc363343c3473e5695d8fb473e789be62c27aa1",
+      "bytes": 7188,
+      "status": null
+    },
+    {
+      "artifact": "templates/WORKBENCH_FEEDBACK.md",
+      "classification": "current",
+      "sha256": "9234e3d83e984bd7f061805e4a89f7b99ca18e6dfe5dfc11d890dc7948d33e17",
+      "bytes": 1715,
+      "status": null
+    }
+  ],
+  "findings": [
+    {
+      "code": "stale-claim",
+      "artifact": "specs",
+      "claim": "S-00Q has an in-progress task last updated 2026-09-19",
+      "expected": "current owner and verified identity",
+      "observed": "S-00Q has an in-progress task last updated 2026-09-19",
+      "correction": "S-00Q has an in-progress task last updated 2026-09-19",
+      "classification": "stale",
+      "severity": "attention",
+      "effect": "blocks-clean-update",
+      "diagnosticEffect": "none"
+    },
+    {
+      "code": "stale-seed",
+      "artifact": "workbench/feedback/REPORT_FORMAT.md",
+      "claim": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+      "expected": "current owner and verified identity",
+      "observed": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+      "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+      "classification": "historical",
+      "severity": "attention",
+      "effect": "limitation",
+      "diagnosticEffect": "none"
+    },
+    {
+      "code": "stale-seed",
+      "artifact": "workbench/sessions/notepads/templates/notepad.schema.json",
+      "claim": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+      "expected": "current owner and verified identity",
+      "observed": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+      "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+      "classification": "historical",
+      "severity": "attention",
+      "effect": "limitation",
+      "diagnosticEffect": "none"
+    },
+    {
+      "code": "stale-seed",
+      "artifact": "workbench/sessions/notepads/templates/work.example.json",
+      "claim": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+      "expected": "current owner and verified identity",
+      "observed": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+      "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+      "classification": "historical",
+      "severity": "attention",
+      "effect": "limitation",
+      "diagnosticEffect": "none"
+    },
+    {
+      "code": "stale-seed",
+      "artifact": "workbench/sessions/notepads/templates/grilling.example.json",
+      "claim": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+      "expected": "current owner and verified identity",
+      "observed": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+      "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+      "classification": "historical",
+      "severity": "attention",
+      "effect": "limitation",
+      "diagnosticEffect": "none"
+    },
+    {
+      "code": "stale-seed",
+      "artifact": "workbench/sessions/notepads/templates/handoff.example.json",
+      "claim": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+      "expected": "current owner and verified identity",
+      "observed": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+      "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+      "classification": "historical",
+      "severity": "attention",
+      "effect": "limitation",
+      "diagnosticEffect": "none"
+    },
+    {
+      "code": "unverified-provenance",
+      "artifact": "manifest",
+      "claim": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+      "expected": "current owner and verified identity",
+      "observed": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+      "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+      "classification": "historical",
+      "severity": "attention",
+      "effect": "limitation",
+      "diagnosticEffect": "none"
+    }
+  ],
+  "machineResult": "blocked",
+  "cleanUpdate": false,
+  "limitations": [
+    "Machine evidence does not establish semantic freshness. Review current-facing claims against their owners and record a no-memory cold-start read-back.",
+    "Target-project drift is a separate operation.",
+    "Installed-source files do not prove native host callability; no installation or repair is performed."
+  ]
+}

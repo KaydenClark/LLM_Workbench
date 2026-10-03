@@ -1,0 +1,224 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-005U",
+  "revision": 7,
+  "title": "How does the landmark inventory start and evolve?",
+  "question": "How does the landmark inventory start and evolve?",
+  "answer": "LD-1: Use the proposed 23 candidates as an evolving starting inventory. Add further landmarks as meaningful features or framework pillars emerge from DQCs. The count is not fixed, overlap is allowed, and detailed names/boundaries remain refinable.\nLD-1A: Agreed candidate grouping: Context Map, Agent Autonomy, Agent Stances, Skills, Notepads, Handoffs, Session Transport. Individual eligibility and detailed boundaries remain provisional; overall inventory remains open.\nLD-1B: Keep Artifact Types, Durable Knowledge and Wiki as separate landmark candidates. Overlap is acceptable; rigid boundaries are not required.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: LD-1, LD-1A, LD-1B (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "LD-1 update workbench/wiki/design-concepts/landmark-tracker.md: Lists the starting landmark candidates as a map of concepts, not a closed taxonomy or delivery claim. | LD-1 update BLUEPRINT.md (Landmark Tracker paragraphs): States that further landmarks emerge from DQCs. | LD-1A update workbench/wiki/design-concepts/landmark-tracker.md: Carries Context Map, Agent Autonomy, Agent Stances, Skills, Notepads, Handoffs and Session Transport as candidate landmarks. | LD-1B update workbench/wiki/design-concepts/landmark-tracker.md: Keeps Artifact Types, Durable Knowledge and Wiki as separate, overlapping candidates.",
+    "home": "workbench/wiki/design-concepts/landmark-tracker.md; BLUEPRINT.md (Landmark Tracker paragraphs)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "LD-1",
+      "revision": "56b459da"
+    },
+    {
+      "id": "LD-1A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "LD-1B",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000X"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "LD-1",
+      "revision": "56b459da",
+      "reason": "Ledger row LD-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "LD-1A",
+      "revision": "56b459da",
+      "reason": "Ledger row LD-1A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "LD-1B",
+      "revision": "56b459da",
+      "reason": "Ledger row LD-1B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How does the landmark inventory start and evolve?",
+    "question": "How does the landmark inventory start and evolve?",
+    "sources": [
+      {
+        "id": "LD-1",
+        "revision": "56b459da"
+      },
+      {
+        "id": "LD-1A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "LD-1B",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:33.532Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:33.532Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: a card written from ledger rows that postdate the 2026-09-26 draft grouping, grilling ledger at 56b459da.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:33.565Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "LD-1: Use the proposed 23 candidates as an evolving starting inventory. Add further landmarks as meaningful features or framework pillars emerge from DQCs. The count is not fixed, overlap is allowed, and detailed names/boundaries remain refinable.\nLD-1A: Agreed candidate grouping: Context Map, Agent Autonomy, Agent Stances, Skills, Notepads, Handoffs, Session Transport. Individual eligibility and detailed boundaries remain provisional; overall inventory remains open.\nLD-1B: Keep Artifact Types, Durable Knowledge and Wiki as separate landmark candidates. Overlap is acceptable; rigid boundaries are not required."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: LD-1, LD-1A, LD-1B (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "LD-1 update workbench/wiki/design-concepts/landmark-tracker.md: Lists the starting landmark candidates as a map of concepts, not a closed taxonomy or delivery claim. | LD-1 update BLUEPRINT.md (Landmark Tracker paragraphs): States that further landmarks emerge from DQCs. | LD-1A update workbench/wiki/design-concepts/landmark-tracker.md: Carries Context Map, Agent Autonomy, Agent Stances, Skills, Notepads, Handoffs and Session Transport as candidate landmarks. | LD-1B update workbench/wiki/design-concepts/landmark-tracker.md: Keeps Artifact Types, Durable Knowledge and Wiki as separate, overlapping candidates.",
+            "home": "workbench/wiki/design-concepts/landmark-tracker.md; BLUEPRINT.md (Landmark Tracker paragraphs)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:33.597Z",
+      "reason": "Ledger row LD-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "LD-1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:33.635Z",
+      "reason": "Ledger row LD-1A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "LD-1A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:33.672Z",
+      "reason": "Ledger row LD-1B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "LD-1B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:33.709Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:50:02.230Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000X"
+          ]
+        }
+      ]
+    }
+  ]
+}

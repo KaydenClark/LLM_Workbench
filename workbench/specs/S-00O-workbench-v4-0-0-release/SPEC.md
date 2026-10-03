@@ -9,7 +9,7 @@
 **Catalog description:** Reconcile the v4 build scope and delivery proof: WBID, JSON Taskboard, workflow controls, direct Blueprint Tasks and feature capture, followed by the preserved Template upgrade gate and full WF-11 project cycle.
 **Blockers:** Release execution remains blocked on the expanded build scope and delivery-versus-closure reconciliation. S-01W/S-01X are owned by Lane I and deliver identity then board; direct-Task ownership remains a proposal. No version bump or downstream update is authorized by the current planning assignment.
 **Latest event:** Lane I rebuilt the 2026-09-26 planning candidate on integration 1a6f6e0, renumbering its identity and board Specs to S-01W and S-01X. No release Task is claimed or completed.
-**Next gate:** Lane I delivers S-01W then S-01X; release Tasks TK-002..TK-005 stay blocked until S-00P is complete. Retain blocked release state until those dependencies are established.
+**Next gate:** Deliver remaining workflow and identity/board proof plus the linked GitHub Coordination capabilities and reviewed claim cutover. Release Tasks retain their S-00P blockers; version, Template, owner QA and main gates remain open.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -99,6 +99,13 @@ At the pre anchor:
    promotion stays owner-only in both repositories.
 
 ## Decisions And Contracts
+
+### Audience for v4 - 2026-10-02
+
+The owner is the only person using the Workbench in v4. Nothing is designed
+for other people or a team now; the release only has to work. The owner tied
+this to the GitHub coordination capabilities below: trusted Issue operations
+use the owner's own GitHub account, and no multi-user trust model is built.
 
 ### Current release planning reconciliation — 2026-09-26
 
@@ -222,6 +229,43 @@ The original two-build-lane guidance referred to the September 16 rollout.
 The current Director assignment coordinates isolated lanes and a single writer
 per shared surface. Packet drafting is independent; implementation follows the
 dependency order and explicit Director lane releases.
+
+### GitHub Coordination package — owner continuation, 2026-10-01
+
+The owner includes required GitHub Issues coordination in v4 and requests
+implementation. The concept seed is contained through PR235 at integration
+`282dc043ab7dad92826a6d5447369238c35df0a3`; this is concept proof only.
+ADR-000Q remains proposed and ADR-000O remains operative until the separately
+reviewed cutover. This package adds no version bump, owner approval or main
+promotion. Existing release and Template proof gates remain open.
+
+| Capability | Owner | Consumable prerequisites |
+|---|---|---|
+| GitHub Coordination Room Binding And Identity | [S-003P](../S-003P-github-coordination-room-binding-and-identity/SPEC.md) | Independent first binding slice |
+| GitHub Coordination Issue Graph | [S-003Q](../S-003Q-github-coordination-issue-graph/SPEC.md) | S-003P |
+| GitHub Coordination Trusted Assignments | [S-003R](../S-003R-github-coordination-trusted-assignments/SPEC.md) | S-003P, S-003Q |
+| GitHub Coordination Operational Transitions | [S-003S](../S-003S-github-coordination-operational-transitions/SPEC.md) | S-003Q, S-003R |
+| GitHub Coordination Shared Continuation | [S-003T](../S-003T-github-coordination-shared-continuation/SPEC.md) | S-003P, S-003Q, S-003S |
+| GitHub Coordination Setup And Upgrade | [S-003U](../S-003U-github-coordination-setup-and-upgrade/SPEC.md) | S-003P |
+| GitHub Coordination Claim Authority Cutover | [S-003V](../S-003V-github-coordination-claim-authority-cutover/SPEC.md) | S-003R, S-003S, S-003T, S-003U |
+| Composed Taskboard and Project views | [S-01X](../S-01X-generated-json-taskboard/SPEC.md) | Issue graph + operational snapshot; Projects access/requirement unresolved |
+
+Only the binding Spec is activated for the first read-only Task by this
+continuation. Peers remain planned without Tasks. The owner decided the
+trusted actor policy on 2026-10-02: the owner's own GitHub account, structured
+Issue records, and only records from the room's configured account count. The
+hold on assignment-dependent work is lifted; the record's fields and validation
+are for S-003R to define. Projects availability and whether a Project is required remain open; no
+mandatory Project policy is invented. Extended outage recovery remains
+DQC-000E, with no v4 blocking edge. Basic visible failure/pending and migration
+correctness remain in active capability acceptance.
+
+S-00V's remaining remote-tip claim Tasks TK-01M/TK-01N/TK-01P retain their
+historical requirements and evidence. Their successor disposition belongs to
+the cutover Spec: no silent re-status, dropped claim or parallel authority.
+S-00P retains shared operational controls and templates. The first inspector
+adds no mandatory coordination dependency; controls are reconciled only once
+their implementing seams are real.
 
 ### Preserved answers and open items
 
@@ -436,6 +480,8 @@ workflow is owned by S-00P, not here.
 | 2026-09-27 | none | Owner-confirmed integration reconciliation and minimum role groundwork | ROLE-1..4 confirmed; source inventory and scope dispositions in INTEGRATION-RECONCILIATION.md; new capability Specs contain no Tasks | Controls, generic mirrors, role model, capability owners and tracked progress | Runtime delivery, open owner choices, bootstrap exception, baseline self-drift and Human QA remain explicit; no clean-update or release-readiness claim |
 
 | 2026-09-27 | none | Verify role groundwork and decision reconciliation candidate b010449977348922159ef984ffe4d66a02f66e7c | All 48 AGENTS commands passed with clean unchanged HEAD; independent full-candidate review PASS; post self-drift retains seven baseline findings and guardrail78 | INTEGRATION-RECONCILIATION.md records method, source pins and limitations; evidence rows placed under Evidence Log | No runtime delivery, exhaustive historical assessment, clean-update or Human QA approval claim; final evidence candidate review and landing PR establish integration delivery |
+
+| 2026-10-02 | none | Owner decisions recorded: single-owner v4 audience; GitHub trusted actor policy, write floor and per-item claim authority carried into the GitHub coordination capability Specs and the proposed decision record | Promotion only; no runtime proof claimed | This Spec, the GitHub coordination Specs named, the proposed GitHub coordination decision record and the GitHub Coordination Wiki article | Structured-record fields and validation undefined; coexistence of both claim mechanisms for different items undecided; the Projects requirement is still open |
 
 ## Completion Result
 

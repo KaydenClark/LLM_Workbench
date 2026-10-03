@@ -1,15 +1,22 @@
 #!/usr/bin/env node
-// Architecture decision records: create, validate, and derive the register.
+// Decision records: create, validate, and derive the register.
 //
 // An ADR owns rationale. Its rule binds only where `canonicalized_in` points,
 // so validation checks that every named owner exists. A durable reference into
 // an untracked session collection is not evidence and is reported.
+//
+// S-003X TK-004X: the same runtime serves both kinds of decision record
+// (ADR-000S): the ADR in the `adr` collection and the Destination Decision
+// Record in the `ddr` collection. A kind selects the collection, the visible
+// identifier prefix, the template and the finding code; the layout, the
+// folder lifecycle and the shared validation rules are one implementation.
+// Every function defaults to the ADR, so existing callers are unchanged.
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { finding } from './diagnostics.mjs';
 import { allocateArtifactId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
-import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule, isSafeRelative, IGNORED_COLLECTIONS, liveRecordPath, markdownLinkTargets } from './workbench-paths.mjs';
+import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule, isSafeRelative, IGNORED_COLLECTIONS, laneRelative, liveRecordPath, markdownLinkTargets, readManifest } from './workbench-paths.mjs';
 
 export const STATUSES = Object.freeze(['proposed', 'accepted', 'superseded', 'deprecated', 'rejected']);
 export const REGISTER_NAME = 'REGISTER.md';
@@ -23,6 +30,25 @@ export const ID_PATTERN = /^([0-9A-Za-z]{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/;
 // Specs and Tasks and keeps ADR history in permanent `archive` instead. TK-002
 // reuses this exact constant when it migrates lifecycle out of frontmatter.
 export const ADR_LIFECYCLE_FOLDERS = Object.freeze(['proposed', 'archive']);
+
+// S-003X TK-004X: the two kinds of decision record. `invalid` is the finding
+// code a kind's own validation failures carry; the other findings
+// (`stale-register`, `disagreeing-status`, `untracked-provenance`) are shared.
+export const RECORD_KINDS = Object.freeze({
+  adr: Object.freeze({ kind: 'adr', collection: 'adr', prefix: 'ADR', invalid: 'invalid-adr' }),
+  ddr: Object.freeze({ kind: 'ddr', collection: 'ddr', prefix: 'DDR', invalid: 'invalid-ddr' })
+});
+
+export function recordKind(kind = 'adr') {
+  if (typeof kind !== 'string' || !Object.hasOwn(RECORD_KINDS, kind)) throw new Error(`--kind must be adr or ddr, not ${kind}`);
+  return RECORD_KINDS[kind];
+}
+
+// The kinds whose collection directory exists in this room, ADR first. A
+// command run without `--kind` acts on each of them.
+export function presentKinds(root) {
+  return Object.keys(RECORD_KINDS).filter((kind) => kind === 'adr' || fs.existsSync(collectionPath(root, RECORD_KINDS[kind].collection)));
+}
 
 // A record is authored once and checked out on many hosts. Git for Windows
 // rewrites Markdown to CRLF by default, so anchoring on a bare LF would report
@@ -170,7 +196,8 @@ export function rewriteCanonicalizedIn(content, root, locations) {
 // read from, so a successor or a link can be resolved by identity across the
 // whole set instead of by the location a caller assumed.
 export function listAdrs(root, options = {}) {
-  const directory = collectionPath(root, 'adr');
+  const spec = recordKind(options.kind);
+  const directory = collectionPath(root, spec.collection);
   assertSafeReadPath(root, directory);
   if (!fs.existsSync(directory)) return [];
   const locations = [{ folder: null, directory }];
@@ -186,13 +213,13 @@ export function listAdrs(root, options = {}) {
       .map((entry) => {
         const stat = fs.lstatSync(path.join(location, entry.name));
         if (!stat.isFile() || stat.isSymbolicLink() || stat.nlink > 1) {
-          throw new Error(`${entry.name} must be an ordinary, singly linked ADR file; allocation cannot ignore an occupied identity`);
+          throw new Error(`${entry.name} must be an ordinary, singly linked ${spec.prefix} file; allocation cannot ignore an occupied identity`);
         }
         return entry;
       })
       .map((entry) => entry.name)
-      .map((name) => readAdr(root, path.join(location, name), options.contentOverrides?.get(path.join(location, name)), folder)))
-    .sort((a, b) => compareVisibleIds(`ADR-${a.number}`, `ADR-${b.number}`) || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+      .map((name) => readAdr(root, path.join(location, name), options.contentOverrides?.get(path.join(location, name)), folder, spec)))
+    .sort((a, b) => compareVisibleIds(a.id, b.id) || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 }
 
 // S-00I TK-002: a record's lifecycle is its folder, not frontmatter `status`.
@@ -235,7 +262,7 @@ function deriveStatus(folder, data) {
   return { status: 'accepted', disagreement: false, implied };
 }
 
-function readAdr(root, filePath, content = fs.readFileSync(filePath, 'utf8'), folder = null) {
+function readAdr(root, filePath, content = fs.readFileSync(filePath, 'utf8'), folder = null, spec = RECORD_KINDS.adr) {
   const { data, body } = parseFrontmatter(content);
   const name = path.basename(filePath);
   const [, number, slug] = name.match(ID_PATTERN);
@@ -245,43 +272,57 @@ function readAdr(root, filePath, content = fs.readFileSync(filePath, 'utf8'), fo
   // top-level record, so a flat collection's rendered link text is unchanged.
   const href = folder ? `${folder}/${name}` : name;
   const { status, disagreement, implied } = deriveStatus(folder, data);
-  return { root, filePath, relativePath: path.relative(root, filePath).split(path.sep).join('/'), name, number, slug, title, data, body, folder, href, status, statusDisagreement: disagreement, impliedStatus: implied };
+  return { root, filePath, relativePath: path.relative(root, filePath).split(path.sep).join('/'), kind: spec.kind, id: `${spec.prefix}-${number}`, name, number, slug, title, data, body, folder, href, status, statusDisagreement: disagreement, impliedStatus: implied };
 }
 
 export function validateAdrs(root, options = {}) {
+  const spec = recordKind(options.kind);
+  const code = spec.invalid;
   const findings = [];
   let adrs;
   try { adrs = listAdrs(root, options); }
-  catch (error) { return [finding('invalid-adr', error.message)]; }
-  const adrCollectionRelative = collectionRelative(root, 'adr');
+  catch (error) { return [finding(code, error.message)]; }
+  const adrCollectionRelative = collectionRelative(root, spec.collection);
+  // S-003X TK-004X (ADR-000S point 7): a DDR's `canonicalized_in` never names
+  // the Wiki, at any lifecycle. The Wiki cites decisions; it never carries one.
+  const wikiRoot = spec.kind === 'ddr' ? path.resolve(root, laneRelative(root, 'wiki')) : null;
   const numbers = new Map();
   for (const adr of adrs) {
-    const key = visibleIdKey(`ADR-${adr.number}`);
+    const key = visibleIdKey(adr.id);
     const seen = numbers.get(key) ?? { number: adr.number, names: [] };
     seen.names.push(adr.name);
     numbers.set(key, seen);
     const data = adr.data;
+    const detail = (extra = {}) => ({ [spec.kind]: adr.name, ...extra });
     if (!data) {
-      findings.push(finding('invalid-adr', `${adr.relativePath} has no frontmatter`, { adr: adr.name }));
+      findings.push(finding(code, `${adr.relativePath} has no frontmatter`, detail()));
       continue;
     }
     if (adr.statusDisagreement) {
-      findings.push(finding('disagreeing-status', `${adr.relativePath} frontmatter status '${data.status}' disagrees with its ${adr.folder}/ folder, which implies '${adr.impliedStatus}'`, { adr: adr.name }));
+      findings.push(finding('disagreeing-status', `${adr.relativePath} frontmatter status '${data.status}' disagrees with its ${adr.folder}/ folder, which implies '${adr.impliedStatus}'`, detail()));
     }
-    if (!STATUSES.includes(adr.status)) findings.push(finding('invalid-adr', `${adr.relativePath} status must be one of ${STATUSES.join(', ')}`, { adr: adr.name }));
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(data.date ?? ''))) findings.push(finding('invalid-adr', `${adr.relativePath} needs a YYYY-MM-DD date`, { adr: adr.name }));
-    if (!adr.title) findings.push(finding('invalid-adr', `${adr.relativePath} needs a title heading`, { adr: adr.name }));
-    if (adr.status === 'accepted') {
-      const owners = Array.isArray(data.canonicalized_in) ? data.canonicalized_in : (data.canonicalized_in ? [data.canonicalized_in] : []);
-      if (owners.length === 0) findings.push(finding('invalid-adr', `${adr.relativePath} is accepted but names no canonicalized_in owner`, { adr: adr.name }));
+    if (!STATUSES.includes(adr.status)) findings.push(finding(code, `${adr.relativePath} status must be one of ${STATUSES.join(', ')}`, detail()));
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(data.date ?? ''))) findings.push(finding(code, `${adr.relativePath} needs a YYYY-MM-DD date`, detail()));
+    if (!adr.title) findings.push(finding(code, `${adr.relativePath} needs a title heading`, detail()));
+    const owners = Array.isArray(data.canonicalized_in) ? data.canonicalized_in : (data.canonicalized_in ? [data.canonicalized_in] : []);
+    if (wikiRoot) {
       for (const owner of owners) {
         const target = path.resolve(root, owner);
-        if (!target.startsWith(path.resolve(root) + path.sep) || !fs.existsSync(target)) {
-          findings.push(finding('invalid-adr', `${adr.relativePath} canonicalized_in target ${owner} does not exist`, { adr: adr.name, owner }));
+        if (target === wikiRoot || target.startsWith(wikiRoot + path.sep)) {
+          findings.push(finding(code, `${adr.relativePath} canonicalized_in names the Wiki (${owner}); a DDR's canonicalized_in never names the Wiki, which cites decisions by name and context`, detail({ owner })));
         }
       }
     }
-    const lifecycleError = message => findings.push(finding('invalid-adr', `${adr.relativePath} ${message}`, { adr: adr.name }));
+    if (adr.status === 'accepted') {
+      if (owners.length === 0) findings.push(finding(code, `${adr.relativePath} is accepted but names no canonicalized_in owner`, detail()));
+      for (const owner of owners) {
+        const target = path.resolve(root, owner);
+        if (!target.startsWith(path.resolve(root) + path.sep) || !fs.existsSync(target)) {
+          findings.push(finding(code, `${adr.relativePath} canonicalized_in target ${owner} does not exist`, detail({ owner })));
+        }
+      }
+    }
+    const lifecycleError = message => findings.push(finding(code, `${adr.relativePath} ${message}`, detail()));
     if (adr.status === 'deprecated' && (typeof data.deprecation_reason !== 'string' || !data.deprecation_reason.trim())) lifecycleError('needs a durable deprecation_reason');
     if (adr.status !== 'superseded' && data.superseded_by) lifecycleError('names a successor without superseded status');
     if (adr.status === 'superseded') {
@@ -306,7 +347,7 @@ export function validateAdrs(root, options = {}) {
     for (const link of markdownLinkTargets(adr.body)) {
       if (inline.has(link)) continue;
       const live = liveRecordPath(root, path.resolve(path.dirname(adr.filePath), link));
-      if (live) findings.push(finding('untracked-provenance', `${adr.relativePath} references live record ${live}; a notepad or handoff is working context even when committed, so reconcile selected claims into a durable owner first`, { adr: adr.name, target: live }));
+      if (live) findings.push(finding('untracked-provenance', `${adr.relativePath} references live record ${live}; a notepad or handoff is working context even when committed, so reconcile selected claims into a durable owner first`, detail({ target: live })));
     }
     for (const link of localLinks(adr.body)) {
       const target = path.resolve(path.dirname(adr.filePath), link);
@@ -314,7 +355,7 @@ export function validateAdrs(root, options = {}) {
       if (relative.startsWith(`${collectionRelative(root, 'notepad-templates')}/`)) continue;
       for (const collection of IGNORED_COLLECTIONS) {
         if (relative.startsWith(`${collectionRelative(root, collection)}/`)) {
-          findings.push(finding('untracked-provenance', `${adr.relativePath} references live record ${relative}; a notepad or handoff is working context even when committed, so reconcile selected claims into a durable owner first`, { adr: adr.name, target: relative }));
+          findings.push(finding('untracked-provenance', `${adr.relativePath} references live record ${relative}; a notepad or handoff is working context even when committed, so reconcile selected claims into a durable owner first`, detail({ target: relative })));
         }
       }
       // A body link is for a reader, so it is checked literally: identity
@@ -326,27 +367,34 @@ export function validateAdrs(root, options = {}) {
       // and only within the ADR collection itself, where a moved target's
       // stale incoming link is exactly what would otherwise go unnoticed.
       if ((relative === adrCollectionRelative || relative.startsWith(`${adrCollectionRelative}/`)) && !fs.existsSync(target)) {
-        findings.push(finding('invalid-adr', `${adr.relativePath} links to missing ${relative}`, { adr: adr.name, target: relative }));
+        findings.push(finding(code, `${adr.relativePath} links to missing ${relative}`, detail({ target: relative })));
       }
     }
   }
   for (const { number, names } of numbers.values()) {
-    if (names.length > 1) findings.push(finding('invalid-adr', `ADR number ${number} is used by ${names.join(', ')}`, { number }));
+    if (names.length > 1) findings.push(finding(code, `${spec.prefix} number ${number} is used by ${names.join(', ')}`, { number }));
   }
-  const registerPath = path.join(collectionPath(root, 'adr'), REGISTER_NAME);
+  const registerPath = path.join(collectionPath(root, spec.collection), REGISTER_NAME);
   if (adrs.length > 0) {
-    const expected = renderRegister(adrs);
+    const expected = renderRegister(adrs, { kind: spec.kind });
     const actual = fs.existsSync(registerPath) ? fs.readFileSync(registerPath, 'utf8') : null;
     if (actual === null || actual.replaceAll('\r\n', '\n') !== expected) {
-      findings.push(finding('stale-register', `${collectionRelative(root, 'adr')}/${REGISTER_NAME} is stale; run adr register`));
+      findings.push(finding('stale-register', `${collectionRelative(root, spec.collection)}/${REGISTER_NAME} is stale; run adr register`));
     }
   }
-  const historyPath = path.join(collectionPath(root, 'adr'), HISTORY_NAME);
+  const historyPath = path.join(collectionPath(root, spec.collection), HISTORY_NAME);
   if (adrs.length > 0) {
     const history = fs.existsSync(historyPath) ? fs.readFileSync(historyPath, 'utf8') : null;
-    if (history === null || history.replaceAll('\r\n', '\n') !== renderRegister(adrs, { history: true })) findings.push(finding('stale-register', `${collectionRelative(root, 'adr')}/${HISTORY_NAME} is stale; run adr register`));
+    if (history === null || history.replaceAll('\r\n', '\n') !== renderRegister(adrs, { history: true, kind: spec.kind })) findings.push(finding('stale-register', `${collectionRelative(root, spec.collection)}/${HISTORY_NAME} is stale; run adr register`));
   }
   return findings;
+}
+
+// S-003X TK-004X: validate every decision-record collection present in the
+// room (always the ADR collection; the DDR collection when it exists), as
+// `validate` without `--kind` and `doctor` do.
+export function validateDecisionRecords(root, options = {}) {
+  return presentKinds(root).flatMap((kind) => validateAdrs(root, { ...options, kind }));
 }
 
 // Bring existing records into shape without editing a body. S-00I TK-002 made
@@ -363,7 +411,7 @@ export function normalizeAdrs(root, options = {}) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error('--date must be YYYY-MM-DD');
   const fields = [['date', [`date: ${date}`]]];
   const changed = [];
-  for (const adr of listAdrs(root)) {
+  for (const adr of listAdrs(root, { kind: options.kind })) {
     const content = fs.readFileSync(adr.filePath, 'utf8');
     const result = insertFrontmatterKeys(content, fields, adr.relativePath);
     if (result.inserted.length === 0) continue;
@@ -374,15 +422,16 @@ export function normalizeAdrs(root, options = {}) {
   return { changed };
 }
 
-export function renderRegister(adrs, { history = false } = {}) {
+export function renderRegister(adrs, { history = false, kind = 'adr' } = {}) {
+  const { prefix } = recordKind(kind);
   const lines = [
-    history ? '# ADR History' : '# ADR Register',
+    history ? `# ${prefix} History` : `# ${prefix} Register`,
     '',
     '> Derived by `adr.mjs register`; do not edit by hand. The directory listing is the source; this table is a projection.',
     '',
     history ? '[Active decisions](REGISTER.md). All retained lifecycle states follow.' : '[Complete history](HISTORY.md). Only accepted active decisions follow.',
     '',
-    '| ADR | Title | Status | Date | Canonicalized in |',
+    `| ${prefix} | Title | Status | Date | Canonicalized in |`,
     '|---|---|---|---|---|'
   ];
   for (const adr of adrs.filter(record => history || record.status === 'accepted')) {
@@ -392,16 +441,27 @@ export function renderRegister(adrs, { history = false } = {}) {
   return `${lines.join('\n')}\n`;
 }
 
-export function writeRegister(root) {
-  const registerPath = path.join(collectionPath(root, 'adr'), REGISTER_NAME);
-  const historyPath = path.join(collectionPath(root, 'adr'), HISTORY_NAME);
+export function writeRegister(root, options = {}) {
+  const spec = recordKind(options.kind);
+  const registerPath = path.join(collectionPath(root, spec.collection), REGISTER_NAME);
+  const historyPath = path.join(collectionPath(root, spec.collection), HISTORY_NAME);
   assertSafeWritePath(root, registerPath);
   assertSafeWritePath(root, historyPath);
-  const adrs = listAdrs(root);
-  const content = renderRegister(adrs);
+  const adrs = listAdrs(root, { kind: spec.kind });
+  const content = renderRegister(adrs, { kind: spec.kind });
   writeSafeFile(root, registerPath, content);
-  writeSafeFile(root, historyPath, renderRegister(adrs, { history: true }));
+  writeSafeFile(root, historyPath, renderRegister(adrs, { history: true, kind: spec.kind }));
   return { registerPath, historyPath, count: adrs.length };
+}
+
+// S-003X TK-004X: regenerate the register and history of every decision-record
+// collection that exists, so a move that rewrites links or owners leaves no
+// projection stale. A room with neither collection is left alone; nothing
+// here conjures a collection into existence.
+export function writeDecisionRegisters(root) {
+  return Object.keys(RECORD_KINDS)
+    .filter((kind) => fs.existsSync(collectionPath(root, RECORD_KINDS[kind].collection)))
+    .map((kind) => ({ kind, ...writeRegister(root, { kind }) }));
 }
 
 // S-01W TK-002Q: the ADR reservation inventory the artifact policy
@@ -410,32 +470,33 @@ export function writeRegister(root) {
 // (ADR-000O), every remote-tracking tip is read too, so a label another
 // pushed branch already holds is never proposed again; repeated spellings
 // across tips reserve one identity. A room outside Git has no tips to read.
-export function occupiedAdrLabels(root) {
+export function occupiedAdrLabels(root, kind = 'adr') {
+  const spec = recordKind(kind);
   const labels = [];
   const local = new Map();
-  for (const adr of listAdrs(root)) {
-    const label = `ADR-${adr.number}`;
+  for (const adr of listAdrs(root, { kind: spec.kind })) {
+    const label = adr.id;
     const key = visibleIdKey(label);
-    if (local.has(key)) throw new Error(`Visible identifier collision: ${label} and ${local.get(key)} alias one ADR identity`);
+    if (local.has(key)) throw new Error(`Visible identifier collision: ${label} and ${local.get(key)} alias one ${spec.prefix} identity`);
     local.set(key, label);
     labels.push(label);
   }
   const git = (...args) => spawnSync('git', ['-C', root, ...args], { encoding: 'utf8' });
   const refs = git('for-each-ref', '--format=%(refname)', 'refs/remotes');
   if (refs.status !== 0) return labels;
-  const fallback = collectionRelative(root, 'adr');
+  const fallback = collectionRelative(root, spec.collection);
   for (const ref of refs.stdout.split('\n').filter(Boolean)) {
     let collection = fallback;
     const manifest = git('show', `${ref}:./workbench/manifest.json`);
     if (manifest.status === 0) {
       let declared;
-      try { declared = JSON.parse(manifest.stdout).collections?.adr; }
-      catch { throw new Error(`Cannot reserve ADR labels from malformed manifest at ${ref}`); }
+      try { declared = JSON.parse(manifest.stdout).collections?.[spec.collection]; }
+      catch { throw new Error(`Cannot reserve ${spec.prefix} labels from malformed manifest at ${ref}`); }
       // The same rule `collectionRelative` applies to the local manifest;
       // only the source differs, so a tip can never widen or redirect the scan.
       if (declared !== undefined) {
         if (!isSafeRelative(declared)) {
-          const failure = new Error(`Cannot reserve ADR labels from unsafe adr collection at ${ref}: ${JSON.stringify(declared)}`);
+          const failure = new Error(`Cannot reserve ${spec.prefix} labels from unsafe ${spec.collection} collection at ${ref}: ${JSON.stringify(declared)}`);
           failure.code = 'invalid-collection';
           throw failure;
         }
@@ -443,25 +504,33 @@ export function occupiedAdrLabels(root) {
       }
     }
     const listing = git('ls-tree', '-r', '-z', '--name-only', ref, '--', `${collection}/`);
-    if (listing.status !== 0) throw new Error(`Cannot reserve ADR labels from ${ref}: ${listing.stderr.trim()}`);
+    if (listing.status !== 0) throw new Error(`Cannot reserve ${spec.prefix} labels from ${ref}: ${listing.stderr.trim()}`);
     for (const file of listing.stdout.split('\0').filter(Boolean)) {
       const parts = path.posix.relative(collection, file).split('/');
       const name = parts.at(-1);
       if (parts.length > 2 || (parts.length === 2 && !ADR_LIFECYCLE_FOLDERS.includes(parts[0]))) continue;
       const match = name.match(ID_PATTERN);
-      if (match) labels.push(`ADR-${match[1]}`);
+      if (match) labels.push(`${spec.prefix}-${match[1]}`);
     }
   }
   return [...new Set(labels)];
 }
 
 export function newAdr(root, options) {
+  const spec = recordKind(options.kind);
   const title = requireValue(options.title, '--title is required');
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   if (!slug) throw new Error('title must contain letters or digits');
-  const directory = collectionPath(root, 'adr');
+  // S-003X TK-004X: a DDR is written only into a declared collection. A room
+  // whose manifest predates the `ddr` collection gains it through the update
+  // route first; writing here would conjure an undeclared directory.
+  const manifest = readManifest(root);
+  if (spec.kind === 'ddr' && manifest && manifest.collections?.ddr === undefined) {
+    throw new Error('the ddr collection is not declared in workbench/manifest.json; run workbench-layout.mjs migrate --project PATH from the release checkout first');
+  }
+  const directory = collectionPath(root, spec.collection);
   assertSafeWritePath(root, path.join(directory, REGISTER_NAME));
-  const next = allocateArtifactId('ADR', occupiedAdrLabels(root)).slice(4);
+  const next = allocateArtifactId(spec.prefix, occupiedAdrLabels(root, spec.kind)).slice(spec.prefix.length + 1);
   // S-00I TK-002: a new record is always `proposed`, so it is created inside
   // the `proposed/` lifecycle folder its own status implies - folder is
   // lifecycle, so an unreviewed decision never starts out looking active. It
@@ -477,7 +546,13 @@ export function newAdr(root, options) {
   const filePath = path.join(directory, 'proposed', `${next}-${slug}.md`);
   if (fs.existsSync(filePath)) throw new Error(`${filePath} already exists`);
   const date = options.date ?? new Date().toISOString().slice(0, 10);
-  const content = [
+  const content = (spec.kind === 'ddr' ? ddrTemplate : adrTemplate)(date, title).join('\n');
+  writeSafeFile(root, filePath, content, { exclusive: true });
+  return { filePath, number: next, id: `${spec.prefix}-${next}`, kind: spec.kind };
+}
+
+function adrTemplate(date, title) {
+  return [
     '---',
     `date: ${date}`,
     'canonicalized_in:',
@@ -494,9 +569,35 @@ export function newAdr(root, options) {
     '',
     'Provenance: [the reconciled durable owner or preserved historical decision, by repository-relative path].',
     ''
-  ].join('\n');
-  writeSafeFile(root, filePath, content, { exclusive: true });
-  return { filePath, number: next };
+  ];
+}
+
+// S-003X TK-004X: the DDR template is the ADR's, adapted to a destination
+// choice (ADR-000S points 4 and 6): the accepted keys `date`, `supersedes` and
+// `canonicalized_in`, and a free-prose body. `canonicalized_in` defaults to
+// the Blueprint, the owner a destination decision most often changes; it
+// never names the Wiki. How a DDR records its landmark is open (S-003Z), so
+// the template carries no landmark field.
+function ddrTemplate(date, title) {
+  return [
+    '---',
+    `date: ${date}`,
+    'supersedes:',
+    'canonicalized_in:',
+    '  - BLUEPRINT.md',
+    '---',
+    '',
+    `# ${title}`,
+    '',
+    '[The destination decision in one to three sentences: what the finished product must be or do, and why the owner chose it.]',
+    '',
+    'Considered and rejected: [the meaningful alternative and why the owner set it aside].',
+    '',
+    'Consequences: [what changes in the destination; name in canonicalized_in the owners that carry it, including BLUEPRINT.md when this decision changes or contradicts the Blueprint, never the Wiki].',
+    '',
+    'Provenance: [the owner-confirmed source of the decision, by name, date or repository-relative path].',
+    ''
+  ];
 }
 
 export function localLinks(content) {
@@ -714,6 +815,330 @@ export function migrateLifecycleFolders(root) {
   return { usesGit, moved: movedByFolder, stripped, referencesRewritten, historicalReferencesLeft, register };
 }
 
+// S-003X TK-004Y: one decision record addressed by its visible identifier.
+// The prefix selects the kind (`ADR-...` or `DDR-...`); the value resolves
+// case-folded across the collection and its lifecycle folders, as every other
+// identifier does. An identifier no record carries, or one two records alias,
+// fails visibly instead of choosing.
+export function resolveRecord(root, id) {
+  const match = /^([A-Za-z]{3})-([0-9A-Za-z]+)$/.exec(String(id ?? ''));
+  const kind = match?.[1].toLowerCase();
+  if (!match || !Object.hasOwn(RECORD_KINDS, kind)) throw new Error(`${id} is not a decision-record identifier; name an ADR-... or DDR-... record`);
+  const spec = RECORD_KINDS[kind];
+  const key = visibleIdKey(`${spec.prefix}-${match[2]}`);
+  const hits = listAdrs(root, { kind }).filter((record) => visibleIdKey(record.id) === key);
+  if (hits.length === 0) throw new Error(`Unknown ${spec.prefix} identifier: ${id}`);
+  if (hits.length > 1) throw new Error(`${id} names ${hits.length} records (${hits.map((record) => record.relativePath).join(', ')}); reconcile the identity collision first`);
+  return hits[0];
+}
+
+// Every live Markdown surface a decision-record move repairs a reference in:
+// the root controls, the Wiki, the skills lane (and a pre-lane root
+// `skills/`), `team templates/`, both decision-record collections and every
+// Spec and Task record. Generated registers are regenerated, not rewritten;
+// `templates/` is the blank product and never names this room's records.
+function collectRecordReferenceFiles(root) {
+  const files = [];
+  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md']) {
+    const file = path.join(root, name);
+    if (fs.existsSync(file) && fs.lstatSync(file).isFile()) files.push(file);
+  }
+  const walk = (dir, match) => {
+    if (!fs.existsSync(dir)) return;
+    assertSafeReadPath(root, dir);
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.isSymbolicLink()) continue;
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(full, match);
+      else if (entry.isFile() && match(entry.name)) files.push(full);
+    }
+  };
+  const markdown = (name) => name.endsWith('.md');
+  walk(path.join(root, laneRelative(root, 'wiki')), markdown);
+  walk(path.join(root, laneRelative(root, 'skills')), markdown);
+  walk(path.join(root, 'skills'), markdown);
+  walk(path.join(root, 'team templates'), markdown);
+  for (const kind of Object.keys(RECORD_KINDS)) walk(collectionPath(root, RECORD_KINDS[kind].collection), (name) => markdown(name) && name !== REGISTER_NAME && name !== HISTORY_NAME);
+  walk(path.join(root, laneRelative(root, 'specs')), (name) => name === 'SPEC.md' || name === 'TASK.md');
+  return [...new Set(files)];
+}
+
+// The pure half of a reference rewrite: computes the rewritten bytes for
+// `original` as the file that will live at `filePath`, records the counts in
+// `totals` under that path, and returns the new content, or null when no live
+// match changed. An append-only evidence section is never rewritten; its
+// stale references are counted as history instead. Moved here from
+// spec-workbench.mjs (S-003X TK-004Y) so the Spec, Task and decision-record
+// moves share one implementation.
+export function planReferenceRewrite(root, filePath, original, oldDir, newDir, locations, totals, options = {}) {
+  const { prefix, evidence, suffix } = splitEvidenceSection(original);
+  const canonicalized = rewriteCanonicalizedIn(prefix, root, locations);
+  const rewrittenPrefix = rewriteAdrLinks(canonicalized.content, oldDir, newDir, locations, options);
+  const rewrittenSuffix = rewriteAdrLinks(suffix, oldDir, newDir, locations, options);
+  const skippedInEvidence = rewriteAdrLinks(evidence, oldDir, newDir, locations, options).count;
+  const relative = path.relative(root, filePath).split(path.sep).join('/');
+  if (skippedInEvidence > 0) totals.historicalReferencesLeft[relative] = (totals.historicalReferencesLeft[relative] ?? 0) + skippedInEvidence;
+  const rewritten = rewrittenPrefix.count + rewrittenSuffix.count + canonicalized.count;
+  if (rewritten === 0) return null;
+  totals.referencesRewritten[relative] = (totals.referencesRewritten[relative] ?? 0) + rewritten;
+  return rewrittenPrefix.content + evidence + rewrittenSuffix.content;
+}
+
+// Append one item to a frontmatter list key, creating the key when absent.
+// An item already listed is left alone. A key that holds free-text prose
+// instead of a list is refused rather than rewritten, because converting it
+// would change what its author wrote.
+export function appendFrontmatterListItem(content, key, item, label) {
+  const eol = nativeEol(content);
+  const lines = content.split(eol);
+  if (lines[0] !== '---') throw new Error(`${label} has no frontmatter`);
+  const close = lines.indexOf('---', 1);
+  if (close === -1) throw new Error(`${label} has no closing frontmatter fence`);
+  const keyIndex = lines.slice(1, close).findIndex((line) => new RegExp(`^${key}:`).test(line)) + 1;
+  if (keyIndex === 0) return insertFrontmatterKeys(content, [[key, [`${key}:`, `  - ${item}`]]], label).content;
+  const scalar = lines[keyIndex].slice(key.length + 1).trim();
+  if (scalar) {
+    if (scalar === item) return content;
+    throw new Error(`${label} ${key} holds free text (${scalar}); make it a list before a move adds ${item}`);
+  }
+  let last = keyIndex;
+  while (last + 1 < close && /^\s+-\s+/.test(lines[last + 1])) last += 1;
+  if (lines.slice(keyIndex + 1, last + 1).some((line) => line.replace(/^\s+-\s+/, '').trim() === item)) return content;
+  lines.splice(last + 1, 0, `  - ${item}`);
+  return lines.join(eol);
+}
+
+function gitInRoot(root, args) {
+  return spawnSync('git', ['-C', root, ...args], { encoding: 'utf8' });
+}
+
+// S-003X TK-004Y: the shared core of accept, supersede and deprecate. Every
+// byte the move will write is planned and its destination checked before the
+// first change; a Git room must be clean so the candidate shows only this
+// move, which `git mv` records as a rename and the result is staged whole.
+// Outside Git the file is renamed. Both registers are regenerated after.
+function moveDecisionRecord(root, record, toFolder, edits, action, extra = {}) {
+  const status = gitInRoot(root, ['status', '--porcelain']);
+  const usesGit = status.status === 0;
+  if (usesGit && status.stdout.trim() !== '') throw new Error(`adr ${action} refuses a dirty working tree; commit or stash first so the candidate shows only this move`);
+  const spec = recordKind(record.kind);
+  const directory = collectionPath(root, spec.collection);
+  const destinationDir = toFolder ? path.join(directory, toFolder) : directory;
+  const destination = path.join(destinationDir, record.name);
+  if (fs.existsSync(destination)) throw new Error(`adr ${action} destination already exists: ${path.relative(root, destination)}`);
+  const all = Object.keys(RECORD_KINDS).flatMap((kind) => fs.existsSync(collectionPath(root, RECORD_KINDS[kind].collection)) ? listAdrs(root, { kind }) : []);
+  const locations = new Map(all.map((item) => [item.filePath, item.filePath]));
+  locations.set(record.filePath, destination);
+  const totals = { referencesRewritten: {}, historicalReferencesLeft: {} };
+  const writes = new Map();
+  // The moved record: its own frontmatter edit, then its outgoing links
+  // recomputed for the folder it now sits in.
+  let moved = edits.get(record.filePath)(fs.readFileSync(record.filePath, 'utf8'));
+  moved = planReferenceRewrite(root, destination, moved, path.dirname(record.filePath), destinationDir, locations, totals) ?? moved;
+  writes.set(destination, moved);
+  const references = collectRecordReferenceFiles(root);
+  for (const file of edits.keys()) if (!references.includes(file)) throw new Error(`internal: ${path.relative(root, file)} is edited by adr ${action} but is not a decision record`);
+  for (const file of references) {
+    if (file === record.filePath) continue;
+    const original = fs.readFileSync(file, 'utf8');
+    const edited = edits.has(file) ? edits.get(file)(original) : original;
+    const rewritten = planReferenceRewrite(root, file, edited, path.dirname(file), path.dirname(file), locations, totals);
+    if (rewritten !== null) writes.set(file, rewritten);
+    else if (edited !== original) writes.set(file, edited);
+  }
+  assertSafeWritePath(root, destination);
+  for (const file of writes.keys()) if (file !== destination) assertSafeWritePath(root, file);
+  fs.mkdirSync(destinationDir, { recursive: true });
+  if (usesGit) {
+    const result = gitInRoot(root, ['mv', path.relative(root, record.filePath), path.relative(root, destination)]);
+    if (result.status !== 0) throw new Error(`git mv failed for ${record.relativePath}: ${(result.stderr || result.stdout || '').trim()}`);
+  } else {
+    fs.renameSync(record.filePath, destination);
+  }
+  for (const [file, content] of writes) writeSafeFile(root, file, content);
+  const registers = writeDecisionRegisters(root);
+  if (usesGit) gitInRoot(root, ['add', '-A']);
+  const relative = (file) => path.relative(root, file).split(path.sep).join('/');
+  return { action, id: record.id, kind: record.kind, from: record.relativePath, to: relative(destination), ...extra, usesGit, referencesRewritten: totals.referencesRewritten, historicalReferencesLeft: totals.historicalReferencesLeft, registers: registers.map((item) => relative(item.registerPath)) };
+}
+
+function ownersOf(record) {
+  const value = record.data?.canonicalized_in;
+  return Array.isArray(value) ? value : (value ? [value] : []);
+}
+
+// What would make this record invalid once it is accepted, checked before a
+// move rather than discovered by `validate` after it.
+function acceptanceProblems(root, record) {
+  const problems = [];
+  if (!record.data) return ['has no frontmatter'];
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(record.data.date ?? ''))) problems.push('needs a YYYY-MM-DD date');
+  if (!record.title) problems.push('needs a title heading');
+  const owners = ownersOf(record);
+  if (owners.length === 0) problems.push('names no canonicalized_in owner');
+  const wikiRoot = path.resolve(root, laneRelative(root, 'wiki'));
+  for (const owner of owners) {
+    const target = path.resolve(root, owner);
+    if (!target.startsWith(path.resolve(root) + path.sep) || !fs.existsSync(target)) problems.push(`canonicalized_in target ${owner} does not exist`);
+    if (record.kind === 'ddr' && (target === wikiRoot || target.startsWith(wikiRoot + path.sep))) problems.push(`canonicalized_in names the Wiki (${owner})`);
+  }
+  if (record.data.superseded_by || record.data.deprecation_reason) problems.push('already carries a superseded_by or deprecation_reason fact');
+  return problems;
+}
+
+function requireActive(record, action) {
+  if (record.folder !== null || record.status !== 'accepted') throw new Error(`${record.id} is ${record.status} in ${record.folder ? `${record.folder}/` : 'the top level'}; only an accepted record at the top level can be ${action}`);
+}
+
+// Accept: move a proposed record to the top level once its corrections are
+// reconciled. A leftover `status` key is removed, because the folder is the
+// lifecycle and a stale key would otherwise keep the record proposed.
+export function acceptRecord(root, id) {
+  const record = resolveRecord(root, id);
+  if (record.folder !== 'proposed') throw new Error(`${record.id} is not in proposed/ (it is ${record.status}); only a proposed record can be accepted`);
+  const problems = acceptanceProblems(root, record);
+  if (problems.length) throw new Error(`${record.id} cannot be accepted: it ${problems.join('; ')}`);
+  const edits = new Map([[record.filePath, (content) => stripFrontmatterKey(content, 'status').content]]);
+  return moveDecisionRecord(root, record, null, edits, 'accept');
+}
+
+// Supersede: one accepted record of the same kind replaces another whole. The
+// replaced record names its successor and moves to the permanent archive; the
+// successor lists what it supersedes.
+export function supersedeRecord(root, id, successors) {
+  const named = (Array.isArray(successors) ? successors : (successors === undefined ? [] : [successors])).flatMap((value) => String(value).split(/[\s,]+/)).filter(Boolean);
+  if (named.length !== 1) throw new Error(`supersede needs exactly one successor named with --by; got ${named.length ? named.join(', ') : 'none'}`);
+  const record = resolveRecord(root, id);
+  requireActive(record, 'superseded');
+  if (record.data?.superseded_by || record.data?.deprecation_reason) throw new Error(`${record.id} already carries a superseded_by or deprecation_reason fact`);
+  const successor = resolveRecord(root, named[0]);
+  if (successor.kind !== record.kind) throw new Error(`${record.id} cannot be superseded by ${successor.id}; a successor is the same kind of decision record`);
+  if (successor.filePath === record.filePath) throw new Error(`${record.id} cannot supersede itself`);
+  requireActive(successor, 'a successor');
+  const edits = new Map([
+    [record.filePath, (content) => insertFrontmatterKeys(stripFrontmatterKey(content, 'status').content, [['superseded_by', [`superseded_by: ${successor.name}`]]], record.relativePath).content],
+    [successor.filePath, (content) => appendFrontmatterListItem(content, 'supersedes', record.name, successor.relativePath)]
+  ]);
+  return moveDecisionRecord(root, record, 'archive', edits, 'supersede', { successor: successor.id });
+}
+
+// Deprecate: an accepted record ends without a successor and says why.
+export function deprecateRecord(root, id, reason) {
+  const text = typeof reason === 'string' ? reason.trim() : '';
+  if (!text) throw new Error('deprecate needs a stated reason (--reason TEXT)');
+  if (/[\r\n]/.test(text)) throw new Error('--reason must be one line; it is stored as the deprecation_reason frontmatter value');
+  const record = resolveRecord(root, id);
+  requireActive(record, 'deprecated');
+  if (record.data?.superseded_by || record.data?.deprecation_reason) throw new Error(`${record.id} already carries a superseded_by or deprecation_reason fact`);
+  const edits = new Map([[record.filePath, (content) => insertFrontmatterKeys(stripFrontmatterKey(content, 'status').content, [['deprecation_reason', [`deprecation_reason: ${text}`]]], record.relativePath).content]]);
+  return moveDecisionRecord(root, record, 'archive', edits, 'deprecate', { reason: text });
+}
+
+// S-003X TK-004Z: the five read words every record answers (ADR-000T), for
+// both kinds of decision record. Reads never write. `list` and `search` act
+// on every collection present unless `--kind` narrows them; `show` (with `get`
+// as its synonym), `history` and `inspect` address one record by identifier.
+function recordSummary(record, records = []) {
+  const summary = { id: record.id, kind: record.kind, status: record.status, folder: record.folder, date: record.data?.date ?? null, title: record.title, path: record.relativePath };
+  const successorName = typeof record.data?.superseded_by === 'string' ? record.data.superseded_by.trim() : '';
+  if (successorName) {
+    const successor = records.find((item) => item.name === successorName);
+    summary.successor = successor ? successor.id : successorName;
+  }
+  return summary;
+}
+
+function readKinds(root, kind) {
+  return kind === undefined ? presentKinds(root) : [recordKind(kind).kind];
+}
+
+// list: the records that exist.
+export function listRecords(root, options = {}) {
+  if (options.status !== undefined && !STATUSES.includes(options.status)) throw new Error(`--status must be one of ${STATUSES.join(', ')}`);
+  return readKinds(root, options.kind).flatMap((kind) => {
+    const records = listAdrs(root, { kind });
+    return records.filter((record) => options.status === undefined || record.status === options.status).map((record) => recordSummary(record, records));
+  });
+}
+
+// show: one whole record.
+export function showRecord(root, id) {
+  const record = resolveRecord(root, id);
+  return { ...recordSummary(record, listAdrs(root, { kind: record.kind })), frontmatter: record.data, content: fs.readFileSync(record.filePath, 'utf8') };
+}
+
+function recordLines(content) {
+  const lines = content.replace(/\r\n?/g, '\n').split('\n');
+  if (lines.length > 1 && lines.at(-1) === '') lines.pop();
+  return lines;
+}
+
+// search: records found by a case-insensitive literal query over the whole
+// file (title, frontmatter and body), each with its matching lines. A
+// superseded hit names its successor, so a replaced decision is never read
+// as current (the Plan decision; nothing else is attached to a result).
+export function searchRecords(root, query, options = {}) {
+  const text = typeof query === 'string' ? query.trim() : '';
+  if (!text) throw new Error('search needs a query');
+  const needle = text.toLowerCase();
+  return readKinds(root, options.kind).flatMap((kind) => {
+    const records = listAdrs(root, { kind });
+    return records.flatMap((record) => {
+      const matches = recordLines(fs.readFileSync(record.filePath, 'utf8'))
+        .map((line, index) => ({ line: index + 1, text: line }))
+        .filter((entry) => entry.text.toLowerCase().includes(needle));
+      return matches.length ? [{ ...recordSummary(record, records), matches }] : [];
+    });
+  });
+}
+
+// history: how a record changed. Its lifecycle chain (what it supersedes,
+// what superseded it, why it was deprecated) and every Git commit that
+// touched its file, followed across lifecycle moves. Outside Git the chain
+// alone is reported and Git is said to be unavailable.
+export function recordHistory(root, id) {
+  const record = resolveRecord(root, id);
+  const records = listAdrs(root, { kind: record.kind });
+  const named = (name) => ({ name, id: records.find((item) => item.name === name)?.id ?? null });
+  const supersedesValue = record.data?.supersedes;
+  const supersedes = (Array.isArray(supersedesValue) ? supersedesValue : (supersedesValue ? [supersedesValue] : [])).map(named);
+  const successor = typeof record.data?.superseded_by === 'string' && record.data.superseded_by.trim() ? named(record.data.superseded_by.trim()) : null;
+  const lifecycle = { status: record.status, folder: record.folder, supersedes, supersededBy: successor, deprecationReason: record.data?.deprecation_reason ?? null };
+  const inside = spawnSync('git', ['-C', root, 'rev-parse', '--is-inside-work-tree'], { encoding: 'utf8' });
+  let git;
+  if (inside.status !== 0 || inside.stdout.trim() !== 'true') {
+    git = { available: false, reason: 'not a Git working tree; only the lifecycle chain is known' };
+  } else {
+    const log = spawnSync('git', ['-C', root, 'log', '--follow', '--format=%H%x09%ad%x09%s', '--date=short', '--', record.relativePath], { encoding: 'utf8' });
+    if (log.status !== 0) throw new Error(`git log failed for ${record.relativePath}: ${(log.stderr || '').trim()}`);
+    git = { available: true, commits: log.stdout.split('\n').filter(Boolean).map((line) => { const [commit, date, ...subject] = line.split('\t'); return { commit, date, subject: subject.join('\t') }; }) };
+  }
+  return { ...recordSummary(record, records), lifecycle, git };
+}
+
+const DERIVED_FIELDS = Object.freeze(['id', 'kind', 'status', 'folder', 'title', 'path']);
+
+// inspect: part of a record, either one field (a frontmatter key or a derived
+// field: id, kind, status, folder, title, path) or a 1-based inclusive line
+// range of the file.
+export function inspectRecord(root, id, options = {}) {
+  if ((options.field === undefined) === (options.lines === undefined)) throw new Error('inspect needs exactly one of --field NAME or --lines START:END');
+  const record = resolveRecord(root, id);
+  if (options.field !== undefined) {
+    const field = String(options.field);
+    if (DERIVED_FIELDS.includes(field)) return { id: record.id, field, value: recordSummary(record)[field] };
+    if (record.data && Object.hasOwn(record.data, field)) return { id: record.id, field, value: record.data[field] };
+    throw new Error(`${record.id} has no field ${field}; frontmatter keys are ${Object.keys(record.data ?? {}).join(', ') || 'none'} and derived fields are ${DERIVED_FIELDS.join(', ')}`);
+  }
+  const match = /^(\d+)(?::(\d+))?$/.exec(String(options.lines));
+  if (!match) throw new Error('--lines must be START:END (or one line number), 1-based and inclusive');
+  const lines = recordLines(fs.readFileSync(record.filePath, 'utf8'));
+  const start = Number(match[1]);
+  const end = match[2] === undefined ? start : Number(match[2]);
+  if (start < 1 || end < start || end > lines.length) throw new Error(`--lines ${options.lines} is outside ${record.id}, which has ${lines.length} lines`);
+  return { id: record.id, lines: `${start}:${end}`, text: lines.slice(start - 1, end).join('\n') };
+}
+
 function cell(value) {
   return String(value).replaceAll('|', '\\|').replaceAll('\n', ' ');
 }
@@ -723,36 +1148,97 @@ function requireValue(value, message) {
   return String(value).trim();
 }
 
+// S-003X TK-004Y/TK-004Z: the commands addressed to one record take its
+// identifier as their one positional argument; `search` takes its query. Every
+// other command refuses a positional argument, as before.
+const ID_COMMANDS = Object.freeze(['accept', 'supersede', 'deprecate', 'show', 'get', 'history', 'inspect']);
+
 function parseArgs(argv) {
   const [command, ...rest] = argv;
   const options = {};
+  const positional = [];
   for (let index = 0; index < rest.length; index += 1) {
     const arg = rest[index];
     if (arg === '--json') options.json = true;
+    // S-003X TK-004Y: `--by` is collected so a supersession naming two
+    // successors is refused instead of silently keeping the last one.
+    else if (arg === '--by') (options.by ??= []).push(rest[++index]);
     else if (arg.startsWith('--')) options[arg.slice(2)] = rest[++index];
-    else throw new Error(`Unknown argument: ${arg}`);
+    else positional.push(arg);
   }
+  if (command === 'search') options.query = positional.join(' ');
+  else if (ID_COMMANDS.includes(command)) {
+    if (positional.length > 1) throw new Error(`Unknown argument: ${positional[1]}`);
+    options.id = positional[0];
+  } else if (positional.length) throw new Error(`Unknown argument: ${positional[0]}`);
   return { command, options };
+}
+
+function printRead(options, value, text) {
+  console.log(options.json ? JSON.stringify(value, null, 2) : text);
+}
+
+function summaryLine(record) {
+  return [record.id, record.status, record.date ?? '', record.title ?? '', record.path, ...(record.successor ? [`superseded by ${record.successor}`] : [])].join('\t');
 }
 
 if (isMainModule(import.meta.url)) {
   try {
     const { command, options } = parseArgs(process.argv.slice(2));
     const root = findRoot(options.path ?? process.cwd());
+    // S-003X TK-004X: `--kind adr|ddr` selects one decision-record collection;
+    // without it, validate, register and normalize act on every collection
+    // present (always the ADR one), and new writes an ADR as before.
+    const kinds = options.kind === undefined ? presentKinds(root) : [recordKind(options.kind).kind];
     if (command === 'validate') {
-      const findings = validateAdrs(root);
-      console.log(options.json ? JSON.stringify(findings, null, 2) : (findings.length ? findings.map((item) => `${item.code} [${item.severity}]: ${item.message}`).join('\n') : 'ok - ADR collection validated'));
+      const findings = kinds.flatMap((kind) => validateAdrs(root, { kind }));
+      const subject = options.kind === undefined ? 'decision records' : `${recordKind(options.kind).prefix} collection`;
+      console.log(options.json ? JSON.stringify(findings, null, 2) : (findings.length ? findings.map((item) => `${item.code} [${item.severity}]: ${item.message}`).join('\n') : `ok - ${subject} validated`));
       if (findings.some((item) => item.severity === 'error')) process.exitCode = 1;
     } else if (command === 'register') {
-      console.log(JSON.stringify(writeRegister(root)));
+      // One kind prints its result as before; without a kind the ADR result
+      // keeps its top-level shape and each other collection is keyed by kind.
+      const [first, ...rest] = kinds;
+      const result = writeRegister(root, { kind: first });
+      for (const kind of rest) result[kind] = writeRegister(root, { kind });
+      console.log(JSON.stringify(result));
     } else if (command === 'normalize') {
-      console.log(JSON.stringify(normalizeAdrs(root, { date: options.date })));
+      console.log(JSON.stringify({ changed: kinds.flatMap((kind) => normalizeAdrs(root, { date: options.date, kind }).changed) }));
     } else if (command === 'new') {
       console.log(JSON.stringify(newAdr(root, options)));
     } else if (command === 'migrate-folders') {
       console.log(JSON.stringify(migrateLifecycleFolders(root), null, 2));
+    } else if (command === 'list') {
+      const records = listRecords(root, { kind: options.kind, status: options.status });
+      printRead(options, records, records.map(summaryLine).join('\n'));
+    } else if (command === 'show' || command === 'get') {
+      const record = showRecord(root, requireValue(options.id, `${command} needs a record identifier (ADR-... or DDR-...)`));
+      if (options.json) printRead(options, record);
+      else process.stdout.write(record.content);
+    } else if (command === 'search') {
+      const hits = searchRecords(root, options.query, { kind: options.kind });
+      printRead(options, hits, hits.map((hit) => [[hit.id, hit.status, hit.title ?? '', hit.path, ...(hit.successor ? [`superseded by ${hit.successor}`] : [])].join('\t'), ...hit.matches.map((match) => `  ${match.line}: ${match.text}`)].join('\n')).join('\n'));
+    } else if (command === 'history') {
+      const history = recordHistory(root, requireValue(options.id, 'history needs a record identifier (ADR-... or DDR-...)'));
+      const chain = [
+        `${history.id}\t${history.status}\t${history.path}`,
+        ...history.lifecycle.supersedes.map((item) => `supersedes ${item.id ?? item.name} (${item.name})`),
+        ...(history.lifecycle.supersededBy ? [`superseded by ${history.lifecycle.supersededBy.id ?? history.lifecycle.supersededBy.name} (${history.lifecycle.supersededBy.name})`] : []),
+        ...(history.lifecycle.deprecationReason ? [`deprecated: ${history.lifecycle.deprecationReason}`] : []),
+        ...(history.git.available ? history.git.commits.map((commit) => `${commit.commit}\t${commit.date}\t${commit.subject}`) : [`git: ${history.git.reason}`])
+      ];
+      printRead(options, history, chain.join('\n'));
+    } else if (command === 'inspect') {
+      const part = inspectRecord(root, requireValue(options.id, 'inspect needs a record identifier (ADR-... or DDR-...)'), { field: options.field, lines: options.lines });
+      printRead(options, part, part.text ?? (Array.isArray(part.value) ? part.value.join('\n') : String(part.value ?? '')));
+    } else if (command === 'accept') {
+      console.log(JSON.stringify(acceptRecord(root, requireValue(options.id, 'accept needs a record identifier (ADR-... or DDR-...)'))));
+    } else if (command === 'supersede') {
+      console.log(JSON.stringify(supersedeRecord(root, requireValue(options.id, 'supersede needs a record identifier (ADR-... or DDR-...)'), options.by)));
+    } else if (command === 'deprecate') {
+      console.log(JSON.stringify(deprecateRecord(root, requireValue(options.id, 'deprecate needs a record identifier (ADR-... or DDR-...)'), options.reason)));
     } else {
-      throw new Error('Usage: adr.mjs validate [--json] | normalize [--date YYYY-MM-DD] [--json] | register | new --title "Decision title" [--date YYYY-MM-DD] | migrate-folders');
+      throw new Error('Usage: adr.mjs list [--kind adr|ddr] [--status STATUS] [--json] | show|get ID [--json] | search QUERY [--kind adr|ddr] [--json] | history ID [--json] | inspect ID (--field NAME | --lines START:END) [--json] | validate [--kind adr|ddr] [--json] | normalize [--kind adr|ddr] [--date YYYY-MM-DD] [--json] | register [--kind adr|ddr] | new [--kind adr|ddr] --title "Decision title" [--date YYYY-MM-DD] | accept ID | supersede ID --by SUCCESSOR | deprecate ID --reason "Why" | migrate-folders');
     }
   } catch (error) {
     console.error(`error: ${error.message}`);
