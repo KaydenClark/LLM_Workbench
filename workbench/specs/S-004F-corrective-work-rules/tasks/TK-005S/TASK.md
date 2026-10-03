@@ -40,3 +40,9 @@ No rename of any command, status or folder; no deletion of a retired Spec; no
 change to what `retire-spec` and `discard` do. A standalone corrective record
 that already exists is not deleted or migrated here. `AGENTS.md`, `RUNBOOK.md`,
 the Lexicon, the Blueprint and the templates are not edited by this Task.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s004f-tk005s | 87eae0f683de2063bc698d193300cfa30a56756a | ahead 0 behind 0 | 0 | Full AGENTS suite on committed candidate 87eae0f6: 47 of 48 commands pass; node tools/test-spec-workbench.mjs was terminated by an external SIGTERM mid-run (exit 143) and passed 59 of 59 when rerun alone on the same candidate; red first (refusal, delivered-Spec and legacy-record cases failed against the old route), then green in tools/test-spec-report.mjs, tools/test-spec-workbench.mjs, tools/test-visible-id-consumers.mjs and tools/test-workbench-round-trip.mjs; wiki.mjs validate ok | workbench/wiki/lifecycle-tool-behaviors.md (finding dispositions, retired close); Task and Spec records | none | 1cdbadcaca3beab0ae35ded7e9eddf9b8cd787bdd1deaf4a7ea51f2fdfa9209b |
