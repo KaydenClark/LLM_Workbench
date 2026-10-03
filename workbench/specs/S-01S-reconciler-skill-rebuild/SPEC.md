@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** codex-s01s-tk01j
 **Stance:** Builder
-**Updated:** 2026-10-01
+**Updated:** 2026-10-03
 **Catalog description:** Leave achieved work and its existing truth owners consistent for continuation.
-**Blockers:** none for assigned implementation; separate immutable review and raw scenario verification remain delivery gates.
-**Latest event:** Coordinator command-set overstatement corrected: original run48required+3additional; missing3nowpass separately. Parent reports independent actual51/51 on prior finalhead; narrow correction review pending.
-**Next gate:** Separate narrow exact-head review of the evidence correction; behavioral evidence assessment and remaining native acceptance gates stay open.
+**Blockers:** none; verification of the original raw scenario remains a delivery gate.
+**Latest event:** Reconciler assembly landed on integration through the Lane A consolidation: codex/s01s-reconciler-route-assembly ee9f1ab7 merged with current integration, full AGENTS suite 48/48 PASS at 53e722aa; landed only after a separate-context PASS on the landing PR.
+**Next gate:** Verify the original raw fresh-context scenario (acceptance criterion 3) before TK-01J can close; owner Human QA follows.
 
 > **Citation anchors.** pre=`d90785908b26517068a474bb88136c81995a2f18` post=`5433310e`.
 
@@ -160,7 +160,7 @@ integration `25d3f4d2`; all 51 current required commands passed at
 `6c85b1aa480f1c356aa82884a8bf7d423fc15047`, with focused 9/9, delivery 3/3,
 GitHub coordination 10/10 and collision 34/34 checks passing. The earlier
 51-command proof remains historical and did not cover replacement objects.
-The sole MEMORY route is now applied. No review PASS, completion, owner QA or merge is claimed. Independent assembled review and verification of the original raw scenario remain open.
+The sole MEMORY route is now applied. On 2026-10-03 the assembly was merged with current integration and landed through the Lane A consolidation after a separate-context review of the landing candidate. No completion or owner QA is claimed. Verification of the original raw scenario remains open, so TK-01J stays in progress.
 
 ## Supersession
 
