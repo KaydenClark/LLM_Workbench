@@ -1,0 +1,107 @@
+{
+  "audit": {
+    "lane": "reconciler",
+    "source": "abe2e8d30d0434be0309a05e8f8bb839a24312d9",
+    "AGENTSSha256": "b1dd211b0174cdfec4924f443e9d1541c8334569aa35d35c71b8a3d3221a748d",
+    "RUNBOOKSha256": "5179831f77b10877853aed16c40ee5c777541757351673726e5ec4a183f0a594",
+    "requiredCommands": [
+      "node tools/test-spec-workbench.mjs",
+      "node tools/test-skill-catalog.mjs",
+      "node tools/test-skill-inspection.mjs",
+      "node tools/test-skills-lane.mjs",
+      "node tools/test-core-composition.mjs",
+      "node tools/test-project-evidence.mjs",
+      "node tools/test-genesis-from-decisions.mjs",
+      "node tools/test-blueprint-contract.mjs",
+      "node tools/test-session-transport.mjs",
+      "node tools/test-configured-host.mjs",
+      "node tools/test-core-skill-installer.mjs",
+      "node tools/test-workbench-layout.mjs",
+      "node tools/test-workbench-adoption.mjs",
+      "node tools/test-workbench-upgrade.mjs",
+      "node tools/test-workbench-tools.mjs",
+      "node tools/test-diagnostics.mjs",
+      "node tools/test-adr.mjs",
+      "node tools/test-governance-core.mjs",
+      "node tools/test-branch-closeout.mjs",
+      "node tools/test-wiki.mjs",
+      "node tools/test-sessions.mjs",
+      "node tools/test-notepads.mjs",
+      "node tools/test-visible-ids.mjs",
+      "node tools/test-workbench-identity.mjs",
+      "node tools/test-visible-id-consumers.mjs",
+      "node tools/test-direct-promotion.mjs",
+      "node tools/test-workbench-round-trip.mjs",
+      "node tools/test-cross-provider-fixture.mjs",
+      "node tools/test-portability-matrix.mjs",
+      "node tools/test-workbench-dogfood.mjs",
+      "node tools/test-evaluate-workbench.mjs",
+      "node tools/test-guardrail-audit.mjs",
+      "node tools/test-context-tools.mjs",
+      "node tools/test-outcome-trials.mjs",
+      "node tools/test-eval-runner.mjs",
+      "node tools/test-feedback-automation.mjs",
+      "node tools/test-symlink-invocation.mjs",
+      "node tools/test-control-fidelity.mjs",
+      "node tools/test-spec-citation-anchors.mjs",
+      "node tools/test-controls-vocabulary-sweep.mjs",
+      "node tools/test-spec-report.mjs",
+      "node tools/test-self-drift.mjs",
+      "node tools/test-feedback-inventory.mjs",
+      "node tools/test-grilling-ledger.mjs",
+      "python3 tools/test-check-append-only.py",
+      "python3 evals/tasks/task_b_path_safety/test_grade.py",
+      "node tools/evaluate-workbench.mjs --path templates --include-controls",
+      "node workbench/tools/spec-workbench.mjs doctor",
+      "node tools/test-team-coordination.mjs",
+      "node tools/test-team-coordination-demo.mjs",
+      "node tools/test-socket-contract.mjs"
+    ],
+    "receipt": "reconciler-574-source-suite/results.json",
+    "receiptSha256": "c43e9466964cf529bc195f80dbe6f3a4dc5ec2709c3e04eae8e62a2c21afbd9e",
+    "actualCoveredRequired": 48,
+    "actualAdditional": 3,
+    "missingFromThisReceipt": [
+      "node tools/test-socket-contract.mjs",
+      "node tools/test-team-coordination-demo.mjs",
+      "node tools/test-team-coordination.mjs"
+    ],
+    "additionalInThisReceipt": [
+      "node tools/test-landmark-tracker.mjs",
+      "node tools/test-lifecycle-directory-links.mjs",
+      "node tools/test-taskboard-json.mjs"
+    ],
+    "statement": "Original51commandreceipt remains unchanged; it is48required+3additional, not exactrequired51. Missingfromthisreceipt does not assert neverexecutedelsewhere.",
+    "preservedPublicReceiptSha256": {
+      "coordinator-574-source-suite.json": "5d279eed89125bda3b1b972b9273dbdf87140a7e4560d80fd3152cdf73b3482f"
+    }
+  },
+  "newProducerMissingCommands": {
+    "head": "d9c670009b813c99632578694a1cf4ebf3db6d85",
+    "results": [
+      {
+        "command": "node tools/test-socket-contract.mjs",
+        "exit": 0,
+        "seconds": 0.06
+      },
+      {
+        "command": "node tools/test-team-coordination-demo.mjs",
+        "exit": 0,
+        "seconds": 0.06
+      },
+      {
+        "command": "node tools/test-team-coordination.mjs",
+        "exit": 0,
+        "seconds": 0.06
+      }
+    ]
+  },
+  "independentActualCoverage": {
+    "reviewerContext": "01a0f743",
+    "candidate": "d9c670009b813c99632578694a1cf4ebf3db6d85",
+    "commands": 51,
+    "result": "PASS",
+    "attribution": "Parent-reported separate final review; no retroactive validation of earlier producer claim",
+    "findings": "P2producercoverageoverstatement; narrow evidence correction review required"
+  }
+}
