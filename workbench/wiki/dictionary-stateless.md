@@ -4,7 +4,7 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - S-004E TK-006B, written from the owner's adopted AI Coding Dictionary term, 2026-10-03
+  - The AI Coding Dictionary Terms Spec (S-004E), its Task that writes the dictionary Wiki entries (TK-006B), written from the owner's adopted AI Coding Dictionary term, 2026-10-03
 source_paths:
   - LEXICON.md
   - AGENTS.md
