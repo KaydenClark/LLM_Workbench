@@ -8,3 +8,4 @@
 |---|---|---|---|---|
 | [000A](000A-the-workbench-aligns-to-the-owner-s-concept-and-delivers-on-it-recursively.md) | The Workbench aligns to the owner's concept and delivers on it recursively | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000B](000B-only-a-confirmed-concept-is-mapped-planned-or-implemented.md) | Only a confirmed concept is mapped, planned or implemented | accepted | 2026-10-03 | BLUEPRINT.md |
+| [000C](000C-confirming-a-concept-authorizes-the-agents-to-carry-it-to-its-endpoint.md) | Confirming a concept authorizes the agents to carry it to its endpoint | accepted | 2026-10-03 | BLUEPRINT.md |

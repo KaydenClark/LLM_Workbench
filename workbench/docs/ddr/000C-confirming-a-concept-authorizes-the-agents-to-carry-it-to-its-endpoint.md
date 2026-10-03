@@ -18,6 +18,6 @@ Why the owner chose it:
 
 Considered and rejected: None recorded.
 
-Consequences: None recorded as owner words. An accepted record that already covers part of this (assigned autonomy and no manufactured next task), not restated here: [Reduced entry and autonomy within assigned work](../../adr/0035-reduced-entry-and-assigned-autonomy.md).
+Consequences: None recorded as owner words. An accepted record that already covers part of this (assigned autonomy and no manufactured next task), not restated here: [Reduced entry and autonomy within assigned work](../adr/0035-reduced-entry-and-assigned-autonomy.md).
 
 Provenance: the Blueprint teardown grilling of 2026-10-02 to 2026-10-03: question BT-D13 (confirmation is the authorization), locked 2026-10-03; the reasons are the confirmed why, question WHY-A3, and the owner's own words, question WHY-A4.
