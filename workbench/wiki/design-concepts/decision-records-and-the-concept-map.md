@@ -10,6 +10,7 @@ source_paths:
   - LEXICON.md
   - workbench/docs/adr/000S-destination-decision-records-are-decision-records-beside-adrs.md
   - workbench/docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md
+  - workbench/docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md
   - workbench/specs/S-003X-decision-record-tooling/SPEC.md
   - workbench/specs/S-003Z-landmark-md-artifact-and-lane-runtime/SPEC.md
 parent: none
@@ -54,7 +55,10 @@ the directions we go, record the choices we made along the way.
 The owner's workflow, in order: defining a destination creates the Blueprint;
 aligning on it creates Destination Question Cards and DDRs; implementing
 creates Specs and Tasks; decisions made from the implementation update ADRs and
-DDRs; groupings that form in the cards and DDRs create landmarks.
+DDRs; groupings that form in the cards and DDRs create landmarks. The accepted
+workflow-verbs decision later fixed when each is written: Destination Question
+Cards and Wiki pages at Confirm, and landmarks, Specs and decision records, DDRs
+and ADRs alike, at Map.
 
 As the accepted destination, a landmark is a `LANDMARK.md` artifact: basically
 a Spec with a much larger scope, saying which way the work goes and what
@@ -91,10 +95,16 @@ decision record replaces it.
 
 A DDR is atomic, like an ADR: one per consequential decision, never one per
 locked answer or per question card, so no one sorts through hundreds of answers
-to find what was decided and why. It is born when the owner confirms the
-decision, the same way an ADR is. Its layout and lifecycle are the ADR's, adapted
+to find what was decided and why. The owner's confirmed decision is what a DDR
+records, but like an ADR it is written at Map: `to-docs` composes it into the
+`proposed/` folder with `adr.mjs new --kind ddr`. The workflow-verbs decision
+narrowed the earlier rule that a DDR is born at the owner's confirmation. Its layout and lifecycle are the ADR's, adapted
 where a destination record needs it: its own collection beside the ADRs, folder
-location as lifecycle, whole-record supersession, a derived register. The
+location as lifecycle, whole-record supersession, a derived register. It is
+accepted by moving it out of `proposed/` (`adr.mjs accept`) once corrections
+are reconciled; a successor replaces it whole (`supersede`), or it ends with a
+stated reason (`deprecate`), and either way it moves to the permanent
+`archive/`. The
 owner's limit is that a DDR must still serve as a destination record, not an
 architecture record. A DDR that contradicts the Blueprint obliges
 the Blueprint to be updated, the way an ADR changes the rest of the Contract.
@@ -147,6 +157,8 @@ delivers them, and settles how a DDR records the one landmark it belongs to.
   the active-decision and delivery-chain rules this builds on.
 - [ADR-000R, The Wiki is the evolving synthesis every agent reads and updates](../../docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md):
   why the Wiki synthesizes rather than keeping a page per decision.
+- [ADR-000X, The workflow is eight verbs and each verb writes the plane its claims live on](../../docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md):
+  when decision records, Destination Question Cards and Wiki pages are written.
 - [Decision Record Tooling Spec (S-003X)](../../specs/S-003X-decision-record-tooling/SPEC.md)
   and [LANDMARK.md Artifact And Lane Runtime Spec (S-003Z)](../../specs/S-003Z-landmark-md-artifact-and-lane-runtime/SPEC.md):
   the delivered DDR tooling and the planned landmark artifacts.
@@ -167,3 +179,4 @@ delivers them, and settles how a DDR records the one landmark it belongs to.
 - 2026-10-03: recorded the Lexicon mirrors of the installed vocabulary.
 - 2026-10-03: recorded the DDR tooling's delivery to integration.
 - 2026-10-03: replaced the claim that no DDR exists with the first teardown DDRs.
+- 2026-10-03: aligned when a DDR is written with the workflow-verbs decision (at Map, through `to-docs`).
