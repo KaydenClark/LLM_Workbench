@@ -40,3 +40,9 @@ swap lands without a scoring gap. Do not reweight, remove or loosen a check.
 ## Boundaries
 
 No Blueprint, template or Contract edit; this Task only teaches the checks.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s004h-tk005r-evaluator | 1ac66e66c4aa7ba03e63ae8c1377f28a11f02e39 | ahead 1 behind 0 | 0 | Red first: test-evaluate-workbench (four-part fixture scored 1.6/8 on the project model) and test-guardrail-audit (four-part Blueprint fell to the legacy path) failed; green after the change. Full AGENTS suite on committed candidate 1ac66e66: 47 of 48 commands pass in a four-way parallel run; node tools/test-wiki.mjs failed once on a concurrent read of workbench/manifest.json and passed alone on the same candidate (14/14). Baseline before editing: guardrail audit 78/100 on this tree, template evaluation 106.6/113; after: guardrail audit 78/100, template evaluation 106.6/113, and a template copy with a four-part Blueprint also 106.6/113, so no criterion moved or was dropped. Remaining recommendations unchanged (outcome evidence 8/30; no real repeated outcome trials, so no agent-outcome claim). | none: tools and tests only; the Blueprint, template and Wiki change in later Tasks | none for this Task; TK-005S swaps the pages and re-records both scores | 39619bcfbf76acadb2a2376593d3953f6b459b9526c3cee5bcc1d14550a75bc7 |
