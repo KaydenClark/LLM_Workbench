@@ -69,3 +69,9 @@ folder (the Spec folder is the only store):
 Read-only against the carriers: no `AGENTS.md`, `RUNBOOK.md`, `LEXICON.md`,
 template or skill edit, and no tool change. It cuts no new Task; a finding that
 needs one is reported to the Dispatcher.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s004c-tk005b-baseline-census | 66fb696758ac5c29396aea0afaadbb0738393b8d | ahead 0 behind 0 | 0 | Read-only record, no behavior change, so no red/green test applies. Full AGENTS suite 48/48 pass on committed candidate 66fb6967 (suite.sh, dirty: []). Re-run at d7ffffe9 in a clean detached checkout: evaluate-workbench --path templates --include-controls 106.6/113, audit-guardrails 78/100, self-drift --phase pre cleanUpdate false with the same 8 attention findings as the Dispatcher receipt, doctor exit 0, render no diff. git diff over AGENTS.md, RUNBOOK.md, LEXICON.md, CLAUDE.md, templates/, skills and tools is empty. | census.md added in the S-004C Spec folder; no carrier, template, skill, tool or Wiki change (the census alters no Wiki statement). | none for this Task; census findings 1-7 (static score reads only templates/, three tests execute Runbook text, TK-005G token looks satisfied, ADR canonicalized_in limit, Task packet carries only AGENTS.md, room-brain route line, section-map corrections) are reported to the Dispatcher | b7463d7381a6293647f5335d1e81674ae176a737d758011a5604d3368c42b5e3 |
