@@ -34,3 +34,9 @@ No other Blueprint change.
 ## Gate cleared
 
 `owner:blueprint-writer-turn` was a sequencing gate this Spec's own planning created, not an owner decision. The Blueprint writer is free: the Blueprint Short Page Spec's swap merged in PR #310 (merge commit 25733f3b, 2026-10-03) and all its Tasks are done on integration be0450fe. Cleared by the Director's direction of 2026-10-03; TK-005T is done.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s004f-tk005w | fa571824c7797d8a65213aab6d74f0290ca3dc36 | ahead 0 behind 0 | 0 | Read BLUEPRINT.md and templates/BLUEPRINT.md at integration be0450fe: no corrective-Task, reopen or Wiki-claim passage remains (grep); tools/test-blueprint-contract.mjs records the old corrective passages as replaced-claim; full AGENTS suite on committed candidate fa571824: 48 of 48 | none; the Blueprint Short Page Spec's swap (PR #310, 25733f3b) already replaced the passages and their pins | none | ab9955ad68c1cadc3bc0beb762dd4efcac93b63abaa32b61097fa6760fbc03d1 |
