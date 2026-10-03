@@ -711,6 +711,31 @@ test('both Lexicons define the Workbench terms once and use "controls" only for 
   assert.equal(rowsOf(read(root, 'templates/LEXICON.md'), 'Workbench Template').length, 0, 'templates/LEXICON.md carries no producer-only Workbench Template row');
 });
 
+
+// S-004G: each workflow verb has exactly one row stating its confirmed
+// meaning, and the Workflow row states the open verb set and the delivery
+// workflow, with Journey as the build loop and Delivered replacing Complete.
+const WORKFLOW_VERBS = ['Idea', 'Align', 'Confirm', 'Prototype', 'Map', 'Plan', 'Implement', 'Check', 'Review', 'Verify', 'Journey', 'Approve', 'Delivered', 'Clean Up'];
+
+test('both Lexicons define every workflow verb once and state the delivery workflow with Journey as the build loop', () => {
+  const rowsOf = (content, term) => content.split('\n').filter((line) => line.startsWith(`| **${term}** |`));
+  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
+    const content = read(root, relative);
+    for (const verb of [...WORKFLOW_VERBS, 'Workflow verb', 'Workflow']) assert.equal(rowsOf(content, verb).length, 1, `${relative} has exactly one ${verb} row`);
+    const workflow = rowsOf(content, 'Workflow')[0];
+    assert.match(workflow, /Idea, Align, Confirm, Map, Plan, Journey, Approve, Delivered, Clean Up/, `${relative} Workflow row names the delivery workflow`);
+    assert.match(workflow, /verb set stays open/, `${relative} Workflow row says the set is open`);
+    assert.doesNotMatch(workflow, /eight verbs Idea|official workflow verbs everywhere/, `${relative} Workflow row drops the closed list`);
+    assert.match(rowsOf(content, 'Journey')[0], /Implement, Check, Review and Verify, repeated until the confirmed concept is built\. Map and Plan come before it and are not part of it/, `${relative} Journey row`);
+    assert.match(rowsOf(content, 'Delivered')[0], /Delivered, not Complete/, `${relative} Delivered row`);
+    assert.match(rowsOf(content, 'Check')[0], /automated checks the building agent runs on its own Task/, `${relative} Check row`);
+    assert.doesNotMatch(rowsOf(content, 'Align')[0], /not itself implementation permission/, `${relative} Align row drops the old confirmation clause`);
+    assert.match(rowsOf(content, 'Confirm')[0], /authorizes the agents to carry it to its endpoint/, `${relative} Confirm row`);
+    assert.equal(content.split('\n').filter((line) => /^\| \*\*Map\*\* \|/.test(line)).length, 1, `${relative} keeps one Map row for noun and verb`);
+    assert.match(content.split('\n').find((line) => /^\| \*\*Map\*\* \|/.test(line)), /As a workflow verb, writing that direction: landmarks, Specs and decision records/, `${relative} Map row carries the verb`);
+  }
+});
+
 // S-004E: each AI Coding Dictionary term the owner adopted has exactly one
 // Lexicon row, in an `AI Coding Terms` section, naming its dictionary entry
 // once; the generic Lexicon carries the same rows, and names no room-specific
