@@ -3,11 +3,12 @@
 **Task ID:** TK-005V
 **Spec ID:** S-004F
 **Slice:** State the corrective rules in the Lexicon Task, Destination Packet and Assembled-Spec review rows
-**Status:** in-progress
+**Status:** done
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: The Lexicon's Task, Destination Packet and Assembled-Spec review rows and their template mirrors state both rules, and no row offers a Wiki claim as a destination for corrective work.
 **Planned verification:** Red: a pin over `LEXICON.md` and `templates/LEXICON.md` fails while the Task row says a correction against the same reconciled capability updates its Wiki claim and that Wiki-claim corrective records are supported, the Destination Packet row lists the reconciled Wiki claim for corrective work and says a corrective packet does not resurrect a discarded Spec, and the Assembled-Spec review row says a failed review creates corrective Tasks under the still-open Spec. Green: the three rows state the continue-or-new rule and the new-Spec rule, the Wiki-claim destination remains defined only for a Task that produces a Wiki page, and the Lexicon test and the full AGENTS suite pass on the committed candidate.
+**Proof:** Full AGENTS suite 48 of 48 on committed candidate 56c95749; Lexicon rows state the continue-or-new rule and the new-Spec route, no row offers a Wiki claim as a corrective destination; Packet pins retargeted
 
 ## Outcome
 
@@ -43,3 +44,4 @@ No other Lexicon row changes here.
 | Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
 |---|---|---|---|---|---|---|---|---|
 | 1 | claude/s004f-tk005v | 56c9574906533c61c9f69743c672cf11dc50283a | ahead 0 behind 0 | 0 | Full AGENTS suite on committed candidate 56c95749: 48 of 48 commands pass; tools/test-adr.mjs Destination Packet pin retargeted (names no corrective Wiki-claim member, new mutation case 'Packet regains a corrective Wiki claim'), test-control-fidelity and test-controls-vocabulary-sweep pass; wiki validate ok | LEXICON.md and templates/LEXICON.md Task, Destination Packet/Packet and Assembled-Spec review rows; tools/test-adr.mjs pins | README line and the Wiki schema lint line still state the replaced rule (owner-scoped) | 34a10406ad63d7f45b2346765192e6349c1ca69f7e713c0070a2aa34266f7b7b |
+| 2 | claude/s004f-tk005v | 633ca2639abe5a06751e8356c2f8c47099af33db | ahead 0 behind 0 | 0 | Full AGENTS suite 48 of 48 on committed candidate 56c95749; Lexicon rows state the continue-or-new rule and the new-Spec route, no row offers a Wiki claim as a corrective destination; Packet pins retargeted | LEXICON.md, templates/LEXICON.md, tools/test-adr.mjs updated | README line 372 and the Wiki schema lint line still state the replaced rule; owner-scoped | 2b7cd3d907232c75d97513b638a8fd20c8182efe7feea58d3be997645eb6b3cd |
