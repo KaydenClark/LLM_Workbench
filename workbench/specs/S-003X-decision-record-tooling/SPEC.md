@@ -8,7 +8,7 @@
 **Updated:** 2026-10-03
 **Catalog description:** Give a room one tool and one set of read words for both kinds of decision record, the ADR and the Destination Decision Record, with the lifecycle moves the ADR tool lacks.
 **Blockers:** none. The Codex Lexicon reconciliation branch TK-005A waited on landed through PR #281, so the Lexicon-mirror Task is ready. How a DDR records its single landmark is open, outside this acceptance, and waits on the landmark capability.
-**Latest event:** Corrective TK-005X closed after the fresh whole-Spec review of 55770bb8 failed on one P2 (Wiki creation timing); a fresh review of the corrected assembled candidate is next.
+**Latest event:** Corrective TK-005X closed after the whole-Spec review of 55770bb8 failed on one P2 (Wiki creation timing), and the earlier corrective record's identity, which collided with the Corrective Work Rules Spec's TK-005U, was recovered to TK-006K; a fresh review of the assembled candidate is next.
 **Next gate:** Fresh separate-context review of the assembled candidate (report and verdict), then owner Human QA on integration, owner main promotion and complete.
 
 > **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`e584cb74b90571f3982e817c8a1f641bbff6234e`.
