@@ -8,8 +8,8 @@
 **Updated:** 2026-10-03
 **Catalog description:** When a check finds a miss, the same Task continues with an adjusted handoff unless the fix rewrites it, and a later gap against delivered work becomes a new Spec under its landmark or the Blueprint instead of a correction anchored to a Wiki claim.
 **Blockers:** none for the Tasks other than TK-005U and TK-005V, which wait on `owner:` tokens for another Spec's writer turn on the Runbook and the Lexicon. The tokens are sequencing gates this Spec's planning created, not owner decisions; the Blueprint token was cleared on 2026-10-03 when the short page merged (PR #310).
-**Latest event:** TK-005W claimed by claude-lane-d.
-**Next gate:** Close TK-005W with verification and documentation proof.
+**Latest event:** TK-005W closed with proof.
+**Next gate:** Complete TK-005U.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 
@@ -126,6 +126,7 @@ Run the targeted spec-report, spec-workbench, control-fidelity and append-only t
 | 2026-10-03 | TK-005R | Task closed | Full AGENTS suite 48 of 48 on committed candidate 9696c78d; red then green at recordReviewVerdict, recordOwnerApproval, createCorrectiveTasks, the Continuation section and the continued-Task re-close; append-only evidence and Receipt rows byte-identical in the fixtures | Docs checked; no control, Runbook or Lexicon update here: the rules reach AGENTS.md in TK-005T and the Wiki lifecycle page in TK-005S | none |
 | 2026-10-03 | TK-005S | Task closed | Full AGENTS suite 47 of 48 on committed candidate 87eae0f6 plus the one externally terminated command passing alone on it; refusal tests red then green at createCorrectiveTasks, recordReviewVerdict, recordOwnerApproval, claim and close; a later gap against a completed Spec carried by a new planned Spec fixture; wiki validate ok | Wiki lifecycle-tool-behaviors page updated and linted; no control, Runbook or Lexicon change here (TK-005T, TK-005U and TK-005V carry them) | none |
 | 2026-10-03 | TK-005T | Task closed | Full AGENTS suite 48 of 48 on committed candidate 086c4395; AGENTS, template and skill pins red then green; guardrail audit 78/100 before and after; self-drift pre and post equal (12 findings, none from this change); Wiki validate ok | AGENTS.md and templates/AGENTS.md corrective sections, to-tasks skill, control-fidelity pins; Spec Remaining Limitations lists README, Wiki schema and Lexicon-pin items for their owners | RUNBOOK, Lexicon rows, Blueprint passages, README and the Wiki schema line still state the replaced rules; TK-005U, TK-005V, TK-005W and their owners carry them |
+| 2026-10-03 | TK-005W | Task closed | No Blueprint edit needed: the Blueprint Short Page Spec's swap (PR #310, 25733f3b, integration be0450fe) already replaced the Desired Lifecycle and Integrated System Design passages; BLUEPRINT.md and templates/BLUEPRINT.md carry no corrective-Task or Wiki-claim line, and test-blueprint-contract records the old passages as replaced claims; full AGENTS suite 48 of 48 on candidate fa571824 | Docs checked; no update needed because the short page already replaced the passages | none |
 
 ## Completion Result
 
