@@ -390,8 +390,11 @@ test('the additive features collection resolves, is created and seeded by init, 
     assert.equal(fs.existsSync(path.join(project, 'workbench', 'wiki', 'features', 'README.md')), true, 'the collection README is seeded from templates/wiki');
     assert.equal(run('validate', '--project', project).report.status, 'valid');
 
-    const { features, ...preFeature } = manifest.collections;
+    // S-003X TK-004W: a pre-feature room also predates the later additive
+    // `ddr` collection, so its shape lacks both.
+    const { features, ddr, ...preFeature } = manifest.collections;
     assert.equal(features, 'workbench/wiki/features');
+    assert.equal(ddr, 'workbench/docs/ddr');
     fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: preFeature }, null, 2)}\n`);
     assert.equal(run('validate', '--project', project).report.status, 'valid', 'the current seven-lane room declared before features still validates');
     assert.equal(collectionRelative(project, 'features'), 'workbench/wiki/features', 'an undeclared room resolves the default path');
