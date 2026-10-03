@@ -16,9 +16,8 @@ import path from 'node:path';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { assembleSpecReport, createCorrectiveTasks, formatSpecReport, recordOwnerApproval, recordReviewVerdict } from '../workbench/tools/spec-report.mjs';
 import { completeSpec, doctor, gate, nextWork, render, retireSpec } from '../workbench/tools/spec-workbench.mjs';
-import { readTaskRecord } from '../workbench/tools/task-record.mjs';
+import { appendContinuationToContent, readContinuations, readTaskRecord } from '../workbench/tools/task-record.mjs';
 import { appendReceiptRowToContent } from '../workbench/tools/task-receipt.mjs';
-import { appendContinuationToContent, readContinuations } from '../workbench/tools/task-continuation.mjs';
 import { RUNTIME_TOOLS } from '../workbench/tools/workbench-layout.mjs';
 import './test-verdict-candidate-binding.mjs';
 
