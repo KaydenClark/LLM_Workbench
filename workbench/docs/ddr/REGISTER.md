@@ -18,3 +18,4 @@
 | [000J](000J-the-behaviors-agents-need-ship-inside-every-room.md) | The behaviors agents need ship inside every room | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000K](000K-a-handoff-is-the-readable-map-to-the-high-fidelity-context.md) | A handoff is the readable map to the high-fidelity context | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000L](000L-agents-work-the-workbench-through-one-action-controls.md) | Agents work the workbench through one-action controls | accepted | 2026-10-03 | BLUEPRINT.md |
+| [000M](000M-working-artifacts-are-scaffolding-cleared-away-once-their-knowledge-is-kept.md) | Working artifacts are scaffolding, cleared away once their knowledge is kept | accepted | 2026-10-03 | BLUEPRINT.md |
