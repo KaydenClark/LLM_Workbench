@@ -290,24 +290,24 @@ function publish(root, resolved, note, { exclusive = false, beforePublish = null
 // silently replaces the earlier write while both are told they succeeded
 // (ADR-000L records twelve barrier-synchronized appends leaving one entry).
 //
-// The guard is a per-target-revision publish token: a writer that read
+// The guard is a per-target-revision publish tokenDir: a writer that read
 // revision N creates the exclusive directory `.<note>.rev<N+1>.publish/`
-// beside the note. Every writer claiming N serializes through that one token,
+// beside the note. Every writer claiming N serializes through that one tokenDir,
 // so re-reading the note inside it and refusing unless it is still at N is a
 // true compare-and-swap; the rename that publishes N+1 happens only under the
-// token for N+1. A writer that finds the token held is refused
+// tokenDir for N+1. A writer that finds the tokenDir held is refused
 // `stale-revision` naming the revision on disk, exactly as a sequential
 // mismatch is, and nothing of its write reaches the file.
 //
-// The token is held for one publication, never across a command or by a
+// The tokenDir is held for one publication, never across a command or by a
 // chat, and it needs no service or configuration. A writer that stops
-// mid-write leaves its token behind; once the token is older than
+// mid-write leaves its tokenDir behind; once the tokenDir is older than
 // PUBLISH_TOKEN_STALE_MS the next writer renames it aside and removes it, so
-// a crash never wedges a note. A holder re-reads its own nonce from the token
-// immediately before the rename, so a holder whose token was reclaimed
+// a crash never wedges a note. A holder re-reads its own nonce from the tokenDir
+// immediately before the rename, so a holder whose tokenDir was reclaimed
 // refuses instead of publishing over a newer write. The window that remains,
 // between that read and the rename, is the rename itself and is reached only
-// by a writer stalled inside its token for longer than the reclaim age.
+// by a writer stalled inside its tokenDir for longer than the reclaim age.
 export const PUBLISH_TOKEN_STALE_MS = 10_000;
 
 class StaleRevision extends Error {
@@ -318,7 +318,7 @@ function publishTokenPath(resolved, revision) {
   return path.join(path.dirname(resolved.absolute), `.${path.basename(resolved.absolute)}.rev${revision}.publish`);
 }
 
-// The revision the file holds right now, read inside the token. A note that
+// The revision the file holds right now, read inside the tokenDir. A note that
 // vanished or no longer parses is reported as it is: the caller cannot be at
 // the revision it read, so the refusal is stale-revision with what was found.
 function revisionOnDisk(resolved) {
@@ -336,18 +336,18 @@ function staleRefusal(resolved, expected, found, why) {
   return blocked('stale-revision', `${where}; ${why}`, { revision: found, claimed: expected });
 }
 
-// Reclaim a token nobody is using. Only one reclaimer can win the rename, so
-// two writers that both find an abandoned token do not both proceed as if
+// Reclaim a tokenDir nobody is using. Only one reclaimer can win the rename, so
+// two writers that both find an abandoned tokenDir do not both proceed as if
 // they had created it; the loser simply retries the exclusive create.
-function reclaimAbandonedToken(token) {
+function reclaimAbandonedToken(tokenDir) {
   let entry;
-  try { entry = fs.statSync(token); }
+  try { entry = fs.statSync(tokenDir); }
   catch (error) { if (error.code === 'ENOENT') return true; throw error; }
   let latest = entry.mtimeMs;
-  try { latest = Math.max(latest, fs.statSync(path.join(token, 'owner')).mtimeMs); } catch { /* an owner file is not required to age the token */ }
+  try { latest = Math.max(latest, fs.statSync(path.join(tokenDir, 'owner')).mtimeMs); } catch { /* an owner file is not required to age the tokenDir */ }
   if (Date.now() - latest < PUBLISH_TOKEN_STALE_MS) return false;
-  const aside = `${token}.abandoned-${process.pid}-${randomUUID()}`;
-  try { fs.renameSync(token, aside); }
+  const aside = `${tokenDir}.abandoned-${process.pid}-${randomUUID()}`;
+  try { fs.renameSync(tokenDir, aside); }
   catch (error) {
     if (error.code === 'ENOENT') return true;
     // Another process holds it open or the filesystem refuses the move: treat
@@ -359,25 +359,25 @@ function reclaimAbandonedToken(token) {
 }
 
 function claimPublishToken(root, resolved, target) {
-  const token = publishTokenPath(resolved, target);
-  if (path.relative(path.resolve(root), token).startsWith('..')) throw new Error('publish token must stay inside the project');
+  const tokenDir = publishTokenPath(resolved, target);
+  if (path.relative(path.resolve(root), tokenDir).startsWith('..')) throw new Error('publish tokenDir must stay inside the project');
   for (let attempt = 0; attempt < 2; attempt += 1) {
-    try { fs.mkdirSync(token); }
+    try { fs.mkdirSync(tokenDir); }
     catch (error) {
       if (error.code !== 'EEXIST') throw error;
-      if (attempt === 0 && reclaimAbandonedToken(token)) continue;
+      if (attempt === 0 && reclaimAbandonedToken(tokenDir)) continue;
       return null;
     }
     const nonce = randomUUID();
-    try { fs.writeFileSync(path.join(token, 'owner'), `${JSON.stringify({ nonce, pid: process.pid, at: nowStamp() })}\n`, { flag: 'wx' }); }
-    catch (error) { fs.rmSync(token, { recursive: true, force: true }); throw error; }
-    return { token, nonce };
+    try { fs.writeFileSync(path.join(tokenDir, 'owner'), `${JSON.stringify({ nonce, pid: process.pid, at: nowStamp() })}\n`, { flag: 'wx' }); }
+    catch (error) { fs.rmSync(tokenDir, { recursive: true, force: true }); throw error; }
+    return { tokenDir, nonce };
   }
   return null;
 }
 
 function stillOwns(claim) {
-  try { return JSON.parse(fs.readFileSync(path.join(claim.token, 'owner'), 'utf8')).nonce === claim.nonce; }
+  try { return JSON.parse(fs.readFileSync(path.join(claim.tokenDir, 'owner'), 'utf8')).nonce === claim.nonce; }
   catch { return false; }
 }
 
@@ -398,13 +398,13 @@ function publishAtRevision(root, resolved, note, expected) {
     if (found !== expected) return staleRefusal(resolved, expected, found, 'read it again before writing');
     return publish(root, resolved, note, {
       beforePublish: () => {
-        if (!stillOwns(claim)) throw new StaleRevision(staleRefusal(resolved, expected, revisionOnDisk(resolved), 'the publish token was reclaimed while this write stalled; read it again before writing'));
+        if (!stillOwns(claim)) throw new StaleRevision(staleRefusal(resolved, expected, revisionOnDisk(resolved), 'the publish tokenDir was reclaimed while this write stalled; read it again before writing'));
       }
     });
   } catch (error) {
     return blocked('write-failed', `${resolved.relative} was not updated: ${error.message}; the previous valid record is unchanged`);
   } finally {
-    fs.rmSync(claim.token, { recursive: true, force: true });
+    fs.rmSync(claim.tokenDir, { recursive: true, force: true });
   }
 }
 
@@ -874,7 +874,7 @@ export function deleteNote(root, options) {
     if (fs.readFileSync(resolved.absolute, 'utf8') !== loaded.text) return staleRefusal(resolved, note.revision, revisionOnDisk(resolved), 'the source changed during cleanup; read it again before retrying');
     fs.unlinkSync(resolved.absolute);
   } catch (error) { return blocked('write-failed', `Cleanup refused: ${error.message}`); }
-  finally { fs.rmSync(claim.token, { recursive: true, force: true }); }
+  finally { fs.rmSync(claim.tokenDir, { recursive: true, force: true }); }
   return { status: 'deleted', note: resolved.relative, id: note.id, revision: note.revision };
 }
 

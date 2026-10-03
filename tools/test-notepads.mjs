@@ -780,7 +780,7 @@ test("the grilling skill's documented command produces the record it shows", () 
     assert.match(documented[1], /notepads\.mjs create/, 'the documented command is a notepad create');
 
     const argv = argvOf(documented[1].replace(/\\\r?\n/g, ' '))
-      .filter((token) => !['node', 'workbench/tools/notepads.mjs'].includes(token))
+      .filter((tokenDir) => !['node', 'workbench/tools/notepads.mjs'].includes(tokenDir))
       .map((token) => token.replace('TOPIC-YYYY-MM-DD', 'topic-2026-01-31').replace('OBJECTIVE_KEY', 'objective-key'));
     const run = spawnSync(process.execPath, [notepadsTool, ...argv, '--path', dir], { encoding: 'utf8' });
     assert.equal(run.status, 0, run.stdout || run.stderr);
@@ -1315,15 +1315,15 @@ test('a held publish token refuses the write as stale-revision and leaves the no
     const created = seed(dir, { note: 'token-note' });
     const file = path.join(dir, created.note);
     const before = fs.readFileSync(file);
-    const token = tokenPath(dir, created.note, 2);
-    fs.mkdirSync(token);
-    fs.writeFileSync(path.join(token, 'owner'), JSON.stringify({ nonce: 'someone-else', pid: 0 }));
+    const tokenDir = tokenPath(dir, created.note, 2);
+    fs.mkdirSync(tokenDir);
+    fs.writeFileSync(path.join(tokenDir, 'owner'), JSON.stringify({ nonce: 'someone-else', pid: 0 }));
     const held = appendEntry(dir, { note: created.note, revision: 1, kind: 'finding', topic: 'held', content: 'Must not land' });
     assert.equal(held.status, 'blocked');
     assert.equal(held.error.code, 'stale-revision');
     assert.equal(held.error.revision, 1, 'the refusal names the revision on disk');
     assert.deepEqual(fs.readFileSync(file), before, 'nothing of the refused write reached the file');
-    assert.ok(fs.existsSync(token), 'a fresh token is not reclaimed');
+    assert.ok(fs.existsSync(tokenDir), 'a fresh token is not reclaimed');
     const viaCli = cli(dir, ['current', '--note', created.note, '--revision', '1', '--state', 'Must not land']);
     assert.equal(viaCli.status, 1);
     assert.equal(viaCli.json.error.code, 'stale-revision');
@@ -1333,12 +1333,12 @@ test('a held publish token refuses the write as stale-revision and leaves the no
     // reclaim age the next writer removes it and proceeds; the previous valid
     // record was never touched.
     const abandoned = new Date(Date.now() - 60_000);
-    fs.utimesSync(path.join(token, 'owner'), abandoned, abandoned);
-    fs.utimesSync(token, abandoned, abandoned);
+    fs.utimesSync(path.join(tokenDir, 'owner'), abandoned, abandoned);
+    fs.utimesSync(tokenDir, abandoned, abandoned);
     const reclaimed = appendEntry(dir, { note: created.note, revision: 1, kind: 'finding', topic: 'reclaimed', content: 'Lands after reclaim' });
     assert.equal(reclaimed.status, 'appended', JSON.stringify(reclaimed));
     assert.equal(reclaimed.revision, 2);
-    assert.ok(!fs.existsSync(token), 'the abandoned token is gone');
+    assert.ok(!fs.existsSync(tokenDir), 'the abandoned token is gone');
     const stored = JSON.parse(fs.readFileSync(file, 'utf8'));
     assert.equal(stored.entries.length, 1);
     assert.equal(stored.entries[0].content, 'Lands after reclaim');
@@ -1353,16 +1353,16 @@ test('delete goes through the same guard: a held token refuses cleanup and the n
   try {
     const created = seed(dir, { note: 'delete-token', status: 'RECONCILED' });
     const file = path.join(dir, created.note);
-    const token = tokenPath(dir, created.note, 2);
-    fs.mkdirSync(token);
+    const tokenDir = tokenPath(dir, created.note, 2);
+    fs.mkdirSync(tokenDir);
     const refused = cli(dir, ['delete', '--note', created.note, '--revision', '1']);
     assert.equal(refused.json.error?.code, 'stale-revision', refused.stdout);
     assert.ok(fs.existsSync(file), 'the note survives a refused delete');
-    fs.rmSync(token, { recursive: true, force: true });
+    fs.rmSync(tokenDir, { recursive: true, force: true });
     const deleted = cli(dir, ['delete', '--note', created.note, '--revision', '1']);
     assert.equal(deleted.json.status, 'deleted', deleted.stdout);
     assert.ok(!fs.existsSync(file));
-    assert.ok(!fs.existsSync(token));
+    assert.ok(!fs.existsSync(tokenDir));
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
