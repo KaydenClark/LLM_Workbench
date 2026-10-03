@@ -907,7 +907,8 @@ function assertWorkflowMeaning(corpus) {
   for (const [term, pattern] of [
     // S-004G TK-006E: the Blueprint row describes the four-part short page and what the Blueprint is for.
     ['Blueprint', /direction we want to head[\s\S]*four-part short page/],
-    ['Destination Packet', /Spec acceptance lines[\s\S]*or the reconciled Wiki claim/],
+    // S-004F TK-005V: the Wiki is evidence, never the destination a packet carries, so no corrective Wiki-claim member.
+    ['Destination Packet', /Spec acceptance lines it satisfies, the Task[\s\S]*never the destination a packet carries/],
     // S-004G TK-006D: the owner's confirmed Align meaning (the inquiry, usually grilling, in which an idea becomes a design concept the owner and the agents share).
     ['Align', /inquiry, usually grilling, in which an idea becomes a design concept the owner and the agents share/],
     ['Design concept', /exists between participants/],
@@ -923,6 +924,7 @@ function assertWorkflowMeaning(corpus) {
     const row = lexicon.split('\n').find(line => line.startsWith(`| **${term}** |`));
     assert.ok(row, `Lexicon defines ${term}`);
     requires(row, pattern, `Lexicon meaning of ${term}`);
+    if (term === 'Destination Packet') assert.doesNotMatch(row, /reconciled Wiki claim/, 'the Destination Packet row names no corrective Wiki-claim member');
   }
   requires(controls.get('AGENTS.md'), /Dispatcher owns whole-Spec QA[\s\S]*separate Director context reviews/, 'AGENTS carries review roles');
   requires(controls.get('AGENTS.md'), /verification on main -> `complete`/, 'AGENTS carries closure order');
@@ -978,7 +980,7 @@ test('workflow checks reject substantive and literal-route mutations with accept
   for (const [label, file, before, after] of [
     ['Context Map route', 'LEXICON.md', '(RUNBOOK.md)', '(MISSING-RUNBOOK.md)'],
     ['Context Map heading', 'LEXICON.md', '(#artifact-ownership-schema)', '(#missing-owner-heading)'],
-    ['Packet loses corrective claim', 'LEXICON.md', 'or the reconciled Wiki claim for corrective work', 'only the Spec'],
+    ['Packet regains a corrective Wiki claim', 'LEXICON.md', 'Spec acceptance lines it satisfies, the Task', 'Spec acceptance lines it satisfies or the reconciled Wiki claim for corrective work, the Task'],
     ['operational owner claim', 'AGENTS.md', 'Dispatcher owns whole-Spec QA', 'Worker owns whole-Spec QA']
   ]) {
     const corpus = workflowCorpus();
