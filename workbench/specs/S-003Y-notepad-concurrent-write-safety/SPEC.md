@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-10-03
 **Catalog description:** Make overlapping writes to one JSON notepad impossible to lose silently: every write response says truthfully whether its entry landed.
-**Blockers:** none for TK-006H (the guard and its barrier test) and TK-006I (the inspection of other writers). TK-006J (the skill, Contract and ownership-decision reconciliation) waits on TK-006H and coordinates the skill wording with S-00Y.
-**Latest event:** TK-006H claimed by claude-fable-s003y.
-**Next gate:** Close TK-006H with verification and documentation proof.
+**Blockers:** none for TK-006I (the inspection of other writers) or TK-006J (the skill, Contract and ownership-decision reconciliation; its prerequisite TK-006H is done). TK-006J coordinates the skill wording with S-00Y.
+**Latest event:** TK-006H closed with proof.
+**Next gate:** Separate-context review of the TK-006H candidate and its PR merge into integration; then claim TK-006I or TK-006J.
 
 > **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a`.
 
@@ -100,6 +100,7 @@ Reconcile the writer-rule statements in `AGENTS.md`, `LEXICON.md`, the `notepad`
 | 2026-10-02 | none | Re-verified and re-anchored at integration 5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a after four PRs landed. | Map only; the asserted counts, tool commands, collections and the S-00M status were re-read at that tip; no runtime proof claimed. | This Spec. | Plan, implementation and proof remain. |
 | 2026-10-03 | none | Planned at integration 5fa2aab657c8492da22980bfd0d70571600071af: Actuality inspected (`loadForWrite`, `publish`, `writeSafeFile`, the `wx` operation locks in `session-transport.mjs` and `workbench-layout.mjs`, the Tracker's `--expect-revision`, the test harness); the race re-reproduced from a worker-thread `Atomics` barrier (six rounds of twelve racers: 3, 3, 6, 4, 5 and 4 `appended` responses, one entry each round); Tasks TK-005B, TK-005C and TK-005D cut record-backed; the Spec activated; the publish-token guard and the ten-second reclaim decided. | Plan only; doctor and render after the cut; guardrail baseline 78/100 and self-drift pre receipt (8 pre-existing attention findings: blocked-slice, stale-claim, five stale-seed, unverified-provenance; machineResult blocked, cleanUpdate false) captured at 5fa2aab6; no runtime fix claimed. | This Spec and its three TASK.md records. | All implementation and proof remain; TK-005D waits on TK-005B and coordinates the skill with S-00Y. |
 | 2026-10-03 | none | Renumbered the three Plan Tasks TK-005B, TK-005C and TK-005D to TK-006H, TK-006I and TK-006J after merging integration f59fce5bd (S-004C and S-004F had allocated TK-005B through TK-005W first; TK-005X through TK-006G are held on remote tips). Records moved with `git mv`; the Plan evidence row above keeps its original text as history. | render and doctor after the move; the claimed in-progress record is now TK-006H. | This Spec, the three TASK.md records, the Wiki article skill-notepad.md. | Suite rerun, close, review and integration merge remain. |
+| 2026-10-03 | TK-006H | Task closed | Red 6cedbdf2 (test-notepads 53/4: twelve barrier-released appenders left one entry while four were told appended). Green 32828062: test-notepads 57/57, both race cases 10/10 repeats, demo 1 appended, 11 stale-revision, 0 lost every round. Full AGENTS suite 48/48 on clean 70409372 after merging integration f59fce5b; guardrail 78/100 unchanged; self-drift pre and post receipts unchanged at 8 pre-existing attention findings. | RUNBOOK JSON Notepads paragraph, templates/RUNBOOK.md mirror and Wiki article skill-notepad.md describe the publish-token guard; wiki validate ok. | Separate-context review of the final head, PR into integration and merge. TK-006I (other writeSafeFile writers) and TK-006J (skill, Contract, ADR-000L) remain. Limitation: a writer stalled inside its token beyond the ten-second reclaim age could publish over a newer write within the rename window. |
 
 ## Completion Result
 
