@@ -217,6 +217,14 @@ node workbench/tools/adr.mjs new --title "Decision title"
 node workbench/tools/adr.mjs new --kind ddr --title "Destination decision title"
 node workbench/tools/adr.mjs validate
 node workbench/tools/adr.mjs register
+node workbench/tools/adr.mjs accept DDR-####
+node workbench/tools/adr.mjs supersede ADR-#### --by ADR-####
+node workbench/tools/adr.mjs deprecate DDR-#### --reason "Why it ends"
+node workbench/tools/adr.mjs list
+node workbench/tools/adr.mjs show DDR-####
+node workbench/tools/adr.mjs search "query"
+node workbench/tools/adr.mjs history ADR-####
+node workbench/tools/adr.mjs inspect DDR-#### --field canonicalized_in
 ```
 
 `doctor` prints every registered finding with its severity and blocking
@@ -261,7 +269,20 @@ never names the Wiki; validation reports that and the ADR rules applied to a
 DDR as `invalid-ddr`. A DDR that changes or contradicts the Blueprint names
 `BLUEPRINT.md` in `canonicalized_in`. `validate` and `register` act on every
 decision-record collection present; `--kind adr` or `--kind ddr` limits them to
-one.
+one. `accept`, `supersede` and `deprecate` move a record by folder for either
+kind, addressed by its `ADR-` or `DDR-` identifier: `accept` takes a
+`proposed/` record to the top level and refuses one that would be invalid as
+accepted; `supersede` archives an accepted record under exactly one accepted
+successor of the same kind and records `superseded_by` and `supersedes`;
+`deprecate` archives an accepted record with a one-line `deprecation_reason`.
+Each refuses a dirty Git tree, renames with `git mv`, repairs live links while
+leaving append-only evidence untouched, regenerates both registers, and writes
+nothing when it refuses. Both kinds answer the five read words: `list` the
+records that exist, `show` one whole record (`get` is a synonym), `search`
+records by a literal query (a superseded hit names its successor), `history`
+the lifecycle chain and the Git commits that touched the record, and
+`inspect` one `--field` or a `--lines START:END` range. Reads never write and
+take `--json`.
 
 `permission-scope-drift` is reported when `.claude/settings.json` exists and
 withholds a manifest-declared authorship lane (no covering `Edit` `allow` rule,
