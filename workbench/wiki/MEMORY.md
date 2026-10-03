@@ -143,6 +143,7 @@ copying its evidence log here.
 - [Dispatcher](skill-dispatcher.md): one Spec and its branch; plan its Tasks, dispatch Workers to one durable writer, verify the assembled Spec and hand the candidate to the Director
 - [Spec Planner](skill-spec-planner.md): the Dispatcher's flight-launch stance; plan one assigned Spec from live Actuality into small complete-path Tasks with one writer per shared file and hand the plan to Spec Manager
 - [Spec Manager](skill-spec-manager.md): the Dispatcher's execution stance; dispatch Workers to ready non-conflicting Tasks, hold conflicting writes under one writer, assess hand-backs against their commits and report the assembled candidate to the Director
+- [Worker](skill-worker-role.md): one assigned Task and one attempt; load its Spec, acceptance and write scope, refuse neighboring or conflicting writes, and hand the exact candidate and proof back to the Dispatcher (staged, not yet installed)
 
 ## GitHub Coordination
 
