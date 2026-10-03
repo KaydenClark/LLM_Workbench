@@ -34,11 +34,11 @@ only the Lexicon's Blueprint row.
 
 ## Acceptance
 
-- [ ] No current-facing Lexicon row presents the installed DDR tooling as
+- [x] No current-facing Lexicon row presents the installed DDR tooling as
       pending.
-- [ ] The generic Lexicon defines Decision Record, DDR and Read words once,
+- [x] The generic Lexicon defines Decision Record, DDR and Read words once,
       with no room-specific identifier.
-- [ ] Root and template rows agree with the shipped commands.
+- [x] Root and template rows agree with the shipped commands.
 
 ## Boundaries
 
@@ -59,3 +59,9 @@ That PR also corrected the root Lexicon DDR row's "not installed yet" claim
 editing. No ownership map row
 (the Ownership Map Spec takes the DDR row) and no `AGENTS.md` ownership-table
 change (the Contract-carrier rewrite owns it).
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s003x-tk005a-lexicon-mirrors | b073036404cec8bb8b30182646c2b02cab3c1749 | ahead 0 behind 0 | 0 | Red 62c1cf50: tools/test-control-fidelity.mjs new case fails (LEXICON.md lists no ddr collection). Green: test-control-fidelity, test-controls-vocabulary-sweep, test-blueprint-contract, test-evaluate-workbench and test-workbench-layout pass; templates evaluator holds 106.6/113 (same as before); wiki validated; full AGENTS suite 48/48 on clean b0730364. | LEXICON.md (Decisions and rationale routes, DDR, Decision Record, Read words, Projection, Archive, Collection rows), templates/LEXICON.md (Decision Record, DDR and Read words rows, DDR register routes, Blueprint, Projection, Archive, Collection rows, Governance Core intro), Wiki article Decision Records and the Concept Map. | Whole-Spec QA, self-drift post receipt and separate-context review of the assembled candidate remain; AGENTS.md documentation-ownership table and the ownership map carry no DDR row (owned by the Contract-carrier rewrite and Ownership Map Specs). | 5ad9b6377efbf182049d6f1d944b76fa4de6c7ec34e209bfadeb373a43513340 |
