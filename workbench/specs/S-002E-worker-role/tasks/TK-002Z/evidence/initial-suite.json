@@ -1,0 +1,206 @@
+[
+  {
+    "command": "node tools/test-spec-workbench.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-skill-catalog.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-skill-inspection.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-skills-lane.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-core-composition.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-project-evidence.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-genesis-from-decisions.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-blueprint-contract.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-session-transport.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-configured-host.mjs",
+    "exit": 1
+  },
+  {
+    "command": "node tools/test-core-skill-installer.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-workbench-layout.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-workbench-adoption.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-workbench-upgrade.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-workbench-tools.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-diagnostics.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-adr.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-governance-core.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-branch-closeout.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-wiki.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-sessions.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-notepads.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-visible-ids.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-workbench-identity.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-visible-id-consumers.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-direct-promotion.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-workbench-round-trip.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-cross-provider-fixture.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-portability-matrix.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-workbench-dogfood.mjs",
+    "exit": 1
+  },
+  {
+    "command": "node tools/test-evaluate-workbench.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-guardrail-audit.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-context-tools.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-outcome-trials.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-eval-runner.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-feedback-automation.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-symlink-invocation.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-control-fidelity.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-spec-citation-anchors.mjs",
+    "exit": 1
+  },
+  {
+    "command": "node tools/test-controls-vocabulary-sweep.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-spec-report.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-self-drift.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-feedback-inventory.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-grilling-ledger.mjs",
+    "exit": 0
+  },
+  {
+    "command": "python3 tools/test-check-append-only.py",
+    "exit": 0
+  },
+  {
+    "command": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+    "exit": 0
+  },
+  {
+    "command": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+    "exit": 0
+  },
+  {
+    "command": "node workbench/tools/spec-workbench.mjs doctor",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-team-coordination.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-team-coordination-demo.mjs",
+    "exit": 0
+  },
+  {
+    "command": "node tools/test-socket-contract.mjs",
+    "exit": 0
+  }
+]

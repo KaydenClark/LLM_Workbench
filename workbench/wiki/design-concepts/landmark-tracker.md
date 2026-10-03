@@ -14,7 +14,7 @@ source_paths:
   - workbench/landmark-tracker/README.md
 parent: none
 authorized_by: owner
-last_verified: 2026-10-02
+last_verified: 2026-10-03
 ---
 
 # Landmark Tracker
@@ -73,6 +73,15 @@ Several Specs can contribute to one page. Identifiers on a page carry the
 artifact's name and context, as on every Wiki page; structured records and
 delivery evidence keep identity-bearing provenance, and readable source routes
 keep the explanation connected to its governing owners.
+
+The [Lexicon family reconciliation](../../specs/S-01U-lexicon-design-concept-reconciliation/recovery-2026-10-03.md)
+keeps these accepted changes separate from installed behavior: the article
+validator still rejects identifiers and the view still prints its earlier
+stage labels. Neither validator success, a Result field nor a completed Task
+by itself establishes that the knowledge is Verified. DQCs are temporary
+scaffolding; removing them requires verified reconciliation of useful
+understanding, corrections, rationale and lineage into durable owners while
+preserving unresolved obligations and live references.
 
 ## Understanding before delivery
 
@@ -235,3 +244,5 @@ distributions; updates reach their source owners and generated views are rebuilt
 - 2026-10-02: Noted the owner-confirmed workflow verbs as the official step names, with the Tracker's own labels still to change, from the owner-confirmed grilling of 2026-10-02.
 
 - 2026-10-02: Linked the owner-requested post-v4 shared browser backlog; no browser capability or v4 obligation is introduced.
+
+- 2026-10-03: Reconciled the recovered Lexicon family with the later Wiki, landmark and workflow decisions; retained the installed-validator mismatch, verification distinctions and DQC reconciliation boundary.
