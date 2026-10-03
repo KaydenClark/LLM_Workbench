@@ -3,13 +3,13 @@
 **Spec ID:** S-004H
 **Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-lane-e
 **Stance:** Builder
 **Updated:** 2026-10-03
 **Catalog description:** Replace the eight-section Blueprint with the owner-confirmed four-part short page, give every room's Blueprint that shape, and move the current page's decisions, workflow map and rules to their homes first so nothing is dropped.
 **Blockers:** none. The Decision Record Tooling (S-003X) installed the `ddr` collection and the 24 destination decision records are accepted (`workbench/docs/ddr/000A` to `000X`), so the root page swap is unblocked. One open owner item, the hosted-service non-goal, is withheld from the page rather than blocking it (see Dependencies And Blockers).
-**Latest event:** Planned and activated 2026-10-03 at integration 64c2c524: three Tasks cut (TK-005Q homes and Wiki pages, TK-005R evaluator and audit, TK-005S the swap).
-**Next gate:** TK-005Q and TK-005R run first, each reviewed and merged into integration; TK-005S swaps the pages after both.
+**Latest event:** TK-005R claimed by claude-lane-e.
+**Next gate:** Close TK-005R with verification and documentation proof.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 

@@ -3,7 +3,7 @@
 **Task ID:** TK-005R
 **Spec ID:** S-004H
 **Slice:** Make the evaluator and the guardrail audit recognize the four-part Blueprint at the owners that hold each criterion
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: The evaluator and guardrail audit recognize the four-part Blueprint, no criterion was removed to keep a score, and the before and after scores are recorded.
