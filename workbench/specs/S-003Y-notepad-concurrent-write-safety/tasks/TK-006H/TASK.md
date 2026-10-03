@@ -26,8 +26,10 @@ valid record in place and does not block later writers indefinitely.
   critical section around publication. A writer claiming revision N creates
   the exclusive publish token `.<note>.rev<N+1>.publish/` beside the note
   (`mkdirSync`, which is exclusive on macOS, Linux and Windows), re-reads the
-  note, refuses `stale-revision` unless it is still at N, publishes through the
-  existing temporary-file-and-rename path, and removes the token. A writer that
+  note, refuses `stale-revision` unless the file still holds exactly the bytes
+  it read (a deleted and recreated note repeats revision 1, so the number alone
+  is not enough; corrected after review 3), publishes through the existing
+  temporary-file-and-rename path, and removes the token. A writer that
   finds the token held re-reads the note and is refused `stale-revision` naming
   the revision on disk. A token older than the reclaim age is treated as
   abandoned and is renamed aside and removed by the next writer; the bytes a

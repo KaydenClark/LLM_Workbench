@@ -1697,8 +1697,9 @@ Overlapping writers cannot lose an entry silently. Every write that takes
 `--revision` (`append`, `current`, `trim`, `delete`) publishes inside a
 per-revision publish token, the exclusive directory `.<note>.rev<N+1>.publish/`
 beside the note: the writer re-reads the note under that token and publishes
-only if it is still at the revision it read, so of two writers that read the
-same revision exactly one succeeds and the other is refused `stale-revision`
+only if it still holds exactly the bytes the writer read (not merely the same
+revision number, which a deleted and recreated note would repeat), so of two
+writers that read the same record exactly one succeeds and the other is refused `stale-revision`
 naming the revision on disk, with nothing of its write in the file. A success
 response is therefore true at the revision it states. The token is held for one
 publication only; it is not a lease, needs no service or configuration, and a
