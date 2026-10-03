@@ -52,7 +52,7 @@ Derived from stable specs; includes completed history.
 | [S-01E - checkpoint skill rebuild](S-01E-checkpoint-skill-rebuild/SPEC.md) | Keep the retired checkpoint command as an accurate compatibility route. | active |
 | [S-01F - code-review skill rebuild](S-01F-code-review-skill-rebuild/SPEC.md) | Review an immutable candidate against the repository and capability contracts. | active |
 | [S-01G - genesis skill rebuild](S-01G-genesis-skill-rebuild/SPEC.md) | Create a new Workbench room from a founding prompt and a recoverable remote boundary. | active |
-| [S-01H - implement skill rebuild](S-01H-implement-skill-rebuild/SPEC.md) | Deliver one eligible assigned Task through red/green and verified recovery. | planned |
+| [S-01H - implement skill rebuild](S-01H-implement-skill-rebuild/SPEC.md) | Deliver one eligible assigned Task through red/green and verified recovery. | active |
 | [S-01I - make-it-so skill rebuild](S-01I-make-it-so-skill-rebuild/SPEC.md) | Compose approved work through the exact endpoint the owner authorized. | active |
 | [S-01J - to-docs skill rebuild](S-01J-to-docs-skill-rebuild/SPEC.md) | Route settled truth into the existing documentation owner. | active |
 | [S-01K - to-spec skill rebuild](S-01K-to-spec-skill-rebuild/SPEC.md) | Turn a settled capability decision into one stable, bounded Spec. | active |
