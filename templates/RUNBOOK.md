@@ -214,6 +214,7 @@ node workbench/tools/spec-workbench.mjs close S-### --proof "..." --docs "..." -
 node workbench/tools/spec-workbench.mjs render
 node workbench/tools/spec-workbench.mjs doctor
 node workbench/tools/adr.mjs new --title "Decision title"
+node workbench/tools/adr.mjs new --kind ddr --title "Destination decision title"
 node workbench/tools/adr.mjs validate
 node workbench/tools/adr.mjs register
 ```
@@ -252,7 +253,15 @@ at `workbench/docs/ddr/`, with the same `proposed/` and `archive/` lifecycle
 folders. `workbench-layout.mjs init` creates it; for a room stamped before it,
 `workbench-layout.mjs migrate --project PATH` from the release checkout appends
 each missing additive collection (`features`, then `ddr`) and changes no ADR
-record or other manifest key.
+record or other manifest key. The same tool writes and checks both kinds of
+record: `new --kind ddr` writes a `DDR`-identified record into `ddr/proposed/`
+with the keys `date`, `supersedes` and `canonicalized_in`, and refuses a room
+whose manifest does not declare the collection. A DDR's `canonicalized_in`
+never names the Wiki; validation reports that and the ADR rules applied to a
+DDR as `invalid-ddr`. A DDR that changes or contradicts the Blueprint names
+`BLUEPRINT.md` in `canonicalized_in`. `validate` and `register` act on every
+decision-record collection present; `--kind adr` or `--kind ddr` limits them to
+one.
 
 `permission-scope-drift` is reported when `.claude/settings.json` exists and
 withholds a manifest-declared authorship lane (no covering `Edit` `allow` rule,
@@ -616,9 +625,9 @@ Task proposals require the assigned spec and reserve labels from all specs in
 the Workbench. Both proposals also reserve retired and discarded labels and
 every Spec and Task ID held at a remote-tracking tip, so fetch first. Write the
 returned label only during authorized planning, then render and run doctor
-before requesting another. ADR `new` writes a proposed record through the
-existing exclusive-publication path and also reserves ADR labels held at every
-remote-tracking tip. Notepad `allocate` creates the note its returned ID names.
+before requesting another. ADR `new` (and `new --kind ddr` for a DDR) writes a
+proposed record through the existing exclusive-publication path and also
+reserves that kind's labels held at every remote-tracking tip. Notepad `allocate` creates the note its returned ID names.
 
 Specs, Tasks, ADRs and notepads share one artifact policy: a new label's suffix
 uses uppercase `0-9A-Z`, has minimum width four and contains at least one

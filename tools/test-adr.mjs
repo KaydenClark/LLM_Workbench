@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
-import { ADR_LIFECYCLE_FOLDERS, ID_PATTERN, REGISTER_NAME, listAdrs, localLinks, migrateLifecycleFolders, newAdr, normalizeAdrs, renderRegister, stripFrontmatterKey, validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
+import { ADR_LIFECYCLE_FOLDERS, ID_PATTERN, REGISTER_NAME, listAdrs, localLinks, migrateLifecycleFolders, newAdr, normalizeAdrs, parseFrontmatter, renderRegister, stripFrontmatterKey, validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
 import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -978,5 +978,168 @@ test('workflow checks reject substantive and literal-route mutations with accept
     assert.ok(content.includes(before), `${label}: mutation must hit its real source`);
     corpus.controls.set(file, content.replace(before, after));
     assert.throws(() => assertWorkflowMeaning(corpus), undefined, label);
+  }
+});
+
+// S-003X TK-004X: Destination Decision Records (ADR-000S) share this runtime.
+// `--kind ddr` selects the manifest-declared `ddr` collection, the `DDR`
+// identifier prefix, the destination template and the `invalid-ddr` code;
+// every ADR behavior above is unchanged.
+function ddrRecord(front = 'canonicalized_in:\n  - BLUEPRINT.md\n', title = 'A destination choice') {
+  return `---\ndate: 2026-10-03\nsupersedes:\n${front}---\n\n# ${title}\n\nThe finished product does this, and the owner chose it over the alternative.\n`;
+}
+
+test('new --kind ddr writes the next DDR into ddr/proposed with the DDR identifier and the three frontmatter keys, and never writes over an occupied identity', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench', 'docs', 'ddr');
+    const created = newAdr(dir, { kind: 'ddr', title: 'Rooms keep destination decisions', date: '2026-10-03' });
+    assert.equal(created.kind, 'ddr');
+    assert.equal(created.id, 'DDR-000A', 'the first DDR takes the first letter-bearing width-four value');
+    assert.equal(created.filePath, path.join(collection, 'proposed', '000A-rooms-keep-destination-decisions.md'));
+    const content = fs.readFileSync(created.filePath, 'utf8');
+    const { data, body } = parseFrontmatter(content);
+    assert.deepEqual(Object.keys(data), ['date', 'supersedes', 'canonicalized_in'], 'a DDR carries exactly the three accepted keys and no status');
+    assert.equal(data.date, '2026-10-03');
+    assert.deepEqual(data.supersedes, []);
+    assert.deepEqual(data.canonicalized_in, ['BLUEPRINT.md']);
+    assert.match(body, /^# Rooms keep destination decisions$/m);
+    assert.doesNotMatch(content, /landmark/i, 'the landmark field stays open and is not written');
+    assert.deepEqual(listAdrs(dir), [], 'writing a DDR adds nothing to the ADR collection');
+
+    const cli = spawnSync(process.execPath, [adrTool, 'new', '--kind', 'ddr', '--path', dir, '--title', 'Second destination choice', '--date', '2026-10-03'], { cwd: dir, encoding: 'utf8' });
+    assert.equal(cli.status, 0, cli.stderr);
+    const second = JSON.parse(cli.stdout);
+    assert.equal(second.id, 'DDR-000B');
+    assert.equal(fs.existsSync(path.join(collection, 'proposed', '000B-second-destination-choice.md')), true);
+
+    const adrCreated = newAdr(dir, { title: 'An architecture choice', date: '2026-10-03' });
+    assert.equal(adrCreated.id, 'ADR-000A', 'ADR and DDR identifiers are separate namespaces');
+    assert.equal(path.dirname(adrCreated.filePath), path.join(dir, 'workbench', 'docs', 'adr', 'proposed'));
+
+    // An unsafe entry holding the next identity refuses before anything is written.
+    fs.symlinkSync(path.join(dir, 'missing-target.md'), path.join(collection, 'proposed', '000C-occupied.md'));
+    const listing = fs.readdirSync(path.join(collection, 'proposed')).sort();
+    assert.throws(() => newAdr(dir, { kind: 'ddr', title: 'Must refuse' }), /ordinary, singly linked DDR file/);
+    assert.deepEqual(fs.readdirSync(path.join(collection, 'proposed')).sort(), listing);
+    assert.throws(() => newAdr(dir, { kind: 'xdr', title: 'Unknown kind' }), /--kind must be adr or ddr/);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('new --kind ddr refuses a room whose manifest does not declare the ddr collection and writes nothing', () => {
+  const dir = fixture();
+  try {
+    const manifestPath = path.join(dir, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    delete manifest.collections.ddr;
+    fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+    fs.rmSync(path.join(dir, 'workbench', 'docs', 'ddr'), { recursive: true });
+    assert.throws(() => newAdr(dir, { kind: 'ddr', title: 'Too early' }), /ddr collection is not declared.*migrate/);
+    assert.equal(fs.existsSync(path.join(dir, 'workbench', 'docs', 'ddr')), false);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('validation refuses a DDR whose canonicalized_in names the Wiki in any folder, applies the ADR rules to DDRs as invalid-ddr, and leaves ADR validation unchanged', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench', 'docs', 'ddr');
+    fs.writeFileSync(path.join(collection, '000A-accepted.md'), ddrRecord());
+    writeRegister(dir, { kind: 'ddr' });
+    assert.deepEqual(validateAdrs(dir, { kind: 'ddr' }), [], 'an accepted DDR naming the Blueprint validates');
+
+    fs.writeFileSync(path.join(collection, '000B-wiki-owner.md'), ddrRecord('canonicalized_in:\n  - BLUEPRINT.md\n  - workbench/wiki/SCHEMA.md\n'));
+    fs.writeFileSync(path.join(collection, 'proposed', '000C-proposed-wiki.md'), ddrRecord('canonicalized_in:\n  - workbench/wiki\n'));
+    fs.writeFileSync(path.join(collection, 'archive', '000D-archived-wiki.md'), '---\ndate: 2026-10-03\nsuperseded_by: 000A-accepted.md\ncanonicalized_in: ./workbench/wiki/MEMORY.md\n---\n\n# Archived\n');
+    writeRegister(dir, { kind: 'ddr' });
+    const findings = validateAdrs(dir, { kind: 'ddr' });
+    assert.deepEqual(findings.filter((item) => item.code === 'invalid-ddr' && /names the Wiki/.test(item.message)).map((item) => item.ddr).sort(),
+      ['000B-wiki-owner.md', '000C-proposed-wiki.md', '000D-archived-wiki.md'], 'the Wiki is refused at every lifecycle');
+    assert.ok(findings.every((item) => item.code !== 'invalid-adr'), 'DDR findings never use the ADR code');
+    assert.ok(findings.every((item) => item.severity === 'error' || item.code !== 'invalid-ddr'));
+
+    fs.writeFileSync(path.join(collection, '000E-undated.md'), '---\ncanonicalized_in:\n  - BLUEPRINT.md\n---\n\n# Undated\n');
+    fs.writeFileSync(path.join(collection, 'proposed', '000a-case-variant.md'), ddrRecord(''));
+    const shared = validateAdrs(dir, { kind: 'ddr' });
+    assert.ok(shared.some((item) => item.code === 'invalid-ddr' && /000E-undated\.md needs a YYYY-MM-DD date/.test(item.message)));
+    assert.ok(shared.some((item) => item.code === 'invalid-ddr' && /DDR number 000[Aa] is used by/.test(item.message)));
+    assert.ok(shared.some((item) => item.code === 'stale-register' && item.message.includes('workbench/docs/ddr/REGISTER.md')));
+
+    fs.writeFileSync(path.join(dir, 'workbench', 'docs', 'adr', '0001-architecture.md'), adr('accepted', 'canonicalized_in:\n  - workbench/wiki/SCHEMA.md\n'));
+    writeRegister(dir);
+    assert.deepEqual(validateAdrs(dir), [], 'the Wiki rule is the DDR\'s; ADR validation is unchanged');
+
+    const cli = spawnSync(process.execPath, [adrTool, 'validate', '--path', dir, '--json'], { cwd: dir, encoding: 'utf8' });
+    assert.equal(cli.status, 1, 'validate without a kind carries DDR errors and exits 1');
+    const reported = JSON.parse(cli.stdout);
+    assert.ok(reported.some((item) => item.code === 'invalid-ddr'));
+    assert.ok(reported.every((item) => item.code !== 'invalid-adr'));
+    assert.equal(spawnSync(process.execPath, [adrTool, 'validate', '--kind', 'adr', '--path', dir], { cwd: dir, encoding: 'utf8' }).status, 0, '--kind adr validates only the ADR collection');
+    assert.ok(doctor(dir).some((item) => item.code === 'invalid-ddr' && item.scope === 'adr'), 'doctor carries DDR findings');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('register writes the DDR register and history beside the ADR ones, and doctor reports a stale DDR register until it runs', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench', 'docs', 'ddr');
+    fs.writeFileSync(path.join(collection, '000A-a-destination-choice.md'), ddrRecord());
+    fs.writeFileSync(path.join(dir, 'workbench', 'docs', 'adr', '0001-first.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+    const stale = doctor(dir).filter((item) => item.code === 'stale-register').map((item) => item.message);
+    assert.ok(stale.some((message) => message.includes('workbench/docs/ddr/REGISTER.md')), 'a missing DDR register is visible');
+    assert.ok(stale.some((message) => message.includes('workbench/docs/ddr/HISTORY.md')));
+
+    const cli = spawnSync(process.execPath, [adrTool, 'register', '--path', dir], { cwd: dir, encoding: 'utf8' });
+    assert.equal(cli.status, 0, cli.stderr);
+    const written = JSON.parse(cli.stdout);
+    assert.equal(written.count, 1, 'the ADR result keeps its shape');
+    assert.equal(written.ddr.count, 1, 'register without a kind also writes the DDR collection');
+    const register = fs.readFileSync(path.join(collection, REGISTER_NAME), 'utf8');
+    assert.match(register, /^# DDR Register$/m);
+    assert.match(register, /^\| DDR \| Title \| Status \| Date \| Canonicalized in \|$/m);
+    assert.match(register, /\| \[000A\]\(000A-a-destination-choice\.md\) \| A destination choice \| accepted \| 2026-10-03 \| BLUEPRINT\.md \|/);
+    assert.match(fs.readFileSync(path.join(collection, 'HISTORY.md'), 'utf8'), /^# DDR History$/m);
+    assert.match(fs.readFileSync(path.join(dir, 'workbench', 'docs', 'adr', REGISTER_NAME), 'utf8'), /^# ADR Register$/m);
+    assert.deepEqual(doctor(dir).filter((item) => ['stale-register', 'invalid-ddr', 'invalid-adr'].includes(item.code)), []);
+    assert.deepEqual(validateAdrs(dir, { kind: 'ddr' }), []);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('new --kind ddr reserves DDR labels held only at a remote tip without touching the local tree', () => {
+  const dir = gitFixture();
+  const remote = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-ddr-remote-'));
+  const git = (...args) => {
+    const result = spawnSync('git', ['-C', dir, ...args], { encoding: 'utf8' });
+    assert.equal(result.status, 0, `git ${args.join(' ')}: ${result.stderr}`);
+    return result.stdout;
+  };
+  try {
+    const collection = path.join(dir, 'workbench', 'docs', 'ddr');
+    git('checkout', '--quiet', '-b', 'main');
+    gitCommitAll(dir, 'Seed the room');
+    assert.equal(spawnSync('git', ['init', '--quiet', '--bare', remote]).status, 0);
+    git('remote', 'add', 'origin', remote);
+    git('push', '--quiet', 'origin', 'main');
+    git('checkout', '--quiet', '-b', 'claude/other-lane');
+    fs.writeFileSync(path.join(collection, 'proposed', '000A-held-on-another-branch.md'), ddrRecord());
+    gitCommitAll(dir, 'Another lane adds a DDR');
+    git('push', '--quiet', 'origin', 'claude/other-lane');
+    git('checkout', '--quiet', 'main');
+    git('branch', '--quiet', '-D', 'claude/other-lane');
+    git('fetch', '--quiet', 'origin');
+    assert.equal(fs.existsSync(path.join(collection, 'proposed', '000A-held-on-another-branch.md')), false);
+    const created = newAdr(dir, { kind: 'ddr', title: 'Local destination choice', date: '2026-10-03' });
+    assert.equal(created.id, 'DDR-000B', 'DDR-000A at origin/claude/other-lane is occupied');
+    assert.deepEqual(fs.readdirSync(path.join(collection, 'proposed')).filter((name) => name.endsWith('.md')), ['000B-local-destination-choice.md']);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+    fs.rmSync(remote, { recursive: true, force: true });
   }
 });

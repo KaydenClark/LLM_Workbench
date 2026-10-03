@@ -14,7 +14,7 @@ import { checkHostFloor, formatHostFloor } from './host-floor.mjs';
 import { capabilitySession } from './optional-capabilities.mjs';
 import { coordinationContext, publicCoordination, publishClaim } from './claim-coordination.mjs';
 import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, declaredGit, lanePath, liveRecordPath, markdownLinkTargets, readManifest } from './workbench-paths.mjs';
-import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenceSection, validateAdrs, writeRegister } from './adr.mjs';
+import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenceSection, validateAdrs, writeDecisionRegisters } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { ARTIFACT_ID_MIN_WIDTH, allocateArtifactId, compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
 import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseFormerId, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
@@ -1452,6 +1452,12 @@ function collectionFindings(root) {
   } catch (error) {
     findings.push(finding('invalid-adr', `ADR validation failed: ${error.message}`));
   }
+  // S-003X TK-004X: the DDR collection carries its findings beside the ADR's.
+  try {
+    if (fs.existsSync(collectionPath(root, 'ddr'))) findings.push(...validateAdrs(root, { kind: 'ddr' }));
+  } catch (error) {
+    findings.push(finding('invalid-ddr', `DDR validation failed: ${error.message}`));
+  }
   try {
     if (fs.existsSync(lanePath(root, 'wiki'))) findings.push(...validateWiki(root));
   } catch (error) {
@@ -2373,7 +2379,7 @@ export function moveSpecDirectory(rootDir, specId, folder) {
   // separate `adr register` call the move's own candidate would otherwise
   // need. A room with no ADR collection at all is left alone - nothing here
   // may conjure one into existence.
-  if (fs.existsSync(collectionPath(root, 'adr'))) writeRegister(root);
+  writeDecisionRegisters(root);
 
   // Corrective review finding 3: `git mv` already stages the rename; leaving
   // the content rewrites above unstaged would show the candidate as a mix
@@ -2502,7 +2508,7 @@ export function moveTaskRecord(rootDir, specId, taskId, folder, options = {}) {
   // name a Task path), which leaves REGISTER.md's derived projection stale
   // by construction exactly as a Spec move does. A room with no ADR
   // collection at all is left alone.
-  if (fs.existsSync(collectionPath(root, 'adr'))) writeRegister(root);
+  writeDecisionRegisters(root);
 
   // Corrective review finding 3 from TK-003, reused unchanged here: `git mv`
   // already stages the rename; stage the content rewrites above too, so the
@@ -2722,7 +2728,9 @@ function recoverTaskCollision(rootDir, specId, taskId, folder, options) {
     if (fs.readFileSync(path.join(root, file), 'utf8').includes(relative(oldDir))) fail(`unhandled JSON path reference in ${file}; reconcile its owner first`);
   }
   const projections = [path.join(root, 'BLUEPRINT.md'), path.join(root, 'TASKBOARD.md'), path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md')];
-  if (fs.existsSync(collectionPath(root, 'adr'))) projections.push(...['REGISTER.md', 'HISTORY.md'].map(name => path.join(collectionPath(root, 'adr'), name)));
+  for (const collection of ['adr', 'ddr']) {
+    if (fs.existsSync(collectionPath(root, collection))) projections.push(...['REGISTER.md', 'HISTORY.md'].map(name => path.join(collectionPath(root, collection), name)));
+  }
   const originals = new Map();
   for (const file of new Set([...moving, ...[...writes.keys()].map(file => file.startsWith(newDir + path.sep) ? path.join(oldDir, path.relative(newDir, file)) : file), ...projections])) {
     assertSafeWritePath(root, file);
@@ -2744,7 +2752,7 @@ function recoverTaskCollision(rootDir, specId, taskId, folder, options) {
   try {
     git('mv', '--', relative(oldDir), relative(newDir));
     for (const [file, bytes] of writes) writeSafeFile(root, file, bytes);
-    if (fs.existsSync(collectionPath(root, 'adr'))) writeRegister(root);
+    writeDecisionRegisters(root);
     render(root);
     git('add', '-A');
   } catch (error) {
@@ -2935,7 +2943,7 @@ function applyIdentityWiden(root, oldDir, newDir, edits, validate) {
   try {
     moveRecordDirectory(root, oldDir, newDir);
     for (const [file, content] of writes) writeSafeFile(root, file, content);
-    if (fs.existsSync(collectionPath(root, 'adr'))) writeRegister(root);
+    writeDecisionRegisters(root);
     if (projections) render(root);
     spawnSync('git', ['-C', root, 'add', '-A']);
   } catch (error) {
@@ -3286,7 +3294,7 @@ export function retireSpec(rootDir, specId, options = {}) {
   atomicWrite(movedSpec.filePath, updatedContent);
 
   render(root);
-  if (fs.existsSync(collectionPath(root, 'adr'))) writeRegister(root);
+  writeDecisionRegisters(root);
   spawnSync('git', ['-C', root, 'add', '-A']);
 
   return {

@@ -1,15 +1,22 @@
 #!/usr/bin/env node
-// Architecture decision records: create, validate, and derive the register.
+// Decision records: create, validate, and derive the register.
 //
 // An ADR owns rationale. Its rule binds only where `canonicalized_in` points,
 // so validation checks that every named owner exists. A durable reference into
 // an untracked session collection is not evidence and is reported.
+//
+// S-003X TK-004X: the same runtime serves both kinds of decision record
+// (ADR-000S): the ADR in the `adr` collection and the Destination Decision
+// Record in the `ddr` collection. A kind selects the collection, the visible
+// identifier prefix, the template and the finding code; the layout, the
+// folder lifecycle and the shared validation rules are one implementation.
+// Every function defaults to the ADR, so existing callers are unchanged.
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { finding } from './diagnostics.mjs';
 import { allocateArtifactId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
-import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule, isSafeRelative, IGNORED_COLLECTIONS, liveRecordPath, markdownLinkTargets } from './workbench-paths.mjs';
+import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule, isSafeRelative, IGNORED_COLLECTIONS, laneRelative, liveRecordPath, markdownLinkTargets, readManifest } from './workbench-paths.mjs';
 
 export const STATUSES = Object.freeze(['proposed', 'accepted', 'superseded', 'deprecated', 'rejected']);
 export const REGISTER_NAME = 'REGISTER.md';
@@ -23,6 +30,25 @@ export const ID_PATTERN = /^([0-9A-Za-z]{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/;
 // Specs and Tasks and keeps ADR history in permanent `archive` instead. TK-002
 // reuses this exact constant when it migrates lifecycle out of frontmatter.
 export const ADR_LIFECYCLE_FOLDERS = Object.freeze(['proposed', 'archive']);
+
+// S-003X TK-004X: the two kinds of decision record. `invalid` is the finding
+// code a kind's own validation failures carry; the other findings
+// (`stale-register`, `disagreeing-status`, `untracked-provenance`) are shared.
+export const RECORD_KINDS = Object.freeze({
+  adr: Object.freeze({ kind: 'adr', collection: 'adr', prefix: 'ADR', invalid: 'invalid-adr' }),
+  ddr: Object.freeze({ kind: 'ddr', collection: 'ddr', prefix: 'DDR', invalid: 'invalid-ddr' })
+});
+
+export function recordKind(kind = 'adr') {
+  if (typeof kind !== 'string' || !Object.hasOwn(RECORD_KINDS, kind)) throw new Error(`--kind must be adr or ddr, not ${kind}`);
+  return RECORD_KINDS[kind];
+}
+
+// The kinds whose collection directory exists in this room, ADR first. A
+// command run without `--kind` acts on each of them.
+export function presentKinds(root) {
+  return Object.keys(RECORD_KINDS).filter((kind) => kind === 'adr' || fs.existsSync(collectionPath(root, RECORD_KINDS[kind].collection)));
+}
 
 // A record is authored once and checked out on many hosts. Git for Windows
 // rewrites Markdown to CRLF by default, so anchoring on a bare LF would report
@@ -170,7 +196,8 @@ export function rewriteCanonicalizedIn(content, root, locations) {
 // read from, so a successor or a link can be resolved by identity across the
 // whole set instead of by the location a caller assumed.
 export function listAdrs(root, options = {}) {
-  const directory = collectionPath(root, 'adr');
+  const spec = recordKind(options.kind);
+  const directory = collectionPath(root, spec.collection);
   assertSafeReadPath(root, directory);
   if (!fs.existsSync(directory)) return [];
   const locations = [{ folder: null, directory }];
@@ -186,13 +213,13 @@ export function listAdrs(root, options = {}) {
       .map((entry) => {
         const stat = fs.lstatSync(path.join(location, entry.name));
         if (!stat.isFile() || stat.isSymbolicLink() || stat.nlink > 1) {
-          throw new Error(`${entry.name} must be an ordinary, singly linked ADR file; allocation cannot ignore an occupied identity`);
+          throw new Error(`${entry.name} must be an ordinary, singly linked ${spec.prefix} file; allocation cannot ignore an occupied identity`);
         }
         return entry;
       })
       .map((entry) => entry.name)
-      .map((name) => readAdr(root, path.join(location, name), options.contentOverrides?.get(path.join(location, name)), folder)))
-    .sort((a, b) => compareVisibleIds(`ADR-${a.number}`, `ADR-${b.number}`) || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+      .map((name) => readAdr(root, path.join(location, name), options.contentOverrides?.get(path.join(location, name)), folder, spec)))
+    .sort((a, b) => compareVisibleIds(a.id, b.id) || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 }
 
 // S-00I TK-002: a record's lifecycle is its folder, not frontmatter `status`.
@@ -235,7 +262,7 @@ function deriveStatus(folder, data) {
   return { status: 'accepted', disagreement: false, implied };
 }
 
-function readAdr(root, filePath, content = fs.readFileSync(filePath, 'utf8'), folder = null) {
+function readAdr(root, filePath, content = fs.readFileSync(filePath, 'utf8'), folder = null, spec = RECORD_KINDS.adr) {
   const { data, body } = parseFrontmatter(content);
   const name = path.basename(filePath);
   const [, number, slug] = name.match(ID_PATTERN);
@@ -245,43 +272,57 @@ function readAdr(root, filePath, content = fs.readFileSync(filePath, 'utf8'), fo
   // top-level record, so a flat collection's rendered link text is unchanged.
   const href = folder ? `${folder}/${name}` : name;
   const { status, disagreement, implied } = deriveStatus(folder, data);
-  return { root, filePath, relativePath: path.relative(root, filePath).split(path.sep).join('/'), name, number, slug, title, data, body, folder, href, status, statusDisagreement: disagreement, impliedStatus: implied };
+  return { root, filePath, relativePath: path.relative(root, filePath).split(path.sep).join('/'), kind: spec.kind, id: `${spec.prefix}-${number}`, name, number, slug, title, data, body, folder, href, status, statusDisagreement: disagreement, impliedStatus: implied };
 }
 
 export function validateAdrs(root, options = {}) {
+  const spec = recordKind(options.kind);
+  const code = spec.invalid;
   const findings = [];
   let adrs;
   try { adrs = listAdrs(root, options); }
-  catch (error) { return [finding('invalid-adr', error.message)]; }
-  const adrCollectionRelative = collectionRelative(root, 'adr');
+  catch (error) { return [finding(code, error.message)]; }
+  const adrCollectionRelative = collectionRelative(root, spec.collection);
+  // S-003X TK-004X (ADR-000S point 7): a DDR's `canonicalized_in` never names
+  // the Wiki, at any lifecycle. The Wiki cites decisions; it never carries one.
+  const wikiRoot = spec.kind === 'ddr' ? path.resolve(root, laneRelative(root, 'wiki')) : null;
   const numbers = new Map();
   for (const adr of adrs) {
-    const key = visibleIdKey(`ADR-${adr.number}`);
+    const key = visibleIdKey(adr.id);
     const seen = numbers.get(key) ?? { number: adr.number, names: [] };
     seen.names.push(adr.name);
     numbers.set(key, seen);
     const data = adr.data;
+    const detail = (extra = {}) => ({ [spec.kind]: adr.name, ...extra });
     if (!data) {
-      findings.push(finding('invalid-adr', `${adr.relativePath} has no frontmatter`, { adr: adr.name }));
+      findings.push(finding(code, `${adr.relativePath} has no frontmatter`, detail()));
       continue;
     }
     if (adr.statusDisagreement) {
-      findings.push(finding('disagreeing-status', `${adr.relativePath} frontmatter status '${data.status}' disagrees with its ${adr.folder}/ folder, which implies '${adr.impliedStatus}'`, { adr: adr.name }));
+      findings.push(finding('disagreeing-status', `${adr.relativePath} frontmatter status '${data.status}' disagrees with its ${adr.folder}/ folder, which implies '${adr.impliedStatus}'`, detail()));
     }
-    if (!STATUSES.includes(adr.status)) findings.push(finding('invalid-adr', `${adr.relativePath} status must be one of ${STATUSES.join(', ')}`, { adr: adr.name }));
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(data.date ?? ''))) findings.push(finding('invalid-adr', `${adr.relativePath} needs a YYYY-MM-DD date`, { adr: adr.name }));
-    if (!adr.title) findings.push(finding('invalid-adr', `${adr.relativePath} needs a title heading`, { adr: adr.name }));
-    if (adr.status === 'accepted') {
-      const owners = Array.isArray(data.canonicalized_in) ? data.canonicalized_in : (data.canonicalized_in ? [data.canonicalized_in] : []);
-      if (owners.length === 0) findings.push(finding('invalid-adr', `${adr.relativePath} is accepted but names no canonicalized_in owner`, { adr: adr.name }));
+    if (!STATUSES.includes(adr.status)) findings.push(finding(code, `${adr.relativePath} status must be one of ${STATUSES.join(', ')}`, detail()));
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(data.date ?? ''))) findings.push(finding(code, `${adr.relativePath} needs a YYYY-MM-DD date`, detail()));
+    if (!adr.title) findings.push(finding(code, `${adr.relativePath} needs a title heading`, detail()));
+    const owners = Array.isArray(data.canonicalized_in) ? data.canonicalized_in : (data.canonicalized_in ? [data.canonicalized_in] : []);
+    if (wikiRoot) {
       for (const owner of owners) {
         const target = path.resolve(root, owner);
-        if (!target.startsWith(path.resolve(root) + path.sep) || !fs.existsSync(target)) {
-          findings.push(finding('invalid-adr', `${adr.relativePath} canonicalized_in target ${owner} does not exist`, { adr: adr.name, owner }));
+        if (target === wikiRoot || target.startsWith(wikiRoot + path.sep)) {
+          findings.push(finding(code, `${adr.relativePath} canonicalized_in names the Wiki (${owner}); a DDR's canonicalized_in never names the Wiki, which cites decisions by name and context`, detail({ owner })));
         }
       }
     }
-    const lifecycleError = message => findings.push(finding('invalid-adr', `${adr.relativePath} ${message}`, { adr: adr.name }));
+    if (adr.status === 'accepted') {
+      if (owners.length === 0) findings.push(finding(code, `${adr.relativePath} is accepted but names no canonicalized_in owner`, detail()));
+      for (const owner of owners) {
+        const target = path.resolve(root, owner);
+        if (!target.startsWith(path.resolve(root) + path.sep) || !fs.existsSync(target)) {
+          findings.push(finding(code, `${adr.relativePath} canonicalized_in target ${owner} does not exist`, detail({ owner })));
+        }
+      }
+    }
+    const lifecycleError = message => findings.push(finding(code, `${adr.relativePath} ${message}`, detail()));
     if (adr.status === 'deprecated' && (typeof data.deprecation_reason !== 'string' || !data.deprecation_reason.trim())) lifecycleError('needs a durable deprecation_reason');
     if (adr.status !== 'superseded' && data.superseded_by) lifecycleError('names a successor without superseded status');
     if (adr.status === 'superseded') {
@@ -306,7 +347,7 @@ export function validateAdrs(root, options = {}) {
     for (const link of markdownLinkTargets(adr.body)) {
       if (inline.has(link)) continue;
       const live = liveRecordPath(root, path.resolve(path.dirname(adr.filePath), link));
-      if (live) findings.push(finding('untracked-provenance', `${adr.relativePath} references live record ${live}; a notepad or handoff is working context even when committed, so reconcile selected claims into a durable owner first`, { adr: adr.name, target: live }));
+      if (live) findings.push(finding('untracked-provenance', `${adr.relativePath} references live record ${live}; a notepad or handoff is working context even when committed, so reconcile selected claims into a durable owner first`, detail({ target: live })));
     }
     for (const link of localLinks(adr.body)) {
       const target = path.resolve(path.dirname(adr.filePath), link);
@@ -314,7 +355,7 @@ export function validateAdrs(root, options = {}) {
       if (relative.startsWith(`${collectionRelative(root, 'notepad-templates')}/`)) continue;
       for (const collection of IGNORED_COLLECTIONS) {
         if (relative.startsWith(`${collectionRelative(root, collection)}/`)) {
-          findings.push(finding('untracked-provenance', `${adr.relativePath} references live record ${relative}; a notepad or handoff is working context even when committed, so reconcile selected claims into a durable owner first`, { adr: adr.name, target: relative }));
+          findings.push(finding('untracked-provenance', `${adr.relativePath} references live record ${relative}; a notepad or handoff is working context even when committed, so reconcile selected claims into a durable owner first`, detail({ target: relative })));
         }
       }
       // A body link is for a reader, so it is checked literally: identity
@@ -326,27 +367,34 @@ export function validateAdrs(root, options = {}) {
       // and only within the ADR collection itself, where a moved target's
       // stale incoming link is exactly what would otherwise go unnoticed.
       if ((relative === adrCollectionRelative || relative.startsWith(`${adrCollectionRelative}/`)) && !fs.existsSync(target)) {
-        findings.push(finding('invalid-adr', `${adr.relativePath} links to missing ${relative}`, { adr: adr.name, target: relative }));
+        findings.push(finding(code, `${adr.relativePath} links to missing ${relative}`, detail({ target: relative })));
       }
     }
   }
   for (const { number, names } of numbers.values()) {
-    if (names.length > 1) findings.push(finding('invalid-adr', `ADR number ${number} is used by ${names.join(', ')}`, { number }));
+    if (names.length > 1) findings.push(finding(code, `${spec.prefix} number ${number} is used by ${names.join(', ')}`, { number }));
   }
-  const registerPath = path.join(collectionPath(root, 'adr'), REGISTER_NAME);
+  const registerPath = path.join(collectionPath(root, spec.collection), REGISTER_NAME);
   if (adrs.length > 0) {
-    const expected = renderRegister(adrs);
+    const expected = renderRegister(adrs, { kind: spec.kind });
     const actual = fs.existsSync(registerPath) ? fs.readFileSync(registerPath, 'utf8') : null;
     if (actual === null || actual.replaceAll('\r\n', '\n') !== expected) {
-      findings.push(finding('stale-register', `${collectionRelative(root, 'adr')}/${REGISTER_NAME} is stale; run adr register`));
+      findings.push(finding('stale-register', `${collectionRelative(root, spec.collection)}/${REGISTER_NAME} is stale; run adr register`));
     }
   }
-  const historyPath = path.join(collectionPath(root, 'adr'), HISTORY_NAME);
+  const historyPath = path.join(collectionPath(root, spec.collection), HISTORY_NAME);
   if (adrs.length > 0) {
     const history = fs.existsSync(historyPath) ? fs.readFileSync(historyPath, 'utf8') : null;
-    if (history === null || history.replaceAll('\r\n', '\n') !== renderRegister(adrs, { history: true })) findings.push(finding('stale-register', `${collectionRelative(root, 'adr')}/${HISTORY_NAME} is stale; run adr register`));
+    if (history === null || history.replaceAll('\r\n', '\n') !== renderRegister(adrs, { history: true, kind: spec.kind })) findings.push(finding('stale-register', `${collectionRelative(root, spec.collection)}/${HISTORY_NAME} is stale; run adr register`));
   }
   return findings;
+}
+
+// S-003X TK-004X: validate every decision-record collection present in the
+// room (always the ADR collection; the DDR collection when it exists), as
+// `validate` without `--kind` and `doctor` do.
+export function validateDecisionRecords(root, options = {}) {
+  return presentKinds(root).flatMap((kind) => validateAdrs(root, { ...options, kind }));
 }
 
 // Bring existing records into shape without editing a body. S-00I TK-002 made
@@ -363,7 +411,7 @@ export function normalizeAdrs(root, options = {}) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error('--date must be YYYY-MM-DD');
   const fields = [['date', [`date: ${date}`]]];
   const changed = [];
-  for (const adr of listAdrs(root)) {
+  for (const adr of listAdrs(root, { kind: options.kind })) {
     const content = fs.readFileSync(adr.filePath, 'utf8');
     const result = insertFrontmatterKeys(content, fields, adr.relativePath);
     if (result.inserted.length === 0) continue;
@@ -374,15 +422,16 @@ export function normalizeAdrs(root, options = {}) {
   return { changed };
 }
 
-export function renderRegister(adrs, { history = false } = {}) {
+export function renderRegister(adrs, { history = false, kind = 'adr' } = {}) {
+  const { prefix } = recordKind(kind);
   const lines = [
-    history ? '# ADR History' : '# ADR Register',
+    history ? `# ${prefix} History` : `# ${prefix} Register`,
     '',
     '> Derived by `adr.mjs register`; do not edit by hand. The directory listing is the source; this table is a projection.',
     '',
     history ? '[Active decisions](REGISTER.md). All retained lifecycle states follow.' : '[Complete history](HISTORY.md). Only accepted active decisions follow.',
     '',
-    '| ADR | Title | Status | Date | Canonicalized in |',
+    `| ${prefix} | Title | Status | Date | Canonicalized in |`,
     '|---|---|---|---|---|'
   ];
   for (const adr of adrs.filter(record => history || record.status === 'accepted')) {
@@ -392,16 +441,27 @@ export function renderRegister(adrs, { history = false } = {}) {
   return `${lines.join('\n')}\n`;
 }
 
-export function writeRegister(root) {
-  const registerPath = path.join(collectionPath(root, 'adr'), REGISTER_NAME);
-  const historyPath = path.join(collectionPath(root, 'adr'), HISTORY_NAME);
+export function writeRegister(root, options = {}) {
+  const spec = recordKind(options.kind);
+  const registerPath = path.join(collectionPath(root, spec.collection), REGISTER_NAME);
+  const historyPath = path.join(collectionPath(root, spec.collection), HISTORY_NAME);
   assertSafeWritePath(root, registerPath);
   assertSafeWritePath(root, historyPath);
-  const adrs = listAdrs(root);
-  const content = renderRegister(adrs);
+  const adrs = listAdrs(root, { kind: spec.kind });
+  const content = renderRegister(adrs, { kind: spec.kind });
   writeSafeFile(root, registerPath, content);
-  writeSafeFile(root, historyPath, renderRegister(adrs, { history: true }));
+  writeSafeFile(root, historyPath, renderRegister(adrs, { history: true, kind: spec.kind }));
   return { registerPath, historyPath, count: adrs.length };
+}
+
+// S-003X TK-004X: regenerate the register and history of every decision-record
+// collection that exists, so a move that rewrites links or owners leaves no
+// projection stale. A room with neither collection is left alone; nothing
+// here conjures a collection into existence.
+export function writeDecisionRegisters(root) {
+  return Object.keys(RECORD_KINDS)
+    .filter((kind) => fs.existsSync(collectionPath(root, RECORD_KINDS[kind].collection)))
+    .map((kind) => ({ kind, ...writeRegister(root, { kind }) }));
 }
 
 // S-01W TK-002Q: the ADR reservation inventory the artifact policy
@@ -410,32 +470,33 @@ export function writeRegister(root) {
 // (ADR-000O), every remote-tracking tip is read too, so a label another
 // pushed branch already holds is never proposed again; repeated spellings
 // across tips reserve one identity. A room outside Git has no tips to read.
-export function occupiedAdrLabels(root) {
+export function occupiedAdrLabels(root, kind = 'adr') {
+  const spec = recordKind(kind);
   const labels = [];
   const local = new Map();
-  for (const adr of listAdrs(root)) {
-    const label = `ADR-${adr.number}`;
+  for (const adr of listAdrs(root, { kind: spec.kind })) {
+    const label = adr.id;
     const key = visibleIdKey(label);
-    if (local.has(key)) throw new Error(`Visible identifier collision: ${label} and ${local.get(key)} alias one ADR identity`);
+    if (local.has(key)) throw new Error(`Visible identifier collision: ${label} and ${local.get(key)} alias one ${spec.prefix} identity`);
     local.set(key, label);
     labels.push(label);
   }
   const git = (...args) => spawnSync('git', ['-C', root, ...args], { encoding: 'utf8' });
   const refs = git('for-each-ref', '--format=%(refname)', 'refs/remotes');
   if (refs.status !== 0) return labels;
-  const fallback = collectionRelative(root, 'adr');
+  const fallback = collectionRelative(root, spec.collection);
   for (const ref of refs.stdout.split('\n').filter(Boolean)) {
     let collection = fallback;
     const manifest = git('show', `${ref}:./workbench/manifest.json`);
     if (manifest.status === 0) {
       let declared;
-      try { declared = JSON.parse(manifest.stdout).collections?.adr; }
-      catch { throw new Error(`Cannot reserve ADR labels from malformed manifest at ${ref}`); }
+      try { declared = JSON.parse(manifest.stdout).collections?.[spec.collection]; }
+      catch { throw new Error(`Cannot reserve ${spec.prefix} labels from malformed manifest at ${ref}`); }
       // The same rule `collectionRelative` applies to the local manifest;
       // only the source differs, so a tip can never widen or redirect the scan.
       if (declared !== undefined) {
         if (!isSafeRelative(declared)) {
-          const failure = new Error(`Cannot reserve ADR labels from unsafe adr collection at ${ref}: ${JSON.stringify(declared)}`);
+          const failure = new Error(`Cannot reserve ${spec.prefix} labels from unsafe ${spec.collection} collection at ${ref}: ${JSON.stringify(declared)}`);
           failure.code = 'invalid-collection';
           throw failure;
         }
@@ -443,25 +504,33 @@ export function occupiedAdrLabels(root) {
       }
     }
     const listing = git('ls-tree', '-r', '-z', '--name-only', ref, '--', `${collection}/`);
-    if (listing.status !== 0) throw new Error(`Cannot reserve ADR labels from ${ref}: ${listing.stderr.trim()}`);
+    if (listing.status !== 0) throw new Error(`Cannot reserve ${spec.prefix} labels from ${ref}: ${listing.stderr.trim()}`);
     for (const file of listing.stdout.split('\0').filter(Boolean)) {
       const parts = path.posix.relative(collection, file).split('/');
       const name = parts.at(-1);
       if (parts.length > 2 || (parts.length === 2 && !ADR_LIFECYCLE_FOLDERS.includes(parts[0]))) continue;
       const match = name.match(ID_PATTERN);
-      if (match) labels.push(`ADR-${match[1]}`);
+      if (match) labels.push(`${spec.prefix}-${match[1]}`);
     }
   }
   return [...new Set(labels)];
 }
 
 export function newAdr(root, options) {
+  const spec = recordKind(options.kind);
   const title = requireValue(options.title, '--title is required');
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   if (!slug) throw new Error('title must contain letters or digits');
-  const directory = collectionPath(root, 'adr');
+  // S-003X TK-004X: a DDR is written only into a declared collection. A room
+  // whose manifest predates the `ddr` collection gains it through the update
+  // route first; writing here would conjure an undeclared directory.
+  const manifest = readManifest(root);
+  if (spec.kind === 'ddr' && manifest && manifest.collections?.ddr === undefined) {
+    throw new Error('the ddr collection is not declared in workbench/manifest.json; run workbench-layout.mjs migrate --project PATH from the release checkout first');
+  }
+  const directory = collectionPath(root, spec.collection);
   assertSafeWritePath(root, path.join(directory, REGISTER_NAME));
-  const next = allocateArtifactId('ADR', occupiedAdrLabels(root)).slice(4);
+  const next = allocateArtifactId(spec.prefix, occupiedAdrLabels(root, spec.kind)).slice(spec.prefix.length + 1);
   // S-00I TK-002: a new record is always `proposed`, so it is created inside
   // the `proposed/` lifecycle folder its own status implies - folder is
   // lifecycle, so an unreviewed decision never starts out looking active. It
@@ -477,7 +546,13 @@ export function newAdr(root, options) {
   const filePath = path.join(directory, 'proposed', `${next}-${slug}.md`);
   if (fs.existsSync(filePath)) throw new Error(`${filePath} already exists`);
   const date = options.date ?? new Date().toISOString().slice(0, 10);
-  const content = [
+  const content = (spec.kind === 'ddr' ? ddrTemplate : adrTemplate)(date, title).join('\n');
+  writeSafeFile(root, filePath, content, { exclusive: true });
+  return { filePath, number: next, id: `${spec.prefix}-${next}`, kind: spec.kind };
+}
+
+function adrTemplate(date, title) {
+  return [
     '---',
     `date: ${date}`,
     'canonicalized_in:',
@@ -494,9 +569,35 @@ export function newAdr(root, options) {
     '',
     'Provenance: [the reconciled durable owner or preserved historical decision, by repository-relative path].',
     ''
-  ].join('\n');
-  writeSafeFile(root, filePath, content, { exclusive: true });
-  return { filePath, number: next };
+  ];
+}
+
+// S-003X TK-004X: the DDR template is the ADR's, adapted to a destination
+// choice (ADR-000S points 4 and 6): the accepted keys `date`, `supersedes` and
+// `canonicalized_in`, and a free-prose body. `canonicalized_in` defaults to
+// the Blueprint, the owner a destination decision most often changes; it
+// never names the Wiki. How a DDR records its landmark is open (S-003Z), so
+// the template carries no landmark field.
+function ddrTemplate(date, title) {
+  return [
+    '---',
+    `date: ${date}`,
+    'supersedes:',
+    'canonicalized_in:',
+    '  - BLUEPRINT.md',
+    '---',
+    '',
+    `# ${title}`,
+    '',
+    '[The destination decision in one to three sentences: what the finished product must be or do, and why the owner chose it.]',
+    '',
+    'Considered and rejected: [the meaningful alternative and why the owner set it aside].',
+    '',
+    'Consequences: [what changes in the destination; name in canonicalized_in the owners that carry it, including BLUEPRINT.md when this decision changes or contradicts the Blueprint, never the Wiki].',
+    '',
+    'Provenance: [the owner-confirmed source of the decision, by name, date or repository-relative path].',
+    ''
+  ];
 }
 
 export function localLinks(content) {
@@ -739,20 +840,30 @@ if (isMainModule(import.meta.url)) {
   try {
     const { command, options } = parseArgs(process.argv.slice(2));
     const root = findRoot(options.path ?? process.cwd());
+    // S-003X TK-004X: `--kind adr|ddr` selects one decision-record collection;
+    // without it, validate, register and normalize act on every collection
+    // present (always the ADR one), and new writes an ADR as before.
+    const kinds = options.kind === undefined ? presentKinds(root) : [recordKind(options.kind).kind];
     if (command === 'validate') {
-      const findings = validateAdrs(root);
-      console.log(options.json ? JSON.stringify(findings, null, 2) : (findings.length ? findings.map((item) => `${item.code} [${item.severity}]: ${item.message}`).join('\n') : 'ok - ADR collection validated'));
+      const findings = kinds.flatMap((kind) => validateAdrs(root, { kind }));
+      const subject = options.kind === undefined ? 'decision records' : `${recordKind(options.kind).prefix} collection`;
+      console.log(options.json ? JSON.stringify(findings, null, 2) : (findings.length ? findings.map((item) => `${item.code} [${item.severity}]: ${item.message}`).join('\n') : `ok - ${subject} validated`));
       if (findings.some((item) => item.severity === 'error')) process.exitCode = 1;
     } else if (command === 'register') {
-      console.log(JSON.stringify(writeRegister(root)));
+      // One kind prints its result as before; without a kind the ADR result
+      // keeps its top-level shape and each other collection is keyed by kind.
+      const [first, ...rest] = kinds;
+      const result = writeRegister(root, { kind: first });
+      for (const kind of rest) result[kind] = writeRegister(root, { kind });
+      console.log(JSON.stringify(result));
     } else if (command === 'normalize') {
-      console.log(JSON.stringify(normalizeAdrs(root, { date: options.date })));
+      console.log(JSON.stringify({ changed: kinds.flatMap((kind) => normalizeAdrs(root, { date: options.date, kind }).changed) }));
     } else if (command === 'new') {
       console.log(JSON.stringify(newAdr(root, options)));
     } else if (command === 'migrate-folders') {
       console.log(JSON.stringify(migrateLifecycleFolders(root), null, 2));
     } else {
-      throw new Error('Usage: adr.mjs validate [--json] | normalize [--date YYYY-MM-DD] [--json] | register | new --title "Decision title" [--date YYYY-MM-DD] | migrate-folders');
+      throw new Error('Usage: adr.mjs validate [--kind adr|ddr] [--json] | normalize [--kind adr|ddr] [--date YYYY-MM-DD] [--json] | register [--kind adr|ddr] | new [--kind adr|ddr] --title "Decision title" [--date YYYY-MM-DD] | migrate-folders');
     }
   } catch (error) {
     console.error(`error: ${error.message}`);
