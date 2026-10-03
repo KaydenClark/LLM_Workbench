@@ -904,7 +904,8 @@ function assertWorkflowMeaning(corpus) {
   for (const [term, pattern] of [
     ['Blueprint', /desired finished product/],
     ['Destination Packet', /Spec acceptance lines[\s\S]*or the reconciled Wiki claim/],
-    ['Align', /shared design concept explicitly confirmed by owner and agent/],
+    // S-004G TK-006D: the owner's confirmed Align meaning (the inquiry, usually grilling, in which an idea becomes a design concept the owner and the agents share).
+    ['Align', /inquiry, usually grilling, in which an idea becomes a design concept the owner and the agents share/],
     ['Design concept', /exists between participants/],
     ['Spec', /scoped objective with its own destination/],
     ['Task', /reaches or repairs a destination/],
