@@ -1,37 +1,43 @@
 # S-004C - Contract Carrier Pointer-Brief Rewrite
 
 **Spec ID:** S-004C
-**Status:** planned
+**Status:** active
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
-**Updated:** 2026-10-02
+**Updated:** 2026-10-03
 **Catalog description:** Rewrite AGENTS.md as a short standing brief and RUNBOOK.md as an operations index of context pointers, with each operation's procedure and binding requirements in a tracked skill the carrier points to.
-**Blockers:** none for specification. Whether this is one Spec or a landmark with several Specs was not stated by the owner. The role skills must exist before role detail leaves the controls. Implementation awaits Plan and assignment.
-**Latest event:** Authored at the Map step from the owner-confirmed Contract-carrier decision record of 2026-10-02, which calls the rewrite its own work with its own Destination Packet; no Task is cut.
-**Next gate:** At Plan, inspect live Actuality, decide with the owner whether this stays one Spec, and cut small Tasks within it.
+**Blockers:** Implementation waits on gates recorded as Task blockers, none of them an owner decision on this Spec's content: the Runbook decision-record section from Decision Record Tooling (the first Task), a turn at the one `AGENTS.md` writer after the Corrective-Work Spec's `AGENTS.md` Task (the lifecycle Task), the Worker and Captain role skills (the role-detail Task only), the Lexicon writer's turn (the Lexicon Task only), and delivery of the `LANDMARK.md` artifact (the landmark-clause Task only).
+**Latest event:** Planned 2026-10-03: kept as one Spec, fifteen Tasks cut in a serial chain behind a baseline, a landing check, the Runbook index and the pointed-skill authority statement, and the Spec activated; none is claimable yet.
+**Next gate:** Decision Record Tooling closes its Runbook-editing Tasks (TK-004Y and TK-004Z remain); the Dispatcher then confirms that on integration, removes the first Task's blocker and claims it.
 
-> **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a`.
+> **Citation anchors.** pre=`226212f1790badce0a5bdcd934d2e48e3981e05f` post=`226212f1790badce0a5bdcd934d2e48e3981e05f`.
 
 ## Outcome
 
-`AGENTS.md` is the project's standing brief: short, declarative lines that apply in every session and that an agent cannot derive from the code. `RUNBOOK.md` is an index of operations, a sentence per topic with a context pointer, whose procedures live in tracked skills. `LEXICON.md` says what terms mean and where each kind of information belongs. A skill a carrier points to for an operation carries Contract force for that operation, and nothing is lost: every line removed from a carrier landed in a named home first.
+`AGENTS.md` is the project's standing brief: short, declarative lines that apply in every session and that an agent cannot derive from the code. `RUNBOOK.md` is an index of operations, a sentence per topic with a context pointer, whose procedures live in tracked skills, and which every session reads at entry. `LEXICON.md` says what terms mean and where each kind of information belongs. A skill a carrier points to for an operation carries Contract force for that operation, and nothing is lost: every line removed from a carrier landed in a named home first.
 
 ## Why It Matters
 
 The owner adopted the AI Coding Dictionary definitions of AGENTS.md, progressive disclosure, context pointer and skill for the Workbench, and confirmed that the always-loaded file pays for everything in it on every turn. At the pre anchor `AGENTS.md` fails that definition, and the accepted decision records the rewrite as an implementation gap, not as delivered. It also records that the Instruction Authority list changes only when the rewrite delivers it, so the Contract and the accepted destination disagree until this work lands.
 
+The Blueprint teardown then locked the owner's test for a contract artifact and said the Runbook should become more important, leaving how to this Spec. This Spec is where that gets decided and built.
+
 ## Current Verified State
 
 At the pre anchor:
 
-- `AGENTS.md` is 623 lines and 36,213 bytes, loaded on every turn; `RUNBOOK.md` is 2,465 lines and 143,200 bytes with 15 top-level and 41 second-level sections holding full procedures.
+- `AGENTS.md` is 623 lines and 36,213 bytes, loaded on every turn; `RUNBOOK.md` is 2,493 lines and 145,375 bytes with 15 top-level and 41 second-level sections holding full procedures. `LEXICON.md` is 294 lines and 65,515 bytes. The generic mirrors are `templates/AGENTS.md` (521 lines, 30,834 bytes), `templates/RUNBOOK.md` (1,517 lines, 81,651 bytes) and `templates/LEXICON.md` (251 lines, 42,597 bytes).
 - The Instruction Authority list in `AGENTS.md` names the user request, `AGENTS.md` with platform limits, the assigned Spec as a bounded delegate, and the Runbook and Lexicon as the other Contract carriers. It does not name a pointed skill or a landmark.
-- The Contract's shape is depended on by code. Eleven runtime tools name `AGENTS.md` (`adr.mjs`, `claim-coordination.mjs`, `diagnostics.mjs`, `self-drift.mjs`, `sessions.mjs`, `spec-workbench.mjs`, `task-packet.mjs`, `task-receipt.mjs`, `template-placeholders.mjs`, `wiki.mjs`, `workbench-layout.mjs`), and tests under `tools/` and `evals/` mention `AGENTS.md` or `RUNBOOK.md`; Plan establishes which of them depend on the content rather than the name. Two tests extract the text between the `### Instruction Authority` and `### State Resolution` headings.
-- The root `LEXICON.md` states the accepted definitions of the carriers' jobs; the controls do not yet follow them.
-- `workbench/skills/` holds 26 skills; the role skills the rewrite points to for role detail do not all exist yet (see [Captain Role And Landmark Director](../S-004B-captain-role-and-landmark-director/SPEC.md)).
+- The Contract's shape is depended on by code. Ten runtime tools under `workbench/tools/` name `AGENTS.md` (`adr.mjs`, `claim-coordination.mjs`, `diagnostics.mjs`, `self-drift.mjs`, `sessions.mjs`, `spec-workbench.mjs`, `task-packet.mjs`, `template-placeholders.mjs`, `wiki.mjs`, `workbench-layout.mjs`) and seven name `RUNBOOK.md` (`adr.mjs`, `notepads.mjs`, `self-drift.mjs`, `wiki.mjs`, `template-placeholders.mjs`, `spec-workbench.mjs`, `workbench-layout.mjs`). Fifty-one files under `tools/`, `workbench/tools/` and `evals/` name one of the two; the baseline Task establishes which of them read a heading or assert content rather than only the name. Two tests (`tools/test-control-fidelity.mjs` and `tools/test-genesis-from-decisions.mjs`) assert the exact wording of the Instruction Authority list between its heading and the `### State Resolution` heading; `tools/test-governance-core.mjs` asserts the headings and phrases of both `AGENTS.md` files; `tools/test-skill-catalog.mjs` asserts Runbook text.
+- Thirty-six tracked files link to a heading of the two carriers: 17 distinct `RUNBOOK.md#` anchors and 11 distinct `AGENTS.md#` anchors, the most linked being `AGENTS.md#git-rules`, `RUNBOOK.md#behavior-selection` and `RUNBOOK.md#role-and-stance-coordination`.
+- A generated room's `CLAUDE.md` is pinned to the single import `@AGENTS.md` (the control-fidelity report checks it for exact equality), and `AGENTS.md` is the shared entry file; this repository's own `CLAUDE.md` imports it with `@AGENTS.md` and adds Claude-specific notes after the import. Which hosts load which file natively is for the baseline Task to establish.
+- The root `LEXICON.md` states the accepted definitions of the carriers' jobs and still says their rewrite is not yet specified; the controls do not yet follow the definitions.
+- `workbench/skills/` holds 26 core skills in a closed bundle. The Director, Dispatcher, Spec Planner, Spec Manager, Builder, Auditor, Reviewer and Reconciler skills exist; a Worker role skill and a Captain skill do not (their Specs, [Worker Role](../S-002E-worker-role/SPEC.md) and [Captain Role And Landmark Director](../S-004B-captain-role-and-landmark-director/SPEC.md), are planned).
+- The blocker grammar has three forms (a plain Spec or same-Spec Task, `S-###:delivered`, `owner:<decision>`). Its resolver's `satisfiedIds` counts only completed Specs and the done Tasks of the Spec that names them, so a plain Task identifier from another Spec parses but never clears; this Spec's cross-Spec waits therefore use `S-###:delivered` where a Spec delivery is the true condition and an `owner:` token (cleared by removing it) where it is a Task or a merge in another lane.
+- Decision Record Tooling's TK-004X is merged; its TK-004Y and TK-004Z, and the corrective-work `AGENTS.md` edits of another lane, are not.
 
-No implementation or agent-outcome proof for this capability is claimed by this Map record.
+No implementation or agent-outcome proof for this capability is claimed by this Plan record.
 
 ## Desired Behavior
 
@@ -44,61 +50,105 @@ No implementation or agent-outcome proof for this capability is claimed by this 
 7. No line is removed before its new home exists. A recorded inventory maps every removed line to its home, and a mechanical check proves each landed.
 8. Because a skill edit can now change binding behavior, a skill change gets the same review care as a Contract change; the lane's receipt hashes and the integration review already cover them.
 9. The generic `templates/` mirrors and the update route carry the same shape, and updating a room preserves its own controls and any visible, deliberate divergence it records.
+10. The Runbook becomes more important in three checkable ways: every session reads its index at entry (a line in `AGENTS.md` says so), the index is the one place a pointer declares which skill binds for an operation, and its size is held so that reading it at every entry is cheap. See the Plan decision below.
+11. Every heading of `AGENTS.md` and `RUNBOOK.md` that is linked from elsewhere keeps resolving: a section that moves keeps its heading, reduced to a sentence and a pointer.
 
 ## Decisions And Contracts
 
-- The Contract carriers follow progressive disclosure and each has the job stated above, with the placement test the owner restated from the ownership schema. See [Contract carriers are briefs that point to skills and authority flows through the pointer](../../docs/adr/000W-contract-carriers-are-briefs-that-point-to-skills-and-authority-flows-through-the-pointer.md) and the AI Coding Dictionary definitions it adopts.
+### Locked by the owner (promoted words)
+
+From the Blueprint teardown grilling of 2026-10-02 to 2026-10-03, questions TERM-contract-artifact and TERM-control:
+
+- Contract artifact, locked 2026-10-03: "An artifact the agent loads, and pays tokens for, on every turn of every session: today AGENTS.md, with the host adapter that loads it. It holds only lines that apply everywhere."
+- Contract, routing artifact and control, locked 2026-10-03 on the owner's "Yes, approved.": a contract artifact is what the agent loads, and pays tokens for, on every turn of every session (the owner's definition, which does not change because artifacts drifted); a routing artifact is what the contract routes to; a control is a one-action tool, and "root controls" and "controls" for files retire as stale; how the Runbook becomes more important belongs to this Spec, not to the teardown.
+- Owner words in chat on 2026-10-03: "RUNBOOK is 100% a contract artifact." and "Agents need to know the rules, expectation and how to operate inside of the environment." and, later the same day, "RUNBOOK should become more important somehow." On the Lexicon the owner said "we can debate lexicon later."
+- The accepted decision [Contract carriers are briefs that point to skills and authority flows through the pointer](../../docs/adr/000W-contract-carriers-are-briefs-that-point-to-skills-and-authority-flows-through-the-pointer.md), with the AI Coding Dictionary definitions it adopts, stands: the carriers follow progressive disclosure, each has the job stated in Desired Behavior, authority flows through the pointer, and the rewrite is its own work with its own Destination Packet.
+
+### What this Spec does with them
+
 - The Contract is still the claim set carried by `AGENTS.md`, `RUNBOOK.md` and `LEXICON.md` with the assigned Spec as a bounded delegate; a pointed lane skill now carries part of that set for its operation. This refines [skill composition within inherited scope](../../docs/adr/0045-skill-composition-within-inherited-scope.md) for pointed lane skills only.
 - Authority does not come from a link a work record carries: a skill a Destination Packet assigns gains no instruction authority from the packet, only from a carrier's pointer.
 - This is relocation, not a change of policy. No rule's meaning is changed by moving it; a rule that would change belongs to its own decision.
 - The rewrite is its own work with its own Destination Packet: this Spec, the accepted decision, the role skills and the Lexicon definitions are the destination it links, and there is no second record that restates the destination.
 - The current `AGENTS.md` text governs until this work delivers; until then the accepted decision is an implementation gap recorded in that decision.
+- Vocabulary: this Spec's older word "Contract carrier" means a contract artifact in the owner's locked sense (loaded on every turn of every session). It keeps its title; the retirement of "root controls" as a term is the Workbench terms Spec's work, and this Spec's words follow it as those rows land.
+- Surfaced conflict, not resolved here: the accepted decisions name three carriers (`AGENTS.md`, `RUNBOOK.md`, `LEXICON.md`), while the locked test (loaded every turn) fits `AGENTS.md` today, fits the Runbook by the owner's statement once it is a small index, and leaves the Lexicon for the owner to debate. This Spec does not decide the Lexicon's status: its Lexicon Task edits only carrier-definition, pointer and routing rows, and line 4 of the Instruction Authority list keeps naming the Lexicon as it does today.
+
+### Plan decisions (agent, 2026-10-03; not owner answers)
+
+These are the Plan's choices where the owner delegated the how, or left a form open. They are visible for owner redirect and gate nothing.
+
+- **One Spec, under the Workbench artifacts landmark.** The Spec's header used to ask whether it stays one Spec or becomes a landmark. The Plan keeps it one Spec: the work is one relocation with one method applied to families of operations, sequenced behind one single-writer file. The landmark placement is derived from the locked landmark set (LS-1), which the Lane H brief states puts Contract artifacts under the Workbench artifacts landmark; it is not a new owner answer, and the LS-1 placement table lives on the owner's private review page, which this Plan could not read. The `LANDMARK.md` runtime is not delivered and how a record names its landmark is open there, so no landmark field is recorded on this Spec.
+- **How the Runbook becomes more important.** From the owner's words above and the accepted decision (a small layer, a sentence per topic, a pointer), the Plan chose three things. (a) Every session's entry route reads `AGENTS.md` and then the Runbook index; `AGENTS.md` carries the line that requires it, because `AGENTS.md` is the entry file every host shares, no portable mechanism is known that makes every host load a second file, and a generated room's `CLAUDE.md` is pinned to `@AGENTS.md`. (b) The index is the single place that declares which skill binds for which operation, so the set of binding skills is read from one table and an edit to an index row is reviewed as a Contract change. (c) The index is held small: its loaded cost together with `AGENTS.md` is measured against the baseline and held below today's `AGENTS.md` alone; the baseline Task may revise that bound with the measured figure and a recorded reason. Considered and not chosen now: importing `@RUNBOOK.md` in `CLAUDE.md`, which is host-specific and would change a pinned check; it is revisited after the cost is measured.
+- **A pointer that binds is declared in the Runbook index.** `AGENTS.md` lines may point to an index row rather than to a skill directly, so authority has one registry that a resolver can read.
+- **Headings survive.** A section that moves keeps its heading and an anchor-stable sentence plus pointer, so the 36 files that link to carrier headings do not need to be rewritten and a link audit can prove none broke.
+- **Homes for procedures.** A moved procedure goes to an existing core skill when that skill's job matches. A new skill is added per operation family, never per section. A new core skill changes the closed bundle (catalog, install receipt, Template, update route) and is made only for an operation every room runs. An operation only this repository's maintainers run does not become a core skill; where a skill is its home it is a room-owned skill in this repository's lane, and the maintainer-operations Task first establishes that the closed-bundle checks allow it, and records a gap rather than parking the text in the Wiki if they do not.
+- **The line-landing check.** A verification tool `tools/check-carrier-landing.mjs`, not a managed room runtime tool, run at rewrite review. Inventories are JSON files in this Spec's folder, one per carrier, completed progressively by the family Task that moves each line. An entry records the line, a hash of its normalized text, a home kind (`stays`, `skill`, `pointer`, `lexicon`, `wiki`, `restates-owner`, `retired-with-reason`), the home path and the landed text the home must contain. The check refuses a removed line with no entry, a missing home, or a home that lacks the text.
+- **Method for every family Task.** (1) Classify every line of the family's `AGENTS.md` and Runbook sections in the inventory. (2) Choose or author the home skill with red and green checks. (3) Move the procedure and its binding requirements into it. (4) Re-point the index rows; keep the heading. (5) Keep in `AGENTS.md` only lines that apply in every session. (6) Mirror to `templates/`. (7) Run the landing check at the candidate. (8) Update the readers the baseline census names. (9) Update and lint touched Wiki pages. (10) Run the full suite.
+- **Sequencing.** `AGENTS.md`, `RUNBOOK.md` and `LEXICON.md` each have one writer at a time, so the family Tasks run as a serial chain: baseline, landing check, Runbook index, pointed-skill authority statement, then the families in the order of the Tasks' blockers. Before claiming any Task that edits `AGENTS.md`, the Dispatcher confirms that no open candidate edits it and that the last `AGENTS.md` change is contained in integration. Only the update-route Task and the Lexicon Task, both after the families, may run side by side, because they edit different files.
 
 Open, not decided here:
 
-- Whether the rewrite is one Spec or a landmark with several Specs. The owner asked for "own packet" and did not say which.
-- Which line-landing check form is used and where its inventory lives.
+- Whether `LEXICON.md` is a contract artifact or a routing artifact (the owner deferred it).
+- Whether the Runbook index should also be imported by a host adapter, after the cost is measured.
 
 ## Non-Goals
 
-Changing the meaning of any rule, the owner's approval or main-promotion authority, the content of any skill beyond what carries a moved procedure, the Blueprint, the `LANDMARK.md` runtime, the Captain and Director skills, GitHub coordination, a version release or Template update, implementing another capability.
+Changing the meaning of any rule, the owner's approval or main-promotion authority, the content of any skill beyond what carries a moved procedure, the Blueprint, the `LANDMARK.md` runtime, the Captain and Director skills, the Worker role skill, GitHub coordination, a version release or Template update, deciding the Lexicon's contract status, a host-adapter import of the Runbook, implementing another capability.
 
 ## Dependencies And Blockers
 
-- The role skills must exist first so role detail has a home: [Captain Role And Landmark Director](../S-004B-captain-role-and-landmark-director/SPEC.md) and [Worker Role](../S-002E-worker-role/SPEC.md). No line leaves `AGENTS.md` before its home exists.
-- [LANDMARK.md Artifact And Lane Runtime](../S-003Z-landmark-md-artifact-and-lane-runtime/SPEC.md) delivers the artifact whose delegate status the Instruction Authority list names; until then the list names only what exists.
-- [Workflow Canon Rework](../S-00P-workflow-canon-rework/SPEC.md) is the current owner of Contract rewrites and is at its owner gate. [Completion Claims Against Repository State](../S-00M-completion-claims-against-repository-state/SPEC.md) has delivered its `AGENTS.md` change to integration and awaits owner Human QA. Two concurrent rewrites of `AGENTS.md` must not happen, so this rewrite starts from the integration text and follows the rule that one `AGENTS.md` change is contained in integration before the next begins. `AGENTS.md`, `RUNBOOK.md` and `LEXICON.md` are shared writers: one writer lane per file, coordinated with [Decision Record Tooling](../S-003X-decision-record-tooling/SPEC.md) and [Notepad Concurrent-Write Safety](../S-003Y-notepad-concurrent-write-safety/SPEC.md), which also touch them.
+Sequencing gates, each recorded as a Task blocker in the grammar the resolver supports:
+
+- The Runbook decision-record section: [Decision Record Tooling](../S-003X-decision-record-tooling/SPEC.md)'s TK-004X (merged), TK-004Y and TK-004Z edit it, and the baseline Task starts from the Runbook after TK-004Z. The baseline Task carries the token `owner:runbook-decision-record-section-landed`: the grammar cannot name a Task in another Spec, so the Dispatcher removes the token after confirming on `origin/integration` that those Tasks are done. It is a sequencing gate, not an owner decision. Decision Record Tooling's last Task adds the decision-record Lexicon rows and leaves the `AGENTS.md` ownership-table row to this Spec, which the verification Task handles.
+- The `AGENTS.md` writer: the Corrective-Work Spec (authored by another lane from the Blueprint teardown) edits the review and closure sections of `AGENTS.md`. The lifecycle Task carries `owner:agents-corrective-sections-landed`, cleared by the Dispatcher when that Spec's `AGENTS.md` Task is contained in integration, and it moves those rules as they then read. [Workflow Canon Rework](../S-00P-workflow-canon-rework/SPEC.md) is at its owner gate and [Completion Claims Against Repository State](../S-00M-completion-claims-against-repository-state/SPEC.md) has delivered its `AGENTS.md` change to integration; this rewrite starts from the integration text and follows the rule that one `AGENTS.md` change is contained in integration before the next begins.
+- The role skills must exist first so role detail has a home: [Worker Role](../S-002E-worker-role/SPEC.md) and [Captain Role And Landmark Director](../S-004B-captain-role-and-landmark-director/SPEC.md). The role-detail Task is blocked on `S-002E:delivered` and `S-004B:delivered`. No line leaves `AGENTS.md` before its home exists.
+- [LANDMARK.md Artifact And Lane Runtime](../S-003Z-landmark-md-artifact-and-lane-runtime/SPEC.md) delivers the artifact whose delegate status the Instruction Authority list names; the landmark-clause Task is blocked on `S-003Z:delivered`, and until then the list names only what exists.
+- The Lexicon writer: the Lexicon has one writer at a time and is also edited by the owner's unmerged Codex Lexicon reconciliation branch, the [AI Coding Dictionary Terms](../S-004E-ai-coding-dictionary-terms/SPEC.md) work and the Workbench terms Spec. The Lexicon Task carries `owner:lexicon-writer-turn-released`. [Notepad Concurrent-Write Safety](../S-003Y-notepad-concurrent-write-safety/SPEC.md) also edits the notepad Runbook section, and the continuity Task takes turns with it.
 - The [Ownership Map root control](../S-00G-ownership-map-root-control/SPEC.md) states each artifact's ownership; coordinate so the moved lines land in owners it names.
-- The tools and tests that read the Contract's structure must change with it. Treat them as part of this capability, not as a later cleanup.
+- The tools and tests that read the Contract's structure must change with it. The baseline census names them and each family Task changes the readers of its own sections; treat them as part of this capability, not as a later cleanup.
 - The [release owner](../S-00O-workbench-v4-0-0-release/SPEC.md) retains release ordering, version, Template and owner gates. Whether this rewrite precedes the v4 release is not claimed here.
 
 ## Vertical Implementation Slices
 
-No Tasks cut. At Plan, use current Actuality to cut small complete-path slices and safe parallel groups; a first slice is likely the non-destructive inventory of every line and its home, since nothing may be removed before its destination exists. The empty tasks directory keeps this planned capability record-backed.
+The Tasks are the records under `tasks/`; their state lives there, not here. The slicing and its order:
+
+- Foundation, in order: [baseline and census](tasks/TK-005B/TASK.md), [landing check](tasks/TK-005C/TASK.md), [Runbook index and entry read](tasks/TK-005D/TASK.md), [pointed-skill authority statement](tasks/TK-005E/TASK.md).
+- Operation families, in order, each following the method above: [continuity and promotion](tasks/TK-005F/TASK.md) (the first, which proves the method), [work selection, review and closure](tasks/TK-005G/TASK.md), [Git, integration review and branch completion](tasks/TK-005H/TASK.md), [verification, documentation ownership and the release gate](tasks/TK-005I/TASK.md), [operations every room runs](tasks/TK-005J/TASK.md), [maintainer-only operations](tasks/TK-005K/TASK.md).
+- After the families: [role detail leaves](tasks/TK-005L/TASK.md) (also waits on the role skills), [Genesis and the update route](tasks/TK-005M/TASK.md), [Lexicon and orientation text](tasks/TK-005N/TASK.md) (also waits on the Lexicon writer); the update-route and Lexicon Tasks may run side by side.
+- Independent of the families: [assigned-landmark clause](tasks/TK-005O/TASK.md), waiting on LANDMARK.md delivery, so the Spec cannot complete with the clause missing.
+- Last: [after-record, fresh-agent scenario and self-drift receipt](tasks/TK-005P/TASK.md), by an Auditor.
+
+Starting section map at the pre anchor (headings, to be confirmed by the baseline Task; an audience split by presence in `templates/RUNBOOK.md` separates room operations from maintainer operations):
+
+- `AGENTS.md`: Authority Order to the authority Task; Traverse, Don't Search to the index Task; Assigned Work And Stances to role detail; Session Records And Checkpoints and Long Session Control to continuity; Work Selection And Lifecycle, Assembled Review And Corrective Return and Owner Closure And Reconciliation to lifecycle; Git Rules and Branch Completion to Git; Engineering And Verification (with its release gate) and Documentation Ownership And Proof to verification; Read Scope, Edit Scope, Safety And Change Control and Visual And Asset Work stay as boundary lines, with the update drift boundary pointing at the self-drift procedure in the maintainer family.
+- `RUNBOOK.md`: Ordinary Entry and its subsections to the index (Role And Stance Coordination's role detail to role detail); the notepad, session transport, portable save, direct promotion, frozen checkpoint and evidence-and-continuation sections to continuity; Spec Lifecycle And Retrieval and Behavior Selection to lifecycle; Version-Control Procedures and Independent Review Boundaries to Git; Test And Build's suite, Test Coverage Policy and the guardrail audit to verification; the decision-record, identifier, landmark tracker, Wiki validation, installed-state, diagnostics, socket registry, troubleshooting and recovery sections and the connection-identity and configured-host checks to room operations; release identity, prerequisites, the support-root, managed-tool, lifecycle, adoption, fidelity, upgrade, self-drift, skills-lane and catalog checks, the round trip, portability and cross-provider proofs, evaluation, feedback and operational proof to maintainer operations.
 
 ## Acceptance Criteria
 
 - [ ] An inventory maps every line of `AGENTS.md` and `RUNBOOK.md` to a home (stays, skill, pointer, Lexicon, Wiki, or restates another owner and goes nowhere), and a check shows every removed line landed.
 - [ ] `AGENTS.md` meets the brief definition: short declarative always-true lines and pointers, with its size and loaded cost recorded before and after.
 - [ ] `RUNBOOK.md` is an operations index in which each pointer has a stable path and a when-to-follow description, and each operation's procedure is reachable in a skill.
+- [ ] The Runbook index is read at every session entry through a line in `AGENTS.md`, is the one place a pointer declares which skill binds, and its measured loaded cost together with `AGENTS.md` is recorded against the baseline.
 - [ ] The Instruction Authority list states that a pointed lane skill binds for its operation and the lane copy wins, and names an assigned landmark once that artifact is delivered.
 - [ ] A skill no carrier points to teaches and does not instruct, and a room-added skill is shown not to bind.
 - [ ] Every tool and test that read the old shape passes against the new one, and the full suite is green.
+- [ ] Every `AGENTS.md#` and `RUNBOOK.md#` anchor that resolved before the rewrite still resolves.
 - [ ] A fresh agent given only the rewritten controls and a Destination Packet can find and perform a representative operation (for example integration review and branch completion) through its pointer without the removed prose.
 - [ ] The generic templates and the update route agree, and updating a room preserves its own controls and deliberate divergence.
 - [ ] Named verification and remaining limitations are recorded without claiming owner approval.
 
 ## Testing Seams
 
-The Contract carriers and the pointed skills in a fixture room, and a real before and after of this repository's own controls. The mechanical line-landing check, the tests that read the Contract's structure, and a one-minute scenario in which a fresh agent follows a pointer to an operation and performs it. Red/green cases cover a removed line with no home, an unpointed skill, a drifted installed copy, and an update of a room with its own controls. Routing or string checks support discovery but do not prove behavior.
+The Contract carriers and the pointed skills in a fixture room, and a real before and after of this repository's own controls. The mechanical line-landing check, the tests that read the Contract's structure, and a one-minute scenario in which a fresh agent follows a pointer to an operation and performs it. Red/green cases cover a removed line with no home, an unpointed skill, a drifted installed copy, a dangling pointer, a broken anchor and an update of a room with its own controls. Routing or string checks support discovery but do not prove behavior.
 
 ## Verification Procedure
 
-Run the targeted control-fidelity, vocabulary and governance tests and the full AGENTS suite, then `render` and `doctor`. Pin the candidate before source-identity checks. Capture the guardrail baseline before editing and the after-score, the remaining recommendations and the outcome limitation after, and never weaken a criterion to raise the score. Capture Workbench self-drift pre and post receipts with the bounded semantic check; a clean update is not claimed while known current-facing drift remains. Obtain separate-context review of the immutable candidate before integration, and keep owner Human QA separate. This Map record claims none of that proof.
+Run the targeted control-fidelity, vocabulary and governance tests and the full AGENTS suite, then `render` and `doctor`. Pin the candidate before source-identity checks. Capture the guardrail baseline before editing (the baseline Task) and the after-score, the remaining recommendations and the outcome limitation after (the final Task), and never weaken a criterion to raise the score. Capture Workbench self-drift pre and post receipts with the bounded semantic check; a clean update is not claimed while known current-facing drift remains. Obtain separate-context review of the immutable candidate before integration, and keep owner Human QA separate. This Plan record claims none of that proof.
 
 ## Documentation Impact
 
-This Spec rewrites the Contract carriers and their `templates/` mirrors. Update the Lexicon's Root controls row and each carrier's definition, the Context Map routes, the README setup text if it names the old shape, and the routed Wiki articles for the changed operations. The accepted decision is history; its stated implementation gap is closed in this Spec's evidence, not by editing it.
+This Spec rewrites the Contract carriers and their `templates/` mirrors. Update the Lexicon's Root controls row and each carrier's definition, the Context Map routes, the README setup text if it names the old shape, and the routed Wiki articles for the changed operations; the Lexicon rows follow the Lexicon writer's turn and the terms Spec's rows, and the Lexicon's present statement that the rewrite is not yet specified is corrected in the Lexicon Task. The `AGENTS.md` ownership-table row that Decision Record Tooling left to this Spec is handled by the verification Task. The accepted decision is history; its stated implementation gap is closed in this Spec's evidence, not by editing it. The inventories and the baseline census are files in this Spec's folder and retire with it.
 
 ## Append-Only Evidence And Execution Log
 
@@ -106,6 +156,7 @@ This Spec rewrites the Contract carriers and their `templates/` mirrors. Update 
 |---|---|---|---|---|---|
 | 2026-10-02 | none | Authored at the Map step from the owner-confirmed Contract-carrier decision record of 2026-10-02 at integration cbb3d5b81c0081c45d92e0d284078ca13fd54c03. | Map only; the control sizes and the tools and tests that read them were counted, no runtime proof claimed. | This Spec. | Plan, implementation and proof remain; one-Spec-or-landmark and the line-landing check form are open. |
 | 2026-10-02 | none | Re-verified and re-anchored at integration 5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a after four PRs landed. | Map only; the asserted counts, tool commands, collections and the S-00M status were re-read at that tip; no runtime proof claimed. | This Spec. | Plan, implementation and proof remain. |
+| 2026-10-03 | none | Planned at integration 226212f1790badce0a5bdcd934d2e48e3981e05f: kept as one Spec under the Workbench artifacts landmark (derived from the locked landmark set, not a new owner answer), the Runbook-importance design and the line-landing check form recorded as Plan decisions, fifteen Tasks cut in a serial chain, and the Spec activated. | Plan only; control sizes, reader counts, inbound anchor counts, the skill lane and the blocker grammar were re-read at that tip, and a throwaway Task record exercised the blocker resolver and was discarded before commit; doctor and render run; no runtime proof of the rewrite is claimed. | This Spec and its fifteen Task records. | All implementation. Three sequencing gates clear only by removing an owner token (the Decision Record Tooling Runbook Tasks, the corrective-work AGENTS Task, the Lexicon writer's turn); the role skills and LANDMARK.md delivery clear by their own Specs. The Plan decisions stay open to owner redirect. |
 
 ## Completion Result
 
@@ -113,7 +164,7 @@ Pending.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-If Plan finds this too large for one Spec, the owner decides whether it becomes a landmark with several Specs. The Worker role skill follows [Worker Role](../S-002E-worker-role/SPEC.md).
+The Plan kept this as one Spec derived from the landmark set; if the owner wants it split, they decide, and the family Tasks are the natural seams. The Worker role skill follows [Worker Role](../S-002E-worker-role/SPEC.md). Whether the Lexicon is a contract artifact is left to the owner's later debate, and a host-adapter import of the Runbook index is left to be decided after its cost is measured.
 
 ## Supersession
 
