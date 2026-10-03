@@ -668,6 +668,8 @@ test('both Lexicons carry the installed decision-record vocabulary, and the gene
   }
   const template = read(root, 'templates/LEXICON.md');
   for (const term of ['Decision Record', 'DDR', 'Read words']) {
+    // Review corrective: the generic Lexicon defines each term exactly once.
+    assert.equal(termRows(template, term).length, 1, `templates/LEXICON.md defines ${term} exactly once`);
     for (const line of termRows(template, term)) assert.doesNotMatch(line, /ADR-0|S-0|TK-0|workbench\/docs\/adr\/0|workbench\/specs\//, `templates/LEXICON.md ${term} stays generic`);
   }
 });
