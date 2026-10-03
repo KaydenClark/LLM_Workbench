@@ -996,9 +996,9 @@ a reviewer reads what was waived. A reason on a clean, pushed tree is refused
 rather than dropped; where Git state is unknown (no Git, not a repository)
 nothing is refused and a given reason is recorded beside `unknown`. `close`
 also refuses a Spec with no in-progress Task (`has no in-progress task to
-close; claim one first`) rather than closing a ready Task nobody claimed. An
-orphan corrective Task closed by its own ID (`close TK-###`) does not run the
-Git-state check.
+close; claim one first`) rather than closing a ready Task nobody claimed.
+`close` takes a Spec ID: `close TK-###` refuses, because the standalone
+corrective Task anchored to a Wiki claim is retired.
 
 Commit and publish the closure evidence and projections too; verify the remote
 SHA. TASK.md owns Task state/proof, SPEC.md owns requirements/acceptance/evidence
@@ -1032,11 +1032,20 @@ write. Receipt runs and administrative headers are excluded narrowly; checked
 acceptance, Task status/proof and decisions remain bound. A green test or a
 Dispatcher's self-review cannot substitute for independent review.
 
-A failed verdict creates one corrective Task per attributable finding, anchored
-to that evidence row. Preserve the original done Task and its proof. Select and
-claim the corrective record, repair it, self-check and hand back, then rerun
+A failed verdict is corrected under the still-open Spec, one disposition per
+`;`-separated finding. `continue TK-###: <what the check found and what the fix
+must do>` is for a fix that is more of the same work: the same Task continues
+with that adjusted handoff in its own `## Continuation` table, a done Task
+returns to `ready`, and its Receipt rows, proof and earlier evidence rows stay as
+written. `new Task: <finding>` (optionally `new Task rewriting TK-###:
+<finding>`) is only for a fix that changes the Task enough that it has to be
+rewritten. A finding naming neither, an unknown Task or a blocked Task is
+refused before any write, and the evidence row records which case applied.
+Select and claim the continued or new Task, repair it, self-check and hand back
+(a continued Task's later close appends `Task closed (run N)`), then rerun
 whole-Spec QA and obtain fresh separate review of the new immutable candidate.
-Do not reopen the original record or reuse the earlier PASS for changed content.
+Do not reuse the earlier PASS for changed content. A verdict against a complete,
+superseded or retired Spec is refused; see the later-gap route below.
 
 Before integration the Spec form checks assembled completion and current PASS:
 
@@ -1079,7 +1088,8 @@ node workbench/tools/spec-workbench.mjs approve S-001 --candidate "[INTEGRATION 
 node workbench/tools/spec-workbench.mjs approve S-001 --candidate "[INTEGRATION SHA]" --owner "[WHO]"
 ```
 
-A finding creates corrective Tasks; a destination change records return to Align
+A finding follows the same disposition rule (`continue TK-###: ...` or
+`new Task: ...`); a destination change records return to Align
 without inventing Tasks. Return at the implicated scope: a defect need not
 change the design concept. Keep failed required-capability findings visible
 as real downstream dependencies until resolved. After correction, repeat
@@ -1196,16 +1206,17 @@ in a disposable clone and compare all recovered bytes, including sibling proof,
 assets and Receipt runs. The final Task leaves `tasks/.gitkeep` so fresh clones
 retain record-backed interpretation. Recovery is for inspection, not new work.
 
-A later same-capability gap targets the surviving Wiki claim; it does not
-resurrect a discarded Spec. The delivered `createCorrectiveTasks` export in
-`workbench/tools/spec-report.mjs` accepts `wikiClaim: "path#heading"` for this
-route and refuses duplicate findings. This is a programmatic API, not a
-create-corrective CLI. Ordinary claim and close accept the resulting standalone corrective Task ID;
-close appends feature provenance. The current receipt CLI remains Spec-bound
-and refuses a standalone Task ID; preserve its intermediate proof in the Task
-and surviving Wiki owner rather than claiming a standalone Receipt command. While the retired Spec
-still exists, findings instead create its corrective Tasks inside that folder.
-A different destination needs a new assigned Spec.
+A later gap against delivered work becomes a new Spec under its landmark or the
+Blueprint. It never revives a discarded Spec and is never a correction anchored
+to a Wiki claim. The new Spec names the delivered work it builds on and may cite
+Wiki pages as evidence for its direction and plan, but no Task takes a Wiki
+claim as its destination for corrective work. `verdict --result fail`,
+`approve --finding` and `createCorrectiveTasks` refuse a Spec that is complete,
+superseded or retired, and refuse any `wikiClaim`, each naming this route.
+`next` never selects a standalone corrective record an earlier release wrote,
+and `claim` and `close` refuse it, though it still occupies its identifier. The
+receipt CLI remains Spec-bound and refuses a standalone Task ID. A different
+destination needs a new assigned Spec.
 
 The first S-01X migration slice provides an opt-in preview:
 
