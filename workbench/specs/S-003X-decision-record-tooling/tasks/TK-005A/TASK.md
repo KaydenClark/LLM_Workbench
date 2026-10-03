@@ -3,9 +3,9 @@
 **Task ID:** TK-005A
 **Spec ID:** S-003X
 **Slice:** Mirror the installed DDR collection, terms and read words into the Lexicons
-**Status:** blocked
+**Status:** ready
 **Stance:** Builder
-**Blockers:** TK-004W, TK-004X, TK-004Y, TK-004Z, owner:s01u-tk01q-lexicon-branch-landed
+**Blockers:** TK-004W, TK-004X, TK-004Y, TK-004Z
 **Destination:** spec-acceptance: S-003X Acceptance Criteria box 6 (source behavior, templates, the manifest declaration, Genesis and the update route agree) for the Lexicon rows, and the Spec's Documentation Impact
 **Planned verification:** Red: `tools/test-control-fidelity.mjs` or `tools/test-controls-vocabulary-sweep.mjs` gains a check that fails while `templates/LEXICON.md` lacks the Decision Record, DDR and Read words rows or the root Lexicon still calls the installed collection not installed. Green: those tests, `test-blueprint-contract`, `test-workbench-layout` (template placeholder vocabulary, if any template wording changes) and the Wiki lint of touched pages pass; `node tools/evaluate-workbench.mjs --path templates --include-controls` holds its score; the full AGENTS suite passes on the committed candidate; a post-change self-drift receipt shows no new current-facing drift.
 
@@ -47,6 +47,15 @@ Blocked until the owner's Codex Lexicon reconciliation branch
 Reconciliation Task TK-01Q, unmerged at Plan on 2026-10-03) lands or the owner
 releases these files: it edits both Lexicons, and this Task must not touch,
 rebase, merge or close it. Remove the `owner:` blocker only when that branch is
-contained in `integration` or the owner says to proceed. No ownership map row
+contained in `integration` or the owner says to proceed.
+
+Blocker cleared on 2026-10-03 by the Spec's single writer: the owner directed
+the merge of PR #281 (`codex/lexicon-snag-recovery`, merged
+2026-10-03T13:09:58Z), which carries the October 1 reconciliation tip
+`e46d587b`; `git merge-base --is-ancestor e46d587b origin/integration`
+succeeds (integration `bbfcd37b` and later), and its branches are deleted.
+That PR also corrected the root Lexicon DDR row's "not installed yet" claim
+(`861657d6`); read both Lexicons at the current integration tip before
+editing. No ownership map row
 (the Ownership Map Spec takes the DDR row) and no `AGENTS.md` ownership-table
 change (the Contract-carrier rewrite owns it).
