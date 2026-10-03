@@ -48,3 +48,9 @@ carries the change; this Task makes that change.
 No `AGENTS.md`, `RUNBOOK.md`, Lexicon, template, Blueprint or tooling change. The
 Blueprint's corrective passages and the Lexicon rows belong to their own owners
 and are reported, not edited. Promote only the owner's locked words.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s004f-tk005q | 0dd04ec2254ec05d4c8b39f18d45dd046bb5ea6c | ahead 0 behind 0 | 0 | Full AGENTS suite on committed candidate 0dd04ec2: 47 of 48 commands pass; node tools/test-spec-workbench.mjs failed once under concurrent local load (async git clone fixture race) and passed alone on the same candidate; node tools/test-control-fidelity.mjs red then green (new pin); node tools/test-adr.mjs 56 pass; adr.mjs validate ok for adr and ddr | DDR accepted (new same-Task record), ADR-000F/G/H/I/R/U amended, registers regenerated; Task and Spec records updated | none | b9a1f04f32e1c87d7e713962e2eae92da7f092ac53f394792565adda51dc967c |
