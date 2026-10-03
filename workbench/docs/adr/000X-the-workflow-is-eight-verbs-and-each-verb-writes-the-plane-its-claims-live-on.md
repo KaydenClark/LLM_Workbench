@@ -105,14 +105,12 @@ text reads at `git show f2d12337a5511b169c46633ad3377366239b5819:workbench/docs/
 - Nothing is superseded, because adding verbs replaces nothing. Points 3 to 6
   and the Consequences stand.
 
-The Lexicon's Workflow, Journey and verb rows carry the current meanings. Two
-records outside this Spec still quote the earlier list and need a visible
-correction by their owners, not a silent edit: the release proof decision
+The Lexicon's Workflow, Journey and verb rows carry the current meanings. The
+release proof decision
 ([A release is proven by the Template building a real product in one pass](../ddr/000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md))
-quotes "Idea, Align, Confirm, Journey, Complete", where the owner changed the
-last verb to Delivered, and the Wiki's [Idea To Delivery](../../wiki/design-concepts/idea-to-delivery-workflow.md)
-page still lists the eight verbs with the earlier Journey. This records no
-owner approval.
+still quotes "Idea, Align, Confirm, Journey, Complete", where the owner changed
+the last verb to Delivered; it needs a visible correction by its owner, not a
+silent edit. This records no owner approval.
 
 Provenance: owner-confirmed grilling of 2026-10-02 under the objective
 "skill-workflow-redesign".
