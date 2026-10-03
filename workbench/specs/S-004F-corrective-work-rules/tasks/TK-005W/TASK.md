@@ -3,9 +3,9 @@
 **Task ID:** TK-005W
 **Spec ID:** S-004F
 **Slice:** Correct the Blueprint's corrective passages unless the short page has already replaced them
-**Status:** blocked
+**Status:** ready
 **Stance:** Builder
-**Blockers:** TK-005T, owner:blueprint-writer-turn
+**Blockers:** none
 **Destination:** spec-acceptance: The Blueprint's corrective passages and their test pins say the new rules or are already gone with the short page.
 **Planned verification:** At the integration tip, read the Blueprint's Desired Lifecycle and Integrated System Design passages and the matching pins in `tools/test-blueprint-contract.mjs`. If the Blueprint Short Page Spec has landed and they are gone, record that and close with no edit. Otherwise Red: the pins fail against the corrected wording; Green: the passages state the continue-or-new rule and the new-Spec rule and the pins agree. The full AGENTS suite passes on the committed candidate.
 
@@ -30,3 +30,7 @@ Spec's Blueprint lane.
 ## Boundaries
 
 No other Blueprint change.
+
+## Gate cleared
+
+`owner:blueprint-writer-turn` was a sequencing gate this Spec's own planning created, not an owner decision. The Blueprint writer is free: the Blueprint Short Page Spec's swap merged in PR #310 (merge commit 25733f3b, 2026-10-03) and all its Tasks are done on integration be0450fe. Cleared by the Director's direction of 2026-10-03; TK-005T is done.
