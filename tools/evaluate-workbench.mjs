@@ -4,11 +4,16 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-// The four-part short page: every part must be present and the parts the project
-// model scores must carry text, so a page of bare headings earns no credit.
-const FOUR_PART_SHAPE = ['^## What it is$', '^## Who it serves$', '^## Promised outcomes$', '^## Non-goals$'];
-const FOUR_PART_CONTENT = ['What it is', 'Who it serves', 'Promised outcomes', 'Non-goals'].map(name => `^## ${name}\\s*\\n\\s*(?!## )\\S`);
-const FOUR_PART = [...FOUR_PART_SHAPE, ...FOUR_PART_CONTENT];
+// The four-part short page: every part must be present and carry text of its own,
+// so a page of bare headings, or of headings with only sub-headings under them,
+// earns no credit. Text means a line that is not a heading; sub-headings
+// ("### ...") may come first, a further "## " heading may not.
+const FOUR_PART_NAMES = ['What it is', 'Who it serves', 'Promised outcomes', 'Non-goals'];
+const FOUR_PART = FOUR_PART_NAMES.flatMap(name => [`^## ${name}$`, `^## ${name}[ \\t]*\\n(?:(?!## )[ \\t]*(?:#[^\\n]*)?\\n)*[ \\t]*[^#\\s]`]);
+
+export function isFourPartBlueprint(text) {
+  return FOUR_PART.every(pattern => new RegExp(pattern, 'im').test(text ?? ''));
+}
 
 export const RUBRIC = [
   {

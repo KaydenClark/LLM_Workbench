@@ -132,6 +132,14 @@ for (const heading of FOUR_PART_HEADINGS) {
   assert.notEqual(changed['BLUEPRINT.md'], FOUR_PART_BLUEPRINT, 'emptying "'+heading+'" must change the fixture');
   assert.ok(modelOf(changed).score < 8, 'the four-part section "'+heading+'" must carry text to earn credit');
 }
+// A section whose only body is a sub-heading has no text either; one with a sub-heading and then text does.
+for (const heading of FOUR_PART_HEADINGS) {
+  const subOnly = FOUR_PART_BLUEPRINT.replace(new RegExp(`(## ${heading}\\n)\\n[^\\n]+\\n`), '$1\n### Only a subheading\n');
+  assert.notEqual(subOnly, FOUR_PART_BLUEPRINT, 'the sub-heading-only fixture for "'+heading+'" must change the page');
+  assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': subOnly}).score < 8, 'a sub-heading alone is not text for "'+heading+'"');
+  const subThenText = FOUR_PART_BLUEPRINT.replace(new RegExp(`(## ${heading}\\n)\\n([^\\n]+\\n)`), '$1\n### A subheading\n\n$2');
+  assert.equal(modelOf({...fourPart, 'BLUEPRINT.md': subThenText}).score, 8, 'a sub-heading followed by text counts for "'+heading+'"');
+}
 const bareHeadings = {...fourPart, 'BLUEPRINT.md': FOUR_PART_HEADINGS.map(h => '## '+h+'\n').join('\n')};
 assert.ok(modelOf(bareHeadings).score <= 1.6, 'a page of bare headings earns no project-model credit beyond the Contract-only check');
 for (const [name, mutate] of [

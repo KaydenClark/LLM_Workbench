@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { scoreWorkbench } from './evaluate-workbench.mjs';
+import { isFourPartBlueprint, scoreWorkbench } from './evaluate-workbench.mjs';
 import { isSafeRelative, SCHEMA_VERSION } from '../workbench/tools/workbench-paths.mjs';
 
 const SKIP_DIRS = new Set(['.git', 'node_modules', '.next', 'dist', 'build']);
@@ -295,8 +295,7 @@ function patternCheck(id, label, weight, haystack, pattern, evidence, action) {
 // A destination-shaped Blueprint is either the eight-section destination or the
 // four-part short page; neither carries a review date or a version stamp.
 function isDestinationBlueprint(text) {
-  return /^## Product Destination$/m.test(text)
-    || ['What it is', 'Who it serves', 'Promised outcomes', 'Non-goals'].every(name => new RegExp(`^## ${name}$`, 'm').test(text));
+  return /^## Product Destination$/m.test(text) || isFourPartBlueprint(text);
 }
 
 function controlDocsAreFresh(files, today, maxAgeDays) {

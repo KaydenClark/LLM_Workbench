@@ -185,6 +185,17 @@ for (const missing of ['What it is', 'Who it serves', 'Promised outcomes', 'Non-
   assert.equal(checked(partial,'fresh_control_docs'),false,'a Blueprint missing the four-part heading "'+missing+'" takes the legacy review-date check');
   assert.equal(checked(partial,'version_contract'),false,'a Blueprint missing the four-part heading "'+missing+'" takes the legacy version-stamp check');
 }
+// Bare or empty sections are not the short page either, so they take the legacy path.
+const bare = {...fourPart,'BLUEPRINT.md':'# Blueprint\n\n## What it is\n\n## Who it serves\n\n## Promised outcomes\n\n## Non-goals\n'};
+assert.equal(checked(bare,'fresh_control_docs'),false,'bare four-part headings take the legacy review-date check');
+assert.equal(checked(bare,'version_contract'),false,'bare four-part headings take the legacy version-stamp check');
+for (const empty of ['What it is', 'Who it serves', 'Promised outcomes', 'Non-goals']) {
+  const emptied = {...fourPart,'BLUEPRINT.md':fourPart['BLUEPRINT.md'].replace(new RegExp(`(## ${empty}\\n)\\n[^\\n]+\\n`), '$1')};
+  assert.notEqual(emptied['BLUEPRINT.md'], fourPart['BLUEPRINT.md'], 'emptying "'+empty+'" must change the page');
+  assert.equal(checked(emptied,'fresh_control_docs'),false,'a Blueprint with an empty "'+empty+'" part takes the legacy path');
+  const subOnly = {...fourPart,'BLUEPRINT.md':fourPart['BLUEPRINT.md'].replace(new RegExp(`(## ${empty}\\n)\\n[^\\n]+\\n`), '$1\n### Only a subheading\n')};
+  assert.equal(checked(subOnly,'version_contract'),false,'a Blueprint whose "'+empty+'" part holds only a sub-heading takes the legacy path');
+}
 const oneHeading = {...modern,'BLUEPRINT.md':'# Blueprint\n\n## What it is\n\nA product.\n'};
 assert.equal(checked(oneHeading,'fresh_control_docs'),false,'a lone What it is heading is not destination-shaped');
 assert.equal(checked(oneHeading,'version_contract'),false);
