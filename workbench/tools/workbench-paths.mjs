@@ -320,15 +320,24 @@ export function assertSafeWritePath(root, destination) {
   }
 }
 
-export function writeSafeFile(root, destination, content, { exclusive = false } = {}) {
+export function writeSafeFile(root, destination, content, { exclusive = false, stagingDir = null } = {}) {
   assertSafeWritePath(root, destination);
   fs.mkdirSync(path.dirname(destination), { recursive: true });
-  const temporaryDir = fs.mkdtempSync(path.join(path.dirname(destination), '.write-'));
+  // A caller that publishes under a condition stages the bytes inside a
+  // directory it owns for exactly as long as the condition holds (the notepad
+  // runtime's publish token). Whoever revokes the condition removes that
+  // directory, and with it the staged bytes, so the rename below fails
+  // instead of publishing: the check and the publication cannot be separated
+  // by a stall, because the publication needs the file the check protects.
+  const temporaryDir = stagingDir ?? fs.mkdtempSync(path.join(path.dirname(destination), '.write-'));
+  const temporary = path.join(temporaryDir, 'content');
   try {
-    const temporary = path.join(temporaryDir, 'content');
     fs.writeFileSync(temporary, content, { mode: 0o644, flag: 'wx' });
     // link is an atomic no-replace publication for a new ADR or checkpoint.
     if (exclusive) fs.linkSync(temporary, destination);
     else fs.renameSync(temporary, destination);
-  } finally { fs.rmSync(temporaryDir, { recursive: true, force: true }); }
+  } finally {
+    if (stagingDir) fs.rmSync(temporary, { force: true });
+    else fs.rmSync(temporaryDir, { recursive: true, force: true });
+  }
 }

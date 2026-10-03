@@ -42,7 +42,7 @@ function recipe(cwd, verb, values = {}, expectStatus = 0, variant = '') {
   const tokens = command.match(/"[^"]*"|'[^']*'|\[[^\]]*\]|[^\s]+/g).map(token => token.replace(/^(["'])(.*)\1$/, '$2'));
   const defaults = { 'S-001': 'S-001', 'TK-001': 'TK-001', '[SHA]': values.candidate,
     '[DIGEST]': values.digest, '[INTEGRATION SHA]': values.candidate, '[WHO]': 'Simulated fixture owner; not Human QA',
-    '[FINDINGS OR none]': values.findings ?? 'none', '[FINDINGS]': values.findings ?? 'Missing punctuation coverage',
+    '[FINDINGS OR none]': values.findings ?? 'none', '[FINDINGS]': values.findings ?? 'new Task: Missing punctuation coverage',
     '[SEPARATE CONTEXT, MODEL AND MODE]': 'Simulated fixture Director; machinery only',
     '[NAMED VERIFICATION]': 'node --test tests/hello.test.mjs PASS; actual greeting observed',
     '[DOCS UPDATED OR Docs checked; no update needed + reason]': 'README usage checked; no update needed',
@@ -55,7 +55,7 @@ function recipe(cwd, verb, values = {}, expectStatus = 0, variant = '') {
     '[Known limit or linked follow-up]': 'none', '[product tradeoff]': 'Simulated owner destination change', ...values };
   const args = tokens.slice(1).map(token => defaults[token] ?? token).map((token, index, args) => {
     if (!genericGuidance) return token;
-    if (args[index - 1] === '--findings' || args[index - 1] === '--finding') return values.findings ?? (command.includes('--result fail') ? 'Missing punctuation coverage' : 'none');
+    if (args[index - 1] === '--findings' || args[index - 1] === '--finding') return values.findings ?? (command.includes('--result fail') ? 'new Task: Missing punctuation coverage' : 'none');
     if (args[index - 1] === '--tests') return values['[TESTS RUN AND RESULT]'] ?? token;
     if (args[index - 1] === '--remaining-gap') return values['[GAP OR none]'] ?? token;
     return token;
@@ -343,7 +343,7 @@ try {
   const checkpoint = step => console.log(`demo - ${step}; HEAD ${git(second, 'rev-parse', '--short', 'HEAD')}`);
   const inspect = () => JSON.parse(recipe(second, 'report', { candidate: git(second, 'rev-parse', 'HEAD') }, 0, '--json'));
   const originalBytes = read(originalTask);
-  const failed = JSON.parse(recipe(second, 'verdict', { candidate: finalSha, digest: report.specDigest, findings: 'Empty names need the default greeting' }, 0, '--result fail'));
+  const failed = JSON.parse(recipe(second, 'verdict', { candidate: finalSha, digest: report.specDigest, findings: 'new Task: Empty names need the default greeting' }, 0, '--result fail'));
   assert.equal(failed.correctiveTasks.length, 1);
   assert.equal(read(originalTask), originalBytes, 'failed review preserves original Task and Receipt bytes');
   const repairId = failed.correctiveTasks[0].id;
@@ -391,7 +391,7 @@ try {
   refusedRecipe(second, 'complete', {}, /owner Human QA|finding|earlier content/);
   commit('Preserve simulated owner destination-change observation'); publish();
   candidate = git(second, 'rev-parse', 'HEAD');
-  const qa = JSON.parse(recipe(second, 'approve', { candidate, findings: 'Explain empty greeting input in usage' }, 0, '--finding'));
+  const qa = JSON.parse(recipe(second, 'approve', { candidate, findings: 'new Task: Explain empty greeting input in usage' }, 0, '--finding'));
   assert.equal(qa.result, 'finding'); assert.equal(qa.correctiveTasks.length, 1);
   const qaTask = qa.correctiveTasks[0].id;
   assert.equal(read(originalTask), originalBytes);

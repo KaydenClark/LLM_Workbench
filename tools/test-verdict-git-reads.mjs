@@ -16,7 +16,7 @@ function refusal(empty,label){
  const report=assembleSpecReport(root,'S-701',{candidate:empty});
  assert.equal(report.candidate.matchesContent,false,`${label}: actual empty object must not acquire peer Spec bytes`);
  for(const result of ['pass','fail']){
-  const r=spawnSync('node',[cli,'verdict','S-701','--candidate',empty,'--result',result,'--findings',result==='pass'?'none':'Synthetic defect','--reviewer','separate fixture context','--path',root,'--json'],{encoding:'utf8'});
+  const r=spawnSync('node',[cli,'verdict','S-701','--candidate',empty,'--result',result,'--findings',result==='pass'?'none':'new Task: Synthetic defect','--reviewer','separate fixture context','--path',root,'--json'],{encoding:'utf8'});
   assert.equal(r.status,1,`${label}: public ${result} must refuse`);
   assert.equal(fs.readFileSync(file,'utf8'),before,`${label}: every Spec byte unchanged`);
   assert.equal(fs.existsSync(path.join(root,'specs/S-701-fixture/tasks')),false,`${label}: no corrective Tasks`);
@@ -46,7 +46,7 @@ try{
    const before=snapshot();const specPath=path.join(room,'specs/S-701-fixture/SPEC.md');const bytes=fs.readFileSync(specPath);
    const report=assembleSpecReport(room,'S-701',{candidate:good});
    assert.notEqual(report.candidate.matchesContent,true,`missing ${missing} cannot bind content`);
-   for(const result of ['pass','fail'])assert.throws(()=>recordReviewVerdict(room,'S-701',{candidate:good,result,findings:result==='pass'?'none':'Synthetic defect',reviewer:'separate fixture context'}),/candidate|repository|committed/);
+   for(const result of ['pass','fail'])assert.throws(()=>recordReviewVerdict(room,'S-701',{candidate:good,result,findings:result==='pass'?'none':'new Task: Synthetic defect',reviewer:'separate fixture context'}),/candidate|repository|committed/);
    assert.equal(gate(room,{spec:'S-701',candidate:good}).refused,true);
    assert.equal(fs.existsSync(tripwire),false,`missing ${missing} must not invoke transport`);
    assert.deepEqual(snapshot(),before,`missing ${missing} must preserve Git metadata`);
