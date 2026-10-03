@@ -673,3 +673,36 @@ test('both Lexicons carry the installed decision-record vocabulary, and the gene
     for (const line of termRows(template, term)) assert.doesNotMatch(line, /ADR-0|S-0|TK-0|workbench\/docs\/adr\/0|workbench\/specs\//, `templates/LEXICON.md ${term} stays generic`);
   }
 });
+
+// S-004F TK-005Q: the owner's two corrective-work answers (a miss found by a
+// check continues the same Task unless the fix rewrites it; a later gap
+// against delivered work is a new Spec, never a correction anchored to a Wiki
+// claim) are carried by accepted decision records, and no accepted record
+// still states the rules they replace as current.
+test('accepted decision records carry the corrective-work rules and no longer state the replaced ones', () => {
+  const active = (directory) => fs.readdirSync(path.join(root, directory))
+    .filter((name) => /^[0-9A-Za-z]{4}-.*\.md$/.test(name))
+    .map((name) => [`${directory}/${name}`, read(root, `${directory}/${name}`).replace(/\s+/g, ' ')]);
+  const records = [...active('workbench/docs/adr'), ...active('workbench/docs/ddr')];
+  const replaced = [
+    ['a failing Spec review creates corrective Tasks', /Failing is diagnostic: it creates corrective Tasks/],
+    ['a missed Task is always replaced by a new Task', /its card returns to In progress, its worktree is removed, and a new Task named for its objective fixes it/],
+    ['a corrective Task uses its Wiki claim (three altitudes)', /A corrective Task against the same reconciled capability uses its Wiki claim/],
+    ['a corrective Task uses its Wiki claim (Task record)', /For a corrective Task against a reconciled Wiki claim, the maintained Wiki/],
+    ['a later repair loads its Wiki claim (lifecycle)', /A later repair against that reconciled destination loads and updates its Wiki claim/],
+    ['a failed landmark review produces corrective Tasks', /failed landmark review produces corrective Tasks, as a failed Spec review does/],
+    ['Wiki lint findings become corrective Tasks', /Findings become corrective Tasks/]
+  ];
+  for (const [file, text] of records) {
+    for (const [claim, pattern] of replaced) assert.doesNotMatch(text, pattern, `${file} still states as current: ${claim}`);
+  }
+  const sameTask = records.find(([file]) => /^workbench\/docs\/ddr\/[0-9A-Za-z]{4}-a-miss-found-by-a-check-continues-the-same-task/.test(file));
+  assert.ok(sameTask, 'an accepted destination decision record carries the same-Task answer');
+  assert.match(sameTask[1], /the same Task continues with an adjusted handoff/);
+  assert.match(sameTask[1], /A new Task is opened only when the fix changes the Task enough that it has to be rewritten/);
+  assert.match(sameTask[1], /If the fix is different than just continuing, and we have to rewrite the task\. then yes\. otherwise\. just use the same task, with an adjusted handoff\./);
+  for (const prefix of ['000F', '000G', '000H', '000I', '000R', '000U']) {
+    const [file, text] = records.find(([name]) => name.startsWith(`workbench/docs/adr/${prefix}-`));
+    assert.match(text, /\.\.\/ddr\/000[MY]-/, `${file} names the destination record that amended it`);
+  }
+});

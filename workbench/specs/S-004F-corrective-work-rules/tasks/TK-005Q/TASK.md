@@ -7,7 +7,7 @@
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: No active accepted decision claim states the replaced rules, and the record that narrows or supersedes them carries the owner's two answers.
-**Planned verification:** Red: a pin in `tools/test-control-fidelity.mjs` fails because the accepted records ADR-000F, ADR-000G, ADR-000H, ADR-000I and ADR-000U still state a failed check as one new corrective Task per finding and a later repair as a correction against a Wiki claim, and no accepted record carries the same-Task rule. Green: a new destination decision record carries the owner's same-Task answer and is accepted through the accept move; the five ADRs are amended in place under the amendment-first rule, each recording the changed premise and the Git anchor of its earlier text; `adr.mjs validate` passes for both record kinds, the registers are regenerated, `tools/test-adr.mjs` and the full AGENTS suite pass on the committed candidate.
+**Planned verification:** Red: a pin in `tools/test-control-fidelity.mjs` fails because the accepted records ADR-000F, ADR-000G, ADR-000H, ADR-000I, ADR-000R and ADR-000U still state a failed check as one new corrective Task per finding and a later repair as a correction against a Wiki claim, and no accepted record carries the same-Task rule. Green: a new destination decision record carries the owner's same-Task answer and is accepted through the accept move; the six ADRs are amended in place under the amendment-first rule, each recording the changed premise and the Git anchor of its earlier text; `adr.mjs validate` passes for both record kinds, the registers are regenerated, `tools/test-adr.mjs` and the full AGENTS suite pass on the committed candidate.
 
 ## Outcome
 
@@ -23,12 +23,14 @@ carries the change; this Task makes that change.
 - One new destination decision record for the same-Task rule, written with
   `adr.mjs new --kind ddr`, filled only with the owner's locked text and his own
   words from the Spec, and accepted with `adr.mjs accept`.
-- In-place amendments to ADR-000F (failing creates corrective Tasks), ADR-000G
-  and ADR-000H and ADR-000I (a later repair uses its Wiki claim) and ADR-000U
-  point 5 (a failed landmark review produces corrective Tasks), each naming the
-  changed premise and `git show` anchor of the text it replaces.
+- In-place amendments to ADR-000F (failing creates corrective Tasks), ADR-000G,
+  ADR-000H and ADR-000I (a later repair uses its Wiki claim), ADR-000R point 9
+  (whole-Wiki lint findings become corrective Tasks) and ADR-000U point 5 (a
+  failed landmark review produces corrective Tasks), each naming the changed
+  premise and the `git show` anchor of the text it replaces.
 - A pin in `tools/test-control-fidelity.mjs` that the accepted records no longer
-  state the replaced rules as current.
+  state the replaced rules as current, and the matching updates to the ADR pins
+  and link census in `tools/test-adr.mjs`.
 
 ## Acceptance
 
