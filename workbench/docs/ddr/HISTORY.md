@@ -6,7 +6,7 @@
 
 | DDR | Title | Status | Date | Canonicalized in |
 |---|---|---|---|---|
-| [000A](proposed/000A-the-workbench-aligns-to-the-owner-s-concept-and-delivers-on-it-recursively.md) | The Workbench aligns to the owner's concept and delivers on it recursively | proposed | 2026-10-03 | BLUEPRINT.md |
+| [000A](000A-the-workbench-aligns-to-the-owner-s-concept-and-delivers-on-it-recursively.md) | The Workbench aligns to the owner's concept and delivers on it recursively | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000B](proposed/000B-only-a-confirmed-concept-is-mapped-planned-or-implemented.md) | Only a confirmed concept is mapped, planned or implemented | proposed | 2026-10-03 | BLUEPRINT.md |
 | [000C](proposed/000C-confirming-a-concept-authorizes-the-agents-to-carry-it-to-its-endpoint.md) | Confirming a concept authorizes the agents to carry it to its endpoint | proposed | 2026-10-03 | BLUEPRINT.md |
 | [000D](proposed/000D-prototype-needs-no-map-and-lands-nothing-in-enduring-context.md) | Prototype needs no map and lands nothing in enduring context | proposed | 2026-10-03 | BLUEPRINT.md |

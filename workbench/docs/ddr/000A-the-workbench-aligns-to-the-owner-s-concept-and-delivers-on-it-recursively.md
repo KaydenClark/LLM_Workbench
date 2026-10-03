@@ -15,6 +15,6 @@ Why the owner chose it: The owner's confirmed reason: One turn of the loop may n
 
 Considered and rejected: None recorded.
 
-Consequences: None recorded as owner words. Accepted records that already cover part of this, and are not restated here: [The workflow is eight verbs and each verb writes the plane its claims live on](../../adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md) and [Work passes two QA gates: spec branch to integration and integration to main](../../adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md).
+Consequences: None recorded as owner words. Accepted records that already cover part of this, and are not restated here: [The workflow is eight verbs and each verb writes the plane its claims live on](../adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md) and [Work passes two QA gates: spec branch to integration and integration to main](../adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md).
 
 Provenance: the Blueprint teardown grilling of 2026-10-02 to 2026-10-03: question BT-D2 (recursive delivery), locked 2026-10-03, and its confirmed why, question WHY-A1.
