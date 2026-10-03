@@ -3,7 +3,7 @@
 **Task ID:** TK-006B
 **Spec ID:** S-004E
 **Slice:** Write the dictionary Wiki entries, route them and prove the acceptance
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-006A
 **Destination:** spec-acceptance: Every term selected at Plan has a Wiki entry that passes wiki validate, is routed from MEMORY.md with a summary line, links its Lexicon row, dictionary entry and owning controls, and was linted; a mechanical comparison finds no copied passage; a fresh agent given only the Lexicon and Wiki answers the two probes.
