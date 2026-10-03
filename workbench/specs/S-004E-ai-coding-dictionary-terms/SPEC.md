@@ -3,13 +3,13 @@
 **Spec ID:** S-004E
 **Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-lane-g
 **Stance:** Builder
 **Updated:** 2026-10-03
 **Catalog description:** Put the owner's agreed meanings for AI Coding Dictionary terms into the Lexicon, with a Wiki dictionary entry wherever a term needs more than its row, starting with nineteen model, harness and session terms.
 **Blockers:** none for specification. The owner answered the harness question on 2026-10-03 (option (a) in Decisions And Contracts), so no row waits on an owner answer. Lexicon writes take one writer at a time; the owner's Codex Lexicon reconciliation landed in integration on 2026-10-03 (PR #281), and the Lexicon Design-Concept Reconciliation Spec stays active for its whole-Lexicon audit. Implementation awaits Plan and assignment.
-**Latest event:** Planned and activated on 2026-10-03 by the Lexicon writer lane: four Tasks are cut (the fifteen self-contained rows; the colliding terms with the harness reconciliation; the ten batch-two rows; the Wiki entries and acceptance proof), serial because the Lexicon takes one writer at a time.
-**Next gate:** The first Task, adding the AI Coding Terms section and its fifteen self-contained rows to both Lexicons, then the remaining three Tasks in order.
+**Latest event:** TK-005Q claimed by claude-lane-g.
+**Next gate:** Close TK-005Q with verification and documentation proof.
 
 > **Citation anchors.** pre=`817096e676992cf7ece72967ac8bbb064261a3ee` post=`817096e676992cf7ece72967ac8bbb064261a3ee`.
 
