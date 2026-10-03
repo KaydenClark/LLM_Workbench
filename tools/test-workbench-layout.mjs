@@ -409,13 +409,105 @@ test('the additive features collection resolves, is created and seeded by init, 
     const migrated = run('migrate', '--project', project);
     assert.equal(migrated.status, 0, `${migrated.stdout}\n${migrated.stderr}`);
     assert.equal(migrated.report.status, 'migrated');
-    assert.deepEqual(migrated.report.added, ['collections.features']);
+    // S-003X TK-004W: a pre-feature room also lacks the later additive `ddr`
+    // collection, so one migrate appends both, in declaration order.
+    assert.deepEqual(migrated.report.added, ['collections.features', 'collections.ddr']);
     const after = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-    assert.deepEqual(after.collections, COLLECTIONS, 'migrate appends exactly the features collection');
+    assert.deepEqual(after.collections, COLLECTIONS, 'migrate appends exactly the missing additive collections');
     assert.deepEqual({ ...after, collections: preFeature }, { ...manifest, collections: preFeature }, 'nothing else in the manifest changes');
     assert.equal(fs.statSync(path.join(project, 'workbench', 'wiki', 'features')).isDirectory(), true);
     assert.equal(run('validate', '--project', project).report.status, 'valid');
     assert.equal(run('migrate', '--project', project).report.status, 'current');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+// S-003X TK-004W: `ddr` is the additive decision-record collection beside
+// `docs/adr` (ADR-000S): the Destination Decision Records, with the ADR's
+// folder lifecycle. A new room declares it and holds the folder with its
+// `proposed/` and `archive/` lifecycle folders; every earlier collection shape
+// still validates; and the ordinary update route (`migrate`) appends it to a
+// room that already holds ADRs without changing a byte of those records or
+// any other manifest key. A link or file where the collection belongs is
+// refused before anything is written.
+test('the additive ddr collection is created with its lifecycle folders by init, every earlier collection shape still validates, and migrate adds it without touching ADR records', () => {
+  const project = fixture();
+  const snapshot = (directory) => Object.fromEntries(markdownFiles(directory).map((file) => [path.relative(directory, file), fs.readFileSync(file, 'utf8')]));
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    const ddrPath = path.join(project, 'workbench', 'docs', 'ddr');
+    assert.equal(manifest.collections.ddr, 'workbench/docs/ddr', 'init declares the ddr collection');
+    assert.equal(Object.keys(manifest.collections).at(-1), 'ddr', 'ddr is appended after every earlier collection key');
+    assert.deepEqual(manifest.lanes, LANES, 'ddr is a collection, never a lane');
+    assert.equal(collectionRelative(project, 'ddr'), 'workbench/docs/ddr', 'the resolver answers the declared collection');
+    for (const folder of ['proposed', 'archive']) {
+      assert.equal(fs.lstatSync(path.join(ddrPath, folder)).isDirectory(), true, `init creates ddr/${folder}/`);
+      assert.equal(fs.existsSync(path.join(ddrPath, folder, '.gitkeep')), true, `ddr/${folder}/ is kept in Git`);
+    }
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+
+    const { ddr, ...preDdr } = manifest.collections;
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: preDdr }, null, 2)}\n`);
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'the current room declared before ddr still validates');
+    assert.equal(collectionRelative(project, 'ddr'), 'workbench/docs/ddr', 'an undeclared room resolves the default path');
+
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: { ...preDdr, ddr: 'workbench/docs/destination-decisions' } }, null, 2)}\n`);
+    assert.equal(run('validate', '--project', project).report.error.code, 'invalid-collection', 'a relocated ddr declaration is not the contract');
+
+    const { features, ...preFeature } = preDdr;
+    const legacy = { ...preFeature };
+    delete legacy.recovery; delete legacy.notepads; delete legacy['notepad-templates'];
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: { ...legacy, features, ddr } }, null, 2)}\n`);
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'the preserved v3.1 collection set with both additive collections appended still validates');
+
+    // A room that already holds ADRs in every lifecycle folder, stamped
+    // before the ddr collection existed, takes the ordinary update route.
+    const adrPath = path.join(project, 'workbench', 'docs', 'adr');
+    fs.mkdirSync(path.join(adrPath, 'proposed'), { recursive: true });
+    fs.mkdirSync(path.join(adrPath, 'archive'), { recursive: true });
+    fs.writeFileSync(path.join(adrPath, '000A-kept-decision.md'), '---\ndate: 2026-10-01\ncanonicalized_in:\n  - AGENTS.md\n---\n\n# Kept decision\n');
+    fs.writeFileSync(path.join(adrPath, 'proposed', '000B-proposed-decision.md'), '---\r\ndate: 2026-10-02\r\n---\r\n\r\n# Proposed decision\r\n');
+    fs.writeFileSync(path.join(adrPath, 'archive', '000C-old-decision.md'), '---\ndate: 2026-09-01\nsuperseded_by: 000A-kept-decision.md\n---\n\n# Old decision\n');
+    fs.writeFileSync(path.join(adrPath, 'REGISTER.md'), '# ADR Register\n\nhand-written projection left alone by migrate\n');
+    const adrBefore = snapshot(adrPath);
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: preDdr }, null, 2)}\n`);
+    fs.rmSync(ddrPath, { recursive: true });
+    const migrated = run('migrate', '--project', project);
+    assert.equal(migrated.status, 0, `${migrated.stdout}\n${migrated.stderr}`);
+    assert.equal(migrated.report.status, 'migrated');
+    assert.deepEqual(migrated.report.added, ['collections.ddr']);
+    const after = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    assert.deepEqual(after.collections, COLLECTIONS, 'migrate appends exactly the ddr collection');
+    assert.deepEqual({ ...after, collections: preDdr }, { ...manifest, collections: preDdr }, 'nothing else in the manifest changes');
+    for (const folder of ['proposed', 'archive']) assert.equal(fs.lstatSync(path.join(ddrPath, folder)).isDirectory(), true, `migrate creates ddr/${folder}/`);
+    assert.deepEqual(snapshot(adrPath), adrBefore, 'every ADR record and projection is byte-identical after migrate');
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+    assert.equal(run('migrate', '--project', project).report.status, 'current');
+
+    // An existing ordinary ddr folder with room content is adopted as is.
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: preDdr }, null, 2)}\n`);
+    fs.rmSync(path.join(ddrPath, 'archive'), { recursive: true });
+    fs.writeFileSync(path.join(ddrPath, 'proposed', '000A-room-draft.md'), '# Room draft\n');
+    const adopted = run('migrate', '--project', project);
+    assert.equal(adopted.status, 0, `${adopted.stdout}\n${adopted.stderr}`);
+    assert.deepEqual(adopted.report.added, ['collections.ddr']);
+    assert.equal(fs.readFileSync(path.join(ddrPath, 'proposed', '000A-room-draft.md'), 'utf8'), '# Room draft\n', 'an existing record in the folder is kept');
+    assert.equal(fs.lstatSync(path.join(ddrPath, 'archive')).isDirectory(), true, 'a missing lifecycle folder is created');
+
+    // A file where the collection or a lifecycle folder belongs is refused
+    // before the manifest or anything else is written.
+    for (const blocked of [ddrPath, path.join(ddrPath, 'archive')]) {
+      fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: preDdr }, null, 2)}\n`);
+      fs.rmSync(ddrPath, { recursive: true, force: true });
+      if (blocked !== ddrPath) fs.mkdirSync(ddrPath, { recursive: true });
+      fs.writeFileSync(blocked, 'not a directory\n');
+      const refused = run('migrate', '--project', project);
+      assert.notEqual(refused.status, 0, `${path.relative(project, blocked)}: ${refused.stdout}`);
+      assert.equal(refused.report.error.code, 'lane-collision');
+      assert.deepEqual(JSON.parse(fs.readFileSync(manifestPath, 'utf8')).collections, preDdr, 'a refused migrate leaves the manifest unchanged');
+      assert.equal(fs.readFileSync(blocked, 'utf8'), 'not a directory\n');
+    }
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });
 
