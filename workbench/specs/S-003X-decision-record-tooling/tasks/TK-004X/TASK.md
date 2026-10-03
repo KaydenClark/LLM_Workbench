@@ -3,7 +3,7 @@
 **Task ID:** TK-004X
 **Spec ID:** S-003X
 **Slice:** Write, validate and register DDRs through the shared ADR runtime
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-004W
 **Destination:** spec-acceptance: S-003X Acceptance Criteria box 2 (the DDR command writes the next record into `proposed/` with a `DDR` visible identifier and refuses to overwrite an existing record), box 5 (validation refuses a DDR whose `canonicalized_in` names the Wiki) and the source, template and documentation part of box 6
