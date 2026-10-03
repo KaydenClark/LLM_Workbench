@@ -39,7 +39,7 @@
         {
           "id": "root-003",
           "text": "LLM Workbench is a portable operating harness through which a person can entrust\nan AI agent with a software project. The project itself carries enough product\nunderstanding, authority boundaries, working context and evidence for another\ncapable agent to continue it without the owner reconstructing the conversation.\n\n",
-          "disposition": "relocate-claim",
+          "disposition": "replaced-claim",
           "owner": "BLUEPRINT.md",
           "homes": [
             {
@@ -58,7 +58,7 @@
               "note": "Everything another agent needs to continue lives in the project repository."
             }
           ],
-          "reason": "The opening claim is rewritten on the short page; the owner rejected the harness wording.",
+          "reason": "The old opening, a portable operating harness, is replaced, not carried: the owner's harness answer says the workbench is an agentic management system and a harness means what it always has. The point that another capable agent can continue the project without the owner reconstructing the conversation is carried by the repository-context decision.",
           "section": "Product Destination"
         },
         {
@@ -214,7 +214,7 @@
         {
           "id": "root-011",
           "text": "An owner may explore an idea in conversation before it is clear enough to\nAlign. `grill-me`, brainstorming or wayfinding can open Align; a grilling\nsession starts through `grill-me`. Align reaches for research as far as a named\nuncertainty requires, and ends when owner and agent explicitly confirm a shared\ndesign concept. That confirmed concept is what gets blueprinted, so nothing is\nspecified from an understanding the two have not agreed on. A prototype is\noptional rather than a standard rung: it sits after the Blueprint and before a\nSpec, where existing evidence cannot settle whether an approach is plausible,\nand prototype code carries forward into the product only once it meets the same\nimplementation and verification requirements as any other work.\n\n",
-          "disposition": "relocate-claim",
+          "disposition": "replaced-claim",
           "owner": "workbench/docs/ddr/000B-only-a-confirmed-concept-is-mapped-planned-or-implemented.md",
           "homes": [
             {
@@ -238,7 +238,7 @@
               "note": "How a grilling starts and how far research goes."
             }
           ],
-          "reason": "Idea exploration, Align and the prototype rule have decision-record homes.",
+          "reason": "The old placement of an optional prototype after the Blueprint and before a Spec is replaced by the owner's later lock in the prototype decision (it can come before Confirm or between Confirm and Plan, and lands nothing in enduring context). The other claims, exploration before Align and what ends Align, are carried unchanged.",
           "section": "Desired Experience And Behavior"
         },
         {
@@ -384,7 +384,7 @@
         {
           "id": "root-017",
           "text": "The [Landmark Tracker](workbench/wiki/design-concepts/landmark-tracker.md)\nconnects evolving understanding to durable explanations. Destination Question\nCards (DQCs) synthesize related grilling questions and preserve unresolved\nmatters, changes, expected results and evidence. Landmarks bring those concepts\ntogether around important features or framework pillars; their importance earns\na place in the Blueprint. They can overlap, begin before a Spec and remain\nuseful after several Specs finish. Further landmarks emerge from DQCs, so an\nexhaustive inventory is never a prerequisite to building the foundation.\n\n",
-          "disposition": "relocate-claim",
+          "disposition": "replaced-claim",
           "owner": "workbench/wiki/design-concepts/landmark-tracker.md",
           "homes": [
             {
@@ -408,7 +408,7 @@
               "note": "A sentence big enough to need its own map becomes a landmark."
             }
           ],
-          "reason": "The Tracker is explained on its Wiki page; the landmark test is the Blueprint decision.",
+          "reason": "The old claim that a landmark's importance earns it a place in the Blueprint is replaced, not carried: the owner's landmark test runs the other way (a Blueprint sentence big enough to need its own map becomes a landmark) and is carried by the Blueprint decision. The Tracker description moves to its Wiki page.",
           "section": "Integrated System Design"
         },
         {
@@ -469,7 +469,7 @@
         {
           "id": "root-020",
           "text": "The starting concept map spans the portable room and its workflow; shared\nunderstanding and its Tracker; implementation visibility; ownership, artifacts,\nknowledge and navigation; agent behavior; continuity; verification and feedback;\nand room creation, updates, relationships and boundaries. The linked readable\nmodel preserves the initial landmark titles as an evolving map. General release\nbehavior belongs to the workflow; a version rollout is delivery work.\n\n",
-          "disposition": "relocate-claim",
+          "disposition": "replaced-claim",
           "owner": "workbench/landmark-tracker/landmarks/LMK-000K.json",
           "homes": [
             {
@@ -488,7 +488,7 @@
               "note": "Release behavior belongs to the workflow; no version-wide approval."
             }
           ],
-          "reason": "The starting concept map is the landmark records; the confirmed set replaces it.",
+          "reason": "The old starting concept map is replaced, not carried: the owner locked a seven-landmark set to replace the 24-item starting inventory. The landmark records and the migration Spec are its homes until the migration lands.",
           "section": "Integrated System Design"
         },
         {
@@ -684,7 +684,7 @@
         {
           "id": "root-028",
           "text": "New projects receive a coherent starter; existing projects adopt or explicitly\nupdate it while preserving their product truth and deliberate local differences.\nGenesis is first-time setup and leads into grilling so a new room can form its\nBlueprint. Setup and updates are separate from the governing idea-to-delivery\nworkflow below.\n\n",
-          "disposition": "relocate-claim",
+          "disposition": "replaced-claim",
           "owner": "workbench/docs/ddr/000S-setup-drafts-everything-it-can-and-grilling-confirms-it.md",
           "homes": [
             {
@@ -703,13 +703,13 @@
               "note": "Visible deliberate control divergence."
             }
           ],
-          "reason": "Setup, adoption and updates are accepted decisions.",
+          "reason": "The old line that Genesis leads into grilling so a new room can form its Blueprint is refined, not carried as written: the owner locked that setup drafts everything it can and grilling confirms it, never a blank Blueprint. The adoption and update claims are carried unchanged.",
           "section": "Desired Lifecycle"
         },
         {
           "id": "root-029",
           "text": "The owner can revisit this destination map when deciding where work belongs.\nArrows show progression; braces show loops and branches, including the return\nto Align after failed Human QA. The map is the owner's source, carried exactly\nas he confirmed it on 2026-09-24 (recorded by commit `482dc6b`, delivered by\nPR #151); it is kept verbatim, never normalized, and the prose after it is a\nseparately labeled interpretation:\n\n",
-          "disposition": "relocate-claim",
+          "disposition": "replaced-claim",
           "owner": "workbench/landmark-tracker/landmarks/LMK-000K.json",
           "homes": [
             {
@@ -723,7 +723,7 @@
               "note": "The owner map rewritten in the workflow verbs."
             }
           ],
-          "reason": "The introduction to the map moves with the map.",
+          "reason": "The old rule that the owner map is carried exactly as confirmed, kept verbatim and never normalized, is replaced, not carried: the owner said the map moves to the Workflow landmark and the Wiki, rewritten in the workflow verbs, and is no longer kept verbatim.",
           "section": "Desired Lifecycle"
         },
         {
@@ -894,7 +894,7 @@
         {
           "id": "root-038",
           "text": "Branch topology expresses the scope of coordinated work: the Director covers\nthe project and integration, each Dispatcher its assigned Spec branch, and each\nWorker its Task branch. A Spec branch is cut from the\nintegration branch, each Task branch is cut from its Spec branch and worked in\nits own worktree, and proven Task results accumulate in the Spec branch until\nthe assembled Spec is approved. No role works from main. As destination design\nfrom the same answers, a Task that advances the Blueprint directly, with no\nintermediate Spec destination, has its Task branch cut from integration and\nmerged back into it: the Dispatcher sends its Worker from integration, verifies\nthe result and merges it, and the Director checks it there. `AGENTS.md` owns the\noperative gate, and this destination route never bypasses its separate-context\nreview before branches combine into integration. A direct Task that outgrows\none context, or a run of them chasing one objective, becomes a Spec.\n\n",
-          "disposition": "relocate-claim",
+          "disposition": "replaced-claim",
           "owner": "workbench/docs/adr/000P-roles-scope-work-and-stances-define-the-job.md",
           "homes": [
             {
@@ -913,7 +913,7 @@
               "note": "Git Rules: the operative route and gate."
             }
           ],
-          "reason": "Branch topology is accepted decisions and Contract text.",
+          "reason": "The old text that the Director covers the project and integration is replaced, not carried: the accepted role decision gives integration to the Captain. The Spec-branch, Task-branch and direct-Blueprint-Task claims are carried unchanged.",
           "section": "Desired Lifecycle"
         },
         {
@@ -1134,7 +1134,7 @@
         {
           "id": "root-047",
           "text": "It does not become a hosted tracker, database, paid service, broad MCP server or\ngeneral project-management application. Personal task management and replacement\nof Command Information Center are outside its purpose. Startup context has no\npermanent Done lane or proof archive; historical tasks are not retrofitted into\nmanufactured specifications. The portable Workbench does not import Foundry\nFUIDs, Job Orders, flights, Claims, orchestration or CIC release machinery.\n",
-          "disposition": "relocate-claim",
+          "disposition": "gap",
           "owner": "BLUEPRINT.md",
           "homes": [
             {
@@ -1168,7 +1168,7 @@
               "note": "The Foundry boundary."
             }
           ],
-          "reason": "The project-management and transcript-archive non-goals stay on the short page; the hosted-service non-goal is an open owner item; the Foundry identifier clause is carried by the Foundry boundary decisions.",
+          "reason": "Partial gap: the project-management and transcript-archive non-goals stay on the short page, and the Foundry identifier clause is carried by the Foundry boundary decisions, but the clause that the workbench does not become a hosted tracker, database, paid service or broad MCP server has no decision-record home; the hosted-service line is withheld as an open owner item in the Spec, and the rest is not carried by the confirmed page. The project-management and transcript-archive non-goals stay on the short page; the hosted-service non-goal is an open owner item; the Foundry identifier clause is carried by the Foundry boundary decisions.",
           "section": "Non-Goals"
         }
       ]
