@@ -230,3 +230,118 @@ test('the index says a pointed skill or index row change is reviewed as a Contra
   assert.equal(resolved.index, 'RUNBOOK.md#operations-index');
   assert.deepEqual(resolved.dangling, [], 'no root index row points to a skill the lane lacks');
 });
+
+// S-004C operation families. Each family Task moves its operations'
+// procedures into lane skills: the index row points to the skill section that
+// now carries the procedure, that section holds the moved text, the Runbook
+// section keeps its heading (inbound anchors keep resolving) and either shrinks
+// to a sentence plus the same pointer or keeps only the lines with no home yet,
+// and the brief in `AGENTS.md` keeps only the family's always-true lines. A
+// later family adds its own entry here.
+const FAMILIES = [
+  {
+    task: 'TK-005F continuity and promotion',
+    rows: [
+      {
+        operation: 'Keep a JSON notepad', pointer: 'workbench/skills/notepad/SKILL.md#runtime-reference',
+        section: 'JSON Notepads', stub: true,
+        carries: ['Choose the artifact type prefix explicitly', 'Kinds are `directive`', 'per-revision publish token', '`trim` removes named reconciled entries and refuses with `retained-dependency`']
+      },
+      {
+        operation: 'Transfer work through a handoff', pointer: 'workbench/skills/handoff/SKILL.md#transfer-procedure',
+        section: 'Handoff Transfer', stub: true,
+        carries: ['For a deep dive on one question in the middle of a grilling', 'For a legacy JSON retaining destination, reconcile it before releasing retention']
+      },
+      {
+        operation: 'Transport sessions privately', pointer: 'workbench/skills/save/SKILL.md#optional-private-session-transport',
+        section: 'Optional Private Session Transport', stub: true,
+        carries: ['node workbench/tools/session-transport.mjs configure --checkout PRIVATE_CHECKOUT', 'For a same-note conflict, keep one active writer and reconcile deliberately']
+      },
+      {
+        operation: 'Save, promote or add a room-local skill', pointer: 'workbench/skills/save/SKILL.md#how-save-and-promote-compose',
+        section: 'Portable Save, Promote And Room-Local Skills', stub: false,
+        carries: ['A promotion that was already performed must not be recursively promoted by save']
+      },
+      {
+        operation: 'Promote claims to an owner', pointer: 'workbench/skills/promote/SKILL.md#command-reference',
+        section: 'Direct Owner Promotion', stub: true,
+        carries: ['`--expected` is the SHA-256 of the destination bytes just read', 'Spec checks reuse lifecycle diagnostics and preserve existing append-only rows']
+      },
+      {
+        operation: { root: 'Read frozen checkpoints or recovery receipts', template: 'Read frozen history or recovery receipts' },
+        pointer: 'workbench/skills/checkpoint/SKILL.md#frozen-history-and-operational-recovery',
+        section: { root: 'Frozen Checkpoint History And Operational Recovery', template: 'Frozen History And Operational Recovery' }, stub: true,
+        carries: ['For a restoration rehearsal, preserve the changed target', 'node workbench/tools/sessions.mjs scan --file PATH']
+      },
+      {
+        operation: 'Size and continue work', pointer: 'workbench/skills/notepad/SKILL.md#continuing-after-a-save-or-handoff',
+        section: 'Evidence And Continuation Practices', stub: false,
+        carries: ['Saving context or authoring a requested handoff does not terminate a session']
+      },
+      {
+        operation: 'Size and continue work', pointer: 'workbench/skills/save/SKILL.md#evidence-partitioning',
+        section: 'Evidence And Continuation Practices', stub: false,
+        carries: ['When an assigned evidence record needs partitioning, first pin the source commit']
+      }
+    ],
+    agents: {
+      section: 'Session Records And Checkpoints',
+      keeps: [
+        /authorizes nothing/, /verify relevant live state/, /secrets/, /never cite an ignored live path as durable evidence/i,
+        /Promote only supported claims/, /RUNBOOK\.md#operations-index/
+      ],
+      moved: [/notepads\.mjs/, /notepad-templates/, /Landmark Tracker/, /sessions\/recovery/, /flush or delete/]
+    }
+  }
+];
+
+const pick = (value, label) => (typeof value === 'string' ? value : value[label]);
+
+for (const family of FAMILIES) {
+  for (const carrier of carriers) {
+    test(`${carrier.label} ${family.task}: index rows point to the lane skills that carry the moved procedures`, () => {
+      const { rows, all } = indexOf(carrier.runbook);
+      for (const row of family.rows) {
+        const operation = pick(row.operation, carrier.label);
+        const found = rows.find(({ cells }) => cells[0] === operation);
+        assert.ok(found, `${carrier.runbook}: the index has a "${operation}" row`);
+        assert.ok(links(found.cells[2]).includes(row.pointer), `${carrier.runbook}: row "${operation}" points to ${row.pointer}`);
+        const resolved = resolvePointer(carrier.runbook, row.pointer);
+        assert.ok(resolved.ok, `${carrier.runbook}: ${row.pointer} resolves (${resolved.reason})`);
+        const [skillFile, fragment] = row.pointer.split('#');
+        const skillSection = headings(read(skillFile)).find((heading) => heading.slug === fragment);
+        const carried = normalize(skillSection.body);
+        for (const phrase of row.carries) {
+          assert.ok(carried.includes(normalize(phrase)), `${skillFile}#${fragment} carries the moved procedure line: ${phrase}`);
+        }
+        const title = pick(row.section, carrier.label);
+        const section = all.find((heading) => heading.title === title);
+        assert.ok(section, `${carrier.runbook}: the "${title}" heading survives`);
+        assert.ok(links(section.body).includes(row.pointer), `${carrier.runbook}: "${title}" points to ${row.pointer}`);
+        if (row.stub) {
+          assert.doesNotMatch(section.body, /```/, `${carrier.runbook}: "${title}" keeps no procedure block`);
+          assert.ok(normalize(section.body).length <= 700, `${carrier.runbook}: "${title}" is a sentence plus a pointer (${normalize(section.body).length} chars)`);
+        }
+      }
+    });
+
+    test(`${carrier.label} ${family.task}: AGENTS keeps only the family's always-true lines`, () => {
+      const section = headings(read(carrier.agents)).find((heading) => heading.title === family.agents.section);
+      assert.ok(section, `${carrier.agents}: "${family.agents.section}" survives`);
+      const body = normalize(section.body);
+      for (const pattern of family.agents.keeps) assert.match(body, pattern, `${carrier.agents}: the brief keeps ${pattern}`);
+      for (const pattern of family.agents.moved) assert.doesNotMatch(body, pattern, `${carrier.agents}: ${pattern} moved behind its pointer`);
+    });
+  }
+
+  test(`${family.task}: the root index makes each home skill binding for its operations`, async () => {
+    const { resolveSkillPointers } = await import('../workbench/tools/skill-inspection.mjs');
+    const resolved = resolveSkillPointers(JSON.parse(read('workbench/manifest.json')), root);
+    for (const row of family.rows) {
+      const skill = row.pointer.split('/')[2];
+      const pointed = resolved.pointed.find((entry) => entry.skill === skill);
+      assert.ok(pointed, `${skill} is binding through the index`);
+      assert.ok(pointed.operations.includes(pick(row.operation, 'root')), `${skill} binds for "${pick(row.operation, 'root')}"`);
+    }
+  });
+}
