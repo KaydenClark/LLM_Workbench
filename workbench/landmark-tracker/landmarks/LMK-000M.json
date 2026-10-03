@@ -1,0 +1,26 @@
+{
+  "schema": "landmark-tracker/landmark@1",
+  "id": "LMK-000M",
+  "revision": 1,
+  "title": "Ownership Model",
+  "summary": "Every kind of truth has an identifiable owner, with information ownership distinct from authority to act.",
+  "importance": "A feature or framework pillar on the core path that deserves Blueprint representation, from the starting inventory the owner approved on 2026-09-26 (landmark-definition note decision-037); boundaries remain refinable and overlap is allowed.",
+  "origin": {
+    "title": "Ownership Model",
+    "summary": "Every kind of truth has an identifiable owner, with information ownership distinct from authority to act.",
+    "revision": 1,
+    "at": "2026-10-01T23:49:58.228Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:58.228Z",
+      "reason": "Owner-approved 2026-09-26 starting-inventory candidate; at least one backfilled card clearly belongs to it: DQC-001I, DQC-001J, DQC-001K, DQC-001L, DQC-001M, DQC-001N, DQC-001O, DQC-001P, DQC-001Q, DQC-001R, DQC-001S, DQC-001T, DQC-001U, DQC-006H.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    }
+  ]
+}

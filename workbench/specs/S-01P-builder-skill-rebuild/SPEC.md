@@ -1,17 +1,17 @@
 # S-01P - builder skill rebuild
 
 **Spec ID:** S-01P
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** codex-s01p-builder
 **Stance:** Builder
-**Updated:** 2026-09-24
+**Updated:** 2026-10-03
 **Catalog description:** Deliver the assigned result with useful verification and truthful documentation.
-**Blockers:** none for planning; implementation is not assigned.
-**Latest event:** Per-skill destination extracted from the oversized Skills Wiki packet and current core inventory.
-**Next gate:** Review this skill's existing behavior, then activate TK-01G for this skill only.
+**Blockers:** none; independent behavioral evidence assessment remains a delivery gate.
+**Latest event:** Builder candidate landed on integration through the Lane A consolidation: codex/s01p-builder-route-assembly e4c8d8d6 merged with current integration, full AGENTS suite 48/48 PASS at 460761f6; landed only after a separate-context PASS on the landing PR.
+**Next gate:** Independent inspection of the two producer-reported Servitor trials (acceptance criterion 3) before TK-01G can close; owner Human QA follows. No acceptance box is checked.
 
-> **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
+> **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`82cd8d1fbc79cb871429439a059be792bc59c137`.
 
 ## Outcome
 
@@ -23,9 +23,9 @@ The prior Skills Wiki packet grouped the whole core inventory into one completio
 
 ## Current Verified State
 
-- `workbench/skills/builder/SKILL.md` is the manifest-declared core source at the pre anchor.
-- `workbench/wiki/skill-builder.md` is not yet routed as a current skill article; its existence and links must be rechecked before authoring.
-- The stance is set by the assigned Spec and Task. No fresh behavioral scenario for this per-skill delivery is claimed by this planning packet.
+- At the original pre anchor, Builder was the manifest-declared source and its individual article was not authored. The source and article are present at `git show 74dd407aef68d63c597637dab9b7cfe9706f7243:workbench/skills/builder/SKILL.md` and `git show 74dd407aef68d63c597637dab9b7cfe9706f7243:workbench/wiki/skill-builder.md`; the sole MEMORY index now routes the article, applied by the coordinator at 3b0451ce2330325da9390663f1614b2b27285828.
+- The stance remains set by the assigned Spec and Task. Source SHA-256 `03af6e33fcc07a38152ecc66f94e4f12b506ca0c23120dd3c3353f2b954170fc` matches the source named in the coordinator's two Servitor trial reports.
+- The new reports are attributed producer observations, not raw behavioral evidence independently inspected by this author. The evidence log and `proof/producer-observations.md` state their limits; acceptance remains unchecked.
 
 ## Desired Behavior
 
@@ -53,7 +53,6 @@ No other skill rebuild is a blanket prerequisite. Check current controls and the
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-01G | Audit builder, deliver the smallest supported source/documentation change and prove the routed article | ready | none | pending |
 
 ### TK-01G - Deliver the builder skill destination
 
@@ -100,9 +99,20 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane. When ther
 | 2026-09-24 | planning | Owner directed one delivery Spec per skill; this Spec names builder's destination and first slice | Current manifest, core catalog, source presence and Wiki route inspected at pre anchor; no behavior change or scenario trial | This Spec authored; article remains future work | TK-01G and independent delivery proof remain open |
 | 2026-09-24 | planning verification | Skill-sized ownership and routing checked on the isolated candidate | All 47 required AGENTS commands passed; Wiki validation and exact 21 core plus one proposed entry coverage passed; doctor has no blocking finding; pre/post self-drift at 4940233 retained the same seven pre-existing findings and cleanUpdate false | No skill source or new article authored in this planning pass | Immutable separate-context review and actual skill behavior remain open |
 
+| 2026-10-01 | TK-01G activation | Native `convert-tasks S-01P --activate` preserved TK-01G; remote claim by codex-s01p-builder committed and pushed at `59c67a916f24f8cd41745c26edf50925fa879952` | Fetched all advertised remote heads from integration `e96766f0e7b73e7159d1a748dffefc79569d267d`; every reachable S-01P header was planned/unassigned; no owner collision; first two claim attempts correctly refused uncommitted native conversion/projection before committing them | Existing Task converted; generated Taskboard and catalog only; no global ID allocation | Assigned implementation only; no merge or main modification |
+| 2026-10-01 | TK-01G source contract | Unbounded helper-composition wording and implicit completion report repaired at `82cd8d1f` | New `node tools/test-builder-skill.mjs` failed 2/3 at red commit `64c46d64`; 3/3 green after repair; `proof/contract-red.txt` and `proof/contract-green.txt` preserve outputs; these are source-text checks, not behavioral validation | Individual article and synthetic scenario authored; `proof/wiki-validation.txt` records successful Wiki validation | Fresh-context behavioral observation and independent review remain unperformed; coordinator serializes MEMORY route |
+
+| 2026-10-01 | TK-01G verification | All required suite commands executed; source implementation candidate `82cd8d1f` | `proof/suite-results.json`: 48/48 exact AGENTS commands, 3/3 additional RUNBOOK commands and 1/1 focused test passed; Wiki validate, diff whitespace check, citation-anchor check and proposed MEMORY patch application check passed | Article is curated partial context; coordinator owns single router hunk in `proof/memory-route.patch`; `proof/pr-body.md` prepared after GitHub API Forbidden | Actual fresh-context Builder behavior and independent review not run; TK-01G remains in progress; no review or Human QA PASS |
+| 2026-10-01 | TK-01G drift | Guardrail score unchanged at 78/100; no clean-update claim | `proof/verification-notes.md` distinguishes flawed initial in-tree receipt captures from reconstructed clean-base receipt and corrected outside-tree post capture; seven baseline findings remain outside this Task | Docs checked; no update needed for shared controls, runtime, identity or generic templates because their contracts are unchanged | Repeated outcome trials, coordinator route and independent candidate review remain; no private scenario material transferred |
+
+| 2026-10-01 | TK-01G producer observations | Parent and release coordinator relayed two fresh Servitor trials from separate observer `01a0f166`, using source `74dd407aef68d63c597637dab9b7cfe9706f7243`; limited attributed update authorized | `proof/producer-observations.md`: producer reports genuine red to 2/2 green at local candidate `504dfa1023a241be42dcf213f97bef800561c7f0`, and red to 13/13 behavior green with required module still failing `ERR_MODULE_NOT_FOUND` exit 1 at `0d232bc95b89df9e9ebb988c4d1b302144c5247a`; this context checked only the matching Builder hash, not raw traces or fixture commits | Both reportedly maintained scoped records, in-progress receipts and truthful exact handbacks; no spawn or push events observed; seven setup/launch failures retained; untracked collector artifact prevents any clean-final-tree claim | Raw evidence remains producer-local; no independent author inspection, reliability, installed discovery, acceptance, closure or Human QA claim; prior source-only review PASS is parent-reported and does not review this update |
+| 2026-10-01 | TK-01G current-base assembly | Preserved original branch and candidate; assembled on integration `d90785908b26517068a474bb88136c81995a2f18` in separate branch `codex/s01p-tk01g-current-base` at `9b132fed1d138cce3308cdda1cec5d159857ec7f` | Merge applied cleanly; Builder source unchanged and matching reported hash; shared runtime changes are inherited from integration, not authored in this Task | Historical proof retained; coordinator's single MEMORY hunk remains unapplied here | Refreshed full checks and separate review of the updated immutable candidate remain required; no merge into integration or main |
+
+| 2026-10-01 | TK-01G current-base verification | Refreshed source-proof checks on evidence candidate `00c1cff52784a28305a8bacd4fc9c3f078e68236`, assembled from integration `d90785908b26517068a474bb88136c81995a2f18` | `proof/suite-currentbase-results.json`: all 48 exact AGENTS commands, three additional RUNBOOK commands and the focused Builder contract test passed; Wiki validation, citation-anchor check, whitespace check and MEMORY patch application check passed; six prior evidence rows and unchanged Builder hash checked locally | Coordinator confirms later serialized MEMORY assembly; `proof/pr-body.md` updated for the preserved-original/current-base branches; no acceptance checkboxes changed | Separate exact-candidate review remains pending; reported trials are not author-inspected raw evidence; no closure, native verdict, Human QA, integration or main claim |
+
 ## Completion Result
 
-Pending. Planning only; no builder rebuild or behavioral acceptance is claimed.
+Implementation candidate only. The Builder source now bounds composed helpers to the assigned Task and caller endpoint and names result, evidence, documentation state and remaining risk at exit. TK-01G remains in progress. Two fresh trials are now coordinator-reported from a separate Servitor observer, with explicit raw-evidence and fixture limitations. The parent reports prior source-only review PASS; this evidence/current-base candidate still needs separate exact review. The individual article is reachable from the sole MEMORY index. No acceptance checkoff, independent author verification of the trials, integration or release is claimed.
 
 ## Supersession
 

@@ -1,0 +1,202 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-005I",
+  "revision": 7,
+  "title": "Which focused fixtures demonstrate the portable layout and preservation seams?",
+  "question": "Which focused fixtures demonstrate the portable layout and preservation seams?",
+  "answer": "V3-17: Focused red/green fixtures plus real Genesis and Adoption exercises prove the portable contract; the v2 upgrade path receives its own migration fixture.\nV3-17A: Valid and invalid manifests, legacy-path migration, missing-skill install, existing-skill preservation, explicitly authorized update with backup, project-local shadows, conflicting destinations, and portable path handling.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-17, V3-17A (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "V3-17 update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Acceptance Criteria, Testing Seams, Verification Procedure): Names the red/green fixtures and the fresh Genesis, mixed Adoption and v2 update exercises. | V3-17 create tools/test-workbench-layout.mjs, tools/test-workbench-adoption.mjs, tools/test-workbench-upgrade.mjs: Focused fixtures for Genesis, Adoption and the v2 upgrade. | V3-17A update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Testing Seams): Lists disposable homes, filesystem fixtures and manifest parser cases covering each named case. | V3-17A create tools/test-core-skill-installer.mjs: Missing-only install, existing-skill preservation, foreign root and explicit update with backup cases. | V3-17A create tools/test-workbench-layout.mjs: Manifest validity, traversal and absolute path rejection cases.",
+    "home": "workbench/specs/S-021-portable-workbench-v3/SPEC.md (Acceptance Criteria, Testing Seams, Verification Procedure); tools/test-workbench-layout.mjs, tools/test-workbench-adoption.mjs, tools/test-workbench-upgrade.mjs; workbench/specs/S-021-portable-workbench-v3/SPEC.md (Testing Seams); tools/test-core-skill-installer.mjs; tools/test-workbench-layout.mjs",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-17",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-17A",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000B",
+    "LMK-000H"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "V3-17",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-17 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-17A",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-17A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Which focused fixtures demonstrate the portable layout and preservation seams?",
+    "question": "Which focused fixtures demonstrate the portable layout and preservation seams?",
+    "sources": [
+      {
+        "id": "V3-17",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-17A",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:30.877Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:30.877Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 136 of the 2026-09-26 grouping (\"Updates, drift and release evidence\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The historical suite covers manifests, migration, collisions, skill preservation, explicit backup updates and portable paths.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:30.907Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "V3-17: Focused red/green fixtures plus real Genesis and Adoption exercises prove the portable contract; the v2 upgrade path receives its own migration fixture.\nV3-17A: Valid and invalid manifests, legacy-path migration, missing-skill install, existing-skill preservation, explicitly authorized update with backup, project-local shadows, conflicting destinations, and portable path handling."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-17, V3-17A (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "V3-17 update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Acceptance Criteria, Testing Seams, Verification Procedure): Names the red/green fixtures and the fresh Genesis, mixed Adoption and v2 update exercises. | V3-17 create tools/test-workbench-layout.mjs, tools/test-workbench-adoption.mjs, tools/test-workbench-upgrade.mjs: Focused fixtures for Genesis, Adoption and the v2 upgrade. | V3-17A update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Testing Seams): Lists disposable homes, filesystem fixtures and manifest parser cases covering each named case. | V3-17A create tools/test-core-skill-installer.mjs: Missing-only install, existing-skill preservation, foreign root and explicit update with backup cases. | V3-17A create tools/test-workbench-layout.mjs: Manifest validity, traversal and absolute path rejection cases.",
+            "home": "workbench/specs/S-021-portable-workbench-v3/SPEC.md (Acceptance Criteria, Testing Seams, Verification Procedure); tools/test-workbench-layout.mjs, tools/test-workbench-adoption.mjs, tools/test-workbench-upgrade.mjs; workbench/specs/S-021-portable-workbench-v3/SPEC.md (Testing Seams); tools/test-core-skill-installer.mjs; tools/test-workbench-layout.mjs",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:30.937Z",
+      "reason": "Ledger row V3-17 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-17",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:30.971Z",
+      "reason": "Ledger row V3-17A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-17A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:31.009Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:53.685Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Portable Workbench pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000B"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:56.100Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000B"
+          ],
+          "to": [
+            "LMK-000B",
+            "LMK-000H"
+          ]
+        }
+      ]
+    }
+  ]
+}

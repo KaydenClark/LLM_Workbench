@@ -1,0 +1,184 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-003T",
+  "revision": 6,
+  "title": "What qualifies as a backlog item, and where should it live?",
+  "question": "What qualifies as a backlog item, and where should it live?",
+  "answer": "E-4: Backlog: 'things I have asked for, but we have not decided to start yet. They are wish list items basically... just on the edge of the frontier that we know we want to go there.' It is the residual lane. The done-Task half was split into E-4A, E-4B and E-4C and answered there.\nE-4A: As a bare-bones Spec, which can be as little as one sentence and be improved later. 'Why can't we have backlog spec items?... Anything not a part of v4 got moved to the backlog.' 'If I have asked for it, and described it, it should go on here.' Backlog is the residual lane. No separate BL- record type.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: E-4, E-4A (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "E-4 create board Spec (TASKBOARD.json board): Backlog lane defined as owner-requested wish-list work not yet started; residual lane. | E-4 update workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md: Amended to carry the Backlog meaning. | E-4 update LEXICON.md (+ templates/LEXICON.md): Inference: LEXICON.md defines Backlog as a board term. | E-4A create board Spec (TASKBOARD.json board): Spec validation accepts a one-sentence Spec without flagging it; such Specs sit in Backlog. | E-4A update workbench/tools/spec-workbench.mjs and templates/SPEC.md: Doctor and the Spec parser accept a minimal Backlog Spec.",
+    "home": "board Spec (TASKBOARD.json board); workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md; LEXICON.md (+ templates/LEXICON.md); workbench/tools/spec-workbench.mjs and templates/SPEC.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "E-4",
+      "revision": "56b459da"
+    },
+    {
+      "id": "E-4A",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000Q"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "E-4",
+      "revision": "56b459da",
+      "reason": "Ledger row E-4 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "E-4A",
+      "revision": "56b459da",
+      "reason": "Ledger row E-4A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What qualifies as a backlog item, and where should it live?",
+    "question": "What qualifies as a backlog item, and where should it live?",
+    "sources": [
+      {
+        "id": "E-4",
+        "revision": "56b459da"
+      },
+      {
+        "id": "E-4A",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:24.651Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:24.651Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 094 of the 2026-09-26 grouping (\"Taskboard and work representation\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Requested but not-yet-started work can live as a minimal planned Spec, even a sentence; no separate backlog record type is needed.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:24.674Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "E-4: Backlog: 'things I have asked for, but we have not decided to start yet. They are wish list items basically... just on the edge of the frontier that we know we want to go there.' It is the residual lane. The done-Task half was split into E-4A, E-4B and E-4C and answered there.\nE-4A: As a bare-bones Spec, which can be as little as one sentence and be improved later. 'Why can't we have backlog spec items?... Anything not a part of v4 got moved to the backlog.' 'If I have asked for it, and described it, it should go on here.' Backlog is the residual lane. No separate BL- record type."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: E-4, E-4A (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "E-4 create board Spec (TASKBOARD.json board): Backlog lane defined as owner-requested wish-list work not yet started; residual lane. | E-4 update workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md: Amended to carry the Backlog meaning. | E-4 update LEXICON.md (+ templates/LEXICON.md): Inference: LEXICON.md defines Backlog as a board term. | E-4A create board Spec (TASKBOARD.json board): Spec validation accepts a one-sentence Spec without flagging it; such Specs sit in Backlog. | E-4A update workbench/tools/spec-workbench.mjs and templates/SPEC.md: Doctor and the Spec parser accept a minimal Backlog Spec.",
+            "home": "board Spec (TASKBOARD.json board); workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md; LEXICON.md (+ templates/LEXICON.md); workbench/tools/spec-workbench.mjs and templates/SPEC.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:24.696Z",
+      "reason": "Ledger row E-4 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "E-4",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:24.723Z",
+      "reason": "Ledger row E-4A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "E-4A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:24.750Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:00.622Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Taskboard pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000Q"
+          ]
+        }
+      ]
+    }
+  ]
+}

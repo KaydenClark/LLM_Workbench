@@ -1,0 +1,26 @@
+{
+  "schema": "landmark-tracker/landmark@1",
+  "id": "LMK-000G",
+  "revision": 1,
+  "title": "Workbench Updates",
+  "summary": "Rooms receive improvements while preserving local choices and detecting target-room and upstream self-drift.",
+  "importance": "A feature or framework pillar on the core path that deserves Blueprint representation, from the starting inventory the owner approved on 2026-09-26 (landmark-definition note decision-037); boundaries remain refinable and overlap is allowed.",
+  "origin": {
+    "title": "Workbench Updates",
+    "summary": "Rooms receive improvements while preserving local choices and detecting target-room and upstream self-drift.",
+    "revision": 1,
+    "at": "2026-10-01T23:49:54.985Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:54.985Z",
+      "reason": "Owner-approved 2026-09-26 starting-inventory candidate; at least one backfilled card clearly belongs to it: DQC-000T, DQC-000X, DQC-000Z, DQC-001S, DQC-001T, DQC-004H, DQC-004V, DQC-005C, DQC-005D, DQC-005E, DQC-005F, DQC-005G, DQC-005H, DQC-005N, DQC-005P.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    }
+  ]
+}

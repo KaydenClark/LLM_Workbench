@@ -175,7 +175,11 @@ While a Task is in progress, record meaningful tests, documentation and gaps
 with `receipt`. Commit and push the verified candidate and Receipt before
 `close`, checking that the remote branch names the local SHA; close refuses a
 dirty or unpushed tree unless `--git-state-reason TEXT` explicitly records why.
-Commit and publish the resulting close evidence and projections as well:
+`--git-state-reason` writes the observed state and the reason into the Receipt
+row and the Spec evidence row, where a reviewer reads what was waived. `doctor`
+reports `detached-head` and `untracked-controls` (untracked control, ADR or
+Spec files) without blocking. Commit and publish the resulting close evidence
+and projections as well:
 
 ```bash
 node workbench/tools/spec-workbench.mjs receipt S-### --task TK-### \
@@ -190,9 +194,10 @@ node workbench/tools/spec-workbench.mjs doctor
 
 `close` closes the first in-progress Task in that Spec, appending its final
 Receipt and Spec evidence before marking the record done. It does not select
-a ready Task or complete the Spec. One writer must ensure the claimed Task is
-the one being closed; do not close unrelated work. A Receipt records live Git
-facts and stated checks; it is neither review nor owner approval.
+a ready Task or complete the Spec, and refuses a Spec with no in-progress Task.
+One writer must ensure the claimed Task is the one being closed; do not close
+unrelated work. A Receipt records live Git facts and stated checks; it is
+neither review nor owner approval.
 
 Dependencies remain explicit: plain Spec IDs require `complete` or
 `superseded`, and plain Task IDs require done. `S-###:delivered` instead requires
@@ -289,6 +294,14 @@ afterward. Static coverage or token reduction is not agent-outcome evidence.
 
 Documentation is part of done; the implementing agent is documentation owner.
 
+Every use of the Workbench reads the Wiki and, when the work changed what a
+page says, updates that page on the same branch; the operation's own
+authority covers its Wiki update, with no per-page approval. End each Wiki
+update with a lint of the touched pages; the whole-Wiki lint runs at Spec
+review when the Spec's work is verified, and its findings become corrective
+Tasks. Identifiers on a page always carry the artifact's name and context.
+In chat, never refer to an artifact by its identifier alone.
+
 This authoring summary assigns documentation maintenance. The
 [Lexicon ownership schema](LEXICON.md#artifact-ownership-schema) defines the
 jobs and provides the question-to-owner routes and artifact boundaries. Keep
@@ -304,7 +317,7 @@ those routes consistent with these assignments when ownership changes.
 | commands and troubleshooting | `RUNBOOK.md` |
 | public usage | `README.md` |
 | active architectural decisions, rationale, alternatives, supersession | `workbench/docs/adr/` (`canonicalized_in` names operational owners) |
-| durable knowledge, design concepts, captured features and their routes | `workbench/wiki/` (`MEMORY.md` router, `SCHEMA.md` rules; post-completion knowledge in the manifest-declared `features` collection, never copied Task state) |
+| evolving synthesis, design concepts, capability and reference pages | `workbench/wiki/` (`MEMORY.md` router, `SCHEMA.md` rules; completed capabilities in the manifest-declared `features` collection, never copied Task state) |
 
 The agent changing a truth maintains its existing owner within the authorized
 scope: update definitions when meaning changes, procedures when operations

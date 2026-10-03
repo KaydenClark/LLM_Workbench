@@ -1,0 +1,264 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-005Q",
+  "revision": 8,
+  "title": "What should a setup-only Round One establish?",
+  "question": "What should a setup-only Round One establish?",
+  "answer": "WB-1: Build the redesigned workflow, then complete Round One: a fresh agent uses the reduced route, Wiki and ADRs to confirm the Workbench is set up correctly. Only after Round One succeeds, produce a reviewed, evidence-backed harness-feedback report and show cold continuation to its accepted next action. The report must not authorize or include a repair to the harness it evaluates.\nWB-11: Build only the four stance skills, the reduced ordinary entry route (AGENTS.md -> RUNBOOK.md -> LEXICON.md), and the feedback-report workflow and format in the existing feedback lane before running the first report. Implement it step by step.\nWB-13: Round One is not a harness-feedback or review test. It succeeds when a fresh agent uses the reduced entry route, consults the Wiki and relevant ADRs, and determines the Workbench is set up correctly. Passing that orientation-and-configuration proof is mission success for Round One; review and feedback testing follow afterward.\nWB-14: The agent inspects the Workbench using the intended route and returns to the current chat to confirm it works. Round One creates no feedback report, handoff, checkpoint, self-created task or other prose artifact.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-1, WB-11, WB-13, WB-14 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WB-1 create workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md: Spec owns the sequence: build route and stances, chat-only Round One, then feedback reporting and fresh-context continuation. | WB-1 create workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md: Accepted decision: setup proof precedes feedback reporting; reports never repair or authorize repair of their targets. | WB-1 update RUNBOOK.md (Ordinary Entry; Manual Harness Feedback Reports) and templates/RUNBOOK.md: Round One precedes feedback testing; the report workflow runs only after a setup-only Round One succeeds. | WB-11 create workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md TK-001: One ticket builds route and stances, runs Round One, then delivers feedback reporting and continuation. | WB-11 create workbench/feedback/REPORT_FORMAT.md: Report format in the feedback lane. | WB-11 create workbench/skills/builder, auditor, reviewer, reconciler: The four stance skills. | WB-13 update RUNBOOK.md (Ordinary Entry, Round One paragraph) and templates/RUNBOOK.md: Round One is a setup-only check by a fresh agent and precedes feedback testing. | WB-13 create workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md: Setup proof by a fresh agent precedes feedback reporting. | WB-13 create workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md: Desired Behavior 3 and acceptance: fresh Round One agent verifies setup via the intended route. | WB-14 update RUNBOOK.md (Ordinary Entry, Round One paragraph) and templates/RUNBOOK.md: Round One returns its result in chat only: no report, handoff, checkpoint, self-created task or other prose artifact. | WB-14 update AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md: 'A read-only setup check may return only in chat.' | WB-14 create workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md: Round One creates no prose artifact.",
+    "home": "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md; workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md; RUNBOOK.md (Ordinary Entry; Manual Harness Feedback Reports) and templates/RUNBOOK.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md TK-001; workbench/feedback/REPORT_FORMAT.md; workbench/skills/builder, auditor, reviewer, reconciler; RUNBOOK.md (Ordinary Entry, Round One paragraph) and templates/RUNBOOK.md; AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "WB-1",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WB-11",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WB-13",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WB-14",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000W"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 7
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WB-1",
+      "revision": "56b459da",
+      "reason": "Ledger row WB-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WB-11",
+      "revision": "56b459da",
+      "reason": "Ledger row WB-11 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WB-13",
+      "revision": "56b459da",
+      "reason": "Ledger row WB-13 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WB-14",
+      "revision": "56b459da",
+      "reason": "Ledger row WB-14 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What should a setup-only Round One establish?",
+    "question": "What should a setup-only Round One establish?",
+    "sources": [
+      {
+        "id": "WB-1",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WB-11",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WB-13",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WB-14",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:32.760Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:32.760Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 144 of the 2026-09-26 grouping (\"Feedback and evaluation\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: A fresh agent uses the reduced route, Wiki and relevant ADRs to verify configuration. Its result can be chat-only, before feedback reporting begins.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:32.792Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WB-1: Build the redesigned workflow, then complete Round One: a fresh agent uses the reduced route, Wiki and ADRs to confirm the Workbench is set up correctly. Only after Round One succeeds, produce a reviewed, evidence-backed harness-feedback report and show cold continuation to its accepted next action. The report must not authorize or include a repair to the harness it evaluates.\nWB-11: Build only the four stance skills, the reduced ordinary entry route (AGENTS.md -> RUNBOOK.md -> LEXICON.md), and the feedback-report workflow and format in the existing feedback lane before running the first report. Implement it step by step.\nWB-13: Round One is not a harness-feedback or review test. It succeeds when a fresh agent uses the reduced entry route, consults the Wiki and relevant ADRs, and determines the Workbench is set up correctly. Passing that orientation-and-configuration proof is mission success for Round One; review and feedback testing follow afterward.\nWB-14: The agent inspects the Workbench using the intended route and returns to the current chat to confirm it works. Round One creates no feedback report, handoff, checkpoint, self-created task or other prose artifact."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-1, WB-11, WB-13, WB-14 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WB-1 create workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md: Spec owns the sequence: build route and stances, chat-only Round One, then feedback reporting and fresh-context continuation. | WB-1 create workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md: Accepted decision: setup proof precedes feedback reporting; reports never repair or authorize repair of their targets. | WB-1 update RUNBOOK.md (Ordinary Entry; Manual Harness Feedback Reports) and templates/RUNBOOK.md: Round One precedes feedback testing; the report workflow runs only after a setup-only Round One succeeds. | WB-11 create workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md TK-001: One ticket builds route and stances, runs Round One, then delivers feedback reporting and continuation. | WB-11 create workbench/feedback/REPORT_FORMAT.md: Report format in the feedback lane. | WB-11 create workbench/skills/builder, auditor, reviewer, reconciler: The four stance skills. | WB-13 update RUNBOOK.md (Ordinary Entry, Round One paragraph) and templates/RUNBOOK.md: Round One is a setup-only check by a fresh agent and precedes feedback testing. | WB-13 create workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md: Setup proof by a fresh agent precedes feedback reporting. | WB-13 create workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md: Desired Behavior 3 and acceptance: fresh Round One agent verifies setup via the intended route. | WB-14 update RUNBOOK.md (Ordinary Entry, Round One paragraph) and templates/RUNBOOK.md: Round One returns its result in chat only: no report, handoff, checkpoint, self-created task or other prose artifact. | WB-14 update AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md: 'A read-only setup check may return only in chat.' | WB-14 create workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md: Round One creates no prose artifact.",
+            "home": "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md; workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md; RUNBOOK.md (Ordinary Entry; Manual Harness Feedback Reports) and templates/RUNBOOK.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md TK-001; workbench/feedback/REPORT_FORMAT.md; workbench/skills/builder, auditor, reviewer, reconciler; RUNBOOK.md (Ordinary Entry, Round One paragraph) and templates/RUNBOOK.md; AGENTS.md (Assigned Work And Stances) and templates/AGENTS.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:32.824Z",
+      "reason": "Ledger row WB-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WB-1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:32.862Z",
+      "reason": "Ledger row WB-11 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WB-11",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:32.899Z",
+      "reason": "Ledger row WB-13 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WB-13",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:32.936Z",
+      "reason": "Ledger row WB-14 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WB-14",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:32.973Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:50:02.028Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Harness Feedback Review pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000W"
+          ]
+        }
+      ]
+    }
+  ]
+}

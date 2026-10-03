@@ -1,0 +1,186 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-003A",
+  "revision": 6,
+  "title": "What evidence should precede building an unattended coordinator?",
+  "question": "What evidence should precede building an unattended coordinator?",
+  "answer": "FND-Q17e: A coordinator comes later; first prove single-Task execution: \"There should be a coordinator, but that will be built in a little bit. Right now let's just prove that we can execute a task every single time consistently.\" Backlog after v4.\nWF-10: 'Its more B': there should be a coordinator, but it will be built later. 'Right now let's just prove that we can execute a task every single time consistently.' Future capabilities are planned on the Blueprint; not every Spec is built now.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q17e (deferred, settled as later work); WF-10 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "FND-Q17e update BLUEPRINT.md (future direction): A coordinator/runner is planned future direction, not a v4 build obligation. | WF-10 update BLUEPRINT.md: Plans the coordinator as future scope; the current proof target is consistent single-Task execution. The coordinator gets no Spec in the current rollout.",
+    "home": "BLUEPRINT.md (future direction); BLUEPRINT.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [
+    "FND-Q17e (deferred, backlog after v4): whether a portable unattended runner is required waits until single-Task execution is proven consistent."
+  ],
+  "sources": [
+    {
+      "id": "FND-Q17e",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-10",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000D"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "FND-Q17e",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q17e (deferred) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-10",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-10 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What evidence should precede building an unattended coordinator?",
+    "question": "What evidence should precede building an unattended coordinator?",
+    "sources": [
+      {
+        "id": "FND-Q17e",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-10",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:22.496Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:22.496Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 075 of the 2026-09-26 grouping (\"Shared claims, host capabilities and coordination\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The owner deferred the coordinator until single-Task execution can be performed consistently.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:22.517Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "FND-Q17e: A coordinator comes later; first prove single-Task execution: \"There should be a coordinator, but that will be built in a little bit. Right now let's just prove that we can execute a task every single time consistently.\" Backlog after v4.\nWF-10: 'Its more B': there should be a coordinator, but it will be built later. 'Right now let's just prove that we can execute a task every single time consistently.' Future capabilities are planned on the Blueprint; not every Spec is built now."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q17e (deferred, settled as later work); WF-10 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "FND-Q17e update BLUEPRINT.md (future direction): A coordinator/runner is planned future direction, not a v4 build obligation. | WF-10 update BLUEPRINT.md: Plans the coordinator as future scope; the current proof target is consistent single-Task execution. The coordinator gets no Spec in the current rollout.",
+            "home": "BLUEPRINT.md (future direction); BLUEPRINT.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:22.538Z",
+      "reason": "Ledger row FND-Q17e (deferred) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q17e",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:22.561Z",
+      "reason": "Ledger row WF-10 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-10",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:22.584Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:54.061Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Agent Autonomy pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000D"
+          ]
+        }
+      ]
+    }
+  ]
+}

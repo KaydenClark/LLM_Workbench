@@ -14,7 +14,7 @@ import { checkHostFloor, formatHostFloor } from './host-floor.mjs';
 import { capabilitySession } from './optional-capabilities.mjs';
 import { coordinationContext, publicCoordination, publishClaim } from './claim-coordination.mjs';
 import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, declaredGit, lanePath, liveRecordPath, markdownLinkTargets, readManifest } from './workbench-paths.mjs';
-import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenceSection, validateAdrs, writeRegister } from './adr.mjs';
+import { parseFrontmatter, planReferenceRewrite, splitEvidenceSection, validateAdrs, writeDecisionRegisters } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { ARTIFACT_ID_MIN_WIDTH, allocateArtifactId, compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
 import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseFormerId, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
@@ -1452,6 +1452,12 @@ function collectionFindings(root) {
   } catch (error) {
     findings.push(finding('invalid-adr', `ADR validation failed: ${error.message}`));
   }
+  // S-003X TK-004X: the DDR collection carries its findings beside the ADR's.
+  try {
+    if (fs.existsSync(collectionPath(root, 'ddr'))) findings.push(...validateAdrs(root, { kind: 'ddr' }));
+  } catch (error) {
+    findings.push(finding('invalid-ddr', `DDR validation failed: ${error.message}`));
+  }
   try {
     if (fs.existsSync(lanePath(root, 'wiki'))) findings.push(...validateWiki(root));
   } catch (error) {
@@ -2151,6 +2157,8 @@ function collectSpecReferenceFiles(root, excludeDir) {
   walk(path.join(root, 'skills'), (name) => name.endsWith('.md'), true);
   walk(path.join(root, 'team templates'), (name) => name.endsWith('.md'));
   walk(collectionPath(root, 'adr'), (name) => name.endsWith('.md'));
+  // S-003X TK-004Y: links inside Destination Decision Records are repaired too.
+  walk(collectionPath(root, 'ddr'), (name) => name.endsWith('.md'));
   walk(resolveSpecsRoot(root).specsRoot, (name) => name === 'SPEC.md' || name === 'TASK.md');
   const seen = new Set();
   return files.filter((file) => {
@@ -2252,26 +2260,11 @@ function preflightReferenceWrites(root, files, locations, options = {}) {
   }
 }
 
-// The pure half of `rewriteReferenceFile`: computes the rewritten bytes for
-// `original` (read from wherever the caller holds it) as the file that will
-// live at `filePath`, records the counts in `totals` under that path, and
-// returns the new content, or null when no live match changed. `widen-id`
-// (S-01W TK-002O) plans every rewrite with this before it touches the tree, so
-// a refusal can never leave a partial mutation; the lifecycle moves keep
-// calling `rewriteReferenceFile` exactly as before.
-function planReferenceRewrite(root, filePath, original, oldDir, newDir, locations, totals, options = {}) {
-  const { prefix, evidence, suffix } = splitEvidenceSection(original);
-  const canonicalized = rewriteCanonicalizedIn(prefix, root, locations);
-  const rewrittenPrefix = rewriteAdrLinks(canonicalized.content, oldDir, newDir, locations, options);
-  const rewrittenSuffix = rewriteAdrLinks(suffix, oldDir, newDir, locations, options);
-  const skippedInEvidence = rewriteAdrLinks(evidence, oldDir, newDir, locations, options).count;
-  const relative = path.relative(root, filePath).split(path.sep).join('/');
-  if (skippedInEvidence > 0) totals.historicalReferencesLeft[relative] = (totals.historicalReferencesLeft[relative] ?? 0) + skippedInEvidence;
-  const rewritten = rewrittenPrefix.count + rewrittenSuffix.count + canonicalized.count;
-  if (rewritten === 0) return null;
-  totals.referencesRewritten[relative] = (totals.referencesRewritten[relative] ?? 0) + rewritten;
-  return rewrittenPrefix.content + evidence + rewrittenSuffix.content;
-}
+// The pure half of `rewriteReferenceFile` is `planReferenceRewrite` in
+// adr.mjs (moved there by S-003X TK-004Y so the decision-record moves share
+// it): it computes the rewritten bytes without touching the tree. `widen-id`
+// (S-01W TK-002O) plans every rewrite with it before it writes, so a refusal
+// can never leave a partial mutation.
 
 // S-00I TK-003: moves a completed Spec's whole directory (Task records and
 // all) from the top level into a `SPEC_LIFECYCLE_FOLDERS` folder, with `git
@@ -2373,7 +2366,7 @@ export function moveSpecDirectory(rootDir, specId, folder) {
   // separate `adr register` call the move's own candidate would otherwise
   // need. A room with no ADR collection at all is left alone - nothing here
   // may conjure one into existence.
-  if (fs.existsSync(collectionPath(root, 'adr'))) writeRegister(root);
+  writeDecisionRegisters(root);
 
   // Corrective review finding 3: `git mv` already stages the rename; leaving
   // the content rewrites above unstaged would show the candidate as a mix
@@ -2502,7 +2495,7 @@ export function moveTaskRecord(rootDir, specId, taskId, folder, options = {}) {
   // name a Task path), which leaves REGISTER.md's derived projection stale
   // by construction exactly as a Spec move does. A room with no ADR
   // collection at all is left alone.
-  if (fs.existsSync(collectionPath(root, 'adr'))) writeRegister(root);
+  writeDecisionRegisters(root);
 
   // Corrective review finding 3 from TK-003, reused unchanged here: `git mv`
   // already stages the rename; stage the content rewrites above too, so the
@@ -2722,7 +2715,9 @@ function recoverTaskCollision(rootDir, specId, taskId, folder, options) {
     if (fs.readFileSync(path.join(root, file), 'utf8').includes(relative(oldDir))) fail(`unhandled JSON path reference in ${file}; reconcile its owner first`);
   }
   const projections = [path.join(root, 'BLUEPRINT.md'), path.join(root, 'TASKBOARD.md'), path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md')];
-  if (fs.existsSync(collectionPath(root, 'adr'))) projections.push(...['REGISTER.md', 'HISTORY.md'].map(name => path.join(collectionPath(root, 'adr'), name)));
+  for (const collection of ['adr', 'ddr']) {
+    if (fs.existsSync(collectionPath(root, collection))) projections.push(...['REGISTER.md', 'HISTORY.md'].map(name => path.join(collectionPath(root, collection), name)));
+  }
   const originals = new Map();
   for (const file of new Set([...moving, ...[...writes.keys()].map(file => file.startsWith(newDir + path.sep) ? path.join(oldDir, path.relative(newDir, file)) : file), ...projections])) {
     assertSafeWritePath(root, file);
@@ -2744,7 +2739,7 @@ function recoverTaskCollision(rootDir, specId, taskId, folder, options) {
   try {
     git('mv', '--', relative(oldDir), relative(newDir));
     for (const [file, bytes] of writes) writeSafeFile(root, file, bytes);
-    if (fs.existsSync(collectionPath(root, 'adr'))) writeRegister(root);
+    writeDecisionRegisters(root);
     render(root);
     git('add', '-A');
   } catch (error) {
@@ -2935,7 +2930,7 @@ function applyIdentityWiden(root, oldDir, newDir, edits, validate) {
   try {
     moveRecordDirectory(root, oldDir, newDir);
     for (const [file, content] of writes) writeSafeFile(root, file, content);
-    if (fs.existsSync(collectionPath(root, 'adr'))) writeRegister(root);
+    writeDecisionRegisters(root);
     if (projections) render(root);
     spawnSync('git', ['-C', root, 'add', '-A']);
   } catch (error) {
@@ -3286,7 +3281,7 @@ export function retireSpec(rootDir, specId, options = {}) {
   atomicWrite(movedSpec.filePath, updatedContent);
 
   render(root);
-  if (fs.existsSync(collectionPath(root, 'adr'))) writeRegister(root);
+  writeDecisionRegisters(root);
   spawnSync('git', ['-C', root, 'add', '-A']);
 
   return {

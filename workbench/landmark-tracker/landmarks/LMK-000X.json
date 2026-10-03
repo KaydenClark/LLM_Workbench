@@ -1,0 +1,26 @@
+{
+  "schema": "landmark-tracker/landmark@1",
+  "id": "LMK-000X",
+  "revision": 1,
+  "title": "Landmark Tracker",
+  "summary": "DQCs and landmarks maintain evolving understanding; Tracker exposes documentation progress and relationships.",
+  "importance": "A feature or framework pillar on the core path that deserves Blueprint representation, from the starting inventory the owner approved on 2026-09-26 (landmark-definition note decision-037); boundaries remain refinable and overlap is allowed.",
+  "origin": {
+    "title": "Landmark Tracker",
+    "summary": "DQCs and landmarks maintain evolving understanding; Tracker exposes documentation progress and relationships.",
+    "revision": 1,
+    "at": "2026-10-01T23:50:02.189Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:50:02.189Z",
+      "reason": "Owner-approved 2026-09-26 starting-inventory candidate; at least one backfilled card clearly belongs to it: DQC-005U, DQC-005V, DQC-005W, DQC-005X, DQC-005Y, DQC-005Z, DQC-006A, DQC-006B, DQC-006C, DQC-006D, DQC-006E, DQC-006G, DQC-006I, DQC-006J, DQC-006K, DQC-006L.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    }
+  ]
+}

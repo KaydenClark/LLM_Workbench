@@ -1,0 +1,168 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000H",
+  "revision": 7,
+  "title": "How should incomplete setup report its result and recovery path?",
+  "question": "How should incomplete setup report its result and recovery path?",
+  "answer": "PW-3: 'We already locked in a version of 1. When we update the workbenches, we update the skills. LLM_Workbench owns the skills it needs to. We store them all in workbench/skills.' Core skills are tracked in every room at workbench/skills and replaced by the ordinary Workbench update; no provider home, personal catalog or bootstrap is on the critical path.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: PW-3 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 3
+  },
+  "expectedResult": {
+    "change": "V3-15B update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Desired Behavior): A blocked skill installation or path collision leaves a truthful recoverable partial result with exact remediation. | V3-15B create tools/core-skill-installer.mjs: Reports blocked or partial status with remediation text. | V3-15B create workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md: Genesis readiness fails closed on a missing lane receipt or broken adapter instead.",
+    "home": "workbench/specs/S-021-portable-workbench-v3/SPEC.md (Desired Behavior); tools/core-skill-installer.mjs; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md",
+    "revision": 7
+  },
+  "result": null,
+  "uncertainty": [
+    "V3-15B is superseded in part (the provider-home install); per its ledger note the truthful-partial-result principle still applies to lane and adapter failures, but no locked ledger row of its own carries it."
+  ],
+  "sources": [
+    {
+      "id": "V3-15B",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000U"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "PW-3",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-3 (locked) at 56b459da, related as the successor of superseded V3-15B; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should incomplete setup report its result and recovery path?",
+    "question": "How should incomplete setup report its result and recovery path?",
+    "sources": [
+      {
+        "id": "V3-15B",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:06.614Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:06.614Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 124 of the 2026-09-26 grouping (\"Genesis, Adoption and the reference Template\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Earlier Genesis explicitly retained a truthful partial scaffold and remediation on failed installation. The later skill lane changes the failure scenario, not permission to claim unproved readiness. Superseded lineage kept as sources and represented by successors: V3-15B (successor PW-3).",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:50:01.583Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Genesis and Adoption pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000U"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:58:37.866Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "PW-3: 'We already locked in a version of 1. When we update the workbenches, we update the skills. LLM_Workbench owns the skills it needs to. We store them all in workbench/skills.' Core skills are tracked in every room at workbench/skills and replaced by the ordinary Workbench update; no provider home, personal catalog or bootstrap is on the critical path."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: PW-3 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:58:37.925Z",
+      "reason": "Ledger row PW-3 (locked) at 56b459da, related as the successor of superseded V3-15B; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-3",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:58:37.988Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:58:38.119Z",
+      "reason": "Correct the inconsistent first capture after separate-context review.",
+      "changes": [
+        {
+          "field": "correction",
+          "to": "The first backfill capture (revision 1) named PW-3 as the successor of V3-15B but left the card with no relation, answer or assessment, unlike every other card holding a superseded row. Separate-context review of candidate 3d584a81 found the inconsistency; the uniform rule now applies: PW-3 is related and answers the superseded provider-home part, and the surviving truthful-partial-result principle stays an uncertainty."
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-02T00:09:45.293Z",
+      "reason": "Record the Expected result the ledger already names for V3-15B, after separate-context review.",
+      "changes": [
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "V3-15B update workbench/specs/S-021-portable-workbench-v3/SPEC.md (Desired Behavior): A blocked skill installation or path collision leaves a truthful recoverable partial result with exact remediation. | V3-15B create tools/core-skill-installer.mjs: Reports blocked or partial status with remediation text. | V3-15B create workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md: Genesis readiness fails closed on a missing lane receipt or broken adapter instead.",
+            "home": "workbench/specs/S-021-portable-workbench-v3/SPEC.md (Desired Behavior); tools/core-skill-installer.mjs; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md",
+            "revision": 7
+          }
+        },
+        {
+          "field": "correction",
+          "to": "Revision 7 left Expected result empty because the card has no non-superseded row of its own. Separate-context review of 2b94f0b7 found that inconsistent with the lane rule. For a card whose only row is superseded, Expected result comes from that row's own ledger result items, which name this destination and its ADR-000M fail-closed replacement; PW-3's results stay with the cards that carry the skills lane."
+        }
+      ]
+    }
+  ]
+}
