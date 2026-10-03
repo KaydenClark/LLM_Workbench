@@ -1,0 +1,250 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-002W",
+  "revision": 8,
+  "title": "What authorizes work, and what does a claim merely record?",
+  "question": "What authorizes work, and what does a claim merely record?",
+  "answer": "TT-Q6: The owner's instruction is the authorization; the claim is recorded by pushing it on the Task branch (PW-6).\nPW-6: Option 1: push the claim, read the remotes. claim creates the task branch from integration, commits the claim as its first commit and pushes at once; next and claim fetch all refs and overlay Task state from every remote tip. No direct claim commit on integration. The PR carries closure. A no-remote session falls back to local and says so.\nU313-1B: This session owns all six.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: TT-Q6 (answered in chat, recovered from the owner's own messages); PW-6, U313-1B (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "TT-Q6 update AGENTS.md (Instruction Authority, Work Selection claim step) and templates/AGENTS.md: The owner's instruction authorizes work; the claim is pushed on the Task branch. | TT-Q6 update LEXICON.md and templates/LEXICON.md: Distinguish selection, claim and authorization if the terms are kept. | PW-6 update workbench/tools/spec-workbench.mjs claim and next: Push on claim; fetch-before-select; remote-tip overlay. | PW-6 create new ADR: claim on the task branch with fetch-all: Records the claim mechanism. | PW-6 update RUNBOOK.md claim procedure: Documents push/fetch. | PW-6 update TASKBOARD render: Reads remote tips so in-flight claims show. | PW-6 update workbench/specs/S-00V-portable-workbench/SPEC.md: Slice: push-on-claim and fetch-before-select. | U313-1B update workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (header Owner and ticket owners): S-045 owned by the Claude session for all six tickets; Codex's S-046 lane untouched.",
+    "home": "AGENTS.md (Instruction Authority, Work Selection claim step) and templates/AGENTS.md; LEXICON.md and templates/LEXICON.md; workbench/tools/spec-workbench.mjs claim and next; new ADR: claim on the task branch with fetch-all; RUNBOOK.md claim procedure; TASKBOARD render; workbench/specs/S-00V-portable-workbench/SPEC.md; workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (header Owner and ticket owners)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "TT-Q6",
+      "revision": "56b459da"
+    },
+    {
+      "id": "PW-6",
+      "revision": "56b459da"
+    },
+    {
+      "id": "U313-1B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "U313-5",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000D",
+    "LMK-000K"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "TT-Q6",
+      "revision": "56b459da",
+      "reason": "Ledger row TT-Q6 (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "PW-6",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-6 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "U313-1B",
+      "revision": "56b459da",
+      "reason": "Ledger row U313-1B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What authorizes work, and what does a claim merely record?",
+    "question": "What authorizes work, and what does a claim merely record?",
+    "sources": [
+      {
+        "id": "TT-Q6",
+        "revision": "56b459da"
+      },
+      {
+        "id": "PW-6",
+        "revision": "56b459da"
+      },
+      {
+        "id": "U313-1B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "U313-5",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:22.057Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:22.057Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 069 of the 2026-09-26 grouping (\"Shared claims, host capabilities and coordination\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The owner’s instruction authorizes work; claiming records shared execution state rather than creating authority. Not related: U313-5 (withdrawn).",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:22.076Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "TT-Q6: The owner's instruction is the authorization; the claim is recorded by pushing it on the Task branch (PW-6).\nPW-6: Option 1: push the claim, read the remotes. claim creates the task branch from integration, commits the claim as its first commit and pushes at once; next and claim fetch all refs and overlay Task state from every remote tip. No direct claim commit on integration. The PR carries closure. A no-remote session falls back to local and says so.\nU313-1B: This session owns all six."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: TT-Q6 (answered in chat, recovered from the owner's own messages); PW-6, U313-1B (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "TT-Q6 update AGENTS.md (Instruction Authority, Work Selection claim step) and templates/AGENTS.md: The owner's instruction authorizes work; the claim is pushed on the Task branch. | TT-Q6 update LEXICON.md and templates/LEXICON.md: Distinguish selection, claim and authorization if the terms are kept. | PW-6 update workbench/tools/spec-workbench.mjs claim and next: Push on claim; fetch-before-select; remote-tip overlay. | PW-6 create new ADR: claim on the task branch with fetch-all: Records the claim mechanism. | PW-6 update RUNBOOK.md claim procedure: Documents push/fetch. | PW-6 update TASKBOARD render: Reads remote tips so in-flight claims show. | PW-6 update workbench/specs/S-00V-portable-workbench/SPEC.md: Slice: push-on-claim and fetch-before-select. | U313-1B update workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (header Owner and ticket owners): S-045 owned by the Claude session for all six tickets; Codex's S-046 lane untouched.",
+            "home": "AGENTS.md (Instruction Authority, Work Selection claim step) and templates/AGENTS.md; LEXICON.md and templates/LEXICON.md; workbench/tools/spec-workbench.mjs claim and next; new ADR: claim on the task branch with fetch-all; RUNBOOK.md claim procedure; TASKBOARD render; workbench/specs/S-00V-portable-workbench/SPEC.md; workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md (header Owner and ticket owners)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:22.096Z",
+      "reason": "Ledger row TT-Q6 (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "TT-Q6",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:22.119Z",
+      "reason": "Ledger row PW-6 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-6",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:22.141Z",
+      "reason": "Ledger row U313-1B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "U313-1B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:22.164Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:54.023Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Agent Autonomy pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000D"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:57.757Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000D"
+          ],
+          "to": [
+            "LMK-000D",
+            "LMK-000K"
+          ]
+        }
+      ]
+    }
+  ]
+}

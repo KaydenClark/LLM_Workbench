@@ -1,0 +1,224 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-002B",
+  "revision": 7,
+  "title": "When does an ADR become active architectural Canon?",
+  "question": "When does an ADR become active architectural Canon?",
+  "answer": "BPR-4: Yes. An accepted, non-superseded ADR is authoritative for its cross-cutting decision until it is explicitly superseded, and it 'preserves the reasons behind what has been done'. It does not need to be copied into another control to bind.\nBPR-3: Planes classify claims, not whole ADRs. In an accepted, non-superseded ADR the active decision claim is architectural Canon; rationale and alternatives usually give Grounding; provenance and history may give Enduring Context. A proposed ADR holds no Canon. A superseded ADR keeps historical context while its explicit successor carries active Canon.\nACC-1: Reconcile ADR-000B/C/D to the locked answers, then accept them now without another owner reread. A confirmed grilling Question / Answer / Why / Impact readback locks the ADR; to-docs authors it before Specs and Tasks.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-4, BPR-3, ACC-1 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "BPR-4 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Accepted, non-superseded ADR decision claims are architectural Canon directly; canonicalized_in names operational owners and is not a duplication prerequisite; no instruction authority is granted. | BPR-4 retire workbench/docs/adr/archive/0002-binding-rules-stay-in-current-controls.md: Wholly superseded by ADR-000A. | BPR-4 update AGENTS.md (State Resolution) and templates/AGENTS.md: State accepted active ADR decision claims are architectural Canon without enlarging instruction authority. | BPR-3 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Say planes classify one claim in one operation, never a whole ADR; rationale, provenance and alternatives stay distinct from the active decision. | BPR-3 retire workbench/docs/adr/archive/0025-planes-classify-claims-not-whole-artifacts.md: Wholly superseded by ADR-000A. | BPR-3 update AGENTS.md (State Resolution) and templates/AGENTS.md: Active ADR decision claims are Canon; rationale and historical alternatives remain evidence. | BPR-3 update LEXICON.md (Governance Core, ADR term) and templates/LEXICON.md: Define ADR so decision and rationale stay distinguishable. | ACC-1 update workbench/docs/adr/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md, workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md, workbench/docs/adr/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md: Reconciled decisions are active; ADR-0013/0033 are superseded in archive. | ACC-1 update workbench/specs/S-00G-ownership-map-root-control/SPEC.md: Acceptance gate cleared; map implementation remains.",
+    "home": "workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md; workbench/docs/adr/archive/0002-binding-rules-stay-in-current-controls.md; AGENTS.md (State Resolution) and templates/AGENTS.md; workbench/docs/adr/archive/0025-planes-classify-claims-not-whole-artifacts.md; LEXICON.md (Governance Core, ADR term) and templates/LEXICON.md; workbench/docs/adr/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md, workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md, workbench/docs/adr/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md; workbench/specs/S-00G-ownership-map-root-control/SPEC.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "BPR-4",
+      "revision": "56b459da"
+    },
+    {
+      "id": "BPR-3",
+      "revision": "56b459da"
+    },
+    {
+      "id": "ACC-1",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000F"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "BPR-4",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-4 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "BPR-3",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "ACC-1",
+      "revision": "56b459da",
+      "reason": "Ledger row ACC-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "When does an ADR become active architectural Canon?",
+    "question": "When does an ADR become active architectural Canon?",
+    "sources": [
+      {
+        "id": "BPR-4",
+        "revision": "56b459da"
+      },
+      {
+        "id": "BPR-3",
+        "revision": "56b459da"
+      },
+      {
+        "id": "ACC-1",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:19.693Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:19.693Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 048 of the 2026-09-26 grouping (\"Blueprint and architectural decision records\"), grilling ledger at 56b459da.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:19.709Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "BPR-4: Yes. An accepted, non-superseded ADR is authoritative for its cross-cutting decision until it is explicitly superseded, and it 'preserves the reasons behind what has been done'. It does not need to be copied into another control to bind.\nBPR-3: Planes classify claims, not whole ADRs. In an accepted, non-superseded ADR the active decision claim is architectural Canon; rationale and alternatives usually give Grounding; provenance and history may give Enduring Context. A proposed ADR holds no Canon. A superseded ADR keeps historical context while its explicit successor carries active Canon.\nACC-1: Reconcile ADR-000B/C/D to the locked answers, then accept them now without another owner reread. A confirmed grilling Question / Answer / Why / Impact readback locks the ADR; to-docs authors it before Specs and Tasks."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-4, BPR-3, ACC-1 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "BPR-4 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Accepted, non-superseded ADR decision claims are architectural Canon directly; canonicalized_in names operational owners and is not a duplication prerequisite; no instruction authority is granted. | BPR-4 retire workbench/docs/adr/archive/0002-binding-rules-stay-in-current-controls.md: Wholly superseded by ADR-000A. | BPR-4 update AGENTS.md (State Resolution) and templates/AGENTS.md: State accepted active ADR decision claims are architectural Canon without enlarging instruction authority. | BPR-3 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Say planes classify one claim in one operation, never a whole ADR; rationale, provenance and alternatives stay distinct from the active decision. | BPR-3 retire workbench/docs/adr/archive/0025-planes-classify-claims-not-whole-artifacts.md: Wholly superseded by ADR-000A. | BPR-3 update AGENTS.md (State Resolution) and templates/AGENTS.md: Active ADR decision claims are Canon; rationale and historical alternatives remain evidence. | BPR-3 update LEXICON.md (Governance Core, ADR term) and templates/LEXICON.md: Define ADR so decision and rationale stay distinguishable. | ACC-1 update workbench/docs/adr/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md, workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md, workbench/docs/adr/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md: Reconciled decisions are active; ADR-0013/0033 are superseded in archive. | ACC-1 update workbench/specs/S-00G-ownership-map-root-control/SPEC.md: Acceptance gate cleared; map implementation remains.",
+            "home": "workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md; workbench/docs/adr/archive/0002-binding-rules-stay-in-current-controls.md; AGENTS.md (State Resolution) and templates/AGENTS.md; workbench/docs/adr/archive/0025-planes-classify-claims-not-whole-artifacts.md; LEXICON.md (Governance Core, ADR term) and templates/LEXICON.md; workbench/docs/adr/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md, workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md, workbench/docs/adr/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md; workbench/specs/S-00G-ownership-map-root-control/SPEC.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:19.726Z",
+      "reason": "Ledger row BPR-4 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-4",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:19.744Z",
+      "reason": "Ledger row BPR-3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-3",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:19.763Z",
+      "reason": "Ledger row ACC-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "ACC-1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:19.781Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:54.795Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Artifact Types pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000F"
+          ]
+        }
+      ]
+    }
+  ]
+}

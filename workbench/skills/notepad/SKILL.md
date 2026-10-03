@@ -59,12 +59,16 @@ notes. Never
 commit one, and never cite one as durable evidence.
 
 For a new visible identity, use `notepads.mjs allocate --prefix N` with the
-same objective/title fields. The returned ID is the
-visible label and filename; no second identity is added. Read an allocated or
-legacy visible ID through `--id ID`, even when its existing filename differs.
-Use `--note` for the original filename/path lookup. Use one writer, preserve existing paths, and reconcile unreadable or ambiguous
-inventory before allocating. The Runbook owns alphabet, width and collision
-rules; neither an ID nor allocation grants authority.
+same objective/title fields. The returned ID is the visible label and filename;
+no second identity is added. New labels follow the shared artifact policy:
+uppercase `0-9A-Z`, minimum width four, with at least one letter (`N-000A`).
+Read an allocated or legacy visible ID through `--id ID`, even when its
+existing filename differs; any spelling of the same identity (legacy `N-00A`,
+`N-000a`) resolves to that one note, and legacy notes are never renamed.
+Use `--note` for the original filename/path lookup. Use one writer, preserve
+existing paths, and reconcile unreadable or ambiguous inventory before
+allocating. The Runbook owns the full alphabet, width and collision rules;
+neither an ID nor allocation grants authority.
 
 Before dependent work, name the active note and returned revision in local
 execution state, verify relevant Actuality, and correct any stale current view.

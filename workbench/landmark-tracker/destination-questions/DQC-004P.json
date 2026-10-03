@@ -1,0 +1,306 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-004P",
+  "revision": 9,
+  "title": "What makes a handoff useful to its receiving context?",
+  "question": "What makes a handoff useful to its receiving context?",
+  "answer": "BPR-R2: A human-readable Markdown handoff. The handoff skill 'already should require' this, and its wording should say explicitly that a handoff is a human-readable Markdown file. The JSON notepad stays the working context and is not the handoff.\nBPR-R4: The handoff succeeds when the new chat can complete the task it was created for, using the authority and context the handoff carries. Success is not measured by completing ceremony after the handoff file exists.\nBPR-R1: The prior chat 'failed at the beginning' because it never actually started a grilling session. Had it started correctly, stopping the grilling session would have been the endpoint. The handoff should then carry the owner-authorized task and authority plus all needed context from the grilling notepad.\nTT-Q7: A fresh Chat is needed when the context is used up, and for the separate-context review. Handoffs are Markdown written for a new Chat. TT-Q4 adds that each Task gets its own Chat.\nTT-Q9: A handoff is Markdown for a new Chat or agent; a notepad is the JSON working record; a notepad belongs to its objective, not to the Chat, model or host that created it (ADR-000L).",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-R2, BPR-R4, BPR-R1 (locked); TT-Q7 (answered in chat, recovered from the owner's own messages); TT-Q9 (partially answered; the open part is an uncertainty). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "BPR-R2 update workbench/skills/handoff/SKILL.md: Say handoffs are readable Markdown in the declared handoffs collection; never generate a new JSON handoff. | BPR-R2 update AGENTS.md (Session Records And Checkpoints) and templates/AGENTS.md: Handoffs are separate human-readable Markdown files; do not serialize a handoff as a JSON notepad. | BPR-R4 update workbench/skills/handoff/SKILL.md: Read the Markdown as the recipient: can they state the job, limits and next step; file existence alone is insufficient. | BPR-R1 update workbench/skills/grilling/SKILL.md: Explicit user direction to stop or hand off ends the interview; hand-off exit composes a Markdown handoff with the exact requested job. | BPR-R1 update workbench/skills/handoff/SKILL.md: State the exact job and endpoint; mentioning make-it-so or carry cannot expand it; carry inherited authorization and notepad context. | TT-Q7 update AGENTS.md (Session Records, integration review gate) and templates/AGENTS.md: Fresh Chat for exhausted context and for separate-context review; handoffs are Markdown for a new Chat. | TT-Q7 update LEXICON.md (Chat, Scoped handoff rows) and templates/LEXICON.md: Consistent with one Task per Chat. | TT-Q9 create workbench/docs/adr/000L-a-notepad-belongs-to-its-objective-and-every-chat-working-that-objective-writes-to-it.md: A notepad belongs to its objective; every context that can reach it resumes it, one writer at a time; ownership is decided, concurrency is not. | TT-Q9 update AGENTS.md (Session Records) and templates/AGENTS.md: Notepads are objective-owned JSON; handoffs are Markdown for a new Chat. | TT-Q9 update LEXICON.md (Notepad row) and templates/LEXICON.md: Notepad belongs to its objective. | TT-Q9 update workbench/skills/notepad/SKILL.md: Keep the check-not-a-lock warning; say the writer rule bounds overlapping writes, not chat ownership; writer-neutral stale-revision; purpose-distinct creation rule.",
+    "home": "workbench/skills/handoff/SKILL.md; AGENTS.md (Session Records And Checkpoints) and templates/AGENTS.md; workbench/skills/grilling/SKILL.md; AGENTS.md (Session Records, integration review gate) and templates/AGENTS.md; LEXICON.md (Chat, Scoped handoff rows) and templates/LEXICON.md; workbench/docs/adr/000L-a-notepad-belongs-to-its-objective-and-every-chat-working-that-objective-writes-to-it.md; AGENTS.md (Session Records) and templates/AGENTS.md; LEXICON.md (Notepad row) and templates/LEXICON.md; workbench/skills/notepad/SKILL.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [
+    "TT-Q9 (partially answered): the Spec and Task parts of the chat, notepad, handoff, Spec and Task continuity relationship remain unstated beyond the Packet row."
+  ],
+  "sources": [
+    {
+      "id": "BPR-R2",
+      "revision": "56b459da"
+    },
+    {
+      "id": "BPR-R4",
+      "revision": "56b459da"
+    },
+    {
+      "id": "BPR-R1",
+      "revision": "56b459da"
+    },
+    {
+      "id": "TT-Q7",
+      "revision": "56b459da"
+    },
+    {
+      "id": "TT-Q9",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000P"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 8
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "BPR-R2",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-R2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "BPR-R4",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-R4 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "BPR-R1",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-R1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "TT-Q7",
+      "revision": "56b459da",
+      "reason": "Ledger row TT-Q7 (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "TT-Q9",
+      "revision": "56b459da",
+      "reason": "Ledger row TT-Q9 (partially-answered) at 56b459da; assessed Aligning from its status only.",
+      "assessment": {
+        "contributions": {
+          "Aligning": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 7
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What makes a handoff useful to its receiving context?",
+    "question": "What makes a handoff useful to its receiving context?",
+    "sources": [
+      {
+        "id": "BPR-R2",
+        "revision": "56b459da"
+      },
+      {
+        "id": "BPR-R4",
+        "revision": "56b459da"
+      },
+      {
+        "id": "BPR-R1",
+        "revision": "56b459da"
+      },
+      {
+        "id": "TT-Q7",
+        "revision": "56b459da"
+      },
+      {
+        "id": "TT-Q9",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:27.879Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:27.879Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 116 of the 2026-09-26 grouping (\"Continuity, notes, handoffs and transport\"), grilling ledger at 56b459da.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:27.906Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "BPR-R2: A human-readable Markdown handoff. The handoff skill 'already should require' this, and its wording should say explicitly that a handoff is a human-readable Markdown file. The JSON notepad stays the working context and is not the handoff.\nBPR-R4: The handoff succeeds when the new chat can complete the task it was created for, using the authority and context the handoff carries. Success is not measured by completing ceremony after the handoff file exists.\nBPR-R1: The prior chat 'failed at the beginning' because it never actually started a grilling session. Had it started correctly, stopping the grilling session would have been the endpoint. The handoff should then carry the owner-authorized task and authority plus all needed context from the grilling notepad.\nTT-Q7: A fresh Chat is needed when the context is used up, and for the separate-context review. Handoffs are Markdown written for a new Chat. TT-Q4 adds that each Task gets its own Chat.\nTT-Q9: A handoff is Markdown for a new Chat or agent; a notepad is the JSON working record; a notepad belongs to its objective, not to the Chat, model or host that created it (ADR-000L)."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-R2, BPR-R4, BPR-R1 (locked); TT-Q7 (answered in chat, recovered from the owner's own messages); TT-Q9 (partially answered; the open part is an uncertainty). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "BPR-R2 update workbench/skills/handoff/SKILL.md: Say handoffs are readable Markdown in the declared handoffs collection; never generate a new JSON handoff. | BPR-R2 update AGENTS.md (Session Records And Checkpoints) and templates/AGENTS.md: Handoffs are separate human-readable Markdown files; do not serialize a handoff as a JSON notepad. | BPR-R4 update workbench/skills/handoff/SKILL.md: Read the Markdown as the recipient: can they state the job, limits and next step; file existence alone is insufficient. | BPR-R1 update workbench/skills/grilling/SKILL.md: Explicit user direction to stop or hand off ends the interview; hand-off exit composes a Markdown handoff with the exact requested job. | BPR-R1 update workbench/skills/handoff/SKILL.md: State the exact job and endpoint; mentioning make-it-so or carry cannot expand it; carry inherited authorization and notepad context. | TT-Q7 update AGENTS.md (Session Records, integration review gate) and templates/AGENTS.md: Fresh Chat for exhausted context and for separate-context review; handoffs are Markdown for a new Chat. | TT-Q7 update LEXICON.md (Chat, Scoped handoff rows) and templates/LEXICON.md: Consistent with one Task per Chat. | TT-Q9 create workbench/docs/adr/000L-a-notepad-belongs-to-its-objective-and-every-chat-working-that-objective-writes-to-it.md: A notepad belongs to its objective; every context that can reach it resumes it, one writer at a time; ownership is decided, concurrency is not. | TT-Q9 update AGENTS.md (Session Records) and templates/AGENTS.md: Notepads are objective-owned JSON; handoffs are Markdown for a new Chat. | TT-Q9 update LEXICON.md (Notepad row) and templates/LEXICON.md: Notepad belongs to its objective. | TT-Q9 update workbench/skills/notepad/SKILL.md: Keep the check-not-a-lock warning; say the writer rule bounds overlapping writes, not chat ownership; writer-neutral stale-revision; purpose-distinct creation rule.",
+            "home": "workbench/skills/handoff/SKILL.md; AGENTS.md (Session Records And Checkpoints) and templates/AGENTS.md; workbench/skills/grilling/SKILL.md; AGENTS.md (Session Records, integration review gate) and templates/AGENTS.md; LEXICON.md (Chat, Scoped handoff rows) and templates/LEXICON.md; workbench/docs/adr/000L-a-notepad-belongs-to-its-objective-and-every-chat-working-that-objective-writes-to-it.md; AGENTS.md (Session Records) and templates/AGENTS.md; LEXICON.md (Notepad row) and templates/LEXICON.md; workbench/skills/notepad/SKILL.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:27.933Z",
+      "reason": "Ledger row BPR-R2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-R2",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:27.964Z",
+      "reason": "Ledger row BPR-R4 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-R4",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:27.994Z",
+      "reason": "Ledger row BPR-R1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-R1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:28.025Z",
+      "reason": "Ledger row TT-Q7 (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "TT-Q7",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:28.056Z",
+      "reason": "Ledger row TT-Q9 (partially-answered) at 56b459da; assessed Aligning from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "TT-Q9",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:28.087Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "at": "2026-10-01T23:50:00.066Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Handoffs pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000P"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -5,10 +5,10 @@
 **Priority:** 1
 **Owner:** unassigned
 **Stance:** Builder
-**Updated:** 2026-10-01
+**Updated:** 2026-10-02
 **Catalog description:** Deliver and verify GitHub coordination binding, managed adapter and skills in a freshly installed or upgraded room.
 **Blockers:** Consumes binding and proven adapter/operation seams, plus existing installation routes. New behavior does not bump the stamped version or authorize a Workbench_Template update. Project access/requirement remains an open gate.
-**Latest event:** Owner requested GitHub coordination implementation; this bounded capability owner is authored from reviewed concept sources.
+**Latest event:** Owner decisions of 2026-10-02 settled the Issue write floor and the trusted actor policy, recorded here and in the proposed GitHub coordination decision record. No Task is cut.
 **Next gate:** Activate only an independently executable slice from current Actuality; unresolved consequential choices keep dependent slices uncut.
 
 > **Citation anchors.** pre=`282dc043ab7dad92826a6d5447369238c35df0a3` post=`282dc043ab7dad92826a6d5447369238c35df0a3`.
@@ -36,7 +36,9 @@ At the pre anchor, PR235 concept sources are contained in integration. The propo
 
 - Scope and permission remain with the request, Contract and assigned Spec/Task. Issue metadata is coordination evidence, never blanket instruction authority.
 - Accepted concept lineage is LMK-000A and DQC-000B/000C/000D; extended outage recovery remains DQC-000E and is off the v4 critical path.
-- Exact actor trust and Projects availability/requirement are unresolved. Preserve these gates without blocking independent read-only work.
+- The owner decided on 2026-10-02: verified Issue write access is part of the minimum capability for any host that takes a Task. Trusted Issue operations use the owner's own GitHub account, and only structured records from the room's configured account count.
+- In v4 the owner is the only user; nothing is designed for a team.
+- Whether GitHub Projects are required for v4 remains open; preserve that gate without blocking independent read-only work.
 - Source proof, installed behavior, integration containment, failed ongoing owner Human QA and owner-only main promotion are distinct.
 
 ## Non-Goals
@@ -79,6 +81,7 @@ This Spec owns capability requirements, open gates and proof. Shared operational
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-10-01 | none | Owner-directed capability capture from integration 282dc043ab7dad92826a6d5447369238c35df0a3; reviewed concept seed PR235. | Planning only; runtime proof not claimed. | Capability owner authored; generic operational template changes deferred to implemented seams/cutover, because no operative workflow changes here. | Acceptance unchecked; unresolved choices and later independent review preserved. |
+| 2026-10-02 | none | Owner decisions recorded: the write floor, trusted records from the owner's configured account, single-owner v4 scope. | Promotion only; no runtime proof claimed. | This Spec, the proposed GitHub coordination decision record, the v4 release Spec and the GitHub Coordination Wiki article. | Installed-room proof of Issue write access is not run; the Projects requirement is open; no Task is cut. |
 
 ## Completion Result
 

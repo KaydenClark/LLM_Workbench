@@ -1,0 +1,282 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000O",
+  "revision": 9,
+  "title": "Which artifacts need to be discoverable at the room root?",
+  "question": "Which artifacts need to be discoverable at the room root?",
+  "answer": "V3-1: The seven root surfaces remain AGENTS.md, BLUEPRINT.md, LEXICON.md, RUNBOOK.md, TASKBOARD.md, CLAUDE.md and README.md; workbench/ is a support-record directory, \"not a second control root\".\nFND-Q23A: A separate map is needed: OWNERSHIP.json at the repository root as the eighth root file, a Core routing artifact outside the three-file Contract; root placement never implies Contract membership. The ownership schema leaves LEXICON.md, which keeps shared language and routes ownership questions to the map. ADR-0013 must be superseded. On 2026-09-22 the \"root control\" label was dropped: it is the Ownership map, a routing artifact.\nE-1: Redirected answer: a generated TASKBOARD.json Agile Kanban board replaces TASKBOARD.md as the root contract artifact, with no TASKBOARD.md view. Six lanes (backlog, toDo, inProgress, blocked, needsReview, complete); cards keyed by WBID, no kind field; loose schema v1; owner = assignee; agents never write it. Complete cards 'stay until promoted to a durable place' and the record is deleted.\nACC-2: The accepted eight-file destination may lead the current seven-file implementation. ADR-000B names TASKBOARD.json; AGENTS and LEXICON distinguish accepted destination from installed files.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-1, FND-Q23A, E-1, ACC-2 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "V3-1 create workbench/docs/adr/0013-seven-file-workbench-contract.md: Records the seven root files and that support records live behind workbench/; no eighth coequal root control. | V3-1 update LEXICON.md (Root controls, Support root, Workbench Contract rows): Defines the seven root controls and states the support root is not a second control plane. | V3-1 update templates/LEXICON.md: Mirrors the generic root-control and support-root definitions. | V3-1 create workbench/specs/S-021-portable-workbench-v3/SPEC.md (Desired Behavior): Every Genesis or Adoption ends with exactly the seven root controls plus lowercase workbench/. | FND-Q23A create OWNERSHIP.json (repo root) and templates/OWNERSHIP.json: The ownership map exists at root as a routing artifact, outside the Contract. | FND-Q23A update workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md: Accepted: eight root files; Contract membership separate from root placement; file list names TASKBOARD.json per E-1. | FND-Q23A retire workbench/docs/adr/0013-seven-file-workbench-contract.md: Archived as superseded; its seven-file, no-eighth-control rule no longer holds. | FND-Q23A update workbench/specs/S-00G-ownership-map-root-control/SPEC.md and workbench/specs/CATALOG.md: Title, catalog description and outcome do not call it a \"root control\". | FND-Q23A update Root-surface consumers: workbench/tools/workbench-layout.mjs, tools/control-fidelity.mjs, their tests, RUNBOOK.md, templates/ADOPTION.md: They know about the eighth root file. | E-1 update workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md: Amended or superseded: the board is generated TASKBOARD.json with six lanes; Complete holds until capture and record deletion (replaces 'completed verified work leaves the board'). | E-1 update workbench/docs/adr/0013-seven-file-workbench-contract.md: Amended: the root artifact is TASKBOARD.json, not TASKBOARD.md. | E-1 update workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md: Its root file list names TASKBOARD.json instead of TASKBOARD.md. | E-1 create board Spec (TASKBOARD.json board): Owns the generator, card schema v1 and six lanes, listed in S-00O's build order. | E-1 create TASKBOARD.json (root) and templates/TASKBOARD.md: Generated TASKBOARD.json replaces TASKBOARD.md in the root and in templates. | E-1 update AGENTS.md, LEXICON.md, README.md (+ templates mirrors): Describe TASKBOARD.json as the generated board instead of the TASKBOARD.md projection. | ACC-2 update workbench/docs/adr/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md: Names OWNERSHIP.json and TASKBOARD.json in the eight-file destination. | ACC-2 update AGENTS.md, LEXICON.md: Distinguish accepted architecture from current runtime and route implementation to S-00G and board work.",
+    "home": "workbench/docs/adr/0013-seven-file-workbench-contract.md; LEXICON.md (Root controls, Support root, Workbench Contract rows); templates/LEXICON.md; workbench/specs/S-021-portable-workbench-v3/SPEC.md (Desired Behavior); OWNERSHIP.json (repo root) and templates/OWNERSHIP.json; workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md; workbench/specs/S-00G-ownership-map-root-control/SPEC.md and workbench/specs/CATALOG.md; Root-surface consumers: workbench/tools/workbench-layout.mjs, tools/control-fidelity.mjs, their tests, RUNBOOK.md, templates/ADOPTION.md; workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md; board Spec (TASKBOARD.json board); TASKBOARD.json (root) and templates/TASKBOARD.md; AGENTS.md, LEXICON.md, README.md (+ templates mirrors); workbench/docs/adr/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md; AGENTS.md, LEXICON.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-1",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q23A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "E-1",
+      "revision": "56b459da"
+    },
+    {
+      "id": "ACC-2",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000B",
+    "LMK-000F"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 7
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "V3-1",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q23A",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q23A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "E-1",
+      "revision": "56b459da",
+      "reason": "Ledger row E-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "ACC-2",
+      "revision": "56b459da",
+      "reason": "Ledger row ACC-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Which artifacts need to be discoverable at the room root?",
+    "question": "Which artifacts need to be discoverable at the room root?",
+    "sources": [
+      {
+        "id": "V3-1",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q23A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "E-1",
+        "revision": "56b459da"
+      },
+      {
+        "id": "ACC-2",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:16.780Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:16.780Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 008 of the 2026-09-26 grouping (\"Layout, manifest and path evolution\"), grilling ledger at 56b459da.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:16.791Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "V3-1: The seven root surfaces remain AGENTS.md, BLUEPRINT.md, LEXICON.md, RUNBOOK.md, TASKBOARD.md, CLAUDE.md and README.md; workbench/ is a support-record directory, \"not a second control root\".\nFND-Q23A: A separate map is needed: OWNERSHIP.json at the repository root as the eighth root file, a Core routing artifact outside the three-file Contract; root placement never implies Contract membership. The ownership schema leaves LEXICON.md, which keeps shared language and routes ownership questions to the map. ADR-0013 must be superseded. On 2026-09-22 the \"root control\" label was dropped: it is the Ownership map, a routing artifact.\nE-1: Redirected answer: a generated TASKBOARD.json Agile Kanban board replaces TASKBOARD.md as the root contract artifact, with no TASKBOARD.md view. Six lanes (backlog, toDo, inProgress, blocked, needsReview, complete); cards keyed by WBID, no kind field; loose schema v1; owner = assignee; agents never write it. Complete cards 'stay until promoted to a durable place' and the record is deleted.\nACC-2: The accepted eight-file destination may lead the current seven-file implementation. ADR-000B names TASKBOARD.json; AGENTS and LEXICON distinguish accepted destination from installed files."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-1, FND-Q23A, E-1, ACC-2 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "V3-1 create workbench/docs/adr/0013-seven-file-workbench-contract.md: Records the seven root files and that support records live behind workbench/; no eighth coequal root control. | V3-1 update LEXICON.md (Root controls, Support root, Workbench Contract rows): Defines the seven root controls and states the support root is not a second control plane. | V3-1 update templates/LEXICON.md: Mirrors the generic root-control and support-root definitions. | V3-1 create workbench/specs/S-021-portable-workbench-v3/SPEC.md (Desired Behavior): Every Genesis or Adoption ends with exactly the seven root controls plus lowercase workbench/. | FND-Q23A create OWNERSHIP.json (repo root) and templates/OWNERSHIP.json: The ownership map exists at root as a routing artifact, outside the Contract. | FND-Q23A update workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md: Accepted: eight root files; Contract membership separate from root placement; file list names TASKBOARD.json per E-1. | FND-Q23A retire workbench/docs/adr/0013-seven-file-workbench-contract.md: Archived as superseded; its seven-file, no-eighth-control rule no longer holds. | FND-Q23A update workbench/specs/S-00G-ownership-map-root-control/SPEC.md and workbench/specs/CATALOG.md: Title, catalog description and outcome do not call it a \"root control\". | FND-Q23A update Root-surface consumers: workbench/tools/workbench-layout.mjs, tools/control-fidelity.mjs, their tests, RUNBOOK.md, templates/ADOPTION.md: They know about the eighth root file. | E-1 update workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md: Amended or superseded: the board is generated TASKBOARD.json with six lanes; Complete holds until capture and record deletion (replaces 'completed verified work leaves the board'). | E-1 update workbench/docs/adr/0013-seven-file-workbench-contract.md: Amended: the root artifact is TASKBOARD.json, not TASKBOARD.md. | E-1 update workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md: Its root file list names TASKBOARD.json instead of TASKBOARD.md. | E-1 create board Spec (TASKBOARD.json board): Owns the generator, card schema v1 and six lanes, listed in S-00O's build order. | E-1 create TASKBOARD.json (root) and templates/TASKBOARD.md: Generated TASKBOARD.json replaces TASKBOARD.md in the root and in templates. | E-1 update AGENTS.md, LEXICON.md, README.md (+ templates mirrors): Describe TASKBOARD.json as the generated board instead of the TASKBOARD.md projection. | ACC-2 update workbench/docs/adr/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md: Names OWNERSHIP.json and TASKBOARD.json in the eight-file destination. | ACC-2 update AGENTS.md, LEXICON.md: Distinguish accepted architecture from current runtime and route implementation to S-00G and board work.",
+            "home": "workbench/docs/adr/0013-seven-file-workbench-contract.md; LEXICON.md (Root controls, Support root, Workbench Contract rows); templates/LEXICON.md; workbench/specs/S-021-portable-workbench-v3/SPEC.md (Desired Behavior); OWNERSHIP.json (repo root) and templates/OWNERSHIP.json; workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md; workbench/specs/S-00G-ownership-map-root-control/SPEC.md and workbench/specs/CATALOG.md; Root-surface consumers: workbench/tools/workbench-layout.mjs, tools/control-fidelity.mjs, their tests, RUNBOOK.md, templates/ADOPTION.md; workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md; board Spec (TASKBOARD.json board); TASKBOARD.json (root) and templates/TASKBOARD.md; AGENTS.md, LEXICON.md, README.md (+ templates mirrors); workbench/docs/adr/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md; AGENTS.md, LEXICON.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:16.802Z",
+      "reason": "Ledger row V3-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:16.815Z",
+      "reason": "Ledger row FND-Q23A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q23A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:16.827Z",
+      "reason": "Ledger row E-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "E-1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:16.839Z",
+      "reason": "Ledger row ACC-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "ACC-2",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:16.852Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:53.306Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Portable Workbench pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000B"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "at": "2026-10-01T23:49:54.402Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Artifact Types pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000B"
+          ],
+          "to": [
+            "LMK-000B",
+            "LMK-000F"
+          ]
+        }
+      ]
+    }
+  ]
+}
