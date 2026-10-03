@@ -1647,8 +1647,23 @@ Whole `delete` requires the source to be reconciled with no entries, unresolved
 items, next action, or active declared retainer. Unreadable live records block
 cleanup with named paths because retention cannot be established; repair or
 reconcile them without discarding their source bytes. This does not block other
-work or grant the tool authority to choose what is important. Writes and cleanup
-assume one writer per note; revision checks are not simultaneous-writer locks.
+work or grant the tool authority to choose what is important.
+
+Overlapping writers cannot lose an entry silently. Every write that takes
+`--revision` (`append`, `current`, `trim`, `delete`) publishes inside a
+per-revision publish token, the exclusive directory `.<note>.rev<N+1>.publish/`
+beside the note: the writer re-reads the note under that token and publishes
+only if it is still at the revision it read, so of two writers that read the
+same revision exactly one succeeds and the other is refused `stale-revision`
+naming the revision on disk, with nothing of its write in the file. A success
+response is therefore true at the revision it states. The token is held for one
+publication only; it is not a lease, needs no service or configuration, and a
+writer that stops mid-write leaves the previous valid record in place. A token
+older than ten seconds is treated as abandoned and reclaimed by the next
+writer, so a crash never blocks a note; a writer stalled inside its own token
+for longer than that refuses rather than publishing over a newer write. One
+writer at a time remains the working rule: the guard makes an overlap honest,
+it does not merge concurrent changes.
 
 ### Optional Private Session Transport
 
