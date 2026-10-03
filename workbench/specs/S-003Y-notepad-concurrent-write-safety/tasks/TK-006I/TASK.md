@@ -3,11 +3,12 @@
 **Task ID:** TK-006I
 **Spec ID:** S-003Y
 **Slice:** Inspect the other revision-carrying writeSafeFile writers for the check-then-act shape
-**Status:** ready
+**Status:** done
 **Stance:** Auditor
 **Blockers:** none
 **Destination:** spec-acceptance: S-003Y Acceptance Criteria box 5, inspection half (the inspection of other `writeSafeFile` writers that carry a revision is recorded) and the first sentence of Remaining Limitations (a separate seam becomes its own Spec)
 **Planned verification:** Read-only inspection of every `writeSafeFile` caller that compares a revision, hash or expected content before publishing: the Landmark Tracker's `revise`, `link` and `relate` (`--expect-revision`), `sessions.mjs promote` (hash check) and `session-transport.mjs` (its own `wx` operation lock). For each, record whether the check and the publication are separate steps, whether two writers reading the same revision can both succeed, and whether the seam is the notepad `publish` path repaired by TK-006H. A finding that shares the seam is fixed here with a red/green case in its own test file; a finding on a separate seam is recorded in this Spec's Remaining Limitations as the owner of a follow-up Spec, not fixed here. `test-landmark-tracker`, `test-sessions`, `test-session-transport` and the full AGENTS suite pass on the committed candidate.
+**Proof:** Inspection-only: every revision- or hash-checked writeSafeFile writer classified at integration e1b193ce; none shares the notepad publish seam. Scratch barrier reproduction showed Landmark Tracker revise losing 7-10 of 12 writes told revised per round. test-landmark-tracker 23/23, test-sessions 8/8, test-session-transport 18/18, test-notepads 57/57.
 
 ## Outcome
 
@@ -28,12 +29,19 @@ repaired, while a separate seam is routed to its own follow-up.
 
 ## Acceptance
 
-- [ ] Every revision- or hash-checked `writeSafeFile` writer is named with its
+- [x] Every revision- or hash-checked `writeSafeFile` writer is named with its
       check-then-act classification in this Spec's evidence.
-- [ ] A writer that shares the notepad publish seam is repaired red/green;
+- [x] A writer that shares the notepad publish seam is repaired red/green;
       a separate seam is recorded as a follow-up without a fix here.
 
 ## Boundaries
 
 No change to a writer whose seam is separate; no new Spec is created by this
 Task, only named. No notepad runtime change (TK-006H).
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s003y-tk006i-writer-inspection | 945e65ff0a5fe0dd14890387a7ce3370eab3348b | ahead 0 behind 0 | 2 | Inspection-only at integration e1b193ce: every revision- or hash-checked writeSafeFile writer classified (Spec Remaining Limitations). Scratch barrier reproduction (not committed; twelve worker-thread racers released by an Atomics barrier calling landmark-tracker reviseRecord --expect-revision 1 on one DQC in a disposable room), 12 rounds over two runs: 8-11 told revised and 1-4 stale-revision per round, the record at revision 2 with one racer's title, 7-10 writers told revised but lost each round. test-landmark-tracker 23/23, test-sessions 8/8, test-session-transport 18/18, test-notepads 57/57. | S-003Y Remaining Limitations records the classification and three named follow-up seams; TK-006I acceptance checked. Docs checked: the Landmark Tracker README already states --expect-revision is not a lock and asks for one writer per record, so no README or Wiki change; notepad wording is TK-006J. | No shared-seam writer, so no fix here. Three separate seams need their own Specs, which were not created: Landmark Tracker concurrent-write safety, Session transport resume against a live notepad writer (S-052 or a linked Spec), and Promotion destination compare-and-swap. TK-006J remains. | 6bff91a440f8cf221a49c59ae19bead48524c8f7b87f56ee9ba89f663e344f84 |
+| 2 | claude/s003y-tk006i-writer-inspection | 1f57cf7753855453c752283eddef87f4f3540990 | ahead 0 behind 0 | 0 | Inspection-only: every revision- or hash-checked writeSafeFile writer classified at integration e1b193ce; none shares the notepad publish seam. Scratch barrier reproduction showed Landmark Tracker revise losing 7-10 of 12 writes told revised per round. test-landmark-tracker 23/23, test-sessions 8/8, test-session-transport 18/18, test-notepads 57/57. | S-003Y Remaining Limitations carries the classification and three named follow-up seams; Tracker README already states the not-a-lock limit, so no README or Wiki change. | Follow-up Specs not created: Landmark Tracker concurrent-write safety; Session transport resume against a live notepad writer (S-052 or linked); Promotion destination compare-and-swap. TK-006J remains. | 2287c183e78f7520fed2324fb8d0887374c79a7656e16001dddc4b5168dde00f |
