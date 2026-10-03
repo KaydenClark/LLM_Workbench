@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-10-03
 **Catalog description:** Audit the whole Lexicon against current design concepts and their governing sources, repair supported drift, and expose unresolved conflicts without promoting proposals or claiming undelivered behavior.
-**Blockers:** none for source inventory and independent reconciliation; overlapping workflow and ownership changes retain S-00P and S-00G gates. Recovery publication is held after October 3 automatic approval review rejected the GitHub push; explicit owner approval of this payload and destination is required.
-**Latest event:** October 1 TK-01Q branch recovered on current integration with later Canon retained; 55/55 fresh required and targeted checks pass. The Task-PR integration gate requires separate-context review of the final immutable commit.
-**Next gate:** Obtain explicit owner approval to push the inspected recovery branch to KaydenClark/LLM_Workbench and merge its reviewed PR into integration. The remaining comprehensive audit requires a later bounded assignment; all ten whole-Spec criteria and owner QA/main remain open.
+**Blockers:** none for source inventory and independent reconciliation; overlapping workflow and ownership changes retain S-00P and S-00G gates.
+**Latest event:** Owner explicitly authorized pushing the recovered Lexicon branch and merging its reviewed PR into integration; the publication hold is resolved. The October 1 branch is recovered with later Canon retained and 55/55 scoped checks passing.
+**Next gate:** The remaining whole-Lexicon inventory and semantic audit require a later bounded assignment; all ten whole-Spec criteria and owner QA/main remain open. Recovered Task delivery uses separate-context review and verified integration containment.
 
 ## Current Recovery Instruction — 2026-10-03
 
@@ -316,6 +316,8 @@ glossary. Completed knowledge follows existing reconciliation/lifecycle rules.
 
 | 2026-10-03 | TK-01Q | Automatic approval review rejected the recovery GitHub push before execution; no PR or integration merge occurred and no alternate publication route was attempted. | Rejection requires explicit owner authorization of the recovery payload for public KaydenClark/LLM_Workbench. Thirteen scoped documentation/proof/projection files inspected; no credential patterns or local notepad material. Separate-context reviewer passed ba0eed2a4e4d66683f4c45fb89b067a8b2934a39; this blocker-only record update requires fresh final-candidate confirmation. | Current Spec and recovery assessment record the publication gate; historical October 1 rejection remains separate dated evidence. | Only external publication/landing waits for approval; local recovery is reviewable. Full audit, owner QA/main and Dictionary Terms implementation remain open. |
 
+| 2026-10-03 | TK-01Q | Owner says "push it and merge into integration" and confirms that fixing, starting work, completing a Task, making progress, walking to end and picking up and carrying authorize aligned delivery. The recovery publication hold is resolved. | Refresh integration to 1b5da601 and preserve its decision-record planning changes; prior 45e6a10b review and 55-check proof remain pinned to their candidates. Refresh independent exact-candidate review after this record-only update and upstream merge. | Current Spec and recovery assessment no longer present the resolved publication gate as pending. | Comprehensive audit, owner QA/main, Dictionary Terms implementation and existing runtime/Canon migration gaps remain separate. |
+
 ## Completion Result
 
 The Landmark Tracker family Task is done; its October 1 proof is preserved
@@ -323,9 +325,9 @@ as historical evidence. Its recovered candidate now consumes the October 2
 Wiki, landmark and workflow decisions. [Recovery assessment](recovery-2026-10-03.md)
 records fresh verification and the integration gate. The former publication
 hold and no-merge instruction are superseded by the owner's October 3 request.
-A new automatic approval review rejected this recovery's push before execution;
-no PR or integration merge has occurred. Its explicit payload/destination
-approval requirement is the current publication gate.
+Automatic approval review initially rejected this recovery's push before execution.
+The owner then explicitly authorized publication and integration merge, resolving
+that hold. Delivery is established by the reviewed PR and remote Git containment.
 The whole-Lexicon inventory, comprehensive audit, all ten Spec acceptance
 criteria and owner QA/main gates remain open. This is neither whole-Spec
 completion nor a clean-update claim.
