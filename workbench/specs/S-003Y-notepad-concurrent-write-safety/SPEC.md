@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-10-03
 **Catalog description:** Make overlapping writes to one JSON notepad impossible to lose silently: every write response says truthfully whether its entry landed.
-**Blockers:** none for TK-005B (the guard and its barrier test) and TK-005C (the inspection of other writers). TK-005D (the skill, Contract and ownership-decision reconciliation) waits on TK-005B and coordinates the skill wording with S-00Y.
-**Latest event:** TK-005B claimed by claude-fable-s003y.
-**Next gate:** Close TK-005B with verification and documentation proof.
+**Blockers:** none for TK-006H (the guard and its barrier test) and TK-006I (the inspection of other writers). TK-006J (the skill, Contract and ownership-decision reconciliation) waits on TK-006H and coordinates the skill wording with S-00Y.
+**Latest event:** TK-006H claimed by claude-fable-s003y.
+**Next gate:** Close TK-006H with verification and documentation proof.
 
 > **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a`.
 
@@ -66,9 +66,9 @@ Changing notepad ownership, the schema or the revision protocol; a mandatory lea
 
 Cut at Plan on 2026-10-03 as record-backed Tasks under `tasks/`; each `TASK.md` carries its state, acceptance and proof. The race was re-reproduced before the cut from a worker-thread barrier against integration 5fa2aab6: six rounds of twelve racers at revision 1 returned three to six `appended` responses each and left one entry.
 
-1. TK-005B writes the barrier regression test red, then the publish-token guard for `append`, `current`, `trim` and `delete`, with the abandoned-token reclaim and the Runbook, template and Wiki sentences that describe it.
-2. TK-005C inspects the other revision- or hash-checked `writeSafeFile` writers (the Landmark Tracker's `--expect-revision` moves, `sessions.mjs promote`, the transport's operation lock), fixes a shared seam here and routes a separate seam to a follow-up. It touches no notepad file, so it may run beside TK-005B.
-3. TK-005D reconciles the `notepad` skill (coordinated with S-00Y), the Contract statements and the accepted ownership decision's defect paragraph through the decision-record lifecycle, with self-drift receipts. It waits on TK-005B.
+1. TK-006H writes the barrier regression test red, then the publish-token guard for `append`, `current`, `trim` and `delete`, with the abandoned-token reclaim and the Runbook, template and Wiki sentences that describe it.
+2. TK-006I inspects the other revision- or hash-checked `writeSafeFile` writers (the Landmark Tracker's `--expect-revision` moves, `sessions.mjs promote`, the transport's operation lock), fixes a shared seam here and routes a separate seam to a follow-up. It touches no notepad file, so it may run beside TK-006H.
+3. TK-006J reconciles the `notepad` skill (coordinated with S-00Y), the Contract statements and the accepted ownership decision's defect paragraph through the decision-record lifecycle, with self-drift receipts. It waits on TK-006H.
 
 ## Acceptance Criteria
 
@@ -99,6 +99,7 @@ Reconcile the writer-rule statements in `AGENTS.md`, `LEXICON.md`, the `notepad`
 | 2026-10-02 | none | Authored at the Map step to own the defect recorded in the accepted notepad-ownership decision, at integration cbb3d5b81c0081c45d92e0d284078ca13fd54c03. | Map only; the pre-anchor write path was read, the race was not re-run. | This Spec. | Plan, the regression test, the guard and proof remain. |
 | 2026-10-02 | none | Re-verified and re-anchored at integration 5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a after four PRs landed. | Map only; the asserted counts, tool commands, collections and the S-00M status were re-read at that tip; no runtime proof claimed. | This Spec. | Plan, implementation and proof remain. |
 | 2026-10-03 | none | Planned at integration 5fa2aab657c8492da22980bfd0d70571600071af: Actuality inspected (`loadForWrite`, `publish`, `writeSafeFile`, the `wx` operation locks in `session-transport.mjs` and `workbench-layout.mjs`, the Tracker's `--expect-revision`, the test harness); the race re-reproduced from a worker-thread `Atomics` barrier (six rounds of twelve racers: 3, 3, 6, 4, 5 and 4 `appended` responses, one entry each round); Tasks TK-005B, TK-005C and TK-005D cut record-backed; the Spec activated; the publish-token guard and the ten-second reclaim decided. | Plan only; doctor and render after the cut; guardrail baseline 78/100 and self-drift pre receipt (8 pre-existing attention findings: blocked-slice, stale-claim, five stale-seed, unverified-provenance; machineResult blocked, cleanUpdate false) captured at 5fa2aab6; no runtime fix claimed. | This Spec and its three TASK.md records. | All implementation and proof remain; TK-005D waits on TK-005B and coordinates the skill with S-00Y. |
+| 2026-10-03 | none | Renumbered the three Plan Tasks TK-005B, TK-005C and TK-005D to TK-006H, TK-006I and TK-006J after merging integration f59fce5bd (S-004C and S-004F had allocated TK-005B through TK-005W first; TK-005X through TK-006G are held on remote tips). Records moved with `git mv`; the Plan evidence row above keeps its original text as history. | render and doctor after the move; the claimed in-progress record is now TK-006H. | This Spec, the three TASK.md records, the Wiki article skill-notepad.md. | Suite rerun, close, review and integration merge remain. |
 
 ## Completion Result
 

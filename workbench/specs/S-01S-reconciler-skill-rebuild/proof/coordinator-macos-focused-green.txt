@@ -1,0 +1,29 @@
+✔ public entry routes to executable observations and owns reconciliation, not approval (0.945875ms)
+✔ pinned owner read ignores newer HEAD and preserves dirty unrelated work (160.826916ms)
+✔ unknown commit and absent owner fail visibly instead of using HEAD (112.352541ms)
+✔ fixed comparison disables target-controlled external diff and text conversion (377.601833ms)
+✔ containment distinguishes a branch candidate from landed content without changing acceptance (154.611083ms)
+✔ replacement commit cannot substitute completion text under the original candidate SHA (180.7055ms)
+✔ replacement parent cannot manufacture integration containment (122.88025ms)
+✔ inherited Git repository and index selectors cannot redirect an observation (155.75475ms)
+✔ inherited object stores, replacement namespaces and config injection cannot alter pinned reads (218.712125ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1488.2395
+✔ code-review fixed diff disables a hostile textconv driver (234.306833ms)
+✔ independence applies at integration, not every task close (1.090958ms)
+✔ notepad skills capture before interruption and preserve unresolved cleanup context (1.025209ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 239.715542
+ok - wiki validated
