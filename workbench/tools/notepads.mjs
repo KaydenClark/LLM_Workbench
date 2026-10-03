@@ -18,6 +18,7 @@
 // finding whose correction stayed behind.
 import fs from 'node:fs';
 import path from 'node:path';
+import { randomUUID } from 'node:crypto';
 import { finding } from './diagnostics.mjs';
 import { assertSafeReadPath, assertSafeWritePath, collectionPath, collectionRelative, findRoot, isMainModule, readManifest, writeSafeFile, UNTRACKED_COLLECTIONS } from './workbench-paths.mjs';
 import { scanPrivacy } from './privacy.mjs';
@@ -266,18 +267,164 @@ function sequenceFrom(entries, existing = {}) {
   return marks;
 }
 
-function publish(root, resolved, note, { exclusive = false } = {}) {
+function publish(root, resolved, note, { exclusive = false, stagingDir = null } = {}) {
   const { missing, invalid } = checkStructure(note);
   if (missing.length || invalid.length) {
     return blocked('invalid-note', `${resolved.relative} was not updated: the result would not be a valid notepad`, { missing, invalid });
   }
   const serialized = `${JSON.stringify(note, null, 2)}\n`;
   try {
-    writeSafeFile(root, resolved.absolute, serialized, { exclusive });
+    writeSafeFile(root, resolved.absolute, serialized, { exclusive, stagingDir });
   } catch (error) {
     return blocked('write-failed', `${resolved.relative} was not updated: ${error.message}; the previous valid record is unchanged`);
   }
   return null;
+}
+
+// ------------------------------------------------- compare-and-swap publish
+//
+// `loadForWrite` compares the caller's revision with the file before the
+// update is built; that alone is a check, not a guard. Two writers that read
+// the same revision at the same moment both pass it, and the later rename
+// silently replaces the earlier write while both are told they succeeded
+// (ADR-000L records twelve barrier-synchronized appends leaving one entry).
+//
+// The guard is a per-target-revision publish token: a writer that read
+// revision N creates the exclusive directory `.<note>.rev<N+1>.publish/`
+// beside the note. Every writer claiming N serializes through that one token,
+// so re-reading the note inside it and refusing unless its bytes are exactly
+// the bytes this writer read is a true compare-and-swap; the rename that
+// publishes N+1 happens only under the token for N+1. The comparison is the
+// whole record, not the revision number: a note deleted and recreated at the
+// same path starts at revision 1 again, and a writer that read the old record
+// at revision 1 must not publish over the new one. A writer that finds the token held is refused
+// `stale-revision` naming the revision on disk, exactly as a sequential
+// mismatch is, and nothing of its write reaches the file.
+//
+// The token is held for one publication, never across a command or by a
+// chat, and it needs no service or configuration. A writer that stops
+// mid-write leaves its token behind; once the token is older than
+// PUBLISH_TOKEN_STALE_MS the next writer renames it aside and removes it, so
+// a crash never wedges a note. The bytes a holder is about to publish are
+// staged inside a nonce-named directory under its own token, so reclaiming a
+// token removes the staged file with it and the stalled holder's rename fails
+// with ENOENT instead of publishing over a newer write; a reclaimer's fresh
+// token at the same path carries a different nonce, so the stalled holder's
+// staging path can never be satisfied by someone else's bytes. There is no
+// window between the ownership check and the publication: the publication is
+// the rename of a file that exists only while the token is held. Cleanup has
+// the same property: `delete` moves the note into its nonce directory rather
+// than unlinking the live path, so a stale delete fails instead of removing a
+// newer write. A reclaim that happens after the rename has already published
+// cannot undo it, and the reclaimer then re-reads the note under its fresh
+// token and is refused as stale.
+export const PUBLISH_TOKEN_STALE_MS = 10_000;
+
+function publishTokenPath(resolved, revision) {
+  return path.join(path.dirname(resolved.absolute), `.${path.basename(resolved.absolute)}.rev${revision}.publish`);
+}
+
+// The revision the file holds right now, read inside the token. A note that
+// vanished or no longer parses is reported as it is: the caller cannot be at
+// the revision it read, so the refusal is stale-revision with what was found.
+function revisionOnDisk(resolved) {
+  try {
+    const parsed = JSON.parse(fs.readFileSync(resolved.absolute, 'utf8'));
+    return Number.isSafeInteger(parsed?.revision) ? parsed.revision : null;
+  } catch (error) {
+    if (error.code === 'ENOENT') return null;
+    throw error;
+  }
+}
+
+function staleRefusal(resolved, expected, found, why) {
+  const where = found === null ? `${resolved.relative} is no longer a readable notepad at any revision` : `${resolved.relative} is at revision ${found}, not ${expected}`;
+  return blocked('stale-revision', `${where}; ${why}`, { revision: found, claimed: expected });
+}
+
+// Reclaim a token nobody is using. Only one reclaimer can win the rename, so
+// two writers that both find an abandoned token do not both proceed as if
+// they had created it; the loser simply retries the exclusive create.
+function reclaimAbandonedToken(tokenDir) {
+  let entry;
+  try { entry = fs.statSync(tokenDir); }
+  catch (error) { if (error.code === 'ENOENT') return true; throw error; }
+  let latest = entry.mtimeMs;
+  try { latest = Math.max(latest, fs.statSync(path.join(tokenDir, 'owner')).mtimeMs); } catch { /* an owner file is not required to age the tokenDir */ }
+  if (Date.now() - latest < PUBLISH_TOKEN_STALE_MS) return false;
+  const aside = `${tokenDir}.abandoned-${process.pid}-${randomUUID()}`;
+  try { fs.renameSync(tokenDir, aside); }
+  catch (error) {
+    if (error.code === 'ENOENT') return true;
+    // Another process holds it open or the filesystem refuses the move: treat
+    // it as held rather than guess, and let the caller refuse as stale.
+    return false;
+  }
+  fs.rmSync(aside, { recursive: true, force: true });
+  return true;
+}
+
+function claimPublishToken(root, resolved, target) {
+  const tokenDir = publishTokenPath(resolved, target);
+  if (path.relative(path.resolve(root), tokenDir).startsWith('..')) throw new Error('publish token must stay inside the project');
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try { fs.mkdirSync(tokenDir); }
+    catch (error) {
+      if (error.code !== 'EEXIST') throw error;
+      if (attempt === 0 && reclaimAbandonedToken(tokenDir)) continue;
+      return null;
+    }
+    const nonce = randomUUID();
+    const stagingDir = path.join(tokenDir, nonce);
+    try {
+      fs.mkdirSync(stagingDir);
+      fs.writeFileSync(path.join(tokenDir, 'owner'), `${JSON.stringify({ nonce, pid: process.pid, at: nowStamp() })}\n`, { flag: 'wx' });
+    } catch (error) { fs.rmSync(tokenDir, { recursive: true, force: true }); throw error; }
+    return { tokenDir, stagingDir, nonce };
+  }
+  return null;
+}
+
+// Ownership is the existence of this writer's nonce directory: a reclaimer
+// removes it with the token, and a fresh token at the same path never
+// recreates it.
+function stillOwns(claim) {
+  try { return fs.statSync(claim.stagingDir).isDirectory(); }
+  catch { return false; }
+}
+
+// Publish `note` (already at the next revision) only if the file still holds
+// exactly the bytes `loaded` read. Returns null on success or the refusal.
+function publishAtRevision(root, resolved, note, loaded) {
+  const expected = loaded.note.revision;
+  let claim;
+  try { claim = claimPublishToken(root, resolved, note.revision); }
+  catch (error) { return blocked('write-failed', `${resolved.relative} was not updated: ${error.message}; the previous valid record is unchanged`); }
+  if (!claim) {
+    let found;
+    try { found = revisionOnDisk(resolved); }
+    catch (error) { return blocked('write-failed', `${resolved.relative} was not updated: ${error.message}; the previous valid record is unchanged`); }
+    return staleRefusal(resolved, expected, found, 'another write is publishing; read it again before writing');
+  }
+  try {
+    let current = null;
+    try { current = fs.readFileSync(resolved.absolute, 'utf8'); }
+    catch (error) { if (error.code !== 'ENOENT') throw error; }
+    if (current !== loaded.text) return staleRefusal(resolved, expected, revisionOnDisk(resolved), 'the record changed since it was read; read it again before writing');
+    const failure = publish(root, resolved, note, { stagingDir: claim.stagingDir });
+    // A staged file that vanished means the token was reclaimed while this
+    // writer stalled: another writer has moved on, and this one is stale.
+    if (failure && failure.error.code === 'write-failed' && !stillOwns(claim)) {
+      return staleRefusal(resolved, expected, revisionOnDisk(resolved), 'the publish token was reclaimed while this write stalled; read it again before writing');
+    }
+    return failure;
+  } catch (error) {
+    return blocked('write-failed', `${resolved.relative} was not updated: ${error.message}; the previous valid record is unchanged`);
+  } finally {
+    // Release only a token this writer still owns; a reclaimer's fresh token
+    // at the same path belongs to the reclaimer.
+    if (stillOwns(claim)) fs.rmSync(claim.tokenDir, { recursive: true, force: true });
+  }
 }
 
 // Scan decoded new fields, including nested keys and string values. Scanning
@@ -496,7 +643,7 @@ export function appendEntry(root, options) {
       ? { ...note.extensions, entry_sequence: { ...sequence, [suffix[1]]: Math.max(Number(sequence[suffix[1]] ?? 0), parsedSuffix) } }
       : note.extensions
   };
-  const failure = publish(root, resolved, updated);
+  const failure = publishAtRevision(root, resolved, updated, loaded);
   if (failure) return failure;
   return { status: 'appended', note: resolved.relative, entry: id, revision: updated.revision };
 }
@@ -532,7 +679,7 @@ export function setCurrent(root, options) {
     // must not silently drop it.
     current: { ...note.current, state, unresolved, next_action: nextAction, ...view }
   };
-  const failure = publish(root, resolved, updated);
+  const failure = publishAtRevision(root, resolved, updated, loaded);
   if (failure) return failure;
   return { status: 'updated', note: resolved.relative, revision: updated.revision };
 }
@@ -718,7 +865,7 @@ export function trimEntries(root, options) {
       entry_sequence: sequenceFrom(note.entries, note.extensions?.entry_sequence)
     }
   };
-  const failure = publish(root, resolved, updated);
+  const failure = publishAtRevision(root, resolved, updated, loaded);
   if (failure) return failure;
   return { status: 'trimmed', note: resolved.relative, removed: [...remove], remaining: retained.length, revision: updated.revision };
 }
@@ -732,13 +879,30 @@ export function deleteNote(root, options) {
   }
   const retained = retentionBlocker(root, resolved);
   if (retained) return retained;
+  // Cleanup is the last write a note at revision N receives, so it takes the
+  // same token a write to N+1 would and rechecks the bytes inside it: a
+  // concurrent append that won the token first is never deleted underneath.
+  let claim;
+  try { assertSafeWritePath(root, resolved.absolute); claim = claimPublishToken(root, resolved, note.revision + 1); }
+  catch (error) { return blocked('write-failed', `Cleanup refused: ${error.message}`); }
+  if (!claim) {
+    try { return staleRefusal(resolved, note.revision, revisionOnDisk(resolved), 'another write is publishing; read it again before retrying'); }
+    catch (error) { return blocked('write-failed', `Cleanup refused: ${error.message}`); }
+  }
   try {
-    assertSafeWritePath(root, resolved.absolute);
-    // The runtime assumes one writer. Recheck after inspecting dependencies;
-    // this catches intervening changes but is not a simultaneous-writer lock.
-    if (fs.readFileSync(resolved.absolute, 'utf8') !== loaded.text) return blocked('stale-revision', 'The source changed during cleanup; read it again before retrying.');
-    fs.unlinkSync(resolved.absolute);
+    if (fs.readFileSync(resolved.absolute, 'utf8') !== loaded.text) return staleRefusal(resolved, note.revision, revisionOnDisk(resolved), 'the source changed during cleanup; read it again before retrying');
+    // Move the note into this writer's nonce directory instead of unlinking
+    // the live path: if the token was reclaimed while this writer stalled, the
+    // directory is gone and the move fails, so a stale delete never removes a
+    // write another writer was told succeeded. Releasing the token below
+    // removes the moved file.
+    try { fs.renameSync(resolved.absolute, path.join(claim.stagingDir, 'deleted')); }
+    catch (error) {
+      if (!stillOwns(claim)) return staleRefusal(resolved, note.revision, revisionOnDisk(resolved), 'the publish token was reclaimed while cleanup stalled; read it again before retrying');
+      throw error;
+    }
   } catch (error) { return blocked('write-failed', `Cleanup refused: ${error.message}`); }
+  finally { if (stillOwns(claim)) fs.rmSync(claim.tokenDir, { recursive: true, force: true }); }
   return { status: 'deleted', note: resolved.relative, id: note.id, revision: note.revision };
 }
 

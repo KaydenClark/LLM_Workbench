@@ -11,7 +11,8 @@ import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { Worker } from 'node:worker_threads';
 import test from 'node:test';
 import { NOTEPAD_SCHEMA_VERSION, LEGACY_SCHEMA_VERSIONS, checkStructure, createNote, appendEntry, setCurrent, readNote, validateNote, listNotes, trimEntries, migrateNote } from '../workbench/tools/notepads.mjs';
 import { RUNTIME_TOOLS } from '../workbench/tools/workbench-layout.mjs';
@@ -779,7 +780,7 @@ test("the grilling skill's documented command produces the record it shows", () 
     assert.match(documented[1], /notepads\.mjs create/, 'the documented command is a notepad create');
 
     const argv = argvOf(documented[1].replace(/\\\r?\n/g, ' '))
-      .filter((token) => !['node', 'workbench/tools/notepads.mjs'].includes(token))
+      .filter((tokenDir) => !['node', 'workbench/tools/notepads.mjs'].includes(tokenDir))
       .map((token) => token.replace('TOPIC-YYYY-MM-DD', 'topic-2026-01-31').replace('OBJECTIVE_KEY', 'objective-key'));
     const run = spawnSync(process.execPath, [notepadsTool, ...argv, '--path', dir], { encoding: 'utf8' });
     assert.equal(run.status, 0, run.stdout || run.stderr);
@@ -1207,4 +1208,172 @@ test('declared Markdown handoff dependency blocks cleanup until explicitly recon
   setCurrent(dir,{note:n.note,revision:3,'view-field':['active_handoffs=[]']});
   assert.equal(trimEntries(dir,{note:n.note,revision:4,entry:['finding-001']}).status,'trimmed');
  }finally{fs.rmSync(dir,{recursive:true,force:true});}
+});
+
+// ---------------------------------------------------------------- S-003Y
+// Overlapping writers. The racers are worker threads released by one
+// Atomics.notify, so every racer is inside the write call at the same moment
+// and nothing depends on process start-up timing. Each racer reports what the
+// runtime told it; the note is then read once and compared with those reports.
+const RACER = `
+import { parentPort, workerData } from 'node:worker_threads';
+const runtime = await import(workerData.runtime);
+const flags = new Int32Array(workerData.shared);
+Atomics.add(flags, 0, 1);
+Atomics.notify(flags, 0);
+while (Atomics.load(flags, 1) === 0) Atomics.wait(flags, 1, 0);
+const [command, options] = workerData.write;
+parentPort.postMessage({ command, result: runtime[command](workerData.dir, options) });
+`;
+
+async function race(dir, writes) {
+  const shared = new SharedArrayBuffer(8);
+  const flags = new Int32Array(shared);
+  const runtime = pathToFileURL(notepadsTool).href;
+  return new Promise((resolve, reject) => {
+    const reports = [];
+    let exited = 0;
+    for (const write of writes) {
+      const worker = new Worker(RACER, { eval: true, workerData: { runtime, shared, dir, write } });
+      worker.on('message', (report) => reports.push(report));
+      worker.on('error', reject);
+      worker.on('exit', () => { if (++exited === writes.length) resolve(reports); });
+    }
+    const release = () => {
+      if (Atomics.load(flags, 0) < writes.length) return void setTimeout(release, 1);
+      Atomics.store(flags, 1, 1);
+      Atomics.notify(flags, 1);
+    };
+    release();
+  });
+}
+
+function tokenPath(dir, note, revision) {
+  const absolute = path.join(dir, note);
+  return path.join(path.dirname(absolute), `.${path.basename(absolute)}.rev${revision}.publish`);
+}
+
+test('barrier race: twelve appends at one revision keep exactly the entries whose writers were told appended', async () => {
+  const dir = project();
+  try {
+    const created = seed(dir, { note: 'race-append' });
+    const writes = Array.from({ length: 12 }, (_, index) => ['appendEntry', { note: created.note, revision: 1, kind: 'finding', topic: 'race', content: `racer ${index}` }]);
+    const reports = await race(dir, writes);
+    assert.equal(reports.length, 12);
+    const note = JSON.parse(fs.readFileSync(path.join(dir, created.note), 'utf8'));
+    const appended = reports.filter((report) => report.result.status === 'appended');
+    const refused = reports.filter((report) => report.result.status !== 'appended');
+    assert.ok(appended.length >= 1, 'one writer must land');
+    assert.equal(note.entries.length, appended.length, `the note holds ${note.entries.length} entries but ${appended.length} writers were told appended`);
+    assert.equal(note.revision, 1 + appended.length, 'the revision counts exactly the landed writes');
+    for (const report of appended) {
+      assert.ok(note.entries.some((entry) => entry.id === report.result.entry), `${report.result.entry} was reported appended but is not in the note`);
+      assert.equal(report.result.revision, note.revision);
+    }
+    for (const report of refused) {
+      assert.equal(report.result.status, 'blocked');
+      assert.equal(report.result.error.code, 'stale-revision');
+      assert.ok(Number.isInteger(report.result.error.revision), 'a refusal names the revision on disk');
+    }
+    assert.equal(validateNote(dir, created.note).status, 'valid');
+    assert.ok(!fs.existsSync(tokenPath(dir, created.note, 2)), 'no publish token outlives the write');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('barrier race: mixed append, current and trim writers at one revision never report a success that is not in the note', async () => {
+  const dir = project();
+  try {
+    const created = seed(dir, { note: 'race-mixed' });
+    assert.equal(appendEntry(dir, { note: created.note, revision: 1, kind: 'finding', topic: 'seed', content: 'Seed entry' }).status, 'appended');
+    const writes = [
+      ...Array.from({ length: 4 }, (_, index) => ['appendEntry', { note: created.note, revision: 2, kind: 'decision', topic: 'race', content: `decision ${index}` }]),
+      ...Array.from({ length: 4 }, (_, index) => ['setCurrent', { note: created.note, revision: 2, state: `state ${index}` }]),
+      ...Array.from({ length: 4 }, () => ['trimEntries', { note: created.note, revision: 2, entry: ['finding-001'] }])
+    ];
+    const reports = await race(dir, writes);
+    const note = JSON.parse(fs.readFileSync(path.join(dir, created.note), 'utf8'));
+    const succeeded = reports.filter((report) => report.result.status !== 'blocked');
+    assert.ok(succeeded.length >= 1);
+    assert.equal(note.revision, 2 + succeeded.length, `revision ${note.revision} does not count ${succeeded.length} reported successes`);
+    for (const report of succeeded) {
+      if (report.command === 'appendEntry') assert.ok(note.entries.some((entry) => entry.id === report.result.entry), 'a reported append is in the note');
+      if (report.command === 'setCurrent') assert.match(note.current.state, /^state \d$/, 'a reported current update is in the note');
+      if (report.command === 'trimEntries') assert.ok(!note.entries.some((entry) => entry.id === 'finding-001'), 'a reported trim removed the entry');
+    }
+    for (const report of reports.filter((item) => item.result.status === 'blocked')) assert.equal(report.result.error.code, 'stale-revision');
+    assert.equal(validateNote(dir, created.note).status, 'valid');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('a held publish token refuses the write as stale-revision and leaves the note byte-identical; an abandoned one is reclaimed', () => {
+  const dir = project();
+  try {
+    const created = seed(dir, { note: 'token-note' });
+    const file = path.join(dir, created.note);
+    const before = fs.readFileSync(file);
+    const tokenDir = tokenPath(dir, created.note, 2);
+    fs.mkdirSync(tokenDir);
+    fs.writeFileSync(path.join(tokenDir, 'owner'), JSON.stringify({ nonce: 'someone-else', pid: 0 }));
+    const held = appendEntry(dir, { note: created.note, revision: 1, kind: 'finding', topic: 'held', content: 'Must not land' });
+    assert.equal(held.status, 'blocked');
+    assert.equal(held.error.code, 'stale-revision');
+    assert.equal(held.error.revision, 1, 'the refusal names the revision on disk');
+    assert.deepEqual(fs.readFileSync(file), before, 'nothing of the refused write reached the file');
+    assert.ok(fs.existsSync(tokenDir), 'a fresh token is not reclaimed');
+    const viaCli = cli(dir, ['current', '--note', created.note, '--revision', '1', '--state', 'Must not land']);
+    assert.equal(viaCli.status, 1);
+    assert.equal(viaCli.json.error.code, 'stale-revision');
+    assert.deepEqual(fs.readFileSync(file), before);
+
+    // An interrupted writer leaves its token behind. Once it is older than the
+    // reclaim age the next writer removes it and proceeds; the previous valid
+    // record was never touched.
+    // A stalled holder stages the bytes it was about to publish inside its
+    // token; reclaiming the token removes them, so they can never land late.
+    fs.mkdirSync(path.join(tokenDir, 'stalled-nonce'));
+    fs.writeFileSync(path.join(tokenDir, 'stalled-nonce', 'content'), JSON.stringify({ ...JSON.parse(before), revision: 2, title: 'Forged by a stalled writer' }));
+    const abandoned = new Date(Date.now() - 60_000);
+    for (const entry of ['owner', 'stalled-nonce/content', 'stalled-nonce', '']) fs.utimesSync(path.join(tokenDir, entry), abandoned, abandoned);
+    const reclaimed = appendEntry(dir, { note: created.note, revision: 1, kind: 'finding', topic: 'reclaimed', content: 'Lands after reclaim' });
+    assert.equal(reclaimed.status, 'appended', JSON.stringify(reclaimed));
+    assert.equal(reclaimed.revision, 2);
+    assert.ok(!fs.existsSync(tokenDir), 'the abandoned token is gone');
+    const stored = JSON.parse(fs.readFileSync(file, 'utf8'));
+    assert.equal(stored.entries.length, 1);
+    assert.equal(stored.entries[0].content, 'Lands after reclaim');
+    assert.equal(stored.title, 'Notepad runtime', 'the stalled writer\'s staged bytes were discarded with its token');
+    assert.ok(!fs.readdirSync(path.dirname(file)).some((name) => name.startsWith('.write-') || name.endsWith('.publish')), 'no staging or token directory outlives the write');
+    assert.equal(validateNote(dir, created.note).status, 'valid');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('delete goes through the same guard: a held token refuses cleanup and the note survives', () => {
+  const dir = project();
+  try {
+    const created = seed(dir, { note: 'delete-token', status: 'RECONCILED' });
+    const file = path.join(dir, created.note);
+    const tokenDir = tokenPath(dir, created.note, 2);
+    fs.mkdirSync(tokenDir);
+    const refused = cli(dir, ['delete', '--note', created.note, '--revision', '1']);
+    assert.equal(refused.json.error?.code, 'stale-revision', refused.stdout);
+    assert.ok(fs.existsSync(file), 'the note survives a refused delete');
+    fs.rmSync(tokenDir, { recursive: true, force: true });
+    // An abandoned token does not block cleanup either.
+    fs.mkdirSync(tokenDir);
+    const abandoned = new Date(Date.now() - 60_000);
+    fs.utimesSync(tokenDir, abandoned, abandoned);
+    const deleted = cli(dir, ['delete', '--note', created.note, '--revision', '1']);
+    assert.equal(deleted.json.status, 'deleted', deleted.stdout);
+    assert.ok(!fs.existsSync(file));
+    assert.ok(!fs.existsSync(tokenDir));
+    assert.ok(!fs.readdirSync(path.dirname(file)).some((name) => name.endsWith('.publish') || name.includes('.abandoned-')), 'nothing of the token outlives cleanup');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 });
