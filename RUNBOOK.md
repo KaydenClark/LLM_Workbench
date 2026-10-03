@@ -13,6 +13,10 @@ itself. It should be boring, exact, and executable.
 Every session reads this index at entry, then follows only the rows its task
 needs. Each row names an operation, when following it is worth it, and the
 stable pointer to where its procedure lives.
+A row that points to a skill in the tracked skills lane makes that skill part
+of the Contract for its operation (`AGENTS.md` Instruction Authority), so a
+change to a skill an index row points to, or to an index row, is reviewed as a
+Contract change.
 
 | Operation | Follow when | Pointer |
 |---|---|---|
@@ -443,6 +447,9 @@ directory is `project-local-skills` (blocks everything) because it shadows
 the lane. A room stamped before the lane declares it with
 `workbench-layout.mjs migrate --project PATH` from the release checkout,
 then runs `install`.
+An operations index row that points to a skill the lane lacks is
+`skill-pointer-dangling` (attention, effect `none`); doctor reads only the
+index and the lane copy to decide which skill binds.
 
 ### Personal catalog publication
 
@@ -500,6 +507,7 @@ published catalog is compared only by the installer's own `update` and
 | `skill-adapter-missing` | A declared discovery root is absent, so that host cannot discover the lane. |
 | `skill-adapter-broken` | A declared discovery root does not resolve into the lane. |
 | `skill-duplicate-discovery` | A deprecated `.codex/skills` entry adds another Codex catalog. |
+| `skill-pointer-dangling` | An operations index row points to a skill the lane lacks; the row binds nothing until the lane holds it or the row is re-pointed. Attention, effect `none`. |
 | `project-local-skills` | A root `skills/` directory shadows the lane. Blocks everything. |
 
 Doctor never repairs a finding; `workbench-skills.mjs update --explicit-update`

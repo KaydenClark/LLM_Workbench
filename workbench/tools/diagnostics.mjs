@@ -185,6 +185,10 @@ const registry = Object.freeze({
   'skill-adapter-missing': entry('attention', 'skills', 'none', 'a declared discovery root is absent, so that host cannot discover the lane'),
   'skill-adapter-broken': entry('attention', 'skills', 'none', 'a declared discovery root does not resolve into the skills lane'),
   'skill-duplicate-discovery': entry('attention', 'skills', 'none', 'a deprecated additional discovery entry duplicates the core catalog'),
+  // S-004C TK-005E: a RUNBOOK.md operations index row that points to a skill
+  // the lane lacks is named in every doctor run and blocks nothing; the row
+  // binds no skill until the lane holds it or the row is re-pointed.
+  'skill-pointer-dangling': entry('attention', 'skills', 'none', 'a RUNBOOK.md operations index row points to a skill the skills lane lacks'),
   // The permission file is the mechanical half of the prose Edit Scope. A
   // withheld lane is reported by name and never blocks: a room may deny a
   // lane deliberately and record why. The Genesis readiness gate still
