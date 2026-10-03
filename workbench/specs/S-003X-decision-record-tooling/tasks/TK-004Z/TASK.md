@@ -3,7 +3,7 @@
 **Task ID:** TK-004Z
 **Spec ID:** S-003X
 **Slice:** Read ADRs and DDRs with list, show, search, history and inspect
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-004X, TK-004Y
 **Destination:** spec-acceptance: S-003X Acceptance Criteria box 4 (an agent can `list`, `show`, `search`, `history` and `inspect` an ADR and a DDR, and every existing command name still works)
