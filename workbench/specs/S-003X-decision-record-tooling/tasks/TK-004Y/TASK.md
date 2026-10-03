@@ -3,7 +3,7 @@
 **Task ID:** TK-004Y
 **Spec ID:** S-003X
 **Slice:** Accept, supersede and deprecate ADRs and DDRs by folder location
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-004X
 **Destination:** spec-acceptance: S-003X Acceptance Criteria box 3 (accept, supersede and deprecate moves work for ADRs and DDRs by folder location, refuse a supersession without exactly one named successor and a deprecation without a stated reason, and leave the register and history derived from the folder listing)
