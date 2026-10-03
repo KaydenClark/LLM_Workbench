@@ -3,13 +3,13 @@
 **Spec ID:** S-004F
 **Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-lane-d
 **Stance:** Builder
 **Updated:** 2026-10-03
 **Catalog description:** When a check finds a miss, the same Task continues with an adjusted handoff unless the fix rewrites it, and a later gap against delivered work becomes a new Spec under its landmark or the Blueprint instead of a correction anchored to a Wiki claim.
 **Blockers:** none for the first four Tasks. Three later Tasks wait on `owner:` tokens for another Spec's writer turn on the Runbook, the Lexicon and the Blueprint; each Dispatcher removes its token when that file is free.
-**Latest event:** Planned on 2026-10-03: the five open questions are settled below from project evidence and seven Tasks are cut.
-**Next gate:** Claim and deliver the decision records first, then the verdict path, the retired Wiki-claim route and the AGENTS corrective sections in order; each lands through its own reviewed pull request into `integration`.
+**Latest event:** TK-005Q closed with proof.
+**Next gate:** Complete TK-005R.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 
@@ -66,7 +66,7 @@ The owner's two answers, both confirmed on the Blueprint teardown review page on
 4. **The `wiki-claim` destination type stays.** It serves a Task whose destination is producing a Wiki page, as the done Task TK-003B in the Dispatcher Role Spec does. Only its use as the destination of corrective work retires, so `task-record.mjs` and `task-packet.mjs` keep parsing and resolving it.
 5. **A new Spec for a later gap.** It names the landmark or the Blueprint it sits under and the delivered Spec (or its retained name and approving date) in its own text, and cites Wiki pages as evidence for its direction and plan in Current Verified State. Its Tasks use `spec-acceptance` destinations. No landmark field exists in the Spec header yet, so this is prose until the landmark runtime lands. Delivered work is a Spec whose status is `complete` or `superseded`, or one that sits in the `retired` folder; for those the corrective commands refuse and name this route.
 6. **A standalone corrective record that already exists** is not deleted or migrated here. `next` stops selecting it and `claim` and `close` refuse it, naming the new-Spec route, while it still counts for identifier occupancy so no identifier collides.
-7. **Which decision records.** The same-Task answer is a destination decision, so it is a new destination decision record. The later-gap answer already sits in the accepted scaffolding decision record, which states that this Spec carries the change to the lifecycle and three-altitudes ADRs. A destination decision record cannot supersede an ADR, and the amendment-first rule asks that the existing ADR be corrected and the changed premise recorded, so ADR-000F, ADR-000G, ADR-000H, ADR-000I and ADR-000U are amended in place.
+7. **Which decision records.** The same-Task answer is a destination decision, so it is a new destination decision record. The later-gap answer already sits in the accepted scaffolding decision record, which states that this Spec carries the change to the lifecycle and three-altitudes ADRs. A destination decision record cannot supersede an ADR, and the amendment-first rule asks that the existing ADR be corrected and the changed premise recorded, so ADR-000F, ADR-000G, ADR-000H, ADR-000I, ADR-000R (its whole-Wiki lint sentence, decision 3) and ADR-000U are amended in place.
 8. **File ownership across Specs.** The Runbook, the Lexicon and the Blueprint each have another writer in turn, so their corrective lines are three separate Tasks that wait on `owner:` tokens rather than edits made here out of turn.
 
 ## Non-Goals
@@ -122,6 +122,7 @@ Run the targeted spec-report, spec-workbench, control-fidelity and append-only t
 |---|---|---|---|---|---|
 | 2026-10-03 | none | Authored at the Map step from the owner's two corrective-work answers confirmed on 2026-10-03 in the Blueprint teardown, at integration 5cfa987bacb0f6a9273d93e8d989e34000d75ad9. | Map only; the quoted `AGENTS.md`, Runbook, Lexicon, template, Blueprint, decision-record and skill lines and the named runtime functions and tests were read at that tip; no runtime proof claimed. | This Spec and the generated Spec catalog. Docs checked; no control, Lexicon or Wiki update is due until delivery, because a planned Spec changes no accepted rule. | Plan, implementation and proof remain; the five open questions are for Plan. |
 | 2026-10-03 | none | Planned: the five open questions settled from project evidence and seven Tasks cut (TK-005Q to TK-005W) at integration 64c2c524. | Plan only; read `spec-report.mjs` (`recordReviewVerdict`, `recordOwnerApproval`, `createCorrectiveTasks`, `createOrphanCorrectiveTasks`), `spec-workbench.mjs` (`closeTask`, `finishRecordClose`, the standalone corrective claim, select and close paths), `task-record.mjs`, `task-receipt.mjs`, the accepted records and `tools/check-append-only.py` at that tip; no implementation or runtime proof claimed. | This Spec and the seven Task records. Docs checked; no control, Lexicon or Wiki update is due until delivery. | Implementation, proof and the three writer-turn Tasks remain. |
+| 2026-10-03 | TK-005Q | Task closed | Full AGENTS suite on committed candidate 0dd04ec2 (47 of 48 first run; the one flake, test-spec-workbench, passed alone on that candidate); control-fidelity pin red then green; test-adr 56 pass; adr validate ok | DDR for the same-Task rule accepted; ADR-000F, 000G, 000H, 000I, 000R, 000U amended with git anchors; registers regenerated | none |
 
 ## Completion Result
 
