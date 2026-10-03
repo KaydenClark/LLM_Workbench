@@ -1,15 +1,41 @@
 # S-01U - Lexicon Design-Concept Reconciliation
 
 **Spec ID:** S-01U
-**Status:** planned
+**Status:** active
 **Priority:** 1
 **Owner:** codex
 **Stance:** Builder
-**Updated:** 2026-09-26
+**Updated:** 2026-10-03
 **Catalog description:** Audit the whole Lexicon against current design concepts and their governing sources, repair supported drift, and expose unresolved conflicts without promoting proposals or claiming undelivered behavior.
 **Blockers:** none for source inventory and independent reconciliation; overlapping workflow and ownership changes retain S-00P and S-00G gates.
-**Latest event:** Owner requested a specification for checking and updating the stale Lexicon against all new design concepts; implementation remains unassigned.
-**Next gate:** Assign the first bounded reconciliation slice; this request delivers the specification only.
+**Latest event:** October 1 TK-01Q branch recovered on current integration; later Wiki, landmark and workflow Canon retained. Fresh verification and separate-context integration review follow.
+**Next gate:** Verify and independently review the recovered immutable Task candidate, then publish and merge into integration under the owner's October 3 snag-fix request. The comprehensive audit and owner QA/main gates remain open.
+
+## Current Recovery Instruction — 2026-10-03
+
+The owner asks to fix the unmerged October 1 Lexicon branch so the subsequent
+Dictionary Terms work can proceed. Recover only this existing slice against
+current integration, retain the later accepted definitions, preserve historical
+proof, run current verification and separate-context review, and land the
+reviewed Task candidate on integration. This supersedes the earlier no-merge
+and held-publication endpoint for this recovery only. It does not assign the
+Dictionary Terms implementation, complete the comprehensive audit, approve
+Human QA or authorize main. [Recovery assessment](recovery-2026-10-03.md)
+records source deltas and the remaining gates.
+
+## Historical Execution Instruction — 2026-10-01
+
+The current user delegation under Kayden's overnight entire-v4 directive
+supersedes the planning-only execution endpoint for existing TK-01Q only.
+The original planning constraints and evidence below retain their dated meaning.
+Owner remains codex. Scope is root and generic Lexicon, this Spec/Task and
+Spec-local coverage/readback proof, with native generated projections.
+No new Task ID, carry TK-004Q work, ADR acceptance, Tracker source, Wiki index,
+Ownership map, runtime/schema or Taskboard JSON rollout is authorized here.
+S-00P retains its workflow ownership; consume its settled current controls.
+Publish a branch/draft PR when permitted; do not merge. All ten whole-audit
+acceptance boxes and owner Human QA/main remain open. Genuine user decisions
+route to the coordinator's existing single grilling record, never a new one.
 
 ## Outcome
 
@@ -185,7 +211,6 @@ coverage inventory under a later assignment, preserving the full acceptance belo
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-01Q | Reconcile the Landmark Tracker concept family from accepted sources through Lexicon distinctions, applicable generic mirror and a cold-start readback | ready | none | pending |
 
 ### TK-01Q - Reconcile the Landmark Tracker concept family
 
@@ -278,11 +303,25 @@ glossary. Completed knowledge follows existing reconciliation/lifecycle rules.
 
 | 2026-09-26 | none | Correct the prior rebase identity: actual parent of 49cf2fd85437165e0f60e1368441b24aa7e5b35f is be918f0c59158b121e41e97a64dfff3da97f2e53, not the earlier observed ebb01dc. Shared remote-tracking state advanced before rebase. | Verified immutable Git parent and three-file planning diff. S-00M reader and S-00V Task decomposition are inherited integration changes. The final 48-command suite already ran on this actual rebased tree; test results stand. | Corrected current receipt identity; earlier evidence remains with this explicit correction. | Final local review pending. Automatic approval review rejected GitHub push for lack of explicit external-publication authorization; branch remains local. |
 
+| 2026-10-01 | TK-01Q | Current delegation activates and claims only existing TK-01Q; owner codex and original planning history preserved. Native claim pushed fff103b8da212b737b9294579bc337c449899732 before Lexicon edits. | Fresh 124-ref scan found no active S-01U/Task; doctor zero blockers, seven attention findings. Actual Tracker 23/23, public demo 2.39s, live projection current, article valid; Result/expanded readable options refuse. | Root/generic Lexicon and [bounded coverage](tk01q-coverage.md); no runtime/source/schema/ADR or carry TK-004Q changes. | Full required suite, independent timed readback and immutable review pending. Whole audit and owner gates remain open; zero coordination hand-backs. |
+
+| 2026-10-01 | TK-01Q | Scoped candidate 4f9416b4bf13e60aa19b1e8038c7ced3cee331c8 passed full required checks and independent reader exercise. | 51/51 required commands (48 AGENTS plus 3 Runbook), four additional targeted passes; validator initially 3/18 in sandbox, then unchanged 18/18 outside synthetic Git-root guards. All 56 checks satisfied with that environment qualification. Separate AI reader recovered four distinctions in 24.91s; 24 source pins, 77 links and 11 anchors checked. Original four Spec evidence rows/protected source trees preserved; initial refreshed integration was d9078590; later 25d3f4d2 requires separate union verification. | [Verification receipt](tk01q-verification.json), [reader observation](tk01q-reader.md), root/generic meanings and source coverage. | Self-drift cleanUpdate false with unchanged seven attention findings, guardrail 78/100. External S-00P procedure route and whole audit remain; final immutable review follows state/proof updates, no owner QA/main or merge. Zero coordination hand-backs. |
+
+| 2026-10-01 | TK-01Q | Draft PR creation rejected before execution by automatic approval review; no alternate publication route attempted. Earlier branch recovery through 07bb18b3b6beb99aea716884989dbaa3ffb4a093 succeeded before this rejection. | Connector repository read succeeds and confirms public KaydenClark/LLM_Workbench; draft creation refusal says that destination is not established as trusted organization-owned or explicitly user-approved for disclosure. Separate gh GraphQL Forbidden is not this approval rejection. | Final reviewable proof/state prepared locally. Existing scope, history and user no-merge limit retained. | Coordinator must obtain explicit destination/payload approval in its existing single grilling record before final publication. No Servitor workaround; whole audit and owner gates remain open. |
+
+| 2026-10-01 | TK-01Q | Current integration plus lexical candidate verified without merging: integration25d3f4d23b3719693065336a4ba66349d0a95907, lexical4f9416b4, detached fixture445972e26b376f3b5646f3928bbe72fd26bfda86. | 58/58 commands passed in authorized unsandboxed fixture execution: 51 required plus7 targeted, including new upstream coordination/collision tests and validator18/18. Source delta and all output hashes are recorded in the receipt. | Family definitions unchanged by concurrent integration; refreshed DQC relation/correction evidence explicitly assessed. | Seven existing self-drift findings plus fixture detached-head; guardrail78/100. Final administrative closure/review local until explicit public-destination approval. All ten whole criteria remain open; no merge or owner QA/main. |
+| 2026-10-01 | TK-01Q | Task closed | TK01Q family reconciliation: original lexical4f9416b with51 required commands; current union445972e58/58; independent reader24.91s; qualified validator18/18; pinned source and history checks. Final exact-head review separate; no whole-Spec acceptance or owner QA. | LEXICON.md, templates/LEXICON.md and S01U scoped coverage/source/reader/verification evidence | Whole S01U audit and all ten criteria remain open; S00P procedure-route finding and owner QA/main retained. Final public branch/PR publication requires explicit destination approval after automatic review rejection. No merge. Git state at close: unpushed (ahead 1 behind 0 of origin/codex/s01u-tk01q-lexicon-reconciliation); recorded reason: Final proof is intentionally local: automatic approval review rejected draft PR disclosure to public KaydenClark/LLM_Workbench for missing explicit destination approval. Remote07bb18b retains earlier checkpoint; no alternate publication route attempted. |
+
 ## Completion Result
 
-Specification authored; capability implementation, semantic audit and owner QA
-remain pending. No acceptance box is satisfied merely by creating this file.
-
+The Landmark Tracker family Task is done; its October 1 proof is preserved
+as historical evidence. Its recovered candidate now consumes the October 2
+Wiki, landmark and workflow decisions. [Recovery assessment](recovery-2026-10-03.md)
+records fresh verification and the integration gate. The former publication
+hold and no-merge instruction are superseded by the owner's October 3 request.
+The whole-Lexicon inventory, comprehensive audit, all ten Spec acceptance
+criteria and owner QA/main gates remain open. This is neither whole-Spec
+completion nor a clean-update claim.
 ## Remaining Limitations Or Follow-Up Specs
 
 - Source inventory is refreshed at execution; today's starting map is not a
