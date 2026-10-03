@@ -1,15 +1,15 @@
 # S-003X - Decision Record Tooling
 
 **Spec ID:** S-003X
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude
 **Stance:** Builder
-**Updated:** 2026-10-02
+**Updated:** 2026-10-03
 **Catalog description:** Give a room one tool and one set of read words for both kinds of decision record, the ADR and the Destination Decision Record, with the lifecycle moves the ADR tool lacks.
-**Blockers:** none for specification. How a DDR records its single landmark is open and waits on the landmark capability; implementation awaits Plan and assignment.
-**Latest event:** Authored at the Map step from the owner-confirmed decision records of 2026-10-02; no Task is cut.
-**Next gate:** At Plan, inspect live Actuality and cut small Tasks within this Spec.
+**Blockers:** none for the four tooling Tasks (TK-004W, TK-004X, TK-004Y, TK-004Z), which run in that order. The Lexicon-mirror Task TK-005A waits on the owner's unmerged Codex Lexicon reconciliation branch, which edits both Lexicons. How a DDR records its single landmark is open, outside this acceptance, and waits on the landmark capability.
+**Latest event:** Planned on 2026-10-03 at integration 2dcde6e90faed0937d7742fdac186db3c14e5e5b: five record-backed Tasks cut and the Spec activated; DDR tooling reuses the ADR runtime.
+**Next gate:** Claim and deliver TK-004W (the `ddr` collection), then TK-004X, TK-004Y and TK-004Z; each Task PR needs a separate-context review of its immutable candidate before its integration merge.
 
 > **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a`.
 
@@ -47,14 +47,17 @@ No implementation or agent-outcome proof for this capability is claimed by this 
 - A DDR is its own durable record type, a sibling of the ADR, and the two are handled by one system. One decision that needs both records links them rather than merging them. A Spec keeps a capability's scoped, testable acceptance. See [Destination Decision Records are decision records beside ADRs](../../docs/adr/000S-destination-decision-records-are-decision-records-beside-adrs.md).
 - The five read words are the Workbench's own and are defined once in the Lexicon. `capture` is Create, not a read. This Spec renames each tool it touches to the words. See [Records share one set of read words](../../docs/adr/000T-records-share-one-set-of-read-words-list-show-search-history-and-inspect.md).
 - Lifecycle is folder location, per the ADR record on [record lifecycle by folder location](../../docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md). Visible identifiers follow the base-62 identifier decision in [ADR-0041](../../docs/adr/0041-visible-base62-workbench-identifiers.md).
-- Whether the DDR tooling reuses the ADR runtime or forks it is for the Plan step. Reuse is the recommendation of the accepted record, not a decision.
+- Decided at Plan on 2026-10-03: the DDR tooling reuses the ADR runtime. `workbench/tools/adr.mjs` serves both kinds, parameterized by record kind (collection, identifier prefix, template and finding code). No second runtime tool is added, so the closed set of managed runtime tools and every installed-tools receipt stay as they are, and every existing ADR command, export and finding keeps its behavior. Commands that create or check a collection take `--kind ddr`; commands addressed to one record read the kind from its `ADR-` or `DDR-` identifier prefix. A forked runtime was rejected because the two kinds share layout, lifecycle, identifiers and validation, and a fork would duplicate all of it.
+- Decided at Plan on 2026-10-03 for decision records only: `search` attaches no other record to a result. Each result carries the record's lifecycle status and, for a superseded record, the successor that replaced it, because supersession is how a decision record is corrected; a reader is never handed a replaced decision as if it were current. Whether `search` attaches linked corrections the way the notepad topic read does stays open for the other record tools.
 - The tool does not encode when a decision record is created. The accepted [workflow verbs decision](../../docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md) places the creation of decision records, ADRs and DDRs alike, at Map and narrows the earlier record's rule that a DDR is born when the owner confirms the decision. The accepted [promotion decision](../../docs/adr/000Y-a-locked-and-confirmed-answer-is-promoted-without-further-ceremony.md) has `to-docs` compose a DDR as it composes an ADR. The command only writes a `proposed/` record at the documentation step, run through `to-docs`.
 - The Wiki cites DDRs by name and context and has no page per DDR. The Wiki is the synthesis; the DDR owns the decision.
 
 Open, not decided here:
 
 - How a DDR records the one landmark it belongs to (a frontmatter key on the DDR, or a listing on the landmark). The accepted landmark decision says each DDR belongs to exactly one landmark or sits at Blueprint level; the accepted DDR record fixes only the keys `date`, `supersedes` and `canonicalized_in`. This is shared with [LANDMARK.md Artifact And Lane Runtime](../S-003Z-landmark-md-artifact-and-lane-runtime/SPEC.md).
-- Whether `search` attaches a record's linked corrections to a result, as the notepad's topic read does.
+- Whether `search` attaches linked corrections for record tools other than the decision-record tool (decided above for decision records only).
+
+The landmark question is not decided at Plan. The DDR template carries no landmark field, and validation neither requires nor refuses one, until the LANDMARK.md capability settles it.
 
 ## Non-Goals
 
@@ -69,7 +72,13 @@ Taking the existing Blueprint apart into the first DDRs, which the owner grills 
 
 ## Vertical Implementation Slices
 
-No Tasks cut. At Plan, use current Actuality to cut small complete-path slices and safe parallel groups. The empty tasks directory keeps this planned capability record-backed.
+Cut at Plan on 2026-10-03 as record-backed Tasks under `tasks/`; each `TASK.md` carries its state, acceptance and proof. They run in this order, one writer, because TK-004X, TK-004Y and TK-004Z all edit `workbench/tools/adr.mjs`, `tools/test-adr.mjs` and the Runbook decision-record section, so no two of them form a safe parallel group:
+
+1. TK-004W installs the `ddr` collection in fresh rooms (`init`) and existing rooms (`migrate`), and in this room.
+2. TK-004X writes, validates and registers DDRs through the shared runtime, narrows the generic Blueprint instruction and routes `to-docs` to the DDR command.
+3. TK-004Y adds the accept, supersede and deprecate moves for both kinds.
+4. TK-004Z adds the five read words for both kinds.
+5. TK-005A mirrors the installed collection, terms and read words into both Lexicons. It is last because the owner's unmerged Codex Lexicon reconciliation branch edits both Lexicons; it stays blocked until that branch lands or the owner releases the files.
 
 ## Acceptance Criteria
 
@@ -99,6 +108,7 @@ Maintain the Lexicon rows, the Runbook decision-record commands and the `to-docs
 |---|---|---|---|---|---|
 | 2026-10-02 | none | Authored at the Map step from the owner-confirmed decision records of 2026-10-02 at integration cbb3d5b81c0081c45d92e0d284078ca13fd54c03. | Map only; no runtime proof claimed. | This Spec. | Plan, implementation and proof remain; the DDR landmark field and `search` corrections are open. |
 | 2026-10-02 | none | Re-verified and re-anchored at integration 5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a after four PRs landed. | Map only; the asserted counts, tool commands, collections and the S-00M status were re-read at that tip; no runtime proof claimed. | This Spec. | Plan, implementation and proof remain. |
+| 2026-10-03 | none | Planned at integration 2dcde6e90faed0937d7742fdac186db3c14e5e5b: Actuality inspected (adr.mjs commands, manifest and layout collection shapes, init and migrate, Genesis and Runbook text, template placeholders, diagnostics); Tasks TK-004W, TK-004X, TK-004Y, TK-004Z and TK-005A cut record-backed; the Spec activated; ADR-runtime reuse and the decision-record search result shape decided; the landmark field left open. | Plan only; doctor and render after the cut; guardrail baseline 78/100 and self-drift pre receipt (7 pre-existing attention findings; machineResult blocked, cleanUpdate false) captured at 2dcde6e9; no runtime proof claimed. | This Spec, its five TASK.md records, the generated projections and the Wiki article "Decision Records and the Concept Map" (names the delivering Specs; Wiki validated). | All implementation and proof remain; TK-005A is blocked on the unmerged Codex Lexicon reconciliation branch. |
 
 ## Completion Result
 

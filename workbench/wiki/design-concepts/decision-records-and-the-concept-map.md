@@ -10,9 +10,10 @@ source_paths:
   - LEXICON.md
   - workbench/docs/adr/000S-destination-decision-records-are-decision-records-beside-adrs.md
   - workbench/docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md
+  - workbench/specs/S-003X-decision-record-tooling/SPEC.md
 parent: none
 authorized_by: the owner's promotions of the 2026-10-01 and 2026-10-02 grillings
-last_verified: 2026-10-02
+last_verified: 2026-10-03
 ---
 
 # Decision Records and the Concept Map
@@ -110,15 +111,19 @@ its Lexicon row.
 The destination is accepted and partly installed. The Lexicon defines the
 Decision Record, the DDR and the Blueprint's standing as a standalone page, and the decision record
 below records the choice. Not yet installed: the DDR collection, its commands,
-and the accept, supersede and deprecate moves, all for a Decision Record tooling
-Spec that is not yet written. The first DDRs will come from taking the existing
+the accept, supersede and deprecate moves and the shared read words. The
+[Decision Record Tooling Spec (S-003X)](../../specs/S-003X-decision-record-tooling/SPEC.md)
+delivers them; it was planned on 2026-10-03 with the DDR tooling reusing the ADR
+runtime, one tool for both kinds of record. The first DDRs will come from taking the existing
 Blueprint apart; the owner grills those candidates first, and a later Spec
 drafts them into the proposed folder for review. The rest of the Blueprint
 splits three more ways: destination chunks that group several decisions become
 landmarks, explanations of durable models become design-concept articles, and
 what remains is one short page saying what the product is, who it serves, its
 promised outcomes and its non-goals. Landmarks as artifacts are not installed
-either; a landmark Spec, not yet written, delivers them.
+either; the planned
+[LANDMARK.md Artifact And Lane Runtime Spec (S-003Z)](../../specs/S-003Z-landmark-md-artifact-and-lane-runtime/SPEC.md)
+delivers them, and settles how a DDR records the one landmark it belongs to.
 
 ## Evidence and Sources
 
@@ -140,3 +145,6 @@ either; a landmark Spec, not yet written, delivers them.
   Destination Decision Records.
 - 2026-10-02: added the map at two scales, the Destination Packet and the rest of
   the Blueprint split, from the owner-confirmed grilling of 2026-10-02.
+- 2026-10-03: named the two Specs that deliver the DDR tooling and the landmark
+  artifact, now that both exist, and the tooling Spec's Plan decision to reuse
+  the ADR runtime.
