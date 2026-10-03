@@ -758,6 +758,24 @@ test('the Blueprint and Foundry rows carry the owner\'s confirmed answers and no
   assert.doesNotMatch(foundry, /downstream coordination extension/, 'Foundry row drops the replaced description');
 });
 
+
+// S-004G: the owner's Journey correction (Journey is the build loop) is carried
+// by the amended workflow-verbs decision record, and no active accepted
+// decision record still says Journey is Map, Plan, Implement, Review and Verify.
+test('the workflow verbs decision carries the Journey correction and no active record states the replaced Journey', () => {
+  const active = (directory) => fs.readdirSync(path.join(root, directory))
+    .filter((name) => /^[0-9A-Za-z]{4}-.*\.md$/.test(name))
+    .map((name) => [`${directory}/${name}`, read(root, `${directory}/${name}`).replace(/\s+/g, ' ')]);
+  const records = [...active('workbench/docs/adr'), ...active('workbench/docs/ddr')];
+  for (const [file, text] of records) assert.doesNotMatch(text, /Journey is Map, Plan, Implement, Review and Verify/, `${file} still states the replaced Journey`);
+  const workflow = records.find(([file]) => /\/000X-the-workflow-is-eight-verbs/.test(file));
+  assert.ok(workflow, 'the workflow verbs decision stays an active accepted record');
+  assert.match(workflow[1], /Journey is Implement, Check, Review and Verify, repeated until the confirmed concept is built; Map and Plan come before it and are not part of it/);
+  assert.match(workflow[1], /the verb set is open/i);
+  assert.match(workflow[1], /Amended 2026-10-03/);
+  assert.match(workflow[1], /git show [0-9a-f]{7,40}:workbench\/docs\/adr\/000X-/, 'the amendment names where the earlier text reads');
+});
+
 // S-004E: each AI Coding Dictionary term the owner adopted has exactly one
 // Lexicon row, in an `AI Coding Terms` section, naming its dictionary entry
 // once; the generic Lexicon carries the same rows, and names no room-specific
