@@ -42,14 +42,14 @@ own manifest declares the collection and carries the folders.
 
 ## Acceptance
 
-- [ ] `init` declares `collections.ddr` and creates the folder with `proposed/`
+- [x] `init` declares `collections.ddr` and creates the folder with `proposed/`
       and `archive/`; `validate` reports the room valid.
-- [ ] Every earlier collection shape still validates; a relocated `ddr`
+- [x] Every earlier collection shape still validates; a relocated `ddr`
       declaration is refused as `invalid-collection`.
-- [ ] `migrate` adds exactly the missing additive collections, leaves every
+- [x] `migrate` adds exactly the missing additive collections, leaves every
       ADR byte and every other manifest key unchanged, and a second run
       reports `current`.
-- [ ] This room declares the collection and `doctor` reports no blocking
+- [x] This room declares the collection and `doctor` reports no blocking
       finding.
 
 ## Boundaries
@@ -59,3 +59,9 @@ No DDR command, register or validation (the next Task). No `LEXICON.md` or
 unmerged Codex Lexicon reconciliation branch. The ADR collection's own layout
 and every existing ADR stay untouched. No version bump or release bundle; the
 release owner keeps those gates.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s003x-tk004w-ddr-collection | 333a6da7abb8471090c1cf1ec9c17b6ab89a77cc | ahead 0 behind 0 | 0 | Red aa51ade6: tools/test-workbench-layout.mjs 71 pass 2 fail (the new ddr-collection case: init declares no ddr; the features case: migrate adds only features). Green 333a6da7: test-workbench-layout 73/73, test-workbench-adoption, test-workbench-upgrade 5/5, test-landmark-tracker 23/23, test-workbench-round-trip, test-workbench-dogfood, test-control-fidelity 26/26 pass; workbench-layout.mjs migrate on this room reported migrated with collections.ddr added and validate reports valid; full AGENTS suite on clean 333a6da7: 48/48 commands pass. | RUNBOOK V3 support-root check (twelve collections incl. wiki/features and docs/ddr, init lifecycle folders, additive migrate and its refusal), templates/RUNBOOK decision-record paragraph, templates/GENESIS readiness line (seven lanes, twelve collections), Wiki article Decision Records and the Concept Map (collection installed, still empty); update-harness skill checked, no change needed because it does not enumerate collections. | No DDR command, register or validation yet (TK-004X). Lexicon rows unchanged (TK-005A, blocked on the Codex Lexicon branch). Separate-context review of the final head pending. | 85880e74559ea52e95e5683f3d4c11cde12fbcbd756c3cdbe11c1ff53fc0f836 |
