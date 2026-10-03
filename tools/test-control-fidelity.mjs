@@ -645,3 +645,31 @@ test('the completion-claim contract fails when a documented mechanism or Git-sco
   assert.ok(generic.includes(codes), 'mutation targets current generic Runbook text');
   assert.throws(() => completionClaimRunbookContract(generic.replace(codes, 'reports Git state (attention,'), { table: false }), { name: 'AssertionError' });
 });
+
+// S-003X TK-005A: the `ddr` collection, its commands and the read words are
+// installed, so both Lexicons define them and neither presents them as
+// pending; the generic Lexicon names no room-specific record.
+test('both Lexicons carry the installed decision-record vocabulary, and the generic one stays generic', () => {
+  const termRows = (content, term) => content.split('\n').filter((line) => line.startsWith(`| **${term}** |`));
+  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
+    const content = read(root, relative);
+    for (const term of ['Decision Record', 'DDR', 'Read words']) assert.ok(termRows(content, term).length > 0, `${relative} defines ${term}`);
+    const collection = termRows(content, 'Collection').join('\n');
+    assert.match(collection, /`docs\/ddr`/, `${relative} lists the ddr collection`);
+    assert.match(collection, /`wiki\/features`/, `${relative} lists the features collection`);
+    const blueprint = termRows(content, 'Blueprint').join('\n');
+    assert.match(blueprint, /ADR or DDR inventory/, `${relative} Blueprint row`);
+    assert.match(blueprint, /links no record that carries an identifier/, `${relative} Blueprint row narrows linking`);
+    assert.match(termRows(content, 'Decisions').join('\n'), /workbench\/docs\/ddr\/REGISTER\.md/, `${relative} routes destination decisions to the DDR register`);
+    assert.match(termRows(content, 'Read words').join('\n'), /decision-record tool answers all five/, `${relative} says which tool answers the read words`);
+    for (const line of [...termRows(content, 'DDR'), ...termRows(content, 'Decision Record'), ...termRows(content, 'Decisions')]) {
+      assert.doesNotMatch(line, /not installed yet|will live in|remain in delivery|as the accepted destination, a DDR/, `${relative} presents installed DDR tooling as pending: ${line.slice(0, 80)}`);
+    }
+  }
+  const template = read(root, 'templates/LEXICON.md');
+  for (const term of ['Decision Record', 'DDR', 'Read words']) {
+    // Review corrective: the generic Lexicon defines each term exactly once.
+    assert.equal(termRows(template, term).length, 1, `templates/LEXICON.md defines ${term} exactly once`);
+    for (const line of termRows(template, term)) assert.doesNotMatch(line, /ADR-0|S-0|TK-0|workbench\/docs\/adr\/0|workbench\/specs\//, `templates/LEXICON.md ${term} stays generic`);
+  }
+});
