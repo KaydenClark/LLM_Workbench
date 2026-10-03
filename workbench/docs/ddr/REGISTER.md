@@ -26,3 +26,4 @@
 | [000R](000R-llm-workbench-owns-what-a-workbench-is-the-project-owns-what-it-says-and-may-add-without-tearing-apart-what-works.md) | LLM Workbench owns what a workbench is; the project owns what it says and may add without tearing apart what works | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000S](000S-setup-drafts-everything-it-can-and-grilling-confirms-it.md) | Setup drafts everything it can and grilling confirms it | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000T](000T-the-workbench-is-an-agentic-management-system-not-a-harness.md) | The workbench is an agentic management system, not a harness | accepted | 2026-10-03 | BLUEPRINT.md |
+| [000U](000U-a-project-is-a-room-and-the-workbench-is-the-table-in-it.md) | A project is a room and the workbench is the table in it | accepted | 2026-10-03 | BLUEPRINT.md |

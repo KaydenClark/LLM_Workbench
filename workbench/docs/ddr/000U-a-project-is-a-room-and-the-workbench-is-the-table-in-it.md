@@ -18,6 +18,6 @@ Why the owner chose it:
 
 Considered and rejected: None recorded.
 
-Consequences: None recorded as owner words. The room and table meanings are Lexicon rows owned by the terms work; this record keeps the destination choice. No accepted record holds the room-and-table metaphor; [LLM Workbench is the sole Workbench source; Foundry is a downstream extension](../../adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md) uses "room" only for the larger context a Workbench can be nested inside.
+Consequences: None recorded as owner words. The room and table meanings are Lexicon rows owned by the terms work; this record keeps the destination choice. No accepted record holds the room-and-table metaphor; [LLM Workbench is the sole Workbench source; Foundry is a downstream extension](../adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md) uses "room" only for the larger context a Workbench can be nested inside.
 
 Provenance: the Blueprint teardown grilling of 2026-10-02 to 2026-10-03: question BT-D14 (a project is a room, the workbench its table), locked 2026-10-03 on the owner's confirmed round-2 readback with the management-system and dependency sentences from the owner's chat answer; reasons from the owner's own words, question WHY-D6.
