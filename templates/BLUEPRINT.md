@@ -18,7 +18,7 @@
 
 ## Integrated System Design
 
-[Explain how the major parts cooperate to deliver those outcomes. Link active architectural decisions inline only when they materially explain or constrain the destination.]
+[Explain how the major parts cooperate to deliver those outcomes. Describe the destination itself; link no record that carries an identifier (an ADR, DDR, Spec, Task or landmark), since decision records name this Blueprint in canonicalized_in instead.]
 
 ## Cross-Cutting Qualities And Constraints
 

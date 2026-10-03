@@ -1,0 +1,1146 @@
+{
+  "status": "bounded-checks-passed-whole-audit-open",
+  "base": "d90785908b26517068a474bb88136c81995a2f18",
+  "tested_candidate": "4f9416b4bf13e60aa19b1e8038c7ced3cee331c8",
+  "required_checks": {
+    "AGENTS": 48,
+    "additional_RUNBOOK": 3,
+    "additional_targeted": 5,
+    "initial_passed": 55,
+    "passed_after_environment_rerun": 56,
+    "checks": [
+      {
+        "command": "node tools/test-spec-workbench.mjs",
+        "exit": 0,
+        "seconds": 97.902,
+        "output_sha256": "e0b825fa768dac5cdb040b93fa9d0a04cb44e7a5034b387be62efa48c26f878f"
+      },
+      {
+        "command": "node tools/test-skill-catalog.mjs",
+        "exit": 0,
+        "seconds": 0.214,
+        "output_sha256": "19e67f88827cc5e580622d4b56df65fa928620ba680579d9fd8babc73c738301"
+      },
+      {
+        "command": "node tools/test-skill-inspection.mjs",
+        "exit": 0,
+        "seconds": 0.078,
+        "output_sha256": "56c88f868888b5c6b0dae05eedc853ea749f365bc7b8f36abc563cadfed6fa0a"
+      },
+      {
+        "command": "node tools/test-skills-lane.mjs",
+        "exit": 0,
+        "seconds": 2.583,
+        "output_sha256": "2a3fd59e64896fa1b38b7d8088a73ad113fc14ac3c061ec04559b77b211c4fae"
+      },
+      {
+        "command": "node tools/test-core-composition.mjs",
+        "exit": 0,
+        "seconds": 2.498,
+        "output_sha256": "dc7eec7d769502084525e5bfe192c2e4dd28393084677fa176111319d18c5a95"
+      },
+      {
+        "command": "node tools/test-project-evidence.mjs",
+        "exit": 0,
+        "seconds": 1.007,
+        "output_sha256": "a28ed34f104848fc97c7958a62a473164ee4ae42a5e06acbcf751e2552062e87"
+      },
+      {
+        "command": "node tools/test-genesis-from-decisions.mjs",
+        "exit": 0,
+        "seconds": 21.551,
+        "output_sha256": "41e5294c8553877eef92a2efe83c26110e326f05fe457b678aceca42a1adb66d"
+      },
+      {
+        "command": "node tools/test-blueprint-contract.mjs",
+        "exit": 0,
+        "seconds": 0.104,
+        "output_sha256": "fd1e113d4e53c6b7e4746a7c804bbc389fcffd6a3e17905564f10031c8d06ea1"
+      },
+      {
+        "command": "node tools/test-session-transport.mjs",
+        "exit": 0,
+        "seconds": 12.259,
+        "output_sha256": "1fb238a7af9ba9d3021469302cb23688c4731a9aba89b73e1f4e0ee3246b7c09"
+      },
+      {
+        "command": "node tools/test-configured-host.mjs",
+        "exit": 0,
+        "seconds": 3.485,
+        "output_sha256": "a10bde462885d9ef7b030ceedeb31579d2fedaac4a58bd4cd3ebc7e705c69eba"
+      },
+      {
+        "command": "node tools/test-core-skill-installer.mjs",
+        "exit": 0,
+        "seconds": 8.837,
+        "output_sha256": "e57069ace284afc31b95e362d946b26fafb08a71d9cc0abbbc3e8550c29b0e6c"
+      },
+      {
+        "command": "node tools/test-workbench-layout.mjs",
+        "exit": 0,
+        "seconds": 37.222,
+        "output_sha256": "7e3ef9dfa75bf8ca3d69ba5849f7b353520d76553f2f20ca442c847507ad0a4f"
+      },
+      {
+        "command": "node tools/test-workbench-adoption.mjs",
+        "exit": 0,
+        "seconds": 8.043,
+        "output_sha256": "dceaa3017b327b1a18f1206baa5c895a2bf418082cc028c6a35f3b20acb9a868"
+      },
+      {
+        "command": "node tools/test-workbench-upgrade.mjs",
+        "exit": 0,
+        "seconds": 6.148,
+        "output_sha256": "7531773ded38ad58b8a84f27bccdb135c3dbc17fdf60960daf8325225a1512e6"
+      },
+      {
+        "command": "node tools/test-workbench-tools.mjs",
+        "exit": 0,
+        "seconds": 6.853,
+        "output_sha256": "d2289364722831aefba252aaef9d17cc470afe3df98e3c23099b1eddab69922c"
+      },
+      {
+        "command": "node tools/test-diagnostics.mjs",
+        "exit": 0,
+        "seconds": 20.721,
+        "output_sha256": "61e39a8e43e779e8811671f1c14e51870db5d87617c4ba679e94f27c2c85d278"
+      },
+      {
+        "command": "node tools/test-adr.mjs",
+        "exit": 0,
+        "seconds": 7.447,
+        "output_sha256": "3cb9334ca8d9ce805851effe8235fde00b455724128901b0b48ca059e7b7e08b"
+      },
+      {
+        "command": "node tools/test-governance-core.mjs",
+        "exit": 0,
+        "seconds": 0.113,
+        "output_sha256": "6596f1e6f3ccffdb735000ae6d596e71fd30a996a06590d336db0bcf97251791"
+      },
+      {
+        "command": "node tools/test-branch-closeout.mjs",
+        "exit": 0,
+        "seconds": 3.509,
+        "output_sha256": "f9d6b45ba09b60f490ec07bf0e6cc4cb9f1d3331191f529176cfafa0338cdd8e"
+      },
+      {
+        "command": "node tools/test-wiki.mjs",
+        "exit": 0,
+        "seconds": 3.421,
+        "output_sha256": "7d20b72e12fd2fe9b0a178af18d2c441b59215b2b9845ca648939a97460ad686"
+      },
+      {
+        "command": "node tools/test-sessions.mjs",
+        "exit": 0,
+        "seconds": 3.534,
+        "output_sha256": "a1946f13563b3f7538d8d3470682e9e86b2e1c77bb4d8e583301c72259f4accd"
+      },
+      {
+        "command": "node tools/test-notepads.mjs",
+        "exit": 0,
+        "seconds": 9.487,
+        "output_sha256": "d3661ee02ef55486a8dec25a52a2a0693302ac8519e5f9e26266042593d6b61e"
+      },
+      {
+        "command": "node tools/test-visible-ids.mjs",
+        "exit": 0,
+        "seconds": 1.361,
+        "output_sha256": "85510dc8f7f113821b241282841f019a8bfcec10783d162e98abe8f25ba578d4"
+      },
+      {
+        "command": "node tools/test-workbench-identity.mjs",
+        "exit": 0,
+        "seconds": 3.605,
+        "output_sha256": "bdbf594a69de32678f73fc2eaf89200fb8b905636bfa3523f51c5432257cb034"
+      },
+      {
+        "command": "node tools/test-visible-id-consumers.mjs",
+        "exit": 0,
+        "seconds": 11.906,
+        "output_sha256": "e9e8e0338fbb867a365fabc26efeb5663684214472de463087db2ec6bcce227f"
+      },
+      {
+        "command": "node tools/test-direct-promotion.mjs",
+        "exit": 0,
+        "seconds": 3.611,
+        "output_sha256": "2c2c8675b2fca2fc9cd100b6550667b8bf0f425a3e62711363170971d25890cc"
+      },
+      {
+        "command": "node tools/test-workbench-round-trip.mjs",
+        "exit": 0,
+        "seconds": 20.215,
+        "output_sha256": "e398a235ad4a31c3b08b6bf921704b2f66a1bfb6b6adff0ea0a994caace62566"
+      },
+      {
+        "command": "node tools/test-cross-provider-fixture.mjs",
+        "exit": 0,
+        "seconds": 2.099,
+        "output_sha256": "4cedcdbf38344fc6d6bc454ef80a75dfef5b4fdd3ae6cfb205b0fd7af45544b5"
+      },
+      {
+        "command": "node tools/test-portability-matrix.mjs",
+        "exit": 0,
+        "seconds": 0.521,
+        "output_sha256": "2dff476f3254bfbb2f5eb4f3049cd0cbdfd11d291503cc1511c49cd3649c61f6"
+      },
+      {
+        "command": "node tools/test-workbench-dogfood.mjs",
+        "exit": 0,
+        "seconds": 2.543,
+        "output_sha256": "5edca15bea0b229bb194025549b2ca7d1e9c08d549d28169904fa162f06c6ac2"
+      },
+      {
+        "command": "node tools/test-evaluate-workbench.mjs",
+        "exit": 0,
+        "seconds": 0.649,
+        "output_sha256": "2f9a0468ee094a221fb6e84b551484e3ed279bb371f694dbc9993980bb6ab887"
+      },
+      {
+        "command": "node tools/test-guardrail-audit.mjs",
+        "exit": 0,
+        "seconds": 0.219,
+        "output_sha256": "373b04e4a2607c087192de6b9e5890b8340195fc3bd4c17b1a681168289d2051"
+      },
+      {
+        "command": "node tools/test-context-tools.mjs",
+        "exit": 0,
+        "seconds": 0.239,
+        "output_sha256": "6f0f4a88425cd465e3f9b9fbb1ed61a07f4b6182d20fc71da78f8e39713af2a1"
+      },
+      {
+        "command": "node tools/test-outcome-trials.mjs",
+        "exit": 0,
+        "seconds": 0.522,
+        "output_sha256": "e0ef32e1edb1645577979090997c74ea4e9c92c98a9da29a9f4d67c42f42498b"
+      },
+      {
+        "command": "node tools/test-eval-runner.mjs",
+        "exit": 0,
+        "seconds": 0.624,
+        "output_sha256": "273c990e6fa749eefd829ac8d5b4d0a18932d4a75c616f5fbbb856a9c03032b8"
+      },
+      {
+        "command": "node tools/test-feedback-automation.mjs",
+        "exit": 0,
+        "seconds": 0.412,
+        "output_sha256": "841f64c4c0bb3461589e16e36202cc8ad61a5542f704c807193d3f1723e1ea12"
+      },
+      {
+        "command": "node tools/test-symlink-invocation.mjs",
+        "exit": 0,
+        "seconds": 1.305,
+        "output_sha256": "847b31f9e23a7ba45ae134c772d8cc1ae8db48d3d6222cf169d12724b5762195"
+      },
+      {
+        "command": "node tools/test-control-fidelity.mjs",
+        "exit": 0,
+        "seconds": 2.709,
+        "output_sha256": "dae384e152bd5c7e26909c59218d1739244f4321fa9fe6c645fb9268d074acdf"
+      },
+      {
+        "command": "node tools/test-spec-citation-anchors.mjs",
+        "exit": 0,
+        "seconds": 11.434,
+        "output_sha256": "76f44ebdb8ad885aa40b3903f19a6a5fe955a8c9b1f06cf390444d604cec061c"
+      },
+      {
+        "command": "node tools/test-controls-vocabulary-sweep.mjs",
+        "exit": 0,
+        "seconds": 0.054,
+        "output_sha256": "db05db954d9a33d47fef93f1fec18d654061d4d34641e26e04ac91e667f5ead4"
+      },
+      {
+        "command": "node tools/test-spec-report.mjs",
+        "exit": 0,
+        "seconds": 13.967,
+        "output_sha256": "7ff059ebd5a46349c397f14c8a2a422afd21ef3c2d856305982bc2d1283f202a"
+      },
+      {
+        "command": "node tools/test-self-drift.mjs",
+        "exit": 0,
+        "seconds": 0.293,
+        "output_sha256": "e6a16f43199f4c16067dd2b93c0d4b0f56bd9f89ab0669770c1415330e500f3d"
+      },
+      {
+        "command": "node tools/test-feedback-inventory.mjs",
+        "exit": 0,
+        "seconds": 0.087,
+        "output_sha256": "37d22545d0d02a263079661cc1392ce33ff71f6f54b57b6a5bdc6cb3c9cd55b4"
+      },
+      {
+        "command": "node tools/test-grilling-ledger.mjs",
+        "exit": 0,
+        "seconds": 0.087,
+        "output_sha256": "c33a32c8f5d6590cb84e44b30369c7d8070ff5044b348589de5fbd3cb2072e76"
+      },
+      {
+        "command": "python3 tools/test-check-append-only.py",
+        "exit": 0,
+        "seconds": 134.827,
+        "output_sha256": "1c60a426838d1ccdac0d98496288fb9edd0cec4f0c2d781c2be92417d29fd934"
+      },
+      {
+        "command": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+        "exit": 0,
+        "seconds": 0.64,
+        "output_sha256": "bd0149c9b483b4ad4fa7e29309e544eda90aaccca0628e5235947f85beaa2195"
+      },
+      {
+        "command": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+        "exit": 0,
+        "seconds": 0.165,
+        "output_sha256": "41153aabe528f2f34c53e7e4d32a3f6b6b31615d8f4565b4dbe350a64bc9227b"
+      },
+      {
+        "command": "node workbench/tools/spec-workbench.mjs doctor",
+        "exit": 0,
+        "seconds": 0.784,
+        "output_sha256": "67da2ed411b60ec0dcb3f9d53cd8cdf4c1a060b38c8abeb6c29bc5af5675c7fd"
+      },
+      {
+        "command": "node tools/test-team-coordination.mjs",
+        "exit": 0,
+        "seconds": 0.062,
+        "output_sha256": "3e105068c0fd2ef9dc5edf775b2742b7144f6c00d66af20bb07ef495cb079840"
+      },
+      {
+        "command": "node tools/test-team-coordination-demo.mjs",
+        "exit": 0,
+        "seconds": 0.064,
+        "output_sha256": "0fb9e546e326d750d8f92b13bc6dc93b017d4d097e79de0c05381a39879668da"
+      },
+      {
+        "command": "node tools/test-socket-contract.mjs",
+        "exit": 0,
+        "seconds": 0.054,
+        "output_sha256": "b4e41aea140124647f3d1e0b81cb018939dfb21744358ef5b7807e88da1e5b99"
+      },
+      {
+        "command": "node tools/test-landmark-tracker.mjs",
+        "exit": 0,
+        "seconds": 13.58,
+        "output_sha256": "4a285b3cff5b89da8f1078c4736ab8d181f749dae76722c87f098a8a8eaddce6"
+      },
+      {
+        "command": "node tools/test-landmark-wiki.mjs",
+        "exit": 1,
+        "seconds": 1.993,
+        "output_sha256": "7ebeea3c3931c1d227cc0bda4a9c17a61b87301d60939f901cf29581aa019bac"
+      },
+      {
+        "command": "node workbench/tools/wiki.mjs validate",
+        "exit": 0,
+        "seconds": 0.26,
+        "output_sha256": "fb2c72085e3b53904d5bf9cf705d3a9b228a0fd362599bd29b5b773bf3fbe50b"
+      },
+      {
+        "command": "node workbench/tools/landmark-tracker.mjs rebuild --check",
+        "exit": 0,
+        "seconds": 0.076,
+        "output_sha256": "2ce23587717e43d926e6416657fa9d7438ee9adbbd6e083c3a8caca28b9e904f"
+      },
+      {
+        "command": "git diff --check",
+        "exit": 0,
+        "seconds": 0.012,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "validator_rerun": {
+      "initial": "3/18; synthetic sandbox parent .git redirects unmanifested fixtures",
+      "same_sandbox_repeat": "3/18; same failure",
+      "alternate_temp_root": "3/18; sandbox also supplies ancestor .git there",
+      "unsandboxed": "18/18; unchanged source and tests",
+      "output_sha256": "797b55c8eed4cb335eacda0469d3d6bbbb6368913f12deb94702e8b78c4c5ed0"
+    }
+  },
+  "runtime_readback": {
+    "tracker_tests": "23/23 pass",
+    "initial_public_demo_seconds": 2.39,
+    "captured_repeat_demo_seconds": 2.33,
+    "captured_repeat_output_sha256": "913b468a5915d8ed869a2af5ac603c679ed6b382d89881ebc989645fc2fdc477",
+    "repeat_reason": "Preserve original command output for independent inspection",
+    "live_projection": "current",
+    "article_validator": "valid",
+    "expanded_show": "invalid-invocation",
+    "result_write": "invalid-invocation before mutation",
+    "validator_environment_limit": "Unmanifested temporary fixtures inherited a synthetic sandbox parent .git; initial and two diagnostic sandbox runs failed. Unchanged test passed all18 outside that synthetic ancestry. Real-room validator already passed in sandbox."
+  },
+  "reader": {
+    "observer": "Independent separate-context AI reviewer /root/s01u_review",
+    "candidate": "4f9416b4bf13e60aa19b1e8038c7ced3cee331c8",
+    "monotonic_start": 429.244219697,
+    "monotonic_end": 454.150659465,
+    "elapsed_seconds": 24.906439768,
+    "result": "Recovered concept sources, generated documentation progress, implementation work and operation-specific runtime; also deletion and taxonomy limits",
+    "scope_limit": "One AI reader after required instruction/Spec reads; not a human observation or repeated reliability trial",
+    "proof": "tk01q-reader.md"
+  },
+  "current_union_and_history": {
+    "candidate": "4f9416b4bf13e60aa19b1e8038c7ced3cee331c8",
+    "integration": "d90785908b26517068a474bb88136c81995a2f18",
+    "base": "d90785908b26517068a474bb88136c81995a2f18",
+    "source_delta": [],
+    "original_spec_evidence_rows_preserved": 4,
+    "protected_trees_unchanged": [
+      "workbench/docs/adr",
+      "workbench/landmark-tracker",
+      "workbench/tools",
+      "workbench/wiki",
+      "workbench/specs/S-01T-landmark-tracker-foundation",
+      "workbench/specs/S-00L-lexicon-freshness-repair"
+    ],
+    "local_links_checked": 77,
+    "missing_links": [],
+    "later_integration": "25d3f4d23b3719693065336a4ba66349d0a95907",
+    "later_delta_paths": [
+      "RUNBOOK.md",
+      "TASKBOARD.md",
+      "benchmarks/RESULTS.md",
+      "templates/RUNBOOK.md",
+      "tools/test-github-coordination.mjs",
+      "tools/test-task-id-collision.mjs",
+      "tools/test-workbench-round-trip.mjs",
+      "workbench/docs/github-coordination.md",
+      "workbench/landmark-tracker/TRACKER.json",
+      "workbench/landmark-tracker/destination-questions/DQC-000B.json",
+      "workbench/landmark-tracker/destination-questions/DQC-000C.json",
+      "workbench/landmark-tracker/destination-questions/DQC-000D.json",
+      "workbench/manifest.json",
+      "workbench/specs/CATALOG.md",
+      "workbench/specs/S-003P-github-coordination-room-binding-and-identity/SPEC.md",
+      "workbench/specs/S-003P-github-coordination-room-binding-and-identity/tasks/.gitkeep",
+      "workbench/specs/S-003P-github-coordination-room-binding-and-identity/tasks/TK-004A/TASK.md",
+      "workbench/specs/S-003P-github-coordination-room-binding-and-identity/tasks/TK-004G/TASK.md",
+      "workbench/specs/S-003P-github-coordination-room-binding-and-identity/tasks/TK-004H/TASK.md",
+      "workbench/specs/S-003P-github-coordination-room-binding-and-identity/tasks/TK-004I/TASK.md",
+      "workbench/specs/S-003P-github-coordination-room-binding-and-identity/tasks/TK-004K/TASK.md",
+      "workbench/specs/S-003P-github-coordination-room-binding-and-identity/tasks/TK-004P/TASK.md",
+      "workbench/specs/S-003Q-github-coordination-issue-graph/SPEC.md",
+      "workbench/specs/S-003Q-github-coordination-issue-graph/tasks/.gitkeep",
+      "workbench/specs/S-003R-github-coordination-trusted-assignments/SPEC.md",
+      "workbench/specs/S-003R-github-coordination-trusted-assignments/tasks/.gitkeep",
+      "workbench/specs/S-003S-github-coordination-operational-transitions/SPEC.md",
+      "workbench/specs/S-003S-github-coordination-operational-transitions/tasks/.gitkeep",
+      "workbench/specs/S-003T-github-coordination-shared-continuation/SPEC.md",
+      "workbench/specs/S-003T-github-coordination-shared-continuation/tasks/.gitkeep",
+      "workbench/specs/S-003U-github-coordination-setup-and-upgrade/SPEC.md",
+      "workbench/specs/S-003U-github-coordination-setup-and-upgrade/tasks/.gitkeep",
+      "workbench/specs/S-003V-github-coordination-claim-authority-cutover/SPEC.md",
+      "workbench/specs/S-003V-github-coordination-claim-authority-cutover/tasks/.gitkeep",
+      "workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md",
+      "workbench/specs/S-01X-generated-json-taskboard/SPEC.md",
+      "workbench/tools/github-coordination.mjs",
+      "workbench/tools/spec-workbench.mjs",
+      "workbench/tools/workbench-layout.mjs"
+    ],
+    "union_tree": "7a7b29f50edda3c0fbfa20a2bacf3f701195ddd8",
+    "disposable_union_commit": "445972e26b376f3b5646f3928bbe72fd26bfda86",
+    "union_result": "58/58 commands passed at detached fixture445972e26b376f3b5646f3928bbe72fd26bfda86: 51 required plus7 targeted; no integration/main merge. Final evidence/closure changes are administrative and reviewed separately.",
+    "semantic_source_delta": "Runbook adds coordination binding/collision procedures; manifest adds githubCoordination. Tracker and article-validator code, ADR000N, Wiki concept, S01T/successor definitions and both Lexicons unchanged by integration advancement. DQC000B/000C add relations; DQC000D preserves corrections and re-evidence for binding inspector. No family definition is changed and no Result/expanded view operation added."
+  },
+  "heading_links": {
+    "anchors_checked": 11,
+    "bad": []
+  },
+  "self_drift": {
+    "pre": {
+      "phase": "pre",
+      "sourceRevision": "d90785908b26517068a474bb88136c81995a2f18",
+      "dirty": false,
+      "machineResult": "blocked",
+      "cleanUpdate": false,
+      "findings": [
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-00Q has an in-progress task last updated 2026-09-19",
+          "expected": "current owner and verified identity",
+          "observed": "S-00Q has an in-progress task last updated 2026-09-19",
+          "correction": "S-00Q has an in-progress task last updated 2026-09-19",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/feedback/REPORT_FORMAT.md",
+          "claim": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/notepad.schema.json",
+          "claim": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/work.example.json",
+          "claim": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/grilling.example.json",
+          "claim": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/handoff.example.json",
+          "claim": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "unverified-provenance",
+          "artifact": "manifest",
+          "claim": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        }
+      ],
+      "limitations": [
+        "Machine evidence does not establish semantic freshness. Review current-facing claims against their owners and record a no-memory cold-start read-back.",
+        "Target-project drift is a separate operation.",
+        "Installed-source files do not prove native host callability; no installation or repair is performed."
+      ]
+    },
+    "post": {
+      "phase": "post",
+      "sourceRevision": "4f9416b4bf13e60aa19b1e8038c7ced3cee331c8",
+      "dirty": false,
+      "machineResult": "blocked",
+      "cleanUpdate": false,
+      "findings": [
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-00Q has an in-progress task last updated 2026-09-19",
+          "expected": "current owner and verified identity",
+          "observed": "S-00Q has an in-progress task last updated 2026-09-19",
+          "correction": "S-00Q has an in-progress task last updated 2026-09-19",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/feedback/REPORT_FORMAT.md",
+          "claim": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/notepad.schema.json",
+          "claim": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/work.example.json",
+          "claim": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/grilling.example.json",
+          "claim": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/handoff.example.json",
+          "claim": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "unverified-provenance",
+          "artifact": "manifest",
+          "claim": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        }
+      ],
+      "limitations": [
+        "Machine evidence does not establish semantic freshness. Review current-facing claims against their owners and record a no-memory cold-start read-back.",
+        "Target-project drift is a separate operation.",
+        "Installed-source files do not prove native host callability; no installation or repair is performed."
+      ]
+    },
+    "current_union": {
+      "sourceRevision": "445972e26b376f3b5646f3928bbe72fd26bfda86",
+      "dirty": false,
+      "machineResult": "blocked",
+      "cleanUpdate": false,
+      "findings": [
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-00Q has an in-progress task last updated 2026-09-19",
+          "expected": "current owner and verified identity",
+          "observed": "S-00Q has an in-progress task last updated 2026-09-19",
+          "correction": "S-00Q has an in-progress task last updated 2026-09-19",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/feedback/REPORT_FORMAT.md",
+          "claim": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/notepad.schema.json",
+          "claim": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/work.example.json",
+          "claim": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/grilling.example.json",
+          "claim": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/handoff.example.json",
+          "claim": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "unverified-provenance",
+          "artifact": "manifest",
+          "claim": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "detached-head",
+          "artifact": "git",
+          "claim": "HEAD is detached; this is an inspection state, not a blocker, but switch to a branch before committing work you intend to deliver",
+          "expected": "current owner and verified identity",
+          "observed": "HEAD is detached; this is an inspection state, not a blocker, but switch to a branch before committing work you intend to deliver",
+          "correction": "HEAD is detached; this is an inspection state, not a blocker, but switch to a branch before committing work you intend to deliver",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        }
+      ],
+      "limitations": [
+        "Machine evidence does not establish semantic freshness. Review current-facing claims against their owners and record a no-memory cold-start read-back.",
+        "Target-project drift is a separate operation.",
+        "Installed-source files do not prove native host callability; no installation or repair is performed."
+      ]
+    },
+    "current_union_note": "Seven existing findings plus intentional detached-head fixture finding; no cleanUpdate claim."
+  },
+  "guardrails": {
+    "pre": 78,
+    "post": 78,
+    "maximum": 100,
+    "remaining": [
+      "Repeated real outcome trials",
+      "Controls/prior/candidate comparison",
+      "Recent real outcome evidence",
+      "Repeated-trial uncertainty"
+    ],
+    "limit": "Static scores do not establish improved agent outcomes",
+    "current_union": 78
+  },
+  "publication": {
+    "native_claim": "fff103b8da212b737b9294579bc337c449899732",
+    "content_recovery": "4f9416b4bf13e60aa19b1e8038c7ced3cee331c8",
+    "branch": "codex/s01u-tk01q-lexicon-reconciliation",
+    "destination": "KaydenClark/LLM_Workbench (public)",
+    "authorization": "Current user explicitly requested branch/draft PR publication; no merge",
+    "private_material_transferred": false,
+    "last_remote_recovery": "07bb18b3b6beb99aea716884989dbaa3ffb4a093",
+    "draft_pr": "rejected before execution by automatic approval review",
+    "rejection_reason": "GitHub destination not established as trusted organization-owned or explicitly user-approved disclosure destination",
+    "distinct_cli_failure": "gh repo view returned GraphQL Forbidden; connector read-only get_repo succeeded",
+    "next_action": "Coordinator existing grilling record: explicit approval for final scoped commit and draft PR disclosure to public KaydenClark/LLM_Workbench; no Servitor or alternative-transport workaround",
+    "final_proof_publication": "held locally pending explicit destination approval"
+  },
+  "limitations": [
+    "Whole ten S-01U acceptance criteria remain open",
+    "No owner Human QA or main act",
+    "External Runbook route drift remains S-00P-owned",
+    "Candidate-only Result/expanded view are not delivered here",
+    "Raw initial claim tool transcript was not saved as a file; native tool success was observed, later remote readback and Git ordering support recovery. No fabricated transcript.",
+    "Initial independent review found no defect; final exact-head review is reported outside this immutable candidate after administrative closure, and is not whole-Spec approval."
+  ],
+  "current_union_checks": {
+    "candidate": "445972e26b376f3b5646f3928bbe72fd26bfda86",
+    "integration": "25d3f4d23b3719693065336a4ba66349d0a95907",
+    "lexical_candidate": "4f9416b4bf13e60aa19b1e8038c7ced3cee331c8",
+    "environment": "Authorized unsandboxed execution avoids synthetic Git-root ancestry in disposable fixtures",
+    "passed": 58,
+    "checks": [
+      {
+        "command": "node tools/test-spec-workbench.mjs",
+        "exit": 0,
+        "seconds": 100.652,
+        "output_sha256": "b0fd248296a13f0d5c887898bef935dbb57e1876ed099546aff1d40a3f8a6ec2"
+      },
+      {
+        "command": "node tools/test-skill-catalog.mjs",
+        "exit": 0,
+        "seconds": 0.158,
+        "output_sha256": "b2eeec014ce2ac0457a76774fe90fb04a18d65a1180f76372159029f114a92ff"
+      },
+      {
+        "command": "node tools/test-skill-inspection.mjs",
+        "exit": 0,
+        "seconds": 0.083,
+        "output_sha256": "a8a3687b3e184e7b67e755df9c95728b8eb63f1246f9535c982030fc806e9915"
+      },
+      {
+        "command": "node tools/test-skills-lane.mjs",
+        "exit": 0,
+        "seconds": 2.541,
+        "output_sha256": "4cbd3a00290c0cb9386546bbe822c6ad4cd60fc288c4a28cc9224db2321ae5ab"
+      },
+      {
+        "command": "node tools/test-core-composition.mjs",
+        "exit": 0,
+        "seconds": 2.131,
+        "output_sha256": "d3dcb17f17a5086d4f6ccc6b6038e975e6c117bb02c98f449dd7ca9e1a31872d"
+      },
+      {
+        "command": "node tools/test-project-evidence.mjs",
+        "exit": 0,
+        "seconds": 1.022,
+        "output_sha256": "a28ed34f104848fc97c7958a62a473164ee4ae42a5e06acbcf751e2552062e87"
+      },
+      {
+        "command": "node tools/test-genesis-from-decisions.mjs",
+        "exit": 0,
+        "seconds": 22.431,
+        "output_sha256": "d8f7e36c44144de95effa01e5fb5e8408b0ea00f2c0b8b5aac18efc20cd5255c"
+      },
+      {
+        "command": "node tools/test-blueprint-contract.mjs",
+        "exit": 0,
+        "seconds": 0.089,
+        "output_sha256": "fd1e113d4e53c6b7e4746a7c804bbc389fcffd6a3e17905564f10031c8d06ea1"
+      },
+      {
+        "command": "node tools/test-session-transport.mjs",
+        "exit": 0,
+        "seconds": 12.359,
+        "output_sha256": "1d1158d3dbe3fe9afbdd1660ce36732564f13ffdea63bbf945ece9d7e39f1fbc"
+      },
+      {
+        "command": "node tools/test-configured-host.mjs",
+        "exit": 0,
+        "seconds": 2.389,
+        "output_sha256": "8af85ec8c297bb102a4504f451687230133eb16e83dcbed826e476c3cbec556c"
+      },
+      {
+        "command": "node tools/test-core-skill-installer.mjs",
+        "exit": 0,
+        "seconds": 8.652,
+        "output_sha256": "36403d454cc4bb49ff560cd49b81bc0c324b46c00c8564be82a5a3515fb005f3"
+      },
+      {
+        "command": "node tools/test-workbench-layout.mjs",
+        "exit": 0,
+        "seconds": 34.799,
+        "output_sha256": "8a307d5aff867036988ea92e4b7e269d3dd58a78849fd8228624720ba40f7ed4"
+      },
+      {
+        "command": "node tools/test-workbench-adoption.mjs",
+        "exit": 0,
+        "seconds": 7.815,
+        "output_sha256": "3c60405066bab71e826fd16db60045c7a5a2c1d8b99796ad1cd5d16461736208"
+      },
+      {
+        "command": "node tools/test-workbench-upgrade.mjs",
+        "exit": 0,
+        "seconds": 6.371,
+        "output_sha256": "4f8630beb5fb9dd6d3949b5d31fee3358ac8eca291f53bc410b754e3a2c8818d"
+      },
+      {
+        "command": "node tools/test-workbench-tools.mjs",
+        "exit": 0,
+        "seconds": 7.339,
+        "output_sha256": "00c49eda97769f8ec062b5627d2067920b3450bb1831ae9c31e00c2eff69e24e"
+      },
+      {
+        "command": "node tools/test-diagnostics.mjs",
+        "exit": 0,
+        "seconds": 23.773,
+        "output_sha256": "5313d2df0cb6a6124028ac52f9f7cb38cab9818f05c2c1d8b7003f9bd4936ba2"
+      },
+      {
+        "command": "node tools/test-adr.mjs",
+        "exit": 0,
+        "seconds": 6.884,
+        "output_sha256": "655300f56372911585373ba243b4901453c0bd25bedfa71e4623ca12947d2553"
+      },
+      {
+        "command": "node tools/test-governance-core.mjs",
+        "exit": 0,
+        "seconds": 0.095,
+        "output_sha256": "cc29f3441105f5f976cf5a374d1593fc235ce33c0e2a79c5359ca66bd03c277f"
+      },
+      {
+        "command": "node tools/test-branch-closeout.mjs",
+        "exit": 0,
+        "seconds": 3.088,
+        "output_sha256": "99d701c78c95064a7bcb722de1a39fe1ba68b767ffb79740a2042f098b345839"
+      },
+      {
+        "command": "node tools/test-wiki.mjs",
+        "exit": 0,
+        "seconds": 3.149,
+        "output_sha256": "14d1f8cfe8297d7ac3edcb2b2c440dc260d7ab3f265fa77689fee3f0a80f10e3"
+      },
+      {
+        "command": "node tools/test-sessions.mjs",
+        "exit": 0,
+        "seconds": 2.966,
+        "output_sha256": "0e2a818d0247e95f62d1f70e1875acb71f1278a6c5f9d3261e95c148fa8f0ad7"
+      },
+      {
+        "command": "node tools/test-notepads.mjs",
+        "exit": 0,
+        "seconds": 9.503,
+        "output_sha256": "c41f99cb377a5e15e89ff167a3c14ab41984544f2f659a1eb31e6132afd3c7d7"
+      },
+      {
+        "command": "node tools/test-visible-ids.mjs",
+        "exit": 0,
+        "seconds": 1.314,
+        "output_sha256": "be54387deeb0b56b0b38ee60ff5372c275203445e14a9e9f3ffd67bfe9f61d4a"
+      },
+      {
+        "command": "node tools/test-workbench-identity.mjs",
+        "exit": 0,
+        "seconds": 3.363,
+        "output_sha256": "2966a816304222fddada4855a48eddf0586124b2f56127435304cf64af1aeba4"
+      },
+      {
+        "command": "node tools/test-visible-id-consumers.mjs",
+        "exit": 0,
+        "seconds": 11.304,
+        "output_sha256": "2de3216a994527c994011d89d87d40470787dbdafdbb59d4d332684a4cbb5bbf"
+      },
+      {
+        "command": "node tools/test-direct-promotion.mjs",
+        "exit": 0,
+        "seconds": 3.564,
+        "output_sha256": "6eae57349cd2ca8e9801d7964313a0e67565efe999890bd3e7de849d4c8dd3ee"
+      },
+      {
+        "command": "node tools/test-workbench-round-trip.mjs",
+        "exit": 0,
+        "seconds": 27.124,
+        "output_sha256": "edf5c01448d437a5d80e920fc149bc427b89c833127ca678fa496922c2b5f9a6"
+      },
+      {
+        "command": "node tools/test-cross-provider-fixture.mjs",
+        "exit": 0,
+        "seconds": 1.876,
+        "output_sha256": "4cedcdbf38344fc6d6bc454ef80a75dfef5b4fdd3ae6cfb205b0fd7af45544b5"
+      },
+      {
+        "command": "node tools/test-portability-matrix.mjs",
+        "exit": 0,
+        "seconds": 0.558,
+        "output_sha256": "208e01c0539f2afad5287b9157c548b6ab36cc75130c9264d312fa6fa66de5fa"
+      },
+      {
+        "command": "node tools/test-workbench-dogfood.mjs",
+        "exit": 0,
+        "seconds": 2.291,
+        "output_sha256": "5edca15bea0b229bb194025549b2ca7d1e9c08d549d28169904fa162f06c6ac2"
+      },
+      {
+        "command": "node tools/test-evaluate-workbench.mjs",
+        "exit": 0,
+        "seconds": 0.596,
+        "output_sha256": "2f9a0468ee094a221fb6e84b551484e3ed279bb371f694dbc9993980bb6ab887"
+      },
+      {
+        "command": "node tools/test-guardrail-audit.mjs",
+        "exit": 0,
+        "seconds": 0.214,
+        "output_sha256": "373b04e4a2607c087192de6b9e5890b8340195fc3bd4c17b1a681168289d2051"
+      },
+      {
+        "command": "node tools/test-context-tools.mjs",
+        "exit": 0,
+        "seconds": 0.199,
+        "output_sha256": "6f0f4a88425cd465e3f9b9fbb1ed61a07f4b6182d20fc71da78f8e39713af2a1"
+      },
+      {
+        "command": "node tools/test-outcome-trials.mjs",
+        "exit": 0,
+        "seconds": 0.526,
+        "output_sha256": "e0ef32e1edb1645577979090997c74ea4e9c92c98a9da29a9f4d67c42f42498b"
+      },
+      {
+        "command": "node tools/test-eval-runner.mjs",
+        "exit": 0,
+        "seconds": 0.621,
+        "output_sha256": "750cdb83a8be8179635b33eeafaa9ce4ad11f9266a2be0cd71f41a31aa65c9ce"
+      },
+      {
+        "command": "node tools/test-feedback-automation.mjs",
+        "exit": 0,
+        "seconds": 0.42,
+        "output_sha256": "841f64c4c0bb3461589e16e36202cc8ad61a5542f704c807193d3f1723e1ea12"
+      },
+      {
+        "command": "node tools/test-symlink-invocation.mjs",
+        "exit": 0,
+        "seconds": 1.113,
+        "output_sha256": "847b31f9e23a7ba45ae134c772d8cc1ae8db48d3d6222cf169d12724b5762195"
+      },
+      {
+        "command": "node tools/test-control-fidelity.mjs",
+        "exit": 0,
+        "seconds": 2.528,
+        "output_sha256": "59334ee0f5d2fd20bdb56ac9248beb1de6d75cecec3e2cc7c78b362730e1873a"
+      },
+      {
+        "command": "node tools/test-spec-citation-anchors.mjs",
+        "exit": 0,
+        "seconds": 12.722,
+        "output_sha256": "00b8f994a8c576b02477be96dcce900c37f55f209e3b3f20cc2146208775c7bf"
+      },
+      {
+        "command": "node tools/test-controls-vocabulary-sweep.mjs",
+        "exit": 0,
+        "seconds": 0.076,
+        "output_sha256": "db05db954d9a33d47fef93f1fec18d654061d4d34641e26e04ac91e667f5ead4"
+      },
+      {
+        "command": "node tools/test-spec-report.mjs",
+        "exit": 0,
+        "seconds": 14.243,
+        "output_sha256": "1cde073d0a47c1e83ba8af2b4c7589188e0159c416ea65625942eb41bd4b66c4"
+      },
+      {
+        "command": "node tools/test-self-drift.mjs",
+        "exit": 0,
+        "seconds": 0.323,
+        "output_sha256": "e6a16f43199f4c16067dd2b93c0d4b0f56bd9f89ab0669770c1415330e500f3d"
+      },
+      {
+        "command": "node tools/test-feedback-inventory.mjs",
+        "exit": 0,
+        "seconds": 0.08,
+        "output_sha256": "37d22545d0d02a263079661cc1392ce33ff71f6f54b57b6a5bdc6cb3c9cd55b4"
+      },
+      {
+        "command": "node tools/test-grilling-ledger.mjs",
+        "exit": 0,
+        "seconds": 0.09,
+        "output_sha256": "8d7606aadda141b468eefba6395637050bb7b9b72a0af973f7ad8b6720ff2400"
+      },
+      {
+        "command": "python3 tools/test-check-append-only.py",
+        "exit": 0,
+        "seconds": 172.946,
+        "output_sha256": "1c60a426838d1ccdac0d98496288fb9edd0cec4f0c2d781c2be92417d29fd934"
+      },
+      {
+        "command": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+        "exit": 0,
+        "seconds": 0.576,
+        "output_sha256": "bd0149c9b483b4ad4fa7e29309e544eda90aaccca0628e5235947f85beaa2195"
+      },
+      {
+        "command": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+        "exit": 0,
+        "seconds": 0.061,
+        "output_sha256": "f21a70e2f53f987be0d3d8e2d2943cd296ac93b69dd854f84101621e12d75339"
+      },
+      {
+        "command": "node workbench/tools/spec-workbench.mjs doctor",
+        "exit": 0,
+        "seconds": 0.594,
+        "output_sha256": "b3cbb4d1789462a6312c8fc6b272bc0ffeb7fe9ba06be58e4da024f57bdec436"
+      },
+      {
+        "command": "node tools/test-team-coordination.mjs",
+        "exit": 0,
+        "seconds": 0.083,
+        "output_sha256": "3e105068c0fd2ef9dc5edf775b2742b7144f6c00d66af20bb07ef495cb079840"
+      },
+      {
+        "command": "node tools/test-team-coordination-demo.mjs",
+        "exit": 0,
+        "seconds": 0.05,
+        "output_sha256": "0fb9e546e326d750d8f92b13bc6dc93b017d4d097e79de0c05381a39879668da"
+      },
+      {
+        "command": "node tools/test-socket-contract.mjs",
+        "exit": 0,
+        "seconds": 0.047,
+        "output_sha256": "b4e41aea140124647f3d1e0b81cb018939dfb21744358ef5b7807e88da1e5b99"
+      },
+      {
+        "command": "node tools/test-github-coordination.mjs",
+        "exit": 0,
+        "seconds": 4.666,
+        "output_sha256": "b17ce4d24b087cbf38729194e979cee0fc0c67b13e625106dc091fae0c642bc4"
+      },
+      {
+        "command": "node tools/test-task-id-collision.mjs",
+        "exit": 0,
+        "seconds": 10.782,
+        "output_sha256": "3959a576a7f4c8014bdbd27bac716a6172985da65390b2b9249c7ab5a57ff65a"
+      },
+      {
+        "command": "node tools/test-landmark-tracker.mjs",
+        "exit": 0,
+        "seconds": 14.853,
+        "output_sha256": "9085234fdff5b400017311e55e8d7e8400aef0957e8985d89fb310c5e1ebc9ef"
+      },
+      {
+        "command": "node tools/test-landmark-wiki.mjs",
+        "exit": 0,
+        "seconds": 3.252,
+        "output_sha256": "7dbad111d2332b652427498c36de01dedcaa539d1b0efe3baa35773d15659313"
+      },
+      {
+        "command": "node workbench/tools/wiki.mjs validate",
+        "exit": 0,
+        "seconds": 0.29,
+        "output_sha256": "fb2c72085e3b53904d5bf9cf705d3a9b228a0fd362599bd29b5b773bf3fbe50b"
+      },
+      {
+        "command": "node workbench/tools/landmark-tracker.mjs rebuild --check",
+        "exit": 0,
+        "seconds": 0.11,
+        "output_sha256": "2ce23587717e43d926e6416657fa9d7438ee9adbbd6e083c3a8caca28b9e904f"
+      },
+      {
+        "command": "git diff --check",
+        "exit": 0,
+        "seconds": 0.018,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  }
+}

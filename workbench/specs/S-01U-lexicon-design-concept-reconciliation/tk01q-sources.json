@@ -1,0 +1,391 @@
+{
+  "base": "d90785908b26517068a474bb88136c81995a2f18",
+  "scope": "TK-01Q affected-family sources only; whole-Spec inventory open",
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "blob": "7084a0b72ae46fb43f65bf5ff97245d3d838aacd"
+    },
+    {
+      "path": "RUNBOOK.md",
+      "blob": "3a83e2674bf0d97e1de7bc2f96df22e855b877da"
+    },
+    {
+      "path": "LEXICON.md",
+      "blob": "97575206867ad62dc3cba74c19d5472c0aac23b6"
+    },
+    {
+      "path": "templates/LEXICON.md",
+      "blob": "a02964d8e5ed03c37fd8918fdabf3c8929eeb493"
+    },
+    {
+      "path": "BLUEPRINT.md",
+      "blob": "616bec1d27a6de8b6579e0c6a6f86283e76d5bec"
+    },
+    {
+      "path": "workbench/manifest.json",
+      "blob": "1284bd205675e53a7b30dd584fd49db9ebfe2048"
+    },
+    {
+      "path": "workbench/docs/adr/REGISTER.md",
+      "blob": "0f174cbe954eb0896c6336b470a2b9321106c7ed"
+    },
+    {
+      "path": "workbench/docs/adr/000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md",
+      "blob": "e4e8235934d3df9ea4d6e1e5d2f1a14c35769507"
+    },
+    {
+      "path": "workbench/wiki/design-concepts/landmark-tracker.md",
+      "blob": "3f2a561c88a624fe8ba128853a8f8f6225b27ad5"
+    },
+    {
+      "path": "workbench/wiki/SCHEMA.md",
+      "blob": "40b67576375885a3cfecb35e6a0e745b7c1442bb"
+    },
+    {
+      "path": "workbench/landmark-tracker/README.md",
+      "blob": "203e30f55db0b9a71b4f02de980ef91ea33a5cd0"
+    },
+    {
+      "path": "workbench/landmark-tracker/LANDMARK-WIKI.md",
+      "blob": "87b5719e1d95106d7c27439cc7444b6aab40f076"
+    },
+    {
+      "path": "workbench/tools/landmark-tracker.mjs",
+      "blob": "df5662b493176caf0447eff482af70db5105ac44"
+    },
+    {
+      "path": "workbench/tools/landmark-wiki.mjs",
+      "blob": "366d69d1531dece04b28c3e6ca750c0d19149f75"
+    },
+    {
+      "path": "tools/test-landmark-tracker.mjs",
+      "blob": "e4bf28cd93c6691a9a7f332a0fb51763cc9e3cbf"
+    },
+    {
+      "path": "tools/test-landmark-wiki.mjs",
+      "blob": "43ebf14b1ea5ea33df960424b90b1bf379078735"
+    },
+    {
+      "path": "tools/landmark-tracker-demo.mjs",
+      "blob": "8c324eeac539ebec4efe80e2a4fd67182e938754"
+    },
+    {
+      "path": "workbench/specs/S-01T-landmark-tracker-foundation/SPEC.md",
+      "blob": "9a98d7149ba26cd49c0dc8d25405a292300736f3"
+    },
+    {
+      "path": "workbench/specs/S-01U-lexicon-design-concept-reconciliation/SPEC.md",
+      "blob": "e1c84a590e001814f874408be5bea90797e833ff"
+    },
+    {
+      "path": "workbench/specs/S-001Z-landmark-tracker-view/SPEC.md",
+      "blob": "f39b3ef8eed096ef99f4b4210e1a69519ea1271d"
+    },
+    {
+      "path": "workbench/specs/S-002A-landmark-records/SPEC.md",
+      "blob": "304531b768121b98f0f502f098abd4792da62378"
+    },
+    {
+      "path": "workbench/specs/S-002B-destination-question-cards/SPEC.md",
+      "blob": "5e6dce2afe83a56adc0cb2d37b9c40ab138d7c14"
+    },
+    {
+      "path": "workbench/specs/S-00P-workflow-canon-rework/SPEC.md",
+      "blob": "d09e3a5e5589e213a44d0a33184da3fa27abbbb3"
+    },
+    {
+      "path": "workbench/specs/S-00L-lexicon-freshness-repair/SPEC.md",
+      "blob": "064e6c3d2f8216295ece0440096f8f1dcac05257"
+    }
+  ],
+  "claim_scan": {
+    "refs_scanned": 124,
+    "matches": [
+      {
+        "ref": "refs/remotes/origin/claude/s-002d-tk-002x-entry",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/claude/s-002d-tk-002y-article",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/claude/s-002f-tk-002x",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/claude/s-002f-tk-002y",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/claude/s002h-domain-modeling-candidate",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/claude/s00o-planning-rebuild",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/claude/s00o-planning-rebuild-v2",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/claude/s00o-planning-rebuild-v3",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/claude/s00o-planning-rebuild-v4",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/claude/s01m-tk01d-tracer-bullet-rebuild",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/claude/s01n-tk01e-update-harness-rebuild",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/claude/s01w-assembled-qa",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/claude/s045-tk004-citation-anchors",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/claude/skills-draft-wiki-specs",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/cloud-retirement-approval",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/cloud-skill-git-detection",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/dqc-result-tk002s",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/github-binding-corrections",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/github-coordination-binding",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/landmark-article-tk002t",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/pr229-bounded-review-followup",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/pr77-current-base-assembly",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/pr77-current-base-resolution",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/pr77-late-citation-followup",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/pr92-accepted-guidance-followup",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/pr92-current-base-resolution",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/s002e-worker-candidate",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/s002h-current-base",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/s00i-close-current-base",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/s00i-close-directory-recovery",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/s00i-close-recovery",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/s00j-corrective-batch-recovery",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/s00j-verdict-committed-content",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/s00p-tk003n-projection-maintenance",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/s01h-implement-rebuild",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/s01p-builder-route-assembly",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/s01p-tk01g-builder-rebuild",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/s01p-tk01g-current-base",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/s01x-stage2-candidate",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/s01x-tk003o-json-preview",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/s01x-tk003q-shared-eligibility",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/skills-draft-current-base",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/codex/tracker-readable-evidence",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      },
+      {
+        "ref": "refs/remotes/origin/integration",
+        "spec_status": "**Status:** planned",
+        "task_exists": false,
+        "task_status": ""
+      }
+    ]
+  },
+  "final_source_delta": {
+    "integration": "25d3f4d23b3719693065336a4ba66349d0a95907",
+    "new_or_changed_concept_records": [
+      {
+        "path": "workbench/landmark-tracker/destination-questions/DQC-000B.json",
+        "blob": "5bd33daa41005c84d3d1ed4f84f69869cde8a458",
+        "disposition": "checked-unchanged family meaning; relations/corrections/re-evidence do not confer Verified or new runtime"
+      },
+      {
+        "path": "workbench/landmark-tracker/destination-questions/DQC-000C.json",
+        "blob": "c58832240f4c45de22a5e38f2c57537913d3d0f4",
+        "disposition": "checked-unchanged family meaning; relations/corrections/re-evidence do not confer Verified or new runtime"
+      },
+      {
+        "path": "workbench/landmark-tracker/destination-questions/DQC-000D.json",
+        "blob": "9fd62e4c5875cc8951bd04c2e2bf339bbb02ecf7",
+        "disposition": "checked-unchanged family meaning; relations/corrections/re-evidence do not confer Verified or new runtime"
+      }
+    ]
+  }
+}

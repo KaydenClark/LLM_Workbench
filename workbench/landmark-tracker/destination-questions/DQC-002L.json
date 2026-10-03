@@ -1,0 +1,264 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-002L",
+  "revision": 8,
+  "title": "How does the product destination decompose into Specs and Tasks?",
+  "question": "How does the product destination decompose into Specs and Tasks?",
+  "answer": "FND-Q01: The workflow starts when the owner brings an idea and runs six phases: Idea -> Align (grilling to a shared design concept) -> Scope (Blueprint plus Specs, updating ADRs and docs) -> Plan (decompose into Tasks) -> Implement (loop over Tasks, tracked on TASKBOARD) -> Verify (to Spec and/or human QA). Destination is in BLUEPRINT, the Journey is a SPEC, each walked Path is a TASK. Prototype is optional, not a standard phase.\nFND-Q19: Blueprint owns the grand design, start to destination. A Spec is a journey step derived from Blueprint, active ADRs, evidence and Actuality: a smaller goalpost. Tasks are tracer-round vertical slices of a Spec, the smallest work fitting one useful context. The Workbench QAs the finished Spec branch before integration; integration is the owner's Human QA branch; he merges to main. A Task is one fresh context, one branch, a packet and a receipt.\nWF-6: The Blueprint defines the product-level destination: count to 100. Each Spec is a mini-PRD, a scoped objective with its own destination, the next number to count to. Tasks do the counting. Stacked Specs together realize the Blueprint journey. TASKBOARD is the Kanban projection of progress and coordination, not truth or a second tracker.\nWF-12: 'I want every spec completed before we call this done.' The rollout must complete the Blueprint rework and every Spec needed to establish the full workflow. The reworked Blueprint describes every rung and the full recursive Spec/Task loop (Create Spec -> Create Tasks -> Complete and Reconcile Tasks -> Verify Whole Spec -> Corrective Tasks -> Repeat Until Approved -> Integrate Spec). Future Blueprint capabilities outside that scope need no Specs now.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q01, FND-Q19, WF-6, WF-12 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "FND-Q01 update BLUEPRINT.md (Desired Experience And Behavior, Desired Lifecycle): States the idea-to-verified-completion ladder with Align, Scope, Plan, Implement, Verify; prototype optional; Blueprint is the Destination, Spec the Journey, Task the Path (S-00P TK-001). | FND-Q01 update workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md: Names the six owner phases in place of Explore/Prototype/Implement and treats Prototype as optional (S-00P TK-004). | FND-Q01 update AGENTS.md, RUNBOOK.md, LEXICON.md (workflow rewrite): Controls describe the same six-phase workflow (S-00P TK-002 to TK-004). | FND-Q01 update templates/BLUEPRINT.md, templates/AGENTS.md, templates/RUNBOOK.md, templates/LEXICON.md: Generic mirror of the reworked workflow (S-00P TK-005). | FND-Q19 update workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md: Accepted record that Blueprint, Spec and Task are three altitudes of one delivery chain. | FND-Q19 update workbench/docs/adr/proposed/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md: Accepted two QA gates: Spec branch to integration (Workbench QA), integration to main (owner Human QA). | FND-Q19 update workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md: Task is a standalone TASK.md, the unit of context, branch and receipt. | FND-Q19 update LEXICON.md (Blueprint, Spec, Task rows) and templates/LEXICON.md: Altitude definitions match the answer. | WF-6 update BLUEPRINT.md: Describes the three altitudes and stacked Specs realizing the Blueprint journey. | WF-6 update LEXICON.md (Spec row) and templates/LEXICON.md: Spec described as an objective with a destination (mini-PRD) instead of a stable capability record; owned by S-00P TK-004. | WF-6 update workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md: Reconciled under S-00P TK-004 against the three-altitude answer. | WF-12 update BLUEPRINT.md: Describes every rung and the full recursive Spec/Task delivery loop (S-00P TK-001). | WF-12 update workbench/specs/S-00P-workflow-canon-rework/SPEC.md: Carries the controls rewrite (AGENTS, RUNBOOK, LEXICON, templates) that completes the workflow. | WF-12 update workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md: Release Spec: all rollout Specs (S-00H, S-00I, S-00J, S-00P) complete before v4.0.0; exemption 1 records the reduced delivery route.",
+    "home": "BLUEPRINT.md (Desired Experience And Behavior, Desired Lifecycle); workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md; AGENTS.md, RUNBOOK.md, LEXICON.md (workflow rewrite); templates/BLUEPRINT.md, templates/AGENTS.md, templates/RUNBOOK.md, templates/LEXICON.md; workbench/docs/adr/proposed/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md; workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md; LEXICON.md (Blueprint, Spec, Task rows) and templates/LEXICON.md; BLUEPRINT.md; LEXICON.md (Spec row) and templates/LEXICON.md; workbench/specs/S-00P-workflow-canon-rework/SPEC.md; workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "FND-Q01",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q19",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-6",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-12",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000K"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 7
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "FND-Q01",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q01 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q19",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q19 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-6",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-6 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-12",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-12 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How does the product destination decompose into Specs and Tasks?",
+    "question": "How does the product destination decompose into Specs and Tasks?",
+    "sources": [
+      {
+        "id": "FND-Q01",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q19",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-6",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-12",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:20.700Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:20.700Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 058 of the 2026-09-26 grouping (\"Specs, Tasks and execution contexts\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Specs are smaller destination-bearing journeys derived from Blueprint, active ADRs and Actuality; Tasks are vertical steps that realize them.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:20.717Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "FND-Q01: The workflow starts when the owner brings an idea and runs six phases: Idea -> Align (grilling to a shared design concept) -> Scope (Blueprint plus Specs, updating ADRs and docs) -> Plan (decompose into Tasks) -> Implement (loop over Tasks, tracked on TASKBOARD) -> Verify (to Spec and/or human QA). Destination is in BLUEPRINT, the Journey is a SPEC, each walked Path is a TASK. Prototype is optional, not a standard phase.\nFND-Q19: Blueprint owns the grand design, start to destination. A Spec is a journey step derived from Blueprint, active ADRs, evidence and Actuality: a smaller goalpost. Tasks are tracer-round vertical slices of a Spec, the smallest work fitting one useful context. The Workbench QAs the finished Spec branch before integration; integration is the owner's Human QA branch; he merges to main. A Task is one fresh context, one branch, a packet and a receipt.\nWF-6: The Blueprint defines the product-level destination: count to 100. Each Spec is a mini-PRD, a scoped objective with its own destination, the next number to count to. Tasks do the counting. Stacked Specs together realize the Blueprint journey. TASKBOARD is the Kanban projection of progress and coordination, not truth or a second tracker.\nWF-12: 'I want every spec completed before we call this done.' The rollout must complete the Blueprint rework and every Spec needed to establish the full workflow. The reworked Blueprint describes every rung and the full recursive Spec/Task loop (Create Spec -> Create Tasks -> Complete and Reconcile Tasks -> Verify Whole Spec -> Corrective Tasks -> Repeat Until Approved -> Integrate Spec). Future Blueprint capabilities outside that scope need no Specs now."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q01, FND-Q19, WF-6, WF-12 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "FND-Q01 update BLUEPRINT.md (Desired Experience And Behavior, Desired Lifecycle): States the idea-to-verified-completion ladder with Align, Scope, Plan, Implement, Verify; prototype optional; Blueprint is the Destination, Spec the Journey, Task the Path (S-00P TK-001). | FND-Q01 update workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md: Names the six owner phases in place of Explore/Prototype/Implement and treats Prototype as optional (S-00P TK-004). | FND-Q01 update AGENTS.md, RUNBOOK.md, LEXICON.md (workflow rewrite): Controls describe the same six-phase workflow (S-00P TK-002 to TK-004). | FND-Q01 update templates/BLUEPRINT.md, templates/AGENTS.md, templates/RUNBOOK.md, templates/LEXICON.md: Generic mirror of the reworked workflow (S-00P TK-005). | FND-Q19 update workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md: Accepted record that Blueprint, Spec and Task are three altitudes of one delivery chain. | FND-Q19 update workbench/docs/adr/proposed/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md: Accepted two QA gates: Spec branch to integration (Workbench QA), integration to main (owner Human QA). | FND-Q19 update workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md: Task is a standalone TASK.md, the unit of context, branch and receipt. | FND-Q19 update LEXICON.md (Blueprint, Spec, Task rows) and templates/LEXICON.md: Altitude definitions match the answer. | WF-6 update BLUEPRINT.md: Describes the three altitudes and stacked Specs realizing the Blueprint journey. | WF-6 update LEXICON.md (Spec row) and templates/LEXICON.md: Spec described as an objective with a destination (mini-PRD) instead of a stable capability record; owned by S-00P TK-004. | WF-6 update workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md: Reconciled under S-00P TK-004 against the three-altitude answer. | WF-12 update BLUEPRINT.md: Describes every rung and the full recursive Spec/Task delivery loop (S-00P TK-001). | WF-12 update workbench/specs/S-00P-workflow-canon-rework/SPEC.md: Carries the controls rewrite (AGENTS, RUNBOOK, LEXICON, templates) that completes the workflow. | WF-12 update workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md: Release Spec: all rollout Specs (S-00H, S-00I, S-00J, S-00P) complete before v4.0.0; exemption 1 records the reduced delivery route.",
+            "home": "BLUEPRINT.md (Desired Experience And Behavior, Desired Lifecycle); workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md; AGENTS.md, RUNBOOK.md, LEXICON.md (workflow rewrite); templates/BLUEPRINT.md, templates/AGENTS.md, templates/RUNBOOK.md, templates/LEXICON.md; workbench/docs/adr/proposed/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md; workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md; LEXICON.md (Blueprint, Spec, Task rows) and templates/LEXICON.md; BLUEPRINT.md; LEXICON.md (Spec row) and templates/LEXICON.md; workbench/specs/S-00P-workflow-canon-rework/SPEC.md; workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:20.735Z",
+      "reason": "Ledger row FND-Q01 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q01",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:20.755Z",
+      "reason": "Ledger row FND-Q19 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q19",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:20.776Z",
+      "reason": "Ledger row WF-6 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-6",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:20.797Z",
+      "reason": "Ledger row WF-12 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-12",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:20.819Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:57.332Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000K"
+          ]
+        }
+      ]
+    }
+  ]
+}

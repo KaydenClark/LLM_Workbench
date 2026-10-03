@@ -27,6 +27,14 @@
 | [000O](000O-claims-are-pushed-on-the-task-branch-and-read-from-every-remote-tip.md) | Claims are pushed on the task branch and read from every remote tip | accepted | 2026-09-26 | workbench/specs/S-00V-portable-workbench/SPEC.md |
 | [000P](000P-roles-scope-work-and-stances-define-the-job.md) | Roles scope work and stances define the job | accepted | 2026-09-27 | AGENTS.md, LEXICON.md, BLUEPRINT.md, RUNBOOK.md |
 | [000Q](proposed/000Q-github-issues-are-the-required-live-coordination-authority.md) | GitHub Issues are the required live coordination authority | proposed | 2026-10-01 | AGENTS.md, LEXICON.md, BLUEPRINT.md, RUNBOOK.md, workbench/specs/S-00V-portable-workbench/SPEC.md |
+| [000R](000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md) | The Wiki is the evolving synthesis every agent reads and updates | accepted | 2026-10-01 | LEXICON.md, AGENTS.md, BLUEPRINT.md, RUNBOOK.md, workbench/specs/S-003W-wiki-evolving-synthesis-migration/SPEC.md |
+| [000S](000S-destination-decision-records-are-decision-records-beside-adrs.md) | Destination Decision Records are decision records beside ADRs | accepted | 2026-10-02 | LEXICON.md |
+| [000T](000T-records-share-one-set-of-read-words-list-show-search-history-and-inspect.md) | Records share one set of read words: list, show, search, history and inspect | accepted | 2026-10-02 | LEXICON.md |
+| [000U](000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md) | Landmarks are LANDMARK.md artifacts one size above Specs | accepted | 2026-10-02 | LEXICON.md |
+| [000V](000V-captain-director-dispatcher-and-worker-scope-work-and-role-skills-own-each-job.md) | Captain, Director, Dispatcher and Worker scope work and role skills own each job | accepted | 2026-10-02 | LEXICON.md |
+| [000W](000W-contract-carriers-are-briefs-that-point-to-skills-and-authority-flows-through-the-pointer.md) | Contract carriers are briefs that point to skills and authority flows through the pointer | accepted | 2026-10-02 | LEXICON.md |
+| [000X](000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md) | The workflow is eight verbs and each verb writes the plane its claims live on | accepted | 2026-10-02 | LEXICON.md, BLUEPRINT.md |
+| [000Y](000Y-a-locked-and-confirmed-answer-is-promoted-without-further-ceremony.md) | A locked and confirmed answer is promoted without further ceremony | accepted | 2026-10-02 | LEXICON.md |
 | [0013](archive/0013-seven-file-workbench-contract.md) | The portable Workbench has seven root files | superseded | 2026-09-04 | BLUEPRINT.md, LEXICON.md |
 | [0015](0015-workbench-base-and-foundry-capabilities.md) | Workbench supplies the base and Foundry adds coordination | accepted | 2026-09-04 | BLUEPRINT.md |
 | [0017](archive/0017-workbench-support-directory-has-six-lanes.md) | The Workbench support directory has six lowercase lanes | superseded | 2026-09-04 | BLUEPRINT.md, RUNBOOK.md |

@@ -1,0 +1,179 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-006M",
+  "revision": 6,
+  "title": "Where does the workflow begin relative to idea exploration, Align and room setup?",
+  "question": "Where does the workflow begin relative to idea exploration, Align and room setup?",
+  "answer": "SKW-1: Idea exploration may precede Align; grill-me, wayfinder or brainstorm can start Align; a grilling session starts with grill-me. Genesis and Adoption are first-time setup or update, not the governing workflow, and Genesis requires a grilling session afterward to form the Blueprint.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: SKW-1 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "SKW-1 update BLUEPRINT.md (Desired Lifecycle workflow map): Idea -> optional exploration -> Align through grill-me, wayfinding, brainstorming and research; setup and updates are separate.",
+    "home": "BLUEPRINT.md (Desired Lifecycle workflow map)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [
+    "Skill-workflow note Q2A (open, paused by the owner on 2026-09-30, \"foundations first\"; not a ledger row): Where does wayfinder keep its provisional decision frontier when invoked during Align before a Blueprint or Spec exists?",
+    "Skill-workflow note Q2 (open, paused by the owner on 2026-09-30, \"foundations first\"; not a ledger row): How should grill-me, grilling, notepad, Lexicon and domain-modeling compose during Align?",
+    "Skill-workflow note Q3 (open, paused by the owner on 2026-09-30, \"foundations first\"; not a ledger row): Which conditional Align aids are needed and when?",
+    "Skill-workflow note Q4 (open, paused by the owner on 2026-09-30, \"foundations first\"; not a ledger row): What marks concept confirmation and Blueprint handoff?",
+    "Skill-workflow note Q5 (open, paused by the owner on 2026-09-30, \"foundations first\"; not a ledger row): How should to-spec, tracer-bullet and to-tasks divide planning?",
+    "Skill-workflow note Q6 (open, paused by the owner on 2026-09-30, \"foundations first\"; not a ledger row): How should carry, implement, stances, review, docs and save divide delivery?",
+    "Skill-workflow note Q7 (open, paused by the owner on 2026-09-30, \"foundations first\"; not a ledger row): Which maintenance, recovery and compatibility skills belong in the flow?",
+    "Skill-workflow note Q8 (open, paused by the owner on 2026-09-30, \"foundations first\"; not a ledger row): What should ship in every room and how should the Wiki explain each skill and its relationships?"
+  ],
+  "sources": [
+    {
+      "id": "SKW-1",
+      "revision": "56b459da"
+    },
+    {
+      "id": "skill-workflow-redesign-2026-09-24",
+      "revision": null
+    }
+  ],
+  "landmarks": [
+    "LMK-000K",
+    "LMK-000O"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 4
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "SKW-1",
+      "revision": "56b459da",
+      "reason": "Ledger row SKW-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Where does the workflow begin relative to idea exploration, Align and room setup?",
+    "question": "Where does the workflow begin relative to idea exploration, Align and room setup?",
+    "sources": [
+      {
+        "id": "SKW-1",
+        "revision": "56b459da"
+      },
+      {
+        "id": "skill-workflow-redesign-2026-09-24",
+        "revision": null
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:36.943Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:36.943Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: a card written from ledger rows that postdate the 2026-09-26 draft grouping, grilling ledger at 56b459da.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:36.978Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "SKW-1: Idea exploration may precede Align; grill-me, wayfinder or brainstorm can start Align; a grilling session starts with grill-me. Genesis and Adoption are first-time setup or update, not the governing workflow, and Genesis requires a grilling session afterward to form the Blueprint."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: SKW-1 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "SKW-1 update BLUEPRINT.md (Desired Lifecycle workflow map): Idea -> optional exploration -> Align through grill-me, wayfinding, brainstorming and research; setup and updates are separate.",
+            "home": "BLUEPRINT.md (Desired Lifecycle workflow map)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:37.014Z",
+      "reason": "Ledger row SKW-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "SKW-1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:37.055Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:57.991Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000K"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:59.905Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Grilling and Shared Understanding pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000K"
+          ],
+          "to": [
+            "LMK-000K",
+            "LMK-000O"
+          ]
+        }
+      ]
+    }
+  ]
+}

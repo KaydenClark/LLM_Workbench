@@ -1,0 +1,144 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-005S",
+  "revision": 5,
+  "title": "How should every feedback finding be dispositioned?",
+  "question": "How should every feedback finding be dispositioned?",
+  "answer": "RB-Q5: Suggested A with four classes: every finding gets exactly one disposition in its owning Spec, and REPORT_FORMAT.md requires the field: diagnostic (doctor code with mandatory remediation), test, declined (with reason), accepted-open (real, unscheduled, naming the owning Spec). A suite test fails if any registered doctor finding lacks remediation text.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: RB-Q5 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "RB-Q5 update workbench/docs/adr/000K-every-feedback-finding-carries-one-of-four-dispositions.md: Accepted closed disposition vocabulary. | RB-Q5 update workbench/feedback/REPORT_FORMAT.md and templates/feedback/REPORT_FORMAT.md: Require the disposition field (template stays generic). | RB-Q5 update LEXICON.md (Feedback Dispositions) and templates/LEXICON.md: Define the vocabulary. | RB-Q5 update tools/test-diagnostics.mjs; workbench/specs/S-00N-feedback-finding-dispositions/SPEC.md: Remediation-text ratchet test; S-00N owns delivery.",
+    "home": "workbench/docs/adr/000K-every-feedback-finding-carries-one-of-four-dispositions.md; workbench/feedback/REPORT_FORMAT.md and templates/feedback/REPORT_FORMAT.md; LEXICON.md (Feedback Dispositions) and templates/LEXICON.md; tools/test-diagnostics.mjs; workbench/specs/S-00N-feedback-finding-dispositions/SPEC.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "RB-Q5",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000W"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 4
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "RB-Q5",
+      "revision": "56b459da",
+      "reason": "Ledger row RB-Q5 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should every feedback finding be dispositioned?",
+    "question": "How should every feedback finding be dispositioned?",
+    "sources": [
+      {
+        "id": "RB-Q5",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:33.182Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:33.182Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 146 of the 2026-09-26 grouping (\"Feedback and evaluation\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The recorded categories are diagnostic with remediation, test, declined with reason, and accepted-open with an owning Spec.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:33.214Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "RB-Q5: Suggested A with four classes: every finding gets exactly one disposition in its owning Spec, and REPORT_FORMAT.md requires the field: diagnostic (doctor code with mandatory remediation), test, declined (with reason), accepted-open (real, unscheduled, naming the owning Spec). A suite test fails if any registered doctor finding lacks remediation text."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: RB-Q5 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "RB-Q5 update workbench/docs/adr/000K-every-feedback-finding-carries-one-of-four-dispositions.md: Accepted closed disposition vocabulary. | RB-Q5 update workbench/feedback/REPORT_FORMAT.md and templates/feedback/REPORT_FORMAT.md: Require the disposition field (template stays generic). | RB-Q5 update LEXICON.md (Feedback Dispositions) and templates/LEXICON.md: Define the vocabulary. | RB-Q5 update tools/test-diagnostics.mjs; workbench/specs/S-00N-feedback-finding-dispositions/SPEC.md: Remediation-text ratchet test; S-00N owns delivery.",
+            "home": "workbench/docs/adr/000K-every-feedback-finding-carries-one-of-four-dispositions.md; workbench/feedback/REPORT_FORMAT.md and templates/feedback/REPORT_FORMAT.md; LEXICON.md (Feedback Dispositions) and templates/LEXICON.md; tools/test-diagnostics.mjs; workbench/specs/S-00N-feedback-finding-dispositions/SPEC.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:33.246Z",
+      "reason": "Ledger row RB-Q5 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "RB-Q5",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:33.284Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:50:02.109Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Harness Feedback Review pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000W"
+          ]
+        }
+      ]
+    }
+  ]
+}

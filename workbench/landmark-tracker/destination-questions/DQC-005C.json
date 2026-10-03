@@ -1,0 +1,224 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-005C",
+  "revision": 7,
+  "title": "What makes a layout migration recoverable?",
+  "question": "What makes a layout migration recoverable?",
+  "answer": "V3-16: A one-time, recoverable v3 migration using the same manifest, path, and missing-only skill rules as Adoption.\nV3-16A: Move affected durable records, update links/tools/scopes, remove legacy local skill shadows only after the presence gate, and retain the migration result in the owning spec evidence.\nV3-16B: Record the pre-migration Git recovery point, preserve or back up every retired path before removal, verify the new paths and references, and leave no unattributed dirty residue.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-16, V3-16A, V3-16B (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "V3-16 create tools/workbench-upgrade.mjs: One command moves a v2-root room onto the v3 support root through the Adoption seam and records upgrade provenance. | V3-16 update RUNBOOK.md (V3 explicit upgrade and recovery check): Documents the one-time upgrade and its two modes. | V3-16 update workbench/skills/update-harness/SKILL.md: Upgrade guidance routes v2 rooms through the one-time migration. | V3-16 update workbench/specs/S-021-portable-workbench-v3/SPEC.md TK-004: Explicit v2 upgrade with recovery. | V3-16A update tools/workbench-upgrade.mjs: Migrates legacy lanes once through the Adoption seam and installs the tools and skills lane. | V3-16A update RUNBOOK.md (V3 explicit upgrade and recovery check): Describes what the upgrade moves and records. | V3-16A update workbench/specs/S-021-portable-workbench-v3/SPEC.md (evidence log): Holds the migration result as spec evidence. | V3-16B update tools/workbench-upgrade.mjs: Refuses a dirty or unrecoverable project and writes upgrade-recovery.json with the pre-migration SHA and path inventory. | V3-16B update RUNBOOK.md (V3 explicit upgrade and recovery check): Records the pre-migration SHA, tracked path inventory and tools receipt. | V3-16B update workbench/specs/S-021-portable-workbench-v3/SPEC.md TK-004: Retired paths disappear only after new-path readback; rollback is proven.",
+    "home": "tools/workbench-upgrade.mjs; RUNBOOK.md (V3 explicit upgrade and recovery check); workbench/skills/update-harness/SKILL.md; workbench/specs/S-021-portable-workbench-v3/SPEC.md TK-004; workbench/specs/S-021-portable-workbench-v3/SPEC.md (evidence log)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-16",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-16A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-16B",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000G"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "V3-16",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-16 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-16A",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-16A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "V3-16B",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-16B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What makes a layout migration recoverable?",
+    "question": "What makes a layout migration recoverable?",
+    "sources": [
+      {
+        "id": "V3-16",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-16A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-16B",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:29.812Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:29.812Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 130 of the 2026-09-26 grouping (\"Updates, drift and release evidence\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Record the starting recovery point, preserve retired paths, migrate references and verify the new state with no unattributed dirty residue.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:29.842Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "V3-16: A one-time, recoverable v3 migration using the same manifest, path, and missing-only skill rules as Adoption.\nV3-16A: Move affected durable records, update links/tools/scopes, remove legacy local skill shadows only after the presence gate, and retain the migration result in the owning spec evidence.\nV3-16B: Record the pre-migration Git recovery point, preserve or back up every retired path before removal, verify the new paths and references, and leave no unattributed dirty residue."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-16, V3-16A, V3-16B (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "V3-16 create tools/workbench-upgrade.mjs: One command moves a v2-root room onto the v3 support root through the Adoption seam and records upgrade provenance. | V3-16 update RUNBOOK.md (V3 explicit upgrade and recovery check): Documents the one-time upgrade and its two modes. | V3-16 update workbench/skills/update-harness/SKILL.md: Upgrade guidance routes v2 rooms through the one-time migration. | V3-16 update workbench/specs/S-021-portable-workbench-v3/SPEC.md TK-004: Explicit v2 upgrade with recovery. | V3-16A update tools/workbench-upgrade.mjs: Migrates legacy lanes once through the Adoption seam and installs the tools and skills lane. | V3-16A update RUNBOOK.md (V3 explicit upgrade and recovery check): Describes what the upgrade moves and records. | V3-16A update workbench/specs/S-021-portable-workbench-v3/SPEC.md (evidence log): Holds the migration result as spec evidence. | V3-16B update tools/workbench-upgrade.mjs: Refuses a dirty or unrecoverable project and writes upgrade-recovery.json with the pre-migration SHA and path inventory. | V3-16B update RUNBOOK.md (V3 explicit upgrade and recovery check): Records the pre-migration SHA, tracked path inventory and tools receipt. | V3-16B update workbench/specs/S-021-portable-workbench-v3/SPEC.md TK-004: Retired paths disappear only after new-path readback; rollback is proven.",
+            "home": "tools/workbench-upgrade.mjs; RUNBOOK.md (V3 explicit upgrade and recovery check); workbench/skills/update-harness/SKILL.md; workbench/specs/S-021-portable-workbench-v3/SPEC.md TK-004; workbench/specs/S-021-portable-workbench-v3/SPEC.md (evidence log)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:29.870Z",
+      "reason": "Ledger row V3-16 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-16",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:29.904Z",
+      "reason": "Ledger row V3-16A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-16A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:29.938Z",
+      "reason": "Ledger row V3-16B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-16B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:29.971Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:55.295Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Updates pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000G"
+          ]
+        }
+      ]
+    }
+  ]
+}
