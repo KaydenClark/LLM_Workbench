@@ -8,8 +8,8 @@
 **Updated:** 2026-10-03
 **Catalog description:** Give a room one tool and one set of read words for both kinds of decision record, the ADR and the Destination Decision Record, with the lifecycle moves the ADR tool lacks.
 **Blockers:** none. The Codex Lexicon reconciliation branch TK-005A waited on landed through PR #281, so the Lexicon-mirror Task is ready. How a DDR records its single landmark is open, outside this acceptance, and waits on the landmark capability.
-**Latest event:** TK-005X claimed by claude-s003x-dispatcher.
-**Next gate:** Close TK-005X with verification and documentation proof.
+**Latest event:** Corrective TK-005X closed after the fresh whole-Spec review of 55770bb8 failed on one P2 (Wiki creation timing); a fresh review of the corrected assembled candidate is next.
+**Next gate:** Fresh separate-context review of the assembled candidate (report and verdict), then owner Human QA on integration, owner main promotion and complete.
 
 > **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`e584cb74b90571f3982e817c8a1f641bbff6234e`.
 
@@ -124,6 +124,7 @@ Maintain the Lexicon rows, the Runbook decision-record commands and the `to-docs
 | 2026-10-03 | TK-005U | Task closed | Records-only correction of completion provenance: post anchor e584cb74 and the Completion Result's self-drift after-state 60dd7643 replace b4e22bd4; test-spec-citation-anchors 15/15, check-append-only CLEAN, doctor no blocking finding. No runtime change, so no red/green test applies. | S-003X Citation anchors and Completion Result corrected. | Fresh separate-context whole-Spec review of the new assembled candidate; the routed S-004C finding belongs to that Spec's writer. |
 | 2026-10-03 | none | Assembly refreshed with integration 64c2c524, which added the Blueprint teardown's 24 accepted DDRs (PR #292, outside this Spec) | `adr.mjs validate` reports the decision records validated with the 24 DDRs present and `adr.mjs list --kind ddr` lists all 24, so the tooling carries real records; the Remaining Limitations and the Wiki article no longer say no DDR exists. | This Spec's Remaining Limitations and the Wiki article Decision Records and the Concept Map. | Fresh separate-context review of the assembled candidate. |
 | 2026-10-03 | review | Review verdict: fail at 55770bb82b67786ce121dae562588d27d6351489 [1b1e588e71be] #2 | P2 Wiki creation timing: the article Decision Records and the Concept Map still says aligning creates DDRs and that a DDR is born when the owner confirms the decision, which the accepted workflow-verbs decision (ADR-000X) narrowed to decision records written at Map through to-docs, so the Spec's claim that the article matches the shipped tooling is overbroad | Codex CLI codex exec -s read-only -m gpt-5.5, separate context, fresh whole-Spec review of 55770bb82b67786ce121dae562588d27d6351489 (fixture suites unrunnable in its sandbox; report digest matched, read-only adr.mjs reads, validate, doctor and diff checks passed) | 1 |
+| 2026-10-03 | TK-005X | Task closed | Records-only correction: the Wiki article Decision Records and the Concept Map now places DDR and ADR writing at Map through to-docs per ADR-000X, cites ADR-000X, and names the accept, supersede and deprecate moves; wiki validated. No runtime change. | Wiki article Decision Records and the Concept Map updated. | Fresh separate-context whole-Spec review of the new assembled candidate. |
 
 ## Completion Result
 
