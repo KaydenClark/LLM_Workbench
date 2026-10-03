@@ -3,7 +3,7 @@
 **Task ID:** TK-006G
 **Spec ID:** S-004G
 **Slice:** Inventory the retired controls wording outside the Lexicon and update the Workflow Verbs article
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-006F
 **Destination:** spec-acceptance: Current-facing uses of the retired controls wording outside the Lexicon are inventoried and either corrected or recorded as drift for the Contract carrier rewrite; the template mirror carries the generic rows or the exemption is recorded; the open questions are answered with their evidence.
