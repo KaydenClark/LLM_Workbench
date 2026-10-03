@@ -3,13 +3,13 @@
 **Spec ID:** S-004C
 **Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-s004c-tk005b
 **Stance:** Builder
 **Updated:** 2026-10-03
 **Catalog description:** Rewrite AGENTS.md as a short standing brief and RUNBOOK.md as an operations index of context pointers, with each operation's procedure and binding requirements in a tracked skill the carrier points to.
-**Blockers:** Implementation waits on gates recorded as Task blockers, none of them an owner decision on this Spec's content: the Runbook decision-record section from Decision Record Tooling (the first Task), a turn at the one `AGENTS.md` writer after the Corrective-Work Spec's `AGENTS.md` Task (the lifecycle Task), the Worker and Captain role skills (the role-detail Task only), the Lexicon writer's turn (the Lexicon Task only), and delivery of the `LANDMARK.md` artifact (the landmark-clause Task only).
-**Latest event:** Planned 2026-10-03: kept as one Spec, fifteen Tasks cut in a serial chain behind a baseline, a landing check, the Runbook index and the pointed-skill authority statement, and the Spec activated; none is claimable yet.
-**Next gate:** Decision Record Tooling closes its Runbook-editing Tasks (TK-004Y and TK-004Z remain); the Dispatcher then confirms that on integration, removes the first Task's blocker and claims it.
+**Blockers:** Implementation waits on gates recorded as Task blockers, none of them an owner decision on this Spec's content: a turn at the one `AGENTS.md` writer after the Corrective-Work Spec's `AGENTS.md` Task (the lifecycle Task), the Worker and Captain role skills (the role-detail Task only), the Lexicon writer's turn (the Lexicon Task only), and delivery of the `LANDMARK.md` artifact (the landmark-clause Task only).
+**Latest event:** TK-005B closed with proof.
+**Next gate:** Complete TK-005C.
 
 > **Citation anchors.** pre=`226212f1790badce0a5bdcd934d2e48e3981e05f` post=`226212f1790badce0a5bdcd934d2e48e3981e05f`.
 
@@ -157,6 +157,8 @@ This Spec rewrites the Contract carriers and their `templates/` mirrors. Update 
 | 2026-10-02 | none | Authored at the Map step from the owner-confirmed Contract-carrier decision record of 2026-10-02 at integration cbb3d5b81c0081c45d92e0d284078ca13fd54c03. | Map only; the control sizes and the tools and tests that read them were counted, no runtime proof claimed. | This Spec. | Plan, implementation and proof remain; one-Spec-or-landmark and the line-landing check form are open. |
 | 2026-10-02 | none | Re-verified and re-anchored at integration 5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a after four PRs landed. | Map only; the asserted counts, tool commands, collections and the S-00M status were re-read at that tip; no runtime proof claimed. | This Spec. | Plan, implementation and proof remain. |
 | 2026-10-03 | none | Planned at integration 226212f1790badce0a5bdcd934d2e48e3981e05f: kept as one Spec under the Workbench artifacts landmark (derived from the locked landmark set, not a new owner answer), the Runbook-importance design and the line-landing check form recorded as Plan decisions, fifteen Tasks cut in a serial chain, and the Spec activated. | Plan only; control sizes, reader counts, inbound anchor counts, the skill lane and the blocker grammar were re-read at that tip, and a throwaway Task record exercised the blocker resolver and was discarded before commit; doctor and render run; no runtime proof of the rewrite is claimed. | This Spec and its fifteen Task records. | All implementation. Three sequencing gates clear only by removing an owner token (the Decision Record Tooling Runbook Tasks, the corrective-work AGENTS Task, the Lexicon writer's turn); the role skills and LANDMARK.md delivery clear by their own Specs. The Plan decisions stay open to owner redirect. |
+| 2026-10-03 | TK-005B | Sequencing blocker cleared | At `origin/integration` d7ffffe9 every Decision Record Tooling Task (TK-004W to TK-005A, TK-005X, TK-006K) is done and its Runbook decision-record section is on integration (TK-004Y PR #284, TK-004Z PR #287). `owner:runbook-decision-record-section-landed` removed and TK-005B set ready. Dispatcher pre-change receipts at d7ffffe9: self-drift pre 8 attention findings (stale-claim S-00Q, five stale-seed, unverified-provenance, detached-head), none about this Spec; `evaluate-workbench --path templates --include-controls` 106.6/113; Guardrail North-Star Audit 78/100. | TK-005B record notes the clearance. | TK-005B baseline and census remain; the role-detail Task waits on S-002E and S-004B delivery and the landmark-clause Task on S-003Z delivery. |
+| 2026-10-03 | TK-005B | Task closed | census.md records at d7ffffe9 the carrier sizes and loaded cost, section sizes by heading (root and template), guardrail baseline (106.6/113, 78/100), self-drift pre receipt with the bounded semantic check, 57 classified readers with the Tasks that must change each content-dependent one, 49 files and 31 inbound anchors all resolving, host-adapter facts, and the confirmed/corrected section map with audience split. Full AGENTS suite 48/48 on 66fb6967; carriers untouched. | census.md added in the Spec folder; no carrier, template, skill, tool or Wiki change. | none for this Task; findings for the Dispatcher are in census.md section 8 |
 
 ## Completion Result
 

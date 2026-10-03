@@ -3,11 +3,12 @@
 **Task ID:** TK-005B
 **Spec ID:** S-004C
 **Slice:** Record the pre-rewrite baseline and the dependency census
-**Status:** blocked
+**Status:** done
 **Stance:** Builder
-**Blockers:** owner:runbook-decision-record-section-landed
+**Blockers:** none
 **Destination:** spec-acceptance: Every tool and test that read the old shape passes against the new one, and the full suite is green (the census names every reader this Spec must change), and the size and loaded-cost before-record of the brief acceptance line
 **Planned verification:** The census is reproducible: its commands are recorded and re-running them at the pinned SHA gives the same classification. `node tools/evaluate-workbench.mjs --path templates --include-controls` and the guardrail audit run read-only and their scores are recorded. A self-drift pre receipt exists. No tracked carrier changed (`git diff --stat` over `AGENTS.md`, `RUNBOOK.md`, `LEXICON.md` and `templates/` is empty). The full AGENTS suite passes on the committed candidate.
+**Proof:** census.md records at d7ffffe9 the carrier sizes and loaded cost, section sizes by heading (root and template), guardrail baseline (106.6/113, 78/100), self-drift pre receipt with the bounded semantic check, 57 classified readers with the Tasks that must change each content-dependent one, 49 files and 31 inbound anchors all resolving, host-adapter facts, and the confirmed/corrected section map with audience split. Full AGENTS suite 48/48 on 66fb6967; carriers untouched.
 
 ## Outcome
 
@@ -20,6 +21,14 @@ in another Spec: it clears when the Dispatcher removes it after confirming on
 `origin/integration` that Decision Record Tooling's TK-004X, TK-004Y and
 TK-004Z are done (they edit the Runbook decision-record section). Clearing it is
 not an owner decision.
+
+Blocker cleared on 2026-10-03 by the Spec's single writer (the Dispatcher): at
+`origin/integration` d7ffffe9 every Decision Record Tooling Task (TK-004W,
+TK-004X, TK-004Y, TK-004Z, TK-005A, TK-005X, TK-006K) is `done`, its Runbook
+decision-record section (`RUNBOOK.md` Architecture Decision Records and the
+Destination Decision Records text after it) is on integration, and TK-004Y and
+TK-004Z landed through PR #284 and PR #287. `owner:runbook-decision-record-section-landed`
+is removed and this Task is ready.
 
 ## Scope
 
@@ -61,3 +70,10 @@ folder (the Spec folder is the only store):
 Read-only against the carriers: no `AGENTS.md`, `RUNBOOK.md`, `LEXICON.md`,
 template or skill edit, and no tool change. It cuts no new Task; a finding that
 needs one is reported to the Dispatcher.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s004c-tk005b-baseline-census | 66fb696758ac5c29396aea0afaadbb0738393b8d | ahead 0 behind 0 | 0 | Read-only record, no behavior change, so no red/green test applies. Full AGENTS suite 48/48 pass on committed candidate 66fb6967 (suite.sh, dirty: []). Re-run at d7ffffe9 in a clean detached checkout: evaluate-workbench --path templates --include-controls 106.6/113, audit-guardrails 78/100, self-drift --phase pre cleanUpdate false with the same 8 attention findings as the Dispatcher receipt, doctor exit 0, render no diff. git diff over AGENTS.md, RUNBOOK.md, LEXICON.md, CLAUDE.md, templates/, skills and tools is empty. | census.md added in the S-004C Spec folder; no carrier, template, skill, tool or Wiki change (the census alters no Wiki statement). | none for this Task; census findings 1-7 (static score reads only templates/, three tests execute Runbook text, TK-005G token looks satisfied, ADR canonicalized_in limit, Task packet carries only AGENTS.md, room-brain route line, section-map corrections) are reported to the Dispatcher | b7463d7381a6293647f5335d1e81674ae176a737d758011a5604d3368c42b5e3 |
+| 2 | claude/s004c-tk005b-baseline-census | b2eac06382517da580dd1259a4cb3fe7c88cdd9a | ahead 0 behind 0 | 0 | census.md records at d7ffffe9 the carrier sizes and loaded cost, section sizes by heading (root and template), guardrail baseline (106.6/113, 78/100), self-drift pre receipt with the bounded semantic check, 57 classified readers with the Tasks that must change each content-dependent one, 49 files and 31 inbound anchors all resolving, host-adapter facts, and the confirmed/corrected section map with audience split. Full AGENTS suite 48/48 on 66fb6967; carriers untouched. | census.md added in the Spec folder; no carrier, template, skill, tool or Wiki change. | none for this Task; findings for the Dispatcher are in census.md section 8 | 788b52c574010b14f9045024c18465d24817da6e01a82d2676d026abf9674f12 |
