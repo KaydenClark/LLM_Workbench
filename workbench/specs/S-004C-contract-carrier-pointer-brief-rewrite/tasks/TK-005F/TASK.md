@@ -3,7 +3,7 @@
 **Task ID:** TK-005F
 **Spec ID:** S-004C
 **Slice:** Move the continuity and promotion operations behind their pointers
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-005E
 **Destination:** spec-acceptance: An inventory maps every line of `AGENTS.md` and `RUNBOOK.md` to a home, and a check shows every removed line landed (first family, which proves the method end to end), and `RUNBOOK.md` is an operations index in which each operation's procedure is reachable in a skill.
