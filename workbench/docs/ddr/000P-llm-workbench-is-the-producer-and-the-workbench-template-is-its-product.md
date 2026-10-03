@@ -15,6 +15,6 @@ Why the owner chose it: The owner, in his own words (2026-10-03, teardown round 
 
 Considered and rejected: None recorded.
 
-Consequences: None recorded as owner words. An adjacent accepted record covers source ownership, not this relationship: [LLM Workbench is the sole Workbench source; Foundry is a downstream extension](../../adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md).
+Consequences: None recorded as owner words. An adjacent accepted record covers source ownership, not this relationship: [LLM Workbench is the sole Workbench source; Foundry is a downstream extension](../adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md).
 
 Provenance: the Blueprint teardown grilling of 2026-10-02 to 2026-10-03: question BT-D8 (producer and product), locked 2026-10-03, with its why confirmed in round 4, question WHY-D1.

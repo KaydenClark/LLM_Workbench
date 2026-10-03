@@ -21,7 +21,7 @@
 | [000M](000M-working-artifacts-are-scaffolding-cleared-away-once-their-knowledge-is-kept.md) | Working artifacts are scaffolding, cleared away once their knowledge is kept | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000N](000N-every-room-s-blueprint-is-the-four-part-short-page.md) | Every room's Blueprint is the four-part short page | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000O](000O-the-blueprint-is-a-high-level-summary-of-the-direction-and-makes-us-ask-questions.md) | The Blueprint is a high-level summary of the direction and makes us ask questions | accepted | 2026-10-03 | BLUEPRINT.md |
-| [000P](proposed/000P-llm-workbench-is-the-producer-and-the-workbench-template-is-its-product.md) | LLM Workbench is the producer and the Workbench Template is its product | proposed | 2026-10-03 | BLUEPRINT.md |
+| [000P](000P-llm-workbench-is-the-producer-and-the-workbench-template-is-its-product.md) | LLM Workbench is the producer and the Workbench Template is its product | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000Q](proposed/000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md) | A release is proven by the Template building a real product in one pass | proposed | 2026-10-03 | BLUEPRINT.md |
 | [000R](proposed/000R-llm-workbench-owns-what-a-workbench-is-the-project-owns-what-it-says-and-may-add-without-tearing-apart-what-works.md) | LLM Workbench owns what a workbench is; the project owns what it says and may add without tearing apart what works | proposed | 2026-10-03 | BLUEPRINT.md |
 | [000S](proposed/000S-setup-drafts-everything-it-can-and-grilling-confirms-it.md) | Setup drafts everything it can and grilling confirms it | proposed | 2026-10-03 | BLUEPRINT.md |
