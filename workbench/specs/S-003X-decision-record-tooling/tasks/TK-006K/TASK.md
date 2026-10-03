@@ -1,6 +1,7 @@
-# TK-005U - P3 completion provenance: the Spec's post citation anchor and its Completion Result name b4e22bd4, the TK-005A head that failed review, as the after-state of the delivered tree and the self-drift receipt, instead of the corrected assembled state (60dd7643, contained in integration e584cb74)
+# TK-006K - P3 completion provenance: the Spec's post citation anchor and its Completion Result name b4e22bd4, the TK-005A head that failed review, as the after-state of the delivered tree and the self-drift receipt, instead of the corrected assembled state (60dd7643, contained in integration e584cb74)
 
-**Task ID:** TK-005U
+**Task ID:** TK-006K
+**Collision recovery:** S-003X/TK-005U@6cd175863c213ae18a12094940cac0052d874181:workbench/specs/S-003X-decision-record-tooling/tasks/TK-005U/TASK.md; retained S-004F/TK-005U@1558ef2b8577d8a1bcd647f2a8038e05f43e3ba7:workbench/specs/S-004F-corrective-work-rules/tasks/TK-005U/TASK.md
 **Spec ID:** S-003X
 **Slice:** P3 completion provenance: the Spec's post citation anchor and its Completion Result name b4e22bd4, the TK-005A head that failed review, as the after-state of the delivered tree and the self-drift receipt, instead of the corrected assembled state (60dd7643, contained in integration e584cb74)
 **Status:** done
