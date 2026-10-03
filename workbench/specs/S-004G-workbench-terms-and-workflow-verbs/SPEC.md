@@ -1,15 +1,15 @@
 # S-004G - Workbench Terms And Workflow Verb Rows
 
 **Spec ID:** S-004G
-**Status:** planned
+**Status:** active
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
 **Updated:** 2026-10-03
 **Catalog description:** Put the owner's Workbench terms and one row per workflow verb into the Lexicon, repair the rows that contradict the Blueprint teardown's locked answers, and record the changed Journey point of the workflow-verbs decision in a decision record.
-**Blockers:** none for specification. The Lexicon rows take one writer at a time (the owner's Codex Lexicon reconciliation landed in integration on 2026-10-03). The `ddr` collection and the commands that write, accept and supersede a decision record are installed. Implementation awaits Plan and assignment.
-**Latest event:** Authored at the Map step from the owner's term, verb and workflow answers confirmed on 2026-10-03 in the Blueprint teardown; no Task is cut.
-**Next gate:** At Plan, inspect live Actuality, settle the open questions below from project evidence, and cut small Tasks.
+**Blockers:** none. The Lexicon rows take one writer at a time, so this Spec's first Task waits on the last Task of the AI Coding Dictionary Terms Spec. The `ddr` collection and the commands that write, accept and supersede a decision record are installed.
+**Latest event:** Planned and activated on 2026-10-03 by the Lexicon writer lane: five serial Tasks are cut (the Workbench term and artifact-kind rows; the workflow verb rows; the Blueprint and Foundry repairs; the decision record for the Journey correction; the controls inventory and the Workflow Verbs article).
+**Next gate:** The first Task, once the last Task of the AI Coding Dictionary Terms Spec is done.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 
@@ -151,6 +151,7 @@ Run the targeted vocabulary, control-fidelity and decision-record tests and the 
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-10-03 | none | Authored at the Map step from the owner's Workbench term, workflow-verb and workflow answers confirmed on 2026-10-03 in the Blueprint teardown, at integration 5cfa987bacb0f6a9273d93e8d989e34000d75ad9. | Map only; the quoted Lexicon rows, the workflow-verbs decision, the template Lexicon's rows, the `delivered` qualifier and the related Spec records were read at that tip; no runtime proof claimed. | This Spec and the generated Spec catalog. Docs checked; no Lexicon, decision-record or Wiki update is due until delivery, because a planned Spec changes no accepted meaning. | Plan, implementation and proof remain; six questions are open for Plan. |
+| 2026-10-03 | none | Plan: activated the Spec and cut five serial Tasks from live Actuality at integration f91bfd72; each Lexicon Task mirrors its generic rows into the template as it lands, and the last Task inventories the retired controls wording outside the Lexicon. The open questions are settled Task by Task, each recorded here with its evidence when its Task closes. | Plan only; the Lexicon rows, the workflow verbs decision, the decision-record commands and the DDR collection were read at that tip; no runtime proof claimed. | This Spec only. | Implementation and proof remain in the five Tasks. |
 
 ## Completion Result
 
