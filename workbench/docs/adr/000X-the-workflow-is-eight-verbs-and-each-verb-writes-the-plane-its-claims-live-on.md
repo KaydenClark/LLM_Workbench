@@ -11,14 +11,16 @@ canonicalized_in:
 
 The owner confirmed these points in a grilling on 2026-10-02:
 
-1. **The verbs.** The workflow is Idea, Align, Confirm, Map, Plan, Implement,
-   Review and Verify, and these are the official workflow verbs everywhere.
-   The owner had been calling this the workflow while it kept being called the
-   ladder, or the steps.
-2. **Journey.** Journey is Map, Plan, Implement, Review and Verify. It is a
-   workflow verb because the workflow loops after a journey: Align, Confirm,
-   Journey, then Align, Confirm, Journey again. Journey is only the loop-level
-   name, not a stage a card can sit at.
+1. **The verbs.** Idea, Align, Confirm, Map, Plan, Implement, Review and
+   Verify were the owner's first standardization of the workflow verbs, and
+   they are official workflow verbs everywhere. The verb set is open: the owner
+   defines verbs one at a time, each in its own Lexicon row, and workflows are
+   composed from them. The owner had been calling this the workflow while it
+   kept being called the ladder, or the steps.
+2. **Journey.** Journey is Implement, Check, Review and Verify, repeated until
+   the confirmed concept is built; Map and Plan come before it and are not part
+   of it. It is a workflow verb because the build repeats until the concept is
+   built. Journey is only the loop-level name, not a stage a card can sit at.
 3. **Verbs can be passed through.** When there is nothing to map, the workflow
    can move from Confirm to Plan. Review and Verify are not as clean a cut as
    the other verbs: when everything is good to go, nothing is written beyond
@@ -81,6 +83,34 @@ gap. The Blueprint's Desired Lifecycle map, which the owner confirmed on
 2026-09-24 and which is kept verbatim, is unchanged. `templates/` is not changed
 here: the shipped Tracker still uses the earlier step names, so its Lexicon
 mirror waits for the Tracker work.
+
+## Amendment
+
+Amended 2026-10-03 under [ADR-000A](000A-active-adr-decisions-and-destination-blueprints.md)'s
+amendment-first rule by the [Workbench Terms And Workflow Verb Rows](../../specs/S-004G-workbench-terms-and-workflow-verbs/SPEC.md)
+Spec, because the owner's later answers changed two points above. The earlier
+text reads at `git show f2d12337a5511b169c46633ad3377366239b5819:workbench/docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md`.
+
+- Point 1 said the eight verbs were the official workflow verbs. The owner
+  said: "why cant we add more workflow verbs? They are verbs. those 8 were our
+  first standardization", and "We shouldnt need to Lock in a list. We lock in
+  verbs. We use verbs to create workflows." The eight stand as the first
+  standardization and the set is open. Prototype, Check, Approve, Delivered and
+  Clean Up have since been defined, and the delivery workflow reads Idea,
+  Align, Confirm, Map, Plan, Journey, Approve, Delivered, Clean Up. The title
+  still reads "eight verbs" and is read as the first eight, because renaming
+  the record would break its links.
+- Point 2 put Map and Plan inside the Journey. The owner corrected it: "Journey is the build loop." Journey is Implement, Check,
+  Review and Verify, and Map and Plan are not part of it.
+- Nothing is superseded, because adding verbs replaces nothing. Points 3 to 6
+  and the Consequences stand.
+
+The Lexicon's Workflow, Journey and verb rows carry the current meanings. The
+release proof decision
+([A release is proven by the Template building a real product in one pass](../ddr/000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md))
+still quotes "Idea, Align, Confirm, Journey, Complete", where the owner changed
+the last verb to Delivered; it needs a visible correction by its owner, not a
+silent edit. This records no owner approval.
 
 Provenance: owner-confirmed grilling of 2026-10-02 under the objective
 "skill-workflow-redesign".
