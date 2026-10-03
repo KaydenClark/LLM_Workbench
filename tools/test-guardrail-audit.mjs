@@ -169,3 +169,54 @@ assert.equal(checked(modern,'version_contract'),true);
 assert.equal(checked({...modern,'RUNBOOK.md':modern['RUNBOOK.md'].replace('**Blueprint reviewed:** 2026-07-12','**Blueprint reviewed:** 2025-01-01')},'fresh_control_docs'),false);
 assert.equal(checked({...modern,'workbench/manifest.json':'{}'},'version_contract'),false);
 assert.equal(checked({...modern,'templates/AGENTS.md':'unstamped'},'version_contract'),false);
+
+// S-004H: the four-part short page is a destination-shaped Blueprint too. It
+// carries no review date or version stamp, so the audit must not fall back to
+// the legacy checks that look for them in the Blueprint.
+const fourPart = {...modern,'BLUEPRINT.md':'# Blueprint\n\n## What it is\n\nA portable product.\n\n## Who it serves\n\nIts people.\n\n## Promised outcomes\n\n- A result.\n\n## Non-goals\n\n- Not a harness.\n'};
+assert.equal(checked(fourPart,'fresh_control_docs'),true,'a four-part Blueprint is destination-shaped and needs no review stamp');
+assert.equal(checked(fourPart,'version_contract'),true,'a four-part Blueprint is destination-shaped and needs no version stamp');
+assert.equal(checked({...fourPart,'RUNBOOK.md':fourPart['RUNBOOK.md'].replace('**Blueprint reviewed:** 2026-07-12','**Blueprint reviewed:** 2025-01-01')},'fresh_control_docs'),false,'a four-part Blueprint keeps the recorded review date requirement');
+assert.equal(checked({...fourPart,'workbench/manifest.json':'{}'},'version_contract'),false);
+assert.equal(checked({...fourPart,'templates/AGENTS.md':'unstamped'},'version_contract'),false);
+// Recognition needs the whole shape: one four-part heading alone is not the short page.
+for (const missing of ['What it is', 'Who it serves', 'Promised outcomes', 'Non-goals']) {
+  const partial = {...fourPart, 'BLUEPRINT.md': fourPart['BLUEPRINT.md'].replace('## '+missing, '## Renamed')};
+  assert.equal(checked(partial,'fresh_control_docs'),false,'a Blueprint missing the four-part heading "'+missing+'" takes the legacy review-date check');
+  assert.equal(checked(partial,'version_contract'),false,'a Blueprint missing the four-part heading "'+missing+'" takes the legacy version-stamp check');
+}
+// Bare or empty sections are not the short page either, so they take the legacy path.
+const bare = {...fourPart,'BLUEPRINT.md':'# Blueprint\n\n## What it is\n\n## Who it serves\n\n## Promised outcomes\n\n## Non-goals\n'};
+assert.equal(checked(bare,'fresh_control_docs'),false,'bare four-part headings take the legacy review-date check');
+assert.equal(checked(bare,'version_contract'),false,'bare four-part headings take the legacy version-stamp check');
+for (const empty of ['What it is', 'Who it serves', 'Promised outcomes', 'Non-goals']) {
+  const emptied = {...fourPart,'BLUEPRINT.md':fourPart['BLUEPRINT.md'].replace(new RegExp(`(## ${empty}\\n)\\n[^\\n]+\\n`), '$1')};
+  assert.notEqual(emptied['BLUEPRINT.md'], fourPart['BLUEPRINT.md'], 'emptying "'+empty+'" must change the page');
+  assert.equal(checked(emptied,'fresh_control_docs'),false,'a Blueprint with an empty "'+empty+'" part takes the legacy path');
+  const subOnly = {...fourPart,'BLUEPRINT.md':fourPart['BLUEPRINT.md'].replace(new RegExp(`(## ${empty}\\n)\\n[^\\n]+\\n`), '$1\n### Only a subheading\n')};
+  assert.equal(checked(subOnly,'version_contract'),false,'a Blueprint whose "'+empty+'" part holds only a sub-heading takes the legacy path');
+}
+// Legacy headings appended to a malformed four-part page do not make it destination-shaped.
+const legacySections = '\n## Product Destination\n\nA product.\n';
+const malformedWithLegacy = {...fourPart,'BLUEPRINT.md':fourPart['BLUEPRINT.md'].replace(/(## Non-goals\n)\n[^\n]+\n/, '$1') + legacySections};
+assert.notEqual(malformedWithLegacy['BLUEPRINT.md'], fourPart['BLUEPRINT.md'] + legacySections, 'the malformed fixture must differ from the valid page');
+assert.equal(checked(malformedWithLegacy,'fresh_control_docs'),false,'a malformed four-part page with a legacy heading takes the legacy path');
+assert.equal(checked(malformedWithLegacy,'version_contract'),false);
+assert.equal(checked({...fourPart,'BLUEPRINT.md':fourPart['BLUEPRINT.md'] + legacySections},'version_contract'),true,'a complete four-part page with an extra legacy heading is still the four-part page');
+// An emptied part cannot be filled by a legacy section appended later, and the part headings match exactly.
+for (const empty of ['Promised outcomes', 'Non-goals']) {
+  const filled = {...fourPart,'BLUEPRINT.md':fourPart['BLUEPRINT.md'].replace(new RegExp(`(## ${empty}\\n)\\n[^\\n]+\\n`), '$1') + '\n## Promised Outcomes\n\nA result.\n\n## Non-Goals\n\nA limit.\n'};
+  assert.equal(checked(filled,'version_contract'),false,'an emptied "'+empty+'" part cannot borrow a same-named legacy section');
+}
+assert.equal(checked({...fourPart,'BLUEPRINT.md':fourPart['BLUEPRINT.md'].replace('## Promised outcomes','## Promised Outcomes')},'version_contract'),false,'the part headings are matched exactly, case included');
+const fencedPage = {...fourPart,'BLUEPRINT.md':'# Blueprint\n\n```markdown\n' + fourPart['BLUEPRINT.md'] + '```\n'};
+assert.equal(checked(fencedPage,'version_contract'),false,'headings inside a fenced code block are not a four-part Blueprint');
+const fourFence = {...fourPart,'BLUEPRINT.md':'# Blueprint\n\n````\n```\n' + fourPart['BLUEPRINT.md'] + '```\n````\n'};
+assert.equal(checked(fourFence,'version_contract'),false,'headings inside a four-backtick fence are not a four-part Blueprint');
+const oneHeading = {...modern,'BLUEPRINT.md':'# Blueprint\n\n## What it is\n\nA product.\n'};
+assert.equal(checked(oneHeading,'fresh_control_docs'),false,'a lone What it is heading is not destination-shaped');
+assert.equal(checked(oneHeading,'version_contract'),false);
+// A Blueprint with neither shape still takes the legacy path.
+const neither = {...modern,'BLUEPRINT.md':'# Blueprint\n\n## Overview\n\nA product.\n'};
+assert.equal(checked(neither,'fresh_control_docs'),false,'a Blueprint with neither destination shape falls back to the legacy review-date check');
+assert.equal(checked(neither,'version_contract'),false,'a Blueprint with neither destination shape falls back to the legacy version-stamp check');

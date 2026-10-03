@@ -90,7 +90,7 @@ function completeGenesis(project, options = {}) {
     const content = control === 'CLAUDE.md'
       ? '@AGENTS.md\n'
       : control === 'BLUEPRINT.md'
-        ? '# Fixture - Blueprint\n\n## Product Destination\n\nA useful finished project.\n'
+        ? '# Fixture - Blueprint\n\n## What it is\n\nA useful finished project.\n\n## Who it serves\n\nIts owner.\n\n## Promised outcomes\n\n- A checked result.\n\n## Non-goals\n\n- Not a hosted service.\n'
         : `# ${control}\n\n> Generated from LLM Workbench ${VERSION}.\n\n## Purpose\n\nThis is a filled ${control} fixture.\nDurable memory lives in workbench/wiki/MEMORY.md.\n${generatedRegions[control] ?? ''}`;
     fs.writeFileSync(path.join(project, control), content);
   }
