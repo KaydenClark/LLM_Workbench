@@ -7,7 +7,7 @@
 **Stance:** Builder
 **Updated:** 2026-10-03
 **Catalog description:** Give a room one tool and one set of read words for both kinds of decision record, the ADR and the Destination Decision Record, with the lifecycle moves the ADR tool lacks.
-**Blockers:** none. The Codex Lexicon reconciliation branch TK-005A waited on landed through PR #281, so the Lexicon-mirror Task is ready. How a DDR records its single landmark is open, outside this acceptance, and waits on the landmark capability.
+**Blockers:** none. How a DDR records its single landmark is open, outside this acceptance, and waits on the landmark capability.
 **Latest event:** Reviewed integration delivery: PR #299 merged as 760a625a, containing the reviewed candidate 98d80e92 (whole-Spec verdict #3 pass); all seven Tasks are done and every Task PR passed its own separate-context review.
 **Next gate:** Owner Human QA on integration, then owner main promotion and complete S-003X.
 
