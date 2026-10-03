@@ -19,6 +19,62 @@ for (const source of inventory.sources) {
     assert.ok(fs.existsSync(path.join(root, claim.owner)), claim.owner);
   }
 }
+// S-004H TK-005Q: every paragraph of the Blueprint and of its template, as they stood
+// before the four-part swap, has a recorded home that exists. The inventory is lossless
+// (its claims rebuild the pinned source byte for byte, in order) so nothing can be dropped
+// unrecorded, and a claim cannot name a home that is not on the tree.
+const findFile = (start, name) => {
+  const hit = (dir) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) { const found = hit(full); if (found) return found; }
+      else if (entry.name === name) return full;
+    }
+    return null;
+  };
+  return hit(path.join(root, start));
+};
+const paragraphFile = findFile('workbench/specs', 'blueprint-paragraph-disposition.json');
+assert.ok(paragraphFile, 'the Blueprint Short Page spec must keep its paragraph disposition inventory');
+const paragraphs = JSON.parse(fs.readFileSync(paragraphFile, 'utf8'));
+assert.deepEqual(paragraphs.sources.map(s => s.path), ['BLUEPRINT.md', 'templates/BLUEPRINT.md'], 'the inventory covers the root Blueprint and its template');
+const HOME_KINDS = new Set(['short-page', 'decision-record', 'wiki', 'landmark', 'spec', 'skill', 'contract', 'generic-contract', 'generic-mirror']);
+const DISPOSITIONS = new Set(['relocate-claim', 'retired-shape', 'retired-claim', 'gap']);
+for (const source of paragraphs.sources) {
+  const original = execFileSync('git', ['show', `${source.commit}:${source.path}`], { cwd: root, encoding: 'utf8' });
+  assert.equal(source.claims.map(x => x.text).join(''), original, `${source.path}: the paragraph inventory must preserve every source byte in order`);
+  const ids = new Set();
+  for (const claim of source.claims) {
+    assert.ok(!ids.has(claim.id), `${claim.id} is unique`);
+    ids.add(claim.id);
+    assert.ok(DISPOSITIONS.has(claim.disposition), `${claim.id}: unknown disposition ${claim.disposition}`);
+    assert.ok(claim.reason && claim.reason.length > 20, `${claim.id}: a recorded reason`);
+    assert.ok(Array.isArray(claim.homes) && claim.homes.length > 0, `${claim.id}: at least one home`);
+    assert.equal(claim.owner, claim.homes[0].owner, `${claim.id}: the owner is the first home`);
+    for (const home of claim.homes) {
+      assert.ok(HOME_KINDS.has(home.kind), `${claim.id}: unknown home kind ${home.kind}`);
+      assert.ok(home.note && home.note.length > 5, `${claim.id}: each home says what it carries`);
+      assert.ok(fs.existsSync(path.join(root, home.owner)), `${claim.id}: home ${home.owner} must exist on the tree`);
+    }
+  }
+}
+// The template's generic workflow paragraph is split into one claim per sentence, each with a generic home,
+// and a claim with no generic home is a recorded gap, never silently dropped.
+const templateClaims = paragraphs.sources[1].claims.filter(c => c.id.startsWith('tpl-wf-'));
+assert.equal(templateClaims.length, 9, 'the template workflow paragraph is recorded sentence by sentence');
+for (const claim of templateClaims.filter(c => c.disposition === 'relocate-claim')) {
+  assert.ok(claim.homes.some(h => h.kind === 'generic-contract' || h.kind === 'generic-mirror' || h.kind === 'decision-record' || h.kind === 'wiki'), `${claim.id}: a relocated template claim names a generic home`);
+}
+assert.ok(templateClaims.some(c => c.disposition === 'gap'), 'a template claim with no generic mirror is recorded as a gap');
+// The two Wiki pages that hold the workflow and the altitudes exist, and the rewritten workflow no longer
+// carries the owner's brace-and-arrow map verbatim.
+const workflowPage = fs.readFileSync(path.join(root, 'workbench/wiki/design-concepts/idea-to-delivery-workflow.md'), 'utf8');
+assert.doesNotMatch(workflowPage, /Spec branch \{|Pick up a hot non-conflicting Task\n/, 'the Wiki workflow is rewritten in the workflow verbs, not the verbatim map');
+for (const verb of ['Idea', 'Align', 'Confirm', 'Map', 'Plan', 'Implement', 'Review', 'Verify']) {
+  assert.match(workflowPage, new RegExp(`\\b${verb}\\b`), `the Wiki workflow names the verb ${verb}`);
+}
+assert.ok(fs.existsSync(path.join(root, 'workbench/wiki/design-concepts/delivery-altitudes.md')), 'the altitudes page exists');
+
 // S-00P TK-001: a reader of the root Blueprint must be able to state every rung
 // of the governing workflow, the three delivery altitudes and every stage of the
 // recursive Spec/Task loop. The generic template carries no product workflow, so
