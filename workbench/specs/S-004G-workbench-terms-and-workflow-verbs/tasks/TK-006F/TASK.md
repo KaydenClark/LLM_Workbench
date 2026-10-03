@@ -3,7 +3,7 @@
 **Task ID:** TK-006F
 **Spec ID:** S-004G
 **Slice:** Record the Journey correction and the current workflow verb decision in a decision record
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-006E
 **Destination:** spec-acceptance: A decision record carries the Journey correction and the current verb decision, ADR-000X is narrowed or superseded for the changed points through the record lifecycle, and no active accepted decision claim still says Journey is Map, Plan, Implement, Review and Verify.
