@@ -6,6 +6,7 @@ knowledge_role: curated
 provenance:
   - S-01A TK-00R source change and fresh-context scenario, 2026-09-26
   - Pinned upstream mattpocock/skills c55ee46073ed923f86ce59a5eb3b6d895095d1b7, retrieved 2026-09-26
+  - S-004C TK-005F moved the Runbook procedure behind its index pointer into the skill, 2026-10-03
 source_paths:
   - workbench/skills/handoff/SKILL.md
   - workbench/skills/handoff/assets/HANDOFF.md
@@ -19,7 +20,7 @@ source_paths:
   - AGENTS.md
   - RUNBOOK.md
   - THIRD_PARTY_NOTICES.md
-last_verified: 2026-09-26
+last_verified: 2026-10-03
 ---
 
 # Handoff: pass one objective to a named recipient
@@ -28,7 +29,8 @@ last_verified: 2026-09-26
 
 The owner confirmed a role-based delegation correction on 2026-10-01. Follow
 [AGENTS](../../AGENTS.md#handoff-assignments-and-shared-context) for the operating
-boundaries and [RUNBOOK](../../RUNBOOK.md#handoff-transfer) for preparing the
+boundaries and the skill's [transfer procedure](../skills/handoff/SKILL.md#transfer-procedure),
+which the [Runbook](../../RUNBOOK.md#handoff-transfer) points to, for preparing the
 recipient purpose and context. [S-01A](../specs/S-01A-handoff-skill-rebuild/SPEC.md#accepted-handoff-correction-2026-10-01)
 keeps the remaining source/shape alignment and behavioral proof visible.
 The account below describes the 2026-09-26 source and scenario; its owner-only
@@ -76,7 +78,7 @@ The skill descends from Matt Pocock's MIT-licensed `handoff` ([notice](../../THI
 - [Handoff source](../skills/handoff/SKILL.md) and [bundled shape](../skills/handoff/assets/HANDOFF.md)
 - [Individual delivery Spec](../specs/S-01A-handoff-skill-rebuild/SPEC.md)
 - [Core catalog](../skills/README.md)
-- [Session records contract](../../AGENTS.md#session-records-and-checkpoints) and [Runbook notepad and handoff procedure](../../RUNBOOK.md)
+- [Session records contract](../../AGENTS.md#session-records-and-checkpoints) and [notepad runtime reference](../skills/notepad/SKILL.md#runtime-reference) and [handoff transfer procedure](../skills/handoff/SKILL.md#transfer-procedure), which the [Runbook operations index](../../RUNBOOK.md#operations-index) points to
 - [Notepad article](skill-notepad.md) and [runtime](../tools/notepads.mjs)
 - [Wiki router](MEMORY.md)
 

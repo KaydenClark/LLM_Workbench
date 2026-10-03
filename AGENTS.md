@@ -135,19 +135,11 @@ its assigned job under the current controls without requiring the owner to
 repeat an already authorized assignment. A document or role title cannot
 expand that scope.
 
-Distinguish author from recipient, and assigner from assignee. A request to
-prepare a handoff assigns its author the preparation of instructions for
-another agent in a separate context. Authoring it does not assign the
-recipient's work to the author. A handoff may convey a delegated assignment,
-a completion report or an update; its instructions do not carry independent
-authority.
-
-Notepads capture context as it happens; handoffs select and organize it for a
-specified recipient and purpose. Agents may read each other's handoffs and
-objective notepads. A coordinating role may manage shared updates to both as
-temporary scaffolding, with one writer per note or handoff at a time.
-The [Lexicon](LEXICON.md#artifact-boundaries) defines their jobs and the
-[Runbook](RUNBOOK.md#handoff-transfer) owns the transfer procedure.
+A handoff's instructions carry no independent authority, and authoring one
+does not assign the recipient's work to its author. The `handoff` skill,
+through its [Runbook operations index](RUNBOOK.md#operations-index) row,
+carries the author and recipient boundaries, shared notepad and handoff
+context, and the transfer procedure.
 
 ## Read Scope
 
@@ -590,63 +582,26 @@ removed only with owner approval.
 
 ## Session Records And Checkpoints
 
-Create or resume a local JSON notepad when meaningful objective work produces
-context whose loss would impair continuation or a focused handoff. Trivial
-conversation needs none. Preserve source fidelity, uncertainty, and corrections;
-maintain a compact current view and an append-oriented work record. Templates
-are examples, not a universal checklist. Notes neither authorize work nor prove
-claims. On resume obey the current Contract and verify relevant live state.
-Save important context promptly as work proceeds, before token exhaustion or
-an owner pressing Stop can interrupt the conversation. Do not defer capture to
-closeout or rely on a final write after Stop. This obligation covers saved local
-context for conversation continuation, not computer crashes or device loss;
-an interruption can still preempt an unsaved write.
+These lines apply in every session. The `notepad`, `handoff`, `save`,
+`promote` and `checkpoint` skills carry the procedures and their binding
+requirements through their rows in the
+[Runbook operations index](RUNBOOK.md#operations-index).
 
-When the Landmark Tracker capability is available, workflow activity maintains
-current pre-delivery understanding in DQCs and landmark records, preserving
-what changed, why, affected claims and evidence. The generated Tracker reflects
-those sources. Grilling notepads remain useful historical and handoff-like
-context; do not discard needed origins or corrections merely because a card
-exists. Until that capability is delivered, preserve working context through
-the existing notepad runtime. Confirmation of understanding never grants
-implementation or promotion authority. The grilling primitive remains unaware
-of Tracker machinery; workflow composition performs the record maintenance.
-Wiki creation and updates are ordinary authorized delivery and reconciliation,
-not a separate publishing ceremony. Apply claim-level ownership and the current
-request throughout; no record or projection can manufacture authority.
-
-Notepads, including grilling records, use JSON, including when older workflow
-examples say Markdown. A note belongs to its objective, not to the chat that
-created it: every context that can reach it resumes and appends to it, one
-writer at a time (ADR-000L). Handoffs are separate human-readable Markdown (`.md`)
-files: they give a receiving agent or a new chat plain-language instructions
-for continuing one objective. Do not serialize a handoff as a JSON notepad.
-The shared runtime is `workbench/tools/notepads.mjs`; its interchange schema
-and reusable examples live in the manifest-declared `notepad-templates`
-collection. The `notepad` skill owns judgment. New live records use typed
-folders in the `notepads` collection; Markdown handoffs use `handoffs`.
-Preserve legacy Markdown and JSON paths, but create no new JSON handoffs. Live
-notes and handoffs stay untracked in project Git; explicitly configured private
-synchronization may transport selected live collections under the accepted
-continuity contract. Local operation remains independent of transport. Do not record secrets,
-credentials, authentication/recovery material, raw private financial, medical,
-or personal data, or unsafe tool output; retain only safe recovery references.
-
-Promote only supported claims, under existing authorization, directly into their
-proper durable owners. Cite those owners, never an ignored live path as durable
-evidence. Retain unresolved material in the live notes. Once reconciliation into
-durable owners leaves no important information or active handoff that still
-depends on the record, normal cleanup may flush or delete it. A retained note
-may instead be trimmed of promoted material, preserving any context and
-correction links still needed by its remaining work. No routine archive is
-required. No autonomous task or handoff creation follows.
-
-Existing privacy-checked checkpoints and their citations are frozen history.
-The legacy `sessions.mjs checkpoint` command refuses new copies without writing.
-Reconcile selected claims into their durable owners with `sessions.mjs promote`;
-retain local notes for unresolved context. Operational receipts and backups live
-in the separate ignored `sessions/recovery/` collection, outside note discovery.
-A preserved historical copy is not blanket promotion of its claims.
+- Create or resume the objective's local JSON notepad when meaningful work
+  produces context whose loss would impair continuation or a focused handoff,
+  and save important context as work proceeds, not at closeout.
+- A note, handoff, record or projection authorizes nothing and proves no
+  claim, and confirmation of understanding never grants implementation or
+  promotion authority. On resume obey the current Contract and verify relevant
+  live state.
+- Do not record secrets, credentials, authentication/recovery material, raw
+  private financial, medical, or personal data, or unsafe tool output in a
+  note or handoff; retain only safe recovery references.
+- Live notes and handoffs stay untracked in project Git. Never cite an ignored
+  live path as durable evidence.
+- Promote only supported claims, under existing authorization, directly into
+  their proper durable owners, and cite those owners.
+- Existing checkpoints are frozen history; no new checkpoint copy is created.
 
 ## Long Session Control
 

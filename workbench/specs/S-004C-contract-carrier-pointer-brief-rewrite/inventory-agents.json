@@ -818,7 +818,7 @@
       "line": 119,
       "text": "The assigned role carries authority within the scope established by the user,",
       "hash": "4db237ab2537a937807ab7d82b09aebfd61e77a2ff5df4e4f9a44fb190b5b651",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -827,7 +827,7 @@
       "line": 120,
       "text": "this Contract and the assigned Spec. Handoffs and notepads carry instructions",
       "hash": "7fe828116f7a1219c18dfd583437ddbee74cd624efc8f590ca9538e6ca26a170",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -836,7 +836,7 @@
       "line": 121,
       "text": "and context. Agents may delegate work through handoffs within their assigned",
       "hash": "7fd98c8fe7ed9110ad834e67c105ba5a0c0b6cd636330f8e1835e111cd9df5db",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -845,7 +845,7 @@
       "line": 122,
       "text": "roles; each transfer need not come directly from the owner. A recipient follows",
       "hash": "2d098a1bcd83b96ab20b8c277559f5ef194af521148f2541b20d09a5f87f659b",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -854,7 +854,7 @@
       "line": 123,
       "text": "its assigned job under the current controls without requiring the owner to",
       "hash": "31adc7d0966b4f0b03359024f2db064a5748bc85830bd7a4db34d5dfef2adf80",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -863,7 +863,7 @@
       "line": 124,
       "text": "repeat an already authorized assignment. A document or role title cannot",
       "hash": "8522439a612579f6e787dce2babad7d9ee9bf65061e9ecff200fba9f95cd3130",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -872,7 +872,7 @@
       "line": 125,
       "text": "expand that scope.",
       "hash": "145ff4c33f9712126f5d78ad55ada00b5f5de73d1e4475ed067e3de9f262f76b",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -881,109 +881,109 @@
       "line": 127,
       "text": "Distinguish author from recipient, and assigner from assignee. A request to",
       "hash": "c72c2faacd7e48714084f1da7df17bd9cfb70bc98f044f96f84b9675408649ef",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/handoff/SKILL.md",
+      "landedText": "Distinguish author from recipient, and assigner from assignee. A request to",
+      "reason": "TK-005F moved this line verbatim to the handoff skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 128,
       "text": "prepare a handoff assigns its author the preparation of instructions for",
       "hash": "47ab88c48772934dd8052117307314adc4d3c4bfc6664eba838fdd59827936ad",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/handoff/SKILL.md",
+      "landedText": "prepare a handoff assigns its author the preparation of instructions for",
+      "reason": "TK-005F moved this line verbatim to the handoff skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 129,
       "text": "another agent in a separate context. Authoring it does not assign the",
       "hash": "bd1ee601e8023745d938d8a62b6f00f0c86b9a51de421fc9e4948593409ba442",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/handoff/SKILL.md",
+      "landedText": "another agent in a separate context. Authoring it does not assign the",
+      "reason": "TK-005F moved this line verbatim to the handoff skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 130,
       "text": "recipient's work to the author. A handoff may convey a delegated assignment,",
       "hash": "3e2d85096ce2a0768bd15b6e2e7a00d749f6f8dcdd4e3f3d3221718b572f616b",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/handoff/SKILL.md",
+      "landedText": "recipient's work to the author. A handoff may convey a delegated assignment,",
+      "reason": "TK-005F moved this line verbatim to the handoff skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 131,
       "text": "a completion report or an update; its instructions do not carry independent",
       "hash": "95a9b98b9be6ad68562cc63025baceb6886b477dba609d6ab1b39018db19b0ba",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/handoff/SKILL.md",
+      "landedText": "a completion report or an update; its instructions do not carry independent",
+      "reason": "TK-005F moved this line verbatim to the handoff skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 132,
       "text": "authority.",
       "hash": "449d07e7bfd9f22922223da4f02154c9314339c92a9b1a5903acd70288b4d603",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/handoff/SKILL.md",
+      "landedText": "authority.",
+      "reason": "TK-005F moved this line verbatim to the handoff skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 134,
       "text": "Notepads capture context as it happens; handoffs select and organize it for a",
       "hash": "e0cd1dd3777a530d82842aa88c9097e5c2999328ae395578259faab50fc7b944",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/handoff/SKILL.md",
+      "landedText": "Notepads capture context as it happens; handoffs select and organize it for a",
+      "reason": "TK-005F moved this line verbatim to the handoff skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 135,
       "text": "specified recipient and purpose. Agents may read each other's handoffs and",
       "hash": "101723a18fcaadcb8ee9d064d11a93cd5ed5a67feaa3ab5a61ba9e6984584a79",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/handoff/SKILL.md",
+      "landedText": "specified recipient and purpose. Agents may read each other's handoffs and",
+      "reason": "TK-005F moved this line verbatim to the handoff skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 136,
       "text": "objective notepads. A coordinating role may manage shared updates to both as",
       "hash": "fde50be3ed0f654dac0c0af6ccc28ec59f1209b5efe0137b88b3dbf0e804653c",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/handoff/SKILL.md",
+      "landedText": "objective notepads. A coordinating role may manage shared updates to both as",
+      "reason": "TK-005F moved this line verbatim to the handoff skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 137,
       "text": "temporary scaffolding, with one writer per note or handoff at a time.",
       "hash": "6296037508b4998c14660f16b6541fc0f0a30f0b8fc855ff5a11f24a6f6a72e2",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/handoff/SKILL.md",
+      "landedText": "temporary scaffolding, with one writer per note or handoff at a time.",
+      "reason": "TK-005F moved this line verbatim to the handoff skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 138,
       "text": "The [Lexicon](LEXICON.md#artifact-boundaries) defines their jobs and the",
       "hash": "891c6038651e47a3729f5d2b9460953013f3ce0c0d71ba6450b93eef3c4d6f7b",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/handoff/SKILL.md",
+      "landedText": "The [Lexicon](../../../LEXICON.md#artifact-boundaries) defines their jobs and the",
+      "reason": "TK-005F moved this line to the handoff skill. The link is re-rooted so it resolves from the skill folder."
     },
     {
       "line": 139,
       "text": "[Runbook](RUNBOOK.md#handoff-transfer) owns the transfer procedure.",
       "hash": "7ba76bbb6e8b615e76b151ff6ed0ee541586e89c8525e34685adc2b89e00382d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/handoff/SKILL.md",
+      "landedText": "[transfer procedure](#transfer-procedure) below owns the transfer procedure.",
+      "reason": "TK-005F moved this line to the handoff skill. The transfer procedure moved from the Runbook into this skill section, so the ownership pointer names the section that now holds it."
     },
     {
       "line": 143,
@@ -4292,484 +4292,484 @@
       "line": 580,
       "text": "Create or resume a local JSON notepad when meaningful objective work produces",
       "hash": "f2f23f356a377ea5dcf272f718630c3e0ecaf82abf258dde7b7e249ccece98ed",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "Create or resume a local JSON notepad when meaningful objective work produces",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 581,
       "text": "context whose loss would impair continuation or a focused handoff. Trivial",
       "hash": "4a4c8a7ae6fec9c35f6e681d5d6c82504f6bf6065ea88dbac518859267a78255",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "context whose loss would impair continuation or a focused handoff. Trivial",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 582,
       "text": "conversation needs none. Preserve source fidelity, uncertainty, and corrections;",
       "hash": "63b6cdf07b4c3202a5411a8d6f95b76573e23a9d76f38b6bb6c54a96e240d346",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "conversation needs none. Preserve source fidelity, uncertainty, and corrections;",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 583,
       "text": "maintain a compact current view and an append-oriented work record. Templates",
       "hash": "efdbeb9385be32ffbc83d0602c374befb8694689879adce5b73758302580f04a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "maintain a compact current view and an append-oriented work record. Templates",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 584,
       "text": "are examples, not a universal checklist. Notes neither authorize work nor prove",
       "hash": "8c903522b3ea124854f8c463a17f932081cce1542d7c11bce5b9967c9a64cb30",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "are examples, not a universal checklist. Notes neither authorize work nor prove",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 585,
       "text": "claims. On resume obey the current Contract and verify relevant live state.",
       "hash": "669578a6ab9b9a347fdf27e0f8e2993120dd2628c5d71852307df88562dc0df9",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "claims. On resume obey the current Contract and verify relevant live state.",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 586,
       "text": "Save important context promptly as work proceeds, before token exhaustion or",
       "hash": "2adbe3940d4f21d1d542ddd0897a3766afd0650055e7bd44ee0e1e55a36a13bb",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "Save important context promptly as work proceeds, before token exhaustion or",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 587,
       "text": "an owner pressing Stop can interrupt the conversation. Do not defer capture to",
       "hash": "3cff31cfd368a1aa357fec7edc6a0817a9f2f1c3cd85679b8a8b936f8917de2b",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "an owner pressing Stop can interrupt the conversation. Do not defer capture to",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 588,
       "text": "closeout or rely on a final write after Stop. This obligation covers saved local",
       "hash": "0121c83db7c1f44922835a3405f5ece8579e25131ab846747aee64dad1f70f9b",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "closeout or rely on a final write after Stop. This obligation covers saved local",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 589,
       "text": "context for conversation continuation, not computer crashes or device loss;",
       "hash": "895b94c93ef082e41c032977129877afc7e6ec180e5f64757f57521cfdc9847f",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "context for conversation continuation, not computer crashes or device loss;",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 590,
       "text": "an interruption can still preempt an unsaved write.",
       "hash": "cc259a6013e9318d768d244bd4843ddc83197a0bdd0e18b5986208a304e343d0",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "an interruption can still preempt an unsaved write.",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 592,
       "text": "When the Landmark Tracker capability is available, workflow activity maintains",
       "hash": "1f463db58e1ac880fe37cc9ea18f3be8f2d36acfa9fa322bb64234fe79656bd6",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "When the Landmark Tracker capability is available, workflow activity maintains",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 593,
       "text": "current pre-delivery understanding in DQCs and landmark records, preserving",
       "hash": "3b4845b18283db4142b2e2734098e7482fce19850d3b42f1706ee778a42caebd",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "current pre-delivery understanding in DQCs and landmark records, preserving",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 594,
       "text": "what changed, why, affected claims and evidence. The generated Tracker reflects",
       "hash": "b3d45a1621f5e71f476c94a733b5eba33cb53a74de67834a47a69755cda24b00",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "what changed, why, affected claims and evidence. The generated Tracker reflects",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 595,
       "text": "those sources. Grilling notepads remain useful historical and handoff-like",
       "hash": "25bbff436be520d1f127130cd3e88fbbac687748fe5ae6ff4b88ccde8bd52c7a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "those sources. Grilling notepads remain useful historical and handoff-like",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 596,
       "text": "context; do not discard needed origins or corrections merely because a card",
       "hash": "119cf24747d7100bc13bf5972366ea769486c2818d0c9b79c1ca6dfcf2417548",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "context; do not discard needed origins or corrections merely because a card",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 597,
       "text": "exists. Until that capability is delivered, preserve working context through",
       "hash": "6f329569fa22a8d36ce48e694ccc27cbe0ecdeaa91612295b741962e057c3a55",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "exists. Until that capability is delivered, preserve working context through",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 598,
       "text": "the existing notepad runtime. Confirmation of understanding never grants",
       "hash": "c15050b401f44b94fcb6dae9fcef46548af4d78ca808f0c9ab466a7fa67adffa",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "the existing notepad runtime. Confirmation of understanding never grants",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 599,
       "text": "implementation or promotion authority. The grilling primitive remains unaware",
       "hash": "ff8f9218375186e7fc7ba8abebdbda8245405eac3f2a2c969825d76da6286e27",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "implementation or promotion authority. The grilling primitive remains unaware",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 600,
       "text": "of Tracker machinery; workflow composition performs the record maintenance.",
       "hash": "227fba97f832b405cee801a012cda952d3d60e49bae533a7255c9b4f0ad24c09",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "of Tracker machinery; workflow composition performs the record maintenance.",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 601,
       "text": "Wiki creation and updates are ordinary authorized delivery and reconciliation,",
       "hash": "99f3cc5f1455942c47e35b0e05a1672534f72e27b4f641c1a35f3414cbb80741",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "Wiki creation and updates are ordinary authorized delivery and reconciliation,",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 602,
       "text": "not a separate publishing ceremony. Apply claim-level ownership and the current",
       "hash": "9e5e3241c03b00399b2536f61dc4e7182c66c9069e30a6659ea8e45a45b51b15",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "not a separate publishing ceremony. Apply claim-level ownership and the current",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 603,
       "text": "request throughout; no record or projection can manufacture authority.",
       "hash": "cb4456ef3eba53293349fccc0b5d9acf632c12d63bd02385a104dd328205045d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "request throughout; no record or projection can manufacture authority.",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 605,
       "text": "Notepads, including grilling records, use JSON, including when older workflow",
       "hash": "c4bbf30e96b890c45b684ff2f296e6b96cc74467c6e8b94d898cd49ad994f8d4",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "Notepads, including grilling records, use JSON, including when older workflow",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 606,
       "text": "examples say Markdown. A note belongs to its objective, not to the chat that",
       "hash": "7d00ce2ead278a4e10d7ac6dedd54f2ea72e06435ecd25b0dc1c29e99d109dc3",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "examples say Markdown. A note belongs to its objective, not to the chat that",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 607,
       "text": "created it: every context that can reach it resumes and appends to it, one",
       "hash": "db97b578bec0bfba6c813753955169bec02cbb5ae34b59d5a513c82f735c1462",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "created it: every context that can reach it resumes and appends to it, one",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 608,
       "text": "writer at a time (ADR-000L). Handoffs are separate human-readable Markdown (`.md`)",
       "hash": "23a07e6fc6b5d843718dbc4d2e2d150841d0f7b7e415b608898bee2f4b731e3d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "writer at a time (ADR-000L). Handoffs are separate human-readable Markdown (`.md`)",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 609,
       "text": "files: they give a receiving agent or a new chat plain-language instructions",
       "hash": "36c1ace0ef1182e71fbee5c2d2055c0536223a2fcc9156f8233ee33dfb6256aa",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "files: they give a receiving agent or a new chat plain-language instructions",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 610,
       "text": "for continuing one objective. Do not serialize a handoff as a JSON notepad.",
       "hash": "7a5bca7eaf0228cc1a71d37d5f9cf5f263fb28cfccbab21fc3466b7725cea0f1",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "for continuing one objective. Do not serialize a handoff as a JSON notepad.",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 611,
       "text": "The shared runtime is `workbench/tools/notepads.mjs`; its interchange schema",
       "hash": "66b5edbf1601440739de3f65faa52d745628bb518df7bbf268008c1e34a96750",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "The shared runtime is `workbench/tools/notepads.mjs`; its interchange schema",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 612,
       "text": "and reusable examples live in the manifest-declared `notepad-templates`",
       "hash": "7dd2cdc25bd8202dc48154b337606255c47a7f2cf11bbb5a70668aecef3065d6",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "and reusable examples live in the manifest-declared `notepad-templates`",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 613,
       "text": "collection. The `notepad` skill owns judgment. New live records use typed",
       "hash": "6a2bc01ef7aa9152d4569f8e8316475a60b1e69fa270fedb0e6bd688925b7fcd",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "collection. The `notepad` skill owns judgment. New live records use typed",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 614,
       "text": "folders in the `notepads` collection; Markdown handoffs use `handoffs`.",
       "hash": "e3e7b8af914838e88ea71de66fb17ff46a3b9c93edc4842406aabd3db5115d31",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "folders in the `notepads` collection; Markdown handoffs use `handoffs`.",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 615,
       "text": "Preserve legacy Markdown and JSON paths, but create no new JSON handoffs. Live",
       "hash": "a03d120771480edf0ac0da2f61a63d8b09e44c9a458068a64ad64ff19c7cb641",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "Preserve legacy Markdown and JSON paths, but create no new JSON handoffs. Live",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 616,
       "text": "notes and handoffs stay untracked in project Git; explicitly configured private",
       "hash": "1a92a6f1c99431f5ad04055d77079d4491f1b6758ef714182b2391a7a9c0c42c",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "notes and handoffs stay untracked in project Git; explicitly configured private",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 617,
       "text": "synchronization may transport selected live collections under the accepted",
       "hash": "0207827e4deedf7bede15d4592519bcb8dbba42bb57182fc6893f093582255b6",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "synchronization may transport selected live collections under the accepted",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 618,
       "text": "continuity contract. Local operation remains independent of transport. Do not record secrets,",
       "hash": "0ab7422e1d92a003aa3e85ba9582c61a5c3a4236f9fa7ee33b98735ee07da499",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "continuity contract. Local operation remains independent of transport. Do not record secrets,",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 619,
       "text": "credentials, authentication/recovery material, raw private financial, medical,",
       "hash": "ab38ee6fbd9580bb21cf3ea2c31a1dc6de0c4cf17e4b2ab3226ec92e86dceb0c",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "credentials, authentication/recovery material, raw private financial, medical,",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 620,
       "text": "or personal data, or unsafe tool output; retain only safe recovery references.",
       "hash": "053a4fd83c9288b4c7c0056e364adb2ff9c2e8fa6f883e85049af752e3ad902c",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/notepad/SKILL.md",
+      "landedText": "or personal data, or unsafe tool output; retain only safe recovery references.",
+      "reason": "TK-005F moved this line verbatim to the notepad skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 622,
       "text": "Promote only supported claims, under existing authorization, directly into their",
       "hash": "9540cb8dcc6a337abea685f8102fb80377efa930c6027ff9828158aaa69a78a3",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/promote/SKILL.md",
+      "landedText": "Promote only supported claims, under existing authorization, directly into their",
+      "reason": "TK-005F moved this line verbatim to the promote skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 623,
       "text": "proper durable owners. Cite those owners, never an ignored live path as durable",
       "hash": "c4f461aa4bdc074dab7a4c308c06ccc8e26a76e855cd4a263fcaf83e9a0873d3",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/promote/SKILL.md",
+      "landedText": "proper durable owners. Cite those owners, never an ignored live path as durable",
+      "reason": "TK-005F moved this line verbatim to the promote skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 624,
       "text": "evidence. Retain unresolved material in the live notes. Once reconciliation into",
       "hash": "4f2450ec51f5f6c6c2938e94c847179c291fe99ccca1eb95c4e97d85a81754c9",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/promote/SKILL.md",
+      "landedText": "evidence. Retain unresolved material in the live notes. Once reconciliation into",
+      "reason": "TK-005F moved this line verbatim to the promote skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 625,
       "text": "durable owners leaves no important information or active handoff that still",
       "hash": "e020b0920286eb1f2993600afcb35f3c86fae015d431669317a1f3a8cff5b7e6",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/promote/SKILL.md",
+      "landedText": "durable owners leaves no important information or active handoff that still",
+      "reason": "TK-005F moved this line verbatim to the promote skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 626,
       "text": "depends on the record, normal cleanup may flush or delete it. A retained note",
       "hash": "55bea4528c49e4713116ac2dc9a45567377eed6260de4ed2802101d4191a8e40",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/promote/SKILL.md",
+      "landedText": "depends on the record, normal cleanup may flush or delete it. A retained note",
+      "reason": "TK-005F moved this line verbatim to the promote skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 627,
       "text": "may instead be trimmed of promoted material, preserving any context and",
       "hash": "530addb7d4a3ec4d5becbc9368f5eb02291a14dfb8a611fb473dd11e9deebcab",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/promote/SKILL.md",
+      "landedText": "may instead be trimmed of promoted material, preserving any context and",
+      "reason": "TK-005F moved this line verbatim to the promote skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 628,
       "text": "correction links still needed by its remaining work. No routine archive is",
       "hash": "d893c4677481c2a9ec80ba0366f0738b13757153bcaf402262efe3ce9886eb53",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/promote/SKILL.md",
+      "landedText": "correction links still needed by its remaining work. No routine archive is",
+      "reason": "TK-005F moved this line verbatim to the promote skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 629,
       "text": "required. No autonomous task or handoff creation follows.",
       "hash": "44bec9d23116188ff6aaaa396d773b23abae8c543e675dc2c7734620ab819ffc",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/promote/SKILL.md",
+      "landedText": "required. No autonomous task or handoff creation follows.",
+      "reason": "TK-005F moved this line verbatim to the promote skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 631,
       "text": "Existing privacy-checked checkpoints and their citations are frozen history.",
       "hash": "7275deb50fd8c7420b4f38989c2dcf4c752f90e11e0d666915e50c3352c09ae7",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/checkpoint/SKILL.md",
+      "landedText": "Existing privacy-checked checkpoints and their citations are frozen history.",
+      "reason": "TK-005F moved this line verbatim to the checkpoint skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 632,
       "text": "The legacy `sessions.mjs checkpoint` command refuses new copies without writing.",
       "hash": "41d786d427f8e09989f7bc48b0ce9ff3194b817f670fc89d07baa9b35bdc12d4",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/checkpoint/SKILL.md",
+      "landedText": "The legacy `sessions.mjs checkpoint` command refuses new copies without writing.",
+      "reason": "TK-005F moved this line verbatim to the checkpoint skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 633,
       "text": "Reconcile selected claims into their durable owners with `sessions.mjs promote`;",
       "hash": "728173530cee4ef92a32adf48725303b99f1c8857c18dce452ab3e9914819478",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/checkpoint/SKILL.md",
+      "landedText": "Reconcile selected claims into their durable owners with `sessions.mjs promote`;",
+      "reason": "TK-005F moved this line verbatim to the checkpoint skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 634,
       "text": "retain local notes for unresolved context. Operational receipts and backups live",
       "hash": "ce002179c343c18e3f1b8ef333a32e9815fb4e1df7e29a92f3b4301893e4ef4b",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/checkpoint/SKILL.md",
+      "landedText": "retain local notes for unresolved context. Operational receipts and backups live",
+      "reason": "TK-005F moved this line verbatim to the checkpoint skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 635,
       "text": "in the separate ignored `sessions/recovery/` collection, outside note discovery.",
       "hash": "a788e01648cbe6cde73fd3f2e6b7f742720aa35df69c68c5e5d0ca48592d7e6a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/checkpoint/SKILL.md",
+      "landedText": "in the separate ignored `sessions/recovery/` collection, outside note discovery.",
+      "reason": "TK-005F moved this line verbatim to the checkpoint skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 636,
       "text": "A preserved historical copy is not blanket promotion of its claims.",
       "hash": "33362cf77df71308087d1d14b4a37569cf5993d5435d6e82e4d9c7fdd153eff7",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/checkpoint/SKILL.md",
+      "landedText": "A preserved historical copy is not blanket promotion of its claims.",
+      "reason": "TK-005F moved this line verbatim to the checkpoint skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 640,
       "text": "After a context summary or long interruption, rerun `doctor`, `next`, and",
       "hash": "337981805a8d4307e337bd341d90d08097f3db2e8db0671dd54b3dbf9da1cc7c",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4778,7 +4778,7 @@
       "line": 641,
       "text": "`show` for the assigned spec. Keep ready/in-progress/blocked task state and",
       "hash": "d75fe09ee030e271442b5c69afca6d1b3aab4c9c7949d7b61cd70b542a8ae5a2",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4787,7 +4787,7 @@
       "line": 642,
       "text": "the append-only evidence log current. An in-progress claim older than one",
       "hash": "91541f3c35fad4906a7f28bb1695c4af8d0d3782cb0f9506124ef5421fc3a6cf",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4796,7 +4796,7 @@
       "line": 643,
       "text": "UTC calendar day is stale (the diagnostic compares date-only stamps and",
       "hash": "6d1e5f200686d3f7cc403cda65495f31c68a619f4d7a91b2655d091cb6a292f8",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4805,7 +4805,7 @@
       "line": 644,
       "text": "requires a difference greater than one day); verify branch/commit activity before reclaiming it. After",
       "hash": "0a5b988e7515c500f2c43e6be9eb0a4f806abd8c20fa87e3ebbdb149c82e7dc5",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4814,7 +4814,7 @@
       "line": 645,
       "text": "the same verification failure twice with no clearly safe next step, record the",
       "hash": "2fee20c130f4056290f6c18407a8e4911e6e359fb89bc9eb147598ca763bdca9",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4823,7 +4823,7 @@
       "line": 646,
       "text": "blocker and stop for a decision.",
       "hash": "ab9f692a5fc26df904db22ed3a402d30ce6900da265fdb89a02e71bc6241694f",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4832,7 +4832,7 @@
       "line": 648,
       "text": "In multi-agent work, use non-overlapping file lanes and one single durable",
       "hash": "f97c7a98c52ff1f70fba12f3064a09ee0a8f57944295093eb72b225a70103f06",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4841,7 +4841,7 @@
       "line": 649,
       "text": "writer for shared spec/Taskboard state; subagents return proof to that writer.",
       "hash": "6f5f45b9e40c38c81f4de08b57f032d6bb6e3e779e423265aa5bf58f0f83ef4d",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null

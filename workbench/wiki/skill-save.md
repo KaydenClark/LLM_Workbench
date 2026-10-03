@@ -6,6 +6,7 @@ knowledge_role: curated
 provenance:
   - S-01O planning packet, 2026-09-24
   - S-01O TK-01F source change and fresh-context scenario, 2026-09-26
+  - S-004C TK-005F moved the Runbook procedure behind its index pointer into the skill, 2026-10-03
 source_paths:
   - workbench/skills/save/SKILL.md
   - workbench/specs/S-01O-save-skill-rebuild/SPEC.md
@@ -13,7 +14,7 @@ source_paths:
   - tools/test-skill-catalog.mjs
   - tools/test-core-composition.mjs
   - RUNBOOK.md
-last_verified: 2026-09-26
+last_verified: 2026-10-03
 ---
 
 # Save: persist authorized work and prove where it landed
@@ -55,6 +56,7 @@ Another writer then pushed on top of the branch, and the owner asked whether the
 - [Save source](../skills/save/SKILL.md)
 - [Individual delivery Spec](../specs/S-01O-save-skill-rebuild/SPEC.md)
 - [Core skill lifecycle: S-00R](../specs/S-00R-core-skill-lifecycle-and-optional-source-disposition/SPEC.md)
+- [How save and promote compose](../skills/save/SKILL.md#how-save-and-promote-compose), [optional private session transport](../skills/save/SKILL.md#optional-private-session-transport) and [evidence partitioning](../skills/save/SKILL.md#evidence-partitioning)
 - [Runbook: portable save, promote and room-local skills](../../RUNBOOK.md#portable-save-promote-and-room-local-skills)
 - [Runbook behavior selection](../../RUNBOOK.md#behavior-selection)
 - [Wiki router](MEMORY.md)

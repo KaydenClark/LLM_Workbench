@@ -6,6 +6,7 @@ knowledge_role: curated
 provenance:
   - S-048 checkpoint retirement, completed 2026-09-09
   - S-01E TK-00V source audit and fresh-context scenario, 2026-09-26
+  - S-004C TK-005F moved the Runbook procedure behind its index pointer into the skill, 2026-10-03
 source_paths:
   - workbench/skills/checkpoint/SKILL.md
   - workbench/tools/sessions.mjs
@@ -15,7 +16,7 @@ source_paths:
   - tools/test-sessions.mjs
   - tools/test-skill-catalog.mjs
   - RUNBOOK.md
-last_verified: 2026-09-26
+last_verified: 2026-10-03
 ---
 
 # Checkpoint: route a retired request to current continuity
@@ -29,9 +30,9 @@ last_verified: 2026-09-26
 The [skill](../skills/checkpoint/SKILL.md) tells the agent to read the manifest and the Runbook. It then chooses one of two current routes:
 
 - **Save for later → notepad.** The current state, unresolved items and next action go into a local note. On resume, the agent checks current controls and source before relying on it. Raw notes and handoffs are never committed, and a local save is never described as cross-device recovery.
-- **Make it durable → promote.** When the user has authorized a claim to become durable, `sessions.mjs promote` writes it into its owning Spec, ADR, Wiki note or control. The write goes through privacy checks, owner validation and byte read-back ([Direct Owner Promotion](../../RUNBOOK.md#direct-owner-promotion)). `/make-it-so` may compose that step when the user authorizes execution.
+- **Make it durable → promote.** When the user has authorized a claim to become durable, `sessions.mjs promote` writes it into its owning Spec, ADR, Wiki note or control. The write goes through privacy checks, owner validation and byte read-back ([command reference](../skills/promote/SKILL.md#command-reference) in the `promote` skill). `/make-it-so` may compose that step when the user authorizes execution.
 
-The files already in `workbench/sessions/checkpoints/` are frozen history. The citations that point at them stay valid. They are not edited, even to mark one PAUSED. The old command `node workbench/tools/sessions.mjs checkpoint` still accepts its old arguments, then returns a nonzero refusal that names both routes and writes nothing. Operational recovery receipts live in the separate, ignored `sessions/recovery/` collection ([Frozen Checkpoint History And Operational Recovery](../../RUNBOOK.md#frozen-checkpoint-history-and-operational-recovery)).
+The files already in `workbench/sessions/checkpoints/` are frozen history. The citations that point at them stay valid. They are not edited, even to mark one PAUSED. The old command `node workbench/tools/sessions.mjs checkpoint` still accepts its old arguments, then returns a nonzero refusal that names both routes and writes nothing. Operational recovery receipts live in the separate, ignored `sessions/recovery/` collection ([frozen history and operational recovery](../skills/checkpoint/SKILL.md#frozen-history-and-operational-recovery) in this skill).
 
 ### Example, from the verification run
 
@@ -56,7 +57,7 @@ In the S-01E scenario, a scratch room held one frozen record from an earlier inv
 - [Checkpoint source](../skills/checkpoint/SKILL.md) and [runtime](../tools/sessions.mjs)
 - [Individual delivery Spec](../specs/S-01E-checkpoint-skill-rebuild/SPEC.md)
 - [Retirement Spec S-048](../specs/S-048-checkpoint-retirement/SPEC.md), its [disposition](../specs/S-048-checkpoint-retirement/checkpoint-disposition.md) and [inventory](../specs/S-048-checkpoint-retirement/checkpoint-inventory.json)
-- [Runbook: Frozen Checkpoint History](../../RUNBOOK.md#frozen-checkpoint-history-and-operational-recovery) and [Direct Owner Promotion](../../RUNBOOK.md#direct-owner-promotion)
+- [Frozen history and operational recovery](../skills/checkpoint/SKILL.md#frozen-history-and-operational-recovery) and the [promotion command reference](../skills/promote/SKILL.md#command-reference), which the Runbook's [Frozen Checkpoint History](../../RUNBOOK.md#frozen-checkpoint-history-and-operational-recovery) and [Direct Owner Promotion](../../RUNBOOK.md#direct-owner-promotion) sections point to
 - [Lexicon: Checkpoint](../../LEXICON.md#governance-core)
 - [Wiki router](MEMORY.md)
 
