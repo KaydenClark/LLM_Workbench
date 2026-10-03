@@ -3,7 +3,7 @@
 **Task ID:** TK-008C
 **Spec ID:** S-004H
 **Slice:** Swap in the four-part Blueprint for LLM Workbench and every room, with its contract test and Genesis guidance
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: `BLUEPRINT.md` matches the owner-confirmed candidate quoted in Decisions And Contracts word for word, and links no record that carries an identifier.
