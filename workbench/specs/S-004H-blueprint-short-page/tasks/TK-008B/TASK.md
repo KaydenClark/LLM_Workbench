@@ -1,6 +1,6 @@
-# TK-005R - Make the evaluator and the guardrail audit recognize the four-part Blueprint at the owners that hold each criterion
+# TK-008B - Make the evaluator and the guardrail audit recognize the four-part Blueprint at the owners that hold each criterion
 
-**Task ID:** TK-005R
+**Task ID:** TK-008B
 **Spec ID:** S-004H
 **Slice:** Make the evaluator and the guardrail audit recognize the four-part Blueprint at the owners that hold each criterion
 **Status:** done

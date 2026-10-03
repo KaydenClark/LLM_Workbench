@@ -8,8 +8,8 @@
 **Updated:** 2026-10-03
 **Catalog description:** Replace the eight-section Blueprint with the owner-confirmed four-part short page, give every room's Blueprint that shape, and move the current page's decisions, workflow map and rules to their homes first so nothing is dropped.
 **Blockers:** none. The Decision Record Tooling (S-003X) installed the `ddr` collection and the 24 destination decision records are accepted (`workbench/docs/ddr/000A` to `000X`), so the root page swap is unblocked. One open owner item, the hosted-service non-goal, is withheld from the page rather than blocking it (see Dependencies And Blockers).
-**Latest event:** TK-005R closed with proof.
-**Next gate:** Complete TK-005Q.
+**Latest event:** TK-008B closed with proof.
+**Next gate:** Complete TK-008A.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 
@@ -133,7 +133,7 @@ Writing the DDRs or landmark artifacts themselves (written at Map and by the lan
 
 ## Vertical Implementation Slices
 
-Planned 2026-10-03 at integration 64c2c524, with the destination decision records already accepted. Three Tasks: TK-005Q records the re-verified paragraph disposition and writes the Wiki pages that hold the workflow and the altitudes; TK-005R teaches the evaluator and guardrail audit the four-part shape beside the eight-part one; TK-005S, after both, swaps the root page and the template, rewrites the contract test and updates the Genesis guidance. The three rules that leave the page have nearest existing homes in the Contract (`AGENTS.md` Safety And Change Control, Instruction Authority and Edit Scope); promoting the owner's explicit wording of the three into `AGENTS.md` or the Runbook belongs to the Contract carrier rewrite, which owns those files, and the disposition records that handoff.
+Planned 2026-10-03 at integration 64c2c524 (the three Tasks were first cut as TK-005Q, TK-005R and TK-005S, and renumbered TK-008A, TK-008B and TK-008C before merge because the Corrective Work Rules Spec took those labels the same afternoon: `next-id` reserves nothing, so two lanes cutting Tasks at once collide; the first receipt rows of the evaluator Task still name the old labels and the branch `claude/s004h-tk005r-evaluator`), with the destination decision records already accepted. Three Tasks: TK-008A records the re-verified paragraph disposition and writes the Wiki pages that hold the workflow and the altitudes; TK-008B teaches the evaluator and guardrail audit the four-part shape beside the eight-part one; TK-008C, after both, swaps the root page and the template, rewrites the contract test and updates the Genesis guidance. The three rules that leave the page have nearest existing homes in the Contract (`AGENTS.md` Safety And Change Control, Instruction Authority and Edit Scope); promoting the owner's explicit wording of the three into `AGENTS.md` or the Runbook belongs to the Contract carrier rewrite, which owns those files, and the disposition records that handoff.
 
 ## Acceptance Criteria
 

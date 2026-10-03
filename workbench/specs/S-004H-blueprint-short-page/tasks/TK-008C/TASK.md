@@ -1,11 +1,11 @@
-# TK-005S - Swap in the four-part Blueprint for LLM Workbench and every room, with its contract test and Genesis guidance
+# TK-008C - Swap in the four-part Blueprint for LLM Workbench and every room, with its contract test and Genesis guidance
 
-**Task ID:** TK-005S
+**Task ID:** TK-008C
 **Spec ID:** S-004H
 **Slice:** Swap in the four-part Blueprint for LLM Workbench and every room, with its contract test and Genesis guidance
 **Status:** blocked
 **Stance:** Builder
-**Blockers:** TK-005Q, TK-005R
+**Blockers:** TK-008A, TK-008B
 **Destination:** spec-acceptance: `BLUEPRINT.md` matches the owner-confirmed candidate quoted in Decisions And Contracts word for word, and links no record that carries an identifier.
 **Planned verification:** Red first: the new four-part contract in `tools/test-blueprint-contract.mjs` fails against the eight-section root page and template. Then green: the root page equals the quoted candidate except the one withheld non-goal, both files have exactly the four headings, the template carries bracketed placeholders only, the eight-section and verbatim-map pins are gone with each retired check recorded, and `templates/GENESIS.md` asks for the four parts. Evaluator on `templates` and the guardrail audit run before and after. Full AGENTS suite on the committed candidate, then render and doctor. Workbench self-drift pre and post receipts.
 
