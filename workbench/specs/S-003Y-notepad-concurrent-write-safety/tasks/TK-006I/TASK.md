@@ -3,7 +3,7 @@
 **Task ID:** TK-006I
 **Spec ID:** S-003Y
 **Slice:** Inspect the other revision-carrying writeSafeFile writers for the check-then-act shape
-**Status:** ready
+**Status:** in-progress
 **Stance:** Auditor
 **Blockers:** none
 **Destination:** spec-acceptance: S-003Y Acceptance Criteria box 5, inspection half (the inspection of other `writeSafeFile` writers that carry a revision is recorded) and the first sentence of Remaining Limitations (a separate seam becomes its own Spec)
