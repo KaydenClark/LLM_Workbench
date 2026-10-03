@@ -3,7 +3,7 @@
 **Task ID:** TK-006E
 **Spec ID:** S-004G
 **Slice:** Repair the Blueprint and Foundry rows
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-006D
 **Destination:** spec-acceptance: The Blueprint and Foundry rows no longer contradict the owner answers recorded in the Spec: the Blueprint row describes the four-part short page and says what the Blueprint is for, and the Foundry row says what the owner said the Foundry is and keeps the sole-source boundary.
