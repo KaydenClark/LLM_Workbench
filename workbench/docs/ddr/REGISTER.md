@@ -14,3 +14,4 @@
 | [000F](000F-a-fresh-session-loads-only-the-context-its-work-needs.md) | A fresh session loads only the context its work needs | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000G](000G-every-kind-of-truth-has-one-maintained-home.md) | Every kind of truth has one maintained home | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000H](000H-the-context-lives-in-github-so-work-can-move-to-the-cloud-at-any-time.md) | The context lives in GitHub, so work can move to the cloud at any time | accepted | 2026-10-03 | BLUEPRINT.md |
+| [000I](000I-many-agents-work-one-project-in-parallel-across-the-cloud-and-the-owner-s-devices.md) | Many agents work one project in parallel, across the cloud and the owner's devices | accepted | 2026-10-03 | BLUEPRINT.md |
