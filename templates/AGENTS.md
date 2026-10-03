@@ -221,7 +221,7 @@ live/retired Task records; a changed candidate needs a fresh review. A Dispatche
 or implementer cannot supply independent approval.
 
 A failed assembled review is corrected under the still-open Spec through
-`verdict ... --result fail`, one finding at a time. Write each finding as
+`verdict ... --result fail`. Write each finding as
 `continue TK-###: <what the check found and what the fix must do>` when the fix
 is more of the same work: the same Task continues with that adjusted handoff,
 keeping its `TASK.md`, completed proof and Receipts as written, and a done Task
