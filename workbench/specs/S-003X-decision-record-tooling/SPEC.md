@@ -85,7 +85,7 @@ Cut at Plan on 2026-10-03 as record-backed Tasks under `tasks/`; each `TASK.md` 
 - [x] The manifest declares a `ddr` collection and a fresh project has `workbench/docs/ddr/` with its `proposed/` and `archive/` folders.
 - [x] The DDR command writes the next record into `proposed/` with a `DDR` visible identifier and refuses to overwrite an existing record.
 - [x] Accept, supersede and deprecate moves work for ADRs and DDRs by folder location, refuse a supersession without exactly one named successor and a deprecation without a stated reason, and leave the register and history derived from the folder listing.
-- [ ] An agent can `list`, `show`, `search`, `history` and `inspect` an ADR and a DDR, and every existing command name still works.
+- [x] An agent can `list`, `show`, `search`, `history` and `inspect` an ADR and a DDR, and every existing command name still works.
 - [x] Validation refuses a DDR whose `canonicalized_in` names the Wiki.
 - [ ] Source behavior, templates, the manifest declaration, Genesis and the update route agree, and updating a room that already holds ADRs adds the collection without altering its records.
 - [ ] Named verification and remaining limitations are recorded without claiming owner approval.

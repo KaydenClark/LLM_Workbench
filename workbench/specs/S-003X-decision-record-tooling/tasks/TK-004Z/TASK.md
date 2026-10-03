@@ -37,12 +37,12 @@ prefix selects the kind. Reads never write.
 
 ## Acceptance
 
-- [ ] Each read word answers for an ADR and a DDR in text and `--json`.
-- [ ] `search` results carry status and a superseded hit's successor; the
+- [x] Each read word answers for an ADR and a DDR in text and `--json`.
+- [x] `search` results carry status and a superseded hit's successor; the
       general corrections question stays open for other record tools.
-- [ ] `history` follows a record across a lifecycle move and reports Git as
+- [x] `history` follows a record across a lifecycle move and reports Git as
       unavailable outside a Git room.
-- [ ] Every existing command name and its output is unchanged.
+- [x] Every existing command name and its output is unchanged.
 
 ## Boundaries
 
@@ -51,3 +51,9 @@ other record tool. Blocked on TK-004Y as well as TK-004X because all three
 edit `adr.mjs`, `tools/test-adr.mjs` and the Runbook section, so they run one
 at a time. No `LEXICON.md` or
 `templates/LEXICON.md` edit.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s003x-tk004z-read-words | 4cd4897331a80d7273f00ebcad4900d813cfbdcb | ahead 0 behind 0 | 0 | Red 0b0512cf: tools/test-adr.mjs exits 1 at import because adr.mjs exports no inspectRecord, listRecords, recordHistory, searchRecords or showRecord. Green: test-adr 56/56 (six new cases: list across kinds with kind and status filters and a superseded record's successor; show and its get synonym in text and JSON with a visible unknown-identifier failure; search with matching lines, status and a superseded hit's successor; history with the lifecycle chain and Git commits followed across the archive move, and Git reported unavailable outside a room; inspect by field and line range with its refusals; existing commands unchanged and refusing a stray positional). Real-corpus demo: list --status superseded, search, history ADR-0013 and inspect ADR-000S run in 0.5s. Full AGENTS suite 48/48 on clean 4cd48973 (TK-004Z merged with the corrected TK-004Y branch). | RUNBOOK decision-record section (read-word commands and output), templates/RUNBOOK command block and paragraph, Wiki article Decision Records and the Concept Map (read words installed). | Lexicon mirrors (TK-005A) remain; separate-context review of the final head pending. | 8827365b023b4608b200aaf9c46df3485a88c28d921f68ae45d263aa7a530519 |
