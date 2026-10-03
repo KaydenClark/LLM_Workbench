@@ -11,7 +11,7 @@
 **Latest event:** TK-005U claimed by claude-s003x-dispatcher.
 **Next gate:** Close TK-005U with verification and documentation proof.
 
-> **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`b4e22bd4ded65ba9918e2beb6fe5293f0fb051ea`.
+> **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`e584cb74b90571f3982e817c8a1f641bbff6234e`.
 
 ## Outcome
 
@@ -132,7 +132,7 @@ Delivered to integration Task by Task on 2026-10-03 under the S-00O bootstrap ex
 - `list`, `show` with `get`, `search`, `history` and `inspect` read either kind (TK-004Z, PR #287).
 - The Runbook, the generic Runbook, the `to-docs` route, the narrowed generic Blueprint instruction, both Lexicons and the Wiki article "Decision Records and the Concept Map" describe the shipped tooling (TK-004W to TK-005A; TK-005A, PR #290).
 
-Verification is in the evidence log: red/green per Task, the full AGENTS suite 48/48 on each Task's committed candidate and on the assembled candidate, guardrail audit 78/100 before and after, and self-drift receipts before (2dcde6e9) and after (b4e22bd4) with the same seven pre-existing attention findings and none new.
+Verification is in the evidence log: red/green per Task, the full AGENTS suite 48/48 on each Task's committed candidate and on the assembled candidate, guardrail audit 78/100 before and after, and self-drift receipts before (2dcde6e9) and after on the corrected assembled candidate 60dd7643, whose S-003X content integration e584cb74 (the PR #290 merge) contains, with the same seven pre-existing attention findings and none new. The delivered tree is integration e584cb74.
 
 ## Remaining Limitations Or Follow-Up Specs
 
