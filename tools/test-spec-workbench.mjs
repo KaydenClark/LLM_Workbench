@@ -5920,7 +5920,7 @@ function commitAll(dir, message) {
     initLifecycleFixture(correctiveRetiredRoot);
     fs.writeFileSync(path.join(correctiveRetiredRoot, 'AGENTS.md'), '# Agents\n\nRoutes to workbench/wiki.\n');
 
-    const verdictRow = '| 2026-09-18 | review | Review verdict: fail at deadbee3 [aaaaaaaaaaaa] #1 | Missing edge case coverage | Reviewer | 1 |';
+    const verdictRow = '| 2026-09-18 | review | Review verdict: fail at deadbee3 [aaaaaaaaaaaa] #1 | new Task: Missing edge case coverage | Reviewer | 1 |';
     const specContent = retirementReadySpec('S-591', ['TK-001']).replace(
       '| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n',
       `| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n${verdictRow}\n`
