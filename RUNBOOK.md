@@ -1708,8 +1708,10 @@ writer, so a crash never blocks a note. The bytes a writer is about to publish
 are staged inside its own token directory, so reclaiming the token removes
 them and a writer stalled past the reclaim age fails its rename and is refused,
 instead of publishing over a newer write; there is no gap between the
-ownership check and the publication. One writer at a time remains the working
-rule: the guard makes an overlap honest, it does not merge concurrent changes.
+ownership check and the publication. `delete` moves the note into the same
+place instead of unlinking the live path, so a stale cleanup fails rather than
+removing a newer write. One writer at a time remains the working rule: the
+guard makes an overlap honest, it does not merge concurrent changes.
 
 ### Optional Private Session Transport
 

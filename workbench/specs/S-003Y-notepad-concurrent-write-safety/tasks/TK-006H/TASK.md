@@ -31,10 +31,12 @@ valid record in place and does not block later writers indefinitely.
   finds the token held re-reads the note and is refused `stale-revision` naming
   the revision on disk. A token older than the reclaim age is treated as
   abandoned and is renamed aside and removed by the next writer; the bytes a
-  holder is about to publish are staged inside its own token directory, so a
-  reclaim removes them and a stalled holder's rename fails and is refused
-  instead of publishing over a newer write (corrected after review 1, which
-  showed the earlier nonce-check-before-rename left a stall window). `append`, `current`,
+  holder is about to publish are staged inside a nonce-named directory under
+  its own token, so a reclaim removes them and a stalled holder's rename fails
+  and is refused instead of publishing over a newer write; `delete` moves the
+  note into that directory instead of unlinking the live path for the same
+  reason (corrected after reviews 1 and 2, which showed the earlier
+  nonce-check-before-rename and the unlink left stall windows). `append`, `current`,
   `trim` and `delete` all go through the guard; `create` (exclusive link) and
   `migrate` (no revision to check) are unchanged.
 - `tools/test-notepads.mjs`: the barrier race (worker threads released by one
