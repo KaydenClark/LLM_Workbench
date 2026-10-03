@@ -124,6 +124,8 @@ for (const heading of FOUR_PART_HEADINGS) {
   const changed = {...fourPart, 'BLUEPRINT.md': FOUR_PART_BLUEPRINT.replace('## '+heading, '## Removed')};
   assert.ok(modelOf(changed).score < 8, 'the four-part heading "'+heading+'" must remain required');
 }
+// The eight-section legacy shape keeps its credit, so the swap lands without a gap.
+const legacy = {...Object.fromEntries(['AGENTS.md'].map(name => [name,localFiles['templates/'+name]])), 'BLUEPRINT.md': EIGHT_SECTION_HEADINGS.map(h => '## '+h+'\n\nprivacy safety verified evidence manifest\n').join('\n') + '\n## Non-Goals\n\nprivacy safety\n'};
 // A heading with nothing under it is not a part of the page: each of the four, emptied in turn, loses credit,
 // and so does a page of bare headings.
 const emptied = (blueprint, heading) => blueprint.replace(new RegExp(`(## ${heading}\\n)\\n[^\\n]+\\n`), '$1');
@@ -140,6 +142,18 @@ for (const heading of FOUR_PART_HEADINGS) {
   const subThenText = FOUR_PART_BLUEPRINT.replace(new RegExp(`(## ${heading}\\n)\\n([^\\n]+\\n)`), '$1\n### A subheading\n\n$2');
   assert.equal(modelOf({...fourPart, 'BLUEPRINT.md': subThenText}).score, 8, 'a sub-heading followed by text counts for "'+heading+'"');
 }
+// A page that declares the four-part shape is judged only as that page: an emptied part loses every
+// Blueprint-owned check at once, even beside a Contract whose own text could fill the gap, and legacy
+// section words cannot lend it credit.
+const BLUEPRINT_OWNED = ['integrated architecture', 'invariants', 'project promise', 'safety boundaries'];
+for (const heading of FOUR_PART_HEADINGS) {
+  const changed = {...fourPart, 'BLUEPRINT.md': emptied(FOUR_PART_BLUEPRINT, heading).replace('# Fixture - Blueprint\n', '# Fixture - Blueprint\n\nPrivacy and safety are verified with evidence; the manifest joins the major parts.\n')};
+  assert.deepEqual([...modelOf(changed).missing].sort(), BLUEPRINT_OWNED, 'an emptied "'+heading+'" part loses every Blueprint-owned check, not just one');
+}
+const mixed = {...fourPart, 'BLUEPRINT.md': FOUR_PART_BLUEPRINT + '\n' + legacy['BLUEPRINT.md'].replace('## Non-Goals', '## Non-Goals\n\n')};
+assert.equal(modelOf(mixed).score, 8, 'a complete four-part page plus extra sections is still judged as the four-part page');
+const mixedEmpty = {...fourPart, 'BLUEPRINT.md': emptied(FOUR_PART_BLUEPRINT, 'Non-goals') + '\n' + legacy['BLUEPRINT.md'].replace('## Non-Goals', '## Limits')};
+assert.ok(modelOf(mixedEmpty).score < 8, 'legacy sections appended to a four-part page with an empty part earn nothing');
 const bareHeadings = {...fourPart, 'BLUEPRINT.md': FOUR_PART_HEADINGS.map(h => '## '+h+'\n').join('\n')};
 assert.ok(modelOf(bareHeadings).score <= 1.6, 'a page of bare headings earns no project-model credit beyond the Contract-only check');
 for (const [name, mutate] of [
@@ -152,6 +166,4 @@ for (const [name, mutate] of [
   assert.notEqual(changed['AGENTS.md'], fourPart['AGENTS.md'], name+' mutation must change the Contract');
   assert.ok(modelOf(changed).score < 8, 'removing '+name+' must lose credit');
 }
-// The eight-section legacy shape keeps its credit, so the swap lands without a gap.
-const legacy = {...Object.fromEntries(['AGENTS.md'].map(name => [name,localFiles['templates/'+name]])), 'BLUEPRINT.md': EIGHT_SECTION_HEADINGS.map(h => '## '+h+'\n\nprivacy safety verified evidence manifest\n').join('\n') + '\n## Non-Goals\n\nprivacy safety\n'};
 assert.equal(modelOf(legacy).score, 8, 'the eight-section destination keeps its credit');

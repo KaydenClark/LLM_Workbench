@@ -44,11 +44,11 @@ export const RUBRIC = [
     label: 'Project model and contracts',
     weight: 8,
     checks: [
-      { label: 'project promise', variants: [{files:['BLUEPRINT.md'], patterns:['Product Map','Core promise']}, {files:['BLUEPRINT.md'],patterns:['^## Product Destination$', '^## Promised Outcomes$']}, {files:['BLUEPRINT.md'],patterns:FOUR_PART}] },
-      { label: 'integrated architecture', variants: [{files:['BLUEPRINT.md'],patterns:['Architecture And Invariants','Layer']}, {files:['BLUEPRINT.md'],patterns:['^## Integrated System Design$', 'manifest|major parts']}, {files:['BLUEPRINT.md','AGENTS.md'],patterns:[...FOUR_PART, 'Documentation Ownership And Proof', 'manifest|major parts']}] },
+      { label: 'project promise', variants: [{legacyShape:true,files:['BLUEPRINT.md'], patterns:['Product Map','Core promise']}, {legacyShape:true,files:['BLUEPRINT.md'],patterns:['^## Product Destination$', '^## Promised Outcomes$']}, {fourPart:true,files:['BLUEPRINT.md'],patterns:['^## What it is$']}] },
+      { label: 'integrated architecture', variants: [{legacyShape:true,files:['BLUEPRINT.md'],patterns:['Architecture And Invariants','Layer']}, {legacyShape:true,files:['BLUEPRINT.md'],patterns:['^## Integrated System Design$', 'manifest|major parts']}, {fourPart:true,files:['BLUEPRINT.md','AGENTS.md'],patterns:['Documentation Ownership And Proof', 'manifest|major parts']}] },
       { label: 'contracts', variants: [{files:['BLUEPRINT.md'],patterns:['Spec Catalog','Capability record|capability-specific']}, {files:['AGENTS.md'],patterns:['Documentation Ownership And Proof','assigned.*SPEC|assigned.*spec','architectural decisions']}] },
-      { label: 'invariants', variants: [{files:['BLUEPRINT.md'],patterns:['Invariants','Source and tests|Implementation truth']}, {files:['BLUEPRINT.md'],patterns:['^## Cross-Cutting Qualities And Constraints$', 'Privacy|privacy', 'verified|evidence']}, {files:['BLUEPRINT.md','AGENTS.md'],patterns:[...FOUR_PART, '^## Engineering And Verification$', 'Privacy|privacy|private data', 'verified|verification|evidence']}] },
-      { label: 'safety boundaries', variants: [{files:['BLUEPRINT.md'],patterns:['Non-Goals', 'privacy|safety']}, {files:['BLUEPRINT.md','AGENTS.md'],patterns:[...FOUR_PART, '^## Safety And Change Control$', 'privacy|private|safety']}] }
+      { label: 'invariants', variants: [{legacyShape:true,files:['BLUEPRINT.md'],patterns:['Invariants','Source and tests|Implementation truth']}, {legacyShape:true,files:['BLUEPRINT.md'],patterns:['^## Cross-Cutting Qualities And Constraints$', 'Privacy|privacy', 'verified|evidence']}, {fourPart:true,files:['BLUEPRINT.md','AGENTS.md'],patterns:['^## Engineering And Verification$', 'Privacy|privacy|private data', 'verified|verification|evidence']}] },
+      { label: 'safety boundaries', variants: [{legacyShape:true,files:['BLUEPRINT.md'],patterns:['Non-Goals', 'privacy|safety']}, {fourPart:true,files:['BLUEPRINT.md','AGENTS.md'],patterns:['^## Safety And Change Control$', 'privacy|private|safety']}] }
     ]
   },
   {
@@ -291,6 +291,12 @@ function checkPassed(files, check) {
   // Accept the historical contract and its explicitly reviewed owner relocation.
   // Weights, substantive requirements and outcome evidence are unchanged.
   if (check.variants) return check.variants.some(variant => checkPassed(files, variant));
+  // The four-part short page is judged on the Blueprint alone, never on the text of the
+  // files it is read beside, so a bare section cannot borrow the Contract's prose.
+  if (check.fourPart && !isFourPartBlueprint(files['BLUEPRINT.md'])) return false;
+  // A Blueprint that declares the four-part shape is judged only as the four-part page,
+  // so the older section patterns cannot lend it credit it has not earned.
+  if (check.legacyShape && /^## What it is$/im.test(files['BLUEPRINT.md'] ?? '')) return false;
   if (check.requireFiles) {
     return check.requireFiles.every((file) => Object.hasOwn(files, file));
   }
