@@ -118,8 +118,9 @@ and `archive/` folders, `adr.mjs new --kind ddr` writes the next DDR into
 Wiki. The accept, supersede and deprecate moves work for both kinds of record
 by folder location, so no decision record is moved or relabelled by hand, and
 both answer the shared read words (`list`, `show`, `search`, `history` and
-`inspect`). No DDR has been written yet; the Lexicon mirrors of these terms
-are the tooling's remaining step. The
+`inspect`). Both Lexicons, this room's and the generic one a new room starts
+from, define the Decision Record, the DDR and the read words as installed. No
+DDR has been written yet. The
 [Decision Record Tooling Spec (S-003X)](../../specs/S-003X-decision-record-tooling/SPEC.md)
 delivers them; it was planned on 2026-10-03 with the DDR tooling reusing the ADR
 runtime, one tool for both kinds of record. The first DDRs will come from taking the existing
@@ -163,3 +164,4 @@ delivers them, and settles how a DDR records the one landmark it belongs to.
 - 2026-10-03: recorded the installed DDR writer and its Wiki rule.
 - 2026-10-03: recorded the installed accept, supersede and deprecate moves.
 - 2026-10-03: recorded the installed read words.
+- 2026-10-03: recorded the Lexicon mirrors of the installed vocabulary.
