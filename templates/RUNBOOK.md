@@ -247,6 +247,12 @@ operational owners in `canonicalized_in`. Active accepted decision claims are
 architectural Canon. `register` derives active `REGISTER.md` and complete
 `HISTORY.md`; supersession uses one whole-record `superseded_by` filename and
 deprecation requires `deprecation_reason`. Historical bodies remain unchanged.
+Destination Decision Records have their own manifest-declared `ddr` collection
+at `workbench/docs/ddr/`, with the same `proposed/` and `archive/` lifecycle
+folders. `workbench-layout.mjs init` creates it; for a room stamped before it,
+`workbench-layout.mjs migrate --project PATH` from the release checkout appends
+each missing additive collection (`features`, then `ddr`) and changes no ADR
+record or other manifest key.
 
 `permission-scope-drift` is reported when `.claude/settings.json` exists and
 withholds a manifest-declared authorship lane (no covering `Edit` `allow` rule,
