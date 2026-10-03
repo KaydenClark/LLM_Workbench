@@ -10,9 +10,10 @@ source_paths:
   - AGENTS.md
   - BLUEPRINT.md
   - RUNBOOK.md
+  - workbench/docs/adr/000V-captain-director-dispatcher-and-worker-scope-work-and-role-skills-own-each-job.md
 parent: none
 authorized_by: owner
-last_verified: 2026-09-27
+last_verified: 2026-10-02
 ---
 
 # Roles and stances
@@ -41,6 +42,22 @@ explains the current bootstrap route. The
 [operating procedure](../../../RUNBOOK.md#role-and-stance-coordination) owns the
 steps and the [controls](../../../AGENTS.md#git-rules) own the gates.
 
+## The accepted next shape
+
+On 2026-10-02 the owner accepted a change ([the decision record "Captain, Director, Dispatcher and Worker scope work and role skills own each job"](../../docs/adr/000V-captain-director-dispatcher-and-worker-scope-work-and-role-skills-own-each-job.md)). Landmarks become a level
+of the map above Specs, so the ladder gains a level. The **Captain** works from
+integration: it assigns a Director to each landmark, coordinates across
+landmarks and oversees Specs that sit directly under the Blueprint. A
+**Director** runs one landmark lane: it assigns that landmark's Dispatchers and
+owns its review. A landmark is a lane, not a branch, so its Specs still merge
+into integration as soon as their own review passes. Dispatchers and Workers
+keep their scopes.
+
+The same decision moves each role's job out of the always-loaded controls and
+into its role skill, which the work's Destination Packet links, so an agent
+gets its job description with its work. Until that lands, the description
+above, in which the Director covers integration, is how the controls read.
+
 ## Separately owned capabilities
 
 - [Director Role — S-002C](../../specs/S-002C-director-role/SPEC.md)
@@ -58,7 +75,7 @@ launch a flight or cut new Tasks.
 
 ## Reference and boundary
 
-GPT_OS Captain informed project coordination, Planner informed Task preparation,
+GPT_OS Captain informed project coordination (the accepted next shape reuses the name for the integration role), Planner informed Task preparation,
 and Engineer informed bounded execution and recoverable hand-back. The owner
 also named Steward as a Dispatcher example; no Steward contract was found in
 the inspected backup role, Foundry reference or historical role locations, so
@@ -74,6 +91,7 @@ establish these Spec-bound roles.
 ## Evidence and Sources
 
 - [Lexicon](../../../LEXICON.md): accepted role and stance definitions.
+- [Decision record: "Captain, Director, Dispatcher and Worker scope work and role skills own each job"](../../docs/adr/000V-captain-director-dispatcher-and-worker-scope-work-and-role-skills-own-each-job.md): the Captain and landmark Director, and role jobs moving into role skills.
 - [AGENTS](../../../AGENTS.md): assignment, authority and integration review.
 - [Blueprint](../../../BLUEPRINT.md): coordinated delivery destination.
 - [Runbook](../../../RUNBOOK.md#role-and-stance-coordination): operating route.
@@ -83,3 +101,4 @@ establish these Spec-bound roles.
 ## History
 
 - 2026-09-27: Created on owner direction after confirmation of the combined concept. Reviewer changed from the initial role proposal to a stance; Dispatcher remains bounded by one Spec with parallel slices inside it.
+- 2026-10-02: Added the accepted Captain and landmark Director ladder and the move of role jobs into role skills, from the owner-confirmed grilling of 2026-10-02.

@@ -1,0 +1,162 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-004C",
+  "revision": 6,
+  "title": "What should happen after assembled-Spec review fails?",
+  "question": "What should happen after assembled-Spec review fails?",
+  "answer": "WF-8C: Keep a separate-context review whose unit is the assembled Spec and the combined result of its Tasks. A failed review is diagnostic, not blame: state what is wrong, create new corrective Tasks under the still-open Spec, update the Taskboard, execute and prove them, then present a fresh immutable Spec candidate. Passing lets the Spec branch move toward integration.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-8C (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WF-8C update workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md: Assembled-Spec report, verdict bound to candidate SHA, corrective Tasks under the still-open Spec. | WF-8C update AGENTS.md (integration review gate) and templates/AGENTS.md: Names the assembled-Spec review and corrective-Task loop; owned by S-00P TK-002 and TK-005. | WF-8C update RUNBOOK.md and templates/RUNBOOK.md: Procedure for a failed Spec review and fresh candidate; owned by S-00P TK-003 and TK-005.",
+    "home": "workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md; AGENTS.md (integration review gate) and templates/AGENTS.md; RUNBOOK.md and templates/RUNBOOK.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "WF-8C",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000H",
+    "LMK-000K"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 4
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WF-8C",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-8C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What should happen after assembled-Spec review fails?",
+    "question": "What should happen after assembled-Spec review fails?",
+    "sources": [
+      {
+        "id": "WF-8C",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:25.912Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:25.912Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 103 of the 2026-09-26 grouping (\"Verification, QA and correction\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Record diagnostic findings, add corrective Tasks under the still-open Spec, update the board, prove the fixes and present a fresh immutable candidate.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:25.937Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WF-8C: Keep a separate-context review whose unit is the assembled Spec and the combined result of its Tasks. A failed review is diagnostic, not blame: state what is wrong, create new corrective Tasks under the still-open Spec, update the Taskboard, execute and prove them, then present a fresh immutable Spec candidate. Passing lets the Spec branch move toward integration."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-8C (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WF-8C update workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md: Assembled-Spec report, verdict bound to candidate SHA, corrective Tasks under the still-open Spec. | WF-8C update AGENTS.md (integration review gate) and templates/AGENTS.md: Names the assembled-Spec review and corrective-Task loop; owned by S-00P TK-002 and TK-005. | WF-8C update RUNBOOK.md and templates/RUNBOOK.md: Procedure for a failed Spec review and fresh candidate; owned by S-00P TK-003 and TK-005.",
+            "home": "workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md; AGENTS.md (integration review gate) and templates/AGENTS.md; RUNBOOK.md and templates/RUNBOOK.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:25.966Z",
+      "reason": "Ledger row WF-8C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-8C",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:25.994Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:55.831Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000H"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:57.835Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000H"
+          ],
+          "to": [
+            "LMK-000H",
+            "LMK-000K"
+          ]
+        }
+      ]
+    }
+  ]
+}

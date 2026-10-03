@@ -1,0 +1,362 @@
+{
+  "candidate": "273339818ab7c405cf12ca6869ba2128be09767a",
+  "results": [
+    {
+      "index": 1,
+      "command": "node tools/test-spec-workbench.mjs",
+      "exit": 0,
+      "seconds": 284.83,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/01-tools_test-spec-workbench.mjs.log"
+    },
+    {
+      "index": 2,
+      "command": "node tools/test-skill-catalog.mjs",
+      "exit": 0,
+      "seconds": 0.44,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/02-tools_test-skill-catalog.mjs.log"
+    },
+    {
+      "index": 3,
+      "command": "node tools/test-skill-inspection.mjs",
+      "exit": 0,
+      "seconds": 0.1,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/03-tools_test-skill-inspection.mjs.log"
+    },
+    {
+      "index": 4,
+      "command": "node tools/test-skills-lane.mjs",
+      "exit": 0,
+      "seconds": 3.93,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/04-tools_test-skills-lane.mjs.log"
+    },
+    {
+      "index": 5,
+      "command": "node tools/test-core-composition.mjs",
+      "exit": 0,
+      "seconds": 3.18,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/05-tools_test-core-composition.mjs.log"
+    },
+    {
+      "index": 6,
+      "command": "node tools/test-project-evidence.mjs",
+      "exit": 0,
+      "seconds": 1.19,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/06-tools_test-project-evidence.mjs.log"
+    },
+    {
+      "index": 7,
+      "command": "node tools/test-genesis-from-decisions.mjs",
+      "exit": 0,
+      "seconds": 39.51,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/07-tools_test-genesis-from-decisions.mjs.log"
+    },
+    {
+      "index": 8,
+      "command": "node tools/test-blueprint-contract.mjs",
+      "exit": 0,
+      "seconds": 0.14,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/08-tools_test-blueprint-contract.mjs.log"
+    },
+    {
+      "index": 9,
+      "command": "node tools/test-session-transport.mjs",
+      "exit": 0,
+      "seconds": 34.68,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/09-tools_test-session-transport.mjs.log"
+    },
+    {
+      "index": 10,
+      "command": "node tools/test-configured-host.mjs",
+      "exit": 0,
+      "seconds": 3.82,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/10-tools_test-configured-host.mjs.log"
+    },
+    {
+      "index": 11,
+      "command": "node tools/test-core-skill-installer.mjs",
+      "exit": 0,
+      "seconds": 18.88,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/11-tools_test-core-skill-installer.mjs.log"
+    },
+    {
+      "index": 12,
+      "command": "node tools/test-workbench-layout.mjs",
+      "exit": 0,
+      "seconds": 80.88,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/12-tools_test-workbench-layout.mjs.log"
+    },
+    {
+      "index": 13,
+      "command": "node tools/test-workbench-adoption.mjs",
+      "exit": 0,
+      "seconds": 18.26,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/13-tools_test-workbench-adoption.mjs.log"
+    },
+    {
+      "index": 14,
+      "command": "node tools/test-workbench-upgrade.mjs",
+      "exit": 0,
+      "seconds": 7.86,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/14-tools_test-workbench-upgrade.mjs.log"
+    },
+    {
+      "index": 15,
+      "command": "node tools/test-workbench-tools.mjs",
+      "exit": 0,
+      "seconds": 18.51,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/15-tools_test-workbench-tools.mjs.log"
+    },
+    {
+      "index": 16,
+      "command": "node tools/test-diagnostics.mjs",
+      "exit": 0,
+      "seconds": 67.02,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/16-tools_test-diagnostics.mjs.log"
+    },
+    {
+      "index": 17,
+      "command": "node tools/test-adr.mjs",
+      "exit": 0,
+      "seconds": 22.23,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/17-tools_test-adr.mjs.log"
+    },
+    {
+      "index": 18,
+      "command": "node tools/test-governance-core.mjs",
+      "exit": 0,
+      "seconds": 0.17,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/18-tools_test-governance-core.mjs.log"
+    },
+    {
+      "index": 19,
+      "command": "node tools/test-branch-closeout.mjs",
+      "exit": 0,
+      "seconds": 9.36,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/19-tools_test-branch-closeout.mjs.log"
+    },
+    {
+      "index": 20,
+      "command": "node tools/test-wiki.mjs",
+      "exit": 0,
+      "seconds": 8.04,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/20-tools_test-wiki.mjs.log"
+    },
+    {
+      "index": 21,
+      "command": "node tools/test-sessions.mjs",
+      "exit": 0,
+      "seconds": 9.83,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/21-tools_test-sessions.mjs.log"
+    },
+    {
+      "index": 22,
+      "command": "node tools/test-notepads.mjs",
+      "exit": 0,
+      "seconds": 25.11,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/22-tools_test-notepads.mjs.log"
+    },
+    {
+      "index": 23,
+      "command": "node tools/test-visible-ids.mjs",
+      "exit": 0,
+      "seconds": 2.55,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/23-tools_test-visible-ids.mjs.log"
+    },
+    {
+      "index": 24,
+      "command": "node tools/test-workbench-identity.mjs",
+      "exit": 0,
+      "seconds": 9.22,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/24-tools_test-workbench-identity.mjs.log"
+    },
+    {
+      "index": 25,
+      "command": "node tools/test-visible-id-consumers.mjs",
+      "exit": 0,
+      "seconds": 29.86,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/25-tools_test-visible-id-consumers.mjs.log"
+    },
+    {
+      "index": 26,
+      "command": "node tools/test-direct-promotion.mjs",
+      "exit": 0,
+      "seconds": 9.56,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/26-tools_test-direct-promotion.mjs.log"
+    },
+    {
+      "index": 27,
+      "command": "node tools/test-workbench-round-trip.mjs",
+      "exit": 0,
+      "seconds": 97.27,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/27-tools_test-workbench-round-trip.mjs.log"
+    },
+    {
+      "index": 28,
+      "command": "node tools/test-cross-provider-fixture.mjs",
+      "exit": 0,
+      "seconds": 5.36,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/28-tools_test-cross-provider-fixture.mjs.log"
+    },
+    {
+      "index": 29,
+      "command": "node tools/test-portability-matrix.mjs",
+      "exit": 0,
+      "seconds": 1.15,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/29-tools_test-portability-matrix.mjs.log"
+    },
+    {
+      "index": 30,
+      "command": "node tools/test-workbench-dogfood.mjs",
+      "exit": 0,
+      "seconds": 6.04,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/30-tools_test-workbench-dogfood.mjs.log"
+    },
+    {
+      "index": 31,
+      "command": "node tools/test-evaluate-workbench.mjs",
+      "exit": 0,
+      "seconds": 0.79,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/31-tools_test-evaluate-workbench.mjs.log"
+    },
+    {
+      "index": 32,
+      "command": "node tools/test-guardrail-audit.mjs",
+      "exit": 0,
+      "seconds": 0.35,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/32-tools_test-guardrail-audit.mjs.log"
+    },
+    {
+      "index": 33,
+      "command": "node tools/test-context-tools.mjs",
+      "exit": 0,
+      "seconds": 0.59,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/33-tools_test-context-tools.mjs.log"
+    },
+    {
+      "index": 34,
+      "command": "node tools/test-outcome-trials.mjs",
+      "exit": 0,
+      "seconds": 1.4,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/34-tools_test-outcome-trials.mjs.log"
+    },
+    {
+      "index": 35,
+      "command": "node tools/test-eval-runner.mjs",
+      "exit": 0,
+      "seconds": 1.4,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/35-tools_test-eval-runner.mjs.log"
+    },
+    {
+      "index": 36,
+      "command": "node tools/test-feedback-automation.mjs",
+      "exit": 0,
+      "seconds": 1.38,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/36-tools_test-feedback-automation.mjs.log"
+    },
+    {
+      "index": 37,
+      "command": "node tools/test-symlink-invocation.mjs",
+      "exit": 0,
+      "seconds": 2.41,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/37-tools_test-symlink-invocation.mjs.log"
+    },
+    {
+      "index": 38,
+      "command": "node tools/test-control-fidelity.mjs",
+      "exit": 0,
+      "seconds": 6.14,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/38-tools_test-control-fidelity.mjs.log"
+    },
+    {
+      "index": 39,
+      "command": "node tools/test-spec-citation-anchors.mjs",
+      "exit": 0,
+      "seconds": 42.82,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/39-tools_test-spec-citation-anchors.mjs.log"
+    },
+    {
+      "index": 40,
+      "command": "node tools/test-controls-vocabulary-sweep.mjs",
+      "exit": 0,
+      "seconds": 0.29,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/40-tools_test-controls-vocabulary-sweep.mjs.log"
+    },
+    {
+      "index": 41,
+      "command": "node tools/test-spec-report.mjs",
+      "exit": 0,
+      "seconds": 52.69,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/41-tools_test-spec-report.mjs.log"
+    },
+    {
+      "index": 42,
+      "command": "node tools/test-self-drift.mjs",
+      "exit": 0,
+      "seconds": 1.16,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/42-tools_test-self-drift.mjs.log"
+    },
+    {
+      "index": 43,
+      "command": "node tools/test-feedback-inventory.mjs",
+      "exit": 0,
+      "seconds": 0.33,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/43-tools_test-feedback-inventory.mjs.log"
+    },
+    {
+      "index": 44,
+      "command": "node tools/test-grilling-ledger.mjs",
+      "exit": 0,
+      "seconds": 0.3,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/44-tools_test-grilling-ledger.mjs.log"
+    },
+    {
+      "index": 45,
+      "command": "python3 tools/test-check-append-only.py",
+      "exit": 0,
+      "seconds": 134.7,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/45-tools_test-check-append-only.py.log"
+    },
+    {
+      "index": 46,
+      "command": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+      "exit": 0,
+      "seconds": 0.68,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/46-evals_tasks_task_b_path_safety_test_grade.py.log"
+    },
+    {
+      "index": 47,
+      "command": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+      "exit": 0,
+      "seconds": 0.1,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/47-tools_evaluate-workbench.mjs.log"
+    },
+    {
+      "index": 48,
+      "command": "node workbench/tools/spec-workbench.mjs doctor",
+      "exit": 0,
+      "seconds": 1.89,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/48-workbench_tools_spec-workbench.mjs.log"
+    },
+    {
+      "index": 49,
+      "command": "node tools/test-taskboard-json.mjs",
+      "exit": 0,
+      "seconds": 55.93,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/49-tools_test-taskboard-json.mjs.log"
+    },
+    {
+      "index": 50,
+      "command": "node tools/test-landmark-tracker.mjs",
+      "exit": 0,
+      "seconds": 23.72,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/50-tools_test-landmark-tracker.mjs.log"
+    },
+    {
+      "index": 51,
+      "command": "node tools/test-lifecycle-directory-links.mjs",
+      "exit": 0,
+      "seconds": 3.91,
+      "log": "/Users/kayden/Documents/Codex/2026-10-01/task/builder-current-route-suite/51-tools_test-lifecycle-directory-links.mjs.log"
+    }
+  ]
+}

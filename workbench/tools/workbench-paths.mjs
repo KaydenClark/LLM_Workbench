@@ -36,12 +36,23 @@ export const COLLECTIONS = Object.freeze({
   // into at its closure point (S-00J closure-capture contract T4). It is a
   // collection inside the wiki lane, never an eighth lane, and it is appended
   // last so a room that adds it keeps every earlier key in place.
-  features: 'workbench/wiki/features'
+  features: 'workbench/wiki/features',
+  // S-003X TK-004W: the Destination Decision Record collection beside
+  // `docs/adr` (ADR-000S), with the ADR's folder lifecycle (`proposed/`,
+  // `archive/`). Like `features` it is additive and appended last, so every
+  // earlier key keeps its place.
+  ddr: 'workbench/docs/ddr'
 });
+// The additive collections, in the order a room gains them. A room stamped
+// before one of them declares an earlier shape; `validateManifest` keeps
+// reading those shapes and `migrate` appends what is missing.
+export const ADDITIVE_COLLECTIONS = Object.freeze(['features', 'ddr']);
 // Every room stamped before the features collection declares one of the
-// pre-feature shapes derived from this set; `validateManifest` keeps reading
-// them and `migrate` appends the collection additively.
-export const PRE_FEATURE_COLLECTIONS = Object.freeze(Object.fromEntries(Object.entries(COLLECTIONS).filter(([name]) => name !== 'features')));
+// pre-feature shapes derived from this set; it excludes every additive
+// collection, so appending a later one cannot redefine what an older room held.
+export const PRE_FEATURE_COLLECTIONS = Object.freeze(Object.fromEntries(Object.entries(COLLECTIONS).filter(([name]) => !ADDITIVE_COLLECTIONS.includes(name))));
+// The current room shape before the ddr collection: everything but `ddr`.
+export const PRE_DDR_COLLECTIONS = Object.freeze(Object.fromEntries(Object.entries(COLLECTIONS).filter(([name]) => name !== 'ddr')));
 // Live records stay untracked. The templates subcollection is explicitly
 // excluded from live-note operations and remains tracked in project Git.
 export const UNTRACKED_COLLECTIONS = Object.freeze(['grilling', 'handoffs', 'notepads']);

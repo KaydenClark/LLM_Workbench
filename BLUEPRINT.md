@@ -31,9 +31,10 @@ only relevant owners, and resolves routine details without asking the owner to
 repeat settled answers. A specification-only request stays specification-only
 through every composed skill and every receiving agent.
 
-One ladder carries an idea to delivered software, and an agent can always say
-which rung the work is on: an owner idea, Align through grilling, a confirmed
-design concept, the Blueprint, then recursive Spec and Task delivery.
+One workflow carries an idea to delivered software, and an agent can always say
+which verb the work is on: Idea, Align, Confirm, Map, Plan, Implement, Review or
+Verify. Map through Verify are one Journey, and the workflow loops back to Align
+after it. Delivery within it is recursive Spec and Task delivery.
 
 An owner may explore an idea in conversation before it is clear enough to
 Align. `grill-me`, brainstorming or wayfinding can open Align; a grilling
@@ -56,8 +57,8 @@ remain visible and recoverable instead of becoming unsupported completion claims
 
 The root controls form the entry surface. This Blueprint describes the desired
 product, active ADR decisions explain cross-cutting architectural choices, the
-Lexicon connects meanings and owners, and the Wiki supplies readable current
-capability knowledge. [Claim-level ownership](workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md)
+Lexicon connects meanings and owners, and the Wiki is the evolving synthesis
+every agent reads and updates. [Claim-level ownership](workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md)
 keeps these surfaces coherent without making a whole file one kind of authority.
 
 Delivery is designed at three altitudes. The Blueprint is the product-level
@@ -71,10 +72,10 @@ corrective Task work however many Tasks it takes, and a distinct scoped
 objective with a destination of its own warrants a new Spec.
 
 Each of these truths has a durable owner, and no working file is one of them.
-The Blueprint owns product direction; the Wiki owns readable current capability
-knowledge; ADR records own consequential architectural decisions; source, tests
-and assets own implemented actuality and its proof; Git preserves recoverable
-history. `SPEC.md` and `TASK.md` are transient working artifacts that carry
+The Blueprint owns product direction; the Wiki owns the readable, evolving
+synthesis of what the project is and how it works; ADR records own
+consequential architectural decisions; source, tests and assets own
+implemented actuality and its proof; Git preserves recoverable history. `SPEC.md` and `TASK.md` are transient working artifacts that carry
 scope, state and evidence while their work is under way, and a later reader
 depends on the durable owners rather than on them.
 
@@ -87,17 +88,18 @@ a place in the Blueprint. They can overlap, begin before a Spec and remain
 useful after several Specs finish. Further landmarks emerge from DQCs, so an
 exhaustive inventory is never a prerequisite to building the foundation.
 
-DQCs and landmarks maintain the current account before a Spec, Task or Wiki
-article exists. Grilling notepads retain useful discussion history, corrections
+DQCs and landmarks keep the structured account; the Wiki summarizes them as
+they evolve. Grilling notepads retain useful discussion history, corrections
 and handoff context. Tracker generates a compact view of the related records
 and their documentation progress; Taskboard monitors implementation. Existing
 sources and owners keep their jobs. A DQC may remain ungrouped, with no
-landmark, until the developing concept suggests one. The Wiki explains confirmed
-durable understanding in readable Markdown without WBIDs; several Specs can
-contribute to one article. These records add no instruction authority.
+landmark, until the developing concept suggests one. The Wiki explains that
+understanding as it evolves, in readable Markdown, naming every identifier it
+cites with the artifact's name and context; several Specs can contribute to
+one article. These records add no instruction authority.
 
-Documentation progresses through Idea, Aligning, Confirmed, Mapped, Planned,
-Journey, Review and Verified. Related items can contribute mixed fractions
+Documentation progresses through the workflow verbs Idea, Align, Confirm, Map,
+Plan, Implement, Review and Verify. Related items can contribute mixed fractions
 across those steps. Each distinct item contributes one unit total in the first
 version, and a shared item counts once per aggregate. A completed Task alone
 does not prove that the expected understanding reached its durable destination.

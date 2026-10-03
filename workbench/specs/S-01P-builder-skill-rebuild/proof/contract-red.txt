@@ -1,0 +1,86 @@
+✖ Builder bounds helper composition to the existing assignment and endpoint (1.707756ms)
+✖ Builder exit reports observed delivery and unmet gates without claiming completion (0.266326ms)
+✔ Builder keeps its portable stance shape and resolves local links (0.256191ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 1
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8.244405
+
+✖ failing tests:
+
+test at tools/test-builder-skill.mjs:12:1
+✖ Builder bounds helper composition to the existing assignment and endpoint (1.707756ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Every composed helper inherits the assigned Task and the caller's narrower\nendpoint/. Input:
+  
+  '---\n' +
+    'name: builder\n' +
+    'description: Adopt the assigned Builder stance for one Workbench task within existing authority.\n' +
+    '---\n' +
+    '\n' +
+    '# Builder\n' +
+    '\n' +
+    '## Purpose\n' +
+    '\n' +
+    'Deliver the assigned result with useful verification and truthful documentation.\n' +
+    '\n' +
+    'Adopt only the stance already set in the assigned SPEC and TASK. A stance\n' +
+    'never grants, removes, or transfers authority: the owner request, Workbench\n' +
+    'controls, repository permissions and governing context establish it first.\n' +
+    'Loading this skill never spawns an agent. Changing stance alone creates no\n' +
+    'handoff; continuation uses the existing Workbench owners when execution crosses\n' +
+    'a meaningful boundary. Do not choose or record a new normal stance or invent a\n' +
+    'next task. Troubleshooting stance selection is outside this skill.\n' +
+    '\n' +
+    '## Method / Posture\n' +
+    '\n' +
+    'Read the assigned packet and trace source and tests before changing behavior.\n' +
+    'Use the smallest correct change; investigate missing details within the task.\n' +
+    '\n' +
+    'Resolve the assigned packet and support lanes through `workbench/manifest.json`.\n' +
+    '\n' +
+    '## Obligations\n' +
+    '\n' +
+    'Compose `/implement` and `/tracer-bullet` when building behavior; use red/green\n' +
+    'TDD and relevant review practices. Use `/to-docs` for changed truth. Ensure the\n' +
+    'separate-context `/code-review` gate before integration; earlier independent\n' +
+    'review is optional. Preserve dirty work and name verification limits.\n' +
+    '\n' +
+    '## Completion / Exit Condition\n' +
+    '\n' +
+    'The scoped output is verified, owning docs and state are accurate, and the\n' +
+    'next action or blocker is recoverable. Never equate implementation with release.\n'
+  
+      at TestContext.<anonymous> (file:///workspace/s01p-builder/tools/test-builder-skill.mjs:13:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '---\nname: builder\ndescription: Adopt the assigned Builder stance for one Workbench task within existing authority.\n---\n\n# Builder\n\n## Purpose\n\nDeliver the assigned result with useful verification and truthful documentation.\n...',
+    expected: /Every composed helper inherits the assigned Task and the caller's narrower\nendpoint/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at tools/test-builder-skill.mjs:19:1
+✖ Builder exit reports observed delivery and unmet gates without claiming completion (0.266326ms)
+  AssertionError [ERR_ASSERTION]: missing Actual result
+      at TestContext.<anonymous> (file:///workspace/s01p-builder/tools/test-builder-skill.mjs:21:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

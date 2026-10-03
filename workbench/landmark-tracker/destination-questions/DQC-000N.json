@@ -1,0 +1,144 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000N",
+  "revision": 5,
+  "title": "What demonstrated need would justify a Master Workbench?",
+  "question": "What demonstrated need would justify a Master Workbench?",
+  "answer": "WB-9: Validate through real, contrasting existing Workbenches and products, not artificial pilots. Candidates include LLM Workbench, Master Workbench, GPT_OS, Cashflow Calculator, CIC, OpenBrain and Foundry; pick the next from live owner priorities. Each proof must show owner-useful delivery, named verification and truthful fresh-session continuation. Revisit Master Workbench only when several such proofs show a concrete need for its registry, observation audit or visualization role.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-9 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WB-9 create workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md: Defer Master Workbench until real contrasting deliveries establish an observation need. | WB-9 create workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md: Records the Master Workbench deferral in its completion result.",
+    "home": "workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "WB-9",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000E"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 4
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WB-9",
+      "revision": "56b459da",
+      "reason": "Ledger row WB-9 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What demonstrated need would justify a Master Workbench?",
+    "question": "What demonstrated need would justify a Master Workbench?",
+    "sources": [
+      {
+        "id": "WB-9",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:16.739Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:16.739Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 006 of the 2026-09-26 grouping (\"Portable room and product boundaries\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Real contrasting project deliveries should establish a need for registry, observation or visualization before building the wider system.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:16.749Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WB-9: Validate through real, contrasting existing Workbenches and products, not artificial pilots. Candidates include LLM Workbench, Master Workbench, GPT_OS, Cashflow Calculator, CIC, OpenBrain and Foundry; pick the next from live owner priorities. Each proof must show owner-useful delivery, named verification and truthful fresh-session continuation. Revisit Master Workbench only when several such proofs show a concrete need for its registry, observation audit or visualization role."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-9 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WB-9 create workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md: Defer Master Workbench until real contrasting deliveries establish an observation need. | WB-9 create workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md: Records the Master Workbench deferral in its completion result.",
+            "home": "workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:16.759Z",
+      "reason": "Ledger row WB-9 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WB-9",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:16.770Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:54.327Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench and Project Relationships pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000E"
+          ]
+        }
+      ]
+    }
+  ]
+}

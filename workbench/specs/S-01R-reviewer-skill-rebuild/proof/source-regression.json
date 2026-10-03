@@ -1,0 +1,27 @@
+{
+  "baseline": "41c39c6f79ab24d195100458a99136064efb1471",
+  "sourceCandidate": "02a30100443e725cbb1baad6fe5e771bfe85f648",
+  "command": "node tools/test-reviewer-stance.mjs",
+  "red": {
+    "exit": 1,
+    "passed": 0,
+    "failed": 3,
+    "failures": [
+      "missing Worker self-check boundary",
+      "missing bundled evidence reference route",
+      "missing reference file"
+    ]
+  },
+  "intermediate": {
+    "exit": 1,
+    "passed": 2,
+    "failed": 1,
+    "reason": "assertion treated wrapped smallest safe correction phrase as absent; normalize whitespace in source-contract test"
+  },
+  "green": {
+    "exit": 0,
+    "passed": 3,
+    "failed": 0
+  },
+  "limit": "Source wording and reference checks only; no model behavior claimed."
+}

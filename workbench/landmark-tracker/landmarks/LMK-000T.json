@@ -1,0 +1,26 @@
+{
+  "schema": "landmark-tracker/landmark@1",
+  "id": "LMK-000T",
+  "revision": 1,
+  "title": "Session Transport",
+  "summary": "Selected private working context can move between environments without losing changes or imposing transport on local work.",
+  "importance": "A feature or framework pillar on the core path that deserves Blueprint representation, from the starting inventory the owner approved on 2026-09-26 (landmark-definition note decision-037); boundaries remain refinable and overlap is allowed.",
+  "origin": {
+    "title": "Session Transport",
+    "summary": "Selected private working context can move between environments without losing changes or imposing transport on local work.",
+    "revision": 1,
+    "at": "2026-10-01T23:50:01.303Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:50:01.303Z",
+      "reason": "Owner-approved 2026-09-26 starting-inventory candidate; at least one backfilled card clearly belongs to it: DQC-004S, DQC-004T, DQC-004U.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    }
+  ]
+}
