@@ -1,0 +1,184 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-004E",
+  "revision": 6,
+  "title": "What conditions allow a Spec to close?",
+  "question": "What conditions allow a Spec to close?",
+  "answer": "WF-8E: A Spec closes only after separate-context Spec review passes and owner Human QA on integration confirms the destination is actually there. It is then reconciled into the Wiki and retired. No Git merge closes it automatically; main promotion stays a separate owner action.\nFND-Q14: Two named gates. Spec QA gate: working branch into integration, triggered by the merge request; it checks every Task in the Spec is done and the branch is up to Spec, passing merges and failing denies. Human QA gate: integration into main; integration is the Human QA branch where the owner decides if work is ready or needs more. Human QA is not a release ceremony and is not batched by release.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-8E, FND-Q14 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WF-8E update BLUEPRINT.md: Fixes the order: assembled-Spec review -> integration -> owner Human QA -> close -> Wiki reconciliation -> SPEC.md retirement. | WF-8E update workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md: Records owner Human QA approval before Spec closure. | WF-8E update workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md: Retirement happens after Wiki reconciliation in the WF-8E order. | WF-8E update AGENTS.md (Work Selection And Lifecycle) and templates/AGENTS.md: Spec completion follows this order instead of a merge; owned by S-00P TK-002 and TK-005. | FND-Q14 update workbench/docs/adr/proposed/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md: Records the two gates as an accepted decision (S-00P TK-004). | FND-Q14 update workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md: Owns the Spec QA gate at the Spec branch into integration and requires recorded owner Human QA approval before closure. | FND-Q14 update AGENTS.md (Git Rules, Human QA) and templates/AGENTS.md: Name the Spec QA gate and the integration-to-main Human QA gate (S-00P TK-002, TK-005). | FND-Q14 update BLUEPRINT.md (Desired Lifecycle): Describes Spec review into integration and owner Human QA before main.",
+    "home": "BLUEPRINT.md; workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md; workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md; AGENTS.md (Work Selection And Lifecycle) and templates/AGENTS.md; workbench/docs/adr/proposed/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md; AGENTS.md (Git Rules, Human QA) and templates/AGENTS.md; BLUEPRINT.md (Desired Lifecycle)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "WF-8E",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q14",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000H"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WF-8E",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-8E (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q14",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q14 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What conditions allow a Spec to close?",
+    "question": "What conditions allow a Spec to close?",
+    "sources": [
+      {
+        "id": "WF-8E",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q14",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:26.216Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:26.216Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 105 of the 2026-09-26 grouping (\"Verification, QA and correction\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Separate-context Spec review and owner Human QA must establish the destination; a merge alone does not close it.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:26.241Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WF-8E: A Spec closes only after separate-context Spec review passes and owner Human QA on integration confirms the destination is actually there. It is then reconciled into the Wiki and retired. No Git merge closes it automatically; main promotion stays a separate owner action.\nFND-Q14: Two named gates. Spec QA gate: working branch into integration, triggered by the merge request; it checks every Task in the Spec is done and the branch is up to Spec, passing merges and failing denies. Human QA gate: integration into main; integration is the Human QA branch where the owner decides if work is ready or needs more. Human QA is not a release ceremony and is not batched by release."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WF-8E, FND-Q14 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WF-8E update BLUEPRINT.md: Fixes the order: assembled-Spec review -> integration -> owner Human QA -> close -> Wiki reconciliation -> SPEC.md retirement. | WF-8E update workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md: Records owner Human QA approval before Spec closure. | WF-8E update workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md: Retirement happens after Wiki reconciliation in the WF-8E order. | WF-8E update AGENTS.md (Work Selection And Lifecycle) and templates/AGENTS.md: Spec completion follows this order instead of a merge; owned by S-00P TK-002 and TK-005. | FND-Q14 update workbench/docs/adr/proposed/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md: Records the two gates as an accepted decision (S-00P TK-004). | FND-Q14 update workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md: Owns the Spec QA gate at the Spec branch into integration and requires recorded owner Human QA approval before closure. | FND-Q14 update AGENTS.md (Git Rules, Human QA) and templates/AGENTS.md: Name the Spec QA gate and the integration-to-main Human QA gate (S-00P TK-002, TK-005). | FND-Q14 update BLUEPRINT.md (Desired Lifecycle): Describes Spec review into integration and owner Human QA before main.",
+            "home": "BLUEPRINT.md; workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md; workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md; AGENTS.md (Work Selection And Lifecycle) and templates/AGENTS.md; workbench/docs/adr/proposed/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md; AGENTS.md (Git Rules, Human QA) and templates/AGENTS.md; BLUEPRINT.md (Desired Lifecycle)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:26.266Z",
+      "reason": "Ledger row WF-8E (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-8E",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:26.296Z",
+      "reason": "Ledger row FND-Q14 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q14",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:26.326Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:55.908Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000H"
+          ]
+        }
+      ]
+    }
+  ]
+}

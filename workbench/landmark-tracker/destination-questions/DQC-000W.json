@@ -1,0 +1,296 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000W",
+  "revision": 8,
+  "title": "Which reusable behaviors belong in the required skill bundle?",
+  "question": "Which reusable behaviors belong in the required skill bundle?",
+  "answer": "V3-21A: The complete current setup and grilling-to-implementation workflow, not merely template-only setup.\nPW-4: 'If we need it, it should be included in workbench/skills. But we should keep [the owner's private skills repository] as a backup of all of the skills, and a place every workbench can publish skills to that they create.' The Contract names only skills that ship in the lane. The specific candidate list was not confirmed.\nREC-02: 17th core skill (chosen over local-only outside the bundle, or contract text in AGENTS.md).\nPW-3: 'We already locked in a version of 1. When we update the workbenches, we update the skills. LLM_Workbench owns the skills it needs to. We store them all in workbench/skills.' Core skills are tracked in every room at workbench/skills and replaced by the ordinary Workbench update; no provider home, personal catalog or bootstrap is on the critical path.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-21A, PW-4, REC-02, PW-3 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "V3-21A create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Outcome states the bundle is the minimum closed workflow, setup through implementation and review. | V3-21A update workbench/skills/README.md: Describes the closed core bundle covering setup and the grilling-to-delivery workflow. | PW-4 update workbench/specs/S-00V-portable-workbench/SPEC.md: Catalog-review Task: owner confirms which non-core skills join the lane, starting from the tentative list. | PW-4 update workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md: Names [the owner's private skills repository] as backup and publication target, never on the critical path. | PW-4 update RUNBOOK.md Portable Save, Promote And Room-Local Skills: Names the publication destination; publishing stays separately authorized. | REC-02 update workbench/manifest.json skillPolicy and workbench/tools/workbench-layout.mjs coreSkills: carry is a required core skill; the bundle grows from sixteen to seventeen. | REC-02 update skills README, LEXICON.md, templates/GENESIS.md and tools/test-skill-catalog.mjs: Counts and catalog pin seventeen skills including carry. | REC-02 update workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts): 'carry is a core-bundle skill, not a repo-local one.'",
+    "home": "workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/skills/README.md; workbench/specs/S-00V-portable-workbench/SPEC.md; workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md; RUNBOOK.md Portable Save, Promote And Room-Local Skills; workbench/manifest.json skillPolicy and workbench/tools/workbench-layout.mjs coreSkills; skills README, LEXICON.md, templates/GENESIS.md and tools/test-skill-catalog.mjs; workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-13A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-21A",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-21B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "V3-10B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "PW-4",
+      "revision": "56b459da"
+    },
+    {
+      "id": "REC-02",
+      "revision": "56b459da"
+    },
+    {
+      "id": "U313-9",
+      "revision": "56b459da"
+    },
+    {
+      "id": "PW-3",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000I"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 7
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "V3-21A",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-21A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "PW-4",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-4 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "REC-02",
+      "revision": "56b459da",
+      "reason": "Ledger row REC-02 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "PW-3",
+      "revision": "56b459da",
+      "reason": "Ledger row PW-3 (locked) at 56b459da, related as the successor of superseded V3-10B; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Which reusable behaviors belong in the required skill bundle?",
+    "question": "Which reusable behaviors belong in the required skill bundle?",
+    "sources": [
+      {
+        "id": "V3-13A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-21A",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-21B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "V3-10B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "PW-4",
+        "revision": "56b459da"
+      },
+      {
+        "id": "REC-02",
+        "revision": "56b459da"
+      },
+      {
+        "id": "U313-9",
+        "revision": "56b459da"
+      },
+      {
+        "id": "PW-3",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:17.302Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:17.302Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 017 of the 2026-09-26 grouping (\"Skills carried by the room\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The original twelve-skill bundle grew through later decisions, including carry and stance skills. Required membership should support the whole workflow. Superseded lineage kept as sources and represented by successors: V3-13A (no ledger successor; the card's current rows carry it); V3-21B (no ledger successor; the card's current rows carry it); V3-10B (successor PW-3). Not related: U313-9 (withdrawn).",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:17.314Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "V3-21A: The complete current setup and grilling-to-implementation workflow, not merely template-only setup.\nPW-4: 'If we need it, it should be included in workbench/skills. But we should keep [the owner's private skills repository] as a backup of all of the skills, and a place every workbench can publish skills to that they create.' The Contract names only skills that ship in the lane. The specific candidate list was not confirmed.\nREC-02: 17th core skill (chosen over local-only outside the bundle, or contract text in AGENTS.md).\nPW-3: 'We already locked in a version of 1. When we update the workbenches, we update the skills. LLM_Workbench owns the skills it needs to. We store them all in workbench/skills.' Core skills are tracked in every room at workbench/skills and replaced by the ordinary Workbench update; no provider home, personal catalog or bootstrap is on the critical path."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-21A, PW-4, REC-02, PW-3 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "V3-21A create workbench/specs/S-021-portable-workbench-v3/SPEC.md: Outcome states the bundle is the minimum closed workflow, setup through implementation and review. | V3-21A update workbench/skills/README.md: Describes the closed core bundle covering setup and the grilling-to-delivery workflow. | PW-4 update workbench/specs/S-00V-portable-workbench/SPEC.md: Catalog-review Task: owner confirms which non-core skills join the lane, starting from the tentative list. | PW-4 update workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md: Names [the owner's private skills repository] as backup and publication target, never on the critical path. | PW-4 update RUNBOOK.md Portable Save, Promote And Room-Local Skills: Names the publication destination; publishing stays separately authorized. | REC-02 update workbench/manifest.json skillPolicy and workbench/tools/workbench-layout.mjs coreSkills: carry is a required core skill; the bundle grows from sixteen to seventeen. | REC-02 update skills README, LEXICON.md, templates/GENESIS.md and tools/test-skill-catalog.mjs: Counts and catalog pin seventeen skills including carry. | REC-02 update workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts): 'carry is a core-bundle skill, not a repo-local one.'",
+            "home": "workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/skills/README.md; workbench/specs/S-00V-portable-workbench/SPEC.md; workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md; RUNBOOK.md Portable Save, Promote And Room-Local Skills; workbench/manifest.json skillPolicy and workbench/tools/workbench-layout.mjs coreSkills; skills README, LEXICON.md, templates/GENESIS.md and tools/test-skill-catalog.mjs; workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:17.326Z",
+      "reason": "Ledger row V3-21A (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-21A",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:17.339Z",
+      "reason": "Ledger row PW-4 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-4",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:17.353Z",
+      "reason": "Ledger row REC-02 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "REC-02",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:17.366Z",
+      "reason": "Ledger row PW-3 (locked) at 56b459da, related as the successor of superseded V3-10B; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "PW-3",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:17.379Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:56.557Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Skills pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000I"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -8,8 +8,8 @@
 **Updated:** 2026-10-01
 **Catalog description:** Carry assigned work to its authorized endpoint and make genuine owner hand-backs visible.
 **Blockers:** none.
-**Latest event:** TK-00T closed with proof.
-**Next gate:** Land the reviewed TK-00T candidate on `integration`, then owner Human QA of conversational fidelity, then `complete S-01C`.
+**Latest event:** Reviewed integration delivery: PR #245 merged as `95176a4f`, containing the reviewed candidate `c4cdb07b` and its verdict commit `26eb87c1`.
+**Next gate:** Owner Human QA of conversational fidelity on `integration`, then `complete S-01C`.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -80,6 +80,18 @@ Run targeted tests for the changed source and `node workbench/tools/wiki.mjs val
 
 Maintain `workbench/wiki/skill-carry.md` and its sole router entry alongside the skill change. Update shared controls or generic template wording only where this skill changes their meaning; record `Docs checked; no update needed` with a reason when they do not change.
 
+## Draft-wiki alignment (owner direction 2026-09-30)
+
+Group: main-workflow. Matt counterpart: none. Enabling Spec: S-002L.
+Intended slice direction: the six per-skill steps of the draft skills wiki
+(1 investigate ours, 2 draft the article, 3 investigate Matt's skill at
+`mattpocock/skills@d81f3a183412e71a5b1e84ca21bc1a35eea03a60`, 4 compare,
+5 align the article, 6 fix or create the skill), to be cut into Tasks by
+`/to-tasks` (at activation for a planned Spec; as additional Tasks when the
+Dispatcher takes up an already-active one). Tasks already cut stay as they
+are. This section changes none of this Spec's acceptance, evidence or status;
+steps 1-5 touch only the draft wiki and step 6 only this skill's lane. When there is no Matt counterpart, steps 3 and 4 compare with the named nearest neighbor skill instead.
+
 ## Append-Only Evidence And Execution Log
 
 | Date | Task | Event | Verification | Docs | Remaining gap |
@@ -91,10 +103,11 @@ Maintain `workbench/wiki/skill-carry.md` and its sole router entry alongside the
 | 2026-10-01 | TK-00T | Gates before close | Full AGENTS suite 48/48 on committed candidate `351ef039` (log `S01C-suite-351ef039.log`, first line `dirty: []`); guardrail before and after byte-identical (78/100, only Outcome evidence missing); self-drift pre at `3b5b76bf` and post at `351ef039` both cleanUpdate false with the same seven pre-existing findings (one stale-claim on S-00Q, five stale-seed, one unverified-provenance); `wiki.mjs validate` ok; `git diff --check` clean; `render` and `doctor` no blocking finding. Bounded semantic check: RUNBOOK behavior selection and templates/RUNBOOK already route delivery as carry with implement, verification, independent review and save, so the source now agrees with them; LEXICON Coordination hand-back and `workbench/skills/README.md` row name carry's recorder and endpoint role unchanged; `workbench/wiki/skill-save.md` and `skill-make-it-so.md` describe the same composition | Docs checked: RUNBOOK, BLUEPRINT, LEXICON, README, templates and `workbench/skills/README.md` need no update because each already states the carry-with-save route or names only the skill, and none restates the recovery step this change extends | Coordination hand-backs this run: zero |
 | 2026-10-01 | TK-00T | Task closed | Red/green tools/test-skill-catalog.mjs (red c2400c50, green aef6c158); targeted skill tests green; full AGENTS suite 48/48 at 351ef039; fresh-context carry of an interrupted fixture Task resumed from its receipt and notepad, reached green, closed with proof, proved remote containment, recorded zero hand-backs and stopped at the review gate naming the exact candidate; wiki validate ok | workbench/skills/carry/SKILL.md, workbench/wiki/skill-carry.md and its MEMORY.md route; RUNBOOK, BLUEPRINT, LEXICON, README, templates and skills README checked with no update needed because each already states the carry-with-save route or names only the skill | Separate-context candidate review; owner Human QA; installed personal skill copies not updated; one scripted run with one model against a local bare remote |
 | 2026-10-01 | review | Review verdict: pass at c4cdb07b717a96b5593103811b2f94e9c9a190f2 [38483e05d4d4] #1 | No High/Medium/Low findings against base 3b5b76bf. Reviewer confirmed: red c2400c50 touches only the catalog test and green aef6c158 only the skill source; green tree contains Task record, receipt, /save, containment proof and pending-recovery wording; no manifest, template, RUNBOOK, LEXICON or save-skill edit; article routed once from MEMORY.md; wiki validate ok; doctor only the seven known nonblocking findings; git diff --check clean. Could not run test-skill-catalog.mjs to completion (EPERM mkdtemp in the read-only sandbox); suite 48/48 at 351ef039 taken from the builder log | Codex CLI codex exec -s read-only -m gpt-5.5, separate context from the builder; log S01C-review-c4cdb07b.log in the lane scratchpad (local, not durable) | 8 |
+| 2026-10-01 | TK-00T landing | PR #245 merged into `integration` as `95176a4f` with `--match-head-commit 26eb87c1`; `gate --task TK-00T --spec S-01C` reported the Task-PR exemption, not refused; `git merge-base --is-ancestor 26eb87c1 origin/integration` true; local and remote task branches deleted with the expected-tip guard | Integration moved to `8b5c28f6` (S-00P TK-004C) during review and the only overlapping file was the generated `TASKBOARD.md`; a trial merge was clean and the merged tree rendered with no board drift, doctor, wiki validate, the catalog test and `git diff --check` passed on it, so the reviewed commits landed unchanged. After the merge the landed tree at `95176a4f` renders with no drift, doctor and wiki validate pass, and every non-board file matches `26eb87c1` line for line | Header Latest event and Next gate updated to the landed state | Owner Human QA; `complete S-01C` |
 
 ## Completion Result
 
-TK-00T found carry composing `/implement`, `/tracer-bullet`, `/to-docs` and `/code-review` but never `save`, with no containment proof and a recovery step that read the Spec but not the Task record, while RUNBOOK, templates and LEXICON already described the carry-with-save route and the receipt as an interrupted run's trace. The source at `aef6c158` now resumes from `TASK.md` and its receipt rows plus the objective notepad, records an in-progress receipt, names `/save` among the composed contracts and proves containment with `git merge-base --is-ancestor`, treating a failed push as pending recovery. `tools/test-skill-catalog.mjs` pins that wording (red `c2400c50`). It authored `workbench/wiki/skill-carry.md`, routed from `workbench/wiki/MEMORY.md`, and recorded one fresh-context scenario in which an interrupted fixture Task was resumed from its receipt, carried to green, closed with proof, proved contained in its remote, and stopped at the review gate with the exact candidate named and zero hand-backs recorded. The Spec is not complete: separate-context review and landing of the candidate, then owner Human QA, remain.
+TK-00T found carry composing `/implement`, `/tracer-bullet`, `/to-docs` and `/code-review` but never `save`, with no containment proof and a recovery step that read the Spec but not the Task record, while RUNBOOK, templates and LEXICON already described the carry-with-save route and the receipt as an interrupted run's trace. The source at `aef6c158` now resumes from `TASK.md` and its receipt rows plus the objective notepad, records an in-progress receipt, names `/save` among the composed contracts and proves containment with `git merge-base --is-ancestor`, treating a failed push as pending recovery. `tools/test-skill-catalog.mjs` pins that wording (red `c2400c50`). It authored `workbench/wiki/skill-carry.md`, routed from `workbench/wiki/MEMORY.md`, and recorded one fresh-context scenario in which an interrupted fixture Task was resumed from its receipt, carried to green, closed with proof, proved contained in its remote, and stopped at the review gate with the exact candidate named and zero hand-backs recorded. A separate-context review passed and PR #245 landed the candidate on `integration` as `95176a4f`. The Spec is not complete: owner Human QA remains.
 
 ## Supersession
 

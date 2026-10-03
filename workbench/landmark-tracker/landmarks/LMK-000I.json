@@ -1,0 +1,26 @@
+{
+  "schema": "landmark-tracker/landmark@1",
+  "id": "LMK-000I",
+  "revision": 1,
+  "title": "Skills",
+  "summary": "Reusable behaviors compose into the workflow and are discoverable and usable inside each room.",
+  "importance": "A feature or framework pillar on the core path that deserves Blueprint representation, from the starting inventory the owner approved on 2026-09-26 (landmark-definition note decision-037); boundaries remain refinable and overlap is allowed.",
+  "origin": {
+    "title": "Skills",
+    "summary": "Reusable behaviors compose into the workflow and are discoverable and usable inside each room.",
+    "revision": 1,
+    "at": "2026-10-01T23:49:56.442Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:56.442Z",
+      "reason": "Owner-approved 2026-09-26 starting-inventory candidate; at least one backfilled card clearly belongs to it: DQC-000F, DQC-000V, DQC-000W, DQC-000X, DQC-000Y, DQC-000Z, DQC-001A, DQC-001B, DQC-001C, DQC-001D, DQC-001E, DQC-003I, DQC-004Y, DQC-006L.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    }
+  ]
+}

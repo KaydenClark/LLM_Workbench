@@ -1,0 +1,26 @@
+{
+  "schema": "landmark-tracker/landmark@1",
+  "id": "LMK-000C",
+  "revision": 1,
+  "title": "Workbench Boundaries",
+  "summary": "The Workbench has clear authority and product limits, including what remains optional or outside its purpose.",
+  "importance": "A feature or framework pillar on the core path that deserves Blueprint representation, from the starting inventory the owner approved on 2026-09-26 (landmark-definition note decision-037); boundaries remain refinable and overlap is allowed.",
+  "origin": {
+    "title": "Workbench Boundaries",
+    "summary": "The Workbench has clear authority and product limits, including what remains optional or outside its purpose.",
+    "revision": 1,
+    "at": "2026-10-01T23:49:53.759Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:53.759Z",
+      "reason": "Owner-approved 2026-09-26 starting-inventory candidate; at least one backfilled card clearly belongs to it: DQC-000J, DQC-000K, DQC-001B, DQC-003B.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    }
+  ]
+}

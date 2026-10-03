@@ -1,0 +1,290 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-004H",
+  "revision": 9,
+  "title": "What does a release-readiness review establish and authorize?",
+  "question": "What does a release-readiness review establish and authorize?",
+  "answer": "BPR-8F1: Asking whether a candidate is ready for main authorizes an independent release review and a verdict only, not merge or publication. Kayden keeps approval and merge authority for integration to main. An agent may create the release PR only when explicitly asked, and Kayden still approves and merges it.\nBPR-8E: When Kayden asks whether a candidate is ready for main, the independent reviewer checks the Blueprint boundary: destination narrative and whole-product constraints only; no version chronology, live status, Spec inventory, evidence or displaced ADR/Spec/Runbook content; ADR links selective, active and coherent; each new ADR has a recorded Blueprint relevance disposition. Mechanical checks support structure and links but cannot replace semantic review.\nWF-8: Tasks use red/green TDD, make relevant tests green, exercise what was built to confirm it works, and preserve proof before handoff. A separate context checks the assembled Spec. Integration is the assembled surface for owner Human QA, which can return work to Align before owner-only main promotion.\nWF-8B: No per-Task independent-review ceremony just because it is a Task. Ordinary verification and proof are mandatory: red/green TDD, relevant tests green, exercising what was built, and preserved proof before handoff.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-8F1, BPR-8E, WF-8, WF-8B (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "BPR-8F1 update RUNBOOK.md (task routing 'Review a candidate or readiness'; Independent Review Boundaries) and templates/RUNBOOK.md: Readiness review is review-only; only Kayden approves and merges main. | BPR-8F1 update AGENTS.md (Git Rules) and templates/AGENTS.md: Only the owner merges integration into main. | BPR-8F1 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Whole-Workbench readiness review never authorizes a main merge. | BPR-8E update RUNBOOK.md (Independent Review Boundaries, main-readiness) and templates/RUNBOOK.md: Require an explicit semantic pass/fail verdict on the Blueprint checklist; structure and link checks alone are insufficient. | BPR-8E create tools/test-blueprint-contract.mjs: Mechanical exclusions and link checks for the destination-only shape. | BPR-8E create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Blueprint Review Checklist for the main-readiness reviewer.",
+    "home": "RUNBOOK.md (task routing 'Review a candidate or readiness'; Independent Review Boundaries) and templates/RUNBOOK.md; AGENTS.md (Git Rules) and templates/AGENTS.md; workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md; RUNBOOK.md (Independent Review Boundaries, main-readiness) and templates/RUNBOOK.md; tools/test-blueprint-contract.mjs; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "BPR-8F",
+      "revision": "56b459da"
+    },
+    {
+      "id": "BPR-8F1",
+      "revision": "56b459da"
+    },
+    {
+      "id": "BPR-8E",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-8",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-8B",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000G",
+    "LMK-000H"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 7
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "BPR-8F1",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-8F1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "BPR-8E",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-8E (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-8",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-8 (locked) at 56b459da, related as the successor of superseded BPR-8F; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-8B",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-8B (locked) at 56b459da, related as the successor of superseded BPR-8F; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What does a release-readiness review establish and authorize?",
+    "question": "What does a release-readiness review establish and authorize?",
+    "sources": [
+      {
+        "id": "BPR-8F",
+        "revision": "56b459da"
+      },
+      {
+        "id": "BPR-8F1",
+        "revision": "56b459da"
+      },
+      {
+        "id": "BPR-8E",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-8",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-8B",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:26.628Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:26.628Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 108 of the 2026-09-26 grouping (\"Verification, QA and correction\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Review evaluates the exact assembled release candidate and its coherent controls, evidence and Template state. A readiness question authorizes a verdict, not main merge or publication. Superseded lineage kept as sources and represented by successors: BPR-8F (successor WF-8, WF-8B).",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:26.653Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "BPR-8F1: Asking whether a candidate is ready for main authorizes an independent release review and a verdict only, not merge or publication. Kayden keeps approval and merge authority for integration to main. An agent may create the release PR only when explicitly asked, and Kayden still approves and merges it.\nBPR-8E: When Kayden asks whether a candidate is ready for main, the independent reviewer checks the Blueprint boundary: destination narrative and whole-product constraints only; no version chronology, live status, Spec inventory, evidence or displaced ADR/Spec/Runbook content; ADR links selective, active and coherent; each new ADR has a recorded Blueprint relevance disposition. Mechanical checks support structure and links but cannot replace semantic review.\nWF-8: Tasks use red/green TDD, make relevant tests green, exercise what was built to confirm it works, and preserve proof before handoff. A separate context checks the assembled Spec. Integration is the assembled surface for owner Human QA, which can return work to Align before owner-only main promotion.\nWF-8B: No per-Task independent-review ceremony just because it is a Task. Ordinary verification and proof are mandatory: red/green TDD, relevant tests green, exercising what was built, and preserved proof before handoff."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-8F1, BPR-8E, WF-8, WF-8B (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "BPR-8F1 update RUNBOOK.md (task routing 'Review a candidate or readiness'; Independent Review Boundaries) and templates/RUNBOOK.md: Readiness review is review-only; only Kayden approves and merges main. | BPR-8F1 update AGENTS.md (Git Rules) and templates/AGENTS.md: Only the owner merges integration into main. | BPR-8F1 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Whole-Workbench readiness review never authorizes a main merge. | BPR-8E update RUNBOOK.md (Independent Review Boundaries, main-readiness) and templates/RUNBOOK.md: Require an explicit semantic pass/fail verdict on the Blueprint checklist; structure and link checks alone are insufficient. | BPR-8E create tools/test-blueprint-contract.mjs: Mechanical exclusions and link checks for the destination-only shape. | BPR-8E create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Blueprint Review Checklist for the main-readiness reviewer.",
+            "home": "RUNBOOK.md (task routing 'Review a candidate or readiness'; Independent Review Boundaries) and templates/RUNBOOK.md; AGENTS.md (Git Rules) and templates/AGENTS.md; workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md; RUNBOOK.md (Independent Review Boundaries, main-readiness) and templates/RUNBOOK.md; tools/test-blueprint-contract.mjs; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:26.678Z",
+      "reason": "Ledger row BPR-8F1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-8F1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:26.708Z",
+      "reason": "Ledger row BPR-8E (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-8E",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:26.739Z",
+      "reason": "Ledger row WF-8 (locked) at 56b459da, related as the successor of superseded BPR-8F; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-8",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:26.769Z",
+      "reason": "Ledger row WF-8B (locked) at 56b459da, related as the successor of superseded BPR-8F; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-8B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:26.800Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:55.213Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Updates pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000G"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "at": "2026-10-01T23:49:56.023Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000G"
+          ],
+          "to": [
+            "LMK-000G",
+            "LMK-000H"
+          ]
+        }
+      ]
+    }
+  ]
+}

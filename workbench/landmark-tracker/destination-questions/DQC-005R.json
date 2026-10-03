@@ -1,0 +1,184 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-005R",
+  "revision": 6,
+  "title": "Where should feedback reports and their accepted follow-up live?",
+  "question": "Where should feedback reports and their accepted follow-up live?",
+  "answer": "WB-7: Harness-feedback reports go in the manifest-declared workbench/feedback/ lane - never loose, in the Wiki, or in an ad-hoc folder. Accepted follow-up work goes in its owning linked spec. A report does not repair its target or authorize automated repair.\nWB-1: Build the redesigned workflow, then complete Round One: a fresh agent uses the reduced route, Wiki and ADRs to confirm the Workbench is set up correctly. Only after Round One succeeds, produce a reviewed, evidence-backed harness-feedback report and show cold continuation to its accepted next action. The report must not authorize or include a repair to the harness it evaluates.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-7, WB-1 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "WB-7 create workbench/feedback/REPORT_FORMAT.md: Report format for the feedback lane. | WB-7 update RUNBOOK.md (Manual Harness Feedback Reports) and templates/RUNBOOK.md: Report workflow stores reports in the feedback lane; follow-up lives in its owning spec; reports never repair. | WB-7 create workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md: States reports never repair or authorize repair of their targets. | WB-1 create workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md: Spec owns the sequence: build route and stances, chat-only Round One, then feedback reporting and fresh-context continuation. | WB-1 create workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md: Accepted decision: setup proof precedes feedback reporting; reports never repair or authorize repair of their targets. | WB-1 update RUNBOOK.md (Ordinary Entry; Manual Harness Feedback Reports) and templates/RUNBOOK.md: Round One precedes feedback testing; the report workflow runs only after a setup-only Round One succeeds.",
+    "home": "workbench/feedback/REPORT_FORMAT.md; RUNBOOK.md (Manual Harness Feedback Reports) and templates/RUNBOOK.md; workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md; RUNBOOK.md (Ordinary Entry; Manual Harness Feedback Reports) and templates/RUNBOOK.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "WB-7",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WB-1",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000W"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "WB-7",
+      "revision": "56b459da",
+      "reason": "Ledger row WB-7 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WB-1",
+      "revision": "56b459da",
+      "reason": "Ledger row WB-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Where should feedback reports and their accepted follow-up live?",
+    "question": "Where should feedback reports and their accepted follow-up live?",
+    "sources": [
+      {
+        "id": "WB-7",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WB-1",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:33.008Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:33.008Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 145 of the 2026-09-26 grouping (\"Feedback and evaluation\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Reports belong in the feedback lane; accepted follow-up belongs in the linked owning Spec. A report neither repairs its target nor authorizes the repair.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:33.041Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "WB-7: Harness-feedback reports go in the manifest-declared workbench/feedback/ lane - never loose, in the Wiki, or in an ad-hoc folder. Accepted follow-up work goes in its owning linked spec. A report does not repair its target or authorize automated repair.\nWB-1: Build the redesigned workflow, then complete Round One: a fresh agent uses the reduced route, Wiki and ADRs to confirm the Workbench is set up correctly. Only after Round One succeeds, produce a reviewed, evidence-backed harness-feedback report and show cold continuation to its accepted next action. The report must not authorize or include a repair to the harness it evaluates."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: WB-7, WB-1 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "WB-7 create workbench/feedback/REPORT_FORMAT.md: Report format for the feedback lane. | WB-7 update RUNBOOK.md (Manual Harness Feedback Reports) and templates/RUNBOOK.md: Report workflow stores reports in the feedback lane; follow-up lives in its owning spec; reports never repair. | WB-7 create workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md: States reports never repair or authorize repair of their targets. | WB-1 create workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md: Spec owns the sequence: build route and stances, chat-only Round One, then feedback reporting and fresh-context continuation. | WB-1 create workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md: Accepted decision: setup proof precedes feedback reporting; reports never repair or authorize repair of their targets. | WB-1 update RUNBOOK.md (Ordinary Entry; Manual Harness Feedback Reports) and templates/RUNBOOK.md: Round One precedes feedback testing; the report workflow runs only after a setup-only Round One succeeds.",
+            "home": "workbench/feedback/REPORT_FORMAT.md; RUNBOOK.md (Manual Harness Feedback Reports) and templates/RUNBOOK.md; workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md; RUNBOOK.md (Ordinary Entry; Manual Harness Feedback Reports) and templates/RUNBOOK.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:33.072Z",
+      "reason": "Ledger row WB-7 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WB-7",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:33.110Z",
+      "reason": "Ledger row WB-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WB-1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:33.147Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:02.069Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Harness Feedback Review pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000W"
+          ]
+        }
+      ]
+    }
+  ]
+}

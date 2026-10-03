@@ -1,0 +1,26 @@
+{
+  "schema": "landmark-tracker/landmark@1",
+  "id": "LMK-000W",
+  "revision": 1,
+  "title": "Harness Feedback Review",
+  "summary": "Observed friction becomes investigated findings and supported improvements, with outcomes distinguished from static scores.",
+  "importance": "A feature or framework pillar on the core path that deserves Blueprint representation, from the starting inventory the owner approved on 2026-09-26 (landmark-definition note decision-037); boundaries remain refinable and overlap is allowed.",
+  "origin": {
+    "title": "Harness Feedback Review",
+    "summary": "Observed friction becomes investigated findings and supported improvements, with outcomes distinguished from static scores.",
+    "revision": 1,
+    "at": "2026-10-01T23:50:01.986Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:50:01.986Z",
+      "reason": "Owner-approved 2026-09-26 starting-inventory candidate; at least one backfilled card clearly belongs to it: DQC-005Q, DQC-005R, DQC-005S, DQC-005T.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    }
+  ]
+}

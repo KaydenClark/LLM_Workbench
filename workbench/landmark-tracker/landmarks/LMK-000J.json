@@ -1,0 +1,26 @@
+{
+  "schema": "landmark-tracker/landmark@1",
+  "id": "LMK-000J",
+  "revision": 1,
+  "title": "Wiki",
+  "summary": "People and agents can read coherent, current explanations of the project and follow their sources.",
+  "importance": "A feature or framework pillar on the core path that deserves Blueprint representation, from the starting inventory the owner approved on 2026-09-26 (landmark-definition note decision-037); boundaries remain refinable and overlap is allowed.",
+  "origin": {
+    "title": "Wiki",
+    "summary": "People and agents can read coherent, current explanations of the project and follow their sources.",
+    "revision": 1,
+    "at": "2026-10-01T23:49:57.019Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:57.019Z",
+      "reason": "Owner-approved 2026-09-26 starting-inventory candidate; at least one backfilled card clearly belongs to it: DQC-001D, DQC-004L, DQC-004M, DQC-005W, DQC-006I.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    }
+  ]
+}

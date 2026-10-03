@@ -6,6 +6,7 @@ knowledge_role: curated
 provenance:
   - Owner-confirmed Landmark Tracker grilling and explicit documentation direction, 2026-09-26
 source_paths:
+  - workbench/specs/S-004D-shared-interactive-board/SPEC.md
   - BLUEPRINT.md
   - LEXICON.md
   - AGENTS.md
@@ -13,7 +14,7 @@ source_paths:
   - workbench/landmark-tracker/README.md
 parent: none
 authorized_by: owner
-last_verified: 2026-09-26
+last_verified: 2026-10-03
 ---
 
 # Landmark Tracker
@@ -46,22 +47,46 @@ can begin before any specification and remain useful after several delivery
 efforts finish. Landmarks can overlap. They are not themselves implemented:
 Specs and Tasks deliver bounded work connected to them.
 
+That description is the landmark as it was first built. On 2026-10-02 the owner
+accepted a change ([the decision record "Landmarks are LANDMARK.md artifacts one size above Specs"](../../docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md)): a landmark becomes a `LANDMARK.md` artifact, a Spec
+with a much larger scope that says where the work goes and what success looks
+like. Landmarks and Specs become the map at two scales and Tasks the steps. A
+landmark forms when groupings appear in the question cards and destination
+decisions, parents its Specs, and retires into its Landmark Wiki page once
+reached. Landmarks no longer overlap through shared children: a Spec has at
+most one. The current JSON landmark records turn into question cards, because
+they were a way of nesting cards. None of this is installed yet; until the
+landmark Spec lands, the Tracker keeps grouping by the JSON records.
+
 **Tracker** generates the compact view of those records and their relationships.
 It monitors the documenting process; Taskboard monitors implementation. Existing
 artifacts and the grilling ledger retain their jobs. Workflow activity changes
 source records with reasons and evidence; the view reflects those changes.
 There is no manually assigned overall card stage or card-reset lifecycle.
 
-**Landmark Wiki pages** explain confirmed durable understanding coherently in
-readable Markdown. Several Specs can contribute to one explanation. These pages
-contain no Workbench identifiers, including metadata and link targets. Structured
-records and delivery evidence preserve identity-bearing provenance; readable
-source routes keep the explanation connected to its governing owners.
+**Landmark Wiki pages** are each landmark's evolving synthesis in readable
+Markdown: what its question cards add up to, updated whenever a card changes.
+Under the accepted change, a page's raw source is its landmark's `LANDMARK.md`;
+the page describes the landmark as it currently is without being the same
+document.
+Several Specs can contribute to one page. Identifiers on a page carry the
+artifact's name and context, as on every Wiki page; structured records and
+delivery evidence keep identity-bearing provenance, and readable source routes
+keep the explanation connected to its governing owners.
+
+The [Lexicon family reconciliation](../../specs/S-01U-lexicon-design-concept-reconciliation/recovery-2026-10-03.md)
+keeps these accepted changes separate from installed behavior: the article
+validator still rejects identifiers and the view still prints its earlier
+stage labels. Neither validator success, a Result field nor a completed Task
+by itself establishes that the knowledge is Verified. DQCs are temporary
+scaffolding; removing them requires verified reconciliation of useful
+understanding, corrections, rationale and lineage into durable owners while
+preserving unresolved obligations and live references.
 
 ## Understanding before delivery
 
-DQCs and landmark records maintain the current account before a Spec, Task or
-Wiki article exists. Grilling notepads remain valuable as more historical and
+DQCs and landmark records keep the structured account; the Wiki summarizes
+them as they evolve, so a synthesis page can exist before any Spec or Task. Grilling notepads remain valuable as more historical and
 handoff-like context: they preserve how the understanding arose, the corrections
 that matter, and what another conversation needs to continue. They are retained
 while needed, not automatically discarded when a card is created.
@@ -89,6 +114,11 @@ The ordered steps are **Idea, Aligning, Confirmed, Mapped, Planned, Journey,
 Review, Verified**. They concern understanding reaching its documented
 destination. Completing a Task or creating a Wiki file alone cannot establish
 that the knowledge is correct and durable.
+
+The owner has since confirmed the workflow verbs Idea, Align, Confirm, Map, Plan,
+Implement, Review and Verify as the official names for these steps, with Journey
+only the loop-level name and not a stage (see [The Workflow Verbs](workflow-verbs.md)).
+The Tracker still prints the earlier names above until the Tracker work changes them.
 
 Each distinct related item contributes one unit total in the first version.
 An item with mixed progress splits its unit across the relevant steps. For each
@@ -178,6 +208,16 @@ source lineage, connect it to a landmark when one emerges, and generate a view
 of its evidence-backed documentation progress. That demonstrates a foundation
 we can build on while answers, inventory and detailed destinations evolve.
 
+## Future shared browser workspace
+
+The owner requested a post-v4 backlog capability for browsing Taskboard and
+Tracker together, opening connected cards, commenting and requesting updates.
+The [Shared Interactive Workbench Board (S-004D)](../../specs/S-004D-shared-interactive-board/SPEC.md)
+owns that future scope and its unresolved design choices. It is planned only,
+excluded from v4, and supplies no current browser capability. A shared card
+interface preserves the separate meanings of execution lanes and understanding
+distributions; updates reach their source owners and generated views are rebuilt.
+
 ## Evidence and Sources
 
 - [Product direction](../../../BLUEPRINT.md#integrated-system-design)
@@ -185,6 +225,7 @@ we can build on while answers, inventory and detailed destinations evolve.
 - [Agent authority and continuity](../../../AGENTS.md)
 - [Available operations and delivery route](../../../RUNBOOK.md#landmark-tracker-accepted-design-and-available-operations)
 - [Tracker record procedure](../../landmark-tracker/README.md)
+- [Decision record: "Landmarks are LANDMARK.md artifacts one size above Specs"](../../docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md): the accepted change to the landmark record
 
 ## History
 
@@ -198,3 +239,10 @@ we can build on while answers, inventory and detailed destinations evolve.
 - 2026-09-26: Distributions across source types and scopes landed; the
   availability sentence now names them and leaves Landmark Wiki content
   assessment and record-move recovery as the remaining delivery.
+- 2026-10-01: Landmark Wiki pages restated as evolving synthesis with the name-and-context identifier rule, from the owner-confirmed Wiki definition (the decision record "The Wiki is the evolving synthesis every agent reads and updates").
+- 2026-10-02: Added the accepted change that turns landmarks into `LANDMARK.md` artifacts one size above Specs and their JSON records into question cards, from the owner-confirmed grilling of 2026-10-02.
+- 2026-10-02: Noted the owner-confirmed workflow verbs as the official step names, with the Tracker's own labels still to change, from the owner-confirmed grilling of 2026-10-02.
+
+- 2026-10-02: Linked the owner-requested post-v4 shared browser backlog; no browser capability or v4 obligation is introduced.
+
+- 2026-10-03: Reconciled the recovered Lexicon family with the later Wiki, landmark and workflow decisions; retained the installed-validator mismatch, verification distinctions and DQC reconciliation boundary.

@@ -13,7 +13,7 @@ import { finding } from './diagnostics.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { allocateWorkbenchId, isWorkbenchId } from './visible-ids.mjs';
 import { templatePlaceholders } from './template-placeholders.mjs';
-import { COLLECTIONS, LANES, PRE_FEATURE_COLLECTIONS, SIX_LANES, SCHEMA_VERSION, IGNORED_COLLECTIONS, WIKI_PROFILES, collectionRelative, declaredGit, laneRelative, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative, trackerDeclaration } from './workbench-paths.mjs';
+import { ADDITIVE_COLLECTIONS, COLLECTIONS, LANES, PRE_DDR_COLLECTIONS, PRE_FEATURE_COLLECTIONS, SIX_LANES, SCHEMA_VERSION, IGNORED_COLLECTIONS, WIKI_PROFILES, collectionRelative, declaredGit, laneRelative, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative, trackerDeclaration } from './workbench-paths.mjs';
 
 // Exported (not just used locally) so a test can build the exact historical
 // v3.0.0-v3.2.0 fixture rows from this frozen array directly, rather than
@@ -111,9 +111,14 @@ const notepadCollections = Object.fromEntries(Object.entries(PRE_FEATURE_COLLECT
 const legacyCollections = Object.fromEntries(Object.entries(notepadCollections).filter(([name]) => !['notepads', 'notepad-templates'].includes(name)));
 // S-00I TK-01U: every pre-feature shape stays valid exactly as stamped, and
 // each may carry the additive `features` collection appended at its declared
-// path. The live `collections` is the first of those appended shapes.
+// path. S-003X TK-004W: each may also carry `features` then `ddr`, the order a
+// room gains them. The live `collections` is the fully appended current shape.
 const allowedCollectionShapes = [PRE_FEATURE_COLLECTIONS, notepadCollections, legacyCollections]
-  .flatMap((shape) => [shape, { ...shape, features: collections.features }]);
+  .flatMap((shape) => [shape, { ...shape, features: collections.features }, { ...shape, features: collections.features, ddr: collections.ddr }]);
+// S-003X TK-004W: the decision-record lifecycle folders the `ddr` collection
+// is created with, the same closed set the ADR collection uses (ADR-000I):
+// accepted records at the top, `proposed/` and the permanent `archive/`.
+export const DECISION_RECORD_LIFECYCLE_FOLDERS = Object.freeze(['proposed', 'archive']);
 
 
 function lstatOrNull(target) {
@@ -530,7 +535,7 @@ function fillTemplate(content, values) {
 // Validate all layout parents and the ignore destination before any mkdir or
 // migration move. A final-directory check alone misses linked ancestors.
 function preflightLayout(project, extraDirectories = []) {
-  for (const relative of ['workbench', ...Object.values(lanes), ...Object.values(collections), ...extraDirectories]) {
+  for (const relative of ['workbench', ...Object.values(lanes), ...Object.values(collections), ...decisionRecordFolders(), ...extraDirectories]) {
     let current = project;
     for (const part of relative.split('/')) {
       current = path.join(current, part);
@@ -596,6 +601,7 @@ export function initialize(options) {
       if (options.deferWikiSeed && relative.startsWith(`${lanes.wiki}/`)) continue;
       const target = path.join(project, relative);
       fs.mkdirSync(target, { recursive: true });
+      if (relative === collections.ddr) createDecisionRecordFolders(project, relative);
       if (!fs.readdirSync(target).length) fs.writeFileSync(path.join(target, '.gitkeep'), '');
     }
     writeSessionsIgnore(project);
@@ -902,6 +908,57 @@ function addFeaturesCollection(project, manifest) {
   return { seeded };
 }
 
+// S-003X TK-004W: the `ddr` collection's lifecycle folders, as
+// project-relative paths, so layout preflight checks them like any other
+// declared directory.
+function decisionRecordFolders() {
+  return DECISION_RECORD_LIFECYCLE_FOLDERS.map(folder => `${collections.ddr}/${folder}`);
+}
+
+// Create each missing lifecycle folder of a decision-record collection as an
+// ordinary directory kept by a `.gitkeep`; an existing folder and anything
+// already in it are left exactly as they are. Callers check every path first.
+function createDecisionRecordFolders(project, relative) {
+  for (const folder of DECISION_RECORD_LIFECYCLE_FOLDERS) {
+    const target = path.join(project, relative, folder);
+    fs.mkdirSync(target, { recursive: true });
+    if (!fs.readdirSync(target).length) fs.writeFileSync(path.join(target, '.gitkeep'), '');
+  }
+}
+
+// S-003X TK-004W: check every directory the named additive collections would
+// create before the first one writes, so a refusal leaves the room unchanged.
+function additivePreflight(project, names) {
+  for (const name of names) {
+    if (!ADDITIVE_COLLECTIONS.includes(name)) throw new Error(`${name} is not an additive collection`);
+    for (const directory of name === 'ddr' ? [collections.ddr, ...decisionRecordFolders()] : [collections[name]]) {
+      try { assertSafeWritePath(project, path.join(project, directory, '.gitkeep')); }
+      catch (error) { return fail('lane-collision', error.message); }
+      const entry = lstatOrNull(path.join(project, directory));
+      if (entry && (entry.isSymbolicLink() || !entry.isDirectory())) return fail('lane-collision', `${directory} must be an ordinary directory.`);
+    }
+  }
+  return null;
+}
+
+// S-003X TK-004W: add the additive ddr collection to an existing room. Every
+// path it would create is checked before anything is written: the collection
+// and its lifecycle folders must each be an ordinary directory or absent. An
+// existing folder is adopted with its contents untouched; only missing
+// lifecycle folders are created. ADR records are never read or written.
+function addDdrCollection(project) {
+  const relative = collections.ddr;
+  for (const directory of [relative, ...decisionRecordFolders()]) {
+    try { assertSafeWritePath(project, path.join(project, directory, '.gitkeep')); }
+    catch (error) { return fail('lane-collision', error.message); }
+    const entry = lstatOrNull(path.join(project, directory));
+    if (entry && (entry.isSymbolicLink() || !entry.isDirectory())) return fail('lane-collision', `${directory} must be an ordinary directory.`);
+  }
+  fs.mkdirSync(path.join(project, relative), { recursive: true });
+  createDecisionRecordFolders(project, relative);
+  return {};
+}
+
 function validateManifestShape(manifest) {
   if (!/^v\d+\.\d+\.\d+$/.test(manifest.workbenchVersion ?? '')) return fail('invalid-version', 'Workbench version must use vMAJOR.MINOR.PATCH.');
   if (!['genesis', 'adoption', 'upgrade'].includes(manifest.provenance.lifecycle)) return fail('invalid-provenance', 'Provenance must be genesis, adoption, or upgrade.');
@@ -947,12 +1004,26 @@ function migrateUnlocked(options) {
     // set gains the features collection additively: the directory is created
     // (seeded with its README when the release templates are beside this
     // tool) and the declaration is appended; nothing else changes.
-    if (JSON.stringify(manifest.collections) === JSON.stringify(PRE_FEATURE_COLLECTIONS)) {
-      const added = addFeaturesCollection(project, manifest);
-      if (added.status) return added;
+    // S-003X TK-004W: the same route appends every later additive collection
+    // the room lacks, in declaration order, so a pre-feature room also gains
+    // `ddr` and a room stamped with the current pre-DDR set gains only `ddr`.
+    // Every addition is checked before the first one writes.
+    const additive = JSON.stringify(manifest.collections) === JSON.stringify(PRE_FEATURE_COLLECTIONS) ? ['features', 'ddr']
+      : JSON.stringify(manifest.collections) === JSON.stringify(PRE_DDR_COLLECTIONS) ? ['ddr'] : null;
+    if (additive) {
+      const blocked = additivePreflight(project, additive);
+      if (blocked) return blocked;
+      let seeded;
+      if (additive.includes('features')) {
+        const added = addFeaturesCollection(project, manifest);
+        if (added.status) return added;
+        seeded = added.seeded;
+      }
+      const addedDdr = addDdrCollection(project);
+      if (addedDdr.status) return addedDdr;
       const updated = { ...manifest, collections };
       writeSafeFile(project, manifestPath, `${JSON.stringify(updated, null, 2)}\n`);
-      return report('migrated', { manifestPath, manifest: updated, moved: [], added: ['collections.features'], seeded: added.seeded });
+      return report('migrated', { manifestPath, manifest: updated, moved: [], added: additive.map(name => `collections.${name}`), ...(seeded ? { seeded } : {}) });
     }
     if (JSON.stringify(manifest.collections) === JSON.stringify(collections)) {
       try { assertSafeReadPath(project, path.join(project, SEED_RECORD)); }
@@ -981,6 +1052,8 @@ function migrateUnlocked(options) {
     for (const name of ['notepads', 'notepad-templates', 'recovery']) fs.mkdirSync(path.join(project, collections[name]), { recursive: true });
     const addedFeatures = addFeaturesCollection(project, manifest);
     if (addedFeatures.status) return addedFeatures;
+    const addedDdr = addDdrCollection(project);
+    if (addedDdr.status) return addedDdr;
     writeSessionsIgnore(project);
     const updated = { ...manifest, workbenchId: manifest.workbenchId ?? allocateWorkbenchId(), collections, provenance: { ...manifest.provenance, layout: { source } } };
     writeSafeFile(project, manifestPath, `${JSON.stringify(updated, null, 2)}\n`);
@@ -1021,6 +1094,7 @@ function migrateUnlocked(options) {
   for (const relative of [...Object.values(lanes), ...Object.values(collections)]) {
     const target = path.join(project, relative);
     fs.mkdirSync(target, { recursive: true });
+    if (relative === collections.ddr) createDecisionRecordFolders(project, relative);
     if (!fs.readdirSync(target).length) fs.writeFileSync(path.join(target, '.gitkeep'), '');
   }
   writeSessionsIgnore(project);
@@ -1119,6 +1193,7 @@ export const RUNTIME_TOOLS = Object.freeze([
   'adr.mjs',
   'claim-coordination.mjs',
   'diagnostics.mjs',
+  'github-coordination.mjs',
   'host-floor.mjs',
   'landmark-tracker.mjs',
   'landmark-wiki.mjs',

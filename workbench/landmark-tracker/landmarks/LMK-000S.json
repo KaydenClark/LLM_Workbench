@@ -1,0 +1,26 @@
+{
+  "schema": "landmark-tracker/landmark@1",
+  "id": "LMK-000S",
+  "revision": 1,
+  "title": "Notepads",
+  "summary": "Working sessions preserve useful reasoning and corrections; grilling notes increasingly support history and handoff as DQCs and landmarks maintain current understanding.",
+  "importance": "A feature or framework pillar on the core path that deserves Blueprint representation, from the starting inventory the owner approved on 2026-09-26 (landmark-definition note decision-037); boundaries remain refinable and overlap is allowed.",
+  "origin": {
+    "title": "Notepads",
+    "summary": "Working sessions preserve useful reasoning and corrections; grilling notes increasingly support history and handoff as DQCs and landmarks maintain current understanding.",
+    "revision": 1,
+    "at": "2026-10-01T23:50:01.020Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:50:01.020Z",
+      "reason": "Owner-approved 2026-09-26 starting-inventory candidate; at least one backfilled card clearly belongs to it: DQC-004N, DQC-004O, DQC-004Q, DQC-004R, DQC-004S, DQC-005Y.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    }
+  ]
+}

@@ -27,7 +27,7 @@ and Task; load the other owners below when the operation needs them:
   project, plus the verification commands that gate "done".
 - [`workbench/wiki/MEMORY.md`](workbench/wiki/MEMORY.md) - the room brain:
   canonical, human-editable durable memory for this project. It routes to the
-  live controls above, to flat memory notes, and to the owner-directed
+  live controls above, to flat memory notes, and to the
   `design-concepts/` collection; it never duplicates live task state.
 
 - [`workbench/feedback/WORKBENCH_FEEDBACK.md`](workbench/feedback/WORKBENCH_FEEDBACK.md) -

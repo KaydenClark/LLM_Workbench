@@ -1,0 +1,264 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-001V",
+  "revision": 8,
+  "title": "What must the Blueprint explain about the finished product?",
+  "question": "What must the Blueprint explain about the finished product?",
+  "answer": "BPR-1: Each artifact has one job. BLUEPRINT.md is the 'future state and grand design' of the finished product; active ADRs are authoritative cross-cutting decisions with their reasoning; Specs detail the capabilities that move verified Actuality toward the Blueprint within ADR limits; AGENTS owns behavior and authority, RUNBOOK operation, LEXICON shared language and navigation. Formula: Blueprint target + active ADRs + verified Actuality -> Specs.\nBPR-5: Blueprint describes the destination: the coherent narrative of the finished product, its goals, what it solves, desired behavior, qualities and how the architectural parts work together. It excludes current activity, completion status, version goals, release mechanics and implementation evidence. It may summarize how active ADRs combine but is not a list of ADRs. Project-wide client requirements may belong there.\nFND-Q05: The Blueprint is 'the grand design of the finished product', the future-looking goal: what we want and what it should be and have, while Specs fill in the details. 'BLUEPRINT + ADRs = SPECs'. For LLM_Workbench it describes the perfect workbench and how agents deploy it.\nWF-1: The Blueprint owns the product destination and user journey (the whole of \"counting to 100\"); each Spec is the PRD-shaped smaller destination derived from it. The Workbench Contract, not the Blueprint, owns the agreement (instructions, authority, boundaries, language, process, completion, verification). LLM_Workbench's Blueprint maps the Workbench product; each project blueprints its own product; the template supplies only the reusable shape.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-1, BPR-5, WF-1 (locked); FND-Q05 (answered in chat, recovered from the owner's own messages). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "BPR-1 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Record the ownership split: Blueprint is the destination narrative, not status, catalog or ADR inventory; active ADR decisions are Canon; the Lexicon owns the only Context Map; Specs own scoped delivery. | BPR-1 update AGENTS.md (Authority Order, State Resolution) and templates/AGENTS.md: State that active ADR decisions are architectural Canon and the Blueprint describes the desired finished product without status or catalogs. | BPR-1 update LEXICON.md (Artifact Ownership Schema) and templates/LEXICON.md: Route each question type to its single owning artifact under this split. | BPR-1 create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Carry the ownership model as a capability with the full question disposition. | BPR-5 update BLUEPRINT.md and templates/BLUEPRINT.md: Rewrite as destination-only narrative with no status, version, evidence or catalog material. | BPR-5 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Define the Blueprint as the adaptable narrative of the desired finished product. | BPR-5 update AGENTS.md (State Resolution) and templates/AGENTS.md: The Blueprint carries no current status, release chronology or generated capability catalog. | BPR-5 update LEXICON.md (Blueprint term) and templates/LEXICON.md: Define Blueprint as destination narrative, not status, ADR inventory or proof archive. | FND-Q05 update BLUEPRINT.md: Future-state description of the finished Workbench against every workflow rung; no current status (S-00P TK-001). | FND-Q05 update templates/BLUEPRINT.md: Generic destination-only Blueprint shape (S-00P TK-005 if the shape changes). | WF-1 update BLUEPRINT.md: States the product-level destination and journey; each Spec is the PRD-shaped smaller destination; the Contract, not the Blueprint, owns the operating agreement. | WF-1 update templates/BLUEPRINT.md: Stays a generic reusable shape; each project fills its own product destination. | WF-1 update workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md: Reconciled (accepted, amended or superseded) under S-00P TK-004 so it no longer claims the Blueprint owns the future-facing PRD function. | WF-1 update LEXICON.md (Blueprint, Spec rows) and templates/LEXICON.md: Blueprint defined as the product destination; Spec as the PRD-shaped scoped destination.",
+    "home": "workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md; AGENTS.md (Authority Order, State Resolution) and templates/AGENTS.md; LEXICON.md (Artifact Ownership Schema) and templates/LEXICON.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md; BLUEPRINT.md and templates/BLUEPRINT.md; AGENTS.md (State Resolution) and templates/AGENTS.md; LEXICON.md (Blueprint term) and templates/LEXICON.md; BLUEPRINT.md; templates/BLUEPRINT.md; workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md; LEXICON.md (Blueprint, Spec rows) and templates/LEXICON.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "BPR-1",
+      "revision": "56b459da"
+    },
+    {
+      "id": "BPR-5",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q05",
+      "revision": "56b459da"
+    },
+    {
+      "id": "WF-1",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000F"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 7
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "BPR-1",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "BPR-5",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-5 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q05",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q05 (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "WF-1",
+      "revision": "56b459da",
+      "reason": "Ledger row WF-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What must the Blueprint explain about the finished product?",
+    "question": "What must the Blueprint explain about the finished product?",
+    "sources": [
+      {
+        "id": "BPR-1",
+        "revision": "56b459da"
+      },
+      {
+        "id": "BPR-5",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q05",
+        "revision": "56b459da"
+      },
+      {
+        "id": "WF-1",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:19.175Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:19.175Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 042 of the 2026-09-26 grouping (\"Blueprint and architectural decision records\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: It tells the grand design, people and problems, outcomes, desired experience and how the product fits together.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:19.190Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "BPR-1: Each artifact has one job. BLUEPRINT.md is the 'future state and grand design' of the finished product; active ADRs are authoritative cross-cutting decisions with their reasoning; Specs detail the capabilities that move verified Actuality toward the Blueprint within ADR limits; AGENTS owns behavior and authority, RUNBOOK operation, LEXICON shared language and navigation. Formula: Blueprint target + active ADRs + verified Actuality -> Specs.\nBPR-5: Blueprint describes the destination: the coherent narrative of the finished product, its goals, what it solves, desired behavior, qualities and how the architectural parts work together. It excludes current activity, completion status, version goals, release mechanics and implementation evidence. It may summarize how active ADRs combine but is not a list of ADRs. Project-wide client requirements may belong there.\nFND-Q05: The Blueprint is 'the grand design of the finished product', the future-looking goal: what we want and what it should be and have, while Specs fill in the details. 'BLUEPRINT + ADRs = SPECs'. For LLM_Workbench it describes the perfect workbench and how agents deploy it.\nWF-1: The Blueprint owns the product destination and user journey (the whole of \"counting to 100\"); each Spec is the PRD-shaped smaller destination derived from it. The Workbench Contract, not the Blueprint, owns the agreement (instructions, authority, boundaries, language, process, completion, verification). LLM_Workbench's Blueprint maps the Workbench product; each project blueprints its own product; the template supplies only the reusable shape."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-1, BPR-5, WF-1 (locked); FND-Q05 (answered in chat, recovered from the owner's own messages). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "BPR-1 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Record the ownership split: Blueprint is the destination narrative, not status, catalog or ADR inventory; active ADR decisions are Canon; the Lexicon owns the only Context Map; Specs own scoped delivery. | BPR-1 update AGENTS.md (Authority Order, State Resolution) and templates/AGENTS.md: State that active ADR decisions are architectural Canon and the Blueprint describes the desired finished product without status or catalogs. | BPR-1 update LEXICON.md (Artifact Ownership Schema) and templates/LEXICON.md: Route each question type to its single owning artifact under this split. | BPR-1 create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Carry the ownership model as a capability with the full question disposition. | BPR-5 update BLUEPRINT.md and templates/BLUEPRINT.md: Rewrite as destination-only narrative with no status, version, evidence or catalog material. | BPR-5 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: Define the Blueprint as the adaptable narrative of the desired finished product. | BPR-5 update AGENTS.md (State Resolution) and templates/AGENTS.md: The Blueprint carries no current status, release chronology or generated capability catalog. | BPR-5 update LEXICON.md (Blueprint term) and templates/LEXICON.md: Define Blueprint as destination narrative, not status, ADR inventory or proof archive. | FND-Q05 update BLUEPRINT.md: Future-state description of the finished Workbench against every workflow rung; no current status (S-00P TK-001). | FND-Q05 update templates/BLUEPRINT.md: Generic destination-only Blueprint shape (S-00P TK-005 if the shape changes). | WF-1 update BLUEPRINT.md: States the product-level destination and journey; each Spec is the PRD-shaped smaller destination; the Contract, not the Blueprint, owns the operating agreement. | WF-1 update templates/BLUEPRINT.md: Stays a generic reusable shape; each project fills its own product destination. | WF-1 update workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md: Reconciled (accepted, amended or superseded) under S-00P TK-004 so it no longer claims the Blueprint owns the future-facing PRD function. | WF-1 update LEXICON.md (Blueprint, Spec rows) and templates/LEXICON.md: Blueprint defined as the product destination; Spec as the PRD-shaped scoped destination.",
+            "home": "workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md; AGENTS.md (Authority Order, State Resolution) and templates/AGENTS.md; LEXICON.md (Artifact Ownership Schema) and templates/LEXICON.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md; BLUEPRINT.md and templates/BLUEPRINT.md; AGENTS.md (State Resolution) and templates/AGENTS.md; LEXICON.md (Blueprint term) and templates/LEXICON.md; BLUEPRINT.md; templates/BLUEPRINT.md; workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md; LEXICON.md (Blueprint, Spec rows) and templates/LEXICON.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:19.205Z",
+      "reason": "Ledger row BPR-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:19.222Z",
+      "reason": "Ledger row BPR-5 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-5",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:19.239Z",
+      "reason": "Ledger row FND-Q05 (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q05",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:19.256Z",
+      "reason": "Ledger row WF-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "WF-1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:19.273Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:49:54.567Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Artifact Types pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000F"
+          ]
+        }
+      ]
+    }
+  ]
+}

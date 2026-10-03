@@ -1,0 +1,264 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-005V",
+  "revision": 8,
+  "title": "What is a landmark, and how long does it live?",
+  "question": "What is a landmark, and how long does it live?",
+  "answer": "LD-2: Codex definition (proposal-001) locked; landmark holds exploration before the canonical map; accepted direction reflected in the Blueprint.\nLD-3: A landmark is an evolving feature/framework account, not a Spec or PRD. It has its own structured record alongside the readable Wiki explanation.\nLD-7: No universal parent Spec. A landmark is not a Spec or PRD and is not implemented itself. Bounded Specs and Tasks deliver work; several Specs may contribute to one landmark explanation. Links expose those contributions.\nLD-18: A landmark is an evolving account of a Workbench feature or framework. It is never implemented itself: Specs and Tasks implement, and the landmark tracks them as they evolve. It must earn a place in the contract (for LLM_Workbench mostly its Blueprint). It has a Wiki page and durable place from the start, may never leave the board, and retires only when nothing lives solely on it. ADRs are routing and decision records, not the delivery path.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: LD-2, LD-3, LD-7, LD-18 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "LD-2 update LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows): Defines Landmark as an evolving account of a feature or framework pillar and its importance to the Workbench. | LD-2 update BLUEPRINT.md (Landmark Tracker paragraphs): Relates landmarks to the Blueprint: accepted direction is reflected there. | LD-3 update LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows): Landmark row: not a Spec or PRD; never implemented itself. | LD-3 update workbench/docs/adr/000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md: Records the landmark as its own structured record beside its readable Wiki explanation. | LD-7 update LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows): Landmark row: bounded Specs and Tasks deliver; several Specs may contribute to one landmark. | LD-18 update BLUEPRINT.md (Landmark Tracker paragraphs): Landmarks are never implemented themselves and may never leave the board. | LD-18 update workbench/wiki/design-concepts/landmark-tracker.md: A landmark has a Wiki page and durable place from the start; retirement only when nothing lives solely on it.",
+    "home": "LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows); BLUEPRINT.md (Landmark Tracker paragraphs); workbench/docs/adr/000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md; workbench/wiki/design-concepts/landmark-tracker.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "LD-2",
+      "revision": "56b459da"
+    },
+    {
+      "id": "LD-3",
+      "revision": "56b459da"
+    },
+    {
+      "id": "LD-7",
+      "revision": "56b459da"
+    },
+    {
+      "id": "LD-18",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000X"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 7
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "LD-2",
+      "revision": "56b459da",
+      "reason": "Ledger row LD-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "LD-3",
+      "revision": "56b459da",
+      "reason": "Ledger row LD-3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "LD-7",
+      "revision": "56b459da",
+      "reason": "Ledger row LD-7 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "LD-18",
+      "revision": "56b459da",
+      "reason": "Ledger row LD-18 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 6
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What is a landmark, and how long does it live?",
+    "question": "What is a landmark, and how long does it live?",
+    "sources": [
+      {
+        "id": "LD-2",
+        "revision": "56b459da"
+      },
+      {
+        "id": "LD-3",
+        "revision": "56b459da"
+      },
+      {
+        "id": "LD-7",
+        "revision": "56b459da"
+      },
+      {
+        "id": "LD-18",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:33.744Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:33.744Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: a card written from ledger rows that postdate the 2026-09-26 draft grouping, grilling ledger at 56b459da.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:33.776Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "LD-2: Codex definition (proposal-001) locked; landmark holds exploration before the canonical map; accepted direction reflected in the Blueprint.\nLD-3: A landmark is an evolving feature/framework account, not a Spec or PRD. It has its own structured record alongside the readable Wiki explanation.\nLD-7: No universal parent Spec. A landmark is not a Spec or PRD and is not implemented itself. Bounded Specs and Tasks deliver work; several Specs may contribute to one landmark explanation. Links expose those contributions.\nLD-18: A landmark is an evolving account of a Workbench feature or framework. It is never implemented itself: Specs and Tasks implement, and the landmark tracks them as they evolve. It must earn a place in the contract (for LLM_Workbench mostly its Blueprint). It has a Wiki page and durable place from the start, may never leave the board, and retires only when nothing lives solely on it. ADRs are routing and decision records, not the delivery path."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: LD-2, LD-3, LD-7, LD-18 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "LD-2 update LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows): Defines Landmark as an evolving account of a feature or framework pillar and its importance to the Workbench. | LD-2 update BLUEPRINT.md (Landmark Tracker paragraphs): Relates landmarks to the Blueprint: accepted direction is reflected there. | LD-3 update LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows): Landmark row: not a Spec or PRD; never implemented itself. | LD-3 update workbench/docs/adr/000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md: Records the landmark as its own structured record beside its readable Wiki explanation. | LD-7 update LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows): Landmark row: bounded Specs and Tasks deliver; several Specs may contribute to one landmark. | LD-18 update BLUEPRINT.md (Landmark Tracker paragraphs): Landmarks are never implemented themselves and may never leave the board. | LD-18 update workbench/wiki/design-concepts/landmark-tracker.md: A landmark has a Wiki page and durable place from the start; retirement only when nothing lives solely on it.",
+            "home": "LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows); BLUEPRINT.md (Landmark Tracker paragraphs); workbench/docs/adr/000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md; workbench/wiki/design-concepts/landmark-tracker.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:33.810Z",
+      "reason": "Ledger row LD-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "LD-2",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:33.849Z",
+      "reason": "Ledger row LD-3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "LD-3",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:33.896Z",
+      "reason": "Ledger row LD-7 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "LD-7",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:33.935Z",
+      "reason": "Ledger row LD-18 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "LD-18",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:33.973Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:50:02.270Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000X"
+          ]
+        }
+      ]
+    }
+  ]
+}
