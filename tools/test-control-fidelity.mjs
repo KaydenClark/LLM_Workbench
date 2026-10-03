@@ -685,6 +685,9 @@ const AI_CODING_TERMS = [
   'Input tokens', 'Output tokens', 'Cache tokens', 'Stateless', 'Stateful', 'Agent', 'System prompt', 'Context window',
   // Batch 1, the four that meet an existing Workbench word: Model provider and Harness, Context and Session.
   'Model provider', 'Harness', 'Context', 'Session',
+  // Batch 2, 2026-10-03: adopted on the Blueprint teardown review page.
+  'Smart zone', 'Attention budget', 'Attention degradation', 'Automated check', 'Automated review', 'Human review',
+  'Grilling', 'Environment', 'Filesystem', 'Software factory',
 ];
 const dictionarySlug = (term) => term.toLowerCase().replace(/ /g, '-');
 
