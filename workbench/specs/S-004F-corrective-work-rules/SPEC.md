@@ -8,8 +8,8 @@
 **Updated:** 2026-10-03
 **Catalog description:** When a check finds a miss, the same Task continues with an adjusted handoff unless the fix rewrites it, and a later gap against delivered work becomes a new Spec under its landmark or the Blueprint instead of a correction anchored to a Wiki claim.
 **Blockers:** none for the first four Tasks. Three later Tasks wait on `owner:` tokens for another Spec's writer turn on the Runbook, the Lexicon and the Blueprint; each Dispatcher removes its token when that file is free.
-**Latest event:** TK-005S closed with proof.
-**Next gate:** Complete TK-005T.
+**Latest event:** TK-005T claimed by claude-lane-d.
+**Next gate:** Close TK-005T with verification and documentation proof.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 

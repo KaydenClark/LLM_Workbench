@@ -3,7 +3,7 @@
 **Task ID:** TK-005T
 **Spec ID:** S-004F
 **Slice:** State the corrective rules in the AGENTS corrective sections, the template mirror and the to-tasks skill
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-005S
 **Destination:** spec-acceptance: `AGENTS.md`, `RUNBOOK.md` and their template mirrors state the same-Task rule and the new-Spec rule, and no current-facing line in them still makes every finding a new Task or anchors later work to a Wiki claim.
