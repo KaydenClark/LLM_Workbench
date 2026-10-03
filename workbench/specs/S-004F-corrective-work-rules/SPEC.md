@@ -8,8 +8,8 @@
 **Updated:** 2026-10-03
 **Catalog description:** When a check finds a miss, the same Task continues with an adjusted handoff unless the fix rewrites it, and a later gap against delivered work becomes a new Spec under its landmark or the Blueprint instead of a correction anchored to a Wiki claim.
 **Blockers:** none for the first four Tasks. Three later Tasks wait on `owner:` tokens for another Spec's writer turn on the Runbook, the Lexicon and the Blueprint; each Dispatcher removes its token when that file is free.
-**Latest event:** TK-005R claimed by claude-lane-d.
-**Next gate:** Close TK-005R with verification and documentation proof.
+**Latest event:** TK-005R closed with proof.
+**Next gate:** Complete TK-005S.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 
@@ -123,6 +123,7 @@ Run the targeted spec-report, spec-workbench, control-fidelity and append-only t
 | 2026-10-03 | none | Authored at the Map step from the owner's two corrective-work answers confirmed on 2026-10-03 in the Blueprint teardown, at integration 5cfa987bacb0f6a9273d93e8d989e34000d75ad9. | Map only; the quoted `AGENTS.md`, Runbook, Lexicon, template, Blueprint, decision-record and skill lines and the named runtime functions and tests were read at that tip; no runtime proof claimed. | This Spec and the generated Spec catalog. Docs checked; no control, Lexicon or Wiki update is due until delivery, because a planned Spec changes no accepted rule. | Plan, implementation and proof remain; the five open questions are for Plan. |
 | 2026-10-03 | none | Planned: the five open questions settled from project evidence and seven Tasks cut (TK-005Q to TK-005W) at integration 64c2c524. | Plan only; read `spec-report.mjs` (`recordReviewVerdict`, `recordOwnerApproval`, `createCorrectiveTasks`, `createOrphanCorrectiveTasks`), `spec-workbench.mjs` (`closeTask`, `finishRecordClose`, the standalone corrective claim, select and close paths), `task-record.mjs`, `task-receipt.mjs`, the accepted records and `tools/check-append-only.py` at that tip; no implementation or runtime proof claimed. | This Spec and the seven Task records. Docs checked; no control, Lexicon or Wiki update is due until delivery. | Implementation, proof and the three writer-turn Tasks remain. |
 | 2026-10-03 | TK-005Q | Task closed | Full AGENTS suite on committed candidate 0dd04ec2 (47 of 48 first run; the one flake, test-spec-workbench, passed alone on that candidate); control-fidelity pin red then green; test-adr 56 pass; adr validate ok | DDR for the same-Task rule accepted; ADR-000F, 000G, 000H, 000I, 000R, 000U amended with git anchors; registers regenerated | none |
+| 2026-10-03 | TK-005R | Task closed | Full AGENTS suite 48 of 48 on committed candidate 9696c78d; red then green at recordReviewVerdict, recordOwnerApproval, createCorrectiveTasks, the Continuation section and the continued-Task re-close; append-only evidence and Receipt rows byte-identical in the fixtures | Docs checked; no control, Runbook or Lexicon update here: the rules reach AGENTS.md in TK-005T and the Wiki lifecycle page in TK-005S | none |
 
 ## Completion Result
 
