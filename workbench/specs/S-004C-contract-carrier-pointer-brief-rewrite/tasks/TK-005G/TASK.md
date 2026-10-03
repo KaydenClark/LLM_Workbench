@@ -3,9 +3,9 @@
 **Task ID:** TK-005G
 **Spec ID:** S-004C
 **Slice:** Move the work-selection, review and closure operations behind their pointers
-**Status:** blocked
+**Status:** ready
 **Stance:** Builder
-**Blockers:** TK-005F, owner:agents-corrective-sections-landed
+**Blockers:** TK-005F
 **Destination:** spec-acceptance: An inventory maps every line of `AGENTS.md` and `RUNBOOK.md` to a home, and a check shows every removed line landed (lifecycle family), and `RUNBOOK.md` is an operations index in which each operation's procedure is reachable in a skill.
 **Planned verification:** Red: the landing check over the family's sections fails for every unplaced line when the bodies are dropped, and the index has no pointer from "pick the next Task", "claim", "close a Task", "assemble a Spec for review", "record a verdict" or "approve and complete" to a skill that carries the procedure. Green: every line is classified, the check passes at the candidate, the skills (`carry`, `implement`, `dispatcher`, `director`, `spec-manager`, `spec-planner`, `to-tasks`, `code-review`, `reviewer` and any new skill the census justifies) carry the moved procedures with their binding requirements, the retained headings keep every inbound anchor (`AGENTS.md#assembled-review-and-corrective-return` and `#owner-closure-and-reconciliation` among them), and the templates agree. `tools/test-spec-workbench.mjs`, `tools/test-spec-report.mjs`, `tools/test-diagnostics.mjs`, `tools/test-branch-closeout.mjs`, the skill and delivery-skill tests, the landing check and the full AGENTS suite pass on the committed candidate; touched Wiki pages lint clean.
 
@@ -55,4 +55,12 @@ skills the index points to.
 ## Boundaries
 
 Relocation only: no rule's meaning changes, including the corrective-work
-rules. No change to the claim, close, verdict, approve or complete commands.
+rules of [Corrective Work Rules](../../../S-004F-corrective-work-rules/SPEC.md)
+(S-004F), which this Task moves exactly as they read on integration. No change
+to the claim, close, verdict, approve or complete commands.
+
+Blocker cleared on 2026-10-03 by the Spec's single writer (the Dispatcher):
+every Corrective Work Rules Task (TK-005Q to TK-005W) is `done`, and its
+`AGENTS.md` corrective-section commits 086c4395 and 8a9dd77e are contained in
+`origin/integration` (checked at a22e98c4). `owner:agents-corrective-sections-landed`
+is removed and this Task is ready.
