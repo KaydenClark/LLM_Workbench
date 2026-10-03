@@ -18,7 +18,10 @@ accepted decision records, not to agent rationale.
 
 ## Scope
 
-The three rows in `LEXICON.md` and `templates/LEXICON.md`.
+The three rows in `LEXICON.md` and `templates/LEXICON.md`, and the Lexicon
+pins in `tools/test-adr.mjs` that still read the Destination Packet row's
+`or the reconciled Wiki claim` wording (its workflow-meaning check and its
+`Packet loses corrective claim` mutation case).
 `owner:lexicon-writer-turn` names a turn in the Lexicon writer lane, which the
 blocker grammar cannot express as a Task identifier.
 

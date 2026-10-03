@@ -19,7 +19,7 @@ The terminal locations have deliberately opposite retentions:
 
 The full Spec closure sequence is reviewed delivery on `integration`, owner approval, verification on `main`, then `complete`, features Wiki capture, retirement and discard. [ADR-000F](000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md), [AGENTS](../../../AGENTS.md#owner-closure-and-reconciliation) and [Runbook lifecycle procedures](../../../RUNBOOK.md#spec-lifecycle-and-retrieval) carry the gates. Completed Task results and proof are reconciled into their Spec before retirement; Spec-bound Task discard waits for the parent closure/capture and containment conditions. Current-reference scanning, verified main containment and recoverable Git identity remain required; this decision performs no cleanup and grants no owner approval.
 
-The earlier FND-Q07/FND-Q08 deletion hold is lifted by the locked WF-8D/WF-8E/WF-8F answers. The features article is written at the closure point under WF-8H. A later repair against that reconciled destination loads and updates its Wiki claim without resurrecting `SPEC.md` (WF-8A/WF-8G); [ADR-000H](000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md) defines that corrective Packet.
+The earlier FND-Q07/FND-Q08 deletion hold is lifted by the locked WF-8D/WF-8E/WF-8F answers. The features article is written at the closure point under WF-8H. A later gap against that reconciled destination becomes a new Spec under its landmark or the Blueprint, never a revived `SPEC.md` and never a correction anchored to a Wiki claim.
 
 The stable-path rule is retired with its old durable-Spec premise. Reachability now comes from the supported `move-spec` and `move-task` operations rewriting live references and counting historical ones, not from forbidding folder movement. ADR moves use the separate ADR lifecycle runtime. The former flat-corpus, frontmatter and folder-unaware-successor obstacles below are historical observations at `c0ac60a`; S-00I delivered folder-aware records, literal-link rewriting and migration. This decision does not introduce another move or accept command.
 
@@ -99,3 +99,7 @@ This record is `proposed`. The ADR directory stays flat, no `proposed`,
 `archive` or `retired` folder is created, frontmatter `status` remains the live
 lifecycle mechanism, and the `AGENTS.md` stable-path rule remains live Canon,
 until the owner accepts this decision.
+
+## Later-gap correction
+
+The corrective-work Spec ([S-004F](../../specs/S-004F-corrective-work-rules/SPEC.md)) replaces the sentence that sent a later repair to its Wiki claim (WF-8A/WF-8G), under ADR-000A's amendment-first rule. The earlier text reads at `git show f91bfd72f41c4b471f1756781649375abb68d158:workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md`. The owner's answer is recorded in [the scaffolding decision](../ddr/000M-working-artifacts-are-scaffolding-cleared-away-once-their-knowledge-is-kept.md). The folder lifecycle and the rest of this decision are unchanged.

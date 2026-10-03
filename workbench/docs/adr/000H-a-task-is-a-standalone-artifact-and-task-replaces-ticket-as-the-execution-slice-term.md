@@ -12,8 +12,7 @@ canonicalized_in:
 A Task is its own artifact, `TASK.md`: bounded executable work that reaches or
 repairs a destination, normally a thin vertical slice of a Spec, carrying its
 own blocking relationships so independent Tasks can complete in parallel. The
-corrective Wiki case below preserves the same destination after its Spec is
-reconciled; it does not require that discarded Spec to remain an active owner. It is no longer a row in a table inside its Spec.
+later-gap correction at the end of this record replaces the corrective Wiki case this paragraph once named. It is no longer a row in a table inside its Spec.
 
 **Task** is the execution-slice term across the Workbench — explanatory prose,
 the live tool vocabulary, the board's columns, and the identifiers newly
@@ -61,12 +60,7 @@ stable work packet", `workbench/tools/spec-packet.mjs` parses one, and five core
 skills use the term. This decision defines the incumbent term rather than
 coining one.
 
-For a corrective Task against a reconciled Wiki claim, the maintained Wiki
-claim replaces the discarded Spec acceptance lines; the Packet still requires
-`TASK.md`, cited source/test paths and the Workbench Contract. It updates the
-same capability destination and does not resurrect `SPEC.md`. A surviving
-retired Spec is historical context when relevant, not a reason to invent a new
-Spec. This is WF-8A/WF-8G's corrective case implemented by S-00I; the broader
+A Task's destination is a Spec's acceptance lines, or a Wiki page when the Task's own destination is producing that page. A Wiki claim is never the destination of corrective work: a later gap against delivered work becomes a new Spec. The Packet still requires `TASK.md`, cited source/test paths and the Workbench Contract. The broader
 direct-Blueprint Task home remains destination design, not a shipped location.
 
 Its optional members are a Scoped handoff and the objective's local JSON
@@ -192,3 +186,7 @@ or ADR identity. S-00H has since delivered Task vocabulary and standalone
 records; the dated Ticket/runtime disclaimer above is historical. Active Task
 state and proof live in TASK.md, projected by Taskboard. Historical identifiers
 and append-only rows remain unchanged.
+
+## Later-gap correction
+
+The corrective-work Spec ([S-004F](../../specs/S-004F-corrective-work-rules/SPEC.md)) retires the corrective Wiki-claim case that WF-8A/WF-8G and S-00I added to this decision, under ADR-000A's amendment-first rule. The earlier text of this record reads at `git show f91bfd72f41c4b471f1756781649375abb68d158:workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md`. The owner's answer is recorded in [the scaffolding decision](../ddr/000M-working-artifacts-are-scaffolding-cleared-away-once-their-knowledge-is-kept.md): a later gap against delivered work becomes a new Spec under its landmark or the Blueprint and is never a correction anchored to a Wiki claim; a miss found by a check while the Spec is still open follows [the same-Task decision](../ddr/000Y-a-miss-found-by-a-check-continues-the-same-task-unless-the-fix-rewrites-it.md). The Task artifact, the Packet's other members, the Receipt and the rest of this decision are unchanged.

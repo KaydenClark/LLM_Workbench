@@ -431,8 +431,9 @@ test('every accepted-ADR-to-spec reference in the real corpus resolves literally
   }
   // TK-004 activates G/I: G routes its S-00P decision owner; I routes S-00I/S-00J.
   // ADR-000X (the workflow verbs) routes the two Landmark Tracker Specs it leaves with the Tracker work.
-  assert.equal(filesWithLink, 27, 're-count of accepted ADR files carrying a live Spec-path reference at this candidate');
-  assert.equal(totalLinks, 33, 're-count of total accepted-ADR-to-spec link edges at this candidate');
+  // S-004F TK-005Q: each corrective-work amendment (ADR-000F, 000G, 000H, 000I, 000R, 000U) routes the Corrective Work Rules Spec.
+  assert.equal(filesWithLink, 29, 're-count of accepted ADR files carrying a live Spec-path reference at this candidate');
+  assert.equal(totalLinks, 39, 're-count of total accepted-ADR-to-spec link edges at this candidate');
 });
 
 test('durable references distinguish tracked notepad templates from ignored live records', () => {
@@ -573,8 +574,9 @@ test('every intra-ADR link in the real corpus resolves literally, and the re-cou
   // ADR-000S (Destination Decision Records) and ADR-000T (the read words) add two linked records.
   // ADR-000U (landmarks), ADR-000V (roles) and ADR-000W (Contract carriers) add three linked records.
   // ADR-000X (the workflow verbs) adds one linked record; ADR-000Y (promotion) links none.
+  // S-004F TK-005Q: the corrective-work amendments in ADR-000F, ADR-000G, ADR-000H, ADR-000I, ADR-000R and ADR-000U add seven edges to the destination records.
   assert.equal(filesWithLink, 47, 're-count of ADR files carrying an intra-ADR link at this candidate');
-  assert.equal(totalLinks, 109, 're-count of total intra-ADR link edges at this candidate');
+  assert.equal(totalLinks, 116, 're-count of total intra-ADR link edges at this candidate');
 });
 
 // S-00I TK-001 review correction: a link is validated literally, never
@@ -895,8 +897,9 @@ function assertWorkflowMeaning(corpus) {
   requires(i, /stable-path rule[\s\S]*retired/i, 'stable path premise retired');
   requires(i, /Task progress \(`ready`, `in-progress`, `done`\) is distinct from folder lifecycle/, 'Task execution state distinct from folder lifecycle');
   const h = records.get('000H').body;
-  requires(h, /corrective Task against a reconciled Wiki claim[\s\S]*replaces the discarded Spec acceptance lines/i, 'Packet supports Wiki corrective work without resurrection');
-  requires(h, /does not resurrect `SPEC.md`/, 'corrective Packet does not restore retired scaffolding');
+  // S-004F TK-005Q: the Wiki is evidence, not the destination of corrective work.
+  requires(h, /A Wiki claim is never the destination of corrective work: a later gap against delivered work becomes a new Spec/, 'a later gap is a new Spec and the Wiki is never a corrective destination');
+  requires(h, /Task's destination is a Spec's acceptance lines, or a Wiki page when the Task's own destination is producing that page/, 'the Wiki-page destination serves a Task that produces the page');
   const lexicon = controls.get('LEXICON.md');
   for (const [term, pattern] of [
     ['Blueprint', /desired finished product/],
@@ -953,7 +956,7 @@ test('workflow checks reject substantive and literal-route mutations with accept
     ['premature capture', '000I', 'then `complete`, features Wiki capture', 'features Wiki capture, then `complete`'],
     ['permanent retirement', '000I', 'transient staging area', 'permanent archive'],
     ['closure before main', '000I', 'verification on `main`, then `complete`', '`complete`, then verification on `main`'],
-    ['Packet loses Wiki', '000H', 'replaces the discarded Spec acceptance lines', 'requires the discarded Spec acceptance lines'],
+    ['Wiki becomes a corrective destination', '000H', 'A Wiki claim is never the destination of corrective work', 'A Wiki claim is the destination of corrective work'],
     ['lost ADR route', '000G', '(000F-', '(proposed/000F-']
   ];
   for (const [label, id, before, after] of cases) {

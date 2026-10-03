@@ -21,8 +21,9 @@ QA itself or dispatching it and owning the result. The Director then approves
 the immutable assembled candidate in a separate context before it combines
 into `integration`. The Dispatcher, and every agent that implemented a Task in
 the candidate, cannot give that approval. Passing lets the Spec branch merge
-into `integration`. Failing is diagnostic: it creates corrective Tasks under
-the still-open Spec, then a fresh candidate. The gate is a step in the
+into `integration`. Failing is diagnostic: each finding is corrected under
+the still-open Spec, by the same Task continuing with an adjusted handoff
+unless the fix rewrites it, then a fresh candidate. The gate is a step in the
 harness's own merge-preparation workflow, not GitHub-enforced branch
 protection. On the board, Needs review holds an assembled Spec waiting for the
 Director's approval, and Complete holds approved work waiting for closure.
@@ -30,10 +31,11 @@ Director's approval, and Complete holds approved work waiting for closure.
 **No Task has a separate destination-level review or approval gate.** A Task is one attempt at one step.
 Its Worker self-checks that its claims are valid and backed by proof before
 handing back, and the Dispatcher reads the report and chooses the next step.
-Merging a Task is coordination and containment, not QA. The missed-Task destination model preserves the original record rather than
-silently reopening completed proof: its `TASK.md` stays the record until the Spec is cleaned
-up into the features Wiki, its card returns to In progress, its worktree is
-removed, and a new Task named for its objective fixes it. Board/card and automatic worktree cleanup in this model
+Merging a Task is coordination and containment, not QA. The missed-Task destination model never silently reopens completed
+proof: its `TASK.md` stays the record until the Spec is cleaned up into the features Wiki,
+with its earlier proof preserved as written, its card returns to In progress and its worktree
+is removed. The same Task continues with an adjusted handoff; only when the fix changes
+the Task enough that it has to be rewritten does a new Task named for its objective fix it. Board/card and automatic worktree cleanup in this model
 remain destination design; they do not authorize deletion of uncontained work.
 
 The **Human QA gate** runs from `integration` into `main` and belongs to the
@@ -148,3 +150,11 @@ contained in integration `66815b4e4d0a35802d28c3a470921c00692f8d0d`.
 The [Runbook lifecycle procedures](../../../RUNBOOK.md#spec-lifecycle-and-retrieval)
 now carry that delivery. This resolves the procedure-documentation gap;
 owner Human QA, main promotion and whole-Spec closure remain separate gates.
+
+The corrective-work Spec ([S-004F](../../specs/S-004F-corrective-work-rules/SPEC.md)) amends the two places above that
+made every finding a new corrective Task, under ADR-000A's amendment-first rule.
+The earlier text reads at `git show f91bfd72f41c4b471f1756781649375abb68d158:workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md`. The owner's answer, recorded
+in [the same-Task destination decision](../ddr/000Y-a-miss-found-by-a-check-continues-the-same-task-unless-the-fix-rewrites-it.md), is that a miss found by a check
+continues the same Task with an adjusted handoff unless the fix rewrites it. The
+two gates, the Director's separate-context review, flexible Human QA and the
+closure order are unchanged. This records no owner approval.
