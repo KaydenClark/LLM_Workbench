@@ -28,3 +28,4 @@
 | [000T](000T-the-workbench-is-an-agentic-management-system-not-a-harness.md) | The workbench is an agentic management system, not a harness | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000U](000U-a-project-is-a-room-and-the-workbench-is-the-table-in-it.md) | A project is a room and the workbench is the table in it | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000V](000V-gaps-are-flagged-never-faked.md) | Gaps are flagged, never faked | accepted | 2026-10-03 | BLUEPRINT.md |
+| [000W](000W-rooms-nest-and-a-parent-workbench-owns-what-its-children-share.md) | Rooms nest and a parent workbench owns what its children share | accepted | 2026-10-03 | LEXICON.md |
