@@ -8,8 +8,8 @@
 **Updated:** 2026-10-03
 **Catalog description:** When a check finds a miss, the same Task continues with an adjusted handoff unless the fix rewrites it, and a later gap against delivered work becomes a new Spec under its landmark or the Blueprint instead of a correction anchored to a Wiki claim.
 **Blockers:** none. The three `owner:*-writer-turn` tokens were sequencing gates this Spec's planning created, not owner decisions; they were cleared on 2026-10-03 as the Blueprint (PR #310), Runbook and Lexicon (PR #317) writers became free.
-**Latest event:** TK-005U closed with proof.
-**Next gate:** Complete TK-005V.
+**Latest event:** TK-005V claimed by claude-lane-d.
+**Next gate:** Close TK-005V with verification and documentation proof.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 

@@ -3,7 +3,7 @@
 **Task ID:** TK-005V
 **Spec ID:** S-004F
 **Slice:** State the corrective rules in the Lexicon Task, Destination Packet and Assembled-Spec review rows
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: The Lexicon's Task, Destination Packet and Assembled-Spec review rows and their template mirrors state both rules, and no row offers a Wiki claim as a destination for corrective work.
