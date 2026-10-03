@@ -7,7 +7,7 @@
 **Stance:** Builder
 **Updated:** 2026-10-03
 **Catalog description:** When a check finds a miss, the same Task continues with an adjusted handoff unless the fix rewrites it, and a later gap against delivered work becomes a new Spec under its landmark or the Blueprint instead of a correction anchored to a Wiki claim.
-**Blockers:** none for the Tasks other than TK-005U and TK-005V, which wait on `owner:` tokens for another Spec's writer turn on the Runbook and the Lexicon. The tokens are sequencing gates this Spec's planning created, not owner decisions; the Blueprint token was cleared on 2026-10-03 when the short page merged (PR #310).
+**Blockers:** none for the Tasks other than TK-005V, which waits on an `owner:` token for another Spec's writer turn on the Lexicon. The tokens are sequencing gates this Spec's planning created, not owner decisions; the Blueprint token was cleared when the short page merged (PR #310) and the Runbook token on 2026-10-03 when the Runbook writer was free.
 **Latest event:** TK-005W closed with proof.
 **Next gate:** Complete TK-005U.
 
