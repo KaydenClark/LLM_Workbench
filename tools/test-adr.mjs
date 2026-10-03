@@ -1299,6 +1299,14 @@ test('every lifecycle refusal names its reason and leaves the tree byte-identica
     const cli = spawnSync(process.execPath, [adrTool, 'supersede', 'DDR-000A', '--by', 'DDR-000B', '--by', 'DDR-000C', '--path', dir], { cwd: dir, encoding: 'utf8' });
     assert.equal(cli.status, 1);
     assert.match(cli.stderr, /exactly one successor/);
+    // Review corrective: only the move commands take a record identifier; any
+    // other command refuses a stray one instead of silently ignoring it.
+    for (const args of [['validate', 'ADR-000A'], ['register', 'DDR-000A'], ['accept', 'DDR-000C', 'DDR-000B']]) {
+      const stray = spawnSync(process.execPath, [adrTool, ...args, '--path', dir], { cwd: dir, encoding: 'utf8' });
+      assert.equal(stray.status, 1, `${args.join(' ')} must refuse`);
+      assert.match(stray.stderr, /Unknown argument: [AD]DR-000[ABC]/);
+    }
+    assert.deepEqual(treeSnapshot(dir), dirty);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
