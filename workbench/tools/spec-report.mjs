@@ -37,7 +37,7 @@ import { appendEvidence, atomicWrite, findSpec, loadRetiredSpecs, loadSpecs, occ
 import { formatTaskRecord, listTaskRecords, parseTaskRecord, taskStatus, updateTaskFields } from './task-record.mjs';
 import { appendContinuationToContent, readContinuations } from './task-continuation.mjs';
 import { readReceiptFromFile } from './task-receipt.mjs';
-import { assertSafeWritePath, lanePath } from './workbench-paths.mjs';
+import { assertSafeWritePath } from './workbench-paths.mjs';
 import { allocateArtifactId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 
 const PLACEHOLDER_COMPLETION = /^pending\.?$/i;
@@ -657,23 +657,13 @@ export function createCorrectiveTasks(rootDir, specId, options = {}) {
     throw new Error(`A fail verdict or owner QA finding for candidate ${candidate} on ${specId} names no corrective finding ("${findings}"); one that leaves the Spec with no corrective Task is refused.`);
   }
 
-  // S-00I TK-006: once a Spec is discarded, `findSpec` finds it neither on
-  // the active roster nor in `retired/` - there is no `SPEC.md` left to
-  // anchor a fail-verdict or owner-QA row against at all, since that row
-  // lived in the file discard just removed. A caller who still names
-  // `--wiki-claim <note>#<heading>` is asking for exactly the case TK-006
-  // defines: anchor the corrective Task directly to the reconciled Wiki
-  // claim instead, skipping the row lookup below entirely (there is no row
-  // to look up). A caller who names no wiki claim gets `findSpec`'s own
-  // "Unknown spec ID" error unchanged - every existing caller of this
-  // function takes this branch exactly as before.
-  let spec;
-  try {
-    spec = findSpec(root, specId);
-  } catch (error) {
-    if (options.wikiClaim) return createOrphanCorrectiveTasks(root, specId, { candidate, items: givenItems, wikiClaim: options.wikiClaim });
-    throw error;
-  }
+  // S-004F TK-005S (DDR-000M): the Wiki-claim anchor S-00I TK-006 added for a
+  // discarded Spec is retired. The Wiki holds knowledge and evidence for the
+  // direction and the plan, never the destination, so no corrective Task
+  // anchors to a claim; a later gap becomes a new Spec.
+  if (options.wikiClaim) throw new Error(`createCorrectiveTasks refuses a Wiki-claim anchor: ${NEW_SPEC_ROUTE}.`);
+  const spec = findSpec(root, specId);
+  assertSpecOpenForCorrection(spec);
   const evidence = parseEvidence(spec.content);
   const anchor = findCorrectiveAnchor(evidence, candidate);
   if (!anchor) {
@@ -803,73 +793,18 @@ export function createCorrectiveTasks(rootDir, specId, options = {}) {
   return { specId, candidate, verdictRow: { ordinal: rowOrdinal, date: verdictDate }, created, continued };
 }
 
-// S-00I TK-006: the discarded-Spec branch `createCorrectiveTasks` above
-// dispatches to when `findSpec` finds no Spec at all and the caller named a
-// Wiki claim. There is no evidence log to anchor against (discard removed
-// it along with the Spec), so this skips `findCorrectiveAnchor` and the
-// row-matches-caller equality check entirely and builds one Task per
-// caller-given finding directly - the caller is asserting the finding
-// itself, not replaying a row this room can still read. Each Task's
-// `Destination` is `wiki-claim: <note>#<heading>` (the exact shape
-// `assembleTaskPacket`'s `resolveWikiClaim` in task-packet.mjs already
-// reads), validated the same way that resolver validates it: the note must
-// exist inside the Wiki collection and actually carry that heading. Written
-// into `<specs lane>/corrective/tasks/<id>/TASK.md` - the folder
-// `loadCorrectiveTasks` in spec-workbench.mjs defines and reads, since the
-// Spec directory a Task would ordinarily live under is gone.
-function createOrphanCorrectiveTasks(root, specId, { candidate, items, wikiClaim }) {
-  const match = /^([^#]+\.md)#(.+)$/.exec(String(wikiClaim).trim());
-  if (!match) throw new Error(`createCorrectiveTasks wikiClaim "${wikiClaim}" is unreadable; expected "<note path>#<claim heading>"`);
-  const [, notePathRaw, heading] = match;
-  const wikiRoot = lanePath(root, 'wiki');
-  const noteAbsolute = path.resolve(root, notePathRaw.trim());
-  const withinWiki = path.relative(wikiRoot, noteAbsolute);
-  if (withinWiki.startsWith('..') || path.isAbsolute(withinWiki)) {
-    throw new Error(`createCorrectiveTasks wikiClaim note "${notePathRaw}" must stay inside the Wiki collection`);
-  }
-  if (!fs.existsSync(noteAbsolute)) {
-    throw new Error(`createCorrectiveTasks found no Wiki note at ${notePathRaw}; a corrective Task after discard must name the reconciled Wiki claim that still exists`);
-  }
-  const noteContent = fs.readFileSync(noteAbsolute, 'utf8');
-  if (!new RegExp(`^## ${escapeRegExp(heading)}[ \t]*$`, 'm').test(noteContent)) {
-    throw new Error(`createCorrectiveTasks found no "${heading}" claim heading in ${notePathRaw}`);
-  }
-  const notePathRelative = path.relative(root, noteAbsolute).split(path.sep).join('/');
-  const destination = `wiki-claim: ${notePathRelative}#${heading}`;
+// S-004F TK-005S (DDR-000M): the route a gap against delivered work takes.
+// Every retired corrective path names it, so a refusal tells the caller what to
+// do instead. Exported so spec-workbench.mjs refuses with the same words.
+export const NEW_SPEC_ROUTE = 'a later gap against delivered work becomes a new Spec under its landmark or the Blueprint (it may cite Wiki pages as evidence for its direction and plan), never a revived Spec and never a correction anchored to a Wiki claim';
 
-  const correctiveDir = path.join(resolveSpecsRoot(root).specsRoot, 'corrective');
-  const existingOrphanRecords = listTaskRecords(correctiveDir, root);
-  for (const findingText of items) {
-    const marker = `Answers a corrective wiki-claim finding for ${specId} at ${candidate}: ${findingText}`;
-    if (existingOrphanRecords.some(task => task.specId === specId && task.destination.reference === `${notePathRelative}#${heading}` && task.plannedVerification === marker)) {
-      throw new Error(`Corrective Tasks already exist for ${specId} at ${candidate}: ${findingText}`);
-    }
-  }
-  const reservations = occupiedIdentities(root, 'TK');
-
-  const staged = [];
-  for (const findingText of items) {
-    const id = allocateArtifactId('TK', reservations);
-    reservations.push(id);
-    const filePath = path.join(correctiveDir, 'tasks', id, 'TASK.md');
-    const plannedVerification = `Answers a corrective wiki-claim finding for ${specId} at ${candidate}: ${findingText}`;
-    const content = formatTaskRecord({
-      id, specId, slice: findingText, status: 'ready', blockers: 'none',
-      destination, plannedVerification
-    });
-    parseTaskRecord(content, filePath, root);
-    staged.push({ id, filePath, content, slice: findingText });
-  }
-
-  const created = [];
-  for (const item of staged) {
-    assertSafeWritePath(root, item.filePath);
-    fs.mkdirSync(path.dirname(item.filePath), { recursive: true });
-    atomicWrite(item.filePath, item.content);
-    created.push({ id: item.id, filePath: path.relative(root, item.filePath).split(path.sep).join('/'), slice: item.slice });
-  }
-
-  return { specId, candidate, wikiClaim: destination, created };
+// Delivered work - a Spec that is complete or superseded, or that sits in the
+// `retired` folder - is not corrected by a Task. While a Spec is still open, a
+// miss found by a check continues its Task or opens a new one (DDR-000Y);
+// after delivery it is a new Spec. Checked before any write.
+function assertSpecOpenForCorrection(spec) {
+  const state = spec.lifecycleFolder === 'retired' ? 'retired' : (['complete', 'superseded'].includes(spec.status) ? spec.status : null);
+  if (state) throw new Error(`${spec.id} is ${state}; a corrective Task is not written against delivered work: ${NEW_SPEC_ROUTE}.`);
 }
 
 // S-004F TK-005R (DDR-000Y): the disposition every finding of a fail verdict
@@ -897,6 +832,7 @@ export function parseFindingDisposition(item) {
 // plan, reading nothing it will not use and writing nothing, so a caller can
 // refuse before it appends a row.
 function planCorrectiveFindings(root, spec, items) {
+  assertSpecOpenForCorrection(spec);
   const specDir = path.dirname(spec.filePath);
   const records = [...listTaskRecords(specDir, root)];
   const find = (taskId) => records.find((record) => visibleIdKey(record.id) === visibleIdKey(taskId));

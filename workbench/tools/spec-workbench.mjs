@@ -20,7 +20,7 @@ import { ARTIFACT_ID_MIN_WIDTH, allocateArtifactId, compareVisibleIds, visibleId
 import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseFormerId, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
 import { appendReceiptRow, appendReceiptRowToContent, readGitFacts, readReceipt, readReceiptFromFile } from './task-receipt.mjs';
 import { buildTaskboard, taskboardTaskEntry, taskboardSpecLane, compareTaskboardEntries } from './taskboard.mjs';
-import { assembleSpecReport, computeSpecDigest, formatSpecReport, isAncestorOfBranch, recordOwnerApproval, recordReviewVerdict } from './spec-report.mjs';
+import { NEW_SPEC_ROUTE, assembleSpecReport, computeSpecDigest, formatSpecReport, isAncestorOfBranch, recordOwnerApproval, recordReviewVerdict } from './spec-report.mjs';
 
 // One closed status vocabulary for an execution slice, owned by the record
 // reader and re-exported here so the lifecycle commands and the record share
@@ -80,48 +80,34 @@ export function nextSelection(rootDir, options = {}) {
     return { result, coordination };
   }
   const { candidate, capabilityBlocked, remoteClaimed } = selectWork([...loadSpecs(rootDir), ...loadRetiredSpecs(rootDir)], { session, remoteClaims: context.claims });
-  let result = candidate ?? selectOrphanCorrectiveCandidate(loadCorrectiveTasks(rootDir).filter((task) => !context.claims?.has(`${task.specId}/${task.id}`)));
+  let result = candidate;
   if (capabilityBlocked.length > 0) result = result ? { ...result, capabilityBlocked } : { specId: null, taskId: null, capabilityBlocked };
   const coordination = publicCoordination(context, remoteClaimed);
   if (result && context.mode === 'remote') result = { ...result, coordination };
   return { result, coordination };
 }
 
-// S-00I TK-006: a corrective Task created after its owning Spec has been
-// discarded (`createCorrectiveTasks`'s wiki-claim branch in spec-report.mjs)
-// has no Spec directory left to live under - the whole point of discard is
-// that the directory is gone. It lives at the one folder this lane defines
-// and states for exactly that case: `<specs lane>/corrective/tasks/<id>/
-// TASK.md`, read with the same `listTaskRecords` reader every ordinary
-// Spec's own `tasks/` directory already uses, so this adds no second reader.
-// Returns `[]` for a room that has never created one, exactly like
-// `loadRetiredSpecs` for a room that has never retired a Spec.
+// S-004F TK-005S (DDR-000M): the standalone corrective Task S-00I TK-006
+// created after its owning Spec was discarded, anchored to a Wiki claim, is
+// retired: the Wiki holds knowledge and evidence, never the destination, and a
+// later gap against delivered work becomes a new Spec. No command creates,
+// selects, claims or closes one. A record an earlier release wrote lives at
+// `<specs lane>/corrective/tasks/<id>/TASK.md`; this reader keeps naming it so
+// its identifier stays occupied and no new identifier collides with it.
+// Returns `[]` for a room that has never held one.
 export function loadCorrectiveTasks(rootDir) {
   const root = path.resolve(rootDir);
   const { specsRoot } = resolveSpecsRoot(root);
   return listTaskRecords(path.join(specsRoot, 'corrective'), root);
 }
 
-// Uses the same To-do eligibility and priority/title/visible-id ordering
-// over the existing status vocabulary of an orphan corrective
-// Task's own record already carries, without a Spec to read priority or
-// blockers from - an orphan corrective Task declares `Blockers: none` by
-// construction (`createOrphanCorrectiveTasks`), so there is nothing to
-// resolve here that `unmetBlockers` would need to check.
-function selectOrphanCorrectiveCandidate(tasks) {
-  const eligible = tasks.filter((task) => taskboardTaskEntry({ id: task.specId, priority: 0 }, task).eligible);
-  if (eligible.length === 0) return null;
-  eligible.sort((a, b) => compareTaskboardEntries(taskboardTaskEntry({ id: a.specId, priority: 0 }, a), taskboardTaskEntry({ id: b.specId, priority: 0 }, b)));
-  const task = eligible[0];
-  return {
-    specId: task.specId,
-    title: `Corrective Task for discarded ${task.specId}`,
-    taskId: task.id,
-    slice: task.slice,
-    status: taskStatus(task),
-    orphan: true,
-    path: task.relativePath
-  };
+// The one refusal every retired Wiki-claim corrective path throws, naming the
+// route the owner chose. `claim` and `close` take a Spec ID; a Task ID is only
+// ever recognized here to say why a standalone corrective record is not worked.
+function refuseStandaloneCorrective(root, verb, selector) {
+  const record = loadCorrectiveTasks(root).find((item) => visibleIdKey(item.id) === visibleIdKey(selector) || (item.formerId && visibleIdKey(item.formerId) === visibleIdKey(selector)));
+  if (!record) throw new Error(`${verb} takes a Spec ID; ${selector} is not one, and no standalone corrective Task ${selector} exists`);
+  throw new Error(`${verb} refused: ${record.id} is a standalone corrective Task anchored to a Wiki claim, and that route is retired: ${NEW_SPEC_ROUTE}. Carry its gap as a new Spec; this record is neither selected, claimed nor closed.`);
 }
 
 // An `all` effect is a refusal, not only a doctor exit code: the effect table
@@ -359,15 +345,8 @@ export function claimWork(rootDir, id, options) {
 // The ordinary claim in the working tree: select, route, and write the Task
 // record and Spec header. Returns the shown Spec plus the claimed ids.
 function claimInTree(rootDir, id, options, remoteClaims) {
-  // S-00I TK-006: an orphan corrective Task (no owning Spec directory left to
-  // claim through) is addressed by its own Task ID directly, never a Spec
-  // ID - there is no Spec ID left to name. `TASK.md`'s own id regex closes
-  // the vocabulary to `TK-...`, which a Spec ID never matches, so this can
-  // never misroute a real Spec ID.
-  if (/^TK-/.test(id)) {
-    const orphan = claimOrphanCorrectiveTask(path.resolve(rootDir), id, options, remoteClaims);
-    return { result: orphan, specId: orphan.specId, taskId: orphan.taskId, remoteClaimed: [] };
-  }
+  // S-004F TK-005S: a Task ID names no Spec; the standalone corrective route is retired.
+  if (/^TK-/.test(id)) refuseStandaloneCorrective(path.resolve(rootDir), 'claim', id);
   id = resolveSpecId(rootDir, id);
   const date = validDate(options?.date ?? today());
   const specs = [...loadSpecs(rootDir), ...loadRetiredSpecs(rootDir)];
@@ -432,10 +411,8 @@ function claimInTree(rootDir, id, options, remoteClaims) {
 
 export function closeTask(rootDir, id, options) {
   const root = path.resolve(rootDir);
-  // S-00I TK-006: an orphan corrective Task closes by its own Task ID
-  // (mirrors `claimWork` above); its evidence lands on the Wiki note its
-  // `wiki-claim` destination names, never a `SPEC.md` that does not exist.
-  if (/^TK-/.test(id)) return closeOrphanCorrectiveTask(root, id, options);
+  // S-004F TK-005S: a Task ID names no Spec; the standalone corrective route is retired.
+  if (/^TK-/.test(id)) refuseStandaloneCorrective(root, 'close', id);
   id = resolveSpecId(root, id);
   const proof = requireValue(options?.proof, '--proof is required');
   const docs = requireValue(options?.docs, '--docs is required');
@@ -637,77 +614,6 @@ function gitStateAtClose(root, remainingGap, reasonOption) {
   }
   if (reason) return record(findings.join(' and '));
   throw new Error(`close refused: ${findings.join(' and ')}; commit and push, or rerun with --git-state-reason "<why>" to record the state and reason`);
-}
-
-// S-00I TK-006: claims an orphan corrective Task by its own Task ID - see
-// `loadCorrectiveTasks` above for why this folder and this reader.
-function claimOrphanCorrectiveTask(root, selector, options, remoteClaims = null) {
-  const corrective = loadCorrectiveTasks(root);
-  const taskId = resolveStoredId('corrective Task', selector, corrective.map((item) => ({ id: item.id })));
-  const task = corrective.find((item) => item.id === taskId);
-  if (!task) throw new Error(`Unknown corrective Task ID: ${taskId}`);
-  if (task.status !== 'ready') throw new Error(`${taskId} is ${task.status}, not ready`);
-  const claimedOn = remoteClaims?.get(`${task.specId}/${task.id}`);
-  if (claimedOn) throw new Error(`${taskId} is claimed on a remote tip: ${claimedOn.join(', ')}`);
-  atomicWrite(task.filePath, updateTaskFields(task.content, { Status: 'in-progress' }));
-  return { taskId, specId: task.specId, status: 'in-progress', orphan: true };
-}
-
-// S-00I TK-006: closes an orphan corrective Task - one created after its
-// owning Spec was discarded (`createCorrectiveTasks`'s wiki-claim branch).
-// There is no `SPEC.md` to append an evidence row to and this never creates
-// one; the Task's own `wiki-claim` destination already names the reconciled
-// Wiki capability record its finding is against, and that note's own
-// `provenance` list - the Wiki schema's own attribution field - is where
-// this append-only close is recorded instead.
-function closeOrphanCorrectiveTask(root, selector, options) {
-  const proof = requireValue(options?.proof, '--proof is required');
-  const docs = requireValue(options?.docs, '--docs is required');
-  const remainingGap = requireValue(options?.remainingGap, '--remaining-gap is required');
-  const date = validDate(options?.date ?? today());
-  const corrective = loadCorrectiveTasks(root);
-  const taskId = resolveStoredId('corrective Task', selector, corrective.map((item) => ({ id: item.id })));
-  const task = corrective.find((item) => item.id === taskId);
-  if (!task) throw new Error(`Unknown corrective Task ID: ${taskId}`);
-  if (!['ready', 'in-progress'].includes(task.status)) throw new Error(`${taskId} has no open task to close`);
-  if (task.destination.type !== 'wiki-claim') {
-    throw new Error(`${taskId} destination is ${task.destination.type}, not wiki-claim; an orphan corrective Task always closes through its Wiki claim`);
-  }
-  const match = /^([^#]+\.md)#(.+)$/.exec(task.destination.reference.trim());
-  if (!match) throw new Error(`${taskId} has an unreadable wiki-claim destination "${task.destination.reference}"`);
-  const [, notePathRaw] = match;
-  const wikiRoot = lanePath(root, 'wiki');
-  const noteAbsolute = path.resolve(root, notePathRaw.trim());
-  const withinWiki = path.relative(wikiRoot, noteAbsolute);
-  if (withinWiki.startsWith('..') || path.isAbsolute(withinWiki)) {
-    throw new Error(`${taskId} wiki-claim note "${notePathRaw}" must stay inside the Wiki collection`);
-  }
-  if (!fs.existsSync(noteAbsolute)) throw new Error(`${taskId} names a Wiki claim note that no longer exists: ${notePathRaw}`);
-  const noteContent = fs.readFileSync(noteAbsolute, 'utf8');
-  const noteRelative = path.relative(root, noteAbsolute).split(path.sep).join('/');
-  const provenanceText = `${taskId} corrective Task closed ${date}: ${proof} (docs: ${docs}; remaining gap: ${remainingGap})`;
-  const updatedNote = appendProvenanceRow(noteContent, provenanceText);
-  if (updatedNote === noteContent) throw new Error(`${noteRelative} has no provenance: list for ${taskId} to append to`);
-  atomicWrite(noteAbsolute, updatedNote);
-  atomicWrite(task.filePath, updateTaskFields(task.content, { Status: 'done', Proof: proof }));
-  return { taskId, specId: task.specId, status: 'done', wikiNote: noteRelative, orphan: true };
-}
-
-// Appends one bullet to a note's frontmatter `provenance:` YAML list -
-// `parseFrontmatter` in adr.mjs reads any `  - value` line following a
-// `key:` line as a list item, so appending here means finding where that
-// run of list items ends and inserting one more line in the same shape,
-// never touching an existing line (append-only). Returns `content`
-// unchanged when the note has no `provenance:` list at all, so the caller
-// can refuse rather than silently writing nothing.
-function appendProvenanceRow(content, text) {
-  const frontmatter = /^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/.exec(content);
-  if (!frontmatter) return content;
-  const pattern = /^provenance:\n((?:  - .*\n)*)/m;
-  const match = pattern.exec(frontmatter[0]);
-  if (!match) return content;
-  const at = match.index + match[0].length;
-  return `${content.slice(0, at)}  - ${text}\n${content.slice(at)}`;
 }
 
 // The Receipt's second, proactive writer (ADR-000H): appends one row to a
