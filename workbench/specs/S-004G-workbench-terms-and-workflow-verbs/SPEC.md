@@ -3,13 +3,13 @@
 **Spec ID:** S-004G
 **Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-lane-g
 **Stance:** Builder
 **Updated:** 2026-10-03
 **Catalog description:** Put the owner's Workbench terms and one row per workflow verb into the Lexicon, repair the rows that contradict the Blueprint teardown's locked answers, and record the changed Journey point of the workflow-verbs decision in a decision record.
 **Blockers:** none. The Lexicon rows take one writer at a time, so this Spec's first Task waits on the last Task of the AI Coding Dictionary Terms Spec. The `ddr` collection and the commands that write, accept and supersede a decision record are installed.
-**Latest event:** Planned and activated on 2026-10-03 by the Lexicon writer lane: five serial Tasks are cut (the Workbench term and artifact-kind rows; the workflow verb rows; the Blueprint and Foundry repairs; the decision record for the Journey correction; the controls inventory and the Workflow Verbs article).
-**Next gate:** The first Task, once the last Task of the AI Coding Dictionary Terms Spec is done.
+**Latest event:** TK-006C claimed by claude-lane-g.
+**Next gate:** Close TK-006C with verification and documentation proof.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 

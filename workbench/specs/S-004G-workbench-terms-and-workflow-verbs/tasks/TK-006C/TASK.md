@@ -3,7 +3,7 @@
 **Task ID:** TK-006C
 **Spec ID:** S-004G
 **Slice:** Add the Owner, Room, Workbench Template, Scaffolding, artifact-kind and Control rows and retire "root controls"
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: The Lexicon has exactly one row each for Owner, Room, Workbench Template, Scaffolding, Contract artifact, Routing artifact, Architecture artifact and Control, each stating the owner confirmed meaning and its distinction from its neighbors; the Root controls row is rewritten in the artifact-kind terms.
