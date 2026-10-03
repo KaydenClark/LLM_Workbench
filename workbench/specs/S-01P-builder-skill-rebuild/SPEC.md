@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** codex-s01p-builder
 **Stance:** Builder
-**Updated:** 2026-10-01
+**Updated:** 2026-10-03
 **Catalog description:** Deliver the assigned result with useful verification and truthful documentation.
-**Blockers:** none for assigned evidence update; independent evidence assessment and separate exact-candidate review remain delivery gates.
-**Latest event:** Coordinator command-set overstatement corrected: original run48required+3additional; missing3nowpass separately. Parent reports independent actual51/51 on prior finalhead; narrow correction review pending.
-**Next gate:** Separate narrow exact-head review of the evidence correction; behavioral evidence assessment and remaining native acceptance gates stay open.
+**Blockers:** none; independent behavioral evidence assessment remains a delivery gate.
+**Latest event:** Builder candidate landed on integration through the Lane A consolidation: codex/s01p-builder-route-assembly e4c8d8d6 merged with current integration, full AGENTS suite 48/48 PASS at 460761f6; landed only after a separate-context PASS on the landing PR.
+**Next gate:** Independent inspection of the two producer-reported Servitor trials (acceptance criterion 3) before TK-01G can close; owner Human QA follows. No acceptance box is checked.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`82cd8d1fbc79cb871429439a059be792bc59c137`.
 
