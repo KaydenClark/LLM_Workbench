@@ -122,8 +122,8 @@ both answer the shared read words (`list`, `show`, `search`, `history` and
 from, define the Decision Record, the DDR and the read words as installed. No
 DDR has been written yet. The
 [Decision Record Tooling Spec (S-003X)](../../specs/S-003X-decision-record-tooling/SPEC.md)
-delivers them; it was planned on 2026-10-03 with the DDR tooling reusing the ADR
-runtime, one tool for both kinds of record. The first DDRs will come from taking the existing
+delivered them to integration on 2026-10-03, reusing the ADR runtime as one tool
+for both kinds of record; the owner's Human QA of that delivery is still to come. The first DDRs will come from taking the existing
 Blueprint apart; the owner grills those candidates first, and a later Spec
 drafts them into the proposed folder for review. The rest of the Blueprint
 splits three more ways: destination chunks that group several decisions become
@@ -149,7 +149,7 @@ delivers them, and settles how a DDR records the one landmark it belongs to.
   why the Wiki synthesizes rather than keeping a page per decision.
 - [Decision Record Tooling Spec (S-003X)](../../specs/S-003X-decision-record-tooling/SPEC.md)
   and [LANDMARK.md Artifact And Lane Runtime Spec (S-003Z)](../../specs/S-003Z-landmark-md-artifact-and-lane-runtime/SPEC.md):
-  the planned delivery of the DDR tooling and of landmark artifacts.
+  the delivered DDR tooling and the planned landmark artifacts.
 
 ## History
 
@@ -165,3 +165,4 @@ delivers them, and settles how a DDR records the one landmark it belongs to.
 - 2026-10-03: recorded the installed accept, supersede and deprecate moves.
 - 2026-10-03: recorded the installed read words.
 - 2026-10-03: recorded the Lexicon mirrors of the installed vocabulary.
+- 2026-10-03: recorded the DDR tooling's delivery to integration.

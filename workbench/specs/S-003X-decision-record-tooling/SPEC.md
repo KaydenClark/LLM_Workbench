@@ -8,10 +8,10 @@
 **Updated:** 2026-10-03
 **Catalog description:** Give a room one tool and one set of read words for both kinds of decision record, the ADR and the Destination Decision Record, with the lifecycle moves the ADR tool lacks.
 **Blockers:** none. The Codex Lexicon reconciliation branch TK-005A waited on landed through PR #281, so the Lexicon-mirror Task is ready. How a DDR records its single landmark is open, outside this acceptance, and waits on the landmark capability.
-**Latest event:** TK-005A closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** Whole-Spec QA assembled after all five Tasks closed; separate-context review of the assembled candidate is next.
+**Next gate:** Separate-context review of the assembled candidate (report and verdict), then owner Human QA on integration, owner main promotion and complete.
 
-> **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a`.
+> **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`b4e22bd4ded65ba9918e2beb6fe5293f0fb051ea`.
 
 ## Outcome
 
@@ -87,8 +87,8 @@ Cut at Plan on 2026-10-03 as record-backed Tasks under `tasks/`; each `TASK.md` 
 - [x] Accept, supersede and deprecate moves work for ADRs and DDRs by folder location, refuse a supersession without exactly one named successor and a deprecation without a stated reason, and leave the register and history derived from the folder listing.
 - [x] An agent can `list`, `show`, `search`, `history` and `inspect` an ADR and a DDR, and every existing command name still works.
 - [x] Validation refuses a DDR whose `canonicalized_in` names the Wiki.
-- [ ] Source behavior, templates, the manifest declaration, Genesis and the update route agree, and updating a room that already holds ADRs adds the collection without altering its records.
-- [ ] Named verification and remaining limitations are recorded without claiming owner approval.
+- [x] Source behavior, templates, the manifest declaration, Genesis and the update route agree, and updating a room that already holds ADRs adds the collection without altering its records.
+- [x] Named verification and remaining limitations are recorded without claiming owner approval.
 
 ## Testing Seams
 
@@ -116,14 +116,30 @@ Maintain the Lexicon rows, the Runbook decision-record commands and the `to-docs
 | 2026-10-03 | TK-004Z | Task closed | Red 0b0512cf (test-adr fails at import: no read-word exports). Green: test-adr 56/56 covering list, show and get, search, history and inspect for both kinds in text and JSON, their refusals, and unchanged existing commands; full AGENTS suite 48/48 on clean 4cd48973. TK-004Y PR #284 (review FAIL at 97c44ba2 corrected; fresh PASS at 6fb1de52) merged into integration as 5cfa987b before this close. | RUNBOOK and templates/RUNBOOK read-word commands, and the Wiki article Decision Records and the Concept Map updated. | TK-005A (Lexicon mirrors; its owner blocker is met since the Codex Lexicon branch landed in PR #281) remains; separate-context review of this Task's final head precedes its integration merge. |
 | 2026-10-03 | TK-005A | Owner blocker cleared | The owner-directed PR #281 (codex/lexicon-snag-recovery, merged 2026-10-03T13:09:58Z) carries the Codex Lexicon reconciliation tip e46d587b; `git merge-base --is-ancestor e46d587b origin/integration` succeeds at integration bbfcd37b and later. `owner:s01u-tk01q-lexicon-branch-landed` removed and TK-005A set ready; its remaining blockers are the four done tooling Tasks. | TK-005A record notes the clearance and that PR #281 already corrected the root Lexicon DDR row (861657d6). | TK-005A implementation, proof and review remain. |
 | 2026-10-03 | TK-005A | Task closed | Red 62c1cf50 (control-fidelity Lexicon vocabulary case fails). Green: control-fidelity, controls-vocabulary-sweep, blueprint-contract, evaluate-workbench and workbench-layout pass; templates evaluator 106.6/113 unchanged; full AGENTS suite 48/48 on clean b0730364. Owner blocker cleared with PR #281 evidence (e46d587b contained in integration). TK-004Z PR #287 (reviewed PASS at ec5e6d16) merged into integration as 23f42ab2 before this close. | LEXICON.md, templates/LEXICON.md and the Wiki article Decision Records and the Concept Map updated. | Whole-Spec QA and separate-context review of the assembled candidate remain; owner Human QA and main promotion are the owner's. |
+| 2026-10-03 | none | Whole-Spec QA assembled on top of the TK-005A head b4e22bd4ded65ba9918e2beb6fe5293f0fb051ea: all five Tasks done; Completion Result, Remaining Limitations and acceptance boxes 6 and 7 written. | Self-drift post receipt at b4e22bd4 (clean tree): the same seven pre-existing attention findings as the pre receipt at 2dcde6e9 (one stale claim on S-00Q, five stale seeds, one manifest provenance), none new; machineResult blocked, cleanUpdate false, as before. Bounded semantic check: S-003X header, both Lexicons, Runbook and generic Runbook, to-docs, the generic Blueprint instruction and the Wiki article match the shipped tooling; ADR-000S and ADR-000T keep their dated "at the time of this record" claims as history. Guardrail audit 78/100 after, unchanged from the baseline. Full AGENTS suite on the assembled candidate: recorded in the next row. | This Spec and the Wiki article Decision Records and the Concept Map (delivery recorded). | Separate-context review of the assembled candidate, then owner Human QA, main promotion and complete. |
 
 ## Completion Result
 
-Pending.
+Delivered to integration Task by Task on 2026-10-03 under the S-00O bootstrap exemption 2, each Task PR reviewed in a separate context before its merge. Owner Human QA, main promotion and `complete` remain the owner's.
+
+- The `ddr` collection (`workbench/docs/ddr/`, with `proposed/` and `archive/`) is declared by `init` in a fresh room and appended by `workbench-layout.mjs migrate` to an existing room without touching its ADRs or other manifest keys; this room declares it (TK-004W, PR #280).
+- `workbench/tools/adr.mjs` serves both kinds of decision record. `new --kind ddr` writes the next `DDR`-identified record into `proposed/` with the keys `date`, `supersedes` and `canonicalized_in`; validation applies the ADR rules to DDRs as the registered `invalid-ddr` and refuses a DDR naming the Wiki in `canonicalized_in`; `register` derives each collection's register and history; doctor and the Spec and Task moves carry both (TK-004X, PR #282).
+- `accept`, `supersede` and `deprecate` move either kind by folder location with their refusals, live-link repair outside append-only evidence and register regeneration (TK-004Y, PR #284).
+- `list`, `show` with `get`, `search`, `history` and `inspect` read either kind (TK-004Z, PR #287).
+- The Runbook, the generic Runbook, the `to-docs` route, the narrowed generic Blueprint instruction, both Lexicons and the Wiki article "Decision Records and the Concept Map" describe the shipped tooling (TK-004W to TK-005A; TK-005A, PR #290).
+
+Verification is in the evidence log: red/green per Task, the full AGENTS suite 48/48 on each Task's committed candidate and on the assembled candidate, guardrail audit 78/100 before and after, and self-drift receipts before (2dcde6e9) and after (b4e22bd4) with the same seven pre-existing attention findings and none new.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-Seeding the first DDRs from the Blueprint is a separate step after the owner grills the candidates. The DDR landmark field waits on the landmark capability.
+- Seeding the first DDRs from the Blueprint is a separate step after the owner grills the candidates; no DDR exists yet.
+- The DDR landmark field waits on the [LANDMARK.md Artifact And Lane Runtime](../S-003Z-landmark-md-artifact-and-lane-runtime/SPEC.md) capability; the template carries none.
+- Whether `search` attaches linked corrections stays open for record tools other than the decision-record tool.
+- The `AGENTS.md` documentation-ownership table (root and generic) and the ownership map carry no DDR row; the [Contract carrier rewrite](../S-004C-contract-carrier-pointer-brief-rewrite/SPEC.md) and the [Ownership Map root control](../S-00G-ownership-map-root-control/SPEC.md) own those.
+- `adr.mjs list --status` given with no value is treated as no filter instead of being refused (an unknown status is refused); review P3 on TK-004Z, not repaired.
+- Template placeholder detection matches exact strings, so a room still carrying the previous generic Blueprint instruction unfilled is no longer flagged by it.
+- Version, release bundle and the Workbench_Template upgrade proof for these managed bytes stay with the [release owner](../S-00O-workbench-v4-0-0-release/SPEC.md); no version was bumped.
+- No agent-outcome claim is made; the guardrail score is unchanged.
 
 ## Supersession
 
