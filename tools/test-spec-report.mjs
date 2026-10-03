@@ -2862,3 +2862,86 @@ function doneTaskWithDecisions({ id, specId, rows }) {
     console.log('ok - S-004F TK-005R: the Continuation section appends in order, escapes cells, fails closed on a tampered or malformed table and leaves a record parseable');
   }
 }
+
+// ============================================================================
+// S-004F TK-005S (DDR-000M): delivered work is not corrected by a Task. A fail
+// verdict or an owner QA finding against a Spec that is complete, superseded
+// or retired is refused before any write, naming the route the owner chose: a
+// later gap against delivered work becomes a new Spec under its landmark or
+// the Blueprint, never a revived Spec and never a correction anchored to a
+// Wiki claim. A new planned Spec carries the gap, naming the delivered work it
+// builds on and citing Wiki pages as evidence without taking one as its
+// destination.
+// ============================================================================
+{
+  const REVIEWER = 'Claude Opus 5 (separate context)';
+  const NEW_SPEC_ROUTE = /a later gap against delivered work becomes a new Spec under its landmark or the Blueprint[\s\S]*never a correction anchored to a Wiki claim/;
+  const deliveredRoom = (id, status) => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), `spec-report-delivered-${id}-`));
+    initGitRoot(root);
+    blueprintAndBoard(root);
+    writeAt(root, `specs/${id}-fixture/SPEC.md`, tableSpec({
+      id, taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }).replace('**Status:** active', `**Status:** ${status}`));
+    return { root, specFile: path.join(root, `specs/${id}-fixture/SPEC.md`), candidate: commitFixture(root) };
+  };
+
+  for (const status of ['complete', 'superseded']) {
+    const { root, specFile, candidate } = deliveredRoom(`S-7D${status === 'complete' ? '1' : '2'}`, status);
+    try {
+      const id = `S-7D${status === 'complete' ? '1' : '2'}`;
+      const before = fs.readFileSync(specFile, 'utf8');
+      assert.throws(() => recordReviewVerdict(root, id, { candidate, result: 'fail', findings: 'new Task: Missing edge case coverage', reviewer: REVIEWER }), new RegExp(`${id} is ${status}[\\s\\S]*${NEW_SPEC_ROUTE.source}`), `a fail verdict on a ${status} Spec is refused, naming the new-Spec route`);
+      assert.throws(() => recordOwnerApproval(root, id, { candidate, owner: 'Kayden Clark', result: 'finding', findings: 'new Task: Missing edge case coverage' }), NEW_SPEC_ROUTE, `an owner finding on a ${status} Spec is refused, naming the new-Spec route`);
+      assert.throws(() => createCorrectiveTasks(root, id, { candidate, findings: 'new Task: Missing edge case coverage' }), NEW_SPEC_ROUTE);
+      assert.equal(fs.readFileSync(specFile, 'utf8'), before, 'the refusals write no verdict row');
+      assert.deepEqual(fs.readdirSync(path.join(root, `specs/${id}-fixture`)).sort(), ['SPEC.md'], 'no corrective Task is created beside a delivered Spec');
+      // A pass verdict and an approval are not corrections and are unaffected.
+      assert.equal(recordReviewVerdict(root, id, { candidate, result: 'pass', findings: 'none', reviewer: REVIEWER }).result, 'pass');
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  }
+
+  // Every Wiki-claim anchor refuses, whatever the Spec's state.
+  {
+    const { root, candidate } = deliveredRoom('S-7D3', 'active');
+    try {
+      assert.throws(() => createCorrectiveTasks(root, 'S-7D3', { candidate, findings: 'new Task: Missing edge case coverage', wikiClaim: 'workbench/wiki/design-concepts/x.md#Limits' }), NEW_SPEC_ROUTE, 'a Wiki-claim anchor is refused even against an open Spec');
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  }
+
+  // The fixture: a later gap against a completed Spec, carried by a new planned Spec.
+  {
+    const { root } = deliveredRoom('S-7D4', 'complete');
+    try {
+      writeAt(root, 'specs/S-7D5-later-gap/SPEC.md', [
+        '# S-7D5 - Later Gap Against Delivered Fixture', '',
+        '**Spec ID:** S-7D5', '**Status:** planned', '**Priority:** 1', '**Owner:** unassigned', '**Updated:** 2026-10-03',
+        '**Catalog description:** Closes a gap found after the fixture capability was delivered.',
+        '**Blockers:** none', '**Latest event:** Authored for a later gap.', '**Next gate:** Plan.', '',
+        '## Outcome', '',
+        'Sits under the Blueprint. Closes the gap found after the capability delivered by the completed fixture Spec S-7D4 reached main.', '',
+        '## Current Verified State', '',
+        'Delivered work: the completed fixture Spec S-7D4.',
+        'Evidence, not destination: the feature page workbench/wiki/features/fixture-capability.md states the limit this gap concerns.', '',
+        '## Acceptance Criteria', '', '- [ ] The limit is closed.', '',
+        '## Append-Only Evidence And Execution Log', '', '| Date | Task | Event | Verification | Docs | Remaining gap |', '|---|---|---|---|---|---|', '',
+        '## Completion Result', '', 'Pending.', '',
+        '## Supersession', '', '- Supersedes: none', '- Superseded by: none', ''
+      ].join('\n'));
+      render(root);
+      assert.equal(doctor(root).filter((item) => item.blocks === 'all' || item.blocks === 'selection').length, 0, 'doctor accepts the new planned Spec beside the completed one');
+      assert.equal(nextWork(root), null, 'a planned Spec is never offered before it is planned into Tasks');
+      const board = fs.readFileSync(path.join(root, 'TASKBOARD.md'), 'utf8');
+      assert.match(board, /S-7D5/, 'the new Spec is visible on the board');
+      assert.ok(!board.includes('wiki-claim'), 'no Task takes a Wiki claim as its destination');
+      console.log('ok - S-004F TK-005S: a fail verdict or owner finding against a complete, superseded or retired Spec, and any Wiki-claim anchor, is refused naming the new-Spec route; a later gap is carried by a new planned Spec that names the delivered Spec and cites Wiki evidence');
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  }
+}
