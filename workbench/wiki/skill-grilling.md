@@ -64,7 +64,7 @@ The skill descends from Matt Pocock's MIT-licensed `grilling` ([notice](../../TH
 - [Grilling source](../skills/grilling/SKILL.md)
 - [Individual delivery Spec](../specs/S-00X-grilling-skill-rebuild/SPEC.md)
 - [Concept and acceptance](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md)
-- [Blueprint: Desired Experience And Behavior](../../BLUEPRINT.md#desired-experience-and-behavior)
+- [The workflow from idea to delivery](design-concepts/idea-to-delivery-workflow.md)
 - [Wiki router](MEMORY.md)
 
 ## History
@@ -72,3 +72,4 @@ The skill descends from Matt Pocock's MIT-licensed `grilling` ([notice](../../TH
 - 2026-09-23: Created from the accepted design and verified repository source; intended behavior remains separate from implemented behavior.
 - 2026-09-24: Source links reconciled to the managed skills lane; S-00X owns this skill's future delivery. No behavior change claimed.
 - 2026-09-24: S-00X TK-00O delivered the interaction contract in the source, recorded the pinned upstream comparison and one fresh-context scenario.
+- 2026-10-03: repointed the source link from the retired Blueprint section to the workflow page, from the Blueprint Short Page work.
