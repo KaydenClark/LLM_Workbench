@@ -674,6 +674,43 @@ test('both Lexicons carry the installed decision-record vocabulary, and the gene
   }
 });
 
+// S-004G: the owner's Workbench terms each have exactly one row in both
+// Lexicons (Workbench Template is a producer term and has no generic row), and
+// "root controls", and "controls" for files, are retired: no line uses the
+// word for a file except the retired-name row, the Control and Control fidelity
+// rows and the public names that carry it, each excused by its exact text.
+const WORKBENCH_TERMS = ['Owner', 'Room', 'Scaffolding', 'Contract artifact', 'Routing artifact', 'Architecture artifact', 'Control'];
+const CONTROLS_EXCUSED = [
+  'Safety And Change Control', 'Long Session Control', 'control-fidelity', 'controls-vocabulary-sweep',
+  'three-root-controls', 'ownership-map-root-control', 'second control plane', 'control plane',
+];
+const CONTROLS_EXCUSED_ROWS = ['Control', 'Control fidelity', 'Root controls'];
+
+test('both Lexicons define the Workbench terms once and use "controls" only for one-action tools', () => {
+  const rowsOf = (content, term) => content.split('\n').filter((line) => line.startsWith(`| **${term}** |`));
+  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
+    const content = read(root, relative);
+    for (const term of WORKBENCH_TERMS) assert.equal(rowsOf(content, term).length, 1, `${relative} has exactly one ${term} row`);
+    assert.equal(rowsOf(content, 'Root controls').length, 1, `${relative} keeps one retired-name Root controls row`);
+    assert.equal(rowsOf(content, 'Root files').length, 1, `${relative} describes the root files once`);
+    assert.match(rowsOf(content, 'Control')[0], /A one-action tool/, `${relative} Control row`);
+    assert.match(rowsOf(content, 'Root controls')[0], /Retired name/, `${relative} Root controls row is retired`);
+    assert.match(rowsOf(content, 'Contract artifact')[0], /on every turn of every session/, `${relative} Contract artifact row`);
+    assert.match(rowsOf(content, 'Owner')[0], /alone promotes it to main/, `${relative} Owner row`);
+    const stale = [];
+    for (const line of content.split('\n')) {
+      if (CONTROLS_EXCUSED_ROWS.some((row) => line.startsWith(`| **${row}** |`))) continue;
+      let rest = line;
+      for (const token of CONTROLS_EXCUSED) rest = rest.split(token).join('');
+      if (/\bcontrols?\b/i.test(rest)) stale.push(line.slice(0, 120));
+    }
+    assert.deepEqual(stale, [], `${relative} still uses "controls" for files:\n${stale.join('\n')}`);
+  }
+  const root_ = read(root, 'LEXICON.md');
+  assert.equal(rowsOf(root_, 'Workbench Template').length, 1, 'LEXICON.md has exactly one Workbench Template row');
+  assert.equal(rowsOf(read(root, 'templates/LEXICON.md'), 'Workbench Template').length, 0, 'templates/LEXICON.md carries no producer-only Workbench Template row');
+});
+
 // S-004E: each AI Coding Dictionary term the owner adopted has exactly one
 // Lexicon row, in an `AI Coding Terms` section, naming its dictionary entry
 // once; the generic Lexicon carries the same rows, and names no room-specific
