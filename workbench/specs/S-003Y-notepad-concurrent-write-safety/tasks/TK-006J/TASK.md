@@ -36,11 +36,11 @@ decision-record lifecycle rather than by editing accepted history.
 
 ## Acceptance
 
-- [ ] No control, skill or Wiki page states that overlapping writers both
+- [x] No control, skill or Wiki page states that overlapping writers both
       pass the revision check.
-- [ ] ADR-000L's defect statement is closed by lifecycle, with its text
+- [x] ADR-000L's defect statement is closed by lifecycle, with its text
       preserved as history.
-- [ ] Self-drift pre and post receipts and the bounded semantic check are
+- [x] Self-drift pre and post receipts and the bounded semantic check are
       recorded in this Spec's evidence.
 
 ## Boundaries
