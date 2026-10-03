@@ -138,6 +138,19 @@ copying its evidence log here.
 
 [The Workflow Verbs](design-concepts/workflow-verbs.md) explains the eight workflow verbs, Journey and the loop, and which verb writes each kind of artifact.
 
+## AI Coding Dictionary Entries
+
+The owner adopted terms from the AI Coding Dictionary on 2026-10-03; the [Lexicon's AI Coding Terms section](../../LEXICON.md) holds one row per term, and [AI Coding Dictionary Terms](../specs/S-004E-ai-coding-dictionary-terms/SPEC.md) owns delivery. These entries explain only the terms that need more than their row, in Workbench words, and authorize nothing.
+
+- [Harness: what the Workbench is loaded into](dictionary-harness.md): the Workbench is an agentic management system a harness such as Claude Code or Codex loads, never a harness itself
+- [Session: one run of the context window](dictionary-session.md): why a Chat is not a session, and why continuity is written to files
+- [Context: what the agent has in front of it now](dictionary-context.md): how it differs from the context window, the Context Map, Enduring Context and Working context
+- [Context window: the budget a session spends](dictionary-context-window.md): the finite space progressive disclosure, the Task ceiling and the smart zone protect
+- [Stateless: nothing carries over unless it is written](dictionary-stateless.md): why corrections go where every later session reads them
+- [Stateful: continuity is re-read from the layer below](dictionary-stateful.md): how notepads, handoffs, the Wiki and `AGENTS.md` carry state across sessions
+- [Cache tokens: why the start of a session stays stable](dictionary-cache-tokens.md): why always-loaded content is cheaper when it does not change mid-session
+- [Non-determinism: why one passing run is not proof](dictionary-non-determinism.md): why verification and repeated trials are required
+
 ## Roles And Stances
 
 [Roles and stances](design-concepts/roles-and-stances.md) explains scope versus job and routes to each separately owned capability.
