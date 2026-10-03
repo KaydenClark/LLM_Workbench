@@ -8,7 +8,7 @@
 **Updated:** 2026-10-03
 **Catalog description:** Put the owner's agreed meanings for AI Coding Dictionary terms into the Lexicon, with a Wiki dictionary entry wherever a term needs more than its row, starting with nineteen model, harness and session terms.
 **Blockers:** none for specification. The owner chooses whether the Workbench still calls itself a harness; only the Workbench, Portable Workbench, Evaluation and Harness rows and their mirrors wait on that answer. Implementation awaits Plan and assignment.
-**Latest event:** Authored at the Map step from the owner's first batch of nineteen terms, supplied in chat on 2026-10-03; no Task is cut.
+**Latest event:** Authored at the Map step from the owner's first batch of nineteen terms, supplied in chat on 2026-10-03; no Task is cut. The same day, Dictionary Terms Not Yet Supplied inventoried the other 52 dictionary entries: 9 already addressed in the Workbench and 43 neither supplied nor defined.
 **Next gate:** At Plan, take the owner's harness answer, inspect live Actuality, confirm which terms get Wiki entries and whether the template Lexicon mirrors the new rows, and cut small Tasks.
 
 > **Citation anchors.** pre=`817096e676992cf7ece72967ac8bbb064261a3ee` post=`817096e676992cf7ece72967ac8bbb064261a3ee`.
@@ -51,7 +51,111 @@ The summaries below are this Spec's intake record, not the definitions. The link
 | [System prompt](https://www.aihero.dev/ai-coding-dictionary/system-prompt) | The standing instructions the harness puts at the front of every request: identity, behavior, available tools and conventions. Usually written by the harness vendor and large; files such as AGENTS.md are loaded beside it. It stays fixed for a session, which starts the prefix cache, and models are trained to give it priority over user messages. | AGENTS.md and CLAUDE.md ride beside it. |
 | [Session](https://www.aihero.dev/ai-coding-dictionary/session) | One bounded run of interaction with an agent. It starts empty, accumulates messages, tool results and files read, and ends when cleared, closed or compacted into a fresh session. It is what fills the context window, and its history is the agent's working memory, lost when it ends; only files survive. One task per session keeps the context relevant. | The Chat and Task rows, and "session" in AGENTS.md headings (see Current Verified State). |
 
-The dictionary entries for AI, Training, Model provider request and Prefix cache sit between these terms in the source, and the supplied entries link to further terms such as turn, tool, tool call, tool result, compaction, clearing, handoff and memory system. The owner did not supply them in this batch; they are not adopted here.
+The dictionary entries for AI, Training, Model provider request and Prefix cache sit between these terms in the source, and the supplied entries link to further terms such as turn, tool, tool call, tool result, compaction, clearing, handoff and memory system. The owner did not supply them in this batch; they are not adopted here. The next section inventories every entry the owner has not yet supplied.
+
+## Dictionary Terms Not Yet Supplied
+
+Inventory of 2026-10-03, read at integration `6057e347be7e4ac2506fdc9d2dddeff131f3c09f`. The dictionary index on aihero.dev and the [source repository](https://github.com/mattpocock/dictionary-of-ai-coding) at the pinned commit `ed1ebed3975cba04ed5e74c6ca73659274beb754` list the same 71 entries, and that commit is still the repository's main tip. Of the 71, the owner has supplied 19 (the table above), nine more are already addressed in the Workbench in some form (first table below), and **43 are neither supplied nor defined** (second part). The [AI Hero skills page](https://www.aihero.dev/skills) is a separate source: its 25 skills are tracked by their own skill Specs, not here.
+
+This is an inventory, not adoption. No term below is adopted, defined or given a Lexicon row until the owner supplies it. The meanings are this Spec's short restatements for recognition, never the Workbench's definition, and they follow the no-copy rule in Decisions And Contracts. The last column says what the Workbench already does with the word; "Nothing found" means a whole-word and spelling-variant search of the root controls, ADRs, Wiki (excluding its archive and the grilling ledger), skills lane and templates at the integration tip above found no use of it; where a use or neighbor was found, the cell names it.
+
+### Already addressed in the Workbench (9)
+
+| Term | Where the Workbench stands |
+|---|---|
+| [AGENTS.md](https://www.aihero.dev/ai-coding-dictionary/agents-md) | Adopted by the [Contract carriers decision](../../docs/adr/000W-contract-carriers-are-briefs-that-point-to-skills-and-authority-flows-through-the-pointer.md); the Lexicon has no row for it. |
+| [Skill](https://www.aihero.dev/ai-coding-dictionary/skill) | A Lexicon Core Terms row; adopted by the same decision. |
+| [Progressive disclosure](https://www.aihero.dev/ai-coding-dictionary/progressive-disclosure) | A Lexicon Core Terms row; adopted by the same decision. |
+| [Context pointer](https://www.aihero.dev/ai-coding-dictionary/context-pointer) | A Lexicon Core Terms row; adopted by the same decision. |
+| [Design concept](https://www.aihero.dev/ai-coding-dictionary/design-concept) | A Lexicon row in the Workbench's own words. |
+| [Spec](https://www.aihero.dev/ai-coding-dictionary/spec) | A Lexicon row for the Workbench's own PRD-shaped scoped objective; the dictionary's Spec is a handoff artifact made of tickets, the Workbench's is a PRD-shaped objective made of Tasks, so the two are close but not identical and Desired Behavior 5 reconciles them. |
+| [Ticket](https://www.aihero.dev/ai-coding-dictionary/ticket) | The Lexicon row retires the term and names Task as the execution slice; adopting the dictionary's Ticket would reopen that, which is the owner's call. |
+| [Handoff](https://www.aihero.dev/ai-coding-dictionary/handoff) | The Lexicon's Handoff responsibility row and Scoped handoff row, plus the [handoff skill's Wiki page](../../wiki/skill-handoff.md). |
+| [Grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) | No Lexicon row; the grilling skill and its [Wiki page](../../wiki/skill-grilling.md) own it. |
+
+### Not yet supplied (43)
+
+Groups loosely follow the dictionary's reading order and are only a batching aid for the owner.
+
+**Models and requests (4)**
+
+| Term | Meaning, restated | Where the Workbench already touches it |
+|---|---|---|
+| [AI](https://www.aihero.dev/ai-coding-dictionary/ai) | A label that tracks whatever computers have newly become impressively good at; today it means large language models, not one specific technology. | Ordinary prose only; no definition. |
+| [Training](https://www.aihero.dev/ai-coding-dictionary/training) | The process that fixes a model's parameters, by running it over a vast body of text and nudging it toward better next-token prediction. | Nothing found. Pairs with the supplied Parameters. |
+| [Model provider request](https://www.aihero.dev/ai-coding-dictionary/model-provider-request) | A single round trip in which the harness sends its context to the provider and gets one response back. | Nothing found. Pairs with the supplied Model provider and Inference. |
+| [Prefix cache](https://www.aihero.dev/ai-coding-dictionary/prefix-cache) | The provider's store that lets back-to-back requests skip reprocessing a shared opening stretch of context and bills that stretch at the cheaper cached rate. | Nothing found. The supplied Cache tokens rests on it. |
+
+**The agent loop, tools and environment (9)**
+
+| Term | Meaning, restated | Where the Workbench already touches it |
+|---|---|---|
+| [Turn](https://www.aihero.dev/ai-coding-dictionary/turn) | One user message together with everything the agent does until it hands control back; a turn holds one or more provider requests. | The Progressive disclosure row and the Contract carriers decision already say always-loaded content costs tokens "on every turn", in this sense; the term itself is undefined. |
+| [Environment](https://www.aihero.dev/ai-coding-dictionary/environment) | Whatever the agent acts on outside the harness, seen through tool results and changed through tool calls. | Used in its plain sense in the Lexicon's Execution and Capability rows and the Runbook header; undefined. |
+| [Filesystem](https://www.aihero.dev/ai-coding-dictionary/filesystem) | The directories and files an agent works within: it reads them, changes them and runs programs there. The usual place a coding agent operates. | Used in its plain sense in the Runbook; the Host portability row treats filesystems as a machine concern. |
+| [Tool](https://www.aihero.dev/ai-coding-dictionary/tool) | A function the harness lets the agent call, such as read, write, shell or search, through which it perceives and changes its environment. | **Collision.** The Lexicon's Source, tool and test row and its Managed runtime tool row use tool for a script in `workbench/tools/`, not a function the agent calls, while its Skill row says "a tool is called" in the dictionary's sense. |
+| [Tool call](https://www.aihero.dev/ai-coding-dictionary/tool-call) | The model's output that names a tool and its arguments: structured text the harness must parse and run. | The code-review skill says "tool-call" in this sense; the term is undefined. |
+| [Tool result](https://www.aihero.dev/ai-coding-dictionary/tool-result) | The reply the harness sends the agent once a tool call has run: file contents, command output or an error message. It is all the agent sees of its surroundings. | The Runbook and the carry skill use the phrase in this sense; undefined. |
+| [MCP](https://www.aihero.dev/ai-coding-dictionary/mcp) | A protocol for attaching outside tool servers to a harness, which is how an agent gains tools the harness did not ship with. | The Blueprint mentions an MCP server once, as something a Workbench capability must not become, and the read-words decision cites the Model Context Protocol; undefined. |
+| [Sandbox](https://www.aihero.dev/ai-coding-dictionary/sandbox) | An isolated place for the agent to run, such as a container, VM or restricted shell, which caps the damage its actions can do. | The Wiki's separate-context review note records a read-only sandbox's limits; undefined. |
+| [Subagent](https://www.aihero.dev/ai-coding-dictionary/subagent) | An agent that another agent starts through a tool call; it works in its own session, returns a single tool result and cannot start subagents of its own. | The `team templates/SUBAGENT.md` template gives that name to the one-Task executor that the Lexicon and AGENTS.md call a Worker, and AGENTS.md's multi-agent rule says "subagents return proof"; whether they are one thing is the owner's call. |
+
+**Permissions (3)**
+
+| Term | Meaning, restated | Where the Workbench already touches it |
+|---|---|---|
+| [Permission request](https://www.aihero.dev/ai-coding-dictionary/permission-request) | A prompt the harness raises for the user ahead of any tool call lacking prior approval. It is how a person gets a say in what the agent does. | The template's `.claude/README.md` sorts actions into allow, deny and ask buckets, and skills mention a permission layer refusing a write; the term is undefined. |
+| [Permission mode](https://www.aihero.dev/ai-coding-dictionary/permission-mode) | The part of an agent mode that decides which tool calls prompt the user and which run on their own. | Nothing found as a term. The nearest neighbors are the allow, deny and ask buckets in the template's `.claude/README.md` and the [Permission Scope Matches Lanes](../../wiki/design-concepts/spec-S-030-permission-scope-matches-lanes.md) design concept. |
+| [Agent mode](https://www.aihero.dev/ai-coding-dictionary/agent-mode) | A preset that bundles a permission mode with behavior instructions added to the system prompt, and can change partway through a session. | Nothing found. |
+
+**Model behavior, knowledge and attention (9)**
+
+| Term | Meaning, restated | Where the Workbench already touches it |
+|---|---|---|
+| [Sycophancy](https://www.aihero.dev/ai-coding-dictionary/sycophancy) | Confident, agreeable output, a side effect of training that favored answers people liked, agreement included. | Nothing found. |
+| [Hallucination](https://www.aihero.dev/ai-coding-dictionary/hallucination) | Confident but wrong output, either invented facts or drift away from context that was loaded. | Nothing found. |
+| [Parametric knowledge](https://www.aihero.dev/ai-coding-dictionary/parametric-knowledge) | What a model knows from training, held in its parameters and fixed once training ends. | Nothing found. Pairs with the supplied Parameters. |
+| [Knowledge cutoff](https://www.aihero.dev/ai-coding-dictionary/knowledge-cutoff) | The date after which a model knows nothing from training, so newer libraries and APIs invite fabrication unless their docs are loaded. | Nothing found. The supplied Parameters row mentions it in passing. |
+| [Contextual knowledge](https://www.aihero.dev/ai-coding-dictionary/contextual-knowledge) | Whatever the agent can simply look up in its current context; the counterpart of parametric knowledge. | Nothing found. |
+| [Attention relationship](https://www.aihero.dev/ai-coding-dictionary/attention-relationship) | A link between any two tokens in the context. Tokens that matter to each other sway one another more than unrelated tokens do, and a context of N tokens holds on the order of N squared such links. | Nothing found. |
+| [Attention budget](https://www.aihero.dev/ai-coding-dictionary/attention-budget) | Each token has a limited amount of influence to spread over the rest of the context, and that amount does not grow when the context does. | Nothing found. |
+| [Attention degradation](https://www.aihero.dev/ai-coding-dictionary/attention-degradation) | The dilution that comes with a longer session: every token's limited attention is split across a growing crowd, so tokens that truly relate to each other stand out less. | The Progressive disclosure row already says loaded tokens cost attention, and the [Task decision](../../docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md) puts its 200k context ceiling where answer quality begins to degrade; the term is undefined. |
+| [Smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone) | The stretch near the start of a session when the agent is focused and accurate, before it slides toward a so-called dumb zone, where it grows careless, loses track of things and errs more. | The [Task decision](../../docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md) justifies its 200k context ceiling as the point where answer quality begins to degrade, which is the same idea; the term is undefined. |
+
+**Sessions and continuity (7)**
+
+| Term | Meaning, restated | Where the Workbench already touches it |
+|---|---|---|
+| [Clearing](https://www.aihero.dev/ai-coding-dictionary/clearing) | Closing the present session and beginning anew, so the next message meets a blank session and a blank context window. | **Both senses appear.** The [record-lifecycle decision](../../docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md) uses "clearing" for removing records, while the Wiki's core-rhythm page uses it for clearing the context window. |
+| [Compaction](https://www.aihero.dev/ai-coding-dictionary/compaction) | A kind of handoff that never leaves memory: the harness has the old session summarized and uses that summary to open a new one, giving up detail to regain space. | **Collision, both ways.** The Lexicon's Scoped handoff row and the Runbook call a handoff file a "compaction", which is not this, while the grill-me and make-it-so skills use compaction in this sense. |
+| [Autocompact](https://www.aihero.dev/ai-coding-dictionary/autocompact) | Compaction the harness starts by itself when the context window nears full. | Nothing found. |
+| [Memory system](https://www.aihero.dev/ai-coding-dictionary/memory-system) | A mechanism meant to give an agent continuity from one session to the next: it saves information somewhere in the environment and loads it back when a new session opens. | Host auto-memory is named on several Wiki pages and in the Wiki router template as a continuity layer; the term itself is undefined. Notepads, the Wiki and AGENTS.md are the Workbench's written-down layers. |
+| [Handoff artifact](https://www.aihero.dev/ai-coding-dictionary/handoff-artifact) | The written document that carries a handoff: one session writes it so a later session can pick the work up. | AGENTS.md uses the phrase in this sense; the Lexicon's Scoped handoff row defines the Workbench's own artifact. |
+| [Primary source](https://www.aihero.dev/ai-coding-dictionary/primary-source) | The original material itself, such as code, transcripts or raw data. It is full and authoritative but heavy to bring into context. | Nothing found. |
+| [Secondary source](https://www.aihero.dev/ai-coding-dictionary/secondary-source) | Material that describes a primary source from a step away, such as summaries, documentation or compaction output. It loads cheaply but loses information by design. | Nothing found. |
+
+**Working patterns and review (7)**
+
+| Term | Meaning, restated | Where the Workbench already touches it |
+|---|---|---|
+| [Human-in-the-loop](https://www.aihero.dev/ai-coding-dictionary/human-in-the-loop) | A style of work where a person, or several, works alongside the agent during a session, checking its output, steering it or building together as it happens. | Nothing found. |
+| [AFK](https://www.aihero.dev/ai-coding-dictionary/afk) | A way of working in which the user starts a session and walks away while the agent runs unattended. | Nothing found. |
+| [Automated check](https://www.aihero.dev/ai-coding-dictionary/automated-check) | A verification the environment runs mechanically and that always gives the same pass or fail verdict: tests, type checking, linting, builds and pre-commit hooks. It involves no judgment. | `doctor`, the test suite and the Lexicon's Diagnostic row are instances; the general term is undefined. |
+| [Automated review](https://www.aihero.dev/ai-coding-dictionary/automated-review) | A second agent looking over the first agent's output, frequently on a different model, or with a different system prompt. Because it exercises judgment, its verdicts can vary from run to run. | The nearest neighbors are the Lexicon's Reviewer stance and Assembled-Spec review rows. |
+| [Human review](https://www.aihero.dev/ai-coding-dictionary/human-review) | The person who asked for the code actually reads what the agent wrote and judges it. Studying the diff counts as review; trusting the agent's own summary does not. | The nearest neighbor is the Lexicon's Human QA row, the owner-led evaluation of delivered work; the GitHub-coordination design concept also says "needing human review" for an item flagged for the owner. |
+| [Vibe coding](https://www.aihero.dev/ai-coding-dictionary/vibe-coding) | Taking whatever code the agent produces without anyone reviewing it, so the diff is treated as a black box. | Nothing found. |
+| [Prototyping](https://www.aihero.dev/ai-coding-dictionary/prototyping) | Asking the agent for a rough, fast first version when discussion alone is not concrete enough and you need something real to react to. | The Blueprint treats a prototype as an optional plausibility check before a Spec; the prototype skill has its own [Spec](../S-002Y-prototype-skill-alignment/SPEC.md). |
+
+**Experience and factories (4)**
+
+| Term | Meaning, restated | Where the Workbench already touches it |
+|---|---|---|
+| [DX](https://www.aihero.dev/ai-coding-dictionary/dx) | Developer experience: how easily a codebase and its toolchain let people do good work, through docs, quick feedback and clear errors. | Nothing found. |
+| [AX](https://www.aihero.dev/ai-coding-dictionary/ax) | Agent experience, the agent-side counterpart to developer experience: how well the surroundings equip an agent to succeed, including checks, architecture and spare context. | Nothing found. |
+| [Software factory](https://www.aihero.dev/ai-coding-dictionary/software-factory) | A way of organizing work so that triggers, instead of people, start the agent sessions. Far more work then runs unattended, and human time is reserved for what truly needs it. | Nothing found. |
+| [Dark factory](https://www.aihero.dev/ai-coding-dictionary/dark-factory) | A codebase, or a section of one, produced entirely by a software factory and never read by a human reviewer. | Nothing found. |
+
+When the owner supplies them, three of the 43 meet existing Workbench wording that must be reconciled the way Desired Behavior 2 does for Harness and Session: Tool and Compaction (collisions) and Subagent (a possible second name for Worker). Any other term whose last cell names a use or a neighbor needs only a distinction stated in its row, which every row carries anyway.
 
 ## Current Verified State
 
@@ -138,6 +242,8 @@ This Spec changes `LEXICON.md` (a new section, reconciled rows and the Last revi
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-10-03 | none | Authored at the Map step from the owner's first batch of nineteen AI Coding Dictionary terms, supplied in chat on 2026-10-03, at integration 817096e676992cf7ece72967ac8bbb064261a3ee. | Map only; the nineteen entry links were read from the dictionary index, the supplied text was spot-checked against the source repository at ed1ebed3975cba04ed5e74c6ca73659274beb754, and the quoted Lexicon, template, AGENTS and tool lines were read at the pre anchor; no runtime proof claimed. | This Spec and the Spec catalog. | Plan, implementation and proof remain; the owner's harness answer, the template mirror and Wiki entry selection are open. |
+| 2026-10-03 | none | Added the Dictionary Terms Not Yet Supplied inventory at integration 6057e347be7e4ac2506fdc9d2dddeff131f3c09f: the dictionary's 71 entries less the owner's 19 supplied leaves 52, of which 9 are already addressed in the Workbench and 43 are neither supplied nor defined. | The aihero.dev dictionary index (71 entries read in the in-app browser) matched the source repository's `dictionary/` directory at ed1ebed3975cba04ed5e74c6ca73659274beb754, which is still main; each of the 43 was searched whole-word and by spelling variant across the root controls, ADRs, Wiki, skills lane and templates at the integration tip; the cited Lexicon rows, Blueprint lines and link targets were read there. Restatements were compared against the entries at the pinned commit for copied passages. No Lexicon, Wiki or template change; none of the 43 is adopted. | This Spec only. Docs checked; no Lexicon or Wiki update is due until the owner supplies a batch. | The owner has not chosen the next batch or the harness answer; the skills page is out of scope here. |
+| 2026-10-03 | none | Corrected the inventory after separate-context review of candidate 0b9918f73dfaf49acf988eab8fa6e925fa7ea597, which passed with non-blocking findings: the search scope now names its exclusions (the Wiki archive and the grilling ledger), the "Nothing found" cells that hid real uses or neighbors now name them (Turn, Tool call, MCP, Clearing, Compaction, Subagent, Permission request and mode, Attention degradation, Smart zone, Memory system, Human review, Tool), the Spec row points to Desired Behavior 5, and the closing paragraph no longer states counts it could not support. | The reviewer's findings were each re-checked against the committed tree at 6057e347be7e4ac2506fdc9d2dddeff131f3c09f before the wording changed; the copied-passage comparison and `tools/check-append-only.py` were re-run on the corrected text. The earlier row above stays as first published, so its search-scope wording is superseded by this row. | This Spec only. | The owner has not chosen the next batch; the Session row in Owner-Supplied Terms carries a long run of dictionary wording, which the Acceptance Criteria on copied passages will catch at Plan. |
 
 ## Completion Result
 
