@@ -10,6 +10,10 @@
 **Planned verification:** Red: a check in `tools/test-control-fidelity.mjs` that each named term has exactly one row with one dictionary link in `LEXICON.md` and `templates/LEXICON.md` fails first. Green: that check, the evaluator, then the full AGENTS suite on the committed candidate; a copied-passage comparison against the pinned entries outside the repository.
 **Proof:** Red f7b0d3ae then green: test-control-fidelity 28/28, templates evaluator, full AGENTS suite 48/48 on clean c1ec6fd4
 
+## Scope Note
+
+The delivered section carries sixteen rows, not fifteen: the Model provider row was written in this Task because it collides with no existing Lexicon row (its note on the Workbench's bare "provider" is a distinction only). The control-fidelity case covers all sixteen.
+
 ## Receipt
 
 | Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |

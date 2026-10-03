@@ -679,8 +679,9 @@ test('both Lexicons carry the installed decision-record vocabulary, and the gene
 // once; the generic Lexicon carries the same rows, and names no room-specific
 // record.
 const AI_CODING_TERMS = [
-  // Batch 1, 2026-10-03: the fifteen terms that collide with no existing row.
-  'Model', 'Parameters', 'Effort', 'Inference', 'Token', 'Next-token prediction', 'Non-determinism',
+  // Batch 1, 2026-10-03: the terms that collide with no existing row (the fifteen planned, plus Model provider,
+  // whose provider note is a distinction only).
+  'Model', 'Parameters', 'Effort', 'Inference', 'Token', 'Next-token prediction', 'Non-determinism', 'Model provider',
   'Input tokens', 'Output tokens', 'Cache tokens', 'Stateless', 'Stateful', 'Agent', 'System prompt', 'Context window',
 ];
 const dictionarySlug = (term) => term.toLowerCase().replace(/ /g, '-');
