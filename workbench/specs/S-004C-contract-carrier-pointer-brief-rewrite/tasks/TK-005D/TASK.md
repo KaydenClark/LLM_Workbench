@@ -3,7 +3,7 @@
 **Task ID:** TK-005D
 **Spec ID:** S-004C
 **Slice:** Make the Runbook the operations index read at every session entry
-**Status:** blocked
+**Status:** ready
 **Stance:** Builder
 **Blockers:** TK-005B, TK-005C
 **Destination:** spec-acceptance: `RUNBOOK.md` is an operations index in which each pointer has a stable path and a when-to-follow description, and each operation's procedure is reachable in a skill (the index and its entry-read half; procedures move in the family Tasks), and the Runbook-importance acceptance line.
