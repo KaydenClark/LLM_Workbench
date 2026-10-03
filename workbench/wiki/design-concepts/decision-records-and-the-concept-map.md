@@ -119,13 +119,13 @@ Wiki. The accept, supersede and deprecate moves work for both kinds of record
 by folder location, so no decision record is moved or relabelled by hand, and
 both answer the shared read words (`list`, `show`, `search`, `history` and
 `inspect`). Both Lexicons, this room's and the generic one a new room starts
-from, define the Decision Record, the DDR and the read words as installed. No
-DDR has been written yet. The
+from, define the Decision Record, the DDR and the read words as installed. The
 [Decision Record Tooling Spec (S-003X)](../../specs/S-003X-decision-record-tooling/SPEC.md)
 delivered them to integration on 2026-10-03, reusing the ADR runtime as one tool
-for both kinds of record; the owner's Human QA of that delivery is still to come. The first DDRs will come from taking the existing
-Blueprint apart; the owner grills those candidates first, and a later Spec
-drafts them into the proposed folder for review. The rest of the Blueprint
+for both kinds of record; the owner's Human QA of that delivery is still to come.
+The first 24 DDRs, taken from the Blueprint teardown, were written into
+`proposed/` and accepted with that tooling on 2026-10-03, outside the tooling
+Spec; the [DDR register](../../docs/ddr/REGISTER.md) lists them. The rest of the Blueprint
 splits three more ways: destination chunks that group several decisions become
 landmarks, explanations of durable models become design-concept articles, and
 what remains is one short page saying what the product is, who it serves, its
@@ -166,3 +166,4 @@ delivers them, and settles how a DDR records the one landmark it belongs to.
 - 2026-10-03: recorded the installed read words.
 - 2026-10-03: recorded the Lexicon mirrors of the installed vocabulary.
 - 2026-10-03: recorded the DDR tooling's delivery to integration.
+- 2026-10-03: replaced the claim that no DDR exists with the first teardown DDRs.
