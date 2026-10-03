@@ -3,7 +3,7 @@
 **Task ID:** TK-005S
 **Spec ID:** S-004F
 **Slice:** Retire the Wiki-claim corrective route and refuse corrective work on delivered Specs
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-005R
 **Destination:** spec-acceptance: No command creates, selects, claims or closes a corrective Task anchored to a Wiki claim or creates one inside a retired Spec's folder; each retired path refuses with a message naming the new-Spec route.
