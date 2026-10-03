@@ -1,15 +1,15 @@
 # S-004H - Blueprint Short Page
 
 **Spec ID:** S-004H
-**Status:** planned
+**Status:** active
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
 **Updated:** 2026-10-03
 **Catalog description:** Replace the eight-section Blueprint with the owner-confirmed four-part short page, give every room's Blueprint that shape, and move the current page's decisions, workflow map and rules to their homes first so nothing is dropped.
-**Blockers:** the root page is not swapped until the teardown's destination decisions exist as DDRs; the Decision Record Tooling Spec (S-003X) installed the DDR collection and the commands that write and accept a DDR on 2026-10-03, so they can now be written at Map. The other slices can start at Plan. Implementation awaits Plan and assignment.
-**Latest event:** Authored at the Map step from the owner-confirmed Blueprint candidate of 2026-10-03 (draft 6 with the efficiency clause) and the teardown's Blueprint answers; no Task is cut.
-**Next gate:** At Plan, inspect live Actuality, confirm that every current Blueprint claim has a home that exists, and cut small Tasks; the root page swap waits for the DDRs.
+**Blockers:** none. The Decision Record Tooling (S-003X) installed the `ddr` collection and the 24 destination decision records are accepted (`workbench/docs/ddr/000A` to `000X`), so the root page swap is unblocked. One open owner item, the hosted-service non-goal, is withheld from the page rather than blocking it (see Dependencies And Blockers).
+**Latest event:** Planned and activated 2026-10-03 at integration 64c2c524: three Tasks cut (TK-005Q homes and Wiki pages, TK-005R evaluator and audit, TK-005S the swap).
+**Next gate:** TK-005Q and TK-005R run first, each reviewed and merged into integration; TK-005S swaps the pages after both.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 
@@ -123,6 +123,7 @@ Writing the DDRs or landmark artifacts themselves (written at Map and by the lan
 
 ## Dependencies And Blockers
 
+- **Open owner item (not a blocker): the hosted-service non-goal.** The candidate's non-goal "Not a hosted service, database or paid service of its own: it lives in the project's repository and coordinates through its Git host." is not carried by any accepted decision record: none of the 24 destination decision records carries it, and the Director's instruction for this Spec's build is that it is not an owner-locked claim and needs an owner decision. The swap leaves that one line out of `BLUEPRINT.md` and treats it as undecided; the owner decides whether it returns, and in what words. The other four non-goals stay: not a harness is carried by the accepted decision that the workbench is an agentic management system and not a harness; not a source of permission by the accepted instruction-authority and stance decisions; not a transcript archive by the accepted continuity and notepad decisions; and not a project-management application is the owner's confirmed draft 6 wording. The current page's "network access for ordinary local work" non-goal is dropped: the owner called it wrong in round 1 of the teardown.
 - [Decision Record Tooling](../S-003X-decision-record-tooling/SPEC.md) installed the `ddr` collection, the command that writes a DDR and the move that accepts it. The root page is not replaced before the teardown's DDRs exist and are accepted.
 - The confirmed landmark set lives in the Landmark Tracker's records until [LANDMARK.md Artifact And Lane Runtime](../S-003Z-landmark-md-artifact-and-lane-runtime/SPEC.md) delivers the artifact, and [Landmark Record Migration And Tracker Regrouping](../S-004A-landmark-record-migration-and-tracker-regrouping/SPEC.md) regroups the records; the workflow map's landmark home is whichever exists at swap time.
 - [Workbench Terms And Workflow Verb Rows](../S-004G-workbench-terms-and-workflow-verbs/SPEC.md) owns the Lexicon's Blueprint row meaning, and [AI Coding Dictionary Terms](../S-004E-ai-coding-dictionary-terms/SPEC.md) owns Smart zone, Automated check, Automated review and Harness, which the page uses; the page swap does not wait for those rows, but each takes its turn in the Lexicon, which has one writer at a time.
@@ -132,12 +133,12 @@ Writing the DDRs or landmark artifacts themselves (written at Map and by the lan
 
 ## Vertical Implementation Slices
 
-No Tasks cut. At Plan, use current Actuality to cut small complete-path slices. A likely order: the re-verified paragraph disposition and the homes it needs that do not wait for DDRs (the workflow map in the Wiki, the three rules in the Contract); the evaluator, audit and contract-test changes, red first, against a four-part fixture; the template and Genesis guidance; then, once the DDRs exist, the root page swap with the description lines. The empty tasks directory keeps this planned capability record-backed.
+Planned 2026-10-03 at integration 64c2c524, with the destination decision records already accepted. Three Tasks: TK-005Q records the re-verified paragraph disposition and writes the Wiki pages that hold the workflow and the altitudes; TK-005R teaches the evaluator and guardrail audit the four-part shape beside the eight-part one; TK-005S, after both, swaps the root page and the template, rewrites the contract test and updates the Genesis guidance. The three rules that leave the page have nearest existing homes in the Contract (`AGENTS.md` Safety And Change Control, Instruction Authority and Edit Scope); promoting the owner's explicit wording of the three into `AGENTS.md` or the Runbook belongs to the Contract carrier rewrite, which owns those files, and the disposition records that handoff.
 
 ## Acceptance Criteria
 
 - [ ] Every paragraph of the current `BLUEPRINT.md` has a recorded home that exists at swap time, and a reviewer can follow each to it.
-- [ ] `BLUEPRINT.md` matches the owner-confirmed candidate quoted in Decisions And Contracts word for word, and links no record that carries an identifier.
+- [ ] `BLUEPRINT.md` matches the owner-confirmed candidate quoted in Decisions And Contracts word for word, except the one non-goal line named in Dependencies And Blockers that is withheld until the owner decides it, and links no record that carries an identifier.
 - [ ] `templates/BLUEPRINT.md` has the four parts with generic bracketed placeholders, each claim of its former workflow paragraph has a home, and `templates/GENESIS.md` asks for the four parts.
 - [ ] `tools/test-blueprint-contract.mjs` checks the four-part shape in both files and no longer pins the eight sections or the verbatim map, and every check that left it either moved to a new owner's test or is recorded as retired with its reason.
 - [ ] The evaluator and guardrail audit recognize the four-part Blueprint, no criterion was removed to keep a score, and the before and after scores are recorded.
