@@ -8,8 +8,8 @@
 **Updated:** 2026-10-03
 **Catalog description:** Put the owner's agreed meanings for AI Coding Dictionary terms into the Lexicon, with a Wiki dictionary entry wherever a term needs more than its row, starting with nineteen model, harness and session terms.
 **Blockers:** none. The owner answered the harness question on 2026-10-03 (option (a) in Decisions And Contracts), so no row waits on an owner answer. Lexicon writes take one writer at a time; the owner's Codex Lexicon reconciliation landed in integration on 2026-10-03 (PR #281), and the Lexicon Design-Concept Reconciliation Spec stays active for its whole-Lexicon audit. The four Tasks run serially in this Spec's writer lane.
-**Latest event:** TK-006B claimed by claude-lane-g.
-**Next gate:** Close TK-006B with verification and documentation proof.
+**Latest event:** TK-006B closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`817096e676992cf7ece72967ac8bbb064261a3ee` post=`817096e676992cf7ece72967ac8bbb064261a3ee`.
 
@@ -288,6 +288,7 @@ This Spec changes `LEXICON.md` (a new section, reconciled rows and the Last revi
 | 2026-10-03 | TK-005Y | Task closed | Red f7b0d3ae then green: test-control-fidelity 28/28, templates evaluator, full AGENTS suite 48/48 on clean c1ec6fd4 | LEXICON.md and templates/LEXICON.md carry the AI Coding Terms section and fifteen rows; plan decisions recorded in the Spec | Harness reconciliation, batch two, Wiki entries and whole-Spec QA remain in the next three Tasks |
 | 2026-10-03 | TK-005Z | Task closed | Red 11d1321d then green: test-control-fidelity 30/30, full AGENTS suite 48/48 on clean 45efed10 | LEXICON.md and templates/LEXICON.md reconciled to the harness answer; conflicting AGENTS.md, RUNBOOK.md and README.md lines inventoried in the Spec for the Contract carrier rewrite | Batch two rows, Wiki entries and whole-Spec QA remain in the last two Tasks |
 | 2026-10-03 | TK-006A | Task closed | Red 8e23d299 then green: test-control-fidelity 30/30, full AGENTS suite 48/48 on clean d9038592 | LEXICON.md and templates/LEXICON.md carry the ten batch-two rows; separate-context review wording inventoried in the Spec, no conflicting line | Wiki entries, router and whole-Spec QA remain in the last Task |
+| 2026-10-03 | TK-006B | Task closed | Red e92b18ad then green: test-control-fidelity 31/31, wiki validate, full AGENTS suite 48/48 on clean cf3cfd09, no copied passage beyond seven words, two cold-reader probes answered | Eight dictionary Wiki entries and the MEMORY.md router section; Spec acceptance boxes checked with evidence except the open conflicting-control-lines box | Whole-Spec QA and separate Director review remain; the AGENTS.md, RUNBOOK.md and README.md harness lines wait for the Contract carrier rewrite |
 
 ## Completion Result
 
