@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** codex-s01r
 **Stance:** Builder
-**Updated:** 2026-10-01
+**Updated:** 2026-10-03
 **Catalog description:** Challenge candidate correctness, downstream impact and consequential claims.
-**Blockers:** none for implementation; independent evidence assessment and exact-head review remain delivery gates.
-**Latest event:** Coordinator command-set overstatement corrected: original run48required+3additional; missing3nowpass separately. Parent reports independent actual51/51 on prior finalhead; narrow correction review pending.
-**Next gate:** Separate narrow exact-head review of the evidence correction; behavioral evidence assessment and remaining native acceptance gates stay open.
+**Blockers:** none.
+**Latest event:** TK-01I closed with proof.
+**Next gate:** Whole-Spec QA: confirm acceptance criteria 1, 2, 4 and 5 against the landed Reviewer source, its routed article and the recorded fresh-context observation; owner Human QA follows.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`02a30100443e725cbb1baad6fe5e771bfe85f648`.
 
@@ -120,10 +120,11 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane. When ther
 | 2026-10-01 | TK-01I | Committed-source verification completed; first sweep and projection correction retained | Exact AGENTS/RUNBOOK union 51/51 plus three scoped commands passed; source/tools/tests unchanged during committed-source sweep from 00dff080 to e8d68ef1, native S-01R receipt projection refreshed during run; verification.json records full commands and limits | Final post self-drift at e8d68ef1436685826f44b7fa56ca460c381585fe has exactly seven baseline findings, cleanUpdate false; guardrail remains 78/100; bounded semantic owner check recorded in proof | MEMORY route and independent review remain open; current integration 25d3f4d2 has same command union but its new runtime assembly is not tested by this branch; GitHub GraphQL returned Forbidden |
 
 | 2026-10-01 | TK-01I | Public draft PR #259 opened through connected GitHub app after CLI GraphQL Forbidden; initial remote candidate 514bf0da519ee399ece22d13a4853c638969b927 verified | Final source regression, Wiki/doctor, 15 citation checks and direct append-only checker pass; sequential report/drift retry succeeds after transient citation fixture cleanup; same seven baseline drift findings | Public proof corrects API limitation to historical CLI refusal; native Receipt refreshed without rewriting prior evidence | Draft unapproved/unmerged, API mergeable false; coordinator route/current-integration assembly and independent review remain required |
+| 2026-10-03 | TK-01I | Task closed | Full AGENTS suite 48/48 PASS at cffc9792 on current integration; node tools/test-reviewer-stance.mjs PASS; wiki validate ok; fresh-context scenario observation in the Spec proof | Reviewer skill/reference and skill-reviewer.md from the Task; MEMORY.md Reviewer router line applied at assembly | One synthetic observation is not installed discovery or repeated-outcome proof; acceptance criteria 1, 2, 4 and 5 await whole-Spec QA; owner Human QA pending |
 
 ## Completion Result
 
-Draft implementation on existing TK-01I is verified with 51 required commands, three scoped checks and one public fresh-context scenario. The sole MEMORY index now routes the Reviewer article. Independent review of the final assembly remains open. No integration delivery, owner Human QA or main promotion is claimed.
+Draft implementation on existing TK-01I is verified with 51 required commands, three scoped checks and one public fresh-context scenario. The sole MEMORY index now routes the Reviewer article. The assembly was merged with current integration and landed through the Lane A consolidation after a separate-context review of the landing candidate, with TK-01I closed. Acceptance criteria 1, 2, 4 and 5 await whole-Spec QA. No owner Human QA or main promotion is claimed.
 
 ## Supersession
 
