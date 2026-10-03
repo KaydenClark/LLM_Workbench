@@ -320,13 +320,18 @@ export function assertSafeWritePath(root, destination) {
   }
 }
 
-export function writeSafeFile(root, destination, content, { exclusive = false } = {}) {
+export function writeSafeFile(root, destination, content, { exclusive = false, beforePublish = null } = {}) {
   assertSafeWritePath(root, destination);
   fs.mkdirSync(path.dirname(destination), { recursive: true });
   const temporaryDir = fs.mkdtempSync(path.join(path.dirname(destination), '.write-'));
   try {
     const temporary = path.join(temporaryDir, 'content');
     fs.writeFileSync(temporary, content, { mode: 0o644, flag: 'wx' });
+    // A caller that publishes under a condition checks it here, after the
+    // bytes are complete and immediately before they become visible, so the
+    // window between the check and the publication is the rename itself. A
+    // throw leaves the destination untouched; the temporary is removed below.
+    if (beforePublish) beforePublish();
     // link is an atomic no-replace publication for a new ADR or checkpoint.
     if (exclusive) fs.linkSync(temporary, destination);
     else fs.renameSync(temporary, destination);
