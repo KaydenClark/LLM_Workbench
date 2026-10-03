@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-10-03
 **Catalog description:** When a check finds a miss, the same Task continues with an adjusted handoff unless the fix rewrites it, and a later gap against delivered work becomes a new Spec under its landmark or the Blueprint instead of a correction anchored to a Wiki claim.
-**Blockers:** none for the Tasks other than TK-005V, which waits on an `owner:` token for another Spec's writer turn on the Lexicon. The tokens are sequencing gates this Spec's planning created, not owner decisions; the Blueprint token was cleared when the short page merged (PR #310) and the Runbook token on 2026-10-03 when the Runbook writer was free.
-**Latest event:** TK-005U closed with proof.
-**Next gate:** Complete TK-005V.
+**Blockers:** none. The three `owner:*-writer-turn` tokens were sequencing gates this Spec's planning created, not owner decisions; they were cleared on 2026-10-03 as the Blueprint (PR #310), Runbook and Lexicon (PR #317) writers became free.
+**Latest event:** TK-005V closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 
@@ -128,6 +128,7 @@ Run the targeted spec-report, spec-workbench, control-fidelity and append-only t
 | 2026-10-03 | TK-005T | Task closed | Full AGENTS suite 48 of 48 on committed candidate 086c4395; AGENTS, template and skill pins red then green; guardrail audit 78/100 before and after; self-drift pre and post equal (12 findings, none from this change); Wiki validate ok | AGENTS.md and templates/AGENTS.md corrective sections, to-tasks skill, control-fidelity pins; Spec Remaining Limitations lists README, Wiki schema and Lexicon-pin items for their owners | RUNBOOK, Lexicon rows, Blueprint passages, README and the Wiki schema line still state the replaced rules; TK-005U, TK-005V, TK-005W and their owners carry them |
 | 2026-10-03 | TK-005W | Task closed | No Blueprint edit needed: the Blueprint Short Page Spec's swap (PR #310, 25733f3b, integration be0450fe) already replaced the Desired Lifecycle and Integrated System Design passages; BLUEPRINT.md and templates/BLUEPRINT.md carry no corrective-Task or Wiki-claim line, and test-blueprint-contract records the old passages as replaced claims; full AGENTS suite 48 of 48 on candidate fa571824 | Docs checked; no update needed because the short page already replaced the passages | none |
 | 2026-10-03 | TK-005U | Task closed | Full AGENTS suite 48 of 48 on committed candidate 5510c00a; Runbook and template state the continue-or-new rule and the new-Spec route; control-fidelity pins red then green; guardrail audit 78/100 unchanged | RUNBOOK.md, templates/RUNBOOK.md and control-fidelity pins updated | Lexicon rows (TK-005V), README and the Wiki schema line still state the replaced rules |
+| 2026-10-03 | TK-005V | Task closed | Full AGENTS suite 48 of 48 on committed candidate 56c95749; Lexicon rows state the continue-or-new rule and the new-Spec route, no row offers a Wiki claim as a corrective destination; Packet pins retargeted | LEXICON.md, templates/LEXICON.md, tools/test-adr.mjs updated | README line 372 and the Wiki schema lint line still state the replaced rule; owner-scoped |
 
 ## Completion Result
 
