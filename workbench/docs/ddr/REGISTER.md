@@ -16,3 +16,4 @@
 | [000H](000H-the-context-lives-in-github-so-work-can-move-to-the-cloud-at-any-time.md) | The context lives in GitHub, so work can move to the cloud at any time | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000I](000I-many-agents-work-one-project-in-parallel-across-the-cloud-and-the-owner-s-devices.md) | Many agents work one project in parallel, across the cloud and the owner's devices | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000J](000J-the-behaviors-agents-need-ship-inside-every-room.md) | The behaviors agents need ship inside every room | accepted | 2026-10-03 | BLUEPRINT.md |
+| [000K](000K-a-handoff-is-the-readable-map-to-the-high-fidelity-context.md) | A handoff is the readable map to the high-fidelity context | accepted | 2026-10-03 | BLUEPRINT.md |

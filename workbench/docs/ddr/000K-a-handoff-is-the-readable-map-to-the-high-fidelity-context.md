@@ -18,6 +18,6 @@ Why the owner chose it:
 
 Considered and rejected: None recorded.
 
-Consequences: None recorded as owner words. An accepted record already says a requested handoff is authored as a human-readable Markdown file from the relevant slice, and is not restated here: [JSON notepads preserve objective continuity](../../adr/0040-json-notepads-preserve-objective-continuity.md).
+Consequences: None recorded as owner words. An accepted record already says a requested handoff is authored as a human-readable Markdown file from the relevant slice, and is not restated here: [JSON notepads preserve objective continuity](../adr/0040-json-notepads-preserve-objective-continuity.md).
 
 Provenance: the Blueprint teardown grilling of 2026-10-02 to 2026-10-03: question BT-D11 (a handoff is the readable map), locked 2026-10-03 on the owner's confirmed round-2 readback; reason from the owner's own words, question WHY-B5.

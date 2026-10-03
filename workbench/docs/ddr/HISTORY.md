@@ -16,7 +16,7 @@
 | [000H](000H-the-context-lives-in-github-so-work-can-move-to-the-cloud-at-any-time.md) | The context lives in GitHub, so work can move to the cloud at any time | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000I](000I-many-agents-work-one-project-in-parallel-across-the-cloud-and-the-owner-s-devices.md) | Many agents work one project in parallel, across the cloud and the owner's devices | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000J](000J-the-behaviors-agents-need-ship-inside-every-room.md) | The behaviors agents need ship inside every room | accepted | 2026-10-03 | BLUEPRINT.md |
-| [000K](proposed/000K-a-handoff-is-the-readable-map-to-the-high-fidelity-context.md) | A handoff is the readable map to the high-fidelity context | proposed | 2026-10-03 | BLUEPRINT.md |
+| [000K](000K-a-handoff-is-the-readable-map-to-the-high-fidelity-context.md) | A handoff is the readable map to the high-fidelity context | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000L](proposed/000L-agents-work-the-workbench-through-one-action-controls.md) | Agents work the workbench through one-action controls | proposed | 2026-10-03 | BLUEPRINT.md |
 | [000M](proposed/000M-working-artifacts-are-scaffolding-cleared-away-once-their-knowledge-is-kept.md) | Working artifacts are scaffolding, cleared away once their knowledge is kept | proposed | 2026-10-03 | BLUEPRINT.md |
 | [000N](proposed/000N-every-room-s-blueprint-is-the-four-part-short-page.md) | Every room's Blueprint is the four-part short page | proposed | 2026-10-03 | BLUEPRINT.md |
