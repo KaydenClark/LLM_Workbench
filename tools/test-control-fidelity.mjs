@@ -11,6 +11,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
+import { describe, registeredCodes } from '../workbench/tools/diagnostics.mjs';
 import { templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
 import { classifyLines, reportFidelity, summarizeMarkdown } from './control-fidelity.mjs';
 
@@ -433,7 +434,7 @@ function taskWorkflowContract(content, generic = false) {
     ['Scoped Task close', lifecycle, /close S-###[\s\S]*--proof[\s\S]*--docs[\s\S]*--remaining-gap/],
     ['Dispatcher assembled QA', lifecycle, /Dispatcher[^.]*whole-Spec QA[^.]*assembled Spec/],
     ['Separate Director review', lifecycle, /separate Director context[\s\S]*immutable[\s\S]*report S-### --candidate SHA/],
-    ['Corrective return', lifecycle, /failed assembled review[\s\S]*corrective Task[^.]*finding[\s\S]*preserve[^.]*`TASK\.md`[\s\S]*fresh immutable candidate/],
+    ['Corrective return', lifecycle, /failed assembled review[\s\S]*`continue TK-###:[\s\S]*`new Task:[\s\S]*refused before any write[\s\S]*fresh immutable candidate/],
     ['Completion prerequisites', lifecycle, /reviewed delivery on integration -> owner approval -> verification on main -> `complete`/],
     ['Capture before cleanup', lifecycle, /After `complete`[^.]*features[^.]*before retirement or discard/],
     ['Delivered blocker', lifecycle, /`S-###:delivered`[\s\S]*content-bound[\s\S]*fetch integration/],
@@ -536,7 +537,8 @@ function runbookWorkflowContract(content) {
     ['capture after completion', /After complete, author capability knowledge[^.]*features/],
     ['normal whole-Spec retirement after capture', /normal closure route is complete -> feature capture -> `retire-spec`[\s\S]*whole Spec and its Tasks together/],
     ['owner finding differs from approval', /Finding and destination-change examples[\s\S]*alternatives to explicit approval/],
-    ['same capability after discard', /createCorrectiveTasks[\s\S]*programmatic API, not a[\s\S]*CLI/],
+    ['later gap is a new Spec', /later gap against delivered work becomes a new Spec[\s\S]*never a correction anchored\s+to a Wiki claim[\s\S]*`createCorrectiveTasks` refuse a Spec that is complete/],
+    ['finding dispositions', /`continue TK-###: <what the check found and what the fix\s+must do>`[\s\S]*`new Task: <finding>`[\s\S]*refused before any write/],
     ['delivered dependency', /S-001:delivered[\s\S]*content-bound PASS[\s\S]*Fetch[\s\S]*integration/],
     ['whole directory recovery', /compare all recovered bytes, including sibling proof/]
   ]) assert.match(lifecycle, expression, claim);
@@ -554,10 +556,379 @@ test('Runbook contract detects operationally consequential guidance regressions'
     ['git fetch origin main\nnode workbench/tools/spec-workbench.mjs complete S-001', 'node workbench/tools/spec-workbench.mjs complete S-001'],
     ['After complete, author capability knowledge', 'Before closure, keep temporary task state'],
     ['normal closure route is complete -> feature capture -> `retire-spec`', 'move Tasks before approval to avoid a stale digest'],
-    ['programmatic API, not a', 'automatic create-corrective'],
+    ['is never a correction anchored', 'is a correction anchored'],
     ['compare all recovered bytes, including sibling proof', 'inspect the primary record only']
   ]) {
     assert.ok(current.includes(before), `mutation targets current instructions: ${before}`);
     assert.throws(() => runbookWorkflowContract(current.replace(before, after)), { name: 'AssertionError' });
   }
+});
+
+// S-00M TK-004 (ADR-000J): `doctor` surfaces repository state and `close`
+// refuses a completion claim the repository contradicts. Both mechanisms are
+// documented where a cold-start agent reads them - AGENTS.md at its completion
+// obligations, the Runbook beside the codes and the close procedure - in the
+// root controls and their generic mirror. The Git-scope codes are read from
+// the registry, so a code added there fails here until both Runbooks name it.
+function gitScopeCodes() {
+  return registeredCodes().filter((code) => describe(code).scope === 'git');
+}
+
+function completionClaimAgentsContract(agents) {
+  // Prose wraps anywhere, so match against single-spaced text.
+  const lifecycle = (agents.split('## Work Selection And Lifecycle\n')[1]?.split('\n## ')[0] ?? '').replace(/\s+/g, ' ');
+  for (const [claim, expression] of [
+    ['dirty or unpushed refusal', /close refuses a dirty or unpushed tree unless `--git-state-reason TEXT`/],
+    ['recorded reason stays readable', /`--git-state-reason` writes the observed state and the reason into the Receipt row and the Spec evidence row/],
+    ['no in-progress Task refusal', /refuses a Spec with no in-progress Task/],
+    ['non-blocking Git-state findings', /`doctor` reports `detached-head` and `untracked-controls`[^.]* without blocking/]
+  ]) assert.match(lifecycle, expression, `AGENTS.md completion obligations: ${claim}`);
+}
+
+function completionClaimRunbookContract(runbook, { table }) {
+  const worker = (runbook.split('#### Worker: selection, implementation and hand-back\n')[1]?.split('\n#### ')[0] ?? '').replace(/\s+/g, ' ');
+  for (const [claim, expression] of [
+    ['dirty-tree refusal', /`dirty-tree`[^.]*`git status --porcelain`/],
+    ['unpushed refusal', /`unpushed`[^.]*no remote-tracking ref contains HEAD/],
+    ['remediation', /commit and push, or rerun with `--git-state-reason/],
+    ['reason readable in the record', /observed state and the reason [^.]*final Receipt row and the Spec evidence row/],
+    ['no in-progress Task refusal', /no in-progress Task/],
+    ['standalone corrective close refused', /`close TK-###` refuses, because the standalone\s+corrective Task anchored to a Wiki claim is retired/]
+  ]) assert.match(worker, expression, `Runbook close procedure: ${claim}`);
+  for (const code of gitScopeCodes()) {
+    const { severity, blocks } = describe(code);
+    if (table) {
+      const label = blocks === 'none' ? `\`none\` (${severity})` : `\`${blocks}\``;
+      const row = runbook.split('\n').find((line) => line.startsWith(`| ${label} |`)) ?? '';
+      assert.ok(row.includes(`\`${code}\``), `blocking-effect row ${label} names ${code}`);
+    } else {
+      assert.ok(runbook.includes(`\`${code}\``), `generic Runbook names ${code}`);
+    }
+  }
+}
+
+test('the completion-claim mechanisms are documented in the root controls', () => {
+  assert.deepEqual(gitScopeCodes().filter((code) => describe(code).severity === 'attention'), ['detached-head', 'untracked-controls']);
+  completionClaimAgentsContract(read(root, 'AGENTS.md'));
+  completionClaimRunbookContract(read(root, 'RUNBOOK.md'), { table: true });
+});
+
+test('the completion-claim mechanisms are mirrored in the generic controls', () => {
+  completionClaimAgentsContract(read(productTemplates, 'AGENTS.md'));
+  completionClaimRunbookContract(read(productTemplates, 'RUNBOOK.md'), { table: false });
+});
+
+test('the completion-claim contract fails when a documented mechanism or Git-scope code is dropped', () => {
+  const agents = read(root, 'AGENTS.md');
+  for (const [before, after] of [
+    ['writes the observed state and the reason into the Receipt', 'may mention the state somewhere in the Receipt'],
+    ['and refuses a Spec with no in-progress Task.', 'and closes a ready Task when none is in progress.'],
+    ['reports `detached-head` and `untracked-controls`', 'reports Git state']
+  ]) {
+    assert.ok(agents.includes(before), `mutation targets current AGENTS.md text: ${before}`);
+    assert.throws(() => completionClaimAgentsContract(agents.replace(before, after)), { name: 'AssertionError' }, before);
+  }
+  const runbook = read(root, 'RUNBOOK.md');
+  for (const [before, after] of [
+    ['`dirty-tree` lists anything', 'it lists anything'],
+    ['no remote-tracking ref contains HEAD, naming', 'the branch is behind, naming'],
+    ['commit and push, or rerun with', 'rerun with'],
+    ['final Receipt row and the Spec evidence row record', 'run log records'],
+    ['also refuses a Spec with no in-progress Task', 'also refuses a Spec with nothing claimed'],
+    ['`close TK-###` refuses, because the standalone', '`close TK-###` runs, because the standalone'],
+    ['`detached-head` and `untracked-controls` (scope `git`), and the ADR', 'and the ADR']
+  ]) {
+    assert.ok(runbook.includes(before), `mutation targets current RUNBOOK.md text: ${before}`);
+    assert.throws(() => completionClaimRunbookContract(runbook.replace(before, after), { table: true }), { name: 'AssertionError' }, before);
+  }
+  const generic = read(productTemplates, 'RUNBOOK.md');
+  const codes = 'reports `detached-head` and `untracked-controls` (scope `git`, attention,';
+  assert.ok(generic.includes(codes), 'mutation targets current generic Runbook text');
+  assert.throws(() => completionClaimRunbookContract(generic.replace(codes, 'reports Git state (attention,'), { table: false }), { name: 'AssertionError' });
+});
+
+// S-003X TK-005A: the `ddr` collection, its commands and the read words are
+// installed, so both Lexicons define them and neither presents them as
+// pending; the generic Lexicon names no room-specific record.
+test('both Lexicons carry the installed decision-record vocabulary, and the generic one stays generic', () => {
+  const termRows = (content, term) => content.split('\n').filter((line) => line.startsWith(`| **${term}** |`));
+  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
+    const content = read(root, relative);
+    for (const term of ['Decision Record', 'DDR', 'Read words']) assert.ok(termRows(content, term).length > 0, `${relative} defines ${term}`);
+    const collection = termRows(content, 'Collection').join('\n');
+    assert.match(collection, /`docs\/ddr`/, `${relative} lists the ddr collection`);
+    assert.match(collection, /`wiki\/features`/, `${relative} lists the features collection`);
+    const blueprint = termRows(content, 'Blueprint').join('\n');
+    assert.match(blueprint, /ADR or DDR inventory/, `${relative} Blueprint row`);
+    assert.match(blueprint, /links no record that carries an identifier/, `${relative} Blueprint row narrows linking`);
+    assert.match(termRows(content, 'Decisions').join('\n'), /workbench\/docs\/ddr\/REGISTER\.md/, `${relative} routes destination decisions to the DDR register`);
+    assert.match(termRows(content, 'Read words').join('\n'), /decision-record tool answers all five/, `${relative} says which tool answers the read words`);
+    for (const line of [...termRows(content, 'DDR'), ...termRows(content, 'Decision Record'), ...termRows(content, 'Decisions')]) {
+      assert.doesNotMatch(line, /not installed yet|will live in|remain in delivery|as the accepted destination, a DDR/, `${relative} presents installed DDR tooling as pending: ${line.slice(0, 80)}`);
+    }
+  }
+  const template = read(root, 'templates/LEXICON.md');
+  for (const term of ['Decision Record', 'DDR', 'Read words']) {
+    // Review corrective: the generic Lexicon defines each term exactly once.
+    assert.equal(termRows(template, term).length, 1, `templates/LEXICON.md defines ${term} exactly once`);
+    for (const line of termRows(template, term)) assert.doesNotMatch(line, /ADR-0|S-0|TK-0|workbench\/docs\/adr\/0|workbench\/specs\//, `templates/LEXICON.md ${term} stays generic`);
+  }
+});
+
+// S-004G: the owner's Workbench terms each have exactly one row in both
+// Lexicons (Workbench Template is a producer term and has no generic row), and
+// "root controls", and "controls" for files, are retired: no line uses the
+// word for a file except the retired-name row, the Control and Control fidelity
+// rows and the public names that carry it, each excused by its exact text.
+const WORKBENCH_TERMS = ['Owner', 'Room', 'Scaffolding', 'Contract artifact', 'Routing artifact', 'Architecture artifact', 'Control'];
+const CONTROLS_EXCUSED = [
+  'Safety And Change Control', 'Long Session Control', 'control-fidelity', 'controls-vocabulary-sweep',
+  'three-root-controls', 'ownership-map-root-control', 'second control plane', 'control plane',
+];
+const CONTROLS_EXCUSED_ROWS = ['Control', 'Control fidelity', 'Root controls'];
+
+test('both Lexicons define the Workbench terms once and use "controls" only for one-action tools', () => {
+  const rowsOf = (content, term) => content.split('\n').filter((line) => line.startsWith(`| **${term}** |`));
+  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
+    const content = read(root, relative);
+    for (const term of WORKBENCH_TERMS) assert.equal(rowsOf(content, term).length, 1, `${relative} has exactly one ${term} row`);
+    assert.equal(rowsOf(content, 'Root controls').length, 1, `${relative} keeps one retired-name Root controls row`);
+    assert.equal(rowsOf(content, 'Root files').length, 1, `${relative} describes the root files once`);
+    assert.match(rowsOf(content, 'Control')[0], /A one-action tool/, `${relative} Control row`);
+    assert.match(rowsOf(content, 'Root controls')[0], /Retired name/, `${relative} Root controls row is retired`);
+    assert.match(rowsOf(content, 'Contract artifact')[0], /on every turn of every session/, `${relative} Contract artifact row`);
+    assert.match(rowsOf(content, 'Owner')[0], /alone promotes it to main/, `${relative} Owner row`);
+    const stale = [];
+    for (const line of content.split('\n')) {
+      if (CONTROLS_EXCUSED_ROWS.some((row) => line.startsWith(`| **${row}** |`))) continue;
+      let rest = line;
+      for (const token of CONTROLS_EXCUSED) rest = rest.split(token).join('');
+      if (/\bcontrols?\b/i.test(rest)) stale.push(line.slice(0, 120));
+    }
+    assert.deepEqual(stale, [], `${relative} still uses "controls" for files:\n${stale.join('\n')}`);
+  }
+  const root_ = read(root, 'LEXICON.md');
+  assert.equal(rowsOf(root_, 'Workbench Template').length, 1, 'LEXICON.md has exactly one Workbench Template row');
+  assert.equal(rowsOf(read(root, 'templates/LEXICON.md'), 'Workbench Template').length, 0, 'templates/LEXICON.md carries no producer-only Workbench Template row');
+});
+
+
+// S-004G: each workflow verb has exactly one row stating its confirmed
+// meaning, and the Workflow row states the open verb set and the delivery
+// workflow, with Journey as the build loop and Delivered replacing Complete.
+const WORKFLOW_VERBS = ['Idea', 'Align', 'Confirm', 'Prototype', 'Map', 'Plan', 'Implement', 'Check', 'Review', 'Verify', 'Journey', 'Approve', 'Delivered', 'Clean Up'];
+
+test('both Lexicons define every workflow verb once and state the delivery workflow with Journey as the build loop', () => {
+  const rowsOf = (content, term) => content.split('\n').filter((line) => line.startsWith(`| **${term}** |`));
+  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
+    const content = read(root, relative);
+    for (const verb of [...WORKFLOW_VERBS, 'Workflow verb', 'Workflow']) assert.equal(rowsOf(content, verb).length, 1, `${relative} has exactly one ${verb} row`);
+    const workflow = rowsOf(content, 'Workflow')[0];
+    assert.match(workflow, /Idea, Align, Confirm, Map, Plan, Journey, Approve, Delivered, Clean Up/, `${relative} Workflow row names the delivery workflow`);
+    assert.match(workflow, /verb set stays open/, `${relative} Workflow row says the set is open`);
+    assert.doesNotMatch(workflow, /eight verbs Idea|official workflow verbs everywhere/, `${relative} Workflow row drops the closed list`);
+    assert.match(rowsOf(content, 'Journey')[0], /Implement, Check, Review and Verify, repeated until the confirmed concept is built\. Map and Plan come before it and are not part of it/, `${relative} Journey row`);
+    assert.match(rowsOf(content, 'Delivered')[0], /Delivered, not Complete/, `${relative} Delivered row`);
+    assert.match(rowsOf(content, 'Check')[0], /automated checks the building agent runs on its own Task/, `${relative} Check row`);
+    assert.doesNotMatch(rowsOf(content, 'Align')[0], /not itself implementation permission/, `${relative} Align row drops the old confirmation clause`);
+    assert.match(rowsOf(content, 'Confirm')[0], /authorizes the agents to carry the concept to its endpoint/, `${relative} Confirm row`);
+    assert.equal(content.split('\n').filter((line) => /^\| \*\*Map\*\* \|/.test(line)).length, 1, `${relative} keeps one Map row for noun and verb`);
+    assert.match(content.split('\n').find((line) => /^\| \*\*Map\*\* \|/.test(line)), /As a workflow verb, Map is "Writing the direction to a destination: landmarks, Specs and decision records\."/, `${relative} Map row carries the verb`);
+  }
+});
+
+
+// S-004G: the Blueprint row describes every room's Blueprint as the four-part
+// short page and says what the Blueprint is for, in the owner's confirmed
+// words; the Foundry row says what the owner said the Foundry is and keeps the
+// sole-source boundary.
+test('the Blueprint and Foundry rows carry the owner\'s confirmed answers and not the replaced ones', () => {
+  const rowOf = (content, term) => content.split('\n').find((line) => line.startsWith(`| **${term}** |`));
+  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
+    const blueprint = rowOf(read(root, relative), 'Blueprint');
+    assert.match(blueprint, /four-part short page \(what it is, who it serves, promised outcomes, non-goals\) for every room/, `${relative} Blueprint row names the short page`);
+    assert.match(blueprint, /Each sentence can serve as a map toward an implementation plan/, `${relative} Blueprint row says what it is for`);
+    assert.match(blueprint, /The Blueprint makes us ask questions; it does not give definite answers/, `${relative} Blueprint row`);
+    assert.doesNotMatch(blueprint, /The adaptable narrative of the desired finished product: destination, people, outcomes/, `${relative} Blueprint row drops the eight-section description`);
+    assert.match(blueprint, /not current status, an ADR or DDR inventory/, `${relative} Blueprint row keeps its boundaries`);
+  }
+  const foundry = rowOf(read(root, 'LEXICON.md'), 'Foundry');
+  assert.match(foundry, /autonomous factory of many rooms, each with a workbench producing work/, 'Foundry row says what the Foundry is');
+  assert.match(foundry, /the Foundry needs the workbench proven first/, 'Foundry row carries the confirmed sentence');
+  assert.match(foundry, /never its source, copy target, tool runtime, or prerequisite/, 'Foundry row keeps the sole-source boundary');
+  assert.doesNotMatch(foundry, /downstream coordination extension/, 'Foundry row drops the replaced description');
+});
+
+
+// S-004G: the owner's Journey correction (Journey is the build loop) is carried
+// by the amended workflow-verbs decision record, and no active accepted
+// decision record still says Journey is Map, Plan, Implement, Review and Verify.
+test('the workflow verbs decision carries the Journey correction and no active record states the replaced Journey', () => {
+  const active = (directory) => fs.readdirSync(path.join(root, directory))
+    .filter((name) => /^[0-9A-Za-z]{4}-.*\.md$/.test(name))
+    .map((name) => [`${directory}/${name}`, read(root, `${directory}/${name}`).replace(/\s+/g, ' ')]);
+  const records = [...active('workbench/docs/adr'), ...active('workbench/docs/ddr')];
+  for (const [file, text] of records) assert.doesNotMatch(text, /Journey is Map, Plan, Implement, Review and Verify/, `${file} still states the replaced Journey`);
+  const workflow = records.find(([file]) => /\/000X-the-workflow-is-eight-verbs/.test(file));
+  assert.ok(workflow, 'the workflow verbs decision stays an active accepted record');
+  assert.match(workflow[1], /Journey is Implement, Check, Review and Verify, repeated until the confirmed concept is built; Map and Plan come before it and are not part of it/);
+  assert.match(workflow[1], /the verb set is open/i);
+  assert.match(workflow[1], /Amended 2026-10-03/);
+  assert.match(workflow[1], /git show [0-9a-f]{7,40}:workbench\/docs\/adr\/000X-/, 'the amendment names where the earlier text reads');
+});
+
+
+// S-004G: the Workflow Verbs and Idea To Delivery Wiki pages state the open verb set, the delivery
+// workflow and Journey as the build loop, as the Lexicon and the amended decision do.
+test('the workflow Wiki pages state the delivery workflow and Journey as the build loop', () => {
+  for (const file of ['workflow-verbs.md', 'idea-to-delivery-workflow.md']) {
+    const page = read(root, `workbench/wiki/design-concepts/${file}`).replace(/\s+/g, ' ');
+    assert.doesNotMatch(page, /Journey \(Map, Plan, Implement, Review, Verify\)|Map, Plan, Implement, Review and Verify together are a \*\*Journey|Map through Verify together are one Journey/, `${file} still states the replaced Journey`);
+    assert.match(page, /Idea, Align, Confirm, Map, Plan, Journey, Approve, Delivered, Clean Up/, `${file} names the delivery workflow`);
+  }
+  assert.match(read(root, 'workbench/wiki/design-concepts/workflow-verbs.md').replace(/\s+/g, ' '), /Journey is the build loop: Implement, Check, Review and Verify, repeated until the confirmed concept is built/);
+});
+
+// S-004E: each AI Coding Dictionary term the owner adopted has exactly one
+// Lexicon row, in an `AI Coding Terms` section, naming its dictionary entry
+// once; the generic Lexicon carries the same rows, and names no room-specific
+// record.
+const AI_CODING_TERMS = [
+  // Batch 1, 2026-10-03: the terms that collide with no existing row (the fifteen planned, plus Model provider,
+  // whose provider note is a distinction only).
+  'Model', 'Parameters', 'Effort', 'Inference', 'Token', 'Next-token prediction', 'Non-determinism', 'Model provider',
+  'Input tokens', 'Output tokens', 'Cache tokens', 'Stateless', 'Stateful', 'Agent', 'System prompt', 'Context window',
+  // Batch 1, the three that meet an existing Workbench word: Harness, Context and Session.
+  'Harness', 'Context', 'Session',
+  // Batch 2, 2026-10-03: adopted on the Blueprint teardown review page.
+  'Smart zone', 'Attention budget', 'Attention degradation', 'Automated check', 'Automated review', 'Human review',
+  'Grilling', 'Environment', 'Filesystem', 'Software factory',
+];
+const dictionarySlug = (term) => term.toLowerCase().replace(/ /g, '-');
+
+test('both Lexicons carry each adopted AI Coding Terms row exactly once with one dictionary link', () => {
+  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
+    const content = read(root, relative);
+    assert.match(content, /^## AI Coding Terms$/m, `${relative} has the AI Coding Terms section`);
+    const section = content.split(/^## AI Coding Terms$/m)[1].split(/^## /m)[0];
+    assert.match(section, /no(t a)? live import|not a\s+live import/, `${relative} preamble states the no-live-import rule`);
+    for (const term of AI_CODING_TERMS) {
+      const rows = content.split('\n').filter((line) => line.startsWith(`| **${term}** `));
+      assert.equal(rows.length, 1, `${relative} has exactly one ${term} row`);
+      assert.ok(section.includes(rows[0]), `${relative} keeps the ${term} row inside AI Coding Terms`);
+      const links = rows[0].match(/https:\/\/www\.aihero\.dev\/ai-coding-dictionary\/[a-z-]+/g) || [];
+      assert.deepEqual(links, [`https://www.aihero.dev/ai-coding-dictionary/${dictionarySlug(term)}`], `${relative} ${term} links its dictionary entry once`);
+      if (relative.startsWith('templates/')) assert.doesNotMatch(rows[0], /ADR-0|S-0|TK-0|workbench\/specs\/|workbench\/wiki\//, `${relative} ${term} stays generic`);
+    }
+  }
+});
+
+// S-004F TK-005Q: the owner's two corrective-work answers (a miss found by a
+// check continues the same Task unless the fix rewrites it; a later gap
+// against delivered work is a new Spec, never a correction anchored to a Wiki
+// claim) are carried by accepted decision records, and no accepted record
+// still states the rules they replace as current.
+test('accepted decision records carry the corrective-work rules and no longer state the replaced ones', () => {
+  const active = (directory) => fs.readdirSync(path.join(root, directory))
+    .filter((name) => /^[0-9A-Za-z]{4}-.*\.md$/.test(name))
+    .map((name) => [`${directory}/${name}`, read(root, `${directory}/${name}`).replace(/\s+/g, ' ')]);
+  const records = [...active('workbench/docs/adr'), ...active('workbench/docs/ddr')];
+  const replaced = [
+    ['a failing Spec review creates corrective Tasks', /Failing is diagnostic: it creates corrective Tasks/],
+    ['a missed Task is always replaced by a new Task', /its card returns to In progress, its worktree is removed, and a new Task named for its objective fixes it/],
+    ['a corrective Task uses its Wiki claim (three altitudes)', /A corrective Task against the same reconciled capability uses its Wiki claim/],
+    ['a corrective Task uses its Wiki claim (Task record)', /For a corrective Task against a reconciled Wiki claim, the maintained Wiki/],
+    ['a later repair loads its Wiki claim (lifecycle)', /A later repair against that reconciled destination loads and updates its Wiki claim/],
+    ['a failed landmark review produces corrective Tasks', /failed landmark review produces corrective Tasks, as a failed Spec review does/],
+    ['Wiki lint findings become corrective Tasks', /Findings become corrective Tasks/]
+  ];
+  for (const [file, text] of records) {
+    for (const [claim, pattern] of replaced) assert.doesNotMatch(text, pattern, `${file} still states as current: ${claim}`);
+  }
+  const sameTask = records.find(([file]) => /^workbench\/docs\/ddr\/[0-9A-Za-z]{4}-a-miss-found-by-a-check-continues-the-same-task/.test(file));
+  assert.ok(sameTask, 'an accepted destination decision record carries the same-Task answer');
+  assert.match(sameTask[1], /the same Task continues with an adjusted handoff/);
+  assert.match(sameTask[1], /A new Task is opened only when the fix changes the Task enough that it has to be rewritten/);
+  assert.match(sameTask[1], /If the fix is different than just continuing, and we have to rewrite the task\. then yes\. otherwise\. just use the same task, with an adjusted handoff\./);
+  for (const prefix of ['000F', '000G', '000H', '000I', '000R', '000U']) {
+    const [file, text] = records.find(([name]) => name.startsWith(`workbench/docs/adr/${prefix}-`));
+    assert.match(text, /\.\.\/ddr\/000[MY]-/, `${file} names the destination record that amended it`);
+  }
+});
+
+// S-004E: the owner's harness answer (2026-10-03): the Workbench is an agentic
+// management system a harness loads, never a harness; Room has always meant
+// project. Neither Lexicon calls the Workbench the operating harness, and a
+// Chat is distinguished from a session.
+test('neither Lexicon calls the Workbench a harness, and Chat is distinguished from a session', () => {
+  const termRow = (content, term) => content.split('\n').find((line) => line.startsWith(`| **${term}** `));
+  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
+    const content = read(root, relative);
+    assert.doesNotMatch(content, /operating harness|agent harness|harness around it|this harness/i, `${relative} must not call the Workbench a harness`);
+    assert.doesNotMatch(termRow(content, 'Workbench'), /A room:/, `${relative} Workbench row must not call the Workbench a room`);
+    assert.match(termRow(content, 'Workbench'), /agentic management system/, `${relative} Workbench row says what it is`);
+    assert.match(termRow(content, 'Workbench'), /Not a harness/, `${relative} Workbench row says what it is not`);
+    assert.match(termRow(content, 'Portable Workbench'), /agentic management system/, `${relative} Portable Workbench row`);
+    assert.match(termRow(content, 'Chat'), /not a session either/, `${relative} Chat row distinguishes a session`);
+    assert.match(termRow(content, 'Host portability'), /host" means the machine/, `${relative} Host portability row says which host`);
+    assert.match(termRow(content, 'Harness'), /The Workbench is not a harness/, `${relative} Harness row`);
+    assert.match(termRow(content, 'Evaluation'), /Does this Workbench help agents/, `${relative} Evaluation row`);
+  }
+});
+
+// S-004E: a dictionary term that needs more than its Lexicon row has a flat Wiki
+// entry, routed from MEMORY.md with a summary line, that links its Lexicon
+// row, its dictionary entry and an owning control.
+const AI_CODING_WIKI_ENTRIES = {
+  'dictionary-harness.md': 'harness', 'dictionary-session.md': 'session', 'dictionary-context.md': 'context',
+  'dictionary-context-window.md': 'context-window', 'dictionary-stateless.md': 'stateless', 'dictionary-stateful.md': 'stateful',
+  'dictionary-cache-tokens.md': 'cache-tokens', 'dictionary-non-determinism.md': 'non-determinism',
+};
+
+test('each AI Coding Dictionary Wiki entry is routed from MEMORY.md and links its row, its dictionary entry and its owners', () => {
+  const memory = read(root, 'workbench/wiki/MEMORY.md');
+  for (const [file, slug] of Object.entries(AI_CODING_WIKI_ENTRIES)) {
+    const page = read(root, `workbench/wiki/${file}`);
+    const routed = memory.split('\n').filter((line) => line.includes(`](${file})`));
+    assert.equal(routed.length, 1, `MEMORY.md routes ${file} once`);
+    assert.match(routed[0], /\]\([^)]+\):\s*\S/, `MEMORY.md gives ${file} a summary line`);
+    assert.ok(page.includes('(../../LEXICON.md)'), `${file} links the Lexicon`);
+    assert.ok(page.includes(`https://www.aihero.dev/ai-coding-dictionary/${slug}`), `${file} links its dictionary entry`);
+    assert.match(page, /\.\.\/\.\.\/AGENTS\.md|\.\.\/docs\/(adr|ddr)\//, `${file} links an owning control or decision record`);
+  }
+});
+
+// S-004F TK-005T: the two controls every session loads, their generic mirror and
+// the Task author's skill state the owner's corrective-work rules - a miss found
+// by a check continues the same Task unless the fix rewrites it; a later gap
+// against delivered work is a new Spec, never a correction anchored to a Wiki
+// claim - and no longer the rules they replace.
+test('AGENTS, its template and the to-tasks skill state the corrective-work rules and not the replaced ones', () => {
+  for (const [file, text] of [['AGENTS.md', read(root, 'AGENTS.md')], ['templates/AGENTS.md', read(productTemplates, 'AGENTS.md')]]) {
+    const flat = text.replace(/\s+/g, ' ');
+    for (const [claim, pattern] of [
+      ['continue the same Task', /`continue TK-###: <what the check found and what the fix must do>` when the fix is more of the same work: the same Task continues with that adjusted handoff/],
+      ['open a new Task only when the fix rewrites it', /`new Task: <finding>` \(optionally `new Task rewriting TK-###: <finding>`\) only when the fix changes the Task enough that it has to be rewritten/],
+      ['an undispositioned finding is refused', /A finding naming neither is refused before any write, and the evidence row records which case applied/],
+      ['owner findings follow the same rule', /`approve` with `--finding TEXT` follows the same rule/],
+      ['a later gap is a new Spec', /A later gap against delivered work becomes a new Spec under its landmark or the Blueprint, never a revived Spec and never a correction anchored to a Wiki claim/],
+      ['the Wiki is evidence, not the destination', /the Wiki is evidence for that Spec's direction and plan, not its destination/],
+      ['Wiki lint findings follow the rule', /its findings follow the corrective rule in Assembled Review And Corrective Return/]
+    ]) {
+      if (file === 'templates/AGENTS.md' && claim === 'the Wiki is evidence, not the destination') continue;
+      assert.match(flat, pattern, `${file}: ${claim}`);
+    }
+    for (const [claim, pattern] of [
+      ['one new Task per finding', /creates one corrective Task per attributable finding/],
+      ['approve --finding creates Tasks', /`approve` with `--finding TEXT` creates corrective Tasks/],
+      ['later gaps anchored to a Wiki claim', /use corrective Tasks anchored to its Wiki claim/],
+      ['lint findings become corrective Tasks', /findings become corrective Tasks/],
+      ['reopening is forbidden outright', /Do not silently reopen a done record/]
+    ]) assert.doesNotMatch(flat, pattern, `${file} still states: ${claim}`);
+  }
+  const toTasks = read(root, 'workbench/skills/to-tasks/SKILL.md').replace(/\s+/g, ' ');
+  assert.match(toTasks, /a corrective Task never takes a Wiki claim as its destination/);
+  assert.doesNotMatch(toTasks, /for a corrective Task after retirement/);
+  assert.equal(read(root, 'AGENTS.md').includes('## Assembled Review') || read(root, 'AGENTS.md').includes('### Assembled Review And Corrective Return'), true, 'the heading other records link to stays');
+  assert.match(read(root, 'AGENTS.md'), /### Owner Closure And Reconciliation/);
 });

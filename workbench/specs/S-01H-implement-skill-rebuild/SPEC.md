@@ -1,17 +1,17 @@
 # S-01H - implement skill rebuild
 
 **Spec ID:** S-01H
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** codex-s01h
 **Stance:** Builder
-**Updated:** 2026-09-24
+**Updated:** 2026-10-03
 **Catalog description:** Deliver one eligible assigned Task through red/green and verified recovery.
-**Blockers:** none for planning; implementation is not assigned.
-**Latest event:** Per-skill destination extracted from the oversized Skills Wiki packet and current core inventory.
-**Next gate:** Review this skill's existing behavior, then activate TK-00Y for this skill only.
+**Blockers:** Configured-agent behavior has not been independently observed: both cloud configured-Codex startups failed before the scenario ran, and the one Servitor run is a coordinator-attributed report whose raw records nobody else has inspected. That gap keeps acceptance criterion 3 open.
+**Latest event:** Implement candidate landed on integration through the Lane A consolidation: codex/s01h-implement-rebuild daf990b9 merged with current integration; landed only after a separate-context PASS on the landing PR. No behavioral proof is claimed from it.
+**Next gate:** Observe the configured-agent scenario in an independent context, or inspect the raw Servitor records, before TK-00Y can close; owner Human QA follows. TK-00Y stays in progress without new acceptance or approval.
 
-> **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
+> **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`58e8f0441e1a7222d0f64fd064e814978c495194`.
 
 ## Outcome
 
@@ -24,8 +24,8 @@ The prior Skills Wiki packet grouped the whole core inventory into one completio
 ## Current Verified State
 
 - `workbench/skills/implement/SKILL.md` is the manifest-declared core source at the pre anchor.
-- `workbench/wiki/skill-implement.md` is not yet routed as a current skill article; its existence and links must be rechecked before authoring.
-- S-00R distinguishes this execution job from promote/save composition. No fresh behavioral scenario for this per-skill delivery is claimed by this planning packet.
+- The individual article `workbench/wiki/skill-implement.md` exists and is routed from `workbench/wiki/MEMORY.md`, verified in candidate `b38f4f7bbfa9bd31e77a25bd918f177af1918719`. It documents the repaired source, pinned upstream comparison and remaining configured-agent proof limit. The earlier unrouted state is retained in the dated planning evidence below.
+- S-00R distinguishes this execution job from promote/save composition. One new synthetic configured-agent scenario is recorded below as a coordinator-observed report. The cloud producer has not inspected its raw records or Git objects; independent evidence review and behavioral acceptance remain open.
 
 ## Desired Behavior
 
@@ -55,7 +55,6 @@ No other skill rebuild is a blanket prerequisite. Check current controls and the
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-00Y | Audit implement, deliver the smallest supported source/documentation change and prove the routed article | ready | none | pending |
 
 ### TK-00Y - Deliver the implement skill destination
 
@@ -65,7 +64,7 @@ Inspect the current source, its callers/composition and relevant tests. Demonstr
 
 ## Acceptance Criteria
 
-- [ ] The individual Wiki article records the supported upstream relationship and its practical local effect against a pinned source, with uncertainty visible.
+- [x] The individual Wiki article records the supported upstream relationship and its practical local effect against a pinned source, with uncertainty visible.
 
 - [ ] The skill resolves the current Task, shows a relevant failing check, implements the smallest change, runs required proof and updates owners.
 - [ ] It does not self-approve integration, skip documentation or silently widen a Task.
@@ -104,9 +103,21 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane.
 | 2026-09-24 | planning | Owner directed one delivery Spec per skill; this Spec names implement's destination and first slice | Current manifest, core catalog, source presence and Wiki route inspected at pre anchor; no behavior change or scenario trial | This Spec authored; article remains future work | TK-00Y and independent delivery proof remain open |
 | 2026-09-24 | planning verification | Skill-sized ownership and routing checked on the isolated candidate | All 47 required AGENTS commands passed; Wiki validation and exact 21 core plus one proposed entry coverage passed; doctor has no blocking finding; pre/post self-drift at 4940233 retained the same seven pre-existing findings and cleanUpdate false | No skill source or new article authored in this planning pass | Immutable separate-context review and actual skill behavior remain open |
 
+| 2026-10-01 | TK-00Y | Refreshed ownership at integration `95176a4f216cc3d684301a355d6d23369ab275a1`, descendant of supplied `3b5b76bf`; native activation retained existing TK-00Y and coordinated claim published `1bb4cf0` | No live competing claim or matching remote branch observed. Red `3a30c15`: focused checks fail missing Task-record recovery and containment; green `9d12d4c`: 2/2 pass, including real Git unpublished/descendant containment fixture | Implement now resumes Task receipts, records in-progress proof, composes save, self-checks and bounds owner handback; individual article and scenario protocol authored | Fresh configured-agent proof blocked before execution: codex exec failed to initialize in-process app-server on read-only filesystem. No credentials copied or access expanded. Independent review and publication remain pending |
+
+| 2026-10-01 | TK-00Y | Repaired catalog compatibility and verified clean source `58e8f0441e1a7222d0f64fd064e814978c495194` | Initial suite on `588c87a` failed the catalog literal for assigned stable SPEC; the interrupted attempt is not a passing gate. Restored the established wording while clarifying stable identity rather than fixed location. All 51 distinct commands from the current AGENTS full suite and RUNBOOK Full verification plus test-implement-skill, test-delivery-skills, Wiki validation and diff check passed: 55/55 on a clean tree. Focused tests are source-contract and Git fixture proof, not agent behavior | Source/catalog compatibility restored without editing shared tests; article links source, scenario, controls and exact upstream comparison | Configured-agent scenario and separate-context review remain open; Task remains in progress |
+| 2026-10-01 | TK-00Y | Self-drift and bounded semantic self-check | Pre receipt at `95176a4` and post at `588c87a` both cleanUpdate false, with identical seven pre-existing findings: stale S-00Q claim, five stale seeds, unverified provenance. Guardrail 78/100 before and after; outstanding recommendations concern repeated real outcome trials, controls/prior/candidate comparison and uncertainty. Semantic review checked Task ownership, generated projections, manifest/discovery, source callers and documented completion gates; no new shared-control or schema requirement | Docs checked; no update needed in controls, generic templates, manifest or core inventory: they already define Task receipts, review and save. Only owning source, article, Spec/Task and necessary generated routing changed. No new bundle-count or installed-behavior claim | Global drift remains with its existing owners; this is not a clean-update or reliability claim |
+| 2026-10-01 | TK-00Y | Pinned upstream comparison and assembly handback | Read mattpocock/skills at `d81f3a183412e71a5b1e84ca21bc1a35eea03a60`, actual path skills/engineering/implement/SKILL.md. It prescribes supplied work, TDD where possible, regular checks, full suite, review and commit. Workbench adds assigned Task recovery, required red/green, receipts, documentation, scoped handback and verified remote recovery. No exact-copy ancestry asserted. Both normal and ephemeral configured Codex startup failed before scenario execution on read-only app-server storage; GitHub CLI API returned Forbidden | Article marks behavioral proof partial; repeatable scenario protocol prepared. PR237 `f12e6928` only appends Draft-wiki alignment in S01H; preserve that append on assembly when it lands, retaining existing TK-00Y and proof | No new IDs allocated. No new owner decision made; coordinator single grilling record was not reachable here, so parent must reconcile this factual handback there. Publication requires existing-owner route if API remains unavailable |
+
+| 2026-10-01 | TK-00Y | Correct P3 current-facing Wiki-routing drift identified in independent review of `b38f4f7` | Article exists and MEMORY links skill-implement.md at the reviewed candidate; current-state wording now describes that verified route rather than repeating the planning-time absence | Corrected Current Verified State only; prior planning and execution evidence retained unchanged | Configured-agent results must be reconciled from observed proof into the new scenario-evidence candidate; no behavioral acceptance or Task closure claimed |
+
+| 2026-10-01 | TK-00Y | Reconcile coordinator-observed NEW synthetic Servitor scenario under Director authorization; this is an attributed report, not cloud raw inspection | Coordinator reports actual Codex CLI 0.159.3 with configured gpt6.1sol, public pinned protocol/source at `b38f4f7`, runtime identified in the supplied report only as `02a`. First scenario attempt refused fixture .git/FETCH_HEAD writes before implementation with zero changed bytes and unchanged ready Task and branch tips. Second attempt used supported run-scoped --add-dir for only the disposable fixture .git and its local bare origin; coordinator reports no global configuration, authentication or security changes | Earlier cloud startup failures and this failed Servitor attempt remain history; no raw records or private payload transferred | One synthetic configured run; explicit source loading, not installed behavior or repeated reliability. The abbreviated runtime identifier is not expanded or independently verified here |
+| 2026-10-01 | TK-00Y | Coordinator reports observed bounded implementation and independent local rechecks on Servitor | Agent loaded source hash, Contract and Task; claimed only fixture TK001 at `c5f733e`; red `93e4c2f750e9b032d53d30f18d5523a99d72d4f4` had four stub-test failures before code; green `b12432ccb8e64d21e207de8b21a5f1764c6626d0` passed 4/4. Final `9d8f55f3199f38fda2802170a81c6120efc3e23c4` included native in-progress receipt, self-check, render and README; local bare origin push, fetch, exact-candidate containment and clean tree were observed. Coordinator independently reran 4/4 tests, doctor, receipt checksum, diff and Git containment. Fixture TK001 remained in progress at draft endpoint. TK002 SHA256 `0dbd8de61c13753edc6cdc2d2969daf3f8b3265fbac44de795801e9d0f27adb8` unchanged; local/remote main and integration all unchanged at `9985060e466670ad317f33457ea5a8f8e19867c3`. Ten changed paths were confined to assigned source/test/README/Task/projections, with no controls changed | Wiki now separates coordinator-observed behavior from producer-inspected source and routing. Three pre-existing synthetic setup doctor notices remained: router, core lane and Claude adapter absent | Raw tool records and Git objects remain on Servitor; neither the cloud producer nor cloud behavior reviewer inspected them. This report is not whole-Task PASS, owner Human QA or integration approval; evidence acceptance remains open |
+| 2026-10-01 | TK-00Y | Director approved this evidence disposition through original writer | Record attributed coordinator observation and explicit raw-inspection limits, preserve failures, correct P3 current Wiki route wording, keep TK-00Y in progress and add no acceptance or approval; no raw artifact transfer authorized | Current-facing Spec and Wiki updated; append-only history preserved | Assemble current integration with PR248 planning appendix preserved; run required verification and return new immutable review candidate |
+
 ## Completion Result
 
-Pending. Planning only; no implement rebuild or behavioral acceptance is claimed.
+Implementation and documentation candidate prepared for TK-00Y, with one coordinator-observed synthetic scenario recorded under explicit raw-inspection limits. The candidate source and records landed on integration on 2026-10-03 after a separate-context review of the landing candidate; that review covered the source, records and claims, not the behavior. Configured-agent behavior was not observed in the cloud run and the Servitor run is attributed only, so behavioral acceptance, raw-evidence inspection and owner gates remain open. TK-00Y remains in progress; no new acceptance, whole-Task PASS, approval, Spec completion or installed-behavior claim.
 
 ## Supersession
 

@@ -42,7 +42,7 @@ function recipe(cwd, verb, values = {}, expectStatus = 0, variant = '') {
   const tokens = command.match(/"[^"]*"|'[^']*'|\[[^\]]*\]|[^\s]+/g).map(token => token.replace(/^(["'])(.*)\1$/, '$2'));
   const defaults = { 'S-001': 'S-001', 'TK-001': 'TK-001', '[SHA]': values.candidate,
     '[DIGEST]': values.digest, '[INTEGRATION SHA]': values.candidate, '[WHO]': 'Simulated fixture owner; not Human QA',
-    '[FINDINGS OR none]': values.findings ?? 'none', '[FINDINGS]': values.findings ?? 'Missing punctuation coverage',
+    '[FINDINGS OR none]': values.findings ?? 'none', '[FINDINGS]': values.findings ?? 'new Task: Missing punctuation coverage',
     '[SEPARATE CONTEXT, MODEL AND MODE]': 'Simulated fixture Director; machinery only',
     '[NAMED VERIFICATION]': 'node --test tests/hello.test.mjs PASS; actual greeting observed',
     '[DOCS UPDATED OR Docs checked; no update needed + reason]': 'README usage checked; no update needed',
@@ -55,7 +55,7 @@ function recipe(cwd, verb, values = {}, expectStatus = 0, variant = '') {
     '[Known limit or linked follow-up]': 'none', '[product tradeoff]': 'Simulated owner destination change', ...values };
   const args = tokens.slice(1).map(token => defaults[token] ?? token).map((token, index, args) => {
     if (!genericGuidance) return token;
-    if (args[index - 1] === '--findings' || args[index - 1] === '--finding') return values.findings ?? (command.includes('--result fail') ? 'Missing punctuation coverage' : 'none');
+    if (args[index - 1] === '--findings' || args[index - 1] === '--finding') return values.findings ?? (command.includes('--result fail') ? 'new Task: Missing punctuation coverage' : 'none');
     if (args[index - 1] === '--tests') return values['[TESTS RUN AND RESULT]'] ?? token;
     if (args[index - 1] === '--remaining-gap') return values['[GAP OR none]'] ?? token;
     return token;
@@ -343,7 +343,7 @@ try {
   const checkpoint = step => console.log(`demo - ${step}; HEAD ${git(second, 'rev-parse', '--short', 'HEAD')}`);
   const inspect = () => JSON.parse(recipe(second, 'report', { candidate: git(second, 'rev-parse', 'HEAD') }, 0, '--json'));
   const originalBytes = read(originalTask);
-  const failed = JSON.parse(recipe(second, 'verdict', { candidate: finalSha, digest: report.specDigest, findings: 'Empty names need the default greeting' }, 0, '--result fail'));
+  const failed = JSON.parse(recipe(second, 'verdict', { candidate: finalSha, digest: report.specDigest, findings: 'new Task: Empty names need the default greeting' }, 0, '--result fail'));
   assert.equal(failed.correctiveTasks.length, 1);
   assert.equal(read(originalTask), originalBytes, 'failed review preserves original Task and Receipt bytes');
   const repairId = failed.correctiveTasks[0].id;
@@ -391,7 +391,7 @@ try {
   refusedRecipe(second, 'complete', {}, /owner Human QA|finding|earlier content/);
   commit('Preserve simulated owner destination-change observation'); publish();
   candidate = git(second, 'rev-parse', 'HEAD');
-  const qa = JSON.parse(recipe(second, 'approve', { candidate, findings: 'Explain empty greeting input in usage' }, 0, '--finding'));
+  const qa = JSON.parse(recipe(second, 'approve', { candidate, findings: 'new Task: Explain empty greeting input in usage' }, 0, '--finding'));
   assert.equal(qa.result, 'finding'); assert.equal(qa.correctiveTasks.length, 1);
   const qaTask = qa.correctiveTasks[0].id;
   assert.equal(read(originalTask), originalBytes);
@@ -518,21 +518,23 @@ try {
   assert.deepEqual(directoryBytes(path.join(recoveredClone, retiredDir)), specBytes);
   assert.equal(fs.readFileSync(path.join(recoveredClone, retiredDir, 'tasks/TK-001/TASK.md'), 'utf8'), originalBytes);
   checkpoint('capture, link-safe retirement, discard and exact fresh-clone directory recovery');
-  // No CLI exists for orphan creation. Exercise and disclose the real export,
-  // then use actual CLI claim/close and challenge unsupported standalone receipt.
-  const orphan = JSON.parse(run(second, process.execPath, ['--input-type=module', '-e', `import { createCorrectiveTasks } from './workbench/tools/spec-report.mjs'; console.log(JSON.stringify(createCorrectiveTasks(process.cwd(), 'S-001', { candidate: '${git(second, 'rev-parse', 'HEAD')}', findings: 'Clarify string-only greeting inputs', wikiClaim: '${feature}#Limits' })));`]));
-  const orphanId = orphan.created[0].id;
-  commit('Preserve post-discard Wiki-claim corrective Task'); publish();
-  node(second, tool(second), 'claim', orphanId, '--agent', 'simulated-fixture-worker');
-  write(second, feature, read(feature).replace('String names only.', 'Only string names are supported; other input types are outside this CLI.'));
-  // The receipt CLI remains Spec-bound; claim/close are delivered standalone.
-  const beforeOrphanReceipt = directoryBytes(second);
-  run(second, process.execPath, ['workbench/tools/spec-workbench.mjs', 'receipt', orphanId, '--task', orphanId, '--tests', 'PASS', '--docs', feature, '--remaining-gap', 'none'], 1);
-  assert.deepEqual(directoryBytes(second), beforeOrphanReceipt, 'unsupported standalone Receipt refuses without writing');
-  commit('Clarify durable feature claim without restoring the Spec'); publish();
-  node(second, tool(second), 'close', orphanId, '--proof', 'String-only implementation and feature Limits agree', '--docs', feature, '--remaining-gap', 'none');
-  assert.equal(fs.existsSync(path.join(second, historical)), false);
-  assert.match(read(feature), /corrective Task closed/);
+  // S-004F TK-005S (DDR-000M): the Wiki-claim corrective route is retired. A
+  // later gap against the disposed capability is a new Spec, never a Task
+  // anchored to the surviving feature page. Exercise the real export to show
+  // it refuses, naming the new-Spec route, and writes nothing.
+  const beforeGap = directoryBytes(second);
+  const refused = run(second, process.execPath, ['--input-type=module', '-e', `import { createCorrectiveTasks } from './workbench/tools/spec-report.mjs'; try { createCorrectiveTasks(process.cwd(), 'S-001', { candidate: '${git(second, 'rev-parse', 'HEAD')}', findings: 'new Task: Clarify string-only greeting inputs', wikiClaim: '${feature}#Limits' }); } catch (error) { console.log(error.message); }`]);
+  assert.match(refused, /a later gap against delivered work becomes a new Spec under its landmark or the Blueprint[\s\S]*never a correction anchored to a Wiki claim/);
+  assert.deepEqual(directoryBytes(second), beforeGap, 'the refused Wiki-claim correction writes nothing');
+  // The new route: a planned Spec under the Blueprint names the delivered work
+  // and cites the feature page as evidence, without taking it as its destination.
+  write(second, 'workbench/specs/S-0GP-string-only-greeting-limits/SPEC.md', ['# S-0GP - String-Only Greeting Limits', '', '**Spec ID:** S-0GP', '**Status:** planned', '**Priority:** 1', '**Owner:** unassigned', '**Updated:** 2026-10-03', '**Catalog description:** Clarifies the inputs the greeting CLI accepts.', '**Blockers:** none', '**Latest event:** Authored for a later gap.', '**Next gate:** Plan.', '', '## Outcome', '', 'Sits under the Blueprint. Closes the gap found after the delivered greeting capability reached main.', '', '## Current Verified State', '', `Evidence, not destination: ${feature} states the limit this gap concerns.`, '', '## Acceptance Criteria', '', '- [ ] Inputs other than strings are documented or handled.', '', '## Append-Only Evidence And Execution Log', '', '| Date | Task | Event | Verification | Docs | Remaining gap |', '|---|---|---|---|---|---|', '', '## Completion Result', '', 'Pending.', '', '## Supersession', '', '- Supersedes: none', '- Superseded by: none', ''].join('\n'));
+  write(second, 'workbench/specs/S-0GP-string-only-greeting-limits/tasks/.gitkeep', '');
+  node(second, tool(second), 'render');
+  commit('Carry the later gap as a new planned Spec under the Blueprint'); publish();
+  assert.equal(JSON.parse(node(second, tool(second), 'next', '--json')), null, 'a planned Spec is not offered before it is planned into Tasks');
+  assert.doesNotMatch(read(feature), /corrective Task closed/, 'the feature page is evidence and was never written as a close record');
+  assert.equal(fs.existsSync(path.join(second, historical)), false, 'the discarded Spec stays discarded');
   // Every changed fenced CLI example must have been executed. Read-only and
   // optional alternatives cannot escape this coverage by mere phrase matching.
   const allRecipes = documentedLifecycle.replace(/\\\n/g, ' ').split('\n').filter(line => line.startsWith('node workbench/tools/spec-workbench.mjs '));
@@ -544,7 +546,7 @@ try {
     for (const command of collisionExamples) executedRecipes.add(command);
   }
   assert.deepEqual(allRecipes.filter(command => !executedRecipes.has(command)), [], 'every changed lifecycle CLI example has an executed result');
-  checkpoint(`post-discard claim correction; ${executedRecipes.size} documentation examples executed`);
+  checkpoint(`post-discard later gap carried by a new Spec; ${executedRecipes.size} documentation examples executed`);
 
   // ---- Foundry absence -----------------------------------------------------
   const clonePaths = git(second, 'ls-files');

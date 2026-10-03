@@ -36,12 +36,23 @@ export const COLLECTIONS = Object.freeze({
   // into at its closure point (S-00J closure-capture contract T4). It is a
   // collection inside the wiki lane, never an eighth lane, and it is appended
   // last so a room that adds it keeps every earlier key in place.
-  features: 'workbench/wiki/features'
+  features: 'workbench/wiki/features',
+  // S-003X TK-004W: the Destination Decision Record collection beside
+  // `docs/adr` (ADR-000S), with the ADR's folder lifecycle (`proposed/`,
+  // `archive/`). Like `features` it is additive and appended last, so every
+  // earlier key keeps its place.
+  ddr: 'workbench/docs/ddr'
 });
+// The additive collections, in the order a room gains them. A room stamped
+// before one of them declares an earlier shape; `validateManifest` keeps
+// reading those shapes and `migrate` appends what is missing.
+export const ADDITIVE_COLLECTIONS = Object.freeze(['features', 'ddr']);
 // Every room stamped before the features collection declares one of the
-// pre-feature shapes derived from this set; `validateManifest` keeps reading
-// them and `migrate` appends the collection additively.
-export const PRE_FEATURE_COLLECTIONS = Object.freeze(Object.fromEntries(Object.entries(COLLECTIONS).filter(([name]) => name !== 'features')));
+// pre-feature shapes derived from this set; it excludes every additive
+// collection, so appending a later one cannot redefine what an older room held.
+export const PRE_FEATURE_COLLECTIONS = Object.freeze(Object.fromEntries(Object.entries(COLLECTIONS).filter(([name]) => !ADDITIVE_COLLECTIONS.includes(name))));
+// The current room shape before the ddr collection: everything but `ddr`.
+export const PRE_DDR_COLLECTIONS = Object.freeze(Object.fromEntries(Object.entries(COLLECTIONS).filter(([name]) => name !== 'ddr')));
 // Live records stay untracked. The templates subcollection is explicitly
 // excluded from live-note operations and remains tracked in project Git.
 export const UNTRACKED_COLLECTIONS = Object.freeze(['grilling', 'handoffs', 'notepads']);
@@ -309,15 +320,24 @@ export function assertSafeWritePath(root, destination) {
   }
 }
 
-export function writeSafeFile(root, destination, content, { exclusive = false } = {}) {
+export function writeSafeFile(root, destination, content, { exclusive = false, stagingDir = null } = {}) {
   assertSafeWritePath(root, destination);
   fs.mkdirSync(path.dirname(destination), { recursive: true });
-  const temporaryDir = fs.mkdtempSync(path.join(path.dirname(destination), '.write-'));
+  // A caller that publishes under a condition stages the bytes inside a
+  // directory it owns for exactly as long as the condition holds (the notepad
+  // runtime's publish token). Whoever revokes the condition removes that
+  // directory, and with it the staged bytes, so the rename below fails
+  // instead of publishing: the check and the publication cannot be separated
+  // by a stall, because the publication needs the file the check protects.
+  const temporaryDir = stagingDir ?? fs.mkdtempSync(path.join(path.dirname(destination), '.write-'));
+  const temporary = path.join(temporaryDir, 'content');
   try {
-    const temporary = path.join(temporaryDir, 'content');
     fs.writeFileSync(temporary, content, { mode: 0o644, flag: 'wx' });
     // link is an atomic no-replace publication for a new ADR or checkpoint.
     if (exclusive) fs.linkSync(temporary, destination);
     else fs.renameSync(temporary, destination);
-  } finally { fs.rmSync(temporaryDir, { recursive: true, force: true }); }
+  } finally {
+    if (stagingDir) fs.rmSync(temporary, { force: true });
+    else fs.rmSync(temporaryDir, { recursive: true, force: true });
+  }
 }

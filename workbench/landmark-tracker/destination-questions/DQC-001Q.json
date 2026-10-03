@@ -1,0 +1,184 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-001Q",
+  "revision": 6,
+  "title": "How should an accepted ownership assignment change?",
+  "question": "How should an accepted ownership assignment change?",
+  "answer": "FND-Q23: OWNERSHIP.json holds accepted rows only, with no lifecycle field; lifecycle belongs to records (ADR, Spec, Task). A proposed change lives in the proposing ADR until acceptance; then the applying Task rewrites the row. Changing which type answers a responsibility is an ADR; adjusting route or wording is a Task. Three guards: no instance identifiers, no status-shaped field, routes only. Framing fixed 2026-09-22: no \"canon owners\"; the map is a routing artifact.\nFND-Q21C: Four tiers: ADR for a consequential cross-cutting choice with rationale; Spec for a scoped capability choice; Task body (not the Receipt) for an execution-local choice; a change to what a Core type owns is always an ADR naming OWNERSHIP.json in canonicalized_in. A durable Task choice escalates at close, listed as a remaining gap until then. Editing a Contract or routing artifact is Task work, not a tier. The owns-vs-content rule lives in OWNERSHIP.json.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q23, FND-Q21C (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "FND-Q23 update workbench/specs/S-00G-ownership-map-root-control/SPEC.md (TK-002, TK-004) and OWNERSHIP.json: No lifecycle or status field; tests for the three guards (identifier scan within values, not anchored); governance-core allow-list entry for OWNERSHIP.json; no \"in-record status required\" or \"FND-Q23 open\" text. | FND-Q23 update workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md: States OWNERSHIP.json rows carry no lifecycle and ADR-000I does not apply to it. | FND-Q23 update workbench/tools/adr.mjs and workbench/docs/adr/REGISTER.md: REGISTER header shows a computed count of proposed records with a when-to-care hint; adr.mjs offers list --status (decision-064). | FND-Q23 update workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md: Lifecycle by folder location for ADRs, Specs, Tasks: archive permanent, retired transient (decisions 040-041). | FND-Q21C create workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json (Decisions row and change rule): The Decisions row carries the four-tier rule; the map carries the owns-vs-content change rule. | FND-Q21C update TASK.md body section (shape owned by the S-00H successor) and workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md: Execution-local choices live in the Task body; Receipt gains no decision field. | FND-Q21C update workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md: Spec QA can refuse a Spec whose closed Tasks still name an unescalated durable choice.",
+    "home": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md (TK-002, TK-004) and OWNERSHIP.json; workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md; workbench/tools/adr.mjs and workbench/docs/adr/REGISTER.md; workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md; workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json (Decisions row and change rule); TASK.md body section (shape owned by the S-00H successor) and workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md; workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "FND-Q23",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q21C",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000M"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "FND-Q23",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q23 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q21C",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q21C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should an accepted ownership assignment change?",
+    "question": "How should an accepted ownership assignment change?",
+    "sources": [
+      {
+        "id": "FND-Q23",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q21C",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:18.811Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:18.811Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 037 of the 2026-09-26 grouping (\"Entry, authority and ownership\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: Proposals live in ADRs until accepted; an applying Task updates accepted map rows. Changing responsibility ownership requires an ADR, while route or wording adjustments can be Task work.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:18.827Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "FND-Q23: OWNERSHIP.json holds accepted rows only, with no lifecycle field; lifecycle belongs to records (ADR, Spec, Task). A proposed change lives in the proposing ADR until acceptance; then the applying Task rewrites the row. Changing which type answers a responsibility is an ADR; adjusting route or wording is a Task. Three guards: no instance identifiers, no status-shaped field, routes only. Framing fixed 2026-09-22: no \"canon owners\"; the map is a routing artifact.\nFND-Q21C: Four tiers: ADR for a consequential cross-cutting choice with rationale; Spec for a scoped capability choice; Task body (not the Receipt) for an execution-local choice; a change to what a Core type owns is always an ADR naming OWNERSHIP.json in canonicalized_in. A durable Task choice escalates at close, listed as a remaining gap until then. Editing a Contract or routing artifact is Task work, not a tier. The owns-vs-content rule lives in OWNERSHIP.json."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q23, FND-Q21C (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "FND-Q23 update workbench/specs/S-00G-ownership-map-root-control/SPEC.md (TK-002, TK-004) and OWNERSHIP.json: No lifecycle or status field; tests for the three guards (identifier scan within values, not anchored); governance-core allow-list entry for OWNERSHIP.json; no \"in-record status required\" or \"FND-Q23 open\" text. | FND-Q23 update workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md: States OWNERSHIP.json rows carry no lifecycle and ADR-000I does not apply to it. | FND-Q23 update workbench/tools/adr.mjs and workbench/docs/adr/REGISTER.md: REGISTER header shows a computed count of proposed records with a when-to-care hint; adr.mjs offers list --status (decision-064). | FND-Q23 update workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md: Lifecycle by folder location for ADRs, Specs, Tasks: archive permanent, retired transient (decisions 040-041). | FND-Q21C create workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json (Decisions row and change rule): The Decisions row carries the four-tier rule; the map carries the owns-vs-content change rule. | FND-Q21C update TASK.md body section (shape owned by the S-00H successor) and workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md: Execution-local choices live in the Task body; Receipt gains no decision field. | FND-Q21C update workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md: Spec QA can refuse a Spec whose closed Tasks still name an unescalated durable choice.",
+            "home": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md (TK-002, TK-004) and OWNERSHIP.json; workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md; workbench/tools/adr.mjs and workbench/docs/adr/REGISTER.md; workbench/docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md; workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json (Decisions row and change rule); TASK.md body section (shape owned by the S-00H successor) and workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md; workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:18.842Z",
+      "reason": "Ledger row FND-Q23 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q23",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:18.860Z",
+      "reason": "Ledger row FND-Q21C (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q21C",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:18.877Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:58.576Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Ownership Model pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000M"
+          ]
+        }
+      ]
+    }
+  ]
+}

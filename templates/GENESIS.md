@@ -100,9 +100,9 @@ Genesis moves through a deliberate sequence:
    Actuality, and bounded choices explicitly supplied in the founding prompt.
    Preserve source links and uncertainty in the resulting Specs.
 
-The Blueprint remains a destination narrative throughout. It may link an active
-ADR where that decision materially explains the destination, but it is not a
-decision ledger, status report, evidence archive, or generated Spec catalog.
+The Blueprint remains a destination narrative throughout. It links no record
+that carries an identifier, and it is not a decision ledger, status report,
+evidence archive, or generated Spec catalog.
 
 ## Validated Fresh-Template Formation
 
@@ -164,20 +164,24 @@ only those answers as locked decisions. Where a cross-cutting architectural
 choice needs rationale or alternatives, write an active ADR; do not fabricate
 an owner answer from an assumption, a Template, or the founding prompt.
 
-Fill `BLUEPRINT.md` from the template's applicable destination sections. It
-anchors everything after it:
+Fill `BLUEPRINT.md` from the template's four parts. It anchors everything after
+it, and it is a short summary of the direction, not a record of every decision:
 
-- **Product Destination**, **People And Problems Served**, and **Promised
-  Outcomes**: one honest product narrative, concrete user-facing promises, and
-  clear boundaries.
-- **Desired Experience And Behavior**, **Integrated System Design**,
-  **Cross-Cutting Qualities And Constraints**, **Desired Lifecycle**, and
-  **Non-Goals**: describe the intended finished product; omit a genuinely
-  inapplicable section rather than adding boilerplate.
+- **What it is**: one honest account of the finished product and how its parts
+  form one useful whole.
+- **Who it serves**: the people served, their important problems, and how the
+  product changes their work or lives.
+- **Promised outcomes**: concrete results those people can count on, with clear
+  boundaries.
+- **Non-goals**: what the product intentionally is not.
+- Keep all four parts, each with text of its own; the page is judged by that
+  shape. The product's own workflow, decisions and procedures belong to the
+  Contract, decision records and the Wiki, not to the Blueprint.
 - Preserve the founding prompt verbatim in the preparation record or a linked
   durable intent owner so later drift checks compare against the owner's real
-  words. Link active ADRs inline only when they materially explain or constrain
-  the destination.
+  words. Link no record that carries an identifier (an ADR, DDR, Spec, Task or
+  landmark) from the Blueprint; decision records name the Blueprint in
+  `canonicalized_in` instead.
 
 Output: a `BLUEPRINT.md` a stranger could read to learn what the project is for.
 It contains no decision inventory, current status, proof archive, or generated
@@ -373,8 +377,9 @@ Do not call bootstrap done on vibes. All of the following must hold:
 - [ ] Every command in `RUNBOOK.md` was run and passed; paste or reference the
       result.
 - [ ] One end-to-end path runs from a single command (the demo artifact).
-- [ ] `workbench/manifest.json` is schema 2 and declares the six support
-      lanes, ten collections, wiki profile, exact 26-skill policy, version,
+- [ ] `workbench/manifest.json` is schema 2 and declares the seven support
+      lanes, twelve collections (with the additive `wiki/features` and
+      `docs/ddr`), wiki profile, exact 26-skill policy, version,
       the `git` block, and Genesis provenance with its source commit; the layout validator
       passes with `--genesis`. When it fails, its JSON `message` names the
       failing control or predicate, and first-spec and generated-region

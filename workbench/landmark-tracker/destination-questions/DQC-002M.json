@@ -1,0 +1,186 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-002M",
+  "revision": 6,
+  "title": "When may Specs nest or block other Specs?",
+  "question": "When may Specs nest or block other Specs?",
+  "answer": "FND-Q17c: Specs nest and block each other, the same way Tasks do: \"SPECs can nest and block each other, same as tasks. we are changing that.\" In the same message he said a Task can be created and merged into integration without a Spec branch.\nTT-Q3: A Workbench is a 'room' that holds many Workbenches and many Projects; each Project has exactly one Workbench of its own. A Workbench is one set of Contract and routing artifacts with one Blueprint. A Blueprint has many Specs and many Tasks; a Spec has many Tasks and many Chats; a Task maps to one Chat. Spec is the destination, Task the steps; small work may be a standalone Task.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q17c (answered in chat, recovered from the owner's own messages); TT-Q3 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "FND-Q17c update LEXICON.md (Spec row) and templates/LEXICON.md: A Spec may nest under and block other Specs, as Tasks do. | FND-Q17c update workbench/tools/spec-workbench.mjs (Blockers) and the board Spec (TASKBOARD.json dependsOn/unblocks, blocked-obligations decision-011): Spec-to-Spec blocking is recorded on the Spec record and projected on the board so the chain is visible without the owner rebuilding it. | TT-Q3 update LEXICON.md (Workbench, Project, Blueprint, Spec, Task rows) and templates/LEXICON.md: State the room nesting and the 1:many cardinalities. | TT-Q3 create Durable artifact-model article in workbench/wiki with diagram, plus ownership-map relation rows (S-00G): The 1:many artifact model is modeled out and visible to agents before v4 is complete (owner requirement in decision-068). | TT-Q3 update workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md and AGENTS.md stance rule (plus templates/AGENTS.md): Allow a Task directly under the Blueprint with no Spec, with a home at workbench/tasks/TK-XXXX/TASK.md (E-9). | TT-Q3 create Spec 'Artifact model and definitions' (proposed in TT note finding-037): Owns the model article, the spec-less Task home, the carry skill change and the Director way of working.",
+    "home": "LEXICON.md (Spec row) and templates/LEXICON.md; workbench/tools/spec-workbench.mjs (Blockers) and the board Spec (TASKBOARD.json dependsOn/unblocks, blocked-obligations decision-011); LEXICON.md (Workbench, Project, Blueprint, Spec, Task rows) and templates/LEXICON.md; Durable artifact-model article in workbench/wiki with diagram, plus ownership-map relation rows (S-00G); workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md and AGENTS.md stance rule (plus templates/AGENTS.md); Spec 'Artifact model and definitions' (proposed in TT note finding-037)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [
+    "Draft synthesis gap (2026-09-26, agent note): Detailed nesting mechanics are not established by this cardinality answer alone."
+  ],
+  "sources": [
+    {
+      "id": "FND-Q17c",
+      "revision": "56b459da"
+    },
+    {
+      "id": "TT-Q3",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000K"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "FND-Q17c",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q17c (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "TT-Q3",
+      "revision": "56b459da",
+      "reason": "Ledger row TT-Q3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "When may Specs nest or block other Specs?",
+    "question": "When may Specs nest or block other Specs?",
+    "sources": [
+      {
+        "id": "FND-Q17c",
+        "revision": "56b459da"
+      },
+      {
+        "id": "TT-Q3",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:20.839Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:20.839Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 059 of the 2026-09-26 grouping (\"Specs, Tasks and execution contexts\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The owner’s recorded direction permits Spec nesting and blocking relationships, extending beyond a flat collection of independent Specs.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:20.857Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "FND-Q17c: Specs nest and block each other, the same way Tasks do: \"SPECs can nest and block each other, same as tasks. we are changing that.\" In the same message he said a Task can be created and merged into integration without a Spec branch.\nTT-Q3: A Workbench is a 'room' that holds many Workbenches and many Projects; each Project has exactly one Workbench of its own. A Workbench is one set of Contract and routing artifacts with one Blueprint. A Blueprint has many Specs and many Tasks; a Spec has many Tasks and many Chats; a Task maps to one Chat. Spec is the destination, Task the steps; small work may be a standalone Task."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: FND-Q17c (answered in chat, recovered from the owner's own messages); TT-Q3 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "FND-Q17c update LEXICON.md (Spec row) and templates/LEXICON.md: A Spec may nest under and block other Specs, as Tasks do. | FND-Q17c update workbench/tools/spec-workbench.mjs (Blockers) and the board Spec (TASKBOARD.json dependsOn/unblocks, blocked-obligations decision-011): Spec-to-Spec blocking is recorded on the Spec record and projected on the board so the chain is visible without the owner rebuilding it. | TT-Q3 update LEXICON.md (Workbench, Project, Blueprint, Spec, Task rows) and templates/LEXICON.md: State the room nesting and the 1:many cardinalities. | TT-Q3 create Durable artifact-model article in workbench/wiki with diagram, plus ownership-map relation rows (S-00G): The 1:many artifact model is modeled out and visible to agents before v4 is complete (owner requirement in decision-068). | TT-Q3 update workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md and AGENTS.md stance rule (plus templates/AGENTS.md): Allow a Task directly under the Blueprint with no Spec, with a home at workbench/tasks/TK-XXXX/TASK.md (E-9). | TT-Q3 create Spec 'Artifact model and definitions' (proposed in TT note finding-037): Owns the model article, the spec-less Task home, the carry skill change and the Director way of working.",
+            "home": "LEXICON.md (Spec row) and templates/LEXICON.md; workbench/tools/spec-workbench.mjs (Blockers) and the board Spec (TASKBOARD.json dependsOn/unblocks, blocked-obligations decision-011); LEXICON.md (Workbench, Project, Blueprint, Spec, Task rows) and templates/LEXICON.md; Durable artifact-model article in workbench/wiki with diagram, plus ownership-map relation rows (S-00G); workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md and AGENTS.md stance rule (plus templates/AGENTS.md); Spec 'Artifact model and definitions' (proposed in TT note finding-037)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:20.875Z",
+      "reason": "Ledger row FND-Q17c (answered-in-chat) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q17c",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:20.896Z",
+      "reason": "Ledger row TT-Q3 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "TT-Q3",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:20.916Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:57.371Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Workbench Workflow pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000K"
+          ]
+        }
+      ]
+    }
+  ]
+}

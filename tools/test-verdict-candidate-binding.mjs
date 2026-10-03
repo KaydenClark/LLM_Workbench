@@ -20,7 +20,7 @@ try {
   for(const result of ['pass','fail']){
     for(const suppliedDigest of [false,true]){
       const before=fs.readFileSync(file,'utf8');const report=assembleSpecReport(root,'S-701',{candidate:empty});
-      const args=['verdict','S-701','--candidate',empty,'--result',result,'--findings',result==='pass'?'none':'Fixture defect','--reviewer','disposable separate context'];
+      const args=['verdict','S-701','--candidate',empty,'--result',result,'--findings',result==='pass'?'none':'new Task: Fixture defect','--reviewer','disposable separate context'];
       if(suppliedDigest)args.push('--digest',report.specDigest);
       const refused=invoke(...args);
       assert.equal(refused.status,1,`candidate missing the Spec must refuse ${result}, digest=${suppliedDigest}`);
@@ -47,7 +47,7 @@ try {
   assert.equal(equivalent.candidate.matchesContent,true,'administrative/evidence changes retain normalization');
   assert.equal(gate(root,{spec:'S-701',candidate}).refused,false);
   assert.equal(equivalent.specDigest,passing.digest);
-  const fail=recordReviewVerdict(root,'S-701',{candidate,result:'fail',findings:'First fixture finding; Second fixture finding',reviewer:'another disposable separate context'});
+  const fail=recordReviewVerdict(root,'S-701',{candidate,result:'fail',findings:'new Task: First fixture finding; new Task: Second fixture finding',reviewer:'another disposable separate context'});
   assert.equal(fail.correctiveTasks.length,2,'valid immutable FAIL still creates one Task per finding');
   assert.ok(fs.readFileSync(file,'utf8').includes(passing.row),'prior verdict bytes survive FAIL');
   console.log('ok - public PASS/FAIL reject missing and mismatched committed content without writes; gate cannot borrow PASS; normalized cross-checkout review and valid corrective FAIL remain supported');

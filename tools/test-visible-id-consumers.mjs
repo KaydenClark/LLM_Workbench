@@ -395,17 +395,17 @@ test('numeric historical Task labels keep Spec-qualified scope under widened sel
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
-test('an orphan corrective Task claims by a widened spelling of its stored ID', () => {
+test('a standalone corrective Task is recognized by a widened spelling of its stored ID and its claim is refused', () => {
   const dir = room();
   try {
     const record = path.join(dir, 'workbench/specs/corrective/tasks/TK-00X/TASK.md');
     fs.mkdirSync(path.dirname(record), { recursive: true });
     fs.writeFileSync(record, '# TK-00X - Corrective fixture\n\n**Task ID:** TK-00X\n**Spec ID:** S-00D\n**Slice:** Corrective fixture\n**Status:** ready\n**Blockers:** none\n**Destination:** wiki-claim: workbench/wiki/fixture.md#Claim\n');
+    const before = fs.readFileSync(record, 'utf8');
     const claimed = cli(dir, ['claim', 'TK-000x', '--agent', 'test']);
-    assert.equal(claimed.status, 0, claimed.stderr);
-    assert.equal(claimed.json.taskId, 'TK-00X', 'the claim reports the stored Task ID');
-    assert.match(fs.readFileSync(record, 'utf8'), /\*\*Task ID:\*\* TK-00X\n[\s\S]*\*\*Status:\*\* in-progress/);
-    assert.ok(fs.existsSync(record), 'the record keeps its stored path');
+    assert.notEqual(claimed.status, 0, 'S-004F TK-005S: the Wiki-claim corrective route is retired, so the claim is refused');
+    assert.match(claimed.stderr, /TK-00X is a standalone corrective Task anchored to a Wiki claim[\s\S]*a later gap against delivered work becomes a new Spec/, 'a widened spelling still resolves to the stored ID the refusal names');
+    assert.equal(fs.readFileSync(record, 'utf8'), before, 'the refused claim leaves the record byte-identical');
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 

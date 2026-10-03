@@ -8,20 +8,25 @@ provenance:
   - Promote-draft location learned 2026-09-22
   - Planned-Spec claim refusal observed 2026-09-24
   - Promoted from host auto-memory and re-verified against source by the S-00V TK-00I audit, 2026-09-26
+  - close refusals and the verdict digest scope re-verified against source while documenting them for S-00M TK-004, 2026-10-02
+  - Finding dispositions and the retired Wiki-claim corrective close re-verified against source for S-004F TK-005R and TK-005S, 2026-10-03
 source_paths:
   - workbench/tools/spec-workbench.mjs
   - tools/check-append-only.py
   - workbench/tools/sessions.mjs
+  - workbench/tools/workbench-layout.mjs
+  - workbench/tools/spec-report.mjs
   - RUNBOOK.md
-last_verified: 2026-09-26
+last_verified: 2026-10-03
 ---
 
 # Lifecycle tool behaviors
 
 Non-obvious behaviors of the Workbench lifecycle tools, each re-checked against
-source on 2026-09-26. The commands themselves are documented in
-[RUNBOOK](../../RUNBOOK.md) -> Spec Lifecycle And Retrieval and Direct Owner
-Promotion; this note explains what surprises agents.
+source on 2026-09-26 (the `close` and `verdict` sections on 2026-10-02). The
+commands themselves are documented in [RUNBOOK](../../RUNBOOK.md) -> Spec
+Lifecycle And Retrieval and Direct Owner Promotion; this note explains what
+surprises agents.
 
 ## `spec-workbench.mjs claim`
 
@@ -39,13 +44,48 @@ Promotion; this note explains what surprises agents.
 
 ## `spec-workbench.mjs close`
 
-- **It closes the first `in-progress` slice in order** (falling back to the
-  first `ready` one). With two lanes open in one Spec, closing the later one
-  means writing its rows by hand in the tool's shape.
+- **It closes the first `in-progress` slice in order, and only a claimed
+  one.** With no Task in progress it refuses ("has no in-progress task to
+  close; claim one first") instead of closing a ready Task nobody claimed. With
+  two lanes open in one Spec, closing the later one means writing its rows by
+  hand in the tool's shape.
+- **It refuses a claim the repository contradicts.** A dirty tree (anything
+  `git status --porcelain` shows, untracked files included) or an unpushed
+  HEAD (no remote-tracking ref contains it) is refused as `dirty-tree` /
+  `unpushed` before anything is written. Commit and push, then close; a
+  truthful exception goes in `--git-state-reason "<why>"`, which lands beside
+  the remaining gap in the Receipt row and the Spec evidence row. A reason on a
+  clean, pushed tree is itself refused. The close commit therefore comes after a
+  push, and the close evidence it writes needs a second commit and push.
+  `close` takes a Spec ID: a Task ID refuses, because the standalone corrective
+  Task anchored to a Wiki claim is retired and a later gap against delivered
+  work is a new Spec.
 - **It rewrites `Updated`, `Latest event` and `Next gate`, but not
   `Blockers`.** Re-read the whole Spec header after `close` or `complete` and fix
   any field that became false. Write the Docs cell from the actual diff, not the
   plan.
+
+## `spec-workbench.mjs verdict`
+
+- **Every finding names its disposition.** Write each `;`-separated finding as
+  `continue TK-###: <what the check found and what the fix must do>` (the same
+  Task continues: its own `## Continuation` table gains the handoff and a done
+  Task goes back to `ready`) or `new Task: <finding>` (optionally `new Task
+  rewriting TK-###: ...`). A finding naming neither, a Task the Spec does not
+  hold, or a blocked Task is refused before the verdict row is written, so a
+  refusal leaves nothing half-applied. A continued Task's second close appends
+  `Task closed (run N)` instead of conflicting with the first. `approve
+  --finding` follows the same rule.
+- **A delivered Spec takes no correction.** A fail verdict or owner finding
+  against a Spec that is complete, superseded or retired is refused: a later
+  gap becomes a new Spec under its landmark or the Blueprint, and the Wiki is
+  evidence for it, never its destination.
+- **The review digest binds the Completion Result.** `Updated`, `Latest
+  event`, `Next gate` and evidence rows are excluded, but Acceptance Criteria
+  and the Completion Result are not. Write the Completion Result on the reviewed
+  candidate so it stays true after the merge (do not name the pending review or
+  merge as open there; that belongs in `Next gate`), or the post-merge records
+  update moves the digest and needs a fresh review.
 
 ## Append-only evidence
 

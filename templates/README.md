@@ -16,7 +16,7 @@ and Task; load the other owners below when the operation needs them:
 
 - [`AGENTS.md`](AGENTS.md) - how agents behave here: authority order, read/edit
   scope, the task-selection loop, documentation ownership, and proof rules.
-- [`BLUEPRINT.md`](BLUEPRINT.md) - desired product destination, integrated design, constraints and lifecycle.
+- [`BLUEPRINT.md`](BLUEPRINT.md) - what the product is, who it serves, the outcomes it promises and what it is not.
 - [`LEXICON.md`](LEXICON.md) - accepted project-wide terms and definitions;
   consult it when shared language could be ambiguous.
 - [`TASKBOARD.md`](TASKBOARD.md) - active spec projection: current slice, owner,
@@ -27,7 +27,7 @@ and Task; load the other owners below when the operation needs them:
   project, plus the verification commands that gate "done".
 - [`workbench/wiki/MEMORY.md`](workbench/wiki/MEMORY.md) - the room brain:
   canonical, human-editable durable memory for this project. It routes to the
-  live controls above, to flat memory notes, and to the owner-directed
+  live controls above, to flat memory notes, and to the
   `design-concepts/` collection; it never duplicates live task state.
 
 - [`workbench/feedback/WORKBENCH_FEEDBACK.md`](workbench/feedback/WORKBENCH_FEEDBACK.md) -

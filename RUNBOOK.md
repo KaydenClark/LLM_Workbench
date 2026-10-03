@@ -439,11 +439,19 @@ not native invocation or agent reliability.
 Genesis uses the bounded layout helper to create and validate its declared
 support root. Schema 2 declares seven lowercase lanes (`docs`, `specs`, `wiki`,
 `sessions`, `feedback`, `tools`, `skills`; a room stamped before the skills
-lane still validates with six until it updates) and ten collections (`docs/adr`,
-`wiki/design-concepts`, `wiki/guidebooks`, `wiki/archive`,
+lane still validates with six until it updates) and twelve collections
+(`docs/adr`, `wiki/design-concepts`, `wiki/guidebooks`, `wiki/archive`,
 `sessions/grilling`, `sessions/handoffs`, `sessions/checkpoints`,
-`sessions/notepads`, `sessions/notepads/templates`, `sessions/recovery`), the wiki
-profile, and the exact source release and commit. `workbench/sessions/.gitignore`
+`sessions/notepads`, `sessions/notepads/templates`, `sessions/recovery`, and
+the additive `wiki/features` and `docs/ddr`), the wiki profile, and the exact
+source release and commit. `init` creates `docs/ddr` with the decision-record
+lifecycle folders `proposed/` and `archive/`, as the ADR collection uses them.
+A room stamped before an additive collection still validates; from the release
+checkout, `workbench-layout.mjs migrate --project PATH` appends each missing
+additive collection in order (`features`, then `ddr`), creates its folders as
+ordinary directories, adopts an existing ordinary folder with its contents, and
+changes no ADR record or other manifest key; a link or file in the way refuses
+as `lane-collision` before anything is written. `workbench/sessions/.gitignore`
 keeps `grilling/` and `handoffs/` untracked, and also denies the legacy spaced
 `grilling diary/` name that a stale installed skill may still write (an
 existing ignore file keeps its project rules and validates without that line);
@@ -975,6 +983,23 @@ node workbench/tools/spec-workbench.mjs render
 node workbench/tools/spec-workbench.mjs doctor
 ```
 
+`close` reads repository state before it writes anything and refuses a claim
+the repository contradicts, naming what it found: `dirty-tree` lists anything
+`git status --porcelain` shows, untracked files included, and `unpushed` means
+no remote-tracking ref contains HEAD, naming the upstream distance or the
+missing upstream, gone upstream, detached HEAD or absent remote. The refusal
+names its own remediation: commit and push, or rerun with
+`--git-state-reason "<why>"` (one line) when the state is a truthful
+exception. The observed state and the reason are then appended to the
+remaining gap that the final Receipt row and the Spec evidence row record, so
+a reviewer reads what was waived. A reason on a clean, pushed tree is refused
+rather than dropped; where Git state is unknown (no Git, not a repository)
+nothing is refused and a given reason is recorded beside `unknown`. `close`
+also refuses a Spec with no in-progress Task (`has no in-progress task to
+close; claim one first`) rather than closing a ready Task nobody claimed.
+`close` takes a Spec ID: `close TK-###` refuses, because the standalone
+corrective Task anchored to a Wiki claim is retired.
+
 Commit and publish the closure evidence and projections too; verify the remote
 SHA. TASK.md owns Task state/proof, SPEC.md owns requirements/acceptance/evidence
 and its next gate, and generated TASKBOARD.md/CATALOG.md cannot satisfy either.
@@ -1007,11 +1032,20 @@ write. Receipt runs and administrative headers are excluded narrowly; checked
 acceptance, Task status/proof and decisions remain bound. A green test or a
 Dispatcher's self-review cannot substitute for independent review.
 
-A failed verdict creates one corrective Task per attributable finding, anchored
-to that evidence row. Preserve the original done Task and its proof. Select and
-claim the corrective record, repair it, self-check and hand back, then rerun
+A failed verdict is corrected under the still-open Spec, one disposition per
+`;`-separated finding. `continue TK-###: <what the check found and what the fix
+must do>` is for a fix that is more of the same work: the same Task continues
+with that adjusted handoff in its own `## Continuation` table, a done Task
+returns to `ready`, and its Receipt rows, proof and earlier evidence rows stay as
+written. `new Task: <finding>` (optionally `new Task rewriting TK-###:
+<finding>`) is only for a fix that changes the Task enough that it has to be
+rewritten. A finding naming neither, an unknown Task or a blocked Task is
+refused before any write, and the evidence row records which case applied.
+Select and claim the continued or new Task, repair it, self-check and hand back
+(a continued Task's later close appends `Task closed (run N)`), then rerun
 whole-Spec QA and obtain fresh separate review of the new immutable candidate.
-Do not reopen the original record or reuse the earlier PASS for changed content.
+Do not reuse the earlier PASS for changed content. A verdict against a complete,
+superseded or retired Spec is refused; see the later-gap route below.
 
 Before integration the Spec form checks assembled completion and current PASS:
 
@@ -1054,7 +1088,8 @@ node workbench/tools/spec-workbench.mjs approve S-001 --candidate "[INTEGRATION 
 node workbench/tools/spec-workbench.mjs approve S-001 --candidate "[INTEGRATION SHA]" --owner "[WHO]"
 ```
 
-A finding creates corrective Tasks; a destination change records return to Align
+A finding follows the same disposition rule (`continue TK-###: ...` or
+`new Task: ...`); a destination change records return to Align
 without inventing Tasks. Return at the implicated scope: a defect need not
 change the design concept. Keep failed required-capability findings visible
 as real downstream dependencies until resolved. After correction, repeat
@@ -1171,16 +1206,17 @@ in a disposable clone and compare all recovered bytes, including sibling proof,
 assets and Receipt runs. The final Task leaves `tasks/.gitkeep` so fresh clones
 retain record-backed interpretation. Recovery is for inspection, not new work.
 
-A later same-capability gap targets the surviving Wiki claim; it does not
-resurrect a discarded Spec. The delivered `createCorrectiveTasks` export in
-`workbench/tools/spec-report.mjs` accepts `wikiClaim: "path#heading"` for this
-route and refuses duplicate findings. This is a programmatic API, not a
-create-corrective CLI. Ordinary claim and close accept the resulting standalone corrective Task ID;
-close appends feature provenance. The current receipt CLI remains Spec-bound
-and refuses a standalone Task ID; preserve its intermediate proof in the Task
-and surviving Wiki owner rather than claiming a standalone Receipt command. While the retired Spec
-still exists, findings instead create its corrective Tasks inside that folder.
-A different destination needs a new assigned Spec.
+A later gap against delivered work becomes a new Spec under its landmark or the
+Blueprint. It never revives a discarded Spec and is never a correction anchored
+to a Wiki claim. The new Spec names the delivered work it builds on and may cite
+Wiki pages as evidence for its direction and plan, but no Task takes a Wiki
+claim as its destination for corrective work. `verdict --result fail`,
+`approve --finding` and `createCorrectiveTasks` refuse a Spec that is complete,
+superseded or retired, and refuse any `wikiClaim`, each naming this route.
+`next` never selects a standalone corrective record an earlier release wrote,
+and `claim` and `close` refuse it, though it still occupies its identifier. The
+receipt CLI remains Spec-bound and refuses a standalone Task ID. A different
+destination needs a new assigned Spec.
 
 The first S-01X migration slice provides an opt-in preview:
 
@@ -1232,12 +1268,76 @@ are separate: record any gap in the assigned Spec.
 
 ```bash
 node workbench/tools/adr.mjs new --title "Decision title"
-node workbench/tools/adr.mjs validate
-node workbench/tools/adr.mjs normalize [--date YYYY-MM-DD]
-node workbench/tools/adr.mjs register
+node workbench/tools/adr.mjs new --kind ddr --title "Destination decision title"
+node workbench/tools/adr.mjs validate [--kind adr|ddr]
+node workbench/tools/adr.mjs normalize [--kind adr|ddr] [--date YYYY-MM-DD]
+node workbench/tools/adr.mjs register [--kind adr|ddr]
+node workbench/tools/adr.mjs accept DDR-####
+node workbench/tools/adr.mjs supersede ADR-#### --by ADR-####
+node workbench/tools/adr.mjs deprecate DDR-#### --reason "Why it ends"
+node workbench/tools/adr.mjs list [--kind adr|ddr] [--status STATUS] [--json]
+node workbench/tools/adr.mjs show DDR-#### [--json]
+node workbench/tools/adr.mjs search "query" [--kind adr|ddr] [--json]
+node workbench/tools/adr.mjs history ADR-#### [--json]
+node workbench/tools/adr.mjs inspect DDR-#### --field canonicalized_in | --lines 1:12 [--json]
 node workbench/tools/adr.mjs migrate-folders
 node tools/test-adr.mjs
 ```
+
+The lifecycle moves work for both kinds; the identifier's `ADR-` or `DDR-`
+prefix selects the collection and resolves case-folded across its folders.
+`accept` moves a `proposed/` record to the top level once its corrections are
+reconciled, and refuses a record that would be invalid as accepted (no date or
+title, no or a nonexistent `canonicalized_in` owner, or a DDR naming the Wiki).
+`supersede` archives an accepted top-level record under exactly one accepted
+top-level successor of the same kind: the replaced record gains
+`superseded_by`, the successor's `supersedes` list gains the replaced record,
+and zero or several successors, a proposed or archived successor, a successor
+of the other kind, or the record itself are refused. `deprecate` archives an
+accepted top-level record with a one-line `deprecation_reason` and refuses an
+empty reason. Each move drops a leftover `status` key (the folder is the
+lifecycle), refuses a dirty Git tree so the candidate shows only the move,
+records the move as a `git mv` rename (a plain rename outside Git), rewrites
+live Markdown links to the moved record across the root controls, Wiki, skills,
+team templates, both decision-record collections and every Spec and Task
+record while leaving and counting references inside append-only evidence
+sections, regenerates both registers and stages the result. A refused move
+writes nothing. No separate approval ceremony is added.
+
+Both kinds answer the five read words the Lexicon defines, and reads never
+write. `list` gives the records that exist (both kinds unless `--kind` narrows
+it, optionally one `--status`), one tab-separated line each with identifier,
+status, date, title, path and, for a superseded record, its successor.
+`show` prints one whole record; `get` is its synonym. `search` finds records
+by a case-insensitive literal query over the whole file and prints each hit
+with its status and matching lines; a superseded hit names the successor that
+replaced it, and nothing else is attached. `history` gives how a record
+changed: its lifecycle chain (`supersedes`, `superseded_by`,
+`deprecation_reason`) and every Git commit that touched its file, followed
+across lifecycle moves; outside Git it reports the chain and says Git is
+unavailable. `inspect` gives part of a record: one `--field` (a frontmatter key,
+or `id`, `kind`, `status`, `folder`, `title`, `path`) or a 1-based inclusive
+`--lines` range, and refuses an unknown field or a span outside the record.
+Every read takes `--json`; an unknown identifier fails visibly.
+
+Destination Decision Records (DDRs) are the ADR's sibling for destination
+choices, what the finished product must be or do
+([ADR-000S](workbench/docs/adr/000S-destination-decision-records-are-decision-records-beside-adrs.md)).
+The same tool serves both: `--kind ddr` selects the manifest-declared `ddr`
+collection (`workbench/docs/ddr/`), the `DDR` visible identifier and the
+destination template, and the layout and folder lifecycle are the ADR's.
+`new --kind ddr` writes `<id>-<slug>.md` into `ddr/proposed/` with the keys
+`date`, `supersedes` and `canonicalized_in` (default `BLUEPRINT.md`) and no
+`status`, and refuses a room whose manifest does not declare the collection
+(gain it with `workbench-layout.mjs migrate`). A DDR's `canonicalized_in` never
+names the Wiki, at any lifecycle; validation reports that, and each ADR rule
+described below applied to a DDR, as `invalid-ddr`. A DDR that changes or contradicts the
+Blueprint names `BLUEPRINT.md` in `canonicalized_in` so the Blueprint is
+updated with it; the validator cannot detect a contradiction, so that stays the
+author's obligation. `validate`, `normalize` and `register` without `--kind`
+act on every decision-record collection present; `register` then prints the
+ADR result with the DDR result under `ddr`. Doctor carries DDR findings beside
+the ADR ones, and the Spec and Task moves regenerate both registers.
 
 `new` allocates the next number by scanning the collection and its lifecycle
 folders and writes the record into `proposed/` with the standard sections and
@@ -1341,28 +1441,68 @@ budget and is run for the release umbrella, not on every verification pass;
 node workbench/tools/spec-workbench.mjs next-id --prefix S --json
 node workbench/tools/spec-workbench.mjs next-id S-### --prefix TK --json
 node workbench/tools/adr.mjs new --title "Decision title"
+node workbench/tools/notepads.mjs allocate --prefix N --objective OBJECTIVE_KEY --title "TITLE"
+node workbench/tools/spec-workbench.mjs widen-id S-###
+node workbench/tools/spec-workbench.mjs widen-id TK-### --spec S-###
 ```
 
 `next-id` is a read-only proposal, not a reservation or permission to create work.
 Task proposals require the assigned spec and reserve labels from all specs in
-the Workbench. Write the returned label only during authorized planning, then
-render and run doctor before requesting another. ADR `new` writes a proposed
-record through the existing exclusive-publication path. Existing paths stay fixed.
+the Workbench. Both proposals also reserve retired and discarded labels and
+every Spec and Task ID held at a remote-tracking tip, so fetch first. Write the
+returned label only during authorized planning, then render and run doctor
+before requesting another. ADR `new` (and `new --kind ddr` for a DDR) writes a
+proposed record through the existing exclusive-publication path and also
+reserves that kind's labels held at every remote-tracking tip. Notepad `allocate` creates the note its returned ID names.
 
-New durable labels contain at least one letter, so they cannot reuse historical
-decimal IDs that are no longer present. Spec/task minimum width is three;
-ADR allocation keeps width four. Width grows without truncation using alphabet
-`0-9 A-Z a-z`. Sorting uses suffix length then that alphabet, independent of
-locale; it is label ordering, not creation chronology. Case-folded and leading-zero
-collisions are refused. Letter-bearing task labels are unique across the room;
-legacy numeric task references retain their existing spec-qualified scope and
-are not claimed globally unique. Their bytes and lookup routes are preserved.
+Specs, Tasks, ADRs and notepads share one artifact policy: a new label's suffix
+uses uppercase `0-9A-Z`, has minimum width four and contains at least one
+letter (`S-000A`, `TK-000A`, `ADR-000C`, `N-000A`), so it cannot reuse a
+historical decimal ID that is no longer present. Width grows without truncation
+or recycling. Every spelling of one identity is reserved: suffixes compare
+case-folded with leading zeros removed (the collision key), so a legacy short
+`S-00Q`, its widened `S-000Q` and a lowercase `S-00q` are one identity and are
+never allocated twice. Sorting removes leading zeros, then orders by suffix
+length and then by `0-9`, `A-Z` and legacy `a-z`, independent of locale; it is
+label ordering, not creation chronology. Letter-bearing task labels are unique
+across the room; legacy numeric task references retain their existing
+spec-qualified scope and are not claimed globally unique.
+
+Existing records keep their stored IDs, paths and bytes; allocation never
+renames them. Public Spec and Task commands (`show`, `claim`, `close`,
+`move-spec`, `move-task`, blockers, the `next-id` parent and the other
+selectors) accept any spelling that shares the stored record's collision key
+and act on that one record, reporting its stored ID and path. Task selectors
+stay Spec-qualified. Two stored records behind one key, including an active
+record and a retired one, refuse by name rather than choosing a winner.
+Notepad `--id` resolves the same way, and ADRs or notes whose records alias
+one identity refuse allocation.
+
+`widen-id` is the explicit identity-only touch. An agent starting substantive
+work on a planned, active or blocked Spec, or on an open Task record under one,
+runs it once from a clean tree to widen that record to the width-four spelling
+of its own collision key (`S-00Q` to `S-000Q`, numeric `TK-001` to `TK-0001`;
+`--spec` names the parent when a numeric Task label is ambiguous). It renames
+the record directory, rewrites the ID field and title, keeps the previous
+spelling in one `**Former ID:**` field directly under the ID field, and repairs
+live links with the lifecycle moves' reference rewrite. Evidence rows stay
+byte-identical; their links to the old path are counted as historical and
+doctor reports them as attention-only broken links. The former spelling keeps
+resolving. It never changes status, a repeat run is a no-op, and it refuses
+complete, reviewed, done and retired records, a dirty tree, an occupied
+destination or alias and an unsafe record path before writing anything. Like
+`move-spec` it stages the change and commits nothing; commit it as its own
+candidate. Never bulk-widen: a read-only inventory at QA/verify time finds open
+records still short.
 
 Spec parsing, selection, blockers, claim/close, rendering, Genesis readiness,
 ADR registers, Wiki copied-task-state checks, guardrail contradiction checks and
-citation-anchor coverage accept the new syntax. Existing numeric syntax remains
-readable. Socket/team registry IDs and internal entry sequence IDs keep their
-existing formats; these commands do not allocate those artifact types.
+citation-anchor coverage accept the new syntax. Existing numeric, short and
+mixed-case syntax remains readable. Socket/team registry IDs and internal entry
+sequence IDs keep their existing formats; these commands do not allocate those
+artifact types. Workbench connection identities (`WB-` plus 22 characters)
+keep their separate base-62 alphabet; the artifact policy does not apply to
+them.
 
 The [Landmark Tracker Foundation specification](workbench/specs/S-01T-landmark-tracker-foundation/SPEC.md)
 owns delivery of the accepted design below. No Tracker runtime is implemented
@@ -1389,9 +1529,10 @@ Keep live links current through supported move operations and retain immutable
 citations for historical proof. Ignored notes require their own retention or
 safe transfer until reconciliation; tracked Git history does not recover them.
 
-A Landmark Wiki page contains no WBIDs, including metadata and link targets.
-Keep identity-bearing provenance in the structured records and delivery evidence;
-use readable control or other identifier-free source routes in the article.
+A Landmark Wiki page is the landmark's evolving synthesis, updated whenever
+one of its question cards changes. Identifiers on it, as on every Wiki page,
+carry the artifact's name and context; the structured records keep
+identity-bearing provenance and delivery evidence.
 Ordinary feature explanations and cross-cutting design models retain their
 respective Wiki purposes. Collection/schema support must be delivered and
 verified before claiming those article types are available. Routine Wiki work
@@ -1403,19 +1544,23 @@ Visible note identifiers can be allocated without changing existing note paths:
 
 ```bash
 node workbench/tools/notepads.mjs allocate --prefix N --objective OBJECTIVE_KEY --title "TITLE"
-node workbench/tools/notepads.mjs read --id N-001 --view current
+node workbench/tools/notepads.mjs read --id N-000A --view current
 ```
 
 Choose the artifact type prefix explicitly (for example N for objective notes);
 it is the prefix in the visible ID, not another identity field. Markdown
 handoffs do not use the JSON-notepad ID allocator.
-Allocation uses alphabet `0-9 A-Z a-z`, starts at one with minimum width three,
-and grows without truncation. It chooses the first unoccupied label; identifiers
-do not encode chronology. Legacy numeric labels reserve their existing text and
-are never decoded as a base-62 allocation high-water mark or renamed. Prefixes
-have independent scopes within the room. Case-folded and leading-zero variants
-reserve the same value, so N-00A, N-00a and N-000A cannot be allocated twice.
-Those restrictions deliberately avoid aliases on case-insensitive filesystems.
+Allocation follows the shared artifact policy in Visible Identifiers above:
+uppercase `0-9A-Z`, minimum width four, at least one letter (`N-000A`), growing
+without truncation. It chooses the first unoccupied label; identifiers do not
+encode chronology. Legacy numeric, width-three and mixed-case labels (`N-001`,
+`N-00A`, `N-00a`) stay readable, reserve their identity and are never decoded
+as an allocation high-water mark or renamed. Prefixes have independent scopes
+within the room. Case-folded and leading-zero variants reserve the same value,
+so N-00A, N-00a and N-000A are one identity and cannot be allocated twice; two
+existing notes whose IDs alias one identity refuse allocation rather than
+choosing a winner. Those restrictions deliberately avoid aliases on
+case-insensitive filesystems.
 
 `--id` resolves through the local inventory, including legacy records whose
 filenames differ from their IDs. It refuses unmatched or ambiguous identifiers.
@@ -1552,8 +1697,10 @@ any expected return. Derive the purpose from the request and current assignment
 when clear; ask one focused question only when the intended work is really
 unclear. Include the selected compressed context, relevant objective notepad,
 accessible source links and suggested investigation before the recipient starts.
-For a Q12-only deep dive, prepare the Q12 brief and note/source links for the
-new context to investigate and return a clean answer to the original inquiry.
+For a deep dive on one question in the middle of a grilling, prepare that
+question's brief and note/source links for the new context to investigate and
+return a clean answer to the original inquiry, preserving the grilling
+agent's context.
 
 A handoff requested by the owner or initiated within an assigned role is
 separately authored as a Markdown file in
@@ -1572,8 +1719,28 @@ Whole `delete` requires the source to be reconciled with no entries, unresolved
 items, next action, or active declared retainer. Unreadable live records block
 cleanup with named paths because retention cannot be established; repair or
 reconcile them without discarding their source bytes. This does not block other
-work or grant the tool authority to choose what is important. Writes and cleanup
-assume one writer per note; revision checks are not simultaneous-writer locks.
+work or grant the tool authority to choose what is important.
+
+Overlapping writers cannot lose an entry silently. Every write that takes
+`--revision` (`append`, `current`, `trim`, `delete`) publishes inside a
+per-revision publish token, the exclusive directory `.<note>.rev<N+1>.publish/`
+beside the note: the writer re-reads the note under that token and publishes
+only if it still holds exactly the bytes the writer read (not merely the same
+revision number, which a deleted and recreated note would repeat), so of two
+writers that read the same record exactly one succeeds and the other is refused `stale-revision`
+naming the revision on disk, with nothing of its write in the file. A success
+response is therefore true at the revision it states. The token is held for one
+publication only; it is not a lease, needs no service or configuration, and a
+writer that stops mid-write leaves the previous valid record in place. A token
+older than ten seconds is treated as abandoned and reclaimed by the next
+writer, so a crash never blocks a note. The bytes a writer is about to publish
+are staged inside its own token directory, so reclaiming the token removes
+them and a writer stalled past the reclaim age fails its rename and is refused,
+instead of publishing over a newer write; there is no gap between the
+ownership check and the publication. `delete` moves the note into the same
+place instead of unlinking the live path, so a stale cleanup fails rather than
+removing a newer write. One writer at a time remains the working rule: the
+guard makes an overlap honest, it does not merge concurrent changes.
 
 ### Optional Private Session Transport
 
@@ -1862,8 +2029,19 @@ spec, manifest, or projection can choose whether its own finding blocks.
 | `all` | `doctor` exits 1; `next` and `claim` refuse to read the layout | `invalid-manifest`, `upgrade-required`, `invalid-lane`, `unsafe-lane`, `invalid-collection`, `missing-collection`, `invalid-skill-policy`, `invalid-wiki-profile`, `sessions-not-ignored`, `tools-receipt-missing`, `tools-receipt-drift`, and the Genesis readiness codes |
 | `selection` | `doctor` exits 1 until repaired; selection is unsafe | `malformed-spec`, `duplicate-id`, `invalid-state`, `contradictory-state`, `unstable-path`, `missing-evidence`, `render-drift`, `broken-render-target`, `row-record-collision`, `receipt-corrupt` |
 | `selected-slice` | `doctor` reports it and exits 0; `next` excludes the slice; `claim` refuses it by name | `blocked-slice` |
-| `none` (attention) | reported, exit 0, never hides work | `stale-claim`, `broken-link`, `complete-on-integration`, `stale-register`, `stale-note`, `stale-skill`, `skill-generation-unknown`, `room-brain-unrouted`, `stale-stamp`, `stale-seed`, `unverified-provenance`, and the ADR and wiki findings until their tools ship |
+| `none` (attention) | reported, exit 0, never hides work | `stale-claim`, `broken-link`, `complete-on-integration`, `stale-register`, `stale-note`, `stale-skill`, `skill-generation-unknown`, `room-brain-unrouted`, `stale-stamp`, `stale-seed`, `unverified-provenance`, `detached-head` and `untracked-controls` (scope `git`), and the ADR and wiki findings until their tools ship |
 | `none` (error) | reported, exit 0, never hides work; the Genesis gate fails closed on the same condition | `integration-branch-undeclared`, `integration-branch-missing` (scope `git`), and the error-severity ADR and wiki findings |
+
+The two attention codes in scope `git` surface the repository state a
+completion claim can hide. `detached-head` reports a detached HEAD, a
+legitimate inspection state that blocks nothing; switch to a branch before
+committing work you intend to deliver. `untracked-controls` names untracked
+files under the root controls, the ADR collection or the spec lane (ten by
+name, then a count); commit or remove them before claiming the work done. A
+room that has never been committed carries it until its first commit.
+Neither is reported when Git state is unknown, and neither changes `doctor`'s
+exit code or `next`'s selection: the false claim itself is refused at `close`
+(see [Spec Lifecycle And Retrieval](#spec-lifecycle-and-retrieval)).
 
 `doctor --json` prints the findings with their `severity`, `scope`, and
 `blocks` fields. The plain output groups them by that effect and is read from

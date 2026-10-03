@@ -1,0 +1,242 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-005Z",
+  "revision": 8,
+  "title": "Which grilling material becomes a destination question card, and can a card exist without a landmark?",
+  "question": "Which grilling material becomes a destination question card, and can a card exist without a landmark?",
+  "answer": "LD-31: Yes, owner identifies conceptual groups as destination questions. Retitle meaningfully and preserve source question IDs; exact example groupings/titles not final. Settled-question summary approved, without implementation or promotion authorization.\nLD-17: Show meaningful concept syntheses, relationships and step distributions, rather than a card for every conversational prompt. Keep readable explanations in the Wiki. Proposed presentation: concise title and distribution, with source lineage and assessments available on expansion.\nLD-30: Questions can be tracked without landmark; show no landmark. Early Idea/Aligning grouping can remain unsettled or change. Concept growth: grilling question -> destination question -> landmark if consequential enough. Main-project association tentative; record conversion and threshold unspecified.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: LD-31, LD-17, LD-30 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "LD-31 update LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows): DQC row: a synthesis of related grilling questions preserving source lineage. | LD-17 update workbench/specs/S-001Z-landmark-tracker-view/SPEC.md: Shows concise titles and distributions with lineage and assessments on expansion. | LD-30 update workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/): capture creates a DQC before any landmark, Spec or Task. | LD-30 update workbench/wiki/design-concepts/landmark-tracker.md: A DQC can appear with no landmark.",
+    "home": "LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows); workbench/specs/S-001Z-landmark-tracker-view/SPEC.md; workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/); workbench/wiki/design-concepts/landmark-tracker.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "LD-31",
+      "revision": "56b459da"
+    },
+    {
+      "id": "LD-17",
+      "revision": "56b459da"
+    },
+    {
+      "id": "LD-30",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000O",
+    "LMK-000X"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "LD-31",
+      "revision": "56b459da",
+      "reason": "Ledger row LD-31 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "LD-17",
+      "revision": "56b459da",
+      "reason": "Ledger row LD-17 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "LD-30",
+      "revision": "56b459da",
+      "reason": "Ledger row LD-30 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "Which grilling material becomes a destination question card, and can a card exist without a landmark?",
+    "question": "Which grilling material becomes a destination question card, and can a card exist without a landmark?",
+    "sources": [
+      {
+        "id": "LD-31",
+        "revision": "56b459da"
+      },
+      {
+        "id": "LD-17",
+        "revision": "56b459da"
+      },
+      {
+        "id": "LD-30",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:34.630Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:34.630Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: a card written from ledger rows that postdate the 2026-09-26 draft grouping, grilling ledger at 56b459da.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:34.662Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "LD-31: Yes, owner identifies conceptual groups as destination questions. Retitle meaningfully and preserve source question IDs; exact example groupings/titles not final. Settled-question summary approved, without implementation or promotion authorization.\nLD-17: Show meaningful concept syntheses, relationships and step distributions, rather than a card for every conversational prompt. Keep readable explanations in the Wiki. Proposed presentation: concise title and distribution, with source lineage and assessments available on expansion.\nLD-30: Questions can be tracked without landmark; show no landmark. Early Idea/Aligning grouping can remain unsettled or change. Concept growth: grilling question -> destination question -> landmark if consequential enough. Main-project association tentative; record conversion and threshold unspecified."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: LD-31, LD-17, LD-30 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "LD-31 update LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows): DQC row: a synthesis of related grilling questions preserving source lineage. | LD-17 update workbench/specs/S-001Z-landmark-tracker-view/SPEC.md: Shows concise titles and distributions with lineage and assessments on expansion. | LD-30 update workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/): capture creates a DQC before any landmark, Spec or Task. | LD-30 update workbench/wiki/design-concepts/landmark-tracker.md: A DQC can appear with no landmark.",
+            "home": "LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows); workbench/specs/S-001Z-landmark-tracker-view/SPEC.md; workbench/tools/landmark-tracker.mjs; workbench/landmark-tracker/ (README.md, TRACKER.json, destination-questions/, landmarks/); workbench/wiki/design-concepts/landmark-tracker.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:34.696Z",
+      "reason": "Ledger row LD-31 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "LD-31",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:34.734Z",
+      "reason": "Ledger row LD-17 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "LD-17",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:34.773Z",
+      "reason": "Ledger row LD-30 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "LD-30",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:34.813Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:59.709Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Grilling and Shared Understanding pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000O"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:50:02.435Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000O"
+          ],
+          "to": [
+            "LMK-000O",
+            "LMK-000X"
+          ]
+        }
+      ]
+    }
+  ]
+}

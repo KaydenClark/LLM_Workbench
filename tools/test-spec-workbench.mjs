@@ -103,7 +103,14 @@ if (!process.argv.includes('--close-recovery-only')) {
       if (scenario === 'malformed') fs.writeFileSync(tp, published.replace(/^\*\*Close pending:\*\* .+$/m, '**Close pending:** invalid-json'));
       if (scenario === 'tamper') fs.writeFileSync(tp, published.replace('original docs |', 'altered docs |'));
       if (scenario === 'ambiguous') fs.writeFileSync(other, published.replaceAll('TK-002', 'TK-003'));
-      if (scenario === 'conflict') fs.writeFileSync(sp, beforeSpec.replace('\n## Completion Result', '\n| 2026-10-01 | TK-002 | Task closed | unrelated proof | unrelated docs | none |\n\n## Completion Result'));
+      // The conflicting row must share the pending row's identity, including
+      // the date `close` stamped from the live clock; a literal date stops
+      // conflicting once the calendar moves past it.
+      if (scenario === 'conflict') {
+        const stamped = JSON.parse(published.match(/^\*\*Close pending:\*\* (.+)$/m)[1]).row.split(' | ')[0].slice(2);
+        assert.match(stamped, /^\d{4}-\d{2}-\d{2}$/, 'conflict: pending row carries its stamped date');
+        fs.writeFileSync(sp, beforeSpec.replace('\n## Completion Result', `\n| ${stamped} | TK-002 | Task closed | unrelated proof | unrelated docs | none |\n\n## Completion Result`));
+      }
       // S-00I TK-004L: preserve a published operation across lifecycle changes.
       // Public move-task is deliberately allowed; close must recover its exact
       // retired target without moving it back or selecting the other claim.
@@ -5871,26 +5878,18 @@ function commitAll(dir, message) {
     assert.deepEqual(directoryBytes(path.join(specRecovery, retiredDir)), specBefore, 'T6 recovery command restores the entire latest Spec directory, task marker, sibling proof and nested assets');
     receipt('T6 Spec discard and fresh-clone recovery', { disposalCommit, recoveryCommand: specDiscard.recoveryCommand, recoveredEntries: Object.keys(specBefore).length });
 
-    // The same disposed room routes a later finding to its surviving claim.
-    // Existing S-591 regressions below retain the retired-owner correction
-    // and stale-board protection; this asserts their post-discard endpoint.
-    const correction = createCorrectiveTasks(room, specId, { candidate: disposalCommit, findings: 'Explain unsupported non-string labels', wikiClaim: `${featurePath}#Limits` });
-    const correctiveId = correction.created[0].id;
-    refuses('T6 repeated orphan finding is idempotently refused', () => createCorrectiveTasks(room, specId, { candidate: disposalCommit, findings: 'Explain unsupported non-string labels', wikiClaim: `${featurePath}#Limits` }), /already exist/);
-    assert.equal(nextWork(room)?.taskId, correctiveId);
-    assert.deepEqual(loadCorrectiveTasks(room).find(task => task.id === correctiveId).destination, { type: 'wiki-claim', reference: `${featurePath}#Limits` });
-    claimWork(room, correctiveId, { agent: 'simulated-fixture-builder', date: TODAY, local: true });
-    render(room);
-    commit('preserve the post-discard claim correction');
-    publish('integration');
-    closeTask(room, correctiveId, { proof: 'The Limits section already states string-only input; verified against src/label.mjs', docs: featurePath, remainingGap: 'none', date: TODAY });
-    render(room);
-    assert.equal(nextWork(room), null);
-    assert.ok(!fs.existsSync(path.join(room, historicalRoute)), 'post-discard correction never resurrects the historical Spec');
-    assert.match(read(featurePath), new RegExp(`${correctiveId} corrective Task closed`));
+    // S-004F TK-005S (DDR-000M): a later gap against the disposed capability is
+    // a new Spec under its landmark or the Blueprint, never a correction
+    // anchored to the surviving Wiki claim. The retired route refuses, naming
+    // that route, and writes nothing.
+    const beforeRefusal = directoryBytes(room);
+    refuses('T6 a Wiki-claim correction is retired', () => createCorrectiveTasks(room, specId, { candidate: disposalCommit, findings: 'new Task: Explain unsupported non-string labels', wikiClaim: `${featurePath}#Limits` }), /later gap against delivered work becomes a new Spec[\s\S]*never a correction anchored to a Wiki claim/);
+    assert.deepEqual(directoryBytes(room), beforeRefusal, 'the refused Wiki-claim correction writes nothing');
+    assert.equal(nextWork(room), null, 'no corrective Task exists to select');
+    assert.ok(!fs.existsSync(path.join(room, historicalRoute)), 'the refusal never resurrects the historical Spec');
     assert.deepEqual(scanReferences(room), []);
     assert.deepEqual(directoryBytes(path.join(room, 'workbench/wiki/archive')), archiveBefore);
-    receipt('T6 post-discard correction', { correctiveId, destination: `${featurePath}#Limits` });
+    receipt('T6 post-discard Wiki-claim correction refused', { destination: `${featurePath}#Limits` });
   } finally {
     console.log(`demo - S-00I TK-01V reached ${transitions.at(-1)?.step ?? 'initialization'} in ${((Date.now() - started) / 1000).toFixed(2)}s; fixture-only, no production approval`);
     for (const clone of clones) fs.rmSync(clone, { recursive: true, force: true });
@@ -5901,11 +5900,13 @@ function commitAll(dir, message) {
 
 // ============================================================================
 // S-00J's deferred retired-folder case (its third acceptance line, named by
-// S-00I TK-005's own remaining-gap cell): a corrective Task created against a
-// retired (not discarded) Spec through `createCorrectiveTasks` writes
-// straight into that Spec's still-retired `tasks/` directory - never under
-// `tasks/retired/` (that folder holds a reconciled, *done* Task's own
-// history, not a fresh one), and never moves the Spec back out of `retired/`.
+// S-00I TK-005's own remaining-gap cell), as S-004F TK-005S leaves it: no
+// command creates a corrective Task inside a retired (not discarded) Spec -
+// `createCorrectiveTasks` refuses, naming the new-Spec route - but a record an
+// earlier release wrote straight into that Spec's still-retired `tasks/`
+// directory (never under `tasks/retired/`, which holds a reconciled, *done*
+// Task's own history) keeps selecting, claiming and closing without moving the
+// Spec back out of `retired/`.
 // ============================================================================
 {
   const correctiveRetiredRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-corrective-retired-'));
@@ -5913,7 +5914,7 @@ function commitAll(dir, message) {
     initLifecycleFixture(correctiveRetiredRoot);
     fs.writeFileSync(path.join(correctiveRetiredRoot, 'AGENTS.md'), '# Agents\n\nRoutes to workbench/wiki.\n');
 
-    const verdictRow = '| 2026-09-18 | review | Review verdict: fail at deadbee3 [aaaaaaaaaaaa] #1 | Missing edge case coverage | Reviewer | 1 |';
+    const verdictRow = '| 2026-09-18 | review | Review verdict: fail at deadbee3 [aaaaaaaaaaaa] #1 | new Task: Missing edge case coverage | Reviewer | 1 |';
     const specContent = retirementReadySpec('S-591', ['TK-001']).replace(
       '| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n',
       `| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n${verdictRow}\n`
@@ -5956,13 +5957,28 @@ function commitAll(dir, message) {
 
     assert.ok(fs.existsSync(path.join(correctiveRetiredRoot, historicalRoute)), 'S-591 is genuinely retired before this proves the corrective route against it');
 
-    const receipt = createCorrectiveTasks(correctiveRetiredRoot, 'S-591', { candidate: 'deadbee3', findings: 'Missing edge case coverage' });
-    assert.equal(receipt.created.length, 1);
-    const created = receipt.created[0];
-    assert.equal(created.filePath, `workbench/specs/retired/S-591-corrective-fixture/tasks/${created.id}/TASK.md`);
-    assert.match(created.id, /^TK-[0-9A-Z]{4,}$/, 'S-01W TK-02B: a corrective Task on a retired Spec follows the shared uppercase width-four artifact policy');
+    // S-004F TK-005S (DDR-000M): delivered work is not corrected by a Task. A
+    // retired Spec takes no new corrective Task; the command refuses, naming
+    // the new-Spec route, and writes nothing.
+    const retiredBefore = fs.readFileSync(path.join(correctiveRetiredRoot, historicalRoute), 'utf8');
+    const retiredTasksDir = path.join(correctiveRetiredRoot, path.dirname(historicalRoute), 'tasks');
+    const retiredTasksBefore = fs.readdirSync(retiredTasksDir).sort();
+    assert.throws(() => createCorrectiveTasks(correctiveRetiredRoot, 'S-591', { candidate: 'deadbee3', findings: 'new Task: Missing edge case coverage' }),
+      /S-591 is retired[\s\S]*a later gap against delivered work becomes a new Spec under its landmark or the Blueprint/);
+    assert.equal(fs.readFileSync(path.join(correctiveRetiredRoot, historicalRoute), 'utf8'), retiredBefore, 'the refusal writes nothing');
+    assert.deepEqual(fs.readdirSync(retiredTasksDir).sort(), retiredTasksBefore, 'no corrective Task directory is created inside the retired Spec');
+
+    // A record an earlier release wrote into the retired Spec's folder still
+    // reads, selects, claims and closes; only its creation retired.
+    const legacyId = 'TK-000A';
+    const legacyFile = `workbench/specs/retired/S-591-corrective-fixture/tasks/${legacyId}/TASK.md`;
+    writeAt(correctiveRetiredRoot, legacyFile, taskRecordFixture({
+      id: legacyId, specId: 'S-591', slice: 'Missing edge case coverage', status: 'ready', blockers: 'none',
+      destination: 'spec-acceptance: S-591 Acceptance Criteria'
+    }).replace(/(\*\*Destination:\*\* .*\n)/, '$1**Planned verification:** Answers evidence row 1 (fail verdict at deadbee3 on 2026-09-18): Missing edge case coverage\n'));
+    const created = { id: legacyId, filePath: legacyFile };
     assert.ok(fs.existsSync(path.join(correctiveRetiredRoot, created.filePath)));
-    assert.ok(!created.filePath.includes('/tasks/retired/'), 'the new corrective Task never lands under tasks/retired/ - that folder holds a reconciled done Task, not a fresh one');
+    assert.ok(!created.filePath.includes('/tasks/retired/'), 'the legacy corrective Task never lands under tasks/retired/ - that folder holds a reconciled done Task, not a fresh one');
     assert.ok(fs.existsSync(path.join(correctiveRetiredRoot, historicalRoute)), 'the Spec is still retired');
     assert.ok(!fs.existsSync(path.join(correctiveRetiredRoot, 'workbench/specs/S-591-corrective-fixture')), 'the Spec was never moved back out of retired/');
 
@@ -6027,20 +6043,20 @@ function commitAll(dir, message) {
     claimWork(correctiveRetiredRoot, 'S-592', { agent: 'fixture' });
     assert.equal(nextWork(correctiveRetiredRoot), null, 'ordinary next offers no already claimed corrective or successor Task');
 
-    console.log('ok - createCorrectiveTasks against a retired (not discarded) Spec writes the new Task straight into its still-retired tasks/ directory, never under tasks/retired/, and never moves the Spec back out of retired/ - S-00J\'s deferred retired-folder case');
+    console.log('ok - createCorrectiveTasks against a retired Spec refuses, naming the new-Spec route, while a record an earlier release wrote there still selects, claims and closes without moving the Spec out of retired/ - S-00J\'s deferred retired-folder case');
   } finally {
     fs.rmSync(correctiveRetiredRoot, { recursive: true, force: true });
   }
 }
 
 // ============================================================================
-// S-00I TK-006: `createCorrectiveTasks` can anchor to a discarded Spec's Wiki
-// claim instead of a fail-verdict/owner-QA row it can no longer read (discard
-// removed the evidence log along with the Spec). This fixture represents
-// that post-discard state directly - S-590 was never created at all, exactly
-// what `findSpec` sees once a real discard (proven above) has actually run -
-// rather than re-running the whole discard dance just to reach the same
-// "Unknown spec ID" starting point.
+// S-004F TK-005S (DDR-000M): the Wiki-claim corrective route S-00I TK-006
+// built is retired. A discarded Spec's capability note is knowledge and
+// evidence, not a destination, so no command creates, selects, claims or
+// closes a corrective Task anchored to it. This fixture represents the
+// post-discard state directly - S-590 was never created at all, exactly what
+// `findSpec` sees once a real discard has run - and a standalone record an
+// earlier release wrote still counts for identifier occupancy.
 // ============================================================================
 {
   const orphanRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-corrective-orphan-'));
@@ -6069,56 +6085,33 @@ function commitAll(dir, message) {
       'with no wikiClaim option, an unknown Spec ID still fails exactly as it always has - every existing caller is unaffected'
     );
 
-    const receipt = createCorrectiveTasks(orphanRoot, 'S-590', {
-      candidate: 'deadbee2',
-      findings: 'The capability note omits an edge case',
-      wikiClaim: 'workbench/wiki/design-concepts/orphan-fixture-capability.md#Evidence and Sources'
-    });
-    assert.throws(() => createCorrectiveTasks(orphanRoot, 'S-590', {
-      candidate: 'deadbee2', findings: 'The capability note omits an edge case',
-      wikiClaim: 'workbench/wiki/design-concepts/orphan-fixture-capability.md#Evidence and Sources'
-    }), /already exist/, 'retry does not duplicate a corrective finding');
-    assert.equal(receipt.specId, 'S-590');
-    assert.equal(receipt.created.length, 1);
-    const created = receipt.created[0];
-    assert.match(created.filePath, /^workbench\/specs\/corrective\/tasks\/TK-[0-9A-Za-z]+\/TASK\.md$/);
-    assert.match(created.id, /^TK-[0-9A-Z]{4,}$/, 'S-01W TK-02B: an orphan corrective Task follows the shared uppercase width-four artifact policy');
-    assert.ok(fs.existsSync(path.join(orphanRoot, created.filePath)));
-    const taskContent = fs.readFileSync(path.join(orphanRoot, created.filePath), 'utf8');
-    assert.match(taskContent, /\*\*Destination:\*\* wiki-claim: workbench\/wiki\/design-concepts\/orphan-fixture-capability\.md#Evidence and Sources/);
-    assert.match(taskContent, /\*\*Status:\*\* ready/);
-
-    console.log('ok - createCorrectiveTasks anchors to a discarded Spec\'s Wiki claim, writing into the corrective/ folder this lane defines, and every existing caller with no wikiClaim option is unaffected');
-
-    const next = nextWork(orphanRoot);
-    assert.equal(next.orphan, true, 'an orphan corrective Task is selectable by next');
-    assert.equal(next.taskId, created.id);
-    assert.equal(next.specId, 'S-590');
-
-    claimWork(orphanRoot, created.id, { agent: 'codex' });
-    assert.equal(loadCorrectiveTasks(orphanRoot).find((task) => task.id === created.id).status, 'in-progress');
-
+    const wikiClaim = 'workbench/wiki/design-concepts/orphan-fixture-capability.md#Evidence and Sources';
     const wikiPath = path.join(orphanRoot, 'workbench/wiki/design-concepts/orphan-fixture-capability.md');
-    const validWiki = fs.readFileSync(wikiPath, 'utf8');
-    fs.writeFileSync(wikiPath, validWiki.replace(/^provenance:\n(?:  - .*\n)*/m, '') + '\nprovenance:\n  - body text\n');
-    assert.throws(() => closeTask(orphanRoot, created.id, { proof: 'fixed', docs: 'none', remainingGap: 'none' }), /no provenance/);
-    assert.equal(loadCorrectiveTasks(orphanRoot).find(task => task.id === created.id).status, 'in-progress');
-    fs.writeFileSync(wikiPath, validWiki);
-    const closeReceipt = closeTask(orphanRoot, created.id, { proof: 'fixed the edge case', docs: 'none', remainingGap: 'none' });
-    assert.equal(closeReceipt.status, 'done');
-    assert.equal(closeReceipt.wikiNote, 'workbench/wiki/design-concepts/orphan-fixture-capability.md');
+    const wikiBefore = fs.readFileSync(wikiPath, 'utf8');
+    const newSpecRoute = /a later gap against delivered work becomes a new Spec under its landmark or the Blueprint[\s\S]*never a correction anchored to a Wiki claim/;
+    assert.throws(() => createCorrectiveTasks(orphanRoot, 'S-590', { candidate: 'deadbee2', findings: 'new Task: The capability note omits an edge case', wikiClaim }), newSpecRoute,
+      'a Wiki-claim correction refuses, naming the new-Spec route');
+    assert.ok(!fs.existsSync(path.join(orphanRoot, 'workbench/specs/corrective')), 'the refusal creates no corrective/ folder');
+    assert.equal(fs.readFileSync(wikiPath, 'utf8'), wikiBefore, 'the refusal never touches the Wiki note');
 
-    const noteAfter = fs.readFileSync(path.join(orphanRoot, 'workbench/wiki/design-concepts/orphan-fixture-capability.md'), 'utf8');
-    assert.match(noteAfter, new RegExp(`  - ${created.id} corrective Task closed \\d{4}-\\d{2}-\\d{2}: fixed the edge case \\(docs: none; remaining gap: none\\)`));
-    assert.ok(!fs.existsSync(path.join(orphanRoot, 'workbench/specs/S-590-orphan-fixture')), 'closing never recreates SPEC.md');
-    assert.ok(!fs.existsSync(path.join(orphanRoot, 'workbench/specs/retired/S-590-orphan-fixture')), 'closing never recreates a retired SPEC.md either');
+    // A standalone record an earlier release wrote still reads (it keeps its
+    // identifier occupied) but is never offered, claimed or closed.
+    const legacyId = 'TK-000A';
+    const legacyFile = `workbench/specs/corrective/tasks/${legacyId}/TASK.md`;
+    writeAt(orphanRoot, legacyFile, [
+      `# ${legacyId} - The capability note omits an edge case`, '',
+      `**Task ID:** ${legacyId}`, '**Spec ID:** S-590', '**Slice:** The capability note omits an edge case', '**Status:** ready', '**Blockers:** none',
+      `**Destination:** wiki-claim: ${wikiClaim}`, ''
+    ].join('\n'));
+    const legacyBefore = fs.readFileSync(path.join(orphanRoot, legacyFile), 'utf8');
+    assert.equal(loadCorrectiveTasks(orphanRoot).find((task) => task.id === legacyId)?.destination.type, 'wiki-claim', 'the legacy record still reads');
+    assert.equal(nextWork(orphanRoot), null, 'next never selects a standalone corrective record');
+    assert.throws(() => claimWork(orphanRoot, legacyId, { agent: 'codex' }), newSpecRoute, 'claim refuses a standalone corrective record, naming the new-Spec route');
+    assert.throws(() => closeTask(orphanRoot, legacyId, { proof: 'fixed', docs: 'none', remainingGap: 'none' }), newSpecRoute, 'close refuses a standalone corrective record, naming the new-Spec route');
+    assert.equal(fs.readFileSync(path.join(orphanRoot, legacyFile), 'utf8'), legacyBefore, 'the refused claim and close leave the record byte-identical');
+    assert.equal(fs.readFileSync(wikiPath, 'utf8'), wikiBefore, 'the refused close never appends provenance to the Wiki note');
 
-    const closedTask = loadCorrectiveTasks(orphanRoot).find((task) => task.id === created.id);
-    assert.equal(closedTask.status, 'done');
-    assert.equal(closedTask.proof, 'fixed the edge case');
-    assert.equal(nextWork(orphanRoot), null, 'next offers nothing once the only corrective Task is done');
-
-    console.log('ok - an orphan corrective Task is selectable by next, claims and closes by its own Task ID, and closing appends its evidence to the Wiki note\'s provenance without ever touching SPEC.md');
+    console.log('ok - S-004F TK-005S: a Wiki-claim correction against a discarded Spec refuses naming the new-Spec route, and a standalone corrective record an earlier release wrote is never selected, claimed or closed');
   } finally {
     fs.rmSync(orphanRoot, { recursive: true, force: true });
   }
@@ -7170,3 +7163,79 @@ function parseTaskRecordForTest(content) {
   }
 }
 // ---- S-01W TK-002O: explicit widen-id touch (end) ----
+
+// ============================================================================
+// S-004F TK-005R (DDR-000Y): a continued Task is ordinary work. After a fail
+// verdict continues a closed Task, `next` selects it, `claim` and `close`
+// work on it, and its second close appends a distinct `Task closed (run N)`
+// evidence row instead of conflicting with the first close recorded the same
+// day. Earlier Receipt rows and evidence rows stay byte-identical.
+// ============================================================================
+{
+  const continueRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'continued-task-close-'));
+  initGitRoot(continueRoot);
+  try {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    writeAt(continueRoot, 'BLUEPRINT.md', ['# Fixture Blueprint', '', '<!-- spec-catalog:start -->', '<!-- spec-catalog:end -->'].join('\n'));
+    writeAt(continueRoot, 'TASKBOARD.md', ['# Fixture Taskboard', '', '<!-- hot-specs:start -->', '<!-- hot-specs:end -->'].join('\n'));
+    writeAt(continueRoot, 'specs/S-7C5-continued/SPEC.md', recordBackedSpec('S-7C5').replace('**Updated:** 2026-07-12', `**Updated:** ${todayStr}`));
+    writeAt(continueRoot, 'specs/S-7C5-continued/tasks/TK-002/TASK.md', taskRecordFixture({
+      id: 'TK-002', specId: 'S-7C5', slice: 'Continued slice', status: 'in-progress', blockers: 'none',
+      destination: 'spec-acceptance: S-7C5 Acceptance Criteria'
+    }));
+    publishFixture(continueRoot);
+    const specPath = path.join(continueRoot, 'specs/S-7C5-continued/SPEC.md');
+    const taskPath = path.join(continueRoot, 'specs/S-7C5-continued/tasks/TK-002/TASK.md');
+    const closeWith = (proof) => closeTask(continueRoot, 'S-7C5', { proof, docs: 'Docs checked; no update needed', remainingGap: 'none', date: todayStr });
+    const closeRows = () => fs.readFileSync(specPath, 'utf8').split('\n').filter((line) => line.includes('| TK-002 | Task closed'));
+    const headSha = () => execFileSync('git', ['-C', continueRoot, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+
+    closeWith('first pass: tools/test-fixture.mjs');
+    publishFixture(continueRoot, 'first close');
+    const firstRows = closeRows();
+    assert.equal(firstRows.length, 1);
+    assert.equal(parseMarkdownTableRow(firstRows[0])[2], 'Task closed', 'the first close keeps its event');
+    const firstReceipt = readReceiptFromFile(taskPath);
+
+    recordReviewVerdict(continueRoot, 'S-7C5', {
+      candidate: headSha(), result: 'fail', reviewer: 'Fixture reviewer (separate context)',
+      findings: 'continue TK-002: The slice missed the empty case, so cover it with the same slice'
+    });
+    publishFixture(continueRoot, 'continue TK-002');
+    assert.equal(readTaskRecord(taskPath, continueRoot).status, 'ready');
+    const selected = nextWork(continueRoot);
+    assert.equal(selected.taskId, 'TK-002', 'next selects the continued Task');
+    claimWork(continueRoot, 'S-7C5', { agent: 'fixture', date: todayStr });
+    assert.equal(readTaskRecord(taskPath, continueRoot).status, 'in-progress', 'claim works on a continued Task');
+    publishFixture(continueRoot, 'claim continued');
+
+    closeWith('second pass: tools/test-fixture.mjs covers the empty case');
+    const rows = closeRows();
+    assert.equal(rows.length, 2, 'the second close appends a row instead of conflicting with the first');
+    assert.equal(rows[0], firstRows[0], 'the first close row is byte-identical');
+    assert.equal(parseMarkdownTableRow(rows[1])[2], 'Task closed (run 2)', 'the later close row carries its own identity');
+    const receipts = readReceiptFromFile(taskPath);
+    assert.equal(receipts.length, 2, 'the Receipt chain gained a row and still validates');
+    assert.deepEqual(receipts[0], firstReceipt[0], 'the earlier Receipt row is unchanged');
+    const record = readTaskRecord(taskPath, continueRoot);
+    assert.equal(record.status, 'done');
+    assert.equal(record.proof, 'second pass: tools/test-fixture.mjs covers the empty case', 'the Proof field shows the latest closing proof; earlier proof stays in the Receipt and evidence rows');
+    publishFixture(continueRoot, 'second close');
+
+    // A third pass counts from the rows already recorded.
+    recordReviewVerdict(continueRoot, 'S-7C5', {
+      candidate: headSha(), result: 'fail', reviewer: 'Fixture reviewer (separate context)',
+      findings: 'continue TK-002: The whitespace case is still missing, so cover it too'
+    });
+    publishFixture(continueRoot, 'continue again');
+    claimWork(continueRoot, 'S-7C5', { agent: 'fixture', date: todayStr });
+    publishFixture(continueRoot, 'claim again');
+    closeWith('third pass: whitespace case');
+    assert.equal(parseMarkdownTableRow(closeRows()[2])[2], 'Task closed (run 3)');
+    render(continueRoot);
+    assert.equal(doctor(continueRoot).filter((item) => item.blocks === 'all' || item.blocks === 'selection').length, 0, 'doctor reports no blocking finding after repeated closes');
+    console.log('ok - S-004F TK-005R: a continued Task is selected, claimed and closed like any other, and each later close appends a distinct Task closed (run N) evidence row');
+  } finally {
+    fs.rmSync(continueRoot, { recursive: true, force: true });
+  }
+}

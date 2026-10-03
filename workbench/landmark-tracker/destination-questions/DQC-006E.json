@@ -1,0 +1,162 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-006E",
+  "revision": 6,
+  "title": "How does a changed answer expose the claims it affects?",
+  "question": "How does a changed answer expose the claims it affects?",
+  "answer": "LD-13: Preserve what changed, why, related artifacts and evidence-bearing alignment assessments. Assess which specific claims are affected rather than assuming every link is stale. Proposed mechanics: identify the changed claim, compare related durable statements, and record supported impact or no impact plus any reconciliation need.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: LD-13 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "LD-13 update workbench/specs/S-002A-landmark-records/SPEC.md: Expected-claim assessment records supported impact or no impact for each affected durable claim.",
+    "home": "workbench/specs/S-002A-landmark-records/SPEC.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "LD-13",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000N",
+    "LMK-000X"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 4
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "LD-13",
+      "revision": "56b459da",
+      "reason": "Ledger row LD-13 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How does a changed answer expose the claims it affects?",
+    "question": "How does a changed answer expose the claims it affects?",
+    "sources": [
+      {
+        "id": "LD-13",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:35.671Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:35.671Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: a card written from ledger rows that postdate the 2026-09-26 draft grouping, grilling ledger at 56b459da.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:35.705Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "LD-13: Preserve what changed, why, related artifacts and evidence-bearing alignment assessments. Assess which specific claims are affected rather than assuming every link is stale. Proposed mechanics: identify the changed claim, compare related durable statements, and record supported impact or no impact plus any reconciliation need."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: LD-13 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "LD-13 update workbench/specs/S-002A-landmark-records/SPEC.md: Expected-claim assessment records supported impact or no impact for each affected durable claim.",
+            "home": "workbench/specs/S-002A-landmark-records/SPEC.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:35.739Z",
+      "reason": "Ledger row LD-13 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "LD-13",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:35.779Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:59.279Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Durable Knowledge pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000N"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:02.637Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000N"
+          ],
+          "to": [
+            "LMK-000N",
+            "LMK-000X"
+          ]
+        }
+      ]
+    }
+  ]
+}

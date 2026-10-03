@@ -14,8 +14,8 @@ lanes; do not create a root `specs/`, project-local `skills/` core shadow, or pa
 truth store. Authorized room-local extensions follow the Runbook ownership procedure.
 
 - accepted shared definitions -> `LEXICON.md`;
-- desired product destination, integrated design, qualities and non-goals ->
-  `BLUEPRINT.md`;
+- what the product is, who it serves, its promised outcomes and its
+  non-goals (the Blueprint's four parts) -> `BLUEPRINT.md`;
 - capability requirements, decisions, acceptance, proof, or completion -> the
   assigned `SPEC.md`;
 - active assignment, blocker, event, or next gate -> update the owning spec,
@@ -31,6 +31,13 @@ truth store. Authorized room-local extensions follow the Runbook ownership proce
   ADR in the manifest `adr` collection (`workbench/docs/adr/`) whose
   `canonicalized_in` names operational owners. Active accepted decision claims
   are architectural Canon; do not duplicate the rule merely to make it bind.
+- a consequential destination choice, what the finished product must be or do
+  and why (it would still hold if the architecture were rebuilt) -> a
+  Destination Decision Record written into the `ddr` collection's `proposed/`
+  folder with `node workbench/tools/adr.mjs new --kind ddr --title "..."`. Its
+  `canonicalized_in` names the owners that carry it, `BLUEPRINT.md` when it
+  changes or contradicts the Blueprint, and never the Wiki. One decision that
+  needs both records gets both, linked rather than merged.
 
 Route each claim once. Split a mixed finding into its claims and give each
 exactly one owner by its job: a procedure step to its operational owner, a

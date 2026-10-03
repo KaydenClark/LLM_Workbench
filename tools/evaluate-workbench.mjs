@@ -4,6 +4,42 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+// The four-part short page: its four parts, by these exact headings (case matters, so the
+// older "Promised Outcomes" or "Non-Goals" headings are not the same parts), each once and in
+// order, and each carrying text of its own: a line that is not a heading. Sub-headings
+// ("### ...") may come first; a further "## " heading ends the part. A page of bare
+// headings, or one whose part is empty, is not the short page and earns nothing as it.
+const FOUR_PART_NAMES = ['What it is', 'Who it serves', 'Promised outcomes', 'Non-goals'];
+
+export function isFourPartBlueprint(text) {
+  // Headings inside a fenced code block or an HTML comment are not headings, and a comment is not text.
+  const lines = String(text ?? '').replace(/<!--[\s\S]*?-->/g, '').split('\n');
+  let fence = null;
+  const kinds = lines.map(line => {
+    // CommonMark fences: three or more backticks or tildes, closed only by the same character at least as long;
+    // an unclosed fence runs to the end of the page.
+    if (fence === null) {
+      const open = line.match(/^ {0,3}(`{3,}|~{3,})(.*)$/);
+      if (open && !(open[1][0] === '`' && open[2].includes('`'))) { fence = { char: open[1][0], length: open[1].length }; return 'text'; }
+    } else {
+      const close = line.match(/^ {0,3}(`{3,}|~{3,})[ \t]*$/);
+      if (close && close[1][0] === fence.char && close[1].length >= fence.length) fence = null;
+      return 'text';
+    }
+    if (/^## /.test(line)) return 'heading';
+    if (line.trim() === '' || line.trimStart().startsWith('#')) return 'blank';
+    return 'text';
+  });
+  const at = FOUR_PART_NAMES.map(name => lines.reduce((found, line, i) => (kinds[i] === 'heading' && line.trimEnd() === `## ${name}` ? [...found, i] : found), []));
+  if (at.some(found => found.length !== 1)) return false;
+  const starts = at.map(found => found[0]);
+  if (starts.some((start, i) => i > 0 && start <= starts[i - 1])) return false;
+  return starts.every(start => {
+    for (let i = start + 1; i < lines.length && kinds[i] !== 'heading'; i += 1) if (kinds[i] === 'text') return true;
+    return false;
+  });
+}
+
 export const RUBRIC = [
   {
     id: 'control_surfaces',
@@ -33,11 +69,11 @@ export const RUBRIC = [
     label: 'Project model and contracts',
     weight: 8,
     checks: [
-      { label: 'project promise', variants: [{files:['BLUEPRINT.md'], patterns:['Product Map','Core promise']}, {files:['BLUEPRINT.md'],patterns:['^## Product Destination$', '^## Promised Outcomes$']}] },
-      { label: 'integrated architecture', variants: [{files:['BLUEPRINT.md'],patterns:['Architecture And Invariants','Layer']}, {files:['BLUEPRINT.md'],patterns:['^## Integrated System Design$', 'manifest|major parts']}] },
+      { label: 'project promise', variants: [{legacyShape:true,files:['BLUEPRINT.md'], patterns:['Product Map','Core promise']}, {legacyShape:true,files:['BLUEPRINT.md'],patterns:['^## Product Destination$', '^## Promised Outcomes$']}, {fourPart:true,files:['BLUEPRINT.md'],patterns:['^## What it is$']}] },
+      { label: 'integrated architecture', variants: [{legacyShape:true,files:['BLUEPRINT.md'],patterns:['Architecture And Invariants','Layer']}, {legacyShape:true,files:['BLUEPRINT.md'],patterns:['^## Integrated System Design$', 'manifest|major parts']}, {fourPart:true,files:['BLUEPRINT.md','AGENTS.md'],patterns:['Documentation Ownership And Proof', 'manifest|major parts']}] },
       { label: 'contracts', variants: [{files:['BLUEPRINT.md'],patterns:['Spec Catalog','Capability record|capability-specific']}, {files:['AGENTS.md'],patterns:['Documentation Ownership And Proof','assigned.*SPEC|assigned.*spec','architectural decisions']}] },
-      { label: 'invariants', variants: [{files:['BLUEPRINT.md'],patterns:['Invariants','Source and tests|Implementation truth']}, {files:['BLUEPRINT.md'],patterns:['^## Cross-Cutting Qualities And Constraints$', 'Privacy|privacy', 'verified|evidence']}] },
-      { label: 'safety boundaries', files: ['BLUEPRINT.md'], patterns: ['Non-Goals', 'privacy|safety'] }
+      { label: 'invariants', variants: [{legacyShape:true,files:['BLUEPRINT.md'],patterns:['Invariants','Source and tests|Implementation truth']}, {legacyShape:true,files:['BLUEPRINT.md'],patterns:['^## Cross-Cutting Qualities And Constraints$', 'Privacy|privacy', 'verified|evidence']}, {fourPart:true,files:['BLUEPRINT.md','AGENTS.md'],patterns:['^## Engineering And Verification$', 'Privacy|privacy|private data', 'verified|verification|evidence']}] },
+      { label: 'safety boundaries', variants: [{legacyShape:true,files:['BLUEPRINT.md'],patterns:['Non-Goals', 'privacy|safety']}, {fourPart:true,files:['BLUEPRINT.md','AGENTS.md'],patterns:['^## Safety And Change Control$', 'privacy|private|safety']}] }
     ]
   },
   {
@@ -280,6 +316,12 @@ function checkPassed(files, check) {
   // Accept the historical contract and its explicitly reviewed owner relocation.
   // Weights, substantive requirements and outcome evidence are unchanged.
   if (check.variants) return check.variants.some(variant => checkPassed(files, variant));
+  // The four-part short page is judged on the Blueprint alone, never on the text of the
+  // files it is read beside, so a bare section cannot borrow the Contract's prose.
+  if (check.fourPart && !isFourPartBlueprint(files['BLUEPRINT.md'])) return false;
+  // A Blueprint that declares the four-part shape is judged only as the four-part page,
+  // so the older section patterns cannot lend it credit it has not earned.
+  if (check.legacyShape && /^## What it is$/m.test(files['BLUEPRINT.md'] ?? '')) return false;
   if (check.requireFiles) {
     return check.requireFiles.every((file) => Object.hasOwn(files, file));
   }
