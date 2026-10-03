@@ -112,6 +112,30 @@ and next executable action or blocker. Update those owners as work proceeds;
 reconcile material session reasoning into its named durable owner. No universal
 handoff artifact is required. A read-only setup check may return only in chat.
 
+### Handoff assignments and shared context
+
+The assigned role carries authority within the scope established by the user,
+this Contract and the assigned Spec. Handoffs and notepads carry instructions
+and context. Agents may delegate work through handoffs within their assigned
+roles; each transfer need not come directly from the owner. A recipient follows
+its assigned job under the current controls without requiring the owner to
+repeat an already authorized assignment. A document or role title cannot
+expand that scope.
+
+Distinguish author from recipient, and assigner from assignee. A request to
+prepare a handoff assigns its author the preparation of instructions for
+another agent in a separate context. Authoring it does not assign the
+recipient's work to the author. A handoff may convey a delegated assignment,
+a completion report or an update; its instructions do not carry independent
+authority.
+
+Notepads capture context as it happens; handoffs select and organize it for a
+specified recipient and purpose. Agents may read each other's handoffs and
+objective notepads. A coordinating role may manage shared updates to both as
+temporary scaffolding, with one writer per note or handoff at a time.
+The [Lexicon](LEXICON.md#artifact-boundaries) defines their jobs and the
+[Runbook](RUNBOOK.md#handoff-transfer) owns the transfer procedure.
+
 ## Read Scope
 
 - Allowed: `[READABLE_ROOTS]`

@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** claude-lane-A-worker
 **Stance:** Builder
-**Updated:** 2026-09-26
+**Updated:** 2026-10-03
 **Catalog description:** Transfer one objective to a named destination in readable Markdown.
 **Blockers:** none.
-**Latest event:** TK-00R closed with proof.
-**Next gate:** Owner Human QA on `integration`, then `complete S-01A`.
+**Latest event:** The role-based handoff correction (draft PR #262) was merged with current integration and its Lexicon wording reconciled with the newer handoff and role decisions (DDR-000K, ADR-000V); TK-00R proof remains historical delivery evidence.
+**Next gate:** Cut and claim a source-alignment Task that brings the handoff skill, its bundled shape and `templates/HANDOFF.md` into line with the accepted correction, then verify delegation, upward reporting and one-question investigation-and-return behavior; owner Human QA and completion remain open.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -23,9 +23,9 @@ The prior Skills Wiki packet grouped the whole core inventory into one completio
 
 ## Current Verified State
 
-- `workbench/skills/handoff/SKILL.md` is the manifest-declared core source at the pre anchor.
-- `workbench/wiki/skill-handoff.md` is not yet routed as a current skill article; its existence and links must be rechecked before authoring.
-- Current source includes a Markdown asset; S-00W does not own this skill. No fresh behavioral scenario for this per-skill delivery is claimed by this planning packet.
+- At `574df962fcfdd8045ec4dd405ba7f548216f7d4a`, the manifest-declared handoff source, bundled Markdown shape and routed `workbench/wiki/skill-handoff.md` exist. TK-00R's completed proof and its 2026-09-26 scenario remain in the evidence log.
+- The source and shape still describe inherited authorization and owner-requested authorship. The notepad skill also describes owner-requested transfer. Their alignment with the 2026-10-01 accepted role and delegation correction is an implementation gap, not verified behavior.
+- This promotion changes accepted controls and documentation only. It does not reopen TK-00R, create a corrective Task, update skill sources/assets, install personal copies or claim a new behavioral trial.
 
 ## Desired Behavior
 
@@ -73,6 +73,8 @@ Inspect the current source, its callers/composition and relevant tests. Demonstr
 - [x] `workbench/wiki/skill-handoff.md` accurately distinguishes verified current behavior from remaining intended behavior, links the current source and governing owners, and is reachable from `workbench/wiki/MEMORY.md`.
 - [x] Relevant targeted tests/scenarios, Wiki validation, the required full suite, Workbench self-drift pre/post receipts and separate-context review are recorded at their proper gates; no unrun check is reported as passing.
 
+- [ ] The handoff source and bundled shape agree with the accepted 2026-10-01 correction; focused role-based delegation, upward reporting and Q12 investigation-and-return behavior are verified.
+
 ## Testing Seams
 
 Use the skill's public entry and its nearest source/test seam for the scenario: A receiving agent continues a specification-only request without implementing it and can resolve every cited owner. Structural catalog and Wiki checks prove routing, not agent behavior. If the skill changes behavior, show red then green at the closest meaningful seam. A human review may still be needed for conversational fidelity.
@@ -97,6 +99,49 @@ Dispatcher takes up an already-active one). Tasks already cut stay as they
 are. This section changes none of this Spec's acceptance, evidence or status;
 steps 1-5 touch only the draft wiki and step 6 only this skill's lane.
 
+## Accepted handoff correction (2026-10-01)
+
+The owner confirmed the author/recipient and assigner/assignee distinction and
+explicitly selected promotion. [AGENTS](../../../AGENTS.md#handoff-assignments-and-shared-context)
+owns role authority, delegation and shared scaffolding boundaries;
+[LEXICON](../../../LEXICON.md#artifact-boundaries) owns the artifact meanings;
+[RUNBOOK](../../../RUNBOOK.md#handoff-transfer) owns recipient-purpose and
+transfer preparation. These owners supersede a reading that the handoff
+itself grants authorization or that agents must obtain a new owner request
+for every transfer.
+
+The next authorized source-repair slice must reconcile the handoff skill,
+its bundled shape and `templates/HANDOFF.md`, tests and Wiki explanation with
+those owners. Coordinate the notepad composition wording with its own skill
+owner; this Spec does not absorb another skill's implementation. Preserve
+TK-00R and all completed evidence. A delegation/completion-report scenario and
+a Q12-only investigation-and-return scenario remain unverified for this
+correction. No runtime, installation or owner Human QA result is implied.
+
+## Promotion receipt (2026-10-01)
+
+The public promotion seam selected `decision-002`, `decision-003`,
+`decision-004` and `decision-005` from source revision 15 after the author read
+the correction history. Source SHA-256:
+`12dd55d5700d91ffb73d9b36eadf404275f2d782a5941185e21f7157094976c8`.
+Privacy, existing-owner structure, expected destination hashes and exact byte
+read-back passed; these checks do not establish semantic fidelity or runtime
+behavior. Source context and corrections remain retained locally.
+
+Initial promoted owner bytes, contained in `f98f0ea183e2507231ca494c9166472cd9f963f2`:
+
+| Owner | SHA-256 |
+|---|---|
+| `AGENTS.md` | `d08f06d58ac0862c2344563c2640591a1ac067e3ff05465889c07695ec03e25c` |
+| `LEXICON.md` | `92ea4a030fc269f1d96f398da3085e6416a1e758f3c6817b0d3e0c7df84e7177` |
+| `RUNBOOK.md` | `1ca7c08d95a712bfde1f24e18ecff7cd3200f74ba3ffc01a5e39f9f98c9d6ae7` |
+| `workbench/specs/S-01A-handoff-skill-rebuild/SPEC.md` | `df1e46fc1710aaa4b61701051942e882de061fa1b4396eed20b540bc059c1f74` |
+| `workbench/wiki/skill-handoff.md` | `3f694c1405f1093b5be6a86ebdda6e371bce4d899701fe51695b816121128e56` |
+
+The control templates were synchronized with their filled owners. Subsequent
+Spec evidence and the historical Completion Result clarification are separate
+from these initial hashes. The handoff skill source and shapes remain unchanged.
+
 ## Append-Only Evidence And Execution Log
 
 | Date | Task | Event | Verification | Docs | Remaining gap |
@@ -112,10 +157,12 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane.
 | 2026-09-26 | TK-00R retro review | Post-merge separate-context delta review of the landed PR #171 contribution (merge `ef9dcfb`, head `58c89a8`) against the reviewed candidate `f3a894b`: PASS, one Low | Codex gpt-5.5 read-only (Lane E, separate context) compared `git diff d16ef63 f3a894b` with `git diff ef9dcfb^1 ef9dcfb` outside TASKBOARD.md and CATALOG.md: the only differences are the post-review state (Next gate, acceptance line 5, Completion Result, verdict row) and the MEMORY.md router keep-both with to-spec; no handoff content changed or lost. Low: the verdict row names `c9b07f3`, an intermediate merge tip, while Codex reviewed `f3a894b` and the PR landed at `58c89a8`; this row supplies the landed-state review; fixture tests not run in its sandbox | Docs checked; no update needed: record-only row | none; closes the gap left when the landed tip merged after the review without a fresh one (AGENTS.md integration gate) |
 | 2026-09-26 | TK-00R verdict-row correction | Correction: the review verdict row above names `c9b07f3`, an intermediate merge tip of the lane (integration merged into the reviewed commit), not the commit Codex reviewed or the landed head. Codex reviewed `f3a894b` against base `d16ef63`, and PR #171 landed at head `58c89a8` via merge `ef9dcfb`. The published verdict row stays as recorded; the retro review row above supplies the review of the landed contribution | Verified with git: `f3a894b` is an ancestor of `c9b07f3`, which is an ancestor of `58c89a8`; `ef9dcfb^2` is `58c89a8` | Docs checked; no update needed: record-only row | none |
 | 2026-09-26 | review | Review verdict: pass at eec12cf74ee3f649fa199cfe618c67f4df697938 [4141ef7d4d23] #2 | none; final-content review of the Spec at eec12cf (checked acceptance lines supported by recorded evidence, Completion Result accurate against source, header and Wiki route consistent); refreshes the digest after the boxes and Completion Result were written post-verdict; fixture tests not run in the reviewer sandbox | Codex CLI codex exec -s read-only -m gpt-5.5, separate context (Lane E log E-gate-review-1.log) | 4 |
+| 2026-10-01 | promotion | Owner confirmed the role-based handoff correction and selected promotion; prior completed TK-00R retained | Public hash-checked promotion and owner byte read-back; all 48 required AGENTS commands passed on `f98f0ea183e2507231ca494c9166472cd9f963f2`; control fidelity, vocabulary, catalog and Wiki checks passed. The initial session-suite refusal for uncommitted template identity was resolved by committing the exact candidate before the full rerun. Pre/post self-drift at base `574df962fcfdd8045ec4dd405ba7f548216f7d4a` and candidate `f98f0ea183e2507231ca494c9166472cd9f963f2` retain the same seven findings and `cleanUpdate: false`; guardrail unchanged 78/100. Bounded semantic read-back checked author/recipient, assigned-role limits, delegation, shared scaffolding, recipient purpose and historical/current Wiki distinctions | AGENTS, LEXICON, RUNBOOK and generic mirrors; this Spec and routed Wiki explanation; Taskboard regenerated | Source/shape and neighboring notepad composition alignment, behavioral scenarios, integration gate and owner Human QA remain open; no agent-outcome improvement claimed |
+| 2026-10-03 | landing | Draft PR #262 merged with `origin/integration` (483 commits behind) on `claude/land-262-handoff-authority`; the Codex branch was not rebased or force-pushed | Conflicts only in `LEXICON.md` and `templates/LEXICON.md`, resolved by keeping integration's newer Canon (ADR-000V role ladder, DDR-000K handoff as the readable map to the high-fidelity context, WBID, root-file and Tracker wording) and layering the delegation correction onto it: the Handoff and Scoped handoff rows now carry the readable-map and Markdown-not-JSON reasons, and the Role row keeps the ADR-000V text with a pointer to the AGENTS delegation subsection. The AGENTS subsection moved to the end of Assigned Work And Stances so the stance paragraphs stay under their own heading, and its shared-update sentence now names "a coordinating role" instead of Directors and Dispatchers, since ADR-000V keeps role detail out of AGENTS. Both Runbooks replace the project-specific Q12 example with a generic one-question grilling deep dive. Projections re-rendered. Full suite, doctor and separate-context review are recorded on the landing PR | AGENTS, LEXICON, RUNBOOK and their templates; this Spec; skill-handoff Wiki page unchanged by the landing | Source/shape alignment with the correction and the delegation, upward-report and one-question investigation scenarios remain unverified and have no Task yet; owner Human QA |
 
 ## Completion Result
 
-TK-00R mapped every obligation in `workbench/skills/handoff/SKILL.md` onto a heading of its bundled Markdown shape, which stays byte-equal to `templates/HANDOFF.md`. The source now puts a correction beside the claim it corrects, cites an untracked live notepad only for a recipient in the same checkout, and applies notepad retention only when the handoff draws on a note. `workbench/wiki/skill-handoff.md` records the pinned upstream comparison and one two-agent fresh-context scenario. A separate-context review passed. The Spec is not complete: owner Human QA of conversational fidelity remains.
+TK-00R mapped every obligation in `workbench/skills/handoff/SKILL.md` onto a heading of its bundled Markdown shape, which stays byte-equal to `templates/HANDOFF.md`. The source now puts a correction beside the claim it corrects, cites an untracked live notepad only for a recipient in the same checkout, and applies notepad retention only when the handoff draws on a note. `workbench/wiki/skill-handoff.md` records the pinned upstream comparison and one two-agent fresh-context scenario. A separate-context review passed. This is TK-00R's historical 2026-09-26 result and review. The Spec remains open: the accepted 2026-10-01 correction still needs source/shape alignment and new delegation, reporting and Q12 return proof; owner Human QA of conversational fidelity also remains open.
 
 ## Supersession
 
