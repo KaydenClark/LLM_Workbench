@@ -3,11 +3,12 @@
 **Task ID:** TK-005R
 **Spec ID:** S-004F
 **Slice:** Let a failed verdict or owner finding continue the named Task, or open a new Task when the fix rewrites it
-**Status:** ready
+**Status:** done
 **Stance:** Builder
 **Blockers:** TK-005Q
 **Destination:** spec-acceptance: A failed verdict can continue an existing Task with an adjusted handoff or open a new Task when the fix rewrites it, the record says which, and the append-only check shows no earlier evidence or proof rewritten.
 **Planned verification:** Red, at `recordReviewVerdict`, `recordOwnerApproval` and `createCorrectiveTasks` in `workbench/tools/spec-report.mjs` and through the `verdict` and `approve` commands in a fixture room: a fail verdict finding that names a done Task today creates a new ready Task and never continues it; a finding naming neither disposition is accepted. Green: a finding written `continue TK-###: <what the check found and what the fix must do>` appends an entry to that Task's `## Continuation` table, moves a done Task to ready and leaves its Receipt rows, Proof and every earlier Spec evidence row byte-identical; a finding written `new Task: <finding>` (optionally `new Task rewriting TK-###: ...`) opens a new ready Task as today; a finding naming neither, a Task the Spec does not hold, or a blocked or deferred Task is refused before any write; the Spec evidence row carries the disposition text so the record says which case applied; a repeat for the same evidence row is refused; `next`, `claim`, `receipt` and `close` treat the continued Task as ordinary work, and its second close appends a distinct `Task closed (run N)` evidence row instead of conflicting with the first; `tools/check-append-only.py` passes over the fixture history. `tools/test-spec-report.mjs`, `tools/test-spec-workbench.mjs`, `tools/test-verdict-candidate-binding.mjs`, `tools/test-workbench-round-trip.mjs` and the full AGENTS suite pass on the committed candidate.
+**Proof:** Full AGENTS suite 48 of 48 on committed candidate 9696c78d; red then green at recordReviewVerdict, recordOwnerApproval, createCorrectiveTasks, the Continuation section and the continued-Task re-close; append-only evidence and Receipt rows byte-identical in the fixtures
 
 ## Outcome
 
@@ -25,7 +26,8 @@ evidence row says which case applied.
   written by one reader) and the done to ready move for a continued done Task.
 - The re-close identity in `workbench/tools/spec-workbench.mjs`: `Task closed`
   for the first close and `Task closed (run N)` for a later one.
-- The `verdict` and `approve` command help text where it names corrective Tasks.
+- No command help text names corrective Tasks, so none changes; the finding grammar
+  is stated in the refusal message a finding with no disposition gets.
 - Tests at the stable seams above, including the append-only proof.
 
 ## Acceptance
@@ -45,3 +47,10 @@ No `AGENTS.md`, `RUNBOOK.md`, Lexicon or template change here (TK-005T states th
 rules in the controls). The Wiki-claim route and the refusal for delivered Specs
 belong to TK-005S. A destination-change finding still records a return to Align
 and creates nothing.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s004f-tk005r | 9696c78dbc8223758427a9d04050caf715709b39 | ahead 0 behind 0 | 0 | Full AGENTS suite on committed candidate 9696c78d: 48 of 48 commands pass; red first (task-continuation tests and the verdict, owner-finding and re-close cases failed before the change), then green in tools/test-spec-report.mjs (3 new blocks plus the Continuation module block) and tools/test-spec-workbench.mjs (continued-Task close identity); fixtures in test-verdict-git-reads, test-verdict-candidate-binding and test-workbench-round-trip now name dispositions | Task record scope corrected (no command help text names corrective Tasks); no control, Runbook, Lexicon or Wiki update here - TK-005T states the rules in AGENTS.md and the Wiki lifecycle page changes with TK-005S | none | 45e3537b877f2b098c70af26d5b487d8ff57b06cead243bbb16eb12e6b49d1a5 |
+| 2 | claude/s004f-tk005r | f66d761fe5065ab0bfd8b6bbfd265271a02daece | ahead 0 behind 0 | 0 | Full AGENTS suite 48 of 48 on committed candidate 9696c78d; red then green at recordReviewVerdict, recordOwnerApproval, createCorrectiveTasks, the Continuation section and the continued-Task re-close; append-only evidence and Receipt rows byte-identical in the fixtures | Docs checked; no control, Runbook or Lexicon update here: the rules reach AGENTS.md in TK-005T and the Wiki lifecycle page in TK-005S | none | 6bf2c3bb72f465df0f84542396fe3e0eae0665dfb4611ab19c565d4520d12a54 |

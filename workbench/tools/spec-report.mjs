@@ -34,7 +34,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { appendEvidence, atomicWrite, findSpec, loadRetiredSpecs, loadSpecs, occupiedIdentities, resolveIntegrationContainmentRef, resolveSpecsRoot, slicesOf } from './spec-workbench.mjs';
-import { formatTaskRecord, listTaskRecords, parseTaskRecord, taskStatus } from './task-record.mjs';
+import { appendContinuationToContent, formatTaskRecord, listTaskRecords, parseTaskRecord, readContinuations, taskStatus, updateTaskFields } from './task-record.mjs';
 import { readReceiptFromFile } from './task-receipt.mjs';
 import { assertSafeWritePath, lanePath } from './workbench-paths.mjs';
 import { allocateArtifactId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
@@ -412,6 +412,10 @@ export function recordReviewVerdict(rootDir, specId, options = {}) {
   }
 
   const spec = findSpec(root, specId);
+  // S-004F TK-005R: every finding names its disposition and the Task it names
+  // exists, checked before the verdict row is written, so a refused finding
+  // leaves no row without its corrective step.
+  if (result === 'fail') planCorrectiveFindings(root, spec, splitFindings(findings));
   // Content binds, location does not: the verdict binds to the Spec's
   // current content digest (spec-report.mjs's `computeSpecDigest`), not to
   // this checkout's HEAD. A reviewer names the digest their own `report`
@@ -479,11 +483,12 @@ export function recordReviewVerdict(rootDir, specId, options = {}) {
   // naming this row yet, so it proceeds exactly as if this call had reached
   // it the first time.
   let correctiveTasks;
+  let continuedTasks;
   if (result === 'fail') {
-    correctiveTasks = createCorrectiveTasks(root, specId, { candidate, findings }).created;
+    ({ created: correctiveTasks, continued: continuedTasks } = createCorrectiveTasks(root, specId, { candidate, findings }));
   }
 
-  return { specId: spec.id, candidate, result, findings, reviewer, date, remainingGap, digest, digest12, ordinal, row, ...(correctiveTasks ? { correctiveTasks } : {}) };
+  return { specId: spec.id, candidate, result, findings, reviewer, date, remainingGap, digest, digest12, ordinal, row, ...(correctiveTasks ? { correctiveTasks, continuedTasks } : {}) };
 }
 
 // S-00J TK-005: owner Human QA on `integration` - the owner's own review of
@@ -560,6 +565,10 @@ export function recordOwnerApproval(rootDir, specId, options = {}) {
   }
   const digest12 = digest.slice(0, 12);
 
+  // S-004F TK-005R: an owner finding that keeps the destination follows the
+  // same disposition rule as a fail verdict, validated before the row is written.
+  if (result === 'finding' && !returnToAlign) planCorrectiveFindings(root, spec, splitFindings(findingsInput));
+
   const findingsCell = returnToAlign ? `Return to Align: ${destinationChange}` : (findingsInput || 'none');
   // Review corrective (Low): an approval recorded with no declared
   // integration branch at all skipped the ancestor check above with nothing
@@ -599,11 +608,12 @@ export function recordOwnerApproval(rootDir, specId, options = {}) {
   atomicWrite(spec.filePath, updated);
 
   let correctiveTasks;
+  let continuedTasks;
   if (result === 'finding' && !returnToAlign) {
-    correctiveTasks = createCorrectiveTasks(root, specId, { candidate, findings: findingsInput }).created;
+    ({ created: correctiveTasks, continued: continuedTasks } = createCorrectiveTasks(root, specId, { candidate, findings: findingsInput }));
   }
 
-  return { specId: spec.id, candidate, owner, result, findings: findingsCell, date, remainingGap, digest, digest12, ordinal, row, integrationContainment, ...(correctiveTasks ? { correctiveTasks } : {}) };
+  return { specId: spec.id, candidate, owner, result, findings: findingsCell, date, remainingGap, digest, digest12, ordinal, row, integrationContainment, ...(correctiveTasks ? { correctiveTasks, continuedTasks } : {}) };
 }
 
 // `git merge-base --is-ancestor <sha> <branch>` exits 0 exactly when `sha` is
@@ -700,12 +710,21 @@ export function createCorrectiveTasks(rootDir, specId, options = {}) {
   // its own Planned verification (built from `answeredMarker` below), so
   // detecting "already created" is reading the existing records, never a
   // second ledger that could drift from them.
-  const answeredMarker = `Answers evidence row ${rowOrdinal} (${anchor.kind} at ${candidate} on ${verdictDate})`;
+  const answersText = `evidence row ${rowOrdinal} (${anchor.kind} at ${candidate} on ${verdictDate})`;
+  const answeredMarker = `Answers ${answersText}`;
   const specDir = path.dirname(spec.filePath);
   const existingRecords = listTaskRecords(specDir, root);
-  if (existingRecords.some((task) => task.plannedVerification && task.plannedVerification.startsWith(answeredMarker))) {
-    throw new Error(`Corrective Tasks already exist for candidate ${candidate}'s evidence row ${rowOrdinal} on ${specId}; createCorrectiveTasks refuses to create a duplicate set for a row already answered.`);
+  // S-004F TK-005R: a continuation answers a row too, and names it in its own
+  // `Answers` cell, so "already answered" reads the Task records alone.
+  if (existingRecords.some((task) => (task.plannedVerification && task.plannedVerification.startsWith(answeredMarker))
+      || readContinuations(task.content, task.id).some((entry) => entry.answers === answersText))) {
+    throw new Error(`Corrective work already exists for candidate ${candidate}'s evidence row ${rowOrdinal} on ${specId}; createCorrectiveTasks refuses to answer a row twice.`);
   }
+
+  // S-004F TK-005R: each finding is either more of the same work on a named
+  // Task, which continues with an adjusted handoff (DDR-000Y), or a fix that
+  // rewrites the Task, which opens a new one. Validated before anything is staged.
+  const plan = planCorrectiveFindings(root, spec, items);
 
   // S-00J TK-003 review corrective (Low): every candidate record is built
   // and parsed back (validated) before anything is written, so a problem
@@ -720,15 +739,31 @@ export function createCorrectiveTasks(rootDir, specId, options = {}) {
   // for a later allocation to fail to see.
   const reservations = occupiedIdentities(root, 'TK');
   const staged = [];
-  for (const findingText of items) {
+  const continuedContent = new Map();
+  const continuedRuns = [];
+  for (const entry of plan) {
+    if (entry.kind === 'continue') {
+      // Each continuation appends to the Task's own record and, for a done
+      // Task, moves it back to ready; Receipt rows, Proof and the Spec's
+      // evidence rows are never rewritten. Two findings continuing one Task
+      // in one call build on the same staged content, so runs stay in order.
+      const record = entry.record;
+      const base = continuedContent.get(record.id) ?? record.content;
+      let content = appendContinuationToContent(base, { date: verdictDate, answers: answersText, handoff: entry.text }, record.id);
+      if (record.status === 'done') content = updateTaskFields(content, { Status: 'ready' });
+      parseTaskRecord(content, record.filePath, root);
+      continuedContent.set(record.id, content);
+      continuedRuns.push({ id: record.id, filePath: path.relative(root, record.filePath).split(path.sep).join('/'), handoff: entry.text, run: readContinuations(content, record.id).length, previousStatus: record.status });
+      continue;
+    }
     const id = allocateArtifactId('TK', reservations);
     reservations.push(id);
     const filePath = path.join(specDir, 'tasks', id, 'TASK.md');
-    const plannedVerification = `${answeredMarker}: ${findingText}`;
+    const plannedVerification = `${answeredMarker}: ${entry.text}${entry.rewrites ? ` (rewrites ${entry.rewrites})` : ''}`;
     const content = formatTaskRecord({
       id,
       specId,
-      slice: findingText,
+      slice: entry.text,
       status: 'ready',
       blockers: 'none',
       destination: `spec-acceptance: ${specId} Acceptance Criteria`,
@@ -738,15 +773,15 @@ export function createCorrectiveTasks(rootDir, specId, options = {}) {
     // safety discipline: a record this refuses to produce is never written,
     // and here it is not even added to the batch the write loop below runs.
     parseTaskRecord(content, filePath, root);
-    staged.push({ id, filePath, content, slice: findingText });
+    staged.push({ id, filePath, content, slice: entry.text });
   }
 
   // Only once every record in the batch is already known good does the
   // write loop run. A disk failure partway through THIS loop (as opposed to
   // the row-then-Tasks gap `recordReviewVerdict` documents above) leaves a
-  // genuine partial set on disk with no automatic resume: the row-ordinal
-  // duplicate check above only refuses a second call once at least one
-  // matching Task has landed, so recovering from a partial batch means
+  // genuine partial set on disk with no automatic resume: the answered-row
+  // check above only refuses a second call once at least one matching Task
+  // or continuation has landed, so recovering from a partial batch means
   // completing or removing the partial `tasks/<id>/` directories by hand
   // before createCorrectiveTasks is called again for this same row.
   const created = [];
@@ -756,8 +791,15 @@ export function createCorrectiveTasks(rootDir, specId, options = {}) {
     atomicWrite(item.filePath, item.content);
     created.push({ id: item.id, filePath: path.relative(root, item.filePath).split(path.sep).join('/'), slice: item.slice });
   }
+  const continued = [];
+  for (const [id, content] of continuedContent) {
+    const record = existingRecords.find((task) => task.id === id);
+    assertSafeWritePath(root, record.filePath);
+    atomicWrite(record.filePath, content);
+    continued.push(...continuedRuns.filter((entry) => entry.id === id));
+  }
 
-  return { specId, candidate, verdictRow: { ordinal: rowOrdinal, date: verdictDate }, created };
+  return { specId, candidate, verdictRow: { ordinal: rowOrdinal, date: verdictDate }, created, continued };
 }
 
 // S-00I TK-006: the discarded-Spec branch `createCorrectiveTasks` above
@@ -827,6 +869,56 @@ function createOrphanCorrectiveTasks(root, specId, { candidate, items, wikiClaim
   }
 
   return { specId, candidate, wikiClaim: destination, created };
+}
+
+// S-004F TK-005R (DDR-000Y): the disposition every finding of a fail verdict
+// or an owner QA finding names. `continue TK-###: <text>` means the fix is more
+// of the same work, so that Task continues with `<text>` as its adjusted
+// handoff; `new Task: <text>` (optionally `new Task rewriting TK-###: <text>`)
+// means the fix changes the Task enough that it has to be rewritten, so a new
+// Task opens. The recorder judges which, per finding, because the recorder
+// holds the finding; the Spec's evidence row carries the text as written, so
+// the record says which case applied. Findings are split on ";", so a
+// disposition's own text holds none.
+const CONTINUE_PATTERN = /^continue\s+(TK-[0-9A-Za-z]+)\s*:\s*(\S.*)$/i;
+const NEW_TASK_PATTERN = /^new Task(?:\s+rewriting\s+(TK-[0-9A-Za-z]+))?\s*:\s*(\S.*)$/i;
+const CONTINUABLE_STATUSES = Object.freeze(['done', 'ready', 'in-progress', 'needs-review']);
+
+export function parseFindingDisposition(item) {
+  let match = CONTINUE_PATTERN.exec(item);
+  if (match) return { kind: 'continue', taskId: match[1], text: match[2].trim() };
+  match = NEW_TASK_PATTERN.exec(item);
+  if (match) return { kind: 'new', rewrites: match[1] ?? null, text: match[2].trim() };
+  return null;
+}
+
+// Validates every finding against the Spec's own Task records and returns the
+// plan, reading nothing it will not use and writing nothing, so a caller can
+// refuse before it appends a row.
+function planCorrectiveFindings(root, spec, items) {
+  const specDir = path.dirname(spec.filePath);
+  const records = [...listTaskRecords(specDir, root)];
+  const find = (taskId) => records.find((record) => visibleIdKey(record.id) === visibleIdKey(taskId));
+  const unnamed = [];
+  const parsed = [];
+  for (const item of items) {
+    const disposition = parseFindingDisposition(item);
+    if (disposition) parsed.push(disposition); else unnamed.push(item);
+  }
+  if (unnamed.length > 0) {
+    throw new Error(`Finding${unnamed.length === 1 ? '' : 's'} ${unnamed.map((item) => `"${item}"`).join(', ')} on ${spec.id} name${unnamed.length === 1 ? 's' : ''} no disposition; write each finding as "continue TK-###: <what the check found and what the fix must do>" when the same Task continues with an adjusted handoff, or "new Task: <finding>" (optionally "new Task rewriting TK-###: <finding>") when the fix changes the Task enough that it has to be rewritten. Findings are separated by ";", so a finding's own text holds none.`);
+  }
+  return parsed.map((entry) => {
+    if (entry.kind === 'continue') {
+      const record = find(entry.taskId);
+      if (!record) throw new Error(`${spec.id} holds no Task record ${entry.taskId} to continue; a continued Task is a record under the Spec's tasks/ folder (convert-tasks moves a slice-table row into one), or write the finding as "new Task: <finding>".`);
+      if (!CONTINUABLE_STATUSES.includes(taskStatus(record))) throw new Error(`${record.id} is ${taskStatus(record)}; only a ${CONTINUABLE_STATUSES.join(', ')} Task continues. Clear its blocker first, or write the finding as "new Task: <finding>".`);
+      if (/^\*\*Close pending:\*\*/m.test(record.content)) throw new Error(`${record.id} has a close pending; finish that close before continuing the Task.`);
+      return { ...entry, record };
+    }
+    if (entry.rewrites && !find(entry.rewrites)) throw new Error(`${spec.id} holds no Task record ${entry.rewrites} to rewrite; name a Task the Spec holds, or write the finding as "new Task: <finding>".`);
+    return entry;
+  });
 }
 
 function requiredString(value, message) {
