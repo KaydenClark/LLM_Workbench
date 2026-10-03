@@ -13,7 +13,7 @@
 | [000E](000E-every-session-works-inside-its-smart-zone-and-spends-its-tokens-efficiently.md) | Every session works inside its smart zone and spends its tokens efficiently | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000F](000F-a-fresh-session-loads-only-the-context-its-work-needs.md) | A fresh session loads only the context its work needs | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000G](000G-every-kind-of-truth-has-one-maintained-home.md) | Every kind of truth has one maintained home | accepted | 2026-10-03 | BLUEPRINT.md |
-| [000H](proposed/000H-the-context-lives-in-github-so-work-can-move-to-the-cloud-at-any-time.md) | The context lives in GitHub, so work can move to the cloud at any time | proposed | 2026-10-03 | BLUEPRINT.md |
+| [000H](000H-the-context-lives-in-github-so-work-can-move-to-the-cloud-at-any-time.md) | The context lives in GitHub, so work can move to the cloud at any time | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000I](proposed/000I-many-agents-work-one-project-in-parallel-across-the-cloud-and-the-owner-s-devices.md) | Many agents work one project in parallel, across the cloud and the owner's devices | proposed | 2026-10-03 | BLUEPRINT.md |
 | [000J](proposed/000J-the-behaviors-agents-need-ship-inside-every-room.md) | The behaviors agents need ship inside every room | proposed | 2026-10-03 | BLUEPRINT.md |
 | [000K](proposed/000K-a-handoff-is-the-readable-map-to-the-high-fidelity-context.md) | A handoff is the readable map to the high-fidelity context | proposed | 2026-10-03 | BLUEPRINT.md |

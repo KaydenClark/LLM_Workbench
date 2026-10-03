@@ -19,6 +19,6 @@ Why the owner chose it:
 
 Considered and rejected: None recorded.
 
-Consequences: None recorded as owner words. Accepted records that touch this, not restated here: [Core skills ship in the workbench skills lane](../../adr/000M-core-skills-ship-in-the-workbench-skills-lane.md) (skills ship in the room so a cloud instance starts from the repository alone) and [Workbench continuity through maintained owners](../../adr/0043-workbench-continuity-through-maintained-owners.md) (recovery from maintained owners).
+Consequences: None recorded as owner words. Accepted records that touch this, not restated here: [Core skills ship in the workbench skills lane](../adr/000M-core-skills-ship-in-the-workbench-skills-lane.md) (skills ship in the room so a cloud instance starts from the repository alone) and [Workbench continuity through maintained owners](../adr/0043-workbench-continuity-through-maintained-owners.md) (recovery from maintained owners).
 
 Provenance: the Blueprint teardown grilling of 2026-10-02 to 2026-10-03: question BT-D1 (context lives in GitHub), locked 2026-10-03; reasons from questions WHY-C1, WHY-B4 and WHY-C6.
