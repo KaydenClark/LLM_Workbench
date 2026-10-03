@@ -111,8 +111,10 @@ its Lexicon row.
 
 The destination is accepted and partly installed. The Lexicon defines the
 Decision Record, the DDR and the Blueprint's standing as a standalone page, and the decision record
-below records the choice. Not yet installed: the DDR collection, its commands,
-the accept, supersede and deprecate moves and the shared read words. The
+below records the choice. The `ddr` collection itself is installed: a fresh room
+and an updated room hold `workbench/docs/ddr/` with its `proposed/` and
+`archive/` folders, still empty. Not yet installed: the command that writes a
+DDR, the accept, supersede and deprecate moves and the shared read words. The
 [Decision Record Tooling Spec (S-003X)](../../specs/S-003X-decision-record-tooling/SPEC.md)
 delivers them; it was planned on 2026-10-03 with the DDR tooling reusing the ADR
 runtime, one tool for both kinds of record. The first DDRs will come from taking the existing
@@ -152,3 +154,4 @@ delivers them, and settles how a DDR records the one landmark it belongs to.
 - 2026-10-03: named the two Specs that deliver the DDR tooling and the landmark
   artifact, now that both exist, and the tooling Spec's Plan decision to reuse
   the ADR runtime.
+- 2026-10-03: recorded the installed, still empty `ddr` collection.
