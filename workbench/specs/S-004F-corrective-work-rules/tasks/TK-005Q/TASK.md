@@ -3,11 +3,12 @@
 **Task ID:** TK-005Q
 **Spec ID:** S-004F
 **Slice:** Record the same-Task rule and narrow the accepted records that state the replaced rules
-**Status:** ready
+**Status:** done
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: No active accepted decision claim states the replaced rules, and the record that narrows or supersedes them carries the owner's two answers.
-**Planned verification:** Red: a pin in `tools/test-control-fidelity.mjs` fails because the accepted records ADR-000F, ADR-000G, ADR-000H, ADR-000I and ADR-000U still state a failed check as one new corrective Task per finding and a later repair as a correction against a Wiki claim, and no accepted record carries the same-Task rule. Green: a new destination decision record carries the owner's same-Task answer and is accepted through the accept move; the five ADRs are amended in place under the amendment-first rule, each recording the changed premise and the Git anchor of its earlier text; `adr.mjs validate` passes for both record kinds, the registers are regenerated, `tools/test-adr.mjs` and the full AGENTS suite pass on the committed candidate.
+**Planned verification:** Red: a pin in `tools/test-control-fidelity.mjs` fails because the accepted records ADR-000F, ADR-000G, ADR-000H, ADR-000I, ADR-000R and ADR-000U still state a failed check as one new corrective Task per finding and a later repair as a correction against a Wiki claim, and no accepted record carries the same-Task rule. Green: a new destination decision record carries the owner's same-Task answer and is accepted through the accept move; the six ADRs are amended in place under the amendment-first rule, each recording the changed premise and the Git anchor of its earlier text; `adr.mjs validate` passes for both record kinds, the registers are regenerated, `tools/test-adr.mjs` and the full AGENTS suite pass on the committed candidate.
+**Proof:** Full AGENTS suite on committed candidate 0dd04ec2 (47 of 48 first run; the one flake, test-spec-workbench, passed alone on that candidate); control-fidelity pin red then green; test-adr 56 pass; adr validate ok
 
 ## Outcome
 
@@ -23,12 +24,14 @@ carries the change; this Task makes that change.
 - One new destination decision record for the same-Task rule, written with
   `adr.mjs new --kind ddr`, filled only with the owner's locked text and his own
   words from the Spec, and accepted with `adr.mjs accept`.
-- In-place amendments to ADR-000F (failing creates corrective Tasks), ADR-000G
-  and ADR-000H and ADR-000I (a later repair uses its Wiki claim) and ADR-000U
-  point 5 (a failed landmark review produces corrective Tasks), each naming the
-  changed premise and `git show` anchor of the text it replaces.
+- In-place amendments to ADR-000F (failing creates corrective Tasks), ADR-000G,
+  ADR-000H and ADR-000I (a later repair uses its Wiki claim), ADR-000R point 9
+  (whole-Wiki lint findings become corrective Tasks) and ADR-000U point 5 (a
+  failed landmark review produces corrective Tasks), each naming the changed
+  premise and the `git show` anchor of the text it replaces.
 - A pin in `tools/test-control-fidelity.mjs` that the accepted records no longer
-  state the replaced rules as current.
+  state the replaced rules as current, and the matching updates to the ADR pins
+  and link census in `tools/test-adr.mjs`.
 
 ## Acceptance
 
@@ -46,3 +49,10 @@ carries the change; this Task makes that change.
 No `AGENTS.md`, `RUNBOOK.md`, Lexicon, template, Blueprint or tooling change. The
 Blueprint's corrective passages and the Lexicon rows belong to their own owners
 and are reported, not edited. Promote only the owner's locked words.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s004f-tk005q | 0dd04ec2254ec05d4c8b39f18d45dd046bb5ea6c | ahead 0 behind 0 | 0 | Full AGENTS suite on committed candidate 0dd04ec2: 47 of 48 commands pass; node tools/test-spec-workbench.mjs failed once under concurrent local load (async git clone fixture race) and passed alone on the same candidate; node tools/test-control-fidelity.mjs red then green (new pin); node tools/test-adr.mjs 56 pass; adr.mjs validate ok for adr and ddr | DDR accepted (new same-Task record), ADR-000F/G/H/I/R/U amended, registers regenerated; Task and Spec records updated | none | b9a1f04f32e1c87d7e713962e2eae92da7f092ac53f394792565adda51dc967c |
+| 2 | claude/s004f-tk005q | a41f54e7c74a9f4f3ed97491a176d8040d264409 | ahead 0 behind 0 | 0 | Full AGENTS suite on committed candidate 0dd04ec2 (47 of 48 first run; the one flake, test-spec-workbench, passed alone on that candidate); control-fidelity pin red then green; test-adr 56 pass; adr validate ok | DDR for the same-Task rule accepted; ADR-000F, 000G, 000H, 000I, 000R, 000U amended with git anchors; registers regenerated | none | 61ae3ac4a7380a405a3b3ed741d6dd201642aa63f53a4a9fef13265c92e47d8d |
