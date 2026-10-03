@@ -292,9 +292,12 @@ function publish(root, resolved, note, { exclusive = false, stagingDir = null } 
 // The guard is a per-target-revision publish token: a writer that read
 // revision N creates the exclusive directory `.<note>.rev<N+1>.publish/`
 // beside the note. Every writer claiming N serializes through that one token,
-// so re-reading the note inside it and refusing unless it is still at N is a
-// true compare-and-swap; the rename that publishes N+1 happens only under the
-// token for N+1. A writer that finds the token held is refused
+// so re-reading the note inside it and refusing unless its bytes are exactly
+// the bytes this writer read is a true compare-and-swap; the rename that
+// publishes N+1 happens only under the token for N+1. The comparison is the
+// whole record, not the revision number: a note deleted and recreated at the
+// same path starts at revision 1 again, and a writer that read the old record
+// at revision 1 must not publish over the new one. A writer that finds the token held is refused
 // `stale-revision` naming the revision on disk, exactly as a sequential
 // mismatch is, and nothing of its write reaches the file.
 //
@@ -390,9 +393,10 @@ function stillOwns(claim) {
   catch { return false; }
 }
 
-// Publish `note` (already at the next revision) only if the file is still at
-// `expected`. Returns null on success or the refusal to hand back.
-function publishAtRevision(root, resolved, note, expected) {
+// Publish `note` (already at the next revision) only if the file still holds
+// exactly the bytes `loaded` read. Returns null on success or the refusal.
+function publishAtRevision(root, resolved, note, loaded) {
+  const expected = loaded.note.revision;
   let claim;
   try { claim = claimPublishToken(root, resolved, note.revision); }
   catch (error) { return blocked('write-failed', `${resolved.relative} was not updated: ${error.message}; the previous valid record is unchanged`); }
@@ -403,8 +407,10 @@ function publishAtRevision(root, resolved, note, expected) {
     return staleRefusal(resolved, expected, found, 'another write is publishing; read it again before writing');
   }
   try {
-    const found = revisionOnDisk(resolved);
-    if (found !== expected) return staleRefusal(resolved, expected, found, 'read it again before writing');
+    let current = null;
+    try { current = fs.readFileSync(resolved.absolute, 'utf8'); }
+    catch (error) { if (error.code !== 'ENOENT') throw error; }
+    if (current !== loaded.text) return staleRefusal(resolved, expected, revisionOnDisk(resolved), 'the record changed since it was read; read it again before writing');
     const failure = publish(root, resolved, note, { stagingDir: claim.stagingDir });
     // A staged file that vanished means the token was reclaimed while this
     // writer stalled: another writer has moved on, and this one is stale.
@@ -637,7 +643,7 @@ export function appendEntry(root, options) {
       ? { ...note.extensions, entry_sequence: { ...sequence, [suffix[1]]: Math.max(Number(sequence[suffix[1]] ?? 0), parsedSuffix) } }
       : note.extensions
   };
-  const failure = publishAtRevision(root, resolved, updated, note.revision);
+  const failure = publishAtRevision(root, resolved, updated, loaded);
   if (failure) return failure;
   return { status: 'appended', note: resolved.relative, entry: id, revision: updated.revision };
 }
@@ -673,7 +679,7 @@ export function setCurrent(root, options) {
     // must not silently drop it.
     current: { ...note.current, state, unresolved, next_action: nextAction, ...view }
   };
-  const failure = publishAtRevision(root, resolved, updated, note.revision);
+  const failure = publishAtRevision(root, resolved, updated, loaded);
   if (failure) return failure;
   return { status: 'updated', note: resolved.relative, revision: updated.revision };
 }
@@ -859,7 +865,7 @@ export function trimEntries(root, options) {
       entry_sequence: sequenceFrom(note.entries, note.extensions?.entry_sequence)
     }
   };
-  const failure = publishAtRevision(root, resolved, updated, note.revision);
+  const failure = publishAtRevision(root, resolved, updated, loaded);
   if (failure) return failure;
   return { status: 'trimmed', note: resolved.relative, removed: [...remove], remaining: retained.length, revision: updated.revision };
 }
