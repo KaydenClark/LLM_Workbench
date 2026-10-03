@@ -44,3 +44,9 @@ its next `AGENTS.md` writer turn and moves the rules exactly as they then read.
 
 Wording follows the tooling TK-005R and TK-005S delivered and the decision records
 TK-005Q recorded; no rule beyond the owner's two answers is added.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s004f-tk005t | 086c4395cb945c7e548ba3e6203f17c671edde2f | ahead 0 behind 0 | 1 | Full AGENTS suite on committed candidate 086c4395: 48 of 48 commands pass; red first (new pin over AGENTS.md, templates/AGENTS.md and the to-tasks skill and the retargeted Corrective return pin failed against the old wording), then green in tools/test-control-fidelity.mjs 32 pass; wiki.mjs validate ok; guardrail audit 78/100 before and after (static 20/20, drift 25/25, benchmark 25/25, outcome 8/30 unchanged, no outcome claim); self-drift pre and post both report the same 12 findings, all blocked-slice findings in another Spec's Task chain, none about this change | AGENTS.md, templates/AGENTS.md, workbench/skills/to-tasks/SKILL.md, tools/test-control-fidelity.mjs; Spec Remaining Limitations records the README, Wiki schema and Lexicon pin items for their owners | RUNBOOK, Lexicon rows, Blueprint passages, README and the Wiki schema line still state the replaced rules; owned by TK-005U, TK-005V, TK-005W and their owners | 8b333a6d0add8a2b9ba7a95d2dbc2d5f2ab37beac16030df49493a193be1dc27 |

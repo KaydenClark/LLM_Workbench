@@ -134,6 +134,8 @@ Pending.
 
 The ledger's earlier answers stay as history; marking them replaced belongs with the decision record. Renaming the corrective commands or the `complete` status is not proposed here.
 
+Found while delivering TK-005T and not in this Spec's edit scope, so reported to their owners rather than started: `README.md` (the lifecycle summary sentence that says a failed review "creates corrective Tasks") and the Wiki schema `workbench/wiki/SCHEMA.md` with its generic mirror `templates/wiki/SCHEMA.md` (the lint paragraph that says findings "become corrective Tasks"; the schema takes only the owner's explicit say). ADR-000R point 9 already follows the new rule. `tools/test-adr.mjs` still pins the Lexicon Destination Packet row's `or the reconciled Wiki claim` wording, which TK-005V changes with the row.
+
 ## Supersession
 
 - Supersedes: none
