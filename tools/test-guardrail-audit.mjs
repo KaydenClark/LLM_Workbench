@@ -196,6 +196,13 @@ for (const empty of ['What it is', 'Who it serves', 'Promised outcomes', 'Non-go
   const subOnly = {...fourPart,'BLUEPRINT.md':fourPart['BLUEPRINT.md'].replace(new RegExp(`(## ${empty}\\n)\\n[^\\n]+\\n`), '$1\n### Only a subheading\n')};
   assert.equal(checked(subOnly,'version_contract'),false,'a Blueprint whose "'+empty+'" part holds only a sub-heading takes the legacy path');
 }
+// Legacy headings appended to a malformed four-part page do not make it destination-shaped.
+const legacySections = '\n## Product Destination\n\nA product.\n';
+const malformedWithLegacy = {...fourPart,'BLUEPRINT.md':fourPart['BLUEPRINT.md'].replace(/(## Non-goals\n)\n[^\n]+\n/, '$1') + legacySections};
+assert.notEqual(malformedWithLegacy['BLUEPRINT.md'], fourPart['BLUEPRINT.md'] + legacySections, 'the malformed fixture must differ from the valid page');
+assert.equal(checked(malformedWithLegacy,'fresh_control_docs'),false,'a malformed four-part page with a legacy heading takes the legacy path');
+assert.equal(checked(malformedWithLegacy,'version_contract'),false);
+assert.equal(checked({...fourPart,'BLUEPRINT.md':fourPart['BLUEPRINT.md'] + legacySections},'version_contract'),true,'a complete four-part page with an extra legacy heading is still the four-part page');
 const oneHeading = {...modern,'BLUEPRINT.md':'# Blueprint\n\n## What it is\n\nA product.\n'};
 assert.equal(checked(oneHeading,'fresh_control_docs'),false,'a lone What it is heading is not destination-shaped');
 assert.equal(checked(oneHeading,'version_contract'),false);

@@ -295,7 +295,10 @@ function patternCheck(id, label, weight, haystack, pattern, evidence, action) {
 // A destination-shaped Blueprint is either the eight-section destination or the
 // four-part short page; neither carries a review date or a version stamp.
 function isDestinationBlueprint(text) {
-  return /^## Product Destination$/m.test(text) || isFourPartBlueprint(text);
+  // A page that declares the four-part shape is judged only as that page; a legacy
+  // heading appended to a malformed one cannot make it destination-shaped.
+  if (/^## What it is$/m.test(text)) return isFourPartBlueprint(text);
+  return /^## Product Destination$/m.test(text);
 }
 
 function controlDocsAreFresh(files, today, maxAgeDays) {
