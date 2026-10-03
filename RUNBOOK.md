@@ -886,6 +886,38 @@ owned by [S-00K](workbench/specs/S-00K-workbench-self-drift-check/SPEC.md).
 `cleanUpdate: false` deliberately leaves the semantic judgment to the named
 review; `no-machine-finding` means only the implemented checks found no issue.
 
+### Carrier line-landing check
+
+A maintainer verification tool for a rewrite of the Contract carriers, run at
+rewrite review; it is not installed into rooms. It lists every line a candidate
+removed from `AGENTS.md` or `RUNBOOK.md` since a base commit and refuses unless
+each one has an inventory entry whose home file holds its landed text at the
+candidate. It reads Git objects only and never decides which home is right:
+
+```bash
+node tools/check-carrier-landing.mjs scaffold --base BASE_SHA --carrier AGENTS.md --out INVENTORY.json
+node tools/check-carrier-landing.mjs check --base BASE_SHA --candidate HEAD --inventory INVENTORY.json --json
+node tools/test-carrier-landing.mjs
+```
+
+An inventory is one JSON file per carrier (`schemaVersion`, `carrier`,
+`baseSha`, `entries`). Each entry records `line` (its number at the base),
+`text`, `hash` (sha256 of the normalized text), `homeKind`, `homePath`,
+`landedText` and `reason`. `homeKind` is `null` until classified, then one of
+`stays`, `skill`, `pointer`, `lexicon`, `wiki`, `restates-owner` (the named
+owner already holds the claim) or `retired-with-reason` (no home; `reason`
+required). Normalization trims and collapses whitespace runs, so a reordered,
+re-indented or rewrapped line is not removed; blank lines and headings never
+need to land. `scaffold` writes every other line unclassified and refuses to
+overwrite an existing inventory. `check` exits 0 when every removed line
+landed, 1 on an unlanded line (`no-entry`, `unclassified`, `stays-but-removed`,
+`home-missing`, `home-empty`, `home-lacks-text`, `owner-lacks-claim`,
+`retired-without-reason`, `unknown-home-kind`) or an inventory that no longer
+matches its base, and 2 on a usage or Git error. The Contract Carrier
+Pointer-Brief Rewrite
+([S-004C](workbench/specs/S-004C-contract-carrier-pointer-brief-rewrite/SPEC.md))
+keeps its inventories in its Spec folder.
+
 ### Spec Lifecycle And Retrieval
 
 Use this sequence for one assigned Spec and its Task records. Examples name

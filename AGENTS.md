@@ -379,6 +379,7 @@ node tools/test-symlink-invocation.mjs
 node tools/test-control-fidelity.mjs
 node tools/test-spec-citation-anchors.mjs
 node tools/test-controls-vocabulary-sweep.mjs
+node tools/test-carrier-landing.mjs
 node tools/test-spec-report.mjs
 node tools/test-self-drift.mjs
 node tools/test-feedback-inventory.mjs

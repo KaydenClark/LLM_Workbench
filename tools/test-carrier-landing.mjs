@@ -317,7 +317,7 @@ test('a duplicated line removed twice needs two landed entries', () => {
   } finally { cleanup(dir); }
 });
 
-test('an inventory that does not match its base is refused before any line is judged', () => {
+test('an inventory that does not match its base fails validation, and a different base is refused', () => {
   const { dir, base, candidate } = fixture((d) => removeLines(d, 'Keep notes in JSON.'));
   try {
     const tampered = inventoryFor(dir, base);
