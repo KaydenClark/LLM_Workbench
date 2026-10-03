@@ -3,7 +3,7 @@
 **Task ID:** TK-005E
 **Spec ID:** S-004C
 **Slice:** A skill the index points to binds for its operation and an unpointed skill teaches
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-005D
 **Destination:** spec-acceptance: The Instruction Authority list states that a pointed lane skill binds for its operation and the lane copy wins, and a skill no carrier points to teaches and does not instruct, with a room-added skill shown not to bind.
