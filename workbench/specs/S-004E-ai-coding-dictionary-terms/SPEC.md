@@ -8,8 +8,8 @@
 **Updated:** 2026-10-03
 **Catalog description:** Put the owner's agreed meanings for AI Coding Dictionary terms into the Lexicon, with a Wiki dictionary entry wherever a term needs more than its row, starting with nineteen model, harness and session terms.
 **Blockers:** none. The owner answered the harness question on 2026-10-03 (option (a) in Decisions And Contracts), so no row waits on an owner answer. Lexicon writes take one writer at a time; the owner's Codex Lexicon reconciliation landed in integration on 2026-10-03 (PR #281), and the Lexicon Design-Concept Reconciliation Spec stays active for its whole-Lexicon audit. The four Tasks run serially in this Spec's writer lane.
-**Latest event:** TK-006A claimed by claude-lane-g.
-**Next gate:** Close TK-006A with verification and documentation proof.
+**Latest event:** TK-006A closed with proof.
+**Next gate:** Complete TK-006B.
 
 > **Citation anchors.** pre=`817096e676992cf7ece72967ac8bbb064261a3ee` post=`817096e676992cf7ece72967ac8bbb064261a3ee`.
 
@@ -287,6 +287,7 @@ This Spec changes `LEXICON.md` (a new section, reconciled rows and the Last revi
 | 2026-10-03 | none | Plan: activated the Spec and cut four serial Tasks from live Actuality at integration f91bfd72, with the five Tasks of the Workbench Terms And Workflow Verb Rows Spec cut in the same pass so the identifiers are reserved together; settled the template mirror (mirror every row, generic), the Wiki entry form (flat `dictionary-<term>.md` notes, the provisional eight confirmed for batch one) and the handling of conflicting `AGENTS.md`, `RUNBOOK.md` and `README.md` lines (inventory and hand to the Contract Carrier Pointer-Brief Rewrite). | Plan only; the Lexicon, template Lexicon, Wiki router and schema, the DDR collection (the harness and room decisions among them) and the batch tables were read at that tip; no runtime proof claimed. | This Spec only. | Implementation and proof remain in the four Tasks. |
 | 2026-10-03 | TK-005Y | Task closed | Red f7b0d3ae then green: test-control-fidelity 28/28, templates evaluator, full AGENTS suite 48/48 on clean c1ec6fd4 | LEXICON.md and templates/LEXICON.md carry the AI Coding Terms section and fifteen rows; plan decisions recorded in the Spec | Harness reconciliation, batch two, Wiki entries and whole-Spec QA remain in the next three Tasks |
 | 2026-10-03 | TK-005Z | Task closed | Red 11d1321d then green: test-control-fidelity 30/30, full AGENTS suite 48/48 on clean 45efed10 | LEXICON.md and templates/LEXICON.md reconciled to the harness answer; conflicting AGENTS.md, RUNBOOK.md and README.md lines inventoried in the Spec for the Contract carrier rewrite | Batch two rows, Wiki entries and whole-Spec QA remain in the last two Tasks |
+| 2026-10-03 | TK-006A | Task closed | Red 8e23d299 then green: test-control-fidelity 30/30, full AGENTS suite 48/48 on clean d9038592 | LEXICON.md and templates/LEXICON.md carry the ten batch-two rows; separate-context review wording inventoried in the Spec, no conflicting line | Wiki entries, router and whole-Spec QA remain in the last Task |
 
 ## Completion Result
 
