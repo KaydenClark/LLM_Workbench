@@ -46,16 +46,16 @@ valid record in place and does not block later writers indefinitely.
 
 ## Acceptance
 
-- [ ] Twelve barrier-released racers at one revision: exactly the writers told
+- [x] Twelve barrier-released racers at one revision: exactly the writers told
       they succeeded have entries in the note; every other writer received
       `stale-revision`; the note's revision equals 1 plus the successes.
-- [ ] The same case fails against the pre-fix runtime (recorded red SHA) and
+- [x] The same case fails against the pre-fix runtime (recorded red SHA) and
       passes against the fixed one.
-- [ ] An abandoned token is reclaimed and the next write succeeds; a held
+- [x] An abandoned token is reclaimed and the next write succeeds; a held
       token refuses with the file byte-identical.
-- [ ] No lock or lease outlives one write; no daemon, service or configuration
+- [x] No lock or lease outlives one write; no daemon, service or configuration
       is added; a note works with nothing configured.
-- [ ] Runbook, template mirror and Wiki article describe the shipped guard.
+- [x] Runbook, template mirror and Wiki article describe the shipped guard.
 
 ## Boundaries
 
