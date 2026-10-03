@@ -3,7 +3,7 @@
 **Task ID:** TK-005Q
 **Spec ID:** S-004F
 **Slice:** Record the same-Task rule and narrow the accepted records that state the replaced rules
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: No active accepted decision claim states the replaced rules, and the record that narrows or supersedes them carries the owner's two answers.

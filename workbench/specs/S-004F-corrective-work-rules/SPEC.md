@@ -3,13 +3,13 @@
 **Spec ID:** S-004F
 **Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-lane-d
 **Stance:** Builder
 **Updated:** 2026-10-03
 **Catalog description:** When a check finds a miss, the same Task continues with an adjusted handoff unless the fix rewrites it, and a later gap against delivered work becomes a new Spec under its landmark or the Blueprint instead of a correction anchored to a Wiki claim.
 **Blockers:** none for the first four Tasks. Three later Tasks wait on `owner:` tokens for another Spec's writer turn on the Runbook, the Lexicon and the Blueprint; each Dispatcher removes its token when that file is free.
-**Latest event:** Planned on 2026-10-03: the five open questions are settled below from project evidence and seven Tasks are cut.
-**Next gate:** Claim and deliver the decision records first, then the verdict path, the retired Wiki-claim route and the AGENTS corrective sections in order; each lands through its own reviewed pull request into `integration`.
+**Latest event:** TK-005Q claimed by claude-lane-d.
+**Next gate:** Close TK-005Q with verification and documentation proof.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 
