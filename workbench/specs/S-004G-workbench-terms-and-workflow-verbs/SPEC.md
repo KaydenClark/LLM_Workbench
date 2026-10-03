@@ -8,8 +8,8 @@
 **Updated:** 2026-10-03
 **Catalog description:** Put the owner's Workbench terms and one row per workflow verb into the Lexicon, repair the rows that contradict the Blueprint teardown's locked answers, and record the changed Journey point of the workflow-verbs decision in a decision record.
 **Blockers:** none. The Lexicon rows take one writer at a time, so this Spec's first Task waits on the last Task of the AI Coding Dictionary Terms Spec. The `ddr` collection and the commands that write, accept and supersede a decision record are installed.
-**Latest event:** TK-006G claimed by claude-lane-g.
-**Next gate:** Close TK-006G with verification and documentation proof.
+**Latest event:** All five Tasks are closed: the Workbench term and artifact-kind rows, the workflow verb rows, the Blueprint and Foundry repairs, the amended workflow verbs decision and the Workflow Verbs article with the retired-controls inventory. One acceptance box stays open: recorded verification and limitations at assembled review.
+**Next gate:** Assembled-Spec review by a separate Director context and owner Human QA; the release proof decision's verb list needs a visible correction by its owner, and the controls wording outside the Lexicon waits for the Contract carrier rewrite.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 
@@ -194,6 +194,7 @@ Run the targeted vocabulary, control-fidelity and decision-record tests and the 
 | 2026-10-03 | TK-006D | Task closed | Red 73e4610e then green: control-fidelity 33/33, test-adr 56/56, full suite on clean 75af5dbf all pass except one temp-directory race in test-spec-workbench that passes alone 59/59 | Lexicons carry the workflow verb rows; Align meaning check updated | Blueprint and Foundry repairs, decision record, controls inventory and Workflow Verbs article remain |
 | 2026-10-03 | TK-006E | Task closed | Red c0092e9c then green: control-fidelity 35/35, test-adr 56/56, full AGENTS suite 48/48 on clean ce96ae40 | Blueprint and Foundry rows repaired; the Wiki router routes the two delivery pages and names the four-part Blueprint | Decision record, controls inventory and Workflow Verbs article remain |
 | 2026-10-03 | TK-006F | Task closed | Red bb222f94 then green: control-fidelity 36/36, test-adr 56/56, full AGENTS suite 48/48 on clean ff89e6a0 | ADR-000X amended in place under ADR-000A's amendment-first rule: open verb set and the Journey correction; nothing superseded | Controls inventory, Workflow Verbs article and cold-reader probe remain; the release proof DDR needs a visible correction |
+| 2026-10-03 | TK-006G | Task closed | Red then green: control-fidelity 37/37, wiki validate, full AGENTS suite 48/48 on clean 71681b31, cold-reader probe answered | Workflow Verbs article rewritten for the open verb set, delivery workflow and Journey correction; retired controls wording inventoried in the Spec | Assembled review and owner Human QA; carrier rewrite handles the controls wording outside the Lexicon |
 
 ## Completion Result
 
