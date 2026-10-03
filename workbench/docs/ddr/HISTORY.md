@@ -24,7 +24,7 @@
 | [000P](000P-llm-workbench-is-the-producer-and-the-workbench-template-is-its-product.md) | LLM Workbench is the producer and the Workbench Template is its product | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000Q](000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md) | A release is proven by the Template building a real product in one pass | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000R](000R-llm-workbench-owns-what-a-workbench-is-the-project-owns-what-it-says-and-may-add-without-tearing-apart-what-works.md) | LLM Workbench owns what a workbench is; the project owns what it says and may add without tearing apart what works | accepted | 2026-10-03 | BLUEPRINT.md |
-| [000S](proposed/000S-setup-drafts-everything-it-can-and-grilling-confirms-it.md) | Setup drafts everything it can and grilling confirms it | proposed | 2026-10-03 | BLUEPRINT.md |
+| [000S](000S-setup-drafts-everything-it-can-and-grilling-confirms-it.md) | Setup drafts everything it can and grilling confirms it | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000T](proposed/000T-the-workbench-is-an-agentic-management-system-not-a-harness.md) | The workbench is an agentic management system, not a harness | proposed | 2026-10-03 | BLUEPRINT.md |
 | [000U](proposed/000U-a-project-is-a-room-and-the-workbench-is-the-table-in-it.md) | A project is a room and the workbench is the table in it | proposed | 2026-10-03 | BLUEPRINT.md |
 | [000V](proposed/000V-gaps-are-flagged-never-faked.md) | Gaps are flagged, never faked | proposed | 2026-10-03 | BLUEPRINT.md |

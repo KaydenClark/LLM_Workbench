@@ -15,6 +15,6 @@ Why the owner chose it: The owner, in his own words (chat answer, 2026-10-03): "
 
 Considered and rejected: None recorded.
 
-Consequences: None recorded as owner words. An adjacent accepted record covers preservation, not this: [Preservation contracts for genesis, adoption and upgrade](../../adr/0047-preservation-contracts-for-genesis-adoption-and-upgrade.md).
+Consequences: None recorded as owner words. An adjacent accepted record covers preservation, not this: [Preservation contracts for genesis, adoption and upgrade](../adr/0047-preservation-contracts-for-genesis-adoption-and-upgrade.md).
 
 Provenance: the Blueprint teardown grilling of 2026-10-02 to 2026-10-03: questions BT-D5 (setup drafts, grilling confirms) and GAP-2 (the short-page wording of the same rule, with the owner's note "Add it with your recommendation."), locked 2026-10-03; reason from the owner's own words, question WHY-D3.
