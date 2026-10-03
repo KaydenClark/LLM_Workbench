@@ -1334,11 +1334,10 @@ test('a held publish token refuses the write as stale-revision and leaves the no
     // record was never touched.
     // A stalled holder stages the bytes it was about to publish inside its
     // token; reclaiming the token removes them, so they can never land late.
-    fs.writeFileSync(path.join(tokenDir, 'content'), JSON.stringify({ ...JSON.parse(before), revision: 2, title: 'Forged by a stalled writer' }));
+    fs.mkdirSync(path.join(tokenDir, 'stalled-nonce'));
+    fs.writeFileSync(path.join(tokenDir, 'stalled-nonce', 'content'), JSON.stringify({ ...JSON.parse(before), revision: 2, title: 'Forged by a stalled writer' }));
     const abandoned = new Date(Date.now() - 60_000);
-    fs.utimesSync(path.join(tokenDir, 'owner'), abandoned, abandoned);
-    fs.utimesSync(path.join(tokenDir, 'content'), abandoned, abandoned);
-    fs.utimesSync(tokenDir, abandoned, abandoned);
+    for (const entry of ['owner', 'stalled-nonce/content', 'stalled-nonce', '']) fs.utimesSync(path.join(tokenDir, entry), abandoned, abandoned);
     const reclaimed = appendEntry(dir, { note: created.note, revision: 1, kind: 'finding', topic: 'reclaimed', content: 'Lands after reclaim' });
     assert.equal(reclaimed.status, 'appended', JSON.stringify(reclaimed));
     assert.equal(reclaimed.revision, 2);
@@ -1365,10 +1364,15 @@ test('delete goes through the same guard: a held token refuses cleanup and the n
     assert.equal(refused.json.error?.code, 'stale-revision', refused.stdout);
     assert.ok(fs.existsSync(file), 'the note survives a refused delete');
     fs.rmSync(tokenDir, { recursive: true, force: true });
+    // An abandoned token does not block cleanup either.
+    fs.mkdirSync(tokenDir);
+    const abandoned = new Date(Date.now() - 60_000);
+    fs.utimesSync(tokenDir, abandoned, abandoned);
     const deleted = cli(dir, ['delete', '--note', created.note, '--revision', '1']);
     assert.equal(deleted.json.status, 'deleted', deleted.stdout);
     assert.ok(!fs.existsSync(file));
     assert.ok(!fs.existsSync(tokenDir));
+    assert.ok(!fs.readdirSync(path.dirname(file)).some((name) => name.endsWith('.publish') || name.includes('.abandoned-')), 'nothing of the token outlives cleanup');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

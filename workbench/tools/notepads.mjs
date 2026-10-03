@@ -303,13 +303,18 @@ function publish(root, resolved, note, { exclusive = false, stagingDir = null } 
 // mid-write leaves its token behind; once the token is older than
 // PUBLISH_TOKEN_STALE_MS the next writer renames it aside and removes it, so
 // a crash never wedges a note. The bytes a holder is about to publish are
-// staged inside its own token directory, so reclaiming a token removes the
-// staged file with it and the stalled holder's rename fails with ENOENT
-// instead of publishing over a newer write. There is no window between the
-// ownership check and the publication: the publication is the rename of a
-// file that exists only while the token is held. A reclaim that happens after
-// the rename has already published cannot undo it, and the reclaimer then
-// re-reads the note under its fresh token and is refused as stale.
+// staged inside a nonce-named directory under its own token, so reclaiming a
+// token removes the staged file with it and the stalled holder's rename fails
+// with ENOENT instead of publishing over a newer write; a reclaimer's fresh
+// token at the same path carries a different nonce, so the stalled holder's
+// staging path can never be satisfied by someone else's bytes. There is no
+// window between the ownership check and the publication: the publication is
+// the rename of a file that exists only while the token is held. Cleanup has
+// the same property: `delete` moves the note into its nonce directory rather
+// than unlinking the live path, so a stale delete fails instead of removing a
+// newer write. A reclaim that happens after the rename has already published
+// cannot undo it, and the reclaimer then re-reads the note under its fresh
+// token and is refused as stale.
 export const PUBLISH_TOKEN_STALE_MS = 10_000;
 
 function publishTokenPath(resolved, revision) {
@@ -367,15 +372,21 @@ function claimPublishToken(root, resolved, target) {
       return null;
     }
     const nonce = randomUUID();
-    try { fs.writeFileSync(path.join(tokenDir, 'owner'), `${JSON.stringify({ nonce, pid: process.pid, at: nowStamp() })}\n`, { flag: 'wx' }); }
-    catch (error) { fs.rmSync(tokenDir, { recursive: true, force: true }); throw error; }
-    return { tokenDir, nonce };
+    const stagingDir = path.join(tokenDir, nonce);
+    try {
+      fs.mkdirSync(stagingDir);
+      fs.writeFileSync(path.join(tokenDir, 'owner'), `${JSON.stringify({ nonce, pid: process.pid, at: nowStamp() })}\n`, { flag: 'wx' });
+    } catch (error) { fs.rmSync(tokenDir, { recursive: true, force: true }); throw error; }
+    return { tokenDir, stagingDir, nonce };
   }
   return null;
 }
 
+// Ownership is the existence of this writer's nonce directory: a reclaimer
+// removes it with the token, and a fresh token at the same path never
+// recreates it.
 function stillOwns(claim) {
-  try { return JSON.parse(fs.readFileSync(path.join(claim.tokenDir, 'owner'), 'utf8')).nonce === claim.nonce; }
+  try { return fs.statSync(claim.stagingDir).isDirectory(); }
   catch { return false; }
 }
 
@@ -394,7 +405,7 @@ function publishAtRevision(root, resolved, note, expected) {
   try {
     const found = revisionOnDisk(resolved);
     if (found !== expected) return staleRefusal(resolved, expected, found, 'read it again before writing');
-    const failure = publish(root, resolved, note, { stagingDir: claim.tokenDir });
+    const failure = publish(root, resolved, note, { stagingDir: claim.stagingDir });
     // A staged file that vanished means the token was reclaimed while this
     // writer stalled: another writer has moved on, and this one is stale.
     if (failure && failure.error.code === 'write-failed' && !stillOwns(claim)) {
@@ -874,7 +885,16 @@ export function deleteNote(root, options) {
   }
   try {
     if (fs.readFileSync(resolved.absolute, 'utf8') !== loaded.text) return staleRefusal(resolved, note.revision, revisionOnDisk(resolved), 'the source changed during cleanup; read it again before retrying');
-    fs.unlinkSync(resolved.absolute);
+    // Move the note into this writer's nonce directory instead of unlinking
+    // the live path: if the token was reclaimed while this writer stalled, the
+    // directory is gone and the move fails, so a stale delete never removes a
+    // write another writer was told succeeded. Releasing the token below
+    // removes the moved file.
+    try { fs.renameSync(resolved.absolute, path.join(claim.stagingDir, 'deleted')); }
+    catch (error) {
+      if (!stillOwns(claim)) return staleRefusal(resolved, note.revision, revisionOnDisk(resolved), 'the publish token was reclaimed while cleanup stalled; read it again before retrying');
+      throw error;
+    }
   } catch (error) { return blocked('write-failed', `Cleanup refused: ${error.message}`); }
   finally { if (stillOwns(claim)) fs.rmSync(claim.tokenDir, { recursive: true, force: true }); }
   return { status: 'deleted', note: resolved.relative, id: note.id, revision: note.revision };
