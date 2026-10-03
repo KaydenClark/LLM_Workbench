@@ -46,3 +46,9 @@ in the workflow verbs, and the three altitudes of delivery.
 No `BLUEPRINT.md`, `templates/BLUEPRINT.md`, `MEMORY.md` or `LEXICON.md` edit.
 Router lines for the new pages go to the Lexicon and router writer in the final
 report.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s004h-tk008a-homes | 082b4f77b1569bfcbfdb0bfeef66a0ac129032b3 | ahead 1 behind 0 | 0 | Red first: node tools/test-blueprint-contract.mjs failed (no paragraph disposition inventory in the Spec folder); green after adding blueprint-paragraph-disposition.json (47 root blocks and 26 template blocks, byte-lossless against pinned commit c10fb8da, every named home exists, template workflow paragraph split into nine sentence claims with one recorded gap: no generic mirror states the optional prototype) and the two Wiki pages. node workbench/tools/wiki.mjs validate ok. Full AGENTS suite on committed candidate 082b4f77: 47 of 48 in a four-way parallel run; node tools/test-wiki.mjs failed once on the known concurrent manifest read race and passed alone (14/14). | Created workbench/wiki/design-concepts/idea-to-delivery-workflow.md and delivery-altitudes.md; wiki validate ok; links checked; router lines left to the router writer | Router entries for the two new pages (MEMORY.md belongs to the Lexicon and router writer); the optional-prototype claim has no generic mirror (recorded as a gap in the inventory) | 6e84da234179944662bb3342f65005d6167c0eedc132d1d934dd9d85a701134f |
