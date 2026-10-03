@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** codex-s01h
 **Stance:** Builder
-**Updated:** 2026-10-01
+**Updated:** 2026-10-03
 **Catalog description:** Deliver one eligible assigned Task through red/green and verified recovery.
-**Blockers:** Independent review of the new candidate and attributed scenario evidence remains open; raw Servitor records have not been inspected by the cloud producer or cloud reviewer.
-**Latest event:** Coordinator-observed synthetic scenario summary reconciled with explicit inspection limits; P3 Wiki-currentness corrected.
-**Next gate:** Verify and independently review the new current-base candidate and evidence disposition; retain TK-00Y in progress without new acceptance or approval.
+**Blockers:** Configured-agent behavior has not been independently observed: both cloud configured-Codex startups failed before the scenario ran, and the one Servitor run is a coordinator-attributed report whose raw records nobody else has inspected. That gap keeps acceptance criterion 3 open.
+**Latest event:** Implement candidate landed on integration through the Lane A consolidation: codex/s01h-implement-rebuild daf990b9 merged with current integration; landed only after a separate-context PASS on the landing PR. No behavioral proof is claimed from it.
+**Next gate:** Observe the configured-agent scenario in an independent context, or inspect the raw Servitor records, before TK-00Y can close; owner Human QA follows. TK-00Y stays in progress without new acceptance or approval.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`58e8f0441e1a7222d0f64fd064e814978c495194`.
 
@@ -117,7 +117,7 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane.
 
 ## Completion Result
 
-Implementation and documentation candidate prepared for TK-00Y, with one coordinator-observed synthetic scenario recorded under explicit raw-inspection limits. Independent review of the new candidate and evidence, behavioral acceptance and owner gates remain open. TK-00Y remains in progress; no new acceptance, whole-Task PASS, approval, Spec completion or installed-behavior claim.
+Implementation and documentation candidate prepared for TK-00Y, with one coordinator-observed synthetic scenario recorded under explicit raw-inspection limits. The candidate source and records landed on integration on 2026-10-03 after a separate-context review of the landing candidate; that review covered the source, records and claims, not the behavior. Configured-agent behavior was not observed in the cloud run and the Servitor run is attributed only, so behavioral acceptance, raw-evidence inspection and owner gates remain open. TK-00Y remains in progress; no new acceptance, whole-Task PASS, approval, Spec completion or installed-behavior claim.
 
 ## Supersession
 
