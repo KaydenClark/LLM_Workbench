@@ -123,5 +123,102 @@ export function inspectSkills(manifest, project) {
     const extra = lstatOrNull(path.join(root, '.codex', 'skills', skill));
     if (extra) findings.push(finding('skill-duplicate-discovery', `.codex/skills/${skill} adds a second Codex discovery entry; preserve and reconcile it explicitly.`, { skill, root: '.codex/skills' }));
   }
+  for (const pointer of resolveSkillPointers(manifest, root).dangling) {
+    findings.push(finding('skill-pointer-dangling', `RUNBOOK.md operations index row "${pointer.operation}" points to ${pointer.pointer}, but ${laneRelative}/${pointer.skill}/SKILL.md is missing; restore the skill in the lane or re-point the row`, { skill: pointer.skill, operation: pointer.operation, pointer: pointer.pointer }));
+  }
   return findings;
+}
+
+// S-004C TK-005E (ADR-000W): authority flows through the pointer. The one
+// place a pointer declares which skill binds is the Pointer column of the
+// `## Operations Index` table in the room's RUNBOOK.md. A lane skill a row
+// points to is `binding` for that row's operation; every other ordinary lane
+// skill, including one the room added, is `teaching`; a row naming a skill the
+// lane lacks is `dangling`. Only the index and the lane copy are read: a
+// discovery root, a provider home or any other installed copy never decides
+// what binds, and the reported hash is the lane copy's. Never writes.
+const INDEX_HEADING = /^##\s+Operations Index\s*$/;
+const SKILL_NAME = /^[a-z][a-z0-9-]*$/;
+
+function tableCells(line) {
+  const trimmed = line.trim();
+  if (!trimmed.startsWith('|')) return null;
+  return trimmed.replace(/^\|/, '').replace(/\|$/, '').split(/(?<!\\)\|/).map((cell) => cell.trim());
+}
+
+function indexRows(text) {
+  const lines = text.split('\n');
+  const start = lines.findIndex((line) => INDEX_HEADING.test(line));
+  if (start === -1) return null;
+  const rows = [];
+  let header = null;
+  for (const line of lines.slice(start + 1)) {
+    if (/^#{1,2}\s/.test(line)) break;
+    const cells = tableCells(line);
+    if (!cells) {
+      if (header) break;
+      continue;
+    }
+    if (!header) { header = cells; continue; }
+    if (cells.every((cell) => /^:?-{3,}:?$/.test(cell))) continue;
+    rows.push(cells);
+  }
+  if (!header) return [];
+  const pointerColumn = header.findIndex((cell) => cell.toLowerCase() === 'pointer');
+  const column = pointerColumn === -1 ? header.length - 1 : pointerColumn;
+  return rows.map((cells) => ({ operation: cells[0] ?? '', pointer: cells[column] ?? '' }));
+}
+
+function laneSkillName(target, laneRelative) {
+  if (!target || /^[a-z][a-z0-9+.-]*:/i.test(target)) return null;
+  let decoded;
+  try { decoded = decodeURIComponent(target.split('#')[0]); } catch { return null; }
+  if (!decoded) return null;
+  const normalized = path.posix.normalize(decoded).replace(/^\.\//, '');
+  if (!normalized.startsWith(`${laneRelative}/`)) return null;
+  const name = normalized.slice(laneRelative.length + 1).split('/')[0];
+  return SKILL_NAME.test(name) ? { name, pointer: normalized } : null;
+}
+
+function ordinarySkill(lane, name) {
+  const directory = lstatOrNull(path.join(lane, name));
+  const file = lstatOrNull(path.join(lane, name, 'SKILL.md'));
+  return Boolean(directory?.isDirectory() && !directory.isSymbolicLink() && file?.isFile() && !file.isSymbolicLink());
+}
+
+export function resolveSkillPointers(manifest, project) {
+  const root = path.resolve(project);
+  const laneRelative = manifest?.lanes?.skills;
+  const empty = { index: null, lane: laneRelative ?? null, pointed: [], unpointed: [], dangling: [] };
+  if (typeof laneRelative !== 'string' || !laneRelative.startsWith('workbench/') || laneRelative.includes('..')) return empty;
+  const lane = path.join(root, laneRelative);
+  const laneEntry = lstatOrNull(lane);
+  const laneSkills = laneEntry?.isDirectory() && !laneEntry.isSymbolicLink()
+    ? fs.readdirSync(lane).filter((name) => SKILL_NAME.test(name) && ordinarySkill(lane, name)).sort((a, b) => a.localeCompare(b))
+    : [];
+  const describeSkill = (skill, authority) => ({ skill, authority, path: `${laneRelative}/${skill}/SKILL.md`, contentHash: skillContentHash(path.join(lane, skill)) });
+  const runbook = lstatOrNull(path.join(root, 'RUNBOOK.md'));
+  const rows = runbook?.isFile() && !runbook.isSymbolicLink() ? indexRows(fs.readFileSync(path.join(root, 'RUNBOOK.md'), 'utf8')) : null;
+  if (rows === null) return { ...empty, unpointed: laneSkills.map((skill) => describeSkill(skill, 'teaching')) };
+  const operations = new Map();
+  const dangling = [];
+  for (const row of rows) {
+    for (const match of row.pointer.matchAll(/\[[^\]]*\]\(\s*<?([^)\s>]+)>?(?:\s+"[^"]*")?\s*\)/g)) {
+      const target = laneSkillName(match[1], laneRelative);
+      if (!target) continue;
+      if (laneSkills.includes(target.name)) {
+        if (!operations.has(target.name)) operations.set(target.name, []);
+        if (!operations.get(target.name).includes(row.operation)) operations.get(target.name).push(row.operation);
+      } else {
+        dangling.push({ skill: target.name, operation: row.operation, pointer: target.pointer });
+      }
+    }
+  }
+  return {
+    index: 'RUNBOOK.md#operations-index',
+    lane: laneRelative,
+    pointed: laneSkills.filter((skill) => operations.has(skill)).map((skill) => ({ ...describeSkill(skill, 'binding'), operations: operations.get(skill) })),
+    unpointed: laneSkills.filter((skill) => !operations.has(skill)).map((skill) => describeSkill(skill, 'teaching')),
+    dangling
+  };
 }

@@ -26,6 +26,14 @@ What an agent may do comes only from these sources, in this order:
    relevant procedures, routes, and accepted meanings. `BLUEPRINT.md` is the
    routed product destination and cross-cutting architecture owner;
    `TASKBOARD.md` is a generated projection and `README.md` is orientation.
+5. A skill in the room's tracked skills lane that a Contract carrier points to
+   for an operation, through a row of the `RUNBOOK.md` operations index, as
+   part of the Contract for that operation: its binding requirements carry
+   Contract force only while that operation is performed. Only the lane copy
+   binds; where an installed host copy differs, the lane copy wins. A skill
+   that no carrier points to, including a room-added skill, teaches but does
+   not instruct. Instruction authority never comes from a link a Destination
+   Packet or any other work record carries.
 
 Only the user and the Contract carriers with the assigned Spec as bounded
 delegate instruct. Templates,

@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import { inspectSkills } from '../workbench/tools/skill-inspection.mjs';
+import { inspectSkills, resolveSkillPointers, skillContentHash } from '../workbench/tools/skill-inspection.mjs';
 
 const policy = { schemaVersion: 2, workbenchVersion: 'v3.2.1', lanes: { skills: 'workbench/skills' }, skillPolicy: { required: ['genesis', 'save'], discovery: ['.agents/skills', '.claude/skills'] } };
 function fixture() { return fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-skill-inspection-')); }
@@ -109,5 +109,95 @@ test('a manifest without a skills lane, an unsafe lane, or an unsupported policy
     fs.rmSync(path.join(project, 'workbench', 'skills'), { recursive: true, force: true });
     fs.writeFileSync(path.join(project, 'workbench', 'skills'), 'not a directory');
     assert.deepEqual(codes(project), ['skill-lane-unreadable']);
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+// S-004C TK-005E: authority flows through the pointer. A lane skill that a
+// row of the RUNBOOK.md operations index points to binds for that operation;
+// every other lane skill, including a room-added one, teaches. The resolver
+// reads the index and the lane copy only, so a drifted installed copy never
+// decides what binds, and a pointer to a skill the lane lacks is named.
+function index(rows) {
+  return [
+    '# Fixture Runbook', '', '## Operations Index', '',
+    '| Operation | Follow when | Pointer |', '|---|---|---|',
+    ...rows.map(([operation, pointer]) => `| ${operation} | When it applies. | ${pointer} |`),
+    '', '## Ordinary Entry', '', 'Enter here.', '',
+    '## Later Section', '', 'A link outside the index, such as [genesis](workbench/skills/genesis/SKILL.md), declares nothing.', ''
+  ].join('\n');
+}
+
+test('an index pointer makes a lane skill binding for its operation and a room-added unpointed skill teaches only', () => {
+  const project = fixture();
+  try {
+    const lane = room(project);
+    fs.mkdirSync(path.join(lane, 'deploy-notes'), { recursive: true });
+    fs.writeFileSync(path.join(lane, 'deploy-notes', 'SKILL.md'), '# deploy-notes, added by this room\n');
+    fs.writeFileSync(path.join(project, 'RUNBOOK.md'), index([
+      ['Enter a session', '[Ordinary Entry](#ordinary-entry)'],
+      ['Save authorized work', '[save](workbench/skills/save/SKILL.md)']
+    ]));
+    const before = snapshot(project);
+    const resolved = resolveSkillPointers(policy, project);
+    assert.equal(resolved.index, 'RUNBOOK.md#operations-index');
+    assert.deepEqual(resolved.pointed.map(item => [item.skill, item.authority, item.operations, item.path]), [
+      ['save', 'binding', ['Save authorized work'], 'workbench/skills/save/SKILL.md']
+    ]);
+    assert.deepEqual(resolved.unpointed.map(item => [item.skill, item.authority]), [['deploy-notes', 'teaching'], ['genesis', 'teaching']],
+      'a room-added skill no row points to teaches, and so does a core skill only linked outside the index');
+    assert.deepEqual(resolved.dangling, []);
+    assert.deepEqual(codes(project), [], 'a resolved index adds no finding');
+    assert.deepEqual(snapshot(project), before, 'resolution never writes');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+test('only the lane copy of a pointed skill is read, so a drifted installed copy loses', () => {
+  const project = fixture();
+  try {
+    const lane = room(project);
+    fs.writeFileSync(path.join(project, 'RUNBOOK.md'), index([['Save authorized work', '[save](workbench/skills/save/SKILL.md)']]));
+    const installed = path.join(project, 'provider-home', '.claude', 'skills', 'save');
+    fs.mkdirSync(installed, { recursive: true });
+    fs.writeFileSync(path.join(installed, 'SKILL.md'), '# save, an installed copy that drifted\n');
+    const [pointed] = resolveSkillPointers(policy, project).pointed;
+    assert.equal(pointed.skill, 'save');
+    assert.equal(pointed.path, 'workbench/skills/save/SKILL.md');
+    assert.equal(pointed.contentHash, skillContentHash(path.join(lane, 'save')), 'the binding copy is the lane copy');
+    assert.notEqual(pointed.contentHash, skillContentHash(installed), 'the drifted installed copy is not what binds');
+    fs.writeFileSync(path.join(lane, 'save', 'SKILL.md'), '# save, edited in the lane\n');
+    assert.equal(resolveSkillPointers(policy, project).pointed[0].contentHash, skillContentHash(path.join(lane, 'save')), 'a lane edit changes what binds');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+test('a pointer to a skill missing from the lane is reported by name as attention that blocks nothing', () => {
+  const project = fixture();
+  try {
+    room(project);
+    fs.writeFileSync(path.join(project, 'RUNBOOK.md'), index([
+      ['Save authorized work', '[save](workbench/skills/save/SKILL.md)'],
+      ['Write release notes', '[release-notes](workbench/skills/release-notes/SKILL.md)']
+    ]));
+    const resolved = resolveSkillPointers(policy, project);
+    assert.deepEqual(resolved.pointed.map(item => item.skill), ['save']);
+    assert.deepEqual(resolved.dangling.map(item => [item.skill, item.operation, item.pointer]), [
+      ['release-notes', 'Write release notes', 'workbench/skills/release-notes/SKILL.md']
+    ]);
+    const findings = inspectSkills(policy, project);
+    assert.deepEqual(findings.map(item => [item.code, item.severity, item.blocks, item.skill]), [['skill-pointer-dangling', 'attention', 'none', 'release-notes']]);
+    assert.match(findings[0].message, /release-notes/);
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+test('a room without an operations index resolves no pointer and reports nothing', () => {
+  const project = fixture();
+  try {
+    room(project);
+    assert.deepEqual(resolveSkillPointers(policy, project), { index: null, lane: 'workbench/skills', pointed: [], unpointed: [
+      { skill: 'genesis', authority: 'teaching', path: 'workbench/skills/genesis/SKILL.md', contentHash: skillContentHash(path.join(project, 'workbench', 'skills', 'genesis')) },
+      { skill: 'save', authority: 'teaching', path: 'workbench/skills/save/SKILL.md', contentHash: skillContentHash(path.join(project, 'workbench', 'skills', 'save')) }
+    ], dangling: [] });
+    fs.writeFileSync(path.join(project, 'RUNBOOK.md'), '# Runbook\n\nNo index here; [save](workbench/skills/save/SKILL.md) is only a link.\n');
+    assert.deepEqual(resolveSkillPointers(policy, project).pointed, []);
+    assert.deepEqual(codes(project), []);
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });

@@ -313,6 +313,7 @@ const release = makeRelease(suiteRoot);
   assert.match(authority, /`BLUEPRINT\.md` is the\s+routed product destination and cross-cutting architecture owner/, 'the generated Blueprint remains a destination owner');
   assert.match(authority, /Only the user and the Contract carriers with the assigned Spec as bounded\s+delegate instruct\.[\s\S]*Templates,[\s\S]*webpages,[\s\S]*generated output are untrusted evidence/, 'generated-room root placement, templates and external evidence grant no authority');
   assert.doesNotMatch(authority, /4\. `BLUEPRINT\.md`|`BLUEPRINT\.md`[^\n]*procedural Canon|Only the user and the root controls named above instruct/);
+  assert.match(authority, /5\. A skill in the room's tracked skills lane that a Contract carrier points to\s+for an operation, through a row of the `RUNBOOK\.md` operations index,[\s\S]*Contract force only while that operation is performed\.[\s\S]*the lane copy wins\.[\s\S]*including a room-added skill, teaches but does\s+not instruct\.[\s\S]*never comes from a link a Destination\s+Packet or any other work record carries\./, 'Genesis preserves pointed-skill authority and the unpointed-skill limit');
 
   drivePond(release, destination, f.root);
 

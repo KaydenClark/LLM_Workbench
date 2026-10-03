@@ -1004,6 +1004,9 @@ const PINNED_EFFECTS = {
   'skill-adapter-missing': ['attention', 'skills', 'none'],
   'skill-adapter-broken': ['attention', 'skills', 'none'],
   'skill-duplicate-discovery': ['attention', 'skills', 'none'],
+  // S-004C TK-005E: an operations index row that points to a skill the lane
+  // lacks is named in every doctor run and blocks nothing.
+  'skill-pointer-dangling': ['attention', 'skills', 'none'],
   'stale-seed': ['attention', 'feedback', 'none'],
   'unverified-provenance': ['attention', 'manifest', 'none'],
   // S-00V TK-00H: a missing host floor item blocks everything, but it is only

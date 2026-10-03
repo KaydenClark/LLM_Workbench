@@ -16,6 +16,10 @@ should be boring, exact, and executable.
 Every session reads this index at entry, then follows only the rows its task
 needs. Each row names an operation, when following it is worth it, and the
 stable pointer to where its procedure lives.
+A row that points to a skill in the tracked skills lane makes that skill part
+of the Contract for its operation (`AGENTS.md` Instruction Authority), so a
+change to a skill an index row points to, or to an index row, is reviewed as a
+Contract change.
 
 | Operation | Follow when | Pointer |
 |---|---|---|
@@ -291,6 +295,9 @@ release checkout's `workbench-skills.mjs install` or `update
 (a host that checked an adapter out as a plain file instead of a link reports
 `skill-adapter-broken`), and a root `skills/` directory is
 `project-local-skills`, which blocks everything because it shadows the lane.
+An operations index row that points to a skill the lane lacks is the
+attention finding `skill-pointer-dangling`; doctor reads only the index and
+the lane copy to decide which skill binds.
 Filesystem discovery is distinct from configured-host invocation. `doctor` also reports
 `integration-branch-undeclared` and `integration-branch-missing` (scope
 `git`, effect `none`) until `workbench/manifest.json` `git.integrationBranch`
@@ -1064,7 +1071,8 @@ fresh clone discovers every core skill with no provider home. Check the lane
 from the release checkout with `node tools/workbench-skills.mjs verify
 --project PATH`; `doctor` reports `skill-lane-missing`, `skill-lane-unreadable`,
 `skill-adapter-missing`, `skill-adapter-broken` and `project-local-skills`
-without repairing them.
+without repairing them, and `skill-pointer-dangling` for an index row that
+points to a skill the lane lacks.
 
 For an authorized room-specific extension, keep its sole source in the lane at
 `workbench/skills/NAME/SKILL.md`. Choose a name absent from required core;
