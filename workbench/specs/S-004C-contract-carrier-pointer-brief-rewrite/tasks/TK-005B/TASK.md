@@ -3,7 +3,7 @@
 **Task ID:** TK-005B
 **Spec ID:** S-004C
 **Slice:** Record the pre-rewrite baseline and the dependency census
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: Every tool and test that read the old shape passes against the new one, and the full suite is green (the census names every reader this Spec must change), and the size and loaded-cost before-record of the brief acceptance line
