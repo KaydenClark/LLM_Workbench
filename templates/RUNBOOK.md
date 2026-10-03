@@ -1091,10 +1091,12 @@ response is therefore true at the revision it states. The token is held for one
 publication only; it is not a lease, needs no service or configuration, and a
 writer that stops mid-write leaves the previous valid record in place. A token
 older than ten seconds is treated as abandoned and reclaimed by the next
-writer, so a crash never blocks a note; a writer stalled inside its own token
-for longer than that refuses rather than publishing over a newer write. One
-writer at a time remains the working rule: the guard makes an overlap honest,
-it does not merge concurrent changes.
+writer, so a crash never blocks a note. The bytes a writer is about to publish
+are staged inside its own token directory, so reclaiming the token removes
+them and a writer stalled past the reclaim age fails its rename and is refused,
+instead of publishing over a newer write; there is no gap between the
+ownership check and the publication. One writer at a time remains the working
+rule: the guard makes an overlap honest, it does not merge concurrent changes.
 
 ### Benchmark-Driven Improvement
 

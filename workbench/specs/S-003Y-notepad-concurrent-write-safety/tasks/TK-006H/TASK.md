@@ -30,9 +30,11 @@ valid record in place and does not block later writers indefinitely.
   existing temporary-file-and-rename path, and removes the token. A writer that
   finds the token held re-reads the note and is refused `stale-revision` naming
   the revision on disk. A token older than the reclaim age is treated as
-  abandoned and is renamed aside and removed by the next writer; a holder
-  verifies its own token nonce immediately before publishing so a reclaimed
-  holder refuses instead of publishing over a newer write. `append`, `current`,
+  abandoned and is renamed aside and removed by the next writer; the bytes a
+  holder is about to publish are staged inside its own token directory, so a
+  reclaim removes them and a stalled holder's rename fails and is refused
+  instead of publishing over a newer write (corrected after review 1, which
+  showed the earlier nonce-check-before-rename left a stall window). `append`, `current`,
   `trim` and `delete` all go through the guard; `create` (exclusive link) and
   `migrate` (no revision to check) are unchanged.
 - `tools/test-notepads.mjs`: the barrier race (worker threads released by one
