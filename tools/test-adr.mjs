@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
-import { ADR_LIFECYCLE_FOLDERS, ID_PATTERN, REGISTER_NAME, listAdrs, localLinks, migrateLifecycleFolders, newAdr, normalizeAdrs, parseFrontmatter, renderRegister, stripFrontmatterKey, validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
+import { ADR_LIFECYCLE_FOLDERS, ID_PATTERN, REGISTER_NAME, acceptRecord, deprecateRecord, listAdrs, localLinks, migrateLifecycleFolders, newAdr, normalizeAdrs, parseFrontmatter, renderRegister, stripFrontmatterKey, supersedeRecord, validateAdrs, validateDecisionRecords, writeDecisionRegisters, writeRegister } from '../workbench/tools/adr.mjs';
 import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -1141,5 +1141,178 @@ test('new --kind ddr reserves DDR labels held only at a remote tip without touch
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
     fs.rmSync(remote, { recursive: true, force: true });
+  }
+});
+
+// S-003X TK-004Y: the ADR lifecycle as commands for both kinds of decision
+// record. Lifecycle is folder location (ADR-000I): accept moves a record out
+// of proposed/, supersede and deprecate move it to the permanent archive/.
+// Each move is a reviewable rename in Git, repairs live links, leaves
+// append-only evidence as counted history and regenerates both registers;
+// every refusal leaves the tree byte-identical.
+function treeSnapshot(dir) {
+  const files = {};
+  const walk = (current) => {
+    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+      if (entry.name === '.git') continue;
+      const full = path.join(current, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else files[path.relative(dir, full)] = entry.isSymbolicLink() ? `link:${fs.readlinkSync(full)}` : fs.readFileSync(full, 'utf8');
+    }
+  };
+  walk(dir);
+  return files;
+}
+
+function lifecycleRoom() {
+  const dir = gitFixture();
+  const adrDir = path.join(dir, 'workbench', 'docs', 'adr');
+  const ddrDir = path.join(dir, 'workbench', 'docs', 'ddr');
+  fs.writeFileSync(path.join(adrDir, '000A-current-architecture.md'), '---\ndate: 2026-10-01\ncanonicalized_in:\n  - AGENTS.md\n---\n\n# Current architecture\n\nThe decision.\n');
+  fs.writeFileSync(path.join(adrDir, '000B-replacement-architecture.md'), '---\ndate: 2026-10-02\nsupersedes:\n  - 0001-older.md\ncanonicalized_in:\n  - AGENTS.md\n---\n\n# Replacement architecture\n\nIt replaces [the current one](000A-current-architecture.md).\n');
+  fs.mkdirSync(path.join(adrDir, 'proposed'), { recursive: true });
+  fs.writeFileSync(path.join(adrDir, 'proposed', '000C-proposed-architecture.md'), '---\nstatus: proposed\ndate: 2026-10-03\ncanonicalized_in:\n  - AGENTS.md\n---\n\n# Proposed architecture\n\nSee [the current one](../000A-current-architecture.md).\n');
+  fs.writeFileSync(path.join(ddrDir, '000A-destination-choice.md'), ddrRecord('canonicalized_in:\n  - BLUEPRINT.md\n', 'Destination choice'));
+  fs.writeFileSync(path.join(ddrDir, '000B-better-destination-choice.md'), ddrRecord('canonicalized_in:\n  - BLUEPRINT.md\n', 'Better destination choice'));
+  fs.writeFileSync(path.join(ddrDir, 'proposed', '000C-proposed-destination.md'), ddrRecord('canonicalized_in:\n  - BLUEPRINT.md\n', 'Proposed destination'));
+  const wiki = path.join(dir, 'workbench', 'wiki', 'decision-notes.md');
+  fs.writeFileSync(wiki, '# Notes\n\nSee [the proposed destination](../docs/ddr/proposed/000C-proposed-destination.md), [the destination choice](../docs/ddr/000A-destination-choice.md) and [the current architecture](../docs/adr/000A-current-architecture.md).\n');
+  const specDir = path.join(dir, 'workbench', 'specs', 'S-0ZZ-fixture');
+  fs.mkdirSync(specDir, { recursive: true });
+  fs.writeFileSync(path.join(specDir, 'SPEC.md'), '# S-0ZZ - Fixture\n\nLive link: [destination choice](../../docs/ddr/000A-destination-choice.md).\n\n## Append-Only Evidence And Execution Log\n\n| Date | Event |\n|---|---|\n| 2026-10-01 | Wrote [destination choice](../../docs/ddr/000A-destination-choice.md). |\n\n## Completion Result\n\nPending.\n');
+  writeDecisionRegisters(dir);
+  git(dir, 'checkout', '--quiet', '-b', 'main');
+  gitCommitAll(dir, 'Seed the lifecycle room');
+  return dir;
+}
+
+function git(dir, ...args) {
+  const result = spawnSync('git', ['-C', dir, ...args], { encoding: 'utf8' });
+  assert.equal(result.status, 0, `git ${args.join(' ')}: ${result.stderr}`);
+  return result.stdout;
+}
+
+test('accept moves a proposed ADR and DDR out of proposed/ by a Git rename, drops a leftover status key, repairs live links and regenerates both registers', () => {
+  const dir = lifecycleRoom();
+  try {
+    const accepted = acceptRecord(dir, 'DDR-000C');
+    assert.equal(accepted.from, 'workbench/docs/ddr/proposed/000C-proposed-destination.md');
+    assert.equal(accepted.to, 'workbench/docs/ddr/000C-proposed-destination.md');
+    assert.equal(fs.existsSync(path.join(dir, accepted.from)), false);
+    assert.match(git(dir, 'status', '--porcelain'), /^R  workbench\/docs\/ddr\/proposed\/000C-proposed-destination\.md -> workbench\/docs\/ddr\/000C-proposed-destination\.md$/m, 'Git records a staged rename');
+    assert.match(fs.readFileSync(path.join(dir, 'workbench', 'wiki', 'decision-notes.md'), 'utf8'), /\(\.\.\/docs\/ddr\/000C-proposed-destination\.md\)/, 'a live link follows the record');
+    assert.match(fs.readFileSync(path.join(dir, 'workbench', 'docs', 'ddr', REGISTER_NAME), 'utf8'), /\| \[000C\]\(000C-proposed-destination\.md\) \| Proposed destination \| accepted \|/);
+    gitCommitAll(dir, 'Accept the DDR');
+
+    const adrAccepted = acceptRecord(dir, 'adr-000c');
+    assert.equal(adrAccepted.id, 'ADR-000C', 'the identifier resolves case-folded');
+    const moved = fs.readFileSync(path.join(dir, 'workbench', 'docs', 'adr', '000C-proposed-architecture.md'), 'utf8');
+    assert.doesNotMatch(moved, /^status:/m, 'the folder is the lifecycle; a leftover status key would keep the record proposed');
+    assert.match(moved, /\(000A-current-architecture\.md\)/, 'the moved record\'s own link is recomputed for its new folder');
+    assert.equal(listAdrs(dir).find((record) => record.number === '000C').status, 'accepted');
+    assert.deepEqual(validateDecisionRecords(dir).filter((item) => item.severity === 'error' || item.code === 'stale-register'), []);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('supersede archives an accepted ADR and DDR under exactly one accepted successor of the same kind, records both directions and leaves evidence rows as counted history', () => {
+  const dir = lifecycleRoom();
+  try {
+    const result = supersedeRecord(dir, 'DDR-000A', 'DDR-000B');
+    assert.equal(result.successor, 'DDR-000B');
+    assert.equal(result.to, 'workbench/docs/ddr/archive/000A-destination-choice.md');
+    const archived = parseFrontmatter(fs.readFileSync(path.join(dir, result.to), 'utf8')).data;
+    assert.equal(archived.superseded_by, '000B-better-destination-choice.md');
+    assert.deepEqual(parseFrontmatter(fs.readFileSync(path.join(dir, 'workbench', 'docs', 'ddr', '000B-better-destination-choice.md'), 'utf8')).data.supersedes, ['000A-destination-choice.md']);
+    const spec = fs.readFileSync(path.join(dir, 'workbench', 'specs', 'S-0ZZ-fixture', 'SPEC.md'), 'utf8');
+    assert.match(spec, /Live link: \[destination choice\]\(\.\.\/\.\.\/docs\/ddr\/archive\/000A-destination-choice\.md\)/, 'a live Spec link is repaired');
+    assert.match(spec, /\| 2026-10-01 \| Wrote \[destination choice\]\(\.\.\/\.\.\/docs\/ddr\/000A-destination-choice\.md\)\. \|/, 'an append-only evidence row keeps its first-published text');
+    assert.equal(result.historicalReferencesLeft['workbench/specs/S-0ZZ-fixture/SPEC.md'], 1);
+    assert.match(fs.readFileSync(path.join(dir, 'workbench', 'docs', 'ddr', 'HISTORY.md'), 'utf8'), /\| \[000A\]\(archive\/000A-destination-choice\.md\) \| Destination choice \| superseded \|/);
+    assert.doesNotMatch(fs.readFileSync(path.join(dir, 'workbench', 'docs', 'ddr', REGISTER_NAME), 'utf8'), /000A-destination-choice/, 'the active register drops the replaced decision');
+    gitCommitAll(dir, 'Supersede the DDR');
+
+    const cli = spawnSync(process.execPath, [adrTool, 'supersede', 'ADR-000A', '--by', 'ADR-000B', '--path', dir], { cwd: dir, encoding: 'utf8' });
+    assert.equal(cli.status, 0, cli.stderr);
+    assert.equal(JSON.parse(cli.stdout).to, 'workbench/docs/adr/archive/000A-current-architecture.md');
+    assert.deepEqual(parseFrontmatter(fs.readFileSync(path.join(dir, 'workbench', 'docs', 'adr', '000B-replacement-architecture.md'), 'utf8')).data.supersedes, ['0001-older.md', '000A-current-architecture.md'], 'an existing supersedes list gains the record');
+    assert.match(fs.readFileSync(path.join(dir, 'workbench', 'docs', 'adr', '000B-replacement-architecture.md'), 'utf8'), /\(archive\/000A-current-architecture\.md\)/, 'the successor\'s own link follows the archived record');
+    assert.deepEqual(validateDecisionRecords(dir).filter((item) => item.severity === 'error' || item.code === 'stale-register'), []);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('deprecate archives an accepted record with its stated reason and no successor', () => {
+  const dir = lifecycleRoom();
+  try {
+    const cli = spawnSync(process.execPath, [adrTool, 'deprecate', 'DDR-000B', '--reason', 'The destination no longer includes this feature', '--path', dir], { cwd: dir, encoding: 'utf8' });
+    assert.equal(cli.status, 0, cli.stderr);
+    const archived = path.join(dir, 'workbench', 'docs', 'ddr', 'archive', '000B-better-destination-choice.md');
+    const data = parseFrontmatter(fs.readFileSync(archived, 'utf8')).data;
+    assert.equal(data.deprecation_reason, 'The destination no longer includes this feature');
+    assert.equal(data.superseded_by, undefined);
+    assert.equal(listAdrs(dir, { kind: 'ddr' }).find((record) => record.number === '000B').status, 'deprecated');
+    assert.deepEqual(validateDecisionRecords(dir).filter((item) => item.severity === 'error' || item.code === 'stale-register'), []);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('every lifecycle refusal names its reason and leaves the tree byte-identical', () => {
+  const dir = lifecycleRoom();
+  try {
+    const before = treeSnapshot(dir);
+    const refusals = [
+      [() => supersedeRecord(dir, 'DDR-000A'), /exactly one successor/],
+      [() => supersedeRecord(dir, 'DDR-000A', ['DDR-000B', 'DDR-000C']), /exactly one successor/],
+      [() => supersedeRecord(dir, 'DDR-000A', 'DDR-000B,DDR-000C'), /exactly one successor/],
+      [() => supersedeRecord(dir, 'DDR-000A', 'DDR-000C'), /DDR-000C is proposed/],
+      [() => supersedeRecord(dir, 'DDR-000A', 'ADR-000B'), /same kind/],
+      [() => supersedeRecord(dir, 'DDR-000A', 'DDR-000A'), /cannot supersede itself/],
+      [() => supersedeRecord(dir, 'DDR-000C', 'DDR-000B'), /only an accepted record at the top level/],
+      [() => deprecateRecord(dir, 'DDR-000B'), /stated reason/],
+      [() => deprecateRecord(dir, 'DDR-000B', '   '), /stated reason/],
+      [() => deprecateRecord(dir, 'DDR-000B', 'line one\nline two'), /one line/],
+      [() => deprecateRecord(dir, 'DDR-000C', 'too early'), /only an accepted record at the top level/],
+      [() => acceptRecord(dir, 'DDR-000A'), /only a proposed record can be accepted/],
+      [() => acceptRecord(dir, 'DDR-00ZZ'), /Unknown DDR identifier/],
+      [() => acceptRecord(dir, 'XYZ-0001'), /not a decision-record identifier/]
+    ];
+    for (const [attempt, message] of refusals) {
+      assert.throws(attempt, message);
+      assert.deepEqual(treeSnapshot(dir), before, `${message} must write nothing`);
+    }
+    // An accept that would leave an invalid accepted record is refused first.
+    const proposed = path.join(dir, 'workbench', 'docs', 'ddr', 'proposed', '000C-proposed-destination.md');
+    fs.writeFileSync(proposed, ddrRecord('canonicalized_in:\n  - workbench/wiki/SCHEMA.md\n  - MISSING.md\n', 'Proposed destination'));
+    gitCommitAll(dir, 'Break the proposed DDR');
+    const broken = treeSnapshot(dir);
+    assert.throws(() => acceptRecord(dir, 'DDR-000C'), /cannot be accepted: it canonicalized_in names the Wiki .*MISSING\.md does not exist|cannot be accepted: .*MISSING\.md does not exist/);
+    assert.deepEqual(treeSnapshot(dir), broken);
+    // A dirty Git tree is refused so the candidate shows only the move.
+    fs.writeFileSync(path.join(dir, 'AGENTS.md'), '# Agents\n\nEdited.\n');
+    const dirty = treeSnapshot(dir);
+    assert.throws(() => deprecateRecord(dir, 'DDR-000B', 'reason'), /dirty working tree/);
+    assert.deepEqual(treeSnapshot(dir), dirty);
+    const cli = spawnSync(process.execPath, [adrTool, 'supersede', 'DDR-000A', '--by', 'DDR-000B', '--by', 'DDR-000C', '--path', dir], { cwd: dir, encoding: 'utf8' });
+    assert.equal(cli.status, 1);
+    assert.match(cli.stderr, /exactly one successor/);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('a lifecycle move outside Git renames the record and still regenerates both registers', () => {
+  const dir = fixture();
+  try {
+    const created = newAdr(dir, { kind: 'ddr', title: 'Outside Git', date: '2026-10-03' });
+    const result = acceptRecord(dir, created.id);
+    assert.equal(result.usesGit, false);
+    assert.equal(fs.existsSync(path.join(dir, result.to)), true);
+    assert.match(fs.readFileSync(path.join(dir, 'workbench', 'docs', 'ddr', REGISTER_NAME), 'utf8'), /Outside Git \| accepted/);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
   }
 });
