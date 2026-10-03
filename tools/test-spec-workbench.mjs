@@ -5973,7 +5973,7 @@ function commitAll(dir, message) {
     writeAt(correctiveRetiredRoot, legacyFile, taskRecordFixture({
       id: legacyId, specId: 'S-591', slice: 'Missing edge case coverage', status: 'ready', blockers: 'none',
       destination: 'spec-acceptance: S-591 Acceptance Criteria'
-    }));
+    }).replace(/(\*\*Destination:\*\* .*\n)/, '$1**Planned verification:** Answers evidence row 1 (fail verdict at deadbee3 on 2026-09-18): Missing edge case coverage\n'));
     const created = { id: legacyId, filePath: legacyFile };
     assert.ok(fs.existsSync(path.join(correctiveRetiredRoot, created.filePath)));
     assert.ok(!created.filePath.includes('/tasks/retired/'), 'the legacy corrective Task never lands under tasks/retired/ - that folder holds a reconciled done Task, not a fresh one');
