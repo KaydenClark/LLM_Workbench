@@ -1404,5 +1404,856 @@
     "Article validator enforces obsolete identifier ban, unlike accepted ADR-000R; runtime migration remains with existing owner.",
     "Independent final exact-SHA review is recorded outside the bytes it reviews.",
     "No owner QA approval, main promotion, runtime change or Dictionary Terms implementation."
-  ]
+  ],
+  "current_union_verification": {
+    "baseline": "674855fd574ffa692c58288304d30f4f49cbc903",
+    "tested_candidate": "861657d6b10d5cdb175586303bcc3eb899119bdb",
+    "checks": [
+      {
+        "command": "node tools/test-spec-workbench.mjs",
+        "exit_code": 0,
+        "duration_seconds": 175.07,
+        "output_sha256": "c31b79f5728af1d7a17a1b2f3173a9792122be2fd78e86b45f7fc4d382b3cbc8"
+      },
+      {
+        "command": "node tools/test-core-composition.mjs",
+        "exit_code": 0,
+        "duration_seconds": 2.52,
+        "output_sha256": "21c5bd61fbb00f89e36d2485255a1e17668e19bf6c16670a403bf01043dd0494"
+      },
+      {
+        "command": "node tools/test-session-transport.mjs",
+        "exit_code": 0,
+        "duration_seconds": 24.02,
+        "output_sha256": "9e8e8eaaf5306396b25be9dd5c0ed116c32489fc3afa8d4e46bc719be687020b"
+      },
+      {
+        "command": "node tools/test-workbench-adoption.mjs",
+        "exit_code": 0,
+        "duration_seconds": 10.72,
+        "output_sha256": "83f63dc21013d6b22d6d515a7cf9e48c7b1bba0deaae463f8d7b2f35210f2588"
+      },
+      {
+        "command": "node tools/test-adr.mjs",
+        "exit_code": 0,
+        "duration_seconds": 11.01,
+        "output_sha256": "2da744172228a2aa0156a9dfbf6f636f55b76f68b5db3e50a96a594b3bfa5f07"
+      },
+      {
+        "command": "node tools/test-sessions.mjs",
+        "exit_code": 0,
+        "duration_seconds": 4.99,
+        "output_sha256": "922c6e7836540a4a3190077ea756112640fc024b7a96a75c1bd3c2918d726aa7"
+      },
+      {
+        "command": "node tools/test-visible-id-consumers.mjs",
+        "exit_code": 0,
+        "duration_seconds": 13.68,
+        "output_sha256": "db98f04be1c41021a0a55bdb25dbf350824e7cfa73e909e11cefd5000b775dc0"
+      },
+      {
+        "command": "node tools/test-portability-matrix.mjs",
+        "exit_code": 0,
+        "duration_seconds": 0.57,
+        "output_sha256": "14b36a0db346ee868b8b0490b1b83a05ae76b1ce6e2d4e71fffa6382d8385e10"
+      },
+      {
+        "command": "node tools/test-context-tools.mjs",
+        "exit_code": 0,
+        "duration_seconds": 0.26,
+        "output_sha256": "6f0f4a88425cd465e3f9b9fbb1ed61a07f4b6182d20fc71da78f8e39713af2a1"
+      },
+      {
+        "command": "node tools/test-symlink-invocation.mjs",
+        "exit_code": 0,
+        "duration_seconds": 0.99,
+        "output_sha256": "847b31f9e23a7ba45ae134c772d8cc1ae8db48d3d6222cf169d12724b5762195"
+      },
+      {
+        "command": "node tools/test-self-drift.mjs",
+        "exit_code": 0,
+        "duration_seconds": 0.35,
+        "output_sha256": "e6a16f43199f4c16067dd2b93c0d4b0f56bd9f89ab0669770c1415330e500f3d"
+      },
+      {
+        "command": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+        "exit_code": 0,
+        "duration_seconds": 0.44,
+        "output_sha256": "bd0149c9b483b4ad4fa7e29309e544eda90aaccca0628e5235947f85beaa2195"
+      },
+      {
+        "command": "node tools/test-team-coordination-demo.mjs",
+        "exit_code": 0,
+        "duration_seconds": 0.07,
+        "output_sha256": "0fb9e546e326d750d8f92b13bc6dc93b017d4d097e79de0c05381a39879668da"
+      },
+      {
+        "command": "node workbench/tools/wiki.mjs validate",
+        "exit_code": 0,
+        "duration_seconds": 0.25,
+        "output_sha256": "fb2c72085e3b53904d5bf9cf705d3a9b228a0fd362599bd29b5b773bf3fbe50b"
+      },
+      {
+        "command": "node tools/test-skill-catalog.mjs",
+        "exit_code": 0,
+        "duration_seconds": 0.43,
+        "output_sha256": "61eb1a6c2b520d84e7f3b84b7e5f5f2d6da2197bdd90c2a78e8342965f6a39ee"
+      },
+      {
+        "command": "node tools/test-project-evidence.mjs",
+        "exit_code": 0,
+        "duration_seconds": 1.13,
+        "output_sha256": "a28ed34f104848fc97c7958a62a473164ee4ae42a5e06acbcf751e2552062e87"
+      },
+      {
+        "command": "node tools/test-configured-host.mjs",
+        "exit_code": 0,
+        "duration_seconds": 3.14,
+        "output_sha256": "f254f90becab9a4e9a0a8f22bf398c408d092370d0ab15400c96529db36b3ba0"
+      },
+      {
+        "command": "node tools/test-workbench-upgrade.mjs",
+        "exit_code": 0,
+        "duration_seconds": 6.11,
+        "output_sha256": "e8881929f3e1112ec750e47fa84839f508346e51821d7b2efb9406a4a234af8d"
+      },
+      {
+        "command": "node tools/test-governance-core.mjs",
+        "exit_code": 0,
+        "duration_seconds": 0.1,
+        "output_sha256": "90054303693a9ad31f6ff08146d34c001b9bc309b9db88ad1f200a08fed51a18"
+      },
+      {
+        "command": "node tools/test-notepads.mjs",
+        "exit_code": 0,
+        "duration_seconds": 12.54,
+        "output_sha256": "53d531fccc8ecedd40357aa4151682eb024d61fc381eb09e411c63060868b77d"
+      },
+      {
+        "command": "node tools/test-direct-promotion.mjs",
+        "exit_code": 0,
+        "duration_seconds": 4.89,
+        "output_sha256": "255211fa56d1abfe4b6a57998f03783f173f356ea07604fb5b58f48d0b843fff"
+      },
+      {
+        "command": "node tools/test-workbench-dogfood.mjs",
+        "exit_code": 0,
+        "duration_seconds": 2.18,
+        "output_sha256": "5edca15bea0b229bb194025549b2ca7d1e9c08d549d28169904fa162f06c6ac2"
+      },
+      {
+        "command": "node tools/test-outcome-trials.mjs",
+        "exit_code": 0,
+        "duration_seconds": 0.72,
+        "output_sha256": "e0ef32e1edb1645577979090997c74ea4e9c92c98a9da29a9f4d67c42f42498b"
+      },
+      {
+        "command": "node tools/test-control-fidelity.mjs",
+        "exit_code": 0,
+        "duration_seconds": 1.94,
+        "output_sha256": "ee28fc242bf54e9831c1c46888ef16f429203f9266d799f9c5cfc93a56474353"
+      },
+      {
+        "command": "node tools/test-feedback-inventory.mjs",
+        "exit_code": 0,
+        "duration_seconds": 0.14,
+        "output_sha256": "37d22545d0d02a263079661cc1392ce33ff71f6f54b57b6a5bdc6cb3c9cd55b4"
+      },
+      {
+        "command": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+        "exit_code": 0,
+        "duration_seconds": 0.08,
+        "output_sha256": "e794679b2b12bb980eec389efb1d67bca53bce1f527e84d08cee956121a6f99a"
+      },
+      {
+        "command": "node tools/test-socket-contract.mjs",
+        "exit_code": 0,
+        "duration_seconds": 0.07,
+        "output_sha256": "b4e41aea140124647f3d1e0b81cb018939dfb21744358ef5b7807e88da1e5b99"
+      },
+      {
+        "command": "node workbench/tools/spec-workbench.mjs gate --task TK-01Q --spec S-01U",
+        "exit_code": 0,
+        "duration_seconds": 0.44,
+        "output_sha256": "fbaa58a8eb0f1cd382aafbd056ccdf56977c205cb2fabf9bc34576edf5109ade"
+      },
+      {
+        "command": "node tools/test-skill-inspection.mjs",
+        "exit_code": 0,
+        "duration_seconds": 0.1,
+        "output_sha256": "096ac39ccc2afe4ad2ce506f52049049719281a6eeaa1831436e29ace7517201"
+      },
+      {
+        "command": "node tools/test-genesis-from-decisions.mjs",
+        "exit_code": 0,
+        "duration_seconds": 31.6,
+        "output_sha256": "35f8f050ccafd32ac0c68f625009e5b0c3248d0ff4a0a73c1787c88d31dc7f8d"
+      },
+      {
+        "command": "node tools/test-core-skill-installer.mjs",
+        "exit_code": 0,
+        "duration_seconds": 13.53,
+        "output_sha256": "5baf8854459d495fd25e24a7e258786c0f95a3228c88f96d39b690fd6112f3ad"
+      },
+      {
+        "command": "node tools/test-workbench-tools.mjs",
+        "exit_code": 0,
+        "duration_seconds": 8.26,
+        "output_sha256": "db4cd4d9e9ceaadce3e944248627fec847dba8ce17dedba76fe093a4b552814c"
+      },
+      {
+        "command": "node tools/test-branch-closeout.mjs",
+        "exit_code": 0,
+        "duration_seconds": 4.98,
+        "output_sha256": "8392c700b25def79c517a65147abb9c8b3af62d96b34ef4c2b2a0916508d1ae4"
+      },
+      {
+        "command": "node tools/test-visible-ids.mjs",
+        "exit_code": 0,
+        "duration_seconds": 0.59,
+        "output_sha256": "37ed5952bfcf7877a8d1d73a18151e82dd2076d3590b9b3519a5ba11831d5183"
+      },
+      {
+        "command": "node tools/test-workbench-round-trip.mjs",
+        "exit_code": 0,
+        "duration_seconds": 44.78,
+        "output_sha256": "f08bcf1299595355188c126c18cbc752f4781ddd18290bb784abf5133ca7a04a"
+      },
+      {
+        "command": "node tools/test-evaluate-workbench.mjs",
+        "exit_code": 0,
+        "duration_seconds": 0.33,
+        "output_sha256": "2f9a0468ee094a221fb6e84b551484e3ed279bb371f694dbc9993980bb6ab887"
+      },
+      {
+        "command": "node tools/test-eval-runner.mjs",
+        "exit_code": 0,
+        "duration_seconds": 0.91,
+        "output_sha256": "419bf47a8c683370dac56456a05da467520cb2e244d98c73d2ff1606d3c8b78d"
+      },
+      {
+        "command": "node tools/test-controls-vocabulary-sweep.mjs",
+        "exit_code": 0,
+        "duration_seconds": 0.08,
+        "output_sha256": "db05db954d9a33d47fef93f1fec18d654061d4d34641e26e04ac91e667f5ead4"
+      },
+      {
+        "command": "node tools/test-grilling-ledger.mjs",
+        "exit_code": 0,
+        "duration_seconds": 0.09,
+        "output_sha256": "5f2699c824cf54238285143c7c0d3c697708d354b096c79b0eac16ef1246e748"
+      },
+      {
+        "command": "node workbench/tools/spec-workbench.mjs doctor",
+        "exit_code": 0,
+        "duration_seconds": 0.61,
+        "output_sha256": "2a3e0a982fc4cd4fd1e577ab902dbb6f758b96fb6f43dc8b717350c83fbcf41e"
+      },
+      {
+        "command": "node tools/test-landmark-tracker.mjs",
+        "exit_code": 0,
+        "duration_seconds": 13.27,
+        "output_sha256": "75b0d2059f6e9cd0e0ab28f1724c97f66e4e409bc0d8e48d2e0562a2ce7da4e5"
+      },
+      {
+        "command": "node tools/test-skills-lane.mjs",
+        "exit_code": 0,
+        "duration_seconds": 3.68,
+        "output_sha256": "6baac0a6d746c5aac37543eeb0312c974443c6f5aa3ec4f1438ddf3d816fe3df"
+      },
+      {
+        "command": "node tools/test-blueprint-contract.mjs",
+        "exit_code": 0,
+        "duration_seconds": 0.11,
+        "output_sha256": "fd1e113d4e53c6b7e4746a7c804bbc389fcffd6a3e17905564f10031c8d06ea1"
+      },
+      {
+        "command": "node tools/test-workbench-layout.mjs",
+        "exit_code": 0,
+        "duration_seconds": 47.03,
+        "output_sha256": "c9ac8f0741c3f92743bd24d9bda5e8dfccdaa35018858709f19e8c87fc564dd3"
+      },
+      {
+        "command": "node tools/test-diagnostics.mjs",
+        "exit_code": 0,
+        "duration_seconds": 33.04,
+        "output_sha256": "d625f7f2716ea223f3ad2cbf13ba54c90a6cbdf6289bec97acee100e13aef565"
+      },
+      {
+        "command": "node tools/test-wiki.mjs",
+        "exit_code": 0,
+        "duration_seconds": 4.11,
+        "output_sha256": "094554784c355ef5d72d348764289de21cad9b51bd8a240d059e04451f272841"
+      },
+      {
+        "command": "node tools/test-workbench-identity.mjs",
+        "exit_code": 0,
+        "duration_seconds": 4.05,
+        "output_sha256": "cb7b380899334973d9b27c08cad7df779d54a4fca42ba107f7a56e2b45620276"
+      },
+      {
+        "command": "node tools/test-cross-provider-fixture.mjs",
+        "exit_code": 0,
+        "duration_seconds": 2.59,
+        "output_sha256": "4cedcdbf38344fc6d6bc454ef80a75dfef5b4fdd3ae6cfb205b0fd7af45544b5"
+      },
+      {
+        "command": "node tools/test-guardrail-audit.mjs",
+        "exit_code": 0,
+        "duration_seconds": 0.25,
+        "output_sha256": "373b04e4a2607c087192de6b9e5890b8340195fc3bd4c17b1a681168289d2051"
+      },
+      {
+        "command": "node tools/test-feedback-automation.mjs",
+        "exit_code": 0,
+        "duration_seconds": 0.63,
+        "output_sha256": "841f64c4c0bb3461589e16e36202cc8ad61a5542f704c807193d3f1723e1ea12"
+      },
+      {
+        "command": "node tools/test-spec-report.mjs",
+        "exit_code": 0,
+        "duration_seconds": 26.93,
+        "output_sha256": "5e5f8fc96ba2ada3ea546e138abdd06fd49cdfa10faac9a2ad4cac6775dd970c"
+      },
+      {
+        "command": "python3 tools/test-check-append-only.py",
+        "exit_code": 0,
+        "duration_seconds": 66.95,
+        "output_sha256": "1c60a426838d1ccdac0d98496288fb9edd0cec4f0c2d781c2be92417d29fd934"
+      },
+      {
+        "command": "node tools/test-team-coordination.mjs",
+        "exit_code": 0,
+        "duration_seconds": 0.07,
+        "output_sha256": "3e105068c0fd2ef9dc5edf775b2742b7144f6c00d66af20bb07ef495cb079840"
+      },
+      {
+        "command": "node tools/test-landmark-wiki.mjs",
+        "exit_code": 0,
+        "duration_seconds": 3.38,
+        "output_sha256": "69600ab9284ec69e04ced6bd7d25f24d2ebed74b0bc021d74473968d6e8c1813"
+      },
+      {
+        "command": "node tools/test-spec-citation-anchors.mjs",
+        "exit_code": 0,
+        "tests_passed": 15,
+        "output_sha256": "f9c8428e0bcfcad860b64e3cd0de188c5236922e0d7666a461105f0dd1954a5b",
+        "execution": "Serial after the other checks completed; no source fixture collision."
+      }
+    ],
+    "unique_checks": 55,
+    "passed": 55,
+    "initial_refusals_or_retries": [],
+    "source_delta": "Preserves integrated DDR collection delivery and corrects one stale root Lexicon availability sentence; earlier lexical and history checks stand.",
+    "self_drift_post": {
+      "schemaVersion": 1,
+      "operation": "workbench-self-drift",
+      "phase": "post",
+      "sourceRevision": "861657d6b10d5cdb175586303bcc3eb899119bdb",
+      "dirty": false,
+      "workbenchVersion": "v3.2.1",
+      "sourceIdentity": {
+        "repository": "https://github.com/KaydenClark/LLM_Workbench",
+        "release": "v3.1.0",
+        "commit": "57fb22fbbde012c1c8741d46558a9628fae28b82"
+      },
+      "sourceIdentityRole": "historical-adoption",
+      "seedIdentity": [
+        {
+          "artifact": "workbench/feedback/REPORT_FORMAT.md",
+          "targetState": "present",
+          "repository": null,
+          "release": "v3.1.4",
+          "commit": null,
+          "recordedHash": "f9b3725991fa0ddc05dc686479ba2174bfcad87dcf93df9d2f352b2c403129a3",
+          "observedHash": "1035b0f88438abfb01902a8bb032e55e031833ff314146d9698e0ffc6a727071",
+          "identityLimit": "Missing repository/commit fields remain unknown; matching bytes do not establish source generation"
+        },
+        {
+          "artifact": "workbench/sessions/notepads/templates/notepad.schema.json",
+          "targetState": "present",
+          "repository": null,
+          "release": "v3.1.4",
+          "commit": null,
+          "recordedHash": "2bdc47d139314642bc4b90e8e2d2e2a5e24cc4d258aaa90ec4d126def2be00c0",
+          "observedHash": "2bdc47d139314642bc4b90e8e2d2e2a5e24cc4d258aaa90ec4d126def2be00c0",
+          "identityLimit": "Missing repository/commit fields remain unknown; matching bytes do not establish source generation"
+        },
+        {
+          "artifact": "workbench/sessions/notepads/templates/work.example.json",
+          "targetState": "present",
+          "repository": null,
+          "release": "v3.1.4",
+          "commit": null,
+          "recordedHash": "7608eb9e6879fb564041011f6c09756de696b01a1292a48c2cee9e32c6b82376",
+          "observedHash": "7608eb9e6879fb564041011f6c09756de696b01a1292a48c2cee9e32c6b82376",
+          "identityLimit": "Missing repository/commit fields remain unknown; matching bytes do not establish source generation"
+        },
+        {
+          "artifact": "workbench/sessions/notepads/templates/grilling.example.json",
+          "targetState": "present",
+          "repository": null,
+          "release": "v3.1.4",
+          "commit": null,
+          "recordedHash": "4856b43d2f939a131172e24f455fca457b17508da505d56c89312d58906a2458",
+          "observedHash": "4856b43d2f939a131172e24f455fca457b17508da505d56c89312d58906a2458",
+          "identityLimit": "Missing repository/commit fields remain unknown; matching bytes do not establish source generation"
+        },
+        {
+          "artifact": "workbench/sessions/notepads/templates/handoff.example.json",
+          "targetState": "absent",
+          "repository": null,
+          "release": "v3.1.4",
+          "commit": null,
+          "recordedHash": "4923c44076344979732fc87ca4aadde82b3bf98914003e7e298084c67f67d1b7",
+          "observedHash": null,
+          "identityLimit": "Missing repository/commit fields remain unknown; matching bytes do not establish source generation"
+        }
+      ],
+      "findings": [
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-003X/TK-004Y waits on TK-004X",
+          "expected": "current owner and verified identity",
+          "observed": "S-003X/TK-004Y waits on TK-004X",
+          "correction": "S-003X/TK-004Y waits on TK-004X",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-003X/TK-004Z waits on TK-004X, TK-004Y",
+          "expected": "current owner and verified identity",
+          "observed": "S-003X/TK-004Z waits on TK-004X, TK-004Y",
+          "correction": "S-003X/TK-004Z waits on TK-004X, TK-004Y",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-00Q has an in-progress task last updated 2026-09-19",
+          "expected": "current owner and verified identity",
+          "observed": "S-00Q has an in-progress task last updated 2026-09-19",
+          "correction": "S-00Q has an in-progress task last updated 2026-09-19",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/feedback/REPORT_FORMAT.md",
+          "claim": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/notepad.schema.json",
+          "claim": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/work.example.json",
+          "claim": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/grilling.example.json",
+          "claim": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/handoff.example.json",
+          "claim": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "unverified-provenance",
+          "artifact": "manifest",
+          "claim": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        }
+      ],
+      "machineResult": "blocked",
+      "cleanUpdate": false,
+      "limitations": [
+        "Machine evidence does not establish semantic freshness. Review current-facing claims against their owners and record a no-memory cold-start read-back.",
+        "Target-project drift is a separate operation.",
+        "Installed-source files do not prove native host callability; no installation or repair is performed."
+      ]
+    },
+    "self_drift_output_sha256": "dc7a420986a1ec5aca17023ee471ae8d6aae9b2b34ae11267da66ef1b2c043b0",
+    "guardrails_post": {
+      "score": 78,
+      "maxScore": 100,
+      "status": "developing",
+      "categories": [
+        {
+          "id": "static_contract",
+          "label": "Static guardrail contract",
+          "weight": 20,
+          "score": 20,
+          "checks": [
+            {
+              "id": "static_rubric",
+              "label": "complete static control surfaces",
+              "weight": 0,
+              "passed": true,
+              "evidence": "static evaluator 113/113",
+              "action": "Close the highest-weight missing static evaluator criteria without weakening existing checks."
+            }
+          ]
+        },
+        {
+          "id": "drift_resistance",
+          "label": "Drift resistance",
+          "weight": 25,
+          "score": 25,
+          "checks": [
+            {
+              "id": "fresh_control_docs",
+              "label": "fresh root control documents",
+              "weight": 5,
+              "passed": true,
+              "evidence": "Control review dates remain within 45 days; destination Blueprint review is recorded in RUNBOOK, not embedded as product status.",
+              "action": "Review stale root control docs against live code and update their dates only after resolving any drift."
+            },
+            {
+              "id": "version_contract",
+              "label": "consistent harness version contract",
+              "weight": 5,
+              "passed": true,
+              "evidence": "The declared version owner and all version-bearing copyable controls agree with their contract; destination Blueprints intentionally carry no version stamp.",
+              "action": "Align the root harness version with version placeholders across all copyable control docs."
+            },
+            {
+              "id": "task_state",
+              "label": "no contradictory task status",
+              "weight": 5,
+              "passed": true,
+              "evidence": "A legacy task cannot be active and Done; a complete spec cannot remain hot or contain unfinished tasks.",
+              "action": "Resolve contradictory task status or spec lifecycle state and preserve completion evidence in the stable spec."
+            },
+            {
+              "id": "proof_freshness",
+              "label": "fresh taskboard proof",
+              "weight": 5,
+              "passed": true,
+              "evidence": "The hot taskboard update and newest spec evidence row are no more than 30 days old.",
+              "action": "Run current verification and append a dated spec evidence row with the real result and remaining gap."
+            },
+            {
+              "id": "retired_controls",
+              "label": "retired control docs stay retired",
+              "weight": 5,
+              "passed": true,
+              "evidence": "ROADMAP.md and GAMEPLAN.md are absent from the root control layer.",
+              "action": "Move unique live work into its assigned spec and generated Taskboard, then reconcile duplicate root planning files."
+            }
+          ]
+        },
+        {
+          "id": "benchmark_discipline",
+          "label": "Benchmark discipline",
+          "weight": 25,
+          "score": 25,
+          "checks": [
+            {
+              "id": "prechange_baseline",
+              "label": "pre-change guardrail baseline",
+              "weight": 5,
+              "passed": true,
+              "evidence": "A durable rule requires the benchmark baseline before a harness change.",
+              "action": "Require harness changes to capture the guardrail score before editing."
+            },
+            {
+              "id": "benchmark_delta",
+              "label": "benchmark movement in acceptance proof",
+              "weight": 5,
+              "passed": true,
+              "evidence": "Completion proof must report the before/after benchmark score or explain why no score can move.",
+              "action": "Make the before/after score and remaining recommendations part of harness-change acceptance."
+            },
+            {
+              "id": "evidence_layers",
+              "label": "static and outcome evidence stay distinct",
+              "weight": 5,
+              "passed": true,
+              "evidence": "The docs distinguish static coverage from causal agent-behavior evidence.",
+              "action": "State that static rubric success cannot substitute for repeated outcome trials."
+            },
+            {
+              "id": "append_only_results",
+              "label": "append-only benchmark result ledger",
+              "weight": 5,
+              "passed": true,
+              "evidence": "benchmarks/RESULTS.md is append-only and records remaining gaps.",
+              "action": "Create an append-only benchmark result ledger with proof, result, and remaining-gap fields."
+            },
+            {
+              "id": "north_star",
+              "label": "100-point north star is not the release gate",
+              "weight": 5,
+              "passed": true,
+              "evidence": "The perfect score is an aspirational improvement target; regression health remains a separate release gate.",
+              "action": "Define 100 as the deliberately hard north star while keeping regression checks as a separate minimum gate."
+            }
+          ]
+        },
+        {
+          "id": "outcome_evidence",
+          "label": "Outcome evidence",
+          "weight": 30,
+          "score": 8,
+          "checks": [
+            {
+              "id": "task_diversity",
+              "label": "two task domains including held-out work",
+              "weight": 8,
+              "passed": true,
+              "evidence": "2 eval task(s); held-out present: yes",
+              "action": "Add a deterministic held-out task in a second domain so template tuning cannot overfit the development task."
+            },
+            {
+              "id": "real_results",
+              "label": "real repeated outcome results",
+              "weight": 8,
+              "passed": false,
+              "evidence": "0 non-synthetic outcome result file(s)",
+              "action": "Run real repeated outcome trials and save the non-synthetic JSONL evidence."
+            },
+            {
+              "id": "candidate_comparison",
+              "label": "controls, prior version, and candidate compared",
+              "weight": 6,
+              "passed": false,
+              "evidence": "Real results must include no-template, generic, prior/current, and candidate conditions.",
+              "action": "Compare the candidate against both controls and the prior harness on the same tasks."
+            },
+            {
+              "id": "recent_results",
+              "label": "recent real outcome evidence",
+              "weight": 4,
+              "passed": false,
+              "evidence": "At least one non-synthetic outcome result is no more than 90 days old.",
+              "action": "Refresh the real outcome benchmark on the current candidate and record the tested ref and date."
+            },
+            {
+              "id": "uncertainty",
+              "label": "repeated trials with uncertainty",
+              "weight": 4,
+              "passed": false,
+              "evidence": "The real-result ledger reports repeated trials and uncertainty, not a one-off win.",
+              "action": "Score repeated trials, report the effect and confidence interval, and append the run to the ledger."
+            }
+          ]
+        }
+      ],
+      "recommendations": [
+        {
+          "category": "Outcome evidence",
+          "points": 8,
+          "action": "Run real repeated outcome trials and save the non-synthetic JSONL evidence.",
+          "evidence": "0 non-synthetic outcome result file(s)"
+        },
+        {
+          "category": "Outcome evidence",
+          "points": 6,
+          "action": "Compare the candidate against both controls and the prior harness on the same tasks.",
+          "evidence": "Real results must include no-template, generic, prior/current, and candidate conditions."
+        },
+        {
+          "category": "Outcome evidence",
+          "points": 4,
+          "action": "Refresh the real outcome benchmark on the current candidate and record the tested ref and date.",
+          "evidence": "At least one non-synthetic outcome result is no more than 90 days old."
+        },
+        {
+          "category": "Outcome evidence",
+          "points": 4,
+          "action": "Score repeated trials, report the effect and confidence interval, and append the run to the ledger.",
+          "evidence": "The real-result ledger reports repeated trials and uncertainty, not a one-off win."
+        }
+      ],
+      "staticEvaluation": {
+        "score": 113,
+        "maxScore": 113,
+        "breakdown": [
+          {
+            "id": "control_surfaces",
+            "label": "Core control surfaces",
+            "weight": 10,
+            "score": 10,
+            "passed": 5,
+            "total": 5,
+            "missing": []
+          },
+          {
+            "id": "authority_scope",
+            "label": "Authority, read, and edit scope",
+            "weight": 10,
+            "score": 10,
+            "passed": 4,
+            "total": 4,
+            "missing": []
+          },
+          {
+            "id": "project_model",
+            "label": "Project model and contracts",
+            "weight": 8,
+            "score": 8,
+            "passed": 5,
+            "total": 5,
+            "missing": []
+          },
+          {
+            "id": "active_work_state",
+            "label": "Active work state",
+            "weight": 9,
+            "score": 9,
+            "passed": 5,
+            "total": 5,
+            "missing": []
+          },
+          {
+            "id": "operations",
+            "label": "Operations and recovery",
+            "weight": 8,
+            "score": 8,
+            "passed": 5,
+            "total": 5,
+            "missing": []
+          },
+          {
+            "id": "verification_contract",
+            "label": "Verification contract",
+            "weight": 12,
+            "score": 12,
+            "passed": 6,
+            "total": 6,
+            "missing": []
+          },
+          {
+            "id": "documentation_ownership",
+            "label": "Documentation ownership",
+            "weight": 8,
+            "score": 8,
+            "passed": 4,
+            "total": 4,
+            "missing": []
+          },
+          {
+            "id": "executive_interface",
+            "label": "Executive interface",
+            "weight": 8,
+            "score": 8,
+            "passed": 4,
+            "total": 4,
+            "missing": []
+          },
+          {
+            "id": "product_acceptance",
+            "label": "Product-truth acceptance",
+            "weight": 5,
+            "score": 5,
+            "passed": 3,
+            "total": 3,
+            "missing": []
+          },
+          {
+            "id": "drift_control",
+            "label": "Long-session drift control",
+            "weight": 8,
+            "score": 8,
+            "passed": 4,
+            "total": 4,
+            "missing": []
+          },
+          {
+            "id": "collaboration",
+            "label": "Team coordination",
+            "weight": 8,
+            "score": 8,
+            "passed": 5,
+            "total": 5,
+            "missing": []
+          },
+          {
+            "id": "safety",
+            "label": "Safety and change control",
+            "weight": 8,
+            "score": 8,
+            "passed": 4,
+            "total": 4,
+            "missing": []
+          },
+          {
+            "id": "portability",
+            "label": "Tool portability",
+            "weight": 5,
+            "score": 5,
+            "passed": 3,
+            "total": 3,
+            "missing": []
+          },
+          {
+            "id": "asset_workflow",
+            "label": "Visual and asset guardrails",
+            "weight": 6,
+            "score": 6,
+            "passed": 5,
+            "total": 5,
+            "missing": []
+          }
+        ]
+      }
+    },
+    "limits": "Known attention/dependency findings remain; no clean-update, whole-audit or agent-outcome claim. Final exact-SHA review is outside its own bytes."
+  }
 }
