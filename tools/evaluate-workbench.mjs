@@ -4,15 +4,25 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-// The four-part short page: every part must be present and carry text of its own,
-// so a page of bare headings, or of headings with only sub-headings under them,
-// earns no credit. Text means a line that is not a heading; sub-headings
-// ("### ...") may come first, a further "## " heading may not.
+// The four-part short page: its four parts, by these exact headings (case matters, so the
+// older "Promised Outcomes" or "Non-Goals" headings are not the same parts), each once and in
+// order, and each carrying text of its own: a line that is not a heading. Sub-headings
+// ("### ...") may come first; a further "## " heading ends the part. A page of bare
+// headings, or one whose part is empty, is not the short page and earns nothing as it.
 const FOUR_PART_NAMES = ['What it is', 'Who it serves', 'Promised outcomes', 'Non-goals'];
-const FOUR_PART = FOUR_PART_NAMES.flatMap(name => [`^## ${name}$`, `^## ${name}[ \\t]*\\n(?:(?!## )[ \\t]*(?:#[^\\n]*)?\\n)*[ \\t]*[^#\\s]`]);
 
 export function isFourPartBlueprint(text) {
-  return FOUR_PART.every(pattern => new RegExp(pattern, 'im').test(text ?? ''));
+  const lines = String(text ?? '').split('\n');
+  const at = FOUR_PART_NAMES.map(name => lines.reduce((found, line, i) => (line.trimEnd() === `## ${name}` ? [...found, i] : found), []));
+  if (at.some(found => found.length !== 1)) return false;
+  const starts = at.map(found => found[0]);
+  if (starts.some((start, i) => i > 0 && start <= starts[i - 1])) return false;
+  return starts.every(start => {
+    for (let i = start + 1; i < lines.length && !/^## /.test(lines[i]); i += 1) {
+      if (lines[i].trim() !== '' && !lines[i].trimStart().startsWith('#')) return true;
+    }
+    return false;
+  });
 }
 
 export const RUBRIC = [
@@ -296,7 +306,7 @@ function checkPassed(files, check) {
   if (check.fourPart && !isFourPartBlueprint(files['BLUEPRINT.md'])) return false;
   // A Blueprint that declares the four-part shape is judged only as the four-part page,
   // so the older section patterns cannot lend it credit it has not earned.
-  if (check.legacyShape && /^## What it is$/im.test(files['BLUEPRINT.md'] ?? '')) return false;
+  if (check.legacyShape && /^## What it is$/m.test(files['BLUEPRINT.md'] ?? '')) return false;
   if (check.requireFiles) {
     return check.requireFiles.every((file) => Object.hasOwn(files, file));
   }

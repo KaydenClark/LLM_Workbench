@@ -203,6 +203,12 @@ assert.notEqual(malformedWithLegacy['BLUEPRINT.md'], fourPart['BLUEPRINT.md'] + 
 assert.equal(checked(malformedWithLegacy,'fresh_control_docs'),false,'a malformed four-part page with a legacy heading takes the legacy path');
 assert.equal(checked(malformedWithLegacy,'version_contract'),false);
 assert.equal(checked({...fourPart,'BLUEPRINT.md':fourPart['BLUEPRINT.md'] + legacySections},'version_contract'),true,'a complete four-part page with an extra legacy heading is still the four-part page');
+// An emptied part cannot be filled by a legacy section appended later, and the part headings match exactly.
+for (const empty of ['Promised outcomes', 'Non-goals']) {
+  const filled = {...fourPart,'BLUEPRINT.md':fourPart['BLUEPRINT.md'].replace(new RegExp(`(## ${empty}\\n)\\n[^\\n]+\\n`), '$1') + '\n## Promised Outcomes\n\nA result.\n\n## Non-Goals\n\nA limit.\n'};
+  assert.equal(checked(filled,'version_contract'),false,'an emptied "'+empty+'" part cannot borrow a same-named legacy section');
+}
+assert.equal(checked({...fourPart,'BLUEPRINT.md':fourPart['BLUEPRINT.md'].replace('## Promised outcomes','## Promised Outcomes')},'version_contract'),false,'the part headings are matched exactly, case included');
 const oneHeading = {...modern,'BLUEPRINT.md':'# Blueprint\n\n## What it is\n\nA product.\n'};
 assert.equal(checked(oneHeading,'fresh_control_docs'),false,'a lone What it is heading is not destination-shaped');
 assert.equal(checked(oneHeading,'version_contract'),false);

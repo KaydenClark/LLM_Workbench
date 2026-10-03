@@ -154,6 +154,19 @@ const mixed = {...fourPart, 'BLUEPRINT.md': FOUR_PART_BLUEPRINT + '\n' + legacy[
 assert.equal(modelOf(mixed).score, 8, 'a complete four-part page plus extra sections is still judged as the four-part page');
 const mixedEmpty = {...fourPart, 'BLUEPRINT.md': emptied(FOUR_PART_BLUEPRINT, 'Non-goals') + '\n' + legacy['BLUEPRINT.md'].replace('## Non-Goals', '## Limits')};
 assert.ok(modelOf(mixedEmpty).score < 8, 'legacy sections appended to a four-part page with an empty part earn nothing');
+// The legacy headings differ from the four parts only in case ("Promised Outcomes", "Non-Goals"); a part that is
+// empty cannot be filled by a legacy section of the same name appended later, and a part must appear once, in order.
+for (const heading of FOUR_PART_HEADINGS) {
+  const withLegacy = {...fourPart, 'BLUEPRINT.md': emptied(FOUR_PART_BLUEPRINT, heading) + '\n## Promised Outcomes\n\nA result.\n\n## Non-Goals\n\nprivacy safety\n\n## What It Is\n\nA product.\n\n## Who It Serves\n\nPeople.\n'};
+  assert.ok(modelOf(withLegacy).score < 8, 'an emptied "'+heading+'" part cannot borrow a same-named legacy section appended later');
+}
+const reordered = FOUR_PART_BLUEPRINT.replace('## Who it serves', '## TEMP').replace('## Promised outcomes', '## Who it serves').replace('## TEMP', '## Promised outcomes');
+assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': reordered}).score < 8, 'the four parts must appear in order');
+const duplicated = FOUR_PART_BLUEPRINT + '\n## Non-goals\n\n- Again.\n';
+assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': duplicated}).score < 8, 'a part must appear once');
+const recased = FOUR_PART_BLUEPRINT.replace('## Promised outcomes', '## Promised Outcomes');
+assert.ok(modelOf({...fourPart, 'BLUEPRINT.md': recased}).score < 8, 'the part headings are matched exactly, case included');
+assert.equal(modelOf({...fourPart, 'BLUEPRINT.md': FOUR_PART_BLUEPRINT + '\n## An extra section\n\nMore.\n'}).score, 8, 'a further section does not disturb a well-formed page');
 const bareHeadings = {...fourPart, 'BLUEPRINT.md': FOUR_PART_HEADINGS.map(h => '## '+h+'\n').join('\n')};
 assert.ok(modelOf(bareHeadings).score <= 1.6, 'a page of bare headings earns no project-model credit beyond the Contract-only check');
 for (const [name, mutate] of [
