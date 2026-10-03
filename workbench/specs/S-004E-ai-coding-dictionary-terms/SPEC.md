@@ -224,6 +224,18 @@ Decided at Plan, 2026-10-03, from project evidence (the dogfood boundary, the te
 
 Not proposed here, for the owner if wanted: renaming the `update-harness` skill, the `sessions` lane or the cross-provider tools. Each is a public name, and a rename is its own change.
 
+## Conflicting Control Lines Handed To The Contract Carrier Rewrite
+
+Inventory made by the Lexicon writer lane while delivering the harness reconciliation (Desired Behavior 4), read at integration 336b6a27. `AGENTS.md`, `RUNBOOK.md` and `README.md` belong to the [Contract Carrier Pointer-Brief Rewrite](../S-004C-contract-carrier-pointer-brief-rewrite/SPEC.md) and the [Corrective Work Rules](../S-004F-corrective-work-rules/SPEC.md) Spec in turn, so this Spec does not write them. Each family below still reads the Workbench as a harness and awaits that Spec; none is a public name the owner asked to keep.
+
+- `AGENTS.md`: "Harness design changes normally update both" (Dogfood boundary), "Harness changes also capture the guardrail baseline" (Engineering And Verification) and "This harness does not define a house visual style" (Visual And Asset Work).
+- `RUNBOOK.md`: "the current harness" and "a harness change" in the evaluation and benchmarking text, "the whole harness" in the guardrail-audit text, "the harness rules themselves" and "a new harness version" in the Harness Feedback Loop, and the Manual Harness Feedback Reports and Harness Feedback Loop headings.
+- `README.md`: "an older or foreign harness", "back to this harness", "is not part of the harness", the heading "This Repo Dogfoods Its Own Harness", "the canonical harness", "the harness version" and "later harness improvements".
+
+Kept because they are public names or stable references, which the owner's answer leaves until renamed on their own: the `update-harness` skill and its mentions, `HARNESS_FEEDBACK.md`, the `[HARNESS_VERSION]` stamp placeholder, the "Installed State The Harness Wrote" heading and its links, and the "harness-shaped" room classification in the Runbook's adoption classification table.
+
+The separate-context review wording of `AGENTS.md` (the Git Rules and Owner Human QA paragraphs) and `RUNBOOK.md` (the Template Upgrade Release Gate steps, the verdict command placeholders and the evaluation steps) is inventoried by the batch-two Task, which adds the Automated review row.
+
 ## Non-Goals
 
 Copying dictionary entry text; adopting dictionary entries the owner has not supplied; renaming any skill, tool, lane, collection or file; changing the meaning of any rule; a model, effort or cost policy; the Contract carrier rewrite beyond the conflicting lines in Desired Behavior 4; implementing another capability.
