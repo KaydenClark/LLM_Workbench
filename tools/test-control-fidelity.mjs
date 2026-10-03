@@ -730,7 +730,7 @@ test('both Lexicons define every workflow verb once and state the delivery workf
     assert.match(rowsOf(content, 'Delivered')[0], /Delivered, not Complete/, `${relative} Delivered row`);
     assert.match(rowsOf(content, 'Check')[0], /automated checks the building agent runs on its own Task/, `${relative} Check row`);
     assert.doesNotMatch(rowsOf(content, 'Align')[0], /not itself implementation permission/, `${relative} Align row drops the old confirmation clause`);
-    assert.match(rowsOf(content, 'Confirm')[0], /authorizes the agents to carry it to its endpoint/, `${relative} Confirm row`);
+    assert.match(rowsOf(content, 'Confirm')[0], /authorizes the agents to carry the concept to its endpoint/, `${relative} Confirm row`);
     assert.equal(content.split('\n').filter((line) => /^\| \*\*Map\*\* \|/.test(line)).length, 1, `${relative} keeps one Map row for noun and verb`);
     assert.match(content.split('\n').find((line) => /^\| \*\*Map\*\* \|/.test(line)), /As a workflow verb, writing that direction: landmarks, Specs and decision records/, `${relative} Map row carries the verb`);
   }
