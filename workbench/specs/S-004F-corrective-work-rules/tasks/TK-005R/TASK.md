@@ -46,3 +46,9 @@ No `AGENTS.md`, `RUNBOOK.md`, Lexicon or template change here (TK-005T states th
 rules in the controls). The Wiki-claim route and the refusal for delivered Specs
 belong to TK-005S. A destination-change finding still records a return to Align
 and creates nothing.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s004f-tk005r | 9696c78dbc8223758427a9d04050caf715709b39 | ahead 0 behind 0 | 0 | Full AGENTS suite on committed candidate 9696c78d: 48 of 48 commands pass; red first (task-continuation tests and the verdict, owner-finding and re-close cases failed before the change), then green in tools/test-spec-report.mjs (3 new blocks plus the Continuation module block) and tools/test-spec-workbench.mjs (continued-Task close identity); fixtures in test-verdict-git-reads, test-verdict-candidate-binding and test-workbench-round-trip now name dispositions | Task record scope corrected (no command help text names corrective Tasks); no control, Runbook, Lexicon or Wiki update here - TK-005T states the rules in AGENTS.md and the Wiki lifecycle page changes with TK-005S | none | 45e3537b877f2b098c70af26d5b487d8ff57b06cead243bbb16eb12e6b49d1a5 |
