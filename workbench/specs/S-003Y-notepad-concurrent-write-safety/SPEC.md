@@ -8,8 +8,8 @@
 **Updated:** 2026-10-03
 **Catalog description:** Make overlapping writes to one JSON notepad impossible to lose silently: every write response says truthfully whether its entry landed.
 **Blockers:** none for TK-006I (the inspection of other writers) or TK-006J (the skill, Contract and ownership-decision reconciliation; its prerequisite TK-006H is done). TK-006J coordinates the skill wording with S-00Y.
-**Latest event:** TK-006I closed with proof.
-**Next gate:** Complete TK-006J.
+**Latest event:** TK-006J claimed by claude-captain-dispatcher.
+**Next gate:** Close TK-006J with verification and documentation proof.
 
 > **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a`.
 

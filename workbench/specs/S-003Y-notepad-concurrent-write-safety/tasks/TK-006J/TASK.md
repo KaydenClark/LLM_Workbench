@@ -3,7 +3,7 @@
 **Task ID:** TK-006J
 **Spec ID:** S-003Y
 **Slice:** Reconcile the writer rule in the skill, the Contract and the ownership decision
-**Status:** ready
+**Status:** in-progress
 **Stance:** Reconciler
 **Blockers:** TK-006H
 **Destination:** spec-acceptance: S-003Y Acceptance Criteria box 6 (source, the `notepad` skill, the accepted ownership decision's description of the defect and the writer rule in the Contract agree after delivery) and box 7 (named verification and remaining limitations recorded without claiming owner approval)
