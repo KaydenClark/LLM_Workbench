@@ -20,3 +20,4 @@
 | [000L](000L-agents-work-the-workbench-through-one-action-controls.md) | Agents work the workbench through one-action controls | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000M](000M-working-artifacts-are-scaffolding-cleared-away-once-their-knowledge-is-kept.md) | Working artifacts are scaffolding, cleared away once their knowledge is kept | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000N](000N-every-room-s-blueprint-is-the-four-part-short-page.md) | Every room's Blueprint is the four-part short page | accepted | 2026-10-03 | BLUEPRINT.md |
+| [000O](000O-the-blueprint-is-a-high-level-summary-of-the-direction-and-makes-us-ask-questions.md) | The Blueprint is a high-level summary of the direction and makes us ask questions | accepted | 2026-10-03 | BLUEPRINT.md |

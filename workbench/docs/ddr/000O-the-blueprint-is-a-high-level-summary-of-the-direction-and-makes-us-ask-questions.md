@@ -15,6 +15,6 @@ Why the owner chose it: None recorded: the grilling holds no owner reason for th
 
 Considered and rejected: None recorded.
 
-Consequences: None recorded as owner words. Accepted records that cover what the Blueprint is not and where decisions go, not restated here: [Active ADR decisions and destination Blueprints](../../adr/000A-active-adr-decisions-and-destination-blueprints.md), [Destination Decision Records are decision records beside ADRs](../../adr/000S-destination-decision-records-are-decision-records-beside-adrs.md) and [Landmarks are LANDMARK.md artifacts one size above Specs](../../adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md).
+Consequences: None recorded as owner words. Accepted records that cover what the Blueprint is not and where decisions go, not restated here: [Active ADR decisions and destination Blueprints](../adr/000A-active-adr-decisions-and-destination-blueprints.md), [Destination Decision Records are decision records beside ADRs](../adr/000S-destination-decision-records-are-decision-records-beside-adrs.md) and [Landmarks are LANDMARK.md artifacts one size above Specs](../adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md).
 
 Provenance: the Blueprint teardown grilling of 2026-10-02 to 2026-10-03: question BT-S14 (what the Blueprint is for), locked 2026-10-03 on the round-6 card.
