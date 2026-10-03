@@ -90,16 +90,52 @@ try {
 
 console.log(`ok - evaluator self-test passed; local score ${localScore}, single-file baseline ${singleFileScore}`);
 
-const destinationModel = scoreWorkbench(localFiles).breakdown.find(x => x.id === 'project_model');
+// S-004H: the Blueprint is either the legacy eight-section destination or the
+// four-part short page. Each project-model check keeps its weight and finds its
+// evidence at the owner that holds it, so the shape change moves no score.
+const FOUR_PART_BLUEPRINT = ['# Fixture - Blueprint', '', '## What it is', '', 'A finished product.', '', '## Who it serves', '', 'Its people.', '', '## Promised outcomes', '', '- A durable result.', '', '## Non-goals', '', '- Not a hosted service.', ''].join('\n');
+const EIGHT_SECTION_HEADINGS = ['Product Destination', 'Promised Outcomes', 'Integrated System Design', 'Cross-Cutting Qualities And Constraints'];
+const FOUR_PART_HEADINGS = ['What it is', 'Promised outcomes', 'Non-goals'];
+const modelOf = files => scoreWorkbench(files).breakdown.find(x => x.id === 'project_model');
+const rootBlueprintIsFourPart = /^## What it is$/m.test(localFiles['BLUEPRINT.md']);
+const destinationModel = modelOf(localFiles);
 assert.equal(destinationModel.missing.length, 0, 'current destination model must be evaluated at its actual owners');
-for (const heading of ['Product Destination', 'Promised Outcomes', 'Integrated System Design', 'Cross-Cutting Qualities And Constraints']) {
+for (const heading of rootBlueprintIsFourPart ? FOUR_PART_HEADINGS : EIGHT_SECTION_HEADINGS) {
   const changed = {...localFiles, 'BLUEPRINT.md':localFiles['BLUEPRINT.md'].replace('## '+heading,'## Removed')};
-  assert.ok(scoreWorkbench(changed).breakdown.find(x=>x.id==='project_model').missing.length > 0, heading+' must remain required');
+  assert.ok(modelOf(changed).missing.length > 0, heading+' must remain required');
 }
 
+const templateBlueprintIsFourPart = /^## What it is$/m.test(localFiles['templates/BLUEPRINT.md']);
 const templateModel = Object.fromEntries(['AGENTS.md','BLUEPRINT.md'].map(name => [name,localFiles['templates/'+name]]));
-assert.equal(scoreWorkbench(templateModel).breakdown.find(x=>x.id==='project_model').score,8,'generic destination model retains every substantive constraint prompt');
-for (const terms of [/privacy|safety/gi,/verified|verification|evidence/gi]) {
-  const changed={...templateModel,'BLUEPRINT.md':templateModel['BLUEPRINT.md'].replace(terms,'removed')};
-  assert.ok(scoreWorkbench(changed).breakdown.find(x=>x.id==='project_model').score<8,'removing substantive constraint prompts must lose credit');
+assert.equal(modelOf(templateModel).score,8,'generic destination model retains every substantive constraint prompt');
+if (!templateBlueprintIsFourPart) {
+  for (const terms of [/privacy|safety/gi,/verified|verification|evidence/gi]) {
+    const changed={...templateModel,'BLUEPRINT.md':templateModel['BLUEPRINT.md'].replace(terms,'removed')};
+    assert.ok(modelOf(changed).score<8,'removing substantive constraint prompts must lose credit');
+  }
 }
+
+// The four-part short page plus the generic Contract scores the full project
+// model weight, and each piece of evidence it relies on is still required.
+const fourPart = {...Object.fromEntries(['AGENTS.md'].map(name => [name,localFiles['templates/'+name]])), 'BLUEPRINT.md': FOUR_PART_BLUEPRINT};
+assert.equal(modelOf(fourPart).score, 8, 'a four-part Blueprint must score the full project model at its actual owners');
+assert.deepEqual(modelOf(fourPart).missing, []);
+for (const heading of FOUR_PART_HEADINGS) {
+  const changed = {...fourPart, 'BLUEPRINT.md': FOUR_PART_BLUEPRINT.replace('## '+heading, '## Removed')};
+  assert.ok(modelOf(changed).score < 8, 'the four-part heading "'+heading+'" must remain required');
+}
+const noWhoItServes = {...fourPart, 'BLUEPRINT.md': FOUR_PART_BLUEPRINT.replace('## Who it serves', '## Removed')};
+assert.equal(modelOf(noWhoItServes).score, 8, 'the people-served heading was never a scored check and stays unscored');
+for (const [name, mutate] of [
+  ['the Contract safety section', agents => agents.replace(/^## Safety And Change Control$/m, '## Removed')],
+  ['the Contract privacy rule', agents => agents.replace(/private|privacy/gi, 'removed')],
+  ['the Contract ownership table', agents => agents.replace(/Documentation Ownership And Proof/g, 'Removed')],
+  ['the Contract verification section', agents => agents.replace(/^## Engineering And Verification$/m, '## Removed').replace(/verified|verification|evidence/gi, 'removed')]
+]) {
+  const changed = {...fourPart, 'AGENTS.md': mutate(fourPart['AGENTS.md'])};
+  assert.notEqual(changed['AGENTS.md'], fourPart['AGENTS.md'], name+' mutation must change the Contract');
+  assert.ok(modelOf(changed).score < 8, 'removing '+name+' must lose credit');
+}
+// The eight-section legacy shape keeps its credit, so the swap lands without a gap.
+const legacy = {...Object.fromEntries(['AGENTS.md'].map(name => [name,localFiles['templates/'+name]])), 'BLUEPRINT.md': EIGHT_SECTION_HEADINGS.map(h => '## '+h+'\n\nprivacy safety verified evidence manifest\n').join('\n') + '\n## Non-Goals\n\nprivacy safety\n'};
+assert.equal(modelOf(legacy).score, 8, 'the eight-section destination keeps its credit');

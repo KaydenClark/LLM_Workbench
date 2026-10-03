@@ -33,11 +33,11 @@ export const RUBRIC = [
     label: 'Project model and contracts',
     weight: 8,
     checks: [
-      { label: 'project promise', variants: [{files:['BLUEPRINT.md'], patterns:['Product Map','Core promise']}, {files:['BLUEPRINT.md'],patterns:['^## Product Destination$', '^## Promised Outcomes$']}] },
-      { label: 'integrated architecture', variants: [{files:['BLUEPRINT.md'],patterns:['Architecture And Invariants','Layer']}, {files:['BLUEPRINT.md'],patterns:['^## Integrated System Design$', 'manifest|major parts']}] },
+      { label: 'project promise', variants: [{files:['BLUEPRINT.md'], patterns:['Product Map','Core promise']}, {files:['BLUEPRINT.md'],patterns:['^## Product Destination$', '^## Promised Outcomes$']}, {files:['BLUEPRINT.md'],patterns:['^## What it is$', '^## Promised outcomes$']}] },
+      { label: 'integrated architecture', variants: [{files:['BLUEPRINT.md'],patterns:['Architecture And Invariants','Layer']}, {files:['BLUEPRINT.md'],patterns:['^## Integrated System Design$', 'manifest|major parts']}, {files:['BLUEPRINT.md','AGENTS.md'],patterns:['^## What it is$', 'Documentation Ownership And Proof', 'manifest|major parts']}] },
       { label: 'contracts', variants: [{files:['BLUEPRINT.md'],patterns:['Spec Catalog','Capability record|capability-specific']}, {files:['AGENTS.md'],patterns:['Documentation Ownership And Proof','assigned.*SPEC|assigned.*spec','architectural decisions']}] },
-      { label: 'invariants', variants: [{files:['BLUEPRINT.md'],patterns:['Invariants','Source and tests|Implementation truth']}, {files:['BLUEPRINT.md'],patterns:['^## Cross-Cutting Qualities And Constraints$', 'Privacy|privacy', 'verified|evidence']}] },
-      { label: 'safety boundaries', files: ['BLUEPRINT.md'], patterns: ['Non-Goals', 'privacy|safety'] }
+      { label: 'invariants', variants: [{files:['BLUEPRINT.md'],patterns:['Invariants','Source and tests|Implementation truth']}, {files:['BLUEPRINT.md'],patterns:['^## Cross-Cutting Qualities And Constraints$', 'Privacy|privacy', 'verified|evidence']}, {files:['BLUEPRINT.md','AGENTS.md'],patterns:['^## What it is$', '^## Promised outcomes$', '^## Engineering And Verification$', 'Privacy|privacy|private data', 'verified|verification|evidence']}] },
+      { label: 'safety boundaries', variants: [{files:['BLUEPRINT.md'],patterns:['Non-Goals', 'privacy|safety']}, {files:['BLUEPRINT.md','AGENTS.md'],patterns:['^## What it is$', '^## Non-goals$', '^## Safety And Change Control$', 'privacy|private|safety']}] }
     ]
   },
   {

@@ -292,8 +292,14 @@ function patternCheck(id, label, weight, haystack, pattern, evidence, action) {
   return booleanCheck(id, label, weight, pattern.test(haystack), evidence, action);
 }
 
+// A destination-shaped Blueprint is either the eight-section destination or the
+// four-part short page; neither carries a review date or a version stamp.
+function isDestinationBlueprint(text) {
+  return /^## (?:Product Destination|What it is)$/m.test(text);
+}
+
 function controlDocsAreFresh(files, today, maxAgeDays) {
-  const destination = /^## Product Destination$/m.test(files['BLUEPRINT.md'] ?? '');
+  const destination = isDestinationBlueprint(files['BLUEPRINT.md'] ?? '');
   const docs = destination ? ['TASKBOARD.md', 'RUNBOOK.md'] : ['BLUEPRINT.md', 'TASKBOARD.md', 'RUNBOOK.md'];
   if (destination) {
     const date = parseDate((files['RUNBOOK.md'] ?? '').match(/\*\*Blueprint reviewed:\*\*\s*(\d{4}-\d{2}-\d{2})/i)?.[1]);
@@ -307,7 +313,7 @@ function controlDocsAreFresh(files, today, maxAgeDays) {
 }
 
 function versionContractIsConsistent(files) {
-  const destination = /^## Product Destination$/m.test(files['BLUEPRINT.md'] ?? '');
+  const destination = isDestinationBlueprint(files['BLUEPRINT.md'] ?? '');
   let manifest;
   try { manifest = JSON.parse(files['workbench/manifest.json'] ?? '{}'); } catch { return false; }
   const hasRootVersion = destination ? /^v\d+\.\d+\.\d+$/.test(manifest.workbenchVersion ?? '') : /\*\*Harness version:\*\*\s*v\d+(?:\.\d+)*/i.test(files['BLUEPRINT.md'] ?? '');

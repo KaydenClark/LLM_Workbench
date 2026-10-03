@@ -169,3 +169,17 @@ assert.equal(checked(modern,'version_contract'),true);
 assert.equal(checked({...modern,'RUNBOOK.md':modern['RUNBOOK.md'].replace('**Blueprint reviewed:** 2026-07-12','**Blueprint reviewed:** 2025-01-01')},'fresh_control_docs'),false);
 assert.equal(checked({...modern,'workbench/manifest.json':'{}'},'version_contract'),false);
 assert.equal(checked({...modern,'templates/AGENTS.md':'unstamped'},'version_contract'),false);
+
+// S-004H: the four-part short page is a destination-shaped Blueprint too. It
+// carries no review date or version stamp, so the audit must not fall back to
+// the legacy checks that look for them in the Blueprint.
+const fourPart = {...modern,'BLUEPRINT.md':'# Blueprint\n\n## What it is\n\nA portable product.\n\n## Who it serves\n\nIts people.\n\n## Promised outcomes\n\n- A result.\n\n## Non-goals\n\n- Not a harness.\n'};
+assert.equal(checked(fourPart,'fresh_control_docs'),true,'a four-part Blueprint is destination-shaped and needs no review stamp');
+assert.equal(checked(fourPart,'version_contract'),true,'a four-part Blueprint is destination-shaped and needs no version stamp');
+assert.equal(checked({...fourPart,'RUNBOOK.md':fourPart['RUNBOOK.md'].replace('**Blueprint reviewed:** 2026-07-12','**Blueprint reviewed:** 2025-01-01')},'fresh_control_docs'),false,'a four-part Blueprint keeps the recorded review date requirement');
+assert.equal(checked({...fourPart,'workbench/manifest.json':'{}'},'version_contract'),false);
+assert.equal(checked({...fourPart,'templates/AGENTS.md':'unstamped'},'version_contract'),false);
+// A Blueprint with neither shape still takes the legacy path.
+const neither = {...modern,'BLUEPRINT.md':'# Blueprint\n\n## Overview\n\nA product.\n'};
+assert.equal(checked(neither,'fresh_control_docs'),false,'a Blueprint with neither destination shape falls back to the legacy review-date check');
+assert.equal(checked(neither,'version_contract'),false,'a Blueprint with neither destination shape falls back to the legacy version-stamp check');
