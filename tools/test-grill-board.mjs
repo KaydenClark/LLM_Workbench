@@ -143,6 +143,15 @@ test('status derivation: pending, answered, applied, stale after revise, withdra
   assert.equal(readItems(dir).items.length, 1, 'withdraw never deletes');
 });
 
+test('equal timestamps never mark a changed answer or revision as already applied', () => {
+  const answer = { verdict: 'confirm', note: 'first answer', itemRevision: 1, at: '2026-10-04T00:00:00.000Z' };
+  const item = { status: 'active', revision: 1, applied: { ...answer, answerAt: answer.at } };
+  assert.equal(itemStatus(item, answer), 'applied');
+  assert.equal(itemStatus(item, { ...answer, verdict: 'decline' }), 'answered');
+  assert.equal(itemStatus(item, { ...answer, note: 'different answer' }), 'answered');
+  assert.equal(itemStatus({ ...item, revision: 2 }, { ...answer, itemRevision: 2 }), 'answered');
+});
+
 test('recordAnswer refuses an unknown item or a verdict that is not one of its options', () => {
   const dir = room();
   addItems(dir, [sample('a', { options: [{ value: 'x', label: 'X' }] })], { by: 'tester' });

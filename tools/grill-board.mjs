@@ -206,7 +206,11 @@ export function itemStatus(item, answer) {
   if (answer.itemRevision < item.revision) return 'stale';
   if (!answer.verdict.trim() || answer.verdict === 'defer') return 'pending';
   if (needsOwnerWords(answer)) return 'pending';
-  if (item.applied && item.applied.answerAt === answer.at) return 'applied';
+  // Timestamp precision alone cannot identify an answer: a revision or edit
+  // can share the millisecond of the previously applied answer.
+  if (item.applied && item.applied.answerAt === answer.at
+    && item.applied.itemRevision === answer.itemRevision
+    && item.applied.verdict === answer.verdict && item.applied.note === answer.note) return 'applied';
   return 'answered';
 }
 
