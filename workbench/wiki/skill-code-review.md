@@ -6,6 +6,7 @@ knowledge_role: curated
 provenance:
   - S-01F TK-00W source change and fresh-context scenario, 2026-09-26
   - Pinned upstream mattpocock/skills c55ee46073ed923f86ce59a5eb3b6d895095d1b7, retrieved 2026-09-26
+  - S-004C TK-005H moved the Runbook's independent review boundaries behind their index pointer into the skill, 2026-10-03
 source_paths:
   - workbench/skills/code-review/SKILL.md
   - workbench/specs/S-01F-code-review-skill-rebuild/SPEC.md
@@ -14,7 +15,7 @@ source_paths:
   - workbench/tools/spec-report.mjs
   - AGENTS.md
   - RUNBOOK.md
-last_verified: 2026-09-26
+last_verified: 2026-10-03
 ---
 
 # Code review: check one fixed candidate against both contracts
@@ -67,7 +68,7 @@ The skill descends from Matt Pocock's MIT-licensed `code-review` ([notice](../..
 - [Code-review source](../skills/code-review/SKILL.md)
 - [Individual delivery Spec](../specs/S-01F-code-review-skill-rebuild/SPEC.md)
 - [AGENTS.md Git rules and citation rule](../../AGENTS.md#git-rules)
-- [Runbook independent review boundaries](../../RUNBOOK.md#independent-review-boundaries)
+- [Independent review boundaries](../skills/code-review/SKILL.md#independent-review-boundaries), which the [Runbook operations index](../../RUNBOOK.md#operations-index) points to for independent review
 - [ADR-0037: independent review at integration](../docs/adr/0037-independent-review-at-integration.md)
 - [Wiki router](MEMORY.md)
 

@@ -43,7 +43,7 @@ treat its declared support lanes as the only durable path authority.
 
 Integration review checks the assembled Spec against its controls, assigned scope and named evidence, obtained with `report S-### --candidate <sha>` and bound to its content digest, recorded with `verdict`.
 While the room's Task-PR exemption holds (exemption 2 of its release Spec, which lands each Task as its own PR), a Task still lands as its own PR reviewed here as an immutable candidate diff against its Spec, using exact `BASE_SHA` and `HEAD_SHA`, reported by `gate --task TK-### --spec S-###`.
-Behavioral acceptance checks what actual installed agents did. Whole-Workbench main-readiness review checks system-wide coherence, ownership, drift and open acceptance against the Blueprint checklist in the Runbook. None substitutes for another. A readiness request is review-only; only the owner approves and merges main. Use a fresh context for integration.
+Behavioral acceptance checks what actual installed agents did. Whole-Workbench main-readiness review checks system-wide coherence, ownership, drift and open acceptance against the Blueprint checklist under [Independent review boundaries](#independent-review-boundaries). None substitutes for another. A readiness request is review-only; only the owner approves and merges main. Use a fresh context for integration.
 
 ## 3. Inspect both axes
 
@@ -95,3 +95,29 @@ This skill is review-only. Return evidence-backed findings in chat; changes begi
 only in a separately authorized implementation task. A passing review, a green
 suite or a recorded `verdict` is not owner Human QA: it neither records the
 owner's approval nor resets a failed Human QA gate.
+
+## Independent review boundaries
+
+Task/integration review uses a fresh context and immutable candidate, comparison
+base, expected integration tip and named verification. Inspect scope, behavior,
+recovery, documentation, installed identities and consequential report claims.
+If the target changes, compare and review the resulting candidate as required
+before combining branches; a prior PASS is not approval of changed content.
+
+Whole-Workbench main-readiness review is separately requested, review-only work.
+It checks the combined product for drift, open gates, coherent skill composition,
+installed acceptance and semantic ownership. For the Blueprint, require all
+applicable destination sections, no status/version/evidence/catalog material,
+only materially relevant active ADR (`workbench/docs/adr`) links, lossless
+removed-claim disposition, and root/template agreement. Record an explicit
+semantic pass/fail verdict; structure and link checks alone are insufficient.
+Only the owner approves/merges main.
+
+For incident claims inspect original call/result pairs, including failed,
+rejected and interrupted calls. Record coverage and missing/truncated evidence.
+Distinguish not attempted, rejected before execution, executed and failed,
+local success and remote acceptance with read-back. A summary's omission is
+not proof of non-occurrence. Behavioral acceptance separately records actual
+provider/version/model, prompt, source/installed hashes and observed skill use;
+explicit-path fixtures do not establish ordinary-prompt discovery. Unavailable
+checks remain unverified. Repeated controlled trials are needed for reliability.

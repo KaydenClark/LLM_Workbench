@@ -360,6 +360,62 @@ const FAMILIES = [
         moved: [/approve S-### --candidate SHA --owner NAME/, /retire-spec S-###/, /uncaptured-complete/, /git fetch origin main/]
       }
     ]
+  },
+  {
+    task: 'TK-005H Git, integration review and branch completion',
+    rows: [
+      {
+        operation: 'Branch and open a pull request', pointer: 'workbench/skills/implement/SKILL.md#version-control-procedures',
+        section: 'Version-Control Procedures', stub: false,
+        carries: [
+          'For coordinated Spec delivery, the normal route is a Worker Task-branch merge request into the Dispatcher Spec branch',
+          'A release-specific bootstrap exception may name a different route and its gate explicitly',
+          'Before creating a branch or PR, verify the live base and preserve dirty work.',
+          'PR descriptions state what changed, why, risks, and verification.'
+        ]
+      },
+      {
+        operation: 'Merge, prove containment and clean up a branch', pointer: 'workbench/skills/implement/SKILL.md#branch-completion',
+        section: 'Version-Control Procedures', stub: false,
+        carries: [
+          'A task is not finished at the push.', 'Prove containment of the immutable reviewed commit before any deletion',
+          'Use `git branch -d` for local deletion and an expected-tip guard for remote deletion.',
+          'never force it with `-D` to clear a branch', 'Stacked branches whose commits are already ancestors of the merged tip need no separate merge.',
+          'Run merge and containment verification as a fail-fast sequence.', 'Merge never requests branch deletion.',
+          'The deletion lease is a compare-and-delete guard, not permission to rewrite history.',
+          'For the Spec QA runtime, run the assembled review gate before merging.'
+        ]
+      },
+      {
+        operation: 'Review a candidate independently', pointer: 'workbench/skills/code-review/SKILL.md#independent-review-boundaries',
+        section: 'Independent Review Boundaries', stub: true,
+        carries: [
+          'Task/integration review uses a fresh context and immutable candidate', 'a prior PASS is not approval of changed content',
+          'Whole-Workbench main-readiness review is separately requested, review-only work.', 'Only the owner approves/merges main.',
+          "A summary's omission is not proof of non-occurrence.", 'Repeated controlled trials are needed for reliability.'
+        ]
+      }
+    ],
+    agents: [
+      {
+        section: 'Git Rules',
+        keeps: [
+          /workbench\/skills\/implement\/SKILL\.md#version-control-procedures/, /workbench\/skills\/code-review\/SKILL\.md#independent-review-boundaries/,
+          /RUNBOOK\.md#operations-index/, /[Nn]ever commit (directly )?to/, /Default PR target/, /force-push shared history/,
+          /separate-context reviewer must check the immutable candidate/, /self-review alone cannot satisfy the integration gate/,
+          /local notes and unmerged branches must not be their only discovery route/, /does not reset a failed Human QA gate/
+        ],
+        moved: [/normal route is a Worker Task-branch merge/, /A Task merge is containment/]
+      },
+      {
+        section: 'Branch Completion',
+        keeps: [
+          /workbench\/skills\/implement\/SKILL\.md#branch-completion/, /A task is not finished at the push/, /recoverable, not delivered/,
+          /Never force a branch delete with `-D`/, /removed only with owner approval/, /review is still pending/
+        ],
+        moved: [/git branch -d/, /expected-tip guard/, /already ancestors of/, /tracking upstream alone/]
+      }
+    ]
   }
 ];
 

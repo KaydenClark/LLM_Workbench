@@ -319,15 +319,14 @@ never re-anchored.
 
 ## Git Rules
 
-For coordinated Spec delivery, the normal route is a Worker Task-branch merge
-request into the Dispatcher Spec branch, then an independently reviewed Spec
-merge request into integration under Director coordination. A Task merge is
-containment; its Worker supplies self-check and proof. A release-specific
-bootstrap exception may name a different route and its gate explicitly; read
-that owner rather than silently applying the intended route to unsupported
-current tooling. Accepted decisions and current progress are reconciled into
-tracked owners on integration through reviewed changes; local notes and
-unmerged branches must not be their only discovery route.
+Branching, pull requests, merge, containment proof and branch cleanup follow
+the [`implement` skill](workbench/skills/implement/SKILL.md#version-control-procedures),
+and independent review the
+[`code-review` skill](workbench/skills/code-review/SKILL.md#independent-review-boundaries),
+which the [operations index](RUNBOOK.md#operations-index) points to. Accepted
+decisions and current progress are reconciled into tracked owners on
+integration through reviewed changes; local notes and unmerged branches must
+not be their only discovery route.
 
 - Branch per spec/task from the current PR target, normally the declared
   `[INTEGRATION_BRANCH_OR_DEFAULT]`; never commit to protected branches.
@@ -386,21 +385,16 @@ main promotion remains owner-only.
 ### Branch Completion
 
 A task is not finished at the push. A pushed branch is recoverable, not
-delivered. When the integration review passes, open the PR into the declared
-integration branch with the Runbook's PR command, merge it, and confirm that
-branch contains the work. Do not stall on an approved candidate or leave a
-passed PR waiting for the owner; only the owner-only final merge named above
-stays with the owner. "Never merge a PR left open for review" means a PR whose
-review is still pending, not one that already passed.
+delivered. Merging a reviewed candidate, proving integration containment and
+branch cleanup follow the
+[`implement` skill](workbench/skills/implement/SKILL.md#branch-completion).
+When the integration review passes, merge it and confirm the declared
+integration branch contains the work; do not stall on an approved candidate or
+leave a passed PR waiting for the owner. Only the owner-only final merge named
+above stays with the owner. "Never merge a PR left open for review" means a PR
+whose review is still pending, not one that already passed.
 
-Delete the branch once the declared integration branch contains it and nothing
-is lost, unless its owner defers cleanup. Prove containment of the immutable reviewed commit
-before any deletion, then check the actual local and remote branch tips too.
-Use `git branch -d` for local deletion and an expected-tip guard for remote
-deletion. A tracking upstream alone is not proof of integration containment;
-never force it with
-`-D` to clear a branch. Stacked branches whose commits are already ancestors of
-the merged tip need no separate merge. A branch still holding unmerged work is
+Never force a branch delete with `-D`. A branch still holding unmerged work is
 removed only with owner approval.
 
 ## Session Records And Checkpoints

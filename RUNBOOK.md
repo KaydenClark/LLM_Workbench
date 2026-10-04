@@ -75,7 +75,8 @@ Contract change.
 | Take in harness feedback | Feedback arrives from a downstream room. | [Harness Feedback Loop](#harness-feedback-loop) |
 | Run the automated feedback gate | Scheduled feedback automation runs or is configured. | [Automated Feedback Gate](#automated-feedback-gate) |
 | Record an automation run outcome | A scheduled run finished and its outcome must be recorded. | [Automation Run Outcomes](#automation-run-outcomes) |
-| Branch, review, merge and clean up | You create a branch or PR, merge into integration, or delete a merged branch. | [Version-Control Procedures](#version-control-procedures) |
+| Branch and open a pull request | You create a task branch or open a PR into integration, or need this room's Git commands. | [implement](workbench/skills/implement/SKILL.md#version-control-procedures); this room's commands: [Version-Control Procedures](#version-control-procedures) |
+| Merge, prove containment and clean up a branch | The integration review passed: merge the reviewed candidate, prove integration contains it and delete the merged branch. | [implement](workbench/skills/implement/SKILL.md#branch-completion); this room's closeout commands: [Version-Control Procedures](#version-control-procedures) |
 | Write a manual harness feedback report | A setup-only Round One check succeeded and an assessment is assigned. | [Manual Harness Feedback Reports](#manual-harness-feedback-reports) |
 | Troubleshoot a known failure | A command fails with a symptom listed there. | [Troubleshooting](#troubleshooting) |
 | Recover or roll back | A change fails and its touched files must be restored or reverted. | [Recovery And Rollback](#recovery-and-rollback) |
@@ -83,7 +84,7 @@ Contract change.
 | Size and continue work | You size a Task or leave work a fresh context can resume. | [Evidence And Continuation Practices](#evidence-and-continuation-practices); [notepad](workbench/skills/notepad/SKILL.md#continuing-after-a-save-or-handoff); [save](workbench/skills/save/SKILL.md#evidence-partitioning); [to-tasks](workbench/skills/to-tasks/SKILL.md#sizing-a-task) |
 | Check the Workbench connection identity | A room's `workbenchId` is created, read or compared. | [Workbench connection identity](#workbench-connection-identity) |
 | Check configured-host capabilities | A host is set up, or its lanes, skill discovery or tool execution are in doubt. | [Configured-host capability checks](#configured-host-capability-checks) |
-| Review a candidate independently | A candidate needs separate-context review before integration. | [Independent Review Boundaries](#independent-review-boundaries) |
+| Review a candidate independently | A candidate needs separate-context review before integration, or a main-readiness or incident-claim review is requested. | [code-review](workbench/skills/code-review/SKILL.md#independent-review-boundaries) |
 
 ## Release Identity
 
@@ -1807,6 +1808,11 @@ from an explicitly authorized GPT_OS task.
 
 ## Version-Control Procedures
 
+Branching, pull requests, merge, containment proof and cleanup follow the
+[`implement` skill](workbench/skills/implement/SKILL.md#version-control-procedures)
+and its [branch completion](workbench/skills/implement/SKILL.md#branch-completion)
+procedure; this section keeps this room's commands for them.
+
 Policy and authority live in `AGENTS.md` -> Git Rules. Operational commands:
 
 ```bash
@@ -1816,9 +1822,6 @@ git switch -c codex/short-description origin/integration
 git diff --check
 gh pr create --base integration --fill
 ```
-
-Before creating a branch or PR, verify the live base and preserve dirty work.
-PR descriptions state what changed, why, risks, and verification.
 
 Closeout, once the integration review has passed. Export `TASK_BRANCH`,
 `PR_NUMBER`, and the reviewed full commit SHA as `EXPECTED_HEAD` before running
@@ -1879,15 +1882,6 @@ if [ "$CLEANUP" = yes ]; then
 fi
 )
 ```
-
-The subshell stops on any failure without closing the caller's shell. Merge
-never requests branch deletion. Containment uses the immutable reviewed SHA,
-so it remains checkable if GitHub already removed the source branch. Cleanup
-checks local and remote tips separately; a missing branch is already clean.
-The deletion lease is a compare-and-delete guard, not permission to rewrite
-history. Never use `-D` or an unconditional force push to bypass failed checks.
-If a worktree still holds the task branch, local deletion fails and cleanup
-stops. When cleanup is deferred, both branches and the checkout stay intact.
 
 Disposable review clones and linked worktrees live under the host temporary
 directory (`/private/tmp/llm-workbench-<purpose>-<sha>` or the session
@@ -2052,25 +2046,6 @@ explicit skill-path invocation alone does not prove automatic discovery.
 
 ## Independent Review Boundaries
 
-Task/integration review uses a fresh context and immutable candidate, comparison
-base, expected integration tip and named verification. Inspect scope, behavior,
-recovery, documentation, installed identities and consequential report claims.
-If the target changes, compare and review the resulting candidate as required
-before combining branches; a prior PASS is not approval of changed content.
-
-Whole-Workbench main-readiness review is separately requested, review-only work.
-It checks the combined product for drift, open gates, coherent skill composition,
-installed acceptance and semantic ownership. For the Blueprint, require all
-applicable destination sections, no status/version/evidence/catalog material,
-only materially relevant active ADR links, lossless removed-claim disposition,
-and root/template agreement. Record an explicit semantic pass/fail verdict;
-structure and link checks alone are insufficient. Only Kayden approves/merges main.
-
-For incident claims inspect original call/result pairs, including failed,
-rejected and interrupted calls. Record coverage and missing/truncated evidence.
-Distinguish not attempted, rejected before execution, executed and failed,
-local success and remote acceptance with read-back. A summary's omission is
-not proof of non-occurrence. Behavioral acceptance separately records actual
-provider/version/model, prompt, source/installed hashes and observed skill use;
-explicit-path fixtures do not establish ordinary-prompt discovery. Unavailable
-checks remain unverified. Repeated controlled trials are needed for reliability.
+Task and integration review, main-readiness review and incident-claim evidence
+follow the
+[`code-review` skill](workbench/skills/code-review/SKILL.md#independent-review-boundaries).
