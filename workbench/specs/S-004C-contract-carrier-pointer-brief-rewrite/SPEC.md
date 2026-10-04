@@ -3,13 +3,13 @@
 **Spec ID:** S-004C
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s004c-tk005k
+**Owner:** claude-s004c-tk006l
 **Stance:** Builder
 **Updated:** 2026-10-04
 **Catalog description:** Rewrite AGENTS.md as a short standing brief and RUNBOOK.md as an operations index of context pointers, with each operation's procedure and binding requirements in a tracked skill the carrier points to.
 **Blockers:** Remaining Tasks wait on gates recorded as Task blockers: the declared maintainer-skill list check change (TK-006L, from the owner's 2026-10-04 choice of option A), which TK-005K and behind it TK-005M, TK-005N and TK-005P wait on; the Worker and Captain role skills (TK-005L); the Lexicon writer's turn (TK-005N); and delivery of the `LANDMARK.md` artifact (TK-005O).
-**Latest event:** 2026-10-04: the owner chose option A for the maintainer-skill home ("A ) maintainer skills."); the Dispatcher cleared `owner:maintainer-skill-home-decision`, cut TK-006L for the declared maintainer-skill list check change, and set TK-005K to wait on it.
-**Next gate:** TK-006L (declared maintainer-skill list) lands; then TK-005K resumes, followed by TK-005M and TK-005N. TK-005L waits on S-002E and S-004B delivery, TK-005O on S-003Z delivery, and TK-005P on all of them.
+**Latest event:** TK-006L claimed by claude-s004c-tk006l.
+**Next gate:** Close TK-006L with verification and documentation proof.
 
 > **Citation anchors.** pre=`226212f1790badce0a5bdcd934d2e48e3981e05f` post=`226212f1790badce0a5bdcd934d2e48e3981e05f`.
 

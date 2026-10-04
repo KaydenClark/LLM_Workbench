@@ -3,7 +3,7 @@
 **Task ID:** TK-006L
 **Spec ID:** S-004C
 **Slice:** Declare maintainer skills that the closed-bundle checks allow and never ship
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-005J
 **Destination:** spec-acceptance: `RUNBOOK.md` is an operations index in which each operation's procedure is reachable in a skill (for the maintainer-only operations, through the owner's 2026-10-04 choice of option A on TK-005K: a declared maintainer-skill list the closed-bundle checks exclude and never ship).
