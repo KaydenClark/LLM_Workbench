@@ -183,8 +183,10 @@ contains stale version/provenance information that can misroute a cold-start
 agent. Historical and append-only claims remain preserved when their scope and
 time are explicit. The self-drift capability and proof are owned by
 [`S-00K`](workbench/specs/S-00K-workbench-self-drift-check/SPEC.md). Run its
-read-only pre/post receipt alongside the bounded manual semantic check in
-RUNBOOK; do not claim a clean update while known current-facing drift remains.
+read-only pre/post receipt alongside the bounded manual semantic check, both in
+the [`workbench-room-checks` skill](workbench/skills/workbench-room-checks/SKILL.md#workbench-self-drift-check)
+the operations index points to; do not claim a clean update while known
+current-facing drift remains.
 
 ## Work Selection And Lifecycle
 
@@ -277,8 +279,9 @@ approved; its procedure is the Runbook's
 [Template Upgrade Release Gate](RUNBOOK.md#template-upgrade-release-gate).
 Record this proof in the current release spec; a stale or unverified Template
 keeps that release gate open. Source-template tests and fresh-project generation
-do not substitute for the installed upgrade. RUNBOOK's Template Upgrade Release
-Gate owns the procedure. This producer release requirement does not add an
+do not substitute for the installed upgrade. The `workbench-release` skill that
+the Runbook section and its index row point to owns the procedure. This
+producer release requirement does not add an
 external repository prerequisite to ordinary project work or authorize other
 room updates. Main promotion remains owner-only in both repositories.
 
