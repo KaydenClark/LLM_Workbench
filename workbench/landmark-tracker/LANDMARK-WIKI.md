@@ -52,8 +52,10 @@ occurrence passes when any one of these holds:
    `[records](...)` does not.
 2. **A path slug names it.** The identifier is followed directly by a hyphenated
    slug of two or more lowercase words, as in
-   `workbench/specs/S-002A-landmark-records/SPEC.md`. One word, as in
-   `ADR-0041-history`, does not name it.
+   `workbench/specs/S-002A-landmark-records/SPEC.md`. Later segments may start
+   with a digit, as in `S-045-v3-1-2-follow-ups`, but at least two segments must
+   start with a letter; one word, as in `ADR-0041-history`, or a version
+   fragment, as in `ADR-0041-v3-1`, does not name it.
 3. **A name phrase is adjacent.** Only whitespace and wrapper or separator
    characters (parentheses, brackets, backticks, emphasis marks, quotes, a colon
    or a spaced dash) separate the identifier from a name phrase before or after
@@ -141,3 +143,19 @@ Migration Spec replaced that ban with this name-and-context rule
 (`landmark-bare-id`); the Landmark Records Spec and Landmark Tracker Foundation
 Spec keep their original requirement text as history and carry an evidence row
 for the change.
+
+Landmark synthesis pages: each landmark's page lives in
+`workbench/wiki/design-concepts/` as `landmark-<title>.md`, is routed from the
+Wiki router, and is validated with this command; its convention is in the
+[design-concepts README](../wiki/design-concepts/README.md#landmark-synthesis-pages).
+`tools/test-landmark-wiki.mjs` checks that every landmark record has exactly one
+routed page that passes this rule.
+
+Assessment boundary: the Tracker's claim and documentation assessment
+(`revise --claim-evidence`, `--assess ... --evidence`) records the evidence
+reference an operator or agent names, as `<artifact>@<revision>`, and derives a
+claim's `supported`/`affected` status from record revisions; `rebuild` does not
+read Wiki bytes. A synthesis page can be named as that evidence, but nothing
+yet compares a card's expected claims with a page's actual bytes. Doing so is a
+later delivery decision of the Landmark Records Spec, not a property of these
+pages.

@@ -5,7 +5,7 @@ sensitivity: normal
 knowledge_role: curated
 provenance:
   - Owner-directed per-Spec reconciliation, 2026-09-19
-  - Moved into the features collection and restructured as a feature article by Wiki Evolving-Synthesis Migration (S-003W) Task TK-001 using wiki.mjs move-note, 2026-10-04
+  - Moved into the features collection and restructured as a feature article by Wiki Evolving-Synthesis Migration (S-003W) Task Link-Safe Note Move Proven On One Article (TK-001) using wiki.mjs move-note, 2026-10-04
 source_paths:
   - workbench/specs/retired/S-033-silent-gap-diagnostics/SPEC.md
   - workbench/tools/wiki.mjs
@@ -83,4 +83,4 @@ frozen checkpoint history stays recoverable.
 ## History
 
 - 2026-09-19: Created on owner direction as one article for this legacy Spec after reading its full record and checking named live sources. Evolved or superseded claims are identified explicitly. No Spec was moved, retired or discarded, and no retrospective Human QA is asserted.
-- 2026-10-04: Moved from `design-concepts/spec-S-033-silent-gap-diagnostics.md` into the features collection under this name with `wiki.mjs move-note`, retyped `feature` and restructured into the four feature sections from its existing prose, for the Wiki Evolving-Synthesis Migration Spec (S-003W) Task TK-001. Every live link to it was rewritten by the move; no claim was changed.
+- 2026-10-04: Moved from `design-concepts/spec-S-033-silent-gap-diagnostics.md` into the features collection under this name with `wiki.mjs move-note`, retyped `feature` and restructured into the four feature sections from its existing prose, for the Wiki Evolving-Synthesis Migration Spec (S-003W) Task Link-Safe Note Move Proven On One Article (TK-001). Every live link to it was rewritten by the move; no claim was changed.

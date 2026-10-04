@@ -1268,19 +1268,19 @@
       "line": 183,
       "text": "read-only pre/post receipt alongside the bounded manual semantic check in",
       "hash": "6250501c1b2b4a6d0396ac1700d794118d30c51f9a9515509158774ab41dc001",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "pointer",
+      "homePath": "AGENTS.md",
+      "landedText": "read-only pre/post receipt alongside the bounded manual semantic check, both in the [`workbench-room-checks` skill](workbench/skills/workbench-room-checks/SKILL.md#workbench-self-drift-check) the operations index points to",
+      "reason": "TK-005K: the update drift boundary keeps its always-true rule and now points at the self-drift procedure, which moved from RUNBOOK.md to the workbench-room-checks maintainer skill."
     },
     {
       "line": 184,
       "text": "RUNBOOK; do not claim a clean update while known current-facing drift remains.",
       "hash": "099919f7f3967117b6ada23806b2caac62347a669613b1e7970f23ee85497bac",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "pointer",
+      "homePath": "AGENTS.md",
+      "landedText": "do not claim a clean update while known current-facing drift remains.",
+      "reason": "TK-005K: the same sentence, rewrapped after the pointer to the workbench-room-checks self-drift procedure replaced \"in RUNBOOK\"."
     },
     {
       "line": 188,
@@ -2952,54 +2952,54 @@
       "text": "approved. This is the required real-room test of `update-harness`. Pin the source",
       "hash": "86fc66e8420acdca9d438b814222edc8bb623cb0e4c05bd9ef078aec943bd90d",
       "homeKind": "restates-owner",
-      "homePath": "RUNBOOK.md",
+      "homePath": "workbench/skills/workbench-release/SKILL.md",
       "landedText": "This is the required real-room test of `update-harness`.",
-      "reason": "TK-005I: the Runbook Template Upgrade Release Gate section owns this procedure (AGENTS.md already said so); the AGENTS.md subsection keeps its obligation, proof and owner-only lines and points to that section. The restated claim is the landed text: the Runbook section now states the real-room test sentence and its step 1 pins the source commit; \"approved.\" stays in the AGENTS.md brief."
+      "reason": "TK-005I: the Runbook Template Upgrade Release Gate section owns this procedure (AGENTS.md already said so); the AGENTS.md subsection keeps its obligation, proof and owner-only lines and points to that section. The restated claim is the landed text: the Runbook section now states the real-room test sentence and its step 1 pins the source commit; \"approved.\" stays in the AGENTS.md brief. TK-005K moved that owner, the Template Upgrade Release Gate procedure, from RUNBOOK.md to the workbench-release maintainer skill the Runbook section and its index row point to."
     },
     {
       "line": 403,
       "text": "commit and prior Template commit, exercise the public upgrade route, preserve",
       "hash": "fa591de1a8d8ff3e66293d2f143a345107df2f2e84ea4abd24371ea2ad241698",
       "homeKind": "restates-owner",
-      "homePath": "RUNBOOK.md",
+      "homePath": "workbench/skills/workbench-release/SKILL.md",
       "landedText": "Pin the clean source version/commit and the Template's current integration commit",
-      "reason": "TK-005I: the Runbook Template Upgrade Release Gate section owns this procedure (AGENTS.md already said so); the AGENTS.md subsection keeps its obligation, proof and owner-only lines and points to that section. The restated claim is the landed text: step 1 pins source and prior Template commits; step 2 follows the update-harness skill (the public upgrade route)."
+      "reason": "TK-005I: the Runbook Template Upgrade Release Gate section owns this procedure (AGENTS.md already said so); the AGENTS.md subsection keeps its obligation, proof and owner-only lines and points to that section. The restated claim is the landed text: step 1 pins source and prior Template commits; step 2 follows the update-harness skill (the public upgrade route). TK-005K moved that owner, the Template Upgrade Release Gate procedure, from RUNBOOK.md to the workbench-release maintainer skill the Runbook section and its index row point to."
     },
     {
       "line": 404,
       "text": "room-owned state, and verify matching manifest/control/runtime versions, exact",
       "hash": "ba160fb621a9906e2ccce4efebf2bb2cd219cc2e6822de595ef7149af8f1600f",
       "homeKind": "restates-owner",
-      "homePath": "RUNBOOK.md",
+      "homePath": "workbench/skills/workbench-release/SKILL.md",
       "landedText": "Keep original adoption/genesis provenance and room identity",
-      "reason": "TK-005I: the Runbook Template Upgrade Release Gate section owns this procedure (AGENTS.md already said so); the AGENTS.md subsection keeps its obligation, proof and owner-only lines and points to that section. The restated claim is the landed text: step 2 preserves room-owned provenance and identity and step 3 verifies manifest, control stamps and runtime receipt name the new version."
+      "reason": "TK-005I: the Runbook Template Upgrade Release Gate section owns this procedure (AGENTS.md already said so); the AGENTS.md subsection keeps its obligation, proof and owner-only lines and points to that section. The restated claim is the landed text: step 2 preserves room-owned provenance and identity and step 3 verifies manifest, control stamps and runtime receipt name the new version. TK-005K moved that owner, the Template Upgrade Release Gate procedure, from RUNBOOK.md to the workbench-release maintainer skill the Runbook section and its index row point to."
     },
     {
       "line": 405,
       "text": "managed bytes, the Template's full suite and recovery evidence. Independently",
       "hash": "b065d820d4100797d0469f706b9a751b90e1ef36426587e4b05b527ff54bfde4",
       "homeKind": "restates-owner",
-      "homePath": "RUNBOOK.md",
+      "homePath": "workbench/skills/workbench-release/SKILL.md",
       "landedText": "compare every installed managed hash. Run the Template's full documented suite",
-      "reason": "TK-005I: the Runbook Template Upgrade Release Gate section owns this procedure (AGENTS.md already said so); the AGENTS.md subsection keeps its obligation, proof and owner-only lines and points to that section. The restated claim is the landed text: step 3 checks managed hashes and the full suite; step 5 records preservation and recovery evidence."
+      "reason": "TK-005I: the Runbook Template Upgrade Release Gate section owns this procedure (AGENTS.md already said so); the AGENTS.md subsection keeps its obligation, proof and owner-only lines and points to that section. The restated claim is the landed text: step 3 checks managed hashes and the full suite; step 5 records preservation and recovery evidence. TK-005K moved that owner, the Template Upgrade Release Gate procedure, from RUNBOOK.md to the workbench-release maintainer skill the Runbook section and its index row point to."
     },
     {
       "line": 406,
       "text": "review and merge the Template candidate into its declared integration branch,",
       "hash": "27b9868ca562ec7d3e6b018786a25eb7941942b944be079b3ccc0f56876d3a3d",
       "homeKind": "restates-owner",
-      "homePath": "RUNBOOK.md",
+      "homePath": "workbench/skills/workbench-release/SKILL.md",
       "landedText": "Obtain separate-context review of the immutable Template candidate, merge into its declared integration branch",
-      "reason": "TK-005I: the Runbook Template Upgrade Release Gate section owns this procedure (AGENTS.md already said so); the AGENTS.md subsection keeps its obligation, proof and owner-only lines and points to that section. The restated claim is the landed text: step 4."
+      "reason": "TK-005I: the Runbook Template Upgrade Release Gate section owns this procedure (AGENTS.md already said so); the AGENTS.md subsection keeps its obligation, proof and owner-only lines and points to that section. The restated claim is the landed text: step 4. TK-005K moved that owner, the Template Upgrade Release Gate procedure, from RUNBOOK.md to the workbench-release maintainer skill the Runbook section and its index row point to."
     },
     {
       "line": 407,
       "text": "prove remote containment, and rerun its checks from a fresh remote clone.",
       "hash": "bef671e33cbb7979bda62592c5eb366d6bd6f19763a846deb62b373a7c82f18a",
       "homeKind": "restates-owner",
-      "homePath": "RUNBOOK.md",
+      "homePath": "workbench/skills/workbench-release/SKILL.md",
       "landedText": "prove the reviewed commit is contained remotely. Clone that remote result afresh and repeat the full Template suite and installed-runtime checks",
-      "reason": "TK-005I: the Runbook Template Upgrade Release Gate section owns this procedure (AGENTS.md already said so); the AGENTS.md subsection keeps its obligation, proof and owner-only lines and points to that section. The restated claim is the landed text: step 4."
+      "reason": "TK-005I: the Runbook Template Upgrade Release Gate section owns this procedure (AGENTS.md already said so); the AGENTS.md subsection keeps its obligation, proof and owner-only lines and points to that section. The restated claim is the landed text: step 4. TK-005K moved that owner, the Template Upgrade Release Gate procedure, from RUNBOOK.md to the workbench-release maintainer skill the Runbook section and its index row point to."
     },
     {
       "line": 408,
@@ -3023,19 +3023,19 @@
       "line": 410,
       "text": "do not substitute for the installed upgrade. RUNBOOK's Template Upgrade Release",
       "hash": "f46b6fb5622d1b416b7f56a0cbf7d7061af4ca01d1e2df075778d22d33b61124",
-      "homeKind": "stays",
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "pointer",
+      "homePath": "AGENTS.md",
+      "landedText": "do not substitute for the installed upgrade. The `workbench-release` skill that the Runbook section and its index row point to owns the procedure.",
+      "reason": "TK-005K moved the Template Upgrade Release Gate procedure from RUNBOOK.md to the workbench-release maintainer skill; the brief names the new owner (previously classified stays)."
     },
     {
       "line": 411,
       "text": "Gate owns the procedure. This producer release requirement does not add an",
       "hash": "456d684dc14b205e9fd06c7e28d194499cff4844997e23aaadb7ccd21af09378",
-      "homeKind": "stays",
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "pointer",
+      "homePath": "AGENTS.md",
+      "landedText": "owns the procedure. This producer release requirement does not add an",
+      "reason": "TK-005K: the same sentence after the owner of the procedure changed to the workbench-release maintainer skill (previously classified stays)."
     },
     {
       "line": 412,

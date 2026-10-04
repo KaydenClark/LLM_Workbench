@@ -1,7 +1,8 @@
 # evals/ — the measurement apparatus
 
 This turns "the template feels better" into a number with a confidence interval.
-Read [`../RUNBOOK.md`](../RUNBOOK.md) -> Evaluation And Benchmarking for the
+Read the [`workbench-evaluation` skill](../workbench/skills/workbench-evaluation/SKILL.md),
+which the [`../RUNBOOK.md`](../RUNBOOK.md) operations index points to, for the
 *why* (hypotheses, validity threats, statistics). This file is the *how*.
 
 ## What's here
