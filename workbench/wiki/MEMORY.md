@@ -105,7 +105,11 @@ copying task state here.
 
 For the owner's current package review, the [Consequential Decision Record
 (shared Grill Board)](../grill-board/README.md) bundles questions, named owners,
-proposals, consequences and original question history by destination scope.
+proposals, consequences and original question history. Topic cards explain
+what to think about; decision kind, workflow stage and destination scale can
+be combined into a small fixed batch. Saved answers and applied answers have
+separate counts. The board README owns these navigation and completion rules;
+the topics do not replace the accepted landmark map.
 Its header also opens full current AGENTS, RUNBOOK, BLUEPRINT, LEXICON, Landmark,
 ADR and DDR reading pages, with linked review drafts distinguished from current
 content and proposed excerpts. Navigation preserves the question answer drafts;

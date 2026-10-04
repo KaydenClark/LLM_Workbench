@@ -5,7 +5,10 @@ shared working review package, using the existing Grill Board protocol. It is
 not a newly accepted artifact type. The owner explicitly requested package
 review instead of the ordinary one-question-at-a-time interview.
 
-Items are grouped by **Blueprint, Landmark, Spec and Task** destination scope.
+The opening view groups items into **topics with thinking frames**. Decision
+kind, workflow stage, and **Blueprint, Landmark, Spec and Task** scale are
+independent filters, so the owner can choose a slice without reading the whole
+package. These navigation topics do not change the accepted landmark map.
 Each versioned `brief` explains the question, named artifacts and their purpose,
 why the choice matters, the recommendation, proposed changes, consequences,
 and related Destination Question Cards with their original grilling history.
@@ -100,10 +103,58 @@ node tools/grill-board.mjs serve
 
 Open <http://127.0.0.1:4646/>. Pick a verdict on each card and type notes; every
 change saves to `answers.json` as you go (the card says "Saved <time>"). Use
-the left filters to see only what is left, and the search box to find a topic.
+the left filters to choose a kind of decision, topic, scale and workflow stage,
+and the search box to find a question.
 "Read the full draft text" opens a decision record or page text in full. Source
 links open the file as it is in your checkout, or on GitHub at the commit the
 item was built from (↗).
+
+### Choose a finishable slice
+
+Start with a topic card. Its **Think about { … }** frame and intended outcome
+explain the mental scope before the owner opens a question. Eight editorial
+topics span purpose, workflow, responsibility, context, records, tools,
+coordination and releases. Each existing item has one primary navigation topic;
+all of its original sources and related histories remain available. Topic
+assignments live with the local page, keyed by stable item identity. New items
+without a curated assignment appear under **Other topics**, never disappear.
+
+Three kinds of attention cut across those topics:
+
+- **Unblock / direct work**: items already classified as owner decisions.
+  This is the package's classification, not a live claim that an active Task
+  is blocked. Read the named owner before acting on an answer.
+- **Explore / settle decisions**: choices to resolve, including older prepared
+  questions that may already have answers in their linked history.
+- **Review existing work**: delivery approvals, decision/page texts, question
+  card understanding and the preserved grilling ledger.
+
+The workflow counts are **To answer**, **Revisit**, **With agents**, **Applied**,
+**Not now**, and **Withdrawn**. Each item counts once. Not now is a current
+saved deferral, while a changed revision goes to Revisit. With agents means a
+current applicable answer was saved; Applied means an agent recorded where it
+landed. These are review progress, not implementation or delivery stages.
+
+Open a slice, choose **3, 5 or 10 questions**, and start its next unanswered
+batch, or use checkboxes to choose any set. The page opens one full question
+at a time. The batch membership stays fixed as answers save. Notes without a
+verdict, deferrals, stale answers and unsaved edits do not count as answered.
+Withdrawn items are counted separately and need no answer. **Your part of this
+batch is done** is a stopping point, not proof that agents applied the answers.
+
+Pause a batch to browse another slice; resume it or release it before starting
+another. Release/finish only clears the local batch selection. It never clears
+an answer. Batch identity persists across reloads in this browser's local
+storage; the shared answer file remains the cross-agent source. Browsers that
+disable local storage can still answer but cannot retain a batch after reload.
+The existing board-change banner asks for a reload after an agent changes the
+package; it never redraws or replaces an active answer draft automatically.
+
+One-minute demo: choose **People, agents & responsibility**, select a batch of
+3, and open any question. Pause and resume it, or use Read to visit an artifact
+and return. The same three questions remain, with separate saved/applied counts.
+Use a disposable board for answer-saving tests; never submit fixture verdicts
+to the owner's live board.
 
 ### Read the consequential artifacts
 
