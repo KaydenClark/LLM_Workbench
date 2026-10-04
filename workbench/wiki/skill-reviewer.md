@@ -4,7 +4,7 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - S-01R TK-01I reviewer source reconciliation, 2026-10-01
+  - S-01R (reviewer skill rebuild Spec) TK-01I (Deliver the reviewer skill destination Task) reviewer source reconciliation, 2026-10-01
 source_paths:
   - workbench/skills/reviewer/SKILL.md
   - workbench/skills/reviewer/references/review-evidence.md

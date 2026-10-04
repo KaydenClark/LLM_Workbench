@@ -4,8 +4,8 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - Owner-accepted concept and S-00W planning, 2026-09-23
-  - S-00X TK-00O source rebuild and fresh-context scenario, 2026-09-24
+  - Owner-accepted concept and S-00W (Concept Grilling And Notepad Composition Spec) planning, 2026-09-23
+  - S-00X (grilling skill rebuild Spec) TK-00O (Deliver the grilling skill destination Task) source rebuild and fresh-context scenario, 2026-09-24
   - Pinned upstream mattpocock/skills c55ee46073ed923f86ce59a5eb3b6d895095d1b7, retrieved 2026-09-24
 source_paths:
   - workbench/skills/grilling/SKILL.md
@@ -36,11 +36,11 @@ The map is provisional, not a questionnaire written up front. A locked answer re
 
 ### Example, from the verification run
 
-In the S-00X scenario, the agent recommended that reading-list nudges help the owner *clear* the backlog. The owner answered that nudges are for *reading* and should never suggest throwing things away. The agent read back that answer, not its own recommendation, marked it pending, and asked only whether an archive button was still allowed. The owner corrected two details. The agent revised the readback and asked no new question until the owner said "Yes, that's right". Only then did it lock the answer, show which branches had changed, and ask how the app should detect that an article was read.
+In the S-00X (grilling skill rebuild Spec) scenario, the agent recommended that reading-list nudges help the owner *clear* the backlog. The owner answered that nudges are for *reading* and should never suggest throwing things away. The agent read back that answer, not its own recommendation, marked it pending, and asked only whether an archive button was still allowed. The owner corrected two details. The agent revised the readback and asked no new question until the owner said "Yes, that's right". Only then did it lock the answer, show which branches had changed, and ask how the app should detect that an article was read.
 
 ## Saved context and composition
 
-The interview works without persistence. When losing the session would impair continuation, which is the ordinary case for a consequential design session, grilling composes [notepad](skill-notepad.md) under the `AGENTS.md` session-record rule. An answer awaiting confirmation is saved as a `source_record` entry with the readback as its interpretation and stays listed as unresolved. The question stays `open`, because genesis intake accepts only `open`, `tentative` and `locked`. Only a `decision` entry records an owner answer. [grill-me](skill-grill-me.md) is the planned entry point that composes both skills by default; its delivery belongs to S-00Z.
+The interview works without persistence. When losing the session would impair continuation, which is the ordinary case for a consequential design session, grilling composes [notepad](skill-notepad.md) under the `AGENTS.md` session-record rule. An answer awaiting confirmation is saved as a `source_record` entry with the readback as its interpretation and stays listed as unresolved. The question stays `open`, because genesis intake accepts only `open`, `tentative` and `locked`. Only a `decision` entry records an owner answer. [grill-me](skill-grill-me.md) is the planned entry point that composes both skills by default; its delivery belongs to S-00Z (grill-me skill rebuild Spec).
 
 Lexicon, `domain-modeling` and `wayfinder` may help within the caller's scope, but grant no new authority. The exits (preserve, promote, specify, hand off, execute) each need an explicit owner direction. Specification comes only after the confirmed final readback.
 
@@ -49,7 +49,7 @@ Lexicon, `domain-modeling` and `wayfinder` may help within the caller's scope, b
 The skill descends from Matt Pocock's MIT-licensed `grilling` ([notice](../../THIRD_PARTY_NOTICES.md)). It was compared against the pinned source [`mattpocock/skills@c55ee46`](https://github.com/mattpocock/skills/blob/c55ee46073ed923f86ce59a5eb3b6d895095d1b7/skills/productivity/grilling/SKILL.md), retrieved on 2026-09-24.
 
 - **Shared:** a design tree whose settled decisions unblock the ones that depend on them; the agent finds facts and the owner makes decisions; a recommendation with every question; nothing is enacted before the owner confirms a shared understanding.
-- **Conceptual drift, deliberate:** upstream asks the *whole* frontier in numbered rounds and calls the session done when the frontier is empty. The Workbench asks one question at a time, reads back every answer before it locks, and requires a confirmed final concept readback, because an empty frontier is not treated as proof. In practice that means more turns and fewer silently misread answers. S-011 TK-005 and the owner-accepted S-00W design record why.
+- **Conceptual drift, deliberate:** upstream asks the *whole* frontier in numbered rounds and calls the session done when the frontier is empty. The Workbench asks one question at a time, reads back every answer before it locks, and requires a confirmed final concept readback, because an empty frontier is not treated as proof. In practice that means more turns and fewer silently misread answers. S-011 (Agent Skills Adoption Spec) TK-005 (Rewrite the grilling discipline and its Desktop-facing entry points Task) and the owner-accepted S-00W (Concept Grilling And Notepad Composition Spec) design record why.
 - **Not adopted:** upstream dispatches sub-agents for facts without blocking the rest of the round. The local skill simply requires facts to be looked up first. Whether that costs anything with single-question pacing has not been measured.
 - **Uncertainty:** this comparison covers only `SKILL.md` at the pin. A later upstream revision may differ, so repeat the comparison before claiming fidelity to a newer upstream.
 
@@ -70,6 +70,6 @@ The skill descends from Matt Pocock's MIT-licensed `grilling` ([notice](../../TH
 ## History
 
 - 2026-09-23: Created from the accepted design and verified repository source; intended behavior remains separate from implemented behavior.
-- 2026-09-24: Source links reconciled to the managed skills lane; S-00X owns this skill's future delivery. No behavior change claimed.
-- 2026-09-24: S-00X TK-00O delivered the interaction contract in the source, recorded the pinned upstream comparison and one fresh-context scenario.
+- 2026-09-24: Source links reconciled to the managed skills lane; S-00X (grilling skill rebuild Spec) owns this skill's future delivery. No behavior change claimed.
+- 2026-09-24: S-00X (grilling skill rebuild Spec) TK-00O (Deliver the grilling skill destination Task) delivered the interaction contract in the source, recorded the pinned upstream comparison and one fresh-context scenario.
 - 2026-10-03: repointed the source link from the retired Blueprint section to the workflow page, from the Blueprint Short Page work.
