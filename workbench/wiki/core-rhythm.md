@@ -7,7 +7,7 @@ provenance:
   - Owner directive in the foundation grilling, 2026-09-11 (ledger FND-Q04)
   - Promoted from host auto-memory by the S-00V TK-00I audit, 2026-09-26
 source_paths:
-  - workbench/wiki/grilling-destination-audit-ledger.json
+  - workbench/sessions/grilling-destination-audit-ledger.json
   - workbench/feedback/REPORT-foundation-question-review-2026-09-11.md
 last_verified: 2026-09-26
 ---
@@ -31,6 +31,6 @@ continuity, then verified completion).
 The ledger records it under `FND-Q04` as the answer to whether the Workbench is
 only for software. The foundation rework's other owner answers carry stable IDs
 (`FND-*`, `WF-*`, `TT-*`, `BPR-*`) in the
-[grilling destination audit ledger](grilling-destination-audit-ledger.json):
+[grilling destination audit ledger](../sessions/grilling-destination-audit-ledger.json):
 cite those IDs rather than re-asking settled questions. The handwritten sources
 the rework reconstructed are preserved in [archive/](archive/).

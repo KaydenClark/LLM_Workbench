@@ -119,19 +119,13 @@ Its saved answers and revision protocol are shared by Claude and Codex. Read
 the existing package before revising it; its working review context does not
 replace this ledger or the underlying decision and delivery owners.
 
-Every unique grilling question put to the owner, with its answer, reason and
-intended result, is recorded in
-[grilling-destination-audit-ledger.json](grilling-destination-audit-ledger.json).
-Its progress assessment is historical and pinned; use the linked Specs and current
-Taskboard for delivery state. The [v4 reconciliation receipt](../specs/S-00O-workbench-v4-0-0-release/INTEGRATION-RECONCILIATION.md) identifies recovered sources, branch-only work and remaining gaps.
-That JSON file is the ledger itself, not a projection: readable views are
-rendered from it and never edited by hand. It is the destination the v4
-Workbench is audited against; look a question up by its `id`, or audit one
-artifact by the `result` entries that name it. Each question also carries a
-separate `progress` reading of how far that result is built, pinned by
-`progress_assessment` to one `integration` commit; re-run the assessment to
-refresh it, and never mix progress into the destination fields.
-`tools/test-grilling-ledger.mjs` keeps it valid.
+The question-by-question ledger of every unique grilling question put to the
+owner is a session record, not a Wiki page: it lives in the sessions lane as
+`workbench/sessions/grilling-destination-audit-ledger.json` while its rows
+become destination question cards, and the router does not route into it.
+`tools/test-grilling-ledger.mjs` keeps it valid. The [v4 reconciliation
+receipt](../specs/S-00O-workbench-v4-0-0-release/INTEGRATION-RECONCILIATION.md)
+identifies recovered sources, branch-only work and remaining gaps.
 
 ## Task Artifact And Lifecycle Routing
 

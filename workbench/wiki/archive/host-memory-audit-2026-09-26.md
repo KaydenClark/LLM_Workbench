@@ -9,7 +9,7 @@ provenance:
 source_paths:
   - workbench/wiki/archive/host-memory-audit-2026-09-26.md
   - workbench/specs/S-00V-portable-workbench/tasks/TK-00I/TASK.md
-  - workbench/wiki/grilling-destination-audit-ledger.json
+  - workbench/sessions/grilling-destination-audit-ledger.json
 last_verified: 2026-09-26
 ---
 
@@ -49,7 +49,7 @@ projects' content were not carried into any destination.
 | `check-for-an-existing-lane-first.md` | Promoted (merged) | [parallel-lane-dispatch](../parallel-lane-dispatch.md); S-00V push-on-claim will supersede the need once delivered |
 | `codex-separate-context-review-route.md` | Promoted | [separate-context-review-with-codex](../separate-context-review-with-codex.md), marked as an optional host capability with dated observations |
 | `per-skill-rebuild-specs.md` | Already owned; one fact promoted | Delivery state belongs to S-00X to S-01S and S-00W and is not copied into the Wiki. The planned-Spec claim refusal is in [lifecycle-tool-behaviors](../lifecycle-tool-behaviors.md). |
-| `qa-destination-is-the-grilling-answers.md` | Already owned | [MEMORY.md](../MEMORY.md) -> Grilling Destination Audit Ledger, the [ledger](../grilling-destination-audit-ledger.json), and AGENTS -> Git Rules (Human QA findings are reconciled, not waited on) |
+| `qa-destination-is-the-grilling-answers.md` | Already owned | [MEMORY.md](../MEMORY.md) -> Grilling Destination Audit Ledger, the [ledger](../../sessions/grilling-destination-audit-ledger.json), and AGENTS -> Git Rules (Human QA findings are reconciled, not waited on) |
 | `wiki-as-knowledge-base.md` | Already owned | Ledger `TT-Q8`; the [SCHEMA](../SCHEMA.md) flat-entry rules; the MEMORY.md Skills Reference and Individual Spec Articles; this audit |
 | `landmarks-are-the-design-concept-rung.md` | Already owned | [Landmark Tracker](../design-concepts/landmark-tracker.md) and S-01T; the landmark mapping held only in an external rendered page was not copied |
 | `notepad-cli-note-path.md` | Already owned | RUNBOOK notepad section (bare names resolve under `notepads/work/`; explicit project-relative paths select other live collections) |

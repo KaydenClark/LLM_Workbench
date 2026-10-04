@@ -7,7 +7,7 @@ provenance:
   - Owner reaction 2026-09-23 to nineteen "only you can decide" rows he had already answered
   - Promoted from host auto-memory by the S-00V TK-00I audit, 2026-09-26
 source_paths:
-  - workbench/wiki/grilling-destination-audit-ledger.json
+  - workbench/sessions/grilling-destination-audit-ledger.json
   - AGENTS.md
 last_verified: 2026-09-26
 ---
@@ -22,7 +22,7 @@ proposals, because his chat answers had not been written back.
 
 ## How to look
 
-1. The [grilling destination audit ledger](grilling-destination-audit-ledger.json)
+1. The [grilling destination audit ledger](../sessions/grilling-destination-audit-ledger.json)
    is the durable copy of every owner answer: look the question up by `id` or by
    topic, and read its `status` (`locked`, `answered-in-chat`, `not-a-question`,
    `withdrawn` and so on).

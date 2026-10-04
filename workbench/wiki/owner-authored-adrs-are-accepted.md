@@ -9,7 +9,7 @@ provenance:
 source_paths:
   - workbench/docs/adr/proposed
   - workbench/docs/adr/REGISTER.md
-  - workbench/wiki/grilling-destination-audit-ledger.json
+  - workbench/sessions/grilling-destination-audit-ledger.json
 last_verified: 2026-09-26
 ---
 
@@ -30,7 +30,7 @@ only when it changes a product tradeoff.
 - Unresolved at 2026-09-26: the grilling ledger still carries `ACC-1` (whether
   ADR-000B/C/D acceptance lands before or after the v4 PC handoff) as open, and
   the records the statement named are still under `proposed/`. Check the
-  [ledger](grilling-destination-audit-ledger.json) and the ADR folder before
+  [ledger](../sessions/grilling-destination-audit-ledger.json) and the ADR folder before
   acting; this note does not settle the timing.
 - No root control carries this rule yet; the S-00V TK-00I close records the
   wording it would need.
