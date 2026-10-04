@@ -23,7 +23,7 @@ Workbench has to work on the primary development host.
   [S-052](../specs/S-052-private-session-transport/SPEC.md) as something to
   unblock or prepare for. It is not a blocker on other work.
 - "Ready for main" is the trigger: say so when the audit against the
-  [grilling destination](grilling-destination-audit-ledger.json) passes.
+  [grilling destination](../sessions/grilling-destination-audit-ledger.json) passes.
 - Main promotion itself stays owner-only
   ([AGENTS Git Rules](../../AGENTS.md#git-rules)).
 

@@ -29,7 +29,7 @@ Considered and rejected: one shared terminal folder for every artifact. Opposite
 
 ## Acceptance and correction
 
-S-00P TK-004 accepts the confirmed folder decision and reconciles its original held/flat-tree premises against the locked WF-8D/WF-8E/WF-8F/WF-8A/WF-8G/WF-8H answers, [S-00I](../../specs/S-00I-folder-lifecycle-for-records/SPEC.md) delivered moves/retirement/discard and [S-00J](../../specs/S-00J-spec-qa-gate-at-integration/SPEC.md)'s closure-capture transition contract. Source answers and corrections remain in the [grilling destination ledger](../../wiki/grilling-destination-audit-ledger.json); the Contract owners above carry the operational rule. Board substates and sitrep behavior remain separately assigned destination work, not delivered by this ADR acceptance.
+S-00P TK-004 accepts the confirmed folder decision and reconciles its original held/flat-tree premises against the locked WF-8D/WF-8E/WF-8F/WF-8A/WF-8G/WF-8H answers, [S-00I](../../specs/S-00I-folder-lifecycle-for-records/SPEC.md) delivered moves/retirement/discard and [S-00J](../../specs/S-00J-spec-qa-gate-at-integration/SPEC.md)'s closure-capture transition contract. Source answers and corrections remain in the [grilling destination ledger](../../sessions/grilling-destination-audit-ledger.json); the Contract owners above carry the operational rule. Board substates and sitrep behavior remain separately assigned destination work, not delivered by this ADR acceptance.
 
 ## Historical proposal
 
