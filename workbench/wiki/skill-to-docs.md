@@ -6,6 +6,7 @@ knowledge_role: curated
 provenance:
   - S-01J planning packet, 2026-09-24
   - S-01J TK-01A source change and fresh-context scenario, 2026-09-26
+  - S-004C TK-005I moved the AGENTS documentation-ownership table behind the Lexicon schema pointer and the citation-anchor procedure into the skill, 2026-10-04
 source_paths:
   - workbench/skills/to-docs/SKILL.md
   - workbench/specs/S-01J-to-docs-skill-rebuild/SPEC.md
@@ -13,7 +14,8 @@ source_paths:
   - tools/test-wiki.mjs
   - AGENTS.md
   - RUNBOOK.md
-last_verified: 2026-09-26
+  - LEXICON.md
+last_verified: 2026-10-04
 ---
 
 # To-docs: route settled truth to the owner that holds it
@@ -24,7 +26,7 @@ Use `to-docs` when a conversation or piece of work has already settled something
 
 ## How it works
 
-The [skill](../skills/to-docs/SKILL.md) owns the judgment. The [ownership table in AGENTS](../../AGENTS.md#documentation-ownership-and-proof) and the [Lexicon ownership schema](../../LEXICON.md#artifact-ownership-schema) define which owner holds which kind of truth.
+The [skill](../skills/to-docs/SKILL.md) owns the judgment. The [Lexicon ownership schema](../../LEXICON.md#artifact-ownership-schema) defines which owner holds which kind of truth; [AGENTS](../../AGENTS.md#documentation-ownership-and-proof) keeps the always-true documentation rules and points to that schema. The skill's [Citation anchors](../skills/to-docs/SKILL.md#citation-anchors) section carries how a citation into a changing file names its tree.
 
 - **Destinations first.** The agent reads `workbench/manifest.json` and states where each claim will go before it edits anything. Definitions go to the Lexicon, product direction to the Blueprint, requirements and proof to the assigned Spec, commands and recovery to the Runbook, agent rules to AGENTS, decision rationale to an ADR, and explanations or durable knowledge to the Wiki. If capability truth needs a Spec and none is assigned, it routes to `to-spec` instead of improvising one.
 - **Each claim once.** A mixed finding is split into its claims, and each claim goes to exactly one owner. When another owner needs it, that owner links to it. A Wiki reference article explains why and links the procedure. It does not restate the procedure's steps.

@@ -416,10 +416,82 @@ const FAMILIES = [
         moved: [/git branch -d/, /expected-tip guard/, /already ancestors of/, /tracking upstream alone/]
       }
     ]
+  },
+  {
+    task: 'TK-005I verification, documentation ownership and the release gate',
+    rows: [
+      {
+        operation: 'Verify a behavior change', pointer: 'workbench/skills/implement/SKILL.md#engineering-and-verification',
+        section: 'Test And Build', stub: false,
+        carries: [
+          'Define expected behavior at a stable testing seam.', 'Add or update a failing test and confirm the expected failure.',
+          'Refactor only while green.', 'Run the targeted test, then the full verification suite.',
+          'If tests are impractical, name the specific reason and run the strongest concrete manual check.',
+          'A milestone also needs a demo artifact checkable in under one minute'
+        ]
+      },
+      {
+        operation: 'Hold test coverage', pointer: 'workbench/skills/implement/SKILL.md#test-coverage-policy',
+        section: 'Test Coverage Policy', stub: { root: false, template: true },
+        carries: [
+          'Treat tests as the project specification, not as a comfort signal.',
+          'Prefer red/green TDD: write or update the failing test first',
+          'Remove tests that are stale, duplicated without adding a boundary, or pure bloat.'
+        ]
+      },
+      {
+        operation: { root: 'Run the guardrail audit', template: 'Improve against a benchmark' },
+        pointer: 'workbench/skills/implement/SKILL.md#benchmark-driven-improvement',
+        section: { root: 'Guardrail North-Star Audit', template: 'Benchmark-Driven Improvement' }, stub: { root: false, template: true },
+        carries: [
+          'capture the available guardrail or benchmark baseline', 'Never weaken a criterion to manufacture progress',
+          'do not treat a static coverage score as outcome evidence'
+        ]
+      },
+      {
+        operation: 'Route a truth to its owner', pointer: 'workbench/skills/to-docs/SKILL.md#to-docs', section: null,
+        carries: ['Route each claim once.', 'Read each changed owner back and confirm each claim appears once']
+      },
+      {
+        operation: 'Cite a file that changes', pointer: 'workbench/skills/to-docs/SKILL.md#citation-anchors', section: null,
+        carries: [
+          'Either anchor the citation itself with `git show <sha>:path`', 'A label immediately before a citation names its tree and wins',
+          'Evidence rows read at the commit each row names and are never re-anchored'
+        ]
+      }
+    ],
+    agents: [
+      {
+        section: 'Engineering And Verification',
+        keeps: [
+          /workbench\/skills\/implement\/SKILL\.md#engineering-and-verification/, /RUNBOOK\.md#test-and-build/, /RUNBOOK\.md#operations-index/,
+          /explicit error handling/, /Never invent APIs/, /red\/green|smallest green change/, /failing test/, /targeted test/, /full verification suite/,
+          /tests are impractical, name the specific reason/, /demo artifact/, /baselines? before/, /[Nn]ever weaken|not agent-outcome evidence/
+        ],
+        moved: [/Define expected behavior at a stable testing seam/, /Refactor only while green/, /node tools\/test-/, /\[(TARGETED_TEST|FULL_VERIFICATION|SPEC_DOCTOR)_COMMAND\]/, /```/]
+      },
+      {
+        section: 'Documentation Ownership And Proof',
+        keeps: [
+          /Documentation is part of done/, /documentation owner/, /LEXICON\.md#artifact-ownership-schema/, /workbench\/wiki\//,
+          /architectural decisions/, /Docs checked; no update needed/, /[Ff]inal response proof/,
+          /A citation into a file that changes must say which tree it reads at/, /workbench\/skills\/to-docs\/SKILL\.md#citation-anchors/
+        ],
+        moved: [/\| Truth \| Owner \|/, /pre=`<sha>` post=`<sha>`/, /A label immediately before a citation/, /never re-anchored/]
+      },
+      {
+        section: 'Template Upgrade Release Gate', carriers: ['root'],
+        keeps: [
+          /RUNBOOK\.md#template-upgrade-release-gate/, /must update the existing reference repository/, /Record this proof in the current release spec/,
+          /keeps that release gate open/, /do not substitute for the installed upgrade/, /Main promotion remains owner-only in both repositories/
+        ],
+        moved: [/Pin the source commit/, /exact managed bytes/, /fresh remote clone/]
+      }
+    ]
   }
 ];
 
-const pick = (value, label) => (typeof value === 'string' ? value : value[label]);
+const pick = (value, label) => (value === null || typeof value === 'string' ? value : value[label]);
 
 for (const family of FAMILIES) {
   for (const carrier of carriers) {
@@ -439,6 +511,7 @@ for (const family of FAMILIES) {
           assert.ok(carried.includes(normalize(phrase)), `${skillFile}#${fragment} carries the moved procedure line: ${phrase}`);
         }
         const title = pick(row.section, carrier.label);
+        if (title === null) continue;
         const section = all.find((heading) => heading.title === title);
         assert.ok(section, `${carrier.runbook}: the "${title}" heading survives`);
         assert.ok(links(section.body).includes(row.pointer), `${carrier.runbook}: "${title}" points to ${row.pointer}`);
@@ -450,13 +523,13 @@ for (const family of FAMILIES) {
     });
 
     test(`${carrier.label} ${family.task}: AGENTS keeps only the family's always-true lines`, () => {
-      for (const brief of [family.agents].flat()) {
+      for (const brief of [family.agents].flat().filter((item) => !item.carriers || item.carriers.includes(carrier.label))) {
         const section = headings(read(carrier.agents)).find((heading) => heading.title === brief.section);
         assert.ok(section, `${carrier.agents}: "${brief.section}" survives`);
         const body = normalize(section.body);
         for (const pattern of brief.keeps) assert.match(body, pattern, `${carrier.agents} ${brief.section}: the brief keeps ${pattern}`);
         for (const pattern of brief.moved) assert.doesNotMatch(body, pattern, `${carrier.agents} ${brief.section}: ${pattern} moved behind its pointer`);
-        for (const target of links(section.body)) {
+        for (const target of links(section.body).filter((link) => !/^[a-z][a-z0-9+.-]*:/i.test(link))) {
           const resolved = resolvePointer(carrier.agents, target);
           assert.ok(resolved.ok, `${carrier.agents} ${brief.section}: ${target} resolves (${resolved.reason})`);
         }
@@ -475,6 +548,56 @@ for (const family of FAMILIES) {
     }
   });
 }
+
+// S-004C TK-005I: the Full suite list has one home. `AGENTS.md` keeps the rule
+// that the suite passes before a claim and points to the Runbook's Test And
+// Build, which holds the one list in the shape every suite runner reads: the
+// line starting `Full suite for controls` and the next bash fence.
+function suiteBlock(text) {
+  const lines = text.split('\n');
+  const start = lines.findIndex((line) => /^Full suite for controls/.test(line));
+  if (start < 0) return null;
+  const open = lines.findIndex((line, index) => index > start && /^```bash/.test(line));
+  const close = lines.findIndex((line, index) => index > open && /^```/.test(line));
+  if (open < 0 || close < 0) return null;
+  return lines.slice(open + 1, close).filter((line) => line.trim());
+}
+
+test('TK-005I: the Full suite list has one home, the Runbook Test And Build section', () => {
+  const agents = read('AGENTS.md');
+  const runbook = read('RUNBOOK.md');
+  assert.equal(suiteBlock(agents), null, 'AGENTS.md carries no Full suite block');
+  assert.equal((runbook.match(/^Full suite for controls/gm) ?? []).length, 1, 'RUNBOOK.md holds exactly one Full suite list');
+  const testAndBuild = headings(runbook).find((heading) => heading.title === 'Test And Build');
+  assert.match(testAndBuild.body, /^Full suite for controls, templates, tools, evals, or specs:$/m, 'the list lives in Test And Build');
+  assert.ok(links(testAndBuild.body).includes('AGENTS.md#engineering-and-verification'), 'Test And Build points back to the rule');
+  const engineering = headings(agents).find((heading) => heading.title === 'Engineering And Verification');
+  assert.ok(links(engineering.body).includes('RUNBOOK.md#test-and-build'), 'AGENTS.md points to the one list');
+  const suite = suiteBlock(runbook);
+  assert.ok(suite.length >= 40, `the list is the whole suite (${suite.length} commands)`);
+  assert.equal(new Set(suite).size, suite.length, 'no command is listed twice');
+  for (const command of ['node tools/test-control-fidelity.mjs', 'node tools/test-runbook-index.mjs', 'node workbench/tools/spec-workbench.mjs doctor']) {
+    assert.ok(suite.includes(command), `the list runs ${command}`);
+  }
+  for (const command of suite) {
+    const script = command.match(/^(?:node|python3) (\S+)/)?.[1];
+    assert.ok(script && fs.existsSync(path.join(root, script)), `every listed command runs a tracked script: ${command}`);
+  }
+  for (const carrier of ['templates/AGENTS.md', 'templates/RUNBOOK.md']) assert.equal(suiteBlock(read(carrier)), null, `${carrier} names no repository suite`);
+  const templateTests = headings(read('templates/RUNBOOK.md')).find((heading) => heading.title === 'Test And Build');
+  assert.match(templateTests.body, /\[FULL_TEST_COMMAND\]/, 'the template keeps one generic full verification list');
+});
+
+test('TK-005I: the Runbook Template Upgrade Release Gate holds the procedure the AGENTS brief restates', () => {
+  const { rows } = indexOf('RUNBOOK.md');
+  const row = rows.find(({ cells }) => cells[0] === 'Upgrade the reference Template for a release');
+  assert.ok(row && links(row.cells[2]).includes('#template-upgrade-release-gate'), 'the index points the release operation at its procedure');
+  const gate = normalize(headings(read('RUNBOOK.md')).find((heading) => heading.title === 'Template Upgrade Release Gate').body);
+  for (const phrase of [
+    'This is the required real-room test of `update-harness`.', 'Pin the clean source version/commit and the Template\'s current integration commit',
+    'compare every installed managed hash', 'merge into its declared integration branch', 'Clone that remote result afresh'
+  ]) assert.ok(gate.includes(phrase), `the Runbook gate holds: ${phrase}`);
+});
 
 // S-004C TK-005G review correction: procedures moved into lane skills keep
 // working links. Every relative Markdown link outside code in a lane skill

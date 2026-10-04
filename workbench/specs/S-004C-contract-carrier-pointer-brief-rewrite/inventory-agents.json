@@ -2312,7 +2312,7 @@
       "line": 322,
       "text": "Prefer the smallest correct change. Preserve architecture, naming, and style.",
       "hash": "d5fd7fff77520f935e68cf010e2ddc827b57759f8e4b7db1407b516f876b1496",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -2321,7 +2321,7 @@
       "line": 323,
       "text": "Validate inputs first; use explicit error handling and visible failures rather",
       "hash": "4f8a7fb9d0fc1459f7d323f4b583ef37ae71dd4a225ed53f1c89a3d6b0929524",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -2330,7 +2330,7 @@
       "line": 324,
       "text": "than silent fallbacks. Trace dependencies before shared-logic changes. Never",
       "hash": "b808658c9d09ebf13f888e48cd9a70de9d390efc66b6307923ce4cc77ea87611",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -2339,7 +2339,7 @@
       "line": 325,
       "text": "invent APIs, files, behavior, or test results.",
       "hash": "a1eda8e0455cce22a0dd9933ae2090a1da692844ea0a05f553e9f49144229a18",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -2348,61 +2348,61 @@
       "line": 327,
       "text": "For behavior changes to tools/evals/outcomes:",
       "hash": "60a3f6bfde70b37156fe7264e0bdbd5a00fe468bc9fa4a8911b880d89fdaeb1b",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "pointer",
+      "homePath": "AGENTS.md",
+      "landedText": "Behavior changes to tools/evals/outcomes use red/green/refactor at a stable testing seam",
+      "reason": "TK-005I rewrote this introduction in place as the brief line that keeps the scope (tools/evals/outcomes) and points to the implement skill, which holds the five steps verbatim after \"For behavior changes:\"."
     },
     {
       "line": 329,
       "text": "1. Define expected behavior at a stable testing seam.",
       "hash": "fb32facd64f5395f2acea34d6825e991830897a8db83c2fa3443be9560eb86f8",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "1. Define expected behavior at a stable testing seam.",
+      "reason": "TK-005I moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 330,
       "text": "2. Add or update a failing test and confirm the expected failure.",
       "hash": "50129c9787431c2662d9b23d3d53d35c3fcc3753db587cf553d97b7413b44ab7",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "2. Add or update a failing test and confirm the expected failure.",
+      "reason": "TK-005I moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 331,
       "text": "3. Implement the smallest change that turns it green.",
       "hash": "1f7e5bed9bf2c6eed2c4d4d39aff199ebfb3788afbdac0cb6d76f7d22943a972",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "3. Implement the smallest change that turns it green.",
+      "reason": "TK-005I moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 332,
       "text": "4. Refactor only while green.",
       "hash": "eb808019f6ad9ad45f4d7c853de57e6438754d090ee1abac9fa7a291c4bd3ced",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "4. Refactor only while green.",
+      "reason": "TK-005I moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 333,
       "text": "5. Run the targeted test, then the full verification suite.",
       "hash": "a99f34c9b9b774ac10adaea7ca3b2c23ad36f5ef5f2a6dfba7e9b4c55de93324",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "5. Run the targeted test, then the full verification suite.",
+      "reason": "TK-005I moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 335,
       "text": "If tests are impractical, name the specific reason and run the strongest concrete",
       "hash": "733f2164ee7cc82793c3dbc47ffac97bae3d2474390b9859eaa29e15f543c24e",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -2411,7 +2411,7 @@
       "line": 336,
       "text": "manual check. A milestone also needs a demo artifact checkable in under one",
       "hash": "de4827d3831ad8c09aea4bff52f48d9b4258076c258239fab2922b3726df54e6",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -2420,7 +2420,7 @@
       "line": 337,
       "text": "minute: screenshot, short recording, preview URL, or one-command demo.",
       "hash": "b96640c8bb533d919aa631b6f976d041534b0390e2e915ccb27a5e58f1e62815",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -2429,466 +2429,466 @@
       "line": 339,
       "text": "Full suite for controls, templates, tools, evals, or specs:",
       "hash": "1eb2bd6188af16f9a3617cbe0ecde496dfdfdbc1b55fe968160dd3303a94f5ee",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "Full suite for controls, templates, tools, evals, or specs:",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 341,
       "text": "```bash",
       "hash": "ad332335cfaa348c5bd715c3479844622270d5f7389ae070b81b135d521a221a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "```bash",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 342,
       "text": "node tools/test-spec-workbench.mjs",
       "hash": "c6bd2fd6619e2ceb915f0df87bfdf5445ae1b08cc89bfd0f8998d199b135c938",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-spec-workbench.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 343,
       "text": "node tools/test-skill-catalog.mjs",
       "hash": "b676cfbd82982b7eb3a5dd5edd19f24ff57da25d092bbd19fbb8bd9208d70c2c",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-skill-catalog.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 344,
       "text": "node tools/test-skill-inspection.mjs",
       "hash": "686a65a2bdd2638b73c66eb4ff76a488ca0881cf007808e745ed93c6ce1e2c5a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-skill-inspection.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 345,
       "text": "node tools/test-skills-lane.mjs",
       "hash": "4771d2bef0af35ffa38f402464a4f2b7dbe128915f43db0b06d532b81f86f1fc",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-skills-lane.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 346,
       "text": "node tools/test-core-composition.mjs",
       "hash": "bcdca2b0428a452f449df10c86a4ef2e210e35f6a7665b37c35bcdd613d61538",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-core-composition.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 347,
       "text": "node tools/test-project-evidence.mjs",
       "hash": "563e7c1a0e54f00a748e911e61f877b497210a5561b53841ecae329ea88899d0",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-project-evidence.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 348,
       "text": "node tools/test-genesis-from-decisions.mjs",
       "hash": "e45889b7336186873ef04e49064cba14b56dbc1882f41959bb521a71f19a073c",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-genesis-from-decisions.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 349,
       "text": "node tools/test-blueprint-contract.mjs",
       "hash": "e5e1c4bf8f6105fb049d55b9f69ce4b0f4f8ee6ffeddfd4f5db3ddbadab12758",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-blueprint-contract.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 350,
       "text": "node tools/test-session-transport.mjs",
       "hash": "5e6e317f9c1f77446884f5778acdbbbb5fdcca8f69483cb6af637afa54c267b0",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-session-transport.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 351,
       "text": "node tools/test-configured-host.mjs",
       "hash": "752b93688dd40bbc2307df96b77502905057a8b3dab267fb7fc159f44c0919b6",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-configured-host.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 352,
       "text": "node tools/test-core-skill-installer.mjs",
       "hash": "b82e70212c5666a624e86d87d71809e2e65e82476f81caa539943eb2be2220c5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-core-skill-installer.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 353,
       "text": "node tools/test-workbench-layout.mjs",
       "hash": "92f01e469dec4f00a63787803fae31a82116cee1382b50bc79f6d215dcb46ab5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-workbench-layout.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 354,
       "text": "node tools/test-workbench-adoption.mjs",
       "hash": "ee3160cc601019d4a511a5d82be8ed8c225b7dda04a72c30b4d320244f468e61",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-workbench-adoption.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 355,
       "text": "node tools/test-workbench-upgrade.mjs",
       "hash": "ef97d3c358c22efd942047a120097b58917c6ca7934ade7e761f2fed2b26fbf4",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-workbench-upgrade.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 356,
       "text": "node tools/test-workbench-tools.mjs",
       "hash": "bb1f33f538843b6ac345590fb5748215f5592e5df83fc665fbd43da34745dcc7",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-workbench-tools.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 357,
       "text": "node tools/test-diagnostics.mjs",
       "hash": "9e55ccd8dc498c34bb9f4c4057b23647e0adea83c5d83a5b8d8dfe87e4ef6211",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-diagnostics.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 358,
       "text": "node tools/test-adr.mjs",
       "hash": "2b50c211e6b2511b0dbf20a91519518e15fcd5fa1f66a30441c97c43586338cd",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-adr.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 359,
       "text": "node tools/test-governance-core.mjs",
       "hash": "0fb07a6bd3afad50270637b5d8ab2f93e70dd75b49d23283e62e68c0d603cd41",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-governance-core.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 360,
       "text": "node tools/test-branch-closeout.mjs",
       "hash": "ed9eadcfaa9dde05e737f9ab985c310cd1a46dc5d2a9099e60e79455602636c0",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-branch-closeout.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 361,
       "text": "node tools/test-wiki.mjs",
       "hash": "0d5dab54a59b14b87de9169dad045f78a4089054105639ba6a595f711eb887b0",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-wiki.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 362,
       "text": "node tools/test-sessions.mjs",
       "hash": "d23ccfddaeb1311d86e3140ccbcd054ef64bc468b21272154c70d5ca5aba54f6",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-sessions.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 363,
       "text": "node tools/test-notepads.mjs",
       "hash": "0669a3c96bf0011f2714888bf68749deb24a668790713e7d27a4c6e9f37ac843",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-notepads.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 364,
       "text": "node tools/test-visible-ids.mjs",
       "hash": "379fb93ac026ef49dc2e787ca7d8b7e313e3c213ec42e34030bccc852b3a2381",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-visible-ids.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 365,
       "text": "node tools/test-workbench-identity.mjs",
       "hash": "ce5a764296eee6422ef55871dc0afe04b398ec644e873c50079bc7c3b930517c",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-workbench-identity.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 366,
       "text": "node tools/test-visible-id-consumers.mjs",
       "hash": "155d188180c5ce59b77471c896149a263c46cd6a7c6d57d0f46a8acc2353984a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-visible-id-consumers.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 367,
       "text": "node tools/test-direct-promotion.mjs",
       "hash": "b957f850dd3324948198f8ae02e1a460334cb37865844993dcbfe7c81dd51e03",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-direct-promotion.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 368,
       "text": "node tools/test-workbench-round-trip.mjs",
       "hash": "62334d0de8a3e20be605f2bedf9122d2d840d57b283c77ce2af39442b83bd73c",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-workbench-round-trip.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 369,
       "text": "node tools/test-cross-provider-fixture.mjs",
       "hash": "40c3527e28bde76ffa7f1296b69a64314f1d544fd3c02be366574fb40e111acf",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-cross-provider-fixture.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 370,
       "text": "node tools/test-portability-matrix.mjs",
       "hash": "ff551a06c577147758738b7c964311079f83cb448f3159666c1362e92fb160c2",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-portability-matrix.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 371,
       "text": "node tools/test-workbench-dogfood.mjs",
       "hash": "ed681a18fae8d78ea30bdc165aedf08932557041e9691357b6853b055ff30ae8",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-workbench-dogfood.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 372,
       "text": "node tools/test-evaluate-workbench.mjs",
       "hash": "aae224f4b64b0e6420c3df41c7fac3788fb2c29c5e964d09f1fe160dbb80b5f4",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-evaluate-workbench.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 373,
       "text": "node tools/test-guardrail-audit.mjs",
       "hash": "dd4da5be6c54f801e8287bff3553ebec5f8b6ae9ab34c3a71ccb5f11119a47b5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-guardrail-audit.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 374,
       "text": "node tools/test-context-tools.mjs",
       "hash": "fcb3acfd9d1677ecfe4831747c81693f315a377e57da4790ce8f91825d4ef0fa",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-context-tools.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 375,
       "text": "node tools/test-outcome-trials.mjs",
       "hash": "d85350c0c2f3c70924eee12166954d2ca924200f627f7a051584cdacf7629455",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-outcome-trials.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 376,
       "text": "node tools/test-eval-runner.mjs",
       "hash": "18c77dd68017c3a7db40f98b6e82fa985346e8d24f804cfdd9f305ecc2a663e5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-eval-runner.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 377,
       "text": "node tools/test-feedback-automation.mjs",
       "hash": "d21795a9bc4aa32719bf54055ab90f0972671631cc53ed656da47f0b56a00d1a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-feedback-automation.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 378,
       "text": "node tools/test-symlink-invocation.mjs",
       "hash": "4d39fed33df9a6f01198111b2c62d734070c6af00ae5f45b10920e0a8f8fc40f",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-symlink-invocation.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 379,
       "text": "node tools/test-control-fidelity.mjs",
       "hash": "1efb3176fe06a49617f582cffec8f3be640ccc926d0ba84897c748a0b51c5f4b",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-control-fidelity.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 380,
       "text": "node tools/test-spec-citation-anchors.mjs",
       "hash": "39783e14c5fa4e6e5c41ec4dd434d1aa87f6824cc1ec7efb1e2cc68e273acd8e",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-spec-citation-anchors.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 381,
       "text": "node tools/test-controls-vocabulary-sweep.mjs",
       "hash": "2fbad5b53a53a86395689adc0c1bcd17ccb68a38acced12805dcfd509c7ec2e4",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-controls-vocabulary-sweep.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 382,
       "text": "node tools/test-spec-report.mjs",
       "hash": "fc258be39b8db75794057a2e44593dd43544ae090b5c0ab1654f65be105499f5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-spec-report.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 383,
       "text": "node tools/test-self-drift.mjs",
       "hash": "9d5773b85c9eb888dd2f2a37c5f9fdbe8d9d8ee2542d13ae27dedc662413f0c3",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-self-drift.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 384,
       "text": "node tools/test-feedback-inventory.mjs",
       "hash": "6a0990330efbb4ff9b879276753bd966b2aec025acec378e2485646b9aae9c9a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-feedback-inventory.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 385,
       "text": "node tools/test-grilling-ledger.mjs",
       "hash": "418623131e01279be37d2b1a5a88fec24c05b48f041e1fbad3cb568bbcf34a99",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/test-grilling-ledger.mjs",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 386,
       "text": "python3 tools/test-check-append-only.py",
       "hash": "4e401bbfd4b4c1b4d6c35a06211607c4cc538275920ecad8785557f273763d26",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "python3 tools/test-check-append-only.py",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 387,
       "text": "python3 evals/tasks/task_b_path_safety/test_grade.py",
       "hash": "a9b66704f80501303aed4415a688ac5590f540b26d5f2a8b6344cc55c644c258",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 388,
       "text": "node tools/evaluate-workbench.mjs --path templates --include-controls",
       "hash": "d9be346158b36ea7c3542c190ee048145df0b5aef03899bd83cee67dfa7f9bbb",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 389,
       "text": "node workbench/tools/spec-workbench.mjs doctor",
       "hash": "fed358ed281350416a6d4c01803351cd893132be019e0652f09662b81ceac54e",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs doctor",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 390,
       "text": "```",
       "hash": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "```",
+      "reason": "TK-005I: the Full suite list now has one home, the Runbook Test And Build section, which holds this line verbatim; `AGENTS.md` keeps the rule that the suite passes before a claim and points there. No suite member was added, removed or reordered."
     },
     {
       "line": 392,
       "text": "Harness changes also capture the guardrail baseline before editing and the",
       "hash": "74cc443c31ca09fcaf6ae4671a118544e2a24202fd6373038aea6188915606a9",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -2897,7 +2897,7 @@
       "line": 393,
       "text": "after-score, remaining recommendations, and outcome limitation after. Never",
       "hash": "975b334797b59a18c0627990b36e30caba3d7ab6d93d847f3ded0889e72a253d",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -2906,7 +2906,7 @@
       "line": 394,
       "text": "weaken criteria to raise the score or translate static/context improvement into",
       "hash": "641c7f3878b696491ed581e2cfa10e300090ab6ad4d1a6559a662aa610d01520",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -2915,7 +2915,7 @@
       "line": 395,
       "text": "an agent-outcome claim without repeated controlled trials.",
       "hash": "a91bb23db7e5d157c8651bc314f4d49132fbb870641f074167c3ba6683413301",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -2924,7 +2924,7 @@
       "line": 399,
       "text": "Every new LLM Workbench version must update the existing reference repository",
       "hash": "aa5396667cd9101f249514737f0f3e220788b65f3253cde32a0d2359d5328b5c",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -2933,7 +2933,7 @@
       "line": 400,
       "text": "[Workbench_Template](https://github.com/KaydenClark/Workbench_Template)",
       "hash": "f408a4e18892016cd4f3f59476d468717ffdb2728d9bf383fc7da4b9a477ebaf",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -2942,7 +2942,7 @@
       "line": 401,
       "text": "(formerly Example_Workbench) to that version before release readiness is",
       "hash": "11aa410c73b21a7887cb27eca707a8238466f1449b618231a1b2c4ed8d869ef8",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -2951,61 +2951,61 @@
       "line": 402,
       "text": "approved. This is the required real-room test of `update-harness`. Pin the source",
       "hash": "86fc66e8420acdca9d438b814222edc8bb623cb0e4c05bd9ef078aec943bd90d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "This is the required real-room test of `update-harness`.",
+      "reason": "TK-005I: the Runbook Template Upgrade Release Gate section owns this procedure (AGENTS.md already said so); the AGENTS.md subsection keeps its obligation, proof and owner-only lines and points to that section. The restated claim is the landed text: the Runbook section now states the real-room test sentence and its step 1 pins the source commit; \"approved.\" stays in the AGENTS.md brief."
     },
     {
       "line": 403,
       "text": "commit and prior Template commit, exercise the public upgrade route, preserve",
       "hash": "fa591de1a8d8ff3e66293d2f143a345107df2f2e84ea4abd24371ea2ad241698",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "Pin the clean source version/commit and the Template's current integration commit",
+      "reason": "TK-005I: the Runbook Template Upgrade Release Gate section owns this procedure (AGENTS.md already said so); the AGENTS.md subsection keeps its obligation, proof and owner-only lines and points to that section. The restated claim is the landed text: step 1 pins source and prior Template commits; step 2 follows the update-harness skill (the public upgrade route)."
     },
     {
       "line": 404,
       "text": "room-owned state, and verify matching manifest/control/runtime versions, exact",
       "hash": "ba160fb621a9906e2ccce4efebf2bb2cd219cc2e6822de595ef7149af8f1600f",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "Keep original adoption/genesis provenance and room identity",
+      "reason": "TK-005I: the Runbook Template Upgrade Release Gate section owns this procedure (AGENTS.md already said so); the AGENTS.md subsection keeps its obligation, proof and owner-only lines and points to that section. The restated claim is the landed text: step 2 preserves room-owned provenance and identity and step 3 verifies manifest, control stamps and runtime receipt name the new version."
     },
     {
       "line": 405,
       "text": "managed bytes, the Template's full suite and recovery evidence. Independently",
       "hash": "b065d820d4100797d0469f706b9a751b90e1ef36426587e4b05b527ff54bfde4",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "compare every installed managed hash. Run the Template's full documented suite",
+      "reason": "TK-005I: the Runbook Template Upgrade Release Gate section owns this procedure (AGENTS.md already said so); the AGENTS.md subsection keeps its obligation, proof and owner-only lines and points to that section. The restated claim is the landed text: step 3 checks managed hashes and the full suite; step 5 records preservation and recovery evidence."
     },
     {
       "line": 406,
       "text": "review and merge the Template candidate into its declared integration branch,",
       "hash": "27b9868ca562ec7d3e6b018786a25eb7941942b944be079b3ccc0f56876d3a3d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "Obtain separate-context review of the immutable Template candidate, merge into its declared integration branch",
+      "reason": "TK-005I: the Runbook Template Upgrade Release Gate section owns this procedure (AGENTS.md already said so); the AGENTS.md subsection keeps its obligation, proof and owner-only lines and points to that section. The restated claim is the landed text: step 4."
     },
     {
       "line": 407,
       "text": "prove remote containment, and rerun its checks from a fresh remote clone.",
       "hash": "bef671e33cbb7979bda62592c5eb366d6bd6f19763a846deb62b373a7c82f18a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "prove the reviewed commit is contained remotely. Clone that remote result afresh and repeat the full Template suite and installed-runtime checks",
+      "reason": "TK-005I: the Runbook Template Upgrade Release Gate section owns this procedure (AGENTS.md already said so); the AGENTS.md subsection keeps its obligation, proof and owner-only lines and points to that section. The restated claim is the landed text: step 4."
     },
     {
       "line": 408,
       "text": "Record this proof in the current release spec; a stale or unverified Template",
       "hash": "43ec1978c8ca4829941495b6cc68da3b3cbc2491b3aa611ed9ed751ccb798d2c",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3014,7 +3014,7 @@
       "line": 409,
       "text": "keeps that release gate open. Source-template tests and fresh-project generation",
       "hash": "6c69bc2b9ff96c43297e591dca40067f6b159dea711f370c3e34c277e56c3ce0",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3023,7 +3023,7 @@
       "line": 410,
       "text": "do not substitute for the installed upgrade. RUNBOOK's Template Upgrade Release",
       "hash": "f46b6fb5622d1b416b7f56a0cbf7d7061af4ca01d1e2df075778d22d33b61124",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3032,7 +3032,7 @@
       "line": 411,
       "text": "Gate owns the procedure. This producer release requirement does not add an",
       "hash": "456d684dc14b205e9fd06c7e28d194499cff4844997e23aaadb7ccd21af09378",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3041,7 +3041,7 @@
       "line": 412,
       "text": "external repository prerequisite to ordinary project work or authorize other",
       "hash": "08c8fef9723f2bffc3b5db9480c68633bee36e75752afe53b45bfd149aaa8d7e",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3050,7 +3050,7 @@
       "line": 413,
       "text": "room updates. Main promotion remains owner-only in both repositories.",
       "hash": "bc9dc3660061147eeac8e772d6e4a828e54ae79ad4e91b4cceabd857daf33c68",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3059,7 +3059,7 @@
       "line": 417,
       "text": "Documentation is part of done; the implementing agent is its documentation",
       "hash": "30e7c2f42abeb94b3599916d2ffa3cb606371dbc25027e59f8b9d18446dac507",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3068,16 +3068,16 @@
       "line": 418,
       "text": "owner. Route each truth once:",
       "hash": "242fc4183aff0168c6a70a2a508aec5dbf90278c52140e9134ad62ccf31e3fa5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "pointer",
+      "homePath": "AGENTS.md",
+      "landedText": "owner. Route each truth once, to the owner the Lexicon ownership schema names for its job; durable explanations go to the Wiki (`workbench/wiki/`).",
+      "reason": "TK-005I rewrote this line in place: the table it introduced restated the Lexicon Artifact Ownership Schema, so the line now routes to that schema and keeps the Wiki route `workbench/wiki/` that the Wiki tool requires."
     },
     {
       "line": 420,
       "text": "This authoring summary assigns documentation maintenance. The",
       "hash": "b9e44715a94c1936c98753699856ec86734cb90c07c84a8b316664e348095681",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3086,7 +3086,7 @@
       "line": 421,
       "text": "[Lexicon ownership schema](LEXICON.md#artifact-ownership-schema) defines the",
       "hash": "4f9939bcd15afe38e093348cd90afd93d1b13bca1452cdd8ccbd006757f1f496",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3095,7 +3095,7 @@
       "line": 422,
       "text": "jobs and provides the question-to-owner routes and artifact boundaries. Keep",
       "hash": "e804a56b1bca8ae6b6c6e9816b5b20e8288b3ce298887f319682c90c9d478667",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3104,7 +3104,7 @@
       "line": 423,
       "text": "those routes consistent with these assignments when ownership changes.",
       "hash": "36dfda7b8e2deb7b09f3e38b40ffe1d22c8eb3735f8f8cc03b2e0d8c75e3a292",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3113,106 +3113,106 @@
       "line": 425,
       "text": "| Truth | Owner |",
       "hash": "9d749671bd3e9beb954546bb4c2966a20733b44592cc51d5574d18e97208bef1",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "LEXICON.md",
+      "landedText": "| Job | Definition and owned content | Agent question | Maintained owner / route |",
+      "reason": "TK-005I: the documentation-ownership table restated the Lexicon Artifact Ownership Schema, which holds this route; AGENTS.md now points to that schema and keeps the always-true rules and the Wiki route (`workbench/wiki/`). This is the table header; the Lexicon table carries the job-to-owner routes."
     },
     {
       "line": 426,
       "text": "|---|---|",
       "hash": "4199ba454d6d3ae83657120c2bb6bd674eefc0dd7d3cd4cc844171dc6725135b",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "LEXICON.md",
+      "landedText": "| Artifact | Defined job and ownership limit |",
+      "reason": "TK-005I: the documentation-ownership table restated the Lexicon Artifact Ownership Schema, which holds this route; AGENTS.md now points to that schema and keeps the always-true rules and the Wiki route (`workbench/wiki/`). This is the table separator; the Lexicon Artifact Boundaries table is the two-column owner table."
     },
     {
       "line": 427,
       "text": "| how agents work, safety, Git, verification | `AGENTS.md` |",
       "hash": "72e0ae15638a27c5150725396fcfa63d7d464ef5b831058a4faced7241dde0bf",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "LEXICON.md",
+      "landedText": "AGENTS owns project-wide verification and review obligations",
+      "reason": "TK-005I: the documentation-ownership table restated the Lexicon Artifact Ownership Schema, which holds this route; AGENTS.md now points to that schema and keeps the always-true rules and the Wiki route (`workbench/wiki/`). The Lexicon routes authority and boundaries to AGENTS, says \"AGENTS governs agents\" and gives AGENTS project-wide verification, review and lifecycle obligations."
     },
     {
       "line": 428,
       "text": "| cross-cutting product direction and invariants | `BLUEPRINT.md` |",
       "hash": "5735f2a6adf6e936946849ca574b579eaab396b9e8aee76d5b7dcec707b8a128",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "LEXICON.md",
+      "landedText": "Describe the desired finished product, its people, purpose, experience, outcomes, qualities and non-goals.",
+      "reason": "TK-005I: the documentation-ownership table restated the Lexicon Artifact Ownership Schema, which holds this route; AGENTS.md now points to that schema and keeps the always-true rules and the Wiki route (`workbench/wiki/`). The Lexicon Destination row routes this to the Blueprint; cross-cutting qualities stay in the Blueprint."
     },
     {
       "line": 429,
       "text": "| shared project terms and accepted definitions | `LEXICON.md` |",
       "hash": "6a7611a12f76d5edb1e1fc77de32a20a94b5e42f2ba8184385dce1f511d7f509",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "LEXICON.md",
+      "landedText": "Define shared terms, aliases and distinctions precisely.",
+      "reason": "TK-005I: the documentation-ownership table restated the Lexicon Artifact Ownership Schema, which holds this route; AGENTS.md now points to that schema and keeps the always-true rules and the Wiki route (`workbench/wiki/`). The Lexicon Language row routes this to the Lexicon."
     },
     {
       "line": 430,
       "text": "| active assignment/blocker/event/next gate | assigned `SPEC.md`; `TASKBOARD.md` is its generated projection |",
       "hash": "0f03e2e509efbd5f1d357936774a4a4a557885e09d49dbd34136e93708a144c1",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "LEXICON.md",
+      "landedText": "Owning `SPEC.md` and its Tasks; [Taskboard](TASKBOARD.md) displays their generated current view.",
+      "reason": "TK-005I: the documentation-ownership table restated the Lexicon Artifact Ownership Schema, which holds this route; AGENTS.md now points to that schema and keeps the always-true rules and the Wiki route (`workbench/wiki/`). The Lexicon Work state row."
     },
     {
       "line": 431,
       "text": "| requirements, decisions, acceptance, evidence, completion | assigned `SPEC.md` |",
       "hash": "d7aa7c2f59eea1cf21c78bed80b717c505fe21763e716871e60885313700de2d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "LEXICON.md",
+      "landedText": "Assigned stable `SPEC.md` -> Desired Behavior, Decisions And Contracts, Non-Goals.",
+      "reason": "TK-005I: the documentation-ownership table restated the Lexicon Artifact Ownership Schema, which holds this route; AGENTS.md now points to that schema and keeps the always-true rules and the Wiki route (`workbench/wiki/`). The Lexicon Requirements, Decisions (capability-local choices stay in the owning Spec), Acceptance and Evidence rows."
     },
     {
       "line": 432,
       "text": "| commands and troubleshooting | `RUNBOOK.md` |",
       "hash": "db537626e2c4b8fef3e38b9a6b9aa744073e7716ed81f10c2c5150b7aa03b636",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "LEXICON.md",
+      "landedText": "[Runbook](RUNBOOK.md) -> named procedure and tool.",
+      "reason": "TK-005I: the documentation-ownership table restated the Lexicon Artifact Ownership Schema, which holds this route; AGENTS.md now points to that schema and keeps the always-true rules and the Wiki route (`workbench/wiki/`). The Lexicon Procedures and Recovery rows route commands and troubleshooting to the Runbook."
     },
     {
       "line": 433,
       "text": "| public setup and usage | `README.md` |",
       "hash": "45f10859e76e34da88305f8a4f6882bf4b2c6ee3307ed7ec8cea70e2256024ee",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "LEXICON.md",
+      "landedText": "[README](README.md), linking operational detail to the Runbook.",
+      "reason": "TK-005I: the documentation-ownership table restated the Lexicon Artifact Ownership Schema, which holds this route; AGENTS.md now points to that schema and keeps the always-true rules and the Wiki route (`workbench/wiki/`). The Lexicon Human orientation row."
     },
     {
       "line": 434,
       "text": "| active architectural decisions, rationale, alternatives, supersession | `workbench/docs/adr/` (`canonicalized_in` names operational owners) |",
       "hash": "1c7c10fdb5aa8fc8fe06124b5a6fe30942ff49b02e9a238772d1054c4914e359",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "LEXICON.md",
+      "landedText": "An active accepted decision owns architectural Canon; rationale and rejected or superseded alternatives remain distinguishable. Operational owners are named by `canonicalized_in`.",
+      "reason": "TK-005I: the documentation-ownership table restated the Lexicon Artifact Ownership Schema, which holds this route; AGENTS.md now points to that schema and keeps the always-true rules and the Wiki route (`workbench/wiki/`). The Lexicon Decisions row and ADR boundary; the same schema also routes destination decisions to the DDR register, the row Decision Record Tooling left this Spec to add, so pointing to the schema closes that gap."
     },
     {
       "line": 435,
       "text": "| evolving synthesis, design concepts, capability and reference pages | `workbench/wiki/` (`MEMORY.md` router, `SCHEMA.md` rules; completed capabilities in the manifest-declared `features` collection, never copied task state) |",
       "hash": "42a19f2dc318ddbb91d7112ad733bf459438a361cfea9b8cb3a7ed0d43f8a489",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "LEXICON.md",
+      "landedText": "Wiki `SCHEMA.md` owns their structure, page kinds, ingest, lint and maintenance rules.",
+      "reason": "TK-005I: the documentation-ownership table restated the Lexicon Artifact Ownership Schema, which holds this route; AGENTS.md now points to that schema and keeps the always-true rules and the Wiki route (`workbench/wiki/`). The Lexicon Knowledge row (Wiki MEMORY), Wiki and Wiki article boundaries (SCHEMA.md) and Feature article row (the manifest-declared `features` collection, without copying active Task state); AGENTS.md keeps the `workbench/wiki/` route."
     },
     {
       "line": 437,
       "text": "The agent changing a truth maintains its existing owner within the authorized",
       "hash": "87425775b057ff4cf60c0a96246bea5ebe50488eb42c207ecfe3e7b526f7efe6",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3221,7 +3221,7 @@
       "line": 438,
       "text": "scope: update definitions when meaning changes, procedures when operations",
       "hash": "d81ae7a82df7c3ff5f929cdbec9730f4d1cb649859fa527fa63aaeb39b4204e7",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3230,7 +3230,7 @@
       "line": 439,
       "text": "change, and Spec state/evidence at meaningful work transitions. A document's",
       "hash": "fe40e1feffca4ff6c55cdd9b4f2fd8255baed4f597f03fce3630200ad98408c8",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3239,7 +3239,7 @@
       "line": 440,
       "text": "information ownership is distinct from the person responsible for maintaining",
       "hash": "1d168eaee0ed9f42d40ba7835dd0f8c8838c5b8c918ebc2897d5cde7a2015975",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3248,7 +3248,7 @@
       "line": 441,
       "text": "it and from authority to approve a change. Project-wide approval stays with the",
       "hash": "dd77fa87ddaa3affda14e83ec911d0a1818c6177501d63f4bd56434dd1bb8cf1",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3257,7 +3257,7 @@
       "line": 442,
       "text": "user under this file's rules; Spec/TASK assignments identify delivery ownership.",
       "hash": "eb08a91a5f8cb80e3fbb84366dc29b5fe98848a46bfc11ba1e4d4e5196b77752",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3266,7 +3266,7 @@
       "line": 444,
       "text": "Work state is authored in the owning Spec and projected into TASKBOARD. Route",
       "hash": "a08a597e677f0e168b88b72f16a787af1a16908658dd1bd8f7b369fc4d48e502",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3275,7 +3275,7 @@
       "line": 445,
       "text": "accepted requirements to the Spec, architectural decisions to the ADR owner,",
       "hash": "88d438deb0ecbd3310d89e7d044c783d2f72f6ce67890b6d2ffcde152953ac8a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3284,7 +3284,7 @@
       "line": 446,
       "text": "and durable explanations to the Wiki. A mixed finding may need linked updates",
       "hash": "e9ef86739b783287221f9dcd79aeeba3149cfb51301da3ffade25471572ad5cf",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3293,7 +3293,7 @@
       "line": 447,
       "text": "to several owners; preserve each claim once rather than copying the whole",
       "hash": "8a69b9d466450796c2804141ab36d28aa4f2de4618f15f0c77a291984aaf5b1a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3302,7 +3302,7 @@
       "line": 448,
       "text": "finding into every document.",
       "hash": "0c089b1c6825c0c968636cfd6947b5ae150a0dc0504a3175876522fa36833d53",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3311,169 +3311,169 @@
       "line": 450,
       "text": "A citation into a file that changes must say which tree it reads at. Every merge",
       "hash": "7965deb0f9bb936eb4b0ebb0d447f21fc61bad96aa46ccb67d32b451c23c1cdd",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "pointer",
+      "homePath": "AGENTS.md",
+      "landedText": "A citation into a file that changes must say which tree it reads at; how to anchor one follows the [`to-docs` skill](workbench/skills/to-docs/SKILL.md#citation-anchors).",
+      "reason": "TK-005I kept the rule as a brief line with a pointer; \"Every merge ...\" continues verbatim in the to-docs skill Citation anchors section."
     },
     {
       "line": 451,
       "text": "into the integration branch moves line numbers, so a bare `path:line` written",
       "hash": "502875182fd8da9af37afe6c9b430b19227e71aad3f883f2ce97fc73d93150d8",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/to-docs/SKILL.md",
+      "landedText": "into the integration branch moves line numbers, so a bare `path:line` written",
+      "reason": "TK-005I moved this line verbatim to the to-docs skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 452,
       "text": "against a branch tip points at unrelated content once that branch lands - which",
       "hash": "3c0409929d86e7be49eeafc865bfe87474bb6010b85177dc940e85f2c1f20df1",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/to-docs/SKILL.md",
+      "landedText": "against a branch tip points at unrelated content once that branch lands",
+      "reason": "TK-005I moved this to the to-docs skill Citation anchors section; the incident clause \"- which is how nine citations ...\" is repository history and moved with its sentence to the Runbook Test And Build note on test-spec-citation-anchors."
     },
     {
       "line": 453,
       "text": "is how nine citations in a completed spec came to name the wrong code, one of",
       "hash": "9c87dc598bf511d0bb2e7c99988de8c215acd92a31b403255f61ecaca7cb16e6",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "which is how nine citations in a completed spec came to name the wrong code, one of them behind a checked acceptance box",
+      "reason": "TK-005I: repository-specific rationale for the citation rule; a core skill ships to every room, so it moved to the root Runbook Test And Build note beside the test that enforces the rule here."
     },
     {
       "line": 454,
       "text": "them behind a checked acceptance box. Either anchor the citation itself with",
       "hash": "229f2e6a1c05d76407055da95e50a75cad3c0398cdadfada4bb12f2f62fd0a22",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/to-docs/SKILL.md",
+      "landedText": "Either anchor the citation itself with `git show <sha>:path`",
+      "reason": "TK-005I moved this to the to-docs skill Citation anchors section; \"them behind a checked acceptance box\" moved to the root Runbook Test And Build note."
     },
     {
       "line": 455,
       "text": "`git show <sha>:path`, which is absolute and never needs re-anchoring, or",
       "hash": "953199e00a03ad041b5580022a376f5b8cceead9b3f5b0095e7474c9648f4695",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/to-docs/SKILL.md",
+      "landedText": "`git show <sha>:path`, which is absolute and never needs re-anchoring, or",
+      "reason": "TK-005I moved this line verbatim to the to-docs skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 456,
       "text": "declare the spec's anchors once near the top:",
       "hash": "892e71d4f1cf70edcb0ac894524607dc9b9c2fd47dd4207b036eed2217e339b4",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/to-docs/SKILL.md",
+      "landedText": "declare the spec's anchors once near the top:",
+      "reason": "TK-005I moved this line verbatim to the to-docs skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 458,
       "text": "> **Citation anchors.** pre=`<sha>` post=`<sha>`.",
       "hash": "e9ed7030db577a86292408e0cc0b49f7124835d910f4919f94a3ca03915e17e7",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/to-docs/SKILL.md",
+      "landedText": "> **Citation anchors.** pre=`<sha>` post=`<sha>`.",
+      "reason": "TK-005I moved this line verbatim to the to-docs skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 460,
       "text": "A label immediately before a citation names its tree and wins: \"shipped `:M`\"",
       "hash": "e77b03aa1d36be7697a3cbced8bcc349794e8f07fe093c584597d97c413a8b98",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/to-docs/SKILL.md",
+      "landedText": "A label immediately before a citation names its tree and wins: \"shipped `:M`\"",
+      "reason": "TK-005I moved this line verbatim to the to-docs skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 461,
       "text": "reads at `post`, \"base `:N`\" at the sha of the `git show` anchor that introduced",
       "hash": "1cdbd39c8919823a46d9836c1d66e45ea77966c5b84a7262a0480a5ad261fa57",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/to-docs/SKILL.md",
+      "landedText": "reads at `post`, \"base `:N`\" at the sha of the `git show` anchor that introduced",
+      "reason": "TK-005I moved this line verbatim to the to-docs skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 462,
       "text": "the path. Unlabelled, a citation reads at `pre` in Outcome, Why It Matters,",
       "hash": "3fd4bd085626e80ac3399f8b81ede31d3ab524105c8ac8e8b379300e2bd4bd13",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/to-docs/SKILL.md",
+      "landedText": "the path. Unlabelled, a citation reads at `pre` in Outcome, Why It Matters,",
+      "reason": "TK-005I moved this line verbatim to the to-docs skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 463,
       "text": "Current Verified State, Desired Behavior and Documentation Impact - all written",
       "hash": "a77ccc3c125fcde65c05b6b8b24e7a0c46251c69300e7b3002550613145ae51e",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/to-docs/SKILL.md",
+      "landedText": "Current Verified State, Desired Behavior and Documentation Impact - all written",
+      "reason": "TK-005I moved this line verbatim to the to-docs skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 464,
       "text": "before the change - and at `post` in every other live section. The shorthand",
       "hash": "db2c82d86917fef0fb8d0b248f19381a7cab59bf3736109a2b7d81a88e6fc572",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/to-docs/SKILL.md",
+      "landedText": "before the change - and at `post` in every other live section. The shorthand",
+      "reason": "TK-005I moved this line verbatim to the to-docs skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 465,
       "text": "`` `:N` `` reads against the nearest path already in scope. Evidence rows read at",
       "hash": "ac833d4c63dcc48e13e26883624c54170a59368e9c37a109c8d16318893814fc",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/to-docs/SKILL.md",
+      "landedText": "`` `:N` `` reads against the nearest path already in scope",
+      "reason": "TK-005I moved this to the to-docs skill Citation anchors section, where it continues with the generic mirror's clause \"a shorthand without a scoped path is invalid\" before \"Evidence rows read at the commit each row names\"."
     },
     {
       "line": 466,
       "text": "the commit each row names and are never re-anchored, because they are",
       "hash": "495a716c82fad617ca58cec51ba4ddf1d712a152e87ae9f75b706df5a1afa2fe",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/to-docs/SKILL.md",
+      "landedText": "the commit each row names and are never re-anchored, because they are",
+      "reason": "TK-005I moved this line verbatim to the to-docs skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 467,
       "text": "append-only. `tools/test-spec-citation-anchors.mjs` holds specs from S-036",
       "hash": "006c86b777f3088cc17286596a88166461f26178a15146df09b3468b905ce7b4",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/to-docs/SKILL.md",
+      "landedText": "are never re-anchored, because they are append-only.",
+      "reason": "TK-005I moved \"append-only.\" to the to-docs skill; the maintainer test sentence names a repository Spec and a root `tools/` test, so it moved to the root Runbook Test And Build note."
     },
     {
       "line": 468,
       "text": "forward to this; earlier specs are grandfathered, since retro-anchoring accepted",
       "hash": "de7e06f7d96af37980e8d66a241392cd20990b4ca52dbba2603ad39b657a8425",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "earlier specs are grandfathered, since retro-anchoring accepted records buys no reader anything",
+      "reason": "TK-005I: maintainer-only (a root test and a repository Spec); moved to the root Runbook Test And Build note on test-spec-citation-anchors."
     },
     {
       "line": 469,
       "text": "records buys no reader anything.",
       "hash": "0c53aafba7b23b845f95ebccb19cc4ca2d0a28f2f4329730ada0bf3e2fe18fd8",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "RUNBOOK.md",
+      "landedText": "retro-anchoring accepted records buys no reader anything.",
+      "reason": "TK-005I: maintainer-only; moved to the root Runbook Test And Build note."
     },
     {
       "line": 471,
       "text": "Every use of the Workbench reads the Wiki and, when the work changed what a",
       "hash": "5ad458023efb8747a77a7922d863ffb6b0be31e457942f7977ece215b5db65b0",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3482,7 +3482,7 @@
       "line": 472,
       "text": "page says, updates that page on the same branch; the operation's own",
       "hash": "fda7bbb07697d19bec3ec08b5890a66459191000d64deb8984801f1eb21581d0",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3491,7 +3491,7 @@
       "line": 473,
       "text": "authority covers its Wiki update, with no per-page approval. A grilling exit,",
       "hash": "170b523ecc80697f3bbcf193b4ec2bd4eb1da35b1a7dc742a2ce6c0e8508510c",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3500,7 +3500,7 @@
       "line": 474,
       "text": "Task close, Spec completion, accepted decision or promotion usually touches",
       "hash": "d3dcc0cdefa69ec5e4a4e4c004be21e3c382ecdec7cb40887fc82b7b20f6b228",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3509,7 +3509,7 @@
       "line": 475,
       "text": "several pages. End each Wiki update with a lint of the touched pages; the",
       "hash": "69b22e9ef82e5f3e79258b8437bde96d5e6eb158333e1f9dfab1c44ea79fb361",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3518,7 +3518,7 @@
       "line": 476,
       "text": "whole-Wiki lint runs at Spec review when the Spec's work is verified, and its",
       "hash": "e33c0768de9bae908830d05129023df11cef395eb18fea6aa4fbb40099205c90",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3527,7 +3527,7 @@
       "line": 477,
       "text": "findings follow the corrective rule in Assembled Review And Corrective Return.",
       "hash": "562ddccd19c13799365ba57e76c6c9fb810398e72105f983f6142d89cd78847d",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3536,7 +3536,7 @@
       "line": 478,
       "text": "Identifiers on a page always carry the",
       "hash": "0c927546d973c3d1729cdb679d46a6720d8ce831a2d9b268eb110de122c8bfa9",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3545,7 +3545,7 @@
       "line": 479,
       "text": "artifact's name and context. In chat, never refer to an artifact by its",
       "hash": "216517c1b7541b85f223616ef43f1d80f00fdb0d14f626a38d0baa8ec7ee5035",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3554,7 +3554,7 @@
       "line": 480,
       "text": "identifier alone.",
       "hash": "170ff8471e388cea0b8c2df7a37753944612b22810120d1846bd58953539044c",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3563,7 +3563,7 @@
       "line": 482,
       "text": "If no docs change, record `Docs checked; no update needed` with the reason in",
       "hash": "2aece017c56c3d040532ce1fe8d76b22969f3f1246c7f9230ae0a831e4027e5b",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3572,7 +3572,7 @@
       "line": 483,
       "text": "the spec evidence. Final response proof must state: what changed, why, risks or",
       "hash": "d5b50206ac0748d032363ddb10d3007af82a5c7ac8d60bcfc54bc80cc6ccbad9",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3581,7 +3581,7 @@
       "line": 484,
       "text": "side effects, and how it was verified. Do not copy completed evidence into the",
       "hash": "e56566c561e61ca55e7e5ea349438893fa635ed0955871d147e5fd806478a08f",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3590,7 +3590,7 @@
       "line": 485,
       "text": "Taskboard or rewrite append-only spec evidence rows.",
       "hash": "64eec0bee57bf0e78c799baa05c07c6f2f6b52a6d4b31fc5c3cbda1d4dd20c51",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null

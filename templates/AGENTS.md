@@ -234,15 +234,15 @@ and use explicit error handling. Never invent APIs, behavior, or test results.
 
 For behavior changes: add/update a failing test, confirm the expected failure,
 implement the smallest green change, then run the targeted test and full verification suite.
+The steps follow the
+[`implement` skill](workbench/skills/implement/SKILL.md#engineering-and-verification),
+which the [operations index](RUNBOOK.md#operations-index) points to.
 If tests are impractical, name the specific reason and run a concrete manual
 check. Milestones also need a <1-minute demo artifact: screenshot, recording,
 preview URL, or one-command demo.
 
-```bash
-[TARGETED_TEST_COMMAND]
-[FULL_VERIFICATION_COMMAND]
-[SPEC_DOCTOR_COMMAND]
-```
+A change passes the full verification suite before its result is claimed. The
+suite has one list, in the Runbook's [Test And Build](RUNBOOK.md#test-and-build).
 
 Capture benchmark/guardrail baselines before harness changes and after-scores
 afterward. Static coverage or token reduction is not agent-outcome evidence.
@@ -250,6 +250,8 @@ afterward. Static coverage or token reduction is not agent-outcome evidence.
 ## Documentation Ownership And Proof
 
 Documentation is part of done; the implementing agent is documentation owner.
+Route each truth once, to the owner the Lexicon ownership schema names for its
+job; durable explanations go to the Wiki (`workbench/wiki/`).
 
 Every use of the Workbench reads the Wiki and, when the work changed what a
 page says, updates that page on the same branch; the operation's own
@@ -263,18 +265,6 @@ This authoring summary assigns documentation maintenance. The
 [Lexicon ownership schema](LEXICON.md#artifact-ownership-schema) defines the
 jobs and provides the question-to-owner routes and artifact boundaries. Keep
 those routes consistent with these assignments when ownership changes.
-
-| Truth | Owner |
-|---|---|
-| agent rules, safety, Git, verification | `AGENTS.md` |
-| product direction and invariants | `BLUEPRINT.md` |
-| shared project terms and accepted definitions | `LEXICON.md` |
-| active assignment/blocker/event/gate | assigned `SPEC.md`; `TASKBOARD.md` is its generated projection |
-| requirements, acceptance, decisions, evidence, completion | assigned `SPEC.md` |
-| commands and troubleshooting | `RUNBOOK.md` |
-| public usage | `README.md` |
-| active architectural decisions, rationale, alternatives, supersession | `workbench/docs/adr/` (`canonicalized_in` names operational owners) |
-| evolving synthesis, design concepts, capability and reference pages | `workbench/wiki/` (`MEMORY.md` router, `SCHEMA.md` rules; completed capabilities in the manifest-declared `features` collection, never copied Task state) |
 
 The agent changing a truth maintains its existing owner within the authorized
 scope: update definitions when meaning changes, procedures when operations
@@ -292,22 +282,9 @@ finding into every document.
 Use `Docs checked; no update needed` with a reason when appropriate. The final response proof states what changed, why, risks, and verification. Append spec
 evidence; never duplicate completed proof in the Taskboard.
 
-A citation into a file that changes must say which tree it reads at. Every merge
-moves line numbers, so a bare `path:line` written against a branch tip points at
-unrelated content once that branch lands. Either anchor the citation with
-`git show <sha>:path`, which is absolute, or declare the spec's anchors once
-near the top:
-
-> **Citation anchors.** pre=`<sha>` post=`<sha>`.
-
-A label immediately before a citation then names its tree and wins - "shipped"
-reads at `post`, "base" at the anchor that introduced the path. Unlabelled, a
-citation reads at `pre` in the sections written before the change (Outcome, Why
-It Matters, Current Verified State, Desired Behavior, Documentation Impact) and
-at `post` in the rest. The shorthand `` `:N` `` reads against the nearest
-path already in scope; a shorthand without a scoped path is invalid.
-Evidence rows read at the commit each row names and are
-never re-anchored.
+A citation into a file that changes must say which tree it reads at; how to
+anchor one follows the
+[`to-docs` skill](workbench/skills/to-docs/SKILL.md#citation-anchors).
 
 ## Safety And Change Control
 

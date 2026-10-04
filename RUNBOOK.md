@@ -22,6 +22,8 @@ Contract change.
 |---|---|---|
 | Enter a session | Every session start or resume: check root, branch and dirty state, run doctor and load the assigned Spec. | [Ordinary Entry](#ordinary-entry) |
 | Find the owner of a question | You need the file that owns a permission, meaning, work state, proof or procedure. | [Finding The Owner Of A Question](#finding-the-owner-of-a-question) |
+| Route a truth to its owner | Work changed a durable truth and its owner must be updated, or nothing changed and that must be recorded. | [to-docs](workbench/skills/to-docs/SKILL.md#to-docs) |
+| Cite a file that changes | A Spec, review or record cites a line of a file that later merges can move. | [to-docs](workbench/skills/to-docs/SKILL.md#citation-anchors) |
 | Inspect a GitHub coordination binding | A task asks what a committed repository binding says at an exact commit. | [GitHub Coordination Binding Inspection](#github-coordination-binding-inspection) |
 | Coordinate roles and stances | You plan, dispatch, monitor or verify work as a role or a named stance. | [Role And Stance Coordination](#role-and-stance-coordination) |
 | Choose the behavior for a request | A request arrives in ordinary language and you must pick the skills and endpoint it authorizes. | [Behavior Selection](#behavior-selection) |
@@ -31,6 +33,7 @@ Contract change.
 | Install | You set up a fresh clone. | [Install](#install) |
 | Run locally | You run the evaluator and self-tests by hand. | [Run Locally](#run-locally) |
 | Run the tests | A change to tools, templates, specs or root docs needs its fast check or the full suite. | [Test And Build](#test-and-build) |
+| Verify a behavior change | A behavior change needs its red/green test, its targeted test and the full suite before its result is claimed. | [implement](workbench/skills/implement/SKILL.md#engineering-and-verification); this room's suite: [Test And Build](#test-and-build) |
 | Prepare project evidence and Blueprint questions | Genesis or adoption needs evidence and Blueprint questions from a named evidence room. | [Prepare project evidence and Blueprint questions](#prepare-project-evidence-and-blueprint-questions) |
 | Derive a fresh room from recorded decisions | A release must prove a room regenerates from its recorded decisions. | [Derive a fresh room from recorded decisions](#derive-a-fresh-room-from-recorded-decisions) |
 | Check the skills lane | Core skills, their discovery roots or the lane receipt changed or look stale. | [Skills lane check](#skills-lane-check) |
@@ -66,9 +69,9 @@ Contract change.
 | Repair installed state | doctor reports installed state that a room command rewrites. | [Installed State The Harness Wrote](#installed-state-the-harness-wrote) |
 | Read a diagnostic and its blocking effect | A runtime tool reports a finding and you need its severity and what it blocks. | [Diagnostics And Blocking Effects](#diagnostics-and-blocking-effects) |
 | Use the socket contract registry | Work touches the Foundry socket contract registry. | [Socket Contract Registry](#socket-contract-registry) |
-| Hold test coverage | You add or change tests for the evaluator and trial tooling. | [Test Coverage Policy](#test-coverage-policy) |
+| Hold test coverage | You add or change tests, or judge whether coverage is enough. | [implement](workbench/skills/implement/SKILL.md#test-coverage-policy); this room's policy for the evaluator and trial tooling: [Test Coverage Policy](#test-coverage-policy) |
 | Evaluate a harness change | You must show that a harness change is an improvement. | [Evaluation And Benchmarking](#evaluation-and-benchmarking) |
-| Run the guardrail audit | A harness change needs its guardrail baseline and after-score. | [Guardrail North-Star Audit](#guardrail-north-star-audit) |
+| Run the guardrail audit | A harness change needs its guardrail baseline and after-score. | [implement](workbench/skills/implement/SKILL.md#benchmark-driven-improvement); this room's audit: [Guardrail North-Star Audit](#guardrail-north-star-audit) |
 | Pick the claims to test | An evaluation must name the claim it tests. | [Claims To Test](#claims-to-test) |
 | Design an evaluation | You set up task-outcome scoring or trials. | [Evaluation Design](#evaluation-design) |
 | Run the evaluation commands | You run the static rubric or the trial framework. | [Commands](#commands) |
@@ -99,6 +102,7 @@ Before claiming a new version release-ready, apply the AGENTS Template Upgrade
 Release Gate to [Workbench_Template](https://github.com/KaydenClark/Workbench_Template),
 the example reference installation. Resolve the live repository identity even
 when a local checkout or old remote is named Example_Workbench.
+This is the required real-room test of `update-harness`.
 
 1. Pin the clean source version/commit and the Template's current integration
    commit. Preserve unrelated work in separate checkouts. Read the target
@@ -278,12 +282,16 @@ Fast check (run for any change to `tools/`, `templates/`, or root docs):
 node tools/test-evaluate-workbench.mjs
 ```
 
-Full verification:
+Full verification is the one Full suite list below. `AGENTS.md`
+[Engineering And Verification](AGENTS.md#engineering-and-verification) requires
+it to pass before a change to controls, templates, tools, evals, or specs is
+claimed; the red/green steps and their order follow the
+[`implement` skill](workbench/skills/implement/SKILL.md#engineering-and-verification).
+
+Full suite for controls, templates, tools, evals, or specs:
 
 ```bash
 node tools/test-spec-workbench.mjs
-node tools/test-team-coordination.mjs
-node tools/test-team-coordination-demo.mjs
 node tools/test-skill-catalog.mjs
 node tools/test-skill-inspection.mjs
 node tools/test-skills-lane.mjs
@@ -319,11 +327,11 @@ node tools/test-context-tools.mjs
 node tools/test-outcome-trials.mjs
 node tools/test-eval-runner.mjs
 node tools/test-feedback-automation.mjs
-node tools/test-socket-contract.mjs
 node tools/test-symlink-invocation.mjs
 node tools/test-control-fidelity.mjs
 node tools/test-spec-citation-anchors.mjs
 node tools/test-controls-vocabulary-sweep.mjs
+node tools/test-carrier-landing.mjs
 node tools/test-runbook-index.mjs
 node tools/test-spec-report.mjs
 node tools/test-self-drift.mjs
@@ -343,6 +351,25 @@ Expected result:
   candidates.
 - spec doctor reports no duplicate IDs, invalid/contradictory states, stale
   claims, missing evidence, broken links, or generated-region drift.
+
+These checks pass but are not Full suite members; this Runbook's earlier Full
+verification list named them while the `AGENTS.md` Full suite did not, and
+whether they join the suite is a separate decision:
+
+```bash
+node tools/test-team-coordination.mjs
+node tools/test-team-coordination-demo.mjs
+node tools/test-socket-contract.mjs
+```
+
+`tools/test-spec-citation-anchors.mjs` holds specs from S-036 forward to the
+citation rule in `AGENTS.md` Documentation Ownership And Proof, whose anchoring
+procedure is the `to-docs` skill's Citation anchors section; earlier specs are
+grandfathered, since retro-anchoring accepted records buys no reader anything.
+The rule exists because a bare `path:line` written against a branch tip points
+at unrelated content once that branch lands - which is how nine citations in a
+completed spec came to name the wrong code, one of them behind a checked
+acceptance box.
 
 ### Prepare project evidence and Blueprint questions
 
@@ -1620,7 +1647,9 @@ meaningful line of `tools/` or `evals/` code, or a rubric-relevant section of
 the control docs, at least one self-test fails. If a meaningful behavior
 changes, a self-test must change with it. Remove tests that are stale or pure
 bloat. If behavior cannot be tested in the current harness, record the exact
-reason and use the strongest concrete manual check available.
+reason and use the strongest concrete manual check available. The generic
+coverage rules follow the
+[`implement` skill](workbench/skills/implement/SKILL.md#test-coverage-policy).
 
 ## Evaluation And Benchmarking
 
@@ -1647,7 +1676,8 @@ before/after score and remaining recommendations in the owning spec and
 100/100 is the deliberately hard north star, not the release gate. Regression
 tests remain the minimum ship gate. Never weaken or reweight criteria to create
 score movement, and never translate static score movement into an agent-outcome
-claim without repeated task trials.
+claim without repeated task trials. The method this audit measures follows the
+[`implement` skill](workbench/skills/implement/SKILL.md#benchmark-driven-improvement).
 
 ### Claims To Test
 

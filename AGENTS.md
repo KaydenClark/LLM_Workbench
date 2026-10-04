@@ -249,72 +249,19 @@ Validate inputs first; use explicit error handling and visible failures rather
 than silent fallbacks. Trace dependencies before shared-logic changes. Never
 invent APIs, files, behavior, or test results.
 
-For behavior changes to tools/evals/outcomes:
-
-1. Define expected behavior at a stable testing seam.
-2. Add or update a failing test and confirm the expected failure.
-3. Implement the smallest change that turns it green.
-4. Refactor only while green.
-5. Run the targeted test, then the full verification suite.
+Behavior changes to tools/evals/outcomes use red/green/refactor at a stable
+testing seam: add or update a failing test and confirm the expected failure,
+then run the targeted test and the full verification suite. The steps follow
+the [`implement` skill](workbench/skills/implement/SKILL.md#engineering-and-verification),
+which the [operations index](RUNBOOK.md#operations-index) points to.
 
 If tests are impractical, name the specific reason and run the strongest concrete
 manual check. A milestone also needs a demo artifact checkable in under one
 minute: screenshot, short recording, preview URL, or one-command demo.
 
-Full suite for controls, templates, tools, evals, or specs:
-
-```bash
-node tools/test-spec-workbench.mjs
-node tools/test-skill-catalog.mjs
-node tools/test-skill-inspection.mjs
-node tools/test-skills-lane.mjs
-node tools/test-core-composition.mjs
-node tools/test-project-evidence.mjs
-node tools/test-genesis-from-decisions.mjs
-node tools/test-blueprint-contract.mjs
-node tools/test-session-transport.mjs
-node tools/test-configured-host.mjs
-node tools/test-core-skill-installer.mjs
-node tools/test-workbench-layout.mjs
-node tools/test-workbench-adoption.mjs
-node tools/test-workbench-upgrade.mjs
-node tools/test-workbench-tools.mjs
-node tools/test-diagnostics.mjs
-node tools/test-adr.mjs
-node tools/test-governance-core.mjs
-node tools/test-branch-closeout.mjs
-node tools/test-wiki.mjs
-node tools/test-sessions.mjs
-node tools/test-notepads.mjs
-node tools/test-visible-ids.mjs
-node tools/test-workbench-identity.mjs
-node tools/test-visible-id-consumers.mjs
-node tools/test-direct-promotion.mjs
-node tools/test-workbench-round-trip.mjs
-node tools/test-cross-provider-fixture.mjs
-node tools/test-portability-matrix.mjs
-node tools/test-workbench-dogfood.mjs
-node tools/test-evaluate-workbench.mjs
-node tools/test-guardrail-audit.mjs
-node tools/test-context-tools.mjs
-node tools/test-outcome-trials.mjs
-node tools/test-eval-runner.mjs
-node tools/test-feedback-automation.mjs
-node tools/test-symlink-invocation.mjs
-node tools/test-control-fidelity.mjs
-node tools/test-spec-citation-anchors.mjs
-node tools/test-controls-vocabulary-sweep.mjs
-node tools/test-carrier-landing.mjs
-node tools/test-runbook-index.mjs
-node tools/test-spec-report.mjs
-node tools/test-self-drift.mjs
-node tools/test-feedback-inventory.mjs
-node tools/test-grilling-ledger.mjs
-python3 tools/test-check-append-only.py
-python3 evals/tasks/task_b_path_safety/test_grade.py
-node tools/evaluate-workbench.mjs --path templates --include-controls
-node workbench/tools/spec-workbench.mjs doctor
-```
+A change to controls, templates, tools, evals, or specs passes the full suite
+before its result is claimed. The suite has one list, in the Runbook's
+[Test And Build](RUNBOOK.md#test-and-build).
 
 Harness changes also capture the guardrail baseline before editing and the
 after-score, remaining recommendations, and outcome limitation after. Never
@@ -326,12 +273,8 @@ an agent-outcome claim without repeated controlled trials.
 Every new LLM Workbench version must update the existing reference repository
 [Workbench_Template](https://github.com/KaydenClark/Workbench_Template)
 (formerly Example_Workbench) to that version before release readiness is
-approved. This is the required real-room test of `update-harness`. Pin the source
-commit and prior Template commit, exercise the public upgrade route, preserve
-room-owned state, and verify matching manifest/control/runtime versions, exact
-managed bytes, the Template's full suite and recovery evidence. Independently
-review and merge the Template candidate into its declared integration branch,
-prove remote containment, and rerun its checks from a fresh remote clone.
+approved; its procedure is the Runbook's
+[Template Upgrade Release Gate](RUNBOOK.md#template-upgrade-release-gate).
 Record this proof in the current release spec; a stale or unverified Template
 keeps that release gate open. Source-template tests and fresh-project generation
 do not substitute for the installed upgrade. RUNBOOK's Template Upgrade Release
@@ -342,24 +285,13 @@ room updates. Main promotion remains owner-only in both repositories.
 ## Documentation Ownership And Proof
 
 Documentation is part of done; the implementing agent is its documentation
-owner. Route each truth once:
+owner. Route each truth once, to the owner the Lexicon ownership schema names
+for its job; durable explanations go to the Wiki (`workbench/wiki/`).
 
 This authoring summary assigns documentation maintenance. The
 [Lexicon ownership schema](LEXICON.md#artifact-ownership-schema) defines the
 jobs and provides the question-to-owner routes and artifact boundaries. Keep
 those routes consistent with these assignments when ownership changes.
-
-| Truth | Owner |
-|---|---|
-| how agents work, safety, Git, verification | `AGENTS.md` |
-| cross-cutting product direction and invariants | `BLUEPRINT.md` |
-| shared project terms and accepted definitions | `LEXICON.md` |
-| active assignment/blocker/event/next gate | assigned `SPEC.md`; `TASKBOARD.md` is its generated projection |
-| requirements, decisions, acceptance, evidence, completion | assigned `SPEC.md` |
-| commands and troubleshooting | `RUNBOOK.md` |
-| public setup and usage | `README.md` |
-| active architectural decisions, rationale, alternatives, supersession | `workbench/docs/adr/` (`canonicalized_in` names operational owners) |
-| evolving synthesis, design concepts, capability and reference pages | `workbench/wiki/` (`MEMORY.md` router, `SCHEMA.md` rules; completed capabilities in the manifest-declared `features` collection, never copied task state) |
 
 The agent changing a truth maintains its existing owner within the authorized
 scope: update definitions when meaning changes, procedures when operations
@@ -374,26 +306,9 @@ and durable explanations to the Wiki. A mixed finding may need linked updates
 to several owners; preserve each claim once rather than copying the whole
 finding into every document.
 
-A citation into a file that changes must say which tree it reads at. Every merge
-into the integration branch moves line numbers, so a bare `path:line` written
-against a branch tip points at unrelated content once that branch lands - which
-is how nine citations in a completed spec came to name the wrong code, one of
-them behind a checked acceptance box. Either anchor the citation itself with
-`git show <sha>:path`, which is absolute and never needs re-anchoring, or
-declare the spec's anchors once near the top:
-
-> **Citation anchors.** pre=`<sha>` post=`<sha>`.
-
-A label immediately before a citation names its tree and wins: "shipped `:M`"
-reads at `post`, "base `:N`" at the sha of the `git show` anchor that introduced
-the path. Unlabelled, a citation reads at `pre` in Outcome, Why It Matters,
-Current Verified State, Desired Behavior and Documentation Impact - all written
-before the change - and at `post` in every other live section. The shorthand
-`` `:N` `` reads against the nearest path already in scope. Evidence rows read at
-the commit each row names and are never re-anchored, because they are
-append-only. `tools/test-spec-citation-anchors.mjs` holds specs from S-036
-forward to this; earlier specs are grandfathered, since retro-anchoring accepted
-records buys no reader anything.
+A citation into a file that changes must say which tree it reads at; how to
+anchor one follows the
+[`to-docs` skill](workbench/skills/to-docs/SKILL.md#citation-anchors).
 
 Every use of the Workbench reads the Wiki and, when the work changed what a
 page says, updates that page on the same branch; the operation's own

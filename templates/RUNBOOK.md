@@ -25,6 +25,8 @@ Contract change.
 |---|---|---|
 | Enter a session | Every session start or resume: check root, branch and dirty state, run doctor and load the assigned Spec. | [Ordinary Entry](#ordinary-entry) |
 | Find the owner of a question | You need the file that owns a permission, meaning, work state, proof or procedure. | [Finding The Owner Of A Question](#finding-the-owner-of-a-question) |
+| Route a truth to its owner | Work changed a durable truth and its owner must be updated, or nothing changed and that must be recorded. | [to-docs](workbench/skills/to-docs/SKILL.md#to-docs) |
+| Cite a file that changes | A Spec, review or record cites a line of a file that later merges can move. | [to-docs](workbench/skills/to-docs/SKILL.md#citation-anchors) |
 | Coordinate roles and stances | You plan, dispatch, monitor or verify work as a role or a named stance. | [Role And Stance Coordination](#role-and-stance-coordination) |
 | Choose the behavior for a request | A request arrives in ordinary language and you must pick the skills and endpoint it authorizes. | [Behavior Selection](#behavior-selection) |
 | Check prerequisites | A fresh machine or clone needs this project's required tools confirmed. | [Prerequisites](#prerequisites) |
@@ -32,7 +34,8 @@ Contract change.
 | Install | You set up a fresh clone. | [Install](#install) |
 | Run locally | You start the project on a local machine. | [Run Locally](#run-locally) |
 | Run the tests | A change needs its fast check or the full verification. | [Test And Build](#test-and-build) |
-| Hold test coverage | You add or change tests, or judge whether coverage is enough. | [Test Coverage Policy](#test-coverage-policy) |
+| Verify a behavior change | A behavior change needs its red/green test, its targeted test and the full verification suite before its result is claimed. | [implement](workbench/skills/implement/SKILL.md#engineering-and-verification); this room's suite: [Test And Build](#test-and-build) |
+| Hold test coverage | You add or change tests, or judge whether coverage is enough. | [implement](workbench/skills/implement/SKILL.md#test-coverage-policy) |
 | Run the Workbench runtime tools | You run doctor, selection, records, decision records or diagnostics from the installed tools lane. | [Workbench Lifecycle, Diagnostics, And Decision Records](#workbench-lifecycle-diagnostics-and-decision-records) |
 | Deliver a Spec through its lifecycle | You pick up, deliver, review or close an assigned Spec and its Tasks. | [Spec Lifecycle And Retrieval](#spec-lifecycle-and-retrieval) |
 | Pick, claim and close a Task | Every pickup or resume of assigned work: selection, claim, receipt, close and blocker rules. | [implement](workbench/skills/implement/SKILL.md#work-selection-and-lifecycle) |
@@ -50,7 +53,7 @@ Contract change.
 | Promote claims to an owner | Selected supported claims must reach their durable owner. | [promote](workbench/skills/promote/SKILL.md#command-reference) |
 | Evaluate a harness change | You must show that a harness change is an improvement. | [Evaluation And Benchmarking](#evaluation-and-benchmarking) |
 | Transfer work through a handoff | Work goes to another agent or chat as a job, investigation, report or update. | [handoff](workbench/skills/handoff/SKILL.md#transfer-procedure) |
-| Improve against a benchmark | Agent rules, control docs, evaluation criteria or process change and need a baseline first. | [Benchmark-Driven Improvement](#benchmark-driven-improvement) |
+| Improve against a benchmark | Agent rules, control docs, evaluation criteria or process change and need a baseline first. | [implement](workbench/skills/implement/SKILL.md#benchmark-driven-improvement) |
 | Pick the claims to test | An evaluation must name the claim it tests. | [Claims To Test](#claims-to-test) |
 | Design an evaluation | You set up task-outcome scoring or trials. | [Evaluation Design](#evaluation-design) |
 | Run the evaluation commands | You run the static evaluator or the trial framework. | [Workbench Evaluation Commands](#workbench-evaluation-commands) |
@@ -218,13 +221,17 @@ Expected result:
 
 ## Test And Build
 
-Fast check:
+Fast check (the targeted test for a change):
 
 ```bash
 [FAST_TEST_COMMAND]
 ```
 
-Full verification:
+Full verification is the one full verification suite list below. `AGENTS.md`
+[Engineering And Verification](AGENTS.md#engineering-and-verification) requires
+it to pass before a change's result is claimed; the red/green steps and their
+order follow the
+[`implement` skill](workbench/skills/implement/SKILL.md#engineering-and-verification).
 
 ```bash
 [FULL_TEST_COMMAND]
@@ -240,24 +247,10 @@ Expected result:
 
 ### Test Coverage Policy
 
-Treat tests as the project specification, not as a comfort signal. The suite
-should be strong enough that if someone accidentally deletes a meaningful line,
-branch, route, data contract, workflow step, validation rule, or bug fix, at
-least one test or documented manual check fails.
-
-Coverage rules:
-
-- Prefer red/green TDD: write or update the failing test first, confirm the
-  expected failure, then implement the smallest fix.
-- Run every relevant existing test before judging the suite.
-- Keep tests that prove behavior a user, API consumer, operator, or future
-  maintainer depends on.
-- Improve tests that assert the wrong level, hide real failures, rely on stale
-  fixtures, overuse snapshots, or pass without checking meaningful behavior.
-- Remove tests that are stale, duplicated without adding a boundary, or pure
-  bloat.
-- If behavior cannot be tested in the current harness, record the exact reason
-  and use the strongest concrete manual check available.
+Treat tests as the project specification: if someone accidentally deletes a
+meaningful line, at least one test or documented manual check fails, and tests
+that are stale or pure bloat are removed. The coverage rules follow the
+[`implement` skill](workbench/skills/implement/SKILL.md#test-coverage-policy).
 
 ## Workbench Lifecycle, Diagnostics, And Decision Records
 
@@ -578,16 +571,10 @@ the [role boundaries](AGENTS.md#handoff-assignments-and-shared-context).
 
 ### Benchmark-Driven Improvement
 
-Before changing agent rules, control docs, evaluation criteria, or the working
-process, capture the available guardrail or benchmark baseline. Put the intended
-score movement or outcome hypothesis in the owning spec, then record the
-before/after score and remaining recommendations after the change.
-
-Use 100/100 as a deliberately hard north star, not the release gate. Regression
-checks are the minimum ship gate. Never weaken a criterion to manufacture
-progress, and do not treat a static coverage score as outcome evidence. If this
-project has no executable benchmark yet, add one or state that the change cannot
-yet be called better.
+Capture the available guardrail or benchmark baseline before changing agent
+rules, control docs, evaluation criteria, or the working process. The procedure
+follows the
+[`implement` skill](workbench/skills/implement/SKILL.md#benchmark-driven-improvement).
 
 ### Claims To Test
 

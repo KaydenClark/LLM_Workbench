@@ -66,3 +66,27 @@ job belongs. Run the owning documentation checks (for the Wiki,
 `node workbench/tools/spec-workbench.mjs render` and
 `node workbench/tools/spec-workbench.mjs doctor`. If no owner changed, report exactly
 `Docs checked; no update needed` with the reason.
+
+## Citation anchors
+
+The room's `AGENTS.md`
+[Documentation Ownership And Proof](../../../AGENTS.md#documentation-ownership-and-proof)
+keeps the rule that a citation into a file that changes must say which tree it
+reads at; this is how to anchor one.
+
+Every merge into the integration branch moves line numbers, so a bare
+`path:line` written against a branch tip points at unrelated content once that
+branch lands. Either anchor the citation itself with `git show <sha>:path`,
+which is absolute and never needs re-anchoring, or declare the spec's anchors
+once near the top:
+
+> **Citation anchors.** pre=`<sha>` post=`<sha>`.
+
+A label immediately before a citation names its tree and wins: "shipped `:M`"
+reads at `post`, "base `:N`" at the sha of the `git show` anchor that introduced
+the path. Unlabelled, a citation reads at `pre` in Outcome, Why It Matters,
+Current Verified State, Desired Behavior and Documentation Impact - all written
+before the change - and at `post` in every other live section. The shorthand
+`` `:N` `` reads against the nearest path already in scope; a shorthand without
+a scoped path is invalid. Evidence rows read at the commit each row names and
+are never re-anchored, because they are append-only.
