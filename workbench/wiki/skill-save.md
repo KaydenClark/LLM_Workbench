@@ -4,9 +4,9 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - S-01O planning packet, 2026-09-24
-  - S-01O TK-01F source change and fresh-context scenario, 2026-09-26
-  - S-004C TK-005F moved the Runbook procedure behind its index pointer into the skill, 2026-10-03
+  - S-01O (save skill rebuild Spec) planning packet, 2026-09-24
+  - S-01O (save skill rebuild Spec) TK-01F (Deliver the save skill destination Task) source change and fresh-context scenario, 2026-09-26
+  - S-004C (Contract Carrier Pointer-Brief Rewrite Spec) TK-005F (Move the continuity and promotion operations behind their pointers Task) moved the Runbook procedure behind its index pointer into the skill, 2026-10-03
 source_paths:
   - workbench/skills/save/SKILL.md
   - workbench/specs/S-01O-save-skill-rebuild/SPEC.md
@@ -37,7 +37,7 @@ The [skill](../skills/save/SKILL.md) runs five steps in order.
 
 ### Example, from the verification run
 
-In the S-01O scenario, a scratch room had a finished Task: code and test changes that passed, not yet committed. Its note held an undecided owner question about localized greetings. The owner said "Save it." The agent committed the code and then the Spec proof as separate commits on the task branch. The proof row named the exact commit the tests ran on. It pushed, fetched and ran `git merge-base --is-ancestor` for both commits against the fetched remote ref, then reported both full SHAs and the containing ref. The localized-greetings question stayed in the ignored note and did not go into the Spec, because the owner had not decided it. The agent also reported that review and integration were still pending.
+In the S-01O (save skill rebuild Spec) scenario, a scratch room had a finished Task: code and test changes that passed, not yet committed. Its note held an undecided owner question about localized greetings. The owner said "Save it." The agent committed the code and then the Spec proof as separate commits on the task branch. The proof row named the exact commit the tests ran on. It pushed, fetched and ran `git merge-base --is-ancestor` for both commits against the fetched remote ref, then reported both full SHAs and the containing ref. The localized-greetings question stayed in the ignored note and did not go into the Spec, because the owner had not decided it. The agent also reported that review and integration were still pending.
 
 Another writer then pushed on top of the branch, and the owner asked whether the work was still safe and told the agent to merge it into `main`. The agent fetched again. It showed that both commits were still ancestors of the new tip, even though the tip was no longer its own, and it made no new commit. It declined the merge because the project contract makes `main` owner-only after review. It recorded the refusal and the new commit on the branch as unresolved items in the note. `main` and `integration` were untouched.
 
@@ -49,7 +49,7 @@ Another writer then pushed on top of the branch, and the owner asked whether the
 
 **Verified 2026-09-26:** `tools/test-skill-catalog.mjs` pins the source wording for fresh-fetch containment, the exact full SHA, the ban on citing ignored live paths, and notes surviving a finished Task. It also excludes the old tip-equality wording. `tools/test-core-composition.mjs` characterizes the procedure against a real local bare remote: a pushed commit stays contained after another writer advances the tip, an unpushed commit is not contained, and the unresolved note stays ignored, off the remote and readable. That characterization passed before the source changed, so no runtime defect was found. One fresh-context agent, given only the skill source and a scratch room, followed the contract in the scenario above. The turn-by-turn record is in the [Spec evidence](../specs/S-01O-save-skill-rebuild/SPEC.md#append-only-evidence-and-execution-log).
 
-**Limits:** that was one run with one model, against an owner scripted by the implementing agent. It is not owner Human QA and not a repeated trial. The owner turns reached the agent through its parent agent, and it cited that as one extra reason to decline the merge, besides the contract and the skill. The scratch Spec lacked the room's Spec ID header, so `doctor` failed there, and the agent reported this instead of rendering. Save has no runtime of its own. The containment check is a Git procedure the agent runs, and no tool enforces it. Private-session transport acknowledgment was not exercised. Installed personal copies of the skill are not updated by this source change. Shared lifecycle wording on persistence versus promotion belongs to S-00R and is not restated here.
+**Limits:** that was one run with one model, against an owner scripted by the implementing agent. It is not owner Human QA and not a repeated trial. The owner turns reached the agent through its parent agent, and it cited that as one extra reason to decline the merge, besides the contract and the skill. The scratch Spec lacked the room's Spec ID header, so `doctor` failed there, and the agent reported this instead of rendering. Save has no runtime of its own. The containment check is a Git procedure the agent runs, and no tool enforces it. Private-session transport acknowledgment was not exercised. Installed personal copies of the skill are not updated by this source change. Shared lifecycle wording on persistence versus promotion belongs to S-00R (Core Skill Lifecycle And Optional Source Disposition Spec) and is not restated here.
 
 ## Sources
 
@@ -63,4 +63,4 @@ Another writer then pushed on top of the branch, and the owner asked whether the
 
 ## History
 
-- 2026-09-26: Created as the individual skill article. S-01O TK-01F stated fresh-fetch remote containment, the exact full SHA, durable-only evidence citations and note survival in the source, and recorded one fresh-context scenario.
+- 2026-09-26: Created as the individual skill article. S-01O (save skill rebuild Spec) TK-01F (Deliver the save skill destination Task) stated fresh-fetch remote containment, the exact full SHA, durable-only evidence citations and note survival in the source, and recorded one fresh-context scenario.

@@ -4,8 +4,8 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - S-011 agent skills adoption entrypoint, 2026-07-16
-  - S-01D TK-00U source audit, inventory-order repair and fresh-context scenario, 2026-09-26
+  - S-011 (Agent Skills Adoption Spec) agent skills adoption entrypoint, 2026-07-16
+  - S-01D (adoption skill rebuild Spec) TK-00U (Deliver the adoption skill destination Task) source audit, inventory-order repair and fresh-context scenario, 2026-09-26
 source_paths:
   - workbench/skills/adoption/SKILL.md
   - templates/ADOPTION.md
@@ -37,7 +37,7 @@ The helper refuses before changing anything when a `workbench/` root already exi
 
 ### Example, from the verification run
 
-The S-01D scenario used a throwaway project called `inkwell`: a word counter with two tests and three commits, pushed to a local bare remote. It had its own `AGENTS.md` (offline-only, never commit `drafts/`), `CLAUDE.md`, `README.md` with a founding quote, `ROADMAP.md`, a root `MEMORY.md` and a legacy `specs/` folder. The owner said "Please adopt inkwell into the Workbench."
+The S-01D (adoption skill rebuild Spec) scenario used a throwaway project called `inkwell`: a word counter with two tests and three commits, pushed to a local bare remote. It had its own `AGENTS.md` (offline-only, never commit `drafts/`), `CLAUDE.md`, `README.md` with a founding quote, `ROADMAP.md`, a root `MEMORY.md` and a legacy `specs/` folder. The owner said "Please adopt inkwell into the Workbench."
 
 The agent, given only this skill and a release checkout, ran `classify` and got `adoption`. It ran the tests (2 of 2 passed), created and pushed `integration` from `main`, and branched to `claude/adopt-inkwell`. Its first commit recorded provenance, the baseline and the document inventory in an owning Spec, before any control changed. It then reconciled the seven controls, keeping the four original `AGENTS.md` rules word for word. It ran `migrate` with an empty home directory. The run completed, moved `specs/` and `MEMORY.md` into the lanes, and left the home directory empty. It archived `ROADMAP.md` unchanged and pushed each step.
 
@@ -51,13 +51,13 @@ Asked to resume on "another machine", it cloned the remote and checked out the t
 
 ## Upstream relationship
 
-None is claimed. `adoption` is Workbench-native. `THIRD_PARTY_NOTICES.md` carries only the `mattpocock/skills` MIT notice and names no adoption derivation. At the compared pin `mattpocock/skills@c55ee46073ed923f86ce59a5eb3b6d895095d1b7` no skill adopts or migrates an existing project into a harness. The nearest names there, `setup-matt-pocock-skills` (configures that catalog's issue tracker and labels in a repository) and `migrate-to-shoehorn` (migrates TypeScript test code), do a different job. The skill first appeared in this repository in `6943c10` (PR #27, 2026-07-16). S-01D changed it in two commits (the pre-migration inventory order and the `**Baseline:**` wording); the result is git blob `fae833c0f8cca132a1845ae1a7574eb7b858a982`.
+None is claimed. `adoption` is Workbench-native. `THIRD_PARTY_NOTICES.md` carries only the `mattpocock/skills` MIT notice and names no adoption derivation. At the compared pin `mattpocock/skills@c55ee46073ed923f86ce59a5eb3b6d895095d1b7` no skill adopts or migrates an existing project into a harness. The nearest names there, `setup-matt-pocock-skills` (configures that catalog's issue tracker and labels in a repository) and `migrate-to-shoehorn` (migrates TypeScript test code), do a different job. The skill first appeared in this repository in `6943c10` (PR #27, 2026-07-16). S-01D (adoption skill rebuild Spec) changed it in two commits (the pre-migration inventory order and the `**Baseline:**` wording); the result is git blob `fae833c0f8cca132a1845ae1a7574eb7b858a982`.
 
 ## Verified behavior and limits
 
-**Verified 2026-09-26:** `tools/test-workbench-adoption.mjs` checks the mixed-v2 migration, every refusal named above, and (added by S-01D) that a second run on a room the helper already adopted is refused as `support-root-exists`, moves nothing, and leaves the manifest's `adoption` provenance and the recovery record byte-identical. The same test shows the first adoption completing with an empty provider home and writing nothing there. `tools/test-skill-catalog.mjs` checks that the skill names the classifier, the baseline, the source provenance and the recovery point before the `migrate` command, and that it no longer sends the agent to a provider home or to the retired checkpoint copy. One fresh-context agent followed the skill through the scenario above. The run is recorded in the [Spec evidence](../specs/S-01D-adoption-skill-rebuild/SPEC.md#append-only-evidence-and-execution-log).
+**Verified 2026-09-26:** `tools/test-workbench-adoption.mjs` checks the mixed-v2 migration, every refusal named above, and (added by S-01D (adoption skill rebuild Spec)) that a second run on a room the helper already adopted is refused as `support-root-exists`, moves nothing, and leaves the manifest's `adoption` provenance and the recovery record byte-identical. The same test shows the first adoption completing with an empty provider home and writing nothing there. `tools/test-skill-catalog.mjs` checks that the skill names the classifier, the baseline, the source provenance and the recovery point before the `migrate` command, and that it no longer sends the agent to a provider home or to the retired checkpoint copy. One fresh-context agent followed the skill through the scenario above. The run is recorded in the [Spec evidence](../specs/S-01D-adoption-skill-rebuild/SPEC.md#append-only-evidence-and-execution-log).
 
-**Limits:** that was one run, one model and a scripted owner, in a tiny project with a local bare remote. It is not owner Human QA and not a repeated trial. The scenario did not cover a dirty tree, an `unclassifiable` verdict, a legacy `Wiki/` or `skills/` folder, an `unavailable` baseline, or a remote that had to be created. The agent could not get a separate-context review offline, so nothing was merged into `integration`. The run also surfaced gaps that sit in the shared protocol or helper rather than in this skill. S-01D recorded them without changing them:
+**Limits:** that was one run, one model and a scripted owner, in a tiny project with a local bare remote. It is not owner Human QA and not a repeated trial. The scenario did not cover a dirty tree, an `unclassifiable` verdict, a legacy `Wiki/` or `skills/` folder, an `unavailable` baseline, or a remote that had to be created. The agent could not get a separate-context review offline, so nothing was merged into `integration`. The run also surfaced gaps that sit in the shared protocol or helper rather than in this skill. S-01D (adoption skill rebuild Spec) recorded them without changing them:
 
 - The recovery record is git-ignored, so it never reaches the remote. A resume on another machine relies on the pushed branch and on whatever the owning Spec copied from the record.
 - Without `origin/HEAD`, the helper declares the checked-out branch (the task branch) as `git.defaultBranch`. The trial agent avoided this by running `git remote set-head origin main` first.
@@ -80,4 +80,4 @@ Owner Human QA of the conversational fidelity of an adoption on `integration` re
 
 ## History
 
-- 2026-09-26: Created by S-01D TK-00U after a source audit that reordered the pre-migration inventory, with one fresh-context scenario.
+- 2026-09-26: Created by S-01D (adoption skill rebuild Spec) TK-00U (Deliver the adoption skill destination Task) after a source audit that reordered the pre-migration inventory, with one fresh-context scenario.

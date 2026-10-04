@@ -4,8 +4,8 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - Owner-accepted concept and S-00W planning, 2026-09-23
-  - S-00Z TK-00Q source, core declaration and fresh-context scenario, 2026-09-26
+  - Owner-accepted concept and S-00W (Concept Grilling And Notepad Composition Spec) planning, 2026-09-23
+  - S-00Z (grill-me skill rebuild Spec) TK-00Q (Deliver the grill-me skill destination Task) source, core declaration and fresh-context scenario, 2026-09-26
 source_paths:
   - workbench/skills/grill-me/SKILL.md
   - workbench/skills/grilling/SKILL.md
@@ -35,7 +35,7 @@ Use `grill-me` when the owner wants an idea questioned and wants the answers, co
 
 ### Example, from the verification run
 
-In the S-00Z scenario an agent given only the three skill sources was told to grill the owner on a weekly digest feature. It found no note for the objective, created one with a six-question map, and asked the first question with a recommendation. The owner answered against the recommendation ("a private summary of what I wrote this week, sent to me daily"). The agent saved that as a pending `source_record`, read it back as pending, kept the owner's reason apart from its own inference, and asked one clarifying question about the same decision. The owner corrected "daily" to "weekly"; the agent appended a linked `correction`, gave a revised readback, and waited without locking. The owner then paused and asked for a note on an unrelated retry-limit investigation. The agent left the digest note untouched at its pending state, created a separate work-type note for the other objective, and read both notes back before stopping.
+In the S-00Z (grill-me skill rebuild Spec) scenario an agent given only the three skill sources was told to grill the owner on a weekly digest feature. It found no note for the objective, created one with a six-question map, and asked the first question with a recommendation. The owner answered against the recommendation ("a private summary of what I wrote this week, sent to me daily"). The agent saved that as a pending `source_record`, read it back as pending, kept the owner's reason apart from its own inference, and asked one clarifying question about the same decision. The owner corrected "daily" to "weekly"; the agent appended a linked `correction`, gave a revised readback, and waited without locking. The owner then paused and asked for a note on an unrelated retry-limit investigation. The agent left the digest note untouched at its pending state, created a separate work-type note for the other objective, and read both notes back before stopping.
 
 A second agent with no memory of that session was told to pick the grilling back up. It listed the objective's notes, read the current view, read the topic so the correction returned with the original, and restated the revised readback as pending. It asked no new question. When the owner said "Yes, that's right" it appended the `decision` entry for that question, set the question `locked`, cleared the unresolved item, validated the note, and only then asked the next ready question with a recommendation.
 
@@ -49,7 +49,7 @@ The [archived wrapper](../../skills-archive/optional-active-2026-09-01/grill-me/
 
 **Verified 2026-09-26:** the declaration, adapters and source wording are covered by `tools/test-skill-catalog.mjs`, `tools/test-workbench-layout.mjs` (the frozen `v3.2.1` row), `tools/test-skills-lane.mjs` and `tools/test-core-skill-installer.mjs`. Two fresh-context agents, each given only the three skill sources, followed the composition in the scenario above. The turn-by-turn record is in the [Spec evidence](../specs/S-00Z-grill-me-skill-rebuild/SPEC.md#append-only-evidence-and-execution-log).
 
-**Limits:** that was one run with one model, against a scripted owner, with no runtime change to notepad or grilling. It is not owner Human QA and not a repeated trial. The resuming agent could not verify the room's Contract or live state because the scenario forbade reading anything beyond the skill sources, so that step of the source is unexercised. At the time of that run the revision check on note writes was a check, not a lock, as the then-proposed ADR-000L (PR #92) recorded, and this entry did not change it; the notepad concurrent-write safety Spec (S-003Y) later added the runtime guard that refuses an overlapping write as `stale-revision`. The composed grilling, notepad and grill-me journey is checked by [S-00W](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md) now that all three skills are delivered.
+**Limits:** that was one run with one model, against a scripted owner, with no runtime change to notepad or grilling. It is not owner Human QA and not a repeated trial. The resuming agent could not verify the room's Contract or live state because the scenario forbade reading anything beyond the skill sources, so that step of the source is unexercised. At the time of that run the revision check on note writes was a check, not a lock, as the then-proposed ADR-000L (A notepad belongs to its objective decision) (PR #92) recorded, and this entry did not change it; the notepad concurrent-write safety Spec (S-003Y) later added the runtime guard that refuses an overlapping write as `stale-revision`. The composed grilling, notepad and grill-me journey is checked by [S-00W](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md) now that all three skills are delivered.
 
 ## Sources
 
@@ -64,5 +64,5 @@ The [archived wrapper](../../skills-archive/optional-active-2026-09-01/grill-me/
 ## History
 
 - 2026-09-23: Created as an individual article for the accepted entry-point design; current and intended sources distinguished.
-- 2026-09-24: Source links reconciled to the managed skills lane; S-00Z owns this skill's future delivery. No behavior change claimed.
-- 2026-09-26: S-00Z TK-00Q delivered the repository-owned source, declared it in the core bundle, and recorded one fresh-context scenario. Status `partial` to `active`.
+- 2026-09-24: Source links reconciled to the managed skills lane; S-00Z (grill-me skill rebuild Spec) owns this skill's future delivery. No behavior change claimed.
+- 2026-09-26: S-00Z (grill-me skill rebuild Spec) TK-00Q (Deliver the grill-me skill destination Task) delivered the repository-owned source, declared it in the core bundle, and recorded one fresh-context scenario. Status `partial` to `active`.

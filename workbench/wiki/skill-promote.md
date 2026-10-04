@@ -4,8 +4,8 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - S-01B TK-00S source change and fresh-context scenario, 2026-09-26
-  - S-004C TK-005F moved the Runbook procedure behind its index pointer into the skill, 2026-10-03
+  - S-01B (promote skill rebuild Spec) TK-00S (Deliver the promote skill destination Task) source change and fresh-context scenario, 2026-09-26
+  - S-004C (Contract Carrier Pointer-Brief Rewrite Spec) TK-005F (Move the continuity and promotion operations behind their pointers Task) moved the Runbook procedure behind its index pointer into the skill, 2026-10-03
 source_paths:
   - workbench/skills/promote/SKILL.md
   - workbench/tools/sessions.mjs
@@ -35,7 +35,7 @@ The [skill](../skills/promote/SKILL.md) owns the judgment. The [direct owner pro
 
 ### Example, from the verification run
 
-In the S-01B scenario, a note about nightly reports held two questions. On naming, the owner's first answer was read back as `ROOM-YYYY-MM-DD.md`. The owner corrected it to date-first, and a `decision` recorded the confirmed name. On retention, the owner had said "a month or so, I have not really thought about it". That was saved as a `source_record` with a 30-day readback, still listed in `current.unresolved`. The owner said: "put what we settled about nightly reports into the RUNBOOK Reports section."
+In the S-01B (promote skill rebuild Spec) scenario, a note about nightly reports held two questions. On naming, the owner's first answer was read back as `ROOM-YYYY-MM-DD.md`. The owner corrected it to date-first, and a `decision` recorded the confirmed name. On retention, the owner had said "a month or so, I have not really thought about it". That was saved as a `source_record` with a 30-day readback, still listed in `current.unresolved`. The owner said: "put what we settled about nightly reports into the RUNBOOK Reports section."
 
 The fresh agent selected the naming decision and its correction, and the command brought the first readback along as context. The agent wrote the draft in `workbench/sessions/recovery/`, promoted it, verified the new hash and read the bytes back. The Runbook gained only the corrected, date-first naming rule. Retention stayed out. The agent appended a `verification` entry naming `RUNBOOK.md` and both hashes, and left the retention entry and its unresolved item untouched. It deleted the draft and asked the owner to confirm or correct the retention readback.
 
@@ -68,4 +68,4 @@ The command's hash and revision checks are sequential guards, not locks. Install
 
 ## History
 
-- 2026-09-26: Created by S-01B TK-00S. The source now states pending recognition, one owner per claim, the ignored in-project draft and the retained pending item. One fresh-context scenario was recorded.
+- 2026-09-26: Created by S-01B (promote skill rebuild Spec) TK-00S (Deliver the promote skill destination Task). The source now states pending recognition, one owner per claim, the ignored in-project draft and the retained pending item. One fresh-context scenario was recorded.
