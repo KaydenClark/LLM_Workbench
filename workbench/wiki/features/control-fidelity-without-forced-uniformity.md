@@ -13,6 +13,7 @@ source_paths:
   - workbench/tools/template-placeholders.mjs
   - templates/ADOPTION.md
   - workbench/skills/update-harness/SKILL.md
+  - workbench/skills/workbench-room-checks/SKILL.md
   - LEXICON.md
   - RUNBOOK.md
 last_verified: 2026-10-04
@@ -39,8 +40,17 @@ checked-out templates.
   does not rewrite the room. Invalid invocation can fail; unsafe Wiki-lane
   input is named and compared under the safe default lane without reading
   outside the room.
+- **Template generations.** Given the room's earlier template generation,
+  named with `--previous-templates` or read at the room manifest's recorded
+  source commit when the checkout holds it, the report labels each difference
+  the template made rather than the room: `earlier-template`, `newer-template`
+  and `template-changed`. A room moving from the long control shape to the
+  brief and operations index is told which lines are the template's change and
+  which are its own (the Contract Carrier Pointer-Brief Rewrite, S-004C
+  TK-005M).
 - **Procedures that use it.** Adoption and update procedures require important
-  agent-contract changes to be restored or recorded as deliberate decisions.
+  agent-contract changes to be restored or recorded as deliberate decisions;
+  a line labeled a generation difference is reconciled to the current shape.
 
 ## Why It Matters
 
@@ -50,8 +60,9 @@ dropped ADR qualifier.
 
 ## Limits
 
-- Comparing against another historical generation requires that generation's
-  checkout; the report does not infer old template bytes from a version string.
+- The report does not infer old template bytes from a version string: without
+  `--previous-templates` or a recorded source commit the checkout holds, no
+  line is labeled a generation difference.
 - Line matching remains heuristic: a substantial rewrite may appear as changed
   or as dropped plus added. The output supports review rather than deciding
   equivalence.
@@ -80,3 +91,4 @@ dropped ADR qualifier.
 - 2026-09-19: Created on owner direction as one article for this legacy Spec after reading its full record and checking named live sources. Evolved or superseded claims are identified explicitly. No Spec was moved, retired or discarded, and no retrospective Human QA is asserted.
 - 2026-09-30: Repaired live skill links and source_paths after relocation to workbench/skills; verified destinations only, without revalidating historical capability claims.
 - 2026-10-04: Moved from `design-concepts/spec-S-034-control-fidelity-report.md` into the features collection under this name with `wiki.mjs move-note`, retyped `feature` and restructured into the four feature sections from its existing prose, for the Wiki Evolving-Synthesis Migration Spec (S-003W) Task Move And Retype The Remaining Per-Spec Articles (TK-002). Every live link to it was rewritten by the move; no claim was changed. Checked the Spec name, that every listed current source path exists (the first entry names the Spec's eventual retired route, which does not exist yet), and that the report source declares the unchanged, filled, dropped, changed and added kinds; the other claims were not re-verified.
+- 2026-10-04: The Contract Carrier Pointer-Brief Rewrite (S-004C TK-005M) added the earlier-generation labels; the report procedure lives in the `workbench-room-checks` maintainer skill the Runbook index points to.
