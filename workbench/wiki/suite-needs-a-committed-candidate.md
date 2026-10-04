@@ -6,8 +6,8 @@ knowledge_role: curated
 provenance:
   - Two separate contexts hit the same misleading failure cascade, 2026-09-07
   - zsh suite-loop failure observed 2026-09-26
-  - Promoted from host auto-memory by the S-00V TK-00I audit, 2026-09-26
-  - S-004C TK-005I moved the suite list from AGENTS.md to the Runbook Test And Build section, 2026-10-04
+  - Promoted from host auto-memory by the Portable Workbench Spec (S-00V) Host Memory To Wiki Task (TK-00I) audit, 2026-09-26
+  - Contract Carrier Pointer-Brief Rewrite Spec (S-004C) Verification And Release Gate Operations Task (TK-005I) moved the suite list from AGENTS.md to the Runbook Test And Build section, 2026-10-04
 source_paths:
   - AGENTS.md
   - workbench/tools/workbench-layout.mjs

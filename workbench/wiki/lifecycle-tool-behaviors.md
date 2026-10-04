@@ -7,10 +7,10 @@ provenance:
   - Learned while dispatching v4 build lanes, 2026-09-16 to 2026-09-18
   - Promote-draft location learned 2026-09-22
   - Planned-Spec claim refusal observed 2026-09-24
-  - Promoted from host auto-memory and re-verified against source by the S-00V TK-00I audit, 2026-09-26
-  - close refusals and the verdict digest scope re-verified against source while documenting them for S-00M TK-004, 2026-10-02
-  - Finding dispositions and the retired Wiki-claim corrective close re-verified against source for S-004F TK-005R and TK-005S, 2026-10-03
-  - S-004C TK-005G moved the Runbook and AGENTS lifecycle procedures behind their index pointers into the implement, dispatcher and director skills, 2026-10-03
+  - Promoted from host auto-memory and re-verified against source by the Portable Workbench Spec (S-00V) Host Memory To Wiki Task (TK-00I) audit, 2026-09-26
+  - close refusals and the verdict digest scope re-verified against source while documenting them for the Completion Claims Against Repository State Spec (S-00M) Document Both Mechanisms Task (TK-004), 2026-10-02
+  - Finding dispositions and the retired Wiki-claim corrective close re-verified against source for the Corrective Work Rules Spec (S-004F) Failed Verdict Continuation Task (TK-005R) and Wiki-claim Corrective Route Retirement Task (TK-005S), 2026-10-03
+  - Contract Carrier Pointer-Brief Rewrite Spec (S-004C) Work-selection Operations Task (TK-005G) moved the Runbook and AGENTS lifecycle procedures behind their index pointers into the implement, dispatcher and director skills, 2026-10-03
 source_paths:
   - workbench/tools/spec-workbench.mjs
   - tools/check-append-only.py

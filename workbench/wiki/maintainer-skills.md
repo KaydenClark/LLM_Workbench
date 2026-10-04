@@ -4,9 +4,9 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - Owner chose option A for the maintainer-skill home on the Contract Carrier Pointer-Brief Rewrite (S-004C) TK-005K blocker, 2026-10-04
-  - S-004C TK-006L built the declared maintainer-skill list, 2026-10-04
-  - S-004C TK-005K declared the first three maintainer skills, 2026-10-04
+  - Owner chose option A for the maintainer-skill home on the Contract Carrier Pointer-Brief Rewrite (S-004C) Maintainer-only Operations Task (TK-005K) blocker, 2026-10-04
+  - Contract Carrier Pointer-Brief Rewrite Spec (S-004C) Maintainer Skill Declaration Task (TK-006L) built the declared maintainer-skill list, 2026-10-04
+  - Contract Carrier Pointer-Brief Rewrite Spec (S-004C) Maintainer-only Operations Task (TK-005K) declared the first three maintainer skills, 2026-10-04
 source_paths:
   - tools/maintainer-skills.mjs
   - tools/core-skill-installer.mjs
@@ -59,7 +59,7 @@ in a document that does not bind.
   added.
 
 Three maintainer skills are declared (Contract Carrier Pointer-Brief Rewrite
-TK-005K moved the maintainer-only Runbook procedures into them):
+Maintainer-only Operations Task (TK-005K) moved the maintainer-only Runbook procedures into them):
 
 - [`workbench-release`](../skills/workbench-release/SKILL.md): version labels,
   the reference Template upgrade gate, the composed round trip, the

@@ -4,8 +4,8 @@ status: active
 sensitivity: normal
 knowledge_role: canonical
 provenance:
-  - S-021 dogfood migration 2026-09-01; S-025 contract adoption 2026-09-04
-  - S-00V TK-00I Agent Operating Knowledge route, 2026-09-26
+  - v3 Portable Workbench Spec (S-021) dogfood migration 2026-09-01; Portable Wiki And Design Concepts Spec (S-025) contract adoption 2026-09-04
+  - Portable Workbench Spec (S-00V) Host Memory To Wiki Task (TK-00I) Agent Operating Knowledge route, 2026-09-26
   - Wiki Evolving-Synthesis Migration (S-003W) router changes 2026-10-04: feature article, landmark synthesis and summary-line routes, and the whole-Wiki lint corrections of its corrective Task TK-006P (Wiki wording)
 source_paths:
   - workbench/wiki
@@ -92,7 +92,7 @@ belong to their individual Specs as they are authored.
 
 - [Workbench v4.0.0 Release (S-00O)](../specs/S-00O-workbench-v4-0-0-release/SPEC.md) - current release work
 - [Superseded v3.2.0 release record (S-050)](../specs/S-050-workbench-v3-2-0-release/SPEC.md) - keeps the reconciled v3.2 scope and complete historical inventory
-- [V4 integration decision and progress reconciliation](../specs/S-00O-workbench-v4-0-0-release/INTEGRATION-RECONCILIATION.md) - the receipt of the Workbench v4.0.0 Release (S-00O) that identifies recovered sources, branch-only work and remaining gaps
+- [V4 integration decision and progress reconciliation](../specs/S-00O-workbench-v4-0-0-release/INTEGRATION-RECONCILIATION.md) - the receipt of the v4.0.0 Workbench Release (S-00O) that identifies recovered sources, branch-only work and remaining gaps
 
 Follow the superseded record's named owners for skill ownership/compatibility,
 optional private session transport and the configured-host capability floor.
