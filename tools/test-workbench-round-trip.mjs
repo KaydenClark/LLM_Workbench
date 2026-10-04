@@ -52,8 +52,11 @@ function pointedSkillSection(relative, fragment) {
   assert.ok(start >= 0, `${relative}#${fragment} resolves`);
   return lines.slice(start + 1).join('\n');
 }
-const documentedLifecycle = [lifecycleSection, ...[...lifecycleSection.matchAll(/\]\((workbench\/skills\/[a-z0-9-]+\/SKILL\.md)#([a-z0-9-]+)\)/g)]
-  .map(([, relative, fragment]) => pointedSkillSection(relative, fragment))].join('\n');
+// Each pointed section is read in place, right after the line that points to
+// it, so the recipes keep the Runbook's order.
+const documentedLifecycle = lifecycleSection.split('\n').flatMap(line => [line,
+  ...[...line.matchAll(/\]\((workbench\/skills\/[a-z0-9-]+\/SKILL\.md)#([a-z0-9-]+)\)/g)]
+    .map(([, relative, fragment]) => pointedSkillSection(relative, fragment))]).join('\n');
 const executedRecipes = new Set();
 // Execute the Runbook's actual examples with concrete fixture values, without
 // a shell. Only quoted strings, plain arguments and named placeholders occur.
