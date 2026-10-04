@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Portable wiki validator: router, declared collections, note metadata,
 // portability, the Design Concept and features article shapes, no copied live task state,
-// no secret-like material. Staleness is attention, never blocking.
+// no secret-like material, a one-line summary beside each routed page. Staleness and
+// a missing summary are attention, never blocking.
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -161,6 +162,86 @@ function wikiStamps(root, wikiRoot, wikiRelative, expectedVersion) {
   return findings;
 }
 
+// S-003W TK-002: the router is the Wiki's overview, so every Wiki page it routes
+// carries a one-line summary beside its link and a reader can choose a page
+// without opening it. The rule is mechanical and conservative. A routed page is
+// a Markdown link whose target resolves to a Markdown file inside the Wiki lane
+// other than the router itself; a link to a control, Spec or record outside the
+// Wiki, an external link, a folder, a wikilink and anything in a code span or
+// fence is not checked. The link has a summary when the text right after it,
+// up to the next link or the end of its list item, paragraph or table cell,
+// is a separator (` - `, an en or em dash, or a colon) followed by at least two
+// words, or when its table row has another cell that holds text of its own.
+// The finding is attention only: a missing summary never blocks.
+const SUMMARY_LINK = /(!?)\[([^\]\n]+)\]\(\s*(?:<([^>\n]+)>|([^\s)]+))[^)\n]*\)/g;
+const SUMMARY_SEPARATOR = /^(?:\s*:\s+|\s+[-–—]\s+)(\S[\s\S]*)$/;
+
+function maskCode(content) {
+  const lines = content.split(/\r?\n/);
+  let fence = null;
+  return lines.map((line) => {
+    const opener = line.match(/^ {0,3}(`{3,}|~{3,})/);
+    if (fence) {
+      if (opener && opener[1][0] === fence[0] && opener[1].length >= fence.length) fence = null;
+      return '';
+    }
+    if (opener) { fence = opener[1]; return ''; }
+    return line.replace(/(`+)[^`]*?\1/g, 'code');
+  });
+}
+
+function summaryUnits(lines) {
+  const units = [];
+  let current = null;
+  const flush = () => { if (current) units.push(current); current = null; };
+  lines.forEach((line, index) => {
+    if (!line.trim()) return flush();
+    const start = /^\s*(?:[-*+]|\d+[.)])\s/.test(line) || /^\s*\|/.test(line) || /^\s{0,3}#{1,6}\s/.test(line);
+    if (start || !current) { flush(); current = { text: line.trim(), line: index + 1 }; }
+    else current.text += ` ${line.trim()}`;
+    if (/^\s*\|/.test(line) || /^\s{0,3}#{1,6}\s/.test(line)) flush();
+  });
+  flush();
+  return units;
+}
+
+function wordCount(text) {
+  return text.split(/\s+/).filter((word) => /[\p{L}\p{N}]/u.test(word)).length;
+}
+
+function hasSummaryAfter(text) {
+  const match = SUMMARY_SEPARATOR.exec(text.replace(/\s+/g, ' '));
+  return match !== null && wordCount(match[1]) >= 2;
+}
+
+export function routerSummaryFindings(root, wikiRoot, routerFile, content) {
+  const findings = [];
+  const note = path.relative(root, routerFile).split(path.sep).join('/');
+  for (const unit of summaryUnits(maskCode(content))) {
+    const table = /^\s*\|/.test(unit.text);
+    const cells = table ? unit.text.replace(/^\s*\|/, '').replace(/\|\s*$/, '').split(/(?<!\\)\|/) : [unit.text];
+    cells.forEach((cell, cellIndex) => {
+      for (const link of cell.matchAll(SUMMARY_LINK)) {
+        if (link[1] === '!') continue;
+        const raw = (link[3] ?? link[4]).split('#')[0];
+        if (!raw || /^(?:[a-z][a-z0-9+.-]*:)/i.test(raw)) continue;
+        let decoded = raw;
+        try { decoded = decodeURIComponent(raw); } catch { decoded = raw; }
+        const resolved = path.resolve(wikiRoot, decoded);
+        const inWiki = path.relative(wikiRoot, resolved);
+        if (!inWiki || inWiki.startsWith('..') || path.isAbsolute(inWiki) || !resolved.endsWith('.md') || resolved === routerFile) continue;
+        const rest = cell.slice(link.index + link[0].length);
+        const next = rest.search(/!?\[[^\]\n]+\]\(/);
+        if (hasSummaryAfter(next === -1 ? rest : rest.slice(0, next))) continue;
+        if (table && cells.some((other, index) => index !== cellIndex && wordCount(other.replace(SUMMARY_LINK, '')) >= 1)) continue;
+        const target = path.relative(root, resolved).split(path.sep).join('/');
+        findings.push(finding('unsummarized-route', `${note} line ${unit.line} routes [${link[2]}](${raw}) with no one-line summary beside the link; write "- [Title](path) - summary" (a separator, then at least two words) or give a table row a second cell that says what the page is for`, { note, target, line: unit.line }));
+      }
+    });
+  }
+  return findings;
+}
+
 export function validateWiki(root, options = {}) {
   const findings = [];
   const wikiRoot = lanePath(root, 'wiki');
@@ -173,7 +254,11 @@ export function validateWiki(root, options = {}) {
   if (!fs.existsSync(path.join(wikiRoot, 'MEMORY.md'))) {
     findings.push(finding('invalid-note', `${wikiRelative}/MEMORY.md router is missing`));
   }
-  else findings.push(...roomBrainRouting(root, wikiRelative));
+  else {
+    findings.push(...roomBrainRouting(root, wikiRelative));
+    const routerFile = path.join(wikiRoot, 'MEMORY.md');
+    findings.push(...routerSummaryFindings(root, wikiRoot, routerFile, options.contentOverrides?.get(routerFile) ?? fs.readFileSync(routerFile, 'utf8')));
+  }
   findings.push(...wikiStamps(root, wikiRoot, wikiRelative, manifest?.workbenchVersion));
   // S-045 TK-002 moved two checks out of here: `stale-seed`, the generation of
   // a room's seeded lane documents, and `unverified-provenance`, the source
