@@ -46,7 +46,10 @@ test('template Blueprint and Runbook route decision records, diagnostics, and th
   assert.match(route, /workbench\/docs\/adr\//, 'the Context Map names the ADR collection');
   assert.match(route, /Workbench Contract/, 'the Lexicon names the contract');
   const runbook = read('templates/RUNBOOK.md');
-  assert.match(runbook, /node workbench\/tools\/adr\.mjs/, 'the template Runbook names the ADR command');
+  // S-004C TK-005J: the decision-record procedure lives in the to-docs skill
+  // the template Runbook points to; the Runbook keeps the runtime command list.
+  assert.ok(runbook.includes('](workbench/skills/to-docs/SKILL.md#decision-records)'), 'the template Runbook points decision records to the to-docs skill');
+  assert.match(read('workbench/skills/to-docs/SKILL.md'), /node workbench\/tools\/adr\.mjs/, 'the pointed skill names the ADR command');
   assert.match(runbook, /node workbench\/tools\/spec-workbench\.mjs doctor/, 'the template Runbook names the doctor command');
   assert.match(runbook, /attention/, 'the template Runbook explains attention findings');
 });
@@ -182,5 +185,8 @@ test('the Runbook closeout prunes linked worktrees and names where disposable re
   const template = read('templates/RUNBOOK.md');
   const templateCloseout = template.slice(template.indexOf('Closeout, once the integration review has passed'), template.indexOf('## Upgrading The Harness'));
   assert.match(templateCloseout, /git worktree prune/, 'templates/RUNBOOK.md closeout prunes linked worktrees');
-  assert.match(template, /integration-branch-missing/, 'templates/RUNBOOK.md names the declared-branch doctor finding');
+  // S-004C TK-005J: the diagnostic explanations live in the workbench-runtime
+  // skill the template Runbook points to.
+  assert.ok(template.includes('](workbench/skills/workbench-runtime/SKILL.md#diagnostics-and-blocking-effects)'), 'templates/RUNBOOK.md points diagnostics to the workbench-runtime skill');
+  assert.match(read('workbench/skills/workbench-runtime/SKILL.md'), /integration-branch-missing/, 'the pointed skill names the declared-branch doctor finding');
 });

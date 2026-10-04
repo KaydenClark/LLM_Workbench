@@ -48,7 +48,12 @@ const handoffCoreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'pr
 // it adopts during Task execution. Exported so the tests derive the frozen
 // v3.2.1 row by excluding this group rather than by naming each entry.
 export const coordinationSkills = ['director', 'dispatcher', 'spec-planner', 'spec-manager'];
-export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', ...coordinationSkills, ...stanceSkills];
+// S-004C TK-005J adds `workbench-runtime`, the workflow entry that carries the
+// operations every room runs on its installed runtime tools (diagnostics, Wiki
+// validation, installed state, visible identifiers, connection identity,
+// configured-host checks, room-local skills), after `grill-me` and ahead of
+// the coordination entries, so every coordination and stance slice stays exact.
+export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime', ...coordinationSkills, ...stanceSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];

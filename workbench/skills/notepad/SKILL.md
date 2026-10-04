@@ -278,6 +278,36 @@ Wiki creation and updates are ordinary authorized delivery and reconciliation,
 not a separate publishing ceremony. Apply claim-level ownership and the current
 request throughout; no record or projection can manufacture authority.
 
+### Landmark Tracker: accepted design and available operations
+
+The Landmark Tracker distinguishes evolving concept understanding from delivery
+state. DQCs and landmarks maintain the former; the generated Tracker displays
+it; Specs and Tasks carry implementation and Taskboard projects their state.
+The intended root is `workbench/landmark-tracker/`, containing generated
+`TRACKER.json` and flat `destination-questions/` and `landmarks/` JSON records.
+These paths are a delivery contract, not evidence of installed collections or
+commands. Resolve availability from the actual manifest and verified runtime;
+do not invent a Tracker invocation or use an existing command as its substitute.
+
+Once implemented, workflow transitions and ongoing alignment maintain source
+records with what changed, why and evidence. Keep original grilling questions
+and corrections reachable. DQCs may precede a landmark, Spec, Task or known Wiki
+destination; an answered question records Expected result, while Result records
+achieved delivery. Assess the actual durable content before claiming Verified;
+Task completion, article existence and structural validation alone are insufficient.
+Keep live links current through supported move operations and retain immutable
+citations for historical proof. Ignored notes require their own retention or
+safe transfer until reconciliation; tracked Git history does not recover them.
+
+A Landmark Wiki page is the landmark's evolving synthesis, updated whenever
+one of its question cards changes. Identifiers on it, as on every Wiki page,
+carry the artifact's name and context; the structured records keep
+identity-bearing provenance and delivery evidence.
+Ordinary feature explanations and cross-cutting design models retain their
+respective Wiki purposes. Collection/schema support must be delivered and
+verified before claiming those article types are available. Routine Wiki work
+within an authorized assignment adds no independent publishing ceremony.
+
 ## Runtime reference
 
 Visible note identifiers can be allocated without changing existing note paths:

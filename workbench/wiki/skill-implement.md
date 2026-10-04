@@ -9,6 +9,7 @@ provenance:
   - S-004C TK-005G moved the Runbook and AGENTS lifecycle procedures behind their index pointers into the skill, 2026-10-03
   - S-004C TK-005H moved the Git route, pull-request and branch completion procedures behind their index pointers into the skill, 2026-10-03
   - S-004C TK-005I moved the verification steps, the generic test coverage policy and benchmark-driven improvement behind their index pointers into the skill, 2026-10-04
+  - S-004C TK-005J moved the generic recovery and rollback steps behind their index pointer into the skill, 2026-10-04
 source_paths:
   - workbench/skills/implement/SKILL.md
   - workbench/skills/implement/references/scenario.md
@@ -62,7 +63,10 @@ the [test coverage policy](../skills/implement/SKILL.md#test-coverage-policy)
 and [benchmark-driven improvement](../skills/implement/SKILL.md#benchmark-driven-improvement);
 `AGENTS.md` keeps the verification rules every session obeys, and the room's
 one full suite list stays in its Runbook's
-[Test And Build](../../RUNBOOK.md#test-and-build). A blocked push leaves a local recovery point, not verified remote
+[Test And Build](../../RUNBOOK.md#test-and-build). It carries the generic
+[recovery and rollback](../skills/implement/SKILL.md#recovery-and-rollback)
+steps for a failed change; the room's Runbook keeps its own data and backup
+rules beside the pointer. A blocked push leaves a local recovery point, not verified remote
 recovery or delivery.
 
 ## Composition and lineage

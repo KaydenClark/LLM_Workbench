@@ -14,9 +14,10 @@ source_paths:
   - workbench/specs/S-01W-uppercase-width-four-workbench-artifact-ids/SPEC.md
   - workbench/docs/adr/0041-visible-base62-workbench-identifiers.md
   - RUNBOOK.md
+  - workbench/skills/workbench-runtime/SKILL.md
 parent: none
 authorized_by: owner
-last_verified: 2026-10-02
+last_verified: 2026-10-04
 ---
 
 # S-047: Visible Workbench Identifiers
@@ -29,7 +30,7 @@ The allocator reports collisions against its supplied inventory; it is not a dis
 
 ## Later amendment: uppercase width-four artifact labels
 
-The S-01W Uppercase Width-Four Workbench Artifact IDs Spec narrowed the value for artifact labels after the owner's E-8 answer in the destination audit ledger. New Spec, Task, ADR and notepad labels use uppercase `0-9A-Z`, minimum width four, with at least one letter (`S-000A`, `TK-000A`, `ADR-000C`, `N-000A`). Short, widened and case spellings of one label (`S-00Q`, `S-000Q`, `S-00q`) are one identity: allocation reserves it once, and public Spec and Task selectors resolve any spelling to the one stored record. Existing records keep their stored IDs; an open Spec or Task widens only through the explicit `widen-id` touch, which keeps its former spelling in a `**Former ID:**` field. Workbench connection identities keep the base-62 format above. ADR-0041 (visible Workbench identifiers) owns the decision, the Runbook's Visible Identifiers section owns the commands, and the S-01W Spec owns requirements and proof.
+The S-01W Uppercase Width-Four Workbench Artifact IDs Spec narrowed the value for artifact labels after the owner's E-8 answer in the destination audit ledger. New Spec, Task, ADR and notepad labels use uppercase `0-9A-Z`, minimum width four, with at least one letter (`S-000A`, `TK-000A`, `ADR-000C`, `N-000A`). Short, widened and case spellings of one label (`S-00Q`, `S-000Q`, `S-00q`) are one identity: allocation reserves it once, and public Spec and Task selectors resolve any spelling to the one stored record. Existing records keep their stored IDs; an open Spec or Task widens only through the explicit `widen-id` touch, which keeps its former spelling in a `**Former ID:**` field. Workbench connection identities keep the base-62 format above. ADR-0041 (visible Workbench identifiers) owns the decision, the `workbench-runtime` skill's Visible Identifiers section owns the commands (the Runbook's Visible Identifiers section points there), and the S-01W Spec owns requirements and proof.
 
 ## Historical proof and limits
 
@@ -46,9 +47,11 @@ The source record was read at `bc370fe742d5ddb8348bf361fccea31205f6cee7` and the
 - [LEXICON.md](../../../LEXICON.md)
 - [S-01W Uppercase Width-Four Workbench Artifact IDs Spec](../../../workbench/specs/S-01W-uppercase-width-four-workbench-artifact-ids/SPEC.md)
 - [ADR-0041 Visible Workbench identifiers](../../../workbench/docs/adr/0041-visible-base62-workbench-identifiers.md)
-- [RUNBOOK.md Visible Identifiers](../../../RUNBOOK.md)
+- [RUNBOOK.md Visible Identifiers](../../../RUNBOOK.md#visible-identifiers)
+- [`workbench-runtime` skill: Visible Identifiers](../../skills/workbench-runtime/SKILL.md#visible-identifiers)
 
 ## History
 
 - 2026-09-19: Reconciled into one article on owner direction; source records and proof remain intact pending their lifecycle gates.
 - 2026-10-02: Added the S-01W uppercase width-four amendment during that Spec's assembled QA; the S-047 historical account above is unchanged.
+- 2026-10-04: The identifier commands moved from the Runbook into the `workbench-runtime` skill behind the Runbook operations index (S-004C TK-005J); the account above is unchanged.

@@ -85,7 +85,8 @@ assert.match(catalog, /\.claude\/skills/,
 const bundleSize = coreSkills.length;
 const stanceCount = 4;
 const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
-  'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen'];
+  'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen',
+  'nineteen', 'twenty'];
 const workflowWord = words[bundleSize - stanceCount - coordinationSkills.length];
 for (const [relative, expected] of [
   ['workbench/skills/README.md', [`closed ${bundleSize}-skill bundle`, `${workflowWord} workflow skills`,
@@ -813,6 +814,31 @@ for (const skill of coordinationSkills) {
 }
 assert.match(specPlanner, /`spec-manager`/, 'spec-planner names the Spec Manager sibling by its skill name');
 assert.match(specPlanner, /`dispatcher`/, 'spec-planner names the Dispatcher sibling by its skill name');
+
+// S-004C TK-005J: `workbench-runtime` is the core home for the operations every
+// room runs on its installed runtime tools - reading doctor's findings and
+// their blocking effects, validating the Wiki, repairing installed state,
+// allocating visible identifiers, keeping the connection identity, checking a
+// configured host and adding a room-local skill. The room's Runbook
+// operations index points to its sections. It joins the workflow half of the
+// bundle after grill-me, ahead of the coordination entries, so the frozen
+// rows and every coordination and stance slice stay exact. It ships to every
+// room, so it names no repository Spec path, no maintainer test command and
+// no private path.
+assert.ok(runtimeCoreSkills.includes('workbench-runtime'), 'workbench-runtime must be a declared core skill');
+assert.ok(!coordinationSkills.includes('workbench-runtime'), 'workbench-runtime is a workflow skill, not a coordination entry');
+assert.equal(runtimeCoreSkills.indexOf('workbench-runtime'), runtimeCoreSkills.indexOf('grill-me') + 1,
+  'workbench-runtime follows grill-me in the live bundle');
+const workbenchRuntime = read('workbench/skills/workbench-runtime/SKILL.md');
+assert.match(workbenchRuntime, /^name: workbench-runtime$/m, 'workbench-runtime must declare its skill name');
+const workbenchRuntimeSections = ['## Purpose', '## Method', '## Obligations', '## Completion', '## Diagnostics And Blocking Effects',
+  '## Wiki Validation', '## Installed State The Harness Wrote', '## Visible Identifiers', '## Workbench Connection Identity',
+  '## Configured-Host Capability Checks', '## Room-Local Skills'].map((heading) => workbenchRuntime.indexOf(`\n${heading}\n`));
+assert.ok(workbenchRuntimeSections.every((index) => index >= 0), 'workbench-runtime carries its contract sections and one section per operation');
+assert.deepEqual(workbenchRuntimeSections, [...workbenchRuntimeSections].sort((a, b) => a - b),
+  'workbench-runtime states its contract before the operation sections, in index order');
+assert.doesNotMatch(workbenchRuntime, /workbench\/specs\/|node tools\/test-|\/Users\//,
+  'workbench-runtime ships to every room: no repository Spec path, maintainer test command or private path');
 
 // S-00J TK-006: the reviewed unit at integration is the assembled Spec bound
 // to a content digest - obtained with `report S-### --candidate <sha>` and
