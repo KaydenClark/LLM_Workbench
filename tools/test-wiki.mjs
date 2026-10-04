@@ -500,6 +500,11 @@ test('a nested draft article validates in the skills-draft collection, and a mis
     refused('skills-draft/shaping/regroup.md', /group upkeep does not match its folder shaping/, 'a draft names the group folder it sits in');
     fs.rmSync(path.join(drafts, 'shaping', 'regroup.md'));
 
+    fs.writeFileSync(path.join(drafts, 'shaping', 'anonymous.md'), draftArticle({ skill: undefined, group: undefined }));
+    refused('skills-draft/shaping/anonymous.md', /must declare group shaping/, 'a draft that omits its group is refused');
+    refused('skills-draft/shaping/anonymous.md', /must declare skill anonymous/, 'a draft that omits its skill is refused');
+    fs.rmSync(path.join(drafts, 'shaping', 'anonymous.md'));
+
     fs.writeFileSync(path.join(drafts, 'shaping', 'renamed.md'), draftArticle({ skill: 'someone-else' }));
     refused('skills-draft/shaping/renamed.md', /skill someone-else does not match its file name renamed/, 'a draft names the skill its file is called');
     fs.rmSync(path.join(drafts, 'shaping', 'renamed.md'));

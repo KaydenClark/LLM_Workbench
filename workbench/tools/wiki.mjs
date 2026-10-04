@@ -69,9 +69,11 @@ function draftArticleFindings(relative, segments, data) {
   const findings = [];
   const [group] = segments;
   if (!DRAFT_GROUPS.includes(group)) findings.push(problem(`folder ${group} is not one of the group folders (${DRAFT_GROUPS.join(', ')})`));
-  else if (data.group !== undefined && data.group !== group) findings.push(problem(`group ${data.group} does not match its folder ${group}`));
+  else if (data.group === undefined) findings.push(problem(`must declare group ${group}, the folder it sits in`));
+  else if (data.group !== group) findings.push(problem(`group ${data.group} does not match its folder ${group}`));
   if (data.status !== undefined && data.status !== DRAFT_STATUS) findings.push(problem(`must declare status ${DRAFT_STATUS}; it lives in the draft collection`));
-  if (data.skill !== undefined && data.skill !== basename) findings.push(problem(`skill ${data.skill} does not match its file name ${basename}`));
+  if (data.skill === undefined) findings.push(problem(`must declare skill ${basename}, the skill its file is called`));
+  else if (data.skill !== basename) findings.push(problem(`skill ${data.skill} does not match its file name ${basename}`));
   return findings;
 }
 
