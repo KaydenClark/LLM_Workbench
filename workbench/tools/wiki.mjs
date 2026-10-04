@@ -4,9 +4,10 @@
 // no secret-like material. Staleness is attention, never blocking.
 import fs from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { finding } from './diagnostics.mjs';
-import { collectionRelative, findRoot, isMainModule, lanePath, laneRelative, liveRecordPath, markdownLinkTargets, readManifest, writeSafeFile, WIKI_PROFILES } from './workbench-paths.mjs';
-import { insertFrontmatterKeys, localLinks, parseFrontmatter } from './adr.mjs';
+import { assertSafeReadPath, assertSafeWritePath, collectionRelative, findRoot, isMainModule, lanePath, laneRelative, liveRecordPath, markdownLinkTargets, readManifest, writeSafeFile, WIKI_PROFILES } from './workbench-paths.mjs';
+import { collectRecordReferenceFiles, insertFrontmatterKeys, localLinks, parseFrontmatter, planReferenceRewrite } from './adr.mjs';
 import { scanPrivacy } from './privacy.mjs';
 import { versionStamp, wikiContractFiles } from './workbench-layout.mjs';
 
@@ -249,6 +250,140 @@ function inferredType(root, file) {
   return 'meta';
 }
 
+// S-003W TK-001: the link-safe move of one Wiki note. A note moves to another
+// declared collection, may be renamed and may be retyped in the same step, and
+// every live Markdown link to it is rewritten so nothing dangles: the root
+// controls, the Wiki, the skills lane, decision records, every Spec and Task
+// record, and the landmark records and question cards. References inside a
+// Spec's append-only evidence are history and stay as written; they are
+// counted. The whole move is planned and checked before the first write, so a
+// refusal changes nothing. `move-spec` and `move-task` do the same for their
+// records; this is the Wiki's counterpart, built on the same link rewriter.
+const COLLECTION_TYPES = Object.freeze({
+  'design-concepts': ['design-concept'],
+  features: ['feature'],
+  guidebooks: ['guidebook'],
+  archive: null
+});
+
+function noteBasenameError(name) {
+  return /^[^/\\\0.][^/\\\0]*$/.test(name) && !/\.md$/i.test(name) ? null : 'name must be a plain note name (no path separators, no leading dot, no .md suffix)';
+}
+
+function setFrontmatterType(content, type) {
+  const eol = content.includes('\r\n') ? '\r\n' : '\n';
+  const lines = content.split(eol);
+  const close = lines.indexOf('---', 1);
+  const index = lines.slice(1, close).findIndex((line) => /^type:/.test(line)) + 1;
+  if (lines[0] !== '---' || close === -1 || index === 0) throw new Error('the note has no type property to retype');
+  lines[index] = `type: ${type}`;
+  return lines.join(eol);
+}
+
+function moveNoteReferenceFiles(root) {
+  const files = new Set(collectRecordReferenceFiles(root));
+  const walk = (directory, accept) => {
+    if (!fs.existsSync(directory)) return;
+    assertSafeReadPath(root, directory);
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      if (entry.name.startsWith('.') || entry.isSymbolicLink()) continue;
+      const full = path.join(directory, entry.name);
+      if (entry.isDirectory()) walk(full, accept);
+      else if (entry.isFile() && accept(entry.name)) files.add(full);
+    }
+  };
+  walk(lanePath(root, 'specs'), (name) => name.endsWith('.md'));
+  // TRACKER.json is a generated projection of the cards; the cards are the source.
+  walk(path.join(root, 'workbench', 'landmark-tracker'), (name) => (name.endsWith('.md') || name.endsWith('.json')) && name !== 'TRACKER.json');
+  return [...files].sort();
+}
+
+export function moveNote(root, options = {}) {
+  const { note, to, name, retype, dryRun = false } = options;
+  if (typeof note !== 'string' || !note || typeof to !== 'string' || !to) throw new Error('move-note needs a note path and a destination collection');
+  const wikiRoot = lanePath(root, 'wiki');
+  const source = path.resolve(root, note);
+  const relative = (file) => path.relative(root, file).split(path.sep).join('/');
+  const inWiki = path.relative(wikiRoot, source);
+  if (!inWiki || inWiki.startsWith('..') || path.isAbsolute(inWiki)) throw new Error(`${note} must be inside the wiki lane ${laneRelative(root, 'wiki')}`);
+  assertSafeReadPath(root, source);
+  if (!fs.existsSync(source) || !fs.lstatSync(source).isFile()) throw new Error(`${note} does not exist`);
+  if (!source.endsWith('.md')) throw new Error(`${note} is not a Markdown note`);
+  const wikiRelativePath = inWiki.split(path.sep).join('/');
+  if (wikiRelativePath === 'MEMORY.md' || wikiContractFiles.includes(wikiRelativePath) || path.basename(source) === 'README.md') {
+    throw new Error(`${note} is a router or contract file; router and contract files do not move`);
+  }
+  const content = fs.readFileSync(source, 'utf8');
+  const { data } = parseFrontmatter(content);
+  if (!data) throw new Error(`${note} has no frontmatter`);
+  const type = retype ?? data.type;
+  if (type === undefined) throw new Error(`${note} declares no type; name one with --retype`);
+  if (!NOTE_TYPES.includes(type)) throw new Error(`type ${type} is not one of ${NOTE_TYPES.join(', ')}`);
+  if (!Object.hasOwn(COLLECTION_TYPES, to)) throw new Error(`unknown destination collection ${to}; use one of ${Object.keys(COLLECTION_TYPES).join(', ')}`);
+  const accepted = COLLECTION_TYPES[to];
+  if (accepted && !accepted.includes(type)) throw new Error(`${to} does not accept type ${type}; it holds ${accepted.join(', ')} notes (use --retype to change the type in the same move)`);
+  const oldBase = path.basename(source, '.md');
+  const newBase = name === undefined ? oldBase : String(name);
+  const nameError = name === undefined ? null : noteBasenameError(newBase);
+  if (nameError) throw new Error(nameError);
+  const destinationDir = path.join(root, collectionRelative(root, to));
+  const destination = path.join(destinationDir, `${newBase}.md`);
+  if (destination === source) throw new Error(`${note} already lives in ${to} under that name; nothing to move`);
+  if (fs.existsSync(destination)) throw new Error(`${relative(destination)} already exists`);
+  const wikiFiles = walkMarkdown(wikiRoot).filter((file) => file !== source);
+  const clash = wikiFiles.filter((file) => path.basename(file, '.md') === newBase);
+  if (clash.length > 0) throw new Error(`note basename ${newBase} is not unique: ${clash.map(relative).join(', ')}; basenames are unique across the wiki`);
+  if (newBase !== oldBase) {
+    const wikilink = new RegExp(`\\[\\[\\s*${oldBase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*(?:[|#\\]])`);
+    const orphans = wikiFiles.filter((file) => wikilink.test(fs.readFileSync(file, 'utf8')));
+    if (orphans.length > 0) throw new Error(`renaming ${oldBase} would orphan a wikilink in ${orphans.map(relative).join(', ')}; repair the wikilink first or keep the name`);
+  }
+
+  // Plan every byte before the first write.
+  const totals = { referencesRewritten: {}, historicalReferencesLeft: {} };
+  const writes = new Map();
+  const retyped = type !== data.type;
+  let moved = retyped ? setFrontmatterType(content, type) : content;
+  // The moved note's own outgoing links are recomputed for its new directory:
+  // every local target it names maps to itself so the rewriter recomputes the
+  // relative route, and its own path maps to its destination.
+  const outgoing = new Map([[source, destination]]);
+  const directoryTargets = new Set();
+  const oldDir = path.dirname(source);
+  for (const target of markdownLinkTargets(moved)) {
+    const absolute = path.resolve(oldDir, target);
+    if (!outgoing.has(absolute)) outgoing.set(absolute, absolute);
+    if (fs.existsSync(absolute) && fs.statSync(absolute).isDirectory()) directoryTargets.add(absolute);
+  }
+  moved = planReferenceRewrite(root, destination, moved, oldDir, destinationDir, outgoing, totals, { directoryTargets }) ?? moved;
+  writes.set(destination, moved);
+  const incoming = new Map([[source, destination]]);
+  for (const file of moveNoteReferenceFiles(root)) {
+    if (file === source) continue;
+    const original = fs.readFileSync(file, 'utf8');
+    const rewritten = planReferenceRewrite(root, file, original, path.dirname(file), path.dirname(file), incoming, totals);
+    if (rewritten !== null) writes.set(file, rewritten);
+  }
+  assertSafeWritePath(root, destination);
+  for (const file of writes.keys()) if (file !== destination) assertSafeWritePath(root, file);
+
+  const tracked = spawnSync('git', ['-C', root, 'ls-files', '--error-unmatch', '--', relative(source)], { encoding: 'utf8' }).status === 0;
+  const report = { from: relative(source), to: relative(destination), type, retyped, dryRun, usesGit: tracked, referencesRewritten: totals.referencesRewritten, historicalReferencesLeft: totals.historicalReferencesLeft };
+  if (dryRun) return report;
+  fs.mkdirSync(destinationDir, { recursive: true });
+  if (tracked) {
+    const result = spawnSync('git', ['-C', root, 'mv', relative(source), relative(destination)], { encoding: 'utf8' });
+    if (result.status !== 0) throw new Error(`git mv failed for ${relative(source)}: ${(result.stderr || result.stdout || '').trim()}`);
+  } else {
+    fs.renameSync(source, destination);
+  }
+  for (const [file, text] of writes) writeSafeFile(root, file, text);
+  // Stage exactly what this move changed so the candidate reads as one rename
+  // with its link repairs; unrelated work is never swept in.
+  if (tracked) spawnSync('git', ['-C', root, 'add', '--', ...[...writes.keys()].map(relative)], { encoding: 'utf8' });
+  return report;
+}
+
 if (isMainModule(import.meta.url)) {
   try {
     const [command, ...rest] = process.argv.slice(2);
@@ -256,8 +391,16 @@ if (isMainModule(import.meta.url)) {
     const pathIndex = rest.indexOf('--path');
     const root = findRoot(pathIndex >= 0 ? rest[pathIndex + 1] : process.cwd());
     const dateIndex = rest.indexOf('--date');
-    if (!['validate', 'normalize'].includes(command)) throw new Error('Usage: wiki.mjs validate [--path PROJECT] [--json] | normalize [--path PROJECT] [--date YYYY-MM-DD] [--json] (validate reports wiki facts only; the installed-state findings stale-seed and unverified-provenance come from doctor and are repaired with workbench-layout.mjs; see RUNBOOK.md)');
-    if (command === 'normalize') {
+    if (!['validate', 'normalize', 'move-note'].includes(command)) throw new Error('Usage: wiki.mjs validate [--path PROJECT] [--json] | normalize [--path PROJECT] [--date YYYY-MM-DD] [--json] | move-note NOTE --to COLLECTION [--name BASENAME] [--retype TYPE] [--dry-run] [--path PROJECT] [--json] (validate reports wiki facts only; the installed-state findings stale-seed and unverified-provenance come from doctor and are repaired with workbench-layout.mjs; see RUNBOOK.md)');
+    if (command === 'move-note') {
+      const valueOf = (flag) => { const index = rest.indexOf(flag); return index >= 0 ? rest[index + 1] : undefined; };
+      const flagValues = new Set(['--to', '--name', '--retype', '--path'].map((flag) => rest.indexOf(flag) + 1).filter((index) => index > 0));
+      const positional = rest.filter((item, index) => !item.startsWith('--') && !flagValues.has(index));
+      if (positional.length !== 1 || !valueOf('--to')) throw new Error('Usage: wiki.mjs move-note NOTE --to COLLECTION [--name BASENAME] [--retype TYPE] [--dry-run] [--path PROJECT] [--json]');
+      const result = moveNote(root, { note: positional[0], to: valueOf('--to'), name: valueOf('--name'), retype: valueOf('--retype'), dryRun: rest.includes('--dry-run') });
+      const counts = (record) => Object.values(record).reduce((sum, count) => sum + count, 0);
+      console.log(json ? JSON.stringify(result, null, 2) : `${result.dryRun ? 'would move' : 'moved'} ${result.from} -> ${result.to} (type ${result.type}); ${counts(result.referencesRewritten)} live link(s) rewritten in ${Object.keys(result.referencesRewritten).length} file(s); ${counts(result.historicalReferencesLeft)} historical reference(s) left as written`);
+    } else if (command === 'normalize') {
       const result = normalizeWiki(root, { date: dateIndex >= 0 ? rest[dateIndex + 1] : undefined });
       console.log(json ? JSON.stringify(result, null, 2) : (result.changed.length ? result.changed.map((entry) => `${entry.note}: inserted ${entry.inserted.join(', ')}`).join('\n') : 'ok - every note already carries its required properties'));
     } else {
