@@ -1040,6 +1040,12 @@ function templatesAt(commit) {
   return directory;
 }
 
+function wordOverlap(a, b) {
+  const left = new Set(a.toLowerCase().match(/[a-z0-9_]+/g) ?? []);
+  const right = b.toLowerCase().match(/[a-z0-9_]+/g) ?? [];
+  return right.filter((word) => left.has(word)).length / Math.max(right.length, 1);
+}
+
 function normalizedLines(content) {
   return content.split('\n').map((line) => line.trim().replace(/\s+/g, ' ')).filter((line) => /[a-z0-9]{3,}/i.test(line) && !/\[[A-Z]/.test(line));
 }
@@ -1059,7 +1065,10 @@ test('TK-005M: an old-shape room is told which differences are a template genera
   // The room also rewrote a line only the earlier template ships; that is the
   // room's own change, not a template difference, even though the current
   // template no longer carries the line.
-  const earlierOnly = normalizedLines(read(previous, 'AGENTS.md')).find((line) => line.length > 60 && !normalizedLines(read(productTemplates, 'AGENTS.md')).includes(line) && read(project, 'AGENTS.md').includes(line));
+  // Pick a line the current template removed outright (no current line shares
+  // half its words), so the room's rewrite cannot also be a template rewrite.
+  const currentLines = normalizedLines(read(productTemplates, 'AGENTS.md'));
+  const earlierOnly = normalizedLines(read(previous, 'AGENTS.md')).find((line) => line.length > 60 && !currentLines.includes(line) && read(project, 'AGENTS.md').includes(line) && currentLines.every((other) => wordOverlap(line, other) < 0.5 && wordOverlap(other, line) < 0.5));
   assert.ok(earlierOnly, 'the earlier generation has a line the current one dropped');
   const customized = `${earlierOnly} This room tightened the rule for its payments adapter.`;
   write(project, 'AGENTS.md', read(project, 'AGENTS.md').replace(earlierOnly, customized));
