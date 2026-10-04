@@ -36,8 +36,8 @@ release.
   and workflow composition.
 - **Preserves useful proof.** The packet preserves useful proof for the
   cross-provider round trip and the portability checks.
-- **Routes to current owners.** Current release work is the v4.0.0
-  Workbench Release Spec (S-00O); the Workbench Release Spec (S-050) for v3.2.0 is
+- **Routes to current owners.** Current release work is the
+  Workbench v4.0.0 Release Spec (S-00O); the Workbench Release Spec (S-050) for v3.2.0 is
   superseded history too. The live cross-device proof stays with the Private
   Session Transport Spec (S-052), run inside the owner's own PC test at v4 main
   readiness. A reader uses those owners for release state instead of treating
