@@ -842,15 +842,19 @@ test('TK-005I: the Full suite list has one home, the Runbook Test And Build sect
   assert.match(templateTests.body, /\[FULL_TEST_COMMAND\]/, 'the template keeps one generic full verification list');
 });
 
-test('TK-005I: the Runbook Template Upgrade Release Gate holds the procedure the AGENTS brief restates', () => {
+// TK-005K moved the gate's procedure from the Runbook section into the
+// workbench-release maintainer skill; the Runbook heading keeps a pointer.
+test('TK-005I: the Template Upgrade Release Gate procedure the AGENTS brief restates is reachable from the index', () => {
   const { rows } = indexOf('RUNBOOK.md');
   const row = rows.find(({ cells }) => cells[0] === 'Upgrade the reference Template for a release');
-  assert.ok(row && links(row.cells[2]).includes('#template-upgrade-release-gate'), 'the index points the release operation at its procedure');
-  const gate = normalize(headings(read('RUNBOOK.md')).find((heading) => heading.title === 'Template Upgrade Release Gate').body);
+  const pointer = 'workbench/skills/workbench-release/SKILL.md#template-upgrade-release-gate';
+  assert.ok(row && links(row.cells[2]).includes(pointer), 'the index points the release operation at its procedure');
+  assert.ok(links(headings(read('RUNBOOK.md')).find((heading) => heading.title === 'Template Upgrade Release Gate').body).includes(pointer), 'the Runbook heading points to the procedure');
+  const gate = normalize(headings(read('workbench/skills/workbench-release/SKILL.md')).find((heading) => heading.title === 'Template Upgrade Release Gate').body);
   for (const phrase of [
     'This is the required real-room test of `update-harness`.', 'Pin the clean source version/commit and the Template\'s current integration commit',
     'compare every installed managed hash', 'merge into its declared integration branch', 'Clone that remote result afresh'
-  ]) assert.ok(gate.includes(phrase), `the Runbook gate holds: ${phrase}`);
+  ]) assert.ok(gate.includes(phrase), `the workbench-release gate holds: ${phrase}`);
 });
 
 // S-004C TK-005G review correction: procedures moved into lane skills keep
