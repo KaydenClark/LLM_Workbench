@@ -8,8 +8,8 @@
 **Updated:** 2026-10-04
 **Catalog description:** Give the draft skills wiki a declared home, an index and one article template, so every skill's draft article has somewhere to go and its connection problems can be found by grep.
 **Blockers:** none.
-**Latest event:** TK-006O closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** All three Tasks landed on integration through Task PRs; the assembled Spec awaits its separate-context review and owner Human QA.
+**Next gate:** Record the assembled-Spec review verdict, then owner Human QA on integration; the last acceptance box (review recorded) is checked only by that verdict.
 
 > **Citation anchors.** pre=`07edccc57b8f75613ad1d09203a3e414d867b90c` post=`07edccc57b8f75613ad1d09203a3e414d867b90c`.
 
@@ -102,24 +102,23 @@ last_verified: YYYY-MM-DD
 
 ## Dependencies And Blockers
 
-No blocker. Every other draft-wiki Spec names S-002L under its own blockers and cannot start its step 2 until the location and template are delivered. `next` does not read prose blockers, so no Task exists to enforce this; the Director reports whether it excludes them.
+No blocker. Every other draft-wiki Spec names S-002L under its own blockers and could not start its step 2 until the location and template were delivered; both are now on integration. Those Specs are `planned`, so `next` never offered them, which kept the prose blocker from mattering; their activation is each Spec's own gate.
 
 ## Vertical Implementation Slices
 
-No Task is cut. Tasks are cut from live Actuality when this Spec is activated. Intended slice direction:
+Three Tasks were cut from live Actuality at activation on 2026-10-04 (the four intended slices became three because the README and the router link share one proof). Each landed as its own Task PR into integration; their records and proof are the Task records under `tasks/`.
 
-1. Decide the location and declare the collection. Confirm DRAFT-LOC, DECL and DRAFT-STATUS (owner tradeoff if a shared contract widens), then change the manifest, SCHEMA.md, the validator registry as needed, and `tools/test-wiki.mjs`, red first: a nested draft validates, a bad draft status or misplaced draft is refused, the existing wiki still validates.
-2. Write the collection README: the eight groups with their article counts (7, 14, 7, 21, 12, 5, 6, 9; 81 in all) and each planned article with its owning Spec, taken from the handoff inventory's owning Specs. New Spec IDs are read from the merged Specs at activation, not copied from the untracked handoff or invented here.
-3. Add Template 2 as the collection's template file, including the finding line format and kinds above, and, if slice 1 chooses, a validator check that rejects a malformed `F:` line.
-4. Add the single `MEMORY.md` link, then run `wiki.mjs validate`, render, doctor and the suite from a committed candidate, and record the evidence.
+- TK-006M: confirm the draft-wiki location and make the validator accept a nested draft collection.
+- TK-006N: add the owner-approved draft article template with the finding line format (blocked on TK-006M).
+- TK-006O: write the collection index README and route it once from MEMORY.md (blocked on TK-006N).
 
 ## Acceptance Criteria
 
-- [ ] DRAFT-LOC, DECL and DRAFT-STATUS are each recorded as confirmed or changed, with the owner tradeoff stated where a shared contract widens.
-- [ ] The collection exists with the eight group folders and an index README listing all eight groups and the 81 planned articles with their owning Specs.
-- [ ] Template 2 is the collection's template, carries the `F:<skill>:NN | kind | one line | who fixes it` format and the six kinds, and has any wording change forced by the validator recorded.
-- [ ] `MEMORY.md` links the collection once and `wiki.mjs validate` shows no error finding.
-- [ ] A test in `tools/test-wiki.mjs` failed before the change and passes after it; the 20 existing skill articles are unchanged and still routed.
+- [x] DRAFT-LOC, DECL and DRAFT-STATUS are each recorded as confirmed or changed, with the owner tradeoff stated where a shared contract widens.
+- [x] The collection exists with the eight group folders and an index README listing all eight groups and the 81 planned articles with their owning Specs.
+- [x] Template 2 is the collection's template, carries the `F:<skill>:NN | kind | one line | who fixes it` format and the six kinds, and has any wording change forced by the validator recorded.
+- [x] `MEMORY.md` links the collection once and `wiki.mjs validate` shows no error finding.
+- [x] A test in `tools/test-wiki.mjs` failed before the change and passes after it; the 20 existing skill articles are unchanged and still routed.
 - [ ] Targeted tests, Wiki validation, the full suite, render, doctor, Workbench self-drift pre/post receipts and a separate-context review are recorded at their gates; no unrun check is reported as passing.
 
 ## Testing Seams
@@ -145,7 +144,7 @@ Run `node tools/test-wiki.mjs` red then green, `node workbench/tools/wiki.mjs va
 
 ## Completion Result
 
-Not complete.
+Not complete. Delivered on integration across TK-006M, TK-006N and TK-006O; completion waits on the assembled-Spec review verdict and the owner's Human QA approval. The collection is `workbench/wiki/skills-draft/` (eight tracked group folders, `README.md` index, `TEMPLATE.md`), validated by `workbench/tools/wiki.mjs` and named in `workbench/wiki/SCHEMA.md`, and routed once from `workbench/wiki/MEMORY.md`.
 
 ## Supersession
 
