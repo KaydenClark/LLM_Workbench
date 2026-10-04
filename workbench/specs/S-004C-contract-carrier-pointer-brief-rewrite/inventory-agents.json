@@ -3707,88 +3707,88 @@
       "line": 504,
       "text": "For coordinated Spec delivery, the normal route is a Worker Task-branch merge",
       "hash": "b55dae19ab79407299366af8c65a6e796553aa2318c491be427a2419c7ae6b7d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "For coordinated Spec delivery, the normal route is a Worker Task-branch merge",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 505,
       "text": "request into the Dispatcher Spec branch, then an independently reviewed Spec",
       "hash": "1294f5509ed342f18389263435104ce8b03870c59acb3a9a5653739eb85ff2cc",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "request into the Dispatcher Spec branch, then an independently reviewed Spec",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 506,
       "text": "merge request into integration under Director coordination. A Task merge is",
       "hash": "805c02720e48848f0a997f17aa7bfb503dd6864ae483dd0c84d10d8cc8f975b8",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "merge request into integration under Director coordination. A Task merge is",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 507,
       "text": "containment; its Worker supplies self-check and proof. A release-specific",
       "hash": "8f876f0544f4b6c84fe18a78b96a1ec444fbdb9a9be03a0bcc4a18393f6c8c64",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "containment; its Worker supplies self-check and proof. A release-specific",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 508,
       "text": "bootstrap exception may name a different route and its gate explicitly; read",
       "hash": "086cdf87ddbe12814b42e6079c29cebfd806d5a0ac50630dc50bfc19a23ad690",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "bootstrap exception may name a different route and its gate explicitly; read",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 509,
       "text": "that owner rather than silently applying the intended route to unsupported",
       "hash": "6c014b0d167f62c3887bb68df366aa5145de9de621baf9fa341af87ba5227409",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "that owner rather than silently applying the intended route to unsupported",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 510,
       "text": "current tooling. Accepted decisions and current progress are reconciled into",
       "hash": "a445c0dbbcaced1d321bc2e6188a44e201100f9d0b79937c7d043795c5f3dbb7",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "current tooling. Accepted decisions and current progress are reconciled into",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 511,
       "text": "tracked owners on integration through reviewed changes; local notes and",
       "hash": "5afb77769f26634aab955150b6dbe5502b523814072f97be0d92663f222b2672",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "tracked owners on integration through reviewed changes; local notes and",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 512,
       "text": "unmerged branches must not be their only discovery route.",
       "hash": "4bfaa63a59bae48b94f50435f57b22027537ef72a1155cd294460869e2fb3c22",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "unmerged branches must not be their only discovery route.",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 514,
       "text": "This repository currently uses S-00O's bootstrap exemption 2: each Task PR targets",
       "hash": "26b9c10c5b117e5edb015c4e3e897e13f85c0ea16545b66877a267f97a4879fb",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3797,7 +3797,7 @@
       "line": 515,
       "text": "`integration` and requires separate-context review of its immutable candidate",
       "hash": "e8a5bc34cce1059d47a9f3f0f2a14129c55c878014829806ffe5443061ec0650",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3806,7 +3806,7 @@
       "line": 516,
       "text": "before that integration merge (`gate --task TK-### --spec S-###` checks the",
       "hash": "b2bc52bd0172dd9950cfd3a43c65d304577b9424c0427d4b19d890f1c649364b",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3815,7 +3815,7 @@
       "line": 517,
       "text": "Task-PR form). This exception is an integration boundary, not a normal Task",
       "hash": "0524c912f98ae1887a53752227f50f7d63dde227c287c6d8bba904077ef7d278",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3824,7 +3824,7 @@
       "line": 518,
       "text": "approval ceremony. The nested Task-branch -> Dispatcher Spec-branch ->",
       "hash": "53a592102906e0cdb7a89c313646d6cb0d448ffbfd98a7beb7df4d1f22eb3788",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3833,7 +3833,7 @@
       "line": 519,
       "text": "integration topology is the Blueprint's destination; these controls do not",
       "hash": "085a0b24d06e5f4bc00468d245af20c283a71a29233d4f89ba0464d6bcf6eb6e",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3842,7 +3842,7 @@
       "line": 520,
       "text": "claim delivered Spec-branch tooling. Follow the release owner when the",
       "hash": "a9c923db94b2b81899d57b3b3ccf82ed8fd65eafdde6ab0b376562d9d280711c",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3851,7 +3851,7 @@
       "line": 521,
       "text": "exception changes, and retain assembled-Spec review (`gate --spec S-###",
       "hash": "f2084bd141ce2716c45198b1ec4cd9be97a214a2e2c12f16f2abb6a52b8b97ed",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3860,7 +3860,7 @@
       "line": 522,
       "text": "--candidate SHA`) before Spec integration.",
       "hash": "1974abba3401c2a49e201db5ac0eff832ffe803e87fcbac00acedf077e4b420f",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3869,7 +3869,7 @@
       "line": 524,
       "text": "- Branch per spec/task from the current PR target; the default staging base is",
       "hash": "addf03862faad42d4f0f44a058f8d356c445e4247fec766f5364430cd165394f",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3878,7 +3878,7 @@
       "line": 525,
       "text": "  `integration`. Prefixes: `codex/`, `claude/`, or `backup/`. Never commit",
       "hash": "72ae8cb134b34b7fc2ec2292f22749f55fe413509896df3b7930fbc2a896fc8d",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3887,7 +3887,7 @@
       "line": 526,
       "text": "  directly to `main` or `integration`.",
       "hash": "5a61c49c2bbe57b38fcdd7d90c6cc84d9ebc467c84a2e983ee54bddcd864c236",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3896,7 +3896,7 @@
       "line": 527,
       "text": "- Default PR target is `integration`. Agents may merge below `integration` when",
       "hash": "e946ccf1fc57b4d280a2c6cc89a5cc24f3dd0d403060538d4e070d27bdacb2e4",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3905,7 +3905,7 @@
       "line": 528,
       "text": "  safe; only the owner merges `integration` into `main`.",
       "hash": "8803d7b098860934af1747cf02570f51ed08c65cd8f325e06c6fe4987d0911ac",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3914,7 +3914,7 @@
       "line": 529,
       "text": "- `workbench/manifest.json` declares `integration` (`git.integrationBranch`) as this",
       "hash": "10ff7ec18db8563aa3843a0ae3eaccd06256ddb9798d76c244881b1a9565d3e8",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3923,7 +3923,7 @@
       "line": 530,
       "text": "  repository's integration branch and `main` (`git.defaultBranch`) as the branch",
       "hash": "72074cfd24e86c3c0b3dea6cba247519bae7ccbe77ac8c9d0cb4a302683ea54f",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3932,7 +3932,7 @@
       "line": 531,
       "text": "  it is created from; controls resolve the branch from that declaration, and",
       "hash": "e57e54c38778cf9adf5d119139ef4f2a76b16bbb930a39a7e819b42e04beb762",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3941,7 +3941,7 @@
       "line": 532,
       "text": "  `doctor` reports it undeclared or missing without blocking selection.",
       "hash": "cf66f08ef6d15bd71a59863b4a43beb3501e49d0ef3691b1b05175985709893a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3950,7 +3950,7 @@
       "line": 533,
       "text": "- Never merge a PR left open for review. Never force-push shared history without",
       "hash": "404c8b1a1f7f67d3e86afc9a85711596f3df788c264216177fb30db88f342a25",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3959,7 +3959,7 @@
       "line": 534,
       "text": "  explicit approval. Commits are one logical change with an imperative subject.",
       "hash": "7a9600d609441231a7aeb71ea7c8a0fc1e3427893d0e20270267cf602d917592",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3968,7 +3968,7 @@
       "line": 535,
       "text": "- Version bumps occur only after the new behavior and required proof are green.",
       "hash": "45d0429d267804a57460e4eb45992588b06d6c1c528fe01dd6a8f7d42efb97ae",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3977,7 +3977,7 @@
       "line": 537,
       "text": "Before branches combine into `integration` (or the configured integration",
       "hash": "2b9d45a956f9964cae63b6e8276719c74c8b2adcd09c2d12b2b7f4e0d8b4f5fb",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3986,7 +3986,7 @@
       "line": 538,
       "text": "branch), a separate-context reviewer must check the immutable candidate against",
       "hash": "0b4b6910a78f3b412bfa6993d074a544018c507c892be6b45a9ab8d5247b2735",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -3995,7 +3995,7 @@
       "line": 539,
       "text": "its controls, assigned spec, and named evidence. This gate challenges code,",
       "hash": "c2ede851d7572667045942c5b237df9b0f88061d77c391ceaa6eb0e92842fc8e",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4004,7 +4004,7 @@
       "line": 540,
       "text": "consequential report claims, and recommendations. Earlier review and audit are",
       "hash": "606585c272128d82c1e9b9315c9e21fd6277c1cebca88aeb36a4c12807d2de63",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4013,7 +4013,7 @@
       "line": 541,
       "text": "supports, not mandatory independent ceremonies per task. A new candidate",
       "hash": "98156d43df34a17344d3a60227fe1c271197e55dc8c6e5a34f04a995746d5433",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4022,7 +4022,7 @@
       "line": 542,
       "text": "requires a fresh review; self-review alone cannot satisfy the integration gate.",
       "hash": "4f4a6c3b01232ecec54427b2fe3716b5d9360e2c5ab112574bceed4b7cf69838",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4031,7 +4031,7 @@
       "line": 544,
       "text": "Owner Human QA is an owner-led evaluation process, not the approval command. It",
       "hash": "ff74ace50d8ad62bfc77a90946286e2c4fe3fe06a0ef835095ce8554912dcd3c",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4040,7 +4040,7 @@
       "line": 545,
       "text": "can be underway through audits and corrective cycles before the eventual",
       "hash": "9229941164ed97d6716a677b53fe9f0741251ab010fd3fcf0736ce5164bd2eaa",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4049,7 +4049,7 @@
       "line": 546,
       "text": "approval on `integration`. An ongoing or failed Human QA review has findings to",
       "hash": "52715873e306a7cdae08c3f3d2c371c9ac56ac7d8b8ab6cf4f5709b8fe406e0c",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4058,7 +4058,7 @@
       "line": 547,
       "text": "reconcile; it is not a request for the owner to start QA or an ordinary",
       "hash": "45f0a693dee4af12ab2b1a8230d83388ddca16fb94d2b4788dc01a9d27569d51",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4067,7 +4067,7 @@
       "line": 548,
       "text": "dependency blocker. Record that state and the next corrective action in the",
       "hash": "582524a6326e99d786ac3cf360c731e1ba65c08fa79ba6664a7a17d4a2ce6489",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4076,7 +4076,7 @@
       "line": 549,
       "text": "owning Spec, then refresh the Taskboard projection. Passing tests or a",
       "hash": "10de28a4fa8ce56c14cff959505b5879b6cab87060378653919553a619b4b00a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4085,7 +4085,7 @@
       "line": 550,
       "text": "separate-context source review does not reset a failed Human QA gate to",
       "hash": "a4b7c27d1095c0a2398d428f3211bbc08fc26238f672b1fc474e3e8ce99cd3fd",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4094,7 +4094,7 @@
       "line": 551,
       "text": "\"awaiting approval\"; only the owner's actual approval records approval.",
       "hash": "9fc8e612297b93052fd3e968326d7e2c77ad4ef7ab9636d02146b729edfe912d",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4103,7 +4103,7 @@
       "line": 552,
       "text": "The owner chooses when to evaluate: at useful milestones, after accumulated work,",
       "hash": "7c75169e0d8102b453ca47f788b3b22430da279b5cf90d3a7fba9cd84b6c1b05",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4112,7 +4112,7 @@
       "line": 553,
       "text": "after exhausted Specs, for a valued Spec, or on a Director escalation. A version",
       "hash": "46cb8d5888b0750744ef45185c22ab5adada1eb04172ffc69921e8ea98fe1357",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4121,7 +4121,7 @@
       "line": 554,
       "text": "cadence is a default, not the only trigger; observing or monitoring work is not",
       "hash": "8e57caa51c472570e61752af17ec10a409a8db2fbf0aa052443ebcf91038aa09",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4130,7 +4130,7 @@
       "line": 555,
       "text": "approval. Keep a finding that invalidates a required delivered capability",
       "hash": "cadddbc5a39c9247ff16ca019e889609f2a1d546de9ee1ad024193dc2984220a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4139,7 +4139,7 @@
       "line": 556,
       "text": "visible in its owning Spec and as a real downstream dependency; do not erase",
       "hash": "ccb13c1eb72a21eaaec9dbdac1f049af14e7c66c8df7e368386faaab7b9227dc",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4148,7 +4148,7 @@
       "line": 557,
       "text": "it merely because the review or test suite passed.",
       "hash": "fb40d436d1700cc3bde206a43b9573bbe55ce014825183d3242780c8d2a0e8ff",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4157,7 +4157,7 @@
       "line": 561,
       "text": "A task is not finished at the push. A pushed branch is recoverable, not",
       "hash": "39935ecda19f1874f6307b4716178972b3f78c8d369d3e971f50dcd481f6865a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -4166,124 +4166,124 @@
       "line": 562,
       "text": "delivered. When the integration review passes, open the PR into `integration`",
       "hash": "9d1b1295873c3a1649210f7390dc1a61a99d7988bf0b44490659626eadadd35f",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "delivered. When the integration review passes, open the PR into the declared integration branch",
+      "reason": "TK-005H moved this line to the implement skill in its generic room wording, which the Runbook operations index points to for its operation; this repository declares `integration` as its integration branch (`git.integrationBranch` in `workbench/manifest.json`), so the rule is unchanged here."
     },
     {
       "line": 563,
       "text": "with `gh`, merge it, and confirm `integration` contains the work. Do not stall",
       "hash": "07f14a90443d6b5ee75b9649ee421a70fdffb946b04bf5028f8fd9c55b767a60",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "with the Runbook's PR command, merge it, and confirm that branch contains the work. Do not stall",
+      "reason": "TK-005H moved this line to the implement skill in its generic room wording, which the Runbook operations index points to for its operation; this repository declares `integration` as its integration branch (`git.integrationBranch` in `workbench/manifest.json`), so the rule is unchanged here."
     },
     {
       "line": 564,
       "text": "on an approved candidate or leave a passed PR waiting for the owner; only",
       "hash": "01e1890f277e6e53c173b4cae25aac53731a09ec4a5942878ee2307c88ba47a0",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "on an approved candidate or leave a passed PR waiting for the owner; only",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 565,
       "text": "`integration` into `main` is owner-only. \"Never merge a PR left open for",
       "hash": "5d79f1daa8c35abe8f8894ce6789f92c52af5582b90a69c6f59b71798909e95c",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "only the owner-only final merge named in `AGENTS.md` Git Rules stays with the owner. \"Never merge a PR left open for",
+      "reason": "TK-005H moved this line to the implement skill in its generic room wording, which the Runbook operations index points to for its operation; this repository declares `integration` as its integration branch (`git.integrationBranch` in `workbench/manifest.json`), so the rule is unchanged here. The brief in AGENTS.md Branch Completion also keeps \"Only `integration` into `main` is owner-only.\""
     },
     {
       "line": 566,
       "text": "review\" means a PR whose review is still pending, not one that already passed.",
       "hash": "79f0717c2fd408d863bf26819a1e1b97139fa25c77cb620a9ebc24904e144f2e",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "review\" means a PR whose review is still pending, not one that already passed.",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 568,
       "text": "Delete the branch once `integration` contains it and nothing is lost, unless",
       "hash": "a1daa4552fa649007629e838ed188fbf6f356cf3432cd7e29272607f6ccd706b",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "Delete the branch once the declared integration branch contains it and nothing is lost, unless",
+      "reason": "TK-005H moved this line to the implement skill in its generic room wording, which the Runbook operations index points to for its operation; this repository declares `integration` as its integration branch (`git.integrationBranch` in `workbench/manifest.json`), so the rule is unchanged here."
     },
     {
       "line": 569,
       "text": "its owner defers cleanup. Prove containment of the immutable reviewed commit",
       "hash": "a8579672cbc477ac2d480e9d09eec6a5b4dd95afb6beafee73acf151a19b8fef",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "its owner defers cleanup. Prove containment of the immutable reviewed commit",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 570,
       "text": "before any deletion, then check the actual local and remote branch tips too.",
       "hash": "7ee5390a631a3bb8f8a33f34152947430bb290859896854e2bcafd4f818c23da",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "before any deletion, then check the actual local and remote branch tips too.",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 571,
       "text": "Use `git branch -d` for local deletion and an expected-tip guard for remote",
       "hash": "06606ff338b535b90b17e0166ef24317f60d125d1cef3ba36f9132661b523a50",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "Use `git branch -d` for local deletion and an expected-tip guard for remote",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 572,
       "text": "deletion. A tracking upstream alone is not proof of integration containment;",
       "hash": "1b5578002674025757ab3505cc21e2a71a9a0b685d2aed3ecb3e2f84d1bdde21",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "deletion. A tracking upstream alone is not proof of integration containment;",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 573,
       "text": "never force it with",
       "hash": "f5276fa2709496626287f6320aa9a953fa5ce096d708fff831fec95c615f336d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "never force it with",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 574,
       "text": "`-D` to clear a branch. Stacked branches whose commits are already ancestors of",
       "hash": "5f7e7bd837cb492068cb869dbe851d8d612ae7ca85d7805afeebca24318e6df4",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "`-D` to clear a branch. Stacked branches whose commits are already ancestors of",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 575,
       "text": "the merged tip need no separate merge. A branch still holding unmerged work is",
       "hash": "45a096c0a801ce8ff351dfaa98b03b6cdf4d4a482a87497dab729b7ece0dfe8b",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "the merged tip need no separate merge. A branch still holding unmerged work is",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 576,
       "text": "removed only with owner approval.",
       "hash": "60c971bd565006289159638906c152c98e34106df9e7197e2bd2f8e31c916cbe",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null

@@ -17225,7 +17225,7 @@
       "line": 2297,
       "text": "Policy and authority live in `AGENTS.md` -> Git Rules. Operational commands:",
       "hash": "2f9ef46203b71b1b84d44067ece960d94f10dfea3b9fda7de2c321b784e87fe4",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17234,7 +17234,7 @@
       "line": 2299,
       "text": "```bash",
       "hash": "ad332335cfaa348c5bd715c3479844622270d5f7389ae070b81b135d521a221a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17243,7 +17243,7 @@
       "line": 2300,
       "text": "git status --short --branch",
       "hash": "c489fb61322c98eefe416cf7aaeeb18e5585a99e535deb10ae200c3676ddce43",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17252,7 +17252,7 @@
       "line": 2301,
       "text": "git fetch origin",
       "hash": "57b21b0eafbdb44c437d419f3a6bd6b17920625be2254419b86f97ef2600d45f",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17261,7 +17261,7 @@
       "line": 2302,
       "text": "git switch -c codex/short-description origin/integration",
       "hash": "4b46c74d42dcc639719843917b1aefb10fefec1f338396ba6729f39eb1c5745b",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17270,7 +17270,7 @@
       "line": 2303,
       "text": "git diff --check",
       "hash": "466c2f308b48c7661d646fdd068fbecea974c665fe65dbf8ed508f224180ce0b",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17279,7 +17279,7 @@
       "line": 2304,
       "text": "gh pr create --base integration --fill",
       "hash": "3435f936b3dbbd9a47b75baa2a36df7c0ddf9cf9b4bdde2a32340af2225ad4f0",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17288,7 +17288,7 @@
       "line": 2305,
       "text": "```",
       "hash": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17297,25 +17297,25 @@
       "line": 2307,
       "text": "Before creating a branch or PR, verify the live base and preserve dirty work.",
       "hash": "e960b5c8a2717408030ac1674b59726056d0788f8293bb5c79debd41a69bbd76",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "Before creating a branch or PR, verify the live base and preserve dirty work.",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2308,
       "text": "PR descriptions state what changed, why, risks, and verification.",
       "hash": "e87bb5409276802f81bb3e69b2b8ff1346d65a65f9e792a903f399cb178ecd42",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "PR descriptions state what changed, why, risks, and verification.",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2310,
       "text": "Closeout, once the integration review has passed. Export `TASK_BRANCH`,",
       "hash": "a3c46e48bea6a51028436dc2688dfd1f022a52ed4e5725ecb11998d5c0a4f5b2",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17324,7 +17324,7 @@
       "line": 2311,
       "text": "`PR_NUMBER`, and the reviewed full commit SHA as `EXPECTED_HEAD` before running",
       "hash": "5a9cddc19d6009f94362006e65f01ca3a59285c09761109f2a4f1d17ae71871a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17333,7 +17333,7 @@
       "line": 2312,
       "text": "this block. Export `CLEANUP=no` when the owner defers cleanup; otherwise use",
       "hash": "684aba72a9dd262d631162a5e715c1c18a46427184db654ffc9c54bf84395bbb",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17342,7 +17342,7 @@
       "line": 2313,
       "text": "`CLEANUP=yes`. Review must cover the live integration comparison before merging.",
       "hash": "3a2e1662e5dc4198c6fefa48416a34a3a1d5bc89103284e56a8b90126235ef98",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17351,7 +17351,7 @@
       "line": 2314,
       "text": "Export `SPEC_ID` naming the Spec this candidate is presented for. Export",
       "hash": "19aed26242bbf4805840d79f7b7953a1452f404e8fcdba5a31683db30a8b57b0",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17360,7 +17360,7 @@
       "line": 2315,
       "text": "`TASK_ID` when the candidate is a Task PR (a Task ID with its Spec still",
       "hash": "aa8683a48ac2008ff849f96a0e8fdf5bdf6a0cc2f53778d9db09d62a1ecd69de",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17369,7 +17369,7 @@
       "line": 2316,
       "text": "open - what every PR is while S-00O exemption 2 holds); leave it unset for a",
       "hash": "4b962477da3c8f3fe04b7e75b7d491e778cb9622db24dc21a324fb0755289e5f",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17378,7 +17378,7 @@
       "line": 2317,
       "text": "Spec candidate (the Spec's own assembled result). The gate",
       "hash": "113047fb0fb17a3ce36ccd12c6952a9b58296a50b35f3fb04d799eaba76fc005",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17387,7 +17387,7 @@
       "line": 2318,
       "text": "(`workbench/tools/spec-workbench.mjs gate`, S-00J TK-004) reports a Task PR",
       "hash": "9bd10a87cf8294298fe55e74c2685e8ee0f5bea86d938c18344144cf31487842",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17396,7 +17396,7 @@
       "line": 2319,
       "text": "without refusing it, and refuses a Spec candidate whose Spec is incomplete or",
       "hash": "d7061cf54454fe5381ad531199683ce72cc539737653502053f1ed163fa66a12",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17405,7 +17405,7 @@
       "line": 2320,
       "text": "whose latest review verdict for its current content is not a pass - stopping",
       "hash": "47845ab2b436b0fcc07a096f8e229ce825effe3b88535ed3abd5111355fc1cfe",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17414,7 +17414,7 @@
       "line": 2321,
       "text": "this block before the merge.",
       "hash": "cd41d80be82c81cfd3423b4ad74350caa0265cb70e8e97504866122403af2da1",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17423,7 +17423,7 @@
       "line": 2323,
       "text": "```bash",
       "hash": "ad332335cfaa348c5bd715c3479844622270d5f7389ae070b81b135d521a221a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17432,7 +17432,7 @@
       "line": 2324,
       "text": "(",
       "hash": "32ebb1abcc1c601ceb9c4e3c4faba0caa5b85bb98c4f1e6612c40faa528a91c9",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17441,7 +17441,7 @@
       "line": 2325,
       "text": "set -eu",
       "hash": "e3e17af496508186dc931f18bd38085089aae247f629f1bd96415a6d68ca64f2",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17450,7 +17450,7 @@
       "line": 2326,
       "text": ": \"${TASK_BRANCH:?Set the reviewed task branch}\"",
       "hash": "d01928b834caab7c61796859b9fe5b4bc46afd6647777a7940bbf1d948fc5009",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17459,7 +17459,7 @@
       "line": 2327,
       "text": ": \"${PR_NUMBER:?Set the reviewed PR number}\"",
       "hash": "ec22a94c491e22287b3979a73117581b0f7d330e27678b4e4317da6852a3fe8a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17468,7 +17468,7 @@
       "line": 2328,
       "text": ": \"${EXPECTED_HEAD:?Set the reviewed full commit SHA}\"",
       "hash": "6c3b856b7a5e727028aedcec6a69e9a4174d7dfc6a620eb50603937de0b80c7d",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17477,7 +17477,7 @@
       "line": 2329,
       "text": ": \"${CLEANUP:?Set yes or no according to the owner instruction}\"",
       "hash": "43751c3fcdb712095c5ce36e6dd0c7abc260992ecb82ee520f9ea7334ae9a55a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17486,7 +17486,7 @@
       "line": 2330,
       "text": ": \"${SPEC_ID:?Set the Spec ID this candidate is presented for}\"",
       "hash": "d1951788fd1044e2cc7e8180d9ec88293ecc44278f2c0c1f0976b73436e5dc5f",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17495,7 +17495,7 @@
       "line": 2331,
       "text": "case \"$CLEANUP\" in yes|no) ;; *) exit 1 ;; esac",
       "hash": "a14ca326ba420f4572ce18af2f6be3876b78fe37f5013ec4e87daa313117c6ba",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17504,7 +17504,7 @@
       "line": 2332,
       "text": "git check-ref-format --branch \"$TASK_BRANCH\" >/dev/null",
       "hash": "a2c5365a0e2ed571d651495212601dcfe13eb0e0d006c55d436e7da63d5466af",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17513,7 +17513,7 @@
       "line": 2333,
       "text": "case \"$TASK_BRANCH\" in main|integration) exit 1 ;; esac",
       "hash": "3397115266fb91f5694e82749b7997673fb8cf1f126ecf0b6b25d72f55c25991",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17522,7 +17522,7 @@
       "line": 2334,
       "text": "test -z \"$(git status --porcelain)\"",
       "hash": "4c61c4c53a79f585d36a4c778a3fa2c5748be7fd2da83b69eded9bc695327f81",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17531,7 +17531,7 @@
       "line": 2335,
       "text": "test \"$(git rev-parse HEAD)\" = \"$EXPECTED_HEAD\"",
       "hash": "a4d96a4a8b9f770a3b6790e39534eb7273b186345788361d6c39ba9788344887",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17540,7 +17540,7 @@
       "line": 2336,
       "text": "if [ -n \"${TASK_ID:-}\" ]; then",
       "hash": "c132ec72313984f8b5929224b3748f920bbc3a43b75925b620b99d221093cab3",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17549,7 +17549,7 @@
       "line": 2337,
       "text": "  node workbench/tools/spec-workbench.mjs gate --task \"$TASK_ID\" --spec \"$SPEC_ID\"",
       "hash": "4cc1df29d7b5ac083ededed7cbcd8f200203939f295ef9dbd8937e7f6b26c730",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17558,7 +17558,7 @@
       "line": 2338,
       "text": "else",
       "hash": "7dd530c4d36da47cd33396718ef1fa1e8c0f7d91ee551d7fdc1c73aa65edb454",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17567,7 +17567,7 @@
       "line": 2339,
       "text": "  node workbench/tools/spec-workbench.mjs gate --spec \"$SPEC_ID\" --candidate \"$EXPECTED_HEAD\"",
       "hash": "6906565f4e1a2c8941364ee87f15efb4e13d5b8f443d711424ecc6e3eb4ad9e8",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17576,7 +17576,7 @@
       "line": 2340,
       "text": "fi",
       "hash": "b4bdc848109722a383d0a972c6eb859f2abd29565b8c4cc7199e7c9eb708f1b7",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17585,7 +17585,7 @@
       "line": 2342,
       "text": "git fetch origin '+refs/heads/integration:refs/remotes/origin/integration'",
       "hash": "2d55256d9d3df205e14f0b380683cf0c4564d580e95b311374ce53988a734c44",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17594,7 +17594,7 @@
       "line": 2343,
       "text": "gh pr merge \"$PR_NUMBER\" --merge --match-head-commit \"$EXPECTED_HEAD\"",
       "hash": "2e574cbf1c56012876152d6f41f740064cd8e8f4a6594d5690c64ba50da3a5df",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17603,7 +17603,7 @@
       "line": 2344,
       "text": "git fetch origin '+refs/heads/integration:refs/remotes/origin/integration'",
       "hash": "2d55256d9d3df205e14f0b380683cf0c4564d580e95b311374ce53988a734c44",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17612,7 +17612,7 @@
       "line": 2345,
       "text": "git merge-base --is-ancestor \"$EXPECTED_HEAD\" origin/integration",
       "hash": "be8fa0a9dee46e7bc831f92a281f6f2893fe24e01c150f9e8e400bb59c943faa",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17621,7 +17621,7 @@
       "line": 2346,
       "text": "echo \"integration contains the reviewed work\"",
       "hash": "bbda23b0c135a1ebbab0b2d5b900323dc7fa071a5dc842f8ec13dcadc2877109",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17630,7 +17630,7 @@
       "line": 2347,
       "text": "if [ \"$CLEANUP\" = yes ]; then",
       "hash": "74346756b0378b84b33ddc479f3f824bdec924c7702b5df73692d1ff171f516d",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17639,7 +17639,7 @@
       "line": 2349,
       "text": "  git switch --detach origin/integration",
       "hash": "4e638d0cef99ea3fdd372da212b707e8591dd11c82dc04a0ba35abc894b34fb6",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17648,7 +17648,7 @@
       "line": 2350,
       "text": "  git branch --merged origin/integration",
       "hash": "e135d2455b457abe19f9a62c5f83b571640bc4ef9b735b87d8ba394d50a926d6",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17657,7 +17657,7 @@
       "line": 2351,
       "text": "  if git show-ref --verify --quiet \"refs/heads/$TASK_BRANCH\"; then",
       "hash": "41d2dc1970abca865b5a5f99ce7a930abce9d9d5f7c96e6d9e50230fda98d7c1",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17666,7 +17666,7 @@
       "line": 2352,
       "text": "    git merge-base --is-ancestor \"$TASK_BRANCH\" origin/integration",
       "hash": "494369b02f1eb7c00b7b556b783559700bb6b51ca9639340091964636739263b",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17675,7 +17675,7 @@
       "line": 2353,
       "text": "    git branch -d \"$TASK_BRANCH\"",
       "hash": "1ac842ca5c1781508b374948b7f54ca6c592a9e358c544704faec32ec46580ab",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17684,7 +17684,7 @@
       "line": 2354,
       "text": "  fi",
       "hash": "b4bdc848109722a383d0a972c6eb859f2abd29565b8c4cc7199e7c9eb708f1b7",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17693,7 +17693,7 @@
       "line": 2355,
       "text": "  remote_head=$(git ls-remote origin \"refs/heads/$TASK_BRANCH\")",
       "hash": "19bdc61c03ef69e594e4a2630f078d54c2a072f1fd57c5a1f9bc36f783fd1779",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17702,7 +17702,7 @@
       "line": 2356,
       "text": "  if [ -n \"$remote_head\" ]; then",
       "hash": "4762e28b454780d6fe255dd8396acaede6013bbde91002ac1aeeee3143e715b1",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17711,7 +17711,7 @@
       "line": 2357,
       "text": "    remote_head=${remote_head%%[[:space:]]*}",
       "hash": "771bf11e8ad933cc35cf4dcd1ab6ce15ba689b7a99a730a5ab44cc1455a7b0e5",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17720,7 +17720,7 @@
       "line": 2358,
       "text": "    git fetch origin \"refs/heads/$TASK_BRANCH\"",
       "hash": "49ace1852ade3789de4719ecdff0498d70096a290e4c4079848b60049f9c8cf9",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17729,7 +17729,7 @@
       "line": 2359,
       "text": "    test \"$(git rev-parse FETCH_HEAD)\" = \"$remote_head\"",
       "hash": "357d18b16d36e013e4b6042e3c7e950f71c7acc00223854c21c43ed08d663c92",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17738,7 +17738,7 @@
       "line": 2360,
       "text": "    git merge-base --is-ancestor \"$remote_head\" origin/integration",
       "hash": "1d3cc190cee30c99e787e48ddde25a46636d59d252e5d198a7372f2b3a58c6fd",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17747,7 +17747,7 @@
       "line": 2362,
       "text": "    git push origin --delete \"$TASK_BRANCH\" --force-with-lease=\"refs/heads/$TASK_BRANCH:$remote_head\"",
       "hash": "327ef554999df9c75713ef1c3e89403cbb3f7394f5114aba5ece01f8b9b304bc",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17756,7 +17756,7 @@
       "line": 2363,
       "text": "  fi",
       "hash": "b4bdc848109722a383d0a972c6eb859f2abd29565b8c4cc7199e7c9eb708f1b7",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17765,7 +17765,7 @@
       "line": 2365,
       "text": "  git worktree prune",
       "hash": "cd2e3e543c2c19462ba06bcbb077477e1f024c8c3c7ce91b639a2a41dcd9ef23",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17774,7 +17774,7 @@
       "line": 2366,
       "text": "fi",
       "hash": "b4bdc848109722a383d0a972c6eb859f2abd29565b8c4cc7199e7c9eb708f1b7",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17783,7 +17783,7 @@
       "line": 2367,
       "text": ")",
       "hash": "ba5ec51d07a4ac0e951608704431d59a02b21a4e951acc10505a8dc407c501ee",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17792,7 +17792,7 @@
       "line": 2368,
       "text": "```",
       "hash": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17801,79 +17801,79 @@
       "line": 2370,
       "text": "The subshell stops on any failure without closing the caller's shell. Merge",
       "hash": "5dc0502d15fbb71bd649ea18731f1cf815ba181faf14218628de2113aa9ccaa6",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "The subshell stops on any failure without closing the caller's shell. Merge",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2371,
       "text": "never requests branch deletion. Containment uses the immutable reviewed SHA,",
       "hash": "1e7614cf9aaf75420120a1815700243e73718e8e3b18f93684ea904ec825e5f7",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "never requests branch deletion. Containment uses the immutable reviewed SHA,",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2372,
       "text": "so it remains checkable if GitHub already removed the source branch. Cleanup",
       "hash": "281fb98354b3c720285714c7ccec39ced52596a393852b8eb0bd7a2f5b6a5582",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "so it remains checkable if GitHub already removed the source branch. Cleanup",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2373,
       "text": "checks local and remote tips separately; a missing branch is already clean.",
       "hash": "afe6225d748a25a78166dad9175ba9ce91da29c008bc5c12f88f9a1d987a2173",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "checks local and remote tips separately; a missing branch is already clean.",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2374,
       "text": "The deletion lease is a compare-and-delete guard, not permission to rewrite",
       "hash": "2805d28bbdd056ad5e35ea195b51ed528234eea54687c29384f6b8ceda8ab119",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "The deletion lease is a compare-and-delete guard, not permission to rewrite",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2375,
       "text": "history. Never use `-D` or an unconditional force push to bypass failed checks.",
       "hash": "4a535a6ba2fb74536336073c35a5554753c19ae5f1a5d9a062e30c1127788af2",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "history. Never use `-D` or an unconditional force push to bypass failed checks.",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2376,
       "text": "If a worktree still holds the task branch, local deletion fails and cleanup",
       "hash": "37a270f171b71212c7293443c1304c4159d8a03016ea405f395d54e63dfc1044",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "If a worktree still holds the task branch, local deletion fails and cleanup",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2377,
       "text": "stops. When cleanup is deferred, both branches and the checkout stay intact.",
       "hash": "0865c7979f69870f1c484d24805da7e84f5bbe00adc654ebc46f1c3e4c698146",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "stops. When cleanup is deferred, both branches and the checkout stay intact.",
+      "reason": "TK-005H moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2379,
       "text": "Disposable review clones and linked worktrees live under the host temporary",
       "hash": "20b161e0c4bb1337c9c49782cc4fc29af6a1f5209137382b3b495dd387a5fc4b",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17882,7 +17882,7 @@
       "line": 2380,
       "text": "directory (`/private/tmp/llm-workbench-<purpose>-<sha>` or the session",
       "hash": "0605dc369e8aeeddddd210ae3daf65ca3b006bdcb53cbf15ee1f3436ea71fa27",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17891,7 +17891,7 @@
       "line": 2381,
       "text": "scratchpad), never inside the canonical checkout, and none is a durable owner.",
       "hash": "f46c6d320f68447197131e1a07723b255f572e6956ac2fd66d37e31970180b03",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17900,7 +17900,7 @@
       "line": 2382,
       "text": "`git worktree prune` at closeout drops the registrations of removed ones; a",
       "hash": "306cafa34966127a983e630a06987ffcb2c24ffa7aae507bdb759804472fca60",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17909,7 +17909,7 @@
       "line": 2383,
       "text": "finished review checkout is removed with `git worktree remove PATH` once its",
       "hash": "c182a15ab9fa59ab5babc8766da5420a46683fddcdcf624e8215994b96d5074d",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17918,7 +17918,7 @@
       "line": 2384,
       "text": "review is recorded, and `git worktree list` shows what still lingers. The",
       "hash": "33477e7f037460cd1857c48a4d85002fe3e879cb60e9831ebaebfb618206d554",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17927,7 +17927,7 @@
       "line": 2385,
       "text": "declared integration branch (`git.integrationBranch` in",
       "hash": "80f7cb6982a4d3b1f8c249ac56361806d4793c4982a7044f3405871f97598fb2",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17936,7 +17936,7 @@
       "line": 2386,
       "text": "`workbench/manifest.json`) needs no local checkout for closeout.",
       "hash": "02e32001dd5df9f77465466a7cff2bfc559219550a95d66758f59ad83d9d38f0",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17945,7 +17945,7 @@
       "line": 2388,
       "text": "Use `node tools/test-branch-closeout.mjs` for a disposable Git demonstration of",
       "hash": "1903d4cf81b7b59c8d8a577c54240d42d3bd725f7eb88c187aff9450e2302870",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17954,7 +17954,7 @@
       "line": 2389,
       "text": "failure preservation, linked worktrees, already-deleted branches, and deferred",
       "hash": "a753ef4d031d4da0f5d35efb05793d084268dff35beb44006a492c2ddd37aa3e",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17963,7 +17963,7 @@
       "line": 2390,
       "text": "cleanup. GitHub merge responses are simulated there; actual integration delivery",
       "hash": "42df836cc44b7981ace43b6a064fa2f5880436f91e88e59a7d5709d209e55d71",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -17972,7 +17972,7 @@
       "line": 2391,
       "text": "still requires the reviewed PR and remote containment read-back.",
       "hash": "949739a094168ec004f7f1f57da8704e2f8cbdbef25a1e5318b72111070be6b4",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -19169,181 +19169,181 @@
       "line": 2564,
       "text": "Task/integration review uses a fresh context and immutable candidate, comparison",
       "hash": "3713ee9b1b1a1be18fa6116981ca56b2e2dcef4911c1b90cf2766cc3bf419a54",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/code-review/SKILL.md",
+      "landedText": "Task/integration review uses a fresh context and immutable candidate, comparison",
+      "reason": "TK-005H moved this line verbatim to the code-review skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2565,
       "text": "base, expected integration tip and named verification. Inspect scope, behavior,",
       "hash": "cb0fb20bd09b068543af43be6d8f0099d7fbd26bfcb07e4610fdb20b4d2a4fd3",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/code-review/SKILL.md",
+      "landedText": "base, expected integration tip and named verification. Inspect scope, behavior,",
+      "reason": "TK-005H moved this line verbatim to the code-review skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2566,
       "text": "recovery, documentation, installed identities and consequential report claims.",
       "hash": "288da6ab58ed974d2b2eddb92a680a7abadda0fd57b00e5f11065bf4b7d2fa18",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/code-review/SKILL.md",
+      "landedText": "recovery, documentation, installed identities and consequential report claims.",
+      "reason": "TK-005H moved this line verbatim to the code-review skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2567,
       "text": "If the target changes, compare and review the resulting candidate as required",
       "hash": "b192d8f440cdc76b2836183d8a465ef369502d54a4c0506bff2213354381ac67",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/code-review/SKILL.md",
+      "landedText": "If the target changes, compare and review the resulting candidate as required",
+      "reason": "TK-005H moved this line verbatim to the code-review skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2568,
       "text": "before combining branches; a prior PASS is not approval of changed content.",
       "hash": "02d1d9abcfd3f018a3d68b9f64887ed2635ea2d6919837d3a96f49f82dba4aa4",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/code-review/SKILL.md",
+      "landedText": "before combining branches; a prior PASS is not approval of changed content.",
+      "reason": "TK-005H moved this line verbatim to the code-review skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2570,
       "text": "Whole-Workbench main-readiness review is separately requested, review-only work.",
       "hash": "9fc677991188e5252a5f277db6bf424811978b9a65d414372ed206bf2b9b7023",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/code-review/SKILL.md",
+      "landedText": "Whole-Workbench main-readiness review is separately requested, review-only work.",
+      "reason": "TK-005H moved this line verbatim to the code-review skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2571,
       "text": "It checks the combined product for drift, open gates, coherent skill composition,",
       "hash": "d71c85b31ef4b52c536ae20fa1a674c0c6e7e437ef66a0b61182679f1bf27c3a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/code-review/SKILL.md",
+      "landedText": "It checks the combined product for drift, open gates, coherent skill composition,",
+      "reason": "TK-005H moved this line verbatim to the code-review skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2572,
       "text": "installed acceptance and semantic ownership. For the Blueprint, require all",
       "hash": "2982dc3bfe099c0fc1470b6d44d061f3ab1e3e42c57e52b67a636d60ee7dcb08",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/code-review/SKILL.md",
+      "landedText": "installed acceptance and semantic ownership. For the Blueprint, require all",
+      "reason": "TK-005H moved this line verbatim to the code-review skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2573,
       "text": "applicable destination sections, no status/version/evidence/catalog material,",
       "hash": "87eb5916bcd70a6c7966e2d3634ecc974831bdae6ef7776f199ef10b6c7b59ca",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/code-review/SKILL.md",
+      "landedText": "applicable destination sections, no status/version/evidence/catalog material,",
+      "reason": "TK-005H moved this line verbatim to the code-review skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2574,
       "text": "only materially relevant active ADR links, lossless removed-claim disposition,",
       "hash": "49f9778b727e4663f3dd5fe003d855299ef5a390e6d112bb5925e50c21b8fa99",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/code-review/SKILL.md",
+      "landedText": "only materially relevant active ADR (`workbench/docs/adr`) links, lossless removed-claim disposition,",
+      "reason": "TK-005H moved this line to the code-review skill, which the Runbook operations index points to for independent review; a core skill names the decision-record collection path wherever it mentions ADRs, so the path is added in parentheses and the rule is unchanged."
     },
     {
       "line": 2575,
       "text": "and root/template agreement. Record an explicit semantic pass/fail verdict;",
       "hash": "414cc512870c45b8c68c6348853f8c46c4c5a8652480b8bb694bfa2fad2a4b3c",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/code-review/SKILL.md",
+      "landedText": "and root/template agreement. Record an explicit semantic pass/fail verdict;",
+      "reason": "TK-005H moved this line verbatim to the code-review skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2576,
       "text": "structure and link checks alone are insufficient. Only Kayden approves/merges main.",
       "hash": "8b4d43b9f9ab5b2012a0ee7d9ebd924588d3e34844d4735eff188fb58a7227fd",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/code-review/SKILL.md",
+      "landedText": "structure and link checks alone are insufficient. Only the owner approves/merges main.",
+      "reason": "TK-005H moved this line to the code-review skill, which the Runbook operations index points to for independent review; a core skill ships to every room, so it names the owner role, and in this repository the owner is Kayden, so the rule is unchanged."
     },
     {
       "line": 2578,
       "text": "For incident claims inspect original call/result pairs, including failed,",
       "hash": "a32601605cc8c531bea6706c0960964e74eae474a8b0ac84233cf70072d7dec1",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/code-review/SKILL.md",
+      "landedText": "For incident claims inspect original call/result pairs, including failed,",
+      "reason": "TK-005H moved this line verbatim to the code-review skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2579,
       "text": "rejected and interrupted calls. Record coverage and missing/truncated evidence.",
       "hash": "2e2c60bb98807ae15e0ab0d00ff8a12b5b76c57252b62e398e285b7cc5677e98",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/code-review/SKILL.md",
+      "landedText": "rejected and interrupted calls. Record coverage and missing/truncated evidence.",
+      "reason": "TK-005H moved this line verbatim to the code-review skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2580,
       "text": "Distinguish not attempted, rejected before execution, executed and failed,",
       "hash": "7b47329e0cd7c064895efab24e4fd88fd8fa41de838d87c47b980de45a3dc438",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/code-review/SKILL.md",
+      "landedText": "Distinguish not attempted, rejected before execution, executed and failed,",
+      "reason": "TK-005H moved this line verbatim to the code-review skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2581,
       "text": "local success and remote acceptance with read-back. A summary's omission is",
       "hash": "48893186e0bd57072832a066196686f77ec877e5a26b74e7af13d6ea8489b2d2",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/code-review/SKILL.md",
+      "landedText": "local success and remote acceptance with read-back. A summary's omission is",
+      "reason": "TK-005H moved this line verbatim to the code-review skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2582,
       "text": "not proof of non-occurrence. Behavioral acceptance separately records actual",
       "hash": "a07cffe2f5ebbddb75096e7e6a63761e58ff26305e9e306a61065c486dc027b2",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/code-review/SKILL.md",
+      "landedText": "not proof of non-occurrence. Behavioral acceptance separately records actual",
+      "reason": "TK-005H moved this line verbatim to the code-review skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2583,
       "text": "provider/version/model, prompt, source/installed hashes and observed skill use;",
       "hash": "df735e7111fbe09c557386057b2b41f26b5f0a48ca4292fd91360eb11f9e27fb",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/code-review/SKILL.md",
+      "landedText": "provider/version/model, prompt, source/installed hashes and observed skill use;",
+      "reason": "TK-005H moved this line verbatim to the code-review skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2584,
       "text": "explicit-path fixtures do not establish ordinary-prompt discovery. Unavailable",
       "hash": "871ad0eff5b0766b8c7102e251fe1bcd28389c73dcafda163d500d2b1b0eab3d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/code-review/SKILL.md",
+      "landedText": "explicit-path fixtures do not establish ordinary-prompt discovery. Unavailable",
+      "reason": "TK-005H moved this line verbatim to the code-review skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2585,
       "text": "checks remain unverified. Repeated controlled trials are needed for reliability.",
       "hash": "c43045671740822a6210600b0c88349917654f04600286511c6658f080ae751f",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/code-review/SKILL.md",
+      "landedText": "checks remain unverified. Repeated controlled trials are needed for reliability.",
+      "reason": "TK-005H moved this line verbatim to the code-review skill, which the Runbook operations index points to for its operation."
     }
   ]
 }

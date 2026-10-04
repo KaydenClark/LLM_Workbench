@@ -7,6 +7,7 @@ provenance:
   - S-01H TK-00Y source inspection and focused red/green checks, 2026-10-01
   - mattpocock/skills pinned comparison at d81f3a183412e71a5b1e84ca21bc1a35eea03a60
   - S-004C TK-005G moved the Runbook and AGENTS lifecycle procedures behind their index pointers into the skill, 2026-10-03
+  - S-004C TK-005H moved the Git route, pull-request and branch completion procedures behind their index pointers into the skill, 2026-10-03
 source_paths:
   - workbench/skills/implement/SKILL.md
   - workbench/skills/implement/references/scenario.md
@@ -49,8 +50,12 @@ acceptance and proof; Spec completion and owner Human QA follow the
 judgment. The skill also carries the
 [work-selection and lifecycle rules](../skills/implement/SKILL.md#work-selection-and-lifecycle)
 and the [Worker procedure](../skills/implement/SKILL.md#worker-selection-implementation-and-hand-back)
-for selection, claim, receipts and close, which the
-[Runbook operations index](../../RUNBOOK.md#operations-index) points to. A blocked push leaves a local recovery point, not verified remote
+for selection, claim, receipts and close, and the
+[version-control procedures](../skills/implement/SKILL.md#version-control-procedures)
+and [branch completion](../skills/implement/SKILL.md#branch-completion) for
+branching, pull requests, merge, containment proof and merged-branch cleanup,
+which the [Runbook operations index](../../RUNBOOK.md#operations-index) points
+to. The room's own Git commands stay in its Runbook. A blocked push leaves a local recovery point, not verified remote
 recovery or delivery.
 
 ## Composition and lineage

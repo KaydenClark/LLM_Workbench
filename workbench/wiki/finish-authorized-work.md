@@ -7,10 +7,12 @@ provenance:
   - Owner direction 2026-09-05 (a passed review and an explicit instruction to push to integration were followed by an unneeded merge question)
   - Owner direction 2026-09-23 (agent-invented owner gates stalled the v4 Specs)
   - Promoted from host auto-memory by the S-00V TK-00I audit, 2026-09-26
+  - S-004C TK-005H moved the branch completion procedure behind its pointer into the implement skill, 2026-10-03
 source_paths:
   - AGENTS.md
+  - workbench/skills/implement/SKILL.md
   - workbench/specs/S-00V-portable-workbench/SPEC.md
-last_verified: 2026-09-26
+last_verified: 2026-10-03
 ---
 
 # Finish authorized work
@@ -26,8 +28,9 @@ untrustworthy because they did not make the finished state legible.
 - **Confirmation stalls.** Asking whether to merge a candidate whose
   separate-context review passed, after being told to push to integration. The
   [AGENTS Branch Completion](../../AGENTS.md#branch-completion) rule already
-  says to open, merge and confirm containment; merged branches are deleted
-  without being asked.
+  says to merge and confirm containment, and the
+  [branch completion procedure](../skills/implement/SKILL.md#branch-completion)
+  it points to opens the PR and deletes merged branches without being asked.
 - **Manufactured owner gates.** Adding an "owner reviews before
   implementation", "owner approval row" or "record the owner QA rule" gate the
   controls do not name. In September 2026 seven v4 Specs sat for days in a loop
