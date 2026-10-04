@@ -179,7 +179,7 @@ export function validateWiki(root, options = {}) {
     if (data.status === 'stale') findings.push(finding('stale-note', `${relative} is marked stale`, { note: relative }));
     if (file.startsWith(designConcepts + path.sep) && basename !== 'README') {
       if (data.type !== 'design-concept') findings.push(finding('invalid-note', `${relative} must declare type design-concept`, { note: relative }));
-      if (!data.authorized_by) findings.push(finding('invalid-note', `${relative} must record authorized_by (the authorizing operation or the owner)`, { note: relative }));
+      if (!data.authorized_by) findings.push(finding('invalid-note', `${relative} must record authorized_by (the operation that authorized this article)`, { note: relative }));
       if (data.parent === undefined) findings.push(finding('invalid-note', `${relative} must declare parent (a route or none)`, { note: relative }));
       for (const section of ['Evidence and Sources', 'History']) {
         if (!new RegExp(`^## ${section}$`, 'm').test(content)) findings.push(finding('invalid-note', `${relative} must end with a ${section} section`, { note: relative }));
