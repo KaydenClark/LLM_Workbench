@@ -103,6 +103,10 @@
     "normalSetup": "lane-install",
     "updates": "workbench-update"
   },
-  "maintainerSkills": [],
+  "maintainerSkills": [
+    "workbench-release",
+    "workbench-room-checks",
+    "workbench-evaluation"
+  ],
   "workbenchId": "WB-4oRql1XWpf6VgsNwHUXW4Q"
 }
