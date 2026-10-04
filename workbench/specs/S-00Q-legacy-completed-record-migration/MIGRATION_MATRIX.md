@@ -29,7 +29,7 @@ Result: **PASS for individual article preparation**, bound to the article hashes
 
 ### S-001: Spec-Centered Progressive Disclosure
 
-Article: [Spec-Centered Progressive Disclosure](../../wiki/design-concepts/spec-S-001-progressive-disclosure.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-001-progressive-disclosure/SPEC.md`.
+Article: [Spec-Centered Progressive Disclosure](../../wiki/features/spec-centered-progressive-disclosure.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-001-progressive-disclosure/SPEC.md`.
 
 Progressive disclosure keeps ordinary entry small: read the agent contract, follow the Runbook and Lexicon routes, then load the assigned capability and its relevant source. A Spec carries the assignment and its proof; the hot Taskboard derives an operational view. Reading an entire historical catalog is not a prerequisite for doing one bounded piece of work.
 
@@ -47,7 +47,7 @@ Consumer snapshot: 2 occurrences. Article semantic review: **passed for core cap
 
 ### S-002: Held-Out Path-Safety Evaluation
 
-Article: [Held-Out Path-Safety Evaluation](../../wiki/design-concepts/spec-S-002-heldout-evaluation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-002-heldout-evaluation/SPEC.md`.
+Article: [Held-Out Path-Safety Evaluation](../../wiki/features/held-out-path-safety-evaluation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-002-heldout-evaluation/SPEC.md`.
 
 The held-out task adds a security-oriented path-handling domain beside the development task. Its grader checks the produced repository and transcript without using the harness condition as an input to the grade. Keeping the held-out seam separate reduces the temptation to optimize only for familiar development fixtures.
 
@@ -65,7 +65,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-004: Dependency-Safe Direct Claiming
 
-Article: [Dependency-Safe Direct Claiming](../../wiki/design-concepts/spec-S-004-safe-direct-claim.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-004-safe-direct-claim/SPEC.md`.
+Article: [Dependency-Safe Direct Claiming](../../wiki/features/dependency-safe-direct-claiming.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-004-safe-direct-claim/SPEC.md`.
 
 Direct claiming must enforce the same dependencies as selection. An agent may already know its assigned Spec and skip a general selector; that shortcut must not let it claim a ready Task whose prerequisite is unfinished.
 

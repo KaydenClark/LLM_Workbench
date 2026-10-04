@@ -240,6 +240,9 @@ One article per delivered capability, named for what it delivers. Each line
 carries a one-line summary beside its link so a reader can choose a page
 without opening it. See [features/README.md](features/README.md).
 
+- [Dependency-Safe Direct Claiming](features/dependency-safe-direct-claiming.md) - direct Task claiming uses the same dependency eligibility as selection and refuses blocked work before changing anything.
+- [Held-Out Path-Safety Evaluation](features/held-out-path-safety-evaluation.md) - a held-out path-handling eval task and grader scoring correctness, scope, verification honesty and doc upkeep separately.
+- [Spec-Centered Progressive Disclosure](features/spec-centered-progressive-disclosure.md) - ordinary entry stays small: contract, routes, then the assigned Spec and its source, with no historical catalog read first.
 - [Wiki Routing, Version Stamps And Safe Source Reads](features/wiki-routing-version-stamps-and-safe-source-reads.md) - the checks that tell a room its Wiki router is unreachable or its Wiki files are stamped with a stale version, and the safe-read boundary continuity input must pass.
 
 ## Individual Spec Articles
@@ -247,9 +250,6 @@ without opening it. See [features/README.md](features/README.md).
 One article per Spec preserves capability knowledge and distinguishes historical
 proof from current behavior. Original records remain intact pending lifecycle gates.
 
-- [Spec-Centered Progressive Disclosure](design-concepts/spec-S-001-progressive-disclosure.md)
-- [Held-Out Path-Safety Evaluation](design-concepts/spec-S-002-heldout-evaluation.md)
-- [Dependency-Safe Direct Claiming](design-concepts/spec-S-004-safe-direct-claim.md)
 - [Consistent Bootstrap Ownership Guidance](design-concepts/spec-S-005-bootstrap-doc-alignment.md)
 - [Evidence-Gated Harness Feedback](design-concepts/spec-S-006-feedback-automation.md)
 - [Import-Safe Feedback Helper Entry](design-concepts/spec-S-007-feedback-helper-import.md)
