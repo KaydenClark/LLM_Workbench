@@ -174,8 +174,8 @@ collection, route it from Wiki MEMORY.md and validate it with the Wiki schema.
 There is no capture CLI. A feature article uses `type: feature`, active status,
 provenance and source_paths naming the Spec's eventual retired route; it explains
 What It Does, Why It Matters, Limits, and Evidence and Sources without copying
-active Task state. Follow [features](workbench/wiki/features/README.md) and
-[Wiki schema](workbench/wiki/SCHEMA.md). `uncaptured-complete` is attention while
+active Task state. Follow [features](../../wiki/features/README.md) and
+[Wiki schema](../../wiki/SCHEMA.md). `uncaptured-complete` is attention while
 the Spec stays complete; missing, invalid or unrouted capture blocks retirement
 and Task/Spec discard. Reconcile surviving claims into their existing owners.
 
