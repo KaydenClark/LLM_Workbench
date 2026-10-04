@@ -5,7 +5,7 @@
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
-**Updated:** 2026-09-30
+**Updated:** 2026-10-04
 **Catalog description:** Give the agent one shared vocabulary and a few design tests for deep modules, seams and change locality before structural work.
 **Blockers:** S-002L Skills draft wiki collection must deliver the draft-wiki location and article template before steps 2-5.
 **Latest event:** Authored from the owner's 2026-09-30 draft-skills-wiki direction.
@@ -38,7 +38,7 @@ The owner wants the skills prototyped as a draft Wiki to expose skills that shou
 
 ## Decisions And Contracts
 
-- This Spec owns `codebase-design` alone. `design-an-interface` (S-002Z), `improve-codebase-architecture` (S-003G), `setup-ts-deep-modules` (S-002S), `tdd` (S-003N) and `domain-modeling` (S-002H) own their own articles and sources; findings about them are recorded here as `overlap`, `dangling` or `stale-name` and routed to those Specs, not resolved here.
+- This Spec owns `codebase-design` alone. `design-an-interface` (S-002Z), `improve-codebase-architecture` (S-003G), `setup-ts-deep-modules` (S-002S), `tdd` (S-003N) and `domain-modeling` (S-004J, which replaced the superseded S-002H) own their own articles and sources; findings about them are recorded here as `overlap`, `dangling` or `stale-name` and routed to those Specs, not resolved here.
 - The article draft is curated context, not instruction authority; source and tests establish Actuality.
 - Steps 1-5 touch only the draft Wiki. Step 6 is the only step that touches a skill lane.
 - Matt Pocock's skills are outside evidence, compared at the pin `mattpocock/skills@d81f3a183412e71a5b1e84ca21bc1a35eea03a60`, not Workbench Canon.
@@ -93,6 +93,7 @@ The draft article is `workbench/wiki/skills-draft/primitives/codebase-design.md`
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-30 | planning | Spec authored from the owner's draft-skills-wiki direction; the skill source and both local copies were read-only inspected at the pre anchor | Planning only; no implementation evidence, no scenario run, no suite run | This Spec authored; no article or skill source changed | S-002L delivery, activation, Task cutting and all six steps remain open |
+| 2026-10-04 | reference repair | The domain-modeling owner changed: S-002H was superseded by Required Domain Modeling Skill (S-004J) | Read S-002H and S-004J at the remap branch; dated observations keep their anchor with the new owner noted | Decisions And Contracts ownership line repointed | Unchanged |
 
 ## Completion Result
 

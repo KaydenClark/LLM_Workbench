@@ -89,18 +89,20 @@ they are authored.
 ## Planned And Optional Skill References
 
 [Domain Modeling: sharpen the Workbench's language as decisions form](skill-domain-modeling.md)
-explains the optional personal method and the proposed Workbench adaptation.
-[Domain Modeling Skill for the Workbench - S-002H](../specs/S-002H-domain-modeling-skill/SPEC.md)
-keeps its required-room versus optional-extension distribution choice open.
-This route does not claim that every room can discover the skill today.
+explains the method and the proposed Workbench adaptation.
+[Required Domain Modeling Skill - S-004J](../specs/S-004J-required-domain-modeling-skill/SPEC.md)
+maps it into every room's skills lane as a required skill, replacing the
+superseded S-002H. Until it is delivered, no room's skills lane carries it.
 
 ## Release And Distribution Routing
 
-The reconciled release scope and complete historical inventory live in
-[S-050](../specs/S-050-workbench-v3-2-0-release/SPEC.md). Follow its named owners
-for skill ownership/compatibility, optional private session transport and the
-configured-host capability floor. This route preserves their open gates without
-copying task state here.
+Current release work lives in the
+[Workbench v4.0.0 Release — S-00O](../specs/S-00O-workbench-v4-0-0-release/SPEC.md).
+The superseded [v3.2.0 release record — S-050](../specs/S-050-workbench-v3-2-0-release/SPEC.md)
+keeps the reconciled v3.2 scope and complete historical inventory, with the
+named owners for skill ownership/compatibility, optional private session
+transport and the configured-host capability floor. This route copies no task
+state here.
 
 ## Grilling Destination Audit Ledger
 
@@ -119,6 +121,9 @@ the reader's procedure, source/revision labels and local serving limits.
 Its saved answers and revision protocol are shared by Claude and Codex. Read
 the existing package before revising it; its working review context does not
 replace this ledger or the underlying decision and delivery owners.
+The Grill Board is the first working form of the
+[Shared Interactive Workbench Board (S-004D)](../specs/S-004D-shared-interactive-board/SPEC.md),
+the destination it grows into.
 
 The question-by-question ledger of every unique grilling question put to the
 owner is a session record, not a Wiki page: it lives in the sessions lane as
