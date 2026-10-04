@@ -7,6 +7,7 @@ provenance:
   - S-002D TK-003B routed article and fresh-context scenario, 2026-09-29
   - Owner-confirmed minimum role and stance buildout (ROLE-1 to ROLE-4), 2026-09-27
   - Workbench-native role entry; no third-party upstream
+  - S-004C TK-005G moved the Runbook and AGENTS lifecycle procedures behind their index pointers into the skill, 2026-10-03
 source_paths:
   - workbench/skills/dispatcher/SKILL.md
   - workbench/specs/S-002D-dispatcher-role/SPEC.md
@@ -17,7 +18,7 @@ source_paths:
   - LEXICON.md
   - AGENTS.md
   - RUNBOOK.md
-last_verified: 2026-09-29
+last_verified: 2026-10-03
 ---
 
 # Dispatcher: deliver one Spec's Tasks as a reviewed candidate
@@ -36,6 +37,8 @@ A role is the assigned scope of responsibility; a stance is the job performed in
 - **Containment route.** Normal containment is a Worker Task-branch merge request into the Spec branch, then a separately reviewed Spec-branch merge request into `integration` under Director coordination ([AGENTS Git Rules](../../AGENTS.md#git-rules); [RUNBOOK Role And Stance Coordination](../../RUNBOOK.md#role-and-stance-coordination)). The v4.0.0 rollout runs under a bootstrap exception: until Spec-branch tooling exists, each Task lands as its own branch and PR straight into `integration`. The Dispatcher inspects the [release owner's exemptions](../specs/S-00O-workbench-v4-0-0-release/SPEC.md#bootstrap-exemptions) before choosing a target and follows them until that owner retires them. A stance change does not waive the separate-context integration review; owner Human QA and `main` promotion stay owner acts.
 - **Whole-Spec verification.** The Dispatcher owns Spec-level integration of Task results and the assembled verification, whether it runs the checks itself or delegates them: the full suite on the committed candidate, the scenario proof the Spec names, self-drift receipts and any check the controls require. What could not be verified is recorded as a gap, never reported as passing.
 - **Hosts and refusals.** If the host cannot run Workers, the Dispatcher reports the missing capability and performs the Tasks sequentially rather than inventing an API. A permission refusal is recorded and reported, not retried in other words or routed around. When no confident next action exists, it records the blocker in the Spec and stops.
+
+The skill also carries the [assembled-review and corrective-return rules](../skills/dispatcher/SKILL.md#assembled-review-and-corrective-return) and the [assembled review procedure](../skills/dispatcher/SKILL.md#dispatcher-and-separate-director-assembled-review) (`report`, `verdict`, finding dispositions and the integration `gate`), which the [Runbook operations index](../../RUNBOOK.md#operations-index) points to.
 
 The operating entry is [the dispatcher skill](../skills/dispatcher/SKILL.md), delivered by the [Dispatcher Role Spec](../specs/S-002D-dispatcher-role/SPEC.md) and discovered in every room through the `workbench/skills` lane and its `.agents/skills` and `.claude/skills` adapters.
 

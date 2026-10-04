@@ -6,6 +6,7 @@ knowledge_role: curated
 provenance:
   - S-01H TK-00Y source inspection and focused red/green checks, 2026-10-01
   - mattpocock/skills pinned comparison at d81f3a183412e71a5b1e84ca21bc1a35eea03a60
+  - S-004C TK-005G moved the Runbook and AGENTS lifecycle procedures behind their index pointers into the skill, 2026-10-03
 source_paths:
   - workbench/skills/implement/SKILL.md
   - workbench/skills/implement/references/scenario.md
@@ -13,7 +14,7 @@ source_paths:
   - workbench/specs/S-01H-implement-skill-rebuild/SPEC.md
   - AGENTS.md
   - RUNBOOK.md
-last_verified: 2026-10-01
+last_verified: 2026-10-03
 ---
 
 # Implement: deliver one assigned Task with checkable proof
@@ -45,7 +46,11 @@ and named pending gates. Normal scoped Task handback is distinct from the
 separate-context review required before integration. Task closure needs scoped
 acceptance and proof; Spec completion and owner Human QA follow the
 [Contract](../../AGENTS.md) and [Runbook](../../RUNBOOK.md), not the skill's own
-judgment. A blocked push leaves a local recovery point, not verified remote
+judgment. The skill also carries the
+[work-selection and lifecycle rules](../skills/implement/SKILL.md#work-selection-and-lifecycle)
+and the [Worker procedure](../skills/implement/SKILL.md#worker-selection-implementation-and-hand-back)
+for selection, claim, receipts and close, which the
+[Runbook operations index](../../RUNBOOK.md#operations-index) points to. A blocked push leaves a local recovery point, not verified remote
 recovery or delivery.
 
 ## Composition and lineage

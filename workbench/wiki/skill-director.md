@@ -7,6 +7,7 @@ provenance:
   - S-002C TK-002Y routed article and fresh-context scenario, 2026-09-29
   - Owner-confirmed minimum role and stance buildout (ROLE-1 to ROLE-4), 2026-09-27
   - Workbench-native role entry; no third-party upstream
+  - S-004C TK-005G moved the Runbook and AGENTS lifecycle procedures behind their index pointers into the skill, 2026-10-03
 source_paths:
   - workbench/skills/director/SKILL.md
   - workbench/specs/S-002C-director-role/SPEC.md
@@ -17,7 +18,7 @@ source_paths:
   - LEXICON.md
   - AGENTS.md
   - RUNBOOK.md
-last_verified: 2026-09-30
+last_verified: 2026-10-03
 ---
 
 # Director: coordinate Spec-bound Dispatchers and integrate reviewed results
@@ -35,6 +36,8 @@ A role is the assigned scope of responsibility; a stance is the job performed in
 - **Landing order.** A cross-Spec dependency becomes an explicit order, recorded in a tracked owner on the integration branch: which lane lands first, which waits, and what the waiting lane must sync before it starts. Work that touches no shared artifact proceeds in parallel.
 - **Separate-context review.** Each assembled candidate is reviewed at its exact immutable SHA by a context that did not build it. A rebased or re-merged tip is a new candidate and needs a fresh review. Neither a Dispatcher nor an implementing Worker approves its own candidate, the Director never approves a candidate it built, and it merges only a passed review. While a room's Task-PR exemption holds, a Task may land as its own reviewed PR; the Director reads the [release owner's exemptions](../specs/S-00O-workbench-v4-0-0-release/SPEC.md#bootstrap-exemptions) rather than assuming the route ([AGENTS Git Rules](../../AGENTS.md#git-rules)).
 - **Owner acts and out-of-scope requests.** Owner Human QA and the merge of integration into `main` stay owner acts. A request for another project, a Spec outside the assignment or a `main` merge is reported to the owner, not performed. A genuine owner choice goes up as options, a recommendation and its cost; a question the owner already settled is not asked again. A permission refusal or a missing host capability is recorded, not routed around.
+
+The skill also carries the [owner closure and reconciliation rules](../skills/director/SKILL.md#owner-closure-and-reconciliation), the [owner Human QA and completion procedure](../skills/director/SKILL.md#owner-human-qa-and-main-before-complete) and the [feature capture, retirement and recovery procedure](../skills/director/SKILL.md#documentation-feature-capture-retirement-and-recovery), which the [Runbook operations index](../../RUNBOOK.md#operations-index) points to. Recording `approve` records only the owner's actual decision; it never makes the Director the approver.
 
 The operating entry is [the director skill](../skills/director/SKILL.md), delivered by the [Director Role Spec](../specs/S-002C-director-role/SPEC.md) and discovered in every room through the `workbench/skills` lane and its `.agents/skills` and `.claude/skills` adapters. [RUNBOOK Role And Stance Coordination](../../RUNBOOK.md#role-and-stance-coordination) owns the operating route.
 

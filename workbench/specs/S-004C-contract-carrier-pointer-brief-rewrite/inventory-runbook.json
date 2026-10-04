@@ -944,7 +944,7 @@
       "line": 136,
       "text": "After resolving the requested scope, compose the smallest behavior already",
       "hash": "b75b74c4c8094198f24a70820409df5cc5e391a556966ec3617c47b0b0028e60",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -953,7 +953,7 @@
       "line": 137,
       "text": "authorized by ordinary language; do not wait for a second skill invocation.",
       "hash": "057236319b49d765b89660f73970c65441b01758bdd5027ac5061170270f4280",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -962,7 +962,7 @@
       "line": 139,
       "text": "| User intent | Behavior and endpoint |",
       "hash": "348d0cd2605e3730bd4546eae7e25471ab91c2d4f6f2ab274d5e87ee55609986",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -971,7 +971,7 @@
       "line": 140,
       "text": "|---|---|",
       "hash": "4199ba454d6d3ae83657120c2bb6bd674eefc0dd7d3cd4cc844171dc6725135b",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -980,7 +980,7 @@
       "line": 141,
       "text": "| Decide or stress-test an idea | `grill-me`, the entry composing `grilling` with `notepad`; save answers/corrections before continuing |",
       "hash": "1bf233d7eee2578544adcf4a632719b619fc4806d97cb6e1a3951ae10fcfd4f9",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -989,7 +989,7 @@
       "line": 142,
       "text": "| Preserve or resume meaningful work | `notepad`; verify live state and returned revision |",
       "hash": "7e87278eb8d7c49a5148bf108f23515d685ccba1b36bd5b78e433e640c23f530",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -998,7 +998,7 @@
       "line": 143,
       "text": "| Reconcile agreed claims | `promote` with `to-docs` and `save`; no implied implementation |",
       "hash": "63e618bb3981e4258f3bf6e2a66094761b9ea1c8719dcc6c25e2c84690e49d92",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1007,7 +1007,7 @@
       "line": 144,
       "text": "| Write specifications only | `to-spec` and needed `to-tasks`; stop at the specified endpoint |",
       "hash": "bfbbeed992764ba8ef36123af4ef85af4513b509160c35135979777ddcffed52",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1016,7 +1016,7 @@
       "line": 145,
       "text": "| Deliver assigned work | `carry` with `implement`, verification, independent integration review and `save` |",
       "hash": "8e573a47d7a22f4ee157a4a23c5594c709035ab557c85f82da3d96f4434c9f20",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1025,7 +1025,7 @@
       "line": 146,
       "text": "| Transfer a job or report to another context | core `handoff`; recipient purpose, instructions and context within assigned role scope |",
       "hash": "923b7f44e125e8442c5746f50ebf25d5dc39f6b784db0e5887514f9bafd06708",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1034,7 +1034,7 @@
       "line": 147,
       "text": "| Review a candidate or readiness | `code-review`; report only, no implementation or main merge |",
       "hash": "686911a78cbe69209d428cb444dcfd108be15b24ee1b80947c3144e38207ba2f",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1043,7 +1043,7 @@
       "line": 149,
       "text": "Every helper inherits the caller's narrower endpoint. Mention is not invocation",
       "hash": "e64e5baca5cc2fe5bd779b3b24cbf3e070b7cb8f828f463b07d49e5a2a5eea5d",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1052,7 +1052,7 @@
       "line": 150,
       "text": "and invocation is not new authority. Optional routers and historical extension",
       "hash": "7f20e589d2b976428eb3031b338b00b1639b031061f5fe7c0a888c31f590e243",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1061,7 +1061,7 @@
       "line": 151,
       "text": "skills are not prerequisites. For meaningful work, create/resume a JSON note,",
       "hash": "bb305a9f81a1106362cca5b3e34a60d6059ea6e12f5504159e382f5bc66cc7cf",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1070,7 +1070,7 @@
       "line": 152,
       "text": "read its revision, verify Actuality and correct stale state before dependent",
       "hash": "5d2202df2858aa56472c214a815ac518ba6e348974eef74f121236085e2c7699",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1079,7 +1079,7 @@
       "line": 153,
       "text": "work. Confirm successful append/current results after material changes and",
       "hash": "118bac4dc6615c4cd526d6c1634fec31fece21166cb49998459b38701ab8b76d",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1088,7 +1088,7 @@
       "line": 154,
       "text": "validate/read back before voluntary pause or handoff. Runtime revision, privacy",
       "hash": "2867a1e3f8786d018861752b68136d8a3ef7994e6732f9d1e44497666eaf9f0a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1097,7 +1097,7 @@
       "line": 155,
       "text": "and dependency checks enforce those operations; host-native interception of",
       "hash": "8cd15ee9f2b0e6296cdec410024f4fd7bf54b90a2685968f5d0bedc1c0a0ebed",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1106,7 +1106,7 @@
       "line": 156,
       "text": "arbitrary agent actions is not claimed.",
       "hash": "bf196b625b7114544242bf0bca9fb616620135810aaad93a04cf9c81b658d32e",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -6632,7 +6632,7 @@
       "line": 891,
       "text": "Use this sequence for one assigned Spec and its Task records. Examples name",
       "hash": "81d72042ed294c2c7389becf21164c3dc74c53b8ce16d30d24e3ffa0d5b066cb",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -6641,7 +6641,7 @@
       "line": 892,
       "text": "S-001/TK-001; substitute the actual IDs and quoted values. These are separate",
       "hash": "60f6b328b4f081b01c47e83a2c639079a3d05b4875a1d0a89f44270aae0926fe",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -6650,7 +6650,7 @@
       "line": 893,
       "text": "role checkpoints, not one unattended script: a Worker supplies self-check,",
       "hash": "ca5243cabae1e63bf87688883c72104c573f4c245b3b71fc4839977f7b749b53",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -6659,7 +6659,7 @@
       "line": 894,
       "text": "the Dispatcher owns whole-Spec QA, a separate Director reviews the immutable",
       "hash": "11767507302ac700b6885bfcd9ecaac31044082f55f076065ee18e812134ab81",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -6668,7 +6668,7 @@
       "line": 895,
       "text": "candidate, and only the owner supplies Human QA approval and main promotion.",
       "hash": "69865338f3901fb06766bb4ee4364ab90c48605235a40cc65c3e1f6e5fc9e08a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -6677,7 +6677,7 @@
       "line": 896,
       "text": "The runnable mechanical example is `node tools/test-workbench-round-trip.mjs`;",
       "hash": "9156fc74b02bd9cb3ec4f0175ac85f36c35452b7c6719f3d1d4bf5c5911cd91c",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -6686,7 +6686,7 @@
       "line": 897,
       "text": "its reviewer, owner and main promotion are explicitly disposable fixture data.",
       "hash": "7965c0d93f4f095b3ea35bf622688023028ad39f7b1fe4653e8a308821b0c941",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -6695,1870 +6695,1870 @@
       "line": 901,
       "text": "Ordinary entry is AGENTS -> this Runbook -> Lexicon Task Routing -> the assigned",
       "hash": "0b0d530d495103f9c8969e8420739bc3b2e8212c2bba3fb1df21f327b4c100b6",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "Ordinary entry is AGENTS -> the Runbook -> Lexicon Task Routing -> the assigned",
+      "reason": "TK-005G moved this line to the implement skill. Moved out of the Runbook, \"this Runbook\" becomes \"the Runbook\"."
     },
     {
       "line": 902,
       "text": "Spec and Task. Verify root, branch, remote, upstream and dirty state first.",
       "hash": "fe0e3e6d8a2bb692e8065a2feae930b9259b2736e5c2bc27b2e0e0688706f7ed",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "Spec and Task. Verify root, branch, remote, upstream and dirty state first.",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 903,
       "text": "Preserve unrelated work and obey the assigned stance/file lane. For ordinary",
       "hash": "e482e2238c7661211dde8430b35a26c895f1b0bbbbe5ac4a036d7b76f4088f5d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "Preserve unrelated work and obey the assigned stance/file lane. For ordinary",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 904,
       "text": "pickup run these read-only commands before claiming:",
       "hash": "1aee2ec8c718dace67747e84f2e703ac72a50511d316ddbc117c60e905c3195b",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "pickup run these read-only commands before claiming:",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 906,
       "text": "```bash",
       "hash": "ad332335cfaa348c5bd715c3479844622270d5f7389ae070b81b135d521a221a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "```bash",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 907,
       "text": "node workbench/tools/spec-workbench.mjs doctor",
       "hash": "fed358ed281350416a6d4c01803351cd893132be019e0652f09662b81ceac54e",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs doctor",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 908,
       "text": "node workbench/tools/spec-workbench.mjs next --json",
       "hash": "f0b69ca85b9d31a2c1a75e6f27c42bbddc49114cbe529ee9131c98e3b8423d27",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs next --json",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 909,
       "text": "node workbench/tools/spec-workbench.mjs show S-001",
       "hash": "25231ad4787858221fea675b65ade12d153bf937dc8bdc4e383e19b9caad2845",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs show S-001",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 910,
       "text": "```",
       "hash": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "```",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 912,
       "text": "Read the returned TASK.md, destination, blockers and acceptance. `next` offers",
       "hash": "3b3964853f1b39eda7f3fbe4cf1e59eb554f793003b8e48306441391ef50116a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "Read the returned TASK.md, destination, blockers and acceptance. `next` offers",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 913,
       "text": "ready eligible work; an existing in-progress assignment resumes from its record",
       "hash": "046276447883a1e359ac8eccbe1f737fa4e23a7decb608a01029aad4d5f62527",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "ready eligible work; an existing in-progress assignment resumes from its record",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 914,
       "text": "and `show`, not a second claim. `claim` takes a Spec ID and selects one eligible",
       "hash": "3fd9cc2fe67340f91b4109895b5bf3d1e036a2ef3d79e057372386ffaa7d1a5d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "and `show`, not a second claim. `claim` takes a Spec ID and selects one eligible",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 915,
       "text": "Task; it does not take a TASK.md path. Plain Spec blockers require complete or",
       "hash": "f77394451a86fb5d35424ef8454e76827f526456343e0805b51febec897e246a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "Task; it does not take a TASK.md path. Plain Spec blockers require complete or",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 916,
       "text": "superseded; plain Task blockers require done. `S-001:delivered` instead requires",
       "hash": "3ea5156ea10b70299872750d1952dbd91a12786c74a49ac7811eeae6b1969017",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "superseded; plain Task blockers require done. `S-001:delivered` instead requires",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 917,
       "text": "all prerequisite Tasks done, checked acceptance and a content-bound PASS whose",
       "hash": "4c2fec65ac154dd8a0a2cc09d087d2bad9c8b09d3b55da91ea015fd69427dba9",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "all prerequisite Tasks done, checked acceptance and a content-bound PASS whose",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 918,
       "text": "candidate and committed Spec/Task content are contained in integration. Fetch",
       "hash": "8a8383b8f6c67674ec3c43d8007b427ff7ba65fcc36d4709184e49ac8c91484e",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "candidate and committed Spec/Task content are contained in integration. Fetch",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 919,
       "text": "integration before relying on that local-ref check. `owner:<decision>` is never",
       "hash": "449a3ea8e8d81535816c0b7fdb7d97d598b32085a8754727eea9e8e338f9f3ac",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "integration before relying on that local-ref check. `owner:<decision>` is never",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 920,
       "text": "automatically satisfied; remove it only after the authorized decision resolves",
       "hash": "caa39cfc868a548410a90a00df35ca411e3d3a188e397f9e612546f8aead33b2",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "automatically satisfied; remove it only after the authorized decision resolves",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 921,
       "text": "it. Investigate `blocked-without-blocker` and `unknown-blocker-qualifier` rather",
       "hash": "b5662742a6801275b8c4e726f39d7e4e622c8cc9ed9852feb08f42b0de78bdb7",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "it. Investigate `blocked-without-blocker` and `unknown-blocker-qualifier` rather",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 922,
       "text": "than bypassing them.",
       "hash": "babfb1dc0f116fbf0565c0f75320e47da8862f25dd18fa28b1972962a50607ba",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "than bypassing them.",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 925,
       "text": "`next --review --json` is a separate read-only review offering. Its `review`",
       "hash": "37ead9e62af3a675dc83a6eef998a33209cd11aea6b1b02a67c74f3208954b2c",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "`next --review --json` is a separate read-only review offering. Its `review`",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 926,
       "text": "array contains eligible Spec and Task cards; `excluded` keeps dependency,",
       "hash": "2990b86c1a953d9cb18a56add2e4ed6240870a67f1e392c5d1fd14d26770113a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "array contains eligible Spec and Task cards; `excluded` keeps dependency,",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 927,
       "text": "capability, competing-claim and child-gate exclusions visible. It uses the",
       "hash": "3096325fd911cc636837af33fe1a7488af04a5718648c73b5bbbd6c7f40bad3a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "capability, competing-claim and child-gate exclusions visible. It uses the",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 928,
       "text": "source-qualified identity, so legacy numeric Task labels remain Spec-scoped.",
       "hash": "15e03ce34c3aae46f50e8eee7bb0ede1cd6848a56996e0dca5e2662f65ae4f2a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "source-qualified identity, so legacy numeric Task labels remain Spec-scoped.",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 929,
       "text": "Default `next` still offers only eligible To-do work. Neither review visibility",
       "hash": "c72d7f86c15b67900f89b0bb8091945199067bca7c415d9afd9670bf4f599032",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "Default `next` still offers only eligible To-do work. Neither review visibility",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 930,
       "text": "nor eligibility records a verdict, independent approval or owner Human QA.",
       "hash": "bd6098685f002a9beec40f88d27d4b816cb2ec0d7fb4c4a164c059f0bf870911",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "nor eligibility records a verdict, independent approval or owner Human QA.",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 931,
       "text": "`--review` is accepted only by `next`; it never turns `claim` into a review action.",
       "hash": "a74f4a9971104073c26298571b635678663717de2ce7707ee764d9d6a9110e2a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "`--review` is accepted only by `next`; it never turns `claim` into a review action.",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 933,
       "text": "A minimal Backlog Spec needs its matching title (which may carry the one-sentence",
       "hash": "95bb318ba94ad8d36203c332e7bef398bb21ea93b52694bbd1f769f715e0e55d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "A minimal Backlog Spec needs its matching title (which may carry the one-sentence",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 934,
       "text": "intent), `Spec ID`, and explicit `Status: planned`. Other metadata and the",
       "hash": "b991368e91cd88b351e80fbb5867ea185c7d2bbb9a993d6e01ae7069e51bf158",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "intent), `Spec ID`, and explicit `Status: planned`. Other metadata and the",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 935,
       "text": "Task set may be absent. Unknown priority remains null and sorts after known",
       "hash": "8c797013dc0d06cc1caaf4d7496d637498cfb5e988e950cf7bd4a94f0eda14f2",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "Task set may be absent. Unknown priority remains null and sorts after known",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 936,
       "text": "priorities in JSON; missing people/dates are not invented. Existing pre-cut",
       "hash": "dff9631dae3eb1bbaf0685ea59e90a910b12d9245e366a8e39224e9fc907540a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "priorities in JSON; missing people/dates are not invented. Existing pre-cut",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 937,
       "text": "Tasks are preserved. Before activation, expand the packet to the full active",
       "hash": "de5880c03fcaed649848720e242a4bd2b7045fad0aa041707e8545df07058bfc",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "Tasks are preserved. Before activation, expand the packet to the full active",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 938,
       "text": "Spec contract and supply executable Tasks. The default Markdown board remains",
       "hash": "16919073cd86f673a9c07c7c4df8f46d0dfe27f10d6e23a671528120ddbf5513",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "Spec contract and supply executable Tasks. The default Markdown board remains",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 939,
       "text": "in use; `render --format json` still writes only `TASKBOARD.preview.json`.",
       "hash": "3eea7b1be028de8851bd0344a6198600dede5ba5ef3b3aee6afaea197bc25c67",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "in use; `render --format json` still writes only `TASKBOARD.preview.json`.",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 941,
       "text": "For an active table-backed Spec, this one-shot migration precedes its first",
       "hash": "1764cbdb45972eb3f8b5ce9ba328ecfd09f1816fec267c060b18e2e316e3ba1e",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "For an active table-backed Spec, this one-shot migration precedes its first",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 942,
       "text": "record-backed claim. Omit conversion when `tasks/` already exists. It converts",
       "hash": "7847362751cc4836fc389393f18d76c145f2f34cf0fc2f2d5ed50eafecca1643",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "record-backed claim. Omit conversion when `tasks/` already exists. It converts",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 943,
       "text": "unfinished rows, retaining done rows as history; a second conversion refuses.",
       "hash": "a588b5a81486f032b6dd8a65b6a63029454ab2c9cb41ded6826914223800a8b8",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "unfinished rows, retaining done rows as history; a second conversion refuses.",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 944,
       "text": "A planned Spec needs `--activate` only after its accepted plan is executable.",
       "hash": "346659ca4523ea99f23fdbbe4cd4a344d150fc2d6e5a79957e3011f713de02ba",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "A planned Spec needs `--activate` only after its accepted plan is executable.",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 945,
       "text": "These migration alternatives are not steps to repeat on an already claimed Spec:",
       "hash": "082de93dcb7c435304c93c2811d6d1678388bb7d7e771906ec4865b572d0a68f",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "These migration alternatives are not steps to repeat on an already claimed Spec:",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 947,
       "text": "```bash",
       "hash": "ad332335cfaa348c5bd715c3479844622270d5f7389ae070b81b135d521a221a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "```bash",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 948,
       "text": "node workbench/tools/spec-workbench.mjs convert-tasks S-001",
       "hash": "6e9ba0a87a79e45e3a110973cea18bbb98f531ae1a00e443c056595b90c554eb",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs convert-tasks S-001",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 949,
       "text": "node workbench/tools/spec-workbench.mjs convert-tasks S-001 --activate",
       "hash": "d42e44b7b0671c8372d28640f122373bc9b045379cbbfcf406dc594c6caf6f18",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs convert-tasks S-001 --activate",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 950,
       "text": "```",
       "hash": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "```",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 952,
       "text": "Commit the ready packet before the coordinated claim. From a clean Task branch,",
       "hash": "f3e5956b34284458e328f0932a5727fa637e4dcb6b99a2676ab8a730c910ec8b",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "Commit the ready packet before the coordinated claim. From a clean Task branch,",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 953,
       "text": "claim publishes its record/projection commit to the configured remote. `--local`",
       "hash": "a69e6737b3c914ca58805e798845795930c13437d2c6c9d084c98863a74904ca",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "claim publishes its record/projection commit to the configured remote. `--local`",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 954,
       "text": "is an explicit local-only alternative, not remote recovery proof.",
       "hash": "a070043ca5a5a0324caa9ec41d1b008d016e0f6f58e64777af6686529ca280bd",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "is an explicit local-only alternative, not remote recovery proof.",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 956,
       "text": "```bash",
       "hash": "ad332335cfaa348c5bd715c3479844622270d5f7389ae070b81b135d521a221a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "```bash",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 957,
       "text": "node workbench/tools/spec-workbench.mjs claim S-001 --agent codex",
       "hash": "c5552bb208c582a6bd88fe853eb62ac4b58026b916c8c494420beab9d9db2a70",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs claim S-001 --agent codex",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 958,
       "text": "```",
       "hash": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "```",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 960,
       "text": "Implement red/green at the product seam; preserve failed-attempt proof and",
       "hash": "c87cd0bddfe548bba06094b9a7a983d68195497ba77b47f92f20134cc4e5a0f5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "Implement red/green at the product seam; preserve failed-attempt proof and",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 961,
       "text": "unmerged results. Record meaningful checks while the Task is in progress:",
       "hash": "6a684f87069bc9fad763a91e28557ca22bdc9893e185a0196607ddc31652a164",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "unmerged results. Record meaningful checks while the Task is in progress:",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 963,
       "text": "```bash",
       "hash": "ad332335cfaa348c5bd715c3479844622270d5f7389ae070b81b135d521a221a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "```bash",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 964,
       "text": "node workbench/tools/spec-workbench.mjs receipt S-001 --task TK-001 \\",
       "hash": "4e5bef50d90ebf6ae32fd6aeffa15b06dd284b89cccde2158dd96f0292542f17",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs receipt S-001 --task TK-001 \\",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 965,
       "text": "  --tests \"[TESTS RUN AND RESULT]\" --docs \"[DOCS TOUCHED OR none]\" --remaining-gap \"[GAP OR none]\"",
       "hash": "54ca402e6e3168e0e2e53a76546a5a5f50419f0ee358ae8e245b293a961c7313",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "--tests \"[TESTS RUN AND RESULT]\" --docs \"[DOCS TOUCHED OR none]\" --remaining-gap \"[GAP OR none]\"",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 966,
       "text": "```",
       "hash": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "```",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 968,
       "text": "Self-check acceptance, actual behavior, documentation and remaining gaps; hand",
       "hash": "8c848e6853e72410b6f101cd37ca9483e70be1caa0f114dcf1437a25dc9d1d6c",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "Self-check acceptance, actual behavior, documentation and remaining gaps; hand",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 969,
       "text": "those results to the Dispatcher. Normal Task hand-back has no separate Task",
       "hash": "67c92f3c873f5b93b7916d0ab45d01dcbf7dd1f56bc30e10ad73146071f0371d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "those results to the Dispatcher. Normal Task hand-back has no separate Task",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 970,
       "text": "approval ceremony. Commit and push the verified candidate and Receipt before",
       "hash": "07be452366b3604eb1267f5dbda88e2b9bf1774148f84b775188d49f98a4e972",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "approval ceremony. Commit and push the verified candidate and Receipt before",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 971,
       "text": "close; compare local HEAD to the actual remote branch tip. `close` refuses dirty",
       "hash": "2b296b62ae4fb9288ca4bd179379c3e49c1b08307ae483598acc272e6cb1a0a9",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "close; compare local HEAD to the actual remote branch tip. `close` refuses dirty",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 972,
       "text": "or unpushed work unless `--git-state-reason` records the truthful exception; it",
       "hash": "46562258441745558c2827d3045e416349f9145ac8ca0a56042035219691c723",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "or unpushed work unless `--git-state-reason` records the truthful exception; it",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 973,
       "text": "closes the first in-progress Task, appends its final Receipt and Spec evidence,",
       "hash": "d1c0b740ba8399d060a80685ff5f9a7a6e26d5063663c3dfca6d4d0783182b81",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "closes the first in-progress Task, appends its final Receipt and Spec evidence,",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 974,
       "text": "and never selects a ready Task or completes the Spec. One writer must confirm",
       "hash": "bcdf5111199c2b3a2c28ce4790e41f74a682b788e216bee3bbaea02a0d616fea",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "and never selects a ready Task or completes the Spec. One writer must confirm",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 975,
       "text": "which record will close. A Receipt records Git/test facts, not approval.",
       "hash": "fbe5dd9784c5841ee7964303348d77ce361fdf64c7071665caa7200d45f32608",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "which record will close. A Receipt records Git/test facts, not approval.",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 977,
       "text": "```bash",
       "hash": "ad332335cfaa348c5bd715c3479844622270d5f7389ae070b81b135d521a221a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "```bash",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 978,
       "text": "node workbench/tools/spec-workbench.mjs close S-001 \\",
       "hash": "a1323de91a176a62a18153934f830f774bdbc2bebb34f9caf73e34922d8234a0",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs close S-001 \\",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 979,
       "text": "  --proof \"[NAMED VERIFICATION]\" \\",
       "hash": "5e1389b68f2fb93fe61faf973fcde37b6fb8005f9a2ef1cd78a1a049a00d73c6",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "--proof \"[NAMED VERIFICATION]\" \\",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 980,
       "text": "  --docs \"[DOCS UPDATED OR Docs checked; no update needed + reason]\" \\",
       "hash": "dbfea07775dfe50fc3e6ea83baf9d4b1da9311994f3e72a54bcb4a52322c9465",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "--docs \"[DOCS UPDATED OR Docs checked; no update needed + reason]\" \\",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 981,
       "text": "  --remaining-gap \"[GAP OR none]\"",
       "hash": "9b5f5c24586f6da411a4be825b15a66abe836ee412933045fa1120f9c5cef8ec",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "--remaining-gap \"[GAP OR none]\"",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 982,
       "text": "node workbench/tools/spec-workbench.mjs render",
       "hash": "b62134461a3d05550fd1d71af602e060520fd344aa0f73a31bf456ce3b74499a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs render",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 983,
       "text": "node workbench/tools/spec-workbench.mjs doctor",
       "hash": "fed358ed281350416a6d4c01803351cd893132be019e0652f09662b81ceac54e",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs doctor",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 984,
       "text": "```",
       "hash": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "```",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 986,
       "text": "`close` reads repository state before it writes anything and refuses a claim",
       "hash": "62c61ab3337338722a5fba97a52da30dca2831d15fac77a3635c1457526db192",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "`close` reads repository state before it writes anything and refuses a claim",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 987,
       "text": "the repository contradicts, naming what it found: `dirty-tree` lists anything",
       "hash": "aefd58b827a374764774e1f9c68026c3389a8a067dc6c85174c758f8e5c24950",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "the repository contradicts, naming what it found: `dirty-tree` lists anything",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 988,
       "text": "`git status --porcelain` shows, untracked files included, and `unpushed` means",
       "hash": "10fd57cec82cf746db260f7d972ca6f707f03a310685d6d148d69f428fdf75da",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "`git status --porcelain` shows, untracked files included, and `unpushed` means",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 989,
       "text": "no remote-tracking ref contains HEAD, naming the upstream distance or the",
       "hash": "2a18146950bb3fa282c059affc864d3271c3f0581640d3b17bb3500b6933de7f",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "no remote-tracking ref contains HEAD, naming the upstream distance or the",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 990,
       "text": "missing upstream, gone upstream, detached HEAD or absent remote. The refusal",
       "hash": "70052e3167f9de786fc1b6baff0e2d27dd8b3e1a3290d5de664fd9fd4839594f",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "missing upstream, gone upstream, detached HEAD or absent remote. The refusal",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 991,
       "text": "names its own remediation: commit and push, or rerun with",
       "hash": "ad148af278e8bef9ab4700d840ae5047cac5379c0f211649fcaba861227dd34f",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "names its own remediation: commit and push, or rerun with",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 992,
       "text": "`--git-state-reason \"<why>\"` (one line) when the state is a truthful",
       "hash": "f81b92b7747f700a9614f8770de507409fc1c3f35c25c0708e142d399aeb63f0",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "`--git-state-reason \"<why>\"` (one line) when the state is a truthful",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 993,
       "text": "exception. The observed state and the reason are then appended to the",
       "hash": "83499cdeb830be4b66a051b1472cfc76565530ce215754969d68ce3f2087a661",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "exception. The observed state and the reason are then appended to the",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 994,
       "text": "remaining gap that the final Receipt row and the Spec evidence row record, so",
       "hash": "5b42680b65fee3c37f9a25dc2de1e12458f47373d5ed7f4d039935fe6f7f9f8b",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "remaining gap that the final Receipt row and the Spec evidence row record, so",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 995,
       "text": "a reviewer reads what was waived. A reason on a clean, pushed tree is refused",
       "hash": "45e2f15a785e76019145115918bf1ab51a48f827ea796cbb7feb07aa2bba7a07",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "a reviewer reads what was waived. A reason on a clean, pushed tree is refused",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 996,
       "text": "rather than dropped; where Git state is unknown (no Git, not a repository)",
       "hash": "e1834ed1588fa79cbc1da4ba806c2e11506ab4a911fd60d56d2b3538f9b4bab9",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "rather than dropped; where Git state is unknown (no Git, not a repository)",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 997,
       "text": "nothing is refused and a given reason is recorded beside `unknown`. `close`",
       "hash": "2eb4e36993fd6795fb54d784d47bf85ec9b4f6ce7a28960979081914bbaef477",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "nothing is refused and a given reason is recorded beside `unknown`. `close`",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 998,
       "text": "also refuses a Spec with no in-progress Task (`has no in-progress task to",
       "hash": "f3d66c6de292a162164511d1d1c1be5ce69d3ff2c3a57f8f55588f9f9803b5cb",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "also refuses a Spec with no in-progress Task (`has no in-progress task to",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 999,
       "text": "close; claim one first`) rather than closing a ready Task nobody claimed.",
       "hash": "7775c7185ee94f0a3aecdb6958e9e39ac832890511c86305d7c9ca3eaaf0dcb5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "close; claim one first`) rather than closing a ready Task nobody claimed.",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1000,
       "text": "`close` takes a Spec ID: `close TK-###` refuses, because the standalone",
       "hash": "7a9806258edc250c8a9c7794cdaed6b56624cc56817cbf1a7a79224911082176",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "`close` takes a Spec ID: `close TK-###` refuses, because the standalone",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1001,
       "text": "corrective Task anchored to a Wiki claim is retired.",
       "hash": "667762d3ef66f1d8579788e9b5fb2681e15b83e08b92c6c1be9a90a7e5368756",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "corrective Task anchored to a Wiki claim is retired.",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1003,
       "text": "Commit and publish the closure evidence and projections too; verify the remote",
       "hash": "d5cb9baf5c57d967e51d8b580508431b4302f653933d0296677f80b4ff597e88",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "Commit and publish the closure evidence and projections too; verify the remote",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1004,
       "text": "SHA. TASK.md owns Task state/proof, SPEC.md owns requirements/acceptance/evidence",
       "hash": "5b6edb8fe16d60b5ac51164af008e62f2559a2685fca8d6867ef29189f20d6ea",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "SHA. TASK.md owns Task state/proof, SPEC.md owns requirements/acceptance/evidence",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1005,
       "text": "and its next gate, and generated TASKBOARD.md/CATALOG.md cannot satisfy either.",
       "hash": "07b2a4b9c641bfd788fe0b6e2dac561c1cdceaa6242876ebc876aabc05f63a8d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/implement/SKILL.md",
+      "landedText": "and its next gate, and generated TASKBOARD.md/CATALOG.md cannot satisfy either.",
+      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1009,
       "text": "The Dispatcher assembles all Task results, checked acceptance, real Completion",
       "hash": "0caeff02622011f3abdc47d55c6bd5d7ae5f38e0cb80f4f5d3e991673b1272fa",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "The Dispatcher assembles all Task results, checked acceptance, real Completion",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1010,
       "text": "Result, documentation and remaining limitations and performs whole-Spec QA.",
       "hash": "3dadd1d450ae3f9c8ce16a90bb0bc977a780b3bf3ced556ef1df2e67d922dd99",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "Result, documentation and remaining limitations and performs whole-Spec QA.",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1011,
       "text": "The separate Director inspects that immutable candidate and its report:",
       "hash": "6343733114656930a9143405f8ba59b1e8b85d3e923cb2b7bd4b65188c10f1ce",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "The separate Director inspects that immutable candidate and its report:",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1013,
       "text": "```bash",
       "hash": "ad332335cfaa348c5bd715c3479844622270d5f7389ae070b81b135d521a221a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "```bash",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1014,
       "text": "node workbench/tools/spec-workbench.mjs report S-001 --candidate \"[SHA]\"",
       "hash": "9196a45d1e21b80e37f1266e96e8a2df816ea8cc71d591ed16df5a607b98e788",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs report S-001 --candidate \"[SHA]\"",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1015,
       "text": "node workbench/tools/spec-workbench.mjs report S-001 --candidate \"[SHA]\" --json",
       "hash": "3ad69e5476445494cb60a82f214c2a5ac74919016d1c205fa15666c2e3afbaa0",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs report S-001 --candidate \"[SHA]\" --json",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1016,
       "text": "```",
       "hash": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "```",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1018,
       "text": "An incomplete report is useful evidence, not approval. Record the actual result",
       "hash": "ac16b58a333f8f9259a8d7e65ec6e526916f6943b1a0721a4079052be77e4a06",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "An incomplete report is useful evidence, not approval. Record the actual result",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1019,
       "text": "using the `specDigest` from the inspected report. These pass/fail alternatives",
       "hash": "a5b7c6f11e64b1751bd70708d7d3c002df26e3220dee4901045a651ae84817b7",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "using the `specDigest` from the inspected report. These pass/fail alternatives",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1020,
       "text": "belong to the reviewer; do not run both for one result:",
       "hash": "2dfbef25f4550bbeb0509bf1b500cf5ef1a98d0f19fa7a0fff95c03b1b92c818",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "belong to the reviewer; do not run both for one result:",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1022,
       "text": "```bash",
       "hash": "ad332335cfaa348c5bd715c3479844622270d5f7389ae070b81b135d521a221a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "```bash",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1023,
       "text": "node workbench/tools/spec-workbench.mjs verdict S-001 --candidate \"[SHA]\" --digest \"[DIGEST]\" --result fail \\",
       "hash": "5ff332cde770019aa5f11b63e1d9048e10c94b6c356ad20f8f307e2c3167d027",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs verdict S-001 --candidate \"[SHA]\" --digest \"[DIGEST]\" --result fail \\",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1024,
       "text": "  --findings \"[FINDINGS]\" --reviewer \"[SEPARATE CONTEXT, MODEL AND MODE]\"",
       "hash": "63d16e2938492e0abb791d8ff8604e42d70bca65e03c316a770e23e713621f99",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "--findings \"[FINDINGS]\" --reviewer \"[SEPARATE CONTEXT, MODEL AND MODE]\"",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1025,
       "text": "node workbench/tools/spec-workbench.mjs verdict S-001 --candidate \"[SHA]\" --digest \"[DIGEST]\" --result pass \\",
       "hash": "f0ce5966e7487d07ff2f3c4232071e5d3aa122097c44fb1c2faff296fae3b447",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs verdict S-001 --candidate \"[SHA]\" --digest \"[DIGEST]\" --result pass \\",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1026,
       "text": "  --findings \"[FINDINGS OR none]\" --reviewer \"[SEPARATE CONTEXT, MODEL AND MODE]\"",
       "hash": "cb7d18a7c6de2e4dd410facd3fb67efcd9c8a8a0e8171f0de8258dbf5f325109",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "--findings \"[FINDINGS OR none]\" --reviewer \"[SEPARATE CONTEXT, MODEL AND MODE]\"",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1027,
       "text": "```",
       "hash": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "```",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1029,
       "text": "The candidate must exist; it need not equal HEAD. Always supply the inspected",
       "hash": "702a8a40691d7d32b85ccda8c199453f5b2003089d10b95aa95cb7f9d0b3549b",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "The candidate must exist; it need not equal HEAD. Always supply the inspected",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1030,
       "text": "digest: a changed substantive Spec/Task body refuses an old digest before a",
       "hash": "6f50f033f5b081c71ad9d481a3a1477cd95f8179cfad51b3fba12ba9bc8eff02",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "digest: a changed substantive Spec/Task body refuses an old digest before a",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1031,
       "text": "write. Receipt runs and administrative headers are excluded narrowly; checked",
       "hash": "d493439df653e896fc6570b6246da5300b95046c5a784f4d6dcb9ff1e82bf0cd",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "write. Receipt runs and administrative headers are excluded narrowly; checked",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1032,
       "text": "acceptance, Task status/proof and decisions remain bound. A green test or a",
       "hash": "47e434718f0c4ec0ae6853ec6600521a8d8b4502b006b2e9890e3730fcf955b8",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "acceptance, Task status/proof and decisions remain bound. A green test or a",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1033,
       "text": "Dispatcher's self-review cannot substitute for independent review.",
       "hash": "fec4d510d6575fadbf6df360b547593352d4069b967b715414ba1782707bf76d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "Dispatcher's self-review cannot substitute for independent review.",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1035,
       "text": "A failed verdict is corrected under the still-open Spec, one disposition per",
       "hash": "c9d7700fbfa900aab57f2e99c2fa939ab3de71625601a6d7cf2db77f53947a0b",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "A failed verdict is corrected under the still-open Spec, one disposition per",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1036,
       "text": "`;`-separated finding. `continue TK-###: <what the check found and what the fix",
       "hash": "81781eef2c3386fd4918cd2e39ac01c7556bb8210f4356765243337c2f04cb1e",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "`;`-separated finding. `continue TK-###: <what the check found and what the fix",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1037,
       "text": "must do>` is for a fix that is more of the same work: the same Task continues",
       "hash": "fa38c73ff9014dfb50169db404fb9214c1616e80568ea1ea338cbd2d2056e8e3",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "must do>` is for a fix that is more of the same work: the same Task continues",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1038,
       "text": "with that adjusted handoff in its own `## Continuation` table, a done Task",
       "hash": "ec05a1ddb572c695277119d598f025c527900bb7ada077c8e29a8217494b5f2b",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "with that adjusted handoff in its own `## Continuation` table, a done Task",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1039,
       "text": "returns to `ready`, and its Receipt rows, proof and earlier evidence rows stay as",
       "hash": "b2277c74291ae19e1b28c0579a7427c209fb9267819656656c8ac8f32e3cbbf2",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "returns to `ready`, and its Receipt rows, proof and earlier evidence rows stay as",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1040,
       "text": "written. `new Task: <finding>` (optionally `new Task rewriting TK-###:",
       "hash": "7e034a4152d589ce6b188af92ea9bd204908a134309e5063ebddbd1ba19f039e",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "written. `new Task: <finding>` (optionally `new Task rewriting TK-###:",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1041,
       "text": "<finding>`) is only for a fix that changes the Task enough that it has to be",
       "hash": "af6637221b4f2a7c7cf65275e3ec1dbfd04c69a6268fdb4b7738378940f1d1a1",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "<finding>`) is only for a fix that changes the Task enough that it has to be",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1042,
       "text": "rewritten. A finding naming neither, an unknown Task or a blocked Task is",
       "hash": "4045d428dfbd48e00560a840f7b21c36114c8ce1c7adbf76d202d031abc95de3",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "rewritten. A finding naming neither, an unknown Task or a blocked Task is",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1043,
       "text": "refused before any write, and the evidence row records which case applied.",
       "hash": "e0826ec22493f4637d7cc253fa643994b341d80496476d924fe2494717da0950",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "refused before any write, and the evidence row records which case applied.",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1044,
       "text": "Select and claim the continued or new Task, repair it, self-check and hand back",
       "hash": "cbe8b047d379b93c35152bf0d904f0a2b9f8981a447308715f7eaeb8f02979d7",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "Select and claim the continued or new Task, repair it, self-check and hand back",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1045,
       "text": "(a continued Task's later close appends `Task closed (run N)`), then rerun",
       "hash": "b945f1a4b4793551e8de5c5160fda6439cae3679e0ebeb1b5c41983f68a1b1ee",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "(a continued Task's later close appends `Task closed (run N)`), then rerun",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1046,
       "text": "whole-Spec QA and obtain fresh separate review of the new immutable candidate.",
       "hash": "649dc240c272097099b7afc737881b8a0203216cb4ca325cdb87e18ea8d75d9c",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "whole-Spec QA and obtain fresh separate review of the new immutable candidate.",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1047,
       "text": "Do not reuse the earlier PASS for changed content. A verdict against a complete,",
       "hash": "46f269b005d6b6f3471734640b4db7df4207e613e2a52d30e1e49a4dd8350673",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "Do not reuse the earlier PASS for changed content. A verdict against a complete,",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1048,
       "text": "superseded or retired Spec is refused; see the later-gap route below.",
       "hash": "8a5c3af886a3c500cbc459ea8005c90888f3e72b94e15829c02c683ca880e22f",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "superseded or retired Spec is refused; see the later-gap route in the [`director` skill](../director/SKILL.md#documentation-feature-capture-retirement-and-recovery).",
+      "reason": "TK-005G moved this line to the dispatcher skill. The later-gap route it named \"below\" now lives in the director skill; the moved line points to it."
     },
     {
       "line": 1050,
       "text": "Before integration the Spec form checks assembled completion and current PASS:",
       "hash": "38ada4045565cefb8ffa41f1f1c5d266672b7ad09da00fafe95f539de85a52e8",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "Before integration the Spec form checks assembled completion and current PASS:",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1052,
       "text": "```bash",
       "hash": "ad332335cfaa348c5bd715c3479844622270d5f7389ae070b81b135d521a221a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "```bash",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1053,
       "text": "node workbench/tools/spec-workbench.mjs gate --spec S-001 --candidate \"[SHA]\"",
       "hash": "563cfcf74c82b87db355d06ab7940a2d43c7b5da160d346d4297726eced54c18",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs gate --spec S-001 --candidate \"[SHA]\"",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1054,
       "text": "```",
       "hash": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "```",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1056,
       "text": "This repository currently follows S-00O bootstrap exemption 2: each Task PR goes",
       "hash": "e65c65d23be8932df1aa071a32b65038cf673d7b8e0573fe67b4e0b6ba9edf1f",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "AGENTS.md",
+      "landedText": "This repository currently uses S-00O's bootstrap exemption 2: each Task PR targets `integration` and requires separate-context review of its immutable candidate",
+      "reason": "TK-005G moved this line. Room-specific branch-route exception; AGENTS.md Git Rules already states it, and the core skill carries the generic wording for a room's declared exception."
     },
     {
       "line": 1057,
       "text": "directly into integration with separate-context immutable-candidate review.",
       "hash": "5ad5cccfdb8e99e8e55762d00593b8e0b75590a2e8f33d70b1cd2f5c5b0f9ff5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "restates-owner",
+      "homePath": "AGENTS.md",
+      "landedText": "This repository currently uses S-00O's bootstrap exemption 2: each Task PR targets `integration` and requires separate-context review of its immutable candidate",
+      "reason": "TK-005G moved this line. Room-specific branch-route exception; AGENTS.md Git Rules already states it."
     },
     {
       "line": 1058,
       "text": "Its Task gate reports the exception, not an independent PASS or owner approval:",
       "hash": "4f3558e73e7098d2ad51c8a753595e1ab1cdfcb13a675b880cf5ef51fee22609",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "Where a Task-PR exception applies, this form reports that boundary, not an independent PASS or owner approval:",
+      "reason": "TK-005G moved this line to the dispatcher skill. The core skill carries the generic mirror's wording for the same gate statement."
     },
     {
       "line": 1060,
       "text": "```bash",
       "hash": "ad332335cfaa348c5bd715c3479844622270d5f7389ae070b81b135d521a221a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "```bash",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1061,
       "text": "node workbench/tools/spec-workbench.mjs gate --task TK-001 --spec S-001",
       "hash": "576e0fbb3638aca610ef08953579b5bff2bf2c2e2bd728762610480f983dbde4",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs gate --task TK-001 --spec S-001",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1062,
       "text": "```",
       "hash": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "```",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1064,
       "text": "Nested Worker Task-branch -> Dispatcher Spec-branch -> integration is the",
       "hash": "3379b62d921020f7c81be3503d2ff977cfd49398ef742ffdfbc7ecc6895b7153",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "Nested Worker Task-branch -> Dispatcher Spec-branch -> integration is the",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1065,
       "text": "Blueprint destination, not delivered Spec-branch tooling. Follow the release",
       "hash": "bbbf1e153433cc8283519ae724f1e2b4742766ce29a141ff9e4adba2889cdc4f",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "destination. Destination prose alone does not prove Spec-branch tooling exists.",
+      "reason": "TK-005G moved this line to the dispatcher skill. The core skill carries the generic mirror's wording; \"Follow the release owner when the exception changes\" stays in AGENTS.md Git Rules."
     },
     {
       "line": 1066,
       "text": "owner if the exception changes. Use the [branch closeout recipe](#version-control-procedures)",
       "hash": "d026416b19695f1f973d96d1cd42061c565188c5949b6ff64186f25131e454fd",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "Use the [branch closeout recipe](../../../RUNBOOK.md#version-control-procedures)",
+      "reason": "TK-005G moved this line to the dispatcher skill. The link is re-rooted so it resolves from the skill folder; \"Follow the release owner when the exception changes\" stays in AGENTS.md Git Rules."
     },
     {
       "line": 1067,
       "text": "after the relevant review passes; prove remote containment and protect actual",
       "hash": "618cde908e362caab6d7de469fba3425174c9b01fcc84eff6451ba1b554e4377",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "after the relevant review passes; prove remote containment and protect actual",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1068,
       "text": "local/remote tips before cleanup. Integration delivery is distinct from final",
       "hash": "9448d0a92ad880bdc078e7703305d0e7e27a5397f5c304e448f950251f24fcb1",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "local/remote tips before cleanup. Integration delivery is distinct from final",
+      "reason": "TK-005G moved this line verbatim to the dispatcher skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1069,
       "text": "Spec closure. Only the owner promotes integration into main.",
       "hash": "90cbcefcb6871238e7488fd2bfee5fd9e66f7f563ff31f60c68673d17a94eca0",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/dispatcher/SKILL.md",
+      "landedText": "Spec closure. Only the owner promotes integration into the declared default branch.",
+      "reason": "TK-005G moved this line to the dispatcher skill. The core skill carries the generic mirror's wording for the declared default branch."
     },
     {
       "line": 1073,
       "text": "The owner chooses useful milestones, accumulated work, valued Specs, exhausted",
       "hash": "8309fd721a6895c63a4a84d45e0ed4474ae55d55fca9eeca31f2c294f4ce1847",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "The owner chooses useful milestones, accumulated work, valued Specs, exhausted",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1074,
       "text": "Specs or Director escalations for Human QA; version cadence is a default, not a",
       "hash": "9b362534ae4617a2d35fb0354f4478fcd5e794314463651731ddd0d4dbc4158a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "Specs or Director escalations for Human QA; version cadence is a default, not a",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1075,
       "text": "mandatory sole trigger. An ongoing or failed review remains its corrective",
       "hash": "3cd0a141ac6c81bffb838703b6c631976664b73abb3dd4f81ff1151c54d59da9",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "mandatory sole trigger. An ongoing or failed review remains its corrective",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1076,
       "text": "cycle, not a request to start QA again. Monitoring, findings, a merge and a green",
       "hash": "452610b01f81fa48866cea3608202daeddc6618fed79afdb4fa8a802a7fe0092",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "cycle, not a request to start QA again. Monitoring, findings, a merge and a green",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1077,
       "text": "suite do not approve anything. The runtime records approval per Spec and binds",
       "hash": "fa8cd7c35bd8e114667bfc87c9fded747fc2890dc5211644a30fb0c439049c7d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "suite do not approve anything. The runtime records approval per Spec and binds",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1078,
       "text": "it to the delivered integration content; it has no batch/version approval verb.",
       "hash": "aef5e8203913e0e1d2d41abac139aaf7b156675c783dd1451f93c793ad2fabad",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "it to the delivered integration content; it has no batch/version approval verb.",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1080,
       "text": "Only record the owner's actual decision. Finding and destination-change examples",
       "hash": "83b7b81bb43ada7abd27c287ecb8905593df5bcb6dec85caa8d7ba26bae5bf68",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "Only record the owner's actual decision. Finding and destination-change examples",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1081,
       "text": "are alternatives to explicit approval, not approval with optional decorations:",
       "hash": "9756b070cab59bc5ca68d4824f9b8bb166be0606f7aa883364a6aa4d1f28e447",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "are alternatives to explicit approval, not approval with optional decorations:",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1083,
       "text": "```bash",
       "hash": "ad332335cfaa348c5bd715c3479844622270d5f7389ae070b81b135d521a221a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "```bash",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1084,
       "text": "node workbench/tools/spec-workbench.mjs approve S-001 --candidate \"[INTEGRATION SHA]\" --owner \"[WHO]\" \\",
       "hash": "f2f71c556adfdacc91f1396e4507771b39df74801328836de1ac8cb59df9b8dd",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs approve S-001 --candidate \"[INTEGRATION SHA]\" --owner \"[WHO]\" \\",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1085,
       "text": "  --finding \"[FINDINGS]\"",
       "hash": "9b7c95ea2c74bbc2a34edea7e177ae5a91c0ea23e90edcb0b76f7bb50f26ef50",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "--finding \"[FINDINGS]\"",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1086,
       "text": "node workbench/tools/spec-workbench.mjs approve S-001 --candidate \"[INTEGRATION SHA]\" --owner \"[WHO]\" \\",
       "hash": "f2f71c556adfdacc91f1396e4507771b39df74801328836de1ac8cb59df9b8dd",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs approve S-001 --candidate \"[INTEGRATION SHA]\" --owner \"[WHO]\" \\",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1087,
       "text": "  --destination-change \"[TEXT]\"",
       "hash": "a4c71408c32f5f50694853a7d828ffcdc910e91244177331139deace745b5c9e",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "--destination-change \"[TEXT]\"",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1088,
       "text": "node workbench/tools/spec-workbench.mjs approve S-001 --candidate \"[INTEGRATION SHA]\" --owner \"[WHO]\"",
       "hash": "b728058b4ca16da6a0d22709a17f021cbf233d925bce4a295f00b0492900e66d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs approve S-001 --candidate \"[INTEGRATION SHA]\" --owner \"[WHO]\"",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1089,
       "text": "```",
       "hash": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "```",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1091,
       "text": "A finding follows the same disposition rule (`continue TK-###: ...` or",
       "hash": "6979767f884f365306b2cad940b968b17c34c1b9ee612b082a700d635029fe2d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "A finding follows the same disposition rule (`continue TK-###: ...` or",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1092,
       "text": "`new Task: ...`); a destination change records return to Align",
       "hash": "6eef9858439fd3724d62a59416c8fccf9be098fad257cb7cafe7172789f7ede9",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "`new Task: ...`); a destination change records return to Align",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1093,
       "text": "without inventing Tasks. Return at the implicated scope: a defect need not",
       "hash": "0bf5133bf82dd1b1998b0c6329b239f67aba7c49cd7b841b373e11bc2d9d560d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "without inventing Tasks. Return at the implicated scope: a defect need not",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1094,
       "text": "change the design concept. Keep failed required-capability findings visible",
       "hash": "5b84b8dcd7369ccd569245af45ba949d0e4a21c963c4d1e1048a3c9fbb9a55fa",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "change the design concept. Keep failed required-capability findings visible",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1095,
       "text": "as real downstream dependencies until resolved. After correction, repeat",
       "hash": "ed6e895eec786e205277156ee1c8459d9800a6ec3229b5f96ac18da2560af3ca",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "as real downstream dependencies until resolved. After correction, repeat",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1096,
       "text": "assembly/review/delivery and obtain the owner's actual approval of that content.",
       "hash": "3b4b878f3e26fc7f0dc755dc0bb29195b20d47b61dd99bd8781bfc6957cda7b9",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "assembly/review/delivery and obtain the owner's actual approval of that content.",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1098,
       "text": "After the owner promotes the approved content to main, fetch the declared",
       "hash": "b38d77a507e7f723cdc806e61cacefcb79d33d291a8981ea6366d982ea7a4cd7",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "After the owner promotes the approved content to main, fetch the declared",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1099,
       "text": "default branch (`main` here), then close the Spec:",
       "hash": "e6dfde1f49bde9f6cad6cda038da74c56b72d51e26b6c3f639c15058a8824071",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "default branch (`main` in these examples; use the declared default branch), then close the Spec:",
+      "reason": "TK-005G moved this line to the director skill. The core skill carries the generic mirror's wording for the declared default branch."
     },
     {
       "line": 1101,
       "text": "```bash",
       "hash": "ad332335cfaa348c5bd715c3479844622270d5f7389ae070b81b135d521a221a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "```bash",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1102,
       "text": "git fetch origin main",
       "hash": "05e2077c251d64162391621ca90e0b72d0016d41f428112323f1c7df61b1f0c3",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "git fetch origin main",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1103,
       "text": "node workbench/tools/spec-workbench.mjs complete S-001",
       "hash": "e6a2cddd1bf951b08c70a51e9f986233ae7bc79d78f39cd649cdd3c4b3054013",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs complete S-001",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1104,
       "text": "node workbench/tools/spec-workbench.mjs render",
       "hash": "b62134461a3d05550fd1d71af602e060520fd344aa0f73a31bf456ce3b74499a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs render",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1105,
       "text": "node workbench/tools/spec-workbench.mjs doctor",
       "hash": "fed358ed281350416a6d4c01803351cd893132be019e0652f09662b81ceac54e",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs doctor",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1106,
       "text": "```",
       "hash": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "```",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1108,
       "text": "`complete` requires all Tasks done, checked acceptance, a real Completion Result,",
       "hash": "0430e245d5235594ee4ad9c9e83af486c000d77650cef761279db5db0849c2c4",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "`complete` requires all Tasks done, checked acceptance, a real Completion Result,",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1109,
       "text": "evidence, current passed review and owner approval. It verifies the approved",
       "hash": "fa4df33b5fdf644fc58666c37f465599b18443d347a85a043ab0fb431c700944",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "evidence, current passed review and owner approval. It verifies the approved",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1110,
       "text": "candidate and unchanged assembled content on observed `origin/main`; a local",
       "hash": "0225176ecfb05a263773cdbdb3c4494e05fc16327a496ae6ae00554c4ffa2230",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "candidate and unchanged assembled content on observed `origin/main`; a local",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1111,
       "text": "main branch or integration merge is insufficient. Refusals leave state untouched.",
       "hash": "0c7a1a7a02915caa0cfd1517bae08dc79fad7ce613e26805fe3b2302c25645b3",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "main branch or integration merge is insufficient. Refusals leave state untouched.",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1112,
       "text": "Completion records the observed ref/SHA and preserves administrative approval;",
       "hash": "586ee21b4a178c1af3f267f05bb03d2b1ba95cd45efa1e4ab5c6502e3c571360",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "Completion records the observed ref/SHA and preserves administrative approval;",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1113,
       "text": "substantive changes invalidate it. Render removes complete Specs from the hot",
       "hash": "82124f833d5a95c638da9603770514b3f41fcf12b20d8bb6e246884f20050f5c",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "substantive changes invalidate it. Render removes complete Specs from the hot",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1114,
       "text": "board; outstanding diagnostics remain visible.",
       "hash": "9933dd1a25aab39d60e51984cc4b89a948f00895f4882ee90b6e7ac4b10dfaeb",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "board; outstanding diagnostics remain visible.",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1118,
       "text": "After complete, author capability knowledge in the manifest-declared `features`",
       "hash": "947da1d00044f189dd9727e648c12ead64dfc1ad43dea197517a3ed5cbe741dc",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "After complete, author capability knowledge in the manifest-declared `features`",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1119,
       "text": "collection, route it from Wiki MEMORY.md and validate it with the Wiki schema.",
       "hash": "9a1b1895499c7b1aeb6d327c9df114ab3477d6441a2b96e50e24108b2e74cb62",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "collection, route it from Wiki MEMORY.md and validate it with the Wiki schema.",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1120,
       "text": "There is no capture CLI. A feature article uses `type: feature`, active status,",
       "hash": "197962a643b9ec6c26e4c51b27bb9d515d3bf7938a37e75bef812412516444c5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "There is no capture CLI. A feature article uses `type: feature`, active status,",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1121,
       "text": "provenance and source_paths naming the Spec's eventual retired route; it explains",
       "hash": "f45872853399cef380bed3e77805500532b873d41f777bce9bcd438875c30e04",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "provenance and source_paths naming the Spec's eventual retired route; it explains",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1122,
       "text": "What It Does, Why It Matters, Limits, and Evidence and Sources without copying",
       "hash": "ed03d033dbab8210fa13d3575600884c71199bb35ab90bb9483dc404bf2a1715",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "What It Does, Why It Matters, Limits, and Evidence and Sources without copying",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1123,
       "text": "active Task state. Follow [features](workbench/wiki/features/README.md) and",
       "hash": "77f353191376fd9c7c365a8169541f8a9309f616ac26a04e4dcad3c2fbf0563a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "active Task state. Follow [features](workbench/wiki/features/README.md) and",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1124,
       "text": "[Wiki schema](workbench/wiki/SCHEMA.md). `uncaptured-complete` is attention while",
       "hash": "40de74a55d4f635334da5973de1f8c381451a74ddaefc6bfed65110df868c31f",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "[Wiki schema](workbench/wiki/SCHEMA.md). `uncaptured-complete` is attention while",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1125,
       "text": "the Spec stays complete; missing, invalid or unrouted capture blocks retirement",
       "hash": "ad0352d2fd51349a1c47f8600800febc6b00698b73257482411f66c2cdf43313",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "the Spec stays complete; missing, invalid or unrouted capture blocks retirement",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1126,
       "text": "and Task/Spec discard. Reconcile surviving claims into their existing owners.",
       "hash": "ddbc3ec004d29cf2247b1e8041f2f8d7eb0d0c457f4c12773729b7be4325461d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "and Task/Spec discard. Reconcile surviving claims into their existing owners.",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1128,
       "text": "Move records only with the link-safe operations. Task retirement is optional",
       "hash": "3c05ac9f27f7f48be5bd8cad40276fc88b7813c0dd3e8fd4676339f634fb0a82",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "Move records only with the link-safe operations. Task retirement is optional",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1129,
       "text": "for a done record with proof/Receipt; it rewrites live links, preserves and counts",
       "hash": "a495ab82c64053929a7e717091a435209f256cf5143e19fc82c8b816e722070a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "for a done record with proof/Receipt; it rewrites live links, preserves and counts",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1130,
       "text": "historical references, and retains the complete Task directory. `move-spec` is",
       "hash": "3c33433de281a6cdb7a8e68fe33e2b777170f55def080d532818134d20934dbe",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "historical references, and retains the complete Task directory. `move-spec` is",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1131,
       "text": "a folder-only alternative for an already complete Spec, not reconciliation or",
       "hash": "377ed7400576eecfab2ddcb140a133c44473013fa695eaf2ebf6e06cf6e14a83",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "a folder-only alternative for an already complete Spec, not reconciliation or",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1132,
       "text": "a bypass of capture. The normal closure route is complete -> feature capture -> `retire-spec`, which",
       "hash": "bbd0600317b7063e4bbdbdf9077232e2c1b2456d2f8c882116caa4ac3b111dd6",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "a bypass of capture. The normal closure route is complete -> feature capture -> `retire-spec`, which",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1133,
       "text": "moves the whole Spec and its Tasks together. An individual Task move is a",
       "hash": "b7b070df01c94bf858e3913248cf5540c1a61b1f3444b87dbdafd8a9e7b13333",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "moves the whole Spec and its Tasks together. An individual Task move is a",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1134,
       "text": "separate optional operation; its path participates in the review digest and",
       "hash": "7143aec907f9a0862bc0e24d9919beeb23842b0777a5c34b26993766d447a35f",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "separate optional operation; its path participates in the review digest and",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1135,
       "text": "invalidates earlier content-bound approval. Do not describe it as transparent",
       "hash": "141620ab104e5635a51ead4a001fc670eecd1ddf1efad417bfa73fd9c767818b",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "invalidates earlier content-bound approval. Do not describe it as transparent",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1136,
       "text": "normal cleanup or move normal cleanup before closure to avoid that limit.",
       "hash": "24803fe3ee7440ec9ad0332d0c92221969a479898d6b3006647cd0e95f441777",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "normal cleanup or move normal cleanup before closure to avoid that limit.",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1137,
       "text": "Use `retire-spec` after validated feature capture;",
       "hash": "a90c416a17191da5714b8721b33fa54ba215d1ad335e6bc9c874dcf3c3205085",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "Use `retire-spec` after validated feature capture;",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1138,
       "text": "it checks closure/approval/capture, appends evidence, moves the complete directory,",
       "hash": "28e4c755ddaca6464b7700586c07741ab067b4c0db959e50b13710f0cd8cfcd0",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "it checks closure/approval/capture, appends evidence, moves the complete directory,",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1139,
       "text": "regenerates ADR/board projections, cleans contained lane branches and lists",
       "hash": "a418acc4adc851f50cb324f1bee1f5e5309f9d29cc91d6a031c6bb91b7457b38",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "regenerates ADR/board projections, cleans contained lane branches and lists",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1140,
       "text": "unmerged results without deleting them. Do not run both Spec moves sequentially:",
       "hash": "7c862067c6f052e206561c5ed8f9e5b830b857729e57bec6dd9797ace9229919",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "unmerged results without deleting them. Do not run both Spec moves sequentially:",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1142,
       "text": "```bash",
       "hash": "ad332335cfaa348c5bd715c3479844622270d5f7389ae070b81b135d521a221a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "```bash",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1143,
       "text": "node workbench/tools/spec-workbench.mjs move-task S-001 --task TK-001 --to retired",
       "hash": "085d6f466c54e5cb4d791dfe912f895d13d0254e2a3d5c0f93ed5d5c3c2ea13f",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs move-task S-001 --task TK-001 --to retired",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1144,
       "text": "node workbench/tools/spec-workbench.mjs move-spec S-001 --to retired",
       "hash": "dd4e9a019fa221c255f5a086fb7c60b370f144fdc50a2fc91404282dd083aa1c",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs move-spec S-001 --to retired",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1145,
       "text": "node workbench/tools/spec-workbench.mjs retire-spec S-001 --wiki workbench/wiki/features/greeting.md",
       "hash": "a8c7168f60a5d4edd2afaf48dfc55e36fe7276fcfc869411aa493ca8be3758a8",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs retire-spec S-001 --wiki workbench/wiki/features/greeting.md",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1146,
       "text": "```",
       "hash": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "```",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1148,
       "text": "Collision identity recovery is an exceptional `move-task` mode for an already",
       "hash": "0a662f2111125c117d986aba58b2c8b0e63b4473560e72766e7b81308fed7e36",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "Collision identity recovery is an exceptional `move-task` mode for an already",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1149,
       "text": "published done Task in an open Spec. First fetch all remote tips and obtain the",
       "hash": "f6eaf356c9d9369ed573e67533ad3b028f55d54a03cffbaef168261aefc8397e",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "published done Task in an open Spec. First fetch all remote tips and obtain the",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1150,
       "text": "Director disposition naming the earlier identity and centrally reserved replacement.",
       "hash": "043e8d2de7622bda174b6a6682cc473ada473c031fae4b5cf87f00ac9a4e3bfe",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "Director disposition naming the earlier identity and centrally reserved replacement.",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1151,
       "text": "Freeze the clean candidate and the unchanged original Task bytes. This room's",
       "hash": "51accf00c232a13446eb67578d768b8e73c3f192debe2b2bb9190350fc4f957b",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -8567,7 +8567,7 @@
       "line": 1152,
       "text": "2026-10-01 example retains S-00I/TK-004F and assigns its later S-003P record",
       "hash": "c3ccc3655de2acf70cc6700508f1253bc0824603909de4afa855895dd842f7ad",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -8576,7 +8576,7 @@
       "line": 1153,
       "text": "TK-004I. Replay historical examples only in a disposable checkout containing the",
       "hash": "2d9dee3fcb645bf80c847b10a46eeaac00d857c90c68def2c4dd1928f46e08b7",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -8585,7 +8585,7 @@
       "line": 1154,
       "text": "original record; a completed recovery does not authorize another move. Set the exact",
       "hash": "bbee54f38036c5e28184fec9185e0ca1e4cc378e5851586db647a9d43218f62f",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -8594,7 +8594,7 @@
       "line": 1155,
       "text": "`EXPECTED_HEAD`, original `SOURCE_SHA`, earlier `COLLISION_SHA`, and SHA256",
       "hash": "21daae27c722a97476c7ed260bb81e0158ec87f78855b9c3ad99cdad9660c1db",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -8603,7 +8603,7 @@
       "line": 1156,
       "text": "`TASK_HASH` from those reviewed inputs; the original source is recoverable with",
       "hash": "cc7cfb940e07e774623ef2b718056fbba7ca39aa9ef99423f4e0aa6a4fb793b1",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -8612,7 +8612,7 @@
       "line": 1157,
       "text": "`git show SOURCE_SHA:workbench/specs/S-003P-github-coordination-room-binding-and-identity/tasks/TK-004F/TASK.md`.",
       "hash": "bcfd0680723d2368ddef9131790a7cbe68d7fcf0f5ac087ca16ddb6f07754e8b",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -8621,16 +8621,16 @@
       "line": 1159,
       "text": "```bash",
       "hash": "ad332335cfaa348c5bd715c3479844622270d5f7389ae070b81b135d521a221a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "```bash",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1160,
       "text": "node workbench/tools/spec-workbench.mjs move-task S-003P --task TK-004F \\",
       "hash": "e7aefaf2d63b7a3d5eaaba1374d3b0535e175619a744e3ad995c54bf465ecae5",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -8639,7 +8639,7 @@
       "line": 1161,
       "text": "  --replacement TK-004I --expected-head \"$EXPECTED_HEAD\" --task-hash \"$TASK_HASH\" \\",
       "hash": "893540fdbc6c5434084422423cb4cc15bd85568b849b6e077236ac5d55e726a6",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -8648,7 +8648,7 @@
       "line": 1162,
       "text": "  --source-revision \"$SOURCE_SHA\" --collision-spec S-00I \\",
       "hash": "a5887a39aa090e009607fc4dedbf8798f8611d6e47e4d399ab0a45bdfa893b78",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -8657,7 +8657,7 @@
       "line": 1163,
       "text": "  --collision-revision \"$COLLISION_SHA\" \\",
       "hash": "0ac96cab61fb6d2e4d86f3bd5309dd679b4a51071889f97848d58ac6818b5f87",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -8666,7 +8666,7 @@
       "line": 1164,
       "text": "  --collision-path workbench/specs/S-00I-folder-lifecycle-for-records/tasks/TK-004F/TASK.md \\",
       "hash": "2cf55a107af334ea04a5450f20bba5b31c4ee59de0082934b90f4ad20cc1d2c4",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -8675,7 +8675,7 @@
       "line": 1165,
       "text": "  --reason \"Director retains earlier S-00I identity\" --dry-run --json",
       "hash": "c814283d27175c6ca240e5eff67de396cb9060b1e1b764540a2c13be527f2d5c",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -8684,439 +8684,439 @@
       "line": 1166,
       "text": "```",
       "hash": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "```",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1168,
       "text": "`--dry-run` validates collision recovery and reports without writes. An empty",
       "hash": "dd6e3df3b35f855c3ddbce8f06e68f287d60f3e9dd97e5483cbfc431ec858303",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "`--dry-run` validates collision recovery and reports without writes. An empty",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1169,
       "text": "replacement is refused. Ordinary retirement and other verbs refuse `--dry-run`",
       "hash": "4dd12950bb1ab69909d37019a9f5ac16783d544d15aa32d732a15e2e9bd3a7c0",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "replacement is refused. Ordinary retirement and other verbs refuse `--dry-run`",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1170,
       "text": "before any mutation. After independent review of the",
       "hash": "e3181eb65b2c447e97ab7a45fd8426865a2f1fcf12a1d11ac665e941d8fc0952",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "before any mutation. After independent review of the",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1171,
       "text": "mechanism and plan, repeat the identical command without `--dry-run`; it stages",
       "hash": "72e103d42c356b669461cc1a3e73d58ed68870b431a7653d9792a34a4d124c3a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "mechanism and plan, repeat the identical command without `--dry-run`; it stages",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1172,
       "text": "one guarded move and its live Markdown references/projections, without a commit.",
       "hash": "e53fb364cac9152edb1cfcc834590bd81f6f848db6677cac77f2b39eeaa92a24",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "one guarded move and its live Markdown references/projections, without a commit.",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1173,
       "text": "The original Receipt bytes, done status and append-only Spec rows stay intact;",
       "hash": "5ae4c57dbbccc2359c489598e97146ba8ddbcb6e7929dbabfebad4d6b47afcb7",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "The original Receipt bytes, done status and append-only Spec rows stay intact;",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1174,
       "text": "qualified immutable provenance replaces a colliding Former ID alias. Reference",
       "hash": "0428594b0c62395ce700c119f0b73852ebfd863f6b1532fef5d82d6e12dc24ef",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "qualified immutable provenance replaces a colliding Former ID alias. Reference",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1175,
       "text": "reservations are allowed, but current/retired records, aliases and discard entries",
       "hash": "06c9457056823f5583129063aa4b288230136519142fd8d8886190935a02f8a0",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "reservations are allowed, but current/retired records, aliases and discard entries",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1176,
       "text": "at observed remote tips refuse an occupied replacement. Pending close evidence,",
       "hash": "a2d3abae77ecc44ee6f93fbdc5a75da693a28ef03d1e7817397e1e6fd1d3572e",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "at observed remote tips refuse an occupied replacement. Pending close evidence,",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1177,
       "text": "linked paths, dirty state, mismatched inputs and unsupported JSON path references",
       "hash": "3228dbf131f0d080b727365f0f80c620047d7c217b7f8ddc5d50a8706470b110",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "linked paths, dirty state, mismatched inputs and unsupported JSON path references",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1178,
       "text": "refuse before writes. Git environment overrides must be removed; GIT_PAGER is",
       "hash": "6e7423e5e93422c80dd93863a880870f062d4ccfae2554f5b43b4d886b0b0443",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "refuse before writes. Git environment overrides must be removed; GIT_PAGER is",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1179,
       "text": "allowed. Missing Git objects are not fetched by this operation.",
       "hash": "b12bdf975508bf057f1175ccab5b8a7975be8e42f367d7b62f441491ddc34932",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "allowed. Missing Git objects are not fetched by this operation.",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1181,
       "text": "A process or I/O failure restores touched files and the original Git index. A",
       "hash": "39e9e5b4df5af534f200badd5eeeaa98677a07a39b8650d9a57a633e1c5aed1b",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "A process or I/O failure restores touched files and the original Git index. A",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1182,
       "text": "rollback failure reports its pinned recovery commit and leaves the tree for",
       "hash": "a2d2015b58e882e9229361a7e6b5dc9df75fde496350fd5e58fca02548c8e611",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "rollback failure reports its pinned recovery commit and leaves the tree for",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1183,
       "text": "inspection. This does not guarantee recovery after power loss or coordinate",
       "hash": "7c6b18dd0a4768c3aecf5f83fd58f2b580c0f689b076b092ea6a4cc62f7caa7d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "inspection. This does not guarantee recovery after power loss or coordinate",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1184,
       "text": "concurrent writers. Commit and independently review the actual repaired assembly;",
       "hash": "d4f9c1b8653bf7434ae869bd527d9cf813dac94a2446bc312b202623a1395c61",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "concurrent writers. Commit and independently review the actual repaired assembly;",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1185,
       "text": "identity repair transfers no review, acceptance or owner approval. Ordinary",
       "hash": "150e49747bf139b79c25924f6cead67d8d859c56c8ca9a5d6156c4400897303b",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "identity repair transfers no review, acceptance or owner approval. Ordinary",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1186,
       "text": "retirement keeps using `--to retired` with no replacement options.",
       "hash": "1b43d725aaf4186e1093083143930a53799de356eae04fc449eed880f7ea64ea",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "retirement keeps using `--to retired` with no replacement options.",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1188,
       "text": "Commit and preserve the retirement result. Its latest incarnation and entire",
       "hash": "2ae14511d9052043776f5d8e13f8bf1f38732762bc9ef36c782f0155a3f8f412",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "Commit and preserve the retirement result. Its latest incarnation and entire",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1189,
       "text": "current directory must reach the declared default branch, observed by a fresh",
       "hash": "7012cddd2af650cee1c09e95d9c641aa3ef8671e8ef0bead037deacfb873cfc8",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "current directory must reach the declared default branch, observed by a fresh",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1190,
       "text": "fetch, before discard. Discard alternatives are separate operations:",
       "hash": "d4195e5b13354513c88ad5a980d18f5cdb22f9afce1f745ba3603cc5a44cf201",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "fetch, before discard. Discard alternatives are separate operations:",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1192,
       "text": "```bash",
       "hash": "ad332335cfaa348c5bd715c3479844622270d5f7389ae070b81b135d521a221a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "```bash",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1193,
       "text": "node workbench/tools/spec-workbench.mjs discard S-001 --task TK-001",
       "hash": "a380a3a433f2c9950e526df226f4bad362656733695e01355cc081a296030e1d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs discard S-001 --task TK-001",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1194,
       "text": "node workbench/tools/spec-workbench.mjs discard S-001",
       "hash": "26ed38f0981747114594c5830fd8978a69bd402f46052542bc43a2b344221391",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "node workbench/tools/spec-workbench.mjs discard S-001",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1195,
       "text": "```",
       "hash": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "```",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1197,
       "text": "Discard refuses active records, dirty state, unfinished work, missing/invalid",
       "hash": "872a22b0102cd2e5b22080e477f4dbcc798cf9cf2c46957958dfe266fb036022",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "Discard refuses active records, dirty state, unfinished work, missing/invalid",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1198,
       "text": "capture, unverified current directory on main and current references. It never",
       "hash": "fa2fbcfd1c6f01f67a30703829f80a54768cfe46f0d1f13a4c8810350acf2fbf",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "capture, unverified current directory on main and current references. It never",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1199,
       "text": "clears the permanent ADR archive. After a Task discard the parent directory has",
       "hash": "7e2a7254e86832f0373d2b649eba6bee27297159196767254b61a1b924418313",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "clears the permanent ADR archive. After a Task discard the parent directory has",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1200,
       "text": "changed; publish/verify that latest directory on main before Spec discard.",
       "hash": "19523f27142c48f6b69a845bce28a4ab5f97b98a56cb924e2d65057a32dc58df",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "changed; publish/verify that latest directory on main before Spec discard.",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1201,
       "text": "Operational references still block even in the feature owner. Historical links",
       "hash": "627eab472d4bf5a73ab1c924b19998bb53084fa1a6929327377dd0eebf475c59",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "Operational references still block even in the feature owner. Historical links",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1202,
       "text": "in its Evidence and Sources become immutable git-show citations. Successful",
       "hash": "e411570cc2bbf0c2b5c712af605dc15fa9834b4b671cad64999dfaad346cbb4b",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "in its Evidence and Sources become immutable git-show citations. Successful",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1203,
       "text": "removal writes DISCARDS.md with the historical route, retiring/discard-parent",
       "hash": "ce0f32d8cd576047f08237582438b875180811a3a7c36df4f21ba92456db8c22",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "removal writes DISCARDS.md with the historical route, retiring/discard-parent",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1204,
       "text": "commits and exact `git checkout SHA -- DIRECTORY` recovery command; exercise it",
       "hash": "e41e96e140fb40a5170a45b8eee9c5473f60f14a314dd71a55733200826b90fb",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "commits and exact `git checkout SHA -- DIRECTORY` recovery command; exercise it",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1205,
       "text": "in a disposable clone and compare all recovered bytes, including sibling proof,",
       "hash": "34e64b2c900c9ce37333233c7bbac71e4de3f41ff8fa44d5a97c868ffbd5abbc",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "in a disposable clone and compare all recovered bytes, including sibling proof,",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1206,
       "text": "assets and Receipt runs. The final Task leaves `tasks/.gitkeep` so fresh clones",
       "hash": "48028af7975acf6b6842d900fa8e1d7857fd9866d58493380450be9b10bdc131",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "assets and Receipt runs. The final Task leaves `tasks/.gitkeep` so fresh clones",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1207,
       "text": "retain record-backed interpretation. Recovery is for inspection, not new work.",
       "hash": "f70d5c523713285b3e88f2a15bf222c310d348bb29fb764e194cdbc54eaefe1f",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "retain record-backed interpretation. Recovery is for inspection, not new work.",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1209,
       "text": "A later gap against delivered work becomes a new Spec under its landmark or the",
       "hash": "d299734ca39ab10ab504c2006d9a1b322900e0268753ada28333e994c685bcd8",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "A later gap against delivered work becomes a new Spec under its landmark or the",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1210,
       "text": "Blueprint. It never revives a discarded Spec and is never a correction anchored",
       "hash": "bfa3d10441fb633c77ac3aeea75e59e2df4782b20347919b8d9fbbf34ae3637d",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "Blueprint. It never revives a discarded Spec and is never a correction anchored",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1211,
       "text": "to a Wiki claim. The new Spec names the delivered work it builds on and may cite",
       "hash": "b20f6328abd92e3259a12836bc255c1d93efcc249b2a979d4b93e95824dbb10f",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "to a Wiki claim. The new Spec names the delivered work it builds on and may cite",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1212,
       "text": "Wiki pages as evidence for its direction and plan, but no Task takes a Wiki",
       "hash": "f436c6a69c1eed8ad098d47f7948ec6bfb491de6c27d512f7d03c55c57eb800f",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "Wiki pages as evidence for its direction and plan, but no Task takes a Wiki",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1213,
       "text": "claim as its destination for corrective work. `verdict --result fail`,",
       "hash": "557d16ed48366adc00a994ba2c2390e1dffd3858a7b78c61e78a712867a0f256",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "claim as its destination for corrective work. `verdict --result fail`,",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1214,
       "text": "`approve --finding` and `createCorrectiveTasks` refuse a Spec that is complete,",
       "hash": "8ae5280a2b9e6d604d9678059ab0b8e30d24d0fae4f103e6fb0f60d74b6116a2",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "`approve --finding` and `createCorrectiveTasks` refuse a Spec that is complete,",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1215,
       "text": "superseded or retired, and refuse any `wikiClaim`, each naming this route.",
       "hash": "70cefe80532431858a49463337c590ffbef753b123f76e2aa166e3d065fba4e1",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "superseded or retired, and refuse any `wikiClaim`, each naming this route.",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1216,
       "text": "`next` never selects a standalone corrective record an earlier release wrote,",
       "hash": "8e415f9e23e14345c065f6b4aeb8cf40a85b8b5ebe8e542275feeeee94abeca8",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "`next` never selects a standalone corrective record an earlier release wrote,",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1217,
       "text": "and `claim` and `close` refuse it, though it still occupies its identifier. The",
       "hash": "de7d39e9ed6a424835699457c9a5176178e103f42f4fa7017862a24753a89b1f",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "and `claim` and `close` refuse it, though it still occupies its identifier. The",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1218,
       "text": "receipt CLI remains Spec-bound and refuses a standalone Task ID. A different",
       "hash": "bf6a818f2a94733a51c9a5a74158d42208b23a4b040f1788b8bf4b7ec66efbe8",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "receipt CLI remains Spec-bound and refuses a standalone Task ID. A different",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1219,
       "text": "destination needs a new assigned Spec.",
       "hash": "bda981a1db681a86af540030da0d8b3521541165bc5ab9b61df8e8cb926f9f1a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "destination needs a new assigned Spec.",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1221,
       "text": "The first S-01X migration slice provides an opt-in preview:",
       "hash": "dc8231d1255fd86b0c90a511308f08fe7ac859745e3261dc8a259e93b3e27ed9",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -9125,16 +9125,16 @@
       "line": 1223,
       "text": "```bash",
       "hash": "ad332335cfaa348c5bd715c3479844622270d5f7389ae070b81b135d521a221a",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "```bash",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1224,
       "text": "node workbench/tools/spec-workbench.mjs render --format json",
       "hash": "f5e3a16d2b36115a50c2b0caf0da42ede04f72286d64d460e4478ce29819e088",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -9143,7 +9143,7 @@
       "line": 1225,
       "text": "node tools/test-taskboard-json.mjs --demo",
       "hash": "5a1c1c1e4089a3f91d94ba05c03fefe7badcd05fd332e828890b03d4326f01c6",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -9152,16 +9152,16 @@
       "line": 1226,
       "text": "```",
       "hash": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/director/SKILL.md",
+      "landedText": "```",
+      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 1228,
       "text": "`render --format json` regenerates only `TASKBOARD.preview.json` from existing",
       "hash": "033fff878533e074f340b8ec2a9a32229bca4822ca04c859058b4b01587a6188",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -9170,7 +9170,7 @@
       "line": 1229,
       "text": "Spec/Task records. Its six lanes retain readable source links, source-owned",
       "hash": "c18d2bb01f56f450e6656dbb31ff2143fc737abb0097510554d755d99ba18e40",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -9179,7 +9179,7 @@
       "line": 1230,
       "text": "metadata and derived child progress and cleanup state. Unknown metadata stays",
       "hash": "ff5b0905e3364416c4eb4720088d8e5af606eedc3c818830a5e04818243663be",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -9188,7 +9188,7 @@
       "line": 1231,
       "text": "`null`; ordering is priority, title, then WBID. Editing a card never changes",
       "hash": "9c3e954c473cb0a54ad2aa197ca5b460fda1a7bf0556e71391f1c31a70b3631e",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -9197,7 +9197,7 @@
       "line": 1232,
       "text": "its source, and the next render restores the source-derived value. Invalid",
       "hash": "a165cc7420b07b7a663b5dd25c343b639b6140129ed5069048ddf94e05b5dca2",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -9206,7 +9206,7 @@
       "line": 1233,
       "text": "source, ambiguous flat identities, symlinked sources or linked outputs refuse before",
       "hash": "fb6400e27ce667a3d8ba1d311a66235cb56b0f4dbe8688f0e1a49c455bb2697b",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -9215,7 +9215,7 @@
       "line": 1234,
       "text": "replacing the previous preview. Normalized duplicate field names anywhere in",
       "hash": "fe0fdab91738b285dc40c1226ce345d5299b154acde163856942e06cd3f366d8",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -9224,7 +9224,7 @@
       "line": 1235,
       "text": "a record also refuse, using the same whole-document extraction, case",
       "hash": "009ab020fc212d20578de14b608674dfe41a47084326a407fc2197c119e79f33",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -9233,7 +9233,7 @@
       "line": 1236,
       "text": "sensitivity and key/value trimming as",
       "hash": "8c6a340d90c1830823a97171cdadae83b7bf8aee4d55603fe93a996d63dc9425",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -9242,7 +9242,7 @@
       "line": 1237,
       "text": "the existing source parsers. This validation applies only to the preview.",
       "hash": "6cf802112036461f8308195f8cf572776d82085197f43201beedaf9d96f32218",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -9251,7 +9251,7 @@
       "line": 1238,
       "text": "Legacy numeric Task labels remain Spec-scoped in their owners: if two labels",
       "hash": "a7e95c53a78353e647dfcac2e5da099a23c35c934057b3df9e0c7622eaba2728",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -9260,7 +9260,7 @@
       "line": 1239,
       "text": "collide as flat JSON keys, the refusal names both sources without changing",
       "hash": "e469b83db8171aea7e234b44bcd3c235eaf91e9976e9a77e5825b6e519880b42",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -9269,7 +9269,7 @@
       "line": 1240,
       "text": "them. Reconcile that boundary before the later",
       "hash": "be62521caf64a845c989a994aa9c985dacb5828b9f78d5c99098b656283f2c57",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -9278,7 +9278,7 @@
       "line": 1241,
       "text": "canonical board switch. Default `render` continues to generate Markdown and",
       "hash": "a60ddc6bc9b12fdf4b7477b9b10a149d4792b6ee7ed51bfd4e14cdab692ac9d2",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -9287,7 +9287,7 @@
       "line": 1242,
       "text": "CATALOG; selection, review vocabulary, direct/orphan Task coverage, sitrep and",
       "hash": "eece5839a3cf9a8c5f20dd4160ebb88bf6539b91e28abd80bbb04acf65744181",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -9296,7 +9296,7 @@
       "line": 1243,
       "text": "the root/template switch remain separate S-01X slices. The demo uses a",
       "hash": "3bb2e2f872de52bbcc2c0a62dbf8d65578071caed9025e172bb88977a0c48c9c",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -9305,7 +9305,7 @@
       "line": 1244,
       "text": "disposable room and runs in under one minute.",
       "hash": "bdc59f07630b276224e9f2f74c1901ed7197b4f67d3b9a580d7050135ec848d5",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -18377,46 +18377,46 @@
       "line": 2455,
       "text": "Size a task so a fresh context can recover its inputs, exercise one useful",
       "hash": "75a4c2aec14234ac40365a805406ffc7f38eeaf8c27d73fd89db42ec4bf1892c",
-      "homeKind": "stays",
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/to-tasks/SKILL.md",
+      "landedText": "Size a task so a fresh context can recover its inputs, exercise one useful",
+      "reason": "TK-005G moved this line verbatim to the to-tasks skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2456,
       "text": "behavior at its public seam and finish named verification. There is no accepted",
       "hash": "2f0144943da6be74d92ecb2d8b0276c9433dfa5e7070a0b70e64da108e7755ba",
-      "homeKind": "stays",
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/to-tasks/SKILL.md",
+      "landedText": "behavior at its public seam and finish named verification. There is no accepted",
+      "reason": "TK-005G moved this line verbatim to the to-tasks skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2457,
       "text": "universal byte or token threshold. Unknown consequential product choices belong",
       "hash": "4525b1707a70d3de33cce08c743184939f1bc659aca1c0f6e40b4b0912a92036",
-      "homeKind": "stays",
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/to-tasks/SKILL.md",
+      "landedText": "universal byte or token threshold. Unknown consequential product choices belong",
+      "reason": "TK-005G moved this line verbatim to the to-tasks skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2458,
       "text": "in a decision slice of the already assigned spec before dependent implementation;",
       "hash": "7608f178755637c1e9037043aea25f5686b5c810c1ff27e107c4623bb4b1b934",
-      "homeKind": "stays",
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/to-tasks/SKILL.md",
+      "landedText": "in a decision slice of the already assigned spec before dependent implementation;",
+      "reason": "TK-005G moved this line verbatim to the to-tasks skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2459,
       "text": "this does not authorize creating a task from an unassigned finding.",
       "hash": "80bd3e42ac9789b77e13c6faeb5d6a6a7c7326e738297b93b0b49867740f89a8",
-      "homeKind": "stays",
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "skill",
+      "homePath": "workbench/skills/to-tasks/SKILL.md",
+      "landedText": "this does not authorize creating a task from an unassigned finding.",
+      "reason": "TK-005G moved this line verbatim to the to-tasks skill, which the Runbook operations index points to for its operation."
     },
     {
       "line": 2461,
