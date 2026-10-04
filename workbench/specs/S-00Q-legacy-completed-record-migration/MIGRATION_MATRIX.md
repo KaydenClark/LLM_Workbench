@@ -137,7 +137,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-008: Portable Verification Boundaries
 
-Article: [Portable Verification Boundaries](../../wiki/design-concepts/spec-S-008-windows-verification-portability.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-008-windows-verification-portability/SPEC.md`.
+Article: [Portable Verification Boundaries](../../wiki/features/portable-verification-boundaries.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-008-windows-verification-portability/SPEC.md`.
 
 Cross-platform verification needs stable serialized contracts without rewriting the host's real filesystem paths. Context-pack labels normalize path separators to forward slashes, while paths used for I/O retain native handling. Spec generated-region comparison normalizes CRLF to LF, so an equivalent checkout does not become stale solely because of line-ending style.
 
@@ -155,7 +155,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-009: Adoption When Git Writes Are Unavailable
 
-Article: [Adoption When Git Writes Are Unavailable](../../wiki/design-concepts/spec-S-009-git-write-constrained-adoption.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-009-git-write-constrained-adoption/SPEC.md`.
+Article: [Adoption When Git Writes Are Unavailable](../../wiki/features/adoption-when-git-writes-are-unavailable.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-009-git-write-constrained-adoption/SPEC.md`.
 
 A host can allow ordinary document edits while refusing branch, stash or commit writes in Git metadata. Adoption must distinguish that capability limit from a safe, completed migration.
 
@@ -173,7 +173,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-00A: S-00A: Blueprint, Active ADRs And The Context Map
 
-Article: [S-00A: Blueprint, Active ADRs And The Context Map](../../wiki/design-concepts/spec-S-00A-blueprint-active-adr-and-context-map.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md`.
+Article: [S-00A: Blueprint, Active ADRs And The Context Map](../../wiki/features/blueprint-active-adrs-and-the-context-map.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md`.
 
 The Blueprint describes the desired finished product. Accepted active ADR decisions carry architectural Canon; their rationale and historical alternatives remain evidence. The Lexicon routes questions to owners through its Context Map. A Spec describes a bounded destination derived from that direction and verified Actuality.
 
@@ -191,7 +191,7 @@ Consumer snapshot: 3 occurrences. Article semantic review: **passed for core cap
 
 ### S-00B: S-00B: Workbench Template Reformation
 
-Article: [S-00B: Workbench Template Reformation](../../wiki/design-concepts/spec-S-00B-workbench-template-reformation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00B-workbench-template-reformation/SPEC.md`.
+Article: [S-00B: Workbench Template Reformation](../../wiki/features/copyable-workbench-template-reference-room.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00B-workbench-template-reformation/SPEC.md`.
 
 The reference room was changed from a fictional Example application into a copyable Workbench Template. A reference installation has its own controls, identity, local differences and installed-runtime provenance. Updating it requires preserving those facts rather than replacing the room with upstream generic files.
 

@@ -241,9 +241,12 @@ carries a one-line summary beside its link so a reader can choose a page
 without opening it. See [features/README.md](features/README.md).
 
 - [Adoption Preflight And Legacy Classification](features/adoption-preflight-and-legacy-classification.md) - reports every unreconciled root control at once and classifies a room as genesis, adoption, upgrade or unclassifiable from evidence.
+- [Adoption When Git Writes Are Unavailable](features/adoption-when-git-writes-are-unavailable.md) - adoption on a host that refuses Git writes records a visible blocker and reversible work, never forced Git or invented proof.
+- [Blueprint, Active ADRs And The Context Map](features/blueprint-active-adrs-and-the-context-map.md) - the Blueprint states the finished product, active ADR decisions carry architectural Canon, and the Context Map routes questions to owners.
 - [Canonical Evaluator Invocation](features/canonical-evaluator-invocation.md) - the evaluator emits its report when run directly through a path alias, checked by report content and not just exit status.
 - [Consistent Bootstrap Ownership Guidance](features/consistent-bootstrap-ownership-guidance.md) - setup, Genesis and Adoption entry points route to the current owners: contract for behavior, Spec for requirements and proof, Taskboard as view.
 - [Control Fidelity Without Forced Uniformity](features/control-fidelity-without-forced-uniformity.md) - A report that compares a room's controls with the templates and labels each line unchanged, filled, changed, dropped or added, without failing on divergence.
+- [Copyable Workbench Template Reference Room](features/copyable-workbench-template-reference-room.md) - the reference room became a copyable Workbench Template whose installed controls, identity and provenance survive an upgrade.
 - [Dependency-Safe Direct Claiming](features/dependency-safe-direct-claiming.md) - direct Task claiming uses the same dependency eligibility as selection and refuses blocked work before changing anything.
 - [Diagnostics Ordered By Consequence](features/diagnostics-ordered-by-consequence.md) - doctor groups findings as blocking, selected-slice, then informational, so effect leads severity.
 - [Evidence-Gated Harness Feedback](features/evidence-gated-harness-feedback.md) - feedback discovery ranks candidates and an independent decision passes, denies or blocks each on reproduction, regression, suite and safety evidence.
@@ -257,6 +260,7 @@ without opening it. See [features/README.md](features/README.md).
 - [Lexicon Freshness Repair](features/lexicon-freshness-repair.md) - repairs stale release, version and source-boundary claims in the Lexicon by checking them against the manifest, Git containment and links.
 - [Manifest Schema 2 Lanes And Managed Runtime](features/manifest-schema-2-lanes-and-managed-runtime.md) - manifest-declared support lanes and collections, and managed runtime tools installed against a recorded receipt.
 - [Named Template Upgrade Release Gate](features/named-template-upgrade-release-gate.md) - requires each new Workbench version to be exercised in the named Workbench_Template installation before release readiness.
+- [Portable Verification Boundaries](features/portable-verification-boundaries.md) - context labels use forward slashes, spec comparison ignores CRLF, and eval fixtures use the running interpreter and Windows launchers.
 - [Portable Workbench Installation, Adoption And Upgrade](features/portable-workbench-installation-adoption-and-upgrade.md) - how a Workbench is created, adopted and upgraded, with presence kept separate from replacement of installed skills.
 - [Project Evidence Preparation For Blueprint Grilling](features/project-evidence-preparation-for-blueprint-grilling.md) - turns named project sources into a bounded provisional grilling note that keeps source identity and uncertainty and answers no owner question.
 - [Reproducible Adoption Provenance](features/reproducible-adoption-provenance.md) - adoption proof carries the source remote, ref, resolved commit, executed self-tests and checksum, so a cold reviewer can reproduce it.
@@ -274,6 +278,9 @@ proof from current behavior. Original records remain intact pending lifecycle ga
 - [Adoption When Git Writes Are Unavailable](design-concepts/spec-S-009-git-write-constrained-adoption.md)
 - [S-00A: Blueprint, Active ADRs And The Context Map](design-concepts/spec-S-00A-blueprint-active-adr-and-context-map.md)
 - [S-00B: Workbench Template Reformation](design-concepts/spec-S-00B-workbench-template-reformation.md)
+- [Canonical Evaluator Invocation](design-concepts/spec-S-010-canonical-evaluator-entry.md)
+- [Reproducible Adoption Provenance](design-concepts/spec-S-012-adoption-provenance-proof.md)
+- [Verified Automation Run Outcomes](design-concepts/spec-S-013-automation-run-outcomes.md)
 - [Operable Genesis Readiness](design-concepts/spec-S-015-portable-v3-release-audit-recovery.md)
 - [Bounded Team Coordination (S-020)](design-concepts/spec-S-020-spec-native-team-coordination.md)
 - [Governance Claims And Diagnostics (S-024)](design-concepts/spec-S-024-governance-core-and-diagnostics.md)
