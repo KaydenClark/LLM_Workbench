@@ -25,8 +25,9 @@ The blank, copyable templates live in `templates/`:
   manifest-declared `workbench/specs/S-###-slug/SPEC.md`; it owns detailed requirements, decisions,
   acceptance, evidence, completion, and supersession. Active Tasks carry their own
   `tasks/TK-###/TASK.md` state, Packet and Receipt; retained done tables are history.
-- `templates/RUNBOOK.md` - setup, run, test, build, troubleshooting, recovery,
-  and evaluation procedure.
+- `templates/RUNBOOK.md` - an operations index whose rows point to the skills
+  that carry each procedure, plus the room's own setup, run, test, build,
+  troubleshooting, recovery and evaluation sections.
 - `templates/README.md` - a blank, user-facing product README for the target
   project (points readers at the control surfaces). The root README you are
   reading is the workbench's own and is not meant to be copied.
@@ -264,8 +265,10 @@ The upgrade path is a loop, not a one-way copy. Downstream projects record where
 the harness helped or hurt in their `WORKBENCH_FEEDBACK.md` (legacy copies may still be named `HARNESS_FEEDBACK.md`); those lessons are
 harvested back here, turned into template changes, and validated with `evals/`
 before shipping as a new harness version. A template change is only called
-"better" when the evidence supports it - see `RUNBOOK.md` -> Evaluation And
-Benchmarking. This is the "ruleset that updates the ruleset".
+"better" when the evidence supports it - see the
+[`workbench-evaluation` skill](workbench/skills/workbench-evaluation/SKILL.md)
+the `RUNBOOK.md` operations index points to. This is the "ruleset that updates
+the ruleset".
 
 ## Visual And Asset Guidance
 
@@ -299,7 +302,7 @@ node tools/evaluate-workbench.mjs --github KaydenClark/LLM_Workbench \
 ```
 
 The static scorer proves coverage of expected control surfaces. For stronger
-evidence, use `RUNBOOK.md` -> Evaluation And Benchmarking plus `evals/` or
+evidence, use the `workbench-evaluation` skill the Runbook index points to plus `evals/` or
 `outcomes/` to run controlled task trials and record outcomes.
 
 For harness changes, capture the guardrail score before editing and report the
@@ -364,15 +367,16 @@ MIT. See `LICENSE`.
 
 ## Ordinary Agent Entry
 
-Follow AGENTS.md -> RUNBOOK.md -> LEXICON.md, then the assigned SPEC and only
+Follow AGENTS.md -> the RUNBOOK.md operations index -> LEXICON.md, then the assigned SPEC and only
 its Task record and relevant owners. Roles assign Director/Dispatcher/Worker
 responsibility; Builder, Auditor, Reviewer and Reconciler are assigned
 stances within existing authority. Work autonomously inside the assigned task;
 Worker self-check returns to Dispatcher whole-Spec QA, and separate-context
 Director review is required before integration. Failed review preserves original
 proof and creates corrective Tasks. Existing failed Human QA stays in its
-corrective cycle until the owner resolves it. See the Runbook for exact
-content-bound review, main-before-complete and capture/recovery procedures.
+corrective cycle until the owner resolves it. The Runbook operations index
+points to the skills that carry the exact content-bound review,
+main-before-complete and capture/recovery procedures.
 The setup-only Round One
 proof returns in chat; feedback reporting follows it in the declared lane.
 
