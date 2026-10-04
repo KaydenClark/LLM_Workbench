@@ -352,7 +352,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-015: Operable Genesis Readiness
 
-Article: [Operable Genesis Readiness](../../wiki/design-concepts/spec-S-015-portable-v3-release-audit-recovery.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-015-portable-v3-release-audit-recovery/SPEC.md`.
+Article: [Operable Genesis Readiness](../../wiki/features/operable-genesis-readiness.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-015-portable-v3-release-audit-recovery/SPEC.md`.
 
 A scaffold is not ready merely because expected filenames exist. Genesis readiness must establish that a cold agent can follow the declared support layout, read filled controls and select executable work.
 
@@ -370,7 +370,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-020: Bounded Team Coordination (S-020)
 
-Article: [Bounded Team Coordination (S-020)](../../wiki/design-concepts/spec-S-020-spec-native-team-coordination.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-020-spec-native-team-coordination/SPEC.md`.
+Article: [Bounded Team Coordination (S-020)](../../wiki/features/bounded-team-coordination.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-020-spec-native-team-coordination/SPEC.md`.
 
 A small agent team can work concurrently when its assignments have disjoint edit paths. A coordinator partitions the assigned work, names each lane's output and verification, receives proof, and consolidates shared state once. The useful unit of independence is the file and dependency boundary: separate worktrees preserve checkouts, but do not make competing edits to the same runtime or control independent.
 
