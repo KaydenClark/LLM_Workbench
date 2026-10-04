@@ -1,7 +1,7 @@
 # S-003W - Wiki Evolving-Synthesis Migration
 
 **Spec ID:** S-003W
-**Status:** planned
+**Status:** active
 **Priority:** 1
 **Owner:** unassigned
 **Stance:** Builder
@@ -148,12 +148,6 @@ exists, TASK.md owns active Task state; retain only done table rows as history.
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Link-safe `wiki.mjs move-note` proven by moving one per-Spec article into features as a feature article with a router summary line | ready | none | pending |
-| TK-002 | Move and retype the remaining per-Spec articles; router summaries for every page; validator attention for a routed page without one | blocked | TK-001 | pending |
-| TK-003 | Name-and-context identifier validator in place of the identifier ban; usage note, tests, registration and citing Specs reconciled | ready | none | pending |
-| TK-004 | Landmark synthesis pages seeded from question cards for every landmark; assessment reads them | blocked | TK-003 | pending |
-| TK-005 | Ledger rows for the Wiki grilling, supersession of LD-4 and LD-22B, move to the sessions lane | ready | none | pending |
-| TK-006 | Lint procedures in the Runbook and the validator message fix | ready | none | pending |
 
 ### TK-001 - Link-safe note move proven on one article
 
