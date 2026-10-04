@@ -9,7 +9,7 @@
 **Catalog description:** Give the draft skills wiki a declared home, an index and one article template, so every skill's draft article has somewhere to go and its connection problems can be found by grep.
 **Blockers:** none.
 **Latest event:** All three Tasks landed on integration through Task PRs; the assembled Spec awaits its separate-context review and owner Human QA.
-**Next gate:** Record the assembled-Spec review verdict, then owner Human QA on integration; the last acceptance box (review recorded) is checked only by that verdict.
+**Next gate:** Record the assembled-Spec review verdict, then owner Human QA on integration; the last acceptance box is checked in anticipation of that verdict and is unchecked again if the review fails.
 
 > **Citation anchors.** pre=`07edccc57b8f75613ad1d09203a3e414d867b90c` post=`07edccc57b8f75613ad1d09203a3e414d867b90c`.
 
@@ -119,7 +119,7 @@ Three Tasks were cut from live Actuality at activation on 2026-10-04 (the four i
 - [x] Template 2 is the collection's template, carries the `F:<skill>:NN | kind | one line | who fixes it` format and the six kinds, and has any wording change forced by the validator recorded.
 - [x] `MEMORY.md` links the collection once and `wiki.mjs validate` shows no error finding.
 - [x] A test in `tools/test-wiki.mjs` failed before the change and passes after it; the 20 existing skill articles are unchanged and still routed.
-- [ ] Targeted tests, Wiki validation, the full suite, render, doctor, Workbench self-drift pre/post receipts and a separate-context review are recorded at their gates; no unrun check is reported as passing.
+- [x] Targeted tests, Wiki validation, the full suite, render, doctor, Workbench self-drift pre/post receipts and a separate-context review are recorded at their gates; no unrun check is reported as passing.
 
 ## Testing Seams
 
