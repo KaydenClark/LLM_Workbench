@@ -1136,6 +1136,8 @@ test('TK-005N: both Lexicons and the README describe the delivered carrier shape
     assert.match(row('| Recovery after interruption or failure |'), /RUNBOOK\.md#operations-index/, `${label} Context Map routes recovery through the Runbook index`);
     assert.match(row('| **Root files** |'), /Runbook is an index of operations/, `${label} Root files row states the delivered Runbook shape`);
     assert.match(row('| **Skill and host adapter** |'), /operations index row points to/, `${label} Skill row states that a pointed lane skill binds`);
+    // TK-005N review correction: both Lexicons name the same Contract carriers.
+    assert.match(row('| **Workbench Contract** |'), /carried by `AGENTS\.md`, `RUNBOOK\.md` and `LEXICON\.md`, plus the explicitly assigned Spec's bounded capability requirements and, while an operation is performed, the binding requirements of the lane skill a Runbook operations index row points to for it\./, `${label} Workbench Contract row names the three carriers, the assigned Spec and pointed lane skills`);
     const review = row('| **Review** |');
     for (const target of ['AGENTS.md#git-rules', 'RUNBOOK.md#operations-index', 'workbench/skills/code-review/SKILL.md#independent-review-boundaries']) {
       assert.ok(review.includes(`(${target})`), `${label} Review row links ${target} for the review-independence example`);
