@@ -5,7 +5,7 @@
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
-**Updated:** 2026-09-30
+**Updated:** 2026-10-04
 **Catalog description:** Adopt a small new productivity skill, `wait-what`, so the owner has one checked description of what it does and an aligned skill source.
 **Blockers:** S-002L Skills draft wiki collection must deliver the draft-wiki location and article template before steps 2-5.
 **Latest event:** Authored from the owner's 2026-09-30 draft-skills-wiki direction.
@@ -26,7 +26,7 @@ The owner wants to prototype the skills Wiki on the skills we have and find what
 - No `wait-what` skill exists in the repo or the owner's personal install. `workbench/skills/`, `skills-pending/` and `~/.agents/skills/` hold no directory by that name, and a search of the tree at the pre anchor found no mention of it outside the owner's own inventory. This Spec therefore does not know what the skill does. Step 3 establishes that from Matt's source at the pin; step 1 only records our nearest behavior.
 - Our nearest behavior, checked read-only:
   - `~/.agents/skills/lexicon/SKILL.md` (personal only, no repo source) tells an agent to load the nearest `LEXICON.md` whole, use its terms exactly from the first reply, follow a term to its owning doc, and not report an open question as settled. It says supplying vocabulary is the whole job and routes a wrong map to `/ubiquitous-language` or `/domain-modeling`. Its own Spec is S-003O.
-  - `skills-pending/domain-modeling/SKILL.md` is the active discipline of building the glossary and recording decisions as they form. It names `CONTEXT.md` and `docs/adr/`, which are Matt's paths and not ours. Its live Spec is S-002H, and a live lane may own it, so it is reference only here.
+  - `skills-pending/domain-modeling/SKILL.md` is the active discipline of building the glossary and recording decisions as they form. It names `CONTEXT.md` and `docs/adr/`, which are Matt's paths and not ours. At the pre anchor its live Spec was S-002H; on 2026-10-04 S-002H was superseded by Required Domain Modeling Skill (S-004J), its current owner, so it is reference only here.
   - `LEXICON.md` carries accepted terms, including retired names with the date they retired (for example Portable layout and Portability model).
 - The framing handed to this Spec is only that `wait-what` is a small new skill whose nearest neighbors are `lexicon` and `domain-modeling`. Whether it is actually about vocabulary or about something else is open until step 3.
 - Default home is Pending, per the owner's 2026-09-30 decision that adopted skills default to Pending unless their own Spec says otherwise. `skills-pending/` is a root directory `AGENTS.md` Edit Scope does not list, and `workbench/skills/README.md` describes it as historical rewrite source outside discovery. A new skill placed there is not yet reachable by the catalog.
@@ -49,7 +49,7 @@ The owner wants to prototype the skills Wiki on the skills we have and find what
 ## Non-Goals
 
 - Running the pilot on `wait-what`, or deciding anything about the other pilot skills.
-- Merging `wait-what` into `lexicon` or `domain-modeling`, or editing either; S-003O and S-002H own those.
+- Merging `wait-what` into `lexicon` or `domain-modeling`, or editing either; S-003O and S-004J own those.
 - Moving a skill into Core or changing the Core bundle.
 - Writing any `LEXICON.md` term or ADR for the skill.
 - Reading or copying Matt's text in this planning pass.
@@ -58,7 +58,7 @@ The owner wants to prototype the skills Wiki on the skills we have and find what
 
 - S-002L Skills draft wiki collection must deliver the draft-wiki location and article template before steps 2-5. The tentative location is `workbench/wiki/skills-draft/productivity/wait-what.md`; the Template 2 shape belongs to S-002L.
 - Step 6 depends on the lane decision above (S-00R and the owner). A live lane on S-00R's inventory work exists, so do not edit S-00R.
-- Related, not blocking: S-003O (lexicon) and S-002H (domain-modeling), for the comparison of neighbors.
+- Related, not blocking: S-003O (lexicon) and S-004J (domain-modeling), for the comparison of neighbors.
 
 ## Vertical Implementation Slices
 
@@ -99,6 +99,7 @@ Draft article: `workbench/wiki/skills-draft/productivity/wait-what.md` (tentativ
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-30 | planning | Spec authored from the owner's draft-skills-wiki direction; planning only | Nearest-neighbor sources (personal `lexicon`, pending `domain-modeling`, `LEXICON.md`) and the absence of a `wait-what` source inspected read-only at the pre anchor; no implementation | This Spec authored; no article or skill source written | S-002L, activation, Tasks and all six steps remain open |
+| 2026-10-04 | reference repair | The domain-modeling owner changed: S-002H was superseded by Required Domain Modeling Skill (S-004J) | Read S-002H and S-004J at the remap branch; dated observations keep their anchor with the new owner noted | Current Verified State owner note, Non-Goals and Dependencies lines repointed | Unchanged |
 
 ## Completion Result
 

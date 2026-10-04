@@ -83,10 +83,8 @@ belong to their individual Specs as they are authored.
 
 ## Planned And Optional Skill References
 
-- [Domain Modeling](skill-domain-modeling.md) - sharpen the Workbench's language as decisions form: the optional personal method and the proposed Workbench adaptation
-- [S-002H - Domain Modeling Skill for the Workbench](../specs/S-002H-domain-modeling-skill/SPEC.md) - the Spec that keeps its required-room versus optional-extension distribution choice open
-
-This route does not claim that every room can discover the skill today.
+- [Domain Modeling](skill-domain-modeling.md) - sharpen the Workbench's language as decisions form: the method and the proposed Workbench adaptation
+- [Required Domain Modeling Skill (S-004J)](../specs/S-004J-required-domain-modeling-skill/SPEC.md) - maps the skill into every room's skills lane as a required skill, replacing the superseded Domain Modeling Skill for the Workbench Spec (S-002H); until it is delivered, no room's skills lane carries it
 
 ## Release And Distribution Routing
 
@@ -113,6 +111,9 @@ the reader's procedure, source/revision labels and local serving limits.
 Its saved answers and revision protocol are shared by Claude and Codex. Read
 the existing package before revising it; its working review context does not
 replace this ledger or the underlying decision and delivery owners.
+The Grill Board is the first working form of the
+[Shared Interactive Workbench Board (S-004D)](../specs/S-004D-shared-interactive-board/SPEC.md),
+the destination it grows into.
 
 The question-by-question ledger of every unique grilling question put to the
 owner is a session record, not a Wiki page: it lives in the sessions lane as

@@ -685,7 +685,22 @@ test('move-note in a Git room records a rename and stages only the files it chan
 // `status: draft`, and the scoped status is refused everywhere else.
 const DRAFT_GROUPS = ['getting-started', 'main-workflow', 'shaping', 'upkeep', 'primitives', 'productivity', 'stances', 'foundry'];
 
-function draftArticle(overrides = {}, body = '# Wayfinder: chart a large effort one decision at a time\n\nA draft.\n') {
+const READER_SECTIONS = ['What it does', 'When to reach for it', 'What it needs', 'What it reads and writes', 'How it works', 'Common questions', 'It\'s working if', 'Where it fits'];
+const DRAFT_ONLY_SECTIONS = ['Compared with Matt\'s', 'Findings', 'Sources and history'];
+const FINDING_KINDS = ['dangling', 'stale-name', 'overlap', 'gap', 'conflict', 'missing-skill'];
+
+// A complete draft body: the eight reader sections, the draft-only marker, then
+// the three draft-only sections. `findings` replaces the Findings section text.
+function draftBody({ skip = [], findings = 'F:wayfinder:01 | gap | no home is named for pre-Spec decisions | wayfinder Spec\nF:wayfinder:02 | dangling | names a skill that does not exist | owning Spec' } = {}) {
+  const lines = ['# Wayfinder: chart a large effort one decision at a time', ''];
+  const section = (name) => { if (!skip.includes(name)) lines.push(`## ${name}`, '', name === 'Findings' ? findings : 'Filled.', ''); };
+  READER_SECTIONS.forEach(section);
+  if (!skip.includes('marker')) lines.push('--- draft only, stripped on promotion ---', '');
+  DRAFT_ONLY_SECTIONS.forEach(section);
+  return lines.join('\n');
+}
+
+function draftArticle(overrides = {}, body = draftBody()) {
   return note({
     type: 'memory',
     status: 'draft',
@@ -765,4 +780,79 @@ test('the product wiki carries the skills-draft collection with every group fold
     assert.equal(fs.existsSync(path.join(root, 'workbench', 'wiki', 'skills-draft', group, '.gitkeep')), true, `skills-draft/${group} must be a tracked folder`);
   }
   assert.match(fs.readFileSync(path.join(root, 'workbench', 'wiki', 'SCHEMA.md'), 'utf8'), /skills-draft\//, 'SCHEMA.md names the draft collection as its nesting exception');
+});
+
+
+// S-002L TK-006N: a draft carries the owner-approved reader sections and the
+// draft-only tail, every finding is one greppable line in the fixed format, and
+// the collection's TEMPLATE.md is the template the validator accepts.
+function templateFence(template) {
+  const match = template.match(/```markdown\n(---\n[\s\S]*?)\n```/);
+  assert.ok(match, 'TEMPLATE.md carries the article template in a markdown fence');
+  return match[1] + '\n';
+}
+
+test('a draft must carry the template sections and one well-formed finding per line, and every refusal names the rule', () => {
+  const project = seededWiki();
+  try {
+    const wiki = path.join(project, 'workbench', 'wiki');
+    const drafts = path.join(wiki, 'skills-draft');
+    for (const group of DRAFT_GROUPS) fs.mkdirSync(path.join(drafts, group), { recursive: true });
+    const target = path.join(drafts, 'shaping', 'wayfinder.md');
+    const refusedWith = (article, pattern, why) => {
+      fs.writeFileSync(target, article);
+      const found = validateWiki(project).filter((item) => item.note === 'workbench/wiki/skills-draft/shaping/wayfinder.md');
+      assert.ok(found.some((item) => item.code === 'invalid-note' && pattern.test(item.message)), `${why}: ${found.map((item) => item.message).join(' | ')}`);
+    };
+
+    fs.writeFileSync(target, draftArticle());
+    assert.deepEqual(validateWiki(project), [], 'a complete draft with well-formed findings validates');
+    fs.writeFileSync(target, draftArticle({}, draftBody({ findings: 'none' })));
+    assert.deepEqual(validateWiki(project), [], 'a draft that records no finding says none');
+    fs.writeFileSync(target, draftArticle({}, draftBody({ findings: '<!-- F:<skill>:NN | kind | one line | who fixes it -->\nF:wayfinder:01 | overlap | two skills write the same note | to-docs Spec' })));
+    assert.deepEqual(validateWiki(project), [], 'a single-line comment is allowed beside findings');
+
+    for (const section of [...READER_SECTIONS, ...DRAFT_ONLY_SECTIONS]) {
+      refusedWith(draftArticle({}, draftBody({ skip: [section] })), new RegExp(`must carry a .${section.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}. section`), `a draft missing ${section} is refused`);
+    }
+    refusedWith(draftArticle({}, draftBody({ skip: ['marker'] })), /draft-only marker/, 'a draft without the draft-only marker line is refused');
+
+    refusedWith(draftArticle({}, draftBody({ findings: 'F:wayfinder:1 | gap | number is not two digits | owner' })), /malformed finding line/, 'a finding with a one-digit number is refused');
+    refusedWith(draftArticle({}, draftBody({ findings: 'F:wayfinder:01 | gap | only three fields' })), /malformed finding line/, 'a finding with three fields is refused');
+    refusedWith(draftArticle({}, draftBody({ findings: '- F:wayfinder:01 | gap | bulleted | owner' })), /malformed finding line/, 'a bulleted finding is refused so the roll-up can anchor on F:');
+    refusedWith(draftArticle({}, draftBody({ findings: 'Some prose about the skill.' })), /malformed finding line/, 'prose inside Findings is refused');
+    refusedWith(draftArticle({}, draftBody({ findings: 'F:wayfinder:01 | nonsense | bad kind | owner' })), new RegExp(`finding kind nonsense is not one of ${FINDING_KINDS.join(', ')}`), 'an unknown finding kind is refused');
+    refusedWith(draftArticle({}, draftBody({ findings: 'F:someone-else:01 | gap | wrong skill | owner' })), /finding names skill someone-else, not wayfinder/, 'a finding for another skill is refused');
+    refusedWith(draftArticle({}, draftBody({ findings: 'F:wayfinder:01 | gap | first | owner\nF:wayfinder:01 | gap | repeated number | owner' })), /finding number 01 is used twice/, 'a repeated finding number is refused');
+
+    refusedWith(draftArticle({ origin: 'workbench # foundry = revisit later' }), /origin .* is not one of workbench, matt, foundry/, 'an origin carrying a trailing comment is refused');
+    refusedWith(draftArticle({ skill_source: 'somewhere' }), /skill_source somewhere is not one of core, pending, personal, new/, 'an unknown skill_source is refused');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('the collection TEMPLATE.md fixes the finding line and kinds, and the template it carries validates once filled', () => {
+  const templatePath = path.join(root, 'workbench', 'wiki', 'skills-draft', 'TEMPLATE.md');
+  assert.equal(fs.existsSync(templatePath), true, 'skills-draft/TEMPLATE.md must exist');
+  const template = fs.readFileSync(templatePath, 'utf8');
+  assert.match(template, /F:<skill>:NN \| kind \| one line \| who fixes it/, 'TEMPLATE.md fixes the finding line format');
+  for (const kind of FINDING_KINDS) assert.match(template, new RegExp('`' + kind + '`'), `TEMPLATE.md names the finding kind ${kind}`);
+  const fence = templateFence(template);
+  for (const section of [...READER_SECTIONS, ...DRAFT_ONLY_SECTIONS]) assert.match(fence, new RegExp(`^## ${section.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'm'), `the template carries the ${section} section`);
+  assert.match(fence, /^--- draft only, stripped on promotion ---$/m, 'the template carries the draft-only marker');
+  const project = seededWiki();
+  try {
+    const drafts = path.join(project, 'workbench', 'wiki', 'skills-draft');
+    fs.mkdirSync(path.join(drafts, 'shaping'), { recursive: true });
+    const filled = fence
+      .replace('<skill-name>', 'wayfinder').replace('<group-folder>', 'shaping')
+      .replace('<core | pending | personal | new>', 'pending').replace('<workbench | matt | foundry>', 'matt')
+      .replace('YYYY-MM-DD', '2026-10-04').replace('<repository-relative path>', 'BLUEPRINT.md');
+    assert.doesNotMatch(filled, /<skill-name>|<group-folder>/, 'the named placeholders were all substituted');
+    fs.writeFileSync(path.join(drafts, 'shaping', 'wayfinder.md'), filled);
+    assert.deepEqual(validateWiki(project), [], 'the template, filled with only its named placeholders, is a valid draft');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
 });
