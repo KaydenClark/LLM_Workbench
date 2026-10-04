@@ -8,8 +8,8 @@
 **Updated:** 2026-10-04
 **Catalog description:** Rewrite AGENTS.md as a short standing brief and RUNBOOK.md as an operations index of context pointers, with each operation's procedure and binding requirements in a tracked skill the carrier points to.
 **Blockers:** Implementation waits on gates recorded as Task blockers, none of them an owner decision on this Spec's content: the Worker and Captain role skills (the role-detail Task only), the Lexicon writer's turn (the Lexicon Task only), and delivery of the `LANDMARK.md` artifact (the landmark-clause Task only).
-**Latest event:** TK-005H closed with proof.
-**Next gate:** Complete TK-005I.
+**Latest event:** 2026-10-03: TK-005H (Git, integration review and branch completion family) landed through PR #328 as integration 9b825ae6 after a separate-context Codex review passed its head 41181bc7; TK-005I set ready.
+**Next gate:** Claim, deliver and land TK-005I (verification, documentation ownership and release gate family); then TK-005J, TK-005K and TK-005M run serially, TK-005N after its Lexicon-writer token is confirmed, while TK-005L waits on S-002E and S-004B delivery, TK-005O on S-003Z delivery, and TK-005P on both.
 
 > **Citation anchors.** pre=`226212f1790badce0a5bdcd934d2e48e3981e05f` post=`226212f1790badce0a5bdcd934d2e48e3981e05f`.
 
