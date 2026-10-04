@@ -4,7 +4,7 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - S-01S TK-01J source review and focused command scenarios, 2026-10-01
+  - S-01S (reconciler skill rebuild Spec) TK-01J (Deliver the reconciler skill destination Task) source review and focused command scenarios, 2026-10-01
   - Workbench-native portable stance; no Matt counterpart in the assigned Spec
 source_paths:
   - workbench/skills/reconciler/SKILL.md

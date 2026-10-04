@@ -4,8 +4,8 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - S-01C TK-00T source change and fresh-context scenario, 2026-10-01
-  - Workbench-native core skill since f93c8a4f (S-049, 2026-09-07), no third-party upstream
+  - S-01C (carry skill rebuild Spec) TK-00T (Deliver the carry skill destination Task) source change and fresh-context scenario, 2026-10-01
+  - Workbench-native core skill since f93c8a4f (S-049 (Assignment Ownership And The Coordination Record Spec), 2026-09-07), no third-party upstream
 source_paths:
   - workbench/skills/carry/SKILL.md
   - workbench/specs/S-01C-carry-skill-rebuild/SPEC.md
@@ -37,7 +37,7 @@ The [skill](../skills/carry/SKILL.md) grants nothing. It does not widen scope, r
 
 ### Example, from the verification run
 
-In the S-01C scenario, a fresh agent was given only the carry source text and a small fixture room with one Spec, S-001, whose Task TK-001 (`findNotes`) an earlier run had left in progress: two failing tests and a throwing stub committed and pushed, a receipt row saying red observed and green pending, and a notepad with the next action. The agent found the Task's state in that receipt row and notepad and did not restart the slice. `doctor` also failed on `render-drift`, because the earlier run had recorded its receipt without re-rendering the board. The agent re-ran `render` in its owner and moved on, treating a stale record it could repair as no question for the owner. It implemented `findNotes` (three tests passing), added the README example the Spec's decisions required, recorded a second receipt, pushed, and closed the Task with proof. After a fresh fetch it proved the closing commit contained in the remote task branch with `git merge-base --is-ancestor`. Then it stopped: the room's controls require a separate-context review before `integration`, no reviewer existed in the run, and it named that as an unavailable resource rather than merging. It recorded zero coordination hand-backs in the Spec's evidence log, left the acceptance boxes unchecked pending review, and named the exact base and head SHAs the reviewer needs.
+In the S-01C (carry skill rebuild Spec) scenario, a fresh agent was given only the carry source text and a small fixture room with one Spec, S-001 (the fixture room's notebook-cli Spec), whose Task TK-001 (fixture notes-lookup Task) (`findNotes`) an earlier run had left in progress: two failing tests and a throwing stub committed and pushed, a receipt row saying red observed and green pending, and a notepad with the next action. The agent found the Task's state in that receipt row and notepad and did not restart the slice. `doctor` also failed on `render-drift`, because the earlier run had recorded its receipt without re-rendering the board. The agent re-ran `render` in its owner and moved on, treating a stale record it could repair as no question for the owner. It implemented `findNotes` (three tests passing), added the README example the Spec's decisions required, recorded a second receipt, pushed, and closed the Task with proof. After a fresh fetch it proved the closing commit contained in the remote task branch with `git merge-base --is-ancestor`. Then it stopped: the room's controls require a separate-context review before `integration`, no reviewer existed in the run, and it named that as an unavailable resource rather than merging. It recorded zero coordination hand-backs in the Spec's evidence log, left the acceptance boxes unchecked pending review, and named the exact base and head SHAs the reviewer needs.
 
 ## Composition
 
@@ -51,7 +51,7 @@ Carry is Workbench-native. It entered at [`f93c8a4`](https://github.com/KaydenCl
 
 ## Verified behavior and limits
 
-**Verified 2026-10-01:** the source at S-01C's green commit `aef6c158` names the Task record and its receipt rows as the recovery trace, the in-progress receipt command, and `save` with containment proof. `tools/test-skill-catalog.mjs` pins that wording (red `c2400c50`, green `aef6c158`). One fresh-context agent, given only the skill text, resumed an interrupted Task from its receipt and notepad, reached green, closed with proof, proved remote containment, recorded zero hand-backs and stopped at the review gate with the exact candidate named. Its evidence is in the [Spec evidence](../specs/S-01C-carry-skill-rebuild/SPEC.md#append-only-evidence-and-execution-log).
+**Verified 2026-10-01:** the source at S-01C (carry skill rebuild Spec)'s green commit `aef6c158` names the Task record and its receipt rows as the recovery trace, the in-progress receipt command, and `save` with containment proof. `tools/test-skill-catalog.mjs` pins that wording (red `c2400c50`, green `aef6c158`). One fresh-context agent, given only the skill text, resumed an interrupted Task from its receipt and notepad, reached green, closed with proof, proved remote containment, recorded zero hand-backs and stopped at the review gate with the exact candidate named. Its evidence is in the [Spec evidence](../specs/S-01C-carry-skill-rebuild/SPEC.md#append-only-evidence-and-execution-log).
 
 **Limits:** that was one run with one model (Claude Opus 5.5) against a fixture the implementing agent authored; it is not owner Human QA and not a repeated trial. The room's remote was a local bare repository, so the push proved the mechanism and not a public recovery boundary. The absence of a reviewer was a stated condition of the run, not something the agent discovered. The agent still received its host's default instructions. No tool parses the hand-back rows or the receipt text, so both are wording contracts, not machine formats. Installed personal copies of the skill are not updated by this source change.
 
@@ -66,4 +66,4 @@ Carry is Workbench-native. It entered at [`f93c8a4`](https://github.com/KaydenCl
 
 ## History
 
-- 2026-10-01: Created by S-01C TK-00T with Task-record recovery, in-progress receipts and `save` composition with containment proof delivered in the source, and one fresh-context scenario recorded.
+- 2026-10-01: Created by S-01C (carry skill rebuild Spec) TK-00T (Deliver the carry skill destination Task) with Task-record recovery, in-progress receipts and `save` composition with containment proof delivered in the source, and one fresh-context scenario recorded.

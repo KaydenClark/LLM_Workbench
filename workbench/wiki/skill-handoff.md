@@ -4,9 +4,9 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - S-01A TK-00R source change and fresh-context scenario, 2026-09-26
+  - S-01A (handoff skill rebuild Spec) TK-00R (Deliver the handoff skill destination Task) source change and fresh-context scenario, 2026-09-26
   - Pinned upstream mattpocock/skills c55ee46073ed923f86ce59a5eb3b6d895095d1b7, retrieved 2026-09-26
-  - S-004C TK-005F moved the Runbook procedure behind its index pointer into the skill, 2026-10-03
+  - S-004C (Contract Carrier Pointer-Brief Rewrite Spec) TK-005F (Move the continuity and promotion operations behind their pointers Task) moved the Runbook procedure behind its index pointer into the skill, 2026-10-03
 source_paths:
   - workbench/skills/handoff/SKILL.md
   - workbench/skills/handoff/assets/HANDOFF.md
@@ -54,7 +54,7 @@ Use `handoff` when the owner asks for work to continue somewhere else: another a
 
 ### Example, from the verification run
 
-In the S-01A scenario, an agent given only the skill source, a scratch clone and a local design note was asked to hand off a specification-only job. The job was a Spec for a read-only status-count command, to be picked up in a separate clone that "won't see anything that isn't committed". The note held two decisions, an earlier scope reading with a linked correction, and one open question. The agent wrote a 166-line handoff. It copied the note's content in, because the recipient could not open the note, and wrote the correction as the earlier meaning next to the corrected meaning that now holds. It pinned the commit it had checked and left the open question unanswered. Under `Authorized endpoint` it quoted the owner's words ("the Spec ... and nothing else"). It recorded the handoff in the note's `active_handoffs`, and said that no separate read-back had been done. It committed nothing and sent nothing. Because the handoffs folder is untracked, it told the owner the file had to be delivered by hand.
+In the S-01A (handoff skill rebuild Spec) scenario, an agent given only the skill source, a scratch clone and a local design note was asked to hand off a specification-only job. The job was a Spec for a read-only status-count command, to be picked up in a separate clone that "won't see anything that isn't committed". The note held two decisions, an earlier scope reading with a linked correction, and one open question. The agent wrote a 166-line handoff. It copied the note's content in, because the recipient could not open the note, and wrote the correction as the earlier meaning next to the corrected meaning that now holds. It pinned the commit it had checked and left the open question unanswered. Under `Authorized endpoint` it quoted the owner's words ("the Spec ... and nothing else"). It recorded the handoff in the note's `active_handoffs`, and said that no separate read-back had been done. It committed nothing and sent nothing. Because the handoffs folder is untracked, it told the owner the file had to be delivered by hand.
 
 A second agent, in a different clone that held no note, was told only "Here's the handoff from the previous agent. Please continue." It wrote one planned Spec. It excluded superseded Specs, as the correction required, and kept the earlier reading only as marked history. The open question stayed an open owner choice, and the only Task was blocked on it. It ran `render` and `doctor`, then stopped. It wrote no code, no tests and no claim. It opened every path the handoff cited and found each one matched, with one exception: a search claim the author had made was incomplete. The recipient found a second, unrelated match and recorded both.
 
@@ -84,5 +84,5 @@ The skill descends from Matt Pocock's MIT-licensed `handoff` ([notice](../../THI
 
 ## History
 
-- 2026-10-01: Routed the accepted role-based delegation correction and distinguished it from the prior verified source account; implementation alignment remains in S-01A.
-- 2026-09-26: Created by S-01A TK-00R. The source maps its obligations onto the bundled shape, and one two-agent fresh-context scenario is recorded.
+- 2026-10-01: Routed the accepted role-based delegation correction and distinguished it from the prior verified source account; implementation alignment remains in S-01A (handoff skill rebuild Spec).
+- 2026-09-26: Created by S-01A (handoff skill rebuild Spec) TK-00R (Deliver the handoff skill destination Task). The source maps its obligations onto the bundled shape, and one two-agent fresh-context scenario is recorded.

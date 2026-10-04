@@ -4,7 +4,7 @@ status: partial
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - S-002E authorized staged Worker role delivery
+  - S-002E (Worker Role Spec) authorized staged Worker role delivery
 source_paths:
   - workbench/specs/S-002E-worker-role/SPEC.md
   - workbench/specs/S-002E-worker-role/candidate/worker/SKILL.md

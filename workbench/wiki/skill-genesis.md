@@ -4,8 +4,8 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - S-01G planning packet, 2026-09-24
-  - S-01G TK-00X source change, probe and fresh-context scenario, 2026-09-26
+  - S-01G (genesis skill rebuild Spec) planning packet, 2026-09-24
+  - S-01G (genesis skill rebuild Spec) TK-00X (Deliver the genesis skill destination Task) source change, probe and fresh-context scenario, 2026-09-26
 source_paths:
   - workbench/skills/genesis/SKILL.md
   - templates/GENESIS.md
@@ -53,7 +53,7 @@ A Template copy is still greenfield: it starts a new identity and does not inher
 
 ### Example, from the verification run
 
-In the S-01G scenario, a fresh agent was given only this skill source and a scratch copy of the release. The founding prompt asked for a tiny private Node.js command-line tool that converts temperatures between Celsius and Fahrenheit for a child's science homework, with no dependencies. The target was a new folder and the remote was a local bare repository.
+In the S-01G (genesis skill rebuild Spec) scenario, a fresh agent was given only this skill source and a scratch copy of the release. The founding prompt asked for a tiny private Node.js command-line tool that converts temperatures between Celsius and Fahrenheit for a child's science homework, with no dependencies. The target was a new folder and the remote was a local bare repository.
 
 The agent created the empty folder and classified it (`genesis`). It then built and tested the smallest scaffold: `node bin/temp-converter.js 100 C` prints `100 °C = 212 °F`. It ran `init`, the tools install and the skills install, and filled the seven controls and a founding-prompt wiki note that holds the prompt verbatim. The first Spec is active with a ready task, and open questions such as rounding and Kelvin support are recorded as working assumptions, not decisions. The agent committed on `claude/genesis-temp-converter`, created and pushed `main` and `integration`, and passed `validate --genesis` and doctor, including from a fresh clone.
 
@@ -69,7 +69,7 @@ None is claimed. At the pinned `mattpocock/skills@c55ee46` there is no genesis, 
 
 ## Verified behavior and limits
 
-**Verified 2026-09-26 (S-01G TK-00X):**
+**Verified 2026-09-26 (S-01G (genesis skill rebuild Spec) TK-00X (Deliver the genesis skill destination Task)):**
 
 - **Found and fixed:** a pre-change probe in a scratch room followed only the commands the skill listed (`init` and the tools install). The readiness gate then refused the room with `skill-lane-missing`. The same room with `workbench-skills.mjs install` added passed. The same probe showed that `init --provenance genesis` accepted a folder of existing code, which the classifier reported as `adoption`. The skill now classifies before writing, installs the skills lane and names the readiness gate. `tools/test-skill-catalog.mjs` pins that wording. It failed on the prior source and passes on the change.
 - **Tool behavior relied on:** the tests cover the classifier verdicts and the `validate --genesis` refusals (`tools/test-workbench-layout.mjs`), the skills lane install (`tools/test-skills-lane.mjs`), the `derive` path, including its refusal of an existing destination (`tools/test-genesis-from-decisions.mjs`), and a model-free end-to-end Genesis with push and fresh-clone resume (`tools/test-workbench-round-trip.mjs`).
@@ -79,7 +79,7 @@ None is claimed. At the pinned `mattpocock/skills@c55ee46` there is no genesis, 
 
 ## Remaining intended behavior
 
-- A tool-level refusal, so that `init --provenance genesis` itself declines a folder the classifier would route to adoption. This is not built. It is recorded as a gap in the S-01G Spec.
+- A tool-level refusal, so that `init --provenance genesis` itself declines a folder the classifier would route to adoption. This is not built. It is recorded as a gap in the S-01G (genesis skill rebuild) Spec.
 - Owner Human QA of the conversational side: which questions get asked, and how a reroute is explained.
 
 ## Sources
@@ -92,4 +92,4 @@ None is claimed. At the pinned `mattpocock/skills@c55ee46` there is no genesis, 
 
 ## History
 
-- 2026-09-26: Created by S-01G TK-00X. The source now classifies the target before writing, installs the skills lane and names the readiness gate. The tool-level refusal is recorded as a remaining gap.
+- 2026-09-26: Created by S-01G (genesis skill rebuild Spec) TK-00X (Deliver the genesis skill destination Task). The source now classifies the target before writing, installs the skills lane and names the readiness gate. The tool-level refusal is recorded as a remaining gap.

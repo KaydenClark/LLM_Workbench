@@ -36,7 +36,9 @@ function refuse(code, message) { throw new LandmarkWikiRefusal(code, message); }
 // A name is a phrase of words; identifiers and punctuation are not words.
 // Lowercase function words and bare artifact-kind words ("Spec", "Task") do
 // not make a phrase a name, so "See Spec S-002A" stays bare.
-const WORD = "[A-Za-z][A-Za-z'’]*(?:-[A-Za-z][A-Za-z'’]*)*";
+// A name word is a letter word or a version token ("v4", "v4.0.0", "3.2.1"), so a
+// real title such as "Workbench v4.0.0 Release" stays one name phrase.
+const WORD = "(?:[A-Za-z][A-Za-z'’]*(?:-[A-Za-z][A-Za-z'’]*)*|v?\\d+(?:\\.\\d+)+|v\\d+)";
 const NON_NAME = new Set(['a', 'an', 'the', 'of', 'in', 'on', 'to', 'for', 'and', 'or', 'by', 'as', 'at', 'is', 'are', 'was', 'were', 'be', 'it', 'its', 'this', 'that', 'these', 'those', 'with', 'from', 'through', 'see', 'per', 'via', 'also', 'then', 'now',
   'spec', 'specs', 'task', 'tasks', 'adr', 'adrs', 'note', 'notes', 'notepad', 'notepads', 'card', 'cards', 'decision', 'decisions', 'question', 'questions', 'id', 'ids', 'identifier', 'identifiers']);
 const BEFORE_PHRASE = new RegExp(`(?<![A-Za-z0-9_'’-])(${WORD}(?:[ \\t]+${WORD})*)([\\s:\\-–—()\\[\\]\`*_"“”'’]*)$`);
