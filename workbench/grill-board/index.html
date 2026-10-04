@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grill Board</title>
+<style>
+  :root {
+    --bg: #f6f5f1; --panel: #ffffff; --ink: #1d1c19; --muted: #6b675e; --line: #e2dfd6;
+    --accent: #3b5bdb; --accent-ink: #ffffff; --soft: #eef0fb;
+    --ok: #2f8f5b; --ok-soft: #e6f4ec; --warn: #b7791f; --warn-soft: #fbf1dc; --bad: #c0392b; --bad-soft: #fbe7e4;
+    --stale: #8e5bd6; --stale-soft: #f0e8fb; --applied: #2f6f8f; --applied-soft: #e3eff5;
+    --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15161a; --panel: #1e2026; --ink: #ecebe6; --muted: #a39f94; --line: #2f323b;
+      --accent: #7f97ff; --accent-ink: #0f1120; --soft: #232a44;
+      --ok: #5cc48a; --ok-soft: #1d3328; --warn: #e0a84a; --warn-soft: #3a2e17; --bad: #ef7466; --bad-soft: #3d1f1b;
+      --stale: #b793f2; --stale-soft: #2c2340; --applied: #7fb6d6; --applied-soft: #1b2c36;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15161a; --panel: #1e2026; --ink: #ecebe6; --muted: #a39f94; --line: #2f323b;
+    --accent: #7f97ff; --accent-ink: #0f1120; --soft: #232a44;
+    --ok: #5cc48a; --ok-soft: #1d3328; --warn: #e0a84a; --warn-soft: #3a2e17; --bad: #ef7466; --bad-soft: #3d1f1b;
+    --stale: #b793f2; --stale-soft: #2c2340; --applied: #7fb6d6; --applied-soft: #1b2c36;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--sans); }
+  a { color: var(--accent); }
+  button { font: inherit; cursor: pointer; }
+  .shell { display: grid; grid-template-columns: 280px minmax(0, 1fr); min-height: 100vh; }
+  nav { position: sticky; top: 0; height: 100vh; overflow: auto; border-right: 1px solid var(--line); background: var(--panel); padding: 16px; }
+  nav h1 { font-size: 17px; margin: 0 0 4px; }
+  nav .meta { color: var(--muted); font-size: 12px; margin-bottom: 14px; }
+  .progress { height: 8px; border-radius: 4px; background: var(--line); overflow: hidden; display: flex; margin: 8px 0 14px; }
+  .progress span { display: block; height: 100%; }
+  .filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .chip { border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 999px; padding: 3px 10px; font-size: 12px; }
+  .chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  nav input[type=search] { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); margin-bottom: 14px; }
+  .groups a { display: flex; justify-content: space-between; gap: 8px; padding: 7px 8px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 13px; }
+  .groups a:hover { background: var(--soft); }
+  .groups a small { color: var(--muted); white-space: nowrap; }
+  main { padding: 20px 28px 80px; max-width: 1100px; }
+  .banner { position: sticky; top: 0; z-index: 5; background: var(--warn-soft); color: var(--ink); border: 1px solid var(--warn); border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; display: none; align-items: center; justify-content: space-between; gap: 12px; }
+  .banner.show { display: flex; }
+  .notice { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin-bottom: 24px; color: var(--muted); font-size: 14px; }
+  .notice strong { color: var(--ink); }
+  section.group { margin: 0 0 36px; }
+  section.group > header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+  section.group h2 { font-size: 20px; margin: 0; }
+  section.group .intro { color: var(--muted); margin: 0 0 14px; font-size: 14px; }
+  .bulk { font-size: 12px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 8px; padding: 4px 10px; }
+  article.item { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin-bottom: 14px; }
+  article.item[data-status="applied"] { border-color: var(--applied); }
+  article.item[data-status="answered"] { border-color: var(--ok); }
+  article.item[data-status="stale"] { border-color: var(--stale); }
+  article.item[data-status="withdrawn"] { opacity: .6; }
+  .item-head { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
+  .item-head h3 { margin: 0; font-size: 16px; line-height: 1.35; }
+  .item-head .id { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-right: 8px; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; border-radius: 6px; padding: 2px 8px; }
+  .badge.pending { background: var(--soft); color: var(--accent); }
+  .badge.answered { background: var(--ok-soft); color: var(--ok); }
+  .badge.applied { background: var(--applied-soft); color: var(--applied); }
+  .badge.stale { background: var(--stale-soft); color: var(--stale); }
+  .badge.withdrawn { background: var(--line); color: var(--muted); }
+  .kind { font-size: 12px; color: var(--muted); margin-left: 6px; }
+  .q { font-weight: 600; margin: 10px 0 12px; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 900px) { .cols { grid-template-columns: 1fr; } .shell { grid-template-columns: 1fr; } nav { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); } main { padding: 16px; } }
+  .block { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 14px; }
+  .block h4 { margin: 0 0 6px; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  .block p { margin: 0 0 8px; } .block p:last-child { margin-bottom: 0; }
+  .block ul, .block ol { margin: 0 0 8px; padding-left: 20px; }
+  .block pre { white-space: pre-wrap; word-break: break-word; font-family: var(--mono); font-size: 12.5px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin: 0 0 8px; }
+  .block code { font-family: var(--mono); font-size: 12.5px; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
+  .block blockquote { margin: 0 0 8px; padding-left: 10px; border-left: 3px solid var(--line); color: var(--muted); }
+  .block h1, .block h2, .block h3 { font-size: 14px; margin: 10px 0 4px; }
+  details.draft { margin-top: 12px; }
+  details.draft summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+  details.draft .block { margin-top: 8px; max-height: 70vh; overflow: auto; }
+  .sources { margin: 12px 0 0; font-size: 12.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 14px; }
+  .sources a, .sources button { color: var(--accent); background: none; border: 0; padding: 0; font-size: 12.5px; text-decoration: underline; }
+  .answer { margin-top: 14px; border-top: 1px dashed var(--line); padding-top: 12px; }
+  .options { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .opt { border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 10px; padding: 6px 12px; font-size: 13.5px; }
+  .opt:hover { border-color: var(--accent); }
+  .opt[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .opt[data-value="decline"][aria-pressed="true"], .opt[data-value="drop"][aria-pressed="true"] { background: var(--bad); border-color: var(--bad); color: #fff; }
+  .opt[data-value="correct"][aria-pressed="true"], .opt[data-value="finding"][aria-pressed="true"] { background: var(--warn); border-color: var(--warn); color: #fff; }
+  .hint { font-size: 12px; color: var(--muted); min-height: 18px; margin-bottom: 8px; }
+  textarea { width: 100%; min-height: 72px; resize: vertical; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); font: inherit; }
+  textarea.needs-note { border-color: var(--warn); }
+  .save { font-size: 12px; color: var(--muted); margin-top: 6px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .save .err { color: var(--bad); }
+  .applied-box { margin-top: 10px; background: var(--applied-soft); border: 1px solid var(--applied); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
+  .stale-box { margin-top: 10px; background: var(--stale-soft); border: 1px solid var(--stale); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
+  .empty { color: var(--muted); padding: 30px 0; text-align: center; }
+  dialog { width: min(1000px, 92vw); max-height: 88vh; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--ink); padding: 0; }
+  dialog header { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 12.5px; }
+  dialog pre { margin: 0; padding: 16px; white-space: pre-wrap; word-break: break-word; font-family: var(--mono); font-size: 12.5px; max-height: 76vh; overflow: auto; }
+  dialog::backdrop { background: rgba(0,0,0,.45); }
+  .theme { font-size: 12px; border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 8px; padding: 2px 8px; margin-top: 12px; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav>
+    <h1 id="title">Grill Board</h1>
+    <div class="meta" id="meta">loading…</div>
+    <div class="progress" id="progress" title="pending / re-answer / answered / applied"></div>
+    <div class="filters" id="filters"></div>
+    <input type="search" id="search" placeholder="Search titles, questions, text…" aria-label="Search items">
+    <div class="groups" id="groups"></div>
+    <button class="theme" id="theme">Toggle theme</button>
+  </nav>
+  <main>
+    <div class="banner" id="banner"><span>An agent updated the board since you loaded it. Your saved answers are safe.</span><button class="bulk" onclick="location.reload()">Reload</button></div>
+    <div class="notice" id="notice"></div>
+    <div id="content"><div class="empty">Loading the board…</div></div>
+  </main>
+</div>
+<dialog id="viewer"><header><span id="viewer-path"></span><button class="bulk" onclick="document.getElementById('viewer').close()">Close</button></header><pre id="viewer-text"></pre></dialog>
+<script>
+(() => {
+  const STATUS_LABEL = { pending: 'Pending', stale: 'Re-answer', answered: 'Answered', applied: 'Applied', withdrawn: 'Withdrawn' };
+  const STATUS_ORDER = ['pending', 'stale', 'answered', 'applied', 'withdrawn'];
+  const state = { board: null, filter: 'open', query: '', timers: new Map() };
+  try { state.filter = localStorage.getItem('grill-board-filter') || 'open'; } catch {}
+
+  const esc = (text) => String(text ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  // A deliberately small Markdown renderer: paragraphs, headings, lists,
+  // quotes, fenced code, inline code, bold and links. Everything else is text.
+  function inline(text) {
+    return esc(text)
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  }
+  function markdown(text) {
+    const lines = String(text ?? '').replace(/\r\n/g, '\n').split('\n');
+    const out = [];
+    let i = 0;
+    while (i < lines.length) {
+      const line = lines[i];
+      if (/^```/.test(line)) {
+        const buf = [];
+        i += 1;
+        while (i < lines.length && !/^```/.test(lines[i])) { buf.push(lines[i]); i += 1; }
+        i += 1;
+        out.push(`<pre>${esc(buf.join('\n'))}</pre>`);
+        continue;
+      }
+      if (/^---\s*$/.test(line) && i === 0) {
+        const buf = [];
+        i += 1;
+        while (i < lines.length && !/^---\s*$/.test(lines[i])) { buf.push(lines[i]); i += 1; }
+        i += 1;
+        out.push(`<pre>${esc(buf.join('\n'))}</pre>`);
+        continue;
+      }
+      if (/^\|/.test(line)) {
+        const buf = [];
+        while (i < lines.length && /^\|/.test(lines[i])) { buf.push(lines[i]); i += 1; }
+        out.push(`<pre>${esc(buf.join('\n'))}</pre>`);
+        continue;
+      }
+      const heading = line.match(/^(#{1,6})\s+(.*)$/);
+      if (heading) { out.push(`<h${Math.min(3, heading[1].length)}>${inline(heading[2])}</h${Math.min(3, heading[1].length)}>`); i += 1; continue; }
+      if (/^\s*([-*]|\d+\.)\s+/.test(line)) {
+        const ordered = /^\s*\d+\./.test(line);
+        const buf = [];
+        while (i < lines.length && /^\s*([-*]|\d+\.)\s+/.test(lines[i])) {
+          let item = lines[i].replace(/^\s*([-*]|\d+\.)\s+/, '');
+          i += 1;
+          while (i < lines.length && /^\s{2,}\S/.test(lines[i]) && !/^\s*([-*]|\d+\.)\s+/.test(lines[i])) { item += ' ' + lines[i].trim(); i += 1; }
+          buf.push(`<li>${inline(item)}</li>`);
+        }
+        out.push(`<${ordered ? 'ol' : 'ul'}>${buf.join('')}</${ordered ? 'ol' : 'ul'}>`);
+        continue;
+      }
+      if (/^>/.test(line)) {
+        const buf = [];
+        while (i < lines.length && /^>/.test(lines[i])) { buf.push(lines[i].replace(/^>\s?/, '')); i += 1; }
+        out.push(`<blockquote>${markdown(buf.join('\n'))}</blockquote>`);
+        continue;
+      }
+      if (!line.trim()) { i += 1; continue; }
+      const buf = [];
+      while (i < lines.length && lines[i].trim() && !/^(```|#{1,6}\s|>|\s*([-*]|\d+\.)\s+|\|)/.test(lines[i])) { buf.push(lines[i]); i += 1; }
+      out.push(`<p>${inline(buf.join(' '))}</p>`);
+    }
+    return out.join('');
+  }
+
+  async function load() {
+    const response = await fetch('/api/board', { cache: 'no-store' });
+    if (!response.ok) throw new Error(`board ${response.status}`);
+    state.board = await response.json();
+    render();
+  }
+
+  function visible(item) {
+    const status = item.derivedStatus;
+    if (state.filter === 'open' && !(status === 'pending' || status === 'stale')) return false;
+    if (state.filter !== 'open' && state.filter !== 'all' && status !== state.filter) return false;
+    if (state.query) {
+      const hay = `${item.id} ${item.title} ${item.question} ${item.current} ${item.proposal} ${item.draft ?? ''} ${(item.tags || []).join(' ')}`.toLowerCase();
+      if (!hay.includes(state.query)) return false;
+    }
+    return true;
+  }
+
+  function render() {
+    const board = state.board;
+    document.getElementById('title').textContent = board.title || 'Grill Board';
+    document.getElementById('meta').textContent = `integration ${board.integration} · built ${new Date(board.generatedAt).toLocaleString()} · ${board.items.length} items`;
+    document.getElementById('notice').innerHTML = markdown(board.notice || '');
+    const c = board.counts;
+    const total = Math.max(1, board.items.length);
+    document.getElementById('progress').innerHTML = [['pending', 'var(--line)'], ['stale', 'var(--stale)'], ['answered', 'var(--ok)'], ['applied', 'var(--applied)']]
+      .map(([k, color]) => `<span style="width:${(100 * c[k]) / total}%;background:${color}" title="${STATUS_LABEL[k]} ${c[k]}"></span>`).join('');
+    const filters = [['open', `To answer (${c.pending + c.stale})`], ['answered', `Answered (${c.answered})`], ['applied', `Applied (${c.applied})`], ['withdrawn', `Withdrawn (${c.withdrawn})`], ['all', `All (${board.items.length})`]];
+    document.getElementById('filters').innerHTML = filters.map(([value, label]) => `<button class="chip" data-filter="${value}" aria-pressed="${state.filter === value}">${label}</button>`).join('');
+    for (const chip of document.querySelectorAll('.chip')) chip.onclick = () => { state.filter = chip.dataset.filter; try { localStorage.setItem('grill-board-filter', state.filter); } catch {} render(); };
+
+    const groups = board.groups.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    const content = [];
+    const navLinks = [];
+    for (const group of groups) {
+      const all = board.items.filter((item) => item.group === group.id);
+      const shown = all.filter(visible);
+      const open = all.filter((item) => item.derivedStatus === 'pending' || item.derivedStatus === 'stale').length;
+      navLinks.push(`<a href="#g-${esc(group.id)}"><span>${esc(group.title)}</span><small>${open} open / ${all.length}</small></a>`);
+      if (!shown.length) continue;
+      const bulk = shown.some((item) => item.derivedStatus === 'pending' && item.options.some((o) => o.value === 'confirm'))
+        ? `<button class="bulk" data-bulk="${esc(group.id)}">Confirm every unanswered item in this group</button>` : '';
+      content.push(`<section class="group" id="g-${esc(group.id)}"><header><h2>${esc(group.title)}</h2>${bulk}</header><p class="intro">${inline(group.intro || '')}</p>${shown.map(card).join('')}</section>`);
+    }
+    document.getElementById('groups').innerHTML = navLinks.join('');
+    document.getElementById('content').innerHTML = content.length ? content.join('') : '<div class="empty">Nothing matches this filter.</div>';
+    wire();
+  }
+
+  function card(item) {
+    const status = item.derivedStatus;
+    const answer = item.answer || { verdict: '', note: '' };
+    const needsNote = ['correct', 'finding', 'destination_change', 'answer', 'return_reworded'].includes(answer.verdict) && !answer.note.trim();
+    const options = item.options.map((o) => `<button class="opt" data-value="${esc(o.value)}" data-hint="${esc(o.hint || '')}" aria-pressed="${answer.verdict === o.value}">${esc(o.label)}</button>`).join('');
+    const sources = (item.links || []).map((s) => {
+      const view = s.path && !s.path.startsWith('/') ? `<button data-view="${esc(s.path)}">${esc(s.label)}</button>` : `<span>${esc(s.label)}</span>`;
+      const gh = s.url ? ` <a href="${esc(s.url)}" target="_blank" rel="noopener" title="open on GitHub at ${esc(s.ref)}">↗</a>` : '';
+      return `<span>${view}${gh}</span>`;
+    }).join('');
+    const applied = item.applied ? `<div class="applied-box"><strong>Applied</strong> by ${esc(item.applied.by)} on ${new Date(item.applied.at).toLocaleString()}: ${esc(item.applied.where)}${item.applied.agentNote ? ` — ${esc(item.applied.agentNote)}` : ''}<br><small>Your answer then: ${esc(item.applied.verdict || '(note only)')}${item.applied.note ? ` — "${esc(item.applied.note)}"` : ''}</small></div>` : '';
+    const stale = status === 'stale' ? `<div class="stale-box">This item changed after you answered (now revision ${item.revision}; you answered revision ${answer.itemRevision}). Your earlier answer was <strong>${esc(answer.verdict || '(note only)')}</strong>${answer.note ? `: "${esc(answer.note)}"` : ''}. Please answer again.</div>` : '';
+    const history = (item.history || []).filter((h) => h.revision > 1 || /^applied|^withdrawn/.test(h.reason || '')).map((h) => `${new Date(h.at).toLocaleDateString()} · ${esc(h.by)}: ${esc(h.reason)}`);
+    return `<article class="item" id="${item.id}" data-id="${item.id}" data-status="${status}" data-revision="${item.revision}">
+      <div class="item-head"><h3><span class="id">${item.id}</span>${esc(item.title)}</h3><span><span class="badge ${status}">${STATUS_LABEL[status]}</span><span class="kind">${esc(item.kind)}</span></span></div>
+      <p class="q">${esc(item.question)}</p>
+      <div class="cols">
+        <div class="block"><h4>Now</h4>${markdown(item.current)}</div>
+        <div class="block"><h4>Proposed</h4>${markdown(item.proposal)}</div>
+      </div>
+      ${item.draft ? `<details class="draft"><summary>Read the full draft text</summary><div class="block">${markdown(item.draft)}</div></details>` : ''}
+      ${sources ? `<div class="sources"><span>Sources:</span>${sources}</div>` : ''}
+      ${history.length ? `<div class="sources"><span>History:</span>${history.map((h) => `<span>${h}</span>`).join('')}</div>` : ''}
+      ${stale}${applied}
+      <div class="answer">
+        <div class="options">${options}</div>
+        <div class="hint">${esc(item.options.find((o) => o.value === answer.verdict)?.hint || 'Pick a verdict, then add any notes. Saves as you type.')}</div>
+        <textarea class="${needsNote ? 'needs-note' : ''}" placeholder="Notes, corrections, the words you want used…">${esc(answer.note)}</textarea>
+        <div class="save"><span class="status">${answer.at ? `Saved ${new Date(answer.at).toLocaleString()}` : 'Not answered yet'}</span><span class="err"></span></div>
+      </div>
+    </article>`;
+  }
+
+  function wire() {
+    for (const article of document.querySelectorAll('article.item')) {
+      const id = article.dataset.id;
+      for (const opt of article.querySelectorAll('.opt')) {
+        opt.onclick = () => {
+          const pressed = opt.getAttribute('aria-pressed') === 'true';
+          for (const other of article.querySelectorAll('.opt')) other.setAttribute('aria-pressed', 'false');
+          if (!pressed) opt.setAttribute('aria-pressed', 'true');
+          article.querySelector('.hint').textContent = pressed ? 'Pick a verdict, then add any notes. Saves as you type.' : (opt.dataset.hint || '');
+          save(article, 0);
+        };
+      }
+      article.querySelector('textarea').oninput = () => save(article, 700);
+      for (const button of article.querySelectorAll('[data-view]')) button.onclick = () => viewFile(button.dataset.view);
+    }
+    for (const button of document.querySelectorAll('[data-bulk]')) {
+      button.onclick = async () => {
+        const group = button.dataset.bulk;
+        const targets = [...document.querySelectorAll(`#g-${CSS.escape(group)} article.item[data-status="pending"]`)].filter((a) => a.querySelector('.opt[data-value="confirm"]'));
+        if (!targets.length) return;
+        if (!confirm(`Mark ${targets.length} unanswered item(s) in this group as Confirm? Items you already answered are untouched.`)) return;
+        for (const article of targets) {
+          for (const other of article.querySelectorAll('.opt')) other.setAttribute('aria-pressed', other.dataset.value === 'confirm' ? 'true' : 'false');
+          await save(article, 0, true);
+        }
+        await load();
+      };
+    }
+  }
+
+  function save(article, delay, immediate) {
+    const id = article.dataset.id;
+    clearTimeout(state.timers.get(id));
+    const run = async () => {
+      const verdict = article.querySelector('.opt[aria-pressed="true"]')?.dataset.value ?? '';
+      const note = article.querySelector('textarea').value;
+      const statusEl = article.querySelector('.save .status');
+      const errEl = article.querySelector('.save .err');
+      statusEl.textContent = 'Saving…';
+      try {
+        const response = await fetch(`/api/answers/${id}`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ verdict, note, itemRevision: Number(article.dataset.revision) }) });
+        const body = await response.json();
+        if (!response.ok) throw new Error(body.error?.message || response.status);
+        statusEl.textContent = `Saved ${new Date(body.at).toLocaleTimeString()}`;
+        errEl.textContent = '';
+        const item = state.board.items.find((candidate) => candidate.id === id);
+        if (item) { item.answer = body; item.derivedStatus = body.derivedStatus; }
+        article.dataset.status = body.derivedStatus;
+        article.querySelector('.badge').className = `badge ${body.derivedStatus}`;
+        article.querySelector('.badge').textContent = STATUS_LABEL[body.derivedStatus];
+        const needsNote = ['correct', 'finding', 'destination_change', 'answer', 'return_reworded'].includes(verdict) && !note.trim();
+        article.querySelector('textarea').classList.toggle('needs-note', needsNote);
+        refreshCounts();
+      } catch (error) {
+        statusEl.textContent = 'Not saved';
+        errEl.textContent = `Save failed: ${error.message}. Is the server still running?`;
+      }
+    };
+    if (immediate) return run();
+    state.timers.set(id, setTimeout(run, delay));
+  }
+
+  function refreshCounts() {
+    const counts = { pending: 0, stale: 0, answered: 0, applied: 0, withdrawn: 0 };
+    for (const item of state.board.items) counts[item.derivedStatus] += 1;
+    state.board.counts = counts;
+    const total = Math.max(1, state.board.items.length);
+    document.getElementById('progress').innerHTML = [['pending', 'var(--line)'], ['stale', 'var(--stale)'], ['answered', 'var(--ok)'], ['applied', 'var(--applied)']]
+      .map(([k, color]) => `<span style="width:${(100 * counts[k]) / total}%;background:${color}"></span>`).join('');
+    const labels = { open: `To answer (${counts.pending + counts.stale})`, answered: `Answered (${counts.answered})`, applied: `Applied (${counts.applied})`, withdrawn: `Withdrawn (${counts.withdrawn})`, all: `All (${state.board.items.length})` };
+    for (const chip of document.querySelectorAll('.chip')) chip.textContent = labels[chip.dataset.filter];
+    for (const link of document.querySelectorAll('.groups a')) {
+      const gid = link.getAttribute('href').slice(3);
+      const all = state.board.items.filter((item) => item.group === gid);
+      const open = all.filter((item) => item.derivedStatus === 'pending' || item.derivedStatus === 'stale').length;
+      link.querySelector('small').textContent = `${open} open / ${all.length}`;
+    }
+  }
+
+  async function viewFile(relPath) {
+    const dialog = document.getElementById('viewer');
+    document.getElementById('viewer-path').textContent = relPath;
+    document.getElementById('viewer-text').textContent = 'Loading…';
+    dialog.showModal();
+    try {
+      const response = await fetch(`/api/file?path=${encodeURIComponent(relPath)}`);
+      const body = await response.json();
+      document.getElementById('viewer-text').textContent = response.ok ? body.text : `Could not read: ${body.error?.message}`;
+    } catch (error) {
+      document.getElementById('viewer-text').textContent = `Could not read: ${error.message}`;
+    }
+  }
+
+  document.getElementById('search').oninput = (event) => { state.query = event.target.value.trim().toLowerCase(); render(); };
+  document.getElementById('theme').onclick = () => {
+    const root = document.documentElement;
+    const current = root.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    root.dataset.theme = current === 'dark' ? 'light' : 'dark';
+    try { localStorage.setItem('grill-board-theme', root.dataset.theme); } catch {}
+  };
+  try { const saved = localStorage.getItem('grill-board-theme'); if (saved) document.documentElement.dataset.theme = saved; } catch {}
+
+  // Agents may add, revise or apply items while the page is open. Poll the
+  // items file's modification time and offer a reload rather than redrawing
+  // under the owner's hands.
+  setInterval(async () => {
+    if (!state.board) return;
+    try {
+      const response = await fetch('/api/status', { cache: 'no-store' });
+      const status = await response.json();
+      if (status.itemsMtime !== state.board.itemsMtime) document.getElementById('banner').classList.add('show');
+    } catch {}
+  }, 15000);
+
+  load().catch((error) => { document.getElementById('content').innerHTML = `<div class="empty">Could not load the board: ${esc(error.message)}</div>`; });
+})();
+</script>
+</body>
+</html>
