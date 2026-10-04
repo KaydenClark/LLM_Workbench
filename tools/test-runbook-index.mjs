@@ -419,3 +419,34 @@ for (const family of FAMILIES) {
     }
   });
 }
+
+// S-004C TK-005G review correction: procedures moved into lane skills keep
+// working links. Every relative Markdown link outside code in a lane skill
+// resolves from that skill's own folder (a generated room lays its lane down
+// with the same layout), and a fragment names a heading in its target.
+test('every relative Markdown link in a lane skill resolves from the skill folder', () => {
+  const lane = 'workbench/skills';
+  const broken = [];
+  let checked = 0;
+  for (const name of fs.readdirSync(path.join(root, lane)).sort()) {
+    const skillFile = `${lane}/${name}/SKILL.md`;
+    if (!fs.existsSync(path.join(root, skillFile))) continue;
+    let fence = false;
+    const prose = read(skillFile).split('\n').filter((line) => {
+      if (/^\s*(```|~~~)/.test(line)) { fence = !fence; return false; }
+      return !fence;
+    }).join('\n').replace(/`[^`\n]*`/g, '');
+    for (const target of links(prose)) {
+      if (/^[a-z][a-z0-9+.-]*:/i.test(target) || target.startsWith('/')) continue;
+      checked += 1;
+      const [relative, fragment] = target.split('#');
+      const file = relative ? path.normalize(path.join(path.dirname(skillFile), relative)) : skillFile;
+      if (!fs.existsSync(path.join(root, file))) { broken.push(`${skillFile}: ${target} (missing ${file})`); continue; }
+      if (fragment && file.endsWith('.md') && !headings(read(file)).some((heading) => heading.slug === fragment)) {
+        broken.push(`${skillFile}: ${target} (no heading #${fragment} in ${file})`);
+      }
+    }
+  }
+  assert.ok(checked > 10, `the scan found the lane skill links (${checked})`);
+  assert.deepEqual(broken, []);
+});
