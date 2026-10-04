@@ -210,7 +210,10 @@ test('design-concept articles need the owner-directed shape and stale notes are 
     fs.writeFileSync(path.join(concepts, 'Half Article.md'), note({ type: 'project' }, '# Half Article\n\nNo sections.\n'));
     const messages = validateWiki(project).map((item) => item.message);
     assert.ok(messages.some((message) => /type design-concept/.test(message)));
-    assert.ok(messages.some((message) => /authorized_by/.test(message)));
+    const authorizedBy = messages.filter((message) => /authorized_by/.test(message));
+    assert.equal(authorizedBy.length, 1);
+    assert.match(authorizedBy[0], /the operation that authorized/);
+    assert.doesNotMatch(authorizedBy[0], /owner/);
     assert.ok(messages.some((message) => /parent/.test(message)));
     assert.ok(messages.some((message) => /Evidence and Sources/.test(message)));
     assert.ok(messages.some((message) => /History/.test(message)));

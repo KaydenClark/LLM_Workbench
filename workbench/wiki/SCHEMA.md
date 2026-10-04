@@ -168,7 +168,8 @@ did the router get its summary line, was a concept mentioned that has no
 page. At Spec review, when the Spec's work is verified, lint the whole wiki
 the same way against the current controls and question cards. Findings
 become corrective Tasks. This is a reading job for an agent; the structural
-validator below keeps running on every change and does not replace it.
+validator below keeps running on every change and does not replace it. The
+checklist for both cadences is the Runbook's Wiki Lint section (`RUNBOOK.md`).
 
 ## Concurrency
 
