@@ -1138,6 +1138,9 @@ test('TK-005N: both Lexicons and the README describe the delivered carrier shape
     assert.match(row('| **Skill and host adapter** |'), /operations index row points to/, `${label} Skill row states that a pointed lane skill binds`);
     // TK-005N review correction: both Lexicons name the same Contract carriers.
     assert.match(row('| **Workbench Contract** |'), /carried by `AGENTS\.md`, `RUNBOOK\.md` and `LEXICON\.md`, plus the explicitly assigned Spec's bounded capability requirements and, while an operation is performed, the binding requirements of the lane skill a Runbook operations index row points to for it\./, `${label} Workbench Contract row names the three carriers, the assigned Spec and pointed lane skills`);
+    // Second review correction: the ownership schema's opening sentence agrees.
+    assert.match(lexicon.replace(/\s+/g, ' '), /The Workbench Contract spans `AGENTS\.md`, `RUNBOOK\.md`, `LEXICON\.md`, the bounded assigned Spec and, while an operation is performed, the lane skill a Runbook operations index row points to; it is not another document\. Other root artifacts are routed by the question they answer\./, `${label} ownership schema names the same Contract carriers`);
+    assert.doesNotMatch(lexicon, /The Workbench Contract spans its existing root files/, `${label} Lexicon no longer says the Contract spans every root file`);
     const review = row('| **Review** |');
     for (const target of ['AGENTS.md#git-rules', 'RUNBOOK.md#operations-index', 'workbench/skills/code-review/SKILL.md#independent-review-boundaries']) {
       assert.ok(review.includes(`(${target})`), `${label} Review row links ${target} for the review-independence example`);
