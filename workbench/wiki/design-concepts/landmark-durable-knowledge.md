@@ -67,7 +67,7 @@ separately owner-confirmed.
   (card [DQC-003R: "How should Complete distinguish capture from final cleanup?"](../../landmark-tracker/destination-questions/DQC-003R.json), revision 8).
   The same card records the owner's redirect to a generated JSON board with six
   lanes that replaces the Markdown board.
-- **Features articles.** A new Wiki collection named features holds one article
+- **Features articles.** A new Wiki collection named features is designed to hold one article
   per completed Spec, written at the closure point and not as a new gate
   (card [DQC-004L: "What should a Wiki feature article explain, and when is it written?"](../../landmark-tracker/destination-questions/DQC-004L.json), revision 7).
   The collection is delivered and holds the feature articles migrated from the
