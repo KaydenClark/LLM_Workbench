@@ -981,7 +981,8 @@ test('workflow checks reject substantive and literal-route mutations with accept
   missingOwner.records.get('000G').data = { ...missingOwner.records.get('000G').data, canonicalized_in: ['BLUEPRINT.md'] };
   assert.throws(() => assertWorkflowMeaning(missingOwner), undefined, 'missing operational owner with accepted lifecycle');
   for (const [label, file, before, after] of [
-    ['Context Map route', 'LEXICON.md', '(RUNBOOK.md)', '(MISSING-RUNBOOK.md)'],
+    // S-004C TK-005N routes the Lexicon's Runbook links through the operations index.
+    ['Context Map route', 'LEXICON.md', '(RUNBOOK.md#operations-index)', '(MISSING-RUNBOOK.md#operations-index)'],
     ['Context Map heading', 'LEXICON.md', '(#artifact-ownership-schema)', '(#missing-owner-heading)'],
     ['Packet regains a corrective Wiki claim', 'LEXICON.md', 'Spec acceptance lines it satisfies, the Task', 'Spec acceptance lines it satisfies or the reconciled Wiki claim for corrective work, the Task'],
     ['operational owner claim', 'AGENTS.md', 'Dispatcher owns whole-Spec QA', 'Worker owns whole-Spec QA']
