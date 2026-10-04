@@ -205,8 +205,8 @@ for a manifest whose recorded source identity is a placeholder or disagrees with
 `workbenchVersion`. `doctor` emits both, from the installed-state hook beside
 its managed-runtime check; the checks themselves live in
 `workbench/tools/workbench-layout.mjs` and are repaired by its `seed-documents`
-and `record-source` commands. `RUNBOOK.md` -> Installed State The Harness Wrote
-documents them. Neither blocks.
+and `record-source` commands. The `workbench-runtime` skill's Installed State The
+Harness Wrote section documents them. Neither blocks.
 
 `normalize` is the explicit repair for a note missing required properties. It
 inserts only what is absent, never edits a body or overwrites a declared value,

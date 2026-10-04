@@ -37,6 +37,10 @@ Contract change.
 | Verify a behavior change | A behavior change needs its red/green test, its targeted test and the full verification suite before its result is claimed. | [implement](workbench/skills/implement/SKILL.md#engineering-and-verification); this room's suite: [Test And Build](#test-and-build) |
 | Hold test coverage | You add or change tests, or judge whether coverage is enough. | [implement](workbench/skills/implement/SKILL.md#test-coverage-policy) |
 | Run the Workbench runtime tools | You run doctor, selection, records, decision records or diagnostics from the installed tools lane. | [Workbench Lifecycle, Diagnostics, And Decision Records](#workbench-lifecycle-diagnostics-and-decision-records) |
+| Write or accept a decision record | A decision record (ADR or DDR) is proposed, accepted, superseded, deprecated, read, linked or validated. | [to-docs](workbench/skills/to-docs/SKILL.md#decision-records) |
+| Read a diagnostic and its blocking effect | A runtime tool reports a finding and you need its severity and what it blocks. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#diagnostics-and-blocking-effects) |
+| Validate the Wiki | A Wiki page changed, or doctor reports a Wiki finding. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#wiki-validation) |
+| Repair installed state | doctor reports installed state that a room command rewrites. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#installed-state-the-harness-wrote) |
 | Deliver a Spec through its lifecycle | You pick up, deliver, review or close an assigned Spec and its Tasks. | [Spec Lifecycle And Retrieval](#spec-lifecycle-and-retrieval) |
 | Pick, claim and close a Task | Every pickup or resume of assigned work: selection, claim, receipt, close and blocker rules. | [implement](workbench/skills/implement/SKILL.md#work-selection-and-lifecycle) |
 | Work a Task as Worker | You select, claim, implement, record receipts for, self-check, close and hand back one Task. | [implement](workbench/skills/implement/SKILL.md#worker-selection-implementation-and-hand-back) |
@@ -44,12 +48,12 @@ Contract change.
 | Correct a failed review | A verdict or owner finding failed and its findings return to the still-open Spec. | [dispatcher](workbench/skills/dispatcher/SKILL.md#assembled-review-and-corrective-return) |
 | Record owner Human QA and complete | The owner approves delivered work, or main containment must be proven before `complete`. | [director](workbench/skills/director/SKILL.md#owner-human-qa-and-main-before-complete); closure rules: [director](workbench/skills/director/SKILL.md#owner-closure-and-reconciliation) |
 | Capture, retire or recover a completed Spec | After `complete`: feature capture, retirement, discard or recovery. | [director](workbench/skills/director/SKILL.md#documentation-feature-capture-retirement-and-recovery) |
-| Allocate a visible identifier | You need a new Spec, Task, note or other visible identifier. | [Visible Identifiers](#visible-identifiers) |
-| Use the Landmark Tracker | Concept understanding (DQCs, landmarks) changes, or the Tracker view is needed. | [Landmark Tracker: accepted design and available operations](#landmark-tracker-accepted-design-and-available-operations) |
+| Allocate a visible identifier | You need a new Spec, Task, note or other visible identifier. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#visible-identifiers) |
+| Use the Landmark Tracker | Concept understanding (DQCs, landmarks) changes, or the Tracker view is needed. | [notepad](workbench/skills/notepad/SKILL.md#landmark-tracker-accepted-design-and-available-operations) |
 | Keep a JSON notepad | Meaningful work needs a local note created, resumed, appended, trimmed or cleaned up. | [notepad](workbench/skills/notepad/SKILL.md#runtime-reference) |
 | Read frozen history or recovery receipts | A legacy checkpoint is cited, or a recovery receipt or backup is needed. | [checkpoint](workbench/skills/checkpoint/SKILL.md#frozen-history-and-operational-recovery) |
 | Transport sessions privately | Private session transport is configured and selected collections must sync. | [save](workbench/skills/save/SKILL.md#optional-private-session-transport) |
-| Save, promote or add a room-local skill | Authorized work must be saved to its owners, or the room adds its own skill. | [save](workbench/skills/save/SKILL.md#how-save-and-promote-compose); room-local skills: [Portable Save, Promote And Room-Local Skills](#portable-save-promote-and-room-local-skills) |
+| Save, promote or add a room-local skill | Authorized work must be saved to its owners, or the room adds its own skill. | [save](workbench/skills/save/SKILL.md#how-save-and-promote-compose); room-local skills: [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#room-local-skills) |
 | Promote claims to an owner | Selected supported claims must reach their durable owner. | [promote](workbench/skills/promote/SKILL.md#command-reference) |
 | Evaluate a harness change | You must show that a harness change is an improvement. | [Evaluation And Benchmarking](#evaluation-and-benchmarking) |
 | Transfer work through a handoff | Work goes to another agent or chat as a job, investigation, report or update. | [handoff](workbench/skills/handoff/SKILL.md#transfer-procedure) |
@@ -65,11 +69,11 @@ Contract change.
 | Upgrade the harness | The project moves to a newer Workbench version. | [Upgrading The Harness](#upgrading-the-harness) |
 | Write a manual harness feedback report | A setup-only Round One check succeeded and an assessment is assigned. | [Manual Harness Feedback Reports](#manual-harness-feedback-reports) |
 | Troubleshoot a known failure | A command fails with a symptom listed there. | [Troubleshooting](#troubleshooting) |
-| Recover or roll back | A change fails and its touched files must be restored or reverted. | [Recovery And Rollback](#recovery-and-rollback) |
+| Recover or roll back | A change fails and its touched files must be restored or reverted. | [implement](workbench/skills/implement/SKILL.md#recovery-and-rollback); this room's data rules: [Recovery And Rollback](#recovery-and-rollback) |
 | Record operational proof | A command changed durable project state. | [Operational Proof](#operational-proof) |
 | Size and continue work | You size a Task or leave work a fresh context can resume. | [Evidence And Continuation Practices](#evidence-and-continuation-practices); [notepad](workbench/skills/notepad/SKILL.md#continuing-after-a-save-or-handoff); [save](workbench/skills/save/SKILL.md#evidence-partitioning); [to-tasks](workbench/skills/to-tasks/SKILL.md#sizing-a-task) |
-| Check the Workbench connection identity | The room's `workbenchId` is created, read or compared. | [Workbench connection identity](#workbench-connection-identity) |
-| Check configured-host capabilities | A host is set up, or its lanes, skill discovery or tool execution are in doubt. | [Configured-host capability checks](#configured-host-capability-checks) |
+| Check the Workbench connection identity | The room's `workbenchId` is created, read or compared. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#workbench-connection-identity) |
+| Check configured-host capabilities | A host is set up, or its lanes, skill discovery or tool execution are in doubt. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#configured-host-capability-checks) |
 | Review a candidate independently | A candidate needs separate-context review before integration, or a main-readiness or incident-claim review is requested. | [code-review](workbench/skills/code-review/SKILL.md#independent-review-boundaries) |
 
 ## Ordinary Entry
@@ -264,101 +268,20 @@ node workbench/tools/spec-workbench.mjs claim S-### --agent NAME
 node workbench/tools/spec-workbench.mjs close S-### --proof "..." --docs "..." --remaining-gap "..."
 node workbench/tools/spec-workbench.mjs render
 node workbench/tools/spec-workbench.mjs doctor
-node workbench/tools/adr.mjs new --title "Decision title"
-node workbench/tools/adr.mjs new --kind ddr --title "Destination decision title"
-node workbench/tools/adr.mjs validate
-node workbench/tools/adr.mjs register
-node workbench/tools/adr.mjs accept DDR-####
-node workbench/tools/adr.mjs supersede ADR-#### --by ADR-####
-node workbench/tools/adr.mjs deprecate DDR-#### --reason "Why it ends"
-node workbench/tools/adr.mjs list
-node workbench/tools/adr.mjs show DDR-####
-node workbench/tools/adr.mjs search "query"
-node workbench/tools/adr.mjs history ADR-####
-node workbench/tools/adr.mjs inspect DDR-#### --field canonicalized_in
 ```
 
-`doctor` prints every registered finding with its severity and blocking
-effect and exits non-zero only for `all` or `selection` findings; a
-`selected-slice` finding is excluded by `next` and refused by `claim`, and an
-`attention` finding stays visible without blocking. `doctor` also reads this
-room's `workbench/skills` lane and its `.agents/skills` and `.claude/skills`
-adapters, never a provider home: `skill-lane-missing` and
-`skill-lane-unreadable` are errors with effect `none` (repair them with the
-release checkout's `workbench-skills.mjs install` or `update
---explicit-update`; the Genesis readiness gate fails closed on them),
-`skill-adapter-missing` and `skill-adapter-broken` are attention findings
-(a host that checked an adapter out as a plain file instead of a link reports
-`skill-adapter-broken`), and a root `skills/` directory is
-`project-local-skills`, which blocks everything because it shadows the lane.
-An operations index row that points to a skill the lane lacks is the
-attention finding `skill-pointer-dangling`; doctor reads only the index and
-the lane copy to decide which skill binds.
-Filesystem discovery is distinct from configured-host invocation. `doctor` also reports
-`integration-branch-undeclared` and `integration-branch-missing` (scope
-`git`, effect `none`) until `workbench/manifest.json` `git.integrationBranch`
-names a branch that resolves locally or on a remote; the Genesis readiness
-gate fails closed on the same two conditions. When that branch resolves and
-the spec `next` would select is already complete there, `doctor` reports
-`complete-on-integration` (attention) without hiding the work. `doctor`
-reports `detached-head` and `untracked-controls` (scope `git`, attention,
-effect `none`) for a detached HEAD and for untracked files under the root
-controls, the ADR collection or the spec lane; neither blocks, because `close`
-refuses the false completion claim itself. Decision records live in
-`workbench/docs/adr/`; an accepted record names the control that carries its
-operational owners in `canonicalized_in`. Active accepted decision claims are
-architectural Canon. `register` derives active `REGISTER.md` and complete
-`HISTORY.md`; supersession uses one whole-record `superseded_by` filename and
-deprecation requires `deprecation_reason`. Historical bodies remain unchanged.
-Destination Decision Records have their own manifest-declared `ddr` collection
-at `workbench/docs/ddr/`, with the same `proposed/` and `archive/` lifecycle
-folders. `workbench-layout.mjs init` creates it; for a room stamped before it,
-`workbench-layout.mjs migrate --project PATH` from the release checkout appends
-each missing additive collection (`features`, then `ddr`) and changes no ADR
-record or other manifest key. The same tool writes and checks both kinds of
-record: `new --kind ddr` writes a `DDR`-identified record into `ddr/proposed/`
-with the keys `date`, `supersedes` and `canonicalized_in`, and refuses a room
-whose manifest does not declare the collection. A DDR's `canonicalized_in`
-never names the Wiki; validation reports that and the ADR rules applied to a
-DDR as `invalid-ddr`. A DDR that changes or contradicts the Blueprint names
-`BLUEPRINT.md` in `canonicalized_in`. `validate` and `register` act on every
-decision-record collection present; `--kind adr` or `--kind ddr` limits them to
-one. `accept`, `supersede` and `deprecate` move a record by folder for either
-kind, addressed by its `ADR-` or `DDR-` identifier: `accept` takes a
-`proposed/` record to the top level and refuses one that would be invalid as
-accepted; `supersede` archives an accepted record under exactly one accepted
-successor of the same kind and records `superseded_by` and `supersedes`;
-`deprecate` archives an accepted record with a one-line `deprecation_reason`.
-Each refuses a dirty Git tree, renames with `git mv`, repairs live links while
-leaving append-only evidence untouched, regenerates both registers, and writes
-nothing when it refuses. Both kinds answer the five read words: `list` the
-records that exist, `show` one whole record (`get` is a synonym), `search`
-records by a literal query (a superseded hit names its successor), `history`
-the lifecycle chain and the Git commits that touched the record, and
-`inspect` one `--field` or a `--lines START:END` range. Reads never write and
-take `--json`.
-
-`permission-scope-drift` is reported when `.claude/settings.json` exists and
-withholds a manifest-declared authorship lane (no covering `Edit` `allow` rule,
-a `deny` or `ask` rule covers it, or a restrictive pattern is uncertain), or
-grants `workbench/tools/` in `allow` without a covering `ask` holding the whole
-lane; an intersecting tools deny also remains visible. It names each lane,
-never blocks, and never edits the file. Claude Code applies `Edit` rules to every built-in
-file-editing tool. Resolve the finding by adding the
-`Edit(./workbench/<lane>/**)` rules, holding `workbench/tools/**` in `ask`,
-simplifying an uncertain restriction, or recording the deliberate restriction
-in `AGENTS.md`. The Genesis readiness check fails closed on the same finding;
-a room without the file is unaffected.
-
-The wiki lane raises `room-brain-unrouted` (attention) when a root control does
-not route back to the room brain: `AGENTS.md` must reference `workbench/wiki/`
-and `README.md` must reference `MEMORY.md`; the finding names the control that
-lacks the route, and a room whose manifest declares a different wiki lane path
-sees it until its controls name that lane. It raises `stale-stamp` (attention)
-when a wiki contract file or the room brain carries a `Generated from LLM
-Workbench` stamp naming a version other than `workbench/manifest.json`; refresh
-the stamp when the harness is upgraded (`validate --genesis` fails the same
-files with `version-mismatch`).
+Selecting, claiming and closing work with these commands follows the
+[`implement` skill](workbench/skills/implement/SKILL.md#work-selection-and-lifecycle).
+`doctor` prints every registered finding with its severity and blocking effect;
+what each finding means and blocks, including the `attention` findings that
+stay visible without blocking, follows the
+[`workbench-runtime` skill](workbench/skills/workbench-runtime/SKILL.md#diagnostics-and-blocking-effects),
+and validating the wiki lane follows its
+[Wiki Validation](workbench/skills/workbench-runtime/SKILL.md#wiki-validation) section.
+Decision records live in `workbench/docs/adr/` and Destination Decision Records
+in `workbench/docs/ddr/`; writing, accepting, superseding, deprecating, reading
+and validating them follows the
+[`to-docs` skill](workbench/skills/to-docs/SKILL.md#decision-records).
 
 ### Spec Lifecycle And Retrieval
 
@@ -397,102 +320,15 @@ recover a colliding Task identity, through the procedure in the
 
 ### Visible Identifiers
 
-```bash
-node workbench/tools/spec-workbench.mjs next-id --prefix S --json
-node workbench/tools/spec-workbench.mjs next-id S-### --prefix TK --json
-node workbench/tools/adr.mjs new --title "Decision title"
-node workbench/tools/notepads.mjs allocate --prefix N --objective OBJECTIVE_KEY --title "TITLE"
-node workbench/tools/spec-workbench.mjs widen-id S-###
-node workbench/tools/spec-workbench.mjs widen-id TK-### --spec S-###
-```
-
-`next-id` is a read-only proposal, not a reservation or permission to create work.
-Task proposals require the assigned spec and reserve labels from all specs in
-the Workbench. Both proposals also reserve retired and discarded labels and
-every Spec and Task ID held at a remote-tracking tip, so fetch first. Write the
-returned label only during authorized planning, then render and run doctor
-before requesting another. ADR `new` (and `new --kind ddr` for a DDR) writes a
-proposed record through the existing exclusive-publication path and also
-reserves that kind's labels held at every remote-tracking tip. Notepad `allocate` creates the note its returned ID names.
-
-Specs, Tasks, ADRs and notepads share one artifact policy: a new label's suffix
-uses uppercase `0-9A-Z`, has minimum width four and contains at least one
-letter (`S-000A`, `TK-000A`, `ADR-000C`, `N-000A`), so it cannot reuse a
-historical decimal ID that is no longer present. Width grows without truncation
-or recycling. Every spelling of one identity is reserved: suffixes compare
-case-folded with leading zeros removed (the collision key), so a legacy short
-`S-00Q`, its widened `S-000Q` and a lowercase `S-00q` are one identity and are
-never allocated twice. Sorting removes leading zeros, then orders by suffix
-length and then by `0-9`, `A-Z` and legacy `a-z`, independent of locale; it is
-label ordering, not creation chronology. Letter-bearing task labels are unique
-across the room; legacy numeric task references retain their existing
-spec-qualified scope and are not claimed globally unique.
-
-Existing records keep their stored IDs, paths and bytes; allocation never
-renames them. Public Spec and Task commands (`show`, `claim`, `close`,
-`move-spec`, `move-task`, blockers, the `next-id` parent and the other
-selectors) accept any spelling that shares the stored record's collision key
-and act on that one record, reporting its stored ID and path. Task selectors
-stay Spec-qualified. Two stored records behind one key, including an active
-record and a retired one, refuse by name rather than choosing a winner.
-Notepad `--id` resolves the same way, and ADRs or notes whose records alias
-one identity refuse allocation.
-
-`widen-id` is the explicit identity-only touch. An agent starting substantive
-work on a planned, active or blocked Spec, or on an open Task record under one,
-runs it once from a clean tree to widen that record to the width-four spelling
-of its own collision key (`S-00Q` to `S-000Q`, numeric `TK-001` to `TK-0001`;
-`--spec` names the parent when a numeric Task label is ambiguous). It renames
-the record directory, rewrites the ID field and title, keeps the previous
-spelling in one `**Former ID:**` field directly under the ID field, and repairs
-live links with the lifecycle moves' reference rewrite. Evidence rows stay
-byte-identical; their links to the old path are counted as historical and
-doctor reports them as attention-only broken links. The former spelling keeps
-resolving. It never changes status, a repeat run is a no-op, and it refuses
-complete, reviewed, done and retired records, a dirty tree, an occupied
-destination or alias and an unsafe record path before writing anything. Like
-`move-spec` it stages the change and commits nothing; commit it as its own
-candidate. Never bulk-widen: a read-only inventory at QA/verify time finds open
-records still short.
-
-Spec parsing, selection, blockers, claim/close, rendering, Genesis readiness,
-ADR registers, Wiki copied-task-state checks, guardrail contradiction checks and
-citation-anchor coverage accept the new syntax. Existing numeric, short and
-mixed-case syntax remains readable. Socket/team registry IDs and internal entry
-sequence IDs keep their existing formats; these commands do not allocate those
-artifact types. Workbench connection identities (`WB-` plus 22 characters)
-keep their separate base-62 alphabet; the artifact policy does not apply to
-them.
+Allocate and widen the visible identifiers of Specs, Tasks, decision records
+and notepads through the procedure in the
+[`workbench-runtime` skill](workbench/skills/workbench-runtime/SKILL.md#visible-identifiers).
 
 ### Landmark Tracker: accepted design and available operations
 
-The Landmark Tracker distinguishes evolving concept understanding from delivery
-state. DQCs and landmarks maintain the former; the generated Tracker displays
-it; Specs and Tasks carry implementation and Taskboard projects their state.
-The intended root is `workbench/landmark-tracker/`, containing generated
-`TRACKER.json` and flat `destination-questions/` and `landmarks/` JSON records.
-These paths are a delivery contract, not evidence of installed collections or
-commands. Resolve availability from the actual manifest and verified runtime;
-do not invent a Tracker invocation or use an existing command as its substitute.
-
-Once implemented, workflow transitions and ongoing alignment maintain source
-records with what changed, why and evidence. Keep original grilling questions
-and corrections reachable. DQCs may precede a landmark, Spec, Task or known Wiki
-destination; an answered question records Expected result, while Result records
-achieved delivery. Assess the actual durable content before claiming Verified;
-Task completion, article existence and structural validation alone are insufficient.
-Keep live links current through supported move operations and retain immutable
-citations for historical proof. Ignored notes require their own retention or
-safe transfer until reconciliation; tracked Git history does not recover them.
-
-A Landmark Wiki page is the landmark's evolving synthesis, updated whenever
-one of its question cards changes. Identifiers on it, as on every Wiki page,
-carry the artifact's name and context; the structured records keep
-identity-bearing provenance and delivery evidence.
-Ordinary feature explanations and cross-cutting design models retain their
-respective Wiki purposes. Collection/schema support must be delivered and
-verified before claiming those article types are available. Routine Wiki work
-within an authorized assignment adds no independent publishing ceremony.
+The Landmark Tracker's accepted design and the operations available now are
+carried by the
+[`notepad` skill](workbench/skills/notepad/SKILL.md#landmark-tracker-accepted-design-and-available-operations).
 
 ### JSON Notepads
 
@@ -517,39 +353,15 @@ ordinary local notepad commands stay independent of it.
 
 How `save` and `promote` compose is in the
 [`save` skill](workbench/skills/save/SKILL.md#how-save-and-promote-compose).
-The core catalog and room-local skill rules follow.
+Adding a room-local skill to the lane, and checking the lane it joins, follows
+the [`workbench-runtime` skill](workbench/skills/workbench-runtime/SKILL.md#room-local-skills).
+The core catalog rules follow.
 
 The core machine catalog is `coreSkills` in the layout runtime; documentation
 and tests derive its size from that catalog. The current candidate includes
 save/promote while preserving checkpoint as a no-write compatibility notice.
 The v3.1.4 eighteen-skill manifest policy remains readable as a frozen legacy
 row; adding candidate source does not publish or stamp v3.2.0.
-
-The core skills live in this room's `workbench/skills` lane, laid down from
-the LLM Workbench release with a receipt (`.workbench-skills.json`) naming the
-source release, commit and a hash per skill. The tracked `.agents/skills`
-(Codex) and `.claude/skills` (Claude Code) links resolve into the lane, so a
-fresh clone discovers every core skill with no provider home. Check the lane
-from the release checkout with `node tools/workbench-skills.mjs verify
---project PATH`; `doctor` reports `skill-lane-missing`, `skill-lane-unreadable`,
-`skill-adapter-missing`, `skill-adapter-broken` and `project-local-skills`
-without repairing them, and `skill-pointer-dangling` for an index row that
-points to a skill the lane lacks.
-
-For an authorized room-specific extension, keep its sole source in the lane at
-`workbench/skills/NAME/SKILL.md`. Choose a name absent from required core;
-preserve any collision for explicit reconciliation. Both hosts discover it
-through the existing adapters, and `verify` lists it under `roomLocal` and
-never replaces or removes it. On Windows, confirm the host checked the adapter
-links out as links; inability to do so leaves that discovery gate open. Do not
-duplicate implementation bytes, add a root `skills/`, or add `.codex/skills`.
-Invoke the extension in the actual configured application: file presence and
-a resolving adapter alone do not prove native discovery or callability.
-
-Laying the lane down does not publish room-local source into a personal
-catalog. That is a separately authorized operation, and a personal catalog is
-never on this room's critical path. A new room needs no local extension and no
-personal catalog for core save/promote/notepad operation.
 
 ### Direct Owner Promotion
 
@@ -857,12 +669,8 @@ assigned target; it never authorizes a repair or invokes automated repair.
 
 ## Recovery And Rollback
 
-If a change fails:
-
-1. Identify the touched files and failing command.
-2. Revert only the smallest change needed, preserving user work.
-3. Rerun the failing verification command.
-4. Update the owning spec with the result and remaining gap, then render.
+Recover from a failed change through the procedure in the
+[`implement` skill](workbench/skills/implement/SKILL.md#recovery-and-rollback).
 
 Do not delete data, reset databases, rewrite history, or rotate secrets unless
 the user explicitly approves that action.
@@ -882,20 +690,11 @@ Continuing after a save or a handoff follows the
 and partitioning an evidence record follows the
 [`save` skill](workbench/skills/save/SKILL.md#evidence-partitioning).
 
-The claim-age diagnostic compares UTC calendar date stamps and reports a claim
-older than one calendar day (strictly greater than 86,400,000 milliseconds).
-The old prose saying working day was inaccurate. Historical GPT_OS local-day
-Preflight and ref-deduplication rules remain scoped historical requirements,
-not an automatically imported Workbench algorithm.
+How the claim-age diagnostic counts a claim's age follows the
+[`workbench-runtime` skill](workbench/skills/workbench-runtime/SKILL.md#diagnostics-and-blocking-effects).
 
-Correct or expand the existing ADR when refining the same architectural
-decision; preserve its identity, rationale and consequential alternatives.
-Create a new ADR only when it adds a valuable distinct architectural lens or
-layer, with the reasons for that decision and real alternatives or reversal
-cost. Binding rules stay in current owners. A semantic
-review checks agreement; text presence alone cannot establish fidelity.
-Portable record parsing treats LF, CRLF and CR as syntax variations; read-only
-validation never normalizes files as a side effect.
+Amending an existing decision record before adding a new one follows the
+[`to-docs` skill](workbench/skills/to-docs/SKILL.md#decision-records).
 
 Keep setup human-readable and staged through the documented Genesis, adoption
 and explicit-upgrade routes. Verify every consumed source lane before mutation,
@@ -906,56 +705,14 @@ acceptance. Recheck actual destination refs and preserve unknown remote state.
 
 ### Workbench connection identity
 
-`workbench/manifest.json` stores `workbenchId`, a `WB-` identifier containing
-128 random bits encoded in the shared base-62 alphabet. New Genesis/adoption
-initialization assigns a new identity. Clone, worktree, rename, relocation and
-maintenance preserve the manifest's identity; visible artifact IDs retain their
-existing room scope. No path, credential or remote configuration enters this
-field. Global uniqueness is probabilistic; transport must check its selected
-namespace inventory before association.
-
-For an existing room without the field, explicitly assign it once:
-
-```bash
-node workbench/tools/workbench-layout.mjs identify --project .
-```
-
-Commit that manifest before cloning the legacy room. Repeated assignment reads
-back the existing value without rewriting it. Read-only validation never assigns
-identity; ordinary legacy local work remains available without transport.
-Migration assigns missing identity and preserves existing valid identity.
-Malformed identity is refused, never silently regenerated. Independent projects
-use fresh initialization rather than copying another project's manifest.
-
-Local assignment uses an exclusive `workbench/.identity.lock`. A busy result
-preserves the existing writer's lock; after interruption, verify that writer is
-inactive before deliberately removing its stale lock. This is local writer
-serialization, not a cross-clone transaction or a crash-recovery claim.
+Assign, read and compare the room's `workbenchId` through the procedure in the
+[`workbench-runtime` skill](workbench/skills/workbench-runtime/SKILL.md#workbench-connection-identity).
 
 ### Configured-host capability checks
 
-The minimum is writable declared lanes (relative, home-relative and absolute),
-native skill discovery and invocation, Node execution of managed tools, the
-selected directory adapter, and checkout record syntax. Evidence is scoped to
-the actual host/application/configuration. Missing capabilities affect dependent
-operations only; unavailable checks stay unverified. Capability does not prove
-enforcement or agent reliability. Remote transport is optional.
-
-From the pinned producer checkout, run `node tools/configured-host.mjs --probe
-CONFIG.json`. The explicitly supplied JSON names `root` (producer checkout),
-`sourceCommit` (the expected full 40-character producer commit),
-`sourceRepository` (the expected producer `origin` URL),
-`cwd` (authorized temporary adapter location), `home`, nonempty `lanes` (existing
-writable directories), `skill` (a declared SKILL.md path), and optional `node`
-(runtime executable). The command creates and removes private temporary probes
-only in those locations. Before executing managed doctor, it verifies that
-`root` is the named Git checkout root at the expected commit and origin, with
-clean manifest, managed-tool, and ADR inputs. It executes managed doctor and parses actual ADRs;
-line-ending variants are structural evidence. Its exit code fails on a failed
-operation; zero may include unverified checks and is not blanket compatibility.
-Native discovery/invocation always needs a separate provider trace. Record the
-provider, model if reported, configuration, OS, exact source and operations;
-explicit skill-path invocation alone does not prove automatic discovery.
+Check what a configured host can actually do (writable lanes, native skill
+discovery and invocation, managed-tool execution) through the procedure in the
+[`workbench-runtime` skill](workbench/skills/workbench-runtime/SKILL.md#configured-host-capability-checks).
 
 ## Independent Review Boundaries
 

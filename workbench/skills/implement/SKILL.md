@@ -430,3 +430,17 @@ checks are the minimum ship gate. Never weaken a criterion to manufacture
 progress, and do not treat a static coverage score as outcome evidence. If this
 project has no executable benchmark yet, add one or state that the change cannot
 yet be called better.
+
+## Recovery and rollback
+
+If a change fails:
+
+1. Identify the touched files and failing command.
+2. Revert only the smallest change needed (`git checkout -- <file>` or revert
+   commit), preserving unrelated work and user work.
+3. Rerun the failing verification command.
+4. Update the owning spec with the result and remaining gap, then render.
+
+Do not delete data, reset databases, remove unmerged branches, rewrite history
+or rotate secrets unless the owner explicitly approves that action. Merged
+branch cleanup follows Git Rules and any owner instruction to defer it.

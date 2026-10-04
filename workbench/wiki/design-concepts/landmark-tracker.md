@@ -12,9 +12,10 @@ source_paths:
   - AGENTS.md
   - RUNBOOK.md
   - workbench/landmark-tracker/README.md
+  - workbench/skills/notepad/SKILL.md
 parent: none
 authorized_by: owner
-last_verified: 2026-10-03
+last_verified: 2026-10-04
 ---
 
 # Landmark Tracker
@@ -31,7 +32,9 @@ distributions at card, landmark and Workbench scope; its procedure lives beside
 the records in the [Tracker README](../../landmark-tracker/README.md).
 Landmark Wiki content assessment and record-move recovery are still being
 delivered. The [Runbook](../../../RUNBOOK.md#landmark-tracker-accepted-design-and-available-operations)
-routes to delivery and states the available-operation boundary.
+routes to delivery, and the
+[notepad skill](../../skills/notepad/SKILL.md#landmark-tracker-accepted-design-and-available-operations)
+it points to states the available-operation boundary.
 
 ## Four pieces with distinct jobs
 
@@ -248,3 +251,4 @@ distributions; updates reach their source owners and generated views are rebuilt
 
 - 2026-10-03: Restated how a landmark relates to the Blueprint (a Blueprint sentence big enough to need its own map becomes a landmark) and repointed the product-direction link to the four-part page, from the Blueprint Short Page work.
 - 2026-10-03: Reconciled the recovered Lexicon family with the later Wiki, landmark and workflow decisions; retained the installed-validator mismatch, verification distinctions and DQC reconciliation boundary.
+- 2026-10-04: The Runbook's accepted-design and available-operation text moved into the notepad skill behind the Runbook operations index (S-004C TK-005J); the Runbook keeps the delivery route.

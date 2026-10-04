@@ -7,6 +7,7 @@ provenance:
   - S-01J planning packet, 2026-09-24
   - S-01J TK-01A source change and fresh-context scenario, 2026-09-26
   - S-004C TK-005I moved the AGENTS documentation-ownership table behind the Lexicon schema pointer and the citation-anchor procedure into the skill, 2026-10-04
+  - S-004C TK-005J moved the Runbook decision-record procedure and the amendment-first rule into the skill, 2026-10-04
 source_paths:
   - workbench/skills/to-docs/SKILL.md
   - workbench/specs/S-01J-to-docs-skill-rebuild/SPEC.md
@@ -26,7 +27,7 @@ Use `to-docs` when a conversation or piece of work has already settled something
 
 ## How it works
 
-The [skill](../skills/to-docs/SKILL.md) owns the judgment. The [Lexicon ownership schema](../../LEXICON.md#artifact-ownership-schema) defines which owner holds which kind of truth; [AGENTS](../../AGENTS.md#documentation-ownership-and-proof) keeps the always-true documentation rules and points to that schema. The skill's [Citation anchors](../skills/to-docs/SKILL.md#citation-anchors) section carries how a citation into a changing file names its tree.
+The [skill](../skills/to-docs/SKILL.md) owns the judgment. The [Lexicon ownership schema](../../LEXICON.md#artifact-ownership-schema) defines which owner holds which kind of truth; [AGENTS](../../AGENTS.md#documentation-ownership-and-proof) keeps the always-true documentation rules and points to that schema. The skill's [Citation anchors](../skills/to-docs/SKILL.md#citation-anchors) section carries how a citation into a changing file names its tree, and its [Decision records](../skills/to-docs/SKILL.md#decision-records) section carries how an ADR or DDR is written, accepted, superseded, deprecated, read and validated with `adr.mjs`, and when to amend an existing record instead of adding one; the [Runbook operations index](../../RUNBOOK.md#operations-index) points there.
 
 - **Destinations first.** The agent reads `workbench/manifest.json` and states where each claim will go before it edits anything. Definitions go to the Lexicon, product direction to the Blueprint, requirements and proof to the assigned Spec, commands and recovery to the Runbook, agent rules to AGENTS, decision rationale to an ADR, and explanations or durable knowledge to the Wiki. If capability truth needs a Spec and none is assigned, it routes to `to-spec` instead of improvising one.
 - **Each claim once.** A mixed finding is split into its claims, and each claim goes to exactly one owner. When another owner needs it, that owner links to it. A Wiki reference article explains why and links the procedure. It does not restate the procedure's steps.
@@ -65,3 +66,4 @@ The fresh agent stated its destinations before editing. The confirmed free-space
 ## History
 
 - 2026-09-26: Created by S-01J TK-01A. The source now states once-per-claim routing for a mixed finding, link-not-copy, pending recognition, durable-only evidence and owner read-back. One fresh-context scenario was recorded.
+- 2026-10-04: S-004C TK-005J moved the Runbook's decision-record procedure and the amendment-first rule into the skill behind the operations index; no behavior change.

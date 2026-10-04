@@ -6,6 +6,7 @@ knowledge_role: curated
 provenance:
   - Owner-accepted concept and S-00W planning, 2026-09-23
   - S-00Y TK-00P source change and fresh-context scenario, 2026-09-24
+  - S-004C TK-005J moved the Runbook Landmark Tracker design and available operations into the skill, 2026-10-04
 source_paths:
   - workbench/skills/notepad/SKILL.md
   - workbench/tools/notepads.mjs
@@ -14,7 +15,7 @@ source_paths:
   - tools/test-notepads.mjs
   - tools/test-skill-catalog.mjs
   - RUNBOOK.md
-last_verified: 2026-09-24
+last_verified: 2026-10-04
 ---
 
 # Notepad: preserve one objective's working context
@@ -45,7 +46,10 @@ a current concept account in DQCs and landmark records before delivery artifacts
 exist. As that capability is delivered, grilling notepads become more historical
 and handoff-like, preserving useful origins, corrections and continuation. This
 does not retire the general notepad primitive or claim that Tracker storage is
-already available.
+already available. The skill's
+[Landmark Tracker section](../skills/notepad/SKILL.md#landmark-tracker-accepted-design-and-available-operations)
+carries the accepted design and the operations available now, which the
+[Runbook operations index](../../RUNBOOK.md#operations-index) points to.
 
 ## Verified behavior and limits
 
@@ -70,3 +74,5 @@ already available.
 
 - 2026-09-26: Clarified the owner-confirmed relationship between grilling notes
   and planned DQC/landmark understanding; existing runtime claims unchanged.
+- 2026-10-04: S-004C TK-005J moved the Runbook's Landmark Tracker design and
+  available operations into the skill behind the operations index; no behavior change.
