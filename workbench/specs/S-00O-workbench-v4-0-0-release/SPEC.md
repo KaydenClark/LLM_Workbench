@@ -164,7 +164,8 @@ for these three, and all three are already on the Grill Board:
   owner-confirmed, so the S-004I proof plan reads the stale verbs until he
   answers.
 
-The other open owner-decision items on the Grill Board (17 at this change)
+The other open owner-decision items on the Grill Board (16 at integration
+5361417d plus this change)
 belong to their own Specs and gate those Specs, not this record directly; the
 board's `pending` list is their live view.
 
