@@ -57,7 +57,8 @@ Contract change.
 | Return harness feedback | A lesson about the harness rules belongs in the feedback return channel. | [Harness Feedback Loop](#harness-feedback-loop) |
 | Operate project data | The project has seed data, migrations, imports, local databases or generated feeds. | [Data Operations](#data-operations) |
 | Deploy or start services | The project has deployment, scheduled jobs or service startup. | [Deployment Or Startup](#deployment-or-startup) |
-| Branch, review, merge and clean up | You create a branch or PR, merge into integration, or delete a merged branch. | [Version-Control Procedures](#version-control-procedures) |
+| Branch and open a pull request | You create a task branch or open a PR into integration, or need this room's Git commands. | [implement](workbench/skills/implement/SKILL.md#version-control-procedures); this room's commands: [Version-Control Procedures](#version-control-procedures) |
+| Merge, prove containment and clean up a branch | The integration review passed: merge the reviewed candidate, prove integration contains it and delete the merged branch. | [implement](workbench/skills/implement/SKILL.md#branch-completion); this room's closeout commands: [Version-Control Procedures](#version-control-procedures) |
 | Upgrade the harness | The project moves to a newer Workbench version. | [Upgrading The Harness](#upgrading-the-harness) |
 | Write a manual harness feedback report | A setup-only Round One check succeeded and an assessment is assigned. | [Manual Harness Feedback Reports](#manual-harness-feedback-reports) |
 | Troubleshoot a known failure | A command fails with a symptom listed there. | [Troubleshooting](#troubleshooting) |
@@ -66,7 +67,7 @@ Contract change.
 | Size and continue work | You size a Task or leave work a fresh context can resume. | [Evidence And Continuation Practices](#evidence-and-continuation-practices); [notepad](workbench/skills/notepad/SKILL.md#continuing-after-a-save-or-handoff); [save](workbench/skills/save/SKILL.md#evidence-partitioning); [to-tasks](workbench/skills/to-tasks/SKILL.md#sizing-a-task) |
 | Check the Workbench connection identity | The room's `workbenchId` is created, read or compared. | [Workbench connection identity](#workbench-connection-identity) |
 | Check configured-host capabilities | A host is set up, or its lanes, skill discovery or tool execution are in doubt. | [Configured-host capability checks](#configured-host-capability-checks) |
-| Review a candidate independently | A candidate needs separate-context review before integration. | [Independent Review Boundaries](#independent-review-boundaries) |
+| Review a candidate independently | A candidate needs separate-context review before integration, or a main-readiness or incident-claim review is requested. | [code-review](workbench/skills/code-review/SKILL.md#independent-review-boundaries) |
 
 ## Ordinary Entry
 
@@ -707,6 +708,11 @@ Expected healthy state:
 
 ## Version-Control Procedures
 
+Branching, pull requests, merge, containment proof and cleanup follow the
+[`implement` skill](workbench/skills/implement/SKILL.md#version-control-procedures)
+and its [branch completion](workbench/skills/implement/SKILL.md#branch-completion)
+procedure; this section keeps this room's commands for them.
+
 Git authority and policy live in `AGENTS.md` -> Git Rules. Keep executable
 commands and expected results here:
 
@@ -721,19 +727,6 @@ Expected result: [clean scope, verified base/target, reviewable PR].
 
 Closeout, once the integration review has passed. A pushed branch is
 recoverable, not delivered; finish the merge and clean up after yourself:
-
-For the Spec QA runtime, run the assembled review gate before merging. Record
-the owner's actual content-bound approval after integration, naming the inspected commit whose Spec and
-live/retired Task content matches the local assembled digest. Completion still
-requires that approval; administrative completion preserves it for retirement,
-while substantive changes require fresh review and approval.
-
-Run merge and containment verification as a fail-fast sequence. Pin the reviewed
-commit and reject a changed candidate. Merge must not delete branches before
-containment is verified. A linked worktree holding the target must not block
-verification. Only run cleanup when the owner has not deferred it; verify each
-local and remote tip is contained, tolerate absent branches, and use an atomic
-expected-tip guard on remote deletion so concurrent pushes are preserved.
 
 ```bash
 (
@@ -751,13 +744,6 @@ git worktree prune
 ```
 
 Expected result: [integration contains the work; merged branch deleted locally and remotely; unmerged work never force-deleted].
-
-When cleanup is owner-deferred, the declared integration branch contains the
-reviewed work and the branches remain available for later cleanup. Disposable
-review clones and linked worktrees live outside the canonical checkout, under
-the host temporary directory; `git worktree prune` drops the registrations of
-removed ones, and a finished review checkout is removed once its review is
-recorded. None is a durable owner.
 
 ## Upgrading The Harness
 
@@ -986,25 +972,6 @@ explicit skill-path invocation alone does not prove automatic discovery.
 
 ## Independent Review Boundaries
 
-Task/integration review uses a fresh context and immutable candidate, comparison
-base, expected integration tip and named verification. Inspect scope, behavior,
-recovery, documentation, installed identities and consequential report claims.
-If the target changes, compare and review the resulting candidate as required
-before combining branches; a prior PASS is not approval of changed content.
-
-Whole-Workbench main-readiness review is separately requested, review-only work.
-It checks the combined product for drift, open gates, coherent skill composition,
-installed acceptance and semantic ownership. For the Blueprint, require all
-applicable destination sections, no status/version/evidence/catalog material,
-only materially relevant active ADR links, lossless removed-claim disposition,
-and root/template agreement. Record an explicit semantic pass/fail verdict;
-structure and link checks alone are insufficient. Only the owner approves/merges main.
-
-For incident claims inspect original call/result pairs, including failed,
-rejected and interrupted calls. Record coverage and missing/truncated evidence.
-Distinguish not attempted, rejected before execution, executed and failed,
-local success and remote acceptance with read-back. A summary's omission is
-not proof of non-occurrence. Behavioral acceptance separately records actual
-provider/version/model, prompt, source/installed hashes and observed skill use;
-explicit-path fixtures do not establish ordinary-prompt discovery. Unavailable
-checks remain unverified. Repeated controlled trials are needed for reliability.
+Task and integration review, main-readiness review and incident-claim evidence
+follow the
+[`code-review` skill](workbench/skills/code-review/SKILL.md#independent-review-boundaries).

@@ -306,3 +306,73 @@ corrective Task anchored to a Wiki claim is retired.
 Commit and publish the closure evidence and projections too; verify the remote
 SHA. TASK.md owns Task state/proof, SPEC.md owns requirements/acceptance/evidence
 and its next gate, and generated TASKBOARD.md/CATALOG.md cannot satisfy either.
+
+## Version-control procedures
+
+Branching, pull requests, merge and cleanup obey the room's `AGENTS.md`
+[Git Rules](../../../AGENTS.md#git-rules); the room's own commands for them are
+in its `RUNBOOK.md`
+[Version-Control Procedures](../../../RUNBOOK.md#version-control-procedures).
+
+For coordinated Spec delivery, the normal route is a Worker Task-branch merge
+request into the Dispatcher Spec branch, then an independently reviewed Spec
+merge request into integration under Director coordination. A Task merge is
+containment; its Worker supplies self-check and proof. A release-specific
+bootstrap exception may name a different route and its gate explicitly; read
+that owner rather than silently applying the intended route to unsupported
+current tooling. Accepted decisions and current progress are reconciled into
+tracked owners on integration through reviewed changes; local notes and
+unmerged branches must not be their only discovery route.
+
+Before creating a branch or PR, verify the live base and preserve dirty work.
+PR descriptions state what changed, why, risks, and verification.
+
+## Branch completion
+
+A task is not finished at the push. A pushed branch is recoverable, not
+delivered. When the integration review passes, open the PR into the declared
+integration branch with the Runbook's PR command, merge it, and confirm that
+branch contains the work. Do not stall on an approved candidate or leave a
+passed PR waiting for the owner; only the owner-only final merge named in
+`AGENTS.md` Git Rules stays with the owner. "Never merge a PR left open for
+review" means a PR whose review is still pending, not one that already passed.
+
+Delete the branch once the declared integration branch contains it and nothing
+is lost, unless its owner defers cleanup. Prove containment of the immutable
+reviewed commit before any deletion, then check the actual local and remote
+branch tips too. Use `git branch -d` for local deletion and an expected-tip
+guard for remote deletion. A tracking upstream alone is not proof of
+integration containment; never force it with `-D` to clear a branch. Stacked
+branches whose commits are already ancestors of the merged tip need no separate
+merge. A branch still holding unmerged work is removed only with owner approval.
+
+For the Spec QA runtime, run the assembled review gate before merging. Record
+the owner's actual content-bound approval after integration, naming the
+inspected commit whose Spec and live/retired Task content matches the local
+assembled digest. Completion still requires that approval; administrative
+completion preserves it for retirement, while substantive changes require fresh
+review and approval.
+
+Run merge and containment verification as a fail-fast sequence. Pin the reviewed
+commit and reject a changed candidate. Merge must not delete branches before
+containment is verified. A linked worktree holding the target must not block
+verification. Only run cleanup when the owner has not deferred it; verify each
+local and remote tip is contained, tolerate absent branches, and use an atomic
+expected-tip guard on remote deletion so concurrent pushes are preserved.
+
+The room's closeout recipe runs as one subshell. The subshell stops on any
+failure without closing the caller's shell. Merge never requests branch
+deletion. Containment uses the immutable reviewed SHA, so it remains checkable
+if GitHub already removed the source branch. Cleanup checks local and remote
+tips separately; a missing branch is already clean. The deletion lease is a
+compare-and-delete guard, not permission to rewrite history. Never use `-D` or
+an unconditional force push to bypass failed checks. If a worktree still holds
+the task branch, local deletion fails and cleanup stops. When cleanup is
+deferred, both branches and the checkout stay intact.
+
+When cleanup is owner-deferred, the declared integration branch contains the
+reviewed work and the branches remain available for later cleanup. Disposable
+review clones and linked worktrees live outside the canonical checkout, under
+the host temporary directory; `git worktree prune` drops the registrations of
+removed ones, and a finished review checkout is removed once its review is
+recorded. None is a durable owner.
