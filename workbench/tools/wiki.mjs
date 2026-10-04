@@ -28,6 +28,15 @@ export const NOTE_STATUSES = Object.freeze(['active', 'partial', 'stale', 'archi
 export const DRAFT_COLLECTION = 'skills-draft';
 export const DRAFT_GROUPS = Object.freeze(['getting-started', 'main-workflow', 'shaping', 'upkeep', 'primitives', 'productivity', 'stances', 'foundry']);
 export const DRAFT_STATUS = 'draft';
+// The owner-approved article template (S-002L TK-006N): eight reader sections,
+// then the draft-only marker and three draft-only sections. Every finding is one
+// greppable line, `F:<skill>:NN | kind | one line | who fixes it`.
+export const DRAFT_READER_SECTIONS = Object.freeze(['What it does', 'When to reach for it', 'What it needs', 'What it reads and writes', 'How it works', 'Common questions', 'It\'s working if', 'Where it fits']);
+export const DRAFT_ONLY_SECTIONS = Object.freeze(['Compared with Matt\'s', 'Findings', 'Sources and history']);
+export const DRAFT_ONLY_MARKER = '--- draft only, stripped on promotion ---';
+export const FINDING_KINDS = Object.freeze(['dangling', 'stale-name', 'overlap', 'gap', 'conflict', 'missing-skill']);
+const DRAFT_ORIGINS = Object.freeze(['workbench', 'matt', 'foundry']);
+const DRAFT_SKILL_SOURCES = Object.freeze(['core', 'pending', 'personal', 'new']);
 // The collection's own files, directly under its root: the index and the template.
 const DRAFT_ROOT_FILES = Object.freeze(['README', 'TEMPLATE']);
 export const SENSITIVITIES = Object.freeze(['normal', 'private', 'restricted']);
@@ -60,7 +69,7 @@ function walkMarkdown(directory, files = []) {
 // A draft article sits directly inside one group folder, is called by its skill,
 // names that skill and group, and carries the scoped `draft` status. The
 // collection's own index and template sit at its root and are ordinary notes.
-function draftArticleFindings(relative, segments, data) {
+function draftArticleFindings(relative, segments, data, body) {
   const problem = (message) => finding('invalid-note', `${relative} ${message}`, { note: relative });
   const basename = path.basename(segments[segments.length - 1], '.md');
   if (segments.length === 1) {
@@ -75,6 +84,41 @@ function draftArticleFindings(relative, segments, data) {
   if (data.status !== undefined && data.status !== DRAFT_STATUS) findings.push(problem(`must declare status ${DRAFT_STATUS}; it lives in the draft collection`));
   if (data.skill === undefined) findings.push(problem(`must declare skill ${basename}, the skill its file is called`));
   else if (data.skill !== basename) findings.push(problem(`skill ${data.skill} does not match its file name ${basename}`));
+  if (data.origin !== undefined && !DRAFT_ORIGINS.includes(data.origin)) findings.push(problem(`origin ${data.origin} is not one of ${DRAFT_ORIGINS.join(', ')}; write the bare value with no trailing comment`));
+  if (data.skill_source !== undefined && !DRAFT_SKILL_SOURCES.includes(data.skill_source)) findings.push(problem(`skill_source ${data.skill_source} is not one of ${DRAFT_SKILL_SOURCES.join(', ')}; write the bare value with no trailing comment`));
+  findings.push(...draftBodyFindings(relative, body, basename));
+  return findings;
+}
+
+// The template's sections must all be present, and the Findings section holds
+// only finding lines (plus `none` and single-line comments), so a later roll-up
+// can grep every connection problem with `^F:`.
+function draftBodyFindings(relative, body, skill) {
+  const problem = (message) => finding('invalid-note', `${relative} ${message}`, { note: relative });
+  const findings = [];
+  for (const section of [...DRAFT_READER_SECTIONS, ...DRAFT_ONLY_SECTIONS]) {
+    if (!new RegExp(`^## ${section.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'm').test(body)) findings.push(problem(`must carry a "${section}" section`));
+  }
+  if (!body.split('\n').some((line) => line.trim() === DRAFT_ONLY_MARKER)) findings.push(problem(`must carry the draft-only marker line ${DRAFT_ONLY_MARKER}`));
+  const start = body.search(/^## Findings$/m);
+  if (start < 0) return findings;
+  const rest = body.slice(start).split('\n').slice(1);
+  const end = rest.findIndex((line) => /^## /.test(line));
+  const seen = new Set();
+  for (const raw of end < 0 ? rest : rest.slice(0, end)) {
+    const line = raw.trim();
+    if (line === '' || line === 'none' || /^<!--.*-->$/.test(line)) continue;
+    const parts = line.split(' | ');
+    const head = parts[0].match(/^F:([a-z0-9][a-z0-9-]*):(\d{2})$/);
+    if (parts.length !== 4 || !head || parts.some((part) => part.trim() === '')) {
+      findings.push(problem(`has a malformed finding line "${line.slice(0, 60)}"; write F:<skill>:NN | kind | one line | who fixes it, one finding per line`));
+      continue;
+    }
+    if (!FINDING_KINDS.includes(parts[1])) findings.push(problem(`finding kind ${parts[1]} is not one of ${FINDING_KINDS.join(', ')}`));
+    if (head[1] !== skill) findings.push(problem(`finding names skill ${head[1]}, not ${skill}`));
+    if (seen.has(head[2])) findings.push(problem(`finding number ${head[2]} is used twice`));
+    seen.add(head[2]);
+  }
   return findings;
 }
 
@@ -170,7 +214,7 @@ export function validateWiki(root, options = {}) {
     const basename = path.basename(file, '.md');
     basenames.set(basename, [...(basenames.get(basename) ?? []), relative]);
     if (inArchive) continue;
-    const { data } = parseFrontmatter(content);
+    const { data, body } = parseFrontmatter(content);
     if (!data) {
       findings.push(finding('invalid-note', `${relative} has no frontmatter`, { note: relative }));
       continue;
@@ -223,7 +267,7 @@ export function validateWiki(root, options = {}) {
         if (!new RegExp(`^## ${section}$`, 'm').test(content)) findings.push(finding('invalid-note', `${relative} must end with a ${section} section`, { note: relative }));
       }
     }
-    if (inDrafts) findings.push(...draftArticleFindings(relative, path.relative(draftRoot, file).split(path.sep), data));
+    if (inDrafts) findings.push(...draftArticleFindings(relative, path.relative(draftRoot, file).split(path.sep), data, body));
     const inFeatures = file.startsWith(features + path.sep);
     if (inFeatures && basename !== 'README') {
       if (data.type !== 'feature') findings.push(finding('invalid-note', `${relative} must declare type feature; it lives in the features collection ${featuresRelative}`, { note: relative }));

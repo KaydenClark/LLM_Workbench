@@ -8,8 +8,8 @@
 **Updated:** 2026-10-04
 **Catalog description:** Give the draft skills wiki a declared home, an index and one article template, so every skill's draft article has somewhere to go and its connection problems can be found by grep.
 **Blockers:** none.
-**Latest event:** TK-006M closed with proof.
-**Next gate:** Complete TK-006N.
+**Latest event:** TK-006N closed with proof.
+**Next gate:** Complete TK-006O.
 
 > **Citation anchors.** pre=`07edccc57b8f75613ad1d09203a3e414d867b90c` post=`07edccc57b8f75613ad1d09203a3e414d867b90c`.
 
@@ -49,9 +49,11 @@ Read at the pre anchor.
 - **DRAFT-STATUS (to confirm).** Either add `draft` to the status enum (valid only inside the collection, refused elsewhere) or keep Template 2 on `status: partial` plus another key. Recommended: the scoped `draft` status, because the owner approved Template 2 with `status: draft`.
   **Resolved 2026-10-04 (TK-006M): confirmed.** `draft` is accepted only inside `skills-draft/` and refused everywhere else; inside it every non-index note must declare it, name its own `skill` and `group`, and sit directly in one of the eight group folders. `normalize` infers `type: memory` there (Template 2's value) and never invents the draft status.
 - Template 2 is reproduced verbatim below from the owner-approved 2026-09-30 draft-skills handoff; this Spec may adjust wording the validator forces (status, type) and records each adjustment, but adds no section to the template.
+  **Adjustments recorded 2026-10-04 (TK-006N), in `workbench/wiki/skills-draft/TEMPLATE.md`:** no section, key or section order changed. (1) A section's parenthetical hint moved from its heading to a comment line under it, so a heading is exactly the section name. (2) `provenance` and `source_paths` are block lists, because the Wiki front matter reader keeps `[a, b]` as a string. (3) `skill_source` and `origin` are bare values with no trailing `# comment`, which the reader would keep as part of the value; the validator refuses a value outside the listed set. (4) `supersedes` and `matt_counterpart` carry `none` instead of staying blank. `status: draft` and `type: memory` needed no wording change: the scoped status landed in TK-006M and `memory` is already a valid type. The validator also requires the eight reader sections, the draft-only marker line and the three draft-only sections, and holds `## Findings` to well-formed finding lines (or `none`) with a two-digit number unique per draft, one of the six kinds and the draft's own skill name.
 - Drafts do not replace the 20 existing `skill-*.md` articles. A draft carries `supersedes:` naming its existing article, which stays active and routed until the owner decides a promotion in a separate step. Draft basenames are the bare skill name, so they cannot collide with the `skill-` prefixed existing notes.
 - The README's index of planned articles uses plain text, not links, until the owning Spec delivers the article and turns its row into a link; an unwritten target must never be a dangling link. It is the collection's own index (the `design-concepts` and `features` READMEs are the precedent), so SCHEMA's "no category indexes" wording must be reconciled in the same slice.
 - Source paths in a draft are repository-relative. A skill that exists only in the owner's personal install has no repo path; where its source is cited is an open question for slice 3 (provenance line versus `source_paths`).
+  **Resolved 2026-10-04 (TK-006N):** `source_paths` stays repository-relative; a personal-install skill cites its install location in a `provenance` line.
 
 ### Owner-approved draft article template
 
@@ -138,6 +140,7 @@ Run `node tools/test-wiki.mjs` red then green, `node workbench/tools/wiki.mjs va
 |---|---|---|---|---|---|
 | 2026-09-30 | planning | Spec authored from the owner's draft-skills-wiki direction; planning only | Wiki schema, validator, manifest collections and existing articles read at the pre anchor; no implementation or test run | This Spec authored; collection, README and template remain future work | Slices 1-4 and independent review remain open |
 | 2026-10-04 | TK-006M | Task closed | tools/test-wiki.mjs red then green 16/16; wiki.mjs validate ok; full Full suite 51/51 at 10aa2693; Codex gpt-5.5 separate-context review: FAIL at 57486cec (medium: draft skill/group optional, preserved), PASS at 10aa2693 (no findings); read-only sandbox could not run tests | workbench/wiki/SCHEMA.md; Spec Decisions resolved (DRAFT-LOC confirmed, DECL changed, DRAFT-STATUS confirmed); templates/wiki/SCHEMA.md untouched by exemption | TK-006N template and TK-006O README remain |
+| 2026-10-04 | TK-006N | Task closed | tools/test-wiki.mjs red then green 22/22; wiki.mjs validate ok; Full suite 51/51 at 452134d0; Codex gpt-5.5 separate-context review PASS at 452134d0, no findings | workbench/wiki/skills-draft/TEMPLATE.md; Spec Decisions (template adjustments, source_paths decision) | TK-006O README and MEMORY link remain |
 
 ## Completion Result
 
