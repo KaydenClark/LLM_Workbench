@@ -442,6 +442,24 @@ as a decision in the owning spec or an ADR. Comparing against an older
 release means checking that release out first; `--templates PATH` points the
 report at another templates directory.
 
+Given the room's earlier template generation, the report also labels the
+differences the template made rather than the room (S-004C TK-005M): a room
+line only the earlier template carried is `earlier-template`, a current
+template line the earlier template did not carry is `newer-template`, and a
+line the room kept from the earlier template where the template itself
+rewrote it is `template-changed`. Each such entry carries a `generation`
+field, each control a `generationCounts` object, and the Markdown names them
+as generation differences. The earlier generation is `--previous-templates
+PATH`, or the templates at the room manifest's `provenance.source.commit` when
+this checkout holds that commit; the report names which in
+`previousTemplates`, and labels nothing when neither is available. A labeled
+line is reconciled to the current shape; an unlabeled `added`, `dropped` or
+`changed` line is the room's own divergence, restored or recorded as above.
+
+```bash
+node tools/control-fidelity.mjs report --project /absolute/project --previous-templates /path/to/earlier/templates --format markdown
+```
+
 ## V3 explicit upgrade and recovery check
 
 One command moves a v2-root room (root `specs/`, no `workbench/`) onto the v3

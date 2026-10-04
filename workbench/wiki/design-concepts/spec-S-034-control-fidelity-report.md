@@ -12,11 +12,12 @@ source_paths:
   - workbench/tools/template-placeholders.mjs
   - templates/ADOPTION.md
   - workbench/skills/update-harness/SKILL.md
+  - workbench/skills/workbench-room-checks/SKILL.md
   - LEXICON.md
   - RUNBOOK.md
 parent: none
 authorized_by: owner
-last_verified: 2026-09-19
+last_verified: 2026-10-04
 ---
 
 # Control Fidelity Without Forced Uniformity
@@ -28,9 +29,15 @@ or silently accepting lost qualifiers.
 The report compares templated controls, the exact Claude bridge and applicable
 permission/Wiki seed files against the checked-out templates. It classifies
 occurrences as unchanged, filled, changed, dropped or added and labels the
-checkout, room and provenance versions. Comparing against another historical
-generation requires that generation's checkout; the report does not infer old
-template bytes from a version string.
+checkout, room and provenance versions. It does not infer old template bytes
+from a version string. Since the Contract Carrier Pointer-Brief Rewrite
+(S-004C TK-005M) it can also take the room's earlier template generation, named
+with `--previous-templates` or read at the room manifest's recorded source
+commit when the checkout holds it, and then labels each difference the template
+made rather than the room (`earlier-template`, `newer-template`,
+`template-changed`). A room moving from the long control shape to the brief
+and operations index is told which lines are the template's change and which
+are its own; without that generation nothing is labeled.
 
 Current filled-line matching requires fixed wording to survive placeholder
 substitution. A line containing a placeholder is not automatically exempt
@@ -67,3 +74,4 @@ a review aid whose source generation and matching limits stay visible.
 
 - 2026-09-19: Created on owner direction as one article for this legacy Spec after reading its full record and checking named live sources. Evolved or superseded claims are identified explicitly. No Spec was moved, retired or discarded, and no retrospective Human QA is asserted.
 - 2026-09-30: Repaired live skill links and source_paths after relocation to workbench/skills; verified destinations only, without revalidating historical capability claims.
+- 2026-10-04: The Contract Carrier Pointer-Brief Rewrite (S-004C TK-005M) added the earlier-generation labels; the report procedure now lives in the `workbench-room-checks` maintainer skill the Runbook index points to.
