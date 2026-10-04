@@ -72,31 +72,27 @@ test('the ADR corpus is reconciled: ADR-0008 is not ported and ADR-0025 records 
   }
 });
 
+// S-004C TK-005H: the brief keeps the always-true branch completion rules and
+// points to the implement skill, which carries the merge, containment and
+// merged-branch cleanup procedure.
 test('root and template AGENTS define branch completion and merged-branch cleanup', () => {
+  const skillFile = 'workbench/skills/implement/SKILL.md';
+  const skill = read(skillFile);
+  const start = skill.indexOf('\n## Branch completion\n');
+  assert.ok(start > -1, `${skillFile} carries the branch completion procedure`);
+  const completion = skill.slice(start, skill.indexOf('\n## ', start + 1) > -1 ? skill.indexOf('\n## ', start + 1) : undefined);
   for (const relative of ['AGENTS.md', 'templates/AGENTS.md']) {
     const agents = read(relative);
     assert.match(agents, /^### Branch Completion$/m, `${relative} names the branch completion contract`);
-    assert.match(
-      agents,
-      /A task is not finished at the push/,
-      `${relative} states that a pushed branch is not a finished task`
-    );
-    assert.match(
-      agents,
-      /git branch -d/,
-      `${relative} names the safe merged-branch delete`
-    );
-    assert.match(
-      agents,
-      /never force it with\s+`-D`/,
-      `${relative} forbids forcing a delete past the merged check`
-    );
-    assert.match(
-      agents,
-      /already ancestors of\s+the merged tip/,
-      `${relative} resolves stacked branches without a separate merge`
-    );
+    const section = agents.slice(agents.indexOf('### Branch Completion'), agents.indexOf('\n## ', agents.indexOf('### Branch Completion')));
+    assert.match(section, /A task is not finished at the push/, `${relative} states that a pushed branch is not a finished task`);
+    assert.match(section, /workbench\/skills\/implement\/SKILL\.md#branch-completion/, `${relative} points to the branch completion procedure`);
+    assert.match(section, /Never force a branch delete with\s+`-D`/, `${relative} forbids forcing a delete past the merged check`);
   }
+  assert.match(completion, /A task is not finished at the push/, `${skillFile} states that a pushed branch is not a finished task`);
+  assert.match(completion, /git branch -d/, `${skillFile} names the safe merged-branch delete`);
+  assert.match(completion, /never force it with\s+`-D`/, `${skillFile} forbids forcing a delete past the merged check`);
+  assert.match(completion, /already ancestors of\s+the merged tip/, `${skillFile} resolves stacked branches without a separate merge`);
 });
 
 test('the safety rule exempts a provably merged branch from the ask-first gate', () => {
