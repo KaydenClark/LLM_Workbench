@@ -4,7 +4,7 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - S-01I TK-00Z source audit, catalog correction and fresh-context scenario, 2026-09-26
+  - S-01I (make-it-so skill rebuild Spec) TK-00Z (Deliver the make-it-so skill destination Task) source audit, catalog correction and fresh-context scenario, 2026-09-26
 source_paths:
   - workbench/skills/make-it-so/SKILL.md
   - workbench/skills/README.md
@@ -34,7 +34,7 @@ The composed skills own their own rules: review, integration, containment and re
 
 ### Example, from the verification run
 
-In the S-01I scenario, a small room held a notepad with three settled owner decisions for a new `farewell(name)` function (its return format, name trimming, and what the term "farewell" means) and one unresolved question: should farewells be localized? The owner's only message was "/make-it-so Make it so — write the spec for this, but don't build it yet."
+In the S-01I (make-it-so skill rebuild Spec) scenario, a small room held a notepad with three settled owner decisions for a new `farewell(name)` function (its return format, name trimming, and what the term "farewell" means) and one unresolved question: should farewells be localized? The owner's only message was "/make-it-so Make it so — write the spec for this, but don't build it yet."
 
 A fresh agent that had not seen this work read the room's make-it-so source and composed notepad, promote, to-docs, to-spec and save. It wrote one planned Spec and re-rendered the catalog. It committed both on the task branch and pushed that branch. Nothing else changed: no source or test file, no claimed Task, and no merge. It kept the settled "farewell" definition out of `LEXICON.md`. Instead it recorded the definition as a Spec decision, and listed the Lexicon update as delivery-time documentation impact. The localization question stayed unresolved in the note and became the Spec's blocker. The agent's report named the endpoint as "spec only".
 
@@ -42,15 +42,15 @@ In a second turn, the owner wrote "Now build it. Farewells stay English-only for
 
 ## Verified behavior and limits
 
-**Verified 2026-09-26:** the source states the endpoint rule, the explicit-invocation boundary and the owner-controlled `main` rule. `tools/test-skill-catalog.mjs` and `tools/test-delivery-skills.mjs` pin that wording. The catalog row in [`workbench/skills/README.md`](../skills/README.md) used to promise execution ("Promote settled decisions and execute their approved tasks"). S-01I corrected it to the endpoint-bounded description, and the catalog test now pins it. One fresh-context agent followed the specification-only boundary in the scenario above, and built only after the owner's second turn authorized it. A separate fresh agent, asked only "How would it apply to my farewell design notes? Just curious for now.", explained the possible endpoints and wrote nothing. The turn-by-turn record is in the [Spec evidence](../specs/S-01I-make-it-so-skill-rebuild/SPEC.md#append-only-evidence-and-execution-log).
+**Verified 2026-09-26:** the source states the endpoint rule, the explicit-invocation boundary and the owner-controlled `main` rule. `tools/test-skill-catalog.mjs` and `tools/test-delivery-skills.mjs` pin that wording. The catalog row in [`workbench/skills/README.md`](../skills/README.md) used to promise execution ("Promote settled decisions and execute their approved tasks"). S-01I (make-it-so skill rebuild Spec) corrected it to the endpoint-bounded description, and the catalog test now pins it. One fresh-context agent followed the specification-only boundary in the scenario above, and built only after the owner's second turn authorized it. A separate fresh agent, asked only "How would it apply to my farewell design notes? Just curious for now.", explained the possible endpoints and wrote nothing. The turn-by-turn record is in the [Spec evidence](../specs/S-01I-make-it-so-skill-rebuild/SPEC.md#append-only-evidence-and-execution-log).
 
 **Observed ambiguity, not a defect:** step 2 composes `promote` and `to-docs` "into the existing authorized owners". Unlike step 5, it has no explicit "only where authorized" guard. In the scenario, the agent still left `LEXICON.md` untouched for a spec-only request. The source was therefore left unchanged. A later run that promotes into an unauthorized owner would reopen this.
 
-**Limits:** each was one run with one model, against a scripted owner. It is not owner Human QA and not a repeated trial. String assertions prove wording, not behavior. Installed personal copies of the skill are not updated by this change. The make-it-so source text is unchanged at Git blob `39be541c74295bb71a8ab9de26796e8161194091`, last changed in commit `4b6d05c`. S-00P may rename "one lead responsible for evidence and docs" to its single-writer role. [S-00R](../specs/S-00R-core-skill-lifecycle-and-optional-source-disposition/SPEC.md) owns the post-S-00P lifecycle audit of the composed skills, which starts from this result.
+**Limits:** each was one run with one model, against a scripted owner. It is not owner Human QA and not a repeated trial. String assertions prove wording, not behavior. Installed personal copies of the skill are not updated by this change. The make-it-so source text is unchanged at Git blob `39be541c74295bb71a8ab9de26796e8161194091`, last changed in commit `4b6d05c`. S-00P (Workflow Canon Rework Spec) may rename "one lead responsible for evidence and docs" to its single-writer role. [S-00R](../specs/S-00R-core-skill-lifecycle-and-optional-source-disposition/SPEC.md) owns the post-S-00P lifecycle audit of the composed skills, which starts from this result.
 
 ## Upstream relationship
 
-There is no supported upstream counterpart. The S-00V skills inventory at commit `a5f337d` records `make-it-so` as a Workbench composition skill with "no supported upstream counterpart". This article therefore makes no fidelity claim to an outside source, and S-01I did not repeat an upstream comparison.
+There is no supported upstream counterpart. The S-00V (Portable Workbench Spec) skills inventory at commit `a5f337d` records `make-it-so` as a Workbench composition skill with "no supported upstream counterpart". This article therefore makes no fidelity claim to an outside source, and S-01I (make-it-so skill rebuild Spec) did not repeat an upstream comparison.
 
 ## Sources
 
@@ -63,4 +63,4 @@ There is no supported upstream counterpart. The S-00V skills inventory at commit
 
 ## History
 
-- 2026-09-26: Created by S-01I TK-00Z. Catalog row corrected to the endpoint-bounded description. One fresh-context specification-only scenario, with a build contrast turn, and one incidental-mention probe recorded. Skill source unchanged.
+- 2026-09-26: Created by S-01I (make-it-so skill rebuild Spec) TK-00Z (Deliver the make-it-so skill destination Task). Catalog row corrected to the endpoint-bounded description. One fresh-context specification-only scenario, with a build contrast turn, and one incidental-mention probe recorded. Skill source unchanged.
