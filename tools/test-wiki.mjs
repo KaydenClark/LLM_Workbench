@@ -466,7 +466,7 @@ function moveFixture() {
   const article = note({
     type: 'design-concept', authorized_by: 'owner', parent: 'none', provenance: ['owner-directed reconciliation, 2026-09-19'],
     source_paths: ['workbench/specs/S-700-fixture/SPEC.md']
-  }, '# Fixture Article\n\nSee the [Spec](../../specs/S-700-fixture/SPEC.md), the [sibling](sibling.md#part) and [the blueprint](../../../BLUEPRINT.md).\n\n## Evidence and Sources\n\n- [Spec](../../specs/S-700-fixture/SPEC.md)\n\n## History\n\n- 2026-09-19: Created.\n');
+  }, '# Fixture Article\n\nSee the [Spec](../../specs/S-700-fixture/SPEC.md), the [sibling](sibling.md#part) and [the blueprint](../../../BLUEPRINT.md), also [verbose](../../../workbench/specs/S-700-fixture/SPEC.md).\n\n## Evidence and Sources\n\n- [Spec](../../specs/S-700-fixture/SPEC.md)\n\n## History\n\n- 2026-09-19: Created.\n');
   fs.writeFileSync(path.join(concepts, 'spec-S-700-fixture.md'), article);
   fs.writeFileSync(path.join(concepts, 'sibling.md'), note({ type: 'design-concept', authorized_by: 'owner', parent: 'none' }, '# Sibling\n\nBack to [the article](spec-S-700-fixture.md).\n\n## Evidence and Sources\n\n- none\n\n## History\n\n- 2026-09-19: Created.\n'));
   fs.appendFileSync(path.join(wiki, 'MEMORY.md'), '\n- [Fixture Article](design-concepts/spec-S-700-fixture.md)\n');
@@ -502,6 +502,7 @@ test('move-note retypes, renames and relocates one note, rewrites every live lin
     const moved = fs.readFileSync(path.join(wiki, 'features', 'fixture-capability.md'), 'utf8');
     assert.match(moved, /^---\ntype: feature\n/, 'the note is retyped in its frontmatter');
     assert.match(moved, /\(\.\.\/\.\.\/specs\/S-700-fixture\/SPEC\.md\)/, 'a same-depth outgoing link is untouched');
+    assert.match(moved, /\(\.\.\/\.\.\/\.\.\/workbench\/specs\/S-700-fixture\/SPEC\.md\)/, 'a link that still resolves keeps its author\'s spelling instead of being shortened');
     assert.match(moved, /\(\.\.\/design-concepts\/sibling\.md#part\)/, 'an outgoing link to a note left behind is recomputed and keeps its fragment');
 
     const read = (file) => fs.readFileSync(file, 'utf8');
@@ -517,7 +518,7 @@ test('move-note retypes, renames and relocates one note, rewrites every live lin
     assert.equal(result.referencesRewritten['workbench/wiki/MEMORY.md'], 1);
     assert.equal(result.referencesRewritten['workbench/wiki/design-concepts/sibling.md'], 1);
     assert.equal(result.referencesRewritten['workbench/specs/S-700-fixture/SPEC.md'], 1);
-    assert.equal(result.referencesRewritten['workbench/wiki/features/fixture-capability.md'], 1, 'the moved note is reported under its new path');
+    assert.equal(result.referencesRewritten['workbench/wiki/features/fixture-capability.md'], 1, 'the moved note is reported under its new path, counting only the link that needed repair');
     assert.equal(result.usesGit, false);
     const afterMove = validateWiki(project).filter((item) => item.note === 'workbench/wiki/features/fixture-capability.md');
     assert.ok(afterMove.length > 0 && afterMove.every((item) => /must carry a .* section/.test(item.message)), 'the retyped note is in the right collection with the right type; only the feature sections remain for its author to write');

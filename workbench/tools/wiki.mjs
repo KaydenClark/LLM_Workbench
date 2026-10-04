@@ -344,15 +344,17 @@ export function moveNote(root, options = {}) {
   const writes = new Map();
   const retyped = type !== data.type;
   let moved = retyped ? setFrontmatterType(content, type) : content;
-  // The moved note's own outgoing links are recomputed for its new directory:
-  // every local target it names maps to itself so the rewriter recomputes the
-  // relative route, and its own path maps to its destination.
+  // The moved note's own outgoing links are recomputed for its new directory,
+  // but only those whose text no longer resolves to the same target from
+  // there: a link that still resolves is left exactly as its author wrote it.
+  // Each such target maps to itself so the rewriter recomputes the route, and
+  // the note's own path maps to its destination.
   const outgoing = new Map([[source, destination]]);
   const directoryTargets = new Set();
   const oldDir = path.dirname(source);
   for (const target of markdownLinkTargets(moved)) {
     const absolute = path.resolve(oldDir, target);
-    if (!outgoing.has(absolute)) outgoing.set(absolute, absolute);
+    if (path.resolve(destinationDir, target) !== absolute && !outgoing.has(absolute)) outgoing.set(absolute, absolute);
     if (fs.existsSync(absolute) && fs.statSync(absolute).isDirectory()) directoryTargets.add(absolute);
   }
   moved = planReferenceRewrite(root, destination, moved, oldDir, destinationDir, outgoing, totals, { directoryTargets }) ?? moved;
