@@ -164,7 +164,7 @@ completed Task records and evidence remain history. Human QA remains owner-led
 and separate, at useful owner-selected review points; main promotion stays
 owner-only. Final closure follows verification of the delivered content on main.
 
-The existing [decision-routing ledger](../../wiki/grilling-destination-audit-ledger.json)
+The existing [decision-routing ledger](../../sessions/grilling-destination-audit-ledger.json)
 records FND-Q21C's four-tier rule and explicit S-00J destination: durable Task
 choices escalate at close and remain a gap until reconciled. Task bodies carry
 choices; Receipts carry run facts. TT-Q12 is only partially answered: its
@@ -190,7 +190,7 @@ the closure point and is not a new gate), WF-8F and FND-Q07 (discard only after
 verified main) and the separate-context-review grilling decisions 009, 011 and
 012 of 2026-09-24 (closure, meaning features capture and record cleanup, waits
 for verification on main; TASK.md stays the record until cleanup). The
-[ledger](../../wiki/grilling-destination-audit-ledger.json) carries the WF and
+[ledger](../../sessions/grilling-destination-audit-ledger.json) carries the WF and
 FND rows; the SCR decisions, owner answers in grilling notes, are promoted as the
 ledger's SCR rows and accepted ADR-000F.
 

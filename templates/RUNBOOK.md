@@ -39,7 +39,8 @@ Contract change.
 | Run the Workbench runtime tools | You run doctor, selection, records, decision records or diagnostics from the installed tools lane. | [Workbench Lifecycle, Diagnostics, And Decision Records](#workbench-lifecycle-diagnostics-and-decision-records) |
 | Write or accept a decision record | A decision record (ADR or DDR) is proposed, accepted, superseded, deprecated, read, linked or validated. | [to-docs](workbench/skills/to-docs/SKILL.md#decision-records) |
 | Read a diagnostic and its blocking effect | A runtime tool reports a finding and you need its severity and what it blocks. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#diagnostics-and-blocking-effects) |
-| Validate the Wiki | A Wiki page changed, or doctor reports a Wiki finding. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#wiki-validation) |
+| Validate the Wiki | A Wiki page changed or must move to another collection, or doctor reports a Wiki finding. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#wiki-validation) |
+| Lint the Wiki | A Wiki update is ending (lint the pages it touched), or a Spec's work is verified and its review begins (lint the whole Wiki). | [Wiki Lint](#wiki-lint) |
 | Repair installed state | doctor reports installed state that a room command rewrites. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#installed-state-the-harness-wrote) |
 | Deliver a Spec through its lifecycle | You pick up, deliver, review or close an assigned Spec and its Tasks. | [Spec Lifecycle And Retrieval](#spec-lifecycle-and-retrieval) |
 | Pick, claim and close a Task | Every pickup or resume of assigned work: selection, claim, receipt, close and blocker rules. | [implement](workbench/skills/implement/SKILL.md#work-selection-and-lifecycle) |
@@ -368,6 +369,59 @@ row; adding candidate source does not publish or stamp v3.2.0.
 Reconcile selected supported claims into an existing durable owner with
 `sessions.mjs promote` through the procedure in the
 [`promote` skill](workbench/skills/promote/SKILL.md#command-reference).
+
+### Wiki Lint
+
+Lint is a reading job an agent performs; no command does it, and
+`node workbench/tools/wiki.mjs validate` keeps
+running on every change without replacing it. The obligation and its two
+cadences are owned by [`AGENTS.md`](AGENTS.md#documentation-ownership-and-proof)
+and [`workbench/wiki/SCHEMA.md`](workbench/wiki/SCHEMA.md#lint); this section
+is the checklist, not a second statement of them.
+
+**Small lint, at the end of every Wiki update, on the pages it touched:**
+
+1. Run `wiki.mjs validate`. The touched pages add no finding: properties,
+   collection shape, relative links and sources are the validator's, not the
+   reader's.
+2. Read each touched page against the pages it links to and the pages that
+   link to it. It contradicts none of them.
+3. Every claim still has its source. A claim checked in this operation is
+   stated plainly; an inferred claim says `Inference:`; a dated one says its
+   date. `last_verified` moved only for facts actually checked
+   ([SCHEMA Update](workbench/wiki/SCHEMA.md#update)).
+4. The router `workbench/wiki/MEMORY.md` links the page with a one-line
+   summary, and the summary still says what the page now says.
+5. Every identifier on the page carries the artifact's name and a little
+   context. Add what is missing; never strip an identifier.
+6. Each truth lives once: the page links to its owner (Spec, decision record,
+   Lexicon, Runbook) instead of restating it, and copies no live task state.
+7. No concept the page mentions lacks a page or a Lexicon row it should have.
+8. An article in `design-concepts/` or `features/` has its `History` line for
+   this operation, and a design concept's `authorized_by` names it.
+
+Repair what the update itself can fix on the same branch. A finding not
+resolved in the update becomes a corrective Task under the owning, still-open
+Spec ([SCHEMA Lint](workbench/wiki/SCHEMA.md#lint)); it is not left unrecorded.
+
+**Whole-Wiki lint, at Spec review when the Spec's work is verified:** the
+agent doing the review reads every page against the current controls and the
+question cards, asking the small-lint questions across the whole Wiki and
+these:
+
+- Does any page contradict `AGENTS.md`, the Lexicon, an active decision record
+  or the schema?
+- Is any page stale (marked `status: stale` and not repaired) or orphaned
+  (not routed from the router, or with a link or source that no longer
+  resolves)?
+- Does every delivered capability have its article in `workbench/wiki/features/`?
+- Does every router summary line still describe its page?
+- Does each landmark's synthesis page still match its question cards' current
+  answers?
+
+Each finding becomes a corrective Task under the still-open Spec, following
+the [assembled review and corrective return](workbench/skills/dispatcher/SKILL.md#assembled-review-and-corrective-return)
+rule in `AGENTS.md`; it is not cleared by a green `validate`.
 
 ## Evaluation And Benchmarking
 

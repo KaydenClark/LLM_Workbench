@@ -3,13 +3,13 @@
 **Spec ID:** S-004C
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s004c-tk005k
+**Owner:** claude-s004c-tk006l
 **Stance:** Builder
 **Updated:** 2026-10-04
 **Catalog description:** Rewrite AGENTS.md as a short standing brief and RUNBOOK.md as an operations index of context pointers, with each operation's procedure and binding requirements in a tracked skill the carrier points to.
-**Blockers:** Remaining Tasks wait on gates recorded as Task blockers: an owner decision on where maintainer-only procedures live, since this repository's skills lane is also the closed release-source lane (TK-005K, and behind it TK-005M, TK-005N and TK-005P); the Worker and Captain role skills (TK-005L); the Lexicon writer's turn (TK-005N); and delivery of the `LANDMARK.md` artifact (TK-005O).
-**Latest event:** 2026-10-04: TK-005K's first step found no safe home for a maintainer-only skill (the closed-bundle checks refuse any non-core skill in this repository's lane); no line moved; the Dispatcher recorded `owner:maintainer-skill-home-decision` and set TK-005K blocked.
-**Next gate:** Owner decision on the maintainer-skill home for TK-005K (options A, B, C in its Task record); then TK-005K resumes, followed by TK-005M and TK-005N. TK-005L waits on S-002E and S-004B delivery, TK-005O on S-003Z delivery, and TK-005P on all of them.
+**Blockers:** Remaining Tasks wait on gates recorded as Task blockers: TK-005K (maintainer-only operations, now ready on the declared maintainer-skill list TK-006L delivered), which TK-005M, TK-005N and TK-005P wait on; the Worker and Captain role skills (TK-005L); the Lexicon writer's turn (TK-005N); and delivery of the `LANDMARK.md` artifact (TK-005O).
+**Latest event:** TK-006L closed with proof.
+**Next gate:** Complete TK-005K; then TK-005M and TK-005N. TK-005L waits on S-002E and S-004B delivery, TK-005O on S-003Z delivery, and TK-005P on all of them.
 
 > **Citation anchors.** pre=`226212f1790badce0a5bdcd934d2e48e3981e05f` post=`226212f1790badce0a5bdcd934d2e48e3981e05f`.
 
@@ -87,6 +87,20 @@ These are the Plan's choices where the owner delegated the how, or left a form o
 - **Method for every family Task.** (1) Classify every line of the family's `AGENTS.md` and Runbook sections in the inventory. (2) Choose or author the home skill with red and green checks. (3) Move the procedure and its binding requirements into it. (4) Re-point the index rows; keep the heading. (5) Keep in `AGENTS.md` only lines that apply in every session. (6) Mirror to `templates/`. (7) Run the landing check at the candidate. (8) Update the readers the baseline census names. (9) Update and lint touched Wiki pages. (10) Run the full suite.
 - **Sequencing.** `AGENTS.md`, `RUNBOOK.md` and `LEXICON.md` each have one writer at a time, so the family Tasks run as a serial chain: baseline, landing check, Runbook index, pointed-skill authority statement, then the families in the order of the Tasks' blockers. Before claiming any Task that edits `AGENTS.md`, the Dispatcher confirms that no open candidate edits it and that the last `AGENTS.md` change is contained in integration. Only the update-route Task and the Lexicon Task, both after the families, may run side by side, because they edit different files.
 
+### Owner decision: maintainer-skill home (2026-10-04)
+
+TK-005K's first step found that this repository's skills lane, which is also
+the closed release-source lane, refuses any non-core skill, so a maintainer-only
+procedure had no skill home (options A, B and C in that Task record). The owner
+answered in chat on 2026-10-04: "A ) maintainer skills." That selects option
+(A): a declared maintainer-skill list that the core-skill installer, the
+one-time upgrade and the skill-catalog exactness checks exclude and never ship,
+landed as its own reviewed check change ([TK-006L](tasks/TK-006L/TASK.md))
+before TK-005K resumes. It refines the Plan decision "Homes for procedures": a
+maintainer-only operation's home is a skill in this repository's lane that the
+declaration names, never a core skill, and the closed core bundle, its catalog,
+install receipt and version label are unchanged by it.
+
 Open, not decided here:
 
 - Whether `LEXICON.md` is a contract artifact or a routing artifact (the owner deferred it).
@@ -114,7 +128,7 @@ Sequencing gates, each recorded as a Task blocker in the grammar the resolver su
 The Tasks are the records under `tasks/`; their state lives there, not here. The slicing and its order:
 
 - Foundation, in order: [baseline and census](tasks/TK-005B/TASK.md), [landing check](tasks/TK-005C/TASK.md), [Runbook index and entry read](tasks/TK-005D/TASK.md), [pointed-skill authority statement](tasks/TK-005E/TASK.md).
-- Operation families, in order, each following the method above: [continuity and promotion](tasks/TK-005F/TASK.md) (the first, which proves the method), [work selection, review and closure](tasks/TK-005G/TASK.md), [Git, integration review and branch completion](tasks/TK-005H/TASK.md), [verification, documentation ownership and the release gate](tasks/TK-005I/TASK.md), [operations every room runs](tasks/TK-005J/TASK.md), [maintainer-only operations](tasks/TK-005K/TASK.md).
+- Operation families, in order, each following the method above: [continuity and promotion](tasks/TK-005F/TASK.md) (the first, which proves the method), [work selection, review and closure](tasks/TK-005G/TASK.md), [Git, integration review and branch completion](tasks/TK-005H/TASK.md), [verification, documentation ownership and the release gate](tasks/TK-005I/TASK.md), [operations every room runs](tasks/TK-005J/TASK.md), [maintainer-only operations](tasks/TK-005K/TASK.md), preceded by its [declared maintainer-skill list](tasks/TK-006L/TASK.md) check change (owner decision of 2026-10-04).
 - After the families: [role detail leaves](tasks/TK-005L/TASK.md) (also waits on the role skills), [Genesis and the update route](tasks/TK-005M/TASK.md), [Lexicon and orientation text](tasks/TK-005N/TASK.md) (also waits on the Lexicon writer); the update-route and Lexicon Tasks may run side by side.
 - Independent of the families: [assigned-landmark clause](tasks/TK-005O/TASK.md), waiting on LANDMARK.md delivery, so the Spec cannot complete with the clause missing.
 - Last: [after-record, fresh-agent scenario and self-drift receipt](tasks/TK-005P/TASK.md), by an Auditor.
@@ -172,6 +186,8 @@ This Spec rewrites the Contract carriers and their `templates/` mirrors. Update 
 | 2026-10-04 | TK-005K | Blocked on owner decision | The Task's required first step probed a non-core skill in this repository's lane at 4beb3a28 in a throwaway worktree: core-skill-installer install exits 1 `invalid-bundled-core`, test-skill-catalog fails (exactly the locked 27 skills), test-core-skill-installer and test-workbench-upgrade fail `invalid-bundled-core`; test-skills-lane, skills verify and doctor accept it. No line moved. Landed before it: TK-005G PR #327 (d65117a0), TK-005H PR #328 (9b825ae6), TK-005I PR #329 (c89a7ad5), TK-005J PR #330 (c7d15b2c), each after a separate-context Codex review PASS of its head. | TK-005K record states the blocker and the owner options. | Owner decision `owner:maintainer-skill-home-decision`: (A) a declared maintainer-skill list the bundle checks exclude, (B) keep maintainer sections in the Runbook with index rows to headings, (C) a non-skill maintainer document. AGENTS.md plus the index is 39,666 B against the 38,178 B bound. |
 | 2026-10-04 | none | Dispatcher post-change receipts | At integration 18ee145e after TK-005B to TK-005J landed and TK-005K was blocked: `self-drift.mjs --phase post --json` cleanUpdate false with the same 8 attention findings as the pre receipt at d7ffffe9 (stale-claim S-00Q, five stale-seed, unverified-provenance, detached-head), none about this Spec; `evaluate-workbench --path templates --include-controls` 106.6/113 (pre 106.6); Guardrail North-Star Audit 78/100 (pre 78; Outcome evidence 8/30 unchanged, no outcome claim). Sizes: AGENTS.md 38,178 -> 26,238 B, RUNBOOK.md 151,684 -> 101,224 B, templates/AGENTS.md 32,749 -> 23,421 B, templates/RUNBOOK.md 86,307 -> 38,104 B; AGENTS.md plus the 13,428 B Operations Index is 39,666 B against the 38,178 B bound. Bounded semantic check: the known current-facing drift is the Lexicon's statement that the carrier rewrite is not yet specified, its Context Map and handoff routes, and the README entry-route text naming Ordinary Entry rather than the index, all owned by TK-005N; the unmet loaded-cost bound and the maintainer sections still in RUNBOOK.md are owned by TK-005K. | Spec evidence only. | Clean update not claimed: TK-005K (owner decision), TK-005L, TK-005M, TK-005N, TK-005O and TK-005P remain; the after-record and fresh-agent scenario are TK-005P's. |
 | 2026-10-04 | none | Dispatcher post-change receipt correction | Separate-context review of 0dfc443c found the previous row's self-drift count was taken in a detached inspection checkout: the eighth finding, `detached-head`, is an inspection-state artifact. Re-run on branch checkout 0dfc443c: `self-drift.mjs --phase post --json` cleanUpdate false with 7 attention findings (stale-claim S-00Q, five stale-seed, unverified-provenance); the pre receipt's 8 at d7ffffe9 were likewise taken detached, so the pre and post sets agree once `detached-head` is set aside, and none is about this Spec. The other figures in the previous row stand. | Spec evidence only. | As the previous row. |
+| 2026-10-04 | TK-005K | Owner chose the maintainer-skill home | The owner answered the TK-005K options in chat on 2026-10-04: "A ) maintainer skills." `owner:maintainer-skill-home-decision` removed from TK-005K; TK-006L cut (ID from `next-id` at 46ad9789 after checking every `refs/remotes/origin/*` tip holds no TK-006L) for the declared maintainer-skill list check change; TK-005K now waits on TK-005J and TK-006L. | Spec Decisions And Contracts, TK-005K record, new TK-006L record. | TK-006L implementation and review; then TK-005K, TK-005M and TK-005N. |
+| 2026-10-04 | TK-006L | Task closed | Full suite 51/51 at e9cb8235 (RUNBOOK Full suite list, dirty []); red 3e9998f6 (installer 2 and upgrade 1 new tests fail invalid-bundled-core; catalog fails exactness in a declared-skill clone), green test-core-skill-installer 33/33, test-workbench-upgrade 7/7, test-skill-catalog ok, also green in a committed clone declaring a probe maintainer skill; guardrails 106.6/113 and 78/100 held; wiki validate ok | workbench/skills/README.md Maintainer skills section and region; RUNBOOK.md Skills lane check paragraph; Wiki maintainer-skills (new, routed in MEMORY); manifest maintainerSkills []; templates unchanged (producer-only declaration) | No maintainer skill declared yet (TK-005K); no Lexicon Maintainer skill term (TK-005N, Lexicon writer's turn); a symlinked lane directory is still ignored rather than refused (pre-existing) |
 
 ## Completion Result
 

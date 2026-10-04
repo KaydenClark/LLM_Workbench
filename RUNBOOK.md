@@ -66,7 +66,8 @@ Contract change.
 | Save, promote or add a room-local skill | Authorized work must be saved to its owners, or a room adds its own skill. | [save](workbench/skills/save/SKILL.md#how-save-and-promote-compose); room-local skills: [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#room-local-skills) |
 | Promote claims to an owner | Selected supported claims must reach their durable owner. | [promote](workbench/skills/promote/SKILL.md#command-reference) |
 | Read frozen checkpoints or recovery receipts | A legacy checkpoint is cited, or a recovery receipt or backup is needed. | [checkpoint](workbench/skills/checkpoint/SKILL.md#frozen-history-and-operational-recovery) |
-| Validate the Wiki | A Wiki page changed, or doctor reports a Wiki finding. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#wiki-validation) |
+| Validate the Wiki | A Wiki page changed or must move to another collection, or doctor reports a Wiki finding. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#wiki-validation) |
+| Lint the Wiki | A Wiki update is ending (lint the pages it touched), or a Spec's work is verified and its review begins (lint the whole Wiki). | [Wiki Lint](#wiki-lint) |
 | Repair installed state | doctor reports installed state that a room command rewrites. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#installed-state-the-harness-wrote) |
 | Read a diagnostic and its blocking effect | A runtime tool reports a finding and you need its severity and what it blocks. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#diagnostics-and-blocking-effects) |
 | Use the socket contract registry | Work touches the Foundry socket contract registry. | [Socket Contract Registry](#socket-contract-registry) |
@@ -482,6 +483,14 @@ then runs `install`.
 An operations index row that points to a skill the lane lacks is
 `skill-pointer-dangling` (attention, effect `none`); doctor reads only the
 index and the lane copy to decide which skill binds.
+
+This repository's lane is also the release source, so it may hold maintainer
+skills, only when `workbench/manifest.json` declares them under
+`maintainerSkills`: the provider-home installer, the one-time upgrade and the
+skill-catalog check accept exactly the core plus those names, refuse any other
+extra lane entry (`invalid-bundled-core`) or a malformed declaration
+(`invalid-maintainer-skills`), and never install or lay one down
+([Maintainer skills](workbench/skills/README.md#maintainer-skills)).
 
 ### Personal catalog publication
 
@@ -1254,9 +1263,63 @@ ignored recovery collection; read or restore them through the procedure in the
 
 ### Wiki Validation
 
-Validate the wiki lane, read its findings (which `doctor` also carries) and
-repair a note's missing properties through the procedure in the
+Validate the wiki lane, read its findings (which `doctor` also carries),
+repair a note's missing properties and move a note to another collection
+without breaking a link (`wiki.mjs move-note`) through the procedure in the
 [`workbench-runtime` skill](workbench/skills/workbench-runtime/SKILL.md#wiki-validation).
+
+### Wiki Lint
+
+Lint is a reading job an agent performs; no command does it, and
+`node workbench/tools/wiki.mjs validate` (see Wiki Validation above) keeps
+running on every change without replacing it. The obligation and its two
+cadences are owned by [`AGENTS.md`](AGENTS.md#documentation-ownership-and-proof)
+and [`workbench/wiki/SCHEMA.md`](workbench/wiki/SCHEMA.md#lint); this section
+is the checklist, not a second statement of them.
+
+**Small lint, at the end of every Wiki update, on the pages it touched:**
+
+1. Run `wiki.mjs validate`. The touched pages add no finding: properties,
+   collection shape, relative links and sources are the validator's, not the
+   reader's.
+2. Read each touched page against the pages it links to and the pages that
+   link to it. It contradicts none of them.
+3. Every claim still has its source. A claim checked in this operation is
+   stated plainly; an inferred claim says `Inference:`; a dated one says its
+   date. `last_verified` moved only for facts actually checked
+   ([SCHEMA Update](workbench/wiki/SCHEMA.md#update)).
+4. The router `workbench/wiki/MEMORY.md` links the page with a one-line
+   summary, and the summary still says what the page now says.
+5. Every identifier on the page carries the artifact's name and a little
+   context. Add what is missing; never strip an identifier.
+6. Each truth lives once: the page links to its owner (Spec, decision record,
+   Lexicon, Runbook) instead of restating it, and copies no live task state.
+7. No concept the page mentions lacks a page or a Lexicon row it should have.
+8. An article in `design-concepts/` or `features/` has its `History` line for
+   this operation, and a design concept's `authorized_by` names it.
+
+Repair what the update itself can fix on the same branch. A finding not
+resolved in the update becomes a corrective Task under the owning, still-open
+Spec ([SCHEMA Lint](workbench/wiki/SCHEMA.md#lint)); it is not left unrecorded.
+
+**Whole-Wiki lint, at Spec review when the Spec's work is verified:** the
+agent doing the review reads every page against the current controls and the
+question cards, asking the small-lint questions across the whole Wiki and
+these:
+
+- Does any page contradict `AGENTS.md`, the Lexicon, an active decision record
+  or the schema?
+- Is any page stale (marked `status: stale` and not repaired) or orphaned
+  (not routed from the router, or with a link or source that no longer
+  resolves)?
+- Does every delivered capability have its article in `workbench/wiki/features/`?
+- Does every router summary line still describe its page?
+- Does each landmark's synthesis page still match its question cards' current
+  answers?
+
+Each finding becomes a corrective Task under the still-open Spec, following
+the [assembled review and corrective return](workbench/skills/dispatcher/SKILL.md#assembled-review-and-corrective-return)
+rule in `AGENTS.md`; it is not cleared by a green `validate`.
 
 ### Installed State The Harness Wrote
 

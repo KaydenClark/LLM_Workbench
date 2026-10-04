@@ -102,8 +102,9 @@ At the pre anchor:
 
 ### Current release state — 2026-10-04
 
-Read against integration `46ad978956a74a3ee1bda22c36eb16207dcd98fd`, the
-[destination ledger](../../wiki/grilling-destination-audit-ledger.json), the
+Read against integration `46ad978956a74a3ee1bda22c36eb16207dcd98fd` and rechecked
+after merging integration `145ab2f9555dfbd77e14739ab7150036d72ba962`, the
+[destination ledger](../../sessions/grilling-destination-audit-ledger.json), the
 destination decision records DDR-000A to DDR-000Y in `workbench/docs/ddr/`,
 the Grill Board and the owner's own messages. It replaces the 2026-09-26
 blocker wording; the reconciliation entries below remain as history.
@@ -134,7 +135,7 @@ so TK-002 stamps `v4.0.0` without an owner question.
 | Direct Blueprint Tasks | Director: allocate the successor the [ownership proposal](direct-blueprint-task-proposal.md) names | In v4: ledger E-3 ("Not every Task has to belong to a Spec") and E-9 (home `workbench/tasks/TK-XXXX/TASK.md`), and ADR-000U lets Tasks sit directly under a landmark. No owning Spec exists and `workbench/tasks/` does not exist yet. Allocating the owner is a Director disposition, not an owner question. |
 | Template Upgrade Release Gate | This Spec, TK-003 | Unchanged procedure; the five update-tool gaps recorded under TK-003 still need an owning delivery or a named limit. [S-01N](../S-01N-update-harness-skill-rebuild/SPEC.md) (update-harness skill rebuild) is planned and unassigned. |
 | Release proof (Puffer Pond) | [S-004I](../S-004I-template-release-proof-puffer-pond/SPEC.md), unassigned | [DDR-000Q](../../docs/ddr/000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md) (locked 2026-10-03): the Template, updated to the release and deployed in the cloud, builds Puffer Pond from a prewritten grill-me-and-genesis script in one pass. S-004I's cloud form, script content and build landing are its own Plan items. |
-| Every other v4 Spec | Each Spec's named owner | The owner's WF-12 answer is "I want every spec completed before we call this done". At this change 53 Specs are active and 49 planned (the Taskboard and `CATALOG.md` project them); TK-001 checks which are v4 scope, since anything outside v4 went to the backlog (ledger E-4A). |
+| Every other v4 Spec | Each Spec's named owner | The owner's WF-12 answer is "I want every spec completed before we call this done". At integration 145ab2f9 plus this change, 55 Specs are active and 47 planned (the Taskboard and `CATALOG.md` project them); TK-001 checks which are v4 scope, since anything outside v4 went to the backlog (ledger E-4A). |
 | Integration target binding | S-00J (above) | Open requirement carried from S-054, not yet delivered: review evidence must name the expected integration tip and the merge path must refuse a moved tip. S-00J has no Task for it yet. |
 
 **How the release proof relates to the Template gate and WF-11.** DDR-000Q
@@ -197,7 +198,7 @@ use the owner's own GitHub account, and no multi-user trust model is built.
 ### Current release planning reconciliation — 2026-09-26
 
 Source comparison is pinned to `89d4042fb8931b9d720af75bffea1c28803d72aa`:
-the [destination ledger](../../wiki/grilling-destination-audit-ledger.json)
+the [destination ledger](../../sessions/grilling-destination-audit-ledger.json)
 entries E-6, E-7, E-8, E-9 and TT-Q10, and the retired
 [Task Artifact Spec](../retired/S-00H-task-artifact-and-terminology-migration/SPEC.md)
 including its 2026-09-17 TT-Q10 evidence. The Current Verified State above is

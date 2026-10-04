@@ -8,7 +8,7 @@ provenance:
   - Owner direction 2026-09-24 on grouping the grilling ledger view
   - Promoted from host auto-memory by the S-00V TK-00I audit, 2026-09-26
 source_paths:
-  - workbench/wiki/grilling-destination-audit-ledger.json
+  - workbench/sessions/grilling-destination-audit-ledger.json
   - workbench/wiki/design-concepts/landmark-tracker.md
 last_verified: 2026-09-26
 ---
@@ -23,7 +23,7 @@ producing them, so another document adds to the problem.
 
 - Markdown or JSON stays right for the source artifact an agent produces; the
   thing the owner looks at is rendered from it. The
-  [grilling ledger](grilling-destination-audit-ledger.json) works this way:
+  [grilling ledger](../sessions/grilling-destination-audit-ledger.json) works this way:
   readable views are rendered from the JSON and never edited by hand.
 - Group a progress view by destination before status. The owner reads the
   ledger by landmark, the design-concept rung larger than a Spec, not as a flat

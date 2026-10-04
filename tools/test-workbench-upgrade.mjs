@@ -205,4 +205,69 @@ test('the updater validates every consumed source lane, including the skills lan
   }
 });
 
+// S-004C TK-006L: a skill the release checkout's manifest declares under
+// `maintainerSkills` passes the source check and is never laid into the room's
+// lane; an undeclared extra lane skill still blocks before the project changes.
+function releaseWithExtraSkill(parent, declare) {
+  const bundle = path.join(parent, 'release');
+  const cloned = spawnSync('git', ['clone', '-q', '--no-local', root, bundle], { cwd: parent, encoding: 'utf8' });
+  assert.equal(cloned.status, 0, cloned.stderr);
+  const skill = declare ? 'maintainer-fixture' : 'stray-fixture';
+  write(bundle, `workbench/skills/${skill}/SKILL.md`, `---\nname: ${skill}\ndescription: Fixture lane skill.\n---\n\n# ${skill}\n`);
+  if (declare) {
+    // Add to whatever the release already declares, so the fixture holds once
+    // this repository declares real maintainer skills.
+    const manifestPath = path.join(bundle, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    manifest.maintainerSkills = [...(manifest.maintainerSkills ?? []), skill];
+    fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+  }
+  assert.equal(spawnSync('git', ['add', '-A'], { cwd: bundle }).status, 0);
+  const committed = spawnSync('git', ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.test', 'commit', '-qm', 'maintainer fixture'], { cwd: bundle, encoding: 'utf8' });
+  assert.equal(committed.status, 0, committed.stderr);
+  return path.join(bundle, 'tools', 'workbench-upgrade.mjs');
+}
+
+test('a declared maintainer skill in the release passes the source check and is never laid into the room', () => {
+  const project = fixture('workbench-upgrade-project-');
+  const home = fixture('workbench-upgrade-home-');
+  const parent = fixture('workbench-upgrade-source-');
+  try {
+    seedProject(project);
+    const bundleUpgrade = releaseWithExtraSkill(parent, true);
+    const result = run(bundleUpgrade, 'upgrade', '--project', project, '--home', home, '--version', VERSION, '--explicit-update');
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    assert.equal(result.report.status, 'complete', result.stdout);
+    assert.equal(fs.existsSync(path.join(project, 'workbench', 'skills', 'maintainer-fixture')), false, 'the maintainer skill never ships into the room');
+    const receipt = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'skills', '.workbench-skills.json'), 'utf8'));
+    assert.deepEqual(Object.keys(receipt.skills).sort(), [...coreSkills].sort(), 'the lane receipt names only the core skills');
+    const manifest = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'manifest.json'), 'utf8'));
+    assert.equal(Object.hasOwn(manifest, 'maintainerSkills'), false, 'the room manifest declares no maintainer skills');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+    fs.rmSync(parent, { recursive: true, force: true });
+  }
+});
+
+test('an undeclared extra skill in the release lane still blocks the upgrade before the project changes', () => {
+  const project = fixture('workbench-upgrade-project-');
+  const home = fixture('workbench-upgrade-home-');
+  const parent = fixture('workbench-upgrade-source-');
+  try {
+    seedProject(project);
+    const bundleUpgrade = releaseWithExtraSkill(parent, false);
+    const result = run(bundleUpgrade, 'upgrade', '--project', project, '--home', home, '--version', VERSION, '--explicit-update');
+    assert.notEqual(result.status, 0);
+    assert.equal(result.report.status, 'blocked');
+    assert.equal(result.report.error.code, 'invalid-bundled-core');
+    assert.equal(fs.existsSync(path.join(project, 'workbench')), false, 'the project is untouched');
+    assert.deepEqual(fs.readdirSync(home), [], 'the home is untouched');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+    fs.rmSync(parent, { recursive: true, force: true });
+  }
+});
+
 console.log('ok - the one-time upgrade lays the skills lane down from the release and never touches the provider home');

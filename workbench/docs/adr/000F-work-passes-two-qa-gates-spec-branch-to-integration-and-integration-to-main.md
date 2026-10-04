@@ -119,7 +119,7 @@ comes from the 2026-09-26 Director assignment recorded in S-00J and S-00P, and
 the closure order from S-00J's contract. The grilling notes are untracked
 working material named as origin, not durable evidence; their questions and
 answers are recorded in the
-[grilling destination audit ledger](../../wiki/grilling-destination-audit-ledger.json).
+[grilling destination audit ledger](../../sessions/grilling-destination-audit-ledger.json).
 The SCR answers replace the "not batched by release" clause FND-Q14 carried
 with the version cadence as default, not as a mandate.
 

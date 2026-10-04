@@ -55,7 +55,20 @@ Declared collections are `design-concepts/` (required to exist, may be empty),
 `features/` (one readable article per completed Spec, captured at its closure
 point; additive, may be empty), `guidebooks/` (ordered procedures), and
 `archive/` (historical, generated, superseded, and migration evidence). Every
-collection is flat; only `archive/` may nest. `MEMORY.md` is the only router.
+collection is flat; only `archive/` and the draft collection `skills-draft/`
+may nest. `MEMORY.md` is the only router.
+
+`skills-draft/` is this repository's prototype of the skills Wiki: one folder
+per group (`getting-started`, `main-workflow`, `shaping`, `upkeep`,
+`primitives`, `productivity`, `stances`, `foundry`) holding one draft article
+per skill at `skills-draft/<group>/<skill>.md`, an index `README.md` and the
+article `TEMPLATE.md` at its root. A draft carries `status: draft`, a value no
+note outside the collection may carry, and names its own `skill` and `group`.
+It is named here and in the validator, not declared in the manifest, because
+it is a repo-only prototype; the nesting exception and the `draft` status end
+when the owner promotes drafts into flat `skill-*.md` notes, and a draft
+never replaces the active article it names under `supersedes` until then.
+Generated rooms do not carry the collection.
 
 ## Page Kinds
 
@@ -108,7 +121,8 @@ last_verified: YYYY-MM-DD
 ## Create
 
 - Create a note only when no existing active note owns the fact.
-- Keep every collection flat; do not add category indexes.
+- Keep every collection flat; do not add category indexes. The one index is
+  the draft collection's own `skills-draft/README.md`.
 - Do not create notes for temporary status or tasks. A chat answer that
   produced a durable summary, comparison or synthesis is filed as a page;
   a passing answer is not.
@@ -154,7 +168,8 @@ did the router get its summary line, was a concept mentioned that has no
 page. At Spec review, when the Spec's work is verified, lint the whole wiki
 the same way against the current controls and question cards. Findings
 become corrective Tasks. This is a reading job for an agent; the structural
-validator below keeps running on every change and does not replace it.
+validator below keeps running on every change and does not replace it. The
+checklist for both cadences is the Runbook's Wiki Lint section (`RUNBOOK.md`).
 
 ## Concurrency
 
