@@ -60,7 +60,7 @@ declared collections; only `archive/` may nest.
 
 Every page this router links carries a one-line summary beside its link, so a
 reader can choose a page without opening it. In a list, write
-`- [Page Title](page-file.md) - what the page is for`; in a table, give the
+`- [Schema](SCHEMA.md) - what the page is for`; in a table, give the
 link's row a second cell that says what the page is for. `wiki.mjs validate`
 reports a routed page without one as attention, never as a failure.
 

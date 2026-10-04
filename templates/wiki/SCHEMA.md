@@ -64,8 +64,8 @@ and may be revised when something does not fit.
 
 - **Overview**: `MEMORY.md`, the router, carrying a one-line summary beside
   every link so a reader can choose a page without opening it. Write a list
-  entry as `- [Title](path) - what the page is for` (a dash, an en or em dash,
-  or a colon, then at least two words), or give a table row a second cell that
+  entry as `- [Schema](SCHEMA.md) - what the page is for` (the link, a dash, an
+  en or em dash or a colon, then at least two words), or give a table row a second cell that
   says what the page is for. `wiki.mjs validate` reports a routed Wiki page
   without one as attention (`unsummarized-route`), never as a failure.
 - **Synthesis**: one evolving page per landmark, in `design-concepts/`,

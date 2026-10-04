@@ -334,7 +334,7 @@ test('a routed Wiki page with no one-line summary beside its link is attention o
 
 test('the router template shows the summary-line convention and the product router keeps every routed Wiki page summarized', () => {
   const template = fs.readFileSync(path.join(root, 'templates', 'wiki', 'MEMORY.project.md'), 'utf8');
-  assert.match(template, /`- \[Page Title\]\(page-file\.md\) - what the page is for`/, 'the template router shows a summary-line example');
+  assert.match(template, /`- \[Schema\]\(SCHEMA\.md\) - what the page is for`/, 'the template router shows a summary-line example');
   assert.deepEqual(validateWiki(root).filter((item) => item.code === 'unsummarized-route'), [], 'this repository routes no Wiki page without a summary');
 });
 
