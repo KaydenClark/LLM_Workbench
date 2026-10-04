@@ -140,6 +140,14 @@ evidence log and Completion Result record what it delivered.
 - Slice 6 depends on whether the ledger-to-cards conversion lands first; it
   carries that check as its first step.
 
+- Review hold (2026-10-04): the owner prohibited Codex for separate-context
+  review. PR for corrective Task TK-006T (identifier repair on the non-skill
+  Wiki pages) was reviewed once by a read-only Claude Opus subagent (FAIL with
+  two P2 findings, both since fixed) and needs a fresh separate-context review
+  before it merges; after it merges, TK-006R and TK-006S are merged and closed,
+  TK-006T closes, and the assembled Spec needs `report` and `verdict`. The owner
+  decides how that review is done; nothing here is approved to merge until then.
+
 ## Vertical Implementation Slices
 
 Tasks are temporary tracer bullets reaching or repairing this scoped destination.
