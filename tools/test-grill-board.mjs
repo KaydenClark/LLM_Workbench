@@ -13,10 +13,10 @@ import test from 'node:test';
 import {
   ANSWERS_SCHEMA, ITEMS_SCHEMA, addItems, applyAnswer, boardPaths, createServer, itemStatus, mergeBoard,
   pendingForAgents, readAnswers, readItems, readSourceFile, recordAnswer, reviseItem, statusSummary, withdrawItem
-} from '../workbench/tools/grill-board.mjs';
+} from './grill-board.mjs';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const tool = path.join(repo, 'workbench', 'tools', 'grill-board.mjs');
+const tool = path.join(repo, 'tools', 'grill-board.mjs');
 
 function room() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'grill-board-'));
@@ -120,6 +120,8 @@ test('recordAnswer refuses an unknown item or a verdict that is not one of its o
   assert.throws(() => recordAnswer(dir, 'GB-0009', { verdict: 'x', note: '', itemRevision: 1 }), /unknown-item|not on the board/);
   assert.throws(() => recordAnswer(dir, 'GB-0001', { verdict: 'confirm', note: '', itemRevision: 1 }), /not an option/);
   assert.equal(recordAnswer(dir, 'GB-0001', { verdict: '', note: 'a note only', itemRevision: 1 }).derivedStatus, 'answered');
+  assert.throws(() => recordAnswer(dir, 'GB-0001', { verdict: 'x', note: '', itemRevision: 999 }), (e) => e.code === 'stale-item', 'a future revision is refused, so a bad PUT cannot outlive later revisions');
+  assert.throws(() => recordAnswer(dir, 'GB-0001', { verdict: 'x', note: '', itemRevision: 0 }), (e) => e.code === 'stale-item');
   assert.equal(itemStatus(readItems(dir).items[0], { verdict: '', note: '  ', at: 'x', itemRevision: 1 }), 'pending', 'blank verdict and blank note is not an answer');
 });
 
@@ -152,6 +154,11 @@ test('the server serves the page, writes answers.json only on PUT, and never tou
     assert.equal(file.text, 'readable\n');
     const escape = await fetch(`${base}/api/file?path=../../etc/passwd`);
     assert.equal(escape.status, 400);
+    const malformed = await fetch(`${base}/api/answers/GB-0001`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: '{not json' });
+    assert.equal(malformed.status, 400);
+    assert.equal((await malformed.json()).error.code, 'invalid-json');
+    const stale = await fetch(`${base}/api/answers/GB-0001`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ verdict: 'confirm', note: '', itemRevision: 7 }) });
+    assert.equal(stale.status, 409);
     const status = await (await fetch(`${base}/api/status`)).json();
     assert.equal(status.counts.answered, 1);
   } finally {

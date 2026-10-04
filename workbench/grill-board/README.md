@@ -15,7 +15,7 @@ which stays planned and blocked on its own owner gate.
 
 | File | Who writes it | How |
 |---|---|---|
-| `items.json` | agents | only through `node workbench/tools/grill-board.mjs add / revise / apply / withdraw` |
+| `items.json` | agents | only through `node tools/grill-board.mjs add / revise / apply / withdraw` |
 | `answers.json` | the owner | only through the served page; untracked in Git; **agents never write it** |
 | `index.html` | agents, rarely | the page; change it only when the owner asks for a page change |
 
@@ -53,7 +53,7 @@ The owner serves and answers the copy in the main checkout,
 there. If you work in a worktree, read his answers from that path:
 
 ```bash
-node /Users/kayden/LLM_Workbench/workbench/tools/grill-board.mjs pending --path /Users/kayden/LLM_Workbench
+node /Users/kayden/LLM_Workbench/tools/grill-board.mjs pending --path /Users/kayden/LLM_Workbench
 ```
 
 and run `apply` / `revise` / `add` in your own worktree against your branch's
@@ -64,7 +64,7 @@ an unrelated dirty file; leave it alone.
 ## Owner: how to use it
 
 ```bash
-node workbench/tools/grill-board.mjs serve
+node tools/grill-board.mjs serve
 ```
 
 Open <http://127.0.0.1:4646/>. Pick a verdict on each card and type notes; every
@@ -87,7 +87,7 @@ carries the applied verdicts into Git.
 
 ## Agents: how to process a batch
 
-1. `node workbench/tools/grill-board.mjs status` then `pending` (add `--json`
+1. `node tools/grill-board.mjs status` then `pending` (add `--json`
    for the full records). Each pending row names the item, the owner's verdict
    label, his note and the item revision he answered.
 2. Route each verdict by item kind:
@@ -132,5 +132,7 @@ carries the applied verdicts into Git.
 | Withdrawn | an agent retired the item with a reason; the owner can still read it |
 
 `status`, `pending`, `show`, `validate` are read-only. `serve` writes only
-`answers.json`, and only on the owner's own PUT from the page. The test
+`answers.json`, and only through a PUT from the page it serves on 127.0.0.1;
+nothing checks who sent that PUT, so the owner-only rule for `answers.json`
+is a rule agents follow, not one the server enforces. The test
 `tools/test-grill-board.mjs` locks these seams.

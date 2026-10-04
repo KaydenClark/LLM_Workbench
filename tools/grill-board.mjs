@@ -15,7 +15,9 @@
 // into its durable owner runs `apply`, which copies the owner's verdict, note
 // and time into the item so the owner sees it as done and Git keeps his words.
 // Everything else about how to process answers is in
-// workbench/grill-board/README.md.
+// workbench/grill-board/README.md. The tool lives in the root tools lane,
+// beside the evaluator and the test suite, because the board is this room's
+// working surface and not a managed runtime tool shipped to every room.
 import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
@@ -336,7 +338,7 @@ export function recordAnswer(root, id, { verdict, note, itemRevision }) {
   const item = findItem(board, id);
   if (!isString(verdict) || !isString(note)) throw new BoardError('invalid-answer', 'verdict and note must be strings');
   if (verdict && !optionsFor(item).some((option) => option.value === verdict)) throw new BoardError('invalid-answer', `${verdict} is not an option of ${id}`);
-  if (!Number.isInteger(itemRevision)) throw new BoardError('invalid-answer', 'itemRevision must be an integer');
+  if (itemRevision !== item.revision) throw new BoardError('stale-item', `${id} is at revision ${item.revision}; reload the page and answer again`);
   const answers = readAnswers(root);
   const previous = answers.answers[id];
   const entry = { verdict, note, at: now(), itemRevision };
@@ -439,14 +441,19 @@ export function createServer(root) {
       }
       const match = url.pathname.match(/^\/api\/answers\/(GB-\d{4})$/);
       if (request.method === 'PUT' && match) {
-        const body = JSON.parse(await readBody(request));
+        let body;
+        try {
+          body = JSON.parse(await readBody(request));
+        } catch (error) {
+          throw new BoardError('invalid-json', `request body is not JSON: ${error.message}`);
+        }
         sendJson(response, 200, recordAnswer(root, match[1], body));
         return;
       }
       sendJson(response, 404, { error: { code: 'not-found', message: `${request.method} ${url.pathname}` } });
     } catch (error) {
       const code = error.code ?? 'internal';
-      const status = code === 'unknown-item' || code === 'missing-file' ? 404 : code === 'internal' ? 500 : 400;
+      const status = code === 'unknown-item' || code === 'missing-file' ? 404 : code === 'stale-item' ? 409 : code === 'internal' ? 500 : 400;
       sendJson(response, status, { error: { code, message: error.message } });
     }
   });
