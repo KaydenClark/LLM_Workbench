@@ -103,6 +103,13 @@ copying task state here.
 
 ## Grilling Destination Audit Ledger
 
+For the owner's current package review, the [Consequential Decision Record
+(shared Grill Board)](../grill-board/README.md) bundles questions, named owners,
+proposals, consequences and original question history by destination scope.
+Its saved answers and revision protocol are shared by Claude and Codex. Read
+the existing package before revising it; its working review context does not
+replace this ledger or the underlying decision and delivery owners.
+
 Every unique grilling question put to the owner, with its answer, reason and
 intended result, is recorded in
 [grilling-destination-audit-ledger.json](grilling-destination-audit-ledger.json).

@@ -1,5 +1,36 @@
 # Grill Board
 
+The page is titled **Consequential Decision Record**. It is this objective's
+shared working review package, using the existing Grill Board protocol. It is
+not a newly accepted artifact type. The owner explicitly requested package
+review instead of the ordinary one-question-at-a-time interview.
+
+Items are grouped by **Blueprint, Landmark, Spec and Task** destination scope.
+Each versioned `brief` explains the question, named artifacts and their purpose,
+why the choice matters, the recommendation, proposed changes, consequences,
+and related Destination Question Cards with their original grilling history.
+Complete proposals, acceptance text and evidence remain expandable. The ledger
+review includes all 298 questions and 171 cards captured for this package;
+these are dated snapshots, not a promise that their inventories cannot grow.
+
+**Do not regenerate this package on arrival.** Read the existing items and
+answers first. Change only context supported by new evidence or owner feedback,
+through `revise`, naming what changed and why. Preserve original questions,
+answers, corrections and reasons. An unanswered item is not evidence that its
+underlying question has never been answered. A recommendation must agree with
+the machine-readable `proposal`; never process an older proposal that conflicts
+with the brief the owner actually reviewed.
+
+To revise a brief, pass `--brief-file PATH` to `revise`. It takes a JSON object
+with `scope` (BLUEPRINT, LANDMARK, SPEC or TASK) and nonempty Markdown strings
+`summary`, `artifacts`, `why`, `recommendation`, `changes`, `impact`, `history`.
+The revision invalidates earlier answers without editing their words. `pending
+--json` includes the brief so Claude and Codex see the same context.
+Notes without a verdict and **Not now** save locally but remain pending.
+The tool refuses to apply either as a decision. Custom choice verdicts mean the
+selected alternative, not automatic acceptance of the recommended alternative;
+read the returned question, options, brief and verdict together.
+
 One local page where the owner reads every item that waits on him (Spec owner
 gates, open owner decisions, unsettled Destination Question Cards, decision
 record texts, page texts), answers them as a package, and saves as he goes.

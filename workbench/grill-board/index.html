@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Grill Board</title>
+<title>Consequential Decision Record · Grill Board</title>
 <style>
   :root {
     --bg: #f6f5f1; --panel: #ffffff; --ink: #1d1c19; --muted: #6b675e; --line: #e2dfd6;
@@ -44,7 +44,7 @@
   .groups a { display: flex; justify-content: space-between; gap: 8px; padding: 7px 8px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 13px; }
   .groups a:hover { background: var(--soft); }
   .groups a small { color: var(--muted); white-space: nowrap; }
-  main { padding: 20px 28px 80px; max-width: 1100px; }
+  main { padding: 20px 28px 80px; max-width: 1060px; }
   .banner { position: sticky; top: 0; z-index: 5; background: var(--warn-soft); color: var(--ink); border: 1px solid var(--warn); border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; display: none; align-items: center; justify-content: space-between; gap: 12px; }
   .banner.show { display: flex; }
   .notice { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin-bottom: 24px; color: var(--muted); font-size: 14px; }
@@ -105,12 +105,26 @@
   dialog pre { margin: 0; padding: 16px; white-space: pre-wrap; word-break: break-word; font-family: var(--mono); font-size: 12.5px; max-height: 76vh; overflow: auto; }
   dialog::backdrop { background: rgba(0,0,0,.45); }
   .theme { font-size: 12px; border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 8px; padding: 2px 8px; margin-top: 12px; }
+  .block { margin: 12px 0; }
+  .block h4, .recommendation h4 { font-size: 13px; text-transform: none; letter-spacing: 0; }
+  .brief-summary { font-size: 17px; line-height: 1.6; }
+  .recommendation { border-left: 4px solid var(--accent); background: var(--soft); padding: 10px 18px; margin: 16px 0; border-radius: 4px; }
+  .recommendation h4 { margin: 0 0 6px; }
+  .recommendation p { margin: 0; }
+  .identity { display: block; color: var(--muted); font: 11px var(--mono); margin-top: 8px; font-weight: normal; }
+  .options { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; }
+  .option-impact { font-size: 13px; color: var(--muted); }
+  .history-entry { margin: 10px 0; background: var(--bg); padding: 12px; border-radius: 8px; }
+  .history-entry summary { cursor: pointer; font-size: 14px; }
+  .history-entry p { line-height: 1.65; }
+  .family { margin: 24px 0 14px; font-weight: 500; color: var(--muted); }
+  .family small { font-size: 12px; }
 </style>
 </head>
 <body>
 <div class="shell">
   <nav>
-    <h1 id="title">Grill Board</h1>
+    <h1>Consequential<br>Decision Record</h1><div id="title" class="meta">Shared Grill Board</div>
     <div class="meta" id="meta">loading…</div>
     <div class="progress" id="progress" title="pending / re-answer / answered / applied"></div>
     <div class="filters" id="filters"></div>
@@ -129,7 +143,7 @@
 (() => {
   const STATUS_LABEL = { pending: 'Pending', stale: 'Re-answer', answered: 'Answered', applied: 'Applied', withdrawn: 'Withdrawn' };
   const STATUS_ORDER = ['pending', 'stale', 'answered', 'applied', 'withdrawn'];
-  const state = { board: null, filter: 'open', query: '', timers: new Map() };
+  const state = { drafts: new Map(), errors: new Map(), inflight: new Map(), board: null, filter: 'open', query: '', timers: new Map() };
   try { state.filter = localStorage.getItem('grill-board-filter') || 'open'; } catch {}
 
   const esc = (text) => String(text ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -210,7 +224,7 @@
     if (state.filter === 'open' && !(status === 'pending' || status === 'stale')) return false;
     if (state.filter !== 'open' && state.filter !== 'all' && status !== state.filter) return false;
     if (state.query) {
-      const hay = `${item.id} ${item.title} ${item.question} ${item.current} ${item.proposal} ${item.draft ?? ''} ${(item.tags || []).join(' ')}`.toLowerCase();
+      const hay = `${JSON.stringify(item.brief || {})} ${item.id} ${item.title} ${item.question} ${item.current} ${item.proposal} ${item.draft ?? ''} ${(item.tags || []).join(' ')}`.toLowerCase();
       if (!hay.includes(state.query)) return false;
     }
     return true;
@@ -219,8 +233,8 @@
   function render() {
     const board = state.board;
     document.getElementById('title').textContent = board.title || 'Grill Board';
-    document.getElementById('meta').textContent = `integration ${board.integration} · built ${new Date(board.generatedAt).toLocaleString()} · ${board.items.length} items`;
-    document.getElementById('notice').innerHTML = markdown(board.notice || '');
+    document.getElementById('meta').textContent = `${board.items.length} review items · shared with Claude and Codex`;
+    document.getElementById('notice').innerHTML = markdown('**Read and answer as a package.** Each question explains its context, choices and consequences. Open its draft or original grilling history when you need more detail. Your verdict and notes save as you go.\n\n**After a batch:** tell Claude or Codex “The Consequential Decision Record is updated; read the Grill Board instructions and process my saved answers.” Changed proposals keep your earlier answer and ask for another look.');
     const c = board.counts;
     const total = Math.max(1, board.items.length);
     document.getElementById('progress').innerHTML = [['pending', 'var(--line)'], ['stale', 'var(--stale)'], ['answered', 'var(--ok)'], ['applied', 'var(--applied)']]
@@ -229,18 +243,17 @@
     document.getElementById('filters').innerHTML = filters.map(([value, label]) => `<button class="chip" data-filter="${value}" aria-pressed="${state.filter === value}">${label}</button>`).join('');
     for (const chip of document.querySelectorAll('.chip')) chip.onclick = () => { state.filter = chip.dataset.filter; try { localStorage.setItem('grill-board-filter', state.filter); } catch {} render(); };
 
-    const groups = board.groups.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    const groups = ['BLUEPRINT', 'LANDMARK', 'SPEC', 'TASK'].map((id) => ({ id, title: {BLUEPRINT:'Blueprint · the overall destination',LANDMARK:'Landmark · directions and concept groupings',SPEC:'Spec · a bounded capability',TASK:'Task · a concrete step or recovery'}[id], intro: 'Read the context, compare the options, then save your verdict and notes.' }));
     const content = [];
     const navLinks = [];
     for (const group of groups) {
-      const all = board.items.filter((item) => item.group === group.id);
+      const all = board.items.filter((item) => (item.brief?.scope || 'SPEC') === group.id);
       const shown = all.filter(visible);
       const open = all.filter((item) => item.derivedStatus === 'pending' || item.derivedStatus === 'stale').length;
       navLinks.push(`<a href="#g-${esc(group.id)}"><span>${esc(group.title)}</span><small>${open} open / ${all.length}</small></a>`);
       if (!shown.length) continue;
-      const bulk = shown.some((item) => item.derivedStatus === 'pending' && item.options.some((o) => o.value === 'confirm'))
-        ? `<button class="bulk" data-bulk="${esc(group.id)}">Confirm every unanswered item in this group</button>` : '';
-      content.push(`<section class="group" id="g-${esc(group.id)}"><header><h2>${esc(group.title)}</h2>${bulk}</header><p class="intro">${inline(group.intro || '')}</p>${shown.map(card).join('')}</section>`);
+      const bulk = '';
+      content.push(`<section class="group" id="g-${esc(group.id)}"><header><h2>${esc(group.title)}</h2>${bulk}</header><p class="intro">${inline(group.intro || '')}</p>${board.groups.map((family) => { const items = shown.filter((item) => item.group === family.id); return items.length ? `<h3 class="family">${esc(family.title)} <small>${items.length} items</small></h3>${items.map(card).join('')}` : ''; }).join('')}</section>`);
     }
     document.getElementById('groups').innerHTML = navLinks.join('');
     document.getElementById('content').innerHTML = content.length ? content.join('') : '<div class="empty">Nothing matches this filter.</div>';
@@ -249,9 +262,9 @@
 
   function card(item) {
     const status = item.derivedStatus;
-    const answer = item.answer || { verdict: '', note: '' };
+    const answer = state.drafts.get(item.id) || item.answer || { verdict: '', note: '' };
     const needsNote = ['correct', 'finding', 'destination_change', 'answer', 'return_reworded'].includes(answer.verdict) && !answer.note.trim();
-    const options = item.options.map((o) => `<button class="opt" data-value="${esc(o.value)}" data-hint="${esc(o.hint || '')}" aria-pressed="${answer.verdict === o.value}">${esc(o.label)}</button>`).join('');
+    const options = item.options.map((o) => `<button class="opt" data-value="${esc(o.value)}" data-hint="${esc(o.hint || '')}" aria-pressed="${answer.verdict === o.value}">${esc(o.label)}</button>${o.hint ? `<span class="option-impact">${esc(o.hint)}</span>` : ''}`).join('');
     const sources = (item.links || []).map((s) => {
       const view = s.path && !s.path.startsWith('/') ? `<button data-view="${esc(s.path)}">${esc(s.label)}</button>` : `<span>${esc(s.label)}</span>`;
       const gh = s.url ? ` <a href="${esc(s.url)}" target="_blank" rel="noopener" title="open on GitHub at ${esc(s.ref)}">↗</a>` : '';
@@ -261,23 +274,35 @@
     const stale = status === 'stale' ? `<div class="stale-box">This item changed after you answered (now revision ${item.revision}; you answered revision ${answer.itemRevision}). Your earlier answer was <strong>${esc(answer.verdict || '(note only)')}</strong>${answer.note ? `: "${esc(answer.note)}"` : ''}. Please answer again.</div>` : '';
     const history = (item.history || []).filter((h) => h.revision > 1 || /^applied|^withdrawn/.test(h.reason || '')).map((h) => `${new Date(h.at).toLocaleDateString()} · ${esc(h.by)}: ${esc(h.reason)}`);
     return `<article class="item" id="${item.id}" data-id="${item.id}" data-status="${status}" data-revision="${item.revision}">
-      <div class="item-head"><h3><span class="id">${item.id}</span>${esc(item.title)}</h3><span><span class="badge ${status}">${STATUS_LABEL[status]}</span><span class="kind">${esc(item.kind)}</span></span></div>
+      <div class="item-head"><h3>${esc(item.title)}<small class="identity">${item.id} · revision ${item.revision}</small></h3><span><span class="badge ${status}">${STATUS_LABEL[status]}</span><span class="kind">${esc({'approve-spec':'Delivery approval','confirm-dqc':'Confirm understanding','confirm-ddr':'Review existing decision','confirm-text':'Review draft text','choice':'Choose a direction','owner-decision':'Unblock work'}[item.kind] || item.kind)}</span></span></div>
       <p class="q">${esc(item.question)}</p>
-      <div class="cols">
-        <div class="block"><h4>Now</h4>${markdown(item.current)}</div>
-        <div class="block"><h4>Proposed</h4>${markdown(item.proposal)}</div>
-      </div>
-      ${item.draft ? `<details class="draft"><summary>Read the full draft text</summary><div class="block">${markdown(item.draft)}</div></details>` : ''}
-      ${sources ? `<div class="sources"><span>Sources:</span>${sources}</div>` : ''}
+      ${item.brief ? decisionBrief(item) : `<div class="block"><h4>Context</h4>${markdown(item.current)}</div><div class="block"><h4>Agent recommendation</h4>${markdown(item.proposal)}</div>`}
+      ${item.draft ? `<details class="draft"><summary>Read the complete proposed record or page</summary><div class="block">${markdown(item.draft)}</div></details>` : ''}
+      ${sources ? `<details class="draft"><summary>Evidence and source links</summary><div class="sources">${sources}</div><div class="block">${markdown(item.current)}</div><div class="block">${markdown(item.proposal)}</div></details>` : ''}
       ${history.length ? `<div class="sources"><span>History:</span>${history.map((h) => `<span>${h}</span>`).join('')}</div>` : ''}
       ${stale}${applied}
       <div class="answer">
         <div class="options">${options}</div>
         <div class="hint">${esc(item.options.find((o) => o.value === answer.verdict)?.hint || 'Pick a verdict, then add any notes. Saves as you type.')}</div>
         <textarea class="${needsNote ? 'needs-note' : ''}" placeholder="Notes, corrections, the words you want used…">${esc(answer.note)}</textarea>
-        <div class="save"><span class="status">${answer.at ? `Saved ${new Date(answer.at).toLocaleString()}` : 'Not answered yet'}</span><span class="err"></span></div>
+        <div class="save"><span class="status">${state.drafts.has(item.id) ? 'Not saved yet' : answer.at ? `Saved ${new Date(answer.at).toLocaleString()}` : 'Not answered yet'}</span><span class="err">${esc(state.errors.get(item.id) || '')}</span></div>
       </div>
     </article>`;
+  }
+
+  function decisionBrief(item) {
+    const b = item.brief;
+    const history = b.history.split(/(?=^### )/m).filter((part) => part.trim()).map((part) => {
+      const lines = part.split('\n');
+      return `<details class="history-entry"><summary>${esc(lines.shift().replace(/^### /, ''))}</summary>${markdown(lines.join('\n'))}</details>`;
+    }).join('');
+    return `<div class="brief-summary">${markdown(b.summary)}</div>
+      <div class="block"><h4>What this concerns</h4>${markdown(b.artifacts)}</div>
+      <div class="block"><h4>Why this choice matters</h4>${markdown(b.why)}</div>
+      <div class="recommendation"><h4>Recommended answer · agent proposal</h4>${markdown(b.recommendation)}</div>
+      <div class="block"><h4>What would change</h4>${markdown(b.changes)}</div>
+      <div class="block"><h4>Consequences and tradeoffs</h4>${markdown(b.impact)}</div>
+      <details class="draft"><summary>Related Destination Question Cards and original grilling history</summary>${history}</details>`;
   }
 
   function wire() {
@@ -312,21 +337,32 @@
 
   function save(article, delay, immediate) {
     const id = article.dataset.id;
+    const draft = { verdict: article.querySelector('.opt[aria-pressed="true"]')?.dataset.value ?? '', note: article.querySelector('textarea').value, itemRevision: Number(article.dataset.revision) };
+    state.drafts.set(id, draft);
     clearTimeout(state.timers.get(id));
     const run = async () => {
-      const verdict = article.querySelector('.opt[aria-pressed="true"]')?.dataset.value ?? '';
-      const note = article.querySelector('textarea').value;
+      const { verdict, note, itemRevision } = draft;
       const statusEl = article.querySelector('.save .status');
       const errEl = article.querySelector('.save .err');
       statusEl.textContent = 'Saving…';
       try {
-        const response = await fetch(`/api/answers/${id}`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ verdict, note, itemRevision: Number(article.dataset.revision) }) });
+        const response = await fetch(`/api/answers/${id}`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ verdict, note, itemRevision }) });
         const body = await response.json();
         if (!response.ok) throw new Error(body.error?.message || response.status);
         statusEl.textContent = `Saved ${new Date(body.at).toLocaleTimeString()}`;
         errEl.textContent = '';
+        state.errors.delete(id);
         const item = state.board.items.find((candidate) => candidate.id === id);
         if (item) { item.answer = body; item.derivedStatus = body.derivedStatus; }
+        if (state.drafts.get(id) === draft) state.drafts.delete(id);
+        const currentArticle = document.getElementById(id);
+        if (currentArticle && currentArticle !== article && !state.drafts.has(id)) {
+          currentArticle.querySelector('.save .status').textContent = `Saved ${new Date(body.at).toLocaleTimeString()}`;
+          currentArticle.querySelector('.save .err').textContent = '';
+          currentArticle.dataset.status = body.derivedStatus;
+          currentArticle.querySelector('.badge').className = `badge ${body.derivedStatus}`;
+          currentArticle.querySelector('.badge').textContent = STATUS_LABEL[body.derivedStatus];
+        }
         article.dataset.status = body.derivedStatus;
         article.querySelector('.badge').className = `badge ${body.derivedStatus}`;
         article.querySelector('.badge').textContent = STATUS_LABEL[body.derivedStatus];
@@ -335,11 +371,19 @@
         refreshCounts();
       } catch (error) {
         statusEl.textContent = 'Not saved';
-        errEl.textContent = `Save failed: ${error.message}. Is the server still running?`;
+        const message = `Save failed: ${error.message}. Your unsaved text remains here; edit it again to retry.`;
+        state.errors.set(id, message);
+        errEl.textContent = message;
+        const currentArticle = document.getElementById(id);
+        if (currentArticle) {
+          currentArticle.querySelector('.save .status').textContent = 'Not saved';
+          currentArticle.querySelector('.save .err').textContent = message;
+        }
       }
     };
-    if (immediate) return run();
-    state.timers.set(id, setTimeout(run, delay));
+    const queued = () => { const promise = (state.inflight.get(id) || Promise.resolve()).then(run); state.inflight.set(id, promise); promise.finally(() => { if (state.inflight.get(id) === promise) state.inflight.delete(id); }); return promise; };
+    if (immediate) return queued();
+    state.timers.set(id, setTimeout(queued, delay));
   }
 
   function refreshCounts() {
@@ -353,7 +397,7 @@
     for (const chip of document.querySelectorAll('.chip')) chip.textContent = labels[chip.dataset.filter];
     for (const link of document.querySelectorAll('.groups a')) {
       const gid = link.getAttribute('href').slice(3);
-      const all = state.board.items.filter((item) => item.group === gid);
+      const all = state.board.items.filter((item) => (item.brief?.scope || 'SPEC') === gid);
       const open = all.filter((item) => item.derivedStatus === 'pending' || item.derivedStatus === 'stale').length;
       link.querySelector('small').textContent = `${open} open / ${all.length}`;
     }
@@ -393,6 +437,8 @@
       if (status.itemsMtime !== state.board.itemsMtime) document.getElementById('banner').classList.add('show');
     } catch {}
   }, 15000);
+
+  window.addEventListener('beforeunload', (event) => { if (state.drafts.size) { event.preventDefault(); event.returnValue = ''; } });
 
   load().catch((error) => { document.getElementById('content').innerHTML = `<div class="empty">Could not load the board: ${esc(error.message)}</div>`; });
 })();
