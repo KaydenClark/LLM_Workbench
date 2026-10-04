@@ -3,7 +3,7 @@
 **Task ID:** TK-006M
 **Spec ID:** S-002L
 **Slice:** Confirm the draft-wiki location and make the validator accept a nested draft collection
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: DRAFT-LOC, DECL and DRAFT-STATUS are each recorded as confirmed or changed, with the owner tradeoff stated where a shared contract widens.

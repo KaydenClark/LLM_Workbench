@@ -3,13 +3,13 @@
 **Spec ID:** S-002L
 **Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-director
 **Stance:** Builder
-**Updated:** 2026-09-30
+**Updated:** 2026-10-04
 **Catalog description:** Give the draft skills wiki a declared home, an index and one article template, so every skill's draft article has somewhere to go and its connection problems can be found by grep.
 **Blockers:** none.
-**Latest event:** Activated 2026-10-04 with three Tasks (TK-006M, TK-006N, TK-006O) cut from live Actuality; the Director carries it through Task PRs into integration.
-**Next gate:** Claim and deliver TK-006M (location, declaration and validator), then TK-006N (template), then TK-006O (README and router link).
+**Latest event:** TK-006M claimed by claude-director.
+**Next gate:** Close TK-006M with verification and documentation proof.
 
 > **Citation anchors.** pre=`07edccc57b8f75613ad1d09203a3e414d867b90c` post=`07edccc57b8f75613ad1d09203a3e414d867b90c`.
 
