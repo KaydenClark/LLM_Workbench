@@ -299,7 +299,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-010: Canonical Evaluator Invocation
 
-Article: [Canonical Evaluator Invocation](../../wiki/design-concepts/spec-S-010-canonical-evaluator-entry.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-010-canonical-evaluator-entry/SPEC.md`.
+Article: [Canonical Evaluator Invocation](../../wiki/features/canonical-evaluator-invocation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-010-canonical-evaluator-entry/SPEC.md`.
 
 A successful process exit is not enough if a directly invoked evaluator never runs. A checkout reached through a path alias can make the command-line script path differ textually from its module URL even though both identify the same file.
 
@@ -316,7 +316,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-012: Reproducible Adoption Provenance
 
-Article: [Reproducible Adoption Provenance](../../wiki/design-concepts/spec-S-012-adoption-provenance-proof.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-012-adoption-provenance-proof/SPEC.md`.
+Article: [Reproducible Adoption Provenance](../../wiki/features/reproducible-adoption-provenance.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-012-adoption-provenance-proof/SPEC.md`.
 
 Adoption proof must survive the original checkout and conversation. A cold reviewer needs the published source identity and executable reconstruction steps, not a statement that a local run once passed.
 
@@ -334,7 +334,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-013: Verified Automation Run Outcomes
 
-Article: [Verified Automation Run Outcomes](../../wiki/design-concepts/spec-S-013-automation-run-outcomes.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-013-automation-run-outcomes/SPEC.md`.
+Article: [Verified Automation Run Outcomes](../../wiki/features/verified-automation-run-outcomes.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-013-automation-run-outcomes/SPEC.md`.
 
 Run accounting distinguishes useful work, genuine absence of work and an interrupted attempt. The helper accepts exactly six categories: `actionable`, `worked`, `idle`, `owner_gate`, `collision` and `infrastructure_error`. It requires a nonempty reason and a nonnegative integer previous idle count. Unknown categories fail visibly.
 
