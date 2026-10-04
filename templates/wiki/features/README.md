@@ -68,8 +68,12 @@ last_verified: YYYY-MM-DD
 ## Limits
 
 ## Evidence and Sources
+
+## History
 ```
 
+- `History` is a dated list of what created and changed the article and the
+  operation that authorized each change; see `SCHEMA.md` Update.
 - `type: feature` belongs in this collection only; a note here of any other
   type, or a feature article anywhere else, is invalid.
 - `knowledge_role` is `canonical` or `curated` for the article to serve as the
