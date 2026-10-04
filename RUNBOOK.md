@@ -484,6 +484,14 @@ An operations index row that points to a skill the lane lacks is
 `skill-pointer-dangling` (attention, effect `none`); doctor reads only the
 index and the lane copy to decide which skill binds.
 
+This repository's lane is also the release source, so it may hold maintainer
+skills, only when `workbench/manifest.json` declares them under
+`maintainerSkills`: the provider-home installer, the one-time upgrade and the
+skill-catalog check accept exactly the core plus those names, refuse any other
+extra lane entry (`invalid-bundled-core`) or a malformed declaration
+(`invalid-maintainer-skills`), and never install or lay one down
+([Maintainer skills](workbench/skills/README.md#maintainer-skills)).
+
 ### Personal catalog publication
 
 The owner's personal catalog (a separate Git checkout mounted as the provider

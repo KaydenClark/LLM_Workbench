@@ -1,17 +1,52 @@
 # S-050 - Workbench v3.2.0 Release
 
 **Spec ID:** S-050
-**Status:** active
+**Status:** superseded
 **Priority:** 1
 **Owner:** codex
 **Stance:** Builder
-**Updated:** 2026-09-09
-**Catalog description:** Deliver the reconciled v3.2.0 capability set and prove the Workbench Template update and reviewed integration.
-**Blockers:** live-device-and-private-repository-access (final rollout readiness only)
-**Latest event:** Repaired source PR84 and Template PR5/PR6 delivered; exact receipts reconciled.
-**Next gate:** Establish actual S052TK004 private repository and Mac/Windows Claude/Codex access before final readiness.
+**Updated:** 2026-10-04
+**Catalog description:** Historical v3.2.0 release record: the reconciled v3.2.0 capability set and Workbench Template update were delivered and reached `main`; its unissued readiness verdict is retired in favor of the v4.0.0 release.
+**Blockers:** none
+**Latest event:** Superseded on 2026-10-04 by the [Workbench v4.0.0 Release — S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md). v3.2.0 is on `main` (PR #86); the only open step, the TK-006 readiness verdict waiting on Mac/Windows access, is withdrawn unexecuted and replaced by the owner's own PC test at v4 main readiness.
+**Next gate:** None; superseded by the [Workbench v4.0.0 Release — S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md).
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
+
+## Why Retired
+
+Retired 2026-10-04. The v3.2.0 release this record carried happened: its
+reviewed source (PR #84) and Workbench Template update (Template PR #5/#6)
+reached `integration`, and the owner promoted `integration` to `main` on
+2026-09-09 (PR #86), whose manifest still declares `v3.2.0`. What stayed open
+was only TK-006, a readiness verdict that waited on S-052's live Mac/Windows
+Claude/Codex continuation proof. That verdict is now about a release that is
+already on `main` and has been overtaken: every later commit on `integration`
+is v4 work, and v3.2.1 was never released.
+
+The design reason is the owner's lifecycle rule. Specs, like Tasks, are
+scaffolding; "obsolete release promises become historical or superseded;
+still-needed obligations remain reachable until resolved" (grilling ledger
+FND-Q16, locked 2026-09-30). On 2026-10-04 the owner said: "We retire things
+all of the time. why would a spec be any different than a task?" and "we are
+working on version 4 right now". Keeping a v3.2 readiness gate open would ask
+for proof of a release nobody will ship again.
+
+The one still-needed obligation, the real cross-device continuation, is not
+dropped: it lives in [Private Session Transport — S-052](../S-052-private-session-transport/SPEC.md)
+TK-004 and runs as part of the owner's own Windows PC deployment test, which
+he performs once when agents judge `integration` ready for `main`
+([PC test at main readiness](../../wiki/pc-test-at-main-readiness.md)). The
+[Workbench v4.0.0 Release — S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md)
+names that test among the owner acts at v4 main readiness. It is never a
+blocker on agent work.
+
+TK-006 is closed as withdrawn, not achieved: the Task status set has no
+withdrawn value and `doctor` refuses a superseded Spec with an unfinished
+row, so its row reads `done` with a proof cell that says it never ran. No
+v3.2 readiness verdict was issued, and none is claimed. The delivered
+receipts, the 181-record reconciliation and every evidence row below stay
+as historical proof.
 
 ## Outcome
 
@@ -118,7 +153,7 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 | TK-003 | Converge capability implementations and useful continuity proof | done | none | Local capability implementation converged; full42 and focused host review corrections6 pass; useful Genesis/native continuation receipt preserved |
 | TK-004 | Verify and integrate the immutable upstream v3.2.0 candidate | done | TK-003 | 16c8278 full42 PASS; configured-host10 and source-identity18 PASS; independent corrective review PASS; PR81 merged as integration5ceef14 with exact candidate containment and zero tree delta |
 | TK-005 | Deliver Workbench Template v3.2.0 and reviewed integration | done | TK-004, S-00A | S00A complete;S00B Template PR5 integrationdf63359 contains reviewed d14553c;fresh remote clone19tests/syntax/layout/doctor passes;v3.2.0 retained |
-| TK-006 | Reconcile release receipts and readiness verdict | blocked | live-device-and-private-repository-access | Repair receipts reconciled; actual S052TK004 final readiness evidence unavailable |
+| TK-006 | Reconcile release receipts and readiness verdict | done | none | Withdrawn unexecuted on supersession 2026-10-04: repair receipts were reconciled, but no readiness verdict was issued or is claimed; the cross-device proof moved to S-052 TK-004 within the owner PC test at v4 main readiness |
 
 ### TK-001 - Promote and push the complete reconciled scope
 
@@ -231,6 +266,7 @@ claims/status/lineage, not private transcripts.
 | 2026-09-09 | TK-005 | Ticket closed | S00A complete;S00B Template PR5 integrationdf63359 contains reviewed d14553c;fresh remote clone19tests/syntax/layout/doctor passes;v3.2.0 retained | S00B and targetS00A own Template closeout;repair-integration-acceptance.json preserves exact source,installed and native limits | Repaired source final independent integration review and actual S052 Mac/Windows Claude/Codex private transport remain |
 
 | 2026-09-09 | TK-006 | Repaired source and Template delivered; final readiness remains externally blocked | Independent source PASS 7f9fe2101e5b693f5085c3ed5acee65e73eda445; PR84 integration b937f7deac3669307041e86e4b5fc84cd167f818 exact containment and zero tree delta; TemplatePR5/PR6 at4010003; fresh remote checks pass; all181records/19candidates/59mappings unchanged | repair-integration-acceptance.json links full and adverse results, installed identities, native limits and original version waiver; bounded capability owners reconciled | Actual S052TK004 Mac/Windows Claude/Codex private transport, authenticated Claude and final readiness unavailable; no main approval/merge |
+| 2026-10-04 | spec | Superseded by S-00O; TK-006 readiness verdict withdrawn unexecuted | Read-back: origin/main manifest declares v3.2.0 and contains PR84 source b937f7d (owner merge PR #86, 2026-09-09); integration is 1762 commits ahead with v4 work; owner direction 2026-10-04 and ledger FND-Q16 cited in Why Retired | Why Retired added; header, TK-006 row and Supersession reconciled; S-052 TK-004 reframed as part of the owner PC test; S-00O names that owner act | None for this record; the cross-device proof stays with S-052 TK-004 inside the owner PC test at v4 main readiness |
 
 ## Completion Result
 
@@ -247,6 +283,10 @@ skill-discovery failure and Astra's client-version failure remain failed/unavail
 results. Main was neither approved nor merged, no unrelated Workbench was
 updated, and no portfolio automation or future personalization was claimed.
 
+Superseded 2026-10-04 (see Why Retired): v3.2.0 reached `main` through the
+owner's PR #86; the TK-006 readiness verdict was withdrawn unexecuted, never
+issued.
+
 ## Remaining Limitations Or Follow-Up Specs
 
 See [release owner](../S-050-workbench-v3-2-0-release/SPEC.md) for the complete assigned set,
@@ -259,4 +299,4 @@ readiness still requires the original actual cross-device evidence.
 ## Supersession
 
 - Supersedes: none; completed capability evidence remains historical.
-- Superseded by: none.
+- Superseded by: S-00O ([Workbench v4.0.0 Release](../S-00O-workbench-v4-0-0-release/SPEC.md)), 2026-10-04. See Why Retired.

@@ -80,21 +80,21 @@ belong to their individual Specs as they are authored.
 - [To-tasks](skill-to-tasks.md) - cut an activated Spec into executable Tasks
 - [Adoption](skill-adoption.md) - bring an existing project into the Workbench once
 - [Genesis](skill-genesis.md) - start a new room from a founding prompt
+- [Skills draft wiki](skills-draft/README.md) - a draft article and its connection findings for every skill
 
 ## Planned And Optional Skill References
 
-- [Domain Modeling](skill-domain-modeling.md) - sharpen the Workbench's language as decisions form: the optional personal method and the proposed Workbench adaptation
-- [S-002H - Domain Modeling Skill for the Workbench](../specs/S-002H-domain-modeling-skill/SPEC.md) - the Spec that keeps its required-room versus optional-extension distribution choice open
-
-This route does not claim that every room can discover the skill today.
+- [Domain Modeling](skill-domain-modeling.md) - sharpen the Workbench's language as decisions form: the method and the proposed Workbench adaptation
+- [Required Domain Modeling Skill (S-004J)](../specs/S-004J-required-domain-modeling-skill/SPEC.md) - maps the skill into every room's skills lane as a required skill, replacing the superseded Domain Modeling Skill for the Workbench Spec (S-002H); until it is delivered, no room's skills lane carries it
 
 ## Release And Distribution Routing
 
-- [S-050 - Workbench v3.2.0 Release](../specs/S-050-workbench-v3-2-0-release/SPEC.md) - the reconciled release scope and complete historical inventory
+- [Workbench v4.0.0 Release (S-00O)](../specs/S-00O-workbench-v4-0-0-release/SPEC.md) - current release work
+- [Superseded v3.2.0 release record (S-050)](../specs/S-050-workbench-v3-2-0-release/SPEC.md) - keeps the reconciled v3.2 scope and complete historical inventory
 
-Follow its named owners for skill ownership/compatibility, optional private
-session transport and the configured-host capability floor. This route
-preserves their open gates without copying task state here.
+Follow the superseded record's named owners for skill ownership/compatibility,
+optional private session transport and the configured-host capability floor.
+This route copies no task state here.
 
 ## Grilling Destination Audit Ledger
 
@@ -113,6 +113,9 @@ the reader's procedure, source/revision labels and local serving limits.
 Its saved answers and revision protocol are shared by Claude and Codex. Read
 the existing package before revising it; its working review context does not
 replace this ledger or the underlying decision and delivery owners.
+The Grill Board is the first working form of the
+[Shared Interactive Workbench Board (S-004D)](../specs/S-004D-shared-interactive-board/SPEC.md),
+the destination it grows into.
 
 The question-by-question ledger of every unique grilling question put to the
 owner is a session record, not a Wiki page: it lives in the sessions lane as
@@ -195,6 +198,7 @@ entry.
 - [Parallel lane dispatch](parallel-lane-dispatch.md): worktree lanes, read-only suite runner, one-at-a-time merges
 - [Separate-context review with Codex](separate-context-review-with-codex.md): a working `codex exec` route and its stdin trap
 - [Host-Memory Audit, 2026-09-26](archive/host-memory-audit-2026-09-26.md): the provenance record naming every promoted and excluded host memory file
+- [Maintainer skills](maintainer-skills.md): this repository's maintainer-only lane skills, which the release checks allow and never ship
 
 ## Leaving The Wiki
 
@@ -292,7 +296,7 @@ without opening it. The collection's shape and capture convention are in
 - [Genesis From Blueprint Decisions And Active ADRs](features/genesis-from-blueprint-decisions-and-active-adrs.md) - creates a new room from a clean Template, a prepared note and an explicit plan, deriving one first capability from locked questions and active ADRs.
 - [Governance Planes, ADR Decisions And Scoped Diagnostics](features/governance-planes-adr-decisions-and-scoped-diagnostics.md) - claims classified by plane, authority kept apart from state resolution, and diagnostics with their own severity, scope and blocking effect.
 - [Held-Out Path-Safety Evaluation](features/held-out-path-safety-evaluation.md) - a held-out path-handling eval task and grader scoring correctness, scope, verification honesty and doc upkeep separately.
-- [Historical v3.1 Release Proof Packet](features/historical-v3-1-release-proof-packet.md) - the blocked v3.1 release proof packet: what it preserved, what it never completed, and the current owners of release state.
+- [Historical v3.1 Release Proof Packet](features/historical-v3-1-release-proof-packet.md) - the superseded v3.1 release proof packet: what it preserved, what it never completed, and the current owners of release state.
 - [Import-Safe Feedback Helper Entry](features/import-safe-feedback-helper-entry.md) - the feedback helper can be imported inline without running its CLI, because its entry guard handles an absent script path.
 - [Installed Runtime Integrity](features/installed-runtime-integrity.md) - A room compares its installed runtime files with its managed-tools receipt hashes and classifies drift; verify reports and repair stays separate.
 - [Installed Skill Identity And Inspection](features/installed-skill-identity-and-inspection.md) - Managed skill markers with a content hash and compatibility range, and read-only inspection that tells an installed copy from its source.

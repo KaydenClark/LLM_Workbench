@@ -1,18 +1,55 @@
 # S-054 - Workbench v3.2.1 Review-Boundary Integrity
 
 **Spec ID:** S-054
-**Status:** planned
+**Status:** superseded
 **Priority:** 1
 **Owner:** codex
 **Stance:** Builder
-**Updated:** 2026-09-08
-**Catalog description:** Make an integration review bind to the exact resulting candidate and refuse target movement before merge.
-**Blockers:** explicit v3.2.1 docket activation by the owner; specification is
-complete, implementation is not authorized by this record alone
-**Latest event:** v3.2.1 docket created from the v3.2.0 review-boundary handoff; no implementation started.
-**Next gate:** Owner explicitly activates the v3.2.1 docket after the separate v3.2.0 release work is ready to start it.
+**Updated:** 2026-10-04
+**Catalog description:** Historical v3.2.1 docket entry for binding an integration review to the exact resulting candidate; its undelivered target-binding requirements now live in the Spec QA Gate at Integration.
+**Blockers:** none
+**Latest event:** Superseded on 2026-10-04: v3.2.1 will never be released, the docket was never activated, and the review-boundary requirements still undelivered on integration were carried into the [Spec QA Gate at Integration — S-00J](../S-00J-spec-qa-gate-at-integration/SPEC.md).
+**Next gate:** None; superseded by the [Spec QA Gate at Integration — S-00J](../S-00J-spec-qa-gate-at-integration/SPEC.md), which owns the carried requirement.
 
 > **Citation anchors.** pre=`340e80a1b4f1af92afbbe3a974e7de3d4cb679b7` post=`340e80a1b4f1af92afbbe3a974e7de3d4cb679b7`. The evidence log below names this commit only by its 7-character abbreviation (`340e80a`); the full 40-character hash previously recorded here (`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2`) shared that prefix but is not an object reachable from this repository. This is the actual commit ("Record v3.2.0 upstream integration") matching the abbreviation and the S-050 TK-004 context the evidence log describes.
+
+## Why Retired
+
+Retired 2026-10-04. This record was a planned v3.2.1 docket entry that only
+the owner's explicit v3.2.1 activation could start. That activation will never
+come: v3.2.1 was stamped on `integration` but never released, `main` still
+carries v3.2.0, and every later commit on `integration` is v4 work. When an
+agent listed the v3.2.1 docket for activation on 2026-10-04, the owner
+answered: "we are working on version 4 right now... so this seems a bit late
+to tell me", and asked whether his 350-plus answers on the v4 direction had
+not already answered the v3.2 questions. They had: the v4 Spec QA gate
+(locked WF-8/WF-8B/WF-8C answers, ADR-000F) already redesigned the reviewed
+unit and the integration boundary this docket was patching. The owner's
+lifecycle rule applies: "We retire things all of the time. why would a spec
+be any different than a task?" (2026-10-04), and obsolete release promises
+become historical or superseded while still-needed obligations remain
+reachable (grilling ledger FND-Q16, locked 2026-09-30).
+
+The still-needed obligation is not dropped. Each Desired Behavior item was
+checked against `integration` at `46ad978956a74a3ee1bda22c36eb16207dcd98fd`
+(the `gate` and `verdict` commands in `workbench/tools/spec-workbench.mjs`
+and `workbench/tools/spec-report.mjs`, the RUNBOOK closeout recipe and
+`tools/test-branch-closeout.mjs`, and the `implement` and `code-review`
+skills):
+
+| Desired Behavior item | Reading at integration | Disposition |
+|---|---|---|
+| 1. Review receipt names reviewed content, integration branch and exact integration tip | Partly delivered. A `verdict` binds the candidate SHA and the assembled Spec's committed content digest, and `gate` reports the declared integration branch. No verdict or receipt records the integration tip the result was derived from. | Integration-tip binding carried to S-00J |
+| 2. Merge accepts only the reviewed result against the expected target tip and fails closed if source or target moved | Source half delivered: the closeout recipe checks `HEAD` equals the reviewed SHA, runs `gate`, and merges with `gh pr merge --match-head-commit`. Target half not delivered: nothing refuses the merge when `integration` moved after review. | Target-tip refusal carried to S-00J |
+| 3. A changed result is re-verified and freshly reviewed; an unchanged one needs no ceremony | Policy delivered: `AGENTS.md`, the `code-review` skill ("If the target changes, compare and review the resulting candidate") and the `director` skill (a rebased or re-merged tip is a new candidate). Not enforced: no tool compares the resulting merge content to the reviewed content. | Result comparison carried to S-00J |
+| 4. Root and generic closeout procedures, delivery/review skills and the disposable demonstration express the same boundary | Not delivered. The `code-review` skill names the expected integration tip; the RUNBOOK closeout recipe and `tools/test-branch-closeout.mjs` (six cases) do not exercise target movement. | Procedure and demonstration agreement carried to S-00J |
+| 5. Evidence distinguishes review PASS, integration update and remote containment | Delivered. Verdict rows, the recipe's separate merge and `git merge-base --is-ancestor` containment check, owner-QA rows and `complete`'s main-containment check are separate facts. | None needed |
+
+S-00J's "Integration target binding carried from S-054" section now holds
+items 1 to 4 as one requirement with its own acceptance line. TK-001 below is
+closed as withdrawn, not achieved: the Task status set has no withdrawn value
+and `doctor` refuses a superseded Spec with an unfinished row, so its row reads
+`done` with a proof cell that says it never ran. No implementation is claimed.
 
 ## Outcome
 
@@ -101,7 +138,7 @@ spec's existing Git-compatible candidate path remains the required fallback.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Bind review, target and merge result in one tested integration-closeout path | deferred | explicit v3.2.1 activation | Red regression for target movement; green guarded refusal and unchanged-result path; full suite; separate-context review; remote containment evidence if an integration candidate is authorized |
+| TK-001 | Bind review, target and merge result in one tested integration-closeout path | done | none | Withdrawn unexecuted on supersession 2026-10-04: no implementation or proof is claimed; the undelivered target-binding requirement moved to S-00J (Integration target binding carried from S-054) |
 
 ### TK-001 - Bind review, target and merge result in one tested integration-closeout path
 
@@ -164,9 +201,12 @@ row remains append-only historical evidence.
 |---|---|---|---|---|---|
 | 2026-09-08 | spec | Added the review-boundary repair to the planned v3.2.1 docket from the v3.2.0 handoff | Read ADR-0037, S-050 TK-004 evidence, the live closeout recipe, its disposable test, and review/delivery skills at `340e80a`; `doctor` has no blocking finding | This new stable owner records scope, proof and non-goals; no implementation or release state changed | Explicit v3.2.1 activation, red/green repair, full verification, exact-candidate independent review and any separately authorized integration remain pending; no coordination hand-backs occurred |
 | 2026-09-12 | f2d2e87 | Review found the header `Blockers: none` contradicted both Next gate and TK-001's own `deferred`/`explicit v3.2.1 activation` blocker | Re-read this Spec's own Next gate and TK-001 fields against the header | Corrected `Blockers` to name the activation gate, matching S-00K's pattern; no implementation performed |
+| 2026-10-04 | spec | Superseded; undelivered review-boundary items carried into S-00J | Each Desired Behavior item read against integration 46ad978: item 5 delivered, items 1 to 4 partly or not delivered (no integration-tip binding, no target-movement refusal, no result comparison, closeout test has no target-movement case) | Why Retired with the item-by-item table; S-00J gains its carried requirement and acceptance line; header, TK-001 row and Supersession reconciled | None for this record; the carried requirement is open in S-00J |
 
 ## Completion Result
 
+Superseded 2026-10-04 without implementation (see Why Retired); the
+undelivered target-binding requirement is open in S-00J. Original text:
 Pending. This specification is a planned docket entry only. It authorizes no
 v3.2.1 implementation, release stamp, PR merge, publication, or rollout.
 
@@ -174,10 +214,11 @@ v3.2.1 implementation, release stamp, PR merge, publication, or rollout.
 
 Until TK-001 is completed, a review PASS and post-merge containment remain
 separate facts, but the existing closeout path has no demonstrated protection
-against a changed integration target during review. The next executable action
-is explicit activation of this planned docket.
+against a changed integration target during review. That limitation still
+holds on integration; it is now S-00J's carried requirement, not an activation
+of this retired docket.
 
 ## Supersession
 
 - Supersedes: none.
-- Superseded by: none.
+- Superseded by: S-00J ([Spec QA Gate at Integration](../S-00J-spec-qa-gate-at-integration/SPEC.md)), 2026-10-04, which carries items 1 to 4. See Why Retired.
