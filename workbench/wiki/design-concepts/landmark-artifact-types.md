@@ -113,7 +113,7 @@ and not separately owner-confirmed.
   Retired decision history stays reachable by navigating to the Wiki
   explanation first, which links archived records as sources, while the archive
   is kept
-  (card [DQC-002D: "How should retired ADR history remain reachable?"](../../landmark-tracker/destination-questions/DQC-002D.json), revision 7).
+  (card [DQC-002D: "How should retired ADR history remain reachable?"](../../landmark-tracker/destination-questions/DQC-002D.json), revision 8).
 
 ## Newer decisions that revise these cards
 
@@ -188,3 +188,4 @@ artifact in depth.
 ## History
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
+- 2026-10-04: corrected after the whole-Wiki lint of the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-006P (Wiki wording): the Destination Question Card DQC-002D citation moved from revision 7 to revision 8 (only its expected-result route changed; the answer is unchanged).

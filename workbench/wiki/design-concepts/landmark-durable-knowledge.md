@@ -70,12 +70,14 @@ separately owner-confirmed.
 - **Features articles.** A new Wiki collection named features holds one article
   per completed Spec, written at the closure point and not as a new gate
   (card [DQC-004L: "What should a Wiki feature article explain, and when is it written?"](../../landmark-tracker/destination-questions/DQC-004L.json), revision 7).
-  The collection exists; see the [features README](../features/README.md).
+  The collection is delivered and holds an article for each Spec completed so
+  far, routed from the router's Feature Articles list; see the
+  [features README](../features/README.md).
 - **Retired decisions stay reachable.** Navigation from historical capability
   links goes to the Wiki article first, and the article links archived decision
   records as sources; the archive is kept
-  (card [DQC-002D: "How should retired ADR history remain reachable?"](../../landmark-tracker/destination-questions/DQC-002D.json), revision 7).
-  Articles exist for [Governance Core, ADRs, And Scoped Diagnostics (S-024)](../features/governance-planes-adr-decisions-and-scoped-diagnostics.md)
+  (card [DQC-002D: "How should retired ADR history remain reachable?"](../../landmark-tracker/destination-questions/DQC-002D.json), revision 8).
+  Feature articles exist for the completed Specs, among them [Governance Core, ADRs, And Scoped Diagnostics (S-024)](../features/governance-planes-adr-decisions-and-scoped-diagnostics.md)
   and [LLM Workbench release article (S-022)](../features/historical-v3-1-release-proof-packet.md).
 - **How confirmed answers reach owners.** A grilling answer never enters Canon
   inline; it is promoted through ordinary scoped work, a Task when small and a
@@ -164,3 +166,4 @@ The tools are the [landmark tracker](../../tools/landmark-tracker.mjs) and the
 ## History
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
+- 2026-10-04: corrected after the whole-Wiki lint of the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-006P (Wiki wording): the features collection statements now say it is delivered with an article for each completed Spec, and the Destination Question Card DQC-002D citation moved to revision 8 (its answer is unchanged). No card answer was changed.

@@ -59,7 +59,10 @@ owner-confirmed.
   quality check on integration, and is not a new gate; the card records it as a
   v4 requirement
   (card [DQC-004L: "What should a Wiki feature article explain, and when is it written?"](../../landmark-tracker/destination-questions/DQC-004L.json), revision 7).
-  The collection and its README exist; see the [features README](../features/README.md).
+  The collection is delivered: it holds an article for each Spec completed so far,
+  all routed from the router's Feature Articles list, and the per-Spec articles
+  once filed as design concepts were moved into it; see the
+  [features README](../features/README.md).
 - **Who keeps it current.** The grilling primitive stays unaware of landmarks and the
   Tracker; compound workflow activity reads and updates the landmark system. Tracker
   updates follow workflow events and derive the view from source artifacts wherever
@@ -93,9 +96,6 @@ owner-confirmed.
   the Wiki sits beside the Wiki decision record's rule that finishing a grilling makes
   page writing part of promotion. They are compatible if promotion, not the primitive,
   writes the pages, but the card does not say so.
-- Moving the per-Spec articles filed as design concepts into the features collection
-  is delivery work of the Wiki migration Spec and was not complete when this page was
-  written.
 
 ## Where the work lives
 
@@ -127,3 +127,4 @@ The tools are the [Wiki validator](../../tools/wiki.mjs), the
 ## History
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
+- 2026-10-04: corrected after the whole-Wiki lint of the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-006P (Wiki wording): the features collection and the move of the per-Spec articles into it are delivered, so the closed item left the Open list. No card answer was changed.

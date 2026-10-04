@@ -7,7 +7,7 @@ provenance:
   - LLM Workbench template wiki
 source_paths:
   - workbench/wiki/features
-last_verified: 2026-09-26
+last_verified: 2026-10-04
 ---
 
 # Features
@@ -68,8 +68,12 @@ last_verified: YYYY-MM-DD
 ## Limits
 
 ## Evidence and Sources
+
+## History
 ```
 
+- `History` is a dated list of what created and changed the article and the
+  operation that authorized each change; see `SCHEMA.md` Update.
 - `type: feature` belongs in this collection only; a note here of any other
   type, or a feature article anywhere else, is invalid.
 - `knowledge_role` is `canonical` or `curated` for the article to serve as the
@@ -88,6 +92,5 @@ last_verified: YYYY-MM-DD
 
 ## This Room's Articles
 
-The `MEMORY.md` router lists them under Feature Articles. The first, moved here
-from `design-concepts/` with `wiki.mjs move-note`, is
-[Wiki Routing, Version Stamps And Safe Source Reads](wiki-routing-version-stamps-and-safe-source-reads.md).
+The `MEMORY.md` router lists every article under Feature Articles; this
+collection keeps no index of its own.
