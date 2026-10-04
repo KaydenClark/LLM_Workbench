@@ -155,6 +155,9 @@ const registry = Object.freeze({
   'invalid-note': entry('error', 'wiki', 'none', 'a wiki note, checkpoint source, or notepad violates its schema'),
   'copied-task-state': entry('error', 'wiki', 'none', 'a wiki note copies live task state'),
   'secret-like-content': entry('error', 'wiki', 'none', 'a wiki note, checkpoint, or notepad write contains secret-like material'),
+  // S-003W TK-002: a Wiki page the router links with no one-line summary beside
+  // the link; the rule is `routerSummaryFindings` in wiki.mjs.
+  'unsummarized-route': entry('attention', 'wiki', 'none', 'a Wiki page the router MEMORY.md links has no one-line summary beside its link'),
   'room-brain-unrouted': entry('attention', 'wiki', 'none', 'a root control does not route to the room brain'),
   'stale-stamp': entry('attention', 'wiki', 'none', 'a wiki contract file or the room brain is stamped with a version other than the manifest'),
   // git: the review gate's merge target is a declared fact; its absence is

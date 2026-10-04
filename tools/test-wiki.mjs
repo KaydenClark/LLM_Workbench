@@ -279,6 +279,65 @@ test('a wiki stamp naming a version other than the manifest is attention only, a
   }
 });
 
+test('a routed Wiki page with no one-line summary beside its link is attention only, and the summary convention clears it', () => {
+  const project = seededWiki();
+  try {
+    const wiki = path.join(project, 'workbench', 'wiki');
+    const router = fs.readFileSync(path.join(wiki, 'MEMORY.md'), 'utf8');
+    fs.writeFileSync(path.join(wiki, 'Release Habits.md'), note());
+    fs.writeFileSync(path.join(wiki, 'Deploy Notes.md'), note());
+    const route = (body) => fs.writeFileSync(path.join(wiki, 'MEMORY.md'), `${router}\n## Notes\n\n${body}\n`);
+    const unsummarized = () => validateWiki(project).filter((item) => item.code === 'unsummarized-route');
+    assert.deepEqual(validateWiki(project), [], 'the generated router, whose table rows carry a description cell, is clean');
+
+    route('- [Release Habits](Release%20Habits.md)\n- [Deploy Notes](Deploy%20Notes.md) - how this room ships a release');
+    const [bare, ...others] = unsummarized();
+    assert.equal(others.length, 0, 'only the link with no summary is reported');
+    assert.deepEqual([bare.code, bare.severity, bare.blocks, bare.note], ['unsummarized-route', 'attention', 'none', 'workbench/wiki/MEMORY.md']);
+    assert.equal(bare.target, 'workbench/wiki/Release Habits.md');
+    assert.match(bare.message, /Release Habits/);
+    assert.match(bare.message, /\[Title\]\(path\) - summary/, 'the message states the convention');
+    assert.deepEqual(doctor(project).filter((item) => item.code === 'unsummarized-route').map((item) => item.target), ['workbench/wiki/Release Habits.md'], 'doctor carries the finding');
+    const cli = spawnSync(process.execPath, [wikiTool, 'validate', '--path', project], { cwd: project, encoding: 'utf8' });
+    assert.equal(cli.status, 0, 'a missing summary never fails the command');
+    assert.match(cli.stdout, /unsummarized-route \[attention/);
+
+    for (const summarized of [
+      '- [Release Habits](Release%20Habits.md) - how this room ships',
+      '- [Release Habits](Release%20Habits.md): how this room ships',
+      '- [Release Habits](Release%20Habits.md) — how this room ships',
+      'Start with [Release Habits](Release%20Habits.md) - how this room ships.',
+      '| Question | Read first |\n|---|---|\n| How this room ships | [Release Habits](Release%20Habits.md) |'
+    ]) {
+      route(summarized);
+      assert.deepEqual(unsummarized(), [], `${summarized} carries a summary`);
+    }
+    for (const missing of [
+      '- [Release Habits](Release%20Habits.md) explains how this room ships',
+      '- [Release Habits](Release%20Habits.md) - ',
+      '- [Release Habits](Release%20Habits.md) - ships',
+      '- [Release Habits](Release%20Habits.md) ([Deploy Notes](Deploy%20Notes.md))',
+      '| [Release Habits](Release%20Habits.md) | |',
+      '| [Release Habits](Release%20Habits.md) | [Deploy Notes](Deploy%20Notes.md) |'
+    ]) {
+      route(missing);
+      assert.ok(unsummarized().some((item) => /Release Habits/.test(item.message)), `${missing} has no one-line summary`);
+    }
+    route('- [BLUEPRINT.md](../../BLUEPRINT.md)\n- `[Release Habits](Release%20Habits.md)`\n- [Site](https://example.com/page.md)\n- [Folder](guidebooks/)\n- [[Release Habits]]');
+    assert.deepEqual(unsummarized(), [], 'a page outside the Wiki, a code span, an external link, a folder and a wikilink are not routed pages');
+    route('```\n- [Release Habits](Release%20Habits.md)\n```');
+    assert.deepEqual(unsummarized(), [], 'a fenced example is not a route');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('the router template shows the summary-line convention and the product router keeps every routed Wiki page summarized', () => {
+  const template = fs.readFileSync(path.join(root, 'templates', 'wiki', 'MEMORY.project.md'), 'utf8');
+  assert.match(template, /`- \[Page Title\]\(page-file\.md\) - what the page is for`/, 'the template router shows a summary-line example');
+  assert.deepEqual(validateWiki(root).filter((item) => item.code === 'unsummarized-route'), [], 'this repository routes no Wiki page without a summary');
+});
+
 test('this repository stamps its wiki contract files with its manifest version and routes to its room brain', () => {
   for (const relative of ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md', 'features/README.md']) {
     const content = fs.readFileSync(path.join(root, 'workbench', 'wiki', relative), 'utf8');
