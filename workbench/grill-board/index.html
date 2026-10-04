@@ -119,9 +119,40 @@
   .history-entry p { line-height: 1.65; }
   .family { margin: 24px 0 14px; font-weight: 500; color: var(--muted); }
   .family small { font-size: 12px; }
+  [hidden] { display: none !important; }
+  .page-header { position: sticky; top: 0; z-index: 8; min-height: 58px; background: var(--panel); border-bottom: 1px solid var(--line); padding: 10px 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .page-header label { color: var(--muted); font-size: 13px; }
+  .page-header select { font: inherit; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; }
+  nav { top: 58px; height: calc(100vh - 58px); }
+  .shell.reading { grid-template-columns: minmax(0, 1fr); }
+  .shell.reading main { width: 100%; margin: auto; }
+  .reader { font-size: 16px; line-height: 1.7; overflow-wrap: anywhere; }
+  .reader h1 { font-size: 28px; line-height: 1.3; }
+  .reader h2 { font-size: 22px; margin-top: 32px; }
+  .reader h3 { font-size: 18px; }
+  .reader pre { white-space: pre-wrap; padding: 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; font: 13px/1.6 var(--mono); }
+  .reader code { font-family: var(--mono); font-size: .86em; }
+  .reader blockquote { margin-left: 0; padding-left: 16px; border-left: 3px solid var(--line); }
+  .table-scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 14px; }
+  th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--soft); }
+  .reader-meta { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+  .reader-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0; }
+  .reader-tabs a, .artifact-list a { display: block; border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; background: var(--panel); text-decoration: none; }
+  .artifact-list { display: grid; gap: 10px; margin: 16px 0; }
+  .artifact-list small { display: block; color: var(--muted); }
+  .artifact-section { padding: 20px; margin: 20px 0; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+  .artifact-section > h2 { margin-top: 0; }
+  .source-change { padding: 12px; border: 1px solid var(--warn); background: var(--warn-soft); border-radius: 10px; margin: 12px 0; }
+  .unavailable-link { color: var(--muted); text-decoration: underline dotted; }
+  #artifact-panel, .reader [data-anchor], .artifact-section, #artifact-proposals, article.item { scroll-margin-top: 80px; }
+  .banner { top: 70px; }
+  @media (max-width: 900px) { nav { top: auto; height: auto; } .page-header { padding: 10px 16px; } }
 </style>
 </head>
 <body>
+<header class="page-header"><strong>Consequential Decision Record</strong><label for="page-select">Read</label><select id="page-select"><option value="questions">Questions</option><option value="agents">AGENTS</option><option value="runbook">RUNBOOK</option><option value="blueprint">BLUEPRINT</option><option value="lexicon">LEXICON</option><option value="landmarks">Landmarks</option><option value="adrs">ADRs</option><option value="ddrs">DDRs</option></select><a href="#questions">Return to questions</a></header>
 <div class="shell">
   <nav>
     <h1>Consequential<br>Decision Record</h1><div id="title" class="meta">Shared Grill Board</div>
@@ -134,8 +165,9 @@
   </nav>
   <main>
     <div class="banner" id="banner"><span>An agent updated the board since you loaded it. Your saved answers are safe.</span><button class="bulk" onclick="location.reload()">Reload</button></div>
-    <div class="notice" id="notice"></div>
+    <div id="questions-panel"><div class="notice" id="notice"></div>
     <div id="content"><div class="empty">Loading the board…</div></div>
+    </div><div id="artifact-panel" hidden></div>
   </main>
 </div>
 <dialog id="viewer"><header><span id="viewer-path"></span><button class="bulk" onclick="document.getElementById('viewer').close()">Close</button></header><pre id="viewer-text"></pre></dialog>
@@ -143,20 +175,37 @@
 (() => {
   const STATUS_LABEL = { pending: 'Pending', stale: 'Re-answer', answered: 'Answered', applied: 'Applied', withdrawn: 'Withdrawn' };
   const STATUS_ORDER = ['pending', 'stale', 'answered', 'applied', 'withdrawn'];
-  const state = { drafts: new Map(), errors: new Map(), inflight: new Map(), board: null, filter: 'open', query: '', timers: new Map() };
+  const state = { drafts: new Map(), errors: new Map(), inflight: new Map(), board: null, filter: 'open', query: '', timers: new Map(), catalog: null, artifact: null, route: 0, revisions: new Map() };
   try { state.filter = localStorage.getItem('grill-board-filter') || 'open'; } catch {}
 
   const esc = (text) => String(text ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
   // A deliberately small Markdown renderer: paragraphs, headings, lists,
   // quotes, fenced code, inline code, bold and links. Everything else is text.
-  function inline(text) {
-    return esc(text)
-      .replace(/`([^`]+)`/g, '<code>$1</code>')
-      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-      .replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  function inline(text, source = '') {
+    const token = /`([^`]+)`|\[([^\]]+)\]\(([^\s)]+)\)/g;
+    let result = '', start = 0;
+    const plain = value => esc(value).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    for (const match of String(text).matchAll(token)) {
+      result += plain(String(text).slice(start, match.index));
+      if (match[1] !== undefined) result += `<code>${esc(match[1])}</code>`;
+      else {
+        const label = plain(match[2]), target = match[3];
+        if (/^https?:\/\//i.test(target)) result += `<a href="${esc(target)}" target="_blank" rel="noopener">${label}</a>`;
+        else if (source && !/^[a-z][a-z\d+.-]*:/i.test(target)) {
+          try {
+            const url = new URL(target, `http://reader/${source}`);
+            const local = decodeURIComponent(url.pathname.slice(1));
+            const artifact = state.catalog?.artifacts.find(a => a.path === local);
+            result += artifact ? `<a href="${esc(artifactHref(local, url.hash.slice(1)))}">${label}</a>` : `<span class="unavailable-link" title="Outside the seven artifact groups: ${esc(local)}">${label}</span>`;
+          } catch { result += label; }
+        } else result += label;
+      }
+      start = match.index + match[0].length;
+    }
+    return result + plain(String(text).slice(start));
   }
-  function markdown(text) {
+  function markdown(text, source = '') {
     const lines = String(text ?? '').replace(/\r\n/g, '\n').split('\n');
     const out = [];
     let i = 0;
@@ -181,11 +230,14 @@
       if (/^\|/.test(line)) {
         const buf = [];
         while (i < lines.length && /^\|/.test(lines[i])) { buf.push(lines[i]); i += 1; }
-        out.push(`<pre>${esc(buf.join('\n'))}</pre>`);
+        const cells = row => row.trim().replace(/^\||\|$/g, '').split(/(?<!\\)\|/).map(cell => inline(cell.trim().replace(/\\\|/g, '|'), source));
+        if (buf.length > 1 && /^\|?[\s:|-]+\|?\s*$/.test(buf[1])) {
+          out.push(`<div class="table-scroll"><table><thead><tr>${cells(buf[0]).map(cell => `<th>${cell}</th>`).join('')}</tr></thead><tbody>${buf.slice(2).map(row => `<tr>${cells(row).map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`);
+        } else out.push(`<pre>${esc(buf.join('\n'))}</pre>`);
         continue;
       }
       const heading = line.match(/^(#{1,6})\s+(.*)$/);
-      if (heading) { out.push(`<h${Math.min(3, heading[1].length)}>${inline(heading[2])}</h${Math.min(3, heading[1].length)}>`); i += 1; continue; }
+      if (heading) { const level = heading[1].length; const anchor = heading[2].toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu, '').replace(/\s/g, '-'); out.push(`<h${level} data-anchor="${esc(anchor)}">${inline(heading[2], source)}</h${level}>`); i += 1; continue; }
       if (/^\s*([-*]|\d+\.)\s+/.test(line)) {
         const ordered = /^\s*\d+\./.test(line);
         const buf = [];
@@ -193,7 +245,7 @@
           let item = lines[i].replace(/^\s*([-*]|\d+\.)\s+/, '');
           i += 1;
           while (i < lines.length && /^\s{2,}\S/.test(lines[i]) && !/^\s*([-*]|\d+\.)\s+/.test(lines[i])) { item += ' ' + lines[i].trim(); i += 1; }
-          buf.push(`<li>${inline(item)}</li>`);
+          buf.push(`<li>${inline(item, source)}</li>`);
         }
         out.push(`<${ordered ? 'ol' : 'ul'}>${buf.join('')}</${ordered ? 'ol' : 'ul'}>`);
         continue;
@@ -201,13 +253,13 @@
       if (/^>/.test(line)) {
         const buf = [];
         while (i < lines.length && /^>/.test(lines[i])) { buf.push(lines[i].replace(/^>\s?/, '')); i += 1; }
-        out.push(`<blockquote>${markdown(buf.join('\n'))}</blockquote>`);
+        out.push(`<blockquote>${markdown(buf.join('\n'), source)}</blockquote>`);
         continue;
       }
       if (!line.trim()) { i += 1; continue; }
       const buf = [];
       while (i < lines.length && lines[i].trim() && !/^(```|#{1,6}\s|>|\s*([-*]|\d+\.)\s+|\|)/.test(lines[i])) { buf.push(lines[i]); i += 1; }
-      out.push(`<p>${inline(buf.join(' '))}</p>`);
+      out.push(`<p>${inline(buf.join(' '), source)}</p>`);
     }
     return out.join('');
   }
@@ -276,8 +328,9 @@
     return `<article class="item" id="${item.id}" data-id="${item.id}" data-status="${status}" data-revision="${item.revision}">
       <div class="item-head"><h3>${esc(item.title)}<small class="identity">${item.id} · revision ${item.revision}</small></h3><span><span class="badge ${status}">${STATUS_LABEL[status]}</span><span class="kind">${esc({'approve-spec':'Delivery approval','confirm-dqc':'Confirm understanding','confirm-ddr':'Review existing decision','confirm-text':'Review draft text','choice':'Choose a direction','owner-decision':'Unblock work'}[item.kind] || item.kind)}</span></span></div>
       <p class="q">${esc(item.question)}</p>
+      <div class="sources">${(item.sources || []).filter(source => state.catalog?.artifacts.some(a => a.path === source.path)).map(source => `<a href="${esc(artifactHref(source.path, '', item.id))}">Read ${esc(source.label)} and its proposals</a>`).join('')}</div>
       ${item.brief ? decisionBrief(item) : `<div class="block"><h4>Context</h4>${markdown(item.current)}</div><div class="block"><h4>Agent recommendation</h4>${markdown(item.proposal)}</div>`}
-      ${item.draft ? `<details class="draft"><summary>Read the complete proposed record or page</summary><div class="block">${markdown(item.draft)}</div></details>` : ''}
+      ${item.draft ? `<details class="draft"><summary>Read proposed draft or review text</summary><div class="block">${markdown(item.draft)}</div></details>` : ''}
       ${sources ? `<details class="draft"><summary>Evidence and source links</summary><div class="sources">${sources}</div><div class="block">${markdown(item.current)}</div><div class="block">${markdown(item.proposal)}</div></details>` : ''}
       ${history.length ? `<div class="sources"><span>History:</span>${history.map((h) => `<span>${h}</span>`).join('')}</div>` : ''}
       ${stale}${applied}
@@ -404,6 +457,7 @@
   }
 
   async function viewFile(relPath) {
+    if (state.catalog?.artifacts.some(a => a.path === relPath)) { location.hash = artifactHref(relPath); return; }
     const dialog = document.getElementById('viewer');
     document.getElementById('viewer-path').textContent = relPath;
     document.getElementById('viewer-text').textContent = 'Loading…';
@@ -416,6 +470,88 @@
       document.getElementById('viewer-text').textContent = `Could not read: ${error.message}`;
     }
   }
+
+  function artifactHref(file, anchor = '', item = '') {
+    const params = new URLSearchParams({ artifact: file });
+    if (anchor) params.set('anchor', anchor);
+    if (item) params.set('item', item);
+    return `#${params}`;
+  }
+
+  function recordFields(value, source, depth = 2) {
+    if (Array.isArray(value)) return value.length ? value.map((entry, index) => `<section><h${Math.min(6, depth)}>Entry ${index + 1}</h${Math.min(6, depth)}>${recordFields(entry, source, depth + 1)}</section>`).join('') : '<p>None recorded.</p>';
+    if (value && typeof value === 'object') return Object.entries(value).map(([key, entry]) => `<section><h${Math.min(6, depth)}>${esc(key.replace(/_/g, ' '))}</h${Math.min(6, depth)}>${recordFields(entry, source, depth + 1)}</section>`).join('');
+    return typeof value === 'string' ? markdown(value, source) : `<p>${esc(value === null ? 'null' : value)}</p>`;
+  }
+
+  async function routePage() {
+    if (!state.catalog) return;
+    const serial = ++state.route;
+    const params = new URLSearchParams(location.hash.slice(1));
+    const file = params.get('artifact'), group = params.get('artifacts');
+    const reading = Boolean(file || group);
+    if (reading && !state.reading) state.questionScroll = window.scrollY;
+    const returning = !reading && state.reading;
+    state.reading = reading;
+    document.querySelector('.shell').classList.toggle('reading', reading);
+    document.querySelector('.shell > nav').hidden = reading;
+    document.getElementById('questions-panel').hidden = reading;
+    const panel = document.getElementById('artifact-panel');
+    panel.hidden = !reading;
+    state.artifact = null;
+    if (!reading) {
+      document.getElementById('page-select').value = 'questions';
+      const id = location.hash.slice(1);
+      if (/^GB-\d{4}$/.test(id)) {
+        const target = state.board.items.find(item => item.id === id);
+        if (target && !visible(target)) { state.filter = 'all'; state.query = ''; document.getElementById('search').value = ''; render(); }
+        document.getElementById(id)?.scrollIntoView({ block: 'start' });
+      } else if (returning) window.scrollTo(0, state.questionScroll || 0);
+      return;
+    }
+    panel.innerHTML = '<p>Loading artifacts…</p>';
+    try {
+      const response = await fetch('/api/artifacts', { cache: 'no-store' });
+      if (!response.ok) throw new Error(`inventory ${response.status}`);
+      const catalog = await response.json();
+      if (serial !== state.route) return;
+      state.catalog = catalog;
+      if (!file) {
+        const selected = catalog.groups.find(candidate => candidate.id === group);
+        if (!selected) throw new Error('Unknown artifact group');
+        document.getElementById('page-select').value = group;
+        const records = catalog.artifacts.filter(a => a.group === group).sort((a, b) => Number(b.status === 'accepted') - Number(a.status === 'accepted') || a.title.localeCompare(b.title));
+        panel.innerHTML = `<h1>${esc(selected.title)}</h1><p>Open the full record. Accepted active decisions appear first; proposed and historical records remain available.</p><div class="artifact-list">${records.map(a => `<a href="${esc(artifactHref(a.path))}"><strong>${esc(a.title)}</strong><small>${esc(a.status)}${a.id ? ` · ${esc(a.id)}` : ''}</small><small>${esc(a.path)}</small></a>`).join('') || '<p>No records in this collection.</p>'}</div>`;
+        panel.scrollIntoView({ block: 'start' });
+        return;
+      }
+      const result = await fetch(`/api/artifact?path=${encodeURIComponent(file)}`, { cache: 'no-store' });
+      const artifact = await result.json();
+      if (serial !== state.route) return;
+      if (!result.ok) throw new Error(artifact.error?.message || result.status);
+      state.artifact = artifact;
+      document.getElementById('page-select').value = artifact.group;
+      const previous = state.revisions.get(file);
+      state.revisions.set(file, artifact.revision);
+      const itemId = params.get('item');
+      const drafts = artifact.related.filter(item => item.draftKind === 'full-text');
+      const related = artifact.related.map(item => `<section class="artifact-section" id="draft-${item.id}"><h2>${esc(item.title)}</h2><p class="reader-meta">${item.id} · item revision ${item.revision} · ${esc(item.status)} · package captured ${esc(item.snapshotAt)} · item updated ${esc(item.itemUpdatedAt)}<br>Source at ${item.sources.map(source => esc(source.ref || 'unrecorded revision')).join(', ')}</p><p>${esc(item.question)}</p><a href="#${item.id}">Read and answer this question</a><h3>${item.draftKind === 'full-text' ? 'Proposed draft / review snapshot · full text' : item.draftKind === 'excerpt' ? 'Proposed draft · excerpt only' : 'Proposed change · no complete draft'}</h3><p>Review material; displaying it does not accept a change.${item.draftKind !== 'full-text' ? ' No complete replacement artifact is supplied by this item.' : ''}</p><div class="reader">${item.draft ? markdown(item.draft, file) : ''}<h3>Proposed change</h3>${markdown(item.proposal, file)}</div></section>`).join('');
+      panel.innerHTML = `<a href="#artifacts=${esc(artifact.group)}">All ${esc(catalog.groups.find(g => g.id === artifact.group).title)}</a><h1>${esc(artifact.title)}</h1><p class="reader-meta">${esc(artifact.path)} · ${esc(artifact.status)}${artifact.id ? ` · ${esc(artifact.id)}` : ''}</p><div id="source-change" class="source-change" ${previous && previous !== artifact.revision ? '' : 'hidden'}>Source revision changed since your previous reading. This is the current text; review snapshots below retain their own revisions. <button class="bulk" id="refresh-artifact">Read latest source</button></div><div class="reader-tabs"><a href="${esc(artifactHref(file, 'current'))}">Current artifact</a><a href="${esc(artifactHref(file, 'proposals'))}">Drafts and proposed changes (${artifact.related.length})</a></div><section class="artifact-section" id="current-artifact"><h2>Current artifact</h2><p class="reader-meta">Current checkout · tree ${esc(artifact.tree || 'unavailable')}<br>Content SHA-256 ${esc(artifact.revision)} · read ${esc(artifact.readAt)}</p>${artifact.format === 'json' ? '<p>Current Landmark JSON record, including every field and its recorded history. The future LANDMARK.md model is not installed here.</p>' : ''}<div class="reader">${artifact.format === 'json' ? recordFields(JSON.parse(artifact.text), file) + `<details><summary>Complete source JSON</summary><pre>${esc(artifact.text)}</pre></details>` : markdown(artifact.text, file)}</div></section><section id="artifact-proposals"><h2>Available drafts and proposed changes</h2>${drafts.length ? '' : '<p>No complete draft is available for this artifact. Existing proposed changes are shown below without inventing a replacement.</p>'}${related || '<p>No linked proposals in the current review package.</p>'}</section>`;
+      document.getElementById('refresh-artifact').onclick = routePage;
+      const anchor = params.get('anchor');
+      const target = itemId ? document.getElementById(`draft-${itemId}`) : anchor === 'current' ? document.getElementById('current-artifact') : anchor === 'proposals' ? document.getElementById('artifact-proposals') : [...panel.querySelectorAll('[data-anchor]')].find(element => element.dataset.anchor === anchor);
+      (target || panel).scrollIntoView({ block: 'start' });
+    } catch (error) {
+      if (serial === state.route) panel.innerHTML = `<h1>Could not read artifact</h1><p>${esc(error.message)}</p><a href="#questions">Return to questions</a>`;
+    }
+  }
+
+  document.getElementById('page-select').onchange = event => {
+    const group = event.target.value;
+    const root = state.catalog?.artifacts.find(a => a.group === group);
+    location.hash = group === 'questions' ? '#questions' : ['agents', 'runbook', 'blueprint', 'lexicon'].includes(group) && root ? artifactHref(root.path) : `#artifacts=${group}`;
+  };
+  window.addEventListener('hashchange', routePage);
 
   document.getElementById('search').oninput = (event) => { state.query = event.target.value.trim().toLowerCase(); render(); };
   document.getElementById('theme').onclick = () => {
@@ -435,12 +571,18 @@
       const response = await fetch('/api/status', { cache: 'no-store' });
       const status = await response.json();
       if (status.itemsMtime !== state.board.itemsMtime) document.getElementById('banner').classList.add('show');
+      if (state.artifact) {
+        const viewed = state.artifact;
+        const current = await fetch(`/api/artifact?path=${encodeURIComponent(viewed.path)}`, { cache: 'no-store' });
+        const body = await current.json();
+        if (state.artifact === viewed && (!current.ok || body.revision !== viewed.revision)) document.getElementById('source-change').hidden = false;
+      }
     } catch {}
   }, 15000);
 
   window.addEventListener('beforeunload', (event) => { if (state.drafts.size) { event.preventDefault(); event.returnValue = ''; } });
 
-  load().catch((error) => { document.getElementById('content').innerHTML = `<div class="empty">Could not load the board: ${esc(error.message)}</div>`; });
+  Promise.all([load(), fetch('/api/artifacts', { cache: 'no-store' }).then(async response => { if (!response.ok) throw new Error(`inventory ${response.status}`); state.catalog = await response.json(); })]).then(() => { render(); return routePage(); }).catch((error) => { document.getElementById('content').innerHTML = `<div class="empty">Could not load the board: ${esc(error.message)}</div>`; });
 })();
 </script>
 </body>

@@ -10,6 +10,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
+import vm from 'node:vm';
 import {
   ANSWERS_SCHEMA, ITEMS_SCHEMA, addItems, applyAnswer, boardPaths, createServer, itemStatus, mergeBoard,
   pendingForAgents, readAnswers, readItems, readSourceFile, recordAnswer, reviseItem, statusSummary, withdrawItem
@@ -199,6 +200,83 @@ test('readSourceFile refuses paths outside the room', () => {
   assert.throws(() => readSourceFile(dir, '../outside.txt'), (e) => e.code === 'unsafe-path');
   assert.throws(() => readSourceFile(dir, '/etc/hosts'), (e) => e.code === 'unsafe-path');
   assert.equal(readSourceFile(dir, 'README.md'), 'readable\n');
+});
+
+test('artifact reader follows manifest collections, preserves full records and distinguishes draft excerpts', async () => {
+  const dir = room();
+  const manifest = JSON.parse(fs.readFileSync(path.join(repo, 'workbench/manifest.json')));
+  manifest.collections.adr = 'workbench/docs/decisions/adr';
+  manifest.collections.ddr = 'workbench/docs/decisions/ddr';
+  manifest.landmarkTracker.collections.landmarks = 'concepts';
+  fs.writeFileSync(path.join(dir, 'workbench/manifest.json'), JSON.stringify(manifest));
+  for (const folder of ['workbench/docs/decisions/adr/proposed', 'workbench/docs/decisions/adr/archive', 'workbench/docs/decisions/ddr', 'concepts']) fs.mkdirSync(path.join(dir, folder), { recursive: true });
+  for (const file of ['AGENTS.md', 'RUNBOOK.md', 'BLUEPRINT.md', 'LEXICON.md']) fs.writeFileSync(path.join(dir, file), `# ${file}\n\nFull current text\n`);
+  fs.writeFileSync(path.join(dir, 'workbench/docs/decisions/adr/000A-accepted.md'), '---\ndate: 2026-10-04\n---\n# Accepted decision\n\n## Decision\nFull decision.\n');
+  fs.writeFileSync(path.join(dir, 'workbench/docs/decisions/adr/proposed/000B-proposal.md'), '---\ndate: 2026-10-04\n---\n# Proposed decision\nFull proposed record.\n');
+  fs.writeFileSync(path.join(dir, 'workbench/docs/decisions/adr/archive/000C-old.md'), '---\ndate: 2026-10-04\nsuperseded_by: ADR-000A\n---\n# Old decision\nOld text.\n');
+  const landmark = { id: 'LMK-000G', title: 'Workbench Updates', revision: 3, summary: 'Full summary', importance: 'Why it matters', origin: { title: 'Original name' }, history: [{ revision: 3, reason: 'Keep full history' }] };
+  fs.writeFileSync(path.join(dir, 'concepts/LMK-000G.json'), JSON.stringify(landmark));
+  addItems(dir, [sample('full', { kind: 'confirm-text', sources: [{ label: 'Blueprint', path: 'BLUEPRINT.md', ref: 'abc1234' }], draft: '# Blueprint draft\n\nComplete reviewed page.\n' }), sample('excerpt', { sources: [{ label: 'Blueprint', path: 'BLUEPRINT.md', ref: 'abc1234' }], draft: 'Only one proposed line.' }), sample('second', { sources: [{ label: 'Blueprint', path: 'BLUEPRINT.md' }] })], { by: 'tester' });
+  const before = fs.readFileSync(boardPaths(dir).items, 'utf8');
+  const server = createServer(dir);
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const get = async p => (await fetch(base + p)).json();
+  try {
+    const catalog = await get('/api/artifacts');
+    assert.deepEqual(catalog.groups.map(g => g.id), ['agents', 'runbook', 'blueprint', 'lexicon', 'landmarks', 'adrs', 'ddrs']);
+    assert.ok(catalog.artifacts.some(a => a.title === 'Accepted decision' && a.status === 'accepted'));
+    assert.ok(catalog.artifacts.some(a => a.title === 'Proposed decision' && a.status === 'proposed'));
+    assert.ok(catalog.artifacts.some(a => a.title === 'Old decision' && a.status === 'superseded'));
+    const current = await get('/api/artifact?path=BLUEPRINT.md');
+    assert.match(current.text, /Full current text/);
+    assert.match(current.revision, /^[a-f0-9]{64}$/);
+    assert.equal(current.related.length, 3, 'multiple item identities survive');
+    assert.equal(current.related[0].draftKind, 'full-text');
+    assert.equal(current.related[1].draftKind, 'excerpt');
+    assert.equal(current.related[2].draftKind, 'none');
+    fs.appendFileSync(path.join(dir, 'BLUEPRINT.md'), '\nChanged source.');
+    assert.notEqual((await get('/api/artifact?path=BLUEPRINT.md')).revision, current.revision);
+    assert.deepEqual(JSON.parse((await get('/api/artifact?path=concepts/LMK-000G.json')).text), landmark);
+    assert.equal((await fetch(base + '/api/artifact?path=workbench/specs/S-999/SPEC.md')).status, 404);
+    assert.equal((await fetch(base + '/api/artifact?path=AGENTS.md%00')).status, 400);
+    fs.unlinkSync(path.join(dir, 'AGENTS.md'));
+    assert.equal((await fetch(base + '/api/artifact?path=AGENTS.md')).status, 404);
+    assert.equal(fs.readFileSync(boardPaths(dir).items, 'utf8'), before);
+    assert.equal(fs.existsSync(boardPaths(dir).answers), false, 'reader never writes answers');
+  } finally { await new Promise(resolve => server.close(resolve)); }
+});
+
+test('source safety refuses symlink escapes, private files and unlisted API files', async () => {
+  const dir = room();
+  fs.symlinkSync('/etc/hosts', path.join(dir, 'escape.md'));
+  assert.throws(() => readSourceFile(dir, 'escape.md'), e => e.code === 'unsafe-path');
+  fs.writeFileSync(path.join(dir, '.env'), 'fixture secret');
+  assert.throws(() => readSourceFile(dir, '.env'), e => e.code === 'unsafe-path');
+  fs.writeFileSync(path.join(dir, 'unlisted.md'), 'unlisted');
+  const server = createServer(dir);
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  try { assert.equal((await fetch(`http://127.0.0.1:${server.address().port}/api/file?path=unlisted.md`)).status, 400); }
+  finally { await new Promise(resolve => server.close(resolve)); }
+});
+
+test('reader renders headings, real tables, safe relative links and inert document content', () => {
+  const html = fs.readFileSync(path.join(repo, 'workbench/grill-board/index.html'), 'utf8');
+  const script = html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()', 'window.readerTest = { markdown, recordFields, state }; Promise.all([load()');
+  const context = vm.createContext({ document: { getElementById: () => ({}), documentElement: { dataset: {} } }, window: { addEventListener() {} }, setInterval() {}, URL, URLSearchParams, fetch: () => new Promise(() => {}) });
+  vm.runInContext(script, context);
+  const { markdown, recordFields, state } = context.window.readerTest;
+  state.catalog = { artifacts: [{ path: 'BLUEPRINT.md' }, { path: 'decisions/000A-accepted.md' }] };
+  const rendered = markdown('# Full page\n\n| Name | Value |\n|---|---|\n| Decision | [Current](../BLUEPRINT.md) |\n\n[Record](000A-accepted.md#decision)\n\n<script>attack()</script>\n\n[Bad](javascript:alert)\n\n`[code](https://example.com)`', 'decisions/REGISTER.md');
+  assert.match(rendered, /<h1 data-anchor="full-page">Full page<\/h1>/);
+  assert.match(rendered, /<table>.*<th>Name<\/th>.*<td>Decision<\/td>/);
+  assert.match(rendered, /href="#artifact=BLUEPRINT.md"/);
+  assert.match(rendered, /artifact=decisions%2F000A-accepted.md&amp;anchor=decision/);
+  assert.ok(!rendered.includes('<script>') && !rendered.includes('href="javascript:'));
+  assert.match(rendered, /<code>\[code\]\(https:\/\/example.com\)<\/code>/);
+  const fields = recordFields({ title: 'Workbench Updates', history: [{ reason: 'Original full history' }], revision: 3 }, 'concepts/LMK-000G.json');
+  assert.match(fields, /Workbench Updates/);
+  assert.match(fields, /Original full history/);
 });
 
 test('the CLI exposes no command that writes answers.json and reports with exit codes', () => {
