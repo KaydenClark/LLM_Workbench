@@ -234,7 +234,8 @@ Standalone room; no deployment wiki.
 
 One article per delivered capability, named for what it delivers. Each line
 carries a one-line summary beside its link so a reader can choose a page
-without opening it. See [features/README.md](features/README.md).
+without opening it. The collection's shape and capture convention are in
+[features/README.md](features/README.md) - the features collection's article shape and capture rules.
 
 - [Adoption Preflight And Legacy Classification](features/adoption-preflight-and-legacy-classification.md) - reports every unreconciled root control at once and classifies a room as genesis, adoption, upgrade or unclassifiable from evidence.
 - [Adoption When Git Writes Are Unavailable](features/adoption-when-git-writes-are-unavailable.md) - adoption on a host that refuses Git writes records a visible blocker and reversible work, never forced Git or invented proof.
@@ -287,30 +288,3 @@ without opening it. See [features/README.md](features/README.md).
 - [Visible Workbench Identifiers](features/visible-workbench-identifiers.md) - the visible type-prefixed identity readers see, with legacy compatibility and the uppercase width-four amendment.
 - [Wiki Routing, Version Stamps And Safe Source Reads](features/wiki-routing-version-stamps-and-safe-source-reads.md) - the checks that tell a room its Wiki router is unreachable or its Wiki files are stamped with a stale version, and the safe-read boundary continuity input must pass.
 - [Workflow Composition And Cold Continuation](features/workflow-composition-and-cold-continuation.md) - how composed work resumes from repository evidence alone, with a round-trip fixture and checkpoint copying retired in favor of promotion.
-
-## Individual Spec Articles
-
-One article per Spec preserves capability knowledge and distinguishes historical
-proof from current behavior. Original records remain intact pending lifecycle gates.
-
-- [Portable Verification Boundaries](design-concepts/spec-S-008-windows-verification-portability.md)
-- [Adoption When Git Writes Are Unavailable](design-concepts/spec-S-009-git-write-constrained-adoption.md)
-- [S-00A: Blueprint, Active ADRs And The Context Map](design-concepts/spec-S-00A-blueprint-active-adr-and-context-map.md)
-- [S-00B: Workbench Template Reformation](design-concepts/spec-S-00B-workbench-template-reformation.md)
-- [Operable Genesis Readiness](design-concepts/spec-S-015-portable-v3-release-audit-recovery.md)
-- [Bounded Team Coordination (S-020)](design-concepts/spec-S-020-spec-native-team-coordination.md)
-- [Source-Checked Finding Disposition (S-038)](design-concepts/spec-S-038-upstream-finding-disposition.md)
-- [Installed Runtime Integrity (S-039)](design-concepts/spec-S-039-installed-runtime-integrity.md)
-- [Skill Presence And Repair Routes (S-040)](design-concepts/spec-S-040-skill-gate-route-selection.md)
-- [Recorded Baseline Availability (S-041)](design-concepts/spec-S-041-recorded-baseline-availability.md)
-- [Governance Claims And Diagnostics (S-024)](design-concepts/spec-S-024-governance-core-and-diagnostics.md)
-- [Portable Wiki Knowledge (S-025)](design-concepts/spec-S-025-portable-wiki-and-design-concepts.md)
-- [Workflow Composition And Cold Continuation (S-026)](design-concepts/spec-S-026-workflow-composition-and-cold-resume.md)
-- [Assigned Work, Portable Stances And Delivery Boundaries](design-concepts/spec-S-027-workbench-v3-1-1-boundaries.md)
-- [Feedback And Migration Integrity](design-concepts/spec-S-028-harness-feedback-integrity.md)
-- [Declared Integration And Recoverable Completion](design-concepts/spec-S-029-declared-integration-branch.md)
-- [Mechanical Permission Scope And Declared Lanes](design-concepts/spec-S-030-permission-scope-matches-lanes.md)
-- [S-048: Checkpoint Retirement And Direct Promotion](design-concepts/spec-S-048-checkpoint-retirement.md)
-- [S-049: Assignment Ownership And Coordination Records](design-concepts/spec-S-049-assignment-ownership-and-coordination-record.md)
-- [S-051: Core Skill Ownership And Compatibility](design-concepts/spec-S-051-core-skill-ownership-and-compatibility.md)
-- [S-053: Configured Host Capabilities](design-concepts/spec-S-053-configured-host-capabilities.md)
