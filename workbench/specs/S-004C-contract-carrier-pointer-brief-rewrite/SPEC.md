@@ -3,13 +3,13 @@
 **Spec ID:** S-004C
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s004c-tk005m
+**Owner:** claude-s004c-tk005n
 **Stance:** Builder
 **Updated:** 2026-10-04
 **Catalog description:** Rewrite AGENTS.md as a short standing brief and RUNBOOK.md as an operations index of context pointers, with each operation's procedure and binding requirements in a tracked skill the carrier points to.
 **Blockers:** Remaining Tasks wait on gates recorded as Task blockers: the Worker and Captain role skills (TK-005L, on S-002E and S-004B delivery); delivery of the `LANDMARK.md` artifact (TK-005O, on S-003Z); and all of them (TK-005P). TK-005M and TK-005N are ready.
-**Latest event:** TK-005M claimed by claude-s004c-tk005m.
-**Next gate:** Close TK-005M with verification and documentation proof.
+**Latest event:** TK-005N claimed by claude-s004c-tk005n.
+**Next gate:** Close TK-005N with verification and documentation proof.
 
 > **Citation anchors.** pre=`226212f1790badce0a5bdcd934d2e48e3981e05f` post=`226212f1790badce0a5bdcd934d2e48e3981e05f`.
 

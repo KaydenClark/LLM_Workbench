@@ -3,7 +3,7 @@
 **Task ID:** TK-005N
 **Spec ID:** S-004C
 **Slice:** Make the Lexicon and the orientation text say what the carriers now are
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-005K
 **Destination:** spec-acceptance: The Lexicon says what terms mean and where each kind of information belongs (Desired Behavior items 1 to 3), and the Documentation Impact of this Spec (Lexicon rows, Context Map routes, README setup text, routed Wiki articles) is applied once the carriers have their new shape.
