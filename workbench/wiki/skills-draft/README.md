@@ -33,10 +33,10 @@ from [TEMPLATE.md](TEMPLATE.md), then changes its row below from plain text to
 a link to the article. Until the article exists the row stays plain text, so
 this index never links to a file that is not there.
 
-List every finding the drafts have raised with:
+List every finding the drafts have raised with the command below; `TEMPLATE.md` is excluded because it shows the line format on a line of its own.
 
 ```bash
-grep -rh '^F:' workbench/wiki/skills-draft
+grep -rh '^F:' --exclude=TEMPLATE.md workbench/wiki/skills-draft
 ```
 
 ## Groups

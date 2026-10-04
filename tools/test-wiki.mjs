@@ -835,6 +835,11 @@ test('the skills-draft index lists the eight groups and 81 planned articles with
   assert.equal(total, 81, 'the index lists 81 planned articles');
   assert.deepEqual(readme.match(/^\| \[[a-z-]+\]\(#[a-z-]+\) \| (\d+) \|/gm).map((line) => Number(line.match(/\| (\d+) \|/)[1])), DRAFT_GROUPS.map((group) => counts[group]), 'the summary table carries the per-group counts in group order');
 
+  const command = readme.match(/```bash\n(grep [^\n]+)\n```/)?.[1];
+  assert.ok(command, 'the index documents the one command that lists every finding');
+  const listed = spawnSync('sh', ['-c', command], { cwd: root, encoding: 'utf8' });
+  assert.doesNotMatch(listed.stdout, /F:<skill>:NN/, 'the documented findings command does not list the template\'s own format line');
+
   const router = fs.readFileSync(path.join(wiki, 'MEMORY.md'), 'utf8');
   assert.equal(router.split('skills-draft/README.md').length - 1, 1, 'MEMORY.md links the collection README exactly once');
   assert.doesNotMatch(router, /skills-draft\/[a-z-]+\//, 'MEMORY.md routes to no draft article directly');
