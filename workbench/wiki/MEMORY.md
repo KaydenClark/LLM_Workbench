@@ -84,6 +84,7 @@ they are authored.
 - [To-tasks: cut an activated Spec into executable Tasks](skill-to-tasks.md)
 - [Adoption: bring an existing project into the Workbench once](skill-adoption.md)
 - [Genesis: start a new room from a founding prompt](skill-genesis.md)
+- [Skills draft wiki: a draft article and its connection findings for every skill](skills-draft/README.md)
 
 ## Planned And Optional Skill References
 

@@ -797,3 +797,47 @@ test('the collection TEMPLATE.md fixes the finding line and kinds, and the templ
     fs.rmSync(project, { recursive: true, force: true });
   }
 });
+
+// S-002L TK-006O: the collection's index README lists every group with its
+// article count and every planned article with its owning Spec, as plain text
+// until the owning Spec delivers the article, and the router links it once.
+test('the skills-draft index lists the eight groups and 81 planned articles with real owning Specs, and the router links it once', () => {
+  const wiki = path.join(root, 'workbench', 'wiki');
+  const readme = fs.readFileSync(path.join(wiki, 'skills-draft', 'README.md'), 'utf8');
+  const counts = { 'getting-started': 7, 'main-workflow': 14, shaping: 7, upkeep: 21, primitives: 12, productivity: 5, stances: 6, foundry: 9 };
+  const specFolders = [];
+  const collect = (directory, depth) => {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue;
+      if (/^S-[0-9A-Za-z]+-/.test(entry.name)) specFolders.push(entry.name);
+      else if (depth < 2) collect(path.join(directory, entry.name), depth + 1);
+    }
+  };
+  collect(path.join(root, 'workbench', 'specs'), 0);
+  let total = 0;
+  for (const group of DRAFT_GROUPS) {
+    const section = readme.split(new RegExp(`^## ${group}$`, 'm'))[1]?.split(/^## /m)[0];
+    assert.ok(section, `the index has a ${group} section`);
+    const rows = section.split('\n').filter((line) => /^\| [^|-]/.test(line) && !/^\| Skill \|/.test(line));
+    assert.equal(rows.length, counts[group], `${group} lists ${counts[group]} planned articles`);
+    for (const row of rows) {
+      const [, skill, , owner] = row.split('|').map((cell) => cell.trim());
+      assert.doesNotMatch(skill, /\[|\]\(/, `${skill} is plain text until its article exists`);
+      const id = owner.match(/^(S-[0-9A-Za-z]+) \(/)?.[1];
+      assert.ok(id, `${skill} names an owning Spec as "S-### (name)": ${owner}`);
+      assert.ok(specFolders.some((name) => name.startsWith(`${id}-`)), `${skill}'s owning Spec ${id} exists`);
+      assert.equal(fs.existsSync(path.join(wiki, 'skills-draft', group, `${skill}.md`)), false, `${skill} has no article yet, so its row must stay plain text`);
+    }
+    total += rows.length;
+  }
+  assert.equal(total, 81, 'the index lists 81 planned articles');
+  assert.deepEqual(readme.match(/^\| \[[a-z-]+\]\(#[a-z-]+\) \| (\d+) \|/gm).map((line) => Number(line.match(/\| (\d+) \|/)[1])), DRAFT_GROUPS.map((group) => counts[group]), 'the summary table carries the per-group counts in group order');
+
+  const router = fs.readFileSync(path.join(wiki, 'MEMORY.md'), 'utf8');
+  assert.equal(router.split('skills-draft/README.md').length - 1, 1, 'MEMORY.md links the collection README exactly once');
+  assert.doesNotMatch(router, /skills-draft\/[a-z-]+\//, 'MEMORY.md routes to no draft article directly');
+  for (const name of fs.readdirSync(wiki).filter((entry) => /^skill-.*\.md$/.test(entry))) {
+    assert.ok(router.includes(`(${name})`), `${name} stays routed from MEMORY.md`);
+  }
+  assert.deepEqual(validateWiki(root).filter((item) => item.severity === 'error'), [], 'the product wiki validates without error findings');
+});
