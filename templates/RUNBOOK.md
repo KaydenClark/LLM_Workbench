@@ -400,7 +400,9 @@ is the checklist, not a second statement of them.
 8. An article in `design-concepts/` or `features/` has its `History` line for
    this operation, and a design concept's `authorized_by` names it.
 
-Fix each finding in the same update, on the same branch.
+Repair what the update itself can fix on the same branch. A finding not
+resolved in the update becomes a corrective Task under the owning, still-open
+Spec ([SCHEMA Lint](workbench/wiki/SCHEMA.md#lint)); it is not left unrecorded.
 
 **Whole-Wiki lint, at Spec review when the Spec's work is verified:** the
 agent doing the review reads every page against the current controls and the
