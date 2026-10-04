@@ -388,7 +388,7 @@ Consumer snapshot: 0 occurrences. Article semantic review: **passed for core cap
 
 ### S-021: Portable Workbench Architecture (S-021)
 
-Article: [Portable Workbench Architecture (S-021)](../../wiki/design-concepts/spec-S-021-portable-workbench-v3.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-021-portable-workbench-v3/SPEC.md`.
+Article: [Portable Workbench Architecture (S-021)](../../wiki/features/portable-workbench-installation-adoption-and-upgrade.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-021-portable-workbench-v3/SPEC.md`.
 
 A Workbench is a filled project with root controls and a manifest-routed support area. Genesis creates a project, Adoption reconciles an existing project, and explicit upgrades carry managed components forward. LLM Workbench is the source product; ordinary operation does not depend on Foundry or a private machine's topology.
 
@@ -406,7 +406,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-023: Manifest And Managed Runtime (S-023)
 
-Article: [Manifest And Managed Runtime (S-023)](../../wiki/design-concepts/spec-S-023-manifest-and-managed-runtime.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-023-manifest-schema-2-and-managed-runtime/SPEC.md`.
+Article: [Manifest And Managed Runtime (S-023)](../../wiki/features/manifest-schema-2-lanes-and-managed-runtime.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-023-manifest-schema-2-and-managed-runtime/SPEC.md`.
 
 Schema 2 declares six support lanes—docs, specs, wiki, sessions, feedback and tools—and the machine-used collections inside them. Consumers resolve these bindings through workbench-paths. An application's root tools directory does not become harness-owned merely because the Workbench has a managed tools lane.
 
