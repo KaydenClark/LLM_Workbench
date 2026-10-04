@@ -356,8 +356,12 @@ test('the protocols run the report and route AGENTS.md divergences to a recorded
   const section5 = upgrade.slice(upgrade.indexOf('## 5.'), upgrade.indexOf('## 6.'));
   assert.match(section5, /node tools\/control-fidelity\.mjs report --project/, 'update-harness section 5 runs the report');
   assert.match(section5, /`dropped` or `changed`[\s\S]*`AGENTS\.md`[\s\S]*(restored|restore)[\s\S]*(recorded|record)[\s\S]*ADR/, 'update-harness section 5 requires each AGENTS.md divergence to be restored or recorded');
+  // S-004C TK-005K: the procedure moved from the Runbook section into the
+  // workbench-room-checks maintainer skill, which the Runbook index points to.
   const runbook = fs.readFileSync(path.join(root, 'RUNBOOK.md'), 'utf8');
-  assert.match(runbook, /node tools\/control-fidelity\.mjs report --project/, 'the Runbook documents the report command');
+  assert.match(runbook, /workbench\/skills\/workbench-room-checks\/SKILL\.md#control-fidelity-report/, 'the Runbook points the report operation at its procedure');
+  const roomChecks = fs.readFileSync(path.join(root, 'workbench', 'skills', 'workbench-room-checks', 'SKILL.md'), 'utf8');
+  assert.match(roomChecks, /node tools\/control-fidelity\.mjs report --project/, 'the workbench-room-checks skill documents the report command');
   // The Full suite list has one home, the Runbook's Test And Build (S-004C
   // TK-005I): the fidelity test is a member there, and AGENTS.md points to it.
   const suite = runbook.slice(runbook.search(/^Full suite for controls/m));

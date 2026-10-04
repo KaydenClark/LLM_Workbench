@@ -114,7 +114,8 @@ for (const [relative, expected] of [
   ['workbench/skills/README.md', [`closed ${bundleSize}-skill bundle`, `${workflowWord} workflow skills`,
     `${words[coordinationSkills.length]} coordination skills`, 'four portable stances']],
   ['README.md', [`closed ${bundleSize}-skill core bundle`]],
-  ['RUNBOOK.md', [`the ${bundleSize} core skills`]],
+  // S-004C TK-005K: the Skills lane check moved into a maintainer skill.
+  ['workbench/skills/workbench-room-checks/SKILL.md', [`the ${bundleSize} core skills`]],
   ['LEXICON.md', [`closed set of ${workflowWord} workflow skills`]],
   ['templates/GENESIS.md', [`exact ${bundleSize}-skill policy`]]
 ]) {
@@ -127,7 +128,7 @@ for (const [relative, expected] of [
 // a mismatch with `invalid-source-identity` - a root control shipping a command
 // that cannot run. Every documented `--version` literal must be this release.
 const VERSION = JSON.parse(read('workbench/manifest.json')).workbenchVersion;
-for (const relative of ['RUNBOOK.md', 'templates/ADOPTION.md', 'workbench/skills/adoption/SKILL.md',
+for (const relative of ['RUNBOOK.md', ...maintainerSkills.map((skill) => `workbench/skills/${skill}/SKILL.md`), 'templates/ADOPTION.md', 'workbench/skills/adoption/SKILL.md',
   'workbench/skills/update-harness/SKILL.md', 'tools/workbench-upgrade.mjs', 'tools/workbench-adoption.mjs',
   'workbench/tools/workbench-layout.mjs']) {
   const stale = [...read(relative).matchAll(/--version (v\d+\.\d+\.\d+)/g)]
@@ -926,7 +927,7 @@ assert.ok(adoptionOpening.includes('workbench-upgrade.mjs upgrade --layout-only'
   'adoption must point an already-adopted room at the layout-only route by name');
 assert.match(read('templates/ADOPTION.md'), /already-adopted[^.]*`tools\/workbench-upgrade\.mjs upgrade --layout-only`/,
   'templates/ADOPTION.md must name the layout-only route for an already-adopted room');
-assert.match(read('RUNBOOK.md'), /--layout-only/, 'the Runbook must document the layout-only mode');
+assert.match(read('workbench/skills/workbench-room-checks/SKILL.md'), /--layout-only/, 'the explicit upgrade procedure (workbench-room-checks, S-004C TK-005K) must document the layout-only mode');
 assert.match(read('LEXICON.md'), /--layout-only/, 'the Lexicon distinction must gain the layout-only mode');
 
 for (const name of ['grilling', 'checkpoint', 'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'implement', 'code-review', 'carry', 'notepad']) {
