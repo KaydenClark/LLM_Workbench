@@ -8,8 +8,8 @@
 **Updated:** 2026-10-04
 **Catalog description:** Bring the Wiki's files, tooling and records in line with the accepted definition of the Wiki as the evolving synthesis every agent reads and updates: link-safe note moves, per-Spec articles into the features collection, router summaries, the name-and-context identifier rule in place of the identifier ban, landmark synthesis pages, the ledger out of the Wiki, and the lint cadence as a procedure.
 **Blockers:** none
-**Latest event:** TK-003 claimed by claude-director-s003w.
-**Next gate:** Close TK-003 with verification and documentation proof.
+**Latest event:** TK-002 claimed by claude-director-s003w.
+**Next gate:** Close TK-002 with verification and documentation proof.
 
 > **Citation anchors.** pre=`e72ff5bc78d8815d5911c604b76c2953c78ecb79` post=`e72ff5bc78d8815d5911c604b76c2953c78ecb79`.
 > Both name the Canon promotion commit on `claude/wiki-definition-canon`; post
@@ -223,6 +223,9 @@ Then the full suite in `AGENTS.md`.
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-10-01 | - | Spec captured | none run; planning only | this record | all slices |
+| 2026-10-04 | TK-001 | Task closed | Task PR review PASS (Codex gpt-5.5, separate context) on d8a3fb24 vs 58ca0d20; full RUNBOOK suite 51/51 green on candidate 43a8797; tools/test-wiki.mjs 18/18 incl. 4 move-note tests (red: missing moveNote export); wiki.mjs validate ok; PR merged to integration | RUNBOOK.md, templates/RUNBOOK.md, workbench-runtime skill (move-note procedure), features README root+template, MEMORY.md router, moved feature article | summary-line validator attention and the other 50 per-Spec articles: TK-002 |
+| 2026-10-04 | TK-003 | Task closed | Task PR review PASS (Codex gpt-5.5, separate context) on bf9dff4f vs 58ca0d20; full RUNBOOK suite 51/51 green on candidate 706484e9 plus test-landmark-wiki 42/42 (red: 34 of 42 failed before change) and test-landmark-tracker 23/23; PR #342 merged to integration | workbench/landmark-tracker/LANDMARK-WIKI.md (name-and-context rule); evidence rows appended to S-002A and S-01T; RUNBOOK and templates checked, no ban or validator text to update | 600 bare identifiers across 93 existing Wiki pages are reported by the explicit-call validator (wired into no gate): repair belongs to whole-Wiki lint corrective Tasks and TK-002/TK-004 page work |
+| 2026-10-04 | TK-005 | Task closed | Task PR review PASS (Codex gpt-5.5, separate context) on f66da319 vs 58ca0d20; full RUNBOOK suite 53/53 green on candidate 6ad8225d (incl. test-landmark-tracker and test-landmark-wiki); tools/test-grilling-ledger.mjs 9/9 (red: 8 failed before the move); test-portability-matrix 6/6; PR #340 merged to integration | workbench/sessions/grilling-destination-audit-ledger.json (moved from the Wiki lane; ten WIKI rows; LD-4 and LD-22B superseded); live links in ADRs, Specs and Wiki notes rewritten; router ledger route replaced by a pointer; RUNBOOK and templates checked, no ledger reference | Receipt row says ledger test '11 pass'; true count 9/9 (checksummed Receipt left unedited, correction here). LD-5 locked answer (do not move the ledger, about the Tracker not replacing it) kept with result path updated, not superseded: owner call if wanted |
 
 ## Completion Result
 

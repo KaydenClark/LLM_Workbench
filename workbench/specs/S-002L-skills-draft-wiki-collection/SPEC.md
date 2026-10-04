@@ -1,15 +1,15 @@
 # S-002L - skills draft wiki collection
 
 **Spec ID:** S-002L
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-director
 **Stance:** Builder
-**Updated:** 2026-09-30
+**Updated:** 2026-10-04
 **Catalog description:** Give the draft skills wiki a declared home, an index and one article template, so every skill's draft article has somewhere to go and its connection problems can be found by grep.
 **Blockers:** none.
-**Latest event:** Authored from the owner's 2026-09-30 draft-skills-wiki direction.
-**Next gate:** Activate and cut Tasks from live Actuality with `/to-tasks`.
+**Latest event:** TK-006M closed with proof.
+**Next gate:** Complete TK-006N.
 
 > **Citation anchors.** pre=`07edccc57b8f75613ad1d09203a3e414d867b90c` post=`07edccc57b8f75613ad1d09203a3e414d867b90c`.
 
@@ -43,8 +43,11 @@ Read at the pre anchor.
 ## Decisions And Contracts
 
 - **DRAFT-LOC (to confirm in the first slice, not settled).** Options: (A) nested exception: a collection `workbench/wiki/skills-draft/<group>/<skill>.md`, with SCHEMA amended to "only `archive/` and the draft collection may nest"; the validator already tolerates this. (B) Flat: `workbench/wiki/skills-draft/<group>-<skill>.md` with a `group` front-matter key (Template 2 already has one), keeping SCHEMA's flat rule but duplicating the group in every filename and putting 81 files in one folder. (C) Outside the wiki lane: no SCHEMA conflict, but the draft wiki would lose the validator and the `MEMORY.md` route, so it is not a wiki. Recommended: (A). The owner's go-ahead accepted the nested layout, the exception ends when drafts are promoted (promoted articles are flat `skill-*.md` notes), and (B) gives up the one-folder-per-group reading the owner asked for. The owner may change it.
+  **Resolved 2026-10-04 (TK-006M): confirmed (A).** `workbench/wiki/skills-draft/<group>/<skill>.md`; `SCHEMA.md` now says only `archive/` and `skills-draft/` may nest and that the index README is the one allowed category index.
 - **DECL (to confirm).** Declaring the collection touches `workbench/manifest.json` and, because collections are a closed set, `workbench/tools/workbench-paths.mjs` and `workbench/tools/workbench-layout.mjs` (preserved shapes, `migrate`). Options: follow the `features` precedent without seeding the template; or leave the manifest alone and have SCHEMA and the validator name the folder. Recommended: the declaration, kept out of `templates/` with the exemption recorded, since this is a repo-only prototype. This enlarges a shared contract, so surface it as an owner tradeoff if the change reaches more than the manifest and one registry entry.
+  **Resolved 2026-10-04 (TK-006M): changed to the second option.** The declaration would reach the closed `COLLECTIONS` registry, three preserved layout shapes, `migrate` and a template README (the `features` route), which is more than the manifest and one registry entry, and a repo-only prototype does not justify widening a contract every generated room reads. The folder is named by `SCHEMA.md` and by `workbench/tools/wiki.mjs` (`DRAFT_COLLECTION`, `DRAFT_GROUPS`); the manifest, `workbench-paths.mjs`, `workbench-layout.mjs` and `templates/` are untouched, and `templates/wiki/SCHEMA.md` deliberately omits the exception (the dogfood exemption; generated rooms do not carry the collection). The validator change ships inert in rooms without the folder. Reversing it later is one declaration and one migration, so this was a low-risk in-scope call rather than an owner tradeoff.
 - **DRAFT-STATUS (to confirm).** Either add `draft` to the status enum (valid only inside the collection, refused elsewhere) or keep Template 2 on `status: partial` plus another key. Recommended: the scoped `draft` status, because the owner approved Template 2 with `status: draft`.
+  **Resolved 2026-10-04 (TK-006M): confirmed.** `draft` is accepted only inside `skills-draft/` and refused everywhere else; inside it every non-index note must declare it, name its own `skill` and `group`, and sit directly in one of the eight group folders. `normalize` infers `type: memory` there (Template 2's value) and never invents the draft status.
 - Template 2 is reproduced verbatim below from the owner-approved 2026-09-30 draft-skills handoff; this Spec may adjust wording the validator forces (status, type) and records each adjustment, but adds no section to the template.
 - Drafts do not replace the 20 existing `skill-*.md` articles. A draft carries `supersedes:` naming its existing article, which stays active and routed until the owner decides a promotion in a separate step. Draft basenames are the bare skill name, so they cannot collide with the `skill-` prefixed existing notes.
 - The README's index of planned articles uses plain text, not links, until the owning Spec delivers the article and turns its row into a link; an unwritten target must never be a dangling link. It is the collection's own index (the `design-concepts` and `features` READMEs are the precedent), so SCHEMA's "no category indexes" wording must be reconciled in the same slice.
@@ -134,6 +137,7 @@ Run `node tools/test-wiki.mjs` red then green, `node workbench/tools/wiki.mjs va
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-30 | planning | Spec authored from the owner's draft-skills-wiki direction; planning only | Wiki schema, validator, manifest collections and existing articles read at the pre anchor; no implementation or test run | This Spec authored; collection, README and template remain future work | Slices 1-4 and independent review remain open |
+| 2026-10-04 | TK-006M | Task closed | tools/test-wiki.mjs red then green 16/16; wiki.mjs validate ok; full Full suite 51/51 at 10aa2693; Codex gpt-5.5 separate-context review: FAIL at 57486cec (medium: draft skill/group optional, preserved), PASS at 10aa2693 (no findings); read-only sandbox could not run tests | workbench/wiki/SCHEMA.md; Spec Decisions resolved (DRAFT-LOC confirmed, DECL changed, DRAFT-STATUS confirmed); templates/wiki/SCHEMA.md untouched by exemption | TK-006N template and TK-006O README remain |
 
 ## Completion Result
 
