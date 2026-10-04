@@ -837,7 +837,7 @@ export function resolveRecord(root, id) {
 // `skills/`), `team templates/`, both decision-record collections and every
 // Spec and Task record. Generated registers are regenerated, not rewritten;
 // `templates/` is the blank product and never names this room's records.
-function collectRecordReferenceFiles(root) {
+export function collectRecordReferenceFiles(root) {
   const files = [];
   for (const name of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md']) {
     const file = path.join(root, name);
