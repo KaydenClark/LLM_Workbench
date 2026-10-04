@@ -9,7 +9,7 @@
 **Catalog description:** Optionally synchronize selected working records through private Git with explicit acknowledgment and lossless offline/conflict handling.
 **Blockers:** none
 **Latest event:** 2026-10-04: TK-004 reframed as part of the owner's own PC deployment test at v4 main readiness, no longer a blocker; the superseded v3.2.0 release record no longer waits on it. TK-003 closed with proof before that.
-**Next gate:** None for agents. TK-004 runs inside the owner's own PC test when agents judge `integration` ready for `main`; the [Workbench v4.0.0 Release — S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md) names it among the owner acts.
+**Next gate:** None for agents. TK-004 runs inside the owner's own PC test when agents judge `integration` ready for `main`; the Workbench v4.0.0 Release (S-00O) names it among the owner acts.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -208,6 +208,7 @@ AGENTS/BLUEPRINT/LEXICON/RUNBOOK and generic owners, lifecycle manifests/tools, 
 | 2026-09-08 | TK-003 | Recovery candidate e7eecd4 passed 16 tests; b7b297d added passing acknowledgment-failure retry case | Independent review reproduced effective ignore exceptions exposing original-note backups after an interrupted resume. New regression demonstrated RED before repair. Every planned backup, prior-state and receipt destination is now checked before private recovery bytes are copied | Docs checked; existing ignored recovery boundary remains unchanged | Repaired targeted/full checks and independent re-review pending; earlier b7 full suite remains separate historical evidence |
 | 2026-09-08 | TK-003 | Ticket closed | db540ec27a272d61283262ee48d46fe9ebf8f7af: transport 18/18 including explicit conflict reconciliation, full 41/41, independent TK-003 review PASS; preserved backup and remote ancestry read-back | Root and generic Runbook document serialization, rejected/offline uploads, partial resumes, ignored recovery, explicit conflict reconciliation and limits | TK-004 actual private repository and Mac Windows Claude Codex continuation remains blocked on access; final release and Example integration remain open |
 | 2026-10-04 | spec | TK-004 reframed: the real Mac/Windows continuation runs inside the owner PC test at v4 main readiness, not as a blocker | Owner words of 2026-09-23 (PC test at main readiness Wiki page) and ledger CAND-N (2026-09-21) re-read; S-050 superseded the same day | Header, TK-004 row (deferred, no blocker), new Owner PC Test At Main Readiness section, Completion Result and limitations reconciled; ledger CAND-N progress re-read | TK-004 proof remains owed and is the owner's to run; its acceptance line stays unchecked |
+| 2026-10-04 | spec | Review correction: Next gate names S-00O in plain text so the Taskboard projection carries no broken relative link | Separate-context review of merged candidate 1aac21f (Codex gpt-5.5, read-only) FAIL, one Low: the Next gate link resolved outside the repository when copied into TASKBOARD.md | Next gate text only; the S-00O link remains in the Owner PC Test section | Fresh review of the corrected candidate |
 
 ## Completion Result
 
