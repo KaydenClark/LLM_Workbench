@@ -3,7 +3,7 @@
 **Task ID:** TK-005K
 **Spec ID:** S-004C
 **Slice:** Move the maintainer-only operations behind their pointers
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-005J, TK-006L
 **Destination:** spec-acceptance: An inventory maps every line of `AGENTS.md` and `RUNBOOK.md` to a home, and a check shows every removed line landed (maintainer-operations family), and `RUNBOOK.md` is an operations index in which each operation's procedure is reachable in a skill.
