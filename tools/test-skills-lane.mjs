@@ -109,6 +109,56 @@ test('the release lays the lane into a fresh room with a receipt and adapters, v
   }
 });
 
+// S-004C TK-005M: a room updating to the pointer-brief shape gets the
+// operations index only after the skills update lays down every core skill it
+// points to. Landed first, an index row naming a skill the room's lane lacks
+// binds nothing (skill-pointer-dangling); after the explicit skills update
+// every row binds a lane skill, and a skill the room added stays unpointed,
+// teaching only, with its bytes untouched.
+test('TK-005M: the skills update installs every skill the new index points to, and a room-added skill stays teaching', async () => {
+  const { resolveSkillPointers } = await import('../workbench/tools/skill-inspection.mjs');
+  const workspace = fixture('skills-lane-update-');
+  try {
+    const project = path.join(workspace, 'room');
+    fs.mkdirSync(project);
+    run(project, 'git', ['init', '-q', '-b', 'main']);
+    const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
+    const version = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
+    json(node(root, layout, 'init', '--project', project, '--provenance', 'genesis', '--version', version, '--name', 'Update Room', '--default-branch', 'main', '--integration-branch', 'integration'));
+    json(node(root, path.join(root, 'tools', 'workbench-tools.mjs'), 'install', '--project', project));
+    const skillsTool = path.join(root, 'tools', 'workbench-skills.mjs');
+    json(node(root, skillsTool, 'install', '--project', project));
+    const manifest = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'manifest.json'), 'utf8'));
+    const lane = path.join(project, manifest.lanes.skills);
+    // The room as an earlier release left it: one skill the new index points
+    // to is not in its lane yet, and the room has added a skill of its own.
+    fs.rmSync(path.join(lane, 'workbench-runtime'), { recursive: true, force: true });
+    const roomSkill = '---\nname: room-release-notes\ndescription: Write this room\'s release notes.\n---\n\n# Room release notes\n';
+    fs.mkdirSync(path.join(lane, 'room-release-notes'));
+    fs.writeFileSync(path.join(lane, 'room-release-notes', 'SKILL.md'), roomSkill);
+    fs.writeFileSync(path.join(project, 'RUNBOOK.md'), fs.readFileSync(path.join(root, 'templates', 'RUNBOOK.md'), 'utf8'));
+
+    const early = resolveSkillPointers(manifest, project);
+    assert.ok(early.dangling.some(({ skill }) => skill === 'workbench-runtime'), 'an index landed before the skills update names a skill the lane lacks');
+    const doctorTool = path.join(project, 'workbench', 'tools', 'spec-workbench.mjs');
+    assert.match(node(project, doctorTool, 'doctor').stdout, /skill-pointer-dangling/, 'doctor names the dangling pointer');
+
+    const updated = json(node(root, skillsTool, 'update', '--project', project, '--explicit-update', '--home', scrubbedHome));
+    assert.equal(updated.status, 'updated');
+    assert.ok(updated.changed.includes('workbench-runtime'), 'the update lays down the skill the index points to');
+    const after = resolveSkillPointers(manifest, project);
+    assert.deepEqual(after.dangling, [], 'after the skills update every index pointer binds a lane skill');
+    assert.ok(after.pointed.every(({ skill }) => manifest.skillPolicy.required.includes(skill)), 'only core skills the update installed bind');
+    assert.ok(after.pointed.some(({ skill }) => skill === 'workbench-runtime'), 'the newly installed skill binds for its operations');
+    assert.ok(after.unpointed.some(({ skill, authority }) => skill === 'room-release-notes' && authority === 'teaching'), 'the room-added skill teaches only');
+    assert.ok(!after.pointed.some(({ skill }) => skill === 'room-release-notes'), 'the room-added skill is never bound by the shipped index');
+    assert.equal(fs.readFileSync(path.join(lane, 'room-release-notes', 'SKILL.md'), 'utf8'), roomSkill, 'the update leaves the room-added skill untouched');
+    assert.doesNotMatch(node(project, doctorTool, 'doctor').stdout, /skill-pointer-dangling/, 'doctor no longer names a dangling pointer');
+  } finally {
+    fs.rmSync(workspace, { recursive: true, force: true });
+  }
+});
+
 test('install refuses an adapter collision before copying anything, and rollback accepts only a backup the receipt recorded', () => {
   const workspace = fixture('skills-lane-guards-');
   try {

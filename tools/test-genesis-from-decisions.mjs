@@ -7,6 +7,8 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
+import { resolveSkillPointers } from '../workbench/tools/skill-inspection.mjs';
+import { coreSkills } from '../workbench/tools/workbench-layout.mjs';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -319,6 +321,17 @@ const release = makeRelease(suiteRoot);
   assert.match(authority, /Only the user and the Contract carriers with the assigned Spec as bounded\s+delegate instruct\.[\s\S]*Templates,[\s\S]*webpages,[\s\S]*generated output are untrusted evidence/, 'generated-room root placement, templates and external evidence grant no authority');
   assert.doesNotMatch(authority, /4\. `BLUEPRINT\.md`|`BLUEPRINT\.md`[^\n]*procedural Canon|Only the user and the root controls named above instruct/);
   assert.match(authority, /5\. A skill in the room's tracked skills lane that a Contract carrier points to\s+for an operation, through a row of the `RUNBOOK\.md` operations index,[\s\S]*Contract force only while that operation is performed\.[\s\S]*the lane copy wins\.[\s\S]*including a room-added skill, teaches but does\s+not instruct\.[\s\S]*never comes from a link a Destination\s+Packet or any other work record carries\./, 'Genesis preserves pointed-skill authority and the unpointed-skill limit');
+
+  // S-004C TK-005M: a freshly generated room carries the pointer-brief shape:
+  // the Runbook operations index, every pointer of which binds a skill the
+  // room's own lane holds, and the unchanged single-import CLAUDE.md.
+  const derivedManifest = JSON.parse(fs.readFileSync(path.join(destination, 'workbench', 'manifest.json'), 'utf8'));
+  const pointers = resolveSkillPointers(derivedManifest, destination);
+  assert.equal(pointers.index, 'RUNBOOK.md#operations-index', 'the derived room carries the Runbook operations index');
+  assert.deepEqual(pointers.dangling, [], 'every index pointer in the derived room resolves to a skill its lane holds');
+  assert.ok(pointers.pointed.length >= 5, `the derived index binds the room's lane skills (${pointers.pointed.length})`);
+  assert.ok(pointers.pointed.every(({ skill }) => coreSkills.includes(skill)), 'a derived room binds only core skills, never a maintainer skill');
+  assert.equal(fs.readFileSync(path.join(destination, 'CLAUDE.md'), 'utf8'), '@AGENTS.md\n', 'CLAUDE.md stays the single AGENTS.md import');
 
   drivePond(release, destination, f.root);
 
