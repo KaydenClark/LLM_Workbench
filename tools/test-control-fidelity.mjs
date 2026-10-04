@@ -1056,11 +1056,19 @@ test('TK-005M: an old-shape room is told which differences are a template genera
   assert.ok(shared, 'both template generations share a line to diverge from');
   const diverged = `${shared} The room records this divergence in its upgrade Spec.`;
   write(project, 'AGENTS.md', read(project, 'AGENTS.md').replace(shared, diverged));
+  // The room also rewrote a line only the earlier template ships; that is the
+  // room's own change, not a template difference, even though the current
+  // template no longer carries the line.
+  const earlierOnly = normalizedLines(read(previous, 'AGENTS.md')).find((line) => line.length > 60 && !normalizedLines(read(productTemplates, 'AGENTS.md')).includes(line) && read(project, 'AGENTS.md').includes(line));
+  assert.ok(earlierOnly, 'the earlier generation has a line the current one dropped');
+  const customized = `${earlierOnly} This room tightened the rule for its payments adapter.`;
+  write(project, 'AGENTS.md', read(project, 'AGENTS.md').replace(earlierOnly, customized));
   const current = normalizedLines(read(productTemplates, 'AGENTS.md'));
   const earlier = normalizedLines(read(previous, 'AGENTS.md'));
   const newOnly = current.find((line) => line.length > 40 && !earlier.includes(line));
   assert.ok(newOnly, 'the two generations differ in AGENTS.md');
   const roomOwn = ['## Room Boundaries', ownRule];
+  const roomOwnAdded = (text) => roomOwn.includes(text) || text.includes('This room tightened the rule for its payments adapter.');
 
   const plain = reportFidelity({ project, templates: productTemplates, manifestRelease: VERSION, checkoutVersion: VERSION });
   assert.equal(plain.previousTemplates, null, 'no earlier generation is named or recorded, so none is used');
@@ -1080,7 +1088,10 @@ test('TK-005M: an old-shape room is told which differences are a template genera
     assert.equal(byRoom(ownRule)?.generation, undefined, 'the room-owned rule is the room\'s own, not a generation difference');
     const unlabeled = (kind) => agents.lines.filter((line) => !line.trivial && line.kind === kind && line.generation === undefined);
     assert.ok(agents.lines.some((line) => line.kind === 'added' && line.generation === 'earlier-template' && earlier.includes(line.room.trim().replace(/\s+/g, ' ')) && !current.includes(line.room.trim().replace(/\s+/g, ' '))), 'an old-shape line the current template no longer carries is labeled as the earlier template generation');
-    assert.deepEqual(unlabeled('added').map((line) => line.room.trim()), roomOwn, 'only the room\'s own lines stay unlabeled additions');
+    assert.ok(unlabeled('added').every((line) => roomOwnAdded(line.room.trim())), 'only the room\'s own lines stay unlabeled additions');
+    for (const text of roomOwn) assert.ok(unlabeled('added').some((line) => line.room.trim() === text), `the room's own line stays an unlabeled addition: ${text}`);
+    const tightened = agents.lines.find((line) => line.room !== undefined && line.room.includes('This room tightened the rule for its payments adapter.'));
+    assert.ok(tightened && tightened.generation === undefined, 'a room\'s rewrite of a line only the earlier template shipped stays the room\'s own, never a generation difference');
     assert.deepEqual(unlabeled('dropped').map((line) => line.template), [], 'a room that kept the earlier shape dropped nothing of its own');
     assert.ok(agents.lines.some((line) => line.kind === 'dropped' && line.generation === 'newer-template' && !earlier.includes(line.template.trim().replace(/\s+/g, ' '))), 'a new-shape line the room never had is labeled as the newer template generation');
     assert.ok(byTemplate(newOnly) === undefined || byTemplate(newOnly).generation === 'newer-template', 'a dropped new-shape line is never left unlabeled');
