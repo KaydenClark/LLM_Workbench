@@ -137,6 +137,13 @@ cards below.
 
 ## Open and unresolved
 
+- Where the grilling ledger lives: the card [DQC-005Y: "Where does pre-delivery understanding live, and what becomes of the grilling sources?"](../../landmark-tracker/destination-questions/DQC-005Y.json)
+  says the ledger is not moved or replaced, which is accurate as to the Tracker
+  replacing it. The later accepted decision record
+  [The Wiki is the evolving synthesis every agent reads and updates](../../docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md)
+  moves the grilling destination audit ledger out of the Wiki into the sessions
+  lane, and the Wiki Evolving-Synthesis Migration Spec (S-003W) Task Ledger Rows
+  For The Wiki Grilling (TK-005) delivered that move. The card is unchanged here.
 - Landmark definition: the cards still record the landmark as an evolving
   account with its own structured JSON record. The decision record
   ["Landmarks are LANDMARK.md artifacts one size above Specs"](../../docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md)

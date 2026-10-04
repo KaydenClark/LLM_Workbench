@@ -142,6 +142,11 @@ cards below.
 
 ## Open and unresolved
 
+- Corrective work after a failed review: the card [DQC-003P: "What does Needs review mean without imposing independent review on every Task?"](../../landmark-tracker/destination-questions/DQC-003P.json)
+  still says a failed review creates corrective Tasks. The decision record
+  ["A miss found by a check continues the same Task unless the fix rewrites it"](../../docs/ddr/000Y-a-miss-found-by-a-check-continues-the-same-task-unless-the-fix-rewrites-it.md)
+  amends that wording: the same Task continues unless the fix rewrites it. The
+  card is unchanged here; read the decision record as the current rule.
 - Meaning of `next`: the card [DQC-000G: "What does next mean, and which work should it offer?"](../../landmark-tracker/destination-questions/DQC-000G.json)
   records an open question, whether `next` means the next eligible Task, the
   next action inside current work, or an owner recommendation. The working
