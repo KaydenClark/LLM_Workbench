@@ -1376,10 +1376,10 @@
       "line": 199,
       "text": "   and owned documentation. Preserve proof and unresolved gaps as work proceeds.",
       "hash": "ace9e9e180e71a1011fa0d73ce0ae7644c3b41e4ba4929de3d2478a0b68b8ddc",
-      "homeKind": "skill",
-      "homePath": "workbench/skills/implement/SKILL.md",
-      "landedText": "and owned documentation. Preserve proof and unresolved gaps as work proceeds.",
-      "reason": "TK-005G moved this line verbatim to the implement skill, which the Runbook operations index points to for its operation."
+      "homeKind": "stays",
+      "homePath": null,
+      "landedText": null,
+      "reason": null
     },
     {
       "line": 200,
