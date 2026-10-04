@@ -5,9 +5,9 @@
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
-**Updated:** 2026-09-30
+**Updated:** 2026-10-04
 **Catalog description:** Extract, challenge, and normalize shared project vocabulary in the owning Lexicon, or fold that job into the skill that already does it.
-**Blockers:** S-002L Skills draft wiki collection must deliver the draft-wiki location and article template before steps 2-5. The fold-or-retire decision may also depend on S-002H (domain-modeling) and S-003O (lexicon), which own the neighboring skills.
+**Blockers:** S-002L Skills draft wiki collection must deliver the draft-wiki location and article template before steps 2-5. The fold-or-retire decision may also depend on S-004J (Required Domain Modeling Skill, which replaced S-002H) and S-003O (lexicon), which own the neighboring skills.
 **Latest event:** Authored from the owner's 2026-09-30 draft-skills-wiki direction.
 **Next gate:** Deliver S-002L, then activate this Spec and cut Tasks from live Actuality with `/to-tasks`.
 
@@ -44,7 +44,7 @@ Checked at the pre anchor, with the personal copy read-only on 2026-09-30.
 - Origin is recorded at step 1 from the evidence; this Spec does not guess it. The pending copy descends from Matt's skill; the personal copy is a Workbench rewrite.
 - Which copy is canonical is a step-1 decision. The pending copy is Matt-shaped and repository-held; the personal copy is Workbench-shaped but lives in the owner's separate Git repository, which this Spec never writes.
 - Steps 1-5 touch only the draft wiki. Step 6 is the only step that touches a skill lane, and `skills-pending/` is not in the `AGENTS.md` Edit Scope. S-00R is the authorizing route for any step-6 move, edit, archive or removal there, and per S-00R a per-item owner decision governs it.
-- `domain-modeling` is owned by S-002H, which has a live lane. This Spec reads it and records findings against it; it plans no edit to it. `lexicon` is owned by S-003O.
+- `domain-modeling` is owned by S-004J (Required Domain Modeling Skill), which replaced the superseded S-002H on 2026-10-04. This Spec reads it and records findings against it; it plans no edit to it. `lexicon` is owned by S-003O.
 - A draft article is curated context, not instruction authority or proof of behavior.
 
 ## Non-Goals
@@ -58,7 +58,7 @@ Checked at the pre anchor, with the personal copy read-only on 2026-09-30.
 ## Dependencies And Blockers
 
 - **S-002L Skills draft wiki collection** must deliver the draft-wiki location and article template before steps 2-5.
-- Step 6 coordinates with S-002H (domain-modeling, live lane), S-003O (lexicon) and S-00R (pending-source disposition, live Codex lane). Do not write the same lane at the same time as any of them.
+- Step 6 coordinates with S-004J (domain-modeling), S-003O (lexicon) and S-00R (pending-source disposition, live Codex lane). Do not write the same lane at the same time as any of them.
 - Open question for step 1: if the personal `lexicon` skill keeps routing to `/ubiquitous-language`, retiring this skill leaves a dangling route that S-003O must repair.
 
 ## Vertical Implementation Slices
@@ -98,6 +98,7 @@ The draft-wiki article is `workbench/wiki/skills-draft/primitives/ubiquitous-lan
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-30 | planning | Spec authored from the owner's draft-skills-wiki direction; no Task cut | Pending and personal copies diffed read-only; catalog, README and neighbor skills read at the pre anchor; no behavior change or scenario trial | This Spec authored; article remains future work | S-002L delivery, activation, Tasks and independent delivery proof remain open |
+| 2026-10-04 | reference repair | The domain-modeling owner changed: S-002H was superseded by Required Domain Modeling Skill (S-004J); ownership and coordination lines now name S-004J | Read S-002H and S-004J at the remap branch; Current Verified State left as dated at its anchor | Blockers, Decisions And Contracts and Dependencies lines repointed | Unchanged |
 
 ## Completion Result
 

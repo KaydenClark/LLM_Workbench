@@ -7,6 +7,7 @@ provenance:
   - Owner-confirmed Landmark Tracker grilling and explicit documentation direction, 2026-09-26
 source_paths:
   - workbench/specs/S-004D-shared-interactive-board/SPEC.md
+  - workbench/grill-board/README.md
   - BLUEPRINT.md
   - LEXICON.md
   - AGENTS.md
@@ -212,15 +213,19 @@ source lineage, connect it to a landmark when one emerges, and generate a view
 of its evidence-backed documentation progress. That demonstrates a foundation
 we can build on while answers, inventory and detailed destinations evolve.
 
-## Future shared browser workspace
+## Shared browser workspace
 
-The owner requested a post-v4 backlog capability for browsing Taskboard and
-Tracker together, opening connected cards, commenting and requesting updates.
-The [Shared Interactive Workbench Board (S-004D)](../../specs/S-004D-shared-interactive-board/SPEC.md)
-owns that future scope and its unresolved design choices. It is planned only,
-excluded from v4, and supplies no current browser capability. A shared card
-interface preserves the separate meanings of execution lanes and understanding
-distributions; updates reach their source owners and generated views are rebuilt.
+The owner wants one browser workspace for browsing Taskboard and Tracker
+together, opening connected cards, commenting and requesting updates. The
+[Shared Interactive Workbench Board (S-004D)](../../specs/S-004D-shared-interactive-board/SPEC.md)
+owns that destination and its unresolved design choices. Its first working form
+is the [Grill Board](../../grill-board/README.md), where the owner already
+answers pending items, including unconfirmed question cards, as a package (the
+owner, 2026-10-04: the shared board spec "is what the grilling board is
+supposed to turn into"). The Grill Board does not yet show Tracker
+distributions or Taskboard lanes. A shared card interface preserves the
+separate meanings of execution lanes and understanding distributions; updates
+reach their source owners and generated views are rebuilt.
 
 ## Evidence and Sources
 
@@ -252,3 +257,4 @@ distributions; updates reach their source owners and generated views are rebuilt
 - 2026-10-03: Restated how a landmark relates to the Blueprint (a Blueprint sentence big enough to need its own map becomes a landmark) and repointed the product-direction link to the four-part page, from the Blueprint Short Page work.
 - 2026-10-03: Reconciled the recovered Lexicon family with the later Wiki, landmark and workflow decisions; retained the installed-validator mismatch, verification distinctions and DQC reconciliation boundary.
 - 2026-10-04: The Runbook's accepted-design and available-operation text moved into the notepad skill behind the Runbook operations index (S-004C TK-005J); the Runbook keeps the delivery route.
+- 2026-10-04: The shared browser workspace is no longer a post-v4 backlog: the owner named the Grill Board its first working form, so the section links the Grill Board and Shared Interactive Workbench Board (S-004D) as one product line.

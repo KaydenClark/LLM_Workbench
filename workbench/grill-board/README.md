@@ -38,10 +38,12 @@ One local page where the owner reads every item that waits on him (Spec owner
 gates, open owner decisions, unsettled Destination Question Cards, decision
 record texts, page texts), answers them as a package, and saves as he goes.
 Claude and Codex share it: both read the owner's answers, both carry them into
-their durable owners, and both update the board through the same tool. It is a
-bounded working surface for the current grilling backlog, not the post-v4
-[Shared Interactive Workbench Board](../specs/S-004D-shared-interactive-board/SPEC.md),
-which stays planned and blocked on its own owner gate.
+their durable owners, and both update the board through the same tool. It is
+the first working form of the
+[Shared Interactive Workbench Board (S-004D)](../specs/S-004D-shared-interactive-board/SPEC.md):
+that Spec is the destination this page grows into (the owner, 2026-10-04), and
+its Current Verified State maps what the page already delivers and what is
+still to come. There is one board, not two.
 
 ## Agents: read this before touching anything here
 
