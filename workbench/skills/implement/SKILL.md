@@ -376,3 +376,57 @@ review clones and linked worktrees live outside the canonical checkout, under
 the host temporary directory; `git worktree prune` drops the registrations of
 removed ones, and a finished review checkout is removed once its review is
 recorded. None is a durable owner.
+
+## Engineering and verification
+
+The room's `AGENTS.md`
+[Engineering And Verification](../../../AGENTS.md#engineering-and-verification)
+keeps the verification rules every session obeys; this is their procedure. The
+room's own fast check and its one full suite list are in its `RUNBOOK.md`
+[Test And Build](../../../RUNBOOK.md#test-and-build).
+
+For behavior changes:
+
+1. Define expected behavior at a stable testing seam.
+2. Add or update a failing test and confirm the expected failure.
+3. Implement the smallest change that turns it green.
+4. Refactor only while green.
+5. Run the targeted test, then the full verification suite.
+
+If tests are impractical, name the specific reason and run the strongest concrete
+manual check. A milestone also needs a demo artifact checkable in under one
+minute: screenshot, short recording, preview URL, or one-command demo.
+
+## Test coverage policy
+
+Treat tests as the project specification, not as a comfort signal. The suite
+should be strong enough that if someone accidentally deletes a meaningful line,
+branch, route, data contract, workflow step, validation rule, or bug fix, at
+least one test or documented manual check fails.
+
+Coverage rules:
+
+- Prefer red/green TDD: write or update the failing test first, confirm the
+  expected failure, then implement the smallest fix.
+- Run every relevant existing test before judging the suite.
+- Keep tests that prove behavior a user, API consumer, operator, or future
+  maintainer depends on.
+- Improve tests that assert the wrong level, hide real failures, rely on stale
+  fixtures, overuse snapshots, or pass without checking meaningful behavior.
+- Remove tests that are stale, duplicated without adding a boundary, or pure
+  bloat.
+- If behavior cannot be tested in the current harness, record the exact reason
+  and use the strongest concrete manual check available.
+
+## Benchmark-driven improvement
+
+Before changing agent rules, control docs, evaluation criteria, or the working
+process, capture the available guardrail or benchmark baseline. Put the intended
+score movement or outcome hypothesis in the owning spec, then record the
+before/after score and remaining recommendations after the change.
+
+Use 100/100 as a deliberately hard north star, not the release gate. Regression
+checks are the minimum ship gate. Never weaken a criterion to manufacture
+progress, and do not treat a static coverage score as outcome evidence. If this
+project has no executable benchmark yet, add one or state that the change cannot
+yet be called better.

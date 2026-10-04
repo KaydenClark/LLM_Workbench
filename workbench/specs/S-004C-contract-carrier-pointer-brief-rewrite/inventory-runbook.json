@@ -1295,7 +1295,7 @@
       "line": 197,
       "text": "Fast check (run for any change to `tools/`, `templates/`, or root docs):",
       "hash": "346af8662a3dbd308e681fed8dab3b0190f2168bce81c15183d0c9ca3e5b546e",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1304,7 +1304,7 @@
       "line": 199,
       "text": "```bash",
       "hash": "ad332335cfaa348c5bd715c3479844622270d5f7389ae070b81b135d521a221a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1313,7 +1313,7 @@
       "line": 200,
       "text": "node tools/test-evaluate-workbench.mjs",
       "hash": "aae224f4b64b0e6420c3df41c7fac3788fb2c29c5e964d09f1fe160dbb80b5f4",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1322,7 +1322,7 @@
       "line": 201,
       "text": "```",
       "hash": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1331,16 +1331,16 @@
       "line": 203,
       "text": "Full verification:",
       "hash": "743621a5977696609233e469b23983a84e74148d347930147ca7639aa36ff346",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "pointer",
+      "homePath": "RUNBOOK.md",
+      "landedText": "Full verification is the one Full suite list below.",
+      "reason": "TK-005I made the Runbook Test And Build list the one Full suite home: the label now introduces the `Full suite for controls` line every suite runner reads."
     },
     {
       "line": 205,
       "text": "```bash",
       "hash": "ad332335cfaa348c5bd715c3479844622270d5f7389ae070b81b135d521a221a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1349,7 +1349,7 @@
       "line": 206,
       "text": "node tools/test-spec-workbench.mjs",
       "hash": "c6bd2fd6619e2ceb915f0df87bfdf5445ae1b08cc89bfd0f8998d199b135c938",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1358,7 +1358,7 @@
       "line": 207,
       "text": "node tools/test-team-coordination.mjs",
       "hash": "e17c36647df18da86563554dc5bd276a99d499b25f74f1643792863dfe4da8a3",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1367,7 +1367,7 @@
       "line": 208,
       "text": "node tools/test-team-coordination-demo.mjs",
       "hash": "55cde16c1f409de979e4b0b6253cf5d194199f69594bf43ecd29a7dd633f0cd4",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1376,7 +1376,7 @@
       "line": 209,
       "text": "node tools/test-skill-catalog.mjs",
       "hash": "b676cfbd82982b7eb3a5dd5edd19f24ff57da25d092bbd19fbb8bd9208d70c2c",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1385,7 +1385,7 @@
       "line": 210,
       "text": "node tools/test-skill-inspection.mjs",
       "hash": "686a65a2bdd2638b73c66eb4ff76a488ca0881cf007808e745ed93c6ce1e2c5a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1394,7 +1394,7 @@
       "line": 211,
       "text": "node tools/test-skills-lane.mjs",
       "hash": "4771d2bef0af35ffa38f402464a4f2b7dbe128915f43db0b06d532b81f86f1fc",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1403,7 +1403,7 @@
       "line": 212,
       "text": "node tools/test-core-composition.mjs",
       "hash": "bcdca2b0428a452f449df10c86a4ef2e210e35f6a7665b37c35bcdd613d61538",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1412,7 +1412,7 @@
       "line": 213,
       "text": "node tools/test-project-evidence.mjs",
       "hash": "563e7c1a0e54f00a748e911e61f877b497210a5561b53841ecae329ea88899d0",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1421,7 +1421,7 @@
       "line": 214,
       "text": "node tools/test-genesis-from-decisions.mjs",
       "hash": "e45889b7336186873ef04e49064cba14b56dbc1882f41959bb521a71f19a073c",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1430,7 +1430,7 @@
       "line": 215,
       "text": "node tools/test-blueprint-contract.mjs",
       "hash": "e5e1c4bf8f6105fb049d55b9f69ce4b0f4f8ee6ffeddfd4f5db3ddbadab12758",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1439,7 +1439,7 @@
       "line": 216,
       "text": "node tools/test-session-transport.mjs",
       "hash": "5e6e317f9c1f77446884f5778acdbbbb5fdcca8f69483cb6af637afa54c267b0",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1448,7 +1448,7 @@
       "line": 217,
       "text": "node tools/test-configured-host.mjs",
       "hash": "752b93688dd40bbc2307df96b77502905057a8b3dab267fb7fc159f44c0919b6",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1457,7 +1457,7 @@
       "line": 218,
       "text": "node tools/test-core-skill-installer.mjs",
       "hash": "b82e70212c5666a624e86d87d71809e2e65e82476f81caa539943eb2be2220c5",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1466,7 +1466,7 @@
       "line": 219,
       "text": "node tools/test-workbench-layout.mjs",
       "hash": "92f01e469dec4f00a63787803fae31a82116cee1382b50bc79f6d215dcb46ab5",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1475,7 +1475,7 @@
       "line": 220,
       "text": "node tools/test-workbench-adoption.mjs",
       "hash": "ee3160cc601019d4a511a5d82be8ed8c225b7dda04a72c30b4d320244f468e61",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1484,7 +1484,7 @@
       "line": 221,
       "text": "node tools/test-workbench-upgrade.mjs",
       "hash": "ef97d3c358c22efd942047a120097b58917c6ca7934ade7e761f2fed2b26fbf4",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1493,7 +1493,7 @@
       "line": 222,
       "text": "node tools/test-workbench-tools.mjs",
       "hash": "bb1f33f538843b6ac345590fb5748215f5592e5df83fc665fbd43da34745dcc7",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1502,7 +1502,7 @@
       "line": 223,
       "text": "node tools/test-diagnostics.mjs",
       "hash": "9e55ccd8dc498c34bb9f4c4057b23647e0adea83c5d83a5b8d8dfe87e4ef6211",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1511,7 +1511,7 @@
       "line": 224,
       "text": "node tools/test-adr.mjs",
       "hash": "2b50c211e6b2511b0dbf20a91519518e15fcd5fa1f66a30441c97c43586338cd",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1520,7 +1520,7 @@
       "line": 225,
       "text": "node tools/test-governance-core.mjs",
       "hash": "0fb07a6bd3afad50270637b5d8ab2f93e70dd75b49d23283e62e68c0d603cd41",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1529,7 +1529,7 @@
       "line": 226,
       "text": "node tools/test-branch-closeout.mjs",
       "hash": "ed9eadcfaa9dde05e737f9ab985c310cd1a46dc5d2a9099e60e79455602636c0",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1538,7 +1538,7 @@
       "line": 227,
       "text": "node tools/test-wiki.mjs",
       "hash": "0d5dab54a59b14b87de9169dad045f78a4089054105639ba6a595f711eb887b0",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1547,7 +1547,7 @@
       "line": 228,
       "text": "node tools/test-sessions.mjs",
       "hash": "d23ccfddaeb1311d86e3140ccbcd054ef64bc468b21272154c70d5ca5aba54f6",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1556,7 +1556,7 @@
       "line": 229,
       "text": "node tools/test-notepads.mjs",
       "hash": "0669a3c96bf0011f2714888bf68749deb24a668790713e7d27a4c6e9f37ac843",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1565,7 +1565,7 @@
       "line": 230,
       "text": "node tools/test-visible-ids.mjs",
       "hash": "379fb93ac026ef49dc2e787ca7d8b7e313e3c213ec42e34030bccc852b3a2381",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1574,7 +1574,7 @@
       "line": 231,
       "text": "node tools/test-workbench-identity.mjs",
       "hash": "ce5a764296eee6422ef55871dc0afe04b398ec644e873c50079bc7c3b930517c",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1583,7 +1583,7 @@
       "line": 232,
       "text": "node tools/test-visible-id-consumers.mjs",
       "hash": "155d188180c5ce59b77471c896149a263c46cd6a7c6d57d0f46a8acc2353984a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1592,7 +1592,7 @@
       "line": 233,
       "text": "node tools/test-direct-promotion.mjs",
       "hash": "b957f850dd3324948198f8ae02e1a460334cb37865844993dcbfe7c81dd51e03",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1601,7 +1601,7 @@
       "line": 234,
       "text": "node tools/test-workbench-round-trip.mjs",
       "hash": "62334d0de8a3e20be605f2bedf9122d2d840d57b283c77ce2af39442b83bd73c",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1610,7 +1610,7 @@
       "line": 235,
       "text": "node tools/test-cross-provider-fixture.mjs",
       "hash": "40c3527e28bde76ffa7f1296b69a64314f1d544fd3c02be366574fb40e111acf",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1619,7 +1619,7 @@
       "line": 236,
       "text": "node tools/test-portability-matrix.mjs",
       "hash": "ff551a06c577147758738b7c964311079f83cb448f3159666c1362e92fb160c2",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1628,7 +1628,7 @@
       "line": 237,
       "text": "node tools/test-workbench-dogfood.mjs",
       "hash": "ed681a18fae8d78ea30bdc165aedf08932557041e9691357b6853b055ff30ae8",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1637,7 +1637,7 @@
       "line": 238,
       "text": "node tools/test-evaluate-workbench.mjs",
       "hash": "aae224f4b64b0e6420c3df41c7fac3788fb2c29c5e964d09f1fe160dbb80b5f4",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1646,7 +1646,7 @@
       "line": 239,
       "text": "node tools/test-guardrail-audit.mjs",
       "hash": "dd4da5be6c54f801e8287bff3553ebec5f8b6ae9ab34c3a71ccb5f11119a47b5",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1655,7 +1655,7 @@
       "line": 240,
       "text": "node tools/test-context-tools.mjs",
       "hash": "fcb3acfd9d1677ecfe4831747c81693f315a377e57da4790ce8f91825d4ef0fa",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1664,7 +1664,7 @@
       "line": 241,
       "text": "node tools/test-outcome-trials.mjs",
       "hash": "d85350c0c2f3c70924eee12166954d2ca924200f627f7a051584cdacf7629455",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1673,7 +1673,7 @@
       "line": 242,
       "text": "node tools/test-eval-runner.mjs",
       "hash": "18c77dd68017c3a7db40f98b6e82fa985346e8d24f804cfdd9f305ecc2a663e5",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1682,7 +1682,7 @@
       "line": 243,
       "text": "node tools/test-feedback-automation.mjs",
       "hash": "d21795a9bc4aa32719bf54055ab90f0972671631cc53ed656da47f0b56a00d1a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1691,7 +1691,7 @@
       "line": 244,
       "text": "node tools/test-socket-contract.mjs",
       "hash": "1088694c2c028072f1ed4513c688f5c161e834e141ee1466f630a0692280f6c8",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1700,7 +1700,7 @@
       "line": 245,
       "text": "node tools/test-symlink-invocation.mjs",
       "hash": "4d39fed33df9a6f01198111b2c62d734070c6af00ae5f45b10920e0a8f8fc40f",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1709,7 +1709,7 @@
       "line": 246,
       "text": "node tools/test-control-fidelity.mjs",
       "hash": "1efb3176fe06a49617f582cffec8f3be640ccc926d0ba84897c748a0b51c5f4b",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1718,7 +1718,7 @@
       "line": 247,
       "text": "node tools/test-spec-citation-anchors.mjs",
       "hash": "39783e14c5fa4e6e5c41ec4dd434d1aa87f6824cc1ec7efb1e2cc68e273acd8e",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1727,7 +1727,7 @@
       "line": 248,
       "text": "node tools/test-controls-vocabulary-sweep.mjs",
       "hash": "2fbad5b53a53a86395689adc0c1bcd17ccb68a38acced12805dcfd509c7ec2e4",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1736,7 +1736,7 @@
       "line": 249,
       "text": "node tools/test-spec-report.mjs",
       "hash": "fc258be39b8db75794057a2e44593dd43544ae090b5c0ab1654f65be105499f5",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1745,7 +1745,7 @@
       "line": 250,
       "text": "node tools/test-self-drift.mjs",
       "hash": "9d5773b85c9eb888dd2f2a37c5f9fdbe8d9d8ee2542d13ae27dedc662413f0c3",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1754,7 +1754,7 @@
       "line": 251,
       "text": "node tools/test-feedback-inventory.mjs",
       "hash": "6a0990330efbb4ff9b879276753bd966b2aec025acec378e2485646b9aae9c9a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1763,7 +1763,7 @@
       "line": 252,
       "text": "node tools/test-grilling-ledger.mjs",
       "hash": "418623131e01279be37d2b1a5a88fec24c05b48f041e1fbad3cb568bbcf34a99",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1772,7 +1772,7 @@
       "line": 253,
       "text": "python3 tools/test-check-append-only.py",
       "hash": "4e401bbfd4b4c1b4d6c35a06211607c4cc538275920ecad8785557f273763d26",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1781,7 +1781,7 @@
       "line": 254,
       "text": "python3 evals/tasks/task_b_path_safety/test_grade.py",
       "hash": "a9b66704f80501303aed4415a688ac5590f540b26d5f2a8b6344cc55c644c258",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1790,7 +1790,7 @@
       "line": 255,
       "text": "node tools/evaluate-workbench.mjs --path templates --include-controls",
       "hash": "d9be346158b36ea7c3542c190ee048145df0b5aef03899bd83cee67dfa7f9bbb",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1799,7 +1799,7 @@
       "line": 256,
       "text": "node workbench/tools/spec-workbench.mjs doctor",
       "hash": "fed358ed281350416a6d4c01803351cd893132be019e0652f09662b81ceac54e",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1808,7 +1808,7 @@
       "line": 257,
       "text": "```",
       "hash": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1817,7 +1817,7 @@
       "line": 259,
       "text": "Expected result:",
       "hash": "661adb16f3f16dd16fc4b5243354a343d76f888a75f95a9c325f0d379614057c",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1826,7 +1826,7 @@
       "line": 261,
       "text": "- each test script prints an `ok -` line and exits 0;",
       "hash": "9b229ac825c4ca1911057b1cb5c003a7e7e236c48b657d22db6cbb0c603423fb",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1835,7 +1835,7 @@
       "line": 262,
       "text": "- the evaluator self-test reports the repo-root score (dogfood docs) >= 90;",
       "hash": "d5de07536e8bd7c86b687761970fcc0265e26348d5d4f53e42db2649e4421290",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1844,7 +1844,7 @@
       "line": 263,
       "text": "- the `--path templates` run shows the blank templates beating both control",
       "hash": "f2efeb17b12b6883d3a9a8d182a0415284543d925858c9b84b99b1286a5b62f9",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1853,7 +1853,7 @@
       "line": 264,
       "text": "  candidates.",
       "hash": "5e530720c2f1a5fa051edec3dc88562aa8f07362d6e3d107ce57acae43866ce4",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1862,7 +1862,7 @@
       "line": 265,
       "text": "- spec doctor reports no duplicate IDs, invalid/contradictory states, stale",
       "hash": "c10f1019479e10339fba67ae25cc9588937c70e4d2dd1d36217144f30e6501d7",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -1871,7 +1871,7 @@
       "line": 266,
       "text": "  claims, missing evidence, broken links, or generated-region drift.",
       "hash": "ffbcfbba38349d97503f0310739c8dc6ddbd8c53b9dda916d967db677b7ed350",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -15938,7 +15938,7 @@
       "line": 2103,
       "text": "Treat the self-tests as the specification of the evaluator and trial tooling.",
       "hash": "8e13a38db674916474bb5c1a0e38b3c029a0c9b65c38e45f664162f287381a5d",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -15947,7 +15947,7 @@
       "line": 2104,
       "text": "The suite should be strong enough that if someone accidentally deletes a",
       "hash": "203757ebdd73f85dfe0ebbd91231fd10ca0e7c201482e7198cff70350090a038",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -15956,7 +15956,7 @@
       "line": 2105,
       "text": "meaningful line of `tools/` or `evals/` code, or a rubric-relevant section of",
       "hash": "db3134b7da934e9e5725d09bd772d44479dce52d2d37190a9ed28ee0edcfd183",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -15965,7 +15965,7 @@
       "line": 2106,
       "text": "the control docs, at least one self-test fails. If a meaningful behavior",
       "hash": "3fd42d0f8d828a2c63e131568718d59ac86120ed3b84d9e7922a51736f7813cd",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -15974,7 +15974,7 @@
       "line": 2107,
       "text": "changes, a self-test must change with it. Remove tests that are stale or pure",
       "hash": "c33adb0517f1b7678a9534ea4b1ede0ebfe1e48f9127c14d5dec5d287878efde",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -15983,7 +15983,7 @@
       "line": 2108,
       "text": "bloat. If behavior cannot be tested in the current harness, record the exact",
       "hash": "d486e270cc675deef4c2d9a2b9bbc4fe491d813d4fea3e6ab576541ebe74efe7",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -15992,10 +15992,10 @@
       "line": 2109,
       "text": "reason and use the strongest concrete manual check available.",
       "hash": "d56e9479e27b923c3a518995dc3296b7150cf3ac6c7b373b9f7c5f2a30c06cd4",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "pointer",
+      "homePath": "RUNBOOK.md",
+      "landedText": "reason and use the strongest concrete manual check available. The generic coverage rules follow the",
+      "reason": "TK-005I appended the implement-skill pointer to this line in place; its text is unchanged."
     },
     {
       "line": 2113,
@@ -16019,7 +16019,7 @@
       "line": 2118,
       "text": "The static evaluator answers whether required control surfaces exist. The",
       "hash": "cb1fe586372fb391f8bc24a11265bbf2b487cda8f64558b4451821a6c1280541",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -16028,7 +16028,7 @@
       "line": 2119,
       "text": "guardrail audit asks the harder question: how far has the whole harness drifted",
       "hash": "c4ed4778affb95f1e9c2cdc08ae6a9be3475684c6175fda774c273a0ae49e864",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -16037,7 +16037,7 @@
       "line": 2120,
       "text": "from an evidence-backed ideal?",
       "hash": "6732d1ea0f6eeb6d01edf734110c25aaff849c94f363b4d41eced82e07371d30",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -16046,7 +16046,7 @@
       "line": 2122,
       "text": "```bash",
       "hash": "ad332335cfaa348c5bd715c3479844622270d5f7389ae070b81b135d521a221a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -16055,7 +16055,7 @@
       "line": 2123,
       "text": "node tools/audit-guardrails.mjs --path .",
       "hash": "801b92c8061193acb8520c586bc9d99788dd2933ea18de47a0b832807415f82a",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -16064,7 +16064,7 @@
       "line": 2124,
       "text": "node tools/test-guardrail-audit.mjs",
       "hash": "dd4da5be6c54f801e8287bff3553ebec5f8b6ae9ab34c3a71ccb5f11119a47b5",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -16073,7 +16073,7 @@
       "line": 2125,
       "text": "```",
       "hash": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -16082,7 +16082,7 @@
       "line": 2127,
       "text": "The audit holds a stable 100-point scale across four layers: static contract,",
       "hash": "59db76dc65e492e5c71458458e001f913df7e0e2eef3b7b0cf7e7e8cb392962b",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -16091,7 +16091,7 @@
       "line": 2128,
       "text": "drift resistance, benchmark discipline, and real outcome evidence. Capture the",
       "hash": "54dc9bd21708146491209369c12b606ed72e3f98a50970d80f6382be621ef7ad",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -16100,7 +16100,7 @@
       "line": 2129,
       "text": "guardrail audit baseline before editing any harness rule, then record the",
       "hash": "e9860877021d2cee367388596151400d68cd7714bbeb448580561420084222da",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -16109,7 +16109,7 @@
       "line": 2130,
       "text": "before/after score and remaining recommendations in the owning spec and",
       "hash": "ff7ea71a52da8e3a60ba10e2621d4c71d03226e243c744c8e81e65a7b5bc9ffa",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -16118,7 +16118,7 @@
       "line": 2131,
       "text": "`benchmarks/RESULTS.md`.",
       "hash": "cc4648b95e43f8a2f5983bff8e9d7ef171a05a2a843ec99fdcd934e70319fa8c",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -16127,7 +16127,7 @@
       "line": 2133,
       "text": "100/100 is the deliberately hard north star, not the release gate. Regression",
       "hash": "1ff08ffd55327aa12eaa3fc5912327d4b38b994914b3500b79ecb09ba6aef6ef",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -16136,7 +16136,7 @@
       "line": 2134,
       "text": "tests remain the minimum ship gate. Never weaken or reweight criteria to create",
       "hash": "7dbdaa2d673b090480ee82655187a3464d0bb8cecfa3882558fa8c0c1700f2a0",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -16145,7 +16145,7 @@
       "line": 2135,
       "text": "score movement, and never translate static score movement into an agent-outcome",
       "hash": "8be763c17296da2eaac325c0f0b75e180ffcede09cf9e36d86823206850e5137",
-      "homeKind": null,
+      "homeKind": "stays",
       "homePath": null,
       "landedText": null,
       "reason": null
@@ -16154,10 +16154,10 @@
       "line": 2136,
       "text": "claim without repeated task trials.",
       "hash": "e28e244dd4f0a9487ad556b078cb56e80743fe13c660c84800df5409a4e2baed",
-      "homeKind": null,
-      "homePath": null,
-      "landedText": null,
-      "reason": null
+      "homeKind": "pointer",
+      "homePath": "RUNBOOK.md",
+      "landedText": "claim without repeated task trials. The method this audit measures follows the",
+      "reason": "TK-005I appended the implement-skill pointer to this line in place; its text is unchanged."
     },
     {
       "line": 2140,

@@ -465,8 +465,8 @@ const FAMILIES = [
         section: 'Engineering And Verification',
         keeps: [
           /workbench\/skills\/implement\/SKILL\.md#engineering-and-verification/, /RUNBOOK\.md#test-and-build/, /RUNBOOK\.md#operations-index/,
-          /explicit error handling/, /Never invent APIs/, /red\/green/, /failing test/, /targeted test/, /full verification suite/,
-          /tests are impractical, name the specific reason/, /demo artifact/, /baselines? before/, /[Nn]ever weaken/
+          /explicit error handling/, /Never invent APIs/, /red\/green|smallest green change/, /failing test/, /targeted test/, /full verification suite/,
+          /tests are impractical, name the specific reason/, /demo artifact/, /baselines? before/, /[Nn]ever weaken|not agent-outcome evidence/
         ],
         moved: [/Define expected behavior at a stable testing seam/, /Refactor only while green/, /node tools\/test-/, /\[(TARGETED_TEST|FULL_VERIFICATION|SPEC_DOCTOR)_COMMAND\]/, /```/]
       },
@@ -529,7 +529,7 @@ for (const family of FAMILIES) {
         const body = normalize(section.body);
         for (const pattern of brief.keeps) assert.match(body, pattern, `${carrier.agents} ${brief.section}: the brief keeps ${pattern}`);
         for (const pattern of brief.moved) assert.doesNotMatch(body, pattern, `${carrier.agents} ${brief.section}: ${pattern} moved behind its pointer`);
-        for (const target of links(section.body)) {
+        for (const target of links(section.body).filter((link) => !/^[a-z][a-z0-9+.-]*:/i.test(link))) {
           const resolved = resolvePointer(carrier.agents, target);
           assert.ok(resolved.ok, `${carrier.agents} ${brief.section}: ${target} resolves (${resolved.reason})`);
         }

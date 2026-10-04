@@ -20,10 +20,13 @@ const tool = path.join(root, 'tools', 'control-fidelity.mjs');
 const productTemplates = path.join(root, 'templates');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'README.md'];
-// The upstream finding (fix list UP-008): a room dropped this qualifier from
-// the ADR ownership row shipped by templates/AGENTS.md.
-const adrRow = '| active architectural decisions, rationale, alternatives, supersession | `workbench/docs/adr/` (`canonicalized_in` names operational owners) |';
-const adrRowWithoutQualifier = '| active architectural decisions, rationale, alternatives, supersession | `workbench/docs/adr/` |';
+// The upstream finding (fix list UP-008): a room dropped a qualifier from a
+// line shipped by templates/AGENTS.md (then the ADR ownership row's
+// `canonicalized_in` note). S-004C TK-005I moved that table behind the Lexicon
+// ownership schema pointer, so the fixture drops the same kind of qualifier
+// from a line the template still ships.
+const qualifiedLine = 'Use `Docs checked; no update needed` with a reason when appropriate. The final response proof states what changed, why, risks, and verification. Append spec';
+const qualifiedLineWithoutQualifier = 'Use `Docs checked; no update needed` when appropriate. The final response proof states what changed, why, risks, and verification. Append spec';
 
 function fixture(prefix) {
   return fs.mkdtempSync(path.join(os.tmpdir(), prefix));
@@ -111,7 +114,7 @@ function manifest(version, profile = 'project') {
 function fixtureTemplates() {
   const templates = fixture('control-fidelity-templates-');
   fs.cpSync(productTemplates, templates, { recursive: true });
-  assert.ok(read(templates, 'AGENTS.md').includes(adrRow), 'templates/AGENTS.md must ship the ADR ownership row under test');
+  assert.ok(read(templates, 'AGENTS.md').includes(qualifiedLine), 'templates/AGENTS.md must ship the qualified line under test');
   return templates;
 }
 
@@ -167,25 +170,25 @@ test('a filled room reports filled and unchanged lines only, with every placehol
   assert.equal(report.versionMatch, true);
 });
 
-test('a dropped qualifier is one changed entry naming the ADR ownership row and no dropped entry', () => {
+test('a dropped qualifier is one changed entry naming the line that lost it and no dropped entry', () => {
   const templates = fixtureTemplates();
   const project = fixtureRoom(templates);
   const agents = read(project, 'AGENTS.md');
-  assert.ok(agents.includes(adrRow), 'the filled room must carry the ADR ownership row before it is altered');
-  write(project, 'AGENTS.md', agents.replace(adrRow, adrRowWithoutQualifier));
+  assert.ok(agents.includes(qualifiedLine), 'the filled room must carry the qualified line before it is altered');
+  write(project, 'AGENTS.md', agents.replace(qualifiedLine, qualifiedLineWithoutQualifier));
   const entry = control(reportFidelity({ project, templates, manifestRelease: VERSION, checkoutVersion: VERSION }), 'AGENTS.md');
   assert.equal(entry.counts.dropped, 0);
   assert.equal(entry.counts.added, 0);
   assert.equal(entry.counts.changed, 1);
   const [changed] = kinds(entry, 'changed');
-  assert.equal(changed.template, adrRow);
-  assert.equal(changed.room, adrRowWithoutQualifier);
-  assert.ok(changed.template.includes('canonicalized_in'), 'the changed entry names the line that lost the qualifier');
+  assert.equal(changed.template, qualifiedLine);
+  assert.equal(changed.room, qualifiedLineWithoutQualifier);
+  assert.ok(changed.template.includes('with a reason'), 'the changed entry names the line that lost the qualifier');
   assert.ok(Number.isInteger(changed.templateLine) && Number.isInteger(changed.roomLine));
   const summary = summarizeMarkdown(reportFidelity({ project, templates, manifestRelease: VERSION, checkoutVersion: VERSION }));
   assert.match(summary, /## AGENTS\.md/);
   assert.match(summary, /changed 1/);
-  assert.match(summary, /canonicalized_in/);
+  assert.match(summary, /with a reason/);
 });
 
 test('a placeholder fill is changed when it reverses the fixed wording', () => {
@@ -298,7 +301,7 @@ test('a checkout-versus-manifest mismatch is labeled as a newer or older templat
 test('the CLI reports divergence with exit 0, filters by control, never writes to the room, and fails only on invocation errors', () => {
   const templates = fixtureTemplates();
   const project = fixtureRoom(templates, 'v3.1.0');
-  write(project, 'AGENTS.md', read(project, 'AGENTS.md').replace(adrRow, adrRowWithoutQualifier));
+  write(project, 'AGENTS.md', read(project, 'AGENTS.md').replace(qualifiedLine, qualifiedLineWithoutQualifier));
   const before = snapshot(project);
   const result = spawnSync(process.execPath, [tool, 'report', '--project', project, '--templates', templates], { cwd: root, encoding: 'utf8' });
   assert.equal(result.status, 0, result.stdout + result.stderr);
@@ -318,7 +321,7 @@ test('the CLI reports divergence with exit 0, filters by control, never writes t
   const markdown = spawnSync(process.execPath, [tool, 'report', '--project', project, '--templates', templates, '--format', 'markdown'], { cwd: root, encoding: 'utf8' });
   assert.equal(markdown.status, 0);
   assert.match(markdown.stdout, /^# Control fidelity report/m);
-  assert.match(markdown.stdout, /canonicalized_in/);
+  assert.match(markdown.stdout, /with a reason/);
 
   const unknownControl = spawnSync(process.execPath, [tool, 'report', '--project', project, '--templates', templates, '--control', 'NOPE.md'], { cwd: root, encoding: 'utf8' });
   assert.equal(unknownControl.status, 1);
