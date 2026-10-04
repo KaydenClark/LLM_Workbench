@@ -8,6 +8,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import test from 'node:test';
 import { validateWiki } from '../workbench/tools/wiki.mjs';
+import { validateLandmarkArticle } from '../workbench/tools/landmark-wiki.mjs';
 import { install, verify, RECEIPT_NAME } from './workbench-tools.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -368,4 +369,35 @@ test('managed installation exposes the actual receipt-backed validator CLI and A
   const { validateLandmarkArticle } = await import(pathToFileURL(installed).href);
   assert.deepEqual(validateLandmarkArticle(dir, article, { extraPrefixes: ['CUSTOM'] }), report);
   assert.deepEqual(snapshot(dir), before);
+});
+
+// Wiki Evolving-Synthesis Migration (S-003W) Task TK-004: every landmark record
+// has one routed synthesis page in the design-concepts collection that names
+// its own record and passes the name-and-context identifier rule.
+test('every landmark has one routed synthesis page that passes the identifier rule', () => {
+  const landmarkDir = path.join(root, 'workbench/landmark-tracker/landmarks');
+  const conceptDir = path.join(root, 'workbench/wiki/design-concepts');
+  const ids = fs.readdirSync(landmarkDir).filter(name => /^LMK-[0-9A-Z]+\.json$/.test(name)).map(name => name.replace(/\.json$/, ''));
+  assert.ok(ids.length >= 24, `expected the 24 landmark records, found ${ids.length}`);
+  // A synthesis page is a `landmark-*.md` whose first heading is `# Landmark: <Title>`; the
+  // Landmark Tracker concept article keeps its own shape and is not one.
+  const pages = fs.readdirSync(conceptDir).filter(name => /^landmark-.+\.md$/.test(name) && /^# Landmark: /m.test(fs.readFileSync(path.join(conceptDir, name), 'utf8')));
+  const router = fs.readFileSync(path.join(root, 'workbench/wiki/MEMORY.md'), 'utf8');
+  const section = router.split(/^## Landmark Synthesis Pages\s*$/m)[1]?.split(/^## /m)[0] ?? '';
+  assert.ok(section, 'the router needs a "## Landmark Synthesis Pages" section');
+  const missing = [];
+  for (const id of ids) {
+    const record = JSON.parse(fs.readFileSync(path.join(landmarkDir, `${id}.json`), 'utf8'));
+    const owners = pages.filter(name => fs.readFileSync(path.join(conceptDir, name), 'utf8').includes(`landmarks/${id}.json`));
+    if (owners.length !== 1) { missing.push(`${id} "${record.title}": ${owners.length} synthesis pages`); continue; }
+    const relative = `workbench/wiki/design-concepts/${owners[0]}`;
+    const text = fs.readFileSync(path.join(root, relative), 'utf8');
+    assert.match(text, /^type: design-concept$/m, `${relative} must be a design-concept`);
+    assert.match(text, /^authorized_by: .*Wiki Evolving-Synthesis Migration/m, `${relative} must name its authorizing operation`);
+    const line = section.split('\n').find(row => row.includes(`design-concepts/${owners[0]})`));
+    if (!line || !/\) - \S/.test(line)) missing.push(`${id} "${record.title}": ${owners[0]} is not routed with a summary line in the Landmark Synthesis Pages section`);
+    const result = validateLandmarkArticle(root, relative);
+    assert.deepEqual(result.findings, [], `${relative} must carry every identifier with its name and context`);
+  }
+  assert.deepEqual(missing, []);
 });
