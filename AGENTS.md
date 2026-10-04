@@ -198,6 +198,8 @@ session:
 - Claim before editing: `claim S-### --agent NAME` takes a Spec ID and selects
   one eligible Task. Follow the assigned stance and single writer lane: one
   writer holds shared Spec, Task and projection state.
+- Implement that tracer-bullet Task using red/green TDD, actual behavior checks
+  and owned documentation. Preserve proof and unresolved gaps as work proceeds.
 - `TASK.md` carries active state and proof for one Task; its Spec carries the
   capability's requirements, acceptance, evidence and next gate. `TASKBOARD.md`
   projects those sources; editing the board cannot change an assignment or
