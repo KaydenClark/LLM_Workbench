@@ -49,13 +49,28 @@ occurrence passes when any one of these holds:
    name: at least two words, at least two of them not in the closed list of
    function and artifact-kind words (a, the, of, and, see, Spec, Task, ADR, note,
    card and similar). `[Landmark Records Spec](../landmarks/LMK-000A.json)` passes;
-   `[records](...)` does not.
+   `[records](...)` does not. The same text test applies when the identifier
+   sits inside the link text itself, with every identifier on the line masked
+   out: `[Workbench v4.0.0 Release (S-00O)](...)` and
+   `[ADR-000S, Destination Decision Records are decision records](...)` pass
+   because the text still holds a name phrase beside the identifier (a version
+   token such as `v4.0.0` is not a word and does not break the phrase), while
+   `[S-00O, S-00P](...)`, `[see S-00O](...)` and `[S-00H (retired)](...)` do not.
+   An identifier-only link text passes only through rule 2 below applied to its
+   target.
 2. **A path slug names it.** The identifier is followed directly by a hyphenated
    slug of two or more lowercase words, as in
    `workbench/specs/S-002A-landmark-records/SPEC.md`. Later segments may start
    with a digit, as in `S-045-v3-1-2-follow-ups`, but at least two segments must
    start with a letter; one word, as in `ADR-0041-history`, or a version
-   fragment, as in `ADR-0041-v3-1`, does not name it.
+   fragment, as in `ADR-0041-v3-1`, does not name it. When the identifier is
+   the link text (`[S-01R](../specs/S-01R-reviewer-skill-rebuild/SPEC.md)`), the
+   slug is read from the link target: a path segment that starts with the
+   identifier, or with its suffix as an ADR file name does
+   (`[ADR-000P](../docs/adr/000P-roles-scope-work-and-stances-define-the-job.md)`),
+   followed by the same two-letter-leading-word slug. The suffix must start the
+   path segment and match exactly, so `x000P-roles-...` or another identifier's
+   file name does not name it.
 3. **A name phrase is adjacent.** Only whitespace and wrapper or separator
    characters (parentheses, brackets, backticks, emphasis marks, quotes, a colon
    or a spaced dash) separate the identifier from a name phrase before or after
@@ -98,14 +113,39 @@ No record or ignored-note inventory is read.
 This is syntactic detection, not an allocated-record lookup. A word spelled
 exactly like a known identity (for example `S-curve`) is treated as that
 identity and reported until a name sits beside it. Unknown/custom type prefixes
-cannot pass by omission: even ordinary prose such as `HTTP-API` matches generic
-grammar and returns incomplete until a name sits beside it or its namespace is
-designated.
+cannot pass by omission: a candidate such as `CUSTOM-000A` or `XS-001` returns
+incomplete until a name sits beside it or its namespace is designated.
+
+### Tokens that are not identifiers
+
+Two escapes keep placeholders and ordinary words from being reported. Both apply
+only to an undesignated type: a token whose prefix is one of the six defaults, a
+`WB` connection identity, or a namespace named with `--prefix` or
+`extraPrefixes` is always checked, so designating a namespace restores
+detection for it.
+
+1. **Closed token list.** These exact tokens are never identifiers:
+   `YYYY-MM`, `MM-DD` and `HH-MM` (date and time placeholders; `YYYY-MM-DD`
+   is covered through `YYYY-MM`), the hash names `SHA-1`, `SHA-224`, `SHA-256`,
+   `SHA-384` and `SHA-512`, and the encodings `UTF-8`, `UTF-16`, `UTF-32` and
+   `ISO-8601`. A near spelling such as `SHA-2560` is not on the list.
+2. **Word-shaped suffix.** An undesignated token whose suffix has no digit
+   (`PRD-shaped`, `CSV-export`, `PDF-statement`, `TASK-ID`, `GLOSSARY-MAP`,
+   `HTTP-API`) is an ordinary hyphenated word. Allocated labels are decimal or
+   zero-padded, so a real one carries a digit; a custom namespace is designated
+   with `--prefix`, which restores reporting for any suffix.
+
+Historical grilling-question labels (`ROLE-1`, `E-4B`, `TT-Q10`, `FND-Q04`,
+`PW-8`, `OD-1` and the like) are not escaped. They carry a digit and are the
+identifiers of grilling-ledger questions, so a bare one is reported as
+`landmark-ambiguous` until the question's name sits beside it, as in
+`Board lane decision (E-4B)`. This keeps the escape closed and the labels
+traceable.
+
 Ordinary hyphenated words such as `source-path` pass. One layer of `%HH` byte
 encoding is decoded across the content, including URLs and link targets;
 locations still refer to the original article bytes. Recursive encoding,
-HTML entities, split spellings and historical interview labels outside this
-grammar are not semantically reconstructed. This is explicit byte/grammar
+HTML entities and split spellings are not semantically reconstructed. This is explicit byte/grammar
 validation, not a claim of arbitrary obfuscation detection.
 
 Structured Landmark/DQC/delivery records still hold the full identity

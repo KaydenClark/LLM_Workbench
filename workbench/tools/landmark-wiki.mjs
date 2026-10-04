@@ -14,6 +14,15 @@ import { isWorkbenchId, visibleIdParts } from './visible-ids.mjs';
 // namespace. They must never silently pass as identifier-free content.
 const ARTIFACT_PREFIXES = new Set(['S', 'TK', 'ADR', 'N', 'LMK', 'DQC']);
 
+// Tokens that merely fit the identity grammar are not identifiers. A closed
+// list covers date placeholders, hash names and standard encodings; any other
+// undesignated token whose suffix has no digit is an ordinary hyphenated word
+// (`PRD-shaped`, `TASK-ID`). Both escapes apply only to an undesignated type:
+// the six default prefixes, `WB` identities and `--prefix` namespaces keep
+// every spelling reportable, so designating a namespace restores detection.
+const NON_IDENTIFIER_TOKENS = new Set(['YYYY-MM', 'MM-DD', 'HH-MM', 'SHA-1', 'SHA-224', 'SHA-256', 'SHA-384', 'SHA-512', 'UTF-8', 'UTF-16', 'UTF-32', 'ISO-8601']);
+const isNonIdentifier = id => NON_IDENTIFIER_TOKENS.has(id) || !/[0-9]/.test(visibleIdParts(id)?.suffix ?? '');
+
 export class LandmarkWikiRefusal extends Error {
   constructor(code, message) {
     super(message);
@@ -62,19 +71,40 @@ function linkTextIsName(text) {
   return words.length >= 2;
 }
 
-// Decide whether the identifier at `column` of one masked line has the
-// artifact's name beside it: inside a link whose text names it, followed by a
-// path slug of two or more words, or adjacent to a name phrase.
-function hasNameAndContext(masked, column, length) {
+// A link target names the artifact when a path segment starts with the
+// identifier, or with its suffix as an ADR file name does (`000P-...md`), and
+// a slug of two or more letter-leading words follows.
+const escapeRegExp = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+function targetNamesIdentifier(target, id) {
+  const suffix = id.slice(id.indexOf('-') + 1);
+  for (const hit of target.matchAll(new RegExp(`(?:^|/)(?:${escapeRegExp(id)}|${escapeRegExp(suffix)})(?=-)`, 'g'))) {
+    if (slugNamesArtifact(target.slice(hit.index + hit[0].length))) return true;
+  }
+  return false;
+}
+
+// Decide whether the identifier `id` at `column` of one masked line has the
+// artifact's name beside it: inside a link whose text names it (the target
+// slug may name an identifier-only text), followed by a path slug of two or
+// more words, or adjacent to a name phrase. `raw` is the unmasked line.
+function hasNameAndContext(masked, column, id, raw) {
+  const length = id.length;
   const before = masked.slice(0, column);
   const after = masked.slice(column + length);
   if (slugNamesArtifact(after)) return true;
+  const plain = value => value.replace(/[*_`#]/g, ' ');
   for (const link of masked.matchAll(/\[([^\]]*)\]\(([^)]*)\)/g)) {
-    const targetStart = link.index + link[1].length + 3;
-    if (column >= targetStart && column < targetStart + link[2].length) return linkTextIsName(link[1].replace(/[*_`#]/g, ' '));
+    const textStart = link.index + 1;
+    const targetStart = textStart + link[1].length + 2;
+    if (column >= targetStart && column < targetStart + link[2].length) return linkTextIsName(plain(link[1]));
+    if (column >= textStart && column < textStart + link[1].length && (linkTextIsName(plain(link[1])) || targetNamesIdentifier(raw.slice(targetStart, targetStart + link[2].length), id))) return true;
   }
-  const reference = /^\s*\[([^\]]+)\]:\s*\S+/.exec(masked);
-  if (reference && column > reference[0].length - reference[0].trimStart().length + reference[1].length + 2) return linkTextIsName(reference[1].replace(/[*_`#]/g, ' '));
+  const reference = /^\s*\[([^\]]+)\]:\s*(\S+)/.exec(masked);
+  if (reference) {
+    const textStart = masked.indexOf('[') + 1;
+    if (column > textStart + reference[1].length) return linkTextIsName(plain(reference[1]));
+    if (column >= textStart && (linkTextIsName(plain(reference[1])) || targetNamesIdentifier(/^\s*\[[^\]]+\]:\s*(\S+)/.exec(raw)[1], id))) return true;
+  }
   const beforeMatch = BEFORE_PHRASE.exec(before);
   if (beforeMatch && phraseIsName(beforeMatch[1].split(/[ \t]+/), /\S/.test(beforeMatch[2]), true)) return true;
   const afterMatch = AFTER_PHRASE.exec(after);
@@ -142,8 +172,9 @@ export function validateLandmarkArticle(root, article, options = {}) {
     const text = decoded.slice(lineStart, lineEndAt === -1 ? decoded.length : lineEndAt);
     // Other identifiers on the line never count as the name of this one.
     const masked = text.replace(ID_PATTERN, hit => '#'.repeat(hit.length));
-    if (hasNameAndContext(masked, match.index - lineStart, id.length)) continue;
     const known = prefixes.has(visibleIdParts(id)?.prefix) || isWorkbenchId(id);
+    if (!known && isNonIdentifier(id)) continue;
+    if (hasNameAndContext(masked, match.index - lineStart, id, text)) continue;
     const before = content.slice(0, positions[match.index]);
     const line = before.split('\n').length;
     const column = Array.from(before.slice(before.lastIndexOf('\n') + 1)).length + 1;

@@ -143,11 +143,92 @@ test('name-and-context: an ambiguous undesignated token passes only with its nam
   assert.match(result.report.findings[0].message, /name and context/);
 });
 
+// Non-identifier escape (S-003W TK-006Q): placeholders, algorithm names and
+// word-shaped tokens merely fit the identity grammar; real identifiers do not
+// get an escape.
+const NOT_IDENTIFIERS = ['YYYY-MM', 'YYYY-MM-DD', 'MM-DD', 'HH-MM', 'SHA-1', 'SHA-256', 'SHA-512', 'UTF-8', 'ISO-8601',
+  'PRD-shaped', 'CSV-export', 'PDF-statement', 'TASK-ID', 'GLOSSARY-MAP', 'CONTEXT-MAP', 'SCR-reconciled', 'HTTP-API'];
+for (const token of NOT_IDENTIFIERS) {
+  test(`non-identifier escape: ${token} is not reported`, t => {
+    const dir = room(t);
+    fs.writeFileSync(path.join(dir, article), `${readable}\nUse ${token}.\n`);
+    const before = snapshot(dir);
+    const result = cli(dir, 'validate', article, '--json');
+    assert.equal(result.status, 0, JSON.stringify(result.report));
+    assert.deepEqual(result.report, { status: 'valid', article, findings: [] });
+    assert.deepEqual(snapshot(dir), before);
+  });
+}
+
+test('non-identifier escape never hides a real or ID-looking identifier', t => {
+  const dir = room(t);
+  const expected = [
+    ['S-002A', 'landmark-bare-id'], ['TK-003', 'landmark-bare-id'], ['ADR-000P', 'landmark-bare-id'], ['DQC-004L', 'landmark-bare-id'],
+    ['LMK-000A', 'landmark-bare-id'], ['N-000A', 'landmark-bare-id'], ['WB-0123456789ABCDEFGHIJKL', 'landmark-bare-id'],
+    ['S-curve', 'landmark-bare-id'], ['ADR-FORMAT', 'landmark-bare-id'],
+    ['XS-001', 'landmark-ambiguous'], ['CUSTOM-000A', 'landmark-ambiguous'], ['E-4B', 'landmark-ambiguous'], ['ROLE-1', 'landmark-ambiguous'],
+    ['TT-Q10', 'landmark-ambiguous'], ['SHA-2560', 'landmark-ambiguous'], ['SHA-3', 'landmark-ambiguous'], ['MM-DD1', 'landmark-ambiguous']
+  ];
+  fs.writeFileSync(path.join(dir, article), `${readable}\n${expected.map(([id]) => `Next ${id}\n`).join('')}`);
+  const report = cli(dir, 'validate', article, '--json').report;
+  assert.deepEqual(report.findings.map(hit => [hit.id, hit.code]), expected);
+});
+
+test('non-identifier escape yields to an explicit designation', t => {
+  const dir = room(t);
+  fs.writeFileSync(path.join(dir, article), `${readable}\nUse HTTP-API and SHA-256.\n`);
+  assert.equal(cli(dir, 'validate', article, '--json').status, 0);
+  const designated = cli(dir, 'validate', article, '--prefix', 'HTTP', '--prefix', 'SHA', '--json');
+  assert.equal(designated.status, 1);
+  assert.deepEqual(designated.report.findings.map(hit => [hit.id, hit.code]), [['HTTP-API', 'landmark-bare-id'], ['SHA-256', 'landmark-bare-id']]);
+});
+
+// Link-text classes (S-003W TK-006Q): an identifier inside link text passes when
+// the text names the artifact beside it, or when the link target's slug does.
+const LINK_NAMED = [
+  ['name with a version token around the identifier', '- [Workbench v4.0.0 Release (S-00O)](../specs/S-00O/SPEC.md) - the release'],
+  ['identifier, comma, title', '- [ADR-000S, Destination Decision Records are decision records](../docs/adr/000S/ADR.md):'],
+  ['identifier-only text with the identifier and a naming slug in its target', '[S-01R](../specs/S-01R-reviewer-skill-rebuild/SPEC.md#delivery)'],
+  ['identifier-only text with the suffix and a naming slug in its target', '[ADR-000P](../docs/adr/000P-roles-scope-work-and-stances-define-the-job.md)'],
+  ['code-wrapped identifier text with a naming slug', '[`S-00H`](../../specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md)']
+];
+for (const [label, text] of LINK_NAMED) {
+  test(`link-text rule: ${label} passes`, t => {
+    const dir = room(t);
+    fs.writeFileSync(path.join(dir, article), `${readable}\n${text}\n`);
+    const result = cli(dir, 'validate', article, '--json');
+    assert.equal(result.status, 0, JSON.stringify(result.report));
+    assert.deepEqual(result.report, { status: 'valid', article, findings: [] });
+  });
+}
+
+const LINK_BARE = [
+  ['identifier plus one word of text and an unnamed target', '[S-00H (retired)](../specs/retired/other/SPEC.md)'],
+  ['kind word and identifier', '[see S-00O](../specs/SPEC.md)'],
+  ['two identifiers as link text', '[S-00O, S-00P](../specs/SPEC.md)'],
+  ['one-word slug in the target', '[ADR-000P](../docs/adr/000P-history.md)'],
+  ['a different identifier names the target', '[ADR-000P](../docs/adr/0041-roles-scope-work-and-stances.md)'],
+  ['naming slug beside the suffix only inside a longer word', '[ADR-000P](../docs/adr/x000P-roles-scope-work-and-stances.md)']
+];
+for (const [label, text] of LINK_BARE) {
+  test(`link-text rule: ${label} is still reported`, t => {
+    const dir = room(t);
+    fs.writeFileSync(path.join(dir, article), `${readable}\n${text}\n`);
+    const result = cli(dir, 'validate', article, '--json');
+    assert.equal(result.status, 1, text);
+    assert.ok(result.report.findings.length >= 1);
+    assert.ok(result.report.findings.every(hit => hit.code === 'landmark-bare-id'));
+  });
+}
+
 test('the usage note states the name-and-context rule and its finding code', () => {
   const note = fs.readFileSync(path.join(root, 'workbench/landmark-tracker/LANDMARK-WIKI.md'), 'utf8');
   assert.match(note, /name-and-context/i);
   assert.match(note, /landmark-bare-id/);
   assert.match(note, /replaced that ban/);
+  assert.match(note, /Tokens that are not identifiers/);
+  for (const token of NOT_IDENTIFIERS.filter(token => /^(YYYY-MM|MM-DD|SHA-256|UTF-8)$/.test(token))) assert.ok(note.includes(`\`${token}\``), `${token} documented`);
+  assert.match(note, /identifier-only link text passes only through rule 2/i);
 });
 
 test('human-readable CLI output identifies refusals and absolute in-root paths work', t => {
@@ -199,8 +280,8 @@ test('explicit custom namespaces cover metadata and links without inventory read
     assert.throws(() => validateLandmarkArticle(dir, article, { extraPrefixes: [prefix] }), error => error.code === 'invalid-invocation');
   }
   for (const extraPrefixes of [null, 'CUSTOM', [42]]) assert.throws(() => validateLandmarkArticle(dir, article, { extraPrefixes }), error => error.code === 'invalid-invocation');
-  fs.writeFileSync(path.join(dir, article), `${readable}S-curve and HTTP-API.\n`);
-  assert.deepEqual(cli(dir, 'validate', article, '--json').report.findings.map(hit => [hit.id, hit.code]), [['S-curve', 'landmark-bare-id'], ['HTTP-API', 'landmark-ambiguous']]);
+  fs.writeFileSync(path.join(dir, article), `${readable}S-curve and XS-001.\n`);
+  assert.deepEqual(cli(dir, 'validate', article, '--json').report.findings.map(hit => [hit.id, hit.code]), [['S-curve', 'landmark-bare-id'], ['XS-001', 'landmark-ambiguous']]);
   fs.writeFileSync(path.join(dir, article), Buffer.from(before[article], 'base64'));
   assert.deepEqual(snapshot(dir), before);
 });
@@ -252,7 +333,7 @@ test('all legacy/current type identities and widened suffixes are found, ordinar
 
 test('default generic namespace candidates refuse as incomplete rather than silently pass', t => {
   const dir = room(t);
-  for (const id of ['XS-001', 'CUSTOM-000A', 'HTTP-API', 'UTF-8']) {
+  for (const id of ['XS-001', 'CUSTOM-000A', 'E-4B', 'TT-Q10']) {
     fs.writeFileSync(path.join(dir, article), `${readable}${id}\n`);
     const before = snapshot(dir);
     const result = cli(dir, 'validate', article, '--json');
