@@ -94,6 +94,7 @@ last_verified: YYYY-MM-DD
 | `skill` | The skill's name; it must equal the file name without `.md`. |
 | `skill_source` | `core` (`workbench/skills`), `pending` (`skills-pending`), `personal` (only in the owner's install) or `new` (no source yet). |
 | `origin` | `workbench`, `matt` or `foundry`; `foundry` marks a skill to revisit later. |
+| `source_paths` | Repository-relative paths only. A `personal` skill has no repo path: name its install location (for example `~/.agents/skills/<name>/SKILL.md`, read-only) in a `provenance` line instead. |
 | `supersedes` | The existing `skill-*.md` article this draft would replace on promotion, or `none`. It stays active and routed until the owner promotes the draft. |
 
 ## Finding lines
