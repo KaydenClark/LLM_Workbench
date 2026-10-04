@@ -106,6 +106,11 @@ copying task state here.
 For the owner's current package review, the [Consequential Decision Record
 (shared Grill Board)](../grill-board/README.md) bundles questions, named owners,
 proposals, consequences and original question history by destination scope.
+Its header also opens full current AGENTS, RUNBOOK, BLUEPRINT, LEXICON, Landmark,
+ADR and DDR reading pages, with linked review drafts distinguished from current
+content and proposed excerpts. Navigation preserves the question answer drafts;
+Specs and Tasks are excluded from these reading pages. The board README owns
+the reader's procedure, source/revision labels and local serving limits.
 Its saved answers and revision protocol are shared by Claude and Codex. Read
 the existing package before revising it; its working review context does not
 replace this ledger or the underlying decision and delivery owners.

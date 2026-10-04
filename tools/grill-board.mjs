@@ -22,6 +22,9 @@ import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
+import { listAdrs } from '../workbench/tools/adr.mjs';
 
 export const ITEMS_SCHEMA = 'grill-board/items@1';
 export const ANSWERS_SCHEMA = 'grill-board/answers@1';
@@ -407,9 +410,65 @@ function safeRelative(root, requested) {
 
 export function readSourceFile(root, requested) {
   const file = safeRelative(root, requested);
+  const relative = path.relative(root, file).split(path.sep).join('/');
+  if (relative.split('/').some(part => part.startsWith('.')) || /(?:^|\/)answers\.json$|(?:^|\/)sessions\/(?:notepads|handoffs)\//.test(relative)) throw new BoardError('unsafe-path', 'Private working files are not served');
   if (!fs.existsSync(file) || !fs.statSync(file).isFile()) throw new BoardError('missing-file', `${requested} is not a file`);
+  const stat = fs.lstatSync(file);
+  if (stat.isSymbolicLink() || stat.nlink > 1) throw new BoardError('unsafe-path', 'Source must be an ordinary singly linked file');
+  const realFile = fs.realpathSync(file);
+  safeRelative(fs.realpathSync(root), realFile);
+  const realRelative = path.relative(fs.realpathSync(root), realFile).split(path.sep).join('/');
+  if (realRelative.split('/').some(part => part.startsWith('.')) || /(?:^|\/)answers\.json$|(?:^|\/)sessions\/(?:notepads|handoffs)\//.test(realRelative)) throw new BoardError('unsafe-path', 'Private working files are not served');
   if (fs.statSync(file).size > MAX_FILE_BYTES) throw new BoardError('too-large', `${requested} exceeds ${MAX_FILE_BYTES} bytes`);
   return fs.readFileSync(file, 'utf8');
+}
+
+export function artifactCatalog(root) {
+  const manifest = readJson(path.join(root, 'workbench/manifest.json'));
+  const groups = ['agents', 'runbook', 'blueprint', 'lexicon', 'landmarks', 'adrs', 'ddrs'].map((id, index) => ({ id, title: ['AGENTS', 'RUNBOOK', 'BLUEPRINT', 'LEXICON', 'Landmarks', 'ADRs', 'DDRs'][index] }));
+  const artifacts = groups.slice(0, 4).map(group => ({ group: group.id, path: `${group.title}.md`, title: group.title, status: 'current', format: 'markdown' }));
+  for (const kind of ['adr', 'ddr']) {
+    if (!manifest.collections?.[kind]) continue;
+    for (const record of listAdrs(root, { kind })) artifacts.push({ group: `${kind}s`, path: record.relativePath, title: record.title || record.id, id: record.id, status: record.status || 'unknown', format: 'markdown' });
+    for (const name of ['REGISTER.md', 'HISTORY.md']) {
+      const relative = `${manifest.collections[kind]}/${name}`;
+      if (fs.existsSync(safeRelative(root, relative))) artifacts.push({ group: `${kind}s`, path: relative, title: name === 'REGISTER.md' ? 'Active accepted decisions register' : 'Complete decision history', status: 'navigation projection', format: 'markdown' });
+    }
+  }
+  const landmarks = manifest.landmarkTracker?.collections?.landmarks;
+  if (landmarks) {
+    const dir = safeRelative(root, landmarks);
+    if (fs.existsSync(dir)) {
+      safeRelative(fs.realpathSync(root), fs.realpathSync(dir));
+      for (const name of fs.readdirSync(dir).filter(name => /^LMK-[0-9A-Za-z]+\.json$/.test(name))) {
+        const relative = `${landmarks}/${name}`;
+        const record = JSON.parse(readSourceFile(root, relative));
+        artifacts.push({ group: 'landmarks', path: relative, title: record.title || record.id, id: record.id, status: `current JSON record · revision ${record.revision}`, format: 'json' });
+      }
+    }
+  }
+  return { groups, artifacts };
+}
+
+export function readArtifact(root, requested) {
+  safeRelative(root, requested);
+  const catalog = artifactCatalog(root);
+  const artifact = catalog.artifacts.find(candidate => candidate.path === requested);
+  if (!artifact) throw new BoardError('missing-file', 'This path is not a reader artifact');
+  const text = readSourceFile(root, requested);
+  const board = readItems(root);
+  let tree = null;
+  try { tree = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim(); } catch {}
+  const related = board.items.filter(item => item.sources.some(source => source.path === requested)).map(item => ({
+    id: item.id, title: item.title, question: item.question, revision: item.revision, status: item.status,
+    proposal: item.proposal, draft: item.draft, sources: item.sources.filter(source => source.path === requested),
+    // Only a review of this exact complete text is labeled full-text. Other
+    // drafts can be fragments or unrelated acceptance text; never infer a replacement.
+    draftKind: !item.draft ? 'none' : ['confirm-text', 'confirm-ddr'].includes(item.kind) && item.sources[0]?.path === requested ? 'full-text' : 'excerpt',
+    snapshotAt: board.generatedAt,
+    itemUpdatedAt: item.history.at(-1)?.at || board.generatedAt
+  }));
+  return { ...artifact, text, revision: createHash('sha256').update(text).digest('hex'), tree, readAt: new Date().toISOString(), related };
 }
 
 function sendJson(response, status, body) {
@@ -455,8 +514,19 @@ export function createServer(root) {
         sendJson(response, 200, statusSummary(root));
         return;
       }
+      if (request.method === 'GET' && url.pathname === '/api/artifacts') {
+        sendJson(response, 200, artifactCatalog(root));
+        return;
+      }
+      if (request.method === 'GET' && url.pathname === '/api/artifact') {
+        sendJson(response, 200, readArtifact(root, url.searchParams.get('path')));
+        return;
+      }
       if (request.method === 'GET' && url.pathname === '/api/file') {
         const requested = url.searchParams.get('path');
+        safeRelative(root, requested);
+        const known = readItems(root).items.some(item => item.sources.some(source => source.path === requested && !path.isAbsolute(source.path))) || artifactCatalog(root).artifacts.some(artifact => artifact.path === requested);
+        if (!known) throw new BoardError('unsafe-path', 'Only named board sources and reader artifacts are served');
         sendJson(response, 200, { path: requested, text: readSourceFile(root, requested) });
         return;
       }

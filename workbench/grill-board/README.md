@@ -105,6 +105,51 @@ the left filters to see only what is left, and the search box to find a topic.
 links open the file as it is in your checkout, or on GitHub at the commit the
 item was built from (↗).
 
+### Read the consequential artifacts
+
+The persistent **Read** dropdown switches between **Questions**, **AGENTS**,
+**RUNBOOK**, **BLUEPRINT**, **LEXICON**, **Landmarks**, **ADRs** and **DDRs**.
+Root files open directly. The collections list records by title, with identity
+and lifecycle secondary; accepted active decisions appear first, and proposed,
+superseded and deprecated records remain readable. Register and history pages
+are labeled navigation projections. Collection paths come from the manifest.
+Specs and Tasks retain their existing question groups but have no reader pages.
+
+Each reading page contains the complete **Current artifact**, plus linked board
+drafts and proposed changes with their item identity, revision, source revision
+and capture/update dates. A complete text review is labeled **full text**;
+fragments are **excerpt only**. When a complete replacement draft is absent,
+the page says so and still shows the proposed change and its question. A dated
+review snapshot is distinct from today's checkout; showing either accepts
+nothing. The Landmark pages render every meaningful JSON field, origin and
+history, with the full source available; they do not simulate LANDMARK.md.
+
+Reader URLs use a hash, for example
+<http://127.0.0.1:4646/#artifact=BLUEPRINT.md>. The browser's back/forward buttons,
+dropdown and **Return to questions** preserve the question DOM, saved notes,
+queued saves and unsaved drafts. A question's artifact links open its reading
+page, and each proposal links back to its own question. Relative links between
+the seven groups resolve inside the reader, including section anchors. Other
+artifact types appear as labeled unavailable links rather than new browsing
+surfaces. Markdown headings, tables, lists, code and links render as inert text;
+embedded HTML and scripts do not execute.
+
+Current text is identified by a content SHA-256 and checkout commit. A change
+seen on revisit or during the 15-second poll displays a revision notice; the
+open text stays stable until **Read latest source** is clicked. A missing source
+displays an error. No reader operation edits artifacts, items or owner answers.
+The server retains its localhost binding and restricts file reads to named
+board sources and reader artifacts, rejecting private working files, symlinks,
+hardlinks and paths escaping the room.
+
+One-command demo: start `node tools/grill-board.mjs serve`, open the Blueprint
+reader URL above, compare **Current artifact** with **Drafts and proposed
+changes**, and return to Questions. `node tools/test-grill-board.mjs` checks the
+API, manifest routing, complete content, revision changes, draft classification,
+read errors, source safety and inert Markdown. Browser save tests use disposable
+boards, never the owner's live answer file. This is a local working-surface
+addition; it changes no generic template or managed room runtime.
+
 When you have answered a batch, tell any Claude or Codex session:
 
 > The Grill Board is updated. Read `workbench/grill-board/README.md`, run
