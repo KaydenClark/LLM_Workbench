@@ -321,7 +321,7 @@ Choose the artifact type prefix explicitly (for example N for objective notes);
 it is the prefix in the visible ID, not another identity field. Markdown
 handoffs do not use the JSON-notepad ID allocator.
 Allocation follows the shared artifact policy in the Runbook's
-[Visible Identifiers](../workbench-runtime/SKILL.md#visible-identifiers):
+[Visible Identifiers](../../../RUNBOOK.md#visible-identifiers):
 uppercase `0-9A-Z`, minimum width four, at least one letter (`N-000A`), growing
 without truncation. It chooses the first unoccupied label; identifiers do not
 encode chronology. Legacy numeric, width-three and mixed-case labels (`N-001`,
@@ -343,7 +343,7 @@ remains available for legacy named context. Allocation assumes one writer and
 checks current records; it supplies neither a distributed lock nor an eternal
 registry of deleted local notes. Active handoff retention still prevents source
 cleanup. Durable spec/task/ADR behavior is described in the Runbook's
-[Visible Identifiers](../workbench-runtime/SKILL.md#visible-identifiers).
+[Visible Identifiers](../../../RUNBOOK.md#visible-identifiers).
 
 New notepads are JSON. `workbench/tools/notepads.mjs` owns structural checks
 and updates. A new layout declares `sessions/notepads/`: bare names create
