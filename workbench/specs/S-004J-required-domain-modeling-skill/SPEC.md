@@ -128,7 +128,7 @@ Each decision below has an owner answer; none is open.
 
 - **Required room skill.** The owner, 2026-09-29 (quoted above); needed
   behaviors ship in every room (DDR-000J); and the owner's locked portable-workbench
-  answer PW-4 in the [grilling destination ledger](../../wiki/grilling-destination-audit-ledger.json):
+  answer PW-4 in the [grilling destination ledger](../../sessions/grilling-destination-audit-ledger.json):
   "If we need it, it should be included in workbench/skills."
 - **Its job is upstream consequence-tracing.** The owner's 2026-09-29 words above.
 - **Closer to Matt, adapted to this room.** The owner's 2026-09-29 words above;
