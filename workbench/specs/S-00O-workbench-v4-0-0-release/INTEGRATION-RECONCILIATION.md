@@ -38,7 +38,7 @@ from proposals, implementation gaps, candidate results and owner gates.
 
 | Source decision family | Durable owner and disposition |
 |---|---|
-| Foundation FND/RB and Task vocabulary TT | [Destination ledger](../../wiki/grilling-destination-audit-ledger.json), Lexicon, proposed ADR-000B/C/D, [Ownership Map — S-00G](../S-00G-ownership-map-root-control/SPEC.md), lifecycle/QA S-00I/J and workflow S-00P. FND-Q24B remains unanswered; no schema invented or ADR acceptance inferred. |
+| Foundation FND/RB and Task vocabulary TT | [Destination ledger](../../sessions/grilling-destination-audit-ledger.json), Lexicon, proposed ADR-000B/C/D, [Ownership Map — S-00G](../S-00G-ownership-map-root-control/SPEC.md), lifecycle/QA S-00I/J and workflow S-00P. FND-Q24B remains unanswered; no schema invented or ADR acceptance inferred. |
 | WF workflow and SCR review boundary | Blueprint's source-faithful map and labeled interpretation, ADR-000F, S-00J and S-00P. SCR-4A is explicitly superseded by ROLE-3; other review and Human QA answers remain. Old e318f14 promotion is not a candidate to merge. |
 | E board, WBID and direct Tasks | S-00O capability map, [WBID — S-01W](../S-01W-uppercase-width-four-workbench-artifact-ids/SPEC.md), [JSON Taskboard — S-01X](../S-01X-generated-json-taskboard/SPEC.md), and [direct-Task proposal](direct-blueprint-task-proposal.md). Earlier S-01U/V branch identities are superseded allocation attempts, not new capability owners. |
 | PW portable room and continuation | [Portable Workbench — S-00V](../S-00V-portable-workbench/SPEC.md), ADR-000M/O and PW ledger answers. A recorded accepted destination does not prove every managed or remote consumer is implemented. |

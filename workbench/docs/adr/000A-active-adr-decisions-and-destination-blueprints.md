@@ -74,7 +74,7 @@ and [ADR-0025](archive/0025-planes-classify-claims-not-whole-artifacts.md).
 
 The scaffolding lifecycle and amendment-first rule were confirmed and approved
 by the owner on 2026-09-30 through FND-Q16 in the
-[grilling destination ledger](../../wiki/grilling-destination-audit-ledger.json).
+[grilling destination ledger](../../sessions/grilling-destination-audit-ledger.json).
 This documentation reconciliation creates no new cleanup command and deletes
 no artifact. Existing frozen checkpoints and permanent ADR history retain their
 separate preservation rules.

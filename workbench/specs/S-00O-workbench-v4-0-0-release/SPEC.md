@@ -110,7 +110,7 @@ use the owner's own GitHub account, and no multi-user trust model is built.
 ### Current release planning reconciliation — 2026-09-26
 
 Source comparison is pinned to `89d4042fb8931b9d720af75bffea1c28803d72aa`:
-the [destination ledger](../../wiki/grilling-destination-audit-ledger.json)
+the [destination ledger](../../sessions/grilling-destination-audit-ledger.json)
 entries E-6, E-7, E-8, E-9 and TT-Q10, and the retired
 [Task Artifact Spec](../retired/S-00H-task-artifact-and-terminology-migration/SPEC.md)
 including its 2026-09-17 TT-Q10 evidence. The Current Verified State above is

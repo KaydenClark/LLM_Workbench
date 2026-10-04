@@ -2,14 +2,14 @@
   "schema": "grilling-destination-ledger/1",
   "title": "Grilling Destination Audit Ledger",
   "purpose": "The owned record of every unique question put to the owner in grilling sessions while designing the Workbench: the question, the owner's answer, the reason, and the result the answer is meant to produce. The v4 Workbench is audited against it. It is the record itself, not a projection of another file; readable views are rendered from it.",
-  "authority": "Like every wiki record it routes and records; it authorizes no work by itself (AGENTS.md -> Authority Order).",
+  "authority": "It routes and records; it authorizes no work by itself (AGENTS.md -> Authority Order). It lives in the sessions lane, not the Wiki: the Wiki holds readable pages that summarize and cite, never records.",
   "compiled": "2026-09-24",
   "provenance": [
     "Compiled 2026-09-24 by Claude Opus 5.5 (Claude Code) from the local grilling notes, the 2026-09-19 grilling progress board, the 2026-09-23 destination audit (254 verdict rows), its completeness addendum, and the owner answers recovered from transcripts (triage v2). First published as Markdown in PR #149; replaced by this JSON at the owner's direction on 2026-09-24."
   ],
   "counting": {
     "destination_audit_rows": 254,
-    "unique_question_ids": 294,
+    "unique_question_ids": 304,
     "reassessed_ids": [
       "CAND-N",
       "FND-Q20",
@@ -34,8 +34,8 @@
       "REC-04"
     ],
     "status_tally": {
-      "locked": 238,
-      "superseded": 26,
+      "locked": 246,
+      "superseded": 28,
       "deferred": 2,
       "withdrawn": 6,
       "answered-in-chat": 10,
@@ -62,11 +62,11 @@
     "source_refs": "The local, untracked working records (notepads, transcripts, recovery files) the row came from, named so the source can be traced on the owner's machine. They are not durable evidence; this ledger is their durable copy.",
     "counted": "false only for REC rows, which were recovered from transcripts and stay outside the 240 count."
   },
-  "maintenance": "Add a question only when the owner actually answered it in a grilling session, with its source record. When a later answer replaces an earlier one, mark the earlier question superseded and name the replacement; never delete a question. Keep the file valid for tools/test-grilling-ledger.mjs.",
+  "maintenance": "Add a question only when the owner actually answered it in a grilling session, with its source record. When a later answer replaces an earlier one, mark the earlier question superseded and name the replacement; never delete a question. Keep the file valid for tools/test-grilling-ledger.mjs. The file lives at workbench/sessions/grilling-destination-audit-ledger.json as an interim home while its rows become destination question cards.",
   "progress_assessment": {
     "commit": "6ae38b9dfc10144dff5481910c29f46ba09b1f8c",
     "date": "2026-09-24",
-    "method": "Each question's Result items were checked against the tree at this integration commit: the named artifact and section must exist and say what the Answer says (with any named templates/ mirror matching), and owning Spec and Task state was read from the Spec records and Task files, not the Taskboard projection. The 2026-09-23 destination-audit verdicts were used only as pointers, never copied. Superseded questions carry no obligation of their own and name their successor, so no question is counted twice. Evidence citations read at this commit; 'unverified:' marks a reading the assessor could not settle. This is a historical assessment, not a live delivery dashboard. Later ROLE decisions are recorded with explicitly named baseline observations; current implementation state is owned by the linked Specs and generated Taskboard. The 2026-09-27 reconciliation does not re-certify the older row assessments. The 2026-09-29 FND-Q24B reading likewise names its own integration baseline. The 2026-09-29 ACC-1/2/4 row readings preserve their implementation gaps; ACC-5 navigation was delivered at integration merge 83ccb20c (PR #211), while the historical S-022 release packet remains blocked. These later readings do not recertify the 2026-09-24 baseline; the tally counts the current per-row readings, including these named later assessments. The 2026-09-30 readings of TT-Q9, ACC-3 and the GX family name integration 2780fe66 as their baseline. The 2026-09-30 LD family (35 landmark-definition questions) and SKW-1 were added from local grilling notes that the ledger had not yet carried, and are read against integration f373ec58.",
+    "method": "Each question's Result items were checked against the tree at this integration commit: the named artifact and section must exist and say what the Answer says (with any named templates/ mirror matching), and owning Spec and Task state was read from the Spec records and Task files, not the Taskboard projection. The 2026-09-23 destination-audit verdicts were used only as pointers, never copied. Superseded questions carry no obligation of their own and name their successor, so no question is counted twice. Evidence citations read at this commit; 'unverified:' marks a reading the assessor could not settle. This is a historical assessment, not a live delivery dashboard. Later ROLE decisions are recorded with explicitly named baseline observations; current implementation state is owned by the linked Specs and generated Taskboard. The 2026-09-27 reconciliation does not re-certify the older row assessments. The 2026-09-29 FND-Q24B reading likewise names its own integration baseline. The 2026-09-29 ACC-1/2/4 row readings preserve their implementation gaps; ACC-5 navigation was delivered at integration merge 83ccb20c (PR #211), while the historical S-022 release packet remains blocked. These later readings do not recertify the 2026-09-24 baseline; the tally counts the current per-row readings, including these named later assessments. The 2026-09-30 readings of TT-Q9, ACC-3 and the GX family name integration 2780fe66 as their baseline. The 2026-09-30 LD family (35 landmark-definition questions) and SKW-1 were added from local grilling notes that the ledger had not yet carried, and are read against integration f373ec58. The 2026-10-01 WIKI family (ten Wiki-definition questions) and the supersession of LD-4 and LD-22B name integration 46ad9789 as their baseline; they do not re-certify older rows.",
     "statuses": {
       "implemented-and-completed": "Every Result artifact exists at the pinned commit and says what the Answer says; any owning Spec or Task is complete.",
       "specced": "A Spec carries this answer, but no Task is cut for this part.",
@@ -76,12 +76,12 @@
       "no-build-obligation": "Open, withdrawn, superseded, deferred past v4, not a question, or no artifact change."
     },
     "tally": {
-      "implemented-and-completed": 131,
+      "implemented-and-completed": 134,
       "specced": 8,
       "specced-and-tasked": 10,
-      "in-progress": 63,
+      "in-progress": 68,
       "not-started": 35,
-      "no-build-obligation": 51
+      "no-build-obligation": 53
     }
   },
   "families": [
@@ -198,6 +198,12 @@
       "name": "Skill workflow redesign",
       "dates": "2026-09-24",
       "record": "skill-workflow-redesign-2026-09-24 (Q1 locked; Q2A-Q8 open, not recorded until answered)"
+    },
+    {
+      "id": "WIKI",
+      "name": "Wiki definition and use",
+      "dates": "2026-10-01",
+      "record": "wiki-definition-and-use-2026-10-01 (ten owner-confirmed questions; promoted to ADR-000R, the Wiki schema and the controls in the Wiki definition Canon commit)"
     }
   ],
   "questions": [
@@ -12434,7 +12440,7 @@
       "counted": true,
       "topic": "Four pieces and their jobs",
       "question": "Where is a landmark documented: wiki design-concept article, Blueprint section, ledger entry, or a combination, and which is the owner?",
-      "status": "locked",
+      "status": "superseded",
       "answer": "Four pieces divide the jobs: Destination Questions preserve concept understanding and lineage; Landmarks connect the evolving feature/pillar account; Tracker generates the compact view; Wiki explains confirmed durable understanding in readable Markdown without WBIDs.",
       "answered": "2026-09-26, landmark-definition grilling (decision-028, decision-005, decision-023)",
       "reason": "Inference: each piece answers a different reader need: concept lineage, the feature account, a compact view and a readable explanation.",
@@ -12452,21 +12458,23 @@
       ],
       "related": [
         "LD-22B",
-        "LD-28"
+        "LD-28",
+        "WIKI-1",
+        "WIKI-3"
       ],
       "aliases": [
         "landmark-definition Q4"
       ],
-      "notes": "Revised wording during the session: How should persistent landmark records, landmark Wiki pages, the Blueprint and other routing artifacts divide their jobs? Original question asked where a landmark is documented; the four-piece answer supersedes the earlier single-home framing. Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "notes": "Revised wording during the session: How should persistent landmark records, landmark Wiki pages, the Blueprint and other routing artifacts divide their jobs? Original question asked where a landmark is documented; the four-piece answer supersedes the earlier single-home framing. Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155). Superseded 2026-10-01 by WIKI-1 and WIKI-3: the owner revised the confirmed-only Wiki gate and the no-identifier rule (Wiki explains confirmed durable understanding in readable Markdown without WBIDs) in favor of evolving synthesis with identifiers carrying name and context. Historical 2026-09-26 answer preserved.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-028",
         "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-005",
         "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-023"
       ],
       "progress": {
-        "status": "implemented-and-completed",
-        "sub_label": null,
-        "evidence": "At integration f373ec58: BLUEPRINT.md, LEXICON.md (DQC, Landmark, Landmark Tracker, Landmark Wiki page rows) and the design-concept article workbench/wiki/design-concepts/landmark-tracker.md carry the answer; ADR-000N is active; S-01T records the foundation.",
+        "status": "no-build-obligation",
+        "sub_label": "superseded by WIKI-1 and WIKI-3",
+        "evidence": "Owner confirmed WIKI-1 and WIKI-3 on 2026-10-01 and authorized revising this row; original answer remains historical.",
         "gap": ""
       }
     },
@@ -12487,19 +12495,20 @@
           "effect": "Keeps existing grilling sources; DQCs synthesize them with lineage; TRACKER.json projects the records."
         },
         {
-          "artifact": "workbench/wiki/grilling-destination-audit-ledger.json",
+          "artifact": "workbench/sessions/grilling-destination-audit-ledger.json",
           "action": "none",
-          "effect": "Stays in place as the grilling answer record; no migration."
+          "effect": "Stays the grilling answer record, now in the sessions lane (moved from the Wiki by the 2026-10-01 answer WIKI-10); no migration into the Tracker."
         }
       ],
       "related": [
         "LD-22",
-        "LD-28"
+        "LD-28",
+        "WIKI-10"
       ],
       "aliases": [
         "landmark-definition Q5"
       ],
-      "notes": "Revised wording during the session: How should the existing grilling ledger and proposed landmark records feed the Landmark Board without duplicating question/answer authorship? decision-009 (move the ledger into TRACKER.json) was superseded by decision-016/030. Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "notes": "Revised wording during the session: How should the existing grilling ledger and proposed landmark records feed the Landmark Board without duplicating question/answer authorship? decision-009 (move the ledger into TRACKER.json) was superseded by decision-016/030. Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155). 2026-10-01: the ledger file moved from the Wiki lane to the sessions lane (WIKI-10); this answer's scope, that the Tracker does not replace the ledger, is unchanged.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-030",
         "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-016",
@@ -13248,7 +13257,7 @@
       "counted": true,
       "topic": "Landmark JSON vs readable Wiki page",
       "question": "What does a landmark file hold, and how does it divide its job with its Wiki page?",
-      "status": "locked",
+      "status": "superseded",
       "answer": "Landmark files and question cards are JSON structured records; landmark files hold the evolving alignment account and links, cards own questions/answers/history. Wiki pages are human-presentable Markdown explanations containing understanding confirmed enough for durable KB, with no WBIDs. Wiki is how the owner reads about the project; JSON is difficult for him to read.",
       "answered": "2026-09-26, landmark-definition grilling (decision-013)",
       "reason": "Owner: the Wiki is how he reads about the project; JSON is hard for him to read.",
@@ -13265,20 +13274,22 @@
         }
       ],
       "related": [
-        "LD-4"
+        "LD-4",
+        "WIKI-1",
+        "WIKI-6"
       ],
       "aliases": [
         "landmark-definition Q22B"
       ],
-      "notes": "Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155).",
+      "notes": "Added 2026-09-30 from the local note; all answers were owner-confirmed in the 2026-09-24..26 landmark grilling, and documentation/specification promotion was authorized by directive-007 (S-01T, PR #155). Superseded 2026-10-01 by WIKI-1 and WIKI-6: the owner revised the confirmed-only Wiki gate and the no-identifier rule (Wiki pages hold understanding confirmed enough for durable KB, with no WBIDs) in favor of evolving synthesis with identifiers carrying name and context. Historical 2026-09-26 answer preserved.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/landmark-definition-2026-09-24.json#decision-013"
       ],
       "progress": {
-        "status": "in-progress",
-        "sub_label": "S-002A",
-        "evidence": "At integration f373ec58: landmark-wiki.mjs and LANDMARK-WIKI.md exist; landmarks/ is empty, so no landmark Wiki page exists yet.",
-        "gap": "Shared Wiki wiring remains in S-002A."
+        "status": "no-build-obligation",
+        "sub_label": "superseded by WIKI-1 and WIKI-6",
+        "evidence": "Owner confirmed WIKI-1 and WIKI-6 on 2026-10-01 and authorized revising this row; original answer remains historical.",
+        "gap": ""
       }
     },
     {
@@ -13654,6 +13665,440 @@
         "sub_label": "genesis wording",
         "evidence": "At integration f373ec58: BLUEPRINT.md carries the idea-first workflow map with grill-me/wayfinding/brainstorm opening Align and setup kept separate.",
         "gap": "Genesis requiring a follow-up grilling session is not stated in workbench/skills/genesis/SKILL.md."
+      }
+    },
+    {
+      "id": "WIKI-1",
+      "family": "WIKI",
+      "counted": true,
+      "topic": "Wiki holds evolving synthesis",
+      "question": "Does the Wiki hold only confirmed understanding, or does it capture evolving synthesis?",
+      "status": "locked",
+      "answer": "The Wiki captures evolving synthesis: a directory of agent-written Markdown (summaries, entity pages, concept pages, comparisons, an overview, an evolving synthesis) that every agent reads and updates; agents read it, find what is wrong or missing, and fix it for the next agent. Handoffs stay instructions.",
+      "answered": "2026-10-01, wiki-definition-and-use grilling (Q1)",
+      "reason": "Owner: \"let's create a wiki everyone can read and update. that way handoffs stay instructions, and the wiki can stay a directory of LLM-generated markdown files.\" Notepads get written over by concurrent writers; a shared Wiki is where everyone updates.",
+      "result": [
+        {
+          "artifact": "workbench/docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md",
+          "action": "create",
+          "effect": "Settled answer 1 and the consequences: the Wiki holds evolving synthesis, not only confirmed understanding."
+        },
+        {
+          "artifact": "workbench/wiki/SCHEMA.md",
+          "action": "update",
+          "effect": "Purpose, page kinds, read and update rules for the evolving Wiki."
+        },
+        {
+          "artifact": "LEXICON.md (Wiki, Design Concept article and Landmark Wiki page rows)",
+          "action": "update",
+          "effect": "Defines the Wiki as the evolving synthesis."
+        }
+      ],
+      "related": [
+        "LD-4",
+        "LD-22B"
+      ],
+      "aliases": [
+        "wiki-definition-and-use Q1"
+      ],
+      "notes": "The owner's first reply (\"I think the gate of confirmed understanding is perfect...\") was recorded as a lock in error; he corrected it (\"you shouldnt of locked in that last one. I want the Wiki to capture evolving synthesis\"), and that correction is the answer. He then authorized revising LD-4 and LD-22B, which this row supersedes. Question wording is reconstructed from the note's topic key; the owner's reply is quoted verbatim in the note. The answer is owner-confirmed Canon in the accepted Wiki decision record (promoted 2026-10-02).",
+      "source_refs": [
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#source_record-001",
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#source_record-002",
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#correction-001",
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#directive-002"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration 46ad9789: ADR-000R, the Wiki schema, LEXICON.md and AGENTS.md carry the definition; the pages that bring the Wiki's files in line with it are the other rows of this family.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "WIKI-2",
+      "family": "WIKI",
+      "counted": true,
+      "topic": "No page per decision",
+      "question": "Does each decision get its own Wiki page?",
+      "status": "locked",
+      "answer": "No. Decisions are folded into the summaries and the big picture; the decision record stays the owner of the decision.",
+      "answered": "2026-10-01, wiki-definition-and-use grilling (Q2)",
+      "reason": "Owner: \"Under karpathy's model we wouldnt need one per decision, its all about summaries and synthesis into big picture.\"",
+      "result": [
+        {
+          "artifact": "workbench/docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md",
+          "action": "create",
+          "effect": "Settled answer 2: no page per decision."
+        }
+      ],
+      "related": [
+        "WIKI-1"
+      ],
+      "aliases": [
+        "wiki-definition-and-use Q2"
+      ],
+      "notes": "Answered in the same message as WIKI-1. Question wording is reconstructed from the note's topic key; the owner's reply is quoted verbatim in the note. The answer is owner-confirmed Canon in the accepted Wiki decision record (promoted 2026-10-02).",
+      "source_refs": [
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#source_record-002",
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#correction-001"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration 46ad9789: ADR-000R records the answer; no per-decision Wiki page is required or created.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "WIKI-3",
+      "family": "WIKI",
+      "counted": true,
+      "topic": "Cards and landmarks stay beside the Wiki",
+      "question": "Do Destination Question Cards and landmark records stay as tooling and state beside the Wiki, with the Wiki summarizing them?",
+      "status": "locked",
+      "answer": "Yes. Destination Question Cards and landmark records stay as tooling and state; the Wiki is what they are summarized into, updated whenever a card changes.",
+      "answered": "2026-10-01, wiki-definition-and-use grilling (Q3)",
+      "reason": "Owner: \"Yes. And I am fine changing those other locked answers. This is something that should of been in place so those couldnt of been. This Wiki is what the workbench was designed after. everything that came after was trying to get this to work.\"",
+      "result": [
+        {
+          "artifact": "workbench/docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md",
+          "action": "create",
+          "effect": "Settled answer 3 and the revision of ADR-000N's ordering (cards and landmarks stay the structured account; the Wiki summarizes them as they evolve)."
+        },
+        {
+          "artifact": "workbench/specs/S-003W-wiki-evolving-synthesis-migration/SPEC.md",
+          "action": "create",
+          "effect": "Delivers one synthesis page per landmark, seeded from its question cards."
+        }
+      ],
+      "related": [
+        "LD-4",
+        "LD-22B",
+        "WIKI-1"
+      ],
+      "aliases": [
+        "wiki-definition-and-use Q3"
+      ],
+      "notes": "Owner said he is fine changing the other locked answers; LD-4 and LD-22B are the ones that conflicted. Question wording is reconstructed from the note's topic key; the owner's reply is quoted verbatim in the note. The answer is owner-confirmed Canon in the accepted Wiki decision record (promoted 2026-10-02).",
+      "source_refs": [
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#source_record-003",
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#decision-003",
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#directive-002"
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-003W",
+        "evidence": "At integration 46ad9789: the definition is Canon; the 24 landmark records have no synthesis page in the Wiki.",
+        "gap": "Landmark synthesis pages and their router entries remain in S-003W."
+      }
+    },
+    {
+      "id": "WIKI-4",
+      "family": "WIKI",
+      "counted": true,
+      "topic": "Raw sources and ingest",
+      "question": "What are the raw sources of the Wiki, and when does ingest happen?",
+      "status": "locked",
+      "answer": "Raw sources are claims on artifacts, not whole artifacts, viewed through the governance stack: the claims that played the Actuality role in the operation just performed. The Wiki is Enduring Context; the schema is Canon (the Workbench Contract). Whatever was just worked on becomes the raw source once worked on: finishing a grilling session makes writing one or several Wiki articles part of promotion to durable sources, and every use of the Workbench reads the Wiki and, where something changed, updates it.",
+      "answered": "2026-10-01, wiki-definition-and-use grilling (Q4)",
+      "reason": "Owner: \"every time we use the workbench we should be using the wiki, if not to just read, at least to update.\" He also said this exact question is what produced the Governance Planes.",
+      "result": [
+        {
+          "artifact": "workbench/docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md",
+          "action": "create",
+          "effect": "Settled answer 4: ingest is the exit of every operation; the Governance Plane mapping."
+        },
+        {
+          "artifact": "AGENTS.md (Documentation Ownership And Proof)",
+          "action": "update",
+          "effect": "Every use of the Workbench reads the Wiki and updates the pages its work changed."
+        },
+        {
+          "artifact": "workbench/wiki/SCHEMA.md",
+          "action": "update",
+          "effect": "Update rule: ingest touches the pages the operation changed."
+        }
+      ],
+      "related": [
+        "WIKI-1"
+      ],
+      "aliases": [
+        "wiki-definition-and-use Q4"
+      ],
+      "notes": "The owner noted that clearance band is not a current Lexicon term; that observation is recorded in the note, not here. Question wording is reconstructed from the note's topic key; the owner's reply is quoted verbatim in the note. The answer is owner-confirmed Canon in the accepted Wiki decision record (promoted 2026-10-02).",
+      "source_refs": [
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#source_record-004",
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#decision-004"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration 46ad9789: AGENTS.md, the Wiki schema and ADR-000R carry the ingest-at-exit rule.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "WIKI-5",
+      "family": "WIKI",
+      "counted": true,
+      "topic": "Git reconciles the Wiki",
+      "question": "How are concurrent Wiki updates reconciled?",
+      "status": "locked",
+      "answer": "The Wiki is tracked in Git and updated on the agent's own branch, like every other owned document, and Git reconciles the rest. There is no writer lane, revision stamp or lock.",
+      "answered": "2026-10-01, wiki-definition-and-use grilling (Q5)",
+      "reason": "Owner: \"Yes, your recommendation is great. The Wiki is tracked in Git and updated on the agent's own branch, like every other owned document, and Git reconciles the rest.\"",
+      "result": [
+        {
+          "artifact": "workbench/docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md",
+          "action": "create",
+          "effect": "Settled answer 5."
+        },
+        {
+          "artifact": "workbench/wiki/SCHEMA.md",
+          "action": "update",
+          "effect": "Concurrency section: Git reconciles; no writer lane, revision stamp or lock."
+        }
+      ],
+      "related": [
+        "WIKI-1"
+      ],
+      "aliases": [
+        "wiki-definition-and-use Q5"
+      ],
+      "notes": " Question wording is reconstructed from the note's topic key; the owner's reply is quoted verbatim in the note. The answer is owner-confirmed Canon in the accepted Wiki decision record (promoted 2026-10-02).",
+      "source_refs": [
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#source_record-005",
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#decision-005"
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "At integration 46ad9789: the Wiki schema Concurrency section carries the rule.",
+        "gap": ""
+      }
+    },
+    {
+      "id": "WIKI-6",
+      "family": "WIKI",
+      "counted": true,
+      "topic": "Identifiers in the Wiki carry name and context",
+      "question": "Do identifiers belong in the Wiki?",
+      "status": "locked",
+      "answer": "Identifiers stay in the Wiki, because they are how agents link and find artifacts. No Wiki page references an identifier without the artifact's name or title and a bit more context about what it is for. Separately, in chat an artifact is never referred to by its identifier alone.",
+      "answered": "2026-10-01, wiki-definition-and-use grilling (Q6)",
+      "reason": "Owner: \"The WBID exist so that agents can easily link and find artifacts, so forbiding them from being inside of the wiki would defeat a lot of their purpose. But no wiki artifact should reference a WBID without having the name or title, and a bit more context about what the WBID is for on the artifact.\"",
+      "result": [
+        {
+          "artifact": "workbench/docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md",
+          "action": "create",
+          "effect": "Settled answer 6: the name-and-context rule replaces the identifier ban."
+        },
+        {
+          "artifact": "workbench/wiki/SCHEMA.md",
+          "action": "update",
+          "effect": "Update rule: a page that references an identifier carries the artifact's name or title and context."
+        },
+        {
+          "artifact": "workbench/tools/landmark-wiki.mjs; workbench/landmark-tracker/LANDMARK-WIKI.md",
+          "action": "update",
+          "effect": "The identifier-absence validator is reworked into the name-and-context check."
+        }
+      ],
+      "related": [
+        "LD-22B",
+        "WIKI-1"
+      ],
+      "aliases": [
+        "wiki-definition-and-use Q6"
+      ],
+      "notes": "The owner corrected the agent's repeated reading that the Wiki should carry no identifiers; the no-identifier Landmark page rule and its validator were the same misreading. Question wording is reconstructed from the note's topic key; the owner's reply is quoted verbatim in the note. The answer is owner-confirmed Canon in the accepted Wiki decision record (promoted 2026-10-02).",
+      "source_refs": [
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#source_record-006",
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#correction-003",
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#decision-006"
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-003W",
+        "evidence": "At integration 46ad9789: the rule is Canon; workbench/tools/landmark-wiki.mjs still reports any identifier as landmark-wbid.",
+        "gap": "Validator rework and its tests remain in S-003W."
+      }
+    },
+    {
+      "id": "WIKI-7",
+      "family": "WIKI",
+      "counted": true,
+      "topic": "Five Wiki page kinds",
+      "question": "Which page kinds does the Wiki hold?",
+      "status": "locked",
+      "answer": "Five kinds, as a first cut: an overview (the router, with a one-line summary per page), one synthesis page per landmark, entity pages for capabilities, skills, roles, stances and tools, concept pages, and comparisons filed back when a question produces one. If things do not fit, they can be fixed.",
+      "answered": "2026-10-01, wiki-definition-and-use grilling (Q7)",
+      "reason": "Owner: \"This is great for a first go. If things dont fit we can fix it.\"",
+      "result": [
+        {
+          "artifact": "workbench/docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md",
+          "action": "create",
+          "effect": "Settled answer 7."
+        },
+        {
+          "artifact": "workbench/wiki/SCHEMA.md",
+          "action": "update",
+          "effect": "Page Kinds section."
+        },
+        {
+          "artifact": "workbench/wiki/MEMORY.md",
+          "action": "update",
+          "effect": "The router carries a one-line summary beside every link."
+        }
+      ],
+      "related": [
+        "WIKI-1"
+      ],
+      "aliases": [
+        "wiki-definition-and-use Q7"
+      ],
+      "notes": "The owner marked this a first cut, revisable. Question wording is reconstructed from the note's topic key; the owner's reply is quoted verbatim in the note. The answer is owner-confirmed Canon in the accepted Wiki decision record (promoted 2026-10-02).",
+      "source_refs": [
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#source_record-007",
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#decision-007"
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-003W",
+        "evidence": "At integration 46ad9789: the schema names the five kinds; the router lists the 51 per-Spec articles without summary lines and the features collection holds no article.",
+        "gap": "Router summaries, the 51 article moves to features and landmark synthesis pages remain in S-003W."
+      }
+    },
+    {
+      "id": "WIKI-8",
+      "family": "WIKI",
+      "counted": true,
+      "topic": "Any agent writes the Wiki",
+      "question": "Who creates and updates Wiki pages?",
+      "status": "locked",
+      "answer": "Any agent, in any authorized operation, creates or updates the pages its work touched, with no per-page approval; the operation's own authority covers its Wiki update. Only the Wiki schema itself needs the owner's explicit say.",
+      "answered": "2026-10-01, wiki-definition-and-use grilling (Q8)",
+      "reason": "Owner: \"Yes, that is the intention.\"",
+      "result": [
+        {
+          "artifact": "workbench/docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md",
+          "action": "create",
+          "effect": "Settled answer 8."
+        },
+        {
+          "artifact": "workbench/wiki/design-concepts/README.md",
+          "action": "update",
+          "effect": "The owner-alone authorization line is retired; the authorizing operation is recorded instead."
+        },
+        {
+          "artifact": "workbench/wiki/SCHEMA.md",
+          "action": "update",
+          "effect": "Create rule: no per-page approval."
+        }
+      ],
+      "related": [
+        "WIKI-1"
+      ],
+      "aliases": [
+        "wiki-definition-and-use Q8"
+      ],
+      "notes": "The validator message that still names the owner for Design Concept authorization is a delivery item in S-003W. Question wording is reconstructed from the note's topic key; the owner's reply is quoted verbatim in the note. The answer is owner-confirmed Canon in the accepted Wiki decision record (promoted 2026-10-02).",
+      "source_refs": [
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#source_record-008",
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#decision-008"
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-003W",
+        "evidence": "At integration 46ad9789: the schema and design-concepts README carry the rule; the validator message still reads must record authorized_by (the owner directs creation).",
+        "gap": "The validator message remains in S-003W."
+      }
+    },
+    {
+      "id": "WIKI-9",
+      "family": "WIKI",
+      "counted": true,
+      "topic": "Two Wiki lint cadences",
+      "question": "Should the Wiki be linted, and when?",
+      "status": "locked",
+      "answer": "Two cadences: a small lint of the touched pages at the end of every Wiki update, and a whole-Wiki lint at Spec review when the Spec's work is verified, not at version readiness. Findings follow the corrective rule. The structural validator keeps running on every change; the semantic lint is an agent reading job, not a new tool.",
+      "answered": "2026-10-01, wiki-definition-and-use grilling (Q9)",
+      "reason": "Owner: \"Yes, but on wiki update ends, and spec reviews. When the spec work is verified instead of the version readiness.\"",
+      "result": [
+        {
+          "artifact": "workbench/docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md",
+          "action": "create",
+          "effect": "Settled answer 9."
+        },
+        {
+          "artifact": "workbench/wiki/SCHEMA.md",
+          "action": "update",
+          "effect": "Lint section: both cadences."
+        },
+        {
+          "artifact": "RUNBOOK.md",
+          "action": "update",
+          "effect": "Procedure for the small lint and the whole-Wiki lint with their questions and where findings go."
+        }
+      ],
+      "related": [
+        "WIKI-1"
+      ],
+      "aliases": [
+        "wiki-definition-and-use Q9"
+      ],
+      "notes": "The owner corrected the proposed cadence from version readiness to Spec review. Question wording is reconstructed from the note's topic key; the owner's reply is quoted verbatim in the note. The answer is owner-confirmed Canon in the accepted Wiki decision record (promoted 2026-10-02).",
+      "source_refs": [
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#source_record-009",
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#decision-009"
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-003W",
+        "evidence": "At integration 46ad9789: AGENTS.md and the schema state the cadence; RUNBOOK.md carries no lint procedure.",
+        "gap": "The Runbook procedure and its template mirror remain in S-003W."
+      }
+    },
+    {
+      "id": "WIKI-10",
+      "family": "WIKI",
+      "counted": true,
+      "topic": "Ledger leaves the Wiki for the sessions lane",
+      "question": "Where does the grilling destination audit ledger live, given it is a record rather than a readable Wiki page?",
+      "status": "locked",
+      "answer": "The ledger moves out of the Wiki into the sessions lane (workbench/sessions/). It is short-lived there: it is about to be turned into question cards, so the move is interim and the cards become the record. Wiki pages summarize and cite; they do not copy it.",
+      "answered": "2026-10-01, wiki-definition-and-use grilling (Q10)",
+      "reason": "Owner: \"It wont be there for much longer. but we should move it to session/ The ledger is going to be turned into DQCs here very shortly, so that shouldnt be an issue.\"",
+      "result": [
+        {
+          "artifact": "workbench/docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md",
+          "action": "create",
+          "effect": "Settled answer 10."
+        },
+        {
+          "artifact": "workbench/sessions/grilling-destination-audit-ledger.json",
+          "action": "update",
+          "effect": "The ledger file lives at the sessions lane root, tracked; its links and test path follow."
+        }
+      ],
+      "related": [
+        "LD-5",
+        "WIKI-1"
+      ],
+      "aliases": [
+        "wiki-definition-and-use Q10"
+      ],
+      "notes": "The cards backfill (rows related as grilling-question cards at 56b459da) had begun before the move; the ledger remains the live source rows are looked up in, so the move was performed rather than recorded as unnecessary. LD-5's answer (the Tracker does not replace the ledger) is unchanged; only its result path moved. Question wording is reconstructed from the note's topic key; the owner's reply is quoted verbatim in the note. The answer is owner-confirmed Canon in the accepted Wiki decision record (promoted 2026-10-02).",
+      "source_refs": [
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#source_record-010",
+        "workbench/sessions/notepads/work/wiki-definition-and-use-2026-10-01.json#decision-010"
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-003W",
+        "evidence": "At integration 46ad9789: the move to workbench/sessions/ is delivered by the S-003W ledger task.",
+        "gap": "Landing on integration."
       }
     }
   ]
