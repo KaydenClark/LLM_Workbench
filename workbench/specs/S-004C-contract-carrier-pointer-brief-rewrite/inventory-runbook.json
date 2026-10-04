@@ -8335,8 +8335,8 @@
       "hash": "77f353191376fd9c7c365a8169541f8a9309f616ac26a04e4dcad3c2fbf0563a",
       "homeKind": "skill",
       "homePath": "workbench/skills/director/SKILL.md",
-      "landedText": "active Task state. Follow [features](workbench/wiki/features/README.md) and",
-      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
+      "landedText": "active Task state. Follow [features](../../wiki/features/README.md) and",
+      "reason": "TK-005G moved this line to the director skill. The link is re-rooted so it resolves from the skill folder (review correction after close)."
     },
     {
       "line": 1124,
@@ -8344,8 +8344,8 @@
       "hash": "40de74a55d4f635334da5973de1f8c381451a74ddaefc6bfed65110df868c31f",
       "homeKind": "skill",
       "homePath": "workbench/skills/director/SKILL.md",
-      "landedText": "[Wiki schema](workbench/wiki/SCHEMA.md). `uncaptured-complete` is attention while",
-      "reason": "TK-005G moved this line verbatim to the director skill, which the Runbook operations index points to for its operation."
+      "landedText": "[Wiki schema](../../wiki/SCHEMA.md). `uncaptured-complete` is attention while",
+      "reason": "TK-005G moved this line to the director skill. The link is re-rooted so it resolves from the skill folder (review correction after close)."
     },
     {
       "line": 1125,
