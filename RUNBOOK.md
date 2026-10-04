@@ -93,12 +93,12 @@ Contract change.
 
 ## Release Identity
 
-Freezing a version label and changing the core bundle is a maintainer procedure of this repository; it lives in the
+Freezing a version label and changing the core bundle: a maintainer procedure of this repository, in the
 [`workbench-release` skill](workbench/skills/workbench-release/SKILL.md#release-identity).
 
 ## Template Upgrade Release Gate
 
-The real-room release gate that upgrades the reference Template is a maintainer procedure of this repository; it lives in the
+The real-room release gate that upgrades the reference Template: a maintainer procedure of this repository, in the
 [`workbench-release` skill](workbench/skills/workbench-release/SKILL.md#template-upgrade-release-gate).
 
 ## Ordinary Entry
@@ -143,7 +143,7 @@ recover. Execution and recovery therefore remain separate jobs.
 
 ### GitHub Coordination Binding Inspection
 
-Read-only inspection of a committed GitHub coordination binding is a maintainer procedure of this repository; it lives in the
+Read-only inspection of a committed GitHub coordination binding: a maintainer procedure of this repository, in the
 [`workbench-room-checks` skill](workbench/skills/workbench-room-checks/SKILL.md#github-coordination-binding-inspection).
 
 ### Role And Stance Coordination
@@ -333,62 +333,62 @@ acceptance box.
 
 ### Prepare project evidence and Blueprint questions
 
-Preparing project evidence and Blueprint questions from a named evidence room is a maintainer procedure of this repository; it lives in the
+Preparing project evidence and Blueprint questions from a named evidence room: a maintainer procedure of this repository, in the
 [`workbench-release` skill](workbench/skills/workbench-release/SKILL.md#prepare-project-evidence-and-blueprint-questions).
 
 ### Derive a fresh room from recorded decisions
 
-Deriving a fresh room from recorded decisions is a maintainer procedure of this repository; it lives in the
+Deriving a fresh room from recorded decisions: a maintainer procedure of this repository, in the
 [`workbench-release` skill](workbench/skills/workbench-release/SKILL.md#derive-a-fresh-room-from-recorded-decisions).
 
 ### Skills lane check
 
-The skills lane install, verify, update and rollback check is a maintainer procedure of this repository; it lives in the
+The skills lane install, verify, update and rollback check: a maintainer procedure of this repository, in the
 [`workbench-room-checks` skill](workbench/skills/workbench-room-checks/SKILL.md#skills-lane-check).
 
 ### Personal catalog publication
 
-Publishing the core skills to, or replacing them in, the personal catalog is a maintainer procedure of this repository; it lives in the
+Publishing the core skills to, or replacing them in, the personal catalog: a maintainer procedure of this repository, in the
 [`workbench-release` skill](workbench/skills/workbench-release/SKILL.md#personal-catalog-publication).
 
 ### V3 support-root check
 
-The support-root layout, migration and Genesis readiness check is a maintainer procedure of this repository; it lives in the
+The support-root layout, migration and Genesis readiness check: a maintainer procedure of this repository, in the
 [`workbench-room-checks` skill](workbench/skills/workbench-room-checks/SKILL.md#v3-support-root-check).
 
 ### Managed runtime tools check
 
-The managed runtime tools install, verify, update and rollback check is a maintainer procedure of this repository; it lives in the
+The managed runtime tools install, verify, update and rollback check: a maintainer procedure of this repository, in the
 [`workbench-room-checks` skill](workbench/skills/workbench-room-checks/SKILL.md#managed-runtime-tools-check).
 
 ### Room lifecycle classification check
 
-Classifying a room before choosing Genesis, adoption, upgrade or update is a maintainer procedure of this repository; it lives in the
+Classifying a room before choosing Genesis, adoption, upgrade or update: a maintainer procedure of this repository, in the
 [`workbench-room-checks` skill](workbench/skills/workbench-room-checks/SKILL.md#room-lifecycle-classification-check).
 
 ### V3 Adoption migration check
 
-The adoption migration check is a maintainer procedure of this repository; it lives in the
+The adoption migration check: a maintainer procedure of this repository, in the
 [`workbench-room-checks` skill](workbench/skills/workbench-room-checks/SKILL.md#v3-adoption-migration-check).
 
 ### Control fidelity report
 
-The control fidelity report on a room's reconciled controls is a maintainer procedure of this repository; it lives in the
+The control fidelity report on a room's reconciled controls: a maintainer procedure of this repository, in the
 [`workbench-room-checks` skill](workbench/skills/workbench-room-checks/SKILL.md#control-fidelity-report).
 
 ### V3 explicit upgrade and recovery check
 
-The one-time explicit upgrade of a v2-root room and its recovery is a maintainer procedure of this repository; it lives in the
+The one-time explicit upgrade of a v2-root room and its recovery: a maintainer procedure of this repository, in the
 [`workbench-room-checks` skill](workbench/skills/workbench-room-checks/SKILL.md#v3-explicit-upgrade-and-recovery-check).
 
 ### Workbench self-drift check
 
-The Workbench self-drift pre and post receipts and the bounded semantic check is a maintainer procedure of this repository; it lives in the
+The Workbench self-drift pre and post receipts and the bounded semantic check: a maintainer procedure of this repository, in the
 [`workbench-room-checks` skill](workbench/skills/workbench-room-checks/SKILL.md#workbench-self-drift-check).
 
 ### Carrier line-landing check
 
-The carrier line-landing check for a rewrite of `AGENTS.md` or `RUNBOOK.md` is a maintainer procedure of this repository; it lives in the
+The carrier line-landing check for a rewrite of `AGENTS.md` or `RUNBOOK.md`: a maintainer procedure of this repository, in the
 [`workbench-room-checks` skill](workbench/skills/workbench-room-checks/SKILL.md#carrier-line-landing-check).
 
 ### Spec Lifecycle And Retrieval
@@ -480,17 +480,17 @@ Destination Decision Records are the ADR's sibling for destination choices
 
 ### Composed round trip
 
-The mechanical composed round trip is a maintainer procedure of this repository; it lives in the
+The mechanical composed round trip: a maintainer procedure of this repository, in the
 [`workbench-release` skill](workbench/skills/workbench-release/SKILL.md#composed-round-trip).
 
 ### Portability and privacy matrix
 
-The portability and privacy release matrix is a maintainer procedure of this repository; it lives in the
+The portability and privacy release matrix: a maintainer procedure of this repository, in the
 [`workbench-release` skill](workbench/skills/workbench-release/SKILL.md#portability-and-privacy-matrix).
 
 ### Cross-provider resume proof
 
-The cross-provider resume release proof is a maintainer procedure of this repository; it lives in the
+The cross-provider resume release proof: a maintainer procedure of this repository, in the
 [`workbench-release` skill](workbench/skills/workbench-release/SKILL.md#cross-provider-resume-proof).
 
 ### Visible Identifiers
@@ -622,7 +622,7 @@ Read every runtime finding's severity, scope and blocking effect, and how
 
 ### Socket Contract Registry
 
-The Foundry socket contract registry and its validator is a maintainer procedure of this repository; it lives in the
+The Foundry socket contract registry and its validator: a maintainer procedure of this repository, in the
 [`workbench-room-checks` skill](workbench/skills/workbench-room-checks/SKILL.md#socket-contract-registry).
 
 ### Test Coverage Policy
@@ -671,32 +671,32 @@ claim without repeated task trials. The method this audit measures follows the
 
 ### Claims To Test
 
-The claims a harness evaluation tests is a maintainer procedure of this repository; it lives in the
+The claims a harness evaluation tests: a maintainer procedure of this repository, in the
 [`workbench-evaluation` skill](workbench/skills/workbench-evaluation/SKILL.md#claims-to-test).
 
 ### Evaluation Design
 
-The evaluation conditions and what is scored is a maintainer procedure of this repository; it lives in the
+The evaluation conditions and what is scored: a maintainer procedure of this repository, in the
 [`workbench-evaluation` skill](workbench/skills/workbench-evaluation/SKILL.md#evaluation-design).
 
 ### Commands
 
-The static rubric and trial framework commands is a maintainer procedure of this repository; it lives in the
+The static rubric and trial framework commands: a maintainer procedure of this repository, in the
 [`workbench-evaluation` skill](workbench/skills/workbench-evaluation/SKILL.md#commands).
 
 ### Harness Feedback Loop
 
-Taking in harness feedback from downstream rooms is a maintainer procedure of this repository; it lives in the
+Taking in harness feedback from downstream rooms: a maintainer procedure of this repository, in the
 [`workbench-evaluation` skill](workbench/skills/workbench-evaluation/SKILL.md#harness-feedback-loop).
 
 ### Automated Feedback Gate
 
-The optional automated feedback builder and gate is a maintainer procedure of this repository; it lives in the
+The optional automated feedback builder and gate: a maintainer procedure of this repository, in the
 [`workbench-evaluation` skill](workbench/skills/workbench-evaluation/SKILL.md#automated-feedback-gate).
 
 ### Automation Run Outcomes
 
-Recording a scheduled automation run outcome is a maintainer procedure of this repository; it lives in the
+Recording a scheduled automation run outcome: a maintainer procedure of this repository, in the
 [`workbench-evaluation` skill](workbench/skills/workbench-evaluation/SKILL.md#automation-run-outcomes).
 
 ## Version-Control Procedures
@@ -792,7 +792,7 @@ still requires the reviewed PR and remote containment read-back.
 
 ## Manual Harness Feedback Reports
 
-Writing a manual harness feedback report is a maintainer procedure of this repository; it lives in the
+Writing a manual harness feedback report: a maintainer procedure of this repository, in the
 [`workbench-evaluation` skill](workbench/skills/workbench-evaluation/SKILL.md#manual-harness-feedback-reports).
 
 ## Troubleshooting
