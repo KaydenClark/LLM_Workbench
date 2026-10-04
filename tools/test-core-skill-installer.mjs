@@ -719,16 +719,19 @@ function resetClone(clone, base) {
   assert.equal(spawnSync('git', ['clean', '-qfdx'], { cwd: clone }).status, 0);
 }
 
-function mutateClone(clone, { skills = [], declare }) {
+// `declare` adds names to whatever the checkout already declares, so the
+// fixture holds when this repository declares real maintainer skills;
+// `replace` swaps the whole value for a malformed declaration.
+function mutateClone(clone, { skills = [], declare, replace }) {
   for (const skill of skills) {
     const directory = path.join(clone, 'workbench', 'skills', skill);
     fs.mkdirSync(directory, { recursive: true });
     fs.writeFileSync(path.join(directory, 'SKILL.md'), `---\nname: ${skill}\ndescription: Fixture maintainer skill.\n---\n\n# ${skill}\n`);
   }
-  if (declare !== undefined) {
+  if (declare !== undefined || replace !== undefined) {
     const manifestPath = path.join(clone, 'workbench', 'manifest.json');
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-    manifest.maintainerSkills = declare;
+    manifest.maintainerSkills = replace !== undefined ? replace : [...(manifest.maintainerSkills ?? []), ...declare];
     fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
   }
   assert.equal(spawnSync('git', ['add', '-A'], { cwd: clone }).status, 0);
@@ -764,12 +767,12 @@ test('a declared maintainer skill passes the closed-bundle source check and is n
 test('an undeclared extra lane skill or a malformed maintainer declaration still blocks before anything is written', () => {
   const { parent, clone, base } = producerClone();
   const cases = [
-    { name: 'undeclared extra skill', skills: ['maintainer-fixture'], code: 'invalid-bundled-core' },
+    { name: 'undeclared extra skill', skills: ['stray-fixture'], code: 'invalid-bundled-core' },
     { name: 'declared but missing from the lane', declare: ['maintainer-fixture'], code: 'invalid-maintainer-skills' },
     { name: 'declares a core skill', declare: ['genesis'], code: 'invalid-maintainer-skills' },
     { name: 'declares an unsafe name', skills: ['maintainer-fixture'], declare: ['../maintainer-fixture'], code: 'invalid-maintainer-skills' },
     { name: 'declares a name twice', skills: ['maintainer-fixture'], declare: ['maintainer-fixture', 'maintainer-fixture'], code: 'invalid-maintainer-skills' },
-    { name: 'declaration is not a list', skills: ['maintainer-fixture'], declare: 'maintainer-fixture', code: 'invalid-maintainer-skills' },
+    { name: 'declaration is not a list', skills: ['maintainer-fixture'], replace: 'maintainer-fixture', code: 'invalid-maintainer-skills' },
     { name: 'one declared and one undeclared extra skill', skills: ['maintainer-fixture', 'stray-fixture'], declare: ['maintainer-fixture'], code: 'invalid-bundled-core' }
   ];
   try {

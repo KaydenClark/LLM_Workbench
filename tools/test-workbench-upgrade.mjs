@@ -212,11 +212,14 @@ function releaseWithExtraSkill(parent, declare) {
   const bundle = path.join(parent, 'release');
   const cloned = spawnSync('git', ['clone', '-q', '--no-local', root, bundle], { cwd: parent, encoding: 'utf8' });
   assert.equal(cloned.status, 0, cloned.stderr);
-  write(bundle, 'workbench/skills/maintainer-fixture/SKILL.md', '---\nname: maintainer-fixture\ndescription: Fixture maintainer skill.\n---\n\n# maintainer-fixture\n');
+  const skill = declare ? 'maintainer-fixture' : 'stray-fixture';
+  write(bundle, `workbench/skills/${skill}/SKILL.md`, `---\nname: ${skill}\ndescription: Fixture lane skill.\n---\n\n# ${skill}\n`);
   if (declare) {
+    // Add to whatever the release already declares, so the fixture holds once
+    // this repository declares real maintainer skills.
     const manifestPath = path.join(bundle, 'workbench', 'manifest.json');
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-    manifest.maintainerSkills = ['maintainer-fixture'];
+    manifest.maintainerSkills = [...(manifest.maintainerSkills ?? []), skill];
     fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
   }
   assert.equal(spawnSync('git', ['add', '-A'], { cwd: bundle }).status, 0);
