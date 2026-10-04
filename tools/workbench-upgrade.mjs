@@ -3,14 +3,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { collections, coreSkills, validateManifest } from '../workbench/tools/workbench-layout.mjs';
+import { collections, validateManifest } from '../workbench/tools/workbench-layout.mjs';
 import { sourceIdentity } from './workbench-tools.mjs';
+import { bundledSourceFailure } from './maintainer-skills.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 // S-00V: the core skills ship in the room. The one-time upgrade lays the
 // skills lane down through Adoption's migration from this release's own lane
-// and never reads or replaces skills in the provider home.
-const sourceRoot = path.join(root, 'workbench', 'skills');
+// (`workbench/skills`) and never reads or replaces skills in the provider home.
 const adoptionTool = path.join(root, 'tools', 'workbench-adoption.mjs');
 
 function lstatOrNull(target) {
@@ -51,15 +51,12 @@ function parseOptions(args) {
 }
 
 
+// S-004C TK-006L: the lane holds exactly the core skills plus any maintainer
+// skills this checkout's manifest declares; the room's lane receives only the
+// core, through Adoption's lane install.
 function validateSource() {
-  const names = fs.readdirSync(sourceRoot, { withFileTypes: true }).filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
-  if (JSON.stringify(names) !== JSON.stringify([...coreSkills].sort())) {
-    return fail('invalid-bundled-core', 'The checked-out LLM Workbench skills directory must contain exactly the required core skills.');
-  }
-  for (const skill of coreSkills) if (!lstatOrNull(path.join(sourceRoot, skill, 'SKILL.md'))?.isFile()) {
-    return fail('invalid-bundled-core', `Bundled skill ${skill} is missing SKILL.md.`);
-  }
-  return null;
+  const failure = bundledSourceFailure(root);
+  return failure ? fail(failure.code, failure.message, failure.details) : null;
 }
 
 // Both modes lay the skills lane down inside the room from this release; the
