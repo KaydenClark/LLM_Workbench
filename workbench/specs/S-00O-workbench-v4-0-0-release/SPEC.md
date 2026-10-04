@@ -7,7 +7,7 @@
 **Stance:** Builder
 **Updated:** 2026-10-04
 **Catalog description:** Reconcile the v4 build scope and delivery proof: WBID, JSON Taskboard, workflow controls, GitHub coordination, direct Blueprint Tasks and feature capture, followed by the Template upgrade gate, the Puffer Pond release proof and the owner's main-readiness acts.
-**Blockers:** Release execution waits on agent-owned v4 build delivery (see Current release state — 2026-10-04): the remaining build Specs, the GitHub Coordination package (S-003P active; S-003Q to S-003V planned with no Tasks), a direct Blueprint Task owner the Director still has to allocate, the integration target binding carried into S-00J, and the release-proof Spec S-004I. Release direction is settled; the only open owner decisions are GitHub Projects (Grill Board GB-0023) and claim-mechanism coexistence (GB-0025). The PC test is an owner act at main readiness, never a blocker.
+**Blockers:** Release execution waits on agent-owned v4 build delivery (see Current release state — 2026-10-04): the remaining build Specs, the GitHub Coordination package (S-003P active; S-003Q to S-003V planned with no Tasks), a direct Blueprint Task owner the Director still has to allocate, the integration target binding carried into S-00J, and the release-proof Spec S-004I. Release direction is settled; the open owner decisions this record depends on are GitHub Projects (Grill Board GB-0023), claim-mechanism coexistence (GB-0025) and the release-proof decision record's verb-list correction (GB-0026). The PC test is an owner act at main readiness, never a blocker.
 **Latest event:** 2026-10-04: the v3 release records S-014, S-022, S-050 and S-054 were superseded, S-052 TK-004 moved into the owner's PC test at v4 main readiness, and this Spec's remaining work was restated against live evidence.
 **Next gate:** Agents deliver the remaining v4 build Specs and the S-004I release proof, then run TK-001 (build delivery and self-drift check). Owner acts come last: Human QA approvals, the PC test and main promotion in both repositories.
 
@@ -146,9 +146,9 @@ workbench" that the WF-11 answer requires. This Spec already defaulted the
 WF-11 target to the Template unless the owner named another, and DDR-000Q
 names the Template. TK-004 is therefore carried out by S-004I's proof.
 
-**Owner decisions still open.** Searched the ledger, DDRs, Grill Board answers
-and the owner's messages; no answer exists for these two, and both are already
-on the Grill Board:
+**Owner decisions still open that this record depends on.** Searched the
+ledger, DDRs, Grill Board answers and the owner's messages; no answer exists
+for these three, and all three are already on the Grill Board:
 
 - Is GitHub Projects a mandatory v4 requirement (GB-0023)? His 2026-10-02 words
   ("Yes please on the github issues and projects") were read once as "Projects
@@ -156,6 +156,16 @@ on the Grill Board:
 - May the remote-tip claim and the Issue claim coexist for different items
   during the transition (GB-0025)? He set claim authority per item of work on
   2026-10-02, but did not answer coexistence.
+- Does he confirm correcting the release-proof decision record
+  ([DDR-000Q](../../docs/ddr/000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md))
+  so its verb list matches the open verb set and the Journey correction he
+  confirmed on 2026-10-03 (GB-0026, raised by S-004G)? DDRs are
+  owner-confirmed, so the S-004I proof plan reads the stale verbs until he
+  answers.
+
+The other open owner-decision items on the Grill Board (17 at this change)
+belong to their own Specs and gate those Specs, not this record directly; the
+board's `pending` list is their live view.
 
 **Owner acts by Contract**, not blockers and not questions:
 
@@ -566,6 +576,7 @@ workflow is owned by S-00P, not here.
 | 2026-10-02 | none | Owner decisions recorded: single-owner v4 audience; GitHub trusted actor policy, write floor and per-item claim authority carried into the GitHub coordination capability Specs and the proposed decision record | Promotion only; no runtime proof claimed | This Spec, the GitHub coordination Specs named, the proposed GitHub coordination decision record and the GitHub Coordination Wiki article | Structured-record fields and validation undefined; coexistence of both claim mechanisms for different items undecided; the Projects requirement is still open |
 | 2026-10-04 | spec | Remaining v4 release work restated against live evidence; v3 release records superseded | Read at integration 46ad978: ledger (E-3, E-4A, E-9, WF-11, WF-12, CAND-N, FND-Q16), DDR-000M/000P/000Q, Grill Board items and answers, dependency Spec headers and Task states, owner messages of 2026-09-23 and 2026-10-04; render and doctor on the committed candidate | Header, new Current release state section, capability map rows, Dependencies, TK-001 blocker (`S-00P:delivered`) and TK-004 target reconciled; S-014, S-022, S-050 and S-054 superseded; S-052 TK-004 moved into the owner PC test | Build delivery, the direct-Task owner allocation, S-004I, the Template gate and owner acts remain; open owner decisions GB-0023 and GB-0025 |
 | 2026-10-04 | spec | Workbench self-drift pre/post for the v3 release retirement | `self-drift.mjs --phase pre` at integration 46ad978 and `--phase post` at candidate 42353d9 report the same seven baseline findings (one stale-claim, five stale-seed, one unverified-provenance; machineResult blocked, cleanUpdate false); the hot board no longer projects S-014, S-022 or S-050, and S-052 no longer shows a blocker | Bounded manual check found current-facing drift outside this change's writers: RUNBOOK Composed round trip section still calls the real cross-provider resume S-022's release gate (RUNBOOK is held by the S-004C lane); S-00N disposition rows and S-00Q TK-0Q8 still route S-050 TK-006 and S-014/S-022 disposition as open; ledger BPR-7/7A/7B1 dated readings still say S-050 is open | Not a clean update: the drift named here belongs to its owners' writers |
+| 2026-10-04 | spec | Review correction: open owner decisions now include the release-proof verb-list correction (GB-0026) | Separate-context review of f0f9169 (Codex gpt-5.5, read-only) FAIL, one Medium: the current-state section named only GB-0023 and GB-0025 while GB-0026 is open and release-proof related; Grill Board read at the candidate shows 20 open owner-decision items | Header Blockers and the Current release state owner-decision list name GB-0023, GB-0025 and GB-0026 and scope the other 17 to their own Specs | Fresh separate-context review of the corrected candidate |
 
 ## Completion Result
 
