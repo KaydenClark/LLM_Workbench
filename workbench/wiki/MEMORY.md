@@ -234,6 +234,38 @@ Feature Articles, and a completed Spec's article at its closure point.
 
 Standalone room; no deployment wiki.
 
+## Landmark Synthesis Pages
+
+One evolving synthesis page per landmark, seeded from its question cards'
+current answers and updated whenever a card changes. Each line carries a
+one-line summary beside its link. The convention is in
+[design-concepts/README.md](design-concepts/README.md#landmark-synthesis-pages).
+
+- [Landmark: GitHub Coordination](design-concepts/landmark-github-coordination.md) - live coordination of delivery moves to GitHub Issues: who may act and what counts, per-item claim authority, composed views, room binding, and what is still open or unbuilt.
+- [Landmark: Portable Workbench](design-concepts/landmark-portable-workbench.md) - a fresh agent can clone a room, find its skills, manifest and host knowledge there, do authorized work and end clean; the accepted answers, what the owner left open and what is not yet delivered.
+- [Landmark: Workbench Boundaries](design-concepts/landmark-workbench-boundaries.md) - rooms work without the personal skill catalog and coordination machinery stays Foundry augmentation; recurring maintenance is unanswered.
+- [Landmark: Agent Autonomy](design-concepts/landmark-agent-autonomy.md) - agents finish authorized work, investigate before asking and never manufacture their next task; coordinator and Foundry machinery are deferred until single-Task execution is proven.
+- [Landmark: Workbench and Project Relationships](design-concepts/landmark-workbench-and-project-relationships.md) - the room, Project, Blueprint, Spec, Task and Chat cardinalities, and the rule for when a Master Workbench would be justified.
+- [Landmark: Artifact Types](design-concepts/landmark-artifact-types.md) - what each Workbench record is for: the eight-file root destination, one job per artifact, decision tiers and Canon, the destination-only Blueprint, and how Specs, Tasks and ADRs are retired while staying reachable.
+- [Landmark: Workbench Updates](design-concepts/landmark-workbench-updates.md) - how rooms receive upstream improvements: version contract, release-owned skills with explicit updates, ownership-origin divergence, recoverable migration, producer self-drift repair, and what a release must prove.
+- [Landmark: Verification](design-concepts/landmark-verification.md) - how Task proof, assembled-Spec review, Human QA and closure gates, plus portable-layout proof, keep evidence distinct from review and owner approval.
+- [Landmark: Skills](design-concepts/landmark-skills.md) - the tracked skills lane, release-owned versions with explicit-update-only replacement, stance and carry skills, the Wiki skills reference, and the still-unbuilt DQC skills.
+- [Landmark: Wiki](design-concepts/landmark-wiki.md) - the Wiki as evolving synthesis: the skills reference, feature articles, who keeps pages current, and where older cards conflict with the newer Wiki decision.
+- [Landmark: Workbench Workflow](design-concepts/landmark-workbench-workflow.md) - the journey from idea to delivery: the Blueprint, Spec and Task chain, the Task as unit, branches and claims, review and return, integration and main control, and what newer decisions revise.
+- [Landmark: Context Map](design-concepts/landmark-context-map.md) - ordinary entry, the Lexicon-owned single Context Map, and guidebook routing, with what is deferred or not yet reflected in the controls.
+- [Landmark: Ownership Model](design-concepts/landmark-ownership-model.md) - every kind of truth has an identifiable owner, separate from authority to act: the three-carrier Contract, claim-level Governance Planes, and the planned ownership map.
+- [Landmark: Durable Knowledge](design-concepts/landmark-durable-knowledge.md) - Specs and Tasks as scaffolding, retirement and capture, feature articles, promotion of confirmed answers, and how the Tracker and Wiki keep links recoverable.
+- [Landmark: Grilling and Shared Understanding](design-concepts/landmark-grilling-and-shared-understanding.md) - how an idea becomes a confirmed shared concept and reaches its durable owners: working versus confirmed versus promoted, where pre-delivery understanding lives, and open conflicts with later decisions.
+- [Landmark: Handoffs](design-concepts/landmark-handoffs.md) - handoffs as readable Markdown that preserve the named scope, cold continuation through existing owners, notes as transport, and where handoff authority answers conflict with current controls.
+- [Landmark: Taskboard](design-concepts/landmark-taskboard.md) - a generated six-lane board that projects Spec and Task state, one shared lane calculation, review and Complete cleanup rules, and `sitrep`, with delivery status stated honestly.
+- [Landmark: Agent Stances](design-concepts/landmark-agent-stances.md) - the four portable stance skills change method, not authority, and the Spec and Task set the normal stance; routes to the Roles and stances article.
+- [Landmark: Notepads](design-concepts/landmark-notepads.md) - what working notes and handoffs preserve, that a notepad belongs to its objective, promote-before-end with temporary committed transport, and where pre-delivery understanding lives.
+- [Landmark: Session Transport](design-concepts/landmark-session-transport.md) - promote before end with notes allowed to travel temporarily, optional private Git transport, and private recovery material kept out of the public tree.
+- [Landmark: Genesis and Adoption](design-concepts/landmark-genesis-and-adoption.md) - the three entry routes (Genesis, Adoption, update), what each preserves, shadow retirement, and the staged Template-proof path to a personalized room.
+- [Landmark: Workbench Template](design-concepts/landmark-workbench-template.md) - what the reference Template provides, the upgrade each version must prove, staged personalization, and the fixture exercises.
+- [Landmark: Harness Feedback Review](design-concepts/landmark-harness-feedback-review.md) - chat-only Round One precedes reports, reports live in the feedback lane without repairing their target, every finding gets one disposition, and cost and outcome measurement belong to the audit workbench.
+- [Landmark: Landmark Tracker](design-concepts/landmark-landmark-tracker.md) - the four-piece model, card and landmark lifecycle, step distributions and maintenance, routing to the Landmark Tracker concept article for the model itself.
+
 ## Feature Articles
 
 One article per delivered capability, named for what it delivers. Each line

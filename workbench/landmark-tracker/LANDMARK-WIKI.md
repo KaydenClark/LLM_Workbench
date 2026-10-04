@@ -141,3 +141,19 @@ Migration Spec replaced that ban with this name-and-context rule
 (`landmark-bare-id`); the Landmark Records Spec and Landmark Tracker Foundation
 Spec keep their original requirement text as history and carry an evidence row
 for the change.
+
+Landmark synthesis pages: each landmark's page lives in
+`workbench/wiki/design-concepts/` as `landmark-<title>.md`, is routed from the
+Wiki router, and is validated with this command; its convention is in the
+[design-concepts README](../wiki/design-concepts/README.md#landmark-synthesis-pages).
+`tools/test-landmark-wiki.mjs` checks that every landmark record has exactly one
+routed page that passes this rule.
+
+Assessment boundary: the Tracker's claim and documentation assessment
+(`revise --claim-evidence`, `--assess ... --evidence`) records the evidence
+reference an operator or agent names, as `<artifact>@<revision>`, and derives a
+claim's `supported`/`affected` status from record revisions; `rebuild` does not
+read Wiki bytes. A synthesis page can be named as that evidence, but nothing
+yet compares a card's expected claims with a page's actual bytes. Doing so is a
+later delivery decision of the Landmark Records Spec, not a property of these
+pages.
