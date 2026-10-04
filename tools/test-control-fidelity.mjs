@@ -1096,3 +1096,32 @@ test('TK-005M: an old-shape room is told which differences are a template genera
   fs.rmSync(previous, { recursive: true, force: true });
   fs.rmSync(project, { recursive: true, force: true });
 });
+
+// S-004C TK-005N: once the carriers have their pointer-brief shape, the
+// Lexicons and the README describe it as delivered, not as a planned future
+// shape, route an operation through the Runbook operations index to its skill,
+// and make the review-independence example reachable through all three
+// carriers: AGENTS states the rule, the Runbook index points to the skill that
+// prepares, records and checks it, and the Lexicon says what counts as
+// independent review and links to both.
+test('TK-005N: both Lexicons and the README describe the delivered carrier shape and route operations through the Runbook index', () => {
+  for (const [label, relative] of [['root', 'LEXICON.md'], ['template', 'templates/LEXICON.md']]) {
+    const lexicon = read(root, relative);
+    for (const stale of [/their rewrite is planned/, /As the accepted destination, a skill/, /left to the Contract carrier rewrite/, /follow it as the accepted destination/, /is the Contract carrier rewrite's work/]) {
+      assert.doesNotMatch(lexicon, stale, `${label} Lexicon still presents the carrier shape as future: ${stale}`);
+    }
+    assert.match(lexicon, /The ordinary entry route is `AGENTS\.md` -> the \[`RUNBOOK\.md` operations index\]\(RUNBOOK\.md#operations-index\) -> `LEXICON\.md`\./, `${label} Lexicon names the entry route through the Runbook index`);
+    const row = (start) => lexicon.split('\n').find((line) => line.startsWith(start)) ?? '';
+    assert.match(row('| Operations and procedures |'), /RUNBOOK\.md#operations-index/, `${label} Context Map routes operations through the Runbook index`);
+    assert.match(row('| Recovery after interruption or failure |'), /RUNBOOK\.md#operations-index/, `${label} Context Map routes recovery through the Runbook index`);
+    assert.match(row('| **Root files** |'), /Runbook is an index of operations/, `${label} Root files row states the delivered Runbook shape`);
+    assert.match(row('| **Skill and host adapter** |'), /operations index row points to/, `${label} Skill row states that a pointed lane skill binds`);
+    const review = row('| **Review** |');
+    for (const target of ['AGENTS.md#git-rules', 'RUNBOOK.md#operations-index', 'workbench/skills/code-review/SKILL.md#independent-review-boundaries']) {
+      assert.ok(review.includes(`(${target})`), `${label} Review row links ${target} for the review-independence example`);
+    }
+  }
+  const readme = read(root, 'README.md');
+  assert.doesNotMatch(readme, /Follow AGENTS\.md -> RUNBOOK\.md -> LEXICON\.md/, 'README no longer names the old entry route');
+  assert.match(readme, /AGENTS\.md -> the RUNBOOK\.md operations index -> LEXICON\.md/, 'README names the entry route through the Runbook index');
+});
