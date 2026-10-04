@@ -92,7 +92,7 @@ belong to their individual Specs as they are authored.
 
 - [Workbench v4.0.0 Release (S-00O)](../specs/S-00O-workbench-v4-0-0-release/SPEC.md) - current release work
 - [Superseded v3.2.0 release record (S-050)](../specs/S-050-workbench-v3-2-0-release/SPEC.md) - keeps the reconciled v3.2 scope and complete historical inventory
-- [V4 integration decision and progress reconciliation](../specs/S-00O-workbench-v4-0-0-release/INTEGRATION-RECONCILIATION.md) - the receipt of the v4.0.0 Workbench Release (S-00O) that identifies recovered sources, branch-only work and remaining gaps
+- [V4 integration decision and progress reconciliation](../specs/S-00O-workbench-v4-0-0-release/INTEGRATION-RECONCILIATION.md) - the receipt of the Workbench v4.0.0 Release (S-00O) that identifies recovered sources, branch-only work and remaining gaps
 
 Follow the superseded record's named owners for skill ownership/compatibility,
 optional private session transport and the configured-host capability floor.
