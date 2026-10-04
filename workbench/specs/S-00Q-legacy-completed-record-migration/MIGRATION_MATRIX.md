@@ -29,7 +29,7 @@ Result: **PASS for individual article preparation**, bound to the article hashes
 
 ### S-001: Spec-Centered Progressive Disclosure
 
-Article: [Spec-Centered Progressive Disclosure](../../wiki/design-concepts/spec-S-001-progressive-disclosure.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-001-progressive-disclosure/SPEC.md`.
+Article: [Spec-Centered Progressive Disclosure](../../wiki/features/spec-centered-progressive-disclosure.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-001-progressive-disclosure/SPEC.md`.
 
 Progressive disclosure keeps ordinary entry small: read the agent contract, follow the Runbook and Lexicon routes, then load the assigned capability and its relevant source. A Spec carries the assignment and its proof; the hot Taskboard derives an operational view. Reading an entire historical catalog is not a prerequisite for doing one bounded piece of work.
 
@@ -47,7 +47,7 @@ Consumer snapshot: 2 occurrences. Article semantic review: **passed for core cap
 
 ### S-002: Held-Out Path-Safety Evaluation
 
-Article: [Held-Out Path-Safety Evaluation](../../wiki/design-concepts/spec-S-002-heldout-evaluation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-002-heldout-evaluation/SPEC.md`.
+Article: [Held-Out Path-Safety Evaluation](../../wiki/features/held-out-path-safety-evaluation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-002-heldout-evaluation/SPEC.md`.
 
 The held-out task adds a security-oriented path-handling domain beside the development task. Its grader checks the produced repository and transcript without using the harness condition as an input to the grade. Keeping the held-out seam separate reduces the temptation to optimize only for familiar development fixtures.
 
@@ -65,7 +65,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-004: Dependency-Safe Direct Claiming
 
-Article: [Dependency-Safe Direct Claiming](../../wiki/design-concepts/spec-S-004-safe-direct-claim.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-004-safe-direct-claim/SPEC.md`.
+Article: [Dependency-Safe Direct Claiming](../../wiki/features/dependency-safe-direct-claiming.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-004-safe-direct-claim/SPEC.md`.
 
 Direct claiming must enforce the same dependencies as selection. An agent may already know its assigned Spec and skip a general selector; that shortcut must not let it claim a ready Task whose prerequisite is unfinished.
 
@@ -83,7 +83,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-005: Consistent Bootstrap Ownership Guidance
 
-Article: [Consistent Bootstrap Ownership Guidance](../../wiki/design-concepts/spec-S-005-bootstrap-doc-alignment.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-005-bootstrap-doc-alignment/SPEC.md`.
+Article: [Consistent Bootstrap Ownership Guidance](../../wiki/features/consistent-bootstrap-ownership-guidance.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-005-bootstrap-doc-alignment/SPEC.md`.
 
 A new project inherits its operating model through public setup instructions and the copy-ready Genesis and Adoption procedures. If those entry points use obsolete ownership language, they can recreate the very duplication that the harness removed internally.
 
@@ -101,7 +101,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-006: Evidence-Gated Harness Feedback
 
-Article: [Evidence-Gated Harness Feedback](../../wiki/design-concepts/spec-S-006-feedback-automation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-006-feedback-automation/SPEC.md`.
+Article: [Evidence-Gated Harness Feedback](../../wiki/features/evidence-gated-harness-feedback.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-006-feedback-automation/SPEC.md`.
 
 The feedback loop separates candidate construction from an independent integration decision. Discovery reads the declared feedback lane first, then supported legacy feedback filenames. It excludes noncanonical project copies, normalizes origins, ranks candidates by impact and recurrence, and selects no new candidate while a pending fingerprint already exists.
 
@@ -119,7 +119,7 @@ Consumer snapshot: 2 occurrences. Article semantic review: **passed for core cap
 
 ### S-007: Import-Safe Feedback Helper Entry
 
-Article: [Import-Safe Feedback Helper Entry](../../wiki/design-concepts/spec-S-007-feedback-helper-import.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-007-feedback-helper-import/SPEC.md`.
+Article: [Import-Safe Feedback Helper Entry](../../wiki/features/import-safe-feedback-helper-entry.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-007-feedback-helper-import/SPEC.md`.
 
 A JavaScript file can be both a command-line program and an imported library. Its entry guard must decide whether to run the CLI without breaking callers that only want its exported decision functions.
 
@@ -137,7 +137,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-008: Portable Verification Boundaries
 
-Article: [Portable Verification Boundaries](../../wiki/design-concepts/spec-S-008-windows-verification-portability.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-008-windows-verification-portability/SPEC.md`.
+Article: [Portable Verification Boundaries](../../wiki/features/portable-verification-boundaries.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-008-windows-verification-portability/SPEC.md`.
 
 Cross-platform verification needs stable serialized contracts without rewriting the host's real filesystem paths. Context-pack labels normalize path separators to forward slashes, while paths used for I/O retain native handling. Spec generated-region comparison normalizes CRLF to LF, so an equivalent checkout does not become stale solely because of line-ending style.
 
@@ -155,7 +155,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-009: Adoption When Git Writes Are Unavailable
 
-Article: [Adoption When Git Writes Are Unavailable](../../wiki/design-concepts/spec-S-009-git-write-constrained-adoption.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-009-git-write-constrained-adoption/SPEC.md`.
+Article: [Adoption When Git Writes Are Unavailable](../../wiki/features/adoption-when-git-writes-are-unavailable.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-009-git-write-constrained-adoption/SPEC.md`.
 
 A host can allow ordinary document edits while refusing branch, stash or commit writes in Git metadata. Adoption must distinguish that capability limit from a safe, completed migration.
 
@@ -173,7 +173,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-00A: S-00A: Blueprint, Active ADRs And The Context Map
 
-Article: [S-00A: Blueprint, Active ADRs And The Context Map](../../wiki/design-concepts/spec-S-00A-blueprint-active-adr-and-context-map.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md`.
+Article: [S-00A: Blueprint, Active ADRs And The Context Map](../../wiki/features/blueprint-active-adrs-and-the-context-map.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md`.
 
 The Blueprint describes the desired finished product. Accepted active ADR decisions carry architectural Canon; their rationale and historical alternatives remain evidence. The Lexicon routes questions to owners through its Context Map. A Spec describes a bounded destination derived from that direction and verified Actuality.
 
@@ -191,7 +191,7 @@ Consumer snapshot: 3 occurrences. Article semantic review: **passed for core cap
 
 ### S-00B: S-00B: Workbench Template Reformation
 
-Article: [S-00B: Workbench Template Reformation](../../wiki/design-concepts/spec-S-00B-workbench-template-reformation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00B-workbench-template-reformation/SPEC.md`.
+Article: [S-00B: Workbench Template Reformation](../../wiki/features/copyable-workbench-template-reference-room.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00B-workbench-template-reformation/SPEC.md`.
 
 The reference room was changed from a fictional Example application into a copyable Workbench Template. A reference installation has its own controls, identity, local differences and installed-runtime provenance. Updating it requires preserving those facts rather than replacing the room with upstream generic files.
 
@@ -209,7 +209,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-00C: S-00C: Project Evidence And Blueprint Grilling Preparation
 
-Article: [S-00C: Project Evidence And Blueprint Grilling Preparation](../../wiki/design-concepts/spec-S-00C-project-evidence-and-blueprint-grilling.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00C-project-evidence-and-blueprint-grilling/SPEC.md`.
+Article: [S-00C: Project Evidence And Blueprint Grilling Preparation](../../wiki/features/project-evidence-preparation-for-blueprint-grilling.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00C-project-evidence-and-blueprint-grilling/SPEC.md`.
 
 The project-evidence preparation seam turns explicitly named project sources into a bounded provisional JSON grilling note. It retains source identities and uncertainty, then presents owner questions without answering them.
 
@@ -227,7 +227,7 @@ Consumer snapshot: 2 occurrences. Article semantic review: **passed for core cap
 
 ### S-00D: S-00D: Genesis From Blueprint And ADR Decisions
 
-Article: [S-00D: Genesis From Blueprint And ADR Decisions](../../wiki/design-concepts/spec-S-00D-genesis-from-blueprint-and-adrs.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00D-genesis-from-blueprint-and-adrs/SPEC.md`.
+Article: [S-00D: Genesis From Blueprint And ADR Decisions](../../wiki/features/genesis-from-blueprint-decisions-and-active-adrs.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00D-genesis-from-blueprint-and-adrs/SPEC.md`.
 
 The public derivation seam creates a new Workbench from a clean Template, a source project, a prepared grilling note and an explicit `genesis-plan-1` plan. It requires an absent destination and derives exactly one first capability from selected locked questions and active ADRs.
 
@@ -245,7 +245,7 @@ Consumer snapshot: 2 occurrences. Article semantic review: **passed for core cap
 
 ### S-00E: S-00E: Fresh Template Project Proof
 
-Article: [S-00E: Fresh Template Project Proof](../../wiki/design-concepts/spec-S-00E-fresh-template-project-proof.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00E-fresh-template-project-proof/SPEC.md`.
+Article: [S-00E: Fresh Template Project Proof](../../wiki/features/fresh-template-to-independent-project-proof.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00E-fresh-template-project-proof/SPEC.md`.
 
 A clean Template copy was used to create an independent Puffer Pond room through evidence preparation and decision-based Genesis. The demonstration then exercised a useful project Task and saved-note continuation in a fresh agent context.
 
@@ -263,7 +263,7 @@ Consumer snapshot: 4 occurrences. Article semantic review: **passed for core cap
 
 ### S-00F: S-00F: The Named Template Upgrade Release Gate
 
-Article: [S-00F: The Named Template Upgrade Release Gate](../../wiki/design-concepts/spec-S-00F-template-upgrade-release-gate.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00F-template-upgrade-release-gate/SPEC.md`.
+Article: [S-00F: The Named Template Upgrade Release Gate](../../wiki/features/named-template-upgrade-release-gate.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00F-template-upgrade-release-gate/SPEC.md`.
 
 The producer must exercise each new Workbench version in the named Workbench_Template installation before declaring release readiness. Generic generation tests alone cannot prove an installed upgrade preserves room-owned state.
 
@@ -281,7 +281,7 @@ Consumer snapshot: 3 occurrences. Article semantic review: **passed for core cap
 
 ### S-00L: S-00L: Lexicon Freshness Repair
 
-Article: [S-00L: Lexicon Freshness Repair](../../wiki/design-concepts/spec-S-00L-lexicon-freshness-repair.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00L-lexicon-freshness-repair/SPEC.md`.
+Article: [S-00L: Lexicon Freshness Repair](../../wiki/features/lexicon-freshness-repair.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00L-lexicon-freshness-repair/SPEC.md`.
 
 A terminology router also contains claims that can go stale: release lineage, a current candidate version, source boundaries and its verification stamp. S-00L repaired those claims without changing the meaning of the affected definitions.
 
@@ -299,7 +299,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-010: Canonical Evaluator Invocation
 
-Article: [Canonical Evaluator Invocation](../../wiki/design-concepts/spec-S-010-canonical-evaluator-entry.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-010-canonical-evaluator-entry/SPEC.md`.
+Article: [Canonical Evaluator Invocation](../../wiki/features/canonical-evaluator-invocation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-010-canonical-evaluator-entry/SPEC.md`.
 
 A successful process exit is not enough if a directly invoked evaluator never runs. A checkout reached through a path alias can make the command-line script path differ textually from its module URL even though both identify the same file.
 
@@ -316,7 +316,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-012: Reproducible Adoption Provenance
 
-Article: [Reproducible Adoption Provenance](../../wiki/design-concepts/spec-S-012-adoption-provenance-proof.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-012-adoption-provenance-proof/SPEC.md`.
+Article: [Reproducible Adoption Provenance](../../wiki/features/reproducible-adoption-provenance.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-012-adoption-provenance-proof/SPEC.md`.
 
 Adoption proof must survive the original checkout and conversation. A cold reviewer needs the published source identity and executable reconstruction steps, not a statement that a local run once passed.
 
@@ -334,7 +334,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-013: Verified Automation Run Outcomes
 
-Article: [Verified Automation Run Outcomes](../../wiki/design-concepts/spec-S-013-automation-run-outcomes.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-013-automation-run-outcomes/SPEC.md`.
+Article: [Verified Automation Run Outcomes](../../wiki/features/verified-automation-run-outcomes.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-013-automation-run-outcomes/SPEC.md`.
 
 Run accounting distinguishes useful work, genuine absence of work and an interrupted attempt. The helper accepts exactly six categories: `actionable`, `worked`, `idle`, `owner_gate`, `collision` and `infrastructure_error`. It requires a nonempty reason and a nonnegative integer previous idle count. Unknown categories fail visibly.
 
@@ -352,7 +352,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-015: Operable Genesis Readiness
 
-Article: [Operable Genesis Readiness](../../wiki/design-concepts/spec-S-015-portable-v3-release-audit-recovery.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-015-portable-v3-release-audit-recovery/SPEC.md`.
+Article: [Operable Genesis Readiness](../../wiki/features/operable-genesis-readiness.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-015-portable-v3-release-audit-recovery/SPEC.md`.
 
 A scaffold is not ready merely because expected filenames exist. Genesis readiness must establish that a cold agent can follow the declared support layout, read filled controls and select executable work.
 
@@ -370,7 +370,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-020: Bounded Team Coordination (S-020)
 
-Article: [Bounded Team Coordination (S-020)](../../wiki/design-concepts/spec-S-020-spec-native-team-coordination.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-020-spec-native-team-coordination/SPEC.md`.
+Article: [Bounded Team Coordination (S-020)](../../wiki/features/bounded-team-coordination.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-020-spec-native-team-coordination/SPEC.md`.
 
 A small agent team can work concurrently when its assignments have disjoint edit paths. A coordinator partitions the assigned work, names each lane's output and verification, receives proof, and consolidates shared state once. The useful unit of independence is the file and dependency boundary: separate worktrees preserve checkouts, but do not make competing edits to the same runtime or control independent.
 
@@ -388,7 +388,7 @@ Consumer snapshot: 0 occurrences. Article semantic review: **passed for core cap
 
 ### S-021: Portable Workbench Architecture (S-021)
 
-Article: [Portable Workbench Architecture (S-021)](../../wiki/design-concepts/spec-S-021-portable-workbench-v3.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-021-portable-workbench-v3/SPEC.md`.
+Article: [Portable Workbench Architecture (S-021)](../../wiki/features/portable-workbench-installation-adoption-and-upgrade.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-021-portable-workbench-v3/SPEC.md`.
 
 A Workbench is a filled project with root controls and a manifest-routed support area. Genesis creates a project, Adoption reconciles an existing project, and explicit upgrades carry managed components forward. LLM Workbench is the source product; ordinary operation does not depend on Foundry or a private machine's topology.
 
@@ -406,7 +406,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-023: Manifest And Managed Runtime (S-023)
 
-Article: [Manifest And Managed Runtime (S-023)](../../wiki/design-concepts/spec-S-023-manifest-and-managed-runtime.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-023-manifest-schema-2-and-managed-runtime/SPEC.md`.
+Article: [Manifest And Managed Runtime (S-023)](../../wiki/features/manifest-schema-2-lanes-and-managed-runtime.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-023-manifest-schema-2-and-managed-runtime/SPEC.md`.
 
 Schema 2 declares six support lanes—docs, specs, wiki, sessions, feedback and tools—and the machine-used collections inside them. Consumers resolve these bindings through workbench-paths. An application's root tools directory does not become harness-owned merely because the Workbench has a managed tools lane.
 
@@ -424,7 +424,7 @@ Consumer snapshot: 0 occurrences. Article semantic review: **passed for core cap
 
 ### S-024: Governance Claims And Diagnostics (S-024)
 
-Article: [Governance Claims And Diagnostics (S-024)](../../wiki/design-concepts/spec-S-024-governance-core-and-diagnostics.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-024-governance-core-adrs-and-diagnostics/SPEC.md`.
+Article: [Governance Claims And Diagnostics (S-024)](../../wiki/features/governance-planes-adr-decisions-and-scoped-diagnostics.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-024-governance-core-adrs-and-diagnostics/SPEC.md`.
 
 Governance planes classify the role a claim plays in an operation. Intent, Canon, Grounding, Enduring Context, Actuality and Projection do not label entire files as authorities. A Spec can contain accepted requirements, observed results and derived views without making those claims interchangeable.
 
@@ -442,7 +442,7 @@ Consumer snapshot: 0 occurrences. Article semantic review: **passed for core cap
 
 ### S-025: Portable Wiki Knowledge (S-025)
 
-Article: [Portable Wiki Knowledge (S-025)](../../wiki/design-concepts/spec-S-025-portable-wiki-and-design-concepts.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-025-portable-wiki-and-design-concepts/SPEC.md`.
+Article: [Portable Wiki Knowledge (S-025)](../../wiki/features/portable-wiki-knowledge-and-collections.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-025-portable-wiki-and-design-concepts/SPEC.md`.
 
 The Wiki holds durable explanations with explicit source links. MEMORY.md is its one router; SCHEMA.md and lane guidance define shape, maintenance and handling. Lexicon directs readers to the Wiki when they need a concept explained, and to work owners when they need current assignment or acceptance state.
 
@@ -460,7 +460,7 @@ Consumer snapshot: 0 occurrences. Article semantic review: **passed for core cap
 
 ### S-026: Workflow Composition And Cold Continuation (S-026)
 
-Article: [Workflow Composition And Cold Continuation (S-026)](../../wiki/design-concepts/spec-S-026-workflow-composition-and-cold-resume.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-026-workflow-composition-and-cold-resume/SPEC.md`.
+Article: [Workflow Composition And Cold Continuation (S-026)](../../wiki/features/workflow-composition-and-cold-continuation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-026-workflow-composition-and-cold-resume/SPEC.md`.
 
 A composed workflow carries planning into implementation without depending on the original chat. Controls, the assigned Spec and Tasks, linked knowledge, named verification and a recoverable Git commit provide the continuation route. Skills resolve support paths through the manifest rather than importing private directory assumptions.
 
@@ -478,7 +478,7 @@ Consumer snapshot: 0 occurrences. Article semantic review: **passed for core cap
 
 ### S-027: Assigned Work, Portable Stances And Delivery Boundaries
 
-Article: [Assigned Work, Portable Stances And Delivery Boundaries](../../wiki/design-concepts/spec-S-027-workbench-v3-1-1-boundaries.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md`.
+Article: [Assigned Work, Portable Stances And Delivery Boundaries](../../wiki/features/assigned-work-portable-stances-and-delivery-boundaries.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md`.
 
 The normal entry route is `AGENTS.md -> RUNBOOK.md -> LEXICON.md`, followed by the assigned capability and only its relevant context. The Blueprint is loaded for architecture and product direction. An agent investigates missing information inside its assignment and does not invent a new queue item merely because it reaches a gap.
 
@@ -496,7 +496,7 @@ Consumer snapshot: 5 occurrences. Article semantic review: **passed for core cap
 
 ### S-028: Feedback And Migration Integrity
 
-Article: [Feedback And Migration Integrity](../../wiki/design-concepts/spec-S-028-harness-feedback-integrity.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-028-harness-feedback-integrity/SPEC.md`.
+Article: [Feedback And Migration Integrity](../../wiki/features/feedback-and-migration-integrity.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-028-harness-feedback-integrity/SPEC.md`.
 
 Integrity checks must exercise the paths that consume a declaration rather than ban every occurrence of a legacy-looking string. S-028 rejected a blanket lane-literal linter because migration input, fixtures and explanatory text can legitimately name older locations.
 
@@ -514,7 +514,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-029: Declared Integration And Recoverable Completion
 
-Article: [Declared Integration And Recoverable Completion](../../wiki/design-concepts/spec-S-029-declared-integration-branch.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-029-declared-integration-branch/SPEC.md`.
+Article: [Declared Integration And Recoverable Completion](../../wiki/features/declared-integration-and-recoverable-completion.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-029-declared-integration-branch/SPEC.md`.
 
 A review boundary needs a real merge destination. The manifest declares `git.defaultBranch` and `git.integrationBranch` by exact name; controls and runtime resolve that declaration rather than assuming every room uses the same spelling. Exact ref enumeration avoids accepting `Integration` as `integration` merely because a filesystem is case-insensitive. `HEAD` is not a valid declared branch name.
 
@@ -532,7 +532,7 @@ Consumer snapshot: 3 occurrences. Article semantic review: **passed for core cap
 
 ### S-030: Mechanical Permission Scope And Declared Lanes
 
-Article: [Mechanical Permission Scope And Declared Lanes](../../wiki/design-concepts/spec-S-030-permission-scope-matches-lanes.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-030-permission-scope-matches-lanes/SPEC.md`.
+Article: [Mechanical Permission Scope And Declared Lanes](../../wiki/features/mechanical-permission-scope-and-declared-lanes.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-030-permission-scope-matches-lanes/SPEC.md`.
 
 The permission file and prose edit scope must describe the same effective boundary. A room can otherwise pass document checks while its host asks on every record write or denies a declared authorship lane.
 
@@ -550,7 +550,7 @@ Consumer snapshot: 2 occurrences. Article semantic review: **passed for core cap
 
 ### S-031: Installed Skill Identity And Inspection
 
-Article: [Installed Skill Identity And Inspection](../../wiki/design-concepts/spec-S-031-installed-skill-generation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-031-installed-skill-generation/SPEC.md`.
+Article: [Installed Skill Identity And Inspection](../../wiki/features/installed-skill-identity-and-inspection.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-031-installed-skill-generation/SPEC.md`.
 
 A canonical skill source and an installed copy can diverge. A review must name the path and commit it actually read; text from a user discovery root cannot be attributed to the release merely because the skill name matches.
 
@@ -568,7 +568,7 @@ Consumer snapshot: 3 occurrences. Article semantic review: **passed for core cap
 
 ### S-032: Upgrade Layout Without Replacing Skills
 
-Article: [Upgrade Layout Without Replacing Skills](../../wiki/design-concepts/spec-S-032-upgrade-route-and-source-provenance.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-032-upgrade-route-and-source-provenance/SPEC.md`.
+Article: [Upgrade Layout Without Replacing Skills](../../wiki/features/upgrade-layout-without-replacing-skills.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-032-upgrade-route-and-source-provenance/SPEC.md`.
 
 An already-adopted legacy room needs an upgrade route even when replacing its installed skills is not authorized or possible. `upgrade --layout-only` performs the legacy support-root transition with presence-only skill readiness. It does not compare, mark, install, back up or replace skills. The recovery record names lifecycle upgrade, presence-only handling and an empty skill backup list. Explicit skill replacement remains a distinct, mutually exclusive mode.
 
@@ -604,7 +604,7 @@ Consumer snapshot: 2 occurrences. Article semantic review: **passed for core cap
 
 ### S-034: Control Fidelity Without Forced Uniformity
 
-Article: [Control Fidelity Without Forced Uniformity](../../wiki/design-concepts/spec-S-034-control-fidelity-report.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-034-control-fidelity-report/SPEC.md`.
+Article: [Control Fidelity Without Forced Uniformity](../../wiki/features/control-fidelity-without-forced-uniformity.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-034-control-fidelity-report/SPEC.md`.
 
 A room may deliberately diverge from its template. Fidelity reporting makes that divergence inspectable instead of treating every local rule as a defect or silently accepting lost qualifiers.
 
@@ -622,7 +622,7 @@ Consumer snapshot: 3 occurrences. Article semantic review: **passed for core cap
 
 ### S-035: Release Candidate Proof And Historical Disposition
 
-Article: [Release Candidate Proof And Historical Disposition](../../wiki/design-concepts/spec-S-035-workbench-v3-1-2-candidate.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-035-workbench-v3-1-2-candidate/SPEC.md`.
+Article: [Release Candidate Proof And Historical Disposition](../../wiki/features/release-candidate-proof-and-historical-disposition.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-035-workbench-v3-1-2-candidate/SPEC.md`.
 
 A release candidate joins capability delivery, version identity and an account of the feedback it addressed. S-035 coordinated the v3.1.2 candidate after the prerequisite capabilities were complete, measured guardrails without changing criteria, obtained exact-candidate review and proved integration containment. Its recorded PR, commit and score are historical release evidence, not the current Workbench version or a new readiness claim.
 
@@ -640,7 +640,7 @@ Consumer snapshot: 8 occurrences. Article semantic review: **passed for core cap
 
 ### S-036: Evidence-Bounded Upgrade Claims (S-036)
 
-Article: [Evidence-Bounded Upgrade Claims (S-036)](../../wiki/design-concepts/spec-S-036-evidence-corrections.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-036-v3-1-2-evidence-corrections/SPEC.md`.
+Article: [Evidence-Bounded Upgrade Claims (S-036)](../../wiki/features/evidence-bounded-upgrade-claims.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-036-v3-1-2-evidence-corrections/SPEC.md`.
 
 Upgrade reports must distinguish what a check observes from what an operator might infer. S-036 corrected an unpublished v3.1.2 candidate where permission visibility, control fidelity and source identity had been overstated. A bounded matcher that cannot interpret a restriction reports uncertainty; it does not establish that a lane is writable.
 
@@ -658,7 +658,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-037: Line-Ending-Aware Records (S-037)
 
-Article: [Line-Ending-Aware Records (S-037)](../../wiki/design-concepts/spec-S-037-line-ending-agnostic-records.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-037-line-ending-agnostic-records/SPEC.md`.
+Article: [Line-Ending-Aware Records (S-037)](../../wiki/features/line-ending-aware-records.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-037-line-ending-agnostic-records/SPEC.md`.
 
 Portable record readers must accept ordinary LF and CRLF checkouts without requiring each adopted repository to change Git settings. ADR and Wiki parsing share parseFrontmatter, so a correction at that seam applies consistently to both. Parsing normalizes a copy; writers preserve the destination's terminator to avoid an unrelated whole-file diff.
 
@@ -676,7 +676,7 @@ Consumer snapshot: 0 occurrences. Article semantic review: **passed for core cap
 
 ### S-038: Source-Checked Finding Disposition (S-038)
 
-Article: [Source-Checked Finding Disposition (S-038)](../../wiki/design-concepts/spec-S-038-upstream-finding-disposition.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-038-v3-1-2-upstream-fix-list/SPEC.md`.
+Article: [Source-Checked Finding Disposition (S-038)](../../wiki/features/source-checked-finding-disposition.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-038-v3-1-2-upstream-fix-list/SPEC.md`.
 
 An upstream finding is evidence to investigate, not an instruction to repair. S-038 reconciled the second v3.1.1 fix list into named capabilities, corrected unsupported report premises, and preserved the release account. Its eleven items were routed to S-039 through S-044; code ownership stayed with those capabilities.
 
@@ -694,7 +694,7 @@ Consumer snapshot: 2 occurrences. Article semantic review: **passed for core cap
 
 ### S-039: Installed Runtime Integrity (S-039)
 
-Article: [Installed Runtime Integrity (S-039)](../../wiki/design-concepts/spec-S-039-installed-runtime-integrity.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-039-installed-runtime-integrity/SPEC.md`.
+Article: [Installed Runtime Integrity (S-039)](../../wiki/features/installed-runtime-integrity.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-039-installed-runtime-integrity/SPEC.md`.
 
 An installed room can compare its runtime files with the hashes in its managed-tools receipt. The authoritative expected file set also matters: an empty map, omitted file or unsafe receipt key cannot be allowed to shrink verification silently. The installed workbench-layout runtime owns this check so the room does not need the product's root tools directory to inspect itself.
 
@@ -712,7 +712,7 @@ Consumer snapshot: 2 occurrences. Article semantic review: **passed for core cap
 
 ### S-040: Skill Presence And Repair Routes (S-040)
 
-Article: [Skill Presence And Repair Routes (S-040)](../../wiki/design-concepts/spec-S-040-skill-gate-route-selection.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-040-skill-gate-route-selection/SPEC.md`.
+Article: [Skill Presence And Repair Routes (S-040)](../../wiki/features/skill-presence-and-repair-routes.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-040-skill-gate-route-selection/SPEC.md`.
 
 A refusal should name the supported way forward. S-040 made presence-only installation recognize a linked destination whose resolved directory already contains the skill, and made shared-skill refusal messages point to the layout-only route where applicable. A directory already present is skipped; this does not grant permission to overwrite unmanaged user content.
 
@@ -730,7 +730,7 @@ Consumer snapshot: 3 occurrences. Article semantic review: **passed for core cap
 
 ### S-041: Recorded Baseline Availability (S-041)
 
-Article: [Recorded Baseline Availability (S-041)](../../wiki/design-concepts/spec-S-041-recorded-baseline-availability.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-041-recorded-baseline-availability/SPEC.md`.
+Article: [Recorded Baseline Availability (S-041)](../../wiki/features/recorded-baseline-availability.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-041-recorded-baseline-availability/SPEC.md`.
 
 A harness-only change may encounter a target with no reproducible green application baseline for a reason the harness change cannot affect. The owner selected record-and-proceed: the owning Spec records an unavailable baseline with evidence and one of the closed reasons host-restricted, product-broken-as-found or owner-declined-on-boundary. An unknown reason is refused.
 
@@ -748,7 +748,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-042: Installed State Reporting And Repair (S-042)
 
-Article: [Installed State Reporting And Repair (S-042)](../../wiki/design-concepts/spec-S-042-installed-state-repair.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-042-installed-state-repair/SPEC.md`.
+Article: [Installed State Reporting And Repair (S-042)](../../wiki/features/installed-state-reporting-and-repair.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-042-installed-state-repair/SPEC.md`.
 
 Seeded documents and managed runtime files have different ownership. Runtime receipts assert managed-byte identity; a room may legitimately adapt seeded guidance. A separate seed-generation record therefore reports stale seed provenance without turning every local edit into runtime tampering.
 
@@ -766,7 +766,7 @@ Consumer snapshot: 4 occurrences. Article semantic review: **passed for core cap
 
 ### S-043: Diagnostics Ordered By Consequence (S-043)
 
-Article: [Diagnostics Ordered By Consequence (S-043)](../../wiki/design-concepts/spec-S-043-diagnostic-output-legibility.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-043-diagnostic-output-legibility/SPEC.md`.
+Article: [Diagnostics Ordered By Consequence (S-043)](../../wiki/features/diagnostics-ordered-by-consequence.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-043-diagnostic-output-legibility/SPEC.md`.
 
 Doctor's human-readable output groups findings by what they do: blocking, selected-slice constraints, then informational findings. Each populated group has a count. The effect leads the row's severity, so an error with blocks none is visibly distinct from a condition that prevents work.
 
@@ -784,7 +784,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-044: Adoption Preflight And Legacy Classification (S-044)
 
-Article: [Adoption Preflight And Legacy Classification (S-044)](../../wiki/design-concepts/spec-S-044-adoption-and-legacy-classification.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-044-legacy-room-classification/SPEC.md`.
+Article: [Adoption Preflight And Legacy Classification (S-044)](../../wiki/features/adoption-preflight-and-legacy-classification.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-044-legacy-room-classification/SPEC.md`.
 
 Adoption preflight reports every unreconciled root control in one refusal, with each reason, a reconcile order and a template-overwrite warning. An operator can prepare a complete correction instead of discovering one missing file on each attempt. Scaffolding is not permission to replace a project's actual controls with generic templates.
 
@@ -802,7 +802,7 @@ Consumer snapshot: 3 occurrences. Article semantic review: **passed for core cap
 
 ### S-045: Linked Follow-Up Reconciliation (S-045)
 
-Article: [Linked Follow-Up Reconciliation (S-045)](../../wiki/design-concepts/spec-S-045-linked-follow-up-reconciliation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md`.
+Article: [Linked Follow-Up Reconciliation (S-045)](../../wiki/features/linked-follow-up-reconciliation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md`.
 
 A completed result can leave an accepted obligation that needs a new owner. S-045 collected seven bounded follow-ups from S-039 through S-044 without reopening their completed implementation records. Dependencies and owner direction became executable work rather than disappearing into historical prose.
 
@@ -820,7 +820,7 @@ Consumer snapshot: 11 occurrences. Article semantic review: **passed for core ca
 
 ### S-046: S-046: JSON Notepad Foundation
 
-Article: [S-046: JSON Notepad Foundation](../../wiki/design-concepts/spec-S-046-json-notepad-foundation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-046-json-notepad-foundation/SPEC.md`.
+Article: [S-046: JSON Notepad Foundation](../../wiki/features/json-notepad-foundation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-046-json-notepad-foundation/SPEC.md`.
 
 A local JSON notepad preserves consequential context while work happens: objective, findings, corrections, uncertainty and the next authorized action. Its purpose is continuation without making the owner reconstruct lost context. The notepad is provisional evidence and never grants authority.
 
@@ -838,7 +838,7 @@ Consumer snapshot: 8 occurrences. Article semantic review: **passed for core cap
 
 ### S-047: S-047: Visible Workbench Identifiers
 
-Article: [S-047: Visible Workbench Identifiers](../../wiki/design-concepts/spec-S-047-visible-workbench-identifiers.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-047-visible-workbench-identifiers/SPEC.md`.
+Article: [S-047: Visible Workbench Identifiers](../../wiki/features/visible-workbench-identifiers.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-047-visible-workbench-identifiers/SPEC.md`.
 
 A visible identifier combines its artifact type prefix with a base-62 value. It is the identity a reader sees, not an additional hidden identity beside a label. Uniqueness is scoped to that type and Workbench; unrelated Workbenches may use the same visible label.
 
@@ -856,7 +856,7 @@ Consumer snapshot: 7 occurrences. Article semantic review: **passed for core cap
 
 ### S-048: S-048: Checkpoint Retirement And Direct Promotion
 
-Article: [S-048: Checkpoint Retirement And Direct Promotion](../../wiki/design-concepts/spec-S-048-checkpoint-retirement.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-048-checkpoint-retirement/SPEC.md`.
+Article: [S-048: Checkpoint Retirement And Direct Promotion](../../wiki/features/checkpoint-retirement-and-direct-promotion.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-048-checkpoint-retirement/SPEC.md`.
 
 Checkpoint creation was retired while existing checkpoint history and recovery references were preserved. The legacy checkpoint command is a refusal-only compatibility boundary; it does not create new copies.
 
@@ -874,7 +874,7 @@ Consumer snapshot: 6 occurrences. Article semantic review: **passed for core cap
 
 ### S-049: S-049: Assignment Ownership And Coordination Records
 
-Article: [S-049: Assignment Ownership And Coordination Records](../../wiki/design-concepts/spec-S-049-assignment-ownership-and-coordination-record.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md`.
+Article: [S-049: Assignment Ownership And Coordination Records](../../wiki/features/assignment-ownership-and-coordination-records.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md`.
 
 The Carry skill owns an assigned Spec or Task through the endpoint already authorized: recover context, execute, verify, reconcile records and deliver to the permitted integration boundary. It cannot expand the assignment or replace an owner-only decision.
 
@@ -892,7 +892,7 @@ Consumer snapshot: 3 occurrences. Article semantic review: **passed for core cap
 
 ### S-051: S-051: Core Skill Ownership And Compatibility
 
-Article: [S-051: Core Skill Ownership And Compatibility](../../wiki/design-concepts/spec-S-051-core-skill-ownership-and-compatibility.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md`.
+Article: [S-051: Core Skill Ownership And Compatibility](../../wiki/features/core-skill-ownership-and-compatibility.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md`.
 
 A core installation needs an identifiable source generation and compatible manifest policy while preserving optional shared skills and project-local ownership. Source content, installed bytes, discovery and actual native invocation are separate checks.
 
@@ -910,7 +910,7 @@ Consumer snapshot: 8 occurrences. Article semantic review: **passed for core cap
 
 ### S-053: S-053: Configured Host Capabilities
 
-Article: [S-053: Configured Host Capabilities](../../wiki/design-concepts/spec-S-053-configured-host-capabilities.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-053-configured-host-capabilities/SPEC.md`.
+Article: [S-053: Configured Host Capabilities](../../wiki/features/configured-host-capabilities.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-053-configured-host-capabilities/SPEC.md`.
 
 Configured-host conformance asks what the actual host can do at named command seams. It keeps capability, enforcement and agent reliability separate: a runner operation passing does not establish that an agent discovers the skill or reliably obeys the workflow.
 

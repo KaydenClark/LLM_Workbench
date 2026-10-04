@@ -70,6 +70,8 @@ const NAMED_FORMS = [
   ['link text names the identifier in its target', '[Landmark Records Spec](../specs/S-002A/SPEC.md)'],
   ['path slug names the identifier', '[records](../specs/S-002A-landmark-records/SPEC.md)'],
   ['reference definition names its target', '[Landmark Records Spec]: ../landmarks/LMK-000A.json'],
+  ['slug whose later segments start with a digit', 'workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md'],
+  ['slug with a version-like first segment', 'workbench/specs/S-036-v3-2-evidence-corrections/SPEC.md'],
   ['metadata path with a slug', '---\nsource_paths:\n  - workbench/specs/S-002A-landmark-records/SPEC.md\n---'],
   ['two named identifiers on one line', 'Landmark Records Spec (S-002A) and Landmark Tracker Foundation Spec (S-01T).'],
   ['bold name with identifier', '**Wiki Routing And Version Stamps** (S-00X) is delivered.'],
@@ -94,6 +96,7 @@ const BARE_FORMS = [
   ['identifier as its own link text', '[S-002A](../records/overview.md)'],
   ['link text of one word without a slug', '[records](../landmarks/LMK-000A.json)'],
   ['bare metadata value', '---\nsource_paths: [S-001]\n---'],
+  ['version-like slug with one word segment', 'https://example.invalid/ADR-0041-v3-1'],
   ['one-word slug', 'https://example.invalid/ADR-0041-history'],
   ['name-less identifier after a closing bracket', '(TK-002T) is done.'],
   ['bare code span', 'Run `S-002A` now.']
