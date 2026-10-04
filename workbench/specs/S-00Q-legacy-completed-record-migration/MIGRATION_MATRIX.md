@@ -83,7 +83,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-005: Consistent Bootstrap Ownership Guidance
 
-Article: [Consistent Bootstrap Ownership Guidance](../../wiki/design-concepts/spec-S-005-bootstrap-doc-alignment.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-005-bootstrap-doc-alignment/SPEC.md`.
+Article: [Consistent Bootstrap Ownership Guidance](../../wiki/features/consistent-bootstrap-ownership-guidance.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-005-bootstrap-doc-alignment/SPEC.md`.
 
 A new project inherits its operating model through public setup instructions and the copy-ready Genesis and Adoption procedures. If those entry points use obsolete ownership language, they can recreate the very duplication that the harness removed internally.
 
@@ -101,7 +101,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-006: Evidence-Gated Harness Feedback
 
-Article: [Evidence-Gated Harness Feedback](../../wiki/design-concepts/spec-S-006-feedback-automation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-006-feedback-automation/SPEC.md`.
+Article: [Evidence-Gated Harness Feedback](../../wiki/features/evidence-gated-harness-feedback.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-006-feedback-automation/SPEC.md`.
 
 The feedback loop separates candidate construction from an independent integration decision. Discovery reads the declared feedback lane first, then supported legacy feedback filenames. It excludes noncanonical project copies, normalizes origins, ranks candidates by impact and recurrence, and selects no new candidate while a pending fingerprint already exists.
 
@@ -119,7 +119,7 @@ Consumer snapshot: 2 occurrences. Article semantic review: **passed for core cap
 
 ### S-007: Import-Safe Feedback Helper Entry
 
-Article: [Import-Safe Feedback Helper Entry](../../wiki/design-concepts/spec-S-007-feedback-helper-import.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-007-feedback-helper-import/SPEC.md`.
+Article: [Import-Safe Feedback Helper Entry](../../wiki/features/import-safe-feedback-helper-entry.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-007-feedback-helper-import/SPEC.md`.
 
 A JavaScript file can be both a command-line program and an imported library. Its entry guard must decide whether to run the CLI without breaking callers that only want its exported decision functions.
 
