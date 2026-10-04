@@ -444,7 +444,8 @@ report at another templates directory.
 
 Given the room's earlier template generation, the report also labels the
 differences the template made rather than the room (S-004C TK-005M): a room
-line only the earlier template carried is `earlier-template`, a current
+line kept as only the earlier template carried it is `earlier-template` (a line
+the room rewrote stays its own), a current
 template line the earlier template did not carry is `newer-template`, and a
 line the room kept from the earlier template where the template itself
 rewrote it is `template-changed`. Each such entry carries a `generation`

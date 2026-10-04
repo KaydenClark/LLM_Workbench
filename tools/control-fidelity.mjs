@@ -327,7 +327,9 @@ function labelGenerations(result, previousContent, templateContent, roomContent)
   for (const line of result.lines) {
     if (line.trivial) continue;
     const templateKind = templateAgainstPrevious.get(line.templateLine);
-    if (line.kind === 'added' && roomAgainstPrevious.get(line.roomLine) !== 'added') line.generation = 'earlier-template';
+    // Only a line the room kept as the earlier template shipped it (or filled
+    // it) is the template's; a line the room rewrote stays the room's own.
+    if (line.kind === 'added' && kept.includes(roomAgainstPrevious.get(line.roomLine))) line.generation = 'earlier-template';
     // Template against template, a `filled` pairing means an earlier
     // all-placeholder line was matched by shape to new text: a new line.
     else if (line.kind === 'dropped' && ['added', 'filled'].includes(templateKind)) line.generation = 'newer-template';
