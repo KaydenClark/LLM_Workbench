@@ -8,8 +8,8 @@
 **Updated:** 2026-10-04
 **Catalog description:** Give the draft skills wiki a declared home, an index and one article template, so every skill's draft article has somewhere to go and its connection problems can be found by grep.
 **Blockers:** none.
-**Latest event:** TK-006N closed with proof.
-**Next gate:** Complete TK-006O.
+**Latest event:** TK-006O claimed by claude-director.
+**Next gate:** Close TK-006O with verification and documentation proof.
 
 > **Citation anchors.** pre=`07edccc57b8f75613ad1d09203a3e414d867b90c` post=`07edccc57b8f75613ad1d09203a3e414d867b90c`.
 

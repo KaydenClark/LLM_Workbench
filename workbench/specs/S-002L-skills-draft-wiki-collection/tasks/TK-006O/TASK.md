@@ -3,7 +3,7 @@
 **Task ID:** TK-006O
 **Spec ID:** S-002L
 **Slice:** Write the collection index README and route it once from MEMORY.md
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-006N
 **Destination:** spec-acceptance: The collection exists with the eight group folders and an index README listing all eight groups and the 81 planned articles with their owning Specs; `MEMORY.md` links the collection once and `wiki.mjs validate` shows no error finding.
