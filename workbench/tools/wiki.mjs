@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Portable wiki validator: router, declared collections, note metadata,
 // portability, the Design Concept and features article shapes, no copied live task state,
-// no secret-like material. Staleness is attention, never blocking.
+// no secret-like material, a one-line summary beside each routed page. Staleness and
+// a missing summary are attention, never blocking.
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -19,6 +20,17 @@ export const NOTE_TYPES = Object.freeze(['memory', 'project', 'person', 'machine
 // its limits and its evidence.
 export const FEATURE_SECTIONS = Object.freeze(['What It Does', 'Why It Matters', 'Limits', 'Evidence and Sources']);
 export const NOTE_STATUSES = Object.freeze(['active', 'partial', 'stale', 'archived']);
+// S-002L TK-006M: the draft skills wiki. It is the Wiki's second nesting
+// exception beside `archive/`: `skills-draft/<group>/<skill>.md`, one folder per
+// group. It is a repo-only prototype, so it is named here and in SCHEMA.md and
+// is not a declared manifest collection (the closed registry in
+// `workbench-paths.mjs` stays untouched). `draft` is a status only a note inside
+// it may carry; promotion moves a draft out and gives it an ordinary status.
+export const DRAFT_COLLECTION = 'skills-draft';
+export const DRAFT_GROUPS = Object.freeze(['getting-started', 'main-workflow', 'shaping', 'upkeep', 'primitives', 'productivity', 'stances', 'foundry']);
+export const DRAFT_STATUS = 'draft';
+// The collection's own files, directly under its root: the index and the template.
+const DRAFT_ROOT_FILES = Object.freeze(['README', 'TEMPLATE']);
 export const SENSITIVITIES = Object.freeze(['normal', 'private', 'restricted']);
 export const KNOWLEDGE_ROLES = Object.freeze(['canonical', 'curated', 'derived', 'historical']);
 export const REQUIRED_PROPERTIES = Object.freeze(['type', 'status', 'sensitivity', 'knowledge_role', 'provenance', 'source_paths', 'last_verified']);
@@ -44,6 +56,27 @@ function walkMarkdown(directory, files = []) {
     else if (entry.isFile() && entry.name.endsWith('.md')) files.push(target);
   }
   return files.sort();
+}
+
+// A draft article sits directly inside one group folder, is called by its skill,
+// names that skill and group, and carries the scoped `draft` status. The
+// collection's own index and template sit at its root and are ordinary notes.
+function draftArticleFindings(relative, segments, data) {
+  const problem = (message) => finding('invalid-note', `${relative} ${message}`, { note: relative });
+  const basename = path.basename(segments[segments.length - 1], '.md');
+  if (segments.length === 1) {
+    return DRAFT_ROOT_FILES.includes(basename) ? [] : [problem(`must sit directly inside a group folder (${DRAFT_GROUPS.join(', ')}); only README.md and TEMPLATE.md sit at the collection root`)];
+  }
+  if (segments.length > 2) return [problem('must sit directly inside a group folder, not nested below it')];
+  const findings = [];
+  const [group] = segments;
+  if (!DRAFT_GROUPS.includes(group)) findings.push(problem(`folder ${group} is not one of the group folders (${DRAFT_GROUPS.join(', ')})`));
+  else if (data.group === undefined) findings.push(problem(`must declare group ${group}, the folder it sits in`));
+  else if (data.group !== group) findings.push(problem(`group ${data.group} does not match its folder ${group}`));
+  if (data.status !== undefined && data.status !== DRAFT_STATUS) findings.push(problem(`must declare status ${DRAFT_STATUS}; it lives in the draft collection`));
+  if (data.skill === undefined) findings.push(problem(`must declare skill ${basename}, the skill its file is called`));
+  else if (data.skill !== basename) findings.push(problem(`skill ${data.skill} does not match its file name ${basename}`));
+  return findings;
 }
 
 // The room brain is only useful when the controls route back to it: AGENTS.md
@@ -85,6 +118,86 @@ function wikiStamps(root, wikiRoot, wikiRelative, expectedVersion) {
   return findings;
 }
 
+// S-003W TK-002: the router is the Wiki's overview, so every Wiki page it routes
+// carries a one-line summary beside its link and a reader can choose a page
+// without opening it. The rule is mechanical and conservative. A routed page is
+// a Markdown link whose target resolves to a Markdown file inside the Wiki lane
+// other than the router itself; a link to a control, Spec or record outside the
+// Wiki, an external link, a folder, a wikilink and anything in a code span or
+// fence is not checked. The link has a summary when the text right after it,
+// up to the next link or the end of its list item, paragraph or table cell,
+// is a separator (` - `, an en or em dash, or a colon) followed by at least two
+// words, or when its table row has another cell that holds text of its own.
+// The finding is attention only: a missing summary never blocks.
+const SUMMARY_LINK = /(!?)\[([^\]\n]+)\]\(\s*(?:<([^>\n]+)>|([^\s)]+))[^)\n]*\)/g;
+const SUMMARY_SEPARATOR = /^(?:\s*:\s+|\s+[-–—]\s+)(\S[\s\S]*)$/;
+
+function maskCode(content) {
+  const lines = content.split(/\r?\n/);
+  let fence = null;
+  return lines.map((line) => {
+    const opener = line.match(/^ {0,3}(`{3,}|~{3,})/);
+    if (fence) {
+      if (opener && opener[1][0] === fence[0] && opener[1].length >= fence.length) fence = null;
+      return '';
+    }
+    if (opener) { fence = opener[1]; return ''; }
+    return line.replace(/(`+)[^`]*?\1/g, 'code');
+  });
+}
+
+function summaryUnits(lines) {
+  const units = [];
+  let current = null;
+  const flush = () => { if (current) units.push(current); current = null; };
+  lines.forEach((line, index) => {
+    if (!line.trim()) return flush();
+    const start = /^\s*(?:[-*+]|\d+[.)])\s/.test(line) || /^\s*\|/.test(line) || /^\s{0,3}#{1,6}\s/.test(line);
+    if (start || !current) { flush(); current = { text: line.trim(), line: index + 1 }; }
+    else current.text += ` ${line.trim()}`;
+    if (/^\s*\|/.test(line) || /^\s{0,3}#{1,6}\s/.test(line)) flush();
+  });
+  flush();
+  return units;
+}
+
+function wordCount(text) {
+  return text.split(/\s+/).filter((word) => /[\p{L}\p{N}]/u.test(word)).length;
+}
+
+function hasSummaryAfter(text) {
+  const match = SUMMARY_SEPARATOR.exec(text.replace(/\s+/g, ' '));
+  return match !== null && wordCount(match[1]) >= 2;
+}
+
+export function routerSummaryFindings(root, wikiRoot, routerFile, content) {
+  const findings = [];
+  const note = path.relative(root, routerFile).split(path.sep).join('/');
+  for (const unit of summaryUnits(maskCode(content))) {
+    const table = /^\s*\|/.test(unit.text);
+    const cells = table ? unit.text.replace(/^\s*\|/, '').replace(/\|\s*$/, '').split(/(?<!\\)\|/) : [unit.text];
+    cells.forEach((cell, cellIndex) => {
+      for (const link of cell.matchAll(SUMMARY_LINK)) {
+        if (link[1] === '!') continue;
+        const raw = (link[3] ?? link[4]).split('#')[0];
+        if (!raw || /^(?:[a-z][a-z0-9+.-]*:)/i.test(raw)) continue;
+        let decoded = raw;
+        try { decoded = decodeURIComponent(raw); } catch { decoded = raw; }
+        const resolved = path.resolve(wikiRoot, decoded);
+        const inWiki = path.relative(wikiRoot, resolved);
+        if (!inWiki || inWiki.startsWith('..') || path.isAbsolute(inWiki) || !resolved.endsWith('.md') || resolved === routerFile) continue;
+        const rest = cell.slice(link.index + link[0].length);
+        const next = rest.search(/!?\[[^\]\n]+\]\(/);
+        if (hasSummaryAfter(next === -1 ? rest : rest.slice(0, next))) continue;
+        if (table && cells.some((other, index) => index !== cellIndex && wordCount(other.replace(SUMMARY_LINK, '')) >= 1)) continue;
+        const target = path.relative(root, resolved).split(path.sep).join('/');
+        findings.push(finding('unsummarized-route', `${note} line ${unit.line} routes [${link[2]}](${raw}) with no one-line summary beside the link; write "- [Title](path) - summary" (a separator, then at least two words) or give a table row a second cell that says what the page is for`, { note, target, line: unit.line }));
+      }
+    });
+  }
+  return findings;
+}
+
 export function validateWiki(root, options = {}) {
   const findings = [];
   const wikiRoot = lanePath(root, 'wiki');
@@ -97,7 +210,11 @@ export function validateWiki(root, options = {}) {
   if (!fs.existsSync(path.join(wikiRoot, 'MEMORY.md'))) {
     findings.push(finding('invalid-note', `${wikiRelative}/MEMORY.md router is missing`));
   }
-  else findings.push(...roomBrainRouting(root, wikiRelative));
+  else {
+    findings.push(...roomBrainRouting(root, wikiRelative));
+    const routerFile = path.join(wikiRoot, 'MEMORY.md');
+    findings.push(...routerSummaryFindings(root, wikiRoot, routerFile, options.contentOverrides?.get(routerFile) ?? fs.readFileSync(routerFile, 'utf8')));
+  }
   findings.push(...wikiStamps(root, wikiRoot, wikiRelative, manifest?.workbenchVersion));
   // S-045 TK-002 moved two checks out of here: `stale-seed`, the generation of
   // a room's seeded lane documents, and `unverified-provenance`, the source
@@ -128,6 +245,8 @@ export function validateWiki(root, options = {}) {
   const featuresRelative = collectionRelative(root, 'features');
   const features = path.join(root, featuresRelative);
   const archive = path.join(root, collectionRelative(root, 'archive'));
+  const draftRoot = path.join(wikiRoot, DRAFT_COLLECTION);
+  const draftRelative = `${wikiRelative}/${DRAFT_COLLECTION}`;
   const basenames = new Map();
   for (const file of walkMarkdown(wikiRoot)) {
     const relative = path.relative(root, file).split(path.sep).join('/');
@@ -146,7 +265,10 @@ export function validateWiki(root, options = {}) {
     }
     if (data.authority !== undefined) findings.push(finding('invalid-note', `${relative} uses retired property authority; use knowledge_role for handling and provenance for attribution`, { note: relative }));
     if (data.type !== undefined && !NOTE_TYPES.includes(data.type)) findings.push(finding('invalid-note', `${relative} type ${data.type} is not one of ${NOTE_TYPES.join(', ')}`, { note: relative }));
-    if (data.status !== undefined && !NOTE_STATUSES.includes(data.status)) findings.push(finding('invalid-note', `${relative} status ${data.status} is invalid`, { note: relative }));
+    const inDrafts = file.startsWith(draftRoot + path.sep);
+    if (data.status === DRAFT_STATUS) {
+      if (!inDrafts) findings.push(finding('invalid-note', `${relative} status ${DRAFT_STATUS} belongs in ${draftRelative}; promote the draft out of the collection and give it an ordinary status`, { note: relative }));
+    } else if (data.status !== undefined && !NOTE_STATUSES.includes(data.status)) findings.push(finding('invalid-note', `${relative} status ${data.status} is invalid`, { note: relative }));
     if (data.sensitivity !== undefined && !SENSITIVITIES.includes(data.sensitivity)) findings.push(finding('invalid-note', `${relative} sensitivity ${data.sensitivity} is invalid`, { note: relative }));
     if (data.knowledge_role !== undefined && !KNOWLEDGE_ROLES.includes(data.knowledge_role)) findings.push(finding('invalid-note', `${relative} knowledge_role ${data.knowledge_role} is invalid`, { note: relative }));
     if (data.last_verified !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(String(data.last_verified))) findings.push(finding('invalid-note', `${relative} last_verified must be YYYY-MM-DD`, { note: relative }));
@@ -180,12 +302,13 @@ export function validateWiki(root, options = {}) {
     if (data.status === 'stale') findings.push(finding('stale-note', `${relative} is marked stale`, { note: relative }));
     if (file.startsWith(designConcepts + path.sep) && basename !== 'README') {
       if (data.type !== 'design-concept') findings.push(finding('invalid-note', `${relative} must declare type design-concept`, { note: relative }));
-      if (!data.authorized_by) findings.push(finding('invalid-note', `${relative} must record authorized_by (the authorizing operation or the owner)`, { note: relative }));
+      if (!data.authorized_by) findings.push(finding('invalid-note', `${relative} must record authorized_by (the operation that authorized this article)`, { note: relative }));
       if (data.parent === undefined) findings.push(finding('invalid-note', `${relative} must declare parent (a route or none)`, { note: relative }));
       for (const section of ['Evidence and Sources', 'History']) {
         if (!new RegExp(`^## ${section}$`, 'm').test(content)) findings.push(finding('invalid-note', `${relative} must end with a ${section} section`, { note: relative }));
       }
     }
+    if (inDrafts) findings.push(...draftArticleFindings(relative, path.relative(draftRoot, file).split(path.sep), data));
     const inFeatures = file.startsWith(features + path.sep);
     if (inFeatures && basename !== 'README') {
       if (data.type !== 'feature') findings.push(finding('invalid-note', `${relative} must declare type feature; it lives in the features collection ${featuresRelative}`, { note: relative }));
@@ -244,6 +367,7 @@ function noteFields(root, file, relative, date) {
 
 function inferredType(root, file) {
   if (path.basename(file) === 'MEMORY.md') return 'memory';
+  if (file.startsWith(path.join(lanePath(root, 'wiki'), DRAFT_COLLECTION) + path.sep)) return 'memory';
   for (const [collection, type] of [['guidebooks', 'guidebook'], ['design-concepts', 'design-concept'], ['features', 'feature']]) {
     if (file.startsWith(path.join(root, collectionRelative(root, collection)) + path.sep)) return type;
   }

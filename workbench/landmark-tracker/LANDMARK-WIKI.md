@@ -52,8 +52,10 @@ occurrence passes when any one of these holds:
    `[records](...)` does not.
 2. **A path slug names it.** The identifier is followed directly by a hyphenated
    slug of two or more lowercase words, as in
-   `workbench/specs/S-002A-landmark-records/SPEC.md`. One word, as in
-   `ADR-0041-history`, does not name it.
+   `workbench/specs/S-002A-landmark-records/SPEC.md`. Later segments may start
+   with a digit, as in `S-045-v3-1-2-follow-ups`, but at least two segments must
+   start with a letter; one word, as in `ADR-0041-history`, or a version
+   fragment, as in `ADR-0041-v3-1`, does not name it.
 3. **A name phrase is adjacent.** Only whitespace and wrapper or separator
    characters (parentheses, brackets, backticks, emphasis marks, quotes, a colon
    or a spaced dash) separate the identifier from a name phrase before or after

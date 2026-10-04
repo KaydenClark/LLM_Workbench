@@ -210,7 +210,10 @@ test('design-concept articles need the owner-directed shape and stale notes are 
     fs.writeFileSync(path.join(concepts, 'Half Article.md'), note({ type: 'project' }, '# Half Article\n\nNo sections.\n'));
     const messages = validateWiki(project).map((item) => item.message);
     assert.ok(messages.some((message) => /type design-concept/.test(message)));
-    assert.ok(messages.some((message) => /authorized_by/.test(message)));
+    const authorizedBy = messages.filter((message) => /authorized_by/.test(message));
+    assert.equal(authorizedBy.length, 1);
+    assert.match(authorizedBy[0], /the operation that authorized/);
+    assert.doesNotMatch(authorizedBy[0], /owner/);
     assert.ok(messages.some((message) => /parent/.test(message)));
     assert.ok(messages.some((message) => /Evidence and Sources/.test(message)));
     assert.ok(messages.some((message) => /History/.test(message)));
@@ -277,6 +280,65 @@ test('a wiki stamp naming a version other than the manifest is attention only, a
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
   }
+});
+
+test('a routed Wiki page with no one-line summary beside its link is attention only, and the summary convention clears it', () => {
+  const project = seededWiki();
+  try {
+    const wiki = path.join(project, 'workbench', 'wiki');
+    const router = fs.readFileSync(path.join(wiki, 'MEMORY.md'), 'utf8');
+    fs.writeFileSync(path.join(wiki, 'Release Habits.md'), note());
+    fs.writeFileSync(path.join(wiki, 'Deploy Notes.md'), note());
+    const route = (body) => fs.writeFileSync(path.join(wiki, 'MEMORY.md'), `${router}\n## Notes\n\n${body}\n`);
+    const unsummarized = () => validateWiki(project).filter((item) => item.code === 'unsummarized-route');
+    assert.deepEqual(validateWiki(project), [], 'the generated router, whose table rows carry a description cell, is clean');
+
+    route('- [Release Habits](Release%20Habits.md)\n- [Deploy Notes](Deploy%20Notes.md) - how this room ships a release');
+    const [bare, ...others] = unsummarized();
+    assert.equal(others.length, 0, 'only the link with no summary is reported');
+    assert.deepEqual([bare.code, bare.severity, bare.blocks, bare.note], ['unsummarized-route', 'attention', 'none', 'workbench/wiki/MEMORY.md']);
+    assert.equal(bare.target, 'workbench/wiki/Release Habits.md');
+    assert.match(bare.message, /Release Habits/);
+    assert.match(bare.message, /\[Title\]\(path\) - summary/, 'the message states the convention');
+    assert.deepEqual(doctor(project).filter((item) => item.code === 'unsummarized-route').map((item) => item.target), ['workbench/wiki/Release Habits.md'], 'doctor carries the finding');
+    const cli = spawnSync(process.execPath, [wikiTool, 'validate', '--path', project], { cwd: project, encoding: 'utf8' });
+    assert.equal(cli.status, 0, 'a missing summary never fails the command');
+    assert.match(cli.stdout, /unsummarized-route \[attention/);
+
+    for (const summarized of [
+      '- [Release Habits](Release%20Habits.md) - how this room ships',
+      '- [Release Habits](Release%20Habits.md): how this room ships',
+      '- [Release Habits](Release%20Habits.md) — how this room ships',
+      'Start with [Release Habits](Release%20Habits.md) - how this room ships.',
+      '| Question | Read first |\n|---|---|\n| How this room ships | [Release Habits](Release%20Habits.md) |'
+    ]) {
+      route(summarized);
+      assert.deepEqual(unsummarized(), [], `${summarized} carries a summary`);
+    }
+    for (const missing of [
+      '- [Release Habits](Release%20Habits.md) explains how this room ships',
+      '- [Release Habits](Release%20Habits.md) - ',
+      '- [Release Habits](Release%20Habits.md) - ships',
+      '- [Release Habits](Release%20Habits.md) ([Deploy Notes](Deploy%20Notes.md))',
+      '| [Release Habits](Release%20Habits.md) | |',
+      '| [Release Habits](Release%20Habits.md) | [Deploy Notes](Deploy%20Notes.md) |'
+    ]) {
+      route(missing);
+      assert.ok(unsummarized().some((item) => /Release Habits/.test(item.message)), `${missing} has no one-line summary`);
+    }
+    route('- [BLUEPRINT.md](../../BLUEPRINT.md)\n- `[Release Habits](Release%20Habits.md)`\n- [Site](https://example.com/page.md)\n- [Folder](guidebooks/)\n- [[Release Habits]]');
+    assert.deepEqual(unsummarized(), [], 'a page outside the Wiki, a code span, an external link, a folder and a wikilink are not routed pages');
+    route('```\n- [Release Habits](Release%20Habits.md)\n```');
+    assert.deepEqual(unsummarized(), [], 'a fenced example is not a route');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('the router template shows the summary-line convention and the product router keeps every routed Wiki page summarized', () => {
+  const template = fs.readFileSync(path.join(root, 'templates', 'wiki', 'MEMORY.project.md'), 'utf8');
+  assert.match(template, /`- \[Schema\]\(SCHEMA\.md\) - what the page is for`/, 'the template router shows a summary-line example');
+  assert.deepEqual(validateWiki(root).filter((item) => item.code === 'unsummarized-route'), [], 'this repository routes no Wiki page without a summary');
 });
 
 test('this repository stamps its wiki contract files with its manifest version and routes to its room brain', () => {
@@ -613,4 +675,94 @@ test('move-note in a Git room records a rename and stages only the files it chan
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
   }
+});
+
+// S-002L TK-006M: the draft skills wiki lives in `workbench/wiki/skills-draft/`,
+// one folder per group, and is the Wiki's second nesting exception beside
+// `archive/`. It is a repo-only prototype, so it is named by SCHEMA.md and this
+// validator rather than declared in the manifest's closed collection set. A
+// draft article is `skills-draft/<group>/<skill>.md` with the scoped
+// `status: draft`, and the scoped status is refused everywhere else.
+const DRAFT_GROUPS = ['getting-started', 'main-workflow', 'shaping', 'upkeep', 'primitives', 'productivity', 'stances', 'foundry'];
+
+function draftArticle(overrides = {}, body = '# Wayfinder: chart a large effort one decision at a time\n\nA draft.\n') {
+  return note({
+    type: 'memory',
+    status: 'draft',
+    skill: 'wayfinder',
+    group: 'shaping',
+    skill_source: 'pending',
+    origin: 'matt',
+    matt_counterpart: 'wayfinder',
+    provenance: ['draft skills wiki pilot, upstream pin d81f3a1'],
+    source_paths: ['BLUEPRINT.md'],
+    last_verified: '2026-10-04',
+    ...overrides
+  }, body);
+}
+
+test('a nested draft article validates in the skills-draft collection, and a misplaced, mis-grouped or wrongly scoped one is refused by name', () => {
+  const project = seededWiki();
+  try {
+    const wiki = path.join(project, 'workbench', 'wiki');
+    const drafts = path.join(wiki, 'skills-draft');
+    for (const group of DRAFT_GROUPS) fs.mkdirSync(path.join(drafts, group), { recursive: true });
+    fs.writeFileSync(path.join(drafts, 'README.md'), note({ type: 'meta', knowledge_role: 'canonical' }, '# Skills draft wiki\n\nIndex.\n'));
+    fs.writeFileSync(path.join(drafts, 'shaping', 'wayfinder.md'), draftArticle());
+    assert.deepEqual(validateWiki(project), [], 'a placed, well-formed draft with an index README validates with no finding');
+
+    const noteFindings = (relative) => validateWiki(project).filter((item) => item.note === `workbench/wiki/${relative}`);
+    const refused = (relative, pattern, why) => assert.ok(noteFindings(relative).some((item) => item.code === 'invalid-note' && pattern.test(item.message)), why);
+
+    fs.writeFileSync(path.join(wiki, 'flat-draft.md'), draftArticle());
+    refused('flat-draft.md', /status draft belongs in workbench\/wiki\/skills-draft/, 'status draft outside the collection is refused');
+    fs.rmSync(path.join(wiki, 'flat-draft.md'));
+
+    fs.writeFileSync(path.join(drafts, 'shaping', 'not-a-draft.md'), draftArticle({ status: 'active', skill: 'not-a-draft' }));
+    refused('skills-draft/shaping/not-a-draft.md', /must declare status draft/, 'a note in the collection must declare status draft');
+    fs.rmSync(path.join(drafts, 'shaping', 'not-a-draft.md'));
+
+    fs.writeFileSync(path.join(drafts, 'shaping', 'regroup.md'), draftArticle({ skill: 'regroup', group: 'upkeep' }));
+    refused('skills-draft/shaping/regroup.md', /group upkeep does not match its folder shaping/, 'a draft names the group folder it sits in');
+    fs.rmSync(path.join(drafts, 'shaping', 'regroup.md'));
+
+    fs.writeFileSync(path.join(drafts, 'shaping', 'anonymous.md'), draftArticle({ skill: undefined, group: undefined }));
+    refused('skills-draft/shaping/anonymous.md', /must declare group shaping/, 'a draft that omits its group is refused');
+    refused('skills-draft/shaping/anonymous.md', /must declare skill anonymous/, 'a draft that omits its skill is refused');
+    fs.rmSync(path.join(drafts, 'shaping', 'anonymous.md'));
+
+    fs.writeFileSync(path.join(drafts, 'shaping', 'renamed.md'), draftArticle({ skill: 'someone-else' }));
+    refused('skills-draft/shaping/renamed.md', /skill someone-else does not match its file name renamed/, 'a draft names the skill its file is called');
+    fs.rmSync(path.join(drafts, 'shaping', 'renamed.md'));
+
+    fs.mkdirSync(path.join(drafts, 'extras'));
+    fs.writeFileSync(path.join(drafts, 'extras', 'stray.md'), draftArticle({ skill: 'stray', group: 'extras' }));
+    refused('skills-draft/extras/stray.md', /folder extras is not one of the group folders/, 'an unknown group folder is refused');
+    fs.rmSync(path.join(drafts, 'extras'), { recursive: true });
+
+    fs.writeFileSync(path.join(drafts, 'loose.md'), draftArticle({ skill: 'loose' }));
+    refused('skills-draft/loose.md', /must sit directly inside a group folder/, 'a draft loose at the collection root is refused');
+    fs.rmSync(path.join(drafts, 'loose.md'));
+
+    fs.mkdirSync(path.join(drafts, 'shaping', 'deeper'));
+    fs.writeFileSync(path.join(drafts, 'shaping', 'deeper', 'buried.md'), draftArticle({ skill: 'buried' }));
+    refused('skills-draft/shaping/deeper/buried.md', /must sit directly inside a group folder/, 'a draft nested below its group folder is refused');
+    fs.rmSync(path.join(drafts, 'shaping', 'deeper'), { recursive: true });
+
+    assert.deepEqual(validateWiki(project), [], 'removing every refused note leaves the wiki clean');
+
+    fs.writeFileSync(path.join(drafts, 'shaping', 'Bare Draft.md'), '# Bare Draft\n\nNo metadata yet.\n');
+    const result = normalizeWiki(project, { date: '2026-10-04' });
+    assert.deepEqual(result.changed.map((entry) => entry.note), ['workbench/wiki/skills-draft/shaping/Bare Draft.md']);
+    assert.match(fs.readFileSync(path.join(drafts, 'shaping', 'Bare Draft.md'), 'utf8'), /^---\ntype: memory\nstatus: partial\n/, 'normalize infers type memory inside the draft collection and never invents the draft status');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('the product wiki carries the skills-draft collection with every group folder tracked', () => {
+  for (const group of DRAFT_GROUPS) {
+    assert.equal(fs.existsSync(path.join(root, 'workbench', 'wiki', 'skills-draft', group, '.gitkeep')), true, `skills-draft/${group} must be a tracked folder`);
+  }
+  assert.match(fs.readFileSync(path.join(root, 'workbench', 'wiki', 'SCHEMA.md'), 'utf8'), /skills-draft\//, 'SCHEMA.md names the draft collection as its nesting exception');
 });
