@@ -104,7 +104,7 @@ decision was needed. When this Task resumes, each maintainer-only procedure's
 home is a skill in this repository's lane declared as a maintainer skill (one
 skill per operation family, never per section), not a core skill.
 
-## Receipt correction (2026-10-04)
+## Review correction to the receipt reading (2026-10-04)
 
 A separate-context review of 4f443506 (Codex gpt-5.5, FAIL, one P3) found that
 Receipt run 3 names the run it corrects wrongly: it says "Correction to run 1"
