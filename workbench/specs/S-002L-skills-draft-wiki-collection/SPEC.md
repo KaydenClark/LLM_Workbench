@@ -8,8 +8,8 @@
 **Updated:** 2026-10-04
 **Catalog description:** Give the draft skills wiki a declared home, an index and one article template, so every skill's draft article has somewhere to go and its connection problems can be found by grep.
 **Blockers:** none.
-**Latest event:** TK-006N claimed by claude-director.
-**Next gate:** Close TK-006N with verification and documentation proof.
+**Latest event:** TK-006N closed with proof.
+**Next gate:** Complete TK-006O.
 
 > **Citation anchors.** pre=`07edccc57b8f75613ad1d09203a3e414d867b90c` post=`07edccc57b8f75613ad1d09203a3e414d867b90c`.
 
@@ -140,6 +140,7 @@ Run `node tools/test-wiki.mjs` red then green, `node workbench/tools/wiki.mjs va
 |---|---|---|---|---|---|
 | 2026-09-30 | planning | Spec authored from the owner's draft-skills-wiki direction; planning only | Wiki schema, validator, manifest collections and existing articles read at the pre anchor; no implementation or test run | This Spec authored; collection, README and template remain future work | Slices 1-4 and independent review remain open |
 | 2026-10-04 | TK-006M | Task closed | tools/test-wiki.mjs red then green 16/16; wiki.mjs validate ok; full Full suite 51/51 at 10aa2693; Codex gpt-5.5 separate-context review: FAIL at 57486cec (medium: draft skill/group optional, preserved), PASS at 10aa2693 (no findings); read-only sandbox could not run tests | workbench/wiki/SCHEMA.md; Spec Decisions resolved (DRAFT-LOC confirmed, DECL changed, DRAFT-STATUS confirmed); templates/wiki/SCHEMA.md untouched by exemption | TK-006N template and TK-006O README remain |
+| 2026-10-04 | TK-006N | Task closed | tools/test-wiki.mjs red then green 22/22; wiki.mjs validate ok; Full suite 51/51 at 452134d0; Codex gpt-5.5 separate-context review PASS at 452134d0, no findings | workbench/wiki/skills-draft/TEMPLATE.md; Spec Decisions (template adjustments, source_paths decision) | TK-006O README and MEMORY link remain |
 
 ## Completion Result
 
