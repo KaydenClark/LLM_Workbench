@@ -88,11 +88,12 @@ belong to their individual Specs as they are authored.
 
 ## Release And Distribution Routing
 
-- [S-050 - Workbench v3.2.0 Release](../specs/S-050-workbench-v3-2-0-release/SPEC.md) - the reconciled release scope and complete historical inventory
+- [Workbench v4.0.0 Release (S-00O)](../specs/S-00O-workbench-v4-0-0-release/SPEC.md) - current release work
+- [Superseded v3.2.0 release record (S-050)](../specs/S-050-workbench-v3-2-0-release/SPEC.md) - keeps the reconciled v3.2 scope and complete historical inventory
 
-Follow its named owners for skill ownership/compatibility, optional private
-session transport and the configured-host capability floor. This route
-preserves their open gates without copying task state here.
+Follow the superseded record's named owners for skill ownership/compatibility,
+optional private session transport and the configured-host capability floor.
+This route copies no task state here.
 
 ## Grilling Destination Audit Ledger
 

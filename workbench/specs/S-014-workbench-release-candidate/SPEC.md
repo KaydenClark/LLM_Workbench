@@ -4,14 +4,14 @@
 > `workbench/specs/S-014-workbench-release-candidate/SPEC.md`; never move between status folders.
 
 **Spec ID:** S-014
-**Status:** blocked
+**Status:** superseded
 **Priority:** 0
 **Owner:** codex
-**Updated:** 2026-09-19
-**Catalog description:** Historical release packet with current work routed to S-00O; unexecuted historical acceptance remains visible as a limitation.
-**Blockers:** Historical acceptance remains unexecuted; current operational gates belong to S-00O and S-052. No independent release assignment resumes here.
-**Latest event:** S-00K owner reconciliation removed the obsolete duplicate release assignment without changing historical proof.
-**Next gate:** Follow S-00O for current release work; owner-only main promotion and S-052 live-host proof remain separate gates.
+**Updated:** 2026-10-04
+**Catalog description:** Historical v3.0/v3.1 release-candidate packet, superseded by the v4.0.0 release; its unexecuted audit and promotion-PR steps are withdrawn and remain visible as history.
+**Blockers:** none
+**Latest event:** Superseded on 2026-10-04 by the [Workbench v4.0.0 Release — S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md); TK-002 and TK-003 withdrawn unexecuted.
+**Next gate:** None; superseded by the [Workbench v4.0.0 Release — S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md).
 
 ## Current Release Procedure Addendum
 
@@ -23,17 +23,40 @@ installed upgrade verified; upstream tests alone cannot establish readiness.
 This adds the missing release acceptance condition while preserving the
 historical CIC-specific evidence below; it does not reactivate CIC or approve main.
 
-## Current Disposition
+## Why Retired
 
-This packet is **historical and owner-routed, not completed**. Its unchecked acceptance and
-unfinished historical tasks remain below as evidence of what was never proven.
-The current runtime rejects `superseded` while historical tasks remain unfinished,
-so this record stays explicitly blocked; no task is marked done to suppress that
-check. This is a bounded projection limitation, not a new implementation queue.
-Current work routes to [S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md), with
-[S-050](../S-050-workbench-v3-2-0-release/SPEC.md) retaining the delivered v3.2
-receipt and [S-052](../S-052-private-session-transport/SPEC.md) retaining the
-actual private-service/device/provider proof gate. The current release-readiness owner is S-00O. The old CIC-specific status publication and sole-promotion-PR choreography remains historical evidence; it is not a prerequisite for ordinary local delivery. No audit status, promotion PR, publication or owner approval is inferred here.
+Retired 2026-10-04. This packet prepared the first v3 promotion to `main`:
+an exact-head audit of the v3.0.0 (later v3.1.0) candidate and one owner
+promotion PR. Neither candidate was ever released, and the release line moved
+on without it: later candidates were stamped through their own Specs, the owner
+promoted v3.2.0 to `main` on 2026-09-09 (PR #86), and everything since on
+`integration` is v4 work. An audit of a candidate nobody will ship, and a
+promotion PR for it, no longer describe any release.
+
+The design reason is the owner's lifecycle rule: obsolete release promises
+become historical or superseded while still-needed obligations remain
+reachable (grilling ledger FND-Q16, locked 2026-09-30), and "We retire things
+all of the time. why would a spec be any different than a task?" (owner,
+2026-10-04).
+
+Nothing still needed is dropped. Current release work is the
+[Workbench v4.0.0 Release — S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md);
+promotion of `integration` to `main` is the owner's own act; the real
+cross-device continuation proof is
+[Private Session Transport — S-052](../S-052-private-session-transport/SPEC.md)
+TK-004, which runs inside the owner's own PC test at v4 main readiness and
+never blocks agent work.
+
+On 2026-09-19 a first supersession of this packet was retracted because
+`doctor` refuses a superseded Spec with unfinished rows, and the record kept
+the rule never to mark unexecuted Tasks done just to silence that check. What
+changed is the owner's decision, not the check: FND-Q16 (locked 2026-09-30)
+makes obsolete release promises historical or superseded, and on 2026-10-04
+he directed retirement in place of keeping old records open. The Task status
+set still has no withdrawn value, so each unfinished row below now reads
+`done` with a proof cell that says it was withdrawn unexecuted and claims no
+proof. Every unchecked acceptance box, every evidence row and the original
+requirements stay as historical record.
 
 The original generation/stable-path notice and original requirements below are
 historical context. AGENTS owns today's folder-lifecycle rules. This disposition
@@ -189,8 +212,8 @@ Tickets are temporary tracer bullets within this stable capability record.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Reconcile main ancestry into integration through an audited merge PR | done | none | PR #31 head `490ad58`; ancestry merge `88b6f7e`; integration merge `a9fb9f9` |
-| TK-002 | Coordinate separate exact-head audit and evidence publication tasks | blocked | S-022 | Audit of exact `d80d14c` returned REQUEST CHANGES; S-015 repaired it, but v3.0.0 stays unreleased and the candidate becomes the audited v3.1.0 SHA |
-| TK-003 | Open the sole non-draft integration-to-main owner promotion PR | ready | TK-002 | pending |
+| TK-002 | Coordinate separate exact-head audit and evidence publication tasks | done | none | Audit of exact `d80d14c` returned REQUEST CHANGES; S-015 repaired it, but v3.0.0 stays unreleased and the candidate becomes the audited v3.1.0 SHA. Withdrawn unexecuted on supersession 2026-10-04: no audit PASS or evidence publication is claimed |
+| TK-003 | Open the sole non-draft integration-to-main owner promotion PR | done | none | Withdrawn unexecuted on supersession 2026-10-04: no promotion PR was opened by this packet and none is claimed; main promotion is the owner's own act |
 
 ### Scoped Ticket: TK-001
 
@@ -373,10 +396,11 @@ gh pr list --state open --base main --head integration --json number,isDraft,hea
 | 2026-09-19 | S-00K TK-0SA | Reconciled obsolete release assignment to S-00O; historical acceptance not completed | Read complete S-014/S-022/S-050/S-052 packets and S-00O release scope at parent `1a26de9`; current owners preserve release and live-host gates | Current disposition and README route updated; all prior evidence rows preserved | S-050 TK-006 and S-052 TK-004 remain open; current S-00O build/release and owner main approval remain open; CIC/Sol consumer state unverified |
 
 | 2026-09-19 | S-00K TK-0SA correction | Restored blocked status after the superseded candidate failed existing lifecycle validation; retained current-owner routing and all unfinished historical evidence | Doctor reports contradictory-state for superseded Specs with unfinished tasks; no runtime rule changed and no task was marked done | Current Disposition explains the remaining projection limitation; README no longer treats this packet as the current release gate | Current release and live-device gates remain with the mapped owners; historical tasks are unexecuted, not completed or silently dropped |
+| 2026-10-04 | spec | Superseded by S-00O; TK-002 and TK-003 withdrawn unexecuted | origin/main manifest declares v3.2.0 (owner merge PR #86, 2026-09-09); integration is 1762 commits ahead with v4 work; owner direction 2026-10-04 and ledger FND-Q16 cited in Why Retired | Current Disposition replaced by Why Retired; header, rows and Supersession reconciled; README release paragraph updated | None for this record; release work is S-00O's and the cross-device proof is S-052 TK-004 inside the owner PC test |
 
 ## Completion Result
 
-Not completed. Current operational obligations follow S-00O; original unchecked acceptance and unfinished task evidence remain preserved. This packet stays blocked because current lifecycle validation cannot represent supersession with unfinished historical tasks.
+Superseded 2026-10-04 without completing its audit or promotion steps (see Why Retired). Original text: Not completed. Current operational obligations follow S-00O; original unchecked acceptance and unfinished task evidence remain preserved. This packet stays blocked because current lifecycle validation cannot represent supersession with unfinished historical tasks.
 
 ## Remaining Limitations Or Follow-Up Specs
 
@@ -388,4 +412,4 @@ Not completed. Current operational obligations follow S-00O; original unchecked 
 ## Supersession
 
 - Supersedes: none
-- Superseded by: none; formal supersession deferred because unfinished historical tasks must remain truthful. Current owner routes appear above.
+- Superseded by: S-00O ([Workbench v4.0.0 Release](../S-00O-workbench-v4-0-0-release/SPEC.md)), 2026-10-04. See Why Retired.
