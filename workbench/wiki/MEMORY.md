@@ -80,6 +80,7 @@ belong to their individual Specs as they are authored.
 - [To-tasks](skill-to-tasks.md) - cut an activated Spec into executable Tasks
 - [Adoption](skill-adoption.md) - bring an existing project into the Workbench once
 - [Genesis](skill-genesis.md) - start a new room from a founding prompt
+- [Skills draft wiki](skills-draft/README.md) - a draft article and its connection findings for every skill
 
 ## Planned And Optional Skill References
 

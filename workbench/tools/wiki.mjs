@@ -36,7 +36,7 @@ export const DRAFT_READER_SECTIONS = Object.freeze(['What it does', 'When to rea
 export const DRAFT_ONLY_SECTIONS = Object.freeze(['Compared with Matt\'s', 'Findings', 'Sources and history']);
 export const DRAFT_ONLY_MARKER = '--- draft only, stripped on promotion ---';
 export const FINDING_KINDS = Object.freeze(['dangling', 'stale-name', 'overlap', 'gap', 'conflict', 'missing-skill']);
-const DRAFT_ORIGINS = Object.freeze(['workbench', 'matt', 'foundry']);
+const DRAFT_ORIGINS = Object.freeze(['workbench', 'matt', 'foundry', 'other']);
 const DRAFT_SKILL_SOURCES = Object.freeze(['core', 'pending', 'personal', 'new']);
 // The collection's own files, directly under its root: the index and the template.
 const DRAFT_ROOT_FILES = Object.freeze(['README', 'TEMPLATE']);
