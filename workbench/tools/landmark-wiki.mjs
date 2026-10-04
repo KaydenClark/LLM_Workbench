@@ -32,7 +32,14 @@ const NON_NAME = new Set(['a', 'an', 'the', 'of', 'in', 'on', 'to', 'for', 'and'
   'spec', 'specs', 'task', 'tasks', 'adr', 'adrs', 'note', 'notes', 'notepad', 'notepads', 'card', 'cards', 'decision', 'decisions', 'question', 'questions', 'id', 'ids', 'identifier', 'identifiers']);
 const BEFORE_PHRASE = new RegExp(`(?<![A-Za-z0-9_'’-])(${WORD}(?:[ \\t]+${WORD})*)([\\s:\\-–—()\\[\\]\`*_"“”'’]*)$`);
 const AFTER_PHRASE = new RegExp(`^([\\s)\\]\`*_"”'’]*)([:\\-–—(\\[]?)([\\s"“\`*_]*)(${WORD}(?:[ \\t]+${WORD})*)(?![A-Za-z0-9_])`);
-const SLUG_AFTER = /^-[a-z][a-z0-9]*(?:-[a-z][a-z0-9]*)+/;
+// A path slug is lowercase hyphenated segments after the identifier. Later
+// segments may start with a digit ("-v3-1-2-follow-ups"), but at least two
+// segments must start with a letter so "-v3-1" or "-history" stays bare.
+const SLUG_AFTER = /^(?:-[a-z0-9]+)+/;
+const slugNamesArtifact = after => {
+  const slug = SLUG_AFTER.exec(after);
+  return Boolean(slug) && slug[0].split('-').slice(1).filter(segment => /^[a-z]/.test(segment)).length >= 2;
+};
 
 const capitalized = word => /^[A-Z]/.test(word);
 const substantive = words => words.filter(word => !NON_NAME.has(word.toLowerCase()));
@@ -61,7 +68,7 @@ function linkTextIsName(text) {
 function hasNameAndContext(masked, column, length) {
   const before = masked.slice(0, column);
   const after = masked.slice(column + length);
-  if (SLUG_AFTER.test(after)) return true;
+  if (slugNamesArtifact(after)) return true;
   for (const link of masked.matchAll(/\[([^\]]*)\]\(([^)]*)\)/g)) {
     const targetStart = link.index + link[1].length + 3;
     if (column >= targetStart && column < targetStart + link[2].length) return linkTextIsName(link[1].replace(/[*_`#]/g, ' '));

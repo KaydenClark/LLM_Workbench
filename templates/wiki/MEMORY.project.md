@@ -58,6 +58,12 @@ Add a row only when a durable note exists to route to. A young room may have an
 empty table; that is fine. Grow flat notes beside this router and inside the
 declared collections; only `archive/` may nest.
 
+Every page this router links carries a one-line summary beside its link, so a
+reader can choose a page without opening it. In a list, write
+`- [Schema](SCHEMA.md) - what the page is for`; in a table, give the
+link's row a second cell that says what the page is for. `wiki.mjs validate`
+reports a routed page without one as attention, never as a failure.
+
 ## Up-Link
 
 Inside a larger deployment, name the deployment wiki's pointer note for this

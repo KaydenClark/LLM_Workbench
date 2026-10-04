@@ -1,7 +1,7 @@
 {
   "schema": "landmark-tracker/destination-question@2",
   "id": "DQC-002D",
-  "revision": 7,
+  "revision": 8,
   "title": "How should retired ADR history remain reachable?",
   "question": "How should retired ADR history remain reachable?",
   "answer": "ACC-5: Navigate from completed or historical capability links to the Wiki feature article first; the article links archived ADRs as sources. Keep the archive. S-024 already has an article; create one for S-022 while stating that its historical release packet is blocked, not completed.\nWF-8F: Specs and Tasks are transient working artifacts, not product documentation. Once their useful content is turned into readable durable documentation and the exact change is verified on main, they are retired and discarded. The Wiki stores the reconciled retired Spec and later corrective Tasks update it; Blueprint, Wiki and Taskboard are the enduring and navigational surfaces.",
@@ -10,9 +10,9 @@
     "revision": 2
   },
   "expectedResult": {
-    "change": "ACC-5 update workbench/wiki/design-concepts/spec-S-024-governance-core-and-diagnostics.md: Routes to active ADR-000C and archived ADR-0033 as sources. | ACC-5 create workbench/wiki/design-concepts/spec-S-022-llm-workbench-v3-1-release.md: Historical article routes to current release owners and archived Contract source without claiming S-022 complete. | ACC-5 update workbench/wiki/MEMORY.md, LEXICON.md: Wiki-first feature navigation; archived ADRs retained.",
-    "home": "workbench/wiki/design-concepts/spec-S-024-governance-core-and-diagnostics.md; workbench/wiki/design-concepts/spec-S-022-llm-workbench-v3-1-release.md; workbench/wiki/MEMORY.md, LEXICON.md",
-    "revision": 2
+    "change": "ACC-5 update workbench/wiki/features/governance-planes-adr-decisions-and-scoped-diagnostics.md: Routes to active ADR-000C and archived ADR-0033 as sources. | ACC-5 create workbench/wiki/features/historical-v3-1-release-proof-packet.md: Historical article routes to current release owners and archived Contract source without claiming S-022 complete. | ACC-5 update workbench/wiki/MEMORY.md, LEXICON.md: Wiki-first feature navigation; archived ADRs retained.",
+    "home": "workbench/wiki/features/governance-planes-adr-decisions-and-scoped-diagnostics.md; workbench/wiki/features/historical-v3-1-release-proof-packet.md; workbench/wiki/MEMORY.md, LEXICON.md",
+    "revision": 8
   },
   "result": null,
   "uncertainty": [],
@@ -203,6 +203,26 @@
             "LMK-000F",
             "LMK-000N"
           ]
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-04T12:53:38.339Z",
+      "reason": "The two design-concept articles named in the expected result moved into the features collection under capability names (Wiki Evolving-Synthesis Migration, TK-002); the expected route follows them.",
+      "changes": [
+        {
+          "field": "expectedResult",
+          "from": {
+            "change": "ACC-5 update workbench/wiki/design-concepts/spec-S-024-governance-core-and-diagnostics.md: Routes to active ADR-000C and archived ADR-0033 as sources. | ACC-5 create workbench/wiki/design-concepts/spec-S-022-llm-workbench-v3-1-release.md: Historical article routes to current release owners and archived Contract source without claiming S-022 complete. | ACC-5 update workbench/wiki/MEMORY.md, LEXICON.md: Wiki-first feature navigation; archived ADRs retained.",
+            "home": "workbench/wiki/design-concepts/spec-S-024-governance-core-and-diagnostics.md; workbench/wiki/design-concepts/spec-S-022-llm-workbench-v3-1-release.md; workbench/wiki/MEMORY.md, LEXICON.md",
+            "revision": 2
+          },
+          "to": {
+            "change": "ACC-5 update workbench/wiki/features/governance-planes-adr-decisions-and-scoped-diagnostics.md: Routes to active ADR-000C and archived ADR-0033 as sources. | ACC-5 create workbench/wiki/features/historical-v3-1-release-proof-packet.md: Historical article routes to current release owners and archived Contract source without claiming S-022 complete. | ACC-5 update workbench/wiki/MEMORY.md, LEXICON.md: Wiki-first feature navigation; archived ADRs retained.",
+            "home": "workbench/wiki/features/governance-planes-adr-decisions-and-scoped-diagnostics.md; workbench/wiki/features/historical-v3-1-release-proof-packet.md; workbench/wiki/MEMORY.md, LEXICON.md",
+            "revision": 8
+          }
         }
       ]
     }

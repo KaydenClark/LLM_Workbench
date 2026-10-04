@@ -43,7 +43,7 @@ import { assembleTaskPacket } from '../workbench/tools/task-packet.mjs';
 import { appendReceiptRowToContent, readReceiptFromFile } from '../workbench/tools/task-receipt.mjs';
 import { parseMarkdownTableRow } from '../workbench/tools/markdown-table.mjs';
 // S-00I TK-01U: features capture reads the Wiki validator and note frontmatter.
-import { validateWiki } from '../workbench/tools/wiki.mjs';
+import { moveNote, validateWiki } from '../workbench/tools/wiki.mjs';
 import { parseFrontmatter } from '../workbench/tools/adr.mjs';
 if (!process.argv.includes('--close-recovery-only')) {
   await import('./test-lifecycle-directory-links.mjs');
@@ -5097,6 +5097,54 @@ function commitAll(dir, message) {
   } finally {
     fs.rmSync(featureRoot, { recursive: true, force: true });
     fs.rmSync(featureOutside, { recursive: true, force: true });
+  }
+}
+
+// S-003W TK-002: a per-Spec article that began as a design-concept note and
+// moves into the features collection with `wiki.mjs move-note` stays the
+// Spec's retirement owner. The move rewrites the router link, the article is
+// retyped to feature, and `retireSpec` admits it at its new path with the
+// historical route named in its source_paths.
+{
+  const movedRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-retire-moved-feature-'));
+  try {
+    initLifecycleFixture(movedRoot);
+    fs.writeFileSync(path.join(movedRoot, 'AGENTS.md'), '# Agents\n\nRoutes to workbench/wiki.\n');
+    writeAt(movedRoot, 'workbench/specs/S-613-moved-feature-fixture/SPEC.md', retirementReadySpec('S-613', ['TK-001']));
+    writeAt(movedRoot, 'workbench/specs/S-613-moved-feature-fixture/tasks/TK-001/TASK.md',
+      withReceiptRun(doneTaskRecordFixture({ id: 'TK-001', specId: 'S-613', slice: 'Moved feature fixture slice', destination: 'spec-acceptance: S-613 Acceptance Criteria', proof: 'landed' }), { branch: 'claude/moved-feature-fixture' }));
+    const historicalRoute = 'workbench/specs/retired/S-613-moved-feature-fixture/SPEC.md';
+    const conceptNote = 'workbench/wiki/design-concepts/moved-feature-capability.md';
+    const movedNote = 'workbench/wiki/features/moved-feature-capability.md';
+    const article = featureOwnerArticle(historicalRoute, { type: 'design-concept' })
+      .replace('last_verified: 2026-09-26', 'authorized_by: owner\nparent: none\nlast_verified: 2026-09-26')
+      .replace('# Feature Fixture Capability', '# Moved Feature Capability')
+      .concat('\n## History\n\n- 2026-09-26: written as a per-Spec design-concept article.\n');
+    writeAt(movedRoot, conceptNote, article);
+    writeAt(movedRoot, 'workbench/wiki/MEMORY.md', '# Fixture Room Brain\n\n- [Moved Feature Capability](design-concepts/moved-feature-capability.md) - a Spec article moved into the features collection\n');
+    execFileSync('git', ['init', '--quiet', movedRoot]);
+    execFileSync('git', ['-C', movedRoot, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', movedRoot, 'config', 'user.name', 'Fixture']);
+    commitAll(movedRoot, 'initial corpus');
+    execFileSync('git', ['-C', movedRoot, 'branch', 'integration']);
+
+    const moved = moveNote(movedRoot, { note: conceptNote, to: 'features', retype: 'feature' });
+    assert.equal(moved.to, movedNote, 'the article moved into the features collection');
+    assert.match(fs.readFileSync(path.join(movedRoot, 'workbench/wiki/MEMORY.md'), 'utf8'), /\]\(features\/moved-feature-capability\.md\) - a Spec article/, 'the move rewrote the router link and left its summary');
+    assert.deepEqual(validateWiki(movedRoot).filter((item) => item.note === movedNote && item.severity === 'error'), [], 'the moved article validates as a feature');
+    commitAll(movedRoot, 'move the Spec article into the features collection');
+    recordOwnerApproval(movedRoot, 'S-613', { candidate: integratedFixtureCandidate(movedRoot), owner: 'Kayden Clark', result: 'approve' });
+    commitAll(movedRoot, 'record owner Human QA approval');
+
+    const receipt = retireSpec(movedRoot, 'S-613', { wikiNote: movedNote });
+    assert.equal(receipt.wikiNote, movedNote, 'the receipt names the moved article as owner');
+    assert.equal(receipt.ownerType, 'feature', 'the moved article is a feature owner');
+    assert.equal(receipt.route, historicalRoute, 'the receipt names the historical route');
+    assert.ok(fs.existsSync(path.join(movedRoot, historicalRoute)), 'the Spec retired into retired/');
+    assert.deepEqual(validateWiki(movedRoot).filter((item) => item.note === movedNote && item.severity === 'error'), [], 'the moved article still validates after retirement');
+    console.log('ok - a Spec stays retirable through a design-concept article moved into the features collection');
+  } finally {
+    fs.rmSync(movedRoot, { recursive: true, force: true });
   }
 }
 

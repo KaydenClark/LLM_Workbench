@@ -40,7 +40,7 @@ In the S-01Q scenario, a fresh agent audited three claims about a small fixture 
 
 ## Not the historical team "Auditor" role
 
-The optional [team templates](../../team%20templates/SUBAGENT.md) (also [MANAGER.md](../../team%20templates/MANAGER.md)) use "Auditor" as the name of a read-only delegated team role. That vocabulary comes from S-020's bounded-team model, which its [design concept](design-concepts/spec-S-020-spec-native-team-coordination.md) calls historical. The team role is a delegation contract: an agent that joins a team as "Auditor" edits nothing. The stance described here is how one agent performs an assigned task. The two agree on read-only work, but the stance is not a team seat, and loading it spawns no agent. It also grants no role in a coordinator's lane plan.
+The optional [team templates](../../team%20templates/SUBAGENT.md) (also [MANAGER.md](../../team%20templates/MANAGER.md)) use "Auditor" as the name of a read-only delegated team role. That vocabulary comes from S-020's bounded-team model, which its [design concept](features/bounded-team-coordination.md) calls historical. The team role is a delegation contract: an agent that joins a team as "Auditor" edits nothing. The stance described here is how one agent performs an assigned task. The two agree on read-only work, but the stance is not a team seat, and loading it spawns no agent. It also grants no role in a coordinator's lane plan.
 
 ## Composition
 

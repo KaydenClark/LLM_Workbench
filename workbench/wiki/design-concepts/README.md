@@ -46,6 +46,21 @@ starts from the root `LEXICON.md`, which routes here.
   only concepts unique to it and routes upward for the rest; `parent` in the
   frontmatter names that route or `none`.
 
+## Landmark Synthesis Pages
+
+Each landmark has one synthesis page here, named `landmark-<title>.md`, routed
+from `MEMORY.md` under "Landmark Synthesis Pages" with a one-line summary. It is
+seeded from the landmark's question cards' current answers and updated whenever
+a card changes. Its shape is the Article Shape below plus these sections, in
+order: what the landmark is, current accepted answers, open and unresolved,
+where the work lives, and optionally related pages. Only answers a card records
+as confirmed read as claims; anything unconfirmed or open is labeled
+`Inference:` or listed as unresolved, and a card's answer that a newer accepted
+decision supersedes is reported as such, not silently replaced. The page links
+its landmark record, so the record's file path appears in its body; every card
+is cited with its title beside its identifier. List the landmark and card
+directories in `source_paths`, not their identifier-named files.
+
 ## Article Shape
 
 ```markdown
