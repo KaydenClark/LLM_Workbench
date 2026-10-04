@@ -249,6 +249,7 @@ without opening it. See [features/README.md](features/README.md).
 - [Evidence-Gated Harness Feedback](features/evidence-gated-harness-feedback.md) - feedback discovery ranks candidates and an independent decision passes, denies or blocks each on reproduction, regression, suite and safety evidence.
 - [Fresh Template To Independent Project Proof](features/fresh-template-to-independent-project-proof.md) - the recorded proof that a clean Template copy became an independent project room and was continued in a fresh agent context, with its limits.
 - [Genesis From Blueprint Decisions And Active ADRs](features/genesis-from-blueprint-decisions-and-active-adrs.md) - creates a new room from a clean Template, a prepared note and an explicit plan, deriving one first capability from locked questions and active ADRs.
+- [Governance Planes, ADR Decisions And Scoped Diagnostics](features/governance-planes-adr-decisions-and-scoped-diagnostics.md) - claims classified by plane, authority kept apart from state resolution, and diagnostics with their own severity, scope and blocking effect.
 - [Held-Out Path-Safety Evaluation](features/held-out-path-safety-evaluation.md) - a held-out path-handling eval task and grader scoring correctness, scope, verification honesty and doc upkeep separately.
 - [Historical v3.1 Release Proof Packet](features/historical-v3-1-release-proof-packet.md) - the blocked v3.1 release proof packet: what it preserved, what it never completed, and the current owners of release state.
 - [Import-Safe Feedback Helper Entry](features/import-safe-feedback-helper-entry.md) - the feedback helper can be imported inline without running its CLI, because its entry guard handles an absent script path.
@@ -261,6 +262,7 @@ without opening it. See [features/README.md](features/README.md).
 - [Manifest Schema 2 Lanes And Managed Runtime](features/manifest-schema-2-lanes-and-managed-runtime.md) - manifest-declared support lanes and collections, and managed runtime tools installed against a recorded receipt.
 - [Named Template Upgrade Release Gate](features/named-template-upgrade-release-gate.md) - requires each new Workbench version to be exercised in the named Workbench_Template installation before release readiness.
 - [Portable Verification Boundaries](features/portable-verification-boundaries.md) - context labels use forward slashes, spec comparison ignores CRLF, and eval fixtures use the running interpreter and Windows launchers.
+- [Portable Wiki Knowledge And Collections](features/portable-wiki-knowledge-and-collections.md) - the Wiki's one router, schema and note properties, and the named collections that hold durable explanations with explicit sources.
 - [Portable Workbench Installation, Adoption And Upgrade](features/portable-workbench-installation-adoption-and-upgrade.md) - how a Workbench is created, adopted and upgraded, with presence kept separate from replacement of installed skills.
 - [Project Evidence Preparation For Blueprint Grilling](features/project-evidence-preparation-for-blueprint-grilling.md) - turns named project sources into a bounded provisional grilling note that keeps source identity and uncertainty and answers no owner question.
 - [Release Candidate Proof And Historical Disposition](features/release-candidate-proof-and-historical-disposition.md) - What a release candidate must join: capability delivery, version identity and a disposition of feedback, with the proof kept historical.
@@ -270,6 +272,7 @@ without opening it. See [features/README.md](features/README.md).
 - [Verified Automation Run Outcomes](features/verified-automation-run-outcomes.md) - six run-outcome categories and an idle count that only a verified idle advances, so a pause is recommended on real absence of work.
 - [Visible Workbench Identifiers](features/visible-workbench-identifiers.md) - the visible type-prefixed identity readers see, with legacy compatibility and the uppercase width-four amendment.
 - [Wiki Routing, Version Stamps And Safe Source Reads](features/wiki-routing-version-stamps-and-safe-source-reads.md) - the checks that tell a room its Wiki router is unreachable or its Wiki files are stamped with a stale version, and the safe-read boundary continuity input must pass.
+- [Workflow Composition And Cold Continuation](features/workflow-composition-and-cold-continuation.md) - how composed work resumes from repository evidence alone, with a round-trip fixture and checkpoint copying retired in favor of promotion.
 
 ## Individual Spec Articles
 
@@ -278,9 +281,6 @@ proof from current behavior. Original records remain intact pending lifecycle ga
 
 - [Operable Genesis Readiness](design-concepts/spec-S-015-portable-v3-release-audit-recovery.md)
 - [Bounded Team Coordination (S-020)](design-concepts/spec-S-020-spec-native-team-coordination.md)
-- [Governance Claims And Diagnostics (S-024)](design-concepts/spec-S-024-governance-core-and-diagnostics.md)
-- [Portable Wiki Knowledge (S-025)](design-concepts/spec-S-025-portable-wiki-and-design-concepts.md)
-- [Workflow Composition And Cold Continuation (S-026)](design-concepts/spec-S-026-workflow-composition-and-cold-resume.md)
 - [Assigned Work, Portable Stances And Delivery Boundaries](design-concepts/spec-S-027-workbench-v3-1-1-boundaries.md)
 - [Feedback And Migration Integrity](design-concepts/spec-S-028-harness-feedback-integrity.md)
 - [Declared Integration And Recoverable Completion](design-concepts/spec-S-029-declared-integration-branch.md)

@@ -424,7 +424,7 @@ Consumer snapshot: 0 occurrences. Article semantic review: **passed for core cap
 
 ### S-024: Governance Claims And Diagnostics (S-024)
 
-Article: [Governance Claims And Diagnostics (S-024)](../../wiki/design-concepts/spec-S-024-governance-core-and-diagnostics.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-024-governance-core-adrs-and-diagnostics/SPEC.md`.
+Article: [Governance Claims And Diagnostics (S-024)](../../wiki/features/governance-planes-adr-decisions-and-scoped-diagnostics.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-024-governance-core-adrs-and-diagnostics/SPEC.md`.
 
 Governance planes classify the role a claim plays in an operation. Intent, Canon, Grounding, Enduring Context, Actuality and Projection do not label entire files as authorities. A Spec can contain accepted requirements, observed results and derived views without making those claims interchangeable.
 
@@ -442,7 +442,7 @@ Consumer snapshot: 0 occurrences. Article semantic review: **passed for core cap
 
 ### S-025: Portable Wiki Knowledge (S-025)
 
-Article: [Portable Wiki Knowledge (S-025)](../../wiki/design-concepts/spec-S-025-portable-wiki-and-design-concepts.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-025-portable-wiki-and-design-concepts/SPEC.md`.
+Article: [Portable Wiki Knowledge (S-025)](../../wiki/features/portable-wiki-knowledge-and-collections.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-025-portable-wiki-and-design-concepts/SPEC.md`.
 
 The Wiki holds durable explanations with explicit source links. MEMORY.md is its one router; SCHEMA.md and lane guidance define shape, maintenance and handling. Lexicon directs readers to the Wiki when they need a concept explained, and to work owners when they need current assignment or acceptance state.
 
@@ -460,7 +460,7 @@ Consumer snapshot: 0 occurrences. Article semantic review: **passed for core cap
 
 ### S-026: Workflow Composition And Cold Continuation (S-026)
 
-Article: [Workflow Composition And Cold Continuation (S-026)](../../wiki/design-concepts/spec-S-026-workflow-composition-and-cold-resume.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-026-workflow-composition-and-cold-resume/SPEC.md`.
+Article: [Workflow Composition And Cold Continuation (S-026)](../../wiki/features/workflow-composition-and-cold-continuation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-026-workflow-composition-and-cold-resume/SPEC.md`.
 
 A composed workflow carries planning into implementation without depending on the original chat. Controls, the assigned Spec and Tasks, linked knowledge, named verification and a recoverable Git commit provide the continuation route. Skills resolve support paths through the manifest rather than importing private directory assumptions.
 
