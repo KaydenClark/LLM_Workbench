@@ -3,7 +3,7 @@
 **Task ID:** TK-005I
 **Spec ID:** S-004C
 **Slice:** Move verification, documentation ownership and the release gate behind their pointers
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-005H
 **Destination:** spec-acceptance: An inventory maps every line of `AGENTS.md` and `RUNBOOK.md` to a home, and a check shows every removed line landed (verification and documentation family), and `AGENTS.md` meets the brief definition.
