@@ -8,8 +8,8 @@
 **Updated:** 2026-10-04
 **Catalog description:** Bring the Wiki's files, tooling and records in line with the accepted definition of the Wiki as the evolving synthesis every agent reads and updates: link-safe note moves, per-Spec articles into the features collection, router summaries, the name-and-context identifier rule in place of the identifier ban, landmark synthesis pages, the ledger out of the Wiki, and the lint cadence as a procedure.
 **Blockers:** none
-**Latest event:** TK-001 claimed by claude-director-s003w.
-**Next gate:** Close TK-001 with verification and documentation proof.
+**Latest event:** TK-006 claimed by claude-director-s003w.
+**Next gate:** Close TK-006 with verification and documentation proof.
 
 > **Citation anchors.** pre=`e72ff5bc78d8815d5911c604b76c2953c78ecb79` post=`e72ff5bc78d8815d5911c604b76c2953c78ecb79`.
 > Both name the Canon promotion commit on `claude/wiki-definition-canon`; post
