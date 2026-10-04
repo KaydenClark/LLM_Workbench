@@ -40,7 +40,8 @@ documentation progress the Tracker measures cannot reach Verified.
 
 ## Current Verified State
 
-Read at the pre anchor.
+Read at the pre anchor. This is the state the Spec was written against; the
+evidence log and Completion Result record what it delivered.
 
 - `workbench/wiki/design-concepts/` holds 55 files: the README, three model
   articles (Landmark Tracker, Roles and Stances, Task Artifact and Lifecycle)
@@ -236,7 +237,21 @@ Pending.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- The ledger-to-cards conversion is owned elsewhere; slice 6 adapts to it.
+- The ledger-to-cards conversion is owned elsewhere; slice 6 adapts to it. The
+  ledger moved to the sessions lane (TK-005) and remains a live record there.
+- Desired Behavior 5's second half is not delivered: the Landmark Records Spec's
+  expected-claim assessment does not read the landmark synthesis pages. The
+  assessment records evidence references as free text and derives claim status
+  from record revisions only, so reading page contents is a new public contract
+  owned by the Landmark Records Spec (S-002A), not a Task of this Spec. Owner
+  decision at Human QA: add that contract under S-002A, or amend Desired
+  Behavior 5 to the delivered half. Do not clear it with a green test.
+- Pre-existing bare identifiers on untouched Wiki pages were found by the
+  whole-Wiki lint at Spec review (470 findings on 55 pages before repair); the
+  corrective Tasks under this Spec repair them and the validator remains
+  explicit-call only, wired into no gate.
+- Decision-record, Spec and Task identifiers in append-only Spec history and
+  commit-pinned references are historical and left as written.
 - Feature capture for Specs completed after this migration follows the
   schema's ingest rule and needs no slice here.
 
