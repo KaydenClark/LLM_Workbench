@@ -59,9 +59,10 @@ owner-confirmed.
   quality check on integration, and is not a new gate; the card records it as a
   v4 requirement
   (card [DQC-004L: "What should a Wiki feature article explain, and when is it written?"](../../landmark-tracker/destination-questions/DQC-004L.json), revision 7).
-  The collection is delivered: it holds an article for each Spec completed so far,
-  all routed from the router's Feature Articles list, and the per-Spec articles
-  once filed as design concepts were moved into it; see the
+  The collection is delivered: it holds the feature articles migrated from the
+  per-Spec design concepts, all routed from the router's Feature Articles list
+  (an earlier Spec's design-concept or guidebook note can remain its valid
+  retirement owner); see the
   [features README](../features/README.md).
 - **Who keeps it current.** The grilling primitive stays unaware of landmarks and the
   Tracker; compound workflow activity reads and updates the landmark system. Tracker

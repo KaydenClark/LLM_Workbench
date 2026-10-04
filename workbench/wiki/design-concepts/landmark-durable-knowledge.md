@@ -70,8 +70,10 @@ separately owner-confirmed.
 - **Features articles.** A new Wiki collection named features holds one article
   per completed Spec, written at the closure point and not as a new gate
   (card [DQC-004L: "What should a Wiki feature article explain, and when is it written?"](../../landmark-tracker/destination-questions/DQC-004L.json), revision 7).
-  The collection is delivered and holds an article for each Spec completed so
-  far, routed from the router's Feature Articles list; see the
+  The collection is delivered and holds the feature articles migrated from the
+  per-Spec design concepts, routed from the router's Feature Articles list (an
+  earlier Spec's design-concept or guidebook note can remain its valid retirement
+  owner); see the
   [features README](../features/README.md).
 - **Retired decisions stay reachable.** Navigation from historical capability
   links goes to the Wiki article first, and the article links archived decision
