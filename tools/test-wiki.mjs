@@ -766,7 +766,9 @@ test('a draft must carry the template sections and one well-formed finding per l
     refusedWith(draftArticle({}, draftBody({ findings: 'F:someone-else:01 | gap | wrong skill | owner' })), /finding names skill someone-else, not wayfinder/, 'a finding for another skill is refused');
     refusedWith(draftArticle({}, draftBody({ findings: 'F:wayfinder:01 | gap | first | owner\nF:wayfinder:01 | gap | repeated number | owner' })), /finding number 01 is used twice/, 'a repeated finding number is refused');
 
-    refusedWith(draftArticle({ origin: 'workbench # foundry = revisit later' }), /origin .* is not one of workbench, matt, foundry/, 'an origin carrying a trailing comment is refused');
+    fs.writeFileSync(target, draftArticle({ origin: 'other' }));
+    assert.deepEqual(validateWiki(project), [], 'a skill from none of the three origins says other');
+    refusedWith(draftArticle({ origin: 'workbench # foundry = revisit later' }), /origin .* is not one of workbench, matt, foundry, other/, 'an origin carrying a trailing comment is refused');
     refusedWith(draftArticle({ skill_source: 'somewhere' }), /skill_source somewhere is not one of core, pending, personal, new/, 'an unknown skill_source is refused');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
@@ -788,7 +790,7 @@ test('the collection TEMPLATE.md fixes the finding line and kinds, and the templ
     fs.mkdirSync(path.join(drafts, 'shaping'), { recursive: true });
     const filled = fence
       .replace('<skill-name>', 'wayfinder').replace('<group-folder>', 'shaping')
-      .replace('<core | pending | personal | new>', 'pending').replace('<workbench | matt | foundry>', 'matt')
+      .replace('<core | pending | personal | new>', 'pending').replace('<workbench | matt | foundry | other>', 'matt')
       .replace('YYYY-MM-DD', '2026-10-04').replace('<repository-relative path>', 'BLUEPRINT.md');
     assert.doesNotMatch(filled, /<skill-name>|<group-folder>/, 'the named placeholders were all substituted');
     fs.writeFileSync(path.join(drafts, 'shaping', 'wayfinder.md'), filled);

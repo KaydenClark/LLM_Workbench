@@ -50,7 +50,7 @@ grep -rh '^F:' workbench/wiki/skills-draft
 | [primitives](#primitives) | 12 | Skills other skills compose: interviews, notes, promotion, documentation, vocabulary and testing. |
 | [productivity](#productivity) | 5 | Skills for working with people and other agents: handoff, teaching, questionnaires. |
 | [stances](#stances) | 6 | The jobs an agent takes inside an assignment: Builder, Auditor, Reviewer, Reconciler and two Foundry-origin ones. |
-| [foundry](#foundry) | 9 | Skills that came from the Foundry, kept here as drafts until the owner decides whether to adopt them. |
+| [foundry](#foundry) | 9 | Foundry-origin skills and two adjacent personal skills (`chronicle`, `clean-my-ai-harness-codex`, which are not Foundry skills and take `origin: other`), kept here as drafts until the owner decides whether to adopt, retire or hand back each one. |
 | **Total** | **81** | |
 
 Source is where the skill lives today: `core` is `workbench/skills`, `pending` is `skills-pending`, `personal` is only in the owner's own skills install, and `new` has no source yet. "Matt counterpart" is the nearest skill in Matt Pocock's skills at the upstream pin `d81f3a1`, or `none`. The owning Spec is the Spec that writes the draft in its step 2 onward.
@@ -178,7 +178,7 @@ The jobs an agent takes inside an assignment: Builder, Auditor, Reviewer, Reconc
 
 ## foundry
 
-Skills that came from the Foundry, kept here as drafts until the owner decides whether to adopt them.
+Foundry-origin skills and two adjacent personal skills (`chronicle`, `clean-my-ai-harness-codex`, which are not Foundry skills and take `origin: other`), kept here as drafts until the owner decides whether to adopt, retire or hand back each one.
 
 | Skill | Source | Owning Spec | Matt counterpart |
 |---|---|---|---|
@@ -196,5 +196,5 @@ Skills that came from the Foundry, kept here as drafts until the owner decides w
 
 - `to-tickets` is the stale name of `to-tasks`; it has a row so its retirement is visible, and its owning Spec folds it into the `to-tasks` article.
 - `writing-for-agents` replaces `writing-great-skills`, which folds into its Spec and has no row of its own.
-- `harness-feedback-review` and its fourteen stage skills share one Spec, and the eleven Foundry-origin skills (nine in `foundry`, two in `stances`) share another; both are the owner's accepted exceptions to one Spec per skill.
+- The 15-skill Harness Feedback Review family (`harness-feedback-review`, its three composites and its eleven stages) shares one Spec, and the Foundry triage Spec covers eleven skills: the nine in `foundry` plus `role-engineer` and `first-responder` in `stances`. Both are the owner's accepted exceptions to one Spec per skill.
 - Whether a Foundry-origin skill is adopted, retired or handed back is decided later from that triage Spec's output, never by drafting an article.
