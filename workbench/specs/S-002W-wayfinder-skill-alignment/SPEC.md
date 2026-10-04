@@ -5,7 +5,7 @@
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
-**Updated:** 2026-09-30
+**Updated:** 2026-10-04
 **Catalog description:** Chart a large, uncertain effort as a map of decisions and resolve them one at a time toward a named destination.
 **Blockers:** S-002L Skills draft wiki collection must deliver the draft-wiki location and article template before steps 2-5. Open owner question Q2A (where wayfinder keeps provisional decisions before a Blueprint or Spec exists) blocks step 6 only.
 **Latest event:** Authored from the owner's 2026-09-30 draft-skills-wiki direction.
@@ -58,7 +58,7 @@ The owner wants to prototype the skills Wiki on the current skills to find what 
 
 - **S-002L Skills draft wiki collection** must deliver the draft-wiki location and article template before steps 2-5. The tentative location is `workbench/wiki/skills-draft/shaping/wayfinder.md`, tentative until S-002L decides.
 - **Q2A** (owner-deferred) blocks step 6 only, not steps 1-5.
-- Step 6 depends on S-00R for authority to edit `skills-pending/wayfinder`, which has a live Codex lane (`codex/S-00R-optional-inventory`); check `git worktree list` and open PRs before touching that lane. The Pending `domain-modeling` and `prototype` skills it names are owned by S-002H and the later `prototype` adoption Spec; wayfinder must not hide a required dependency on either.
+- Step 6 depends on S-00R for authority to edit `skills-pending/wayfinder`, which has a live Codex lane (`codex/S-00R-optional-inventory`); check `git worktree list` and open PRs before touching that lane. The Pending `domain-modeling` and `prototype` skills it names are owned by Required Domain Modeling Skill (S-004J, which replaced the superseded S-002H) and the later `prototype` adoption Spec; wayfinder must not hide a required dependency on either.
 
 ## Vertical Implementation Slices
 
@@ -97,6 +97,7 @@ Draft article: `workbench/wiki/skills-draft/shaping/wayfinder.md` (tentative unt
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-30 | planning | Spec authored from the owner's draft-skills-wiki direction; Q2A recorded as open and owner-deferred | Current `skills-pending/wayfinder/SKILL.md`, Lexicon Map/Fog/Frontier/Ticket rows and README rows read at the pre anchor; no behavior scenario run | This Spec authored; no article or skill source written | S-002L delivery, Task cutting at activation, and the owner's Q2A answer remain open |
+| 2026-10-04 | reference repair | The domain-modeling owner changed: S-002H was superseded by Required Domain Modeling Skill (S-004J) | Read S-002H and S-004J at the remap branch | Dependencies line repointed | Unchanged |
 
 ## Completion Result
 
