@@ -20,6 +20,17 @@ export const NOTE_TYPES = Object.freeze(['memory', 'project', 'person', 'machine
 // its limits and its evidence.
 export const FEATURE_SECTIONS = Object.freeze(['What It Does', 'Why It Matters', 'Limits', 'Evidence and Sources']);
 export const NOTE_STATUSES = Object.freeze(['active', 'partial', 'stale', 'archived']);
+// S-002L TK-006M: the draft skills wiki. It is the Wiki's second nesting
+// exception beside `archive/`: `skills-draft/<group>/<skill>.md`, one folder per
+// group. It is a repo-only prototype, so it is named here and in SCHEMA.md and
+// is not a declared manifest collection (the closed registry in
+// `workbench-paths.mjs` stays untouched). `draft` is a status only a note inside
+// it may carry; promotion moves a draft out and gives it an ordinary status.
+export const DRAFT_COLLECTION = 'skills-draft';
+export const DRAFT_GROUPS = Object.freeze(['getting-started', 'main-workflow', 'shaping', 'upkeep', 'primitives', 'productivity', 'stances', 'foundry']);
+export const DRAFT_STATUS = 'draft';
+// The collection's own files, directly under its root: the index and the template.
+const DRAFT_ROOT_FILES = Object.freeze(['README', 'TEMPLATE']);
 export const SENSITIVITIES = Object.freeze(['normal', 'private', 'restricted']);
 export const KNOWLEDGE_ROLES = Object.freeze(['canonical', 'curated', 'derived', 'historical']);
 export const REQUIRED_PROPERTIES = Object.freeze(['type', 'status', 'sensitivity', 'knowledge_role', 'provenance', 'source_paths', 'last_verified']);
@@ -45,6 +56,27 @@ function walkMarkdown(directory, files = []) {
     else if (entry.isFile() && entry.name.endsWith('.md')) files.push(target);
   }
   return files.sort();
+}
+
+// A draft article sits directly inside one group folder, is called by its skill,
+// names that skill and group, and carries the scoped `draft` status. The
+// collection's own index and template sit at its root and are ordinary notes.
+function draftArticleFindings(relative, segments, data) {
+  const problem = (message) => finding('invalid-note', `${relative} ${message}`, { note: relative });
+  const basename = path.basename(segments[segments.length - 1], '.md');
+  if (segments.length === 1) {
+    return DRAFT_ROOT_FILES.includes(basename) ? [] : [problem(`must sit directly inside a group folder (${DRAFT_GROUPS.join(', ')}); only README.md and TEMPLATE.md sit at the collection root`)];
+  }
+  if (segments.length > 2) return [problem('must sit directly inside a group folder, not nested below it')];
+  const findings = [];
+  const [group] = segments;
+  if (!DRAFT_GROUPS.includes(group)) findings.push(problem(`folder ${group} is not one of the group folders (${DRAFT_GROUPS.join(', ')})`));
+  else if (data.group === undefined) findings.push(problem(`must declare group ${group}, the folder it sits in`));
+  else if (data.group !== group) findings.push(problem(`group ${data.group} does not match its folder ${group}`));
+  if (data.status !== undefined && data.status !== DRAFT_STATUS) findings.push(problem(`must declare status ${DRAFT_STATUS}; it lives in the draft collection`));
+  if (data.skill === undefined) findings.push(problem(`must declare skill ${basename}, the skill its file is called`));
+  else if (data.skill !== basename) findings.push(problem(`skill ${data.skill} does not match its file name ${basename}`));
+  return findings;
 }
 
 // The room brain is only useful when the controls route back to it: AGENTS.md
@@ -213,6 +245,8 @@ export function validateWiki(root, options = {}) {
   const featuresRelative = collectionRelative(root, 'features');
   const features = path.join(root, featuresRelative);
   const archive = path.join(root, collectionRelative(root, 'archive'));
+  const draftRoot = path.join(wikiRoot, DRAFT_COLLECTION);
+  const draftRelative = `${wikiRelative}/${DRAFT_COLLECTION}`;
   const basenames = new Map();
   for (const file of walkMarkdown(wikiRoot)) {
     const relative = path.relative(root, file).split(path.sep).join('/');
@@ -231,7 +265,10 @@ export function validateWiki(root, options = {}) {
     }
     if (data.authority !== undefined) findings.push(finding('invalid-note', `${relative} uses retired property authority; use knowledge_role for handling and provenance for attribution`, { note: relative }));
     if (data.type !== undefined && !NOTE_TYPES.includes(data.type)) findings.push(finding('invalid-note', `${relative} type ${data.type} is not one of ${NOTE_TYPES.join(', ')}`, { note: relative }));
-    if (data.status !== undefined && !NOTE_STATUSES.includes(data.status)) findings.push(finding('invalid-note', `${relative} status ${data.status} is invalid`, { note: relative }));
+    const inDrafts = file.startsWith(draftRoot + path.sep);
+    if (data.status === DRAFT_STATUS) {
+      if (!inDrafts) findings.push(finding('invalid-note', `${relative} status ${DRAFT_STATUS} belongs in ${draftRelative}; promote the draft out of the collection and give it an ordinary status`, { note: relative }));
+    } else if (data.status !== undefined && !NOTE_STATUSES.includes(data.status)) findings.push(finding('invalid-note', `${relative} status ${data.status} is invalid`, { note: relative }));
     if (data.sensitivity !== undefined && !SENSITIVITIES.includes(data.sensitivity)) findings.push(finding('invalid-note', `${relative} sensitivity ${data.sensitivity} is invalid`, { note: relative }));
     if (data.knowledge_role !== undefined && !KNOWLEDGE_ROLES.includes(data.knowledge_role)) findings.push(finding('invalid-note', `${relative} knowledge_role ${data.knowledge_role} is invalid`, { note: relative }));
     if (data.last_verified !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(String(data.last_verified))) findings.push(finding('invalid-note', `${relative} last_verified must be YYYY-MM-DD`, { note: relative }));
@@ -265,12 +302,13 @@ export function validateWiki(root, options = {}) {
     if (data.status === 'stale') findings.push(finding('stale-note', `${relative} is marked stale`, { note: relative }));
     if (file.startsWith(designConcepts + path.sep) && basename !== 'README') {
       if (data.type !== 'design-concept') findings.push(finding('invalid-note', `${relative} must declare type design-concept`, { note: relative }));
-      if (!data.authorized_by) findings.push(finding('invalid-note', `${relative} must record authorized_by (the authorizing operation or the owner)`, { note: relative }));
+      if (!data.authorized_by) findings.push(finding('invalid-note', `${relative} must record authorized_by (the operation that authorized this article)`, { note: relative }));
       if (data.parent === undefined) findings.push(finding('invalid-note', `${relative} must declare parent (a route or none)`, { note: relative }));
       for (const section of ['Evidence and Sources', 'History']) {
         if (!new RegExp(`^## ${section}$`, 'm').test(content)) findings.push(finding('invalid-note', `${relative} must end with a ${section} section`, { note: relative }));
       }
     }
+    if (inDrafts) findings.push(...draftArticleFindings(relative, path.relative(draftRoot, file).split(path.sep), data));
     const inFeatures = file.startsWith(features + path.sep);
     if (inFeatures && basename !== 'README') {
       if (data.type !== 'feature') findings.push(finding('invalid-note', `${relative} must declare type feature; it lives in the features collection ${featuresRelative}`, { note: relative }));
@@ -329,6 +367,7 @@ function noteFields(root, file, relative, date) {
 
 function inferredType(root, file) {
   if (path.basename(file) === 'MEMORY.md') return 'memory';
+  if (file.startsWith(path.join(lanePath(root, 'wiki'), DRAFT_COLLECTION) + path.sep)) return 'memory';
   for (const [collection, type] of [['guidebooks', 'guidebook'], ['design-concepts', 'design-concept'], ['features', 'feature']]) {
     if (file.startsWith(path.join(root, collectionRelative(root, collection)) + path.sep)) return type;
   }
