@@ -77,7 +77,11 @@ last_verified: YYYY-MM-DD
 - `source_paths` names the Spec's retired route,
   `workbench/specs/retired/<spec directory>/SPEC.md`, which is the provenance
   retirement and discard read, plus the source and tests that prove it.
-- Route every article from `MEMORY.md` with a relative link. This collection
-  keeps no index of its own.
+- Name the article for the capability it delivers, not for the identifier of
+  the Spec that delivered it. Where it names an identifier, it also names the
+  artifact and what it is for.
+- Route every article from `MEMORY.md` with a relative link and a one-line
+  summary beside it, so a reader can choose the article without opening it.
+  This collection keeps no index of its own.
 - Design Concept and guidebook notes remain valid retirement owners for
   earlier Specs; a Task record's discard waits for a features article.

@@ -219,7 +219,7 @@ The provenance of every promoted and excluded memory file is in
 | [docs/adr/REGISTER.md](../docs/adr/REGISTER.md) | The derived register of decision records |
 | [SCHEMA.md](SCHEMA.md) | What the Wiki is, its page kinds, ingest, lint, concurrency, metadata and freshness rules |
 | [design-concepts/](design-concepts/README.md) | Articles explaining durable design models and each landmark's evolving synthesis |
-| [features/](features/README.md) | One entity page per delivered capability (empty; the per-Spec articles below are to move here) |
+| [features/](features/README.md) | One entity page per delivered capability; the per-Spec articles listed below move here one by one, routed under Feature Articles |
 | [guidebooks/](guidebooks/) | Ordered procedures that outgrew the Runbook (empty) |
 
 ## Routing
@@ -233,12 +233,20 @@ The provenance of every promoted and excluded memory file is in
 This product repository keeps no personal, machine, or deployment notes; it is
 a `project` profile wiki. `guidebooks/` ships empty until a procedure outgrows
 the Runbook; `design-concepts/` carries the articles routed above;
-`features/` stays empty until a completed Spec is captured at its closure
-point.
+`features/` holds the per-Spec articles as they move there, routed under
+Feature Articles, and a completed Spec's article at its closure point.
 
 ## Up-Link
 
 Standalone room; no deployment wiki.
+
+## Feature Articles
+
+One article per delivered capability, named for what it delivers. Each line
+carries a one-line summary beside its link so a reader can choose a page
+without opening it. See [features/README.md](features/README.md).
+
+- [Wiki Routing, Version Stamps And Safe Source Reads](features/wiki-routing-version-stamps-and-safe-source-reads.md) - the checks that tell a room its Wiki router is unreachable or its Wiki files are stamped with a stale version, and the safe-read boundary continuity input must pass.
 
 ## Individual Spec Articles
 
@@ -277,7 +285,6 @@ proof from current behavior. Original records remain intact pending lifecycle ga
 - [Mechanical Permission Scope And Declared Lanes](design-concepts/spec-S-030-permission-scope-matches-lanes.md)
 - [Installed Skill Identity And Inspection](design-concepts/spec-S-031-installed-skill-generation.md)
 - [Upgrade Layout Without Replacing Skills](design-concepts/spec-S-032-upgrade-route-and-source-provenance.md)
-- [Wiki Routing, Version Stamps And Safe Source Reads](design-concepts/spec-S-033-silent-gap-diagnostics.md)
 - [Control Fidelity Without Forced Uniformity](design-concepts/spec-S-034-control-fidelity-report.md)
 - [Release Candidate Proof And Historical Disposition](design-concepts/spec-S-035-workbench-v3-1-2-candidate.md)
 - [Evidence-Bounded Upgrade Claims (S-036)](design-concepts/spec-S-036-evidence-corrections.md)

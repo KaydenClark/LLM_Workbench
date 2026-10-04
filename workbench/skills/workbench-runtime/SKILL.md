@@ -139,6 +139,7 @@ not with anything in the wiki lane:
 ```bash
 node workbench/tools/wiki.mjs validate
 node workbench/tools/wiki.mjs normalize [--date YYYY-MM-DD]
+node workbench/tools/wiki.mjs move-note NOTE --to COLLECTION [--name BASENAME] [--retype TYPE] [--dry-run] [--json]
 ```
 
 `invalid-note` covers a missing router, a missing required collection, absent
@@ -179,6 +180,32 @@ normalize ran. `type` is inferred from where the note lives (`MEMORY.md` ->
 otherwise `meta`). Correct the inferred values by hand afterwards; a
 design-concept article still needs its `authorized_by`, `parent`, and sections,
 which normalize never invents.
+
+`move-note` is the only way a note changes collection; never move one by
+hand, because a hand move leaves every link to it dangling. `NOTE` is the
+note's project-relative path inside the wiki lane and `--to` names a declared
+collection (`design-concepts`, `features`, `guidebooks` or `archive`).
+`--name` renames the note (a plain basename, no `.md`), and `--retype` changes
+its `type` in the same move, which is how a per-Spec design-concept article
+becomes a `feature` article. Run it first with `--dry-run`: it prints the plan
+and writes nothing. The move rewrites every live Markdown link to the note,
+recomputes the moved note's own outgoing links only where their text would no
+longer resolve, and covers the root controls, the Wiki, the skills lane,
+decision records, every Spec and Task record and the landmark records and
+question cards. A reference inside a Spec's Append-Only Evidence And Execution
+Log is history and is left as written, counted under `historicalReferencesLeft`
+beside `referencesRewritten`. It refuses, and writes nothing, when the
+destination collection does not accept the (re)typed note (`design-concepts`
+holds `design-concept`, `features` holds `feature`, `guidebooks` holds
+`guidebook`, `archive` holds any type), when the destination or its basename
+is taken anywhere in the wiki, when the note is the router, a collection
+`README.md` or contract file, has no frontmatter, or when a rename would
+orphan an Obsidian `[[wikilink]]`. In a Git room a tracked note moves with
+`git mv` and exactly the changed files are staged, so the candidate reads as
+one rename with its link repairs. The move does not edit the note's body or
+History; add the move to its History and, after a retype, the sections the new
+type requires, then run `validate`. Plain-text path mentions that are not
+Markdown links (a JSON inventory, a generated tracker) are not rewritten.
 
 ## Installed State The Harness Wrote
 
