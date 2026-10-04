@@ -3,13 +3,13 @@
 **Spec ID:** S-004C
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s004c-tk005i
+**Owner:** claude-s004c-tk005j
 **Stance:** Builder
 **Updated:** 2026-10-04
 **Catalog description:** Rewrite AGENTS.md as a short standing brief and RUNBOOK.md as an operations index of context pointers, with each operation's procedure and binding requirements in a tracked skill the carrier points to.
 **Blockers:** Implementation waits on gates recorded as Task blockers, none of them an owner decision on this Spec's content: the Worker and Captain role skills (the role-detail Task only), the Lexicon writer's turn (the Lexicon Task only), and delivery of the `LANDMARK.md` artifact (the landmark-clause Task only).
-**Latest event:** 2026-10-03: TK-005I (verification, documentation ownership and release gate family) landed through PR #329 as integration c89a7ad5 after a separate-context Codex review passed its head 7d3b99bb; the Full suite list now lives in RUNBOOK.md Test And Build; TK-005J set ready.
-**Next gate:** Claim, deliver and land TK-005J (operations every room runs); then TK-005K and TK-005M run serially, TK-005N after its Lexicon-writer token is confirmed, while TK-005L waits on S-002E and S-004B delivery, TK-005O on S-003Z delivery, and TK-005P on both.
+**Latest event:** TK-005J claimed by claude-s004c-tk005j.
+**Next gate:** Close TK-005J with verification and documentation proof.
 
 > **Citation anchors.** pre=`226212f1790badce0a5bdcd934d2e48e3981e05f` post=`226212f1790badce0a5bdcd934d2e48e3981e05f`.
 
