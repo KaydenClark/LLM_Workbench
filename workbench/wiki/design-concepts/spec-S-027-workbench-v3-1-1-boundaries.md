@@ -20,12 +20,14 @@ source_paths:
   - tools/test-workbench-adoption.mjs
 parent: none
 authorized_by: owner
-last_verified: 2026-09-19
+last_verified: 2026-10-04
 ---
 
 # Assigned Work, Portable Stances And Delivery Boundaries
 
-The normal entry route is `AGENTS.md -> RUNBOOK.md -> LEXICON.md`, followed
+The normal entry route is `AGENTS.md` -> the `RUNBOOK.md` operations index ->
+`LEXICON.md` (the Contract Carrier Pointer-Brief Rewrite made the Runbook an
+index of pointers to the skills that hold each procedure), followed
 by the assigned capability and only its relevant context. The Blueprint is
 loaded for architecture and product direction. An agent investigates missing
 information inside its assignment and does not invent a new queue item merely
@@ -78,3 +80,4 @@ refusals and external branch inventories must not be read as today's state.
 
 - 2026-09-19: Created on owner direction as one article for this legacy Spec after reading its full record and checking named live sources. Evolved or superseded claims are identified explicitly. No Spec was moved, retired or discarded, and no retrospective Human QA is asserted.
 - 2026-09-30: Repaired live skill links and source_paths after relocation to workbench/skills; verified destinations only, without revalidating historical capability claims.
+- 2026-10-04: The entry route names the Runbook operations index, which the Contract Carrier Pointer-Brief Rewrite (S-004C TK-005N) delivered.

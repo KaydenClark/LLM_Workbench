@@ -15,7 +15,7 @@ source_paths:
   - tools/test-spec-workbench.mjs
 parent: none
 authorized_by: owner
-last_verified: 2026-09-19
+last_verified: 2026-10-04
 ---
 
 # Spec-Centered Progressive Disclosure
@@ -24,7 +24,11 @@ Progressive disclosure keeps ordinary entry small: read the agent contract,
 follow the Runbook and Lexicon routes, then load the assigned capability and
 its relevant source. A Spec carries the assignment and its proof; the hot
 Taskboard derives an operational view. Reading an entire historical catalog is
-not a prerequisite for doing one bounded piece of work.
+not a prerequisite for doing one bounded piece of work. The Contract Carrier
+Pointer-Brief Rewrite carried the same principle into the carriers themselves:
+`AGENTS.md` is a short brief, and the Runbook is an operations index whose rows
+point to the skills that hold each procedure, so entry reads the brief and the
+index and loads a procedure only when the work needs it.
 
 S-001 established this separation when startup material mixed product detail,
 completed evidence and live work. Its July 2026 measurements describe that
@@ -58,3 +62,4 @@ checks and context reduction do not prove better agent outcomes.
 ## History
 
 - 2026-09-19: Created on owner direction as one article for this legacy Spec; read the full historical record and checked the named live sources. Historical proof is distinguished from current behavior. No Spec was moved, retired or discarded, and no retrospective Human QA is asserted.
+- 2026-10-04: Noted that the Contract Carrier Pointer-Brief Rewrite (S-004C TK-005N) applies progressive disclosure to the carriers.
