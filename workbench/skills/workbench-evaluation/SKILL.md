@@ -7,7 +7,7 @@ description: Evaluate whether a harness change to the LLM Workbench is an improv
 
 The evaluation and feedback operations this repository's maintainers run, moved here from the Runbook by the Contract Carrier Pointer-Brief Rewrite (S-004C TK-005K). Each section below is the procedure an operations index row in `RUNBOOK.md` points to, and it binds for that operation in this repository. The guardrail audit stays with the `implement` skill and the Runbook's Guardrail North-Star Audit section.
 
-This is a maintainer skill: `workbench/manifest.json` declares it under `maintainerSkills`, so the release checks accept it beside the core bundle and no route installs it or lays it into a room ([Maintainer skills](../README.md#maintainer-skills)). Commands run from the root of a clean checkout of this repository.
+This is a maintainer skill: `workbench/manifest.json` declares it under `maintainerSkills`, so the release checks accept it beside the core bundle and no route installs it or lays it into a room ([Maintainer skills](../README.md#maintainer-skills)). Commands run from the root of a clean checkout of this repository, and a path in backticks is relative to that root; a Markdown link resolves from this skill's folder.
 
 ## Claims To Test
 

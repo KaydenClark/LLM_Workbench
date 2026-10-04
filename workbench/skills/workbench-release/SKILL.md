@@ -7,7 +7,7 @@ description: Cut, prove and publish an LLM Workbench release from this producer 
 
 The release operations only this repository's maintainers run, moved here from the Runbook by the Contract Carrier Pointer-Brief Rewrite (S-004C TK-005K). Each section below is the procedure an operations index row in `RUNBOOK.md` points to, and it binds for that operation in this repository.
 
-This is a maintainer skill: `workbench/manifest.json` declares it under `maintainerSkills`, so the release checks accept it beside the core bundle and no route installs it or lays it into a room ([Maintainer skills](../README.md#maintainer-skills)). Commands run from the root of a clean checkout of this repository.
+This is a maintainer skill: `workbench/manifest.json` declares it under `maintainerSkills`, so the release checks accept it beside the core bundle and no route installs it or lays it into a room ([Maintainer skills](../README.md#maintainer-skills)). Commands run from the root of a clean checkout of this repository, and a path in backticks is relative to that root; a Markdown link resolves from this skill's folder.
 
 ## Release Identity
 
@@ -37,7 +37,7 @@ This is the required real-room test of `update-harness`.
    commit. Preserve unrelated work in separate checkouts. Read the target
    controls, create the dedicated upgrade spec, inventory all tracked files,
    and run its full baseline suite.
-2. Follow `workbench/skills/update-harness/SKILL.md` for that installed layout. For an
+2. Follow the [`update-harness` skill](../update-harness/SKILL.md) for that installed layout. For an
    already-v3 room, run the source's additive layout migration, reconcile the
    manifest version and changed control sections, and run the source's
    `tools/workbench-tools.mjs update --project TEMPLATE_ROOT --home BACKUP_HOME

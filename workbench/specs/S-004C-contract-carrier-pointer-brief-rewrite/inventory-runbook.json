@@ -172,8 +172,8 @@
       "hash": "c63e7f7e212fb00fac377dd6fae7075b63d2fb18bef3b6f1310cd491685c5fda",
       "homeKind": "skill",
       "homePath": "workbench/skills/workbench-release/SKILL.md",
-      "landedText": "2. Follow `workbench/skills/update-harness/SKILL.md` for that installed layout. For an",
-      "reason": "TK-005K moved this line verbatim to the workbench-release maintainer skill, which the Runbook operations index points to for its operation."
+      "landedText": "2. Follow the [`update-harness` skill](../update-harness/SKILL.md) for that installed layout. For an",
+      "reason": "TK-005K moved this line to the workbench-release maintainer skill, which the Runbook operations index points to for its operation; after review its repository path to the update-harness skill became a link that resolves from the skill folder."
     },
     {
       "line": 30,
