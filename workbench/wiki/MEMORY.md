@@ -235,7 +235,7 @@ Standalone room; no deployment wiki.
 One evolving synthesis page per landmark, seeded from its question cards'
 current answers and updated whenever a card changes. Each line carries a
 one-line summary beside its link. The convention is in
-[design-concepts/README.md](design-concepts/README.md#landmark-synthesis-pages).
+[design-concepts/README.md](design-concepts/README.md#landmark-synthesis-pages) - the design-concepts collection shape and the landmark synthesis page convention.
 
 - [Landmark: GitHub Coordination](design-concepts/landmark-github-coordination.md) - live coordination of delivery moves to GitHub Issues: who may act and what counts, per-item claim authority, composed views, room binding, and what is still open or unbuilt.
 - [Landmark: Portable Workbench](design-concepts/landmark-portable-workbench.md) - a fresh agent can clone a room, find its skills, manifest and host knowledge there, do authorized work and end clean; the accepted answers, what the owner left open and what is not yet delivered.

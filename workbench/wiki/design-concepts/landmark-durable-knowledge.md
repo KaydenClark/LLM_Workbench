@@ -75,8 +75,8 @@ separately owner-confirmed.
   links goes to the Wiki article first, and the article links archived decision
   records as sources; the archive is kept
   (card [DQC-002D: "How should retired ADR history remain reachable?"](../../landmark-tracker/destination-questions/DQC-002D.json), revision 7).
-  Articles exist for [Governance Core, ADRs, And Scoped Diagnostics (S-024)](spec-S-024-governance-core-and-diagnostics.md)
-  and [LLM Workbench release article (S-022)](spec-S-022-llm-workbench-v3-1-release.md).
+  Articles exist for [Governance Core, ADRs, And Scoped Diagnostics (S-024)](../features/governance-planes-adr-decisions-and-scoped-diagnostics.md)
+  and [LLM Workbench release article (S-022)](../features/historical-v3-1-release-proof-packet.md).
 - **How confirmed answers reach owners.** A grilling answer never enters Canon
   inline; it is promoted through ordinary scoped work, a Task when small and a
   Spec with Tasks when broad, routed by the ownership map to the Lexicon, root

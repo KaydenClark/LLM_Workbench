@@ -113,9 +113,9 @@ The upgrade gate is a producer-only rule in the
 [Template Upgrade Release Gate of AGENTS](../../../AGENTS.md#template-upgrade-release-gate), whose
 procedure is in the [Runbook](../../../RUNBOOK.md#template-upgrade-release-gate), and it is
 owned by [Template Upgrade Release Gate (S-00F)](../../specs/S-00F-template-upgrade-release-gate/SPEC.md)
-([Wiki page](spec-S-00F-template-upgrade-release-gate.md)). The staged
+([Wiki page](../features/named-template-upgrade-release-gate.md)). The staged
 Specs are [Workbench Template Reformation (S-00B)](../../specs/S-00B-workbench-template-reformation/SPEC.md)
-([Wiki page](spec-S-00B-workbench-template-reformation.md)), the three
+([Wiki page](../features/copyable-workbench-template-reference-room.md)), the three
 Specs named above, and [Workbench Release (S-050)](../../specs/S-050-workbench-v3-2-0-release/SPEC.md).
 The fixtures belong to [Portable Workbench (S-021)](../../specs/S-021-portable-workbench-v3/SPEC.md)
 and its [manifest](../../manifest.json). Related decisions:
