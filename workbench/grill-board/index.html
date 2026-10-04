@@ -146,6 +146,8 @@
   .artifact-section > h2 { margin-top: 0; }
   .source-change { padding: 12px; border: 1px solid var(--warn); background: var(--warn-soft); border-radius: 10px; margin: 12px 0; }
   .unavailable-link { color: var(--muted); text-decoration: underline dotted; }
+  #artifact-panel, .reader [data-anchor], .artifact-section, #artifact-proposals, article.item { scroll-margin-top: 80px; }
+  .banner { top: 70px; }
   @media (max-width: 900px) { nav { top: auto; height: auto; } .page-header { padding: 10px 16px; } }
 </style>
 </head>
@@ -488,6 +490,9 @@
     const params = new URLSearchParams(location.hash.slice(1));
     const file = params.get('artifact'), group = params.get('artifacts');
     const reading = Boolean(file || group);
+    if (reading && !state.reading) state.questionScroll = window.scrollY;
+    const returning = !reading && state.reading;
+    state.reading = reading;
     document.querySelector('.shell').classList.toggle('reading', reading);
     document.querySelector('.shell > nav').hidden = reading;
     document.getElementById('questions-panel').hidden = reading;
@@ -501,7 +506,7 @@
         const target = state.board.items.find(item => item.id === id);
         if (target && !visible(target)) { state.filter = 'all'; state.query = ''; document.getElementById('search').value = ''; render(); }
         document.getElementById(id)?.scrollIntoView({ block: 'start' });
-      }
+      } else if (returning) window.scrollTo(0, state.questionScroll || 0);
       return;
     }
     panel.innerHTML = '<p>Loading artifacts…</p>';
@@ -517,6 +522,7 @@
         document.getElementById('page-select').value = group;
         const records = catalog.artifacts.filter(a => a.group === group).sort((a, b) => Number(b.status === 'accepted') - Number(a.status === 'accepted') || a.title.localeCompare(b.title));
         panel.innerHTML = `<h1>${esc(selected.title)}</h1><p>Open the full record. Accepted active decisions appear first; proposed and historical records remain available.</p><div class="artifact-list">${records.map(a => `<a href="${esc(artifactHref(a.path))}"><strong>${esc(a.title)}</strong><small>${esc(a.status)}${a.id ? ` · ${esc(a.id)}` : ''}</small><small>${esc(a.path)}</small></a>`).join('') || '<p>No records in this collection.</p>'}</div>`;
+        panel.scrollIntoView({ block: 'start' });
         return;
       }
       const result = await fetch(`/api/artifact?path=${encodeURIComponent(file)}`, { cache: 'no-store' });
@@ -534,7 +540,7 @@
       document.getElementById('refresh-artifact').onclick = routePage;
       const anchor = params.get('anchor');
       const target = itemId ? document.getElementById(`draft-${itemId}`) : anchor === 'current' ? document.getElementById('current-artifact') : anchor === 'proposals' ? document.getElementById('artifact-proposals') : [...panel.querySelectorAll('[data-anchor]')].find(element => element.dataset.anchor === anchor);
-      target?.scrollIntoView({ block: 'start' });
+      (target || panel).scrollIntoView({ block: 'start' });
     } catch (error) {
       if (serial === state.route) panel.innerHTML = `<h1>Could not read artifact</h1><p>${esc(error.message)}</p><a href="#questions">Return to questions</a>`;
     }
