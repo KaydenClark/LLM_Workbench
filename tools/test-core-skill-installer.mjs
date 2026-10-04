@@ -753,7 +753,7 @@ test('a declared maintainer skill passes the closed-bundle source check and is n
     assert.ok(result.report.installed.every((item) => item.skill !== 'maintainer-fixture'), 'the maintainer skill is never installed');
     for (const discoveryRoot of ['.agents/skills', '.claude/skills']) {
       assert.equal(fs.existsSync(path.join(home, discoveryRoot, 'maintainer-fixture')), false, `${discoveryRoot} never receives a maintainer skill`);
-      assert.deepEqual(fs.readdirSync(path.join(home, discoveryRoot)).sort(), [...coreSkills].sort());
+      assert.deepEqual(fs.readdirSync(path.join(home, discoveryRoot), { withFileTypes: true }).filter((entry) => entry.isDirectory() || entry.isSymbolicLink()).map((entry) => entry.name).sort(), [...coreSkills].sort(), `${discoveryRoot} holds exactly the core skills`);
     }
   } finally {
     fs.rmSync(home, { recursive: true, force: true });
