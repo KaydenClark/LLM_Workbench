@@ -8793,7 +8793,7 @@
         "approval-binding",
         "human-qa-ongoing"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -8830,12 +8830,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.015Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "The existing review -> integration -> owner Human QA -> completion -> retirement path is executable and approvals describe the committed capability inspected.",
-        "why": "The Spec QA Gate And Corrective-Task Return Path (S-00J) implementation checks candidate ancestry but hashes local content, so an old integration SHA can approve an unmerged Spec. Its premerge gate also requires postmerge approval. Completing a Spec changes the digest and invalidates retirement proof. Retired Task bodies are omitted from that digest.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe Spec QA Gate And Corrective-Task Return Path (S-00J) implementation checks candidate ancestry but hashes local content, so an old integration SHA can approve an unmerged Spec. Its premerge gate also requires postmerge approval. Completing a Spec changes the digest and invalidates retirement proof. Retired Task bodies are omitted from that digest.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "The existing review -> integration -> owner Human QA -> completion -> retirement path is executable and approvals describe the committed capability inspected.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -8906,7 +8915,7 @@
         "self-drift",
         "human-qa-ongoing"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -8943,12 +8952,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.041Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Every canonical LLM Workbench update checks the Workbench's own current-facing\nartifacts for semantic drift and refuses a clean-completion claim when stale or\ncontradictory guidance could misroute a fresh agent.",
-        "why": "The Workbench is its own cold-start interface. At the pre anchor its manifest\ndeclares v3.2.0 while the hot board still projects Workbench Release Candidate (S-014) and LLM Workbench v3.1 Release (S-022) as blocked on\nv3.1-era release work. Those specs remain pending and name no successor. The\nsame review found five v3.1.4-seeded artifacts, a v3.1.0 provenance mismatch,\nand unreadable legacy continuity records. `render`, `doctor`, and focused tests\ncan remain structurally green while this stale context changes what a memoryless\nagent believes is current.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe Workbench is its own cold-start interface. At the pre anchor its manifest\ndeclares v3.2.0 while the hot board still projects Workbench Release Candidate (S-014) and LLM Workbench v3.1 Release (S-022) as blocked on\nv3.1-era release work. Those specs remain pending and name no successor. The\nsame review found five v3.1.4-seeded artifacts, a v3.1.0 provenance mismatch,\nand unreadable legacy continuity records. `render`, `doctor`, and focused tests\ncan remain structurally green while this stale context changes what a memoryless\nagent believes is current.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Every canonical LLM Workbench update checks the Workbench's own current-facing\nartifacts for semantic drift and refuses a clean-completion claim when stale or\ncontradictory guidance could misroute a fresh agent.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -9020,7 +9038,7 @@
         "controls",
         "human-qa-ongoing"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -9057,12 +9075,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.064Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Canon describes the workflow the owner settled, in two phases.",
-        "why": "The Blueprint carries no current status, release chronology or catalog, so\nwriting it against target state is honest today, and WF-12 (decision-082)\nmakes that rewrite mandatory for the rollout. The controls are different: they\nare the cold-start Contract, and a control that names a command or record that\ndoes not exist sends the next agent through a route that fails. The two phases\nkeep both truths: the destination is written first, and the operating\ninstructions change only when the runtime they describe is real.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe Blueprint carries no current status, release chronology or catalog, so\nwriting it against target state is honest today, and WF-12 (decision-082)\nmakes that rewrite mandatory for the rollout. The controls are different: they\nare the cold-start Contract, and a control that names a command or record that\ndoes not exist sends the next agent through a route that fails. The two phases\nkeep both truths: the destination is written first, and the operating\ninstructions change only when the runtime they describe is real.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Canon describes the workflow the owner settled, in two phases.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -9134,7 +9161,7 @@
         "discard",
         "human-qa-ongoing"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -9171,12 +9198,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.089Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "A successful discard preserves complete recoverability, current Wiki references and record-backed Task interpretation.",
-        "why": "The Retirement Lifecycle By Folder For Records (S-00I) audit found obsolete incarnation recovery, a broken durable-owner citation after discard, and final-Task deletion failing after mutation. Legacy Completed Record Migration (S-00Q) TK-0Q1 already names these repair prerequisites; this Spec delivers that prerequisite once, without activating migration.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe Retirement Lifecycle By Folder For Records (S-00I) audit found obsolete incarnation recovery, a broken durable-owner citation after discard, and final-Task deletion failing after mutation. Legacy Completed Record Migration (S-00Q) TK-0Q1 already names these repair prerequisites; this Spec delivers that prerequisite once, without activating migration.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "A successful discard preserves complete recoverability, current Wiki references and record-backed Task interpretation.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -9247,7 +9283,7 @@
         "lexicon",
         "not-ready"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -9284,12 +9320,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.110Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "A reader can trust the Lexicon's shared meanings, distinctions and routes against\ncurrent accepted design and verified behavior.",
-        "why": "The Lexicon sits on ordinary agent entry and can therefore spread an obsolete\nmodel into planning, implementation and review. Recent workflow, artifact,\ncontinuity, skill and Landmark Tracker concepts have changed the surrounding\nmodel. Piecemeal additions leave older definitions, distinctions and ownership\nrows capable of contradicting those additions.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe Lexicon sits on ordinary agent entry and can therefore spread an obsolete\nmodel into planning, implementation and review. Recent workflow, artifact,\ncontinuity, skill and Landmark Tracker concepts have changed the surrounding\nmodel. Piecemeal additions leave older definitions, distinctions and ownership\nrows capable of contradicting those additions.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "A reader can trust the Lexicon's shared meanings, distinctions and routes against\ncurrent accepted design and verified behavior.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -9361,7 +9406,7 @@
         "identity",
         "v4"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -9398,12 +9443,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.131Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "New artifact WBIDs use uppercase `0-9A-Z` suffixes of minimum width four.",
-        "why": "The owner selected two separate build Specs and the order WBID -> board ->\nWorkflow Canon Rework (S-00P) controls -> Workbench v4.0.0 Release (S-00O) release. The board needs consistent identities before\nits own records and consumers are built. A bulk rename would contradict the\nowner's touch-and-update rule and endanger recoverable historical references.\nDurable source: [destination audit ledger](../../wiki/grilling-destination-audit-ledger.json),\nrows E-6, E-7 and E-8, including their decision/correction lineage.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe owner selected two separate build Specs and the order WBID -> board ->\nWorkflow Canon Rework (S-00P) controls -> Workbench v4.0.0 Release (S-00O) release. The board needs consistent identities before\nits own records and consumers are built. A bulk rename would contradict the\nowner's touch-and-update rule and endanger recoverable historical references.\nDurable source: [destination audit ledger](../../wiki/grilling-destination-audit-ledger.json),\nrows E-6, E-7 and E-8, including their decision/correction lineage.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "New artifact WBIDs use uppercase `0-9A-Z` suffixes of minimum width four.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -9475,7 +9529,7 @@
         "v4",
         "not-ready"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -9512,12 +9566,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.155Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "A generated root `TASKBOARD.json` displays implementation work in six lanes,\nwith both Spec and Task cards keyed by WBID.",
-        "why": "The current board is a one-row-per-Spec Markdown summary. It cannot represent\nthe requested Task grain, review queue, Backlog or cleanup progress. The owner\nsettled WBID -> board -> Workflow Canon Rework (S-00P) controls -> Workbench v4.0.0 Release (S-00O) release so the controls rewrite\ncan describe the actual new board once. The durable source is the\n[destination audit ledger](../../wiki/grilling-destination-audit-ledger.json),\nrows TRACK, E-1..E-6 including E-4A/B/C, E-10 and E-11.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe current board is a one-row-per-Spec Markdown summary. It cannot represent\nthe requested Task grain, review queue, Backlog or cleanup progress. The owner\nsettled WBID -> board -> Workflow Canon Rework (S-00P) controls -> Workbench v4.0.0 Release (S-00O) release so the controls rewrite\ncan describe the actual new board once. The durable source is the\n[destination audit ledger](../../wiki/grilling-destination-audit-ledger.json),\nrows TRACK, E-1..E-6 including E-4A/B/C, E-10 and E-11.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "A generated root `TASKBOARD.json` displays implementation work in six lanes,\nwith both Spec and Task cards keyed by WBID.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -9588,7 +9651,7 @@
         "landmark-tracker",
         "not-ready"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -9625,12 +9688,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.176Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Rebuild and inspect evidence-backed documentation distributions from existing DQC and landmark records.",
-        "why": "This asks whether the delivered capability matches its agreed destination, not merely whether its Tasks or tests passed.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThis asks whether the delivered capability matches its agreed destination, not merely whether its Tasks or tests passed.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Rebuild and inspect evidence-backed documentation distributions from existing DQC and landmark records.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -9701,7 +9773,7 @@
         "landmark-records",
         "not-ready"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -9738,12 +9810,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.197Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Maintain evolving landmark relationships and readable durable knowledge with recoverable provenance.",
-        "why": "Landmarks preserve evolving direction while readable articles explain durable\nknowledge. Identity-bearing structured provenance must stay recoverable without\nleaking WBIDs into the article or turning a completed Task into documentation\nproof. Live record links must keep resolving after supported delivery moves.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nLandmarks preserve evolving direction while readable articles explain durable\nknowledge. Identity-bearing structured provenance must stay recoverable without\nleaking WBIDs into the article or turning a completed Task into documentation\nproof. Live record links must keep resolving after supported delivery moves.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Maintain evolving landmark relationships and readable durable knowledge with recoverable provenance.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -9814,7 +9895,7 @@
         "dqc",
         "not-ready"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -9851,12 +9932,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.220Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "A room can persist an evolving concept DQC before any answer, landmark or delivery assignment exists.",
-        "why": "Evolving understanding needs a durable inspectable account before delivery. An intended documentation change cannot stand in for achieved delivery; recording only Expected result leaves the concept account incomplete even while a generated view displays progress.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nEvolving understanding needs a durable inspectable account before delivery. An intended documentation change cannot stand in for achieved delivery; recording only Expected result leaves the concept account incomplete even while a generated view displays progress.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "A room can persist an evolving concept DQC before any answer, landmark or delivery assignment exists.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -9927,7 +10017,7 @@
         "citations",
         "tooling"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -9964,12 +10054,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.241Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Citation enforcement selects the declared tree for every citation in an explicitly labelled list, checks digit-leading file basenames, and keeps dotted non-path values from replacing the nearest file scope.",
-        "why": "A green checker must not silently resolve a shipped citation against the pre-change tree or skip a valid file reference. Completed [v3.1.2 Follow-Ups Left Without An Owner (S-045)](../v3.1.2 Follow-Ups Left Without An Owner (S-045)-v3-1-2-follow-ups/SPEC.md) and its prior review remain historical results; these verified late findings need their own linked owner.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nA green checker must not silently resolve a shipped citation against the pre-change tree or skip a valid file reference. Completed [v3.1.2 Follow-Ups Left Without An Owner (S-045)](../v3.1.2 Follow-Ups Left Without An Owner (S-045)-v3-1-2-follow-ups/SPEC.md) and its prior review remain historical results; these verified late findings need their own linked owner.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Citation enforcement selects the declared tree for every citation in an explicitly labelled list, checks digit-leading file basenames, and keeps dotted non-path values from replacing the nearest file scope.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -10040,7 +10139,7 @@
         "github-coordination",
         "not-ready"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -10077,12 +10176,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.262Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Resolve an explicit GitHub coordination repository and room-scoped artifact identities from immutable repository sources.",
-        "why": "GitHub Coordination is part of the owner-directed v4 package. A bounded capability owner makes the accepted destination executable without one oversized Spec or a second coordination queue.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nGitHub Coordination is part of the owner-directed v4 package. A bounded capability owner makes the accepted destination executable without one oversized Spec or a second coordination queue.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Resolve an explicit GitHub coordination repository and room-scoped artifact identities from immutable repository sources.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -10153,7 +10261,7 @@
         "git-state",
         "completion-claims"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -10190,12 +10298,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.284Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "A run cannot report a slice as done while its work sits uncommitted or\nunpushed.",
-        "why": "`close` writes \"closed with proof\" after reading two strings. It reads no\nrepository state at all, so a slice can be closed as done, with proof, on a\ndirty unpushed tree, and nothing observes it. The diagnostic registry cannot\ncatch it either: nothing it registers observes HEAD, the working tree,\nuntracked files or upstream distance.\n\nThe failure is not hypothetical. The session that settled this decision was\nitself detached with 39 porcelain entries, thirteen of them untracked ADRs and\nSpecs under the controls and spec lanes, and no control named it. A completion\nreport written from that state would have been accepted by every check the\nWorkbench has.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\n`close` writes \"closed with proof\" after reading two strings. It reads no\nrepository state at all, so a slice can be closed as done, with proof, on a\ndirty unpushed tree, and nothing observes it. The diagnostic registry cannot\ncatch it either: nothing it registers observes HEAD, the working tree,\nuntracked files or upstream distance.\n\nThe failure is not hypothetical. The session that settled this decision was\nitself detached with 39 porcelain entries, thirteen of them untracked ADRs and\nSpecs under the controls and spec lanes, and no control named it. A completion\nreport written from that state would have been accepted by every check the\nWorkbench has.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "A run cannot report a slice as done while its work sits uncommitted or\nunpushed.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -10266,7 +10383,7 @@
         "skills",
         "not-ready"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -10303,12 +10420,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.304Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "The portable core retains distinct behavior: `promote` selects supported claims,\n`to-docs` routes them to one durable owner, and `save` persists the authorized\nresult. `make-it-so` composes those jobs without enlarging scope; `carry` and\n`implement` separately execute an assigned Task.",
-        "why": "The composition boundaries prevent a settled claim from becoming a new store or\nan authorized planning request from becoming implementation. `to-docs` still\nsays to preserve completed Spec history and `to-spec` says stable paths never\nchange, both of which can misstate Retirement Lifecycle By Folder For Records (S-00I)'s lifecycle. The archive test proves a\ndirectory boundary, not a retained purpose for each asset; pending source has\nno demonstrated live consumer beyond the catalog's broad statement.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe composition boundaries prevent a settled claim from becoming a new store or\nan authorized planning request from becoming implementation. `to-docs` still\nsays to preserve completed Spec history and `to-spec` says stable paths never\nchange, both of which can misstate Retirement Lifecycle By Folder For Records (S-00I)'s lifecycle. The archive test proves a\ndirectory boundary, not a retained purpose for each asset; pending source has\nno demonstrated live consumer beyond the catalog's broad statement.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "The portable core retains distinct behavior: `promote` selects supported claims,\n`to-docs` routes them to one durable owner, and `save` persists the authorized\nresult. `make-it-so` composes those jobs without enlarging scope; `carry` and\n`implement` separately execute an assigned Task.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -10380,7 +10506,7 @@
         "grilling",
         "conversational-fidelity"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -10417,12 +10543,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.324Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Settle a shared design concept through one consequential question at a time.",
-        "why": "The prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets grilling reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets grilling reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Settle a shared design concept through one consequential question at a time.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -10494,7 +10629,7 @@
         "notepad",
         "conversational-fidelity"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -10531,12 +10666,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.346Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Preserve one objective's working context in revision-checked JSON without making it authority.",
-        "why": "The prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets notepad reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets notepad reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Preserve one objective's working context in revision-checked JSON without making it authority.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -10608,7 +10752,7 @@
         "grill-me",
         "conversational-fidelity"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -10645,12 +10789,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.369Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Provide a repository-owned entry point that composes grilling with notepad.",
-        "why": "The prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets grill-me reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets grill-me reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Provide a repository-owned entry point that composes grilling with notepad.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -10722,7 +10875,7 @@
         "handoff",
         "not-ready"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -10759,12 +10912,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.392Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Transfer one objective to a named destination in readable Markdown.",
-        "why": "The prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets handoff reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets handoff reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Transfer one objective to a named destination in readable Markdown.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -10836,7 +10998,7 @@
         "promote",
         "conversational-fidelity"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -10873,12 +11035,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.412Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Move selected supported working claims into their existing durable owners.",
-        "why": "The prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets promote reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets promote reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Move selected supported working claims into their existing durable owners.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -10950,7 +11121,7 @@
         "carry",
         "conversational-fidelity"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -10987,12 +11158,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.433Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Carry assigned work to its authorized endpoint and make genuine owner hand-backs visible.",
-        "why": "The prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets carry reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets carry reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Carry assigned work to its authorized endpoint and make genuine owner hand-backs visible.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -11064,7 +11244,7 @@
         "adoption",
         "conversational-fidelity"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -11101,12 +11281,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.454Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Bring an existing project into the Workbench once while preserving room truth.",
-        "why": "The prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets adoption reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets adoption reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Bring an existing project into the Workbench once while preserving room truth.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -11177,7 +11366,7 @@
         "skill-rebuild",
         "checkpoint"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -11214,12 +11403,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.474Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Keep the retired checkpoint command as an accurate compatibility route.",
-        "why": "The prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets checkpoint reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets checkpoint reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Keep the retired checkpoint command as an accurate compatibility route.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -11290,7 +11488,7 @@
         "skill-rebuild",
         "code-review"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -11327,12 +11525,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.494Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Review an immutable candidate against the repository and capability contracts.",
-        "why": "The prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets code-review reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets code-review reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Review an immutable candidate against the repository and capability contracts.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -11404,7 +11611,7 @@
         "genesis",
         "conversational-fidelity"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -11441,12 +11648,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.516Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Create a new Workbench room from a founding prompt and a recoverable remote boundary.",
-        "why": "The prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets genesis reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets genesis reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Create a new Workbench room from a founding prompt and a recoverable remote boundary.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -11518,7 +11734,7 @@
         "make-it-so",
         "conversational-fidelity"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -11555,12 +11771,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.537Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Compose approved work through the exact endpoint the owner authorized.",
-        "why": "The prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets make-it-so reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets make-it-so reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Compose approved work through the exact endpoint the owner authorized.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -11632,7 +11857,7 @@
         "to-docs",
         "conversational-fidelity"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -11669,12 +11894,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.557Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Route settled truth into the existing documentation owner.",
-        "why": "The prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets to-docs reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets to-docs reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Route settled truth into the existing documentation owner.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -11746,7 +11980,7 @@
         "to-spec",
         "conversational-fidelity"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -11783,12 +12017,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.577Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Turn a settled capability decision into one stable, bounded Spec.",
-        "why": "The prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets to-spec reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets to-spec reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Turn a settled capability decision into one stable, bounded Spec.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -11859,7 +12102,7 @@
         "skill-rebuild",
         "to-tasks"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -11896,12 +12139,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.599Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Cut one assigned Spec into dependency-aware Task records.",
-        "why": "The prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets to-tasks reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets to-tasks reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Cut one assigned Spec into dependency-aware Task records.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -11973,7 +12225,7 @@
         "save",
         "conversational-fidelity"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -12010,12 +12262,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.619Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Persist authorized work and prove the recovery boundary actually reached.",
-        "why": "The prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets save reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets save reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Persist authorized work and prove the recovery boundary actually reached.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -12086,7 +12347,7 @@
         "skill-rebuild",
         "auditor"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -12123,12 +12384,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.639Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Determine whether named claims hold on the assigned target and evidence.",
-        "why": "The prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets auditor reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets auditor reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Determine whether named claims hold on the assigned target and evidence.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -12200,7 +12470,7 @@
         "reviewer",
         "not-ready"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -12237,12 +12507,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.663Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Challenge candidate correctness, downstream impact and consequential claims.",
-        "why": "The prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets reviewer reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets reviewer reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Challenge candidate correctness, downstream impact and consequential claims.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -12314,7 +12593,7 @@
         "director",
         "v4"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -12351,12 +12630,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.684Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Coordinate the whole project across Spec-bound Dispatchers and integrate independently reviewed results.",
-        "why": "Roles define the scope of responsibility; stances define the job performed within that scope. An agent picking up integration needs a discoverable operating contract, not implicit knowledge from another chat. This Spec delivers only the minimum needed for Spec and Task rollout.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nRoles define the scope of responsibility; stances define the job performed within that scope. An agent picking up integration needs a discoverable operating contract, not implicit knowledge from another chat. This Spec delivers only the minimum needed for Spec and Task rollout.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Coordinate the whole project across Spec-bound Dispatchers and integrate independently reviewed results.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -12428,7 +12716,7 @@
         "dispatcher",
         "v4"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -12465,12 +12753,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.704Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Coordinate planning, parallel Task delivery and assembled verification within one assigned Spec and its branch.",
-        "why": "Roles define the scope of responsibility; stances define the job performed within that scope. An agent picking up integration needs a discoverable operating contract, not implicit knowledge from another chat. This Spec delivers only the minimum needed for Spec and Task rollout.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nRoles define the scope of responsibility; stances define the job performed within that scope. An agent picking up integration needs a discoverable operating contract, not implicit knowledge from another chat. This Spec delivers only the minimum needed for Spec and Task rollout.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Coordinate planning, parallel Task delivery and assembled verification within one assigned Spec and its branch.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -12542,7 +12839,7 @@
         "worker",
         "not-ready"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -12579,12 +12876,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.726Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Perform one assigned Task within its declared scope and return a verified, recoverable result.",
-        "why": "Roles define the scope of responsibility; stances define the job performed within that scope. An agent picking up integration needs a discoverable operating contract, not implicit knowledge from another chat. This Spec delivers only the minimum needed for Spec and Task rollout.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nRoles define the scope of responsibility; stances define the job performed within that scope. An agent picking up integration needs a discoverable operating contract, not implicit knowledge from another chat. This Spec delivers only the minimum needed for Spec and Task rollout.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Perform one assigned Task within its declared scope and return a verified, recoverable result.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -12656,7 +12962,7 @@
         "spec-planner",
         "v4"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -12693,12 +12999,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.746Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Plan small Tasks and parallel vertical slices for one Spec from current Actuality when its flight launches.",
-        "why": "Roles define the scope of responsibility; stances define the job performed within that scope. An agent picking up integration needs a discoverable operating contract, not implicit knowledge from another chat. This Spec delivers only the minimum needed for Spec and Task rollout.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nRoles define the scope of responsibility; stances define the job performed within that scope. An agent picking up integration needs a discoverable operating contract, not implicit knowledge from another chat. This Spec delivers only the minimum needed for Spec and Task rollout.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Plan small Tasks and parallel vertical slices for one Spec from current Actuality when its flight launches.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -12770,7 +13085,7 @@
         "spec-manager",
         "v4"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -12807,12 +13122,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.766Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "Dispatch and monitor planned Task work in parallel within one Spec, preserving proof and coordinated hand-back.",
-        "why": "Roles define the scope of responsibility; stances define the job performed within that scope. An agent picking up integration needs a discoverable operating contract, not implicit knowledge from another chat. This Spec delivers only the minimum needed for Spec and Task rollout.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nRoles define the scope of responsibility; stances define the job performed within that scope. An agent picking up integration needs a discoverable operating contract, not implicit knowledge from another chat. This Spec delivers only the minimum needed for Spec and Task rollout.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "Dispatch and monitor planned Task work in parallel within one Spec, preserving proof and coordinated hand-back.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -12884,7 +13208,7 @@
         "ddr",
         "tooling"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -12921,12 +13245,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.789Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "A room keeps two kinds of decision record, the ADR for how the system is built and the Destination Decision Record (DDR) for what the finished product must be or do, and one tool creates, reads, accepts, supersedes and deprecates both.",
-        "why": "The owner accepted the DDR as a durable per-decision owner of destination choices, and accepted that every kind of record answers the same read words. Both decisions were promoted as Canon with the explicit statement that they perform no delivery. Until the tooling exists, a DDR has no collection to live in, no command that writes one, and no way to accept or supersede it; the ADR tool itself can only create a record, validate, normalize and register, so an ADR is superseded by hand.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe owner accepted the DDR as a durable per-decision owner of destination choices, and accepted that every kind of record answers the same read words. Both decisions were promoted as Canon with the explicit statement that they perform no delivery. Until the tooling exists, a DDR has no collection to live in, no command that writes one, and no way to accept or supersede it; the ADR tool itself can only create a record, validate, normalize and register, so an ADR is superseded by hand.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "A room keeps two kinds of decision record, the ADR for how the system is built and the Destination Decision Record (DDR) for what the finished product must be or do, and one tool creates, reads, accepts, supersedes and deprecates both.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -12997,7 +13330,7 @@
         "notepads",
         "concurrency"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -13034,12 +13367,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.811Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "When two or more contexts write one notepad at the same moment, no entry is lost without the writer knowing.",
-        "why": "A notepad belongs to its objective and every context working that objective writes to it, so overlapping writers are an expected case, not a misuse. The runtime's revision check is a check, not a lock, so today overlapping writers can silently erase each other's entries while each is told it succeeded. The notepad exists so that context whose loss would impair continuation is not lost; a silent loss defeats that, and the owner's session-record rule is to save important context promptly. The accepted ownership decision names this as an unresolved runtime defect with no owning Spec and says closing it needs a new linked Spec; the notepad foundation Spec is complete.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nA notepad belongs to its objective and every context working that objective writes to it, so overlapping writers are an expected case, not a misuse. The runtime's revision check is a check, not a lock, so today overlapping writers can silently erase each other's entries while each is told it succeeded. The notepad exists so that context whose loss would impair continuation is not lost; a silent loss defeats that, and the owner's session-record rule is to save important context promptly. The accepted ownership decision names this as an unresolved runtime defect with no owning Spec and says closing it needs a new linked Spec; the notepad foundation Spec is complete.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "When two or more contexts write one notepad at the same moment, no entry is lost without the writer knowing.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -13110,7 +13452,7 @@
         "lexicon",
         "dictionary-terms"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -13147,12 +13489,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.832Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "When an agent or the owner uses one of these words in the Workbench, it means one thing: the meaning the owner agreed on.",
-        "why": "The owner supplied these terms as the words the Workbench should know the agreed meaning of. The Lexicon's Ownership Rules forbid using one term for two concepts, and today it already does so for one of them: the accepted [Contract carriers decision](../../docs/adr/000W-contract-carriers-are-briefs-that-point-to-skills-and-authority-flows-through-the-pointer.md) adopted four dictionary definitions on 2026-10-02 and says AGENTS.md is the file the harness loads into the context window at session start, while the Lexicon's Workbench row calls the Workbench itself \"the operating harness\".\n\nSeveral accepted rules already rest on these mechanics without the Lexicon defining them. That decision keeps AGENTS.md short because everything in it is loaded on every turn and a long file costs tokens. `AGENTS.md` keeps a notepad for context whose loss would impair continuation and has it saved before token exhaustion can interrupt the conversation, and it forbids an agent-outcome claim without repeated controlled trials. Defining the words lets those rules point to one shared meaning.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe owner supplied these terms as the words the Workbench should know the agreed meaning of. The Lexicon's Ownership Rules forbid using one term for two concepts, and today it already does so for one of them: the accepted [Contract carriers decision](../../docs/adr/000W-contract-carriers-are-briefs-that-point-to-skills-and-authority-flows-through-the-pointer.md) adopted four dictionary definitions on 2026-10-02 and says AGENTS.md is the file the harness loads into the context window at session start, while the Lexicon's Workbench row calls the Workbench itself \"the operating harness\".\n\nSeveral accepted rules already rest on these mechanics without the Lexicon defining them. That decision keeps AGENTS.md short because everything in it is loaded on every turn and a long file costs tokens. `AGENTS.md` keeps a notepad for context whose loss would impair continuation and has it saved before token exhaustion can interrupt the conversation, and it forbids an agent-outcome claim without repeated controlled trials. Defining the words lets those rules point to one shared meaning.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "When an agent or the owner uses one of these words in the Workbench, it means one thing: the meaning the owner agreed on.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -13223,7 +13574,7 @@
         "corrective-work",
         "controls"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -13260,12 +13611,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.854Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "When a check finds that a Task's work missed, and the fix is more of the same work, that Task continues with an adjusted handoff; a new Task is opened only when the fix changes the Task enough that it has to be rewritten.",
-        "why": "The owner confirmed both rules on 2026-10-03, and today the Workbench says and does the opposite on both. `AGENTS.md` makes every failed assembled-review finding a new corrective Task and forbids reopening a done record, and `verdict --result fail` creates one new Task per finding in the same call. `AGENTS.md`, the Lexicon's Task and Destination Packet rows and the runtime anchor a later correction to a reconciled Wiki claim. In the owner's words, the Wiki \"doesnt hold a destination for us to create a map or plan from\", and \"the wiki is not the source of the destination.\" Until this lands, an agent that follows the controls opens Tasks the owner does not want and anchors later work to an artifact that holds knowledge and evidence, not a destination.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe owner confirmed both rules on 2026-10-03, and today the Workbench says and does the opposite on both. `AGENTS.md` makes every failed assembled-review finding a new corrective Task and forbids reopening a done record, and `verdict --result fail` creates one new Task per finding in the same call. `AGENTS.md`, the Lexicon's Task and Destination Packet rows and the runtime anchor a later correction to a reconciled Wiki claim. In the owner's words, the Wiki \"doesnt hold a destination for us to create a map or plan from\", and \"the wiki is not the source of the destination.\" Until this lands, an agent that follows the controls opens Tasks the owner does not want and anchors later work to an artifact that holds knowledge and evidence, not a destination.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "When a check finds that a Task's work missed, and the fix is more of the same work, that Task continues with an adjusted handoff; a new Task is opened only when the fix changes the Task enough that it has to be rewritten.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -13336,7 +13696,7 @@
         "lexicon",
         "workflow-verbs"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -13373,12 +13733,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.874Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "The Lexicon carries the words the owner confirmed for the Workbench itself (Owner, Room, Workbench Template, Scaffolding, the three artifact kinds and Control), a definition of what makes a workflow verb, and one row per workflow verb, each in the owner's confirmed meaning.",
-        "why": "The owner confirmed these meanings on 2026-10-03 and asked that each artifact kind get its own row (\"Define them in the lexicon too please\") and that each verb get its own (\"And yes, one row per verb\"). Today the Lexicon has no row for any of these Workbench terms, has verb rows only for Align and for Map as a noun, calls the workflow eight verbs that are \"the official workflow verbs everywhere\" with Journey as Map, Plan, Implement, Review and Verify, says confirmation \"is not itself implementation permission\", describes the Blueprint by its eight sections, and defines the Foundry as a downstream coordination extension. Each of those now contradicts a locked owner answer, so an agent that looks a word up gets the old meaning.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe owner confirmed these meanings on 2026-10-03 and asked that each artifact kind get its own row (\"Define them in the lexicon too please\") and that each verb get its own (\"And yes, one row per verb\"). Today the Lexicon has no row for any of these Workbench terms, has verb rows only for Align and for Map as a noun, calls the workflow eight verbs that are \"the official workflow verbs everywhere\" with Journey as Map, Plan, Implement, Review and Verify, says confirmation \"is not itself implementation permission\", describes the Blueprint by its eight sections, and defines the Foundry as a downstream coordination extension. Each of those now contradicts a locked owner answer, so an agent that looks a word up gets the old meaning.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "The Lexicon carries the words the owner confirmed for the Workbench itself (Owner, Room, Workbench Template, Scaffolding, the three artifact kinds and Control), a definition of what makes a workflow verb, and one row per workflow verb, each in the owner's confirmed meaning.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -13454,7 +13823,7 @@
         "blueprint",
         "teardown"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -13491,12 +13860,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.894Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "`BLUEPRINT.md` is the short page the owner confirmed on 2026-10-03: what LLM Workbench is, who it serves, the outcomes it promises and what it is not, in 607 words by `wc -w` once the withheld hosted-service non-goal is left out (631 with it).",
-        "why": "The owner's locked answers make the current page wrong in shape and in content. It opens \"LLM Workbench is a portable operating harness\", which the owner's harness answer rejects; it carries decisions, a verbatim workflow map, qualities and procedures that the owner placed in decision records, landmarks, the Wiki and the Contract; and its eight sections are the shape the owner replaced for every room. The owner said what the Blueprint is for: \"a high-level summary of the direction we want to head and the choices that got us this far\", which \"makes us ask questions; it does not give definite answers.\" Until the swap lands, an agent that opens the Blueprint learns the old product and the old shape.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe owner's locked answers make the current page wrong in shape and in content. It opens \"LLM Workbench is a portable operating harness\", which the owner's harness answer rejects; it carries decisions, a verbatim workflow map, qualities and procedures that the owner placed in decision records, landmarks, the Wiki and the Contract; and its eight sections are the shape the owner replaced for every room. The owner said what the Blueprint is for: \"a high-level summary of the direction we want to head and the choices that got us this far\", which \"makes us ask questions; it does not give definite answers.\" Until the swap lands, an agent that opens the Blueprint learns the old product and the old shape.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "`BLUEPRINT.md` is the short page the owner confirmed on 2026-10-03: what LLM Workbench is, who it serves, the outcomes it promises and what it is not, in 607 words by `wc -w` once the withheld hosted-service non-goal is left out (631 with it).\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -13568,7 +13946,7 @@
         "retirement",
         "human-qa-failed"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -13605,12 +13983,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.915Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "The active roster of any record collection is its top-level directory listing.",
-        "why": "Lifecycle is invisible until a record is opened. An agent cannot read the active\nroster off a directory listing, and nothing prevents a record whose location and\nstatus disagree. Completed Specs accumulate in the same directory as active\nones, so a cold-start agent loads finished work as if it were current. The\nowner settled on 2026-09-16 that the enduring surfaces are the Blueprint, the\nWiki and the Taskboard, that a Spec closes when its destination is actually\nthere, and that once its useful content is readable documentation the Spec and\nits Tasks are clutter to throw away, with Git preserving history. Two\ndeliberately opposite retentions keep that disposal from ever being pointed at\npermanent ADR history.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nLifecycle is invisible until a record is opened. An agent cannot read the active\nroster off a directory listing, and nothing prevents a record whose location and\nstatus disagree. Completed Specs accumulate in the same directory as active\nones, so a cold-start agent loads finished work as if it were current. The\nowner settled on 2026-09-16 that the enduring surfaces are the Blueprint, the\nWiki and the Taskboard, that a Spec closes when its destination is actually\nthere, and that once its useful content is readable documentation the Spec and\nits Tasks are clutter to throw away, with Git preserving history. Two\ndeliberately opposite retentions keep that disposal from ever being pointed at\npermanent ADR history.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "The active roster of any record collection is its top-level directory listing.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -13682,7 +14069,7 @@
         "verdict",
         "human-qa-failed"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -13719,12 +14106,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.936Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "QA/Verify has one shape at each delivery altitude.",
-        "why": "Today the integration review is the only gate at that boundary, and\n`AGENTS.md` describes the reviewed candidate in task-level terms. A task-level\ncheck can pass repeatedly while the capability the Spec promised remains\nunmet, because a Task is deliberately too small to demonstrate a Spec's\nacceptance. Nothing verifies the whole Spec against its destination, nothing\nturns a failed verification into bounded work, and `complete` succeeds with no\nreview and no owner judgment. The owner's answer is that QA asks whether the\ndestination was reached, that failure produces corrective Tasks rather than\nblame or a terminal ritual, and that closure is the owner's confirmed\njudgment on `integration`.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nToday the integration review is the only gate at that boundary, and\n`AGENTS.md` describes the reviewed candidate in task-level terms. A task-level\ncheck can pass repeatedly while the capability the Spec promised remains\nunmet, because a Task is deliberately too small to demonstrate a Spec's\nacceptance. Nothing verifies the whole Spec against its destination, nothing\nturns a failed verification into bounded work, and `complete` succeeds with no\nreview and no owner judgment. The owner's answer is that QA asks whether the\ndestination was reached, that failure produces corrective Tasks rather than\nblame or a terminal ritual, and that closure is the owner's confirmed\njudgment on `integration`.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "QA/Verify has one shape at each delivery altitude.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -13795,7 +14191,7 @@
         "feedback",
         "human-qa-ongoing"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -13832,12 +14228,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.960Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "A feedback finding cannot be recorded, acknowledged and then left in no state at\nall.",
-        "why": "The feedback lane currently accepts a finding, describes its smallest bounded\nnext action, and stops. Nothing requires the finding to resolve into a named\nclass of outcome, so a real finding can sit acknowledged and undispositioned\nindefinitely, which is the state most findings in `workbench/feedback/` are in\nnow. A lane that collects findings without dispositioning them is ceremony.\n\nThe closed vocabulary is what makes the requirement honest rather than\nbureaucratic. A three-class set with no `accepted-open` would force a real,\naccepted, unscheduled finding into `declined`, making the record assert\nsomething false; a set with no `repaired` would leave a finding fixed by a\ndirect code, configuration or documentation change with no true home. A\nvocabulary that cannot name the ordinary case gets bypassed in the ordinary\ncase.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe feedback lane currently accepts a finding, describes its smallest bounded\nnext action, and stops. Nothing requires the finding to resolve into a named\nclass of outcome, so a real finding can sit acknowledged and undispositioned\nindefinitely, which is the state most findings in `workbench/feedback/` are in\nnow. A lane that collects findings without dispositioning them is ceremony.\n\nThe closed vocabulary is what makes the requirement honest rather than\nbureaucratic. A three-class set with no `accepted-open` would force a real,\naccepted, unscheduled finding into `declined`, making the record assert\nsomething false; a set with no `repaired` would leave a finding fixed by a\ndirect code, configuration or documentation change with no true home. A\nvocabulary that cannot name the ordinary case gets bypassed in the ordinary\ncase.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "A feedback finding cannot be recorded, acknowledged and then left in no state at\nall.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",
@@ -13908,7 +14313,7 @@
         "feedback",
         "human-qa-ongoing"
       ],
-      "revision": 4,
+      "revision": 5,
       "status": "open",
       "applied": null,
       "history": [
@@ -13945,12 +14350,21 @@
           "changes": [
             "options"
           ]
+        },
+        {
+          "revision": 5,
+          "at": "2026-10-04T07:42:18.980Z",
+          "by": "codex",
+          "reason": "Independent review correction: mark pre-implementation Spec rationale as historical, not current behavior",
+          "changes": [
+            "brief"
+          ]
         }
       ],
       "brief": {
         "scope": "SPEC",
         "summary": "The feedback lane has one identified canonical ledger per research pass and\nexplicitly derived views.",
-        "why": "The current feedback material contains representations that look redundant but\nare not interchangeable. `first-pass.json` and `first-pass-snapshot.json` are\nbyte-identical, while the snapshot was frozen to preserve the state before a\ncontinued update of the original. The second-pass ledger has JSON, CSV and\nMarkdown views, and reports/evidence explain provenance and limitations. A\nbyte comparison alone therefore cannot establish safe removal. Without a\nconsumer and lineage inventory, cleanup can erase the original question,\nsource IDs, corrections or a view still used by a report or review.",
+        "why": "**Original Spec rationale, written before this implementation:**\n\nThe current feedback material contains representations that look redundant but\nare not interchangeable. `first-pass.json` and `first-pass-snapshot.json` are\nbyte-identical, while the snapshot was frozen to preserve the state before a\ncontinued update of the original. The second-pass ledger has JSON, CSV and\nMarkdown views, and reports/evidence explain provenance and limitations. A\nbyte comparison alone therefore cannot establish safe removal. Without a\nconsumer and lineage inventory, cleanup can erase the original question,\nsource IDs, corrections or a view still used by a report or review.\n\nThis explains why the capability was proposed. The current acceptance, remaining limitations and review gate are in the complete review text and evidence below; this historical rationale is not a claim that the old behavior is still present.",
         "recommendation": "Review the capability and its acceptance evidence before approving. If the named candidate or required proof is missing, leave approval pending and ask the agent to supply that proof.",
         "impact": "Approve records your acceptance of the exact reviewed integration content. Send back preserves a finding for correction. Return to Align changes the destination. Promotion to main remains your separate act.",
         "changes": "The feedback lane has one identified canonical ledger per research pass and\nexplicitly derived views.\n\nYou are reviewing this capability’s delivered result. The acceptance criteria and recorded next gate are included in the complete review text below. Approval must identify the reviewed candidate; open proof or corrective work remains open.",

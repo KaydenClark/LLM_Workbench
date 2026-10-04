@@ -143,7 +143,7 @@
 (() => {
   const STATUS_LABEL = { pending: 'Pending', stale: 'Re-answer', answered: 'Answered', applied: 'Applied', withdrawn: 'Withdrawn' };
   const STATUS_ORDER = ['pending', 'stale', 'answered', 'applied', 'withdrawn'];
-  const state = { drafts: new Map(), inflight: new Map(), board: null, filter: 'open', query: '', timers: new Map() };
+  const state = { drafts: new Map(), errors: new Map(), inflight: new Map(), board: null, filter: 'open', query: '', timers: new Map() };
   try { state.filter = localStorage.getItem('grill-board-filter') || 'open'; } catch {}
 
   const esc = (text) => String(text ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -285,7 +285,7 @@
         <div class="options">${options}</div>
         <div class="hint">${esc(item.options.find((o) => o.value === answer.verdict)?.hint || 'Pick a verdict, then add any notes. Saves as you type.')}</div>
         <textarea class="${needsNote ? 'needs-note' : ''}" placeholder="Notes, corrections, the words you want used…">${esc(answer.note)}</textarea>
-        <div class="save"><span class="status">${answer.at ? `Saved ${new Date(answer.at).toLocaleString()}` : 'Not answered yet'}</span><span class="err"></span></div>
+        <div class="save"><span class="status">${state.drafts.has(item.id) ? 'Not saved yet' : answer.at ? `Saved ${new Date(answer.at).toLocaleString()}` : 'Not answered yet'}</span><span class="err">${esc(state.errors.get(item.id) || '')}</span></div>
       </div>
     </article>`;
   }
@@ -351,6 +351,7 @@
         if (!response.ok) throw new Error(body.error?.message || response.status);
         statusEl.textContent = `Saved ${new Date(body.at).toLocaleTimeString()}`;
         errEl.textContent = '';
+        state.errors.delete(id);
         const item = state.board.items.find((candidate) => candidate.id === id);
         if (item) { item.answer = body; item.derivedStatus = body.derivedStatus; }
         if (state.drafts.get(id) === draft) state.drafts.delete(id);
@@ -370,7 +371,14 @@
         refreshCounts();
       } catch (error) {
         statusEl.textContent = 'Not saved';
-        errEl.textContent = `Save failed: ${error.message}. Is the server still running?`;
+        const message = `Save failed: ${error.message}. Your unsaved text remains here; edit it again to retry.`;
+        state.errors.set(id, message);
+        errEl.textContent = message;
+        const currentArticle = document.getElementById(id);
+        if (currentArticle) {
+          currentArticle.querySelector('.save .status').textContent = 'Not saved';
+          currentArticle.querySelector('.save .err').textContent = message;
+        }
       }
     };
     const queued = () => { const promise = (state.inflight.get(id) || Promise.resolve()).then(run); state.inflight.set(id, promise); promise.finally(() => { if (state.inflight.get(id) === promise) state.inflight.delete(id); }); return promise; };
