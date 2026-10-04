@@ -6,9 +6,10 @@ knowledge_role: canonical
 provenance:
   - S-021 dogfood migration 2026-09-01; S-025 contract adoption 2026-09-04
   - S-00V TK-00I Agent Operating Knowledge route, 2026-09-26
+  - Wiki Evolving-Synthesis Migration (S-003W) router changes 2026-10-04: feature article, landmark synthesis and summary-line routes, and the whole-Wiki lint corrections of its corrective Task TK-006P (Wiki wording)
 source_paths:
   - workbench/wiki
-last_verified: 2026-09-04
+last_verified: 2026-10-04
 ---
 
 # LLM Workbench Memory
@@ -80,7 +81,7 @@ belong to their individual Specs as they are authored.
 - [To-tasks](skill-to-tasks.md) - cut an activated Spec into executable Tasks
 - [Adoption](skill-adoption.md) - bring an existing project into the Workbench once
 - [Genesis](skill-genesis.md) - start a new room from a founding prompt
-- [Skills draft wiki](skills-draft/README.md) - a draft article and its connection findings for every skill
+- [Skills draft wiki](skills-draft/README.md) - the prototype collection and its article template for drafting each skill's connection findings; no draft article is written yet
 
 ## Planned And Optional Skill References
 
@@ -91,12 +92,13 @@ belong to their individual Specs as they are authored.
 
 - [Workbench v4.0.0 Release (S-00O)](../specs/S-00O-workbench-v4-0-0-release/SPEC.md) - current release work
 - [Superseded v3.2.0 release record (S-050)](../specs/S-050-workbench-v3-2-0-release/SPEC.md) - keeps the reconciled v3.2 scope and complete historical inventory
+- [V4 integration decision and progress reconciliation](../specs/S-00O-workbench-v4-0-0-release/INTEGRATION-RECONCILIATION.md) - the receipt of the Workbench v4.0.0 Release (S-00O) that identifies recovered sources, branch-only work and remaining gaps
 
 Follow the superseded record's named owners for skill ownership/compatibility,
 optional private session transport and the configured-host capability floor.
 This route copies no task state here.
 
-## Grilling Destination Audit Ledger
+## Consequential Decision Record And Grill Board
 
 - [Consequential Decision Record (shared Grill Board)](../grill-board/README.md) - the owner's current package review, bundling questions, named owners, proposals, consequences and original question history
 
@@ -122,8 +124,6 @@ owner is a session record, not a Wiki page: it lives in the sessions lane as
 `workbench/sessions/grilling-destination-audit-ledger.json` while its rows
 become destination question cards, and the router does not route into it.
 `tools/test-grilling-ledger.mjs` keeps it valid.
-
-- [V4 integration decision and progress reconciliation](../specs/S-00O-workbench-v4-0-0-release/INTEGRATION-RECONCILIATION.md) - the S-00O Workbench v4.0.0 Release receipt that identifies recovered sources, branch-only work and remaining gaps
 
 ## Task Artifact And Lifecycle Routing
 
@@ -283,13 +283,13 @@ without opening it. The collection's shape and capture convention are in
 - [Checkpoint Retirement And Direct Promotion](features/checkpoint-retirement-and-direct-promotion.md) - retires checkpoint copy creation, keeps history and promotes selected supported claims straight to their durable owners.
 - [Configured Host Capabilities](features/configured-host-capabilities.md) - five bounded host checks that keep capability, enforcement and agent reliability separate.
 - [Consistent Bootstrap Ownership Guidance](features/consistent-bootstrap-ownership-guidance.md) - setup, Genesis and Adoption entry points route to the current owners: contract for behavior, Spec for requirements and proof, Taskboard as view.
-- [Control Fidelity Without Forced Uniformity](features/control-fidelity-without-forced-uniformity.md) - A report that compares a room's controls with the templates and labels each line unchanged, filled, changed, dropped or added, without failing on divergence.
+- [Control Fidelity Without Forced Uniformity](features/control-fidelity-without-forced-uniformity.md) - a report that compares a room's controls with the templates and labels each line unchanged, filled, changed, dropped or added, without failing on divergence.
 - [Copyable Workbench Template Reference Room](features/copyable-workbench-template-reference-room.md) - the reference room became a copyable Workbench Template whose installed controls, identity and provenance survive an upgrade.
 - [Core Skill Ownership And Compatibility](features/core-skill-ownership-and-compatibility.md) - a versioned core skill source with explicit compatibility ranges that keeps missing or conflicting skills visible.
 - [Declared Integration And Recoverable Completion](features/declared-integration-and-recoverable-completion.md) - the manifest declares the integration branch, doctor reports it missing, and completed work lands committed on a prefixed branch.
 - [Dependency-Safe Direct Claiming](features/dependency-safe-direct-claiming.md) - direct Task claiming uses the same dependency eligibility as selection and refuses blocked work before changing anything.
 - [Diagnostics Ordered By Consequence](features/diagnostics-ordered-by-consequence.md) - doctor groups findings as blocking, selected-slice, then informational, so effect leads severity.
-- [Evidence-Bounded Upgrade Claims](features/evidence-bounded-upgrade-claims.md) - Upgrade reports that separate what a check observes from what an operator might infer: matcher uncertainty, fidelity and source identity.
+- [Evidence-Bounded Upgrade Claims](features/evidence-bounded-upgrade-claims.md) - upgrade reports that separate what a check observes from what an operator might infer: matcher uncertainty, fidelity and source identity.
 - [Evidence-Gated Harness Feedback](features/evidence-gated-harness-feedback.md) - feedback discovery ranks candidates and an independent decision passes, denies or blocks each on reproduction, regression, suite and safety evidence.
 - [Feedback And Migration Integrity](features/feedback-and-migration-integrity.md) - strict feedback ingestion, manifest-aware guardrail evaluation, and adoption that reports the residue it leaves.
 - [Fresh Template To Independent Project Proof](features/fresh-template-to-independent-project-proof.md) - the recorded proof that a clean Template copy became an independent project room and was continued in a fresh agent context, with its limits.
@@ -298,8 +298,8 @@ without opening it. The collection's shape and capture convention are in
 - [Held-Out Path-Safety Evaluation](features/held-out-path-safety-evaluation.md) - a held-out path-handling eval task and grader scoring correctness, scope, verification honesty and doc upkeep separately.
 - [Historical v3.1 Release Proof Packet](features/historical-v3-1-release-proof-packet.md) - the superseded v3.1 release proof packet: what it preserved, what it never completed, and the current owners of release state.
 - [Import-Safe Feedback Helper Entry](features/import-safe-feedback-helper-entry.md) - the feedback helper can be imported inline without running its CLI, because its entry guard handles an absent script path.
-- [Installed Runtime Integrity](features/installed-runtime-integrity.md) - A room compares its installed runtime files with its managed-tools receipt hashes and classifies drift; verify reports and repair stays separate.
-- [Installed Skill Identity And Inspection](features/installed-skill-identity-and-inspection.md) - Managed skill markers with a content hash and compatibility range, and read-only inspection that tells an installed copy from its source.
+- [Installed Runtime Integrity](features/installed-runtime-integrity.md) - a room compares its installed runtime files with its managed-tools receipt hashes and classifies drift; verify reports and repair stays separate.
+- [Installed Skill Identity And Inspection](features/installed-skill-identity-and-inspection.md) - managed skill markers with a content hash and compatibility range, and read-only inspection that tells an installed copy from its source.
 - [Installed State Reporting And Repair](features/installed-state-reporting-and-repair.md) - reports stale seeded documents and repairs missing metadata without reinstalling or replacing project-owned content.
 - [JSON Notepad Foundation](features/json-notepad-foundation.md) - a local revision-checked JSON notepad that preserves working context for continuation without granting authority.
 - [Lexicon Freshness Repair](features/lexicon-freshness-repair.md) - repairs stale release, version and source-boundary claims in the Lexicon by checking them against the manifest, Git containment and links.
@@ -313,13 +313,13 @@ without opening it. The collection's shape and capture convention are in
 - [Portable Wiki Knowledge And Collections](features/portable-wiki-knowledge-and-collections.md) - the Wiki's one router, schema and note properties, and the named collections that hold durable explanations with explicit sources.
 - [Portable Workbench Installation, Adoption And Upgrade](features/portable-workbench-installation-adoption-and-upgrade.md) - how a Workbench is created, adopted and upgraded, with presence kept separate from replacement of installed skills.
 - [Project Evidence Preparation For Blueprint Grilling](features/project-evidence-preparation-for-blueprint-grilling.md) - turns named project sources into a bounded provisional grilling note that keeps source identity and uncertainty and answers no owner question.
-- [Recorded Baseline Availability](features/recorded-baseline-availability.md) - A Spec can record an unavailable application baseline with evidence and one of three closed reasons so a harness-only change can proceed.
-- [Release Candidate Proof And Historical Disposition](features/release-candidate-proof-and-historical-disposition.md) - What a release candidate must join: capability delivery, version identity and a disposition of feedback, with the proof kept historical.
+- [Recorded Baseline Availability](features/recorded-baseline-availability.md) - a Spec can record an unavailable application baseline with evidence and one of three closed reasons so a harness-only change can proceed.
+- [Release Candidate Proof And Historical Disposition](features/release-candidate-proof-and-historical-disposition.md) - what a release candidate must join: capability delivery, version identity and a disposition of feedback, with the proof kept historical.
 - [Reproducible Adoption Provenance](features/reproducible-adoption-provenance.md) - adoption proof carries the source remote, ref, resolved commit, executed self-tests and checksum, so a cold reviewer can reproduce it.
-- [Skill Presence And Repair Routes](features/skill-presence-and-repair-routes.md) - Skill installation that recognizes linked destinations and names the supported route in refusals, with one shared presence judgment.
-- [Source-Checked Finding Disposition](features/source-checked-finding-disposition.md) - How an upstream fix list is reconciled: each finding is source-checked, routed to a named capability, and corrected premises are preserved.
+- [Skill Presence And Repair Routes](features/skill-presence-and-repair-routes.md) - skill installation that recognizes linked destinations and names the supported route in refusals, with one shared presence judgment.
+- [Source-Checked Finding Disposition](features/source-checked-finding-disposition.md) - how an upstream fix list is reconciled: each finding is source-checked, routed to a named capability, and corrected premises are preserved.
 - [Spec-Centered Progressive Disclosure](features/spec-centered-progressive-disclosure.md) - ordinary entry stays small: contract, routes, then the assigned Spec and its source, with no historical catalog read first.
-- [Upgrade Layout Without Replacing Skills](features/upgrade-layout-without-replacing-skills.md) - A layout-only upgrade route for an adopted legacy room whose skills cannot be replaced, with source provenance checked against the real checkout.
+- [Upgrade Layout Without Replacing Skills](features/upgrade-layout-without-replacing-skills.md) - a layout-only upgrade route for an adopted legacy room whose skills cannot be replaced, with source provenance checked against the real checkout.
 - [Verified Automation Run Outcomes](features/verified-automation-run-outcomes.md) - six run-outcome categories and an idle count that only a verified idle advances, so a pause is recommended on real absence of work.
 - [Visible Workbench Identifiers](features/visible-workbench-identifiers.md) - the visible type-prefixed identity readers see, with legacy compatibility and the uppercase width-four amendment.
 - [Wiki Routing, Version Stamps And Safe Source Reads](features/wiki-routing-version-stamps-and-safe-source-reads.md) - the checks that tell a room its Wiki router is unreachable or its Wiki files are stamped with a stale version, and the safe-read boundary continuity input must pass.

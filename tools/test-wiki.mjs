@@ -201,7 +201,7 @@ test('the validator rejects retired metadata, absolute sources, bad enums, copie
   }
 });
 
-test('design-concept articles need the owner-directed shape and stale notes are attention only', () => {
+test('design-concept articles need the authorized-operation shape and stale notes are attention only', () => {
   const project = seededWiki();
   try {
     const concepts = path.join(project, 'workbench', 'wiki', 'design-concepts');

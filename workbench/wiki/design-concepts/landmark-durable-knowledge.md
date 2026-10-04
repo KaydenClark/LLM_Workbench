@@ -67,15 +67,19 @@ separately owner-confirmed.
   (card [DQC-003R: "How should Complete distinguish capture from final cleanup?"](../../landmark-tracker/destination-questions/DQC-003R.json), revision 8).
   The same card records the owner's redirect to a generated JSON board with six
   lanes that replaces the Markdown board.
-- **Features articles.** A new Wiki collection named features holds one article
+- **Features articles.** A new Wiki collection named features is designed to hold one article
   per completed Spec, written at the closure point and not as a new gate
   (card [DQC-004L: "What should a Wiki feature article explain, and when is it written?"](../../landmark-tracker/destination-questions/DQC-004L.json), revision 7).
-  The collection exists; see the [features README](../features/README.md).
+  The collection is delivered and holds the feature articles migrated from the
+  per-Spec design concepts, routed from the router's Feature Articles list (an
+  earlier Spec's design-concept or guidebook note can remain its valid retirement
+  owner); see the
+  [features README](../features/README.md).
 - **Retired decisions stay reachable.** Navigation from historical capability
   links goes to the Wiki article first, and the article links archived decision
   records as sources; the archive is kept
-  (card [DQC-002D: "How should retired ADR history remain reachable?"](../../landmark-tracker/destination-questions/DQC-002D.json), revision 7).
-  Articles exist for [Governance Core, ADRs, And Scoped Diagnostics (S-024)](../features/governance-planes-adr-decisions-and-scoped-diagnostics.md)
+  (card [DQC-002D: "How should retired ADR history remain reachable?"](../../landmark-tracker/destination-questions/DQC-002D.json), revision 8).
+  Feature articles exist for the completed Specs, among them [Governance Core, ADRs, And Scoped Diagnostics (S-024)](../features/governance-planes-adr-decisions-and-scoped-diagnostics.md)
   and [LLM Workbench release article (S-022)](../features/historical-v3-1-release-proof-packet.md).
 - **How confirmed answers reach owners.** A grilling answer never enters Canon
   inline; it is promoted through ordinary scoped work, a Task when small and a
@@ -164,3 +168,4 @@ The tools are the [landmark tracker](../../tools/landmark-tracker.mjs) and the
 ## History
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
+- 2026-10-04: corrected after the whole-Wiki lint of the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-006P (Wiki wording): the features collection statements now say it is delivered with the migrated feature articles routed under Feature Articles (earlier design-concept or guidebook notes can remain valid retirement owners), and the Destination Question Card DQC-002D citation moved to revision 8 (its answer is unchanged). No card answer was changed.
