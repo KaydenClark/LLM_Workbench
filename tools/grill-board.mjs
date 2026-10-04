@@ -47,7 +47,8 @@ export const DEFAULT_OPTIONS = Object.freeze({
     { value: 'defer', label: 'Not now', hint: 'stays open; nothing recorded' }
   ]
 });
-const ITEM_KEYS = Object.freeze(['id', 'key', 'group', 'kind', 'title', 'question', 'current', 'proposal', 'draft', 'options', 'sources', 'tags', 'revision', 'status', 'applied', 'history']);
+const ITEM_KEYS = Object.freeze(['id', 'key', 'group', 'kind', 'title', 'question', 'current', 'proposal', 'draft', 'options', 'sources', 'tags', 'revision', 'status', 'applied', 'history', 'brief']);
+const BRIEF_FIELDS = ['summary', 'why', 'recommendation', 'impact', 'changes', 'history', 'artifacts'];
 const ID_PATTERN = /^GB-\d{4}$/;
 const MAX_FILE_BYTES = 2 * 1024 * 1024;
 const GITHUB_BLOB = 'https://github.com/KaydenClark/LLM_Workbench/blob';
@@ -146,6 +147,14 @@ export function validateItem(item, seen = new Set()) {
     else for (const field of ['verdict', 'note', 'answerAt', 'itemRevision', 'by', 'where', 'at']) if (!(field in applied)) problems.push(`${item.id}: applied.${field} missing`);
   }
   if (!Array.isArray(item.history)) problems.push(`${item.id}: history must be an array`);
+  if (item.brief !== undefined) {
+    if (!item.brief || typeof item.brief !== 'object' || Array.isArray(item.brief)) problems.push(`${item.id}: brief must be an object`);
+    else {
+      if (!['BLUEPRINT', 'LANDMARK', 'SPEC', 'TASK'].includes(item.brief.scope)) problems.push(`${item.id}: brief.scope must name a destination scope`);
+      for (const field of BRIEF_FIELDS) if (!isString(item.brief[field]) || !item.brief[field].trim()) problems.push(`${item.id}: brief.${field} is required`);
+      for (const field of Object.keys(item.brief)) if (!['scope', ...BRIEF_FIELDS].includes(field)) problems.push(`${item.id}: unknown brief field ${field}`);
+    }
+  }
   return problems;
 }
 
@@ -183,11 +192,17 @@ export function hasContent(answer) {
   return Boolean(answer && (answer.verdict.trim() || answer.note.trim()));
 }
 
+function needsOwnerWords(answer) {
+  return ['correct', 'finding', 'destination_change', 'answer', 'return_reworded'].includes(answer?.verdict) && !answer.note.trim();
+}
+
 // The one place the five statuses are derived, so page, CLI and tests agree.
 export function itemStatus(item, answer) {
   if (item.status === 'withdrawn') return 'withdrawn';
   if (!hasContent(answer)) return 'pending';
   if (answer.itemRevision < item.revision) return 'stale';
+  if (!answer.verdict.trim() || answer.verdict === 'defer') return 'pending';
+  if (needsOwnerWords(answer)) return 'pending';
   if (item.applied && item.applied.answerAt === answer.at) return 'applied';
   return 'answered';
 }
@@ -254,7 +269,8 @@ function normalizeNewItem(raw) {
     revision: 1,
     status: 'open',
     applied: null,
-    history: []
+    history: [],
+    ...(raw.brief === undefined ? {} : { brief: raw.brief })
   };
 }
 
@@ -290,7 +306,7 @@ export function reviseItem(root, id, changes, { by, reason }) {
   const board = readItems(root);
   const item = findItem(board, id);
   const changed = [];
-  for (const field of ['title', 'question', 'current', 'proposal', 'draft', 'options']) {
+  for (const field of ['title', 'question', 'current', 'proposal', 'draft', 'options', 'brief']) {
     if (changes[field] === undefined) continue;
     changed.push({ field, from: item[field], to: changes[field] });
     item[field] = changes[field];
@@ -309,6 +325,8 @@ export function applyAnswer(root, id, { by, where, note }) {
   const answers = readAnswers(root);
   const item = findItem(board, id);
   const answer = answers.answers[id];
+  if (answer && (!answer.verdict.trim() || answer.verdict === 'defer')) throw new BoardError('no-decision', `${id}: saved notes or a deferred answer are not an applicable decision`);
+  if (needsOwnerWords(answer)) throw new BoardError('missing-owner-words', `${id}: this verdict needs the owner's correction or finding in the note`);
   const status = itemStatus(item, answer);
   if (status === 'pending' || status === 'withdrawn') throw new BoardError('nothing-to-apply', `${id} has no owner answer to apply (status ${status})`);
   if (status === 'stale') throw new BoardError('stale-answer', `${id}: the owner answered revision ${answer.itemRevision} but the item is at ${item.revision}; wait for a fresh answer`);
@@ -356,12 +374,15 @@ export function pendingForAgents(root) {
     group: item.group,
     kind: item.kind,
     title: item.title,
+    question: item.question,
+    options: item.options,
     revision: item.revision,
     verdict: item.answer.verdict,
     verdictLabel: item.options.find((option) => option.value === item.answer.verdict)?.label ?? item.answer.verdict,
     note: item.answer.note,
     answeredAt: item.answer.at,
     proposal: item.proposal,
+    brief: item.brief,
     sources: item.sources
   }));
 }
@@ -477,7 +498,7 @@ function parseArgs(argv) {
   return { positional, flags };
 }
 
-const USAGE = 'Usage: grill-board.mjs serve [--port N] | status | pending | show GB-#### | add --file ITEMS.json --by NAME [--reason TEXT] | revise GB-#### --by NAME --reason TEXT [--title T] [--question T] [--current T] [--proposal T] [--draft-file PATH] [--options-file PATH] | apply GB-#### --by NAME --where TEXT [--note TEXT] | withdraw GB-#### --by NAME --reason TEXT | validate [--path ROOT] [--json] (see workbench/grill-board/README.md)';
+const USAGE = 'Usage: grill-board.mjs serve [--port N] | status | pending | show GB-#### | add --file ITEMS.json --by NAME [--reason TEXT] | revise GB-#### --by NAME --reason TEXT [--title T] [--question T] [--current T] [--proposal T] [--draft-file PATH] [--options-file PATH] [--brief-file PATH] | apply GB-#### --by NAME --where TEXT [--note TEXT] | withdraw GB-#### --by NAME --reason TEXT | validate [--path ROOT] [--json] (see workbench/grill-board/README.md)';
 
 function out(flags, value, text) {
   if (flags.json) process.stdout.write(`${JSON.stringify(value, null, 2)}\n`);
@@ -533,6 +554,7 @@ export async function main(argv) {
       if (isString(flags['draft-file'])) changes.draft = fs.readFileSync(path.resolve(flags['draft-file']), 'utf8');
       if (flags['clear-draft']) changes.draft = null;
       if (isString(flags['options-file'])) changes.options = readJson(path.resolve(flags['options-file']));
+      if (isString(flags['brief-file'])) changes.brief = readJson(path.resolve(flags['brief-file']));
       const item = reviseItem(root, id, changes, { by: flags.by, reason: flags.reason });
       out(flags, item, `${id} is now revision ${item.revision}; the owner's earlier answer, if any, shows as needing a fresh look`);
       return;

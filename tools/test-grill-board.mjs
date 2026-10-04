@@ -80,6 +80,34 @@ test('add refuses an item that misses a required field or uses an unknown kind',
   assert.throws(() => addItems(dir, [sample('bad', { group: 'nope' })], { by: 'tester' }), /unknown group/);
 });
 
+test('decision context survives a revision and never changes an owner answer', () => {
+  const dir = room();
+  addItems(dir, [sample('context')], { by: 'tester' });
+  recordAnswer(dir, 'GB-0001', { verdict: 'confirm', note: 'My original words', itemRevision: 1 });
+  const before = fs.readFileSync(boardPaths(dir).answers, 'utf8');
+  const brief = { scope: 'SPEC', summary: 'A small capability.', why: 'Avoid an ambiguous approval.', recommendation: 'Review the concrete change.', impact: 'Approval applies to this capability.', changes: 'Before: pending. After: reviewed.', history: 'Earlier question and correction.', artifacts: 'Named capability and purpose.' };
+  reviseItem(dir, 'GB-0001', { brief }, { by: 'tester', reason: 'Bundle decision context' });
+  assert.deepEqual(mergeBoard(dir).items[0].brief, brief);
+  assert.equal(mergeBoard(dir).items[0].derivedStatus, 'stale');
+  assert.equal(fs.readFileSync(boardPaths(dir).answers, 'utf8'), before);
+  assert.throws(() => reviseItem(dir, 'GB-0001', { brief: { ...brief, scope: 'MADE-UP' } }, { by: 'tester', reason: 'bad scope' }), /scope/);
+  assert.equal(readItems(dir).items[0].revision, 2, 'invalid context leaves the previous item intact');
+});
+
+test('saved notes and Not now are not decisions an agent may apply', () => {
+  const dir = room();
+  addItems(dir, [sample('notes')], { by: 'tester' });
+  recordAnswer(dir, 'GB-0001', { verdict: '', note: 'Still thinking', itemRevision: 1 });
+  assert.deepEqual(pendingForAgents(dir), []);
+  assert.throws(() => applyAnswer(dir, 'GB-0001', { by: 'tester', where: 'Spec' }), /decision|deferred/);
+  recordAnswer(dir, 'GB-0001', { verdict: 'defer', note: 'Later', itemRevision: 1 });
+  assert.deepEqual(pendingForAgents(dir), []);
+  assert.throws(() => applyAnswer(dir, 'GB-0001', { by: 'tester', where: 'Spec' }), /decision|deferred/);
+  recordAnswer(dir, 'GB-0001', { verdict: 'correct', note: '', itemRevision: 1 });
+  assert.deepEqual(pendingForAgents(dir), [], 'a correction must include the owner replacement words');
+  assert.throws(() => applyAnswer(dir, 'GB-0001', { by: 'tester', where: 'Spec' }), /note|decision/);
+});
+
 test('status derivation: pending, answered, applied, stale after revise, withdrawn', () => {
   const dir = room();
   addItems(dir, [sample('a')], { by: 'tester' });
@@ -119,7 +147,7 @@ test('recordAnswer refuses an unknown item or a verdict that is not one of its o
   addItems(dir, [sample('a', { options: [{ value: 'x', label: 'X' }] })], { by: 'tester' });
   assert.throws(() => recordAnswer(dir, 'GB-0009', { verdict: 'x', note: '', itemRevision: 1 }), /unknown-item|not on the board/);
   assert.throws(() => recordAnswer(dir, 'GB-0001', { verdict: 'confirm', note: '', itemRevision: 1 }), /not an option/);
-  assert.equal(recordAnswer(dir, 'GB-0001', { verdict: '', note: 'a note only', itemRevision: 1 }).derivedStatus, 'answered');
+  assert.equal(recordAnswer(dir, 'GB-0001', { verdict: '', note: 'a note only', itemRevision: 1 }).derivedStatus, 'pending', 'a saved note still needs an owner verdict');
   assert.throws(() => recordAnswer(dir, 'GB-0001', { verdict: 'x', note: '', itemRevision: 999 }), (e) => e.code === 'stale-item', 'a future revision is refused, so a bad PUT cannot outlive later revisions');
   assert.throws(() => recordAnswer(dir, 'GB-0001', { verdict: 'x', note: '', itemRevision: 0 }), (e) => e.code === 'stale-item');
   assert.equal(itemStatus(readItems(dir).items[0], { verdict: '', note: '  ', at: 'x', itemRevision: 1 }), 'pending', 'blank verdict and blank note is not an answer');
