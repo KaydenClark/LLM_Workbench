@@ -748,7 +748,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-042: Installed State Reporting And Repair (S-042)
 
-Article: [Installed State Reporting And Repair (S-042)](../../wiki/design-concepts/spec-S-042-installed-state-repair.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-042-installed-state-repair/SPEC.md`.
+Article: [Installed State Reporting And Repair (S-042)](../../wiki/features/installed-state-reporting-and-repair.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-042-installed-state-repair/SPEC.md`.
 
 Seeded documents and managed runtime files have different ownership. Runtime receipts assert managed-byte identity; a room may legitimately adapt seeded guidance. A separate seed-generation record therefore reports stale seed provenance without turning every local edit into runtime tampering.
 
@@ -766,7 +766,7 @@ Consumer snapshot: 4 occurrences. Article semantic review: **passed for core cap
 
 ### S-043: Diagnostics Ordered By Consequence (S-043)
 
-Article: [Diagnostics Ordered By Consequence (S-043)](../../wiki/design-concepts/spec-S-043-diagnostic-output-legibility.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-043-diagnostic-output-legibility/SPEC.md`.
+Article: [Diagnostics Ordered By Consequence (S-043)](../../wiki/features/diagnostics-ordered-by-consequence.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-043-diagnostic-output-legibility/SPEC.md`.
 
 Doctor's human-readable output groups findings by what they do: blocking, selected-slice constraints, then informational findings. Each populated group has a count. The effect leads the row's severity, so an error with blocks none is visibly distinct from a condition that prevents work.
 
@@ -784,7 +784,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-044: Adoption Preflight And Legacy Classification (S-044)
 
-Article: [Adoption Preflight And Legacy Classification (S-044)](../../wiki/design-concepts/spec-S-044-adoption-and-legacy-classification.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-044-legacy-room-classification/SPEC.md`.
+Article: [Adoption Preflight And Legacy Classification (S-044)](../../wiki/features/adoption-preflight-and-legacy-classification.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-044-legacy-room-classification/SPEC.md`.
 
 Adoption preflight reports every unreconciled root control in one refusal, with each reason, a reconcile order and a template-overwrite warning. An operator can prepare a complete correction instead of discovering one missing file on each attempt. Scaffolding is not permission to replace a project's actual controls with generic templates.
 
