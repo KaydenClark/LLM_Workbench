@@ -104,6 +104,19 @@ decision was needed. When this Task resumes, each maintainer-only procedure's
 home is a skill in this repository's lane declared as a maintainer skill (one
 skill per operation family, never per section), not a core skill.
 
+## Review correction to the receipt reading (2026-10-04)
+
+A separate-context review of 4f443506 (Codex gpt-5.5, FAIL, one P3) found that
+Receipt run 3 names the run it corrects wrongly: it says "Correction to run 1"
+and "All other run 1 results stand", but it corrects run 2, the e92a72fc
+implementation receipt; run 1 is the earlier blocked maintainer-skill-home
+probe. Read run 3 as correcting run 2: its self-drift count (8 attention
+findings, the added one `blocked-slice` for S-002L/TK-006O) and its exact sizes
+replace run 2's, and every other run 2 result stands. Run 3's Dirty 1 is the
+uncommitted run 2 row it was recorded beside. The checksummed rows stay as
+written; the Task was already done, so the receipt verb could not append a
+fourth correction row. The full suite was also 51/51 at 4f443506 (dirty []).
+
 ## Receipt
 
 | Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |

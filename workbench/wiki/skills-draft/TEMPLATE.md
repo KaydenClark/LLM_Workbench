@@ -28,7 +28,7 @@ knowledge_role: curated
 skill: <skill-name>
 group: <group-folder>
 skill_source: <core | pending | personal | new>
-origin: <workbench | matt | foundry>
+origin: <workbench | matt | foundry | other>
 matt_counterpart: <name | none>
 supersedes: <existing skill-*.md, or none>
 provenance:
@@ -93,7 +93,7 @@ last_verified: YYYY-MM-DD
 | `group` | One of `getting-started`, `main-workflow`, `shaping`, `upkeep`, `primitives`, `productivity`, `stances`, `foundry`; it must equal the folder the draft sits in. |
 | `skill` | The skill's name; it must equal the file name without `.md`. |
 | `skill_source` | `core` (`workbench/skills`), `pending` (`skills-pending`), `personal` (only in the owner's install) or `new` (no source yet). |
-| `origin` | `workbench`, `matt` or `foundry`; `foundry` marks a skill to revisit later. |
+| `origin` | `workbench`, `matt`, `foundry` or `other`; `foundry` marks a skill to revisit later, and `other` is a skill from none of the three (for example one that ships with a host tool). |
 | `source_paths` | Repository-relative paths only. A `personal` skill has no repo path: name its install location (for example `~/.agents/skills/<name>/SKILL.md`, read-only) in a `provenance` line instead. |
 | `supersedes` | The existing `skill-*.md` article this draft would replace on promotion, or `none`. It stays active and routed until the owner promotes the draft. |
 
@@ -121,7 +121,7 @@ F:<skill>:NN | kind | one line | who fixes it
 ## Adjustments the validator forced
 
 The approved template is unchanged in its sections, their order and its keys.
-Four wording changes keep it parseable, and the draft-wiki Spec records them:
+Wording changes keep it parseable, and the draft-wiki Spec records them:
 
 - A section's hint moved from the heading into a comment line under it, so a
   heading is exactly the section name and can be matched and grepped.
@@ -133,3 +133,5 @@ Four wording changes keep it parseable, and the draft-wiki Spec records them:
   the validator refuses a value outside the listed set.
 - `supersedes` and `matt_counterpart` carry `none` rather than being left
   blank.
+- `origin` gained a fourth value, `other`, for a skill that is not from the
+  Workbench, Matt or the Foundry.

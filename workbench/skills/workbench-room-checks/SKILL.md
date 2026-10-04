@@ -7,7 +7,7 @@ description: Check how this producer repository lays out, installs, adopts, upgr
 
 The checks this repository's maintainers run on the routes that create, adopt, upgrade and update a room, and on the producer's own contracts, moved here from the Runbook by the Contract Carrier Pointer-Brief Rewrite (S-004C TK-005K). Each section below is the procedure an operations index row in `RUNBOOK.md` points to, and it binds for that operation in this repository.
 
-This is a maintainer skill: `workbench/manifest.json` declares it under `maintainerSkills`, so the release checks accept it beside the core bundle and no route installs it or lays it into a room ([Maintainer skills](../README.md#maintainer-skills)). Commands run from the root of a clean checkout of this repository.
+This is a maintainer skill: `workbench/manifest.json` declares it under `maintainerSkills`, so the release checks accept it beside the core bundle and no route installs it or lays it into a room ([Maintainer skills](../README.md#maintainer-skills)). Commands run from the root of a clean checkout of this repository, and a path in backticks is relative to that root; a Markdown link resolves from this skill's folder.
 
 ## GitHub Coordination Binding Inspection
 

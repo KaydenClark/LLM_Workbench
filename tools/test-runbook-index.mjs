@@ -855,6 +855,12 @@ test('TK-005I: the Template Upgrade Release Gate procedure the AGENTS brief rest
     'This is the required real-room test of `update-harness`.', 'Pin the clean source version/commit and the Template\'s current integration commit',
     'compare every installed managed hash', 'merge into its declared integration branch', 'Clone that remote result afresh'
   ]) assert.ok(gate.includes(phrase), `the workbench-release gate holds: ${phrase}`);
+  // TK-005K review correction: from the skill folder the gate links the
+  // update-harness skill it follows, rather than naming a repository path a
+  // reader would resolve from the wrong folder.
+  const gateSection = headings(read('workbench/skills/workbench-release/SKILL.md')).find((heading) => heading.title === 'Template Upgrade Release Gate');
+  assert.ok(links(gateSection.body).includes('../update-harness/SKILL.md'), 'the moved gate links ../update-harness/SKILL.md');
+  assert.doesNotMatch(gateSection.body, /`workbench\/skills\/update-harness\/SKILL\.md`/, 'the moved gate names no repository-rooted skill path');
 });
 
 // S-004C TK-005G review correction: procedures moved into lane skills keep
