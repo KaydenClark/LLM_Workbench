@@ -6,6 +6,7 @@ knowledge_role: curated
 provenance:
   - Owner chose option A for the maintainer-skill home on the Contract Carrier Pointer-Brief Rewrite (S-004C) TK-005K blocker, 2026-10-04
   - S-004C TK-006L built the declared maintainer-skill list, 2026-10-04
+  - S-004C TK-005K declared the first three maintainer skills, 2026-10-04
 source_paths:
   - tools/maintainer-skills.mjs
   - tools/core-skill-installer.mjs
@@ -14,6 +15,9 @@ source_paths:
   - workbench/manifest.json
   - workbench/skills/README.md
   - RUNBOOK.md
+  - workbench/skills/workbench-release/SKILL.md
+  - workbench/skills/workbench-room-checks/SKILL.md
+  - workbench/skills/workbench-evaluation/SKILL.md
 last_verified: 2026-10-04
 ---
 
@@ -54,6 +58,25 @@ in a document that does not bind.
   `skillPolicy.required` and the install receipt do not change when one is
   added.
 
-The procedure lives in the Runbook's
-[Skills lane check](../../RUNBOOK.md#skills-lane-check); the shared check is
+Three maintainer skills are declared (Contract Carrier Pointer-Brief Rewrite
+TK-005K moved the maintainer-only Runbook procedures into them):
+
+- [`workbench-release`](../skills/workbench-release/SKILL.md): version labels,
+  the reference Template upgrade gate, the composed round trip, the
+  portability and cross-provider proofs, deriving a room from recorded
+  decisions and personal-catalog publication.
+- [`workbench-room-checks`](../skills/workbench-room-checks/SKILL.md): the
+  skills lane, support root, managed tools, lifecycle classification,
+  adoption, control fidelity, explicit upgrade and self-drift checks, plus the
+  carrier line-landing, GitHub binding and socket contract checks.
+- [`workbench-evaluation`](../skills/workbench-evaluation/SKILL.md): claims,
+  evaluation design and commands, the feedback loop, the automated gate, run
+  outcomes and manual feedback reports.
+
+Each Runbook section that held one of these procedures keeps its heading and a
+pointer, and the operations index row points at the skill section, so the
+skill binds for that operation here.
+
+The declaration procedure lives in
+the [`workbench-room-checks` skill](../skills/workbench-room-checks/SKILL.md#skills-lane-check); the shared check is
 `tools/maintainer-skills.mjs`.

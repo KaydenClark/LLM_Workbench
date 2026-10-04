@@ -572,13 +572,160 @@ const FAMILIES = [
       }
     ],
     agents: []
+  },
+  {
+    // S-004C TK-005K: the operations only this repository's maintainers run
+    // move into three maintainer skills that workbench/manifest.json declares
+    // under maintainerSkills (TK-006L): release, room checks and evaluation.
+    // They never ship, so the template keeps its own generic sections and
+    // carries none of these rows.
+    task: 'TK-005K maintainer-only operations',
+    only: 'root',
+    rows: [
+      {
+        operation: "Freeze a version label", pointer: 'workbench/skills/workbench-release/SKILL.md#release-identity',
+        section: { root: "Release Identity", template: null }, stub: { root: true, template: false },
+        carries: ["A version label freezes when stamped, even before publication.", "The core machine catalog is `coreSkills` in the layout runtime"]
+      },
+      {
+        operation: "Upgrade the reference Template for a release", pointer: 'workbench/skills/workbench-release/SKILL.md#template-upgrade-release-gate',
+        section: { root: "Template Upgrade Release Gate", template: null }, stub: { root: true, template: false },
+        carries: ["This is the required real-room test of `update-harness`.", "Clone that remote result afresh"]
+      },
+      {
+        operation: "Inspect a GitHub coordination binding", pointer: 'workbench/skills/workbench-room-checks/SKILL.md#github-coordination-binding-inspection',
+        section: { root: "GitHub Coordination Binding Inspection", template: null }, stub: { root: true, template: false },
+        carries: ["It reports live access as unverified."]
+      },
+      {
+        operation: "Prepare project evidence and Blueprint questions", pointer: 'workbench/skills/workbench-release/SKILL.md#prepare-project-evidence-and-blueprint-questions',
+        section: { root: "Prepare project evidence and Blueprint questions", template: null }, stub: { root: true, template: false },
+        carries: ["node workbench/tools/project-evidence.mjs prepare --project-root ."]
+      },
+      {
+        operation: "Derive a fresh room from recorded decisions", pointer: 'workbench/skills/workbench-release/SKILL.md#derive-a-fresh-room-from-recorded-decisions',
+        section: { root: "Derive a fresh room from recorded decisions", template: null }, stub: { root: true, template: false },
+        carries: ["node tools/genesis-from-decisions.mjs derive --template TEMPLATE_ROOT"]
+      },
+      {
+        operation: "Check the skills lane", pointer: 'workbench/skills/workbench-room-checks/SKILL.md#skills-lane-check',
+        section: { root: "Skills lane check", template: null }, stub: { root: true, template: false },
+        carries: ["node tools/workbench-skills.mjs install --project /absolute/project", "it may hold maintainer skills, only when `workbench/manifest.json` declares them"]
+      },
+      {
+        operation: "Publish to the personal catalog", pointer: 'workbench/skills/workbench-release/SKILL.md#personal-catalog-publication',
+        section: { root: "Personal catalog publication", template: null }, stub: { root: true, template: false },
+        carries: ["node tools/core-skill-installer.mjs install --home /tmp/workbench-user-home"]
+      },
+      {
+        operation: "Check the support root", pointer: 'workbench/skills/workbench-room-checks/SKILL.md#v3-support-root-check',
+        section: { root: "V3 support-root check", template: null }, stub: { root: true, template: false },
+        carries: ["node workbench/tools/workbench-layout.mjs migrate --project /absolute/project"]
+      },
+      {
+        operation: "Check the managed runtime tools", pointer: 'workbench/skills/workbench-room-checks/SKILL.md#managed-runtime-tools-check',
+        section: { root: "Managed runtime tools check", template: null }, stub: { root: true, template: false },
+        carries: ["node tools/workbench-tools.mjs install --project /absolute/project"]
+      },
+      {
+        operation: "Classify a room's lifecycle route", pointer: 'workbench/skills/workbench-room-checks/SKILL.md#room-lifecycle-classification-check',
+        section: { root: "Room lifecycle classification check", template: null }, stub: { root: true, template: false },
+        carries: ["node tools/workbench-classify.mjs"]
+      },
+      {
+        operation: "Check an adoption migration", pointer: 'workbench/skills/workbench-room-checks/SKILL.md#v3-adoption-migration-check',
+        section: { root: "V3 Adoption migration check", template: null }, stub: { root: true, template: false },
+        carries: ["node tools/workbench-adoption.mjs"]
+      },
+      {
+        operation: "Report control fidelity", pointer: 'workbench/skills/workbench-room-checks/SKILL.md#control-fidelity-report',
+        section: { root: "Control fidelity report", template: null }, stub: { root: true, template: false },
+        carries: ["node tools/control-fidelity.mjs report --project /absolute/project"]
+      },
+      {
+        operation: "Upgrade a v2 room explicitly", pointer: 'workbench/skills/workbench-room-checks/SKILL.md#v3-explicit-upgrade-and-recovery-check',
+        section: { root: "V3 explicit upgrade and recovery check", template: null }, stub: { root: true, template: false },
+        carries: ["`--layout-only` is the route for an already-adopted room"]
+      },
+      {
+        operation: "Check Workbench self-drift", pointer: 'workbench/skills/workbench-room-checks/SKILL.md#workbench-self-drift-check',
+        section: { root: "Workbench self-drift check", template: null }, stub: { root: true, template: false },
+        carries: ["Run `node workbench/tools/self-drift.mjs --phase pre --json` before the change"]
+      },
+      {
+        operation: "Check carrier line landing", pointer: 'workbench/skills/workbench-room-checks/SKILL.md#carrier-line-landing-check',
+        section: { root: "Carrier line-landing check", template: null }, stub: { root: true, template: false },
+        carries: ["node tools/check-carrier-landing.mjs check --base BASE_SHA --candidate HEAD"]
+      },
+      {
+        operation: "Prove the composed round trip", pointer: 'workbench/skills/workbench-release/SKILL.md#composed-round-trip',
+        section: { root: "Composed round trip", template: null }, stub: { root: true, template: false },
+        carries: ["node tools/test-workbench-round-trip.mjs"]
+      },
+      {
+        operation: "Check the portability and privacy matrix", pointer: 'workbench/skills/workbench-release/SKILL.md#portability-and-privacy-matrix',
+        section: { root: "Portability and privacy matrix", template: null }, stub: { root: true, template: false },
+        carries: ["node tools/test-portability-matrix.mjs"]
+      },
+      {
+        operation: "Prove cross-provider resume", pointer: 'workbench/skills/workbench-release/SKILL.md#cross-provider-resume-proof',
+        section: { root: "Cross-provider resume proof", template: null }, stub: { root: true, template: false },
+        carries: ["node tools/cross-provider-resume.mjs plan --workspace /disposable/workspace"]
+      },
+      {
+        operation: "Use the socket contract registry", pointer: 'workbench/skills/workbench-room-checks/SKILL.md#socket-contract-registry',
+        section: { root: "Socket Contract Registry", template: null }, stub: { root: true, template: false },
+        carries: ["node tools/socket-contract.mjs validate"]
+      },
+      {
+        operation: "Pick the claims to test", pointer: 'workbench/skills/workbench-evaluation/SKILL.md#claims-to-test',
+        section: { root: "Claims To Test", template: null }, stub: { root: true, template: false },
+        carries: ["Better than a representative generic instruction file."]
+      },
+      {
+        operation: "Design an evaluation", pointer: 'workbench/skills/workbench-evaluation/SKILL.md#evaluation-design',
+        section: { root: "Evaluation Design", template: null }, stub: { root: true, template: false },
+        carries: ["Score task outcomes (correctness, scope adherence, verification honesty, docs"]
+      },
+      {
+        operation: "Run the evaluation commands", pointer: 'workbench/skills/workbench-evaluation/SKILL.md#commands',
+        section: { root: "Commands", template: null }, stub: { root: true, template: false },
+        carries: ["python3 evals/score.py evals/results/_pipeline_selftest.jsonl --baseline c0_none"]
+      },
+      {
+        operation: "Take in harness feedback", pointer: 'workbench/skills/workbench-evaluation/SKILL.md#harness-feedback-loop',
+        section: { root: "Harness Feedback Loop", template: null }, stub: { root: true, template: false },
+        carries: ["Collect feedback rows from downstream projects"]
+      },
+      {
+        operation: "Run the automated feedback gate", pointer: 'workbench/skills/workbench-evaluation/SKILL.md#automated-feedback-gate',
+        section: { root: "Automated Feedback Gate", template: null }, stub: { root: true, template: false },
+        carries: ["Discovery is fail-closed and one-candidate-at-a-time."]
+      },
+      {
+        operation: "Record an automation run outcome", pointer: 'workbench/skills/workbench-evaluation/SKILL.md#automation-run-outcomes',
+        section: { root: "Automation Run Outcomes", template: null }, stub: { root: true, template: false },
+        carries: ["node tools/feedback-automation.mjs run-outcome --input FILE"]
+      },
+      {
+        operation: "Write a manual harness feedback report", pointer: 'workbench/skills/workbench-evaluation/SKILL.md#manual-harness-feedback-reports',
+        section: { root: "Manual Harness Feedback Reports", template: null }, stub: { root: true, template: false },
+        carries: ["Write `REPORT-topic-date.md` in the declared feedback lane"]
+      }
+    ],
+    agents: [{
+      carriers: ['root'],
+      section: 'Workbench update drift boundary',
+      keeps: [/does not substitute for the\s+Workbench self-drift check/, /S-00K-workbench-self-drift-check/, /workbench-room-checks\/SKILL\.md#workbench-self-drift-check/],
+      moved: [/bounded manual semantic check in\s+RUNBOOK/]
+    }]
   }
 ];
 
 const pick = (value, label) => (value === null || typeof value === 'string' ? value : value[label]);
 
 for (const family of FAMILIES) {
-  for (const carrier of carriers) {
+  for (const carrier of carriers.filter((item) => !family.only || item.label === family.only)) {
     test(`${carrier.label} ${family.task}: index rows point to the lane skills that carry the moved procedures`, () => {
       const { rows, all } = indexOf(carrier.runbook);
       for (const row of family.rows) {
@@ -695,15 +842,25 @@ test('TK-005I: the Full suite list has one home, the Runbook Test And Build sect
   assert.match(templateTests.body, /\[FULL_TEST_COMMAND\]/, 'the template keeps one generic full verification list');
 });
 
-test('TK-005I: the Runbook Template Upgrade Release Gate holds the procedure the AGENTS brief restates', () => {
+// TK-005K moved the gate's procedure from the Runbook section into the
+// workbench-release maintainer skill; the Runbook heading keeps a pointer.
+test('TK-005I: the Template Upgrade Release Gate procedure the AGENTS brief restates is reachable from the index', () => {
   const { rows } = indexOf('RUNBOOK.md');
   const row = rows.find(({ cells }) => cells[0] === 'Upgrade the reference Template for a release');
-  assert.ok(row && links(row.cells[2]).includes('#template-upgrade-release-gate'), 'the index points the release operation at its procedure');
-  const gate = normalize(headings(read('RUNBOOK.md')).find((heading) => heading.title === 'Template Upgrade Release Gate').body);
+  const pointer = 'workbench/skills/workbench-release/SKILL.md#template-upgrade-release-gate';
+  assert.ok(row && links(row.cells[2]).includes(pointer), 'the index points the release operation at its procedure');
+  assert.ok(links(headings(read('RUNBOOK.md')).find((heading) => heading.title === 'Template Upgrade Release Gate').body).includes(pointer), 'the Runbook heading points to the procedure');
+  const gate = normalize(headings(read('workbench/skills/workbench-release/SKILL.md')).find((heading) => heading.title === 'Template Upgrade Release Gate').body);
   for (const phrase of [
     'This is the required real-room test of `update-harness`.', 'Pin the clean source version/commit and the Template\'s current integration commit',
     'compare every installed managed hash', 'merge into its declared integration branch', 'Clone that remote result afresh'
-  ]) assert.ok(gate.includes(phrase), `the Runbook gate holds: ${phrase}`);
+  ]) assert.ok(gate.includes(phrase), `the workbench-release gate holds: ${phrase}`);
+  // TK-005K review correction: from the skill folder the gate links the
+  // update-harness skill it follows, rather than naming a repository path a
+  // reader would resolve from the wrong folder.
+  const gateSection = headings(read('workbench/skills/workbench-release/SKILL.md')).find((heading) => heading.title === 'Template Upgrade Release Gate');
+  assert.ok(links(gateSection.body).includes('../update-harness/SKILL.md'), 'the moved gate links ../update-harness/SKILL.md');
+  assert.doesNotMatch(gateSection.body, /`workbench\/skills\/update-harness\/SKILL\.md`/, 'the moved gate names no repository-rooted skill path');
 });
 
 // S-004C TK-005G review correction: procedures moved into lane skills keep
