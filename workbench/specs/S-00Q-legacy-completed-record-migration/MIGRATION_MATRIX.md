@@ -802,7 +802,7 @@ Consumer snapshot: 3 occurrences. Article semantic review: **passed for core cap
 
 ### S-045: Linked Follow-Up Reconciliation (S-045)
 
-Article: [Linked Follow-Up Reconciliation (S-045)](../../wiki/design-concepts/spec-S-045-linked-follow-up-reconciliation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md`.
+Article: [Linked Follow-Up Reconciliation (S-045)](../../wiki/features/linked-follow-up-reconciliation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md`.
 
 A completed result can leave an accepted obligation that needs a new owner. S-045 collected seven bounded follow-ups from S-039 through S-044 without reopening their completed implementation records. Dependencies and owner direction became executable work rather than disappearing into historical prose.
 
@@ -820,7 +820,7 @@ Consumer snapshot: 11 occurrences. Article semantic review: **passed for core ca
 
 ### S-046: S-046: JSON Notepad Foundation
 
-Article: [S-046: JSON Notepad Foundation](../../wiki/design-concepts/spec-S-046-json-notepad-foundation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-046-json-notepad-foundation/SPEC.md`.
+Article: [S-046: JSON Notepad Foundation](../../wiki/features/json-notepad-foundation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-046-json-notepad-foundation/SPEC.md`.
 
 A local JSON notepad preserves consequential context while work happens: objective, findings, corrections, uncertainty and the next authorized action. Its purpose is continuation without making the owner reconstruct lost context. The notepad is provisional evidence and never grants authority.
 
@@ -838,7 +838,7 @@ Consumer snapshot: 8 occurrences. Article semantic review: **passed for core cap
 
 ### S-047: S-047: Visible Workbench Identifiers
 
-Article: [S-047: Visible Workbench Identifiers](../../wiki/design-concepts/spec-S-047-visible-workbench-identifiers.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-047-visible-workbench-identifiers/SPEC.md`.
+Article: [S-047: Visible Workbench Identifiers](../../wiki/features/visible-workbench-identifiers.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-047-visible-workbench-identifiers/SPEC.md`.
 
 A visible identifier combines its artifact type prefix with a base-62 value. It is the identity a reader sees, not an additional hidden identity beside a label. Uniqueness is scoped to that type and Workbench; unrelated Workbenches may use the same visible label.
 

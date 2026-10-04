@@ -253,7 +253,9 @@ without opening it. See [features/README.md](features/README.md).
 - [Import-Safe Feedback Helper Entry](features/import-safe-feedback-helper-entry.md) - the feedback helper can be imported inline without running its CLI, because its entry guard handles an absent script path.
 - [Installed Skill Identity And Inspection](features/installed-skill-identity-and-inspection.md) - Managed skill markers with a content hash and compatibility range, and read-only inspection that tells an installed copy from its source.
 - [Installed State Reporting And Repair](features/installed-state-reporting-and-repair.md) - reports stale seeded documents and repairs missing metadata without reinstalling or replacing project-owned content.
+- [JSON Notepad Foundation](features/json-notepad-foundation.md) - a local revision-checked JSON notepad that preserves working context for continuation without granting authority.
 - [Lexicon Freshness Repair](features/lexicon-freshness-repair.md) - repairs stale release, version and source-boundary claims in the Lexicon by checking them against the manifest, Git containment and links.
+- [Linked Follow-Up Reconciliation](features/linked-follow-up-reconciliation.md) - gives accepted obligations left by completed Specs a new owner instead of leaving them in closed records.
 - [Manifest Schema 2 Lanes And Managed Runtime](features/manifest-schema-2-lanes-and-managed-runtime.md) - manifest-declared support lanes and collections, and managed runtime tools installed against a recorded receipt.
 - [Named Template Upgrade Release Gate](features/named-template-upgrade-release-gate.md) - requires each new Workbench version to be exercised in the named Workbench_Template installation before release readiness.
 - [Portable Verification Boundaries](features/portable-verification-boundaries.md) - context labels use forward slashes, spec comparison ignores CRLF, and eval fixtures use the running interpreter and Windows launchers.
@@ -263,6 +265,7 @@ without opening it. See [features/README.md](features/README.md).
 - [Spec-Centered Progressive Disclosure](features/spec-centered-progressive-disclosure.md) - ordinary entry stays small: contract, routes, then the assigned Spec and its source, with no historical catalog read first.
 - [Upgrade Layout Without Replacing Skills](features/upgrade-layout-without-replacing-skills.md) - A layout-only upgrade route for an adopted legacy room whose skills cannot be replaced, with source provenance checked against the real checkout.
 - [Verified Automation Run Outcomes](features/verified-automation-run-outcomes.md) - six run-outcome categories and an idle count that only a verified idle advances, so a pause is recommended on real absence of work.
+- [Visible Workbench Identifiers](features/visible-workbench-identifiers.md) - the visible type-prefixed identity readers see, with legacy compatibility and the uppercase width-four amendment.
 - [Wiki Routing, Version Stamps And Safe Source Reads](features/wiki-routing-version-stamps-and-safe-source-reads.md) - the checks that tell a room its Wiki router is unreachable or its Wiki files are stamped with a stale version, and the safe-read boundary continuity input must pass.
 
 ## Individual Spec Articles
@@ -286,9 +289,6 @@ proof from current behavior. Original records remain intact pending lifecycle ga
 - [Installed Runtime Integrity (S-039)](design-concepts/spec-S-039-installed-runtime-integrity.md)
 - [Skill Presence And Repair Routes (S-040)](design-concepts/spec-S-040-skill-gate-route-selection.md)
 - [Recorded Baseline Availability (S-041)](design-concepts/spec-S-041-recorded-baseline-availability.md)
-- [Linked Follow-Up Reconciliation (S-045)](design-concepts/spec-S-045-linked-follow-up-reconciliation.md)
-- [S-046: JSON Notepad Foundation](design-concepts/spec-S-046-json-notepad-foundation.md)
-- [S-047: Visible Workbench Identifiers](design-concepts/spec-S-047-visible-workbench-identifiers.md)
 - [S-048: Checkpoint Retirement And Direct Promotion](design-concepts/spec-S-048-checkpoint-retirement.md)
 - [S-049: Assignment Ownership And Coordination Records](design-concepts/spec-S-049-assignment-ownership-and-coordination-record.md)
 - [S-051: Core Skill Ownership And Compatibility](design-concepts/spec-S-051-core-skill-ownership-and-compatibility.md)
