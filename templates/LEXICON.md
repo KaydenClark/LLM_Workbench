@@ -55,8 +55,10 @@ An **artifact owner** is the maintained location of a particular kind of truth;
 a **maintainer** is the person or assigned agent responsible for keeping it
 current. Owning information does not grant permission to change it.
 
-The Workbench Contract spans its existing root files and the assigned Spec; it is
-not another document. The following jobs are distinct even when one document
+The Workbench Contract spans `AGENTS.md`, `RUNBOOK.md`, `LEXICON.md`, the
+bounded assigned Spec and, while an operation is performed, the lane skill a
+Runbook operations index row points to; it is not another document. Other root
+artifacts are routed by the question they answer. The following jobs are distinct even when one document
 serves several. This is an ownership map, not a requirement to create one file,
 agent or workflow stage per row. Paths below use the standard layout; the
 manifest resolves an installed project's actual lanes and collections.
