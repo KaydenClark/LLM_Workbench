@@ -488,6 +488,90 @@ const FAMILIES = [
         moved: [/Pin the source commit/, /exact managed bytes/, /fresh remote clone/]
       }
     ]
+  },
+  {
+    // The operations every room runs on its installed runtime. Decision
+    // records join the to-docs skill, which already routes a decision to its
+    // record; the Landmark Tracker joins the notepad skill's working-context
+    // section; recovery joins implement; the rest share one new core skill,
+    // workbench-runtime. The template carries the decision-record, diagnostic
+    // and Wiki operations inside its lifecycle, diagnostics and decision-record
+    // section, so those rows check no template heading of their own.
+    task: 'TK-005J operations every room runs',
+    rows: [
+      {
+        operation: 'Write or accept a decision record', pointer: 'workbench/skills/to-docs/SKILL.md#decision-records',
+        section: { root: 'Architecture Decision Records', template: 'Workbench Lifecycle, Diagnostics, And Decision Records' },
+        stub: { root: true, template: false },
+        carries: [
+          'node workbench/tools/adr.mjs supersede ADR-#### --by ADR-####',
+          '`accept` moves a `proposed/` record to the top level once its corrections are reconciled',
+          'Both kinds answer the five read words the Lexicon defines, and reads never write.',
+          '`normalize` is the explicit repair for a hand-authored record',
+          '`workbench-layout.mjs init` creates it; for a room stamped before it',
+          'Create a new ADR only when it adds a valuable distinct architectural lens or layer'
+        ]
+      },
+      {
+        operation: 'Read a diagnostic and its blocking effect', pointer: 'workbench/skills/workbench-runtime/SKILL.md#diagnostics-and-blocking-effects',
+        section: { root: 'Diagnostics And Blocking Effects', template: 'Workbench Lifecycle, Diagnostics, And Decision Records' },
+        stub: { root: true, template: false },
+        carries: [
+          'no spec, manifest, or projection can choose whether its own finding blocks',
+          '| `selected-slice` | `doctor` reports it and exits 0; `next` excludes the slice; `claim` refuses it by name | `blocked-slice` |',
+          'Grouping is presentation',
+          'An operations index row that points to a skill the lane lacks is the attention finding `skill-pointer-dangling`',
+          '`permission-scope-drift` (severity `error`, scope `controls`, effect `none`)',
+          'The claim-age diagnostic compares UTC calendar date stamps'
+        ]
+      },
+      {
+        operation: 'Validate the Wiki', pointer: 'workbench/skills/workbench-runtime/SKILL.md#wiki-validation',
+        section: { root: 'Wiki Validation', template: 'Workbench Lifecycle, Diagnostics, And Decision Records' },
+        stub: { root: true, template: false },
+        carries: [
+          'node workbench/tools/wiki.mjs validate', '`copied-task-state` flags generated-region markers',
+          '`normalize` is the explicit repair for a note whose required properties are missing',
+          'refresh the stamp when the harness is upgraded'
+        ]
+      },
+      {
+        operation: 'Repair installed state', pointer: 'workbench/skills/workbench-runtime/SKILL.md#installed-state-the-harness-wrote',
+        section: { root: 'Installed State The Harness Wrote', template: null }, stub: true,
+        carries: ['node workbench/tools/workbench-layout.mjs seed-documents --project /absolute/project', '`record-source` records verified source identity in `provenance.source`']
+      },
+      {
+        operation: 'Allocate a visible identifier', pointer: 'workbench/skills/workbench-runtime/SKILL.md#visible-identifiers',
+        section: 'Visible Identifiers', stub: true,
+        carries: ['`next-id` is a read-only proposal, not a reservation or permission to create work.', 'node workbench/tools/spec-workbench.mjs widen-id TK-### --spec S-###', 'Never bulk-widen']
+      },
+      {
+        operation: 'Use the Landmark Tracker', pointer: 'workbench/skills/notepad/SKILL.md#landmark-tracker-accepted-design-and-available-operations',
+        section: 'Landmark Tracker: accepted design and available operations', stub: true,
+        carries: ['do not invent a Tracker invocation or use an existing command as its substitute', "A Landmark Wiki page is the landmark's evolving synthesis"]
+      },
+      {
+        operation: 'Recover or roll back', pointer: 'workbench/skills/implement/SKILL.md#recovery-and-rollback',
+        section: 'Recovery And Rollback', stub: false,
+        carries: ['Identify the touched files and failing command.', 'Rerun the failing verification command.', 'Update the owning spec with the result and remaining gap, then render.']
+      },
+      {
+        operation: 'Check the Workbench connection identity', pointer: 'workbench/skills/workbench-runtime/SKILL.md#workbench-connection-identity',
+        section: 'Workbench connection identity', stub: true,
+        carries: ['node workbench/tools/workbench-layout.mjs identify --project .', 'Malformed identity is refused, never silently regenerated.']
+      },
+      {
+        operation: 'Check configured-host capabilities', pointer: 'workbench/skills/workbench-runtime/SKILL.md#configured-host-capability-checks',
+        section: 'Configured-host capability checks', stub: true,
+        carries: ['Capability does not prove enforcement or agent reliability.', 'Native discovery/invocation always needs a separate provider trace.']
+      },
+      {
+        operation: 'Save, promote or add a room-local skill', pointer: 'workbench/skills/workbench-runtime/SKILL.md#room-local-skills',
+        section: 'Portable Save, Promote And Room-Local Skills', stub: false,
+        carries: ['For an authorized room-specific extension, keep its sole source in the lane', 'Invoke the extension in the actual configured application']
+      }
+    ],
+    agents: []
   }
 ];
 
@@ -548,6 +632,29 @@ for (const family of FAMILIES) {
     }
   });
 }
+
+// S-004C TK-005J: the claim-age diagnostic and the amendment-first decision
+// rule left Evidence And Continuation Practices for the skills that carry
+// their operations, and the template's lifecycle, diagnostics and
+// decision-record section keeps only the runtime command list with pointers.
+test('TK-005J: Evidence And Continuation Practices points its diagnostic and decision-record rules to their homes', () => {
+  for (const { label, runbook } of carriers) {
+    const section = headings(read(runbook)).find((heading) => heading.title === 'Evidence And Continuation Practices');
+    assert.ok(section, `${label}: the Evidence And Continuation Practices heading survives`);
+    const pointed = links(section.body);
+    for (const pointer of ['workbench/skills/workbench-runtime/SKILL.md#diagnostics-and-blocking-effects', 'workbench/skills/to-docs/SKILL.md#decision-records']) {
+      assert.ok(pointed.includes(pointer), `${label}: Evidence And Continuation Practices points to ${pointer}`);
+    }
+    const body = normalize(section.body);
+    for (const moved of ['strictly greater than 86,400,000 milliseconds', 'Correct or expand the existing ADR when refining the same architectural decision']) {
+      assert.ok(!body.includes(moved), `${label}: "${moved}" moved behind its pointer`);
+    }
+  }
+  const lifecycle = headings(read('templates/RUNBOOK.md')).find((heading) => heading.title === 'Workbench Lifecycle, Diagnostics, And Decision Records');
+  assert.match(lifecycle.body, /node workbench\/tools\/spec-workbench\.mjs doctor/, 'the template keeps the runtime command list');
+  assert.doesNotMatch(lifecycle.body, /node workbench\/tools\/adr\.mjs/, 'the decision-record commands moved to the to-docs skill');
+  assert.doesNotMatch(lifecycle.body, /`permission-scope-drift` is reported/, 'the diagnostic explanations moved to the workbench-runtime skill');
+});
 
 // S-004C TK-005I: the Full suite list has one home. `AGENTS.md` keeps the rule
 // that the suite passes before a claim and points to the Runbook's Test And
