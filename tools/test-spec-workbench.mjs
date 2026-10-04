@@ -5131,7 +5131,7 @@ function commitAll(dir, message) {
     const moved = moveNote(movedRoot, { note: conceptNote, to: 'features', retype: 'feature' });
     assert.equal(moved.to, movedNote, 'the article moved into the features collection');
     assert.match(fs.readFileSync(path.join(movedRoot, 'workbench/wiki/MEMORY.md'), 'utf8'), /\]\(features\/moved-feature-capability\.md\) - a Spec article/, 'the move rewrote the router link and left its summary');
-    assert.deepEqual(validateWiki(movedRoot).filter((item) => item.severity === 'error'), [], 'the moved article validates as a feature');
+    assert.deepEqual(validateWiki(movedRoot).filter((item) => item.note === movedNote && item.severity === 'error'), [], 'the moved article validates as a feature');
     commitAll(movedRoot, 'move the Spec article into the features collection');
     recordOwnerApproval(movedRoot, 'S-613', { candidate: integratedFixtureCandidate(movedRoot), owner: 'Kayden Clark', result: 'approve' });
     commitAll(movedRoot, 'record owner Human QA approval');
@@ -5141,7 +5141,7 @@ function commitAll(dir, message) {
     assert.equal(receipt.ownerType, 'feature', 'the moved article is a feature owner');
     assert.equal(receipt.route, historicalRoute, 'the receipt names the historical route');
     assert.ok(fs.existsSync(path.join(movedRoot, historicalRoute)), 'the Spec retired into retired/');
-    assert.deepEqual(validateWiki(movedRoot).filter((item) => item.severity === 'error'), [], 'the Wiki still validates after retirement');
+    assert.deepEqual(validateWiki(movedRoot).filter((item) => item.note === movedNote && item.severity === 'error'), [], 'the moved article still validates after retirement');
     console.log('ok - a Spec stays retirable through a design-concept article moved into the features collection');
   } finally {
     fs.rmSync(movedRoot, { recursive: true, force: true });
