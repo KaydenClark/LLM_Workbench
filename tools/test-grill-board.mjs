@@ -143,6 +143,15 @@ test('status derivation: pending, answered, applied, stale after revise, withdra
   assert.equal(readItems(dir).items.length, 1, 'withdraw never deletes');
 });
 
+test('equal timestamps never mark a changed answer or revision as already applied', () => {
+  const answer = { verdict: 'confirm', note: 'first answer', itemRevision: 1, at: '2026-10-04T00:00:00.000Z' };
+  const item = { status: 'active', revision: 1, applied: { ...answer, answerAt: answer.at } };
+  assert.equal(itemStatus(item, answer), 'applied');
+  assert.equal(itemStatus(item, { ...answer, verdict: 'decline' }), 'answered');
+  assert.equal(itemStatus(item, { ...answer, note: 'different answer' }), 'answered');
+  assert.equal(itemStatus({ ...item, revision: 2 }, { ...answer, itemRevision: 2 }), 'answered');
+});
+
 test('recordAnswer refuses an unknown item or a verdict that is not one of its options', () => {
   const dir = room();
   addItems(dir, [sample('a', { options: [{ value: 'x', label: 'X' }] })], { by: 'tester' });
@@ -297,6 +306,51 @@ test('the CLI exposes no command that writes answers.json and reports with exit 
   assert.equal(validate.status, 0);
   const pending = cli(dir, ['pending', '--json']);
   assert.deepEqual(pending.json, []);
+});
+
+function sliceModel() {
+  const html = fs.readFileSync(path.join(repo, 'workbench/grill-board/index.html'), 'utf8');
+  const script = html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()', 'window.sliceTest = { topicFor, intentFor, laneFor, sliceCounts, batchProgress, matchesSlice, state, TOPICS }; Promise.all([load()');
+  const context = vm.createContext({ document: { getElementById: () => ({}), documentElement: { dataset: {} } }, window: { addEventListener() {} }, setInterval() {}, URL, URLSearchParams, fetch: () => new Promise(() => {}) });
+  vm.runInContext(script, context);
+  return context.window.sliceTest;
+}
+
+test('board slices separate owner work, review, and exploration without losing any items', () => {
+  const model = sliceModel();
+  const items = readItems(repo).items;
+  assert.ok(items.every(item => model.TOPICS.some(topic => topic.id === model.topicFor(item))));
+  assert.equal(model.topicFor({ id: 'GB-0018' }), 'context');
+  assert.equal(model.topicFor({ id: 'GB-9999', title: 'An unseen question' }), 'other');
+  assert.equal(model.intentFor({ id: 'GB-0018', kind: 'owner-decision' }), 'unblock');
+  assert.equal(model.intentFor({ id: 'GB-0180', kind: 'owner-decision' }), 'review');
+  assert.equal(model.intentFor({ kind: 'approve-spec' }), 'review');
+  assert.equal(model.intentFor({ kind: 'choice' }), 'explore');
+  assert.equal(model.matchesSlice({ id: 'GB-0018', kind: 'owner-decision', derivedStatus: 'pending', title: 'Maintainer procedures' }, { topic: 'context', intent: 'unblock', lane: 'pending', query: 'maintainer' }), true);
+  assert.equal(model.matchesSlice({ id: 'GB-0018', kind: 'owner-decision', derivedStatus: 'pending' }, { topic: 'workflow' }), false);
+});
+
+test('workflow counts partition items and a parked or unsaved answer never finishes a batch', () => {
+  const model = sliceModel();
+  const items = ['pending', 'stale', 'answered', 'applied', 'withdrawn'].map((derivedStatus, n) => ({ id: `x${n}`, revision: 2, derivedStatus }));
+  items.push({ id: 'parked', revision: 2, derivedStatus: 'pending', answer: { itemRevision: 2, verdict: 'defer' } });
+  assert.equal(model.laneFor(items.at(-1)), 'parked');
+  assert.equal(model.laneFor({ ...items.at(-1), derivedStatus: 'stale' }), 'stale');
+  const counts = model.sliceCounts(items);
+  assert.equal(Object.values(counts).reduce((sum, n) => sum + n, 0), items.length);
+  assert.equal(counts.parked, 1);
+  model.state.board = { items };
+  model.state.batch = { ids: ['x2', 'x3', 'parked'], revisions: { x2: 2, x3: 2, parked: 2 } };
+  assert.equal(model.batchProgress().done, 2);
+  assert.equal(model.batchProgress().complete, false);
+  items.at(-1).derivedStatus = 'answered';
+  assert.equal(model.batchProgress().complete, true);
+  model.state.drafts.set('parked', { note: 'unsaved edit' });
+  assert.equal(model.batchProgress().complete, false);
+  model.state.drafts.clear();
+  items.at(-1).derivedStatus = 'stale';
+  assert.equal(model.batchProgress().complete, false);
+  assert.equal(model.state.batch.ids.length, 3, 'saving never refills the fixed batch');
 });
 
 test('the live board in this repository validates and every item carries a source', () => {

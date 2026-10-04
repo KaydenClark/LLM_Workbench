@@ -149,23 +149,53 @@
   #artifact-panel, .reader [data-anchor], .artifact-section, #artifact-proposals, article.item { scroll-margin-top: 80px; }
   .banner { top: 70px; }
   @media (max-width: 900px) { nav { top: auto; height: auto; } .page-header { padding: 10px 16px; } }
+  .slice-label { display: block; font-size: 12px; font-weight: 600; margin: 14px 0 6px; }
+  nav select { width: 100%; font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); padding: 8px; border-radius: 8px; }
+  .topic-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 20px 0; }
+  .topic-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+  .topic-card h3 { margin: 0 0 8px; font-size: 17px; }
+  .topic-card p { color: var(--muted); margin: 8px 0; font-size: 13px; }
+  .topic-card button { text-align: left; }
+  .frame { color: var(--ink); font-size: 19px; line-height: 1.5; margin: 12px 0; }
+  .lane-counts { display: flex; gap: 6px 12px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+  .lane-counts span { white-space: nowrap; }
+  .slice-toolbar, .batch-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 14px 0; }
+  .slice-toolbar select { font: inherit; background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 6px; }
+  .primary { background: var(--accent); color: var(--accent-ink); border: 1px solid var(--accent); border-radius: 8px; padding: 7px 12px; }
+  button:disabled { cursor: default; opacity: .5; }
+  button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .question-row { display: flex; gap: 10px; align-items: center; border-bottom: 1px solid var(--line); padding: 10px 0; }
+  .question-row button { flex: 1; background: transparent; color: var(--ink); border: 0; text-align: left; padding: 4px; }
+  .question-row small { display: block; color: var(--muted); }
+  .question-row.current { border-left: 3px solid var(--accent); padding-left: 8px; }
+  .batch-panel { background: var(--soft); border: 1px solid var(--accent); border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; }
+  .batch-panel h2 { font-size: 18px; margin: 0 0 8px; }
+  .batch-panel p { margin: 8px 0; }
+  .batch-panel progress, .topic-card progress { width: 100%; accent-color: var(--ok); height: 8px; }
+  #focus { margin-top: 24px; scroll-margin-top: 80px; }
+  .question-context { color: var(--muted); font-size: 13px; }
+  @media (max-width: 650px) { .topic-grid { grid-template-columns: 1fr; } .question-row { align-items: flex-start; } }
 </style>
 </head>
 <body>
 <header class="page-header"><strong>Consequential Decision Record</strong><label for="page-select">Read</label><select id="page-select"><option value="questions">Questions</option><option value="agents">AGENTS</option><option value="runbook">RUNBOOK</option><option value="blueprint">BLUEPRINT</option><option value="lexicon">LEXICON</option><option value="landmarks">Landmarks</option><option value="adrs">ADRs</option><option value="ddrs">DDRs</option></select><a href="#questions">Return to questions</a></header>
 <div class="shell">
   <nav>
-    <h1>Consequential<br>Decision Record</h1><div id="title" class="meta">Shared Grill Board</div>
+    <h1>Grill Board</h1><div id="title" class="meta">Choose a manageable slice</div>
     <div class="meta" id="meta">loading…</div>
     <div class="progress" id="progress" title="pending / re-answer / answered / applied"></div>
-    <div class="filters" id="filters"></div>
+    <label class="slice-label" for="intent">What do you feel like doing?</label>
+    <select id="intent"><option value="all">Anything</option><option value="unblock">Unblock / direct work</option><option value="explore">Explore / settle decisions</option><option value="review">Review existing work</option></select>
+    <label class="slice-label" for="topic">Think about…</label><select id="topic"></select>
+    <label class="slice-label" for="scope">At what scale?</label><select id="scope"><option value="all">Any scale</option><option value="BLUEPRINT">Blueprint · whole product</option><option value="LANDMARK">Landmark · a direction</option><option value="SPEC">Spec · one capability</option><option value="TASK">Task · one step</option></select>
+    <span class="slice-label">Where is it in the workflow?</span><div class="filters" id="filters"></div>
     <input type="search" id="search" placeholder="Search titles, questions, text…" aria-label="Search items">
-    <div class="groups" id="groups"></div>
+    <button class="bulk" id="reset-slice">All topics</button>
     <button class="theme" id="theme">Toggle theme</button>
   </nav>
   <main>
     <div class="banner" id="banner"><span>An agent updated the board since you loaded it. Your saved answers are safe.</span><button class="bulk" onclick="location.reload()">Reload</button></div>
-    <div id="questions-panel"><div class="notice" id="notice"></div>
+    <div id="questions-panel"><div id="batch-panel"></div><div class="notice" id="notice"></div><div id="overview"></div>
     <div id="content"><div class="empty">Loading the board…</div></div>
     </div><div id="artifact-panel" hidden></div>
   </main>
@@ -175,8 +205,62 @@
 (() => {
   const STATUS_LABEL = { pending: 'Pending', stale: 'Re-answer', answered: 'Answered', applied: 'Applied', withdrawn: 'Withdrawn' };
   const STATUS_ORDER = ['pending', 'stale', 'answered', 'applied', 'withdrawn'];
-  const state = { drafts: new Map(), errors: new Map(), inflight: new Map(), board: null, filter: 'open', query: '', timers: new Map(), catalog: null, artifact: null, route: 0, revisions: new Map() };
-  try { state.filter = localStorage.getItem('grill-board-filter') || 'open'; } catch {}
+  const state = { drafts: new Map(), errors: new Map(), inflight: new Map(), board: null, query: '', timers: new Map(), catalog: null, artifact: null, route: 0, revisions: new Map(), topic: 'all', intent: 'all', scope: 'all', lane: 'all', focus: null, picked: new Set(), batch: null, inBatch: false, size: 5 };
+  try {
+    const saved = JSON.parse(localStorage.getItem('grill-board-batch'));
+    if (saved && Array.isArray(saved.ids) && saved.ids.length && saved.ids.every(id => typeof id === 'string') && saved.revisions && typeof saved.title === 'string') { state.batch = saved; state.inBatch = true; }
+  } catch {}
+
+  // Navigation metadata for this review package, not new answers or landmark records.
+  // Unknown additions remain visible in Other topics until deliberately grouped.
+  const TOPICS = [
+    { id: 'direction', title: 'Purpose & boundaries', frame: 'what the Workbench is, whom it serves, and what belongs outside it', outcome: 'A clear destination and limits for the product.', numbers: [17,31,32,33,34,37,47,48,49,51,53,54,56,57,74,75,81,144,160,161,173,174,178,179] },
+    { id: 'workflow', title: 'From idea to delivered work', frame: 'how an idea becomes work, how it moves, and what done means', outcome: 'Clear transitions, proof, approval and cleanup.', numbers: [1,2,6,8,9,20,26,35,36,46,55,58,65,66,72,79,80,82,83,84,85,88,99,101,103,105,106,115,121,122,124,125,127,128,129,130,132,133,142,143,145,146,147,148,159] },
+    { id: 'roles', title: 'People, agents & responsibility', frame: 'who owns a job, who may delegate, and who checks the result', outcome: 'Distinct jobs and trustworthy handoffs between roles.', numbers: [14,15,28,63,67,86,87,134,135,136,137,138] },
+    { id: 'context', title: 'Instructions, knowledge & memory', frame: 'what agents must obey, what they need to read, and what must survive a chat', outcome: 'The right context reaches the next agent without losing your intent.', numbers: [5,16,18,38,39,40,44,59,64,89,94,95,96,97,118,120,131,140,158,163,164,165,171,176,181] },
+    { id: 'records', title: 'Maps, records & shared language', frame: 'how decisions, question cards, landmarks, Specs and names fit together', outcome: 'A readable map from your questions to decisions and delivery.', numbers: [4,10,11,13,27,29,60,62,78,90,91,92,93,102,107,108,110,111,112,139,141,166,167,168,169,170,172,177,180] },
+    { id: 'tools', title: 'Tools, skills & everyday use', frame: 'the actions an agent or owner takes and how those actions should behave', outcome: 'Small, dependable actions with clear inputs and results.', numbers: [7,12,19,43,45,52,61,73,76,77,98,100,113,116,117,119,123,126,155,156,157,162,175] },
+    { id: 'coordination', title: 'Shared work & connected rooms', frame: 'how agents share work across GitHub, devices and rooms', outcome: 'Reliable coordination, access and recovery without conflicting writers.', numbers: [3,22,23,25,30,41,42,68,69,70,71,109,114,154] },
+    { id: 'release', title: 'Releases, upgrades & proof', frame: 'what should ship, where it is proven, and what an upgrade preserves', outcome: 'A release demonstrated in a real project with remaining gaps visible.', numbers: [21,24,50,104,149,150,151,152,153] },
+    { id: 'other', title: 'Other topics', frame: 'the context and consequence of a newly added question', outcome: 'New questions stay reachable while their topic is being organized.', numbers: [] }
+  ];
+  const LANES = { all: 'All stages', pending: 'To answer', stale: 'Revisit', answered: 'With agents', applied: 'Applied', parked: 'Not now', withdrawn: 'Withdrawn' };
+  const INTENTS = { all: 'Any kind of decision', unblock: 'Unblock / direct work', explore: 'Explore / settle decisions', review: 'Review existing work' };
+  function topicFor(item) { return TOPICS.find(topic => topic.numbers.includes(Number(item.id?.replace('GB-', ''))))?.id || 'other'; }
+  function intentFor(item) {
+    if (item.id === 'GB-0180' || ['approve-spec', 'confirm-ddr', 'confirm-text', 'confirm-dqc'].includes(item.kind)) return 'review';
+    return item.kind === 'owner-decision' ? 'unblock' : 'explore';
+  }
+  function laneFor(item) {
+    return item.derivedStatus === 'pending' && item.answer?.itemRevision === item.revision && item.answer?.verdict === 'defer' ? 'parked' : item.derivedStatus;
+  }
+  function sliceCounts(items) {
+    const counts = { pending: 0, stale: 0, answered: 0, applied: 0, parked: 0, withdrawn: 0 };
+    for (const item of items) counts[laneFor(item)] += 1;
+    return counts;
+  }
+  function matchesSlice(item, slice = state) {
+    if (slice.topic && slice.topic !== 'all' && topicFor(item) !== slice.topic) return false;
+    if (slice.intent && slice.intent !== 'all' && intentFor(item) !== slice.intent) return false;
+    if (slice.scope && slice.scope !== 'all' && item.brief?.scope !== slice.scope) return false;
+    if (slice.lane && slice.lane !== 'all' && laneFor(item) !== slice.lane) return false;
+    const hay = `${JSON.stringify(item.brief || {})} ${item.id} ${item.title} ${item.question} ${item.current} ${item.proposal} ${item.draft ?? ''} ${(item.tags || []).join(' ')}`.toLowerCase();
+    return !slice.query || hay.includes(slice.query);
+  }
+  function batchProgress() {
+    const ids = state.batch?.ids || [];
+    const items = ids.map(id => state.board.items.find(item => item.id === id));
+    const done = items.filter(item => item && ['answered', 'applied'].includes(item.derivedStatus) && !state.drafts.has(item.id)).length;
+    const withdrawn = items.filter(item => item?.derivedStatus === 'withdrawn').length;
+    return { total: ids.length, done, withdrawn, complete: ids.length > 0 && done + withdrawn === ids.length };
+  }
+  function persistBatch() { try { if (state.batch) localStorage.setItem('grill-board-batch', JSON.stringify(state.batch)); else localStorage.removeItem('grill-board-batch'); } catch {} }
+  function startBatch(items) {
+    if (!items.length) return;
+    // A fixed membership never grows as answers are saved. Replacing a batch requires an explicit click.
+    state.batch = { ids: items.map(item => item.id), revisions: Object.fromEntries(items.map(item => [item.id, item.revision])), title: `${TOPICS.find(topic => topic.id === state.topic)?.title || 'My chosen slice'} · ${INTENTS[state.intent]}` };
+    state.inBatch = true; state.focus = items[0].id; state.picked.clear(); persistBatch(); render();
+  }
 
   const esc = (text) => String(text ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -272,44 +356,95 @@
   }
 
   function visible(item) {
-    const status = item.derivedStatus;
-    if (state.filter === 'open' && !(status === 'pending' || status === 'stale')) return false;
-    if (state.filter !== 'open' && state.filter !== 'all' && status !== state.filter) return false;
-    if (state.query) {
-      const hay = `${JSON.stringify(item.brief || {})} ${item.id} ${item.title} ${item.question} ${item.current} ${item.proposal} ${item.draft ?? ''} ${(item.tags || []).join(' ')}`.toLowerCase();
-      if (!hay.includes(state.query)) return false;
+    return state.inBatch ? state.batch?.ids.includes(item.id) : matchesSlice(item);
+  }
+
+  function countLine(items) {
+    const c = sliceCounts(items);
+    return `<div class="lane-counts">${Object.keys(c).filter(key => c[key]).map(key => `<span>${LANES[key]} <strong>${c[key]}</strong></span>`).join('')}</div>`;
+  }
+
+  function renderNavigation() {
+    const board = state.board, c = sliceCounts(board.items);
+    const completed = c.answered + c.applied, active = board.items.length - c.withdrawn;
+    document.getElementById('meta').textContent = `${completed} / ${active} answered · ${c.applied} applied · ${c.withdrawn} withdrawn`;
+    document.getElementById('progress').innerHTML = `<span style="width:${100 * c.applied / Math.max(1, active)}%;background:var(--applied)" title="Applied ${c.applied}"></span><span style="width:${100 * c.answered / Math.max(1, active)}%;background:var(--ok)" title="With agents ${c.answered}"></span>`;
+    const scoped = board.items.filter(item => matchesSlice(item, { ...state, lane: 'all' }));
+    const counts = sliceCounts(scoped);
+    document.getElementById('filters').innerHTML = Object.entries(LANES).map(([value, label]) => `<button class="chip" data-lane="${value}" aria-pressed="${state.lane === value}">${label} (${value === 'all' ? scoped.length : counts[value]})</button>`).join('');
+    for (const chip of document.querySelectorAll('[data-lane]')) chip.onclick = () => { state.lane = chip.dataset.lane; state.inBatch = false; state.focus = null; state.picked.clear(); render(); };
+    document.getElementById('topic').innerHTML = '<option value="all">All topics</option>' + TOPICS.filter(topic => board.items.some(item => topicFor(item) === topic.id)).map(topic => `<option value="${topic.id}">${esc(topic.title)}</option>`).join('');
+    for (const key of ['topic', 'intent', 'scope']) {
+      document.getElementById(key).value = state[key];
+      document.getElementById(key).onchange = event => { state[key] = event.target.value; state.inBatch = false; state.focus = null; state.picked.clear(); render(); };
     }
-    return true;
+    document.getElementById('reset-slice').onclick = () => { state.topic = state.intent = state.scope = state.lane = 'all'; state.query = ''; state.focus = null; state.inBatch = false; state.picked.clear(); document.getElementById('search').value = ''; render(); };
+  }
+
+  function renderBatchProgress() {
+    const panel = document.getElementById('batch-panel');
+    if (!state.batch) { panel.innerHTML = ''; return; }
+    const p = batchProgress();
+    panel.innerHTML = `<div class="batch-panel"><h2>${p.complete ? 'Your part of this batch is done' : 'Your current batch'}</h2><div>${esc(state.batch.title)}</div><p role="status">${p.done} / ${p.total} answered and saved${p.withdrawn ? ` · ${p.withdrawn} withdrawn` : ''}</p><progress value="${p.done + p.withdrawn}" max="${p.total}" aria-label="Batch progress"></progress><p>${p.complete ? 'A good stopping point. Answers awaiting application stay in With agents.' : 'A fixed set of questions. Notes alone, Not now, changed questions and unsaved edits do not count as answered.'}</p><div class="batch-actions"><button class="bulk" id="batch-toggle">${state.inBatch ? 'Pause and browse other slices' : 'Resume this batch'}</button><button class="bulk" id="batch-clear">${p.complete ? 'Finish batch' : 'Release this batch'}</button><small>Changing a batch never changes your answers.</small></div></div>`;
+    document.getElementById('batch-toggle').onclick = () => { state.inBatch = !state.inBatch; state.focus = null; render(); };
+    document.getElementById('batch-clear').onclick = () => { state.batch = null; state.inBatch = false; state.focus = null; persistBatch(); render(); };
+  }
+
+  function renderOverview() {
+    const selected = TOPICS.find(topic => topic.id === state.topic);
+    const overview = document.getElementById('overview');
+    if (state.inBatch) { overview.innerHTML = ''; return; }
+    const items = state.board.items.filter(visible);
+    if (selected) {
+      overview.innerHTML = `<h1>${esc(selected.title)}</h1><p class="frame">Think about { ${esc(selected.frame)} }</p><p>${esc(selected.outcome)}</p>${countLine(items)}`;
+      return;
+    }
+    overview.innerHTML = `<h1>Choose what you want to think about</h1><p class="frame">One topic. A few decisions. A clear stopping point.</p><div class="topic-grid">${TOPICS.map(topic => {
+      const all = items.filter(item => topicFor(item) === topic.id);
+      if (!all.length) return '';
+      const c = sliceCounts(all), done = c.answered + c.applied, total = all.length - c.withdrawn;
+      return `<section class="topic-card"><h3>${esc(topic.title)}</h3><p>Think about { ${esc(topic.frame)} }</p><p>${esc(topic.outcome)}</p><strong>${done} / ${total} answered</strong><progress value="${done}" max="${Math.max(1, total)}" aria-label="${esc(topic.title)} answered"></progress>${countLine(all)}<p><button class="bulk" data-topic="${topic.id}">Open this topic · ${all.length} items</button></p></section>`;
+    }).join('')}</div>`;
+    for (const button of overview.querySelectorAll('[data-topic]')) button.onclick = () => { state.topic = button.dataset.topic; state.focus = null; state.picked.clear(); render(); };
   }
 
   function render() {
-    const board = state.board;
-    document.getElementById('title').textContent = board.title || 'Grill Board';
-    document.getElementById('meta').textContent = `${board.items.length} review items · shared with Claude and Codex`;
-    document.getElementById('notice').innerHTML = markdown('**Read and answer as a package.** Each question explains its context, choices and consequences. Open its draft or original grilling history when you need more detail. Your verdict and notes save as you go.\n\n**After a batch:** tell Claude or Codex “The Consequential Decision Record is updated; read the Grill Board instructions and process my saved answers.” Changed proposals keep your earlier answer and ask for another look.');
-    const c = board.counts;
-    const total = Math.max(1, board.items.length);
-    document.getElementById('progress').innerHTML = [['pending', 'var(--line)'], ['stale', 'var(--stale)'], ['answered', 'var(--ok)'], ['applied', 'var(--applied)']]
-      .map(([k, color]) => `<span style="width:${(100 * c[k]) / total}%;background:${color}" title="${STATUS_LABEL[k]} ${c[k]}"></span>`).join('');
-    const filters = [['open', `To answer (${c.pending + c.stale})`], ['answered', `Answered (${c.answered})`], ['applied', `Applied (${c.applied})`], ['withdrawn', `Withdrawn (${c.withdrawn})`], ['all', `All (${board.items.length})`]];
-    document.getElementById('filters').innerHTML = filters.map(([value, label]) => `<button class="chip" data-filter="${value}" aria-pressed="${state.filter === value}">${label}</button>`).join('');
-    for (const chip of document.querySelectorAll('.chip')) chip.onclick = () => { state.filter = chip.dataset.filter; try { localStorage.setItem('grill-board-filter', state.filter); } catch {} render(); };
-
-    const groups = ['BLUEPRINT', 'LANDMARK', 'SPEC', 'TASK'].map((id) => ({ id, title: {BLUEPRINT:'Blueprint · the overall destination',LANDMARK:'Landmark · directions and concept groupings',SPEC:'Spec · a bounded capability',TASK:'Task · a concrete step or recovery'}[id], intro: 'Read the context, compare the options, then save your verdict and notes.' }));
-    const content = [];
-    const navLinks = [];
-    for (const group of groups) {
-      const all = board.items.filter((item) => (item.brief?.scope || 'SPEC') === group.id);
-      const shown = all.filter(visible);
-      const open = all.filter((item) => item.derivedStatus === 'pending' || item.derivedStatus === 'stale').length;
-      navLinks.push(`<a href="#g-${esc(group.id)}"><span>${esc(group.title)}</span><small>${open} open / ${all.length}</small></a>`);
-      if (!shown.length) continue;
-      const bulk = '';
-      content.push(`<section class="group" id="g-${esc(group.id)}"><header><h2>${esc(group.title)}</h2>${bulk}</header><p class="intro">${inline(group.intro || '')}</p>${board.groups.map((family) => { const items = shown.filter((item) => item.group === family.id); return items.length ? `<h3 class="family">${esc(family.title)} <small>${items.length} items</small></h3>${items.map(card).join('')}` : ''; }).join('')}</section>`);
+    renderNavigation();
+    renderBatchProgress();
+    renderOverview();
+    document.getElementById('notice').innerHTML = '<strong>Choose your own slice.</strong> Filter by kind of decision, topic, scale or workflow stage. Pick a batch of 3, 5 or 10, or select your own questions. Each opens on its own. <strong>Answered</strong> means your saved decision is ready for an agent; <strong>Applied</strong> means it was carried into its owner. These counts track this review, not implementation progress.';
+    const overviewOnly = !state.inBatch && !state.focus && state.topic === 'all' && state.intent === 'all' && state.scope === 'all' && state.lane === 'all' && !state.query;
+    const shown = state.inBatch ? state.batch.ids.map(id => state.board.items.find(item => item.id === id)).filter(Boolean) : state.board.items.filter(visible);
+    const actionable = shown.filter(item => ['pending', 'stale', 'parked'].includes(laneFor(item)));
+    const content = document.getElementById('content');
+    if (overviewOnly) { content.innerHTML = ''; return; }
+    if (state.inBatch && !state.focus) state.focus = shown.find(item => !['answered', 'applied', 'withdrawn'].includes(item.derivedStatus))?.id || shown[0]?.id;
+    const toolbar = state.inBatch ? `<h2>Batch questions</h2><p>Choose any question below. The list stays fixed as you answer.</p>` : `<div class="slice-toolbar"><strong>${shown.length} in this slice</strong><label for="batch-size">Batch size</label><select id="batch-size">${[3,5,10].map(n => `<option value="${n}" ${state.size === n ? 'selected' : ''}>${n} questions</option>`).join('')}</select><button class="primary" id="start-batch" ${!actionable.length || state.batch ? 'disabled' : ''}>Start next ${Math.min(state.size, actionable.length)}</button><button class="bulk" id="start-picked" ${!state.picked.size || state.batch ? 'disabled' : ''}>Start selected (${state.picked.size})</button>${state.batch ? '<small>Resume or release your saved batch before starting another.</small>' : ''}</div>`;
+    content.innerHTML = toolbar + (shown.length ? `<div class="question-list">${shown.map(item => `<div class="question-row ${state.focus === item.id ? 'current' : ''}">${!state.inBatch ? `<input type="checkbox" data-pick="${item.id}" aria-label="Select ${esc(item.title)}" ${state.picked.has(item.id) ? 'checked' : ''}>` : ''}<button data-open="${item.id}">${esc(item.title)}<small>${esc(TOPICS.find(t => t.id === topicFor(item)).title)} · ${esc(INTENTS[intentFor(item)])} · ${esc(item.brief?.scope || 'Unspecified scale')} · ${item.id}</small></button><span class="badge ${item.derivedStatus}">${LANES[laneFor(item)]}</span></div>`).join('')}</div>` : '<p class="empty">Nothing in this slice. Choose another topic or workflow stage.</p>') + '<div id="focus"></div>';
+    for (const button of content.querySelectorAll('[data-open]')) button.onclick = () => { state.focus = button.dataset.open; renderFocus(); document.getElementById('focus').scrollIntoView({ block: 'start' }); };
+    for (const checkbox of content.querySelectorAll('[data-pick]')) checkbox.onchange = () => { if (checkbox.checked) state.picked.add(checkbox.dataset.pick); else state.picked.delete(checkbox.dataset.pick); const button = document.getElementById('start-picked'); button.textContent = `Start selected (${state.picked.size})`; button.disabled = !state.picked.size || Boolean(state.batch); };
+    if (!state.inBatch) {
+      document.getElementById('batch-size').onchange = event => { state.size = Number(event.target.value); const button = document.getElementById('start-batch'); button.textContent = `Start next ${Math.min(state.size, actionable.length)}`; };
+      document.getElementById('start-batch').onclick = () => startBatch(state.board.items.filter(visible).filter(item => ['pending', 'stale', 'parked'].includes(laneFor(item))).slice(0, state.size));
+      document.getElementById('start-picked').onclick = () => startBatch(shown.filter(item => state.picked.has(item.id)));
     }
-    document.getElementById('groups').innerHTML = navLinks.join('');
-    document.getElementById('content').innerHTML = content.length ? content.join('') : '<div class="empty">Nothing matches this filter.</div>';
+    renderFocus();
+  }
+
+  function renderFocus() {
+    const item = state.board.items.find(item => item.id === state.focus);
+    const panel = document.getElementById('focus');
+    if (!panel) return;
+    if (!item || !visible(item)) { panel.innerHTML = ''; return; }
+    const topic = TOPICS.find(topic => topic.id === topicFor(item));
+    const scale = { BLUEPRINT: 'the whole product', LANDMARK: 'one direction', SPEC: 'one capability', TASK: 'one concrete step' }[item.brief?.scope] || 'the named artifacts';
+    panel.innerHTML = `<p class="question-context">${esc(INTENTS[intentFor(item)])} · Think about { ${esc(topic.frame)} } at the scale of ${scale}.</p>${card(item)}<div class="batch-actions"><button class="bulk" id="back-to-list">Back to this slice</button><button class="primary" id="next-question">Next question</button></div>`;
     wire();
+    document.getElementById('back-to-list').onclick = () => document.getElementById('content').scrollIntoView({ block: 'start' });
+    const shown = state.inBatch ? state.batch.ids.map(id => state.board.items.find(i => i.id === id)).filter(Boolean) : state.board.items.filter(visible);
+    const index = shown.findIndex(i => i.id === item.id);
+    document.getElementById('next-question').disabled = index < 0 || index === shown.length - 1;
+    document.getElementById('next-question').onclick = () => { state.focus = shown[index + 1].id; renderFocus(); panel.scrollIntoView({ block: 'start' }); };
   }
 
   function card(item) {
@@ -392,6 +527,7 @@
     const id = article.dataset.id;
     const draft = { verdict: article.querySelector('.opt[aria-pressed="true"]')?.dataset.value ?? '', note: article.querySelector('textarea').value, itemRevision: Number(article.dataset.revision) };
     state.drafts.set(id, draft);
+    renderBatchProgress();
     clearTimeout(state.timers.get(id));
     const run = async () => {
       const { verdict, note, itemRevision } = draft;
@@ -440,19 +576,19 @@
   }
 
   function refreshCounts() {
-    const counts = { pending: 0, stale: 0, answered: 0, applied: 0, withdrawn: 0 };
-    for (const item of state.board.items) counts[item.derivedStatus] += 1;
-    state.board.counts = counts;
-    const total = Math.max(1, state.board.items.length);
-    document.getElementById('progress').innerHTML = [['pending', 'var(--line)'], ['stale', 'var(--stale)'], ['answered', 'var(--ok)'], ['applied', 'var(--applied)']]
-      .map(([k, color]) => `<span style="width:${(100 * counts[k]) / total}%;background:${color}"></span>`).join('');
-    const labels = { open: `To answer (${counts.pending + counts.stale})`, answered: `Answered (${counts.answered})`, applied: `Applied (${counts.applied})`, withdrawn: `Withdrawn (${counts.withdrawn})`, all: `All (${state.board.items.length})` };
-    for (const chip of document.querySelectorAll('.chip')) chip.textContent = labels[chip.dataset.filter];
-    for (const link of document.querySelectorAll('.groups a')) {
-      const gid = link.getAttribute('href').slice(3);
-      const all = state.board.items.filter((item) => (item.brief?.scope || 'SPEC') === gid);
-      const open = all.filter((item) => item.derivedStatus === 'pending' || item.derivedStatus === 'stale').length;
-      link.querySelector('small').textContent = `${open} open / ${all.length}`;
+    renderNavigation();
+    renderBatchProgress();
+    renderOverview();
+    const start = document.getElementById('start-batch');
+    if (start) {
+      const remaining = state.board.items.filter(visible).filter(item => ['pending', 'stale', 'parked'].includes(laneFor(item))).length;
+      start.textContent = `Start next ${Math.min(state.size, remaining)}`;
+      start.disabled = !remaining || Boolean(state.batch);
+    }
+    for (const row of document.querySelectorAll('.question-row')) {
+      const item = state.board.items.find(item => item.id === row.querySelector('[data-open]').dataset.open);
+      row.querySelector('.badge').textContent = LANES[laneFor(item)];
+      row.querySelector('.badge').className = `badge ${item.derivedStatus}`;
     }
   }
 
@@ -504,7 +640,7 @@
       const id = location.hash.slice(1);
       if (/^GB-\d{4}$/.test(id)) {
         const target = state.board.items.find(item => item.id === id);
-        if (target && !visible(target)) { state.filter = 'all'; state.query = ''; document.getElementById('search').value = ''; render(); }
+        if (target) { state.inBatch = false; state.topic = topicFor(target); state.intent = state.scope = state.lane = 'all'; state.query = ''; state.focus = target.id; document.getElementById('search').value = ''; render(); }
         document.getElementById(id)?.scrollIntoView({ block: 'start' });
       } else if (returning) window.scrollTo(0, state.questionScroll || 0);
       return;
@@ -553,7 +689,7 @@
   };
   window.addEventListener('hashchange', routePage);
 
-  document.getElementById('search').oninput = (event) => { state.query = event.target.value.trim().toLowerCase(); render(); };
+  document.getElementById('search').oninput = (event) => { state.query = event.target.value.trim().toLowerCase(); state.inBatch = false; state.focus = null; state.picked.clear(); render(); };
   document.getElementById('theme').onclick = () => {
     const root = document.documentElement;
     const current = root.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
