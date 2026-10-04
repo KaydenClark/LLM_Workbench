@@ -622,7 +622,7 @@ Consumer snapshot: 3 occurrences. Article semantic review: **passed for core cap
 
 ### S-035: Release Candidate Proof And Historical Disposition
 
-Article: [Release Candidate Proof And Historical Disposition](../../wiki/design-concepts/spec-S-035-workbench-v3-1-2-candidate.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-035-workbench-v3-1-2-candidate/SPEC.md`.
+Article: [Release Candidate Proof And Historical Disposition](../../wiki/features/release-candidate-proof-and-historical-disposition.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-035-workbench-v3-1-2-candidate/SPEC.md`.
 
 A release candidate joins capability delivery, version identity and an account of the feedback it addressed. S-035 coordinated the v3.1.2 candidate after the prerequisite capabilities were complete, measured guardrails without changing criteria, obtained exact-candidate review and proved integration containment. Its recorded PR, commit and score are historical release evidence, not the current Workbench version or a new readiness claim.
 
@@ -640,7 +640,7 @@ Consumer snapshot: 8 occurrences. Article semantic review: **passed for core cap
 
 ### S-036: Evidence-Bounded Upgrade Claims (S-036)
 
-Article: [Evidence-Bounded Upgrade Claims (S-036)](../../wiki/design-concepts/spec-S-036-evidence-corrections.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-036-v3-1-2-evidence-corrections/SPEC.md`.
+Article: [Evidence-Bounded Upgrade Claims (S-036)](../../wiki/features/evidence-bounded-upgrade-claims.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-036-v3-1-2-evidence-corrections/SPEC.md`.
 
 Upgrade reports must distinguish what a check observes from what an operator might infer. S-036 corrected an unpublished v3.1.2 candidate where permission visibility, control fidelity and source identity had been overstated. A bounded matcher that cannot interpret a restriction reports uncertainty; it does not establish that a lane is writable.
 
@@ -658,7 +658,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-037: Line-Ending-Aware Records (S-037)
 
-Article: [Line-Ending-Aware Records (S-037)](../../wiki/design-concepts/spec-S-037-line-ending-agnostic-records.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-037-line-ending-agnostic-records/SPEC.md`.
+Article: [Line-Ending-Aware Records (S-037)](../../wiki/features/line-ending-aware-records.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-037-line-ending-agnostic-records/SPEC.md`.
 
 Portable record readers must accept ordinary LF and CRLF checkouts without requiring each adopted repository to change Git settings. ADR and Wiki parsing share parseFrontmatter, so a correction at that seam applies consistently to both. Parsing normalizes a copy; writers preserve the destination's terminator to avoid an unrelated whole-file diff.
 
