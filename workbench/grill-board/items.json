@@ -1898,7 +1898,7 @@
         "activation"
       ],
       "revision": 3,
-      "status": "open",
+      "status": "withdrawn",
       "applied": null,
       "history": [
         {
@@ -1925,6 +1925,12 @@
             "proposal",
             "brief"
           ]
+        },
+        {
+          "revision": 3,
+          "at": "2026-10-04T11:31:43.636Z",
+          "by": "claude-remap-lane",
+          "reason": "withdrawn: Owner answered in chat 2026-10-04: the Grill Board is the first working form of the Shared Interactive Workbench Board (S-004D), the destination it grows into; recorded in S-004D Decisions And Contracts, owner:shared-board-activation cleared"
         }
       ],
       "brief": {
