@@ -1141,6 +1141,14 @@ test('TK-005N: both Lexicons and the README describe the delivered carrier shape
     // Second review correction: the ownership schema's opening sentence agrees.
     assert.match(lexicon.replace(/\s+/g, ' '), /The Workbench Contract spans `AGENTS\.md`, `RUNBOOK\.md`, `LEXICON\.md`, the bounded assigned Spec and, while an operation is performed, the lane skill a Runbook operations index row points to; it is not another document\. Other root artifacts are routed by the question they answer\./, `${label} ownership schema names the same Contract carriers`);
     assert.doesNotMatch(lexicon, /The Workbench Contract spans its existing root files/, `${label} Lexicon no longer says the Contract spans every root file`);
+    // Third review correction: every ownership-schema route to the Runbook
+    // goes through its operations index.
+    for (const name of ['Operations', 'Reusable behavior', 'Evaluation']) {
+      const cell = row(`| **${name}** |`);
+      assert.ok(cell, `${label} Lexicon has the ${name} ownership row`);
+      assert.match(cell, /Runbook operations index/, `${label} ${name} row routes through the Runbook operations index`);
+      assert.doesNotMatch(cell, /\[Runbook\]\(RUNBOOK\.md\)|\| Runbook -> /, `${label} ${name} row has no route that skips the index`);
+    }
     const review = row('| **Review** |');
     for (const target of ['AGENTS.md#git-rules', 'RUNBOOK.md#operations-index', 'workbench/skills/code-review/SKILL.md#independent-review-boundaries']) {
       assert.ok(review.includes(`(${target})`), `${label} Review row links ${target} for the review-independence example`);
