@@ -676,7 +676,7 @@ Consumer snapshot: 0 occurrences. Article semantic review: **passed for core cap
 
 ### S-038: Source-Checked Finding Disposition (S-038)
 
-Article: [Source-Checked Finding Disposition (S-038)](../../wiki/design-concepts/spec-S-038-upstream-finding-disposition.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-038-v3-1-2-upstream-fix-list/SPEC.md`.
+Article: [Source-Checked Finding Disposition (S-038)](../../wiki/features/source-checked-finding-disposition.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-038-v3-1-2-upstream-fix-list/SPEC.md`.
 
 An upstream finding is evidence to investigate, not an instruction to repair. S-038 reconciled the second v3.1.1 fix list into named capabilities, corrected unsupported report premises, and preserved the release account. Its eleven items were routed to S-039 through S-044; code ownership stayed with those capabilities.
 
@@ -694,7 +694,7 @@ Consumer snapshot: 2 occurrences. Article semantic review: **passed for core cap
 
 ### S-039: Installed Runtime Integrity (S-039)
 
-Article: [Installed Runtime Integrity (S-039)](../../wiki/design-concepts/spec-S-039-installed-runtime-integrity.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-039-installed-runtime-integrity/SPEC.md`.
+Article: [Installed Runtime Integrity (S-039)](../../wiki/features/installed-runtime-integrity.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-039-installed-runtime-integrity/SPEC.md`.
 
 An installed room can compare its runtime files with the hashes in its managed-tools receipt. The authoritative expected file set also matters: an empty map, omitted file or unsafe receipt key cannot be allowed to shrink verification silently. The installed workbench-layout runtime owns this check so the room does not need the product's root tools directory to inspect itself.
 
@@ -712,7 +712,7 @@ Consumer snapshot: 2 occurrences. Article semantic review: **passed for core cap
 
 ### S-040: Skill Presence And Repair Routes (S-040)
 
-Article: [Skill Presence And Repair Routes (S-040)](../../wiki/design-concepts/spec-S-040-skill-gate-route-selection.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-040-skill-gate-route-selection/SPEC.md`.
+Article: [Skill Presence And Repair Routes (S-040)](../../wiki/features/skill-presence-and-repair-routes.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-040-skill-gate-route-selection/SPEC.md`.
 
 A refusal should name the supported way forward. S-040 made presence-only installation recognize a linked destination whose resolved directory already contains the skill, and made shared-skill refusal messages point to the layout-only route where applicable. A directory already present is skipped; this does not grant permission to overwrite unmanaged user content.
 
@@ -730,7 +730,7 @@ Consumer snapshot: 3 occurrences. Article semantic review: **passed for core cap
 
 ### S-041: Recorded Baseline Availability (S-041)
 
-Article: [Recorded Baseline Availability (S-041)](../../wiki/design-concepts/spec-S-041-recorded-baseline-availability.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-041-recorded-baseline-availability/SPEC.md`.
+Article: [Recorded Baseline Availability (S-041)](../../wiki/features/recorded-baseline-availability.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-041-recorded-baseline-availability/SPEC.md`.
 
 A harness-only change may encounter a target with no reproducible green application baseline for a reason the harness change cannot affect. The owner selected record-and-proceed: the owning Spec records an unavailable baseline with evidence and one of the closed reasons host-restricted, product-broken-as-found or owner-declined-on-boundary. An unknown reason is refused.
 

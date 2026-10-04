@@ -261,6 +261,7 @@ without opening it. See [features/README.md](features/README.md).
 - [Held-Out Path-Safety Evaluation](features/held-out-path-safety-evaluation.md) - a held-out path-handling eval task and grader scoring correctness, scope, verification honesty and doc upkeep separately.
 - [Historical v3.1 Release Proof Packet](features/historical-v3-1-release-proof-packet.md) - the blocked v3.1 release proof packet: what it preserved, what it never completed, and the current owners of release state.
 - [Import-Safe Feedback Helper Entry](features/import-safe-feedback-helper-entry.md) - the feedback helper can be imported inline without running its CLI, because its entry guard handles an absent script path.
+- [Installed Runtime Integrity](features/installed-runtime-integrity.md) - A room compares its installed runtime files with its managed-tools receipt hashes and classifies drift; verify reports and repair stays separate.
 - [Installed Skill Identity And Inspection](features/installed-skill-identity-and-inspection.md) - Managed skill markers with a content hash and compatibility range, and read-only inspection that tells an installed copy from its source.
 - [Installed State Reporting And Repair](features/installed-state-reporting-and-repair.md) - reports stale seeded documents and repairs missing metadata without reinstalling or replacing project-owned content.
 - [JSON Notepad Foundation](features/json-notepad-foundation.md) - a local revision-checked JSON notepad that preserves working context for continuation without granting authority.
@@ -275,8 +276,11 @@ without opening it. See [features/README.md](features/README.md).
 - [Portable Wiki Knowledge And Collections](features/portable-wiki-knowledge-and-collections.md) - the Wiki's one router, schema and note properties, and the named collections that hold durable explanations with explicit sources.
 - [Portable Workbench Installation, Adoption And Upgrade](features/portable-workbench-installation-adoption-and-upgrade.md) - how a Workbench is created, adopted and upgraded, with presence kept separate from replacement of installed skills.
 - [Project Evidence Preparation For Blueprint Grilling](features/project-evidence-preparation-for-blueprint-grilling.md) - turns named project sources into a bounded provisional grilling note that keeps source identity and uncertainty and answers no owner question.
+- [Recorded Baseline Availability](features/recorded-baseline-availability.md) - A Spec can record an unavailable application baseline with evidence and one of three closed reasons so a harness-only change can proceed.
 - [Release Candidate Proof And Historical Disposition](features/release-candidate-proof-and-historical-disposition.md) - What a release candidate must join: capability delivery, version identity and a disposition of feedback, with the proof kept historical.
 - [Reproducible Adoption Provenance](features/reproducible-adoption-provenance.md) - adoption proof carries the source remote, ref, resolved commit, executed self-tests and checksum, so a cold reviewer can reproduce it.
+- [Skill Presence And Repair Routes](features/skill-presence-and-repair-routes.md) - Skill installation that recognizes linked destinations and names the supported route in refusals, with one shared presence judgment.
+- [Source-Checked Finding Disposition](features/source-checked-finding-disposition.md) - How an upstream fix list is reconciled: each finding is source-checked, routed to a named capability, and corrected premises are preserved.
 - [Spec-Centered Progressive Disclosure](features/spec-centered-progressive-disclosure.md) - ordinary entry stays small: contract, routes, then the assigned Spec and its source, with no historical catalog read first.
 - [Upgrade Layout Without Replacing Skills](features/upgrade-layout-without-replacing-skills.md) - A layout-only upgrade route for an adopted legacy room whose skills cannot be replaced, with source provenance checked against the real checkout.
 - [Verified Automation Run Outcomes](features/verified-automation-run-outcomes.md) - six run-outcome categories and an idle count that only a verified idle advances, so a pause is recommended on real absence of work.
@@ -299,3 +303,14 @@ proof from current behavior. Original records remain intact pending lifecycle ga
 - [Installed Runtime Integrity (S-039)](design-concepts/spec-S-039-installed-runtime-integrity.md)
 - [Skill Presence And Repair Routes (S-040)](design-concepts/spec-S-040-skill-gate-route-selection.md)
 - [Recorded Baseline Availability (S-041)](design-concepts/spec-S-041-recorded-baseline-availability.md)
+- [Governance Claims And Diagnostics (S-024)](design-concepts/spec-S-024-governance-core-and-diagnostics.md)
+- [Portable Wiki Knowledge (S-025)](design-concepts/spec-S-025-portable-wiki-and-design-concepts.md)
+- [Workflow Composition And Cold Continuation (S-026)](design-concepts/spec-S-026-workflow-composition-and-cold-resume.md)
+- [Assigned Work, Portable Stances And Delivery Boundaries](design-concepts/spec-S-027-workbench-v3-1-1-boundaries.md)
+- [Feedback And Migration Integrity](design-concepts/spec-S-028-harness-feedback-integrity.md)
+- [Declared Integration And Recoverable Completion](design-concepts/spec-S-029-declared-integration-branch.md)
+- [Mechanical Permission Scope And Declared Lanes](design-concepts/spec-S-030-permission-scope-matches-lanes.md)
+- [S-048: Checkpoint Retirement And Direct Promotion](design-concepts/spec-S-048-checkpoint-retirement.md)
+- [S-049: Assignment Ownership And Coordination Records](design-concepts/spec-S-049-assignment-ownership-and-coordination-record.md)
+- [S-051: Core Skill Ownership And Compatibility](design-concepts/spec-S-051-core-skill-ownership-and-compatibility.md)
+- [S-053: Configured Host Capabilities](design-concepts/spec-S-053-configured-host-capabilities.md)
