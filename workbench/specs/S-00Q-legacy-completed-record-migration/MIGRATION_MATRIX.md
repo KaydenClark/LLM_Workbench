@@ -478,7 +478,7 @@ Consumer snapshot: 0 occurrences. Article semantic review: **passed for core cap
 
 ### S-027: Assigned Work, Portable Stances And Delivery Boundaries
 
-Article: [Assigned Work, Portable Stances And Delivery Boundaries](../../wiki/design-concepts/spec-S-027-workbench-v3-1-1-boundaries.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md`.
+Article: [Assigned Work, Portable Stances And Delivery Boundaries](../../wiki/features/assigned-work-portable-stances-and-delivery-boundaries.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md`.
 
 The normal entry route is `AGENTS.md -> RUNBOOK.md -> LEXICON.md`, followed by the assigned capability and only its relevant context. The Blueprint is loaded for architecture and product direction. An agent investigates missing information inside its assignment and does not invent a new queue item merely because it reaches a gap.
 
@@ -496,7 +496,7 @@ Consumer snapshot: 5 occurrences. Article semantic review: **passed for core cap
 
 ### S-028: Feedback And Migration Integrity
 
-Article: [Feedback And Migration Integrity](../../wiki/design-concepts/spec-S-028-harness-feedback-integrity.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-028-harness-feedback-integrity/SPEC.md`.
+Article: [Feedback And Migration Integrity](../../wiki/features/feedback-and-migration-integrity.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-028-harness-feedback-integrity/SPEC.md`.
 
 Integrity checks must exercise the paths that consume a declaration rather than ban every occurrence of a legacy-looking string. S-028 rejected a blanket lane-literal linter because migration input, fixtures and explanatory text can legitimately name older locations.
 
@@ -514,7 +514,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-029: Declared Integration And Recoverable Completion
 
-Article: [Declared Integration And Recoverable Completion](../../wiki/design-concepts/spec-S-029-declared-integration-branch.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-029-declared-integration-branch/SPEC.md`.
+Article: [Declared Integration And Recoverable Completion](../../wiki/features/declared-integration-and-recoverable-completion.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-029-declared-integration-branch/SPEC.md`.
 
 A review boundary needs a real merge destination. The manifest declares `git.defaultBranch` and `git.integrationBranch` by exact name; controls and runtime resolve that declaration rather than assuming every room uses the same spelling. Exact ref enumeration avoids accepting `Integration` as `integration` merely because a filesystem is case-insensitive. `HEAD` is not a valid declared branch name.
 
@@ -532,7 +532,7 @@ Consumer snapshot: 3 occurrences. Article semantic review: **passed for core cap
 
 ### S-030: Mechanical Permission Scope And Declared Lanes
 
-Article: [Mechanical Permission Scope And Declared Lanes](../../wiki/design-concepts/spec-S-030-permission-scope-matches-lanes.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-030-permission-scope-matches-lanes/SPEC.md`.
+Article: [Mechanical Permission Scope And Declared Lanes](../../wiki/features/mechanical-permission-scope-and-declared-lanes.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-030-permission-scope-matches-lanes/SPEC.md`.
 
 The permission file and prose edit scope must describe the same effective boundary. A room can otherwise pass document checks while its host asks on every record write or denies a declared authorship lane.
 

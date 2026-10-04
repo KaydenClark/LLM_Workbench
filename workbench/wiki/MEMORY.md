@@ -238,6 +238,7 @@ without opening it. See [features/README.md](features/README.md).
 
 - [Adoption Preflight And Legacy Classification](features/adoption-preflight-and-legacy-classification.md) - reports every unreconciled root control at once and classifies a room as genesis, adoption, upgrade or unclassifiable from evidence.
 - [Adoption When Git Writes Are Unavailable](features/adoption-when-git-writes-are-unavailable.md) - adoption on a host that refuses Git writes records a visible blocker and reversible work, never forced Git or invented proof.
+- [Assigned Work, Portable Stances And Delivery Boundaries](features/assigned-work-portable-stances-and-delivery-boundaries.md) - the entry route, the Builder, Auditor, Reviewer and Reconciler stances, and delivery through independent review and verified containment.
 - [Assignment Ownership And Coordination Records](features/assignment-ownership-and-coordination-records.md) - the Carry skill owns an assigned endpoint, and routine coordination the owner supplied by hand is recorded.
 - [Blueprint, Active ADRs And The Context Map](features/blueprint-active-adrs-and-the-context-map.md) - the Blueprint states the finished product, active ADR decisions carry architectural Canon, and the Context Map routes questions to owners.
 - [Bounded Team Coordination](features/bounded-team-coordination.md) - optional team templates and an overlap demonstration: disjoint edit paths, one coordinator, one writer of shared state, no locking service.
@@ -248,10 +249,12 @@ without opening it. See [features/README.md](features/README.md).
 - [Control Fidelity Without Forced Uniformity](features/control-fidelity-without-forced-uniformity.md) - A report that compares a room's controls with the templates and labels each line unchanged, filled, changed, dropped or added, without failing on divergence.
 - [Copyable Workbench Template Reference Room](features/copyable-workbench-template-reference-room.md) - the reference room became a copyable Workbench Template whose installed controls, identity and provenance survive an upgrade.
 - [Core Skill Ownership And Compatibility](features/core-skill-ownership-and-compatibility.md) - a versioned core skill source with explicit compatibility ranges that keeps missing or conflicting skills visible.
+- [Declared Integration And Recoverable Completion](features/declared-integration-and-recoverable-completion.md) - the manifest declares the integration branch, doctor reports it missing, and completed work lands committed on a prefixed branch.
 - [Dependency-Safe Direct Claiming](features/dependency-safe-direct-claiming.md) - direct Task claiming uses the same dependency eligibility as selection and refuses blocked work before changing anything.
 - [Diagnostics Ordered By Consequence](features/diagnostics-ordered-by-consequence.md) - doctor groups findings as blocking, selected-slice, then informational, so effect leads severity.
 - [Evidence-Bounded Upgrade Claims](features/evidence-bounded-upgrade-claims.md) - Upgrade reports that separate what a check observes from what an operator might infer: matcher uncertainty, fidelity and source identity.
 - [Evidence-Gated Harness Feedback](features/evidence-gated-harness-feedback.md) - feedback discovery ranks candidates and an independent decision passes, denies or blocks each on reproduction, regression, suite and safety evidence.
+- [Feedback And Migration Integrity](features/feedback-and-migration-integrity.md) - strict feedback ingestion, manifest-aware guardrail evaluation, and adoption that reports the residue it leaves.
 - [Fresh Template To Independent Project Proof](features/fresh-template-to-independent-project-proof.md) - the recorded proof that a clean Template copy became an independent project room and was continued in a fresh agent context, with its limits.
 - [Genesis From Blueprint Decisions And Active ADRs](features/genesis-from-blueprint-decisions-and-active-adrs.md) - creates a new room from a clean Template, a prepared note and an explicit plan, deriving one first capability from locked questions and active ADRs.
 - [Governance Planes, ADR Decisions And Scoped Diagnostics](features/governance-planes-adr-decisions-and-scoped-diagnostics.md) - claims classified by plane, authority kept apart from state resolution, and diagnostics with their own severity, scope and blocking effect.
@@ -265,6 +268,7 @@ without opening it. See [features/README.md](features/README.md).
 - [Line-Ending-Aware Records](features/line-ending-aware-records.md) - ADR and Wiki readers that accept LF and CRLF checkouts through one shared parser, with writers that keep the destination's line terminator.
 - [Linked Follow-Up Reconciliation](features/linked-follow-up-reconciliation.md) - gives accepted obligations left by completed Specs a new owner instead of leaving them in closed records.
 - [Manifest Schema 2 Lanes And Managed Runtime](features/manifest-schema-2-lanes-and-managed-runtime.md) - manifest-declared support lanes and collections, and managed runtime tools installed against a recorded receipt.
+- [Mechanical Permission Scope And Declared Lanes](features/mechanical-permission-scope-and-declared-lanes.md) - a diagnostic that compares the permission file with each declared lane and reports drift without rewriting settings.
 - [Named Template Upgrade Release Gate](features/named-template-upgrade-release-gate.md) - requires each new Workbench version to be exercised in the named Workbench_Template installation before release readiness.
 - [Operable Genesis Readiness](features/operable-genesis-readiness.md) - Genesis readiness checks that a cold agent can follow the layout, read filled controls and select a ready first Spec packet, not only find filenames.
 - [Portable Verification Boundaries](features/portable-verification-boundaries.md) - context labels use forward slashes, spec comparison ignores CRLF, and eval fixtures use the running interpreter and Windows launchers.
@@ -289,16 +293,8 @@ proof from current behavior. Original records remain intact pending lifecycle ga
 - [Adoption When Git Writes Are Unavailable](design-concepts/spec-S-009-git-write-constrained-adoption.md)
 - [S-00A: Blueprint, Active ADRs And The Context Map](design-concepts/spec-S-00A-blueprint-active-adr-and-context-map.md)
 - [S-00B: Workbench Template Reformation](design-concepts/spec-S-00B-workbench-template-reformation.md)
-- [Portable Workbench Architecture (S-021)](design-concepts/spec-S-021-portable-workbench-v3.md)
-- [Historical v3.1 Release Packet (S-022)](design-concepts/spec-S-022-llm-workbench-v3-1-release.md)
-- [Manifest And Managed Runtime (S-023)](design-concepts/spec-S-023-manifest-and-managed-runtime.md)
-- [Governance Claims And Diagnostics (S-024)](design-concepts/spec-S-024-governance-core-and-diagnostics.md)
-- [Portable Wiki Knowledge (S-025)](design-concepts/spec-S-025-portable-wiki-and-design-concepts.md)
-- [Workflow Composition And Cold Continuation (S-026)](design-concepts/spec-S-026-workflow-composition-and-cold-resume.md)
-- [Assigned Work, Portable Stances And Delivery Boundaries](design-concepts/spec-S-027-workbench-v3-1-1-boundaries.md)
-- [Feedback And Migration Integrity](design-concepts/spec-S-028-harness-feedback-integrity.md)
-- [Declared Integration And Recoverable Completion](design-concepts/spec-S-029-declared-integration-branch.md)
-- [Mechanical Permission Scope And Declared Lanes](design-concepts/spec-S-030-permission-scope-matches-lanes.md)
+- [Operable Genesis Readiness](design-concepts/spec-S-015-portable-v3-release-audit-recovery.md)
+- [Bounded Team Coordination (S-020)](design-concepts/spec-S-020-spec-native-team-coordination.md)
 - [Source-Checked Finding Disposition (S-038)](design-concepts/spec-S-038-upstream-finding-disposition.md)
 - [Installed Runtime Integrity (S-039)](design-concepts/spec-S-039-installed-runtime-integrity.md)
 - [Skill Presence And Repair Routes (S-040)](design-concepts/spec-S-040-skill-gate-route-selection.md)
