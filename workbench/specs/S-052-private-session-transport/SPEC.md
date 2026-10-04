@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** codex
 **Stance:** Builder
-**Updated:** 2026-09-08
+**Updated:** 2026-10-04
 **Catalog description:** Optionally synchronize selected working records through private Git with explicit acknowledgment and lossless offline/conflict handling.
-**Blockers:** live-device-and-private-repository-access
-**Latest event:** TK-003 closed with proof.
-**Next gate:** Establish actual private repository and Mac/Windows Claude/Codex access for TK-004.
+**Blockers:** none
+**Latest event:** 2026-10-04: TK-004 reframed as part of the owner's own PC deployment test at v4 main readiness, no longer a blocker; the superseded v3.2.0 release record no longer waits on it. TK-003 closed with proof before that.
+**Next gate:** None for agents. TK-004 runs inside the owner's own PC test when agents judge `integration` ready for `main`; the [Workbench v4.0.0 Release — S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md) names it among the owner acts.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -74,6 +74,30 @@ uncreated and outside this implementation absent explicit owner direction.
 Ticket edges below govern selection. Independent work continues while an external
 gate is pending. A fixture cannot satisfy a named live-host or cross-device gate.
 
+## Owner PC Test At Main Readiness — 2026-10-04
+
+The capability stays: TK-001 to TK-003 delivered identity, opt-in transport and
+offline/conflict handling, and the real cross-device round trip is still owed.
+What changed is how that last proof is framed. The owner runs the Windows PC
+deployment test himself, once, when agents judge `integration` ready for
+`main`: "When EVERYTHING is ready, and you think we are good to merge into
+main, I will do the PC test" (2026-09-23; see
+[PC test at main readiness](../../wiki/pc-test-at-main-readiness.md)). His
+2026-09-21 answer to the grilling ledger's CAND-N row already made "the real PC
+handoff" the "deployment-readiness test before any merge to main". TK-004's
+real Mac/Windows Claude/Codex continuation is part of that test.
+
+So TK-004 is not a blocker, and no agent provisions a private repository,
+a second device or a Windows host for it. It is `deferred` (Backlog), not
+`blocked`, so selection never offers it to an agent and no board lane shows it
+as something to unblock. The [Workbench v4.0.0 Release — S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md)
+lists the PC test among the owner acts at v4 main readiness. When the owner
+has run it, its result is recorded here against TK-004; until then its
+acceptance line below stays unchecked, and no fixture substitutes for it. The
+earlier release dependency is gone: the
+[v3.2.0 release record — S-050](../S-050-workbench-v3-2-0-release/SPEC.md)
+was superseded on 2026-10-04 with its readiness verdict withdrawn.
+
 ## Vertical Implementation Slices
 
 | Ticket | Slice | Status | Blockers | Proof |
@@ -81,7 +105,7 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 | TK-001 | Allocate stable room identity and preserve it across lifecycle operations | done | none | 434ef6b71fb88d5febbd87b60f4f6d55651a06a9: identity 6/6, full 38/38, independent concurrency and preservation review PASS; actual source identity assigned once and second invocation preserved it |
 | TK-002 | Synchronize selected safe notes and report acknowledgment | done | TK-001 | 6700ca0f31c785385473b0b84529bf71aa6ad205: transport 12/12, full 41/41, independent bounded review PASS with six additional adversarial cases; guardrail 78 unchanged |
 | TK-003 | Preserve conflicting/offline revisions under serialized sync | done | TK-002 | db540ec27a272d61283262ee48d46fe9ebf8f7af: transport 18/18 including explicit conflict reconciliation, full 41/41, independent TK-003 review PASS; preserved backup and remote ancestry read-back |
-| TK-004 | Prove real Mac Windows Claude Codex continuation | blocked | live-device-and-private-repository-access | pending |
+| TK-004 | Prove real Mac Windows Claude Codex continuation | deferred | none | pending; runs inside the owner's own PC test at v4 main readiness (S-00O), never a blocker |
 
 ### TK-001 - Allocate stable room identity and preserve it across lifecycle operations
 
@@ -183,18 +207,23 @@ AGENTS/BLUEPRINT/LEXICON/RUNBOOK and generic owners, lifecycle manifests/tools, 
 
 | 2026-09-08 | TK-003 | Recovery candidate e7eecd4 passed 16 tests; b7b297d added passing acknowledgment-failure retry case | Independent review reproduced effective ignore exceptions exposing original-note backups after an interrupted resume. New regression demonstrated RED before repair. Every planned backup, prior-state and receipt destination is now checked before private recovery bytes are copied | Docs checked; existing ignored recovery boundary remains unchanged | Repaired targeted/full checks and independent re-review pending; earlier b7 full suite remains separate historical evidence |
 | 2026-09-08 | TK-003 | Ticket closed | db540ec27a272d61283262ee48d46fe9ebf8f7af: transport 18/18 including explicit conflict reconciliation, full 41/41, independent TK-003 review PASS; preserved backup and remote ancestry read-back | Root and generic Runbook document serialization, rejected/offline uploads, partial resumes, ignored recovery, explicit conflict reconciliation and limits | TK-004 actual private repository and Mac Windows Claude Codex continuation remains blocked on access; final release and Example integration remain open |
+| 2026-10-04 | spec | TK-004 reframed: the real Mac/Windows continuation runs inside the owner PC test at v4 main readiness, not as a blocker | Owner words of 2026-09-23 (PC test at main readiness Wiki page) and ledger CAND-N (2026-09-21) re-read; S-050 superseded the same day | Header, TK-004 row (deferred, no blocker), new Owner PC Test At Main Readiness section, Completion Result and limitations reconciled; ledger CAND-N progress re-read | TK-004 proof remains owed and is the owner's to run; its acceptance line stays unchecked |
 
 ## Completion Result
 
 Local implementation tickets TK-001 through TK-003 are verified and closed.
-TK-004 remains blocked on actual private repository and device/provider access.
-No v3.2.0 readiness, publication, or downstream delivery claim.
+TK-004's real cross-device continuation is unproven. Since 2026-10-04 it is
+deferred into the owner's own PC test at v4 main readiness rather than
+blocked on access (see Owner PC Test At Main Readiness). No v3.2.0 readiness,
+publication, or downstream delivery claim.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-See [release owner](../S-050-workbench-v3-2-0-release/SPEC.md) for the complete assigned set,
-source inventory, exclusions and externally gated acceptance. Zero routine
-coordination hand-backs so far; the reserved host decision is a real owner gate.
+The superseded [v3.2.0 release record](../S-050-workbench-v3-2-0-release/SPEC.md) keeps the original assigned set,
+source inventory and exclusions as history; current release ownership is the
+[Workbench v4.0.0 Release — S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md). Zero routine
+coordination hand-backs so far. The host is the owner's: he runs the PC test
+himself at main readiness, and that is an owner act, not a gate on agent work.
 
 ## Supersession
 

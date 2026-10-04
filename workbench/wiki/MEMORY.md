@@ -95,11 +95,13 @@ This route does not claim that every room can discover the skill today.
 
 ## Release And Distribution Routing
 
-The reconciled release scope and complete historical inventory live in
-[S-050](../specs/S-050-workbench-v3-2-0-release/SPEC.md). Follow its named owners
-for skill ownership/compatibility, optional private session transport and the
-configured-host capability floor. This route preserves their open gates without
-copying task state here.
+Current release work lives in the
+[Workbench v4.0.0 Release — S-00O](../specs/S-00O-workbench-v4-0-0-release/SPEC.md).
+The superseded [v3.2.0 release record — S-050](../specs/S-050-workbench-v3-2-0-release/SPEC.md)
+keeps the reconciled v3.2 scope and complete historical inventory, with the
+named owners for skill ownership/compatibility, optional private session
+transport and the configured-host capability floor. This route copies no task
+state here.
 
 ## Grilling Destination Audit Ledger
 
