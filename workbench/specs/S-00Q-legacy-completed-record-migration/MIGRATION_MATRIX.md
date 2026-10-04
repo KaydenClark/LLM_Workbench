@@ -856,7 +856,7 @@ Consumer snapshot: 7 occurrences. Article semantic review: **passed for core cap
 
 ### S-048: S-048: Checkpoint Retirement And Direct Promotion
 
-Article: [S-048: Checkpoint Retirement And Direct Promotion](../../wiki/design-concepts/spec-S-048-checkpoint-retirement.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-048-checkpoint-retirement/SPEC.md`.
+Article: [S-048: Checkpoint Retirement And Direct Promotion](../../wiki/features/checkpoint-retirement-and-direct-promotion.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-048-checkpoint-retirement/SPEC.md`.
 
 Checkpoint creation was retired while existing checkpoint history and recovery references were preserved. The legacy checkpoint command is a refusal-only compatibility boundary; it does not create new copies.
 
@@ -874,7 +874,7 @@ Consumer snapshot: 6 occurrences. Article semantic review: **passed for core cap
 
 ### S-049: S-049: Assignment Ownership And Coordination Records
 
-Article: [S-049: Assignment Ownership And Coordination Records](../../wiki/design-concepts/spec-S-049-assignment-ownership-and-coordination-record.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md`.
+Article: [S-049: Assignment Ownership And Coordination Records](../../wiki/features/assignment-ownership-and-coordination-records.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md`.
 
 The Carry skill owns an assigned Spec or Task through the endpoint already authorized: recover context, execute, verify, reconcile records and deliver to the permitted integration boundary. It cannot expand the assignment or replace an owner-only decision.
 
@@ -892,7 +892,7 @@ Consumer snapshot: 3 occurrences. Article semantic review: **passed for core cap
 
 ### S-051: S-051: Core Skill Ownership And Compatibility
 
-Article: [S-051: Core Skill Ownership And Compatibility](../../wiki/design-concepts/spec-S-051-core-skill-ownership-and-compatibility.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md`.
+Article: [S-051: Core Skill Ownership And Compatibility](../../wiki/features/core-skill-ownership-and-compatibility.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md`.
 
 A core installation needs an identifiable source generation and compatible manifest policy while preserving optional shared skills and project-local ownership. Source content, installed bytes, discovery and actual native invocation are separate checks.
 
@@ -910,7 +910,7 @@ Consumer snapshot: 8 occurrences. Article semantic review: **passed for core cap
 
 ### S-053: S-053: Configured Host Capabilities
 
-Article: [S-053: Configured Host Capabilities](../../wiki/design-concepts/spec-S-053-configured-host-capabilities.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-053-configured-host-capabilities/SPEC.md`.
+Article: [S-053: Configured Host Capabilities](../../wiki/features/configured-host-capabilities.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-053-configured-host-capabilities/SPEC.md`.
 
 Configured-host conformance asks what the actual host can do at named command seams. It keeps capability, enforcement and agent reliability separate: a runner operation passing does not establish that an agent discovers the skill or reliably obeys the workflow.
 
