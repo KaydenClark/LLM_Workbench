@@ -5,7 +5,7 @@
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
-**Updated:** 2026-09-30
+**Updated:** 2026-10-04
 **Catalog description:** Identify and prioritize structural improvements that make future changes safer and more local.
 **Blockers:** S-002L Skills draft wiki collection must deliver the draft-wiki location and article template before steps 2-5.
 **Latest event:** Authored from the owner's 2026-09-30 draft-skills-wiki direction.
@@ -26,7 +26,7 @@ The owner wants to prototype the skills Wiki against the current skills to find 
 - `skills-pending/improve-codebase-architecture/SKILL.md` (66 lines) and `HTML-REPORT.md` (123 lines) are the only files. The skill is `disable-model-invocation: true`. It has no tests of its own.
 - `skills-pending/` is a root directory `AGENTS.md` Edit Scope does not list; `workbench/specs/S-00R-core-skill-lifecycle-and-optional-source-disposition/SPEC.md` is the accepted route for per-item pending dispositions. Step 6 edits `skills-pending/` only under that route, or after the owner decides otherwise.
 - `workbench/skills/README.md` lists it as preserved pending source, consumed by pending `diagnosing-bugs`, with disposition "owner decision required". `tools/test-skill-catalog.mjs` treats `skills-pending` as an optional root, so the catalog tests constrain it.
-- It enters from `skills-pending/diagnosing-bugs/SKILL.md`, which hands off to it after a fix. Its own declared dependencies are `/codebase-design` (pending), `/grilling` (core), `/domain-modeling` (pending; S-002H owns the planned rebuild).
+- It enters from `skills-pending/diagnosing-bugs/SKILL.md`, which hands off to it after a fix. Its own declared dependencies are `/codebase-design` (pending), `/grilling` (core), `/domain-modeling` (pending; S-002H owned the planned rebuild at the pre anchor; Required Domain Modeling Skill (S-004J) owns it since 2026-10-04).
 - Its stated flow: read the domain glossary and ADRs; explore with an `Explore` subagent; apply the deletion test; write a self-contained HTML report to the OS temp directory using Tailwind and Mermaid from CDNs; stop and ask which candidate to explore; then run `/grilling`, updating the domain model and offering ADRs inline.
 - Appears to be an unmodified copy of Matt's skill per `THIRD_PARTY_NOTICES.md`; not byte-diffed. Step 3 verifies.
 - Unverified, for step 1: whether a Workbench room has a `CONTEXT.md` at all; whether the report's CDN dependencies suit an offline or restricted environment; whether the personal `~/.agents/skills` install carries a differing copy.
@@ -57,7 +57,7 @@ The owner wants to prototype the skills Wiki against the current skills to find 
 
 - **S-002L Skills draft wiki collection must deliver the draft-wiki location and article template before steps 2-5.** Do not assume `next` enforces this, as no Task exists yet.
 - Step 6 needs the S-00R route, or an owner decision, to edit `skills-pending/`.
-- Boundary dependencies for findings only: S-003M (`codebase-design`), S-002H (`domain-modeling`), S-00X (`grilling`). No ordering is required on them.
+- Boundary dependencies for findings only: S-003M (`codebase-design`), S-004J (`domain-modeling`), S-00X (`grilling`). No ordering is required on them.
 
 ## Vertical Implementation Slices
 
@@ -96,6 +96,7 @@ The draft article, tentatively `workbench/wiki/skills-draft/upkeep/improve-codeb
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-30 | planning | Spec authored from the owner's draft-skills-wiki direction; planning only | Pending source, README row and catalog optional-root handling read at the pre anchor; no Matt file read, no behavior run | This Spec only | Tasks, draft article, Matt comparison and any source change remain open |
+| 2026-10-04 | reference repair | The domain-modeling owner changed: S-002H was superseded by Required Domain Modeling Skill (S-004J) | Read S-002H and S-004J at the remap branch; dated observations keep their anchor with the new owner noted | Current Verified State owner note and Dependencies line repointed | Unchanged |
 
 ## Completion Result
 

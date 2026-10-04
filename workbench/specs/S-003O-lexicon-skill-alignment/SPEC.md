@@ -5,7 +5,7 @@
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
-**Updated:** 2026-09-30
+**Updated:** 2026-10-04
 **Catalog description:** Tell an agent how to load the project's Lexicon whole, speak its terms exactly and follow each term to the document that owns it.
 **Blockers:** S-002L Skills draft wiki collection must deliver the draft-wiki location and article template before steps 2-5. Step 6 also needs the owner's per-item source decision under S-00R (the skill has no repo source today).
 **Latest event:** Authored from the owner's 2026-09-30 draft-skills-wiki direction.
@@ -27,7 +27,7 @@ The owner wants to prototype the skills Wiki to find skills that should connect 
 - What the skill says: read the nearest `LEXICON.md` whole; speak its terms exactly and say once when a retired name surfaces; follow a term's link rather than searching; "keep open what is open", because the Lexicon "records unsettled questions beside settled ones"; supplying vocabulary is the whole job, so a flow skill running alongside keeps its own sequence and writes. When the map is wrong it routes to `/ubiquitous-language` or `/domain-modeling`. It writes nothing.
 - Nothing in the repo invokes it. `workbench/skills/README.md` records `lexicon` as "out of scope" with no reference: the word "Lexicon" in controls and lane skills names the root `LEXICON.md`, and nothing names the skill. A search for `/lexicon` across the tree at the pre anchor found no skill or control calling it. No Core skill or control depends on it, so there is no Core dependency on a personal-only skill today.
 - Conflict on record: locked answer FND-Q09 says the Lexicon holds settled vocabulary only and unsettled questions live in their linked owners (`workbench/sessions/grilling-destination-audit-ledger.json`). That ledger lists the personal `lexicon` skill as a result to update, so it carries no instruction to record unsettled questions beside settled terms. `workbench/feedback/REPORT-foundation-question-review-2026-09-11.md` lists the same line as a correction with no owning Spec. The current skill still says it. Whether the ledger row's progress has since changed is open for step 1.
-- The two skills it routes to are in different places. `ubiquitous-language` is a pending skill (`skills-pending/ubiquitous-language/SKILL.md`, S-003L owns its alignment) that writes a `UBIQUITOUS_LANGUAGE.md` file. `domain-modeling` is a pending skill with a draft rebuild owned by S-002H (reference only here; it is live work).
+- The two skills it routes to are in different places. `ubiquitous-language` is a pending skill (`skills-pending/ubiquitous-language/SKILL.md`, S-003L owns its alignment) that writes a `UBIQUITOUS_LANGUAGE.md` file. `domain-modeling` is a pending skill; at the pre anchor its draft rebuild was owned by S-002H, which was superseded on 2026-10-04 by Required Domain Modeling Skill (S-004J), its current owner (reference only here).
 - The repo's own `LEXICON.md` is the instance the skill's text should describe. It opens with a Task Routing section and Context Map table and says it is "the canonical lookup table for shared Workbench language". S-01U owns a planned audit of the whole Lexicon; this Spec does not edit it.
 - No Matt Pocock counterpart exists. Nearest neighbors: `engineering/domain-modeling` and `productivity/wait-what`. Origin (`workbench` or other) is not known; step 1 records it.
 
@@ -40,7 +40,7 @@ The owner wants to prototype the skills Wiki to find skills that should connect 
 
 ## Decisions And Contracts
 
-- This Spec owns the `lexicon` skill alone. `LEXICON.md` itself, the `domain-modeling` and `ubiquitous-language` skills, and the Core bundle belong to S-01U, S-002H, S-003L and the Core-bound Specs.
+- This Spec owns the `lexicon` skill alone. `LEXICON.md` itself, the `domain-modeling` and `ubiquitous-language` skills, and the Core bundle belong to S-01U, S-004J (Required Domain Modeling Skill, which replaced S-002H), S-003L and the Core-bound Specs.
 - Steps 1-5 touch only the draft wiki. Step 6 is the only step that touches a skill lane.
 - Step 6 has no repo source to edit. It first brings a copy into a repo lane, read-only from the personal repo, defaulting to Pending per the owner's 2026-09-30 decision 1. `skills-pending/` is not in `AGENTS.md` Edit Scope, so the authorizing route is S-00R, which requires a per-item owner decision for relocation. This Spec records that route and does not decide it.
 - A Wiki article is curated context, not instruction authority. The skill source and Canon establish behavior.
@@ -48,7 +48,7 @@ The owner wants to prototype the skills Wiki to find skills that should connect 
 
 ## Non-Goals
 
-- Editing `LEXICON.md`, `templates/LEXICON.md`, S-01U, S-002H or S-003L.
+- Editing `LEXICON.md`, `templates/LEXICON.md`, S-01U, S-004J or S-003L.
 - Writing to `~/.agents/skills/`.
 - Promoting `lexicon` to Core, which would change the closed Core bundle; no owner decision names it for Core.
 - Answering Q2A (wayfinder storage), which is unrelated and stays open.
@@ -58,7 +58,7 @@ The owner wants to prototype the skills Wiki to find skills that should connect 
 
 - S-002L Skills draft wiki collection must deliver the draft-wiki location and article template before steps 2-5.
 - Step 6 depends on the owner's per-item S-00R decision for bringing a personal-only skill into a repo lane. The default is Pending; Core is not assumed.
-- Step 6 should be sequenced with S-003L (`ubiquitous-language`) and S-002H (`domain-modeling`), because the skill's two routes point at them and their final names or homes may change.
+- Step 6 should be sequenced with S-003L (`ubiquitous-language`) and S-004J (`domain-modeling`), because the skill's two routes point at them and their final names or homes may change.
 
 ## Vertical Implementation Slices
 
@@ -100,6 +100,8 @@ For steps 1-5, check the article against the source and the cited Canon at the a
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-30 | planning | Spec authored from the owner's draft-skills-wiki direction; planning only | Read `~/.agents/skills/lexicon/SKILL.md`, `workbench/skills/README.md`, the FND-Q09 ledger row and feedback report at `07edccc5`; no implementation evidence | This Spec authored; no article or skill source written | Steps 1-6 open; S-002L and the S-00R decision outstanding |
+| 2026-10-04 | reference repair | The domain-modeling owner changed: S-002H was superseded by Required Domain Modeling Skill (S-004J); ownership and coordination lines now name S-004J | Read S-002H and S-004J at the remap branch; Current Verified State left as dated at its anchor | Decisions And Contracts, Non-Goals and Dependencies lines repointed | Unchanged |
+| 2026-10-04 | reference repair correction | The Current Verified State line that called S-002H the live domain-modeling owner now notes that Required Domain Modeling Skill (S-004J) replaced it; the dated observation keeps its anchor | Separate-context review of the remap candidate found that line still current-facing | Current Verified State owner note | Unchanged |
 
 ## Completion Result
 
