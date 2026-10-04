@@ -58,6 +58,7 @@ Contract change.
 | Check the portability and privacy matrix | A release matrix row or its privacy check changed. | [Portability and privacy matrix](#portability-and-privacy-matrix) |
 | Prove cross-provider resume | A release gate needs proof that another provider resumes from a clean clone. | [Cross-provider resume proof](#cross-provider-resume-proof) |
 | Allocate a visible identifier | You need a new Spec, Task, note or other visible identifier. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#visible-identifiers) |
+| Answer or process the Grill Board | The owner answers pending items (Spec gates, decisions, cards, decision-record texts) as a package, or an agent carries his saved answers into their owners and marks them applied. | [Grill Board](workbench/grill-board/README.md#grill-board) |
 | Use the Landmark Tracker | Concept understanding (DQCs, landmarks) changes, or the Tracker view is needed. | [notepad](workbench/skills/notepad/SKILL.md#landmark-tracker-accepted-design-and-available-operations) |
 | Keep a JSON notepad | Meaningful work needs a local note created, resumed, appended, trimmed or cleaned up. | [notepad](workbench/skills/notepad/SKILL.md#runtime-reference) |
 | Transfer work through a handoff | Work goes to another agent or chat as a job, investigation, report or update. | [handoff](workbench/skills/handoff/SKILL.md#transfer-procedure) |
@@ -337,6 +338,7 @@ node tools/test-spec-report.mjs
 node tools/test-self-drift.mjs
 node tools/test-feedback-inventory.mjs
 node tools/test-grilling-ledger.mjs
+node tools/test-grill-board.mjs
 python3 tools/test-check-append-only.py
 python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls
