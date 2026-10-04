@@ -199,6 +199,7 @@ The provenance of every promoted and excluded memory file is in
 - [Lifecycle tool behaviors](lifecycle-tool-behaviors.md): claim, close, append-only and promote surprises
 - [Parallel lane dispatch](parallel-lane-dispatch.md): worktree lanes, read-only suite runner, one-at-a-time merges
 - [Separate-context review with Codex](separate-context-review-with-codex.md): a working `codex exec` route and its stdin trap
+- [Maintainer skills](maintainer-skills.md): this repository's maintainer-only lane skills, which the release checks allow and never ship
 
 ## Leaving The Wiki
 

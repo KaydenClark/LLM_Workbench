@@ -8,6 +8,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const skillsRoot = path.join(root, 'workbench', 'skills');
 const archivedSkillsRoot = path.join(root, 'skills-archive', 'optional-active-2026-09-01');
 import { coordinationSkills, coreSkills as runtimeCoreSkills } from '../workbench/tools/workbench-layout.mjs';
+import { readMaintainerSkills } from './maintainer-skills.mjs';
 const coreSkills = [...runtimeCoreSkills].sort();
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
 const assertIncludesAll = (content, requiredTerms, label) => {
@@ -33,8 +34,29 @@ const catalogNames = catalogRegion[1]
 
 assert.deepEqual(catalogNames, coreSkills,
   `the documented source bundle must contain exactly the locked ${coreSkills.length} skills`);
-assert.deepEqual(directoryNames(skillsRoot), coreSkills,
-  `live discovery source must contain exactly the locked ${coreSkills.length} skills`);
+// S-004C TK-006L: this repository's lane is also the release source lane. The
+// maintainer skills its manifest declares sit beside the closed core, are
+// catalogued in their own region and never join the core or its policy.
+const maintainerSkills = readMaintainerSkills(root);
+const maintainerRegion = catalog.match(
+  /<!-- maintainer-skills:start -->([\s\S]*?)<!-- maintainer-skills:end -->/
+);
+assert.ok(maintainerRegion, 'workbench/skills/README.md must declare the maintainer-skill region');
+const maintainerCatalogNames = maintainerRegion[1]
+  .split('\n')
+  .filter((line) => /^\| `[^`]+` \|/.test(line))
+  .map((line) => line.split('|')[1].trim().replaceAll('`', ''))
+  .sort();
+assert.deepEqual(maintainerCatalogNames, maintainerSkills,
+  'the maintainer-skill catalog region must list exactly the skills workbench/manifest.json declares under maintainerSkills');
+const declaredPolicy = JSON.parse(read('workbench/manifest.json')).skillPolicy.required;
+for (const skill of maintainerSkills) {
+  assert.ok(!declaredPolicy.includes(skill), `${skill} is a maintainer skill and must not join skillPolicy.required`);
+  assert.match(read(`workbench/skills/${skill}/SKILL.md`), new RegExp(`^---\\nname: ${skill}\\n`),
+    `${skill} must retain skill frontmatter naming itself`);
+}
+assert.deepEqual(directoryNames(skillsRoot), [...coreSkills, ...maintainerSkills].sort(),
+  `live discovery source must contain exactly the locked ${coreSkills.length} skills and the ${maintainerSkills.length} declared maintainer skills`);
 for (const skill of coreSkills) {
   const source = path.join(skillsRoot, skill, 'SKILL.md');
   assert.ok(fs.statSync(source).isFile(), `${skill} must contain SKILL.md`);
