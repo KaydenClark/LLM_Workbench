@@ -1020,3 +1020,99 @@ test('AGENTS, its template and the to-tasks skill state the corrective-work rule
   assert.equal(read(root, 'AGENTS.md').includes('## Assembled Review') || read(root, 'AGENTS.md').includes('### Assembled Review And Corrective Return'), true, 'the heading other records link to stays');
   assert.match(read(root, 'AGENTS.md'), /### Owner Closure And Reconciliation/);
 });
+
+// S-004C TK-005M: a room still on the earlier, long template shape is compared
+// against the pointer-brief shape. Without the room's own template generation
+// every old-shape line looks room-owned (`added`) and every new pointer line
+// looks dropped by the room. With that generation (named explicitly, or
+// resolved from the room manifest's recorded source commit in this checkout),
+// each such line carries a `generation` label, so the room is told which
+// differences are the template's and which are its own.
+const LONG_SHAPE_COMMIT = 'd7ffffe9f44c96f2e43b1465b99ccb721942c4f8';
+
+function templatesAt(commit) {
+  const directory = fixture('control-fidelity-previous-');
+  for (const name of controls) {
+    const shown = spawnSync('git', ['show', `${commit}:templates/${name}`], { cwd: root, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+    assert.equal(shown.status, 0, `git show ${commit}:templates/${name}: ${shown.stderr}`);
+    write(directory, name, shown.stdout);
+  }
+  return directory;
+}
+
+function wordOverlap(a, b) {
+  const left = new Set(a.toLowerCase().match(/[a-z0-9_]+/g) ?? []);
+  const right = b.toLowerCase().match(/[a-z0-9_]+/g) ?? [];
+  return right.filter((word) => left.has(word)).length / Math.max(right.length, 1);
+}
+
+function normalizedLines(content) {
+  return content.split('\n').map((line) => line.trim().replace(/\s+/g, ' ')).filter((line) => /[a-z0-9]{3,}/i.test(line) && !/\[[A-Z]/.test(line));
+}
+
+test('TK-005M: an old-shape room is told which differences are a template generation difference and which are its own', () => {
+  const previous = templatesAt(LONG_SHAPE_COMMIT);
+  const project = fixture('control-fidelity-old-shape-');
+  for (const name of controls) write(project, name, fill(read(previous, name)));
+  write(project, 'CLAUDE.md', '@AGENTS.md\n');
+  const ownRule = 'Room rule: never edit the vendored payments adapter without the payments owner.';
+  write(project, 'AGENTS.md', `${read(project, 'AGENTS.md')}\n## Room Boundaries\n\n${ownRule}\n`);
+  // A recorded divergence: the room rewrote a line both generations ship.
+  const shared = normalizedLines(read(previous, 'AGENTS.md')).find((line) => line.length > 60 && normalizedLines(read(productTemplates, 'AGENTS.md')).includes(line) && read(project, 'AGENTS.md').includes(line));
+  assert.ok(shared, 'both template generations share a line to diverge from');
+  const diverged = `${shared} The room records this divergence in its upgrade Spec.`;
+  write(project, 'AGENTS.md', read(project, 'AGENTS.md').replace(shared, diverged));
+  // The room also rewrote a line only the earlier template ships; that is the
+  // room's own change, not a template difference, even though the current
+  // template no longer carries the line.
+  // Pick a line the current template removed outright (no current line shares
+  // half its words), so the room's rewrite cannot also be a template rewrite.
+  const currentLines = normalizedLines(read(productTemplates, 'AGENTS.md'));
+  const earlierOnly = normalizedLines(read(previous, 'AGENTS.md')).find((line) => line.length > 60 && !currentLines.includes(line) && read(project, 'AGENTS.md').includes(line) && currentLines.every((other) => wordOverlap(line, other) < 0.5 && wordOverlap(other, line) < 0.5));
+  assert.ok(earlierOnly, 'the earlier generation has a line the current one dropped');
+  const customized = `${earlierOnly} This room tightened the rule for its payments adapter.`;
+  write(project, 'AGENTS.md', read(project, 'AGENTS.md').replace(earlierOnly, customized));
+  const current = normalizedLines(read(productTemplates, 'AGENTS.md'));
+  const earlier = normalizedLines(read(previous, 'AGENTS.md'));
+  const newOnly = current.find((line) => line.length > 40 && !earlier.includes(line));
+  assert.ok(newOnly, 'the two generations differ in AGENTS.md');
+  const roomOwn = ['## Room Boundaries', ownRule];
+  const roomOwnAdded = (text) => roomOwn.includes(text) || text.includes('This room tightened the rule for its payments adapter.');
+
+  const plain = reportFidelity({ project, templates: productTemplates, manifestRelease: VERSION, checkoutVersion: VERSION });
+  assert.equal(plain.previousTemplates, null, 'no earlier generation is named or recorded, so none is used');
+  const plainAgents = control(plain, 'AGENTS.md');
+  assert.ok(plainAgents.lines.every((line) => line.generation === undefined), 'without an earlier generation no line is labeled');
+
+  for (const report of [
+    reportFidelity({ project, templates: productTemplates, previousTemplates: previous, manifestRelease: VERSION, checkoutVersion: VERSION }),
+    (write(project, 'workbench/manifest.json', `${JSON.stringify({ ...JSON.parse(manifest(VERSION)), provenance: { lifecycle: 'genesis', source: { release: VERSION, commit: LONG_SHAPE_COMMIT } } }, null, 2)}\n`),
+      reportFidelity({ project, templates: productTemplates, manifestRelease: VERSION, checkoutVersion: VERSION }))
+  ]) {
+    assert.ok(report.previousTemplates, 'the earlier generation is reported');
+    const agents = control(report, 'AGENTS.md');
+    const byRoom = (text) => agents.lines.find((line) => line.room !== undefined && line.room.trim().replace(/\s+/g, ' ') === text);
+    const byTemplate = (text) => agents.lines.find((line) => line.template !== undefined && line.template.trim().replace(/\s+/g, ' ') === text && line.kind === 'dropped');
+    assert.equal(byRoom(ownRule)?.kind, 'added', 'the room-owned rule is added');
+    assert.equal(byRoom(ownRule)?.generation, undefined, 'the room-owned rule is the room\'s own, not a generation difference');
+    const unlabeled = (kind) => agents.lines.filter((line) => !line.trivial && line.kind === kind && line.generation === undefined);
+    assert.ok(agents.lines.some((line) => line.kind === 'added' && line.generation === 'earlier-template' && earlier.includes(line.room.trim().replace(/\s+/g, ' ')) && !current.includes(line.room.trim().replace(/\s+/g, ' '))), 'an old-shape line the current template no longer carries is labeled as the earlier template generation');
+    assert.ok(unlabeled('added').every((line) => roomOwnAdded(line.room.trim())), 'only the room\'s own lines stay unlabeled additions');
+    for (const text of roomOwn) assert.ok(unlabeled('added').some((line) => line.room.trim() === text), `the room's own line stays an unlabeled addition: ${text}`);
+    const tightened = agents.lines.find((line) => line.room !== undefined && line.room.includes('This room tightened the rule for its payments adapter.'));
+    assert.ok(tightened && tightened.generation === undefined, 'a room\'s rewrite of a line only the earlier template shipped stays the room\'s own, never a generation difference');
+    assert.deepEqual(unlabeled('dropped').map((line) => line.template), [], 'a room that kept the earlier shape dropped nothing of its own');
+    assert.ok(agents.lines.some((line) => line.kind === 'dropped' && line.generation === 'newer-template' && !earlier.includes(line.template.trim().replace(/\s+/g, ' '))), 'a new-shape line the room never had is labeled as the newer template generation');
+    assert.ok(byTemplate(newOnly) === undefined || byTemplate(newOnly).generation === 'newer-template', 'a dropped new-shape line is never left unlabeled');
+    const divergence = agents.lines.find((line) => line.room !== undefined && line.room.includes('The room records this divergence'));
+    assert.equal(divergence?.kind, 'changed', 'the recorded divergence stays a change the room made');
+    assert.equal(divergence?.generation, undefined, 'the recorded divergence is not a generation difference');
+    assert.ok(agents.generationCounts['earlier-template'] > 0 && agents.generationCounts['newer-template'] > 0, 'the control counts its generation differences');
+    const runbook = control(report, 'RUNBOOK.md');
+    const indexRow = runbook.lines.find((line) => line.kind === 'dropped' && /^\| Enter a session \|/.test(line.template ?? ''));
+    assert.equal(indexRow?.generation, 'newer-template', 'an operations index row the old room never had is a generation difference');
+    assert.match(report.markdown, /generation difference/i, 'the Markdown report names generation differences');
+  }
+  fs.rmSync(previous, { recursive: true, force: true });
+  fs.rmSync(project, { recursive: true, force: true });
+});

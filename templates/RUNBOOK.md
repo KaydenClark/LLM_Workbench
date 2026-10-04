@@ -611,6 +611,11 @@ To upgrade:
    `v[HARNESS_VERSION]`.
 2. Re-copy only the changed template sections; keep this project's filled-in
    specifics. Never let `[BRACKETED]` placeholders leak back into filled docs.
+   Land a changed operations index only after step 3, so every row points to a
+   skill this project's lane holds; keep this project's own index rows and
+   sections, any divergence it recorded and any skill it added to the lane. The
+   control fidelity report's generation labels tell the template's changes from
+   this project's own.
 3. Update managed runtime tools only with that checkout's
    `node tools/workbench-tools.mjs update --project PATH --home HOME --explicit-update`
    and the managed core skills only with
