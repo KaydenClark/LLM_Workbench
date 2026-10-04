@@ -54,7 +54,7 @@ owner-confirmed.
   Pages named `skill-<name>.md` sit beside the router for twenty-five of the
   twenty-seven skills in the lane.
 - **Feature articles.** A Wiki collection named features, not capabilities and not a
-  widening of design concepts, holds one article per completed Spec. It is written
+  widening of design concepts, is designed to hold one article per completed Spec. It is written
   at the Spec's closure point, which follows separate-context review and the owner's
   quality check on integration, and is not a new gate; the card records it as a
   v4 requirement
