@@ -28,7 +28,7 @@ only when it changes a product tradeoff.
   [`proposed/`](../docs/adr/proposed/) themselves* is an interpretation of that
   statement, not his exact ruling; say which mechanics you read as covered.
 - Unresolved at 2026-09-26: the grilling ledger still carries `ACC-1` (whether
-  Workbench Root Surface ADR (ADR-000B)/C/D acceptance lands before or after the v4 PC handoff) as open, and
+  the Workbench root surface decision (ADR-000B), the Workbench Contract decision (ADR-000C) and the ownership map decision (ADR-000D) acceptance lands before or after the v4 PC handoff) as open, and
   the records the statement named are still under `proposed/`. Check the
   [ledger](../sessions/grilling-destination-audit-ledger.json) and the ADR folder before
   acting; this note does not settle the timing.
