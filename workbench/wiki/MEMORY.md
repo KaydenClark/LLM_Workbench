@@ -274,13 +274,6 @@ without opening it. See [features/README.md](features/README.md).
 One article per Spec preserves capability knowledge and distinguishes historical
 proof from current behavior. Original records remain intact pending lifecycle gates.
 
-- [Portable Verification Boundaries](design-concepts/spec-S-008-windows-verification-portability.md)
-- [Adoption When Git Writes Are Unavailable](design-concepts/spec-S-009-git-write-constrained-adoption.md)
-- [S-00A: Blueprint, Active ADRs And The Context Map](design-concepts/spec-S-00A-blueprint-active-adr-and-context-map.md)
-- [S-00B: Workbench Template Reformation](design-concepts/spec-S-00B-workbench-template-reformation.md)
-- [Canonical Evaluator Invocation](design-concepts/spec-S-010-canonical-evaluator-entry.md)
-- [Reproducible Adoption Provenance](design-concepts/spec-S-012-adoption-provenance-proof.md)
-- [Verified Automation Run Outcomes](design-concepts/spec-S-013-automation-run-outcomes.md)
 - [Operable Genesis Readiness](design-concepts/spec-S-015-portable-v3-release-audit-recovery.md)
 - [Bounded Team Coordination (S-020)](design-concepts/spec-S-020-spec-native-team-coordination.md)
 - [Governance Claims And Diagnostics (S-024)](design-concepts/spec-S-024-governance-core-and-diagnostics.md)
