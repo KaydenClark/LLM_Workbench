@@ -355,8 +355,13 @@ test('the protocols run the report and route AGENTS.md divergences to a recorded
   assert.match(section5, /`dropped` or `changed`[\s\S]*`AGENTS\.md`[\s\S]*(restored|restore)[\s\S]*(recorded|record)[\s\S]*ADR/, 'update-harness section 5 requires each AGENTS.md divergence to be restored or recorded');
   const runbook = fs.readFileSync(path.join(root, 'RUNBOOK.md'), 'utf8');
   assert.match(runbook, /node tools\/control-fidelity\.mjs report --project/, 'the Runbook documents the report command');
-  assert.match(runbook, /node tools\/test-control-fidelity\.mjs/, 'the Runbook lists the fidelity test');
-  assert.match(fs.readFileSync(path.join(root, 'AGENTS.md'), 'utf8'), /node tools\/test-control-fidelity\.mjs/, 'AGENTS.md lists the fidelity test');
+  // The Full suite list has one home, the Runbook's Test And Build (S-004C
+  // TK-005I): the fidelity test is a member there, and AGENTS.md points to it.
+  const suite = runbook.slice(runbook.search(/^Full suite for controls/m));
+  assert.match(suite.slice(0, suite.indexOf('\n```\n', suite.indexOf('```bash'))), /node tools\/test-control-fidelity\.mjs/, 'the Runbook Full suite list runs the fidelity test');
+  const agents = fs.readFileSync(path.join(root, 'AGENTS.md'), 'utf8');
+  assert.doesNotMatch(agents, /node tools\/test-control-fidelity\.mjs/, 'AGENTS.md keeps no second suite list');
+  assert.match(agents, /\(RUNBOOK\.md#test-and-build\)/, 'AGENTS.md points to the one suite list');
 });
 
 test('an unsafe manifest wiki lane is never joined: the report notes it and falls back to the default lane', () => {
