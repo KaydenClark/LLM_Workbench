@@ -3,7 +3,7 @@
 **Task ID:** TK-005M
 **Spec ID:** S-004C
 **Slice:** Carry the new shape through Genesis and the update route without losing a room's own controls
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-005K
 **Destination:** spec-acceptance: The generic templates and the update route agree, and updating a room preserves its own controls and deliberate divergence.
