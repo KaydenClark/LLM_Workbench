@@ -2198,7 +2198,7 @@
         "v4"
       ],
       "revision": 3,
-      "status": "open",
+      "status": "withdrawn",
       "applied": null,
       "history": [
         {
@@ -2225,6 +2225,12 @@
             "proposal",
             "brief"
           ]
+        },
+        {
+          "revision": 3,
+          "at": "2026-10-04T11:34:45.853Z",
+          "by": "claude-retire-v3-release-specs",
+          "reason": "withdrawn: Answered in chat 2026-10-04: the owner works on version 4 now. S-022 was superseded the same day and TK-004 withdrawn unexecuted; see the Why Retired section in S-022."
         }
       ],
       "brief": {
@@ -2272,7 +2278,7 @@
         "owner-act"
       ],
       "revision": 3,
-      "status": "open",
+      "status": "withdrawn",
       "applied": null,
       "history": [
         {
@@ -2299,6 +2305,12 @@
             "proposal",
             "brief"
           ]
+        },
+        {
+          "revision": 3,
+          "at": "2026-10-04T11:34:46.009Z",
+          "by": "claude-retire-v3-release-specs",
+          "reason": "withdrawn: No longer a question: the owner runs the Windows PC test himself once at main readiness (2026-09-23). S-052 TK-004 is deferred into that test, not blocked; S-050 was superseded 2026-10-04 and its TK-006 withdrawn."
         }
       ],
       "brief": {
@@ -2415,7 +2427,7 @@
         "wf-11"
       ],
       "revision": 3,
-      "status": "open",
+      "status": "withdrawn",
       "applied": null,
       "history": [
         {
@@ -2442,6 +2454,12 @@
             "proposal",
             "brief"
           ]
+        },
+        {
+          "revision": 3,
+          "at": "2026-10-04T11:34:46.140Z",
+          "by": "claude-retire-v3-release-specs",
+          "reason": "withdrawn: Derived from owner-locked sources, not a new answer: DDR-000Q (2026-10-03) names the Template, deployed in the cloud, building Puffer Pond as the release proof, and S-00O already defaulted WF-11 to the Template. S-00O TK-004 now records the S-004I proof. The owner can still correct this."
         }
       ],
       "brief": {
@@ -14412,7 +14430,7 @@
         "supersede"
       ],
       "revision": 3,
-      "status": "open",
+      "status": "withdrawn",
       "applied": null,
       "history": [
         {
@@ -14438,6 +14456,12 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 3,
+          "at": "2026-10-04T11:34:46.270Z",
+          "by": "claude-retire-v3-release-specs",
+          "reason": "withdrawn: Answered in chat 2026-10-04 (retire: specs retire like tasks; work is version 4). S-014 superseded by S-00O the same day; see its Why Retired section."
         }
       ],
       "brief": {
@@ -14490,7 +14514,7 @@
         "supersede"
       ],
       "revision": 3,
-      "status": "open",
+      "status": "withdrawn",
       "applied": null,
       "history": [
         {
@@ -14516,6 +14540,12 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 3,
+          "at": "2026-10-04T11:34:46.397Z",
+          "by": "claude-retire-v3-release-specs",
+          "reason": "withdrawn: Answered in chat 2026-10-04 (retire: specs retire like tasks; work is version 4). S-022 superseded by S-00O the same day; see its Why Retired section."
         }
       ],
       "brief": {
@@ -14557,7 +14587,7 @@
         "v4"
       ],
       "revision": 3,
-      "status": "open",
+      "status": "withdrawn",
       "applied": null,
       "history": [
         {
@@ -14583,6 +14613,12 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 3,
+          "at": "2026-10-04T11:34:46.534Z",
+          "by": "claude-retire-v3-release-specs",
+          "reason": "withdrawn: Answered in chat 2026-10-04: version 4 is the current work, so S-00O continues; its remaining work, open owner decisions and owner acts were restated the same day under Current release state."
         }
       ],
       "brief": {
@@ -14706,7 +14742,7 @@
         "v3.2.0"
       ],
       "revision": 3,
-      "status": "open",
+      "status": "withdrawn",
       "applied": null,
       "history": [
         {
@@ -14732,6 +14768,12 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 3,
+          "at": "2026-10-04T11:34:46.668Z",
+          "by": "claude-retire-v3-release-specs",
+          "reason": "withdrawn: Answered in chat 2026-10-04 (retire). S-050 superseded by S-00O the same day: v3.2.0 is on main and the readiness verdict was withdrawn; see its Why Retired section."
         }
       ],
       "brief": {
@@ -14778,7 +14820,7 @@
         "cross-device"
       ],
       "revision": 3,
-      "status": "open",
+      "status": "withdrawn",
       "applied": null,
       "history": [
         {
@@ -14804,6 +14846,12 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 3,
+          "at": "2026-10-04T11:34:46.797Z",
+          "by": "claude-retire-v3-release-specs",
+          "reason": "withdrawn: Resolved 2026-10-04: S-052 continues as a capability; TK-004 is deferred into the owner's own PC test at v4 main readiness and is no longer a blocker."
         }
       ],
       "brief": {
