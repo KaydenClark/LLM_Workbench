@@ -41,7 +41,7 @@ them into new rules:
 - `workbench/docs/adr/000P-roles-scope-work-and-stances-define-the-job.md`
   and `workbench/docs/adr/0036-stances-change-method-not-authority.md`.
 - `workbench/wiki/design-concepts/roles-and-stances.md` and ledger rows
-  ROLE-1 to ROLE-4 in `workbench/wiki/grilling-destination-audit-ledger.json`.
+  ROLE-1 to ROLE-4 in `workbench/sessions/grilling-destination-audit-ledger.json`.
 - The Spec's Desired Behavior 1 to 5, which the skill's Obligations must
   cover one for one.
 

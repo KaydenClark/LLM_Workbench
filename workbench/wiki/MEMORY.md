@@ -119,19 +119,13 @@ Its saved answers and revision protocol are shared by Claude and Codex. Read
 the existing package before revising it; its working review context does not
 replace this ledger or the underlying decision and delivery owners.
 
-Every unique grilling question put to the owner, with its answer, reason and
-intended result, is recorded in
-[grilling-destination-audit-ledger.json](grilling-destination-audit-ledger.json).
-Its progress assessment is historical and pinned; use the linked Specs and current
-Taskboard for delivery state. The [v4 reconciliation receipt](../specs/S-00O-workbench-v4-0-0-release/INTEGRATION-RECONCILIATION.md) identifies recovered sources, branch-only work and remaining gaps.
-That JSON file is the ledger itself, not a projection: readable views are
-rendered from it and never edited by hand. It is the destination the v4
-Workbench is audited against; look a question up by its `id`, or audit one
-artifact by the `result` entries that name it. Each question also carries a
-separate `progress` reading of how far that result is built, pinned by
-`progress_assessment` to one `integration` commit; re-run the assessment to
-refresh it, and never mix progress into the destination fields.
-`tools/test-grilling-ledger.mjs` keeps it valid.
+The question-by-question ledger of every unique grilling question put to the
+owner is a session record, not a Wiki page: it lives in the sessions lane as
+`workbench/sessions/grilling-destination-audit-ledger.json` while its rows
+become destination question cards, and the router does not route into it.
+`tools/test-grilling-ledger.mjs` keeps it valid. The [v4 reconciliation
+receipt](../specs/S-00O-workbench-v4-0-0-release/INTEGRATION-RECONCILIATION.md)
+identifies recovered sources, branch-only work and remaining gaps.
 
 ## Task Artifact And Lifecycle Routing
 
@@ -220,7 +214,7 @@ The provenance of every promoted and excluded memory file is in
 | [docs/adr/REGISTER.md](../docs/adr/REGISTER.md) | The derived register of decision records |
 | [SCHEMA.md](SCHEMA.md) | What the Wiki is, its page kinds, ingest, lint, concurrency, metadata and freshness rules |
 | [design-concepts/](design-concepts/README.md) | Articles explaining durable design models and each landmark's evolving synthesis |
-| [features/](features/README.md) | One entity page per delivered capability (empty; the per-Spec articles below are to move here) |
+| [features/](features/README.md) | One entity page per delivered capability; the per-Spec articles listed below move here one by one, routed under Feature Articles |
 | [guidebooks/](guidebooks/) | Ordered procedures that outgrew the Runbook (empty) |
 
 ## Routing
@@ -234,12 +228,20 @@ The provenance of every promoted and excluded memory file is in
 This product repository keeps no personal, machine, or deployment notes; it is
 a `project` profile wiki. `guidebooks/` ships empty until a procedure outgrows
 the Runbook; `design-concepts/` carries the articles routed above;
-`features/` stays empty until a completed Spec is captured at its closure
-point.
+`features/` holds the per-Spec articles as they move there, routed under
+Feature Articles, and a completed Spec's article at its closure point.
 
 ## Up-Link
 
 Standalone room; no deployment wiki.
+
+## Feature Articles
+
+One article per delivered capability, named for what it delivers. Each line
+carries a one-line summary beside its link so a reader can choose a page
+without opening it. See [features/README.md](features/README.md).
+
+- [Wiki Routing, Version Stamps And Safe Source Reads](features/wiki-routing-version-stamps-and-safe-source-reads.md) - the checks that tell a room its Wiki router is unreachable or its Wiki files are stamped with a stale version, and the safe-read boundary continuity input must pass.
 
 ## Individual Spec Articles
 
@@ -278,7 +280,6 @@ proof from current behavior. Original records remain intact pending lifecycle ga
 - [Mechanical Permission Scope And Declared Lanes](design-concepts/spec-S-030-permission-scope-matches-lanes.md)
 - [Installed Skill Identity And Inspection](design-concepts/spec-S-031-installed-skill-generation.md)
 - [Upgrade Layout Without Replacing Skills](design-concepts/spec-S-032-upgrade-route-and-source-provenance.md)
-- [Wiki Routing, Version Stamps And Safe Source Reads](design-concepts/spec-S-033-silent-gap-diagnostics.md)
 - [Control Fidelity Without Forced Uniformity](design-concepts/spec-S-034-control-fidelity-report.md)
 - [Release Candidate Proof And Historical Disposition](design-concepts/spec-S-035-workbench-v3-1-2-candidate.md)
 - [Evidence-Bounded Upgrade Claims (S-036)](design-concepts/spec-S-036-evidence-corrections.md)

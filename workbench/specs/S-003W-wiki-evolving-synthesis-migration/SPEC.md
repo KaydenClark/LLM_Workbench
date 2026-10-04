@@ -1,15 +1,15 @@
 # S-003W - Wiki Evolving-Synthesis Migration
 
 **Spec ID:** S-003W
-**Status:** planned
+**Status:** active
 **Priority:** 1
-**Owner:** unassigned
+**Owner:** claude-director-s003w
 **Stance:** Builder
-**Updated:** 2026-10-01
+**Updated:** 2026-10-04
 **Catalog description:** Bring the Wiki's files, tooling and records in line with the accepted definition of the Wiki as the evolving synthesis every agent reads and updates: link-safe note moves, per-Spec articles into the features collection, router summaries, the name-and-context identifier rule in place of the identifier ban, landmark synthesis pages, the ledger out of the Wiki, and the lint cadence as a procedure.
 **Blockers:** none
-**Latest event:** Spec captured from the owner-confirmed Wiki definition grilling of 2026-10-01 and the promotion that landed its Canon.
-**Next gate:** Refine and activate the first eligible slice.
+**Latest event:** TK-003 claimed by claude-director-s003w.
+**Next gate:** Close TK-003 with verification and documentation proof.
 
 > **Citation anchors.** pre=`e72ff5bc78d8815d5911c604b76c2953c78ecb79` post=`e72ff5bc78d8815d5911c604b76c2953c78ecb79`.
 > Both name the Canon promotion commit on `claude/wiki-definition-canon`; post
@@ -148,12 +148,6 @@ exists, TASK.md owns active Task state; retain only done table rows as history.
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Link-safe `wiki.mjs move-note` proven by moving one per-Spec article into features as a feature article with a router summary line | ready | none | pending |
-| TK-002 | Move and retype the remaining per-Spec articles; router summaries for every page; validator attention for a routed page without one | blocked | TK-001 | pending |
-| TK-003 | Name-and-context identifier validator in place of the identifier ban; usage note, tests, registration and citing Specs reconciled | ready | none | pending |
-| TK-004 | Landmark synthesis pages seeded from question cards for every landmark; assessment reads them | blocked | TK-003 | pending |
-| TK-005 | Ledger rows for the Wiki grilling, supersession of LD-4 and LD-22B, move to the sessions lane | ready | none | pending |
-| TK-006 | Lint procedures in the Runbook and the validator message fix | ready | none | pending |
 
 ### TK-001 - Link-safe note move proven on one article
 

@@ -586,7 +586,7 @@ Consumer snapshot: 2 occurrences. Article semantic review: **passed for core cap
 
 ### S-033: Wiki Routing, Version Stamps And Safe Source Reads
 
-Article: [Wiki Routing, Version Stamps And Safe Source Reads](../../wiki/design-concepts/spec-S-033-silent-gap-diagnostics.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-033-silent-gap-diagnostics/SPEC.md`.
+Article: [Wiki Routing, Version Stamps And Safe Source Reads](../../wiki/features/wiki-routing-version-stamps-and-safe-source-reads.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-033-silent-gap-diagnostics/SPEC.md`.
 
 A Wiki router is useful only if ordinary entry can reach it. The `room-brain-unrouted` diagnostic checks that the agent contract references the Wiki lane and the public README references MEMORY. It names the missing control route. This is a presence check, not semantic proof that every link leads to useful knowledge.
 

@@ -93,7 +93,7 @@ the ledger, the three ADRs and `tools/control-fidelity.mjs` are byte-identical a
 
 ## Dependencies And Blockers
 
-The tracked [destination ledger](../../wiki/grilling-destination-audit-ledger.json), read at `89d4042fb8931b9d720af75bffea1c28803d72aa`, records FND-Q21 as settled through Q21A-D and FND-Q23/Q24 as locked. These are recovered decisions, not open questions to ask again. Earlier evidence rows preserve the prior unresolved discrepancy as history.
+The tracked [destination ledger](../../sessions/grilling-destination-audit-ledger.json), read at `89d4042fb8931b9d720af75bffea1c28803d72aa`, records FND-Q21 as settled through Q21A-D and FND-Q23/Q24 as locked. These are recovered decisions, not open questions to ask again. Earlier evidence rows preserve the prior unresolved discrepancy as history.
 
 ADR-000B/C/D acceptance is resolved. Implementation remains planned. FND-Q24B belongs to this Spec as an ownership-origin-model question (PW-2 relabeled it from the retired "portability" framing and ruled it independent of S-00V): what authored facts classify project/upstream differences without a status-shaped field, and whether an undeclared difference is conflict or a reportable finding. The ledger routes its answer to this Spec "with an agent proposal first"; the proposal below was prepared for owner disposition, and on 2026-09-29 the owner disposed of its sub-fork in chat: an undeclared difference is a conflict (tradeoff 1, Option A). Proposal-026 is still only a proposal. Its two-authored-facts/computed-verdict shape and its ADR-citation tension with the no-instance guard are not accepted by that answer; they are compared against the five examples in the packet plan and settled within this Spec at implementation.
 

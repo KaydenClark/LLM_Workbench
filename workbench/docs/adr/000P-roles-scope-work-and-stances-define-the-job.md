@@ -55,7 +55,7 @@ this decision record.
 
 Owner confirmed ROLE-1 through ROLE-4 during the 2026-09-26/27 inquiry and then
 explicitly confirmed the documentation, specification and integration endpoint.
-The [destination ledger](../../wiki/grilling-destination-audit-ledger.json)
+The [destination ledger](../../sessions/grilling-destination-audit-ledger.json)
 records those answers and the SCR-4A supersession; the
 [role model](../../wiki/design-concepts/roles-and-stances.md) routes the separate
 capability owners. GPT_OS Captain, Planner and Engineer were examples, not

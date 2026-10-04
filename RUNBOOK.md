@@ -66,7 +66,7 @@ Contract change.
 | Save, promote or add a room-local skill | Authorized work must be saved to its owners, or a room adds its own skill. | [save](workbench/skills/save/SKILL.md#how-save-and-promote-compose); room-local skills: [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#room-local-skills) |
 | Promote claims to an owner | Selected supported claims must reach their durable owner. | [promote](workbench/skills/promote/SKILL.md#command-reference) |
 | Read frozen checkpoints or recovery receipts | A legacy checkpoint is cited, or a recovery receipt or backup is needed. | [checkpoint](workbench/skills/checkpoint/SKILL.md#frozen-history-and-operational-recovery) |
-| Validate the Wiki | A Wiki page changed, or doctor reports a Wiki finding. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#wiki-validation) |
+| Validate the Wiki | A Wiki page changed or must move to another collection, or doctor reports a Wiki finding. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#wiki-validation) |
 | Repair installed state | doctor reports installed state that a room command rewrites. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#installed-state-the-harness-wrote) |
 | Read a diagnostic and its blocking effect | A runtime tool reports a finding and you need its severity and what it blocks. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#diagnostics-and-blocking-effects) |
 | Use the socket contract registry | Work touches the Foundry socket contract registry. | [Socket Contract Registry](#socket-contract-registry) |
@@ -1262,8 +1262,9 @@ ignored recovery collection; read or restore them through the procedure in the
 
 ### Wiki Validation
 
-Validate the wiki lane, read its findings (which `doctor` also carries) and
-repair a note's missing properties through the procedure in the
+Validate the wiki lane, read its findings (which `doctor` also carries),
+repair a note's missing properties and move a note to another collection
+without breaking a link (`wiki.mjs move-note`) through the procedure in the
 [`workbench-runtime` skill](workbench/skills/workbench-runtime/SKILL.md#wiki-validation).
 
 ### Installed State The Harness Wrote
