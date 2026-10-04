@@ -32,24 +32,20 @@ nothing.
 
 ## Landmark Tracker
 
-[Landmark Tracker](design-concepts/landmark-tracker.md) explains the approved
-relationship between DQCs, landmarks, documentation progress, grilling notes
-and readable knowledge, including the evolving starting inventory.
-[Landmark Tracker Foundation](../specs/S-01T-landmark-tracker-foundation/SPEC.md)
-owns delivery and distinguishes the accepted design from available runtime.
+- [Landmark Tracker](design-concepts/landmark-tracker.md) - the approved relationship between DQCs, landmarks, documentation progress, grilling notes and readable knowledge, including the evolving starting inventory
+- [S-01T - Landmark Tracker Foundation](../specs/S-01T-landmark-tracker-foundation/SPEC.md) - the Spec that owns delivery and distinguishes the accepted design from available runtime
 
 ## Notepad Foundation Routing
 
-For accepted objective continuity and JSON direction, follow
-[S-046](../specs/S-046-json-notepad-foundation/SPEC.md) and
-[ADR-0040](../docs/adr/0040-json-notepads-preserve-objective-continuity.md).
-Visible identifier semantics belong to
-[S-047](../specs/S-047-visible-workbench-identifiers/SPEC.md) and
-[ADR-0041](../docs/adr/0041-visible-base62-workbench-identifiers.md); the
-uppercase width-four artifact policy, dual-form selection and `widen-id` belong
-to the [S-01W Uppercase Width-Four Workbench Artifact IDs Spec](../specs/S-01W-uppercase-width-four-workbench-artifact-ids/SPEC.md).
-Checkpoint rationale and retirement belong to
-[S-048](../specs/S-048-checkpoint-retirement/SPEC.md).
+For accepted objective continuity and JSON direction, follow these owners:
+
+- [S-046 - JSON Notepad Foundation](../specs/S-046-json-notepad-foundation/SPEC.md) - the Spec for objective continuity in local JSON notepads with safe updates and selective retrieval
+- [ADR-0040 - JSON notepads preserve objective continuity](../docs/adr/0040-json-notepads-preserve-objective-continuity.md) - the decision record behind that direction
+- [S-047 - Visible Workbench Identifiers](../specs/S-047-visible-workbench-identifiers/SPEC.md) - the Spec for visible identifier semantics
+- [ADR-0041 - Visible base-62 Workbench identifiers](../docs/adr/0041-visible-base62-workbench-identifiers.md) - the decision record for those identifiers
+- [S-01W - Uppercase Width-Four Workbench Artifact IDs](../specs/S-01W-uppercase-width-four-workbench-artifact-ids/SPEC.md) - the uppercase width-four artifact policy, dual-form selection and `widen-id`
+- [S-048 - Checkpoint Retirement](../specs/S-048-checkpoint-retirement/SPEC.md) - the checkpoint rationale and its retirement
+
 The shared runtime is `workbench/tools/notepads.mjs`; its operations are
 documented in [RUNBOOK](../../RUNBOOK.md) and its judgment in the `notepad`
 skill. This router does not copy their state or the local grilling queue.
@@ -57,55 +53,54 @@ skill. This router does not copy their state or the local grilling queue.
 ## Skills Reference
 
 The individual pages below explain core skills and link to their executable or
-planned source. They are curated context, not
-instruction authority. [S-00W](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md)
-preserves the accepted shared concept for grilling, notepad and grill-me; each
-linked page names its individual delivery Spec. Other core skill articles belong to their individual Specs as
-they are authored.
+planned source. They are curated context, not instruction authority. Each
+linked page names its individual delivery Spec. Other core skill articles
+belong to their individual Specs as they are authored.
 
-- [Grilling: arrive at a shared design concept](skill-grilling.md)
-- [Grill-me: start a saved design inquiry](skill-grill-me.md)
-- [Notepad: preserve one objective's working context](skill-notepad.md)
-- [Workbench runtime: read what the installed tools report and repair what they name](skill-workbench-runtime.md)
-- [To-docs: route settled truth to the owner that holds it](skill-to-docs.md)
-- [Promote: move settled working claims into their durable owners](skill-promote.md)
-- [Checkpoint: route a retired request to current continuity](skill-checkpoint.md)
-- [Auditor: check named claims against pinned evidence](skill-auditor.md)
-- [Builder: deliver one assigned result with checkable proof](skill-builder.md)
-- [Reviewer: assess one eligible immutable candidate](skill-reviewer.md)
-- [Reconciler: compare governed claims against pinned evidence](skill-reconciler.md)
-- [Implement: deliver one assigned Task with checkable proof](skill-implement.md)
-- [Make-it-so: carry approved work to the endpoint the owner named](skill-make-it-so.md)
-- [Carry: take assigned work to its authorized endpoint](skill-carry.md) ([S-01C](../specs/S-01C-carry-skill-rebuild/SPEC.md))
-- [To-spec: turn a settled decision into one bounded Spec](skill-to-spec.md)
-- [Save: persist authorized work and prove where it landed](skill-save.md)
-- [Handoff: pass one objective to a named recipient](skill-handoff.md) ([S-01A](../specs/S-01A-handoff-skill-rebuild/SPEC.md))
-- [Code review: check one fixed candidate against both contracts](skill-code-review.md)
-- [To-tasks: cut an activated Spec into executable Tasks](skill-to-tasks.md)
-- [Adoption: bring an existing project into the Workbench once](skill-adoption.md)
-- [Genesis: start a new room from a founding prompt](skill-genesis.md)
+- [S-00W - Concept Grilling And Notepad Composition](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md) - the accepted shared concept for grilling, notepad and grill-me, which each skill's own Spec delivers
+
+- [Grilling](skill-grilling.md) - arrive at a shared design concept
+- [Grill-me](skill-grill-me.md) - start a saved design inquiry
+- [Notepad](skill-notepad.md) - preserve one objective's working context
+- [Workbench runtime](skill-workbench-runtime.md) - read what the installed tools report and repair what they name
+- [To-docs](skill-to-docs.md) - route settled truth to the owner that holds it
+- [Promote](skill-promote.md) - move settled working claims into their durable owners
+- [Checkpoint](skill-checkpoint.md) - route a retired request to current continuity
+- [Auditor](skill-auditor.md) - check named claims against pinned evidence
+- [Builder](skill-builder.md) - deliver one assigned result with checkable proof
+- [Reviewer](skill-reviewer.md) - assess one eligible immutable candidate
+- [Reconciler](skill-reconciler.md) - compare governed claims against pinned evidence
+- [Implement](skill-implement.md) - deliver one assigned Task with checkable proof
+- [Make-it-so](skill-make-it-so.md) - carry approved work to the endpoint the owner named
+- [Carry](skill-carry.md) - take assigned work to its authorized endpoint (delivery Spec [S-01C - carry skill rebuild](../specs/S-01C-carry-skill-rebuild/SPEC.md))
+- [To-spec](skill-to-spec.md) - turn a settled decision into one bounded Spec
+- [Save](skill-save.md) - persist authorized work and prove where it landed
+- [Handoff](skill-handoff.md) - pass one objective to a named recipient (delivery Spec [S-01A - handoff skill rebuild](../specs/S-01A-handoff-skill-rebuild/SPEC.md))
+- [Code review](skill-code-review.md) - check one fixed candidate against both contracts
+- [To-tasks](skill-to-tasks.md) - cut an activated Spec into executable Tasks
+- [Adoption](skill-adoption.md) - bring an existing project into the Workbench once
+- [Genesis](skill-genesis.md) - start a new room from a founding prompt
 
 ## Planned And Optional Skill References
 
-[Domain Modeling: sharpen the Workbench's language as decisions form](skill-domain-modeling.md)
-explains the optional personal method and the proposed Workbench adaptation.
-[Domain Modeling Skill for the Workbench - S-002H](../specs/S-002H-domain-modeling-skill/SPEC.md)
-keeps its required-room versus optional-extension distribution choice open.
+- [Domain Modeling](skill-domain-modeling.md) - sharpen the Workbench's language as decisions form: the optional personal method and the proposed Workbench adaptation
+- [S-002H - Domain Modeling Skill for the Workbench](../specs/S-002H-domain-modeling-skill/SPEC.md) - the Spec that keeps its required-room versus optional-extension distribution choice open
+
 This route does not claim that every room can discover the skill today.
 
 ## Release And Distribution Routing
 
-The reconciled release scope and complete historical inventory live in
-[S-050](../specs/S-050-workbench-v3-2-0-release/SPEC.md). Follow its named owners
-for skill ownership/compatibility, optional private session transport and the
-configured-host capability floor. This route preserves their open gates without
-copying task state here.
+- [S-050 - Workbench v3.2.0 Release](../specs/S-050-workbench-v3-2-0-release/SPEC.md) - the reconciled release scope and complete historical inventory
+
+Follow its named owners for skill ownership/compatibility, optional private
+session transport and the configured-host capability floor. This route
+preserves their open gates without copying task state here.
 
 ## Grilling Destination Audit Ledger
 
-For the owner's current package review, the [Consequential Decision Record
-(shared Grill Board)](../grill-board/README.md) bundles questions, named owners,
-proposals, consequences and original question history. Topic cards explain
+- [Consequential Decision Record (shared Grill Board)](../grill-board/README.md) - the owner's current package review, bundling questions, named owners, proposals, consequences and original question history
+
+Topic cards explain
 what to think about; decision kind, workflow stage and destination scale can
 be combined into a small fixed batch. Saved answers and applied answers have
 separate counts. The board README owns these navigation and completion rules;
@@ -123,39 +118,40 @@ The question-by-question ledger of every unique grilling question put to the
 owner is a session record, not a Wiki page: it lives in the sessions lane as
 `workbench/sessions/grilling-destination-audit-ledger.json` while its rows
 become destination question cards, and the router does not route into it.
-`tools/test-grilling-ledger.mjs` keeps it valid. The [v4 reconciliation
-receipt](../specs/S-00O-workbench-v4-0-0-release/INTEGRATION-RECONCILIATION.md)
-identifies recovered sources, branch-only work and remaining gaps.
+`tools/test-grilling-ledger.mjs` keeps it valid.
+
+- [V4 integration decision and progress reconciliation](../specs/S-00O-workbench-v4-0-0-release/INTEGRATION-RECONCILIATION.md) - the S-00O Workbench v4.0.0 Release receipt that identifies recovered sources, branch-only work and remaining gaps
 
 ## Task Artifact And Lifecycle Routing
 
 What a Task carries in and out (the Packet it loads, the append-only Receipt
 it closes with), the derived per-Task board signal, and why `Ticket` is
 retired as a live term while historical `TK-###` identifiers are never
-rewritten, are explained in
-[design-concepts/task-artifact-and-lifecycle.md](design-concepts/task-artifact-and-lifecycle.md).
-That article is this capability's durable owner, reconciled from
-[S-00H](../specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md)
-(retired) and
-[ADR-000H](../docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md);
-this route preserves the retired Spec's historical reachability without
-copying its evidence log here.
+rewritten, are explained in the article below. That article is this capability's durable
+owner, reconciled from the retired Spec and the decision record below; this
+route preserves the retired Spec's historical reachability without copying its
+evidence log here.
+
+- [The Task Artifact And Its Lifecycle](design-concepts/task-artifact-and-lifecycle.md) - the durable owner: what a Task carries in and out, the derived board signal and why `Ticket` is retired as a live term
+- [S-00H - Task Artifact And Terminology Migration](../specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md) - the retired Spec that delivered the standalone `TASK.md`, kept reachable as history
+- [ADR-000H - A Task is a standalone artifact and Task replaces Ticket as the execution-slice term](../docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md) - the decision record for the Task artifact and the term
 
 ## Decision Records
 
-[Decision Records and the Concept Map](design-concepts/decision-records-and-the-concept-map.md) explains how the Blueprint, Destination Decision Records, ADRs, landmarks and Specs fit together, how a DDR differs from an ADR, and how landmarks and Specs form the map at two scales with the Destination Packet linking an agent to it.
+- [Decision Records and the Concept Map](design-concepts/decision-records-and-the-concept-map.md) - how the Blueprint, Destination Decision Records, ADRs, landmarks and Specs fit together, how a DDR differs from an ADR, and how landmarks and Specs form the map at two scales with the Destination Packet linking an agent to it.
 
 ## The Workflow Verbs
 
-[The Workflow Verbs](design-concepts/workflow-verbs.md) explains the eight workflow verbs, Journey and the loop, and which verb writes each kind of artifact.
-
+- [The Workflow Verbs](design-concepts/workflow-verbs.md) - the workflow verbs, Journey and the loop, and which verb writes each kind of artifact
 - [The Workflow From Idea To Delivery](design-concepts/idea-to-delivery-workflow.md): the owner's workflow map rewritten in the workflow verbs, with the QA gates, Human QA and closure in plain words
 - [The Three Altitudes Of Delivery](design-concepts/delivery-altitudes.md): Blueprint, Spec and Task as counting to 100, and what the Blueprint is for
 
 ## AI Coding Dictionary Entries
 
-The owner adopted terms from the AI Coding Dictionary on 2026-10-03; the [Lexicon's AI Coding Terms section](../../LEXICON.md) holds one row per term, and [AI Coding Dictionary Terms](../specs/S-004E-ai-coding-dictionary-terms/SPEC.md) owns delivery. These entries explain only the terms that need more than their row, in Workbench words, and authorize nothing.
+The owner adopted terms from the AI Coding Dictionary on 2026-10-03. These entries explain only the terms that need more than their row, in Workbench words, and authorize nothing.
 
+- [Lexicon: AI Coding Terms section](../../LEXICON.md) - one row per adopted term
+- [S-004E - AI Coding Dictionary Terms](../specs/S-004E-ai-coding-dictionary-terms/SPEC.md) - the Spec that owns delivery of the terms and these entries
 - [Harness: what the Workbench is loaded into](dictionary-harness.md): the Workbench is an agentic management system a harness such as Claude Code or Codex loads, never a harness itself
 - [Session: one run of the context window](dictionary-session.md): why a Chat is not a session, and why continuity is written to files
 - [Context: what the agent has in front of it now](dictionary-context.md): how it differs from the context window, the Context Map, Enduring Context and Working context
@@ -167,8 +163,7 @@ The owner adopted terms from the AI Coding Dictionary on 2026-10-03; the [Lexico
 
 ## Roles And Stances
 
-[Roles and stances](design-concepts/roles-and-stances.md) explains scope versus job and routes to each separately owned capability.
-
+- [Roles and stances](design-concepts/roles-and-stances.md) - scope versus job, and the route to each separately owned capability
 - [Director](skill-director.md): the whole project and its integration branch; assign one Spec to each Dispatcher, name one writer per shared artifact, route separate-context review of each candidate and leave Human QA and main promotion to the owner
 - [Dispatcher](skill-dispatcher.md): one Spec and its branch; plan its Tasks, dispatch Workers to one durable writer, verify the assembled Spec and hand the candidate to the Director
 - [Spec Planner](skill-spec-planner.md): the Dispatcher's flight-launch stance; plan one assigned Spec from live Actuality into small complete-path Tasks with one writer per shared file and hand the plan to Spec Manager
@@ -177,16 +172,16 @@ The owner adopted terms from the AI Coding Dictionary on 2026-10-03; the [Lexico
 
 ## GitHub Coordination
 
-[GitHub coordination](design-concepts/github-coordination.md) explains the accepted move of live assignment to GitHub Issues, whose records count, the per-item claim rule and what is not built yet.
+- [GitHub coordination](design-concepts/github-coordination.md) - the accepted move of live assignment to GitHub Issues, whose records count, the per-item claim rule and what is not built yet.
 
 ## Agent Operating Knowledge
 
 How agents are expected to work in this repository, and tool behavior that
 surprises them, promoted from host memory so a fresh clone or a cloud instance
-has it ([S-00V](../specs/S-00V-portable-workbench/SPEC.md) Desired Behavior 6).
+has it (Desired Behavior 6 of the Portable Workbench Spec, [S-00V - Portable Workbench](../specs/S-00V-portable-workbench/SPEC.md)).
 The controls still decide what is authorized; these entries explain and route.
-The provenance of every promoted and excluded memory file is in
-[archive/host-memory-audit-2026-09-26.md](archive/host-memory-audit-2026-09-26.md).
+The provenance of every promoted and excluded memory file is in the final
+entry.
 
 - [Finish authorized work](finish-authorized-work.md): the owner's instruction is the authorization; no manufactured gates
 - [Owner-authored ADRs are accepted](owner-authored-adrs-are-accepted.md): treat their content as settled, surface only tradeoffs
@@ -199,6 +194,7 @@ The provenance of every promoted and excluded memory file is in
 - [Lifecycle tool behaviors](lifecycle-tool-behaviors.md): claim, close, append-only and promote surprises
 - [Parallel lane dispatch](parallel-lane-dispatch.md): worktree lanes, read-only suite runner, one-at-a-time merges
 - [Separate-context review with Codex](separate-context-review-with-codex.md): a working `codex exec` route and its stdin trap
+- [Host-Memory Audit, 2026-09-26](archive/host-memory-audit-2026-09-26.md): the provenance record naming every promoted and excluded host memory file
 
 ## Leaving The Wiki
 
@@ -213,7 +209,7 @@ The provenance of every promoted and excluded memory file is in
 | [docs/adr/REGISTER.md](../docs/adr/REGISTER.md) | The derived register of decision records |
 | [SCHEMA.md](SCHEMA.md) | What the Wiki is, its page kinds, ingest, lint, concurrency, metadata and freshness rules |
 | [design-concepts/](design-concepts/README.md) | Articles explaining durable design models and each landmark's evolving synthesis |
-| [features/](features/README.md) | One entity page per delivered capability; the per-Spec articles listed below move here one by one, routed under Feature Articles |
+| [features/](features/README.md) | One entity page per delivered capability, routed under Feature Articles |
 | [guidebooks/](guidebooks/) | Ordered procedures that outgrew the Runbook (empty) |
 
 ## Routing
@@ -227,8 +223,8 @@ The provenance of every promoted and excluded memory file is in
 This product repository keeps no personal, machine, or deployment notes; it is
 a `project` profile wiki. `guidebooks/` ships empty until a procedure outgrows
 the Runbook; `design-concepts/` carries the articles routed above;
-`features/` holds the per-Spec articles as they move there, routed under
-Feature Articles, and a completed Spec's article at its closure point.
+`features/` holds one article per delivered capability, routed under Feature
+Articles, including a completed Spec's article at its closure point.
 
 ## Up-Link
 
