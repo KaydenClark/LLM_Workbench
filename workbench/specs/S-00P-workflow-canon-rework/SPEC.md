@@ -129,7 +129,7 @@ separately labeled interpretation; `LEXICON.md` and `templates/LEXICON.md`
 define Director, Dispatcher and Worker; accepted
 [ADR-000F](../../docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md)
 carries the gates and roles; the
-[ledger](../../wiki/grilling-destination-audit-ledger.json) carries the SCR
+[ledger](../../sessions/grilling-destination-audit-ledger.json) carries the SCR
 rows. Three e318f14 placements were corrected, not imported: Human QA's
 version cadence is the described default while the owner still chooses when to
 QA and per-Spec content-bound approval (S-00J T1) stays; closure follows the

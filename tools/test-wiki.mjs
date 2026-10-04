@@ -7,7 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
-import { normalizeWiki, validateWiki } from '../workbench/tools/wiki.mjs';
+import { moveNote, normalizeWiki, validateWiki } from '../workbench/tools/wiki.mjs';
 import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -449,6 +449,170 @@ test('a feature article validates in the features collection, normalize infers i
     assert.deepEqual(result.changed.map((entry) => entry.note), ['workbench/wiki/features/Bare Feature.md']);
     assert.match(fs.readFileSync(path.join(features, 'Bare Feature.md'), 'utf8'), /^---\ntype: feature\nstatus: partial\n/, 'normalize infers type feature from the collection');
     assert.ok(noteFindings('features/Bare Feature.md').some((item) => /What It Does section/.test(item.message)), 'normalize adds no article sections; validate keeps reporting them');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+// S-003W TK-001: the link-safe note move. A fixture room carries a per-Spec
+// design-concept article, and every kind of surface that links to it: the
+// router, a sibling note, a root control, a Spec (live prose and its
+// append-only evidence), a Task record and a landmark question card.
+function moveFixture() {
+  const project = seededWiki();
+  const wiki = path.join(project, 'workbench', 'wiki');
+  const concepts = path.join(wiki, 'design-concepts');
+  const specDir = path.join(project, 'workbench', 'specs', 'S-700-fixture');
+  const taskDir = path.join(specDir, 'tasks', 'TK-001');
+  const cards = path.join(project, 'workbench', 'landmark-tracker', 'destination-questions');
+  for (const directory of [concepts, path.join(wiki, 'features'), taskDir, cards]) fs.mkdirSync(directory, { recursive: true });
+  const article = note({
+    type: 'design-concept', authorized_by: 'owner', parent: 'none', provenance: ['owner-directed reconciliation, 2026-09-19'],
+    source_paths: ['workbench/specs/S-700-fixture/SPEC.md']
+  }, '# Fixture Article\n\nSee the [Spec](../../specs/S-700-fixture/SPEC.md), the [sibling](sibling.md#part) and [the blueprint](../../../BLUEPRINT.md), also [verbose](../../../workbench/specs/S-700-fixture/SPEC.md).\n\n## Evidence and Sources\n\n- [Spec](../../specs/S-700-fixture/SPEC.md)\n\n## History\n\n- 2026-09-19: Created.\n');
+  fs.writeFileSync(path.join(concepts, 'spec-S-700-fixture.md'), article);
+  fs.writeFileSync(path.join(concepts, 'sibling.md'), note({ type: 'design-concept', authorized_by: 'owner', parent: 'none' }, '# Sibling\n\nBack to [the article](spec-S-700-fixture.md).\n\n## Evidence and Sources\n\n- none\n\n## History\n\n- 2026-09-19: Created.\n'));
+  fs.appendFileSync(path.join(wiki, 'MEMORY.md'), '\n- [Fixture Article](design-concepts/spec-S-700-fixture.md)\n');
+  fs.appendFileSync(path.join(project, 'README.md'), '\nSee [the article](workbench/wiki/design-concepts/spec-S-700-fixture.md).\n');
+  fs.writeFileSync(path.join(specDir, 'SPEC.md'), '# S-700 - Fixture\n\nArticle: [Fixture Article](../../wiki/design-concepts/spec-S-700-fixture.md).\n\n## Append-Only Evidence And Execution Log\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| 2026-09-19 | - | captured in [the article](../../wiki/design-concepts/spec-S-700-fixture.md) | none | none | none |\n');
+  fs.writeFileSync(path.join(taskDir, 'TASK.md'), '# TK-001\n\nRead [the article](../../../../wiki/design-concepts/spec-S-700-fixture.md#what).\n');
+  fs.writeFileSync(path.join(cards, 'DQC-7000.json'), `${JSON.stringify({ id: 'DQC-7000', answer: 'Documented in [the article](../../wiki/design-concepts/spec-S-700-fixture.md).' }, null, 2)}\n`);
+  return { project, wiki, concepts, specDir, taskDir, cards };
+}
+
+function treeSnapshot(directory) {
+  const entries = {};
+  const walk = (current) => {
+    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+      const full = path.join(current, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else entries[path.relative(directory, full)] = fs.readFileSync(full, 'utf8');
+    }
+  };
+  walk(directory);
+  return entries;
+}
+
+test('move-note retypes, renames and relocates one note, rewrites every live link, counts the historical one and leaves the wiki valid', () => {
+  const fixtureRoom = moveFixture();
+  const { project, wiki, concepts, specDir, taskDir, cards } = fixtureRoom;
+  try {
+    const result = moveNote(project, { note: 'workbench/wiki/design-concepts/spec-S-700-fixture.md', to: 'features', name: 'fixture-capability', retype: 'feature' });
+    assert.equal(result.from, 'workbench/wiki/design-concepts/spec-S-700-fixture.md');
+    assert.equal(result.to, 'workbench/wiki/features/fixture-capability.md');
+    assert.equal(result.type, 'feature');
+    assert.equal(fs.existsSync(path.join(concepts, 'spec-S-700-fixture.md')), false, 'the old path is gone');
+    const moved = fs.readFileSync(path.join(wiki, 'features', 'fixture-capability.md'), 'utf8');
+    assert.match(moved, /^---\ntype: feature\n/, 'the note is retyped in its frontmatter');
+    assert.match(moved, /\(\.\.\/\.\.\/specs\/S-700-fixture\/SPEC\.md\)/, 'a same-depth outgoing link is untouched');
+    assert.match(moved, /\(\.\.\/\.\.\/\.\.\/workbench\/specs\/S-700-fixture\/SPEC\.md\)/, 'a link that still resolves keeps its author\'s spelling instead of being shortened');
+    assert.match(moved, /\(\.\.\/design-concepts\/sibling\.md#part\)/, 'an outgoing link to a note left behind is recomputed and keeps its fragment');
+
+    const read = (file) => fs.readFileSync(file, 'utf8');
+    assert.match(read(path.join(wiki, 'MEMORY.md')), /\]\(features\/fixture-capability\.md\)/);
+    assert.match(read(path.join(concepts, 'sibling.md')), /\]\(\.\.\/features\/fixture-capability\.md\)/);
+    assert.match(read(path.join(project, 'README.md')), /\]\(workbench\/wiki\/features\/fixture-capability\.md\)/);
+    assert.match(read(path.join(specDir, 'SPEC.md')), /Article: \[Fixture Article\]\(\.\.\/\.\.\/wiki\/features\/fixture-capability\.md\)/);
+    assert.match(read(path.join(taskDir, 'TASK.md')), /\]\(\.\.\/\.\.\/\.\.\/\.\.\/wiki\/features\/fixture-capability\.md#what\)/, 'a Task record link keeps its fragment');
+    assert.match(read(path.join(cards, 'DQC-7000.json')), /\]\(\.\.\/\.\.\/wiki\/features\/fixture-capability\.md\)/, 'a question card link is rewritten');
+    assert.match(read(path.join(specDir, 'SPEC.md')), /captured in \[the article\]\(\.\.\/\.\.\/wiki\/design-concepts\/spec-S-700-fixture\.md\)/, 'an append-only evidence row is history and keeps its old link');
+
+    assert.deepEqual(result.historicalReferencesLeft, { 'workbench/specs/S-700-fixture/SPEC.md': 1 });
+    assert.equal(result.referencesRewritten['workbench/wiki/MEMORY.md'], 1);
+    assert.equal(result.referencesRewritten['workbench/wiki/design-concepts/sibling.md'], 1);
+    assert.equal(result.referencesRewritten['workbench/specs/S-700-fixture/SPEC.md'], 1);
+    assert.equal(result.referencesRewritten['workbench/wiki/features/fixture-capability.md'], 1, 'the moved note is reported under its new path, counting only the link that needed repair');
+    assert.equal(result.usesGit, false);
+    const afterMove = validateWiki(project).filter((item) => item.note === 'workbench/wiki/features/fixture-capability.md');
+    assert.ok(afterMove.length > 0 && afterMove.every((item) => /must carry a .* section/.test(item.message)), 'the retyped note is in the right collection with the right type; only the feature sections remain for its author to write');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('move-note recomputes a moved note\'s outgoing links when it changes depth, and a dry run writes nothing', () => {
+  const project = seededWiki();
+  try {
+    const wiki = path.join(project, 'workbench', 'wiki');
+    fs.writeFileSync(path.join(wiki, 'Loose.md'), note({}, '# Loose\n\nSee [the blueprint](../../BLUEPRINT.md), [the router](MEMORY.md#top) and [the web](https://example.com/a).\n'));
+    fs.appendFileSync(path.join(wiki, 'MEMORY.md'), '\n- [Loose](Loose.md)\n');
+    const before = treeSnapshot(project);
+    const planned = moveNote(project, { note: 'workbench/wiki/Loose.md', to: 'archive', dryRun: true });
+    assert.equal(planned.dryRun, true);
+    assert.equal(planned.to, 'workbench/wiki/archive/Loose.md');
+    assert.deepEqual(treeSnapshot(project), before, 'a dry run writes nothing');
+    moveNote(project, { note: 'workbench/wiki/Loose.md', to: 'archive' });
+    const moved = fs.readFileSync(path.join(wiki, 'archive', 'Loose.md'), 'utf8');
+    assert.match(moved, /\]\(\.\.\/\.\.\/\.\.\/BLUEPRINT\.md\)/, 'a link out of the note is recomputed for its new depth');
+    assert.match(moved, /\]\(\.\.\/MEMORY\.md#top\)/);
+    assert.match(moved, /\]\(https:\/\/example\.com\/a\)/, 'a web link is never touched');
+    assert.match(fs.readFileSync(path.join(wiki, 'MEMORY.md'), 'utf8'), /\]\(archive\/Loose\.md\)/);
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('move-note refuses unsafe moves with a clear reason and writes nothing', () => {
+  const { project, wiki, concepts } = moveFixture();
+  try {
+    fs.writeFileSync(path.join(wiki, 'features', 'taken.md'), featureArticle());
+    fs.writeFileSync(path.join(wiki, 'features', 'sibling-name.md'), featureArticle());
+    fs.writeFileSync(path.join(wiki, 'Bare.md'), '# Bare\n\nNo frontmatter.\n');
+    fs.writeFileSync(path.join(wiki, 'Wikilinked.md'), note({}, '# Wikilinked\n\nSee [[Orphaned Name]].\n'));
+    fs.writeFileSync(path.join(wiki, 'Orphaned Name.md'), note({}, '# Orphaned\n'));
+    const article = 'workbench/wiki/design-concepts/spec-S-700-fixture.md';
+    const before = treeSnapshot(project);
+    const refuse = (options, pattern, label) => {
+      assert.throws(() => moveNote(project, options), pattern, label);
+      assert.deepEqual(treeSnapshot(project), before, `${label}: nothing was written`);
+    };
+    refuse({ note: article, to: 'features' }, /features does not accept type design-concept/, 'a type the destination does not accept');
+    refuse({ note: article, to: 'features', retype: 'guidebook' }, /features does not accept type guidebook/, 'a retype the destination does not accept');
+    refuse({ note: article, to: 'guidebooks', retype: 'bogus' }, /type bogus is not one of/, 'an unknown retype');
+    refuse({ note: article, to: 'features', retype: 'feature', name: 'taken' }, /already exists/, 'an occupied destination');
+    refuse({ note: article, to: 'design-concepts', name: 'sibling' }, /already exists/, 'an occupied destination in the same collection');
+    refuse({ note: article, to: 'archive', name: 'taken' }, /basename taken is not unique/, 'a basename another collection already holds');
+    refuse({ note: article, to: 'design-concepts' }, /already lives in/, 'a no-op move');
+    refuse({ note: article, to: 'nowhere' }, /unknown destination collection nowhere/, 'an unknown collection');
+    refuse({ note: article, to: 'features', retype: 'feature', name: '../escape' }, /name must be a plain note name/, 'a path in the new name');
+    refuse({ note: 'workbench/wiki/MEMORY.md', to: 'archive' }, /router and contract files do not move/, 'the router');
+    refuse({ note: 'workbench/wiki/design-concepts/README.md', to: 'archive' }, /router and contract files do not move/, 'a collection README');
+    refuse({ note: 'workbench/wiki/missing.md', to: 'archive' }, /does not exist/, 'a missing note');
+    refuse({ note: 'README.md', to: 'archive' }, /must be inside the wiki lane/, 'a note outside the wiki lane');
+    refuse({ note: 'workbench/wiki/Bare.md', to: 'archive' }, /has no frontmatter/, 'a note with no frontmatter');
+    refuse({ note: 'workbench/wiki/Orphaned Name.md', to: 'archive', name: 'Renamed' }, /wikilink/, 'a rename that would orphan a wikilink');
+    assert.equal(fs.existsSync(path.join(concepts, 'spec-S-700-fixture.md')), true);
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('move-note in a Git room records a rename and stages only the files it changed; the CLI reports JSON and refuses with exit 1', () => {
+  const { project, wiki } = moveFixture();
+  try {
+    const git = (...args) => spawnSync('git', ['-C', project, ...args], { encoding: 'utf8' });
+    assert.equal(git('init', '-q').status, 0);
+    git('config', 'user.email', 'fixture@example.com');
+    git('config', 'user.name', 'Fixture');
+    git('add', '-A');
+    assert.equal(git('commit', '-q', '-m', 'fixture').status, 0);
+    fs.writeFileSync(path.join(project, 'unrelated.txt'), 'unrelated dirty work\n');
+    const cli = spawnSync(process.execPath, [wikiTool, 'move-note', 'workbench/wiki/design-concepts/spec-S-700-fixture.md', '--to', 'features', '--name', 'fixture-capability', '--retype', 'feature', '--path', project, '--json'], { cwd: project, encoding: 'utf8' });
+    assert.equal(cli.status, 0, cli.stderr);
+    const report = JSON.parse(cli.stdout);
+    assert.equal(report.usesGit, true);
+    assert.equal(report.to, 'workbench/wiki/features/fixture-capability.md');
+    const status = git('status', '--porcelain').stdout;
+    assert.match(status, /^R  workbench\/wiki\/design-concepts\/spec-S-700-fixture\.md -> workbench\/wiki\/features\/fixture-capability\.md$/m, 'git sees a rename');
+    assert.match(status, /^\?\? unrelated\.txt$/m, 'unrelated work is never staged');
+    assert.doesNotMatch(status, /^.M /m, 'every changed file is staged, none is left half-edited');
+    const refused = spawnSync(process.execPath, [wikiTool, 'move-note', 'workbench/wiki/features/fixture-capability.md', '--to', 'design-concepts', '--path', project], { cwd: project, encoding: 'utf8' });
+    assert.equal(refused.status, 1);
+    assert.match(refused.stderr, /design-concepts does not accept type feature/);
+    const usage = spawnSync(process.execPath, [wikiTool, 'move-note', '--path', project], { cwd: project, encoding: 'utf8' });
+    assert.equal(usage.status, 1);
+    assert.match(usage.stderr, /move-note NOTE --to COLLECTION/);
+    assert.equal(fs.existsSync(path.join(wiki, 'features', 'fixture-capability.md')), true);
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
   }
