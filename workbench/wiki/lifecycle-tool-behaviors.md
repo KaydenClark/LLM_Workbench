@@ -10,6 +10,7 @@ provenance:
   - Promoted from host auto-memory and re-verified against source by the S-00V TK-00I audit, 2026-09-26
   - close refusals and the verdict digest scope re-verified against source while documenting them for S-00M TK-004, 2026-10-02
   - Finding dispositions and the retired Wiki-claim corrective close re-verified against source for S-004F TK-005R and TK-005S, 2026-10-03
+  - S-004C TK-005G moved the Runbook and AGENTS lifecycle procedures behind their index pointers into the implement, dispatcher and director skills, 2026-10-03
 source_paths:
   - workbench/tools/spec-workbench.mjs
   - tools/check-append-only.py
@@ -17,6 +18,9 @@ source_paths:
   - workbench/tools/workbench-layout.mjs
   - workbench/tools/spec-report.mjs
   - RUNBOOK.md
+  - workbench/skills/implement/SKILL.md
+  - workbench/skills/dispatcher/SKILL.md
+  - workbench/skills/director/SKILL.md
 last_verified: 2026-10-03
 ---
 
@@ -24,8 +28,12 @@ last_verified: 2026-10-03
 
 Non-obvious behaviors of the Workbench lifecycle tools, each re-checked against
 source on 2026-09-26 (the `close` and `verdict` sections on 2026-10-02). The
-commands themselves are documented in [RUNBOOK](../../RUNBOOK.md) -> Spec
-Lifecycle And Retrieval and Direct Owner Promotion; this note explains what
+commands themselves are documented in the lane skills the
+[RUNBOOK operations index](../../RUNBOOK.md#operations-index) points to:
+[implement](../skills/implement/SKILL.md#worker-selection-implementation-and-hand-back),
+[dispatcher](../skills/dispatcher/SKILL.md#dispatcher-and-separate-director-assembled-review),
+[director](../skills/director/SKILL.md#owner-human-qa-and-main-before-complete) and
+[promote](../skills/promote/SKILL.md#command-reference); this note explains what
 surprises agents.
 
 ## `spec-workbench.mjs claim`

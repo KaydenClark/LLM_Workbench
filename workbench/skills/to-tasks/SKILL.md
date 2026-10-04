@@ -111,3 +111,11 @@ authorized decomposition; TASK names the Task record described above, not a
 second queue. An executing agent investigates within its assignment and
 never creates its own next task; these planning tools require owner-directed
 planning authority.
+
+## Sizing a Task
+
+Size a task so a fresh context can recover its inputs, exercise one useful
+behavior at its public seam and finish named verification. There is no accepted
+universal byte or token threshold. Unknown consequential product choices belong
+in a decision slice of the already assigned spec before dependent implementation;
+this does not authorize creating a task from an unassigned finding.

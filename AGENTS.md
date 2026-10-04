@@ -188,132 +188,54 @@ RUNBOOK; do not claim a clean update while known current-facing drift remains.
 
 ## Work Selection And Lifecycle
 
-Unless the user names work directly:
+Work selection, claims, receipts, close and blockers follow the
+[`implement` skill](workbench/skills/implement/SKILL.md#work-selection-and-lifecycle),
+which the [operations index](RUNBOOK.md#operations-index) points to. In every
+session:
 
-1. Verify root, branch, remote, upstream, and dirty state.
-2. Run `node workbench/tools/spec-workbench.mjs doctor`; stop on ambiguous state.
-3. Run `node workbench/tools/spec-workbench.mjs next --json`.
-4. Load only the returned Spec with `show S-###` and its selected Task record;
-   inspect the assigned destination, blockers and referenced source/tests.
-5. Claim before editing: `claim S-### --agent NAME`. This selects one eligible Task
-   in that Spec and writes its record to `in-progress`; it takes a Spec ID,
-   not a `TASK.md` path. Follow the assigned stance and single writer lane.
-6. Implement that tracer-bullet Task using red/green TDD, actual behavior checks
-   and owned documentation. Preserve proof and unresolved gaps as work proceeds.
-7. Worker self-checks the scoped result and hands proof to the Dispatcher;
-   normal Task hand-back needs no separate Task approval. Use the Task's
-   acceptance and the actual branch-route exception below before landing it.
-8. Dispatcher owns whole-Spec QA against the assembled Spec and its destination;
-   a separate Director context reviews the immutable assembled candidate before
-   integration. Follow the review, correction and closure sequence below.
-
-`TASK.md` carries active state and proof for one Task; its Spec carries the
-capability's requirements, acceptance, evidence and next gate. The manifest
-resolves their paths. `TASKBOARD.md` projects those sources; editing the board
-cannot change an assignment or satisfy a gate. Retained done rows in a
-record-backed Spec are history, not an alternative active Task queue.
-
-While a Task is in progress, record meaningful tests, documentation and gaps
-with `receipt`. Commit and push the verified candidate and Receipt before
-`close`, checking that the remote branch names the local SHA; close refuses a
-dirty or unpushed tree unless `--git-state-reason TEXT` explicitly records why.
-`--git-state-reason` writes the observed state and the reason into the Receipt
-row and the Spec evidence row, where a reviewer reads what was waived. `doctor`
-reports `detached-head` and `untracked-controls` (untracked control, ADR or
-Spec files) without blocking. Commit and publish the resulting close evidence
-and projections as well:
-
-```bash
-node workbench/tools/spec-workbench.mjs receipt S-### --task TK-### \
-  --tests "NAMED TESTS AND RESULTS" --docs "DOCS TOUCHED OR none" \
-  --remaining-gap "GAP OR none"
-node workbench/tools/spec-workbench.mjs close S-### \
-  --proof "NAMED VERIFICATION" --docs "DOCS UPDATED OR no update needed + reason" \
-  --remaining-gap "GAP OR none"
-node workbench/tools/spec-workbench.mjs render
-node workbench/tools/spec-workbench.mjs doctor
-```
-
-`close` closes the first in-progress Task in that Spec, appending its final
-Receipt and Spec evidence before marking the record done. It does not select
-a ready Task or complete the Spec, and refuses a Spec with no in-progress Task.
-One writer must ensure the claimed Task is the one being closed; do not close
-unrelated work. A Receipt records live Git facts and stated checks; it is
-neither review nor owner approval.
-
-Dependencies remain explicit: plain Spec IDs require `complete` or
-`superseded`, and plain Task IDs require done. `S-###:delivered` instead requires
-all prerequisite Tasks done, acceptance met and a content-bound PASS whose
-candidate and matching committed Spec/Task content are contained in integration;
-fetch integration before relying on it, because resolution reads local refs.
-`owner:<decision>` is never satisfied automatically; only an authorized resolved
-decision allows that blocker to be removed. Diagnose `blocked-without-blocker`
-and `unknown-blocker-qualifier` rather than bypassing selection or claim.
-
-### Assembled Review And Corrective Return
-
-The Dispatcher supplies the complete Task results, acceptance evidence,
-documentation and remaining limitations for whole-Spec QA. The separate
-Director review uses `report S-### --candidate SHA`; record its result through
-`verdict S-### --candidate SHA --digest DIGEST --result pass|fail --findings TEXT --reviewer CONTEXT`.
-Use the digest from the reviewed report; the runtime refuses a nonexistent
-candidate or a digest that differs from the current assembled content. The
-candidate need not equal HEAD. Its content digest binds the assembled Spec and
-live/retired Task records; a changed candidate needs a fresh review. A Dispatcher
-or implementer cannot supply independent approval.
-
-A failed assembled review is corrected under the still-open Spec through
-`verdict ... --result fail`. Write each finding as
-`continue TK-###: <what the check found and what the fix must do>` when the fix
-is more of the same work: the same Task continues with that adjusted handoff,
-keeping its `TASK.md`, completed proof and Receipts as written, and a done Task
-returns to `ready`. Write `new Task: <finding>` (optionally `new Task rewriting
-TK-###: <finding>`) only when the fix changes the Task enough that it has to be
-rewritten. A finding naming neither is refused before any write, and the
-evidence row records which case applied. `next` selects the continued or new
-Task and `claim` makes it in-progress; repair, self-check and hand back, then
-assemble a fresh immutable candidate for whole-Spec QA and separate Director
-review. Never clear a failed verdict with a green test.
-
-### Owner Closure And Reconciliation
-
-The closure sequence is reviewed delivery on integration -> owner approval -> verification on main -> `complete`.
-Owner Human QA timing and findings follow Git Rules below; the approval is
-content-bound, recorded with `approve S-### --candidate SHA --owner NAME`
-only for the owner's actual approval of delivered integration content.
-`approve` with `--finding TEXT` follows the same rule (each finding names
-`continue TK-###:` or `new Task:`); with
-`--destination-change TEXT` it records the return to Align without inventing
-Tasks. A failed Human QA finding returns to the appropriate scope of Align,
-design-concept and delivery work; it does not imply every defect changes design.
-
-Only the owner promotes integration to main. After that promotion, refresh the
-default-branch ref (`git fetch origin main` here) before `complete S-###`:
-the command requires all Tasks done, checked acceptance, a Completion Result,
-current passed review and owner approval, and verifies the approved content
-is contained unchanged on the observed `origin/main`. A merge alone closes
-neither Task nor Spec. Run `render` and `doctor` after completion to remove
-the Spec from the hot board and keep outstanding diagnostics visible.
-
-After `complete`, capture current capability knowledge in the manifest-declared
-features collection before retirement or discard. Author a validated, routed
-Wiki feature article naming the Spec's historical route; this is ordinary
-documentation work, not a capture CLI command. `uncaptured-complete` reports
-missing capture while the Spec remains complete. Reconcile surviving claims
-into their durable owners before `retire-spec S-### --wiki PATH`; use the
-link-safe folder operations, never manual moves. Discard only retired records
-after main containment, capture and the current-reference checks permit it;
-retain needed origins, corrections and recovery evidence. A later gap against
-delivered work becomes a new Spec under its landmark or the Blueprint, never a
-revived Spec and never a correction anchored to a Wiki claim; the Wiki is
-evidence for that Spec's direction and plan, not its destination, and the
-corrective commands refuse a complete, superseded or retired Spec. See RUNBOOK
-for exact retirement, discard and recovery procedures.
+- Unless the user names work directly, select with `doctor`, `next --json` and
+  `show`, and stop on ambiguous state.
+- Claim before editing: `claim S-### --agent NAME` takes a Spec ID and selects
+  one eligible Task. Follow the assigned stance and single writer lane: one
+  writer holds shared Spec, Task and projection state.
+- Implement that tracer-bullet Task using red/green TDD, actual behavior checks
+  and owned documentation. Preserve proof and unresolved gaps as work proceeds.
+- `TASK.md` carries active state and proof for one Task; its Spec carries the
+  capability's requirements, acceptance, evidence and next gate. `TASKBOARD.md`
+  projects those sources; editing the board cannot change an assignment or
+  satisfy a gate.
+- A done claim needs evidence: record a `receipt`, then commit and push the
+  verified candidate and Receipt before `close`. `close` refuses a dirty or
+  unpushed tree unless `--git-state-reason TEXT` records why. A Receipt is
+  neither review nor owner approval.
+- `owner:<decision>` is never satisfied automatically; only an authorized
+  resolved decision allows that blocker to be removed.
 
 Do not load the full Blueprint, Taskboard, completed specs, or proof archive for
 normal task selection. Read Blueprint for cross-cutting architecture; read the
 Lexicon when a shared term is unclear or a selected skill depends on project
 vocabulary; read the Taskboard for an owner dashboard or collision review.
+
+### Assembled Review And Corrective Return
+
+Assembled review and corrective return follow the
+[`dispatcher` skill](workbench/skills/dispatcher/SKILL.md#assembled-review-and-corrective-return).
+Dispatcher owns whole-Spec QA against the assembled Spec and its destination;
+a separate Director context reviews the immutable assembled candidate before
+integration, and a changed candidate needs a fresh review. A Dispatcher or
+implementer cannot supply independent approval; self-review never counts. A
+failed review or owner finding is never silently cleared: it is corrected under
+the still-open Spec. Never clear a failed verdict with a green test.
+
+### Owner Closure And Reconciliation
+
+Owner closure, feature capture, retirement, discard and recovery follow the
+[`director` skill](workbench/skills/director/SKILL.md#owner-closure-and-reconciliation).
+The closure sequence is reviewed delivery on integration -> owner approval -> verification on main -> `complete`.
+Only the owner approves delivered integration content; an approval is recorded
+only for the owner's actual approval. Only the owner promotes integration to
+main. An owner finding is never silently cleared. A merge alone closes neither
+Task nor Spec.
 
 A Spec and its Tasks are delivery scaffolding. Preserve them while needed;
 after verified delivery and reconciliation, the implementation and maintained

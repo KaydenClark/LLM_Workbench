@@ -130,3 +130,179 @@ Report the authorized endpoint actually reached, accounted-for worktree state,
 exact candidate and recovery ref, checks, documentation, and next gate. A local
 checkpoint with blocked publication remains partial; never call it remote
 recovery, integration approval, installed behavior, or owner acceptance.
+
+## Work selection and lifecycle
+
+Unless the user names work directly:
+
+1. Verify root, branch, remote, upstream, and dirty state.
+2. Run `node workbench/tools/spec-workbench.mjs doctor`; stop on ambiguous state.
+3. Run `node workbench/tools/spec-workbench.mjs next --json`.
+4. Load only the returned Spec with `show S-###` and its selected Task record;
+   inspect the assigned destination, blockers and referenced source/tests.
+5. Claim before editing: `claim S-### --agent NAME`. This selects one eligible Task
+   in that Spec and writes its record to `in-progress`; it takes a Spec ID,
+   not a `TASK.md` path. Follow the assigned stance and single writer lane.
+6. Implement that tracer-bullet Task using red/green TDD, actual behavior checks
+   and owned documentation. Preserve proof and unresolved gaps as work proceeds.
+7. Worker self-checks the scoped result and hands proof to the Dispatcher;
+   normal Task hand-back needs no separate Task approval. Use the Task's
+   acceptance and the actual branch-route exception in `AGENTS.md`
+   [Git Rules](../../../AGENTS.md#git-rules) before landing it.
+8. Dispatcher owns whole-Spec QA against the assembled Spec and its destination;
+   a separate Director context reviews the immutable assembled candidate before
+   integration. Follow the review, correction and closure sequence in the
+   [`dispatcher`](../dispatcher/SKILL.md#assembled-review-and-corrective-return)
+   and [`director`](../director/SKILL.md#owner-closure-and-reconciliation) skills.
+
+`TASK.md` carries active state and proof for one Task; its Spec carries the
+capability's requirements, acceptance, evidence and next gate. The manifest
+resolves their paths. `TASKBOARD.md` projects those sources; editing the board
+cannot change an assignment or satisfy a gate. Retained done rows in a
+record-backed Spec are history, not an alternative active Task queue.
+
+While a Task is in progress, record meaningful tests, documentation and gaps
+with `receipt`. Commit and push the verified candidate and Receipt before
+`close`, checking that the remote branch names the local SHA; close refuses a
+dirty or unpushed tree unless `--git-state-reason TEXT` explicitly records why.
+`--git-state-reason` writes the observed state and the reason into the Receipt
+row and the Spec evidence row, where a reviewer reads what was waived. `doctor`
+reports `detached-head` and `untracked-controls` (untracked control, ADR (`workbench/docs/adr`) or
+Spec files) without blocking. Commit and publish the resulting close evidence
+and projections as well:
+
+```bash
+node workbench/tools/spec-workbench.mjs receipt S-### --task TK-### \
+  --tests "NAMED TESTS AND RESULTS" --docs "DOCS TOUCHED OR none" \
+  --remaining-gap "GAP OR none"
+node workbench/tools/spec-workbench.mjs close S-### \
+  --proof "NAMED VERIFICATION" --docs "DOCS UPDATED OR no update needed + reason" \
+  --remaining-gap "GAP OR none"
+node workbench/tools/spec-workbench.mjs render
+node workbench/tools/spec-workbench.mjs doctor
+```
+
+`close` closes the first in-progress Task in that Spec, appending its final
+Receipt and Spec evidence before marking the record done. It does not select
+a ready Task or complete the Spec, and refuses a Spec with no in-progress Task.
+One writer must ensure the claimed Task is the one being closed; do not close
+unrelated work. A Receipt records live Git facts and stated checks; it is
+neither review nor owner approval.
+
+Dependencies remain explicit: plain Spec IDs require `complete` or
+`superseded`, and plain Task IDs require done. `S-###:delivered` instead requires
+all prerequisite Tasks done, acceptance met and a content-bound PASS whose
+candidate and matching committed Spec/Task content are contained in integration;
+fetch integration before relying on it, because resolution reads local refs.
+`owner:<decision>` is never satisfied automatically; only an authorized resolved
+decision allows that blocker to be removed. Diagnose `blocked-without-blocker`
+and `unknown-blocker-qualifier` rather than bypassing selection or claim.
+
+## Worker: selection, implementation and hand-back
+
+Examples name S-001/TK-001; substitute the actual IDs and quoted values.
+
+Ordinary entry is AGENTS -> the Runbook -> Lexicon Task Routing -> the assigned
+Spec and Task. Verify root, branch, remote, upstream and dirty state first.
+Preserve unrelated work and obey the assigned stance/file lane. For ordinary
+pickup run these read-only commands before claiming:
+
+```bash
+node workbench/tools/spec-workbench.mjs doctor
+node workbench/tools/spec-workbench.mjs next --json
+node workbench/tools/spec-workbench.mjs show S-001
+```
+
+Read the returned TASK.md, destination, blockers and acceptance. `next` offers
+ready eligible work; an existing in-progress assignment resumes from its record
+and `show`, not a second claim. `claim` takes a Spec ID and selects one eligible
+Task; it does not take a TASK.md path. Plain Spec blockers require complete or
+superseded; plain Task blockers require done. `S-001:delivered` instead requires
+all prerequisite Tasks done, checked acceptance and a content-bound PASS whose
+candidate and committed Spec/Task content are contained in integration. Fetch
+integration before relying on that local-ref check. `owner:<decision>` is never
+automatically satisfied; remove it only after the authorized decision resolves
+it. Investigate `blocked-without-blocker` and `unknown-blocker-qualifier` rather
+than bypassing them.
+
+`next --review --json` is a separate read-only review offering. Its `review`
+array contains eligible Spec and Task cards; `excluded` keeps dependency,
+capability, competing-claim and child-gate exclusions visible. It uses the
+source-qualified identity, so legacy numeric Task labels remain Spec-scoped.
+Default `next` still offers only eligible To-do work. Neither review visibility
+nor eligibility records a verdict, independent approval or owner Human QA.
+`--review` is accepted only by `next`; it never turns `claim` into a review action.
+
+A minimal Backlog Spec needs its matching title (which may carry the one-sentence
+intent), `Spec ID`, and explicit `Status: planned`. Other metadata and the
+Task set may be absent. Unknown priority remains null and sorts after known
+priorities in JSON; missing people/dates are not invented. Existing pre-cut
+Tasks are preserved. Before activation, expand the packet to the full active
+Spec contract and supply executable Tasks. The default Markdown board remains
+in use; `render --format json` still writes only `TASKBOARD.preview.json`.
+
+For an active table-backed Spec, this one-shot migration precedes its first
+record-backed claim. Omit conversion when `tasks/` already exists. It converts
+unfinished rows, retaining done rows as history; a second conversion refuses.
+A planned Spec needs `--activate` only after its accepted plan is executable.
+These migration alternatives are not steps to repeat on an already claimed Spec:
+
+```bash
+node workbench/tools/spec-workbench.mjs convert-tasks S-001
+node workbench/tools/spec-workbench.mjs convert-tasks S-001 --activate
+```
+
+Commit the ready packet before the coordinated claim. From a clean Task branch,
+claim publishes its record/projection commit to the configured remote. `--local`
+is an explicit local-only alternative, not remote recovery proof.
+
+```bash
+node workbench/tools/spec-workbench.mjs claim S-001 --agent codex
+```
+
+Implement red/green at the product seam; preserve failed-attempt proof and
+unmerged results. Record meaningful checks while the Task is in progress:
+
+```bash
+node workbench/tools/spec-workbench.mjs receipt S-001 --task TK-001 \
+  --tests "[TESTS RUN AND RESULT]" --docs "[DOCS TOUCHED OR none]" --remaining-gap "[GAP OR none]"
+```
+
+Self-check acceptance, actual behavior, documentation and remaining gaps; hand
+those results to the Dispatcher. Normal Task hand-back has no separate Task
+approval ceremony. Commit and push the verified candidate and Receipt before
+close; compare local HEAD to the actual remote branch tip. `close` refuses dirty
+or unpushed work unless `--git-state-reason` records the truthful exception; it
+closes the first in-progress Task, appends its final Receipt and Spec evidence,
+and never selects a ready Task or completes the Spec. One writer must confirm
+which record will close. A Receipt records Git/test facts, not approval.
+
+```bash
+node workbench/tools/spec-workbench.mjs close S-001 \
+  --proof "[NAMED VERIFICATION]" \
+  --docs "[DOCS UPDATED OR Docs checked; no update needed + reason]" \
+  --remaining-gap "[GAP OR none]"
+node workbench/tools/spec-workbench.mjs render
+node workbench/tools/spec-workbench.mjs doctor
+```
+
+`close` reads repository state before it writes anything and refuses a claim
+the repository contradicts, naming what it found: `dirty-tree` lists anything
+`git status --porcelain` shows, untracked files included, and `unpushed` means
+no remote-tracking ref contains HEAD, naming the upstream distance or the
+missing upstream, gone upstream, detached HEAD or absent remote. The refusal
+names its own remediation: commit and push, or rerun with
+`--git-state-reason "<why>"` (one line) when the state is a truthful
+exception. The observed state and the reason are then appended to the
+remaining gap that the final Receipt row and the Spec evidence row record, so
+a reviewer reads what was waived. A reason on a clean, pushed tree is refused
+rather than dropped; where Git state is unknown (no Git, not a repository)
+nothing is refused and a given reason is recorded beside `unknown`. `close`
+also refuses a Spec with no in-progress Task (`has no in-progress task to
+close; claim one first`) rather than closing a ready Task nobody claimed.
+`close` takes a Spec ID: `close TK-###` refuses, because the standalone
+corrective Task anchored to a Wiki claim is retired.
+
+Commit and publish the closure evidence and projections too; verify the remote
+SHA. TASK.md owns Task state/proof, SPEC.md owns requirements/acceptance/evidence
+and its next gate, and generated TASKBOARD.md/CATALOG.md cannot satisfy either.

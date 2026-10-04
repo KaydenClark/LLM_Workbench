@@ -8,6 +8,7 @@ provenance:
   - S-01L TK-02D convert-tasks --activate runtime change and to-tasks activation route, 2026-09-26
   - S-01L TK-002P record-backed activation through convert-tasks --activate and the to-tasks route for to-spec's planned shape, 2026-09-26
   - Local lineage from to-tickets (6943c10, S-011) renamed by a557370 (S-00H), with upstream mattpocock/skills concept lineage
+  - S-004C TK-005G moved the Runbook and AGENTS lifecycle procedures behind their index pointers into the skill, 2026-10-03
 source_paths:
   - workbench/skills/to-tasks/SKILL.md
   - workbench/tools/task-record.mjs
@@ -18,7 +19,7 @@ source_paths:
   - workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md
   - workbench/docs/adr/0045-skill-composition-within-inherited-scope.md
   - workbench/wiki/grilling-destination-audit-ledger.json
-last_verified: 2026-09-26
+last_verified: 2026-10-03
 ---
 
 # To-tasks: cut an activated Spec into executable Tasks
@@ -45,7 +46,8 @@ In the S-01L scenario, a fresh agent was given a small ledger room and the owner
 - [`to-spec`](../skills/to-spec/SKILL.md) scopes a Spec, which enters as planned; `to-tasks` runs later, at activation. Since S-01K TK-002L (`1388f66`), `to-spec` writes a new Spec with no Task row and an empty tracked `tasks/` directory, per E-4B. `to-tasks` activates that shape by writing the first record(s) and then running `convert-tasks S-### --activate` once (S-01L TK-002P). Older planned Specs that still carry a seeded table row are activated by converting that row.
 - [`tracer-bullet`](../skills/tracer-bullet/SKILL.md) supplies the slicing discipline and hands its ordered slices here to write.
 - [`make-it-so`](../skills/make-it-so/SKILL.md) composes `to-tasks` only for authorized delivery slices.
-- Execution then uses `claim` and `close` in the [Runbook](../../RUNBOOK.md), one eligible Task at a time. An executing agent never creates its own next Task.
+- Execution then uses `claim` and `close` as the [implement skill](../skills/implement/SKILL.md#worker-selection-implementation-and-hand-back) documents, one eligible Task at a time. An executing agent never creates its own next Task.
+- The skill also carries the [Task-sizing rule](../skills/to-tasks/SKILL.md#sizing-a-task) the [Runbook operations index](../../RUNBOOK.md#operations-index) points to: a fresh context can recover a Task's inputs, exercise one behavior at its public seam and finish named verification, with no universal size threshold.
 
 ## Rename from to-tickets
 
