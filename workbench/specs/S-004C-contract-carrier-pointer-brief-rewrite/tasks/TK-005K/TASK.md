@@ -23,6 +23,15 @@ manual feedback reports, and operational proof. The Workbench update drift
 boundary line in the `AGENTS.md` edit scope keeps its always-true statement and
 points at the self-drift procedure.
 
+As delivered (2026-10-04), not every section named above moved. Prerequisites,
+Install, Run Locally and Operational Proof stayed in `RUNBOOK.md` as this room's
+own sections, as did Troubleshooting and the Evaluation And Benchmarking
+introduction, because the generic template carries each as a section every room
+fills (the baseline census, section 3); the Guardrail North-Star Audit stayed
+with the verification family (TK-005I). Every other section above moved into
+the `workbench-release`, `workbench-room-checks` or `workbench-evaluation`
+maintainer skill.
+
 These procedures are not meaningful to a generated room, so their homes must not
 become core skills every room receives; where a skill is the home, it is a
 room-owned skill in this repository's lane, and the Builder records the closed-bundle
