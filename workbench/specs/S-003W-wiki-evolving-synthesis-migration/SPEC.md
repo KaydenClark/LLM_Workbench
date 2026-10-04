@@ -3,13 +3,13 @@
 **Spec ID:** S-003W
 **Status:** active
 **Priority:** 1
-**Owner:** unassigned
+**Owner:** claude-director-s003w
 **Stance:** Builder
-**Updated:** 2026-10-01
+**Updated:** 2026-10-04
 **Catalog description:** Bring the Wiki's files, tooling and records in line with the accepted definition of the Wiki as the evolving synthesis every agent reads and updates: link-safe note moves, per-Spec articles into the features collection, router summaries, the name-and-context identifier rule in place of the identifier ban, landmark synthesis pages, the ledger out of the Wiki, and the lint cadence as a procedure.
 **Blockers:** none
-**Latest event:** Spec captured from the owner-confirmed Wiki definition grilling of 2026-10-01 and the promotion that landed its Canon.
-**Next gate:** Refine and activate the first eligible slice.
+**Latest event:** TK-005 claimed by claude-director-s003w.
+**Next gate:** Close TK-005 with verification and documentation proof.
 
 > **Citation anchors.** pre=`e72ff5bc78d8815d5911c604b76c2953c78ecb79` post=`e72ff5bc78d8815d5911c604b76c2953c78ecb79`.
 > Both name the Canon promotion commit on `claude/wiki-definition-canon`; post
