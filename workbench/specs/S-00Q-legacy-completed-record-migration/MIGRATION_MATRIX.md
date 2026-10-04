@@ -209,7 +209,7 @@ Consumer snapshot: 1 occurrences. Article semantic review: **passed for core cap
 
 ### S-00C: S-00C: Project Evidence And Blueprint Grilling Preparation
 
-Article: [S-00C: Project Evidence And Blueprint Grilling Preparation](../../wiki/design-concepts/spec-S-00C-project-evidence-and-blueprint-grilling.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00C-project-evidence-and-blueprint-grilling/SPEC.md`.
+Article: [S-00C: Project Evidence And Blueprint Grilling Preparation](../../wiki/features/project-evidence-preparation-for-blueprint-grilling.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00C-project-evidence-and-blueprint-grilling/SPEC.md`.
 
 The project-evidence preparation seam turns explicitly named project sources into a bounded provisional JSON grilling note. It retains source identities and uncertainty, then presents owner questions without answering them.
 
@@ -227,7 +227,7 @@ Consumer snapshot: 2 occurrences. Article semantic review: **passed for core cap
 
 ### S-00D: S-00D: Genesis From Blueprint And ADR Decisions
 
-Article: [S-00D: Genesis From Blueprint And ADR Decisions](../../wiki/design-concepts/spec-S-00D-genesis-from-blueprint-and-adrs.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00D-genesis-from-blueprint-and-adrs/SPEC.md`.
+Article: [S-00D: Genesis From Blueprint And ADR Decisions](../../wiki/features/genesis-from-blueprint-decisions-and-active-adrs.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00D-genesis-from-blueprint-and-adrs/SPEC.md`.
 
 The public derivation seam creates a new Workbench from a clean Template, a source project, a prepared grilling note and an explicit `genesis-plan-1` plan. It requires an absent destination and derives exactly one first capability from selected locked questions and active ADRs.
 
@@ -245,7 +245,7 @@ Consumer snapshot: 2 occurrences. Article semantic review: **passed for core cap
 
 ### S-00E: S-00E: Fresh Template Project Proof
 
-Article: [S-00E: Fresh Template Project Proof](../../wiki/design-concepts/spec-S-00E-fresh-template-project-proof.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00E-fresh-template-project-proof/SPEC.md`.
+Article: [S-00E: Fresh Template Project Proof](../../wiki/features/fresh-template-to-independent-project-proof.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00E-fresh-template-project-proof/SPEC.md`.
 
 A clean Template copy was used to create an independent Puffer Pond room through evidence preparation and decision-based Genesis. The demonstration then exercised a useful project Task and saved-note continuation in a fresh agent context.
 
@@ -263,7 +263,7 @@ Consumer snapshot: 4 occurrences. Article semantic review: **passed for core cap
 
 ### S-00F: S-00F: The Named Template Upgrade Release Gate
 
-Article: [S-00F: The Named Template Upgrade Release Gate](../../wiki/design-concepts/spec-S-00F-template-upgrade-release-gate.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00F-template-upgrade-release-gate/SPEC.md`.
+Article: [S-00F: The Named Template Upgrade Release Gate](../../wiki/features/named-template-upgrade-release-gate.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00F-template-upgrade-release-gate/SPEC.md`.
 
 The producer must exercise each new Workbench version in the named Workbench_Template installation before declaring release readiness. Generic generation tests alone cannot prove an installed upgrade preserves room-owned state.
 
@@ -281,7 +281,7 @@ Consumer snapshot: 3 occurrences. Article semantic review: **passed for core cap
 
 ### S-00L: S-00L: Lexicon Freshness Repair
 
-Article: [S-00L: Lexicon Freshness Repair](../../wiki/design-concepts/spec-S-00L-lexicon-freshness-repair.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00L-lexicon-freshness-repair/SPEC.md`.
+Article: [S-00L: Lexicon Freshness Repair](../../wiki/features/lexicon-freshness-repair.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00L-lexicon-freshness-repair/SPEC.md`.
 
 A terminology router also contains claims that can go stale: release lineage, a current candidate version, source boundaries and its verification stamp. S-00L repaired those claims without changing the meaning of the affected definitions.
 

@@ -241,7 +241,12 @@ carries a one-line summary beside its link so a reader can choose a page
 without opening it. See [features/README.md](features/README.md).
 
 - [Dependency-Safe Direct Claiming](features/dependency-safe-direct-claiming.md) - direct Task claiming uses the same dependency eligibility as selection and refuses blocked work before changing anything.
+- [Fresh Template To Independent Project Proof](features/fresh-template-to-independent-project-proof.md) - the recorded proof that a clean Template copy became an independent project room and was continued in a fresh agent context, with its limits.
+- [Genesis From Blueprint Decisions And Active ADRs](features/genesis-from-blueprint-decisions-and-active-adrs.md) - creates a new room from a clean Template, a prepared note and an explicit plan, deriving one first capability from locked questions and active ADRs.
 - [Held-Out Path-Safety Evaluation](features/held-out-path-safety-evaluation.md) - a held-out path-handling eval task and grader scoring correctness, scope, verification honesty and doc upkeep separately.
+- [Lexicon Freshness Repair](features/lexicon-freshness-repair.md) - repairs stale release, version and source-boundary claims in the Lexicon by checking them against the manifest, Git containment and links.
+- [Named Template Upgrade Release Gate](features/named-template-upgrade-release-gate.md) - requires each new Workbench version to be exercised in the named Workbench_Template installation before release readiness.
+- [Project Evidence Preparation For Blueprint Grilling](features/project-evidence-preparation-for-blueprint-grilling.md) - turns named project sources into a bounded provisional grilling note that keeps source identity and uncertainty and answers no owner question.
 - [Spec-Centered Progressive Disclosure](features/spec-centered-progressive-disclosure.md) - ordinary entry stays small: contract, routes, then the assigned Spec and its source, with no historical catalog read first.
 - [Wiki Routing, Version Stamps And Safe Source Reads](features/wiki-routing-version-stamps-and-safe-source-reads.md) - the checks that tell a room its Wiki router is unreachable or its Wiki files are stamped with a stale version, and the safe-read boundary continuity input must pass.
 
@@ -257,11 +262,6 @@ proof from current behavior. Original records remain intact pending lifecycle ga
 - [Adoption When Git Writes Are Unavailable](design-concepts/spec-S-009-git-write-constrained-adoption.md)
 - [S-00A: Blueprint, Active ADRs And The Context Map](design-concepts/spec-S-00A-blueprint-active-adr-and-context-map.md)
 - [S-00B: Workbench Template Reformation](design-concepts/spec-S-00B-workbench-template-reformation.md)
-- [S-00C: Project Evidence And Blueprint Grilling Preparation](design-concepts/spec-S-00C-project-evidence-and-blueprint-grilling.md)
-- [S-00D: Genesis From Blueprint And ADR Decisions](design-concepts/spec-S-00D-genesis-from-blueprint-and-adrs.md)
-- [S-00E: Fresh Template Project Proof](design-concepts/spec-S-00E-fresh-template-project-proof.md)
-- [S-00F: The Named Template Upgrade Release Gate](design-concepts/spec-S-00F-template-upgrade-release-gate.md)
-- [S-00L: Lexicon Freshness Repair](design-concepts/spec-S-00L-lexicon-freshness-repair.md)
 - [Canonical Evaluator Invocation](design-concepts/spec-S-010-canonical-evaluator-entry.md)
 - [Reproducible Adoption Provenance](design-concepts/spec-S-012-adoption-provenance-proof.md)
 - [Verified Automation Run Outcomes](design-concepts/spec-S-013-automation-run-outcomes.md)
