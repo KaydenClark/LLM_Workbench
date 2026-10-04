@@ -8,6 +8,7 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { plan, verify } from './cross-provider-resume.mjs';
+import { coreSkills } from '../workbench/tools/workbench-layout.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -25,8 +26,9 @@ try {
   assert.equal(fs.existsSync(path.join(record.codexHome, 'config.toml')), false, 'the fixture must not weaken host sandbox or approval settings');
   assert.equal(fs.existsSync(path.join(record.codexHome, 'skills')), false, 'the fixture must not create duplicate Codex discovery');
   const pushedLane = execFileSync('git', ['ls-tree', '--name-only', 'main', 'workbench/skills/'], { cwd: record.remote, encoding: 'utf8' }).split('\n').filter(Boolean);
-  const bundleSize = fs.readdirSync(path.join(root, 'workbench', 'skills'), { withFileTypes: true })
-    .filter((entry) => entry.isDirectory()).length;
+  // The room carries the core bundle only; a maintainer skill this repository
+  // declares (S-004C TK-006L) never travels into a room's lane.
+  const bundleSize = coreSkills.length;
   assert.equal(pushedLane.filter((entry) => !entry.endsWith('.json') && !entry.endsWith('.md')).length, bundleSize, 'the pushed checkpoint carries the whole bundle in its lane');
   for (const stance of ['builder', 'auditor', 'reviewer', 'reconciler']) {
     assert.ok(pushedLane.includes(`workbench/skills/${stance}`), `${stance} travels with the room`);
