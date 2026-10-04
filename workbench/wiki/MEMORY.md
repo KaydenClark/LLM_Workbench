@@ -240,14 +240,17 @@ One article per delivered capability, named for what it delivers. Each line
 carries a one-line summary beside its link so a reader can choose a page
 without opening it. See [features/README.md](features/README.md).
 
+- [Control Fidelity Without Forced Uniformity](features/control-fidelity-without-forced-uniformity.md) - A report that compares a room's controls with the templates and labels each line unchanged, filled, changed, dropped or added, without failing on divergence.
 - [Dependency-Safe Direct Claiming](features/dependency-safe-direct-claiming.md) - direct Task claiming uses the same dependency eligibility as selection and refuses blocked work before changing anything.
 - [Fresh Template To Independent Project Proof](features/fresh-template-to-independent-project-proof.md) - the recorded proof that a clean Template copy became an independent project room and was continued in a fresh agent context, with its limits.
 - [Genesis From Blueprint Decisions And Active ADRs](features/genesis-from-blueprint-decisions-and-active-adrs.md) - creates a new room from a clean Template, a prepared note and an explicit plan, deriving one first capability from locked questions and active ADRs.
 - [Held-Out Path-Safety Evaluation](features/held-out-path-safety-evaluation.md) - a held-out path-handling eval task and grader scoring correctness, scope, verification honesty and doc upkeep separately.
+- [Installed Skill Identity And Inspection](features/installed-skill-identity-and-inspection.md) - Managed skill markers with a content hash and compatibility range, and read-only inspection that tells an installed copy from its source.
 - [Lexicon Freshness Repair](features/lexicon-freshness-repair.md) - repairs stale release, version and source-boundary claims in the Lexicon by checking them against the manifest, Git containment and links.
 - [Named Template Upgrade Release Gate](features/named-template-upgrade-release-gate.md) - requires each new Workbench version to be exercised in the named Workbench_Template installation before release readiness.
 - [Project Evidence Preparation For Blueprint Grilling](features/project-evidence-preparation-for-blueprint-grilling.md) - turns named project sources into a bounded provisional grilling note that keeps source identity and uncertainty and answers no owner question.
 - [Spec-Centered Progressive Disclosure](features/spec-centered-progressive-disclosure.md) - ordinary entry stays small: contract, routes, then the assigned Spec and its source, with no historical catalog read first.
+- [Upgrade Layout Without Replacing Skills](features/upgrade-layout-without-replacing-skills.md) - A layout-only upgrade route for an adopted legacy room whose skills cannot be replaced, with source provenance checked against the real checkout.
 - [Wiki Routing, Version Stamps And Safe Source Reads](features/wiki-routing-version-stamps-and-safe-source-reads.md) - the checks that tell a room its Wiki router is unreachable or its Wiki files are stamped with a stale version, and the safe-read boundary continuity input must pass.
 
 ## Individual Spec Articles
@@ -277,9 +280,6 @@ proof from current behavior. Original records remain intact pending lifecycle ga
 - [Feedback And Migration Integrity](design-concepts/spec-S-028-harness-feedback-integrity.md)
 - [Declared Integration And Recoverable Completion](design-concepts/spec-S-029-declared-integration-branch.md)
 - [Mechanical Permission Scope And Declared Lanes](design-concepts/spec-S-030-permission-scope-matches-lanes.md)
-- [Installed Skill Identity And Inspection](design-concepts/spec-S-031-installed-skill-generation.md)
-- [Upgrade Layout Without Replacing Skills](design-concepts/spec-S-032-upgrade-route-and-source-provenance.md)
-- [Control Fidelity Without Forced Uniformity](design-concepts/spec-S-034-control-fidelity-report.md)
 - [Release Candidate Proof And Historical Disposition](design-concepts/spec-S-035-workbench-v3-1-2-candidate.md)
 - [Evidence-Bounded Upgrade Claims (S-036)](design-concepts/spec-S-036-evidence-corrections.md)
 - [Line-Ending-Aware Records (S-037)](design-concepts/spec-S-037-line-ending-agnostic-records.md)

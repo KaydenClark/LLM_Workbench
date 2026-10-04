@@ -550,7 +550,7 @@ Consumer snapshot: 2 occurrences. Article semantic review: **passed for core cap
 
 ### S-031: Installed Skill Identity And Inspection
 
-Article: [Installed Skill Identity And Inspection](../../wiki/design-concepts/spec-S-031-installed-skill-generation.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-031-installed-skill-generation/SPEC.md`.
+Article: [Installed Skill Identity And Inspection](../../wiki/features/installed-skill-identity-and-inspection.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-031-installed-skill-generation/SPEC.md`.
 
 A canonical skill source and an installed copy can diverge. A review must name the path and commit it actually read; text from a user discovery root cannot be attributed to the release merely because the skill name matches.
 
@@ -568,7 +568,7 @@ Consumer snapshot: 3 occurrences. Article semantic review: **passed for core cap
 
 ### S-032: Upgrade Layout Without Replacing Skills
 
-Article: [Upgrade Layout Without Replacing Skills](../../wiki/design-concepts/spec-S-032-upgrade-route-and-source-provenance.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-032-upgrade-route-and-source-provenance/SPEC.md`.
+Article: [Upgrade Layout Without Replacing Skills](../../wiki/features/upgrade-layout-without-replacing-skills.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-032-upgrade-route-and-source-provenance/SPEC.md`.
 
 An already-adopted legacy room needs an upgrade route even when replacing its installed skills is not authorized or possible. `upgrade --layout-only` performs the legacy support-root transition with presence-only skill readiness. It does not compare, mark, install, back up or replace skills. The recovery record names lifecycle upgrade, presence-only handling and an empty skill backup list. Explicit skill replacement remains a distinct, mutually exclusive mode.
 
@@ -604,7 +604,7 @@ Consumer snapshot: 2 occurrences. Article semantic review: **passed for core cap
 
 ### S-034: Control Fidelity Without Forced Uniformity
 
-Article: [Control Fidelity Without Forced Uniformity](../../wiki/design-concepts/spec-S-034-control-fidelity-report.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-034-control-fidelity-report/SPEC.md`.
+Article: [Control Fidelity Without Forced Uniformity](../../wiki/features/control-fidelity-without-forced-uniformity.md). Immutable original: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-034-control-fidelity-report/SPEC.md`.
 
 A room may deliberately diverge from its template. Fidelity reporting makes that divergence inspectable instead of treating every local rule as a defect or silently accepting lost qualifiers.
 
