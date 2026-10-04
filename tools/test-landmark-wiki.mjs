@@ -74,6 +74,8 @@ const NAMED_FORMS = [
   ['slug whose later segments start with a digit', 'workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md'],
   ['slug with a version-like first segment', 'workbench/specs/S-036-v3-2-evidence-corrections/SPEC.md'],
   ['metadata path with a slug', '---\nsource_paths:\n  - workbench/specs/S-002A-landmark-records/SPEC.md\n---'],
+  ['name with a dotted version token', 'S-00O (Workbench v4.0.0 Release Spec) is the release.'],
+  ['name with a short version token', 'Workbench v4 Release Spec (S-00O) is the release.'],
   ['two named identifiers on one line', 'Landmark Records Spec (S-002A) and Landmark Tracker Foundation Spec (S-01T).'],
   ['bold name with identifier', '**Wiki Routing And Version Stamps** (S-00X) is delivered.'],
   ['connection identity with its name', 'Workbench connection identity (WB-0123456789ABCDEFGHIJKL) names this room.']

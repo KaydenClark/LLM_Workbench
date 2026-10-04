@@ -116,6 +116,13 @@ identity and reported until a name sits beside it. Unknown/custom type prefixes
 cannot pass by omission: a candidate such as `CUSTOM-000A` or `XS-001` returns
 incomplete until a name sits beside it or its namespace is designated.
 
+### Version tokens in names
+
+A name phrase may contain version tokens (`v4`, `v4.0.0`, `3.2.1`) as words, so a
+real title such as `Workbench v4.0.0 Release` names its identifier:
+`S-00O (Workbench v4.0.0 Release)` passes. A version token alone, with no name
+words beside the identifier, still leaves it bare.
+
 ### Tokens that are not identifiers
 
 Two escapes keep placeholders and ordinary words from being reported. Both apply
