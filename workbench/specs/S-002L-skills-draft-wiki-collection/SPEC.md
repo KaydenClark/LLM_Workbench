@@ -8,8 +8,8 @@
 **Updated:** 2026-10-04
 **Catalog description:** Give the draft skills wiki a declared home, an index and one article template, so every skill's draft article has somewhere to go and its connection problems can be found by grep.
 **Blockers:** none.
-**Latest event:** All three Tasks landed on integration through Task PRs; the assembled Spec awaits its separate-context review and owner Human QA.
-**Next gate:** Record the assembled-Spec review verdict, then owner Human QA on integration; the last acceptance box is checked in anticipation of that verdict and is unchecked again if the review fails.
+**Latest event:** TK-006O claimed by claude-director.
+**Next gate:** Close TK-006O with verification and documentation proof.
 
 > **Citation anchors.** pre=`07edccc57b8f75613ad1d09203a3e414d867b90c` post=`07edccc57b8f75613ad1d09203a3e414d867b90c`.
 
