@@ -15,29 +15,17 @@ import { coreSkills } from '../workbench/tools/workbench-layout.mjs';
 import { markerSourceIdentity, writeManagedMarker, readManagedMarker, skillContentHash } from './skill-marker.mjs';
 import { lstatOrNull, presentSkillPath, resolveSkillLink } from './skill-presence.mjs';
 import { isMainModule } from '../workbench/tools/workbench-paths.mjs';
+import { bundledSourceFailure } from './maintainer-skills.mjs';
 
 function fail(code, message, details = {}) {
   return { status: 'blocked', requiredSkills: coreSkills, installed: [], skipped: [], error: { code, message, ...details } };
 }
 
+// S-004C TK-006L: the lane holds exactly the core skills plus any maintainer
+// skills this checkout's manifest declares; only the core is ever installed.
 function validateSource() {
-  const names = fs.readdirSync(sourceRoot, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .sort();
-  const expected = [...coreSkills].sort();
-  if (JSON.stringify(names) !== JSON.stringify(expected)) {
-    return fail('invalid-bundled-core',
-      'The checked-out LLM Workbench skills directory must contain exactly the required core skills.',
-      { expected, actual: names });
-  }
-  for (const skill of coreSkills) {
-    const skillFile = path.join(sourceRoot, skill, 'SKILL.md');
-    if (!lstatOrNull(skillFile)?.isFile()) {
-      return fail('invalid-bundled-core', `Bundled skill ${skill} is missing SKILL.md.`, { skill });
-    }
-  }
-  return null;
+  const failure = bundledSourceFailure(root);
+  return failure ? fail(failure.code, failure.message, failure.details) : null;
 }
 
 // Resolve supported linked discovery roots before writing. Normal setup adds
