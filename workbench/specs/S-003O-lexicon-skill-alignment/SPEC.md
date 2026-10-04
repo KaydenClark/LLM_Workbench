@@ -100,7 +100,8 @@ For steps 1-5, check the article against the source and the cited Canon at the a
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-30 | planning | Spec authored from the owner's draft-skills-wiki direction; planning only | Read `~/.agents/skills/lexicon/SKILL.md`, `workbench/skills/README.md`, the FND-Q09 ledger row and feedback report at `07edccc5`; no implementation evidence | This Spec authored; no article or skill source written | Steps 1-6 open; S-002L and the S-00R decision outstanding |
-| 2026-10-04 | reference repair | The domain-modeling owner changed: S-002H was superseded by Required Domain Modeling Skill (S-004J); ownership and coordination lines now name S-004J | Read S-002H and S-004J at the remap branch; Current Verified State keeps its dated observation with the new owner noted | Current Verified State owner note, Decisions And Contracts, Non-Goals and Dependencies lines repointed | Unchanged |
+| 2026-10-04 | reference repair | The domain-modeling owner changed: S-002H was superseded by Required Domain Modeling Skill (S-004J); ownership and coordination lines now name S-004J | Read S-002H and S-004J at the remap branch; Current Verified State left as dated at its anchor | Decisions And Contracts, Non-Goals and Dependencies lines repointed | Unchanged |
+| 2026-10-04 | reference repair correction | The Current Verified State line that called S-002H the live domain-modeling owner now notes that Required Domain Modeling Skill (S-004J) replaced it; the dated observation keeps its anchor | Separate-context review of the remap candidate found that line still current-facing | Current Verified State owner note | Unchanged |
 
 ## Completion Result
 
