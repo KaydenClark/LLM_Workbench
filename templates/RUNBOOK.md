@@ -66,7 +66,7 @@ Contract change.
 | Operate project data | The project has seed data, migrations, imports, local databases or generated feeds. | [Data Operations](#data-operations) |
 | Deploy or start services | The project has deployment, scheduled jobs or service startup. | [Deployment Or Startup](#deployment-or-startup) |
 | Branch and open a pull request | You create a task branch or open a PR into integration, or need this room's Git commands. | [implement](workbench/skills/implement/SKILL.md#version-control-procedures); this room's commands: [Version-Control Procedures](#version-control-procedures) |
-| Merge, prove containment and clean up a branch | The integration review passed: merge the reviewed candidate, prove integration contains it and delete the merged branch. | [implement](workbench/skills/implement/SKILL.md#branch-completion); this room's closeout commands: [Version-Control Procedures](#version-control-procedures) |
+| Merge, prove containment and clean up a branch | A Task's merge answers are validated, or an assembled Spec candidate's Verify review passed: merge, prove integration contains it and delete the merged branch. | [implement](workbench/skills/implement/SKILL.md#branch-completion); this room's closeout commands: [Version-Control Procedures](#version-control-procedures) |
 | Upgrade the harness | The project moves to a newer Workbench version. | [Upgrading The Harness](#upgrading-the-harness) |
 | Write a manual harness feedback report | A setup-only Round One check succeeded and an assessment is assigned. | [Manual Harness Feedback Reports](#manual-harness-feedback-reports) |
 | Troubleshoot a known failure | A command fails with a symptom listed there. | [Troubleshooting](#troubleshooting) |
@@ -75,7 +75,7 @@ Contract change.
 | Size and continue work | You size a Task or leave work a fresh context can resume. | [Evidence And Continuation Practices](#evidence-and-continuation-practices); [notepad](workbench/skills/notepad/SKILL.md#continuing-after-a-save-or-handoff); [save](workbench/skills/save/SKILL.md#evidence-partitioning); [to-tasks](workbench/skills/to-tasks/SKILL.md#sizing-a-task) |
 | Check the Workbench connection identity | The room's `workbenchId` is created, read or compared. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#workbench-connection-identity) |
 | Check configured-host capabilities | A host is set up, or its lanes, skill discovery or tool execution are in doubt. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#configured-host-capability-checks) |
-| Review a candidate independently | A candidate needs separate-context review before integration, or a main-readiness or incident-claim review is requested. | [code-review](workbench/skills/code-review/SKILL.md#independent-review-boundaries) |
+| Review a candidate independently | An assembled Spec or landmark is at its Verify step and needs separate-context review, or a main-readiness or incident-claim review is requested. | [code-review](workbench/skills/code-review/SKILL.md#independent-review-boundaries) |
 
 ## Ordinary Entry
 
@@ -150,7 +150,7 @@ authorized by ordinary language; do not wait for a second skill invocation.
 | Preserve or resume meaningful work | `notepad`; verify live state and returned revision |
 | Reconcile agreed claims | `promote` with `to-docs` and `save`; no implied implementation |
 | Write specifications only | `to-spec` and needed `to-tasks`; stop at the specified endpoint |
-| Deliver assigned work | `carry` with `implement`, verification, independent integration review and `save` |
+| Deliver assigned work | `carry` with `implement`, verification, Task merge answers, independent Verify review of the assembled Spec and `save` |
 | Transfer a job or report to another context | core `handoff`; recipient purpose, instructions and context within assigned role scope |
 | Review a candidate or readiness | `code-review`; report only, no implementation or main merge |
 
@@ -578,7 +578,8 @@ commands and expected results here:
 
 Expected result: [clean scope, verified base/target, reviewable PR].
 
-Closeout, once the integration review has passed. A pushed branch is
+Closeout, once the Task's merge answers are validated or the Spec candidate's
+Verify review has passed. A pushed branch is
 recoverable, not delivered; finish the merge and clean up after yourself:
 
 ```bash
@@ -717,8 +718,9 @@ assigned target; it never authorizes a repair or invokes automated repair.
 5. At a meaningful continuation boundary, a fresh session should find the report,
    its linked spec, and the next executable action or owner gate using repository
    state only. No universal handoff or new self-created task is required.
-6. Before integration, the candidate's separate-context review challenges the
-   report's consequential claims and recommendations along with the change.
+6. At the Spec's Verify step, the assembled candidate's separate-context review
+   challenges the report's consequential claims and recommendations along with
+   the change.
 
 ## Troubleshooting
 
@@ -775,6 +777,6 @@ discovery and invocation, managed-tool execution) through the procedure in the
 
 ## Independent Review Boundaries
 
-Task and integration review, main-readiness review and incident-claim evidence
+Verify review of an assembled Spec, main-readiness review and incident-claim evidence
 follow the
 [`code-review` skill](workbench/skills/code-review/SKILL.md#independent-review-boundaries).

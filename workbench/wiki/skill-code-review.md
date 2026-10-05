@@ -46,7 +46,7 @@ In the S-01F (code-review skill rebuild Spec) scenario, a small Greeter room had
 
 ## Composition
 
-[Reviewer](../skills/reviewer/SKILL.md) is the stance that composes `code-review` for a fixed diff. `implement` calls it for a Task PR's separate-context review, and `carry`, `builder` and `auditor` name it for the separate-context gate that `AGENTS.md` requires before branches combine into `integration`; self-review alone never satisfies that gate. The [Runbook behavior route](../../RUNBOOK.md#behavior-selection) maps "Review a candidate or readiness" to this skill, report only. Failed findings go back to the author as separately authorized work; the skill itself starts no repair.
+[Reviewer](../skills/reviewer/SKILL.md) is the stance that composes `code-review` for a fixed diff. `implement` calls it for the assembled Spec's separate-context review at its Verify step, never for a Task PR (a Task is judged by its two merge answers, which the Spec's Dispatcher, Director or next agent validates), and `carry`, `builder` and `auditor` name it for the Verify gate that `AGENTS.md` requires; self-review alone never satisfies that gate. The [Runbook behavior route](../../RUNBOOK.md#behavior-selection) maps "Review a candidate or readiness" to this skill, report only. Failed findings go back to the author as separately authorized work; the skill itself starts no repair.
 
 ## Upstream relationship
 

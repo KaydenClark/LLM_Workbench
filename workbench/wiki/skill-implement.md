@@ -46,7 +46,10 @@ from this illustrative example.
 
 The endpoint comes from the assignment. A draft-only run stops with a candidate
 and named pending gates. Normal scoped Task handback is distinct from the
-separate-context review required before integration. Task closure needs scoped
+separate-context review required at the assembled Spec's Verify step. A Task
+merge carries two answers in its merge request, whether it can merge into its
+target branch and whether it completed the Task, which the Spec's Dispatcher,
+Director or next agent validates. Task closure needs scoped
 acceptance and proof; Spec completion and owner Human QA follow the
 [Contract](../../AGENTS.md) and [Runbook](../../RUNBOOK.md), not the skill's own
 judgment. The skill also carries the

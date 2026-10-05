@@ -273,13 +273,18 @@ surface. The reworked Blueprint describes the nested topology as the intended
 destination; a later Spec derived from it delivers the tooling and ends this
 exemption.
 
-**Retained during the exemptions.** The `AGENTS.md` integration gate stays in
-force: every PR into `integration` gets a separate-context review of its
-immutable candidate before merge, and a new candidate needs a fresh review.
-This is the current Contract's rule for the `integration` boundary, not the
-per-Task review ceremony WF-8B rejected; it applies because the merge target
-is `integration`, and it is what makes exemption 2 safe. The Template Upgrade
-Release Gate runs before any tag. Owner-only `main` promotion is unchanged.
+**Retained during the exemptions.** The Template Upgrade Release Gate runs
+before any tag. Owner-only `main` promotion is unchanged.
+
+**Owner change, 2026-10-05: no per-PR review.** This paragraph used to retain a
+separate-context review of every PR into `integration`. The owner withdrew it:
+each Task PR into `integration` now carries its two merge answers (can it merge
+into the branch it targets, and did it complete the Task or is more needed),
+validated by the Spec's Dispatcher, Director or next agent, and separate-context
+review runs once per assembled candidate at the Spec's Verify step, by a fresh
+context of the provider the session runs on. Exemption 2 still decides where a
+Task lands; it no longer decides how a Task is judged. `AGENTS.md` Git Rules
+own the rule ([Task Merge Answers And Verify Review](../../../AGENTS.md#task-merge-answers-and-verify-review)).
 
 ### Integration decision and progress reconciliation
 

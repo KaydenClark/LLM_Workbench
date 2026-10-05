@@ -188,5 +188,6 @@ assigned target; it never authorizes a repair or invokes automated repair.
 5. At a meaningful continuation boundary, a fresh session should find the report,
    its linked spec, and the next executable action or owner gate using repository
    state only. No universal handoff or new self-created task is required.
-6. Before integration, the candidate's separate-context review challenges the
-   report's consequential claims and recommendations along with the change.
+6. At the Spec's Verify step, the assembled candidate's separate-context review
+   challenges the report's consequential claims and recommendations along with
+   the change.

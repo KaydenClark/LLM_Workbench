@@ -28,7 +28,8 @@ If only conversation context exists, save material context before it can be lost
    carries the same scope. Stop here when this is the requested endpoint.
 5. Only where implementation is authorized, compose `carry` and `implement`
    for the selected tasks. Keep one lead responsible for evidence and docs;
-   verify, obtain independent integration review and prove remote containment
+   verify, write each Task's merge answers, obtain the assembled Spec's independent
+   Verify review and prove remote containment
    before claiming delivery. Continue independent authorized slices if another
    has a genuine blocker. Never select unrelated work.
 6. Verify durable read-back before cleanup. Keep unresolved decisions,

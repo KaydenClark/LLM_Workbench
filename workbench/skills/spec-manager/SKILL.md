@@ -58,9 +58,11 @@ slices proceed concurrently.
 Arrange verification of the assembled Spec through Reviewer or Auditor stance
 work. The reviewed unit is the assembled Spec at an immutable candidate bound
 to a content digest, obtained with `report S-### --candidate <sha>` and
-recorded with `verdict`; a Task PR landing under a room's Task-PR exemption
-is reported by `gate --task TK-### --spec S-###`. Read the current release
-owner for that exemption rather than assuming it.
+recorded with `verdict`. A Task PR landing under a room's Task-PR exemption is
+reported by `gate --task TK-### --spec S-###`; validate its Worker's two
+merge answers yourself and merge when they hold and the merge is green, with
+no separate-context review. Read the current release owner for that exemption
+rather than assuming it.
 
 Route cross-Spec issues, shared writers outside the Spec and owner tradeoffs
 to the Director. The Dispatcher never approves its own assembled candidate
