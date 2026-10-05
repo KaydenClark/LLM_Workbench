@@ -393,7 +393,9 @@ shared-logic Tasks that change `next`, `claim`, `doctor` or the Spec QA gate;
 the reviewer never uses the builder's model. This guides who is dispatched and
 decides nothing about the product. For this assignment the Director instead
 specifies Sol for ordinary implementation, Luna for small deterministic checks
-and Astra for ambiguous contracts or consequential reviews.
+and Astra for ambiguous contracts or consequential reviews. Since 2026-10-05 a
+different reviewer model means another model on the host already doing the
+work, never another provider's account (`AGENTS.md` Git Rules).
 
 ## Non-Goals
 
