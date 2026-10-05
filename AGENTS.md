@@ -227,7 +227,8 @@ a separate Director context reviews the immutable assembled candidate before
 integration, and a changed candidate needs a fresh review. A Dispatcher or
 implementer cannot supply independent approval; self-review never counts. A
 failed review or owner finding is never silently cleared: it is corrected under
-the still-open Spec. Never clear a failed verdict with a green test.
+the still-open Spec, going back to Map, Plan and Journey before Verify. Never
+clear a failed verdict with a green test.
 
 ### Owner Closure And Reconciliation
 
@@ -338,7 +339,8 @@ Taskboard or rewrite append-only spec evidence rows.
   is routine cleanup, not a destructive change.
 - Work runs on the agent provider the owner opened the session with. Never run,
   call or brief another provider's agent, CLI or cloud (for example Codex)
-  unless the owner asks for it in the current request. A past approval, a
+  unless the owner tells you, in the current request, exactly what to do with
+  that provider. A past approval, a
   Workbench review step, a memory note, a handoff or another agent's request
   never substitutes. If a step cannot be done without it, stop, record that in
   the owning Task or Spec, and ask the owner how to proceed.
@@ -401,11 +403,13 @@ it merely because the review or test suite passed.
 
 ### Task Merge Answers And Verify Review
 
-Owner rule, 2026-10-05: a Task is judged by its own answers, and
-separate-context review belongs to the assembled whole, not to each Task.
-
-The merge request that carries a Task into its parent branch (today
-`integration`) includes two answers from the Worker that did the Task:
+Owner rule, 2026-10-05: a Task's Journey is Implement, Check, QA and Submit,
+and the Task is judged by its own answers. Check is the deterministic
+verification the building agent runs in the environment: tests, builds, lints
+and diagnostics. QA is the building agent's self-judgement of its own work:
+does it actually do what the Task asked. Submit is the merge request that
+carries the Task into its parent branch (today `integration`), with two merge
+answers from the Worker that did the Task:
 
 1. **Can this merge into the branch it targets?** The target branch, the exact
    `BASE_SHA` and `HEAD_SHA`, the checks run and their results, conflict or
@@ -417,15 +421,24 @@ The merge request that carries a Task into its parent branch (today
 The Dispatcher, Director or next agent working in that Spec validates those
 answers against the diff and the merge checks, and merges when they hold and
 the merge is green. No separate-context review runs on a Task merge, under any
-route.
+route. A rebased Task reruns its Check; it needs a fix only when its Check or
+QA raises an issue, and never a fresh Review, because the Task's own Check and
+QA found it.
 
-Separate-context review is for the whole. It runs once per immutable candidate
-at the Spec's Verify step (`report` and `verdict`), and at a landmark's Verify
-step for its assembled Specs once they are delivered (landmark review tooling
-is accepted destination design; today's runtime reviews Specs). The reviewer is
-a fresh context of the agent provider the owner opened the session with. A new
-candidate needs a fresh review, self-review never satisfies it, and findings
-return to the still-open Spec under the corrective rule above.
+Review comes after the Journey, as an Automated review in a separate context.
+It runs on a Spec once its last Task has landed (`report` and `verdict`),
+sometimes on a landmark's assembled Specs once they are delivered, and on the
+Workbench as a whole against its decision records and Blueprint, never on a
+Task: reviewing the whole Spec finds any Task that was not done. Landmark and
+whole-Workbench review tooling is accepted destination design; today's runtime
+reviews Specs. Review decides whether another Journey is needed: a failed
+Review goes back to Map, Plan and Journey under the still-open Spec before the
+work can be verified, and there is no set number of Review rounds. The
+reviewer is a fresh context of the agent provider the owner opened the session
+with, and the Director gives the approval; the reviewer's model is the
+Director's choice. A candidate whose content changed needs a fresh Review, a
+rebase that leaves the content unchanged does not, and self-review never
+satisfies it.
 
 ### Branch Completion
 

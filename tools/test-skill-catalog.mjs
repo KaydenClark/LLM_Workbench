@@ -909,6 +909,22 @@ for (const controls of ['AGENTS.md', 'templates/AGENTS.md']) {
     'Did this complete the Task, or is more needed?',
     'agent provider the owner opened the session with'
   ], `${controls} Task merge answers and provider rule`);
+  // Owner, 2026-10-05: the Journey is Implement, Check, QA and Submit; Review
+  // comes after it, never on a Task, with no set number of rounds; a failed
+  // Review goes back to Map, Plan and Journey; a rebase never needs a Review;
+  // another host runs only when the owner says exactly what to do with it.
+  const flat = body.replace(/\s+/g, ' ');
+  assertIncludesAll(flat, [
+    'Implement, Check, QA and Submit',
+    'QA is the building agent\'s self-judgement',
+    'Review comes after the Journey',
+    'never on a Task',
+    'goes back to Map, Plan and Journey',
+    'no set number of Review rounds',
+    'A rebased Task reruns its Check',
+    'never a fresh Review',
+    'exactly what to do with that provider'
+  ], `${controls} Journey verbs and Review placement`);
 }
 
 const updateHarness = read('workbench/skills/update-harness/SKILL.md');

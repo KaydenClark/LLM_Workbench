@@ -16,7 +16,8 @@ test('reviewer routes actionable findings, evidence limits and inability hand-ba
   assert.match(skill, /\[Review evidence and hand-back\]\(references\/review-evidence\.md\)/);
   const reference = read('workbench/skills/reviewer/references/review-evidence.md');
   for (const term of ['severity', 'proven', 'uncertain', 'path:line@', 'user impact', 'smallest safe correction', 'not attempted', 'approval rejected', 'source', 'behavioral', 'inability', 'no findings', 'missing', 'read-only', 'Human QA']) assert.ok(reference.replace(/\s+/g, ' ').includes(term), `missing report boundary: ${term}`);
-  assert.match(reference, /new SHA.*fresh review/s);
+  assert.match(reference, /changed content.*fresh review/s);
+  assert.match(reference, /rebase that leaves the content unchanged needs no fresh review/);
 });
 test('reviewer portable reference links resolve within the source bundle', () => {
   const reference = read('workbench/skills/reviewer/references/review-evidence.md');

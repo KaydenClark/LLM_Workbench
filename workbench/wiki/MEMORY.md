@@ -163,6 +163,7 @@ The owner adopted terms from the AI Coding Dictionary on 2026-10-03. These entri
 - [Stateful: continuity is re-read from the layer below](dictionary-stateful.md): how notepads, handoffs, the Wiki and `AGENTS.md` carry state across sessions
 - [Cache tokens: why the start of a session stays stable](dictionary-cache-tokens.md): why always-loaded content is cheaper when it does not change mid-session
 - [Non-determinism: why one passing run is not proof](dictionary-non-determinism.md): why verification and repeated trials are required
+- [Automated review: the Review verb, after the Journey](dictionary-automated-review.md): what a separate-context review is, that it reviews Specs, landmarks or the whole Workbench and never a Task, and why it runs on the owner's chosen host
 
 ## Roles And Stances
 

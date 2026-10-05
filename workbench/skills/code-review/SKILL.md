@@ -69,9 +69,11 @@ Run read-only project verification when it materially raises confidence. Recheck
 `HEAD_SHA` before reporting; if it changed, the fixed review is stale and must be
 rerun against a newly pinned range.
 
-A pass belongs to the candidate it reviewed. A new candidate SHA, or a
-changed content digest at integration, needs a fresh review pinned to that
-candidate. A note that an earlier candidate was reviewed is context,
+A pass belongs to the candidate it reviewed, judged by its content. A changed content digest
+needs a fresh review pinned to the new candidate; a rebase that leaves the
+content unchanged needs none, only its Check rerun. A failed review sends the
+Spec back to Map, Plan and Journey, and the next assembled candidate gets one
+fresh review; there is no set number of rounds. A note that an earlier candidate was reviewed is context,
 never a verdict for this one.
 
 ## 4. Report findings first
@@ -99,8 +101,8 @@ owner's approval nor resets a failed Human QA gate.
 ## Independent review boundaries
 
 Verify review of an assembled Spec uses a fresh context of the session's own
-agent provider (another provider only when the owner asks for it in the current
-request) and an immutable candidate, comparison base, expected integration tip
+agent provider (another provider only when the owner tells you, in the current request,
+exactly what to do with it) and an immutable candidate, comparison base, expected integration tip
 and named verification. Inspect scope, behavior,
 recovery, documentation, installed identities and consequential report claims.
 If the target changes, compare and review the resulting candidate as required

@@ -804,7 +804,7 @@ test('both Lexicons define the Workbench terms once and use "controls" only for 
 // S-004G: each workflow verb has exactly one row stating its confirmed
 // meaning, and the Workflow row states the open verb set and the delivery
 // workflow, with Journey as the build loop and Delivered replacing Complete.
-const WORKFLOW_VERBS = ['Idea', 'Align', 'Confirm', 'Prototype', 'Map', 'Plan', 'Implement', 'Check', 'Review', 'Verify', 'Journey', 'Approve', 'Delivered', 'Clean Up'];
+const WORKFLOW_VERBS = ['Idea', 'Align', 'Confirm', 'Prototype', 'Map', 'Plan', 'Implement', 'Check', 'QA', 'Submit', 'Review', 'Verify', 'Journey', 'Approve', 'Delivered', 'Clean Up'];
 
 test('both Lexicons define every workflow verb once and state the delivery workflow with Journey as the build loop', () => {
   const rowsOf = (content, term) => content.split('\n').filter((line) => line.startsWith(`| **${term}** |`));
@@ -812,12 +812,22 @@ test('both Lexicons define every workflow verb once and state the delivery workf
     const content = read(root, relative);
     for (const verb of [...WORKFLOW_VERBS, 'Workflow verb', 'Workflow']) assert.equal(rowsOf(content, verb).length, 1, `${relative} has exactly one ${verb} row`);
     const workflow = rowsOf(content, 'Workflow')[0];
-    assert.match(workflow, /Idea, Align, Confirm, Map, Plan, Journey, Approve, Delivered, Clean Up/, `${relative} Workflow row names the delivery workflow`);
+    assert.match(workflow, /Idea, Align, Confirm, Map, Plan, Journey, Review, Verify, Approve, Delivered, Clean Up/, `${relative} Workflow row names the delivery workflow`);
     assert.match(workflow, /verb set stays open/, `${relative} Workflow row says the set is open`);
     assert.doesNotMatch(workflow, /eight verbs Idea|official workflow verbs everywhere/, `${relative} Workflow row drops the closed list`);
-    assert.match(rowsOf(content, 'Journey')[0], /Implement, Check, Review and Verify, repeated until the confirmed concept is built\. Map and Plan come before it and are not part of it/, `${relative} Journey row`);
+    // Owner, 2026-10-05: QA and Submit join the Journey; Review comes after it
+    // and decides whether another Journey is needed.
+    assert.match(rowsOf(content, 'Journey')[0], /Journey is Implement, Check, QA and Submit\. Map and Plan come before it; Review comes after it and decides whether another Journey is needed/, `${relative} Journey row`);
+    assert.doesNotMatch(rowsOf(content, 'Journey')[0], /Implement, Check, Review and Verify, repeated/, `${relative} Journey row drops the replaced loop`);
+    assert.match(rowsOf(content, 'QA')[0], /self-judgement/, `${relative} QA row`);
+    assert.match(rowsOf(content, 'Submit')[0], /merge request/, `${relative} Submit row`);
+    const review = rowsOf(content, 'Review')[0];
+    assert.match(review, /decides whether another Journey is needed/, `${relative} Review row`);
+    assert.doesNotMatch(review, /before it merges into its Spec's branch|Task pull request/, `${relative} Review row is not a Task review`);
+    if (relative === 'LEXICON.md') assert.match(review, /dictionary-automated-review\.md/, `${relative} Review row routes depth to the Wiki dictionary`);
+    assert.match(content.split('\n').find((line) => line.startsWith('| **Automated review** (')), /a Spec, sometimes a landmark, or the Workbench as a whole[^|]*never a Task/, `${relative} Automated review row scope`);
     assert.match(rowsOf(content, 'Delivered')[0], /Delivered, not Complete/, `${relative} Delivered row`);
-    assert.match(rowsOf(content, 'Check')[0], /automated checks the building agent runs on its own Task/, `${relative} Check row`);
+    assert.match(rowsOf(content, 'Check')[0], /deterministic verifications the building agent runs in the environment on its own Task/, `${relative} Check row`);
     assert.doesNotMatch(rowsOf(content, 'Align')[0], /not itself implementation permission/, `${relative} Align row drops the old confirmation clause`);
     assert.match(rowsOf(content, 'Confirm')[0], /authorizes the agents to carry the concept to its endpoint/, `${relative} Confirm row`);
     assert.equal(content.split('\n').filter((line) => /^\| \*\*Map\*\* \|/.test(line)).length, 1, `${relative} keeps one Map row for noun and verb`);
@@ -859,7 +869,8 @@ test('the workflow verbs decision carries the Journey correction and no active r
   for (const [file, text] of records) assert.doesNotMatch(text, /Journey is Map, Plan, Implement, Review and Verify/, `${file} still states the replaced Journey`);
   const workflow = records.find(([file]) => /\/000X-the-workflow-is-eight-verbs/.test(file));
   assert.ok(workflow, 'the workflow verbs decision stays an active accepted record');
-  assert.match(workflow[1], /Journey is Implement, Check, Review and Verify, repeated until the confirmed concept is built; Map and Plan come before it and are not part of it/);
+  assert.match(workflow[1], /Journey is Implement, Check, QA and Submit; Map and Plan come before it, and Review comes after it and decides whether another Journey is needed/);
+  assert.match(workflow[1], /Amended 2026-10-05/);
   assert.match(workflow[1], /the verb set is open/i);
   assert.match(workflow[1], /Amended 2026-10-03/);
   assert.match(workflow[1], /git show [0-9a-f]{7,40}:workbench\/docs\/adr\/000X-/, 'the amendment names where the earlier text reads');
@@ -872,9 +883,9 @@ test('the workflow Wiki pages state the delivery workflow and Journey as the bui
   for (const file of ['workflow-verbs.md', 'idea-to-delivery-workflow.md']) {
     const page = read(root, `workbench/wiki/design-concepts/${file}`).replace(/\s+/g, ' ');
     assert.doesNotMatch(page, /Journey \(Map, Plan, Implement, Review, Verify\)|Map, Plan, Implement, Review and Verify together are a \*\*Journey|Map through Verify together are one Journey/, `${file} still states the replaced Journey`);
-    assert.match(page, /Idea, Align, Confirm, Map, Plan, Journey, Approve, Delivered, Clean Up/, `${file} names the delivery workflow`);
+    assert.match(page, /Idea, Align, Confirm, Map, Plan, Journey, Review, Verify, Approve, Delivered, Clean Up/, `${file} names the delivery workflow`);
   }
-  assert.match(read(root, 'workbench/wiki/design-concepts/workflow-verbs.md').replace(/\s+/g, ' '), /Journey is the build loop: Implement, Check, Review and Verify, repeated until the confirmed concept is built/);
+  assert.match(read(root, 'workbench/wiki/design-concepts/workflow-verbs.md').replace(/\s+/g, ' '), /Journey is the build loop: Implement, Check, QA and Submit/);
 });
 
 // S-004E: each AI Coding Dictionary term the owner adopted has exactly one
@@ -971,6 +982,7 @@ const AI_CODING_WIKI_ENTRIES = {
   'dictionary-harness.md': 'harness', 'dictionary-session.md': 'session', 'dictionary-context.md': 'context',
   'dictionary-context-window.md': 'context-window', 'dictionary-stateless.md': 'stateless', 'dictionary-stateful.md': 'stateful',
   'dictionary-cache-tokens.md': 'cache-tokens', 'dictionary-non-determinism.md': 'non-determinism',
+  'dictionary-automated-review.md': 'automated-review',
 };
 
 test('each AI Coding Dictionary Wiki entry is routed from MEMORY.md and links its row, its dictionary entry and its owners', () => {

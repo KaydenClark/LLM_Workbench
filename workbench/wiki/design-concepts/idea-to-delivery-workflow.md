@@ -15,7 +15,7 @@ source_paths:
   - AGENTS.md
 parent: none
 authorized_by: the owner's Blueprint teardown answer that the workflow map moves to the Workflow landmark and the Wiki, 2026-10-03
-last_verified: 2026-10-03
+last_verified: 2026-10-05
 ---
 
 # The Workflow From Idea To Delivery
@@ -31,16 +31,20 @@ structured account.
 
 ## The loop in the verbs
 
-The delivery workflow reads Idea, Align, Confirm, Map, Plan, Journey, Approve,
-Delivered, Clean Up; the set of workflow verbs is open, and the
-[Workflow Verbs](workflow-verbs.md) page explains them. Journey is the build
-loop, Implement, Check, Review and Verify, with Map and Plan before it, and the
-workflow loops back to Align when the owner sends the result back at Approve:
+The delivery workflow reads Idea, Align, Confirm, Map, Plan, Journey, Review,
+Verify, Approve, Delivered, Clean Up; the set of workflow verbs is open, and
+the [Workflow Verbs](workflow-verbs.md) page explains them. Journey is the
+build run for each Task: Implement, Check, QA and Submit, with Map and Plan
+before it. Review comes after the Journey and decides whether another Journey
+is needed: a failed Review goes back to Map, Plan and Journey before Verify.
+The workflow loops back to Align when the owner sends the result back at
+Approve:
 
 ```text
-Idea -> Align -> Confirm -> Map -> Plan -> Journey -> Approve -> Delivered -> Clean Up
-          ^                                              |
-          +-------------- sent back at Approve ----------+
+Idea -> Align -> Confirm -> Map -> Plan -> Journey -> Review -> Verify -> Approve -> Delivered -> Clean Up
+          ^                   ^                         |                    |
+          |                   +---- failed Review ------+                    |
+          +------------------------- sent back at Approve -------------------+
 ```
 
 The owner brings an idea. Before it is clear enough to Align, the owner may
@@ -67,10 +71,10 @@ context ([DDR on prototypes](../../docs/ddr/000D-prototype-needs-no-map-and-land
 | Create Spec | Map writes the Spec, the landmark and any decision record |
 | Create Tasks, Update Taskboard | Plan writes the Tasks; the Taskboard is a generated projection of them |
 | Pick up a hot non-conflicting Task, create its branch and worktree, Implement | Implement, one Worker per Task, in parallel where Tasks do not conflict |
-| QA / Verify, Commit and push, Review Task | The Worker's own self-check and hand-back; a Task has no review or approval gate |
+| QA / Verify, Commit and push, Review Task | Check, QA and Submit: the Worker's deterministic checks, its self-judgement, and the merge request carrying its merge answers; a Task has no review or approval gate |
 | Merge Task into Spec branch, Delete Task branch after containment | Containment, not QA; the branch goes once the Spec branch contains it |
 | Repeat until the Spec is assembled | Implement continues until the assembled Spec can be checked |
-| Whole-Spec QA / Verify; If findings, create corrective Tasks | Review and Verify on the assembled Spec; a failed check creates corrective work under the open Spec |
+| Whole-Spec QA / Verify; If findings, create corrective Tasks | Review on the assembled Spec, then Verify; a failed Review goes back to Map, Plan and Journey under the open Spec |
 | If approved, merge Spec into Integration | The Spec merges into integration after the separate-context approval |
 | Owner Human QA on Integration; Pass, owner-only merge into Main | Human QA, the owner's evaluation of delivered work; only the owner merges integration into main |
 | Fail, return to Align and revisit the concept or Blueprint as needed | The workflow loops to Align at the scope the failure implicates |
@@ -94,8 +98,9 @@ at once on Tasks that do not conflict.
 When the Spec is assembled, its Dispatcher verifies the whole Spec against its
 own destination. The Director then approves the immutable assembled candidate in
 a separate context before it combines into integration; neither the Dispatcher
-nor any agent that implemented a Task in it can give that approval. A check that
-fails creates corrective work and the candidate is checked again. The two QA
+nor any agent that implemented a Task in it can give that approval. A Review
+that fails sends the Spec back to Map, Plan and Journey, and the next assembled
+candidate is reviewed once more; there is no set number of rounds. The two QA
 gates, their roles and their timing belong to
 [the QA gates decision](../../docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md),
 and [the controls](../../../AGENTS.md#git-rules) own the operative Git gate.
@@ -148,3 +153,5 @@ and those words move with the controls.
 - 2026-10-03: created in the Blueprint short-page work (the Blueprint Short Page
   Spec) from the owner's teardown answer that the workflow map moves to the
   Workflow landmark and the Wiki, rewritten in the workflow verbs.
+- 2026-10-05: the owner added QA and Submit to the Journey and moved Review
+  after it, with a failed Review going back to Map, Plan and Journey.
