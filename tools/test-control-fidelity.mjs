@@ -523,7 +523,8 @@ function taskWorkflowContract(content, generic = false) {
     ['Delivered blocker', lifecycle, /`S-###:delivered`[\s\S]*content-bound[\s\S]*fetch integration/],
     ['Owner-decision blocker', lifecycle, /`owner:<decision>`[^.]*removed/],
     ['Blocker diagnostics', lifecycle, /`blocked-without-blocker`[\s\S]*`unknown-blocker-qualifier`/],
-    ['Current branch exception', git, generic ? /route actually declared[\s\S]*temporary Task-PR exception requires immutable separate-context[\s\S]*review before integration/ : /S-00O[\s\S]*exemption 2[\s\S]*Task PR[^.]*`integration`[\s\S]*separate-context review/],
+    ['Current branch exception', git, generic ? /route actually declared[\s\S]*temporary Task-PR exception[\s\S]*no\s+separate-context\s+review\s+of\s+its\s+own[\s\S]*assembled\s+Spec/ : /S-00O[\s\S]*exemption 2[\s\S]*Task PR[^.]*`integration`[\s\S]*no\s+separate-context\s+review\s+of\s+its\s+own[\s\S]*assembled\s+Spec/],
+    ['Review on the owner\'s own host', git, /fresh\s+agent\s+context[\s\S]*never\s+invoke\s+another\s+provider's\s+CLI\s+or\s+account[\s\S]*unless\s+the\s+owner\s+asks/],
     ['Flexible owner QA', git, /milestones[\s\S]*accumulated work[\s\S]*exhausted\s+Specs[\s\S]*valued Spec[\s\S]*Director escalation/],
     ['Failed QA retained', git, /does not reset a failed\s+Human QA gate/],
     ['Owner-only main', git, generic ? /owner-only final merge:[\s\S]*`\[OWNER_ONLY_MERGE\]`/ : /only the owner merges `integration` into `main`/]
@@ -531,6 +532,7 @@ function taskWorkflowContract(content, generic = false) {
   for (const [claim, section, pattern] of rules) assert.match(section, pattern, claim);
   assert.doesNotMatch(lifecycle, /claim\s+(?:TASK\.md|[^\n`]*\/TASK\.md)/, 'claim takes a Spec ID, not a Task path');
   assert.doesNotMatch(`${lifecycle}\n${git}`, /Every Task requires separate-context approval|Human QA occurs only at version completion/, 'no extra Task approval or version-only QA gate');
+  assert.doesNotMatch(git, /Task\s+PR[^.]*requires\s+separate-context\s+review|temporary\s+Task-PR\s+exception\s+requires\s+immutable\s+separate-context/, 'WF-8B: a Task PR carries no separate-context review of its own');
   const runtime = read(root, 'workbench/tools/spec-workbench.mjs');
   const supported = new Set(runtime.match(/Usage: spec-workbench\.mjs ([^ ]+)/)[1].split('|'));
   for (const match of content.matchAll(/spec-workbench\.mjs[ \t]+([a-z][a-z-]*)/g)) {

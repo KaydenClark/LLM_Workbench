@@ -89,7 +89,7 @@ Contract change.
 | Size and continue work | You size a Task or leave work a fresh context can resume. | [Evidence And Continuation Practices](#evidence-and-continuation-practices); [notepad](workbench/skills/notepad/SKILL.md#continuing-after-a-save-or-handoff); [save](workbench/skills/save/SKILL.md#evidence-partitioning); [to-tasks](workbench/skills/to-tasks/SKILL.md#sizing-a-task) |
 | Check the Workbench connection identity | A room's `workbenchId` is created, read or compared. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#workbench-connection-identity) |
 | Check configured-host capabilities | A host is set up, or its lanes, skill discovery or tool execution are in doubt. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#configured-host-capability-checks) |
-| Review a candidate independently | A candidate needs separate-context review before integration, or a main-readiness or incident-claim review is requested. | [code-review](workbench/skills/code-review/SKILL.md#independent-review-boundaries) |
+| Review a candidate independently | An assembled Spec candidate needs separate-context review before integration, or a main-readiness or incident-claim review is requested. | [code-review](workbench/skills/code-review/SKILL.md#independent-review-boundaries) |
 
 ## Release Identity
 
@@ -716,10 +716,13 @@ git diff --check
 gh pr create --base integration --fill
 ```
 
-Closeout, once the integration review has passed. Export `TASK_BRANCH`,
-`PR_NUMBER`, and the reviewed full commit SHA as `EXPECTED_HEAD` before running
-this block. Export `CLEANUP=no` when the owner defers cleanup; otherwise use
-`CLEANUP=yes`. Review must cover the live integration comparison before merging.
+Closeout, once the candidate is ready: a Task PR when its own verification is
+green (it has no separate-context review of its own while S-00O exemption 2
+holds), a Spec candidate when its assembled-Spec review has passed. Export
+`TASK_BRANCH`, `PR_NUMBER`, and the verified full commit SHA as `EXPECTED_HEAD`
+before running this block. Export `CLEANUP=no` when the owner defers cleanup;
+otherwise use `CLEANUP=yes`. A Spec candidate's review must cover the live
+integration comparison before merging.
 Export `SPEC_ID` naming the Spec this candidate is presented for. Export
 `TASK_ID` when the candidate is a Task PR (a Task ID with its Spec still
 open - what every PR is while S-00O exemption 2 holds); leave it unset for a
@@ -732,9 +735,9 @@ this block before the merge.
 ```bash
 (
 set -eu
-: "${TASK_BRANCH:?Set the reviewed task branch}"
-: "${PR_NUMBER:?Set the reviewed PR number}"
-: "${EXPECTED_HEAD:?Set the reviewed full commit SHA}"
+: "${TASK_BRANCH:?Set the verified task branch}"
+: "${PR_NUMBER:?Set the verified PR number}"
+: "${EXPECTED_HEAD:?Set the verified full commit SHA}"
 : "${CLEANUP:?Set yes or no according to the owner instruction}"
 : "${SPEC_ID:?Set the Spec ID this candidate is presented for}"
 case "$CLEANUP" in yes|no) ;; *) exit 1 ;; esac

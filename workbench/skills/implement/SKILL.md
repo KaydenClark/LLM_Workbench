@@ -98,14 +98,13 @@ approval. It does not authorize a Worker to approve the assembled Spec, record
 owner Human QA, or merge a candidate still awaiting review. A draft-only endpoint
 stops with the immutable candidate and pending gates named.
 
-While the room's Task-PR exemption holds (exemption 2 of its release Spec, which lands each Task as its own PR), a Task PR still requires separate-context review of its fixed diff as an immutable candidate before it lands: run `/code-review` against exact `BASE_SHA` and `HEAD_SHA`, including controls, the assigned spec, tests and consequential report claims, reported by `gate --task TK-### --spec S-###`.
-Repair only authorized findings, create a new truthful checkpoint, and re-review the changed candidate. The exact-head review must pass before the Task PR lands.
-At the declared integration branch (`git.integrationBranch` in `workbench/manifest.json`), a separate-context review of the assembled Spec is required, obtained with `report S-### --candidate <sha>` and bound to its content digest, recorded with `verdict`. Do not call an intermediate checkpoint or green self-review an integration PASS.
+While the room's Task-PR exemption holds (exemption 2 of its release Spec, which lands each Task as its own PR), a Task PR has no separate-context review of its own: it lands on the Task's own verification - red/green TDD, the full suite on the committed immutable candidate and its Receipt - and `gate --task TK-### --spec S-###` confirms it presents a Task of an open Spec.
+At the declared integration branch (`git.integrationBranch` in `workbench/manifest.json`), a separate-context review of the assembled Spec is required once its last Task has landed, obtained with `report S-### --candidate <sha>` and bound to its content digest, recorded with `verdict`. The reviewer runs `/code-review` over each delivered Task's fixed diff between exact `BASE_SHA` and `HEAD_SHA`, including controls, the assigned spec, tests and consequential report claims. A failed review becomes corrective Tasks under the still-open Spec: repair only authorized findings, create a new truthful checkpoint, and review the fresh candidate. Do not call an intermediate checkpoint or green self-review an integration PASS.
 
 ## 5. Close and recover remotely
 
 Close the task only after its scoped acceptance and required proof are met.
-If the task includes integration, the separate-context gate above also applies:
+If the task is its Spec's last and the work includes the Spec's integration review, the assembled-Spec gate above also applies:
 
 ```bash
 node workbench/tools/spec-workbench.mjs close S-### \

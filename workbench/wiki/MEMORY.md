@@ -196,7 +196,7 @@ entry.
 - [Suite needs a committed candidate](suite-needs-a-committed-candidate.md): a dirty tree fails about thirty tests through `invalid-source-identity`
 - [Lifecycle tool behaviors](lifecycle-tool-behaviors.md): claim, close, append-only and promote surprises
 - [Parallel lane dispatch](parallel-lane-dispatch.md): worktree lanes, read-only suite runner, one-at-a-time merges
-- [Separate-context review with Codex](separate-context-review-with-codex.md): a working `codex exec` route and its stdin trap
+- [Separate-context review](separate-context-review.md): what it is, that it runs once per assembled Spec, and that it never spends another provider's account
 - [Host-Memory Audit, 2026-09-26](archive/host-memory-audit-2026-09-26.md): the provenance record naming every promoted and excluded host memory file
 - [Maintainer skills](maintainer-skills.md): this repository's maintainer-only lane skills, which the release checks allow and never ship
 

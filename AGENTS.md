@@ -356,14 +356,16 @@ integration through reviewed changes; local notes and unmerged branches must
 not be their only discovery route.
 
 This repository currently uses S-00O's bootstrap exemption 2: each Task PR targets
-`integration` and requires separate-context review of its immutable candidate
-before that integration merge (`gate --task TK-### --spec S-###` checks the
-Task-PR form). This exception is an integration boundary, not a normal Task
-approval ceremony. The nested Task-branch -> Dispatcher Spec-branch ->
-integration topology is the Blueprint's destination; these controls do not
-claim delivered Spec-branch tooling. Follow the release owner when the
-exception changes, and retain assembled-Spec review (`gate --spec S-###
---candidate SHA`) before Spec integration.
+`integration` and merges on the Task's own verification - red/green TDD, the
+full suite on the committed candidate and its Receipt - with no separate-context
+review of its own (WF-8B; `gate --task TK-### --spec S-###` checks the Task-PR
+form). The separate-context review runs once per Spec, on the assembled Spec
+when its last Task has landed (`report S-### --candidate SHA`, `verdict`,
+`gate --spec S-### --candidate SHA`), before the Spec is presented for owner
+Human QA; a failed review becomes corrective Tasks under the still-open Spec
+(WF-8C). The nested Task-branch -> Dispatcher Spec-branch -> integration
+topology is the Blueprint's destination; these controls do not claim delivered
+Spec-branch tooling. Follow the release owner when the exception changes.
 
 - Branch per spec/task from the current PR target; the default staging base is
   `integration`. Prefixes: `codex/`, `claude/`, or `backup/`. Never commit
@@ -378,12 +380,20 @@ exception changes, and retain assembled-Spec review (`gate --spec S-###
   explicit approval. Commits are one logical change with an imperative subject.
 - Version bumps occur only after the new behavior and required proof are green.
 
-Before branches combine into `integration` (or the configured integration
-branch), a separate-context reviewer must check the immutable candidate against
-its controls, assigned spec, and named evidence. This gate challenges code,
+Before a Spec's work is accepted at `integration` (or the configured
+integration branch), a separate-context reviewer must check the immutable
+assembled candidate against its controls, assigned spec, and named evidence.
+The reviewed unit is the Spec, never a single Task. This gate challenges code,
 consequential report claims, and recommendations. Earlier review and audit are
 supports, not mandatory independent ceremonies per task. A new candidate
 requires a fresh review; self-review alone cannot satisfy the integration gate.
+
+A separate context is a fresh agent context - a new session or subagent that
+did not write the candidate and starts from only the diff, its Spec and these
+controls. Run it on the host already doing the work: never invoke another
+provider's CLI or account (for example `codex exec` from a Claude session, or
+Claude from a Codex session) for a review unless the owner asks for it in the
+current request. The owner's provider accounts are the owner's to spend.
 
 Owner Human QA is an owner-led evaluation process, not the approval command. It
 can be underway through audits and corrective cycles before the eventual
@@ -403,12 +413,12 @@ it merely because the review or test suite passed.
 ### Branch Completion
 
 A task is not finished at the push. A pushed branch is recoverable, not
-delivered. Merging a reviewed candidate, proving integration containment and
+delivered. Merging a verified candidate, proving integration containment and
 branch cleanup follow the
 [`implement` skill](workbench/skills/implement/SKILL.md#branch-completion).
-When the integration review passes, merge it and confirm `integration` contains
-the work; do not stall on an approved candidate or leave a passed PR waiting for
-the owner. Only `integration` into `main` is owner-only. "Never merge a PR left
+When a Task PR's verification is green, or an assembled Spec's review passes,
+merge it and confirm `integration` contains the work; do not stall on a ready
+candidate or leave a passed PR waiting for the owner. Only `integration` into `main` is owner-only. "Never merge a PR left
 open for review" means a PR whose review is still pending, not one that already
 passed.
 

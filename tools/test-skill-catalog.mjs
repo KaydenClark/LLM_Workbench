@@ -895,6 +895,24 @@ for (const [name, relativePath] of [
     '`HEAD_SHA`'
   ], `${name} reviewed-unit language`);
 }
+// WF-8B/WF-8C (owner, 2026-10-05): a Task PR under the exemption merges on
+// the Task's own verification; the separate-context review runs once, on the
+// assembled Spec. No core skill may restore a per-Task review.
+for (const [name, relativePath] of [
+  ['code-review', 'workbench/skills/code-review/SKILL.md'],
+  ['reviewer', 'workbench/skills/reviewer/SKILL.md'],
+  ['carry', 'workbench/skills/carry/SKILL.md'],
+  ['implement', 'workbench/skills/implement/SKILL.md']
+]) {
+  const content = read(relativePath);
+  assert.ok(content.includes('no separate-context review of its own'), `${name} must state that a Task PR carries no separate-context review of its own`);
+  assert.doesNotMatch(content, /Task PR still requires separate-context review|each Task still lands as its own PR reviewed|a Task still lands as its own PR reviewed here/,
+    `${name} must not restore the per-Task review WF-8B rejected`);
+}
+assert.ok(
+  read('workbench/skills/code-review/SKILL.md').includes("never invoke another provider's CLI or account"),
+  'code-review must keep a separate-context review on the host already in use'
+);
 assert.ok(
   read('workbench/skills/implement/SKILL.md').includes(
     'a separate-context review of the assembled Spec is required'

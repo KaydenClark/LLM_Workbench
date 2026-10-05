@@ -320,19 +320,27 @@ not be their only discovery route.
 
 The nested Task-branch -> Dispatcher Spec-branch -> integration topology is the
 destination. Use only the route actually declared by this room's controls and
-release owner; a temporary Task-PR exception requires immutable separate-context
-review before integration and does not create a normal Task approval ceremony.
-Do not infer delivered Spec-branch tooling from destination prose.
+release owner; a temporary Task-PR exception lands each Task on its own
+verification, with no separate-context review of its own, and keeps the
+separate-context review on the assembled Spec before owner Human QA. Do not
+infer delivered Spec-branch tooling from destination prose.
 
 - Never force-push shared history or merge review-held PRs without approval.
 - Bump versions only after behavior and proof are green.
 
 Before branches combine into the declared integration branch, a
 separate-context reviewer must check the immutable candidate against its
-controls, assigned spec, and named evidence. This gate challenges code,
+controls, assigned spec, and named evidence. The reviewed unit is the Spec,
+never a single Task. This gate challenges code,
 consequential report claims, and recommendations. Earlier review and audit are
 supports, not mandatory independent ceremonies per task. A new candidate
 requires a fresh review; self-review alone cannot satisfy the integration gate.
+
+A separate context is a fresh agent context - a new session or subagent that
+did not write the candidate and starts from only the diff, its Spec and these
+controls. Run it on the host already doing the work: never invoke another
+provider's CLI or account for a review unless the owner asks for it in the
+current request. The owner's provider accounts are the owner's to spend.
 
 Owner Human QA is an owner-led evaluation process, not the approval command. It
 can be underway through audits and corrective cycles before the eventual

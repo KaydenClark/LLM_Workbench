@@ -274,12 +274,23 @@ destination; a later Spec derived from it delivers the tooling and ends this
 exemption.
 
 **Retained during the exemptions.** The `AGENTS.md` integration gate stays in
-force: every PR into `integration` gets a separate-context review of its
-immutable candidate before merge, and a new candidate needs a fresh review.
-This is the current Contract's rule for the `integration` boundary, not the
-per-Task review ceremony WF-8B rejected; it applies because the merge target
-is `integration`, and it is what makes exemption 2 safe. The Template Upgrade
-Release Gate runs before any tag. Owner-only `main` promotion is unchanged.
+force at its locked unit: the assembled Spec. A Task PR under exemption 2
+lands on the Task's own verification (red/green TDD, the full suite on the
+committed candidate, its Receipt) with no separate-context review of its own,
+as WF-8B requires; the separate-context review runs once per Spec on its
+assembled candidate when its last Task has landed, before owner Human QA, and a
+failure becomes corrective Tasks under the still-open Spec (WF-8C).
+`integration` stays below owner-only `main`, which is what keeps exemption 2
+safe. The Template Upgrade Release Gate runs before any tag. Owner-only `main`
+promotion is unchanged.
+
+The earlier wording of this paragraph, in force 2026-09-16 to 2026-10-05,
+required a separate-context review of every PR into `integration`. With every
+Task landing as its own PR, that restored the per-Task review WF-8B rejected,
+multiplied by a fresh review on every rebased candidate; agents met it by
+running another provider's CLI (`codex exec`) and spent the owner's Codex
+allowance. On 2026-10-05 the owner directed review at Spec completion instead
+and an end to agents spending the owner's Codex account.
 
 ### Integration decision and progress reconciliation
 
@@ -580,6 +591,7 @@ workflow is owned by S-00P, not here.
 | 2026-10-04 | spec | Workbench self-drift pre/post for the v3 release retirement | `self-drift.mjs --phase pre` at integration 46ad978 and `--phase post` at candidate 42353d9 report the same seven baseline findings (one stale-claim, five stale-seed, one unverified-provenance; machineResult blocked, cleanUpdate false); the hot board no longer projects S-014, S-022 or S-050, and S-052 no longer shows a blocker | Bounded manual check found current-facing drift outside this change's writers: RUNBOOK Composed round trip section still calls the real cross-provider resume S-022's release gate (RUNBOOK is held by the S-004C lane); S-00N disposition rows and S-00Q TK-0Q8 still route S-050 TK-006 and S-014/S-022 disposition as open; ledger BPR-7/7A/7B1 dated readings still say S-050 is open | Not a clean update: the drift named here belongs to its owners' writers |
 | 2026-10-04 | spec | Review correction: open owner decisions now include the release-proof verb-list correction (GB-0026) | Separate-context review of f0f9169 (Codex gpt-5.5, read-only) FAIL, one Medium: the current-state section named only GB-0023 and GB-0025 while GB-0026 is open and release-proof related; Grill Board read at the candidate shows 20 open owner-decision items | Header Blockers and the Current release state owner-decision list name GB-0023, GB-0025 and GB-0026 and scope the other 17 to their own Specs | Fresh separate-context review of the corrected candidate |
 | 2026-10-04 | spec | Review correction: the integration target binding row reads as an open requirement, not delivered behavior | Separate-context review of 2cf10bf (Codex gpt-5.5, read-only) FAIL, one Medium: the S-00O row stated the S-054 binding as present while S-054 and S-00J record it undelivered; all other checks passed | The Current release state row now says the requirement is open in S-00J with no Task | Fresh separate-context review of the corrected candidate |
+| 2026-10-05 | spec | Owner correction: separate-context review moves from every Task PR to the assembled Spec, and reviews run on the host already doing the work | Owner request in chat 2026-10-05; Retained paragraph rewritten to WF-8B/WF-8C; AGENTS.md Git Rules, templates/AGENTS.md, RUNBOOK.md and the implement, carry, code-review and reviewer skills changed with failing-then-passing tests in test-control-fidelity, test-skill-catalog, test-runbook-index and test-branch-closeout; full suite run on the committed candidate | AGENTS.md, templates/AGENTS.md, RUNBOOK.md, templates/RUNBOOK.md, four core skills, Wiki separate-context-review page | Already-merged Task PRs keep their recorded reviews; no Spec is re-reviewed by this change |
 
 ## Completion Result
 

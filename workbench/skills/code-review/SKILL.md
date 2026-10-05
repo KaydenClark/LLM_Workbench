@@ -42,7 +42,7 @@ treat its declared support lanes as the only durable path authority.
 ### Separate the review question
 
 Integration review checks the assembled Spec against its controls, assigned scope and named evidence, obtained with `report S-### --candidate <sha>` and bound to its content digest, recorded with `verdict`.
-While the room's Task-PR exemption holds (exemption 2 of its release Spec, which lands each Task as its own PR), a Task still lands as its own PR reviewed here as an immutable candidate diff against its Spec, using exact `BASE_SHA` and `HEAD_SHA`, reported by `gate --task TK-### --spec S-###`.
+While the room's Task-PR exemption holds (exemption 2 of its release Spec, which lands each Task as its own PR), a Task PR has no separate-context review of its own and `gate --task TK-### --spec S-###` only reports it. Once the Spec's last Task has landed, review the assembled Spec here as an immutable candidate: each delivered Task's fixed diff against its Spec, using exact `BASE_SHA` and `HEAD_SHA`.
 Behavioral acceptance checks what actual installed agents did. Whole-Workbench main-readiness review checks system-wide coherence, ownership, drift and open acceptance against the Blueprint checklist under [Independent review boundaries](#independent-review-boundaries). None substitutes for another. A readiness request is review-only; only the owner approves and merges main. Use a fresh context for integration.
 
 ## 3. Inspect both axes
@@ -98,8 +98,10 @@ owner's approval nor resets a failed Human QA gate.
 
 ## Independent review boundaries
 
-Task/integration review uses a fresh context and immutable candidate, comparison
-base, expected integration tip and named verification. Inspect scope, behavior,
+Integration review of the assembled Spec uses a fresh context and immutable
+candidate, comparison base, expected integration tip and named verification.
+A fresh context is a new session or subagent that did not write the candidate.
+Run it on the host already doing the work; never invoke another provider's CLI or account for a review unless the owner asks for it in the current request. Inspect scope, behavior,
 recovery, documentation, installed identities and consequential report claims.
 If the target changes, compare and review the resulting candidate as required
 before combining branches; a prior PASS is not approval of changed content.

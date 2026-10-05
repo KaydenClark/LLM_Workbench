@@ -68,8 +68,10 @@ workflow or preference.
 Worker self-check supports ordinary Task hand-back to the Dispatcher. Dispatcher
 owns whole-Spec QA; the independent assembled integration review belongs to a
 separate uninvolved Director context. The current release exception routes
-Task PRs directly to integration with independent review; the
-[controls](../../AGENTS.md#git-rules) own that exception and its gates.
+Task PRs directly to integration on their own verification, with no
+separate-context review of their own; the assembled Spec gets that review once
+its last Task lands. The [controls](../../AGENTS.md#git-rules) own that
+exception and its gates.
 
 Review ends when its exact candidate, findings, coverage and limits are
 recoverable, or an inability identifies the missing item and responsible

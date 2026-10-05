@@ -390,7 +390,7 @@ const FAMILIES = [
         operation: 'Review a candidate independently', pointer: 'workbench/skills/code-review/SKILL.md#independent-review-boundaries',
         section: 'Independent Review Boundaries', stub: true,
         carries: [
-          'Task/integration review uses a fresh context and immutable candidate', 'a prior PASS is not approval of changed content',
+          'Integration review of the assembled Spec uses a fresh context and immutable candidate', 'a prior PASS is not approval of changed content',
           'Whole-Workbench main-readiness review is separately requested, review-only work.', 'Only the owner approves/merges main.',
           "A summary's omission is not proof of non-occurrence.", 'Repeated controlled trials are needed for reliability.'
         ]
@@ -402,7 +402,7 @@ const FAMILIES = [
         keeps: [
           /workbench\/skills\/implement\/SKILL\.md#version-control-procedures/, /workbench\/skills\/code-review\/SKILL\.md#independent-review-boundaries/,
           /RUNBOOK\.md#operations-index/, /[Nn]ever commit (directly )?to/, /Default PR target/, /force-push shared history/,
-          /separate-context reviewer must check the immutable candidate/, /self-review alone cannot satisfy the integration gate/,
+          /separate-context reviewer must check the immutable\s+(?:assembled\s+)?candidate/, /self-review alone cannot satisfy the integration gate/,
           /local notes and unmerged branches must not be their only discovery route/, /does not reset a failed Human QA gate/
         ],
         moved: [/normal route is a Worker Task-branch merge/, /A Task merge is containment/]
