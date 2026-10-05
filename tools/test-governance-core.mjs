@@ -121,7 +121,7 @@ test('the Runbook carries the operational branch closeout commands', () => {
 
 test('the Runbook closeout proves integration containment without a local integration checkout', () => {
   const runbook = read('RUNBOOK.md');
-  const start = runbook.indexOf('Closeout, once the integration review has passed');
+  const start = runbook.indexOf('Closeout, once the candidate is ready');
   const end = runbook.indexOf('## Manual Harness Feedback Reports');
   assert.ok(start > -1 && end > start, 'RUNBOOK.md carries a closeout block before the feedback-report section');
   const closeout = runbook.slice(start, end);
@@ -179,7 +179,7 @@ test('Genesis, Adoption, and update-harness completion require a committed prefi
 
 test('the Runbook closeout prunes linked worktrees and names where disposable review checkouts live', () => {
   const runbook = read('RUNBOOK.md');
-  const closeout = runbook.slice(runbook.indexOf('Closeout, once the integration review has passed'), runbook.indexOf('## Manual Harness Feedback Reports'));
+  const closeout = runbook.slice(runbook.indexOf('Closeout, once the candidate is ready'), runbook.indexOf('## Manual Harness Feedback Reports'));
   assert.match(closeout, /^\s*git worktree prune$/m, 'RUNBOOK.md closeout prunes linked worktrees');
   assert.match(closeout, /disposable review (?:clones|checkouts)[^\n]*live/i, 'RUNBOOK.md names where disposable review clones live');
   const template = read('templates/RUNBOOK.md');
