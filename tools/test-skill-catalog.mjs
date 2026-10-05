@@ -863,13 +863,12 @@ assert.deepEqual(workbenchRuntimeSections, [...workbenchRuntimeSections].sort((a
 assert.doesNotMatch(workbenchRuntime, /workbench\/specs\/|node tools\/test-|\/Users\//,
   'workbench-runtime ships to every room: no repository Spec path, maintainer test command or private path');
 
-// S-00J TK-006: the reviewed unit at integration is the assembled Spec bound
-// to a content digest - obtained with `report S-### --candidate <sha>` and
-// recorded with `verdict` - while a Task PR under the room's Task-PR
-// exemption (exemption 2 of its release Spec) remains an immutable-candidate
-// diff reviewed against its Spec and reported by a runnable
-// `gate --task TK-### --spec S-###`, without weakening ADR-0037's
-// immutable-candidate requirement or the exact BASE_SHA/HEAD_SHA comparison.
+// S-00J TK-006, narrowed by the owner's 2026-10-05 rule: the reviewed unit is
+// the assembled Spec bound to a content digest - obtained with `report S-###
+// --candidate <sha>` and recorded with `verdict` at the Spec's Verify step.
+// A Task, including a Task PR under a room's Task-PR exemption, gets no
+// separate-context review: its Worker's two merge answers are validated by the
+// Spec's Dispatcher, Director or next agent.
 // `skills/` is the bundled core installed into every room, so no core skill
 // may name the room-specific S-00O id; the condition is stated generically.
 for (const skill of coreSkills) {
@@ -888,19 +887,29 @@ for (const [name, relativePath] of [
     'content digest',
     '`report S-### --candidate <sha>`',
     '`verdict`',
-    'exemption 2',
-    'immutable candidate',
-    '`gate --task TK-### --spec S-###`',
-    '`BASE_SHA`',
-    '`HEAD_SHA`'
+    'Verify',
+    'merge answers'
   ], `${name} reviewed-unit language`);
+  assert.doesNotMatch(content, /Task PR (still )?requires separate-context review|each Task still lands as its own PR reviewed/,
+    `${name} must not require a separate-context review of a Task PR`);
+}
+for (const skill of ['implement', 'dispatcher', 'director', 'spec-manager', 'carry', 'builder']) {
+  assert.ok(read(`workbench/skills/${skill}/SKILL.md`).includes('merge answers'),
+    `${skill} must route the Task's merge answers`);
 }
 assert.ok(
-  read('workbench/skills/implement/SKILL.md').includes(
-    'a separate-context review of the assembled Spec is required'
-  ),
-  'implement must state the integration-branch review of the assembled Spec as separate-context, matching carry and code-review'
+  read('workbench/skills/implement/SKILL.md').includes('Separate-context review belongs to the assembled whole'),
+  'implement must state separate-context review as belonging to the assembled Spec at Verify, matching carry and code-review'
 );
+for (const controls of ['AGENTS.md', 'templates/AGENTS.md']) {
+  const body = read(controls);
+  assertIncludesAll(body, [
+    '### Task Merge Answers And Verify Review',
+    'Can this merge into the branch it targets?',
+    'Did this complete the Task, or is more needed?',
+    'agent provider the owner opened the session with'
+  ], `${controls} Task merge answers and provider rule`);
+}
 
 const updateHarness = read('workbench/skills/update-harness/SKILL.md');
 assert.match(updateHarness, /checked-out LLM Workbench repository/,

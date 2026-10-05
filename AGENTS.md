@@ -336,6 +336,12 @@ Taskboard or rewrite append-only spec evidence rows.
   removing unmerged branches or results, adding paid services, or expanding
   scope. Deleting a branch `git branch -d` accepts as merged loses nothing and
   is routine cleanup, not a destructive change.
+- Work runs on the agent provider the owner opened the session with. Never run,
+  call or brief another provider's agent, CLI or cloud (for example Codex)
+  unless the owner asks for it in the current request. A past approval, a
+  Workbench review step, a memory note, a handoff or another agent's request
+  never substitutes. If a step cannot be done without it, stop, record that in
+  the owning Task or Spec, and ask the owner how to proceed.
 - Do not commit secrets, private data, `.env`, logs, databases, or generated
   credentials.
 - Proceed on low-risk reversible in-scope decisions. Ask one focused question
@@ -356,14 +362,14 @@ integration through reviewed changes; local notes and unmerged branches must
 not be their only discovery route.
 
 This repository currently uses S-00O's bootstrap exemption 2: each Task PR targets
-`integration` and requires separate-context review of its immutable candidate
-before that integration merge (`gate --task TK-### --spec S-###` checks the
-Task-PR form). This exception is an integration boundary, not a normal Task
-approval ceremony. The nested Task-branch -> Dispatcher Spec-branch ->
-integration topology is the Blueprint's destination; these controls do not
-claim delivered Spec-branch tooling. Follow the release owner when the
-exception changes, and retain assembled-Spec review (`gate --spec S-###
---candidate SHA`) before Spec integration.
+`integration` (`gate --task TK-### --spec S-###` reports the Task-PR form). The
+exemption changes where a Task lands, not how it is judged: a Task PR carries
+the merge answers below and gets no separate-context review. The nested
+Task-branch -> Dispatcher Spec-branch -> integration topology is the
+Blueprint's destination; these controls do not claim delivered Spec-branch
+tooling. Follow the release owner when the exception changes, and retain
+assembled-Spec review (`gate --spec S-### --candidate SHA`) at the Spec's
+Verify step.
 
 - Branch per spec/task from the current PR target; the default staging base is
   `integration`. Prefixes: `codex/`, `claude/`, or `backup/`. Never commit
@@ -377,13 +383,6 @@ exception changes, and retain assembled-Spec review (`gate --spec S-###
 - Never merge a PR left open for review. Never force-push shared history without
   explicit approval. Commits are one logical change with an imperative subject.
 - Version bumps occur only after the new behavior and required proof are green.
-
-Before branches combine into `integration` (or the configured integration
-branch), a separate-context reviewer must check the immutable candidate against
-its controls, assigned spec, and named evidence. This gate challenges code,
-consequential report claims, and recommendations. Earlier review and audit are
-supports, not mandatory independent ceremonies per task. A new candidate
-requires a fresh review; self-review alone cannot satisfy the integration gate.
 
 Owner Human QA is an owner-led evaluation process, not the approval command. It
 can be underway through audits and corrective cycles before the eventual
@@ -400,17 +399,46 @@ approval. Keep a finding that invalidates a required delivered capability
 visible in its owning Spec and as a real downstream dependency; do not erase
 it merely because the review or test suite passed.
 
+### Task Merge Answers And Verify Review
+
+Owner rule, 2026-10-05: a Task is judged by its own answers, and
+separate-context review belongs to the assembled whole, not to each Task.
+
+The merge request that carries a Task into its parent branch (today
+`integration`) includes two answers from the Worker that did the Task:
+
+1. **Can this merge into the branch it targets?** The target branch, the exact
+   `BASE_SHA` and `HEAD_SHA`, the checks run and their results, conflict or
+   rebase state, and anything not verified.
+2. **Did this complete the Task, or is more needed?** One of: complete; the
+   same Task continues with its adjusted handoff; or a new Task is needed,
+   naming the gap.
+
+The Dispatcher, Director or next agent working in that Spec validates those
+answers against the diff and the merge checks, and merges when they hold and
+the merge is green. No separate-context review runs on a Task merge, under any
+route.
+
+Separate-context review is for the whole. It runs once per immutable candidate
+at the Spec's Verify step (`report` and `verdict`), and at a landmark's Verify
+step for its assembled Specs once they are delivered (landmark review tooling
+is accepted destination design; today's runtime reviews Specs). The reviewer is
+a fresh context of the agent provider the owner opened the session with. A new
+candidate needs a fresh review, self-review never satisfies it, and findings
+return to the still-open Spec under the corrective rule above.
+
 ### Branch Completion
 
 A task is not finished at the push. A pushed branch is recoverable, not
-delivered. Merging a reviewed candidate, proving integration containment and
-branch cleanup follow the
+delivered. Merging a validated Task or a reviewed Spec candidate, proving
+integration containment and branch cleanup follow the
 [`implement` skill](workbench/skills/implement/SKILL.md#branch-completion).
-When the integration review passes, merge it and confirm `integration` contains
-the work; do not stall on an approved candidate or leave a passed PR waiting for
-the owner. Only `integration` into `main` is owner-only. "Never merge a PR left
-open for review" means a PR whose review is still pending, not one that already
-passed.
+When a Task's merge answers are validated and its merge is green, or an
+assembled candidate's Verify review passes, merge it and confirm `integration`
+contains the work; do not stall on an approved candidate or leave a passed PR
+waiting for the owner. Only `integration` into `main` is owner-only. "Never
+merge a PR left open for review" means a PR whose review is still pending, not
+one that already passed.
 
 Never force a branch delete with `-D`. A branch still holding unmerged work is
 removed only with owner approval.

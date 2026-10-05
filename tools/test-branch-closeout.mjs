@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const doc = fs.readFileSync(path.join(root, 'RUNBOOK.md'), 'utf8');
-const section = doc.slice(doc.indexOf('Closeout, once the integration review has passed'));
+const section = doc.slice(doc.indexOf('Closeout, once the Task\'s merge answers are validated'));
 const recipe = section.match(/```bash\n([\s\S]*?)```/)[1];
 
 function fixture(t) {

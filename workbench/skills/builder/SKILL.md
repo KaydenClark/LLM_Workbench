@@ -48,9 +48,11 @@ render the generated projection through its native tool. Preserve historical
 proof and unrelated dirty work. If no docs change is needed, record
 `Docs checked; no update needed` with the reason.
 
-Ensure the separate-context `/code-review` gate before integration; earlier
+Write the Task's two merge answers in its merge request; the Spec's Dispatcher,
+Director or next agent validates them. The separate-context `/code-review`
+belongs to the assembled Spec's Verify step, not to this Task, and earlier
 independent review is optional. A self-review is useful while building but
-cannot satisfy that gate. Follow the current routing, authority, review, Git
+cannot satisfy the Verify gate. Follow the current routing, authority, review, Git
 and owner-decision boundaries in the Contract. Stop at the caller's endpoint,
 even when a helper describes further delivery. Investigate ordinary engineering
 issues within scope; surface only genuine owner decisions, unavailable resources

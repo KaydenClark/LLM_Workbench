@@ -59,8 +59,9 @@ merge into the integration branch delivers.
    re-merged tip is a new candidate and needs a fresh review before it merges.
    Neither a Dispatcher nor an implementing Worker supplies independent approval of its own candidate,
    and the Director never approves a candidate it built. While a room's
-   Task-PR exemption holds, a Task may land as its own reviewed PR; read the
-   release owner for that route rather than assuming it.
+   Task-PR exemption holds, a Task may land as its own PR, judged by its
+   merge answers rather than a separate-context review; read the release owner
+   for that route rather than assuming it.
 5. Keep accepted decisions, progress, branch and candidate references and
    remaining gates in the tracked owners on the integration branch through
    reviewed changes. Allocate IDs only when the record that uses them is
