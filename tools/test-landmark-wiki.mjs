@@ -484,3 +484,83 @@ test('every landmark has one routed synthesis page that passes the identifier ru
   }
   assert.deepEqual(missing, []);
 });
+
+// LANDMARK.md Artifact And Lane Runtime (S-003Z) Task TK-008I: a reached
+// landmark retires into its Landmark Wiki page through `retire-landmark`, and
+// that page must keep the name-and-context identifier rule. A page carrying a
+// bare landmark identifier is refused by its finding code before anything
+// moves; once named, the landmark retires and the page stays a valid Landmark
+// Wiki page and Wiki note whose recorded source, the landmark's historical
+// LANDMARK.md route, exists. The owner here is a simulated fixture actor.
+test('retire-landmark refuses a Landmark Wiki page with a bare identifier and retires into a valid one', t => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'landmark-wiki-retire-'));
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  const layout = path.join(root, 'workbench/tools/workbench-layout.mjs');
+  const version = JSON.parse(fs.readFileSync(path.join(root, 'workbench/manifest.json'), 'utf8')).workbenchVersion;
+  const init = spawnSync(process.execPath, [layout, 'init', '--project', dir, '--provenance', 'genesis', '--version', version], { encoding: 'utf8' });
+  assert.equal(init.status, 0, init.stdout + init.stderr);
+  const git = (...args) => spawnSync('git', ['-C', dir, ...args], { encoding: 'utf8' });
+  const write = (relative, content) => { fs.mkdirSync(path.dirname(path.join(dir, relative)), { recursive: true }); fs.writeFileSync(path.join(dir, relative), content); };
+  const commit = message => { git('add', '-A'); assert.equal(git('commit', '--quiet', '-m', message).status, 0); return git('rev-parse', 'HEAD').stdout.trim(); };
+  write('BLUEPRINT.md', '# Blueprint\n');
+  write('TASKBOARD.md', '# Taskboard\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n');
+  write('README.md', '# Fixture room\n\nSee MEMORY.md.\n');
+  write('AGENTS.md', '# Agents\n\nRoutes to workbench/wiki.\n');
+  git('init', '--quiet');
+  git('config', 'user.email', 'fixture@example.com');
+  git('config', 'user.name', 'Fixture');
+  git('commit', '--quiet', '--allow-empty', '-m', 'init');
+  const branch = git('rev-parse', '--abbrev-ref', 'HEAD').stdout.trim();
+  const manifestFile = path.join(dir, 'workbench/manifest.json');
+  const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+  manifest.collections.landmarks = 'workbench/landmarks';
+  manifest.git = { defaultBranch: branch, integrationBranch: branch };
+  fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
+  const historicalRoute = 'workbench/landmarks/retired/LMK-0EA-wiki-bound-direction/LANDMARK.md';
+  write('workbench/landmarks/LMK-0EA-wiki-bound-direction/LANDMARK.md', [
+    '# LMK-0EA - Wiki Bound Direction', '',
+    '**Landmark ID:** LMK-0EA', '**Status:** active', '**Priority:** 1', '**Owner:** lane-director', '**Updated:** 2026-10-06',
+    '**Catalog description:** Proves retirement into a Landmark Wiki page.', '**Blockers:** none',
+    '**Latest event:** Landmark captured.', '**Next gate:** Run the whole-landmark review.', '',
+    '## Direction', '', 'Toward a retired landmark.', '',
+    '## What Success Looks Like', '', '- [x] The direction is delivered.', '',
+    '## Decision Records', '', '- none', '',
+    '## Append-Only Evidence And Execution Log', '', '| Date | Task | Event | Verification | Docs | Remaining gap |', '|---|---|---|---|---|---|', '',
+    '## Reached Result', '', 'Delivered.', ''
+  ].join('\n'));
+  const page = 'workbench/wiki/design-concepts/landmark-wiki-bound-direction.md';
+  const landmarkPage = body => ['---', 'type: design-concept', 'status: active', 'sensitivity: normal', 'knowledge_role: curated',
+    'provenance:', '  - fixture', 'source_paths:', `  - ${historicalRoute}`, 'last_verified: 2026-10-06',
+    'authorized_by: the LANDMARK.md Artifact And Lane Runtime Spec (S-003Z) retirement fixture', 'parent: none', '---', '',
+    '# Landmark: Wiki Bound Direction', '', body, ''].join('\n');
+  write(page, landmarkPage('Reached as LMK-0EA.'));
+  write('workbench/wiki/MEMORY.md', '# Fixture Room Brain\n\nSee [Landmark: Wiki Bound Direction](design-concepts/landmark-wiki-bound-direction.md).\n');
+  const specTool = path.join(root, 'workbench/tools/spec-workbench.mjs');
+  const spec = (...args) => spawnSync(process.execPath, [specTool, ...args, '--path', dir], { encoding: 'utf8' });
+  assert.equal(spec('render').status, 0);
+  const reviewed = commit('fixture room');
+  const verdict = spec('verdict', 'LMK-0EA', '--candidate', reviewed, '--result', 'pass', '--findings', 'none', '--reviewer', 'Simulated independent landmark reviewer', '--json');
+  assert.equal(verdict.status, 0, verdict.stdout + verdict.stderr);
+  assert.equal(JSON.parse(verdict.stdout).reached, true);
+  const approvedAt = commit('record the passing review');
+  const approval = spec('approve', 'LMK-0EA', '--candidate', approvedAt, '--owner', 'Simulated fixture owner (LMK-0EA only; not Kayden Human QA)', '--json');
+  assert.equal(approval.status, 0, approval.stdout + approval.stderr);
+  commit('record the simulated owner approval');
+
+  // The bare identifier is refused by its finding code; nothing moves.
+  const before = snapshot(dir);
+  const refused = spec('retire-landmark', 'LMK-0EA', '--wiki', page, '--json');
+  assert.notEqual(refused.status, 0, refused.stdout);
+  assert.match(refused.stderr, /landmark-bare-id: LMK-0EA at workbench\/wiki\/design-concepts\/landmark-wiki-bound-direction\.md/, refused.stderr);
+  assert.deepEqual(snapshot(dir), before, 'a refused retirement writes nothing');
+
+  // Named beside its identifier, the page receives the retired landmark.
+  write(page, landmarkPage('The Wiki Bound Direction landmark (LMK-0EA) reached its destination.'));
+  commit('name the landmark beside its identifier');
+  const retired = spec('retire-landmark', 'LMK-0EA', '--wiki', page, '--json');
+  assert.equal(retired.status, 0, retired.stdout + retired.stderr);
+  assert.equal(JSON.parse(retired.stdout).route, historicalRoute);
+  assert.ok(fs.existsSync(path.join(dir, historicalRoute)), 'the page names a recorded source that exists');
+  assert.deepEqual(validateLandmarkArticle(dir, page), { status: 'valid', article: page, findings: [] });
+  assert.deepEqual(validateWiki(dir).filter(item => item.note === page), []);
+});

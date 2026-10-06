@@ -8010,3 +8010,158 @@ function parseTaskRecordForTest(content) {
     fs.rmSync(continueRoot, { recursive: true, force: true });
   }
 }
+
+// ---- S-003Z TK-008I: a reached landmark retires into its Landmark Wiki page ----
+// `retire-landmark LMK-### --wiki <page>` is the Spec's `retire-spec` one size
+// up: it refuses by name a landmark that is not reached, one with an open
+// child, one without a current pass verdict, a dirty tree, a page outside the
+// Wiki lane, a page whose `source_paths` does not name the landmark's
+// historical `LANDMARK.md` route, and one without the owner's approval - which
+// `approve LMK-###` records as the operator supplies it and retirement never
+// records itself. Then the whole landmark folder, nested Specs and Tasks
+// included, moves to `<collection>/retired/` with every live reference
+// rewritten, and `show LMK-###` finds it by its historical route. The owner
+// here is an explicitly simulated fixture actor: these receipts prove the
+// runtime machinery, never real Human QA.
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'landmark-retire-'));
+  try {
+    initLifecycleFixture(root);
+    const manifestFile = path.join(root, 'workbench/manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+    manifest.collections.landmarks = 'workbench/landmarks';
+    fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
+    const lmk = 'workbench/landmarks/LMK-0DA-retiring-direction';
+    const retiredDir = 'workbench/landmarks/retired/LMK-0DA-retiring-direction';
+    const historicalRoute = `${retiredDir}/LANDMARK.md`;
+    const landmarkFile = path.join(root, lmk, 'LANDMARK.md');
+    const page = 'workbench/wiki/design-concepts/landmark-retiring-direction.md';
+    const owner = 'Simulated fixture owner (LMK-0DA only; not Kayden Human QA)';
+    const reviewer = 'Simulated independent landmark reviewer (machinery only)';
+    const landmarkText = landmarkWithDirectTasks('LMK-0DA', { Status: 'active', Owner: 'lane-director', Priority: '1', Updated: TODAY }, [['TK-0DA', 'Advance the retiring direction']])
+      .replace('- [ ] ', '- [x] ')
+      .replace(/(## Child Specs\n[\s\S]*?\n)- none\n/, '$1- [S-0DA - Retiring child](specs/S-0DA-retiring-child/SPEC.md)\n');
+    writeAt(root, `${lmk}/LANDMARK.md`, landmarkText);
+    writeAt(root, `${lmk}/tasks/TK-0DA/TASK.md`, landmarkTaskRecord({ id: 'TK-0DA', landmarkId: 'LMK-0DA', slice: 'Advance the retiring direction', status: 'done' }).replace('**Planned verification:**', '**Proof:** landed\n**Planned verification:**'));
+    writeAt(root, `${lmk}/specs/S-0DA-retiring-child/SPEC.md`, completeFixtureSpec('S-0DA').replaceAll('TK-001', 'TK-0DB'));
+    fs.writeFileSync(path.join(root, 'AGENTS.md'), `# Agents\n\nRoutes to workbench/wiki. The [Retiring Direction landmark](${lmk}/LANDMARK.md) holds the fixture direction.\n`);
+    const pageBody = '# Landmark: Retiring Direction\n\nThe Retiring Direction landmark ([Retiring Direction landmark](../../landmarks/LMK-0DA-retiring-direction/LANDMARK.md)) reached its destination; this page is its evolving synthesis.\n';
+    const landmarkPage = (sourcePaths) => retirementGuidebookNote(historicalRoute, {
+      type: 'design-concept', knowledgeRole: 'curated', sourcePaths,
+      authorizedBy: 'the LANDMARK.md Artifact And Lane Runtime Spec (S-003Z) retirement fixture', parent: 'none', body: pageBody
+    });
+    // First the page names the landmark's live route, not its historical one.
+    writeAt(root, page, landmarkPage([`${lmk}/LANDMARK.md`]));
+    writeAt(root, 'workbench/wiki/MEMORY.md', '# Fixture Room Brain\n\nSee [Landmark: Retiring Direction](design-concepts/landmark-retiring-direction.md).\n');
+    initGitRoot(root);
+    const branch = execFileSync('git', ['-C', root, 'rev-parse', '--abbrev-ref', 'HEAD'], { encoding: 'utf8' }).trim();
+    declareFixtureGit(root, { defaultBranch: branch, integrationBranch: branch });
+    render(root);
+    commitAll(root, 'landmark retirement fixture');
+    const specTool = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+    const cli = (...args) => spawnSync(process.execPath, [specTool, ...args, '--path', root], { encoding: 'utf8' });
+    const json = (run) => { assert.equal(run.status, 0, run.stdout + run.stderr); return JSON.parse(run.stdout); };
+    const refused = (pattern, ...args) => {
+      const run = cli(...args);
+      assert.notEqual(run.status, 0, `${args.join(' ')} must be refused: ${run.stdout}`);
+      assert.match(run.stderr, pattern, run.stderr);
+      return run;
+    };
+    const retire = (wiki = page) => ['retire-landmark', 'LMK-0DA', '--wiki', wiki, '--json'];
+
+    // A landmark that is not reached is refused, and so is a missing page.
+    refused(/LMK-0DA is active, not reached; only a reached landmark retires/, ...retire());
+    refused(/retire-landmark requires --wiki/, 'retire-landmark', 'LMK-0DA');
+
+    // Reached by hand but with no review verdict for its current content.
+    fs.writeFileSync(landmarkFile, landmarkText.replace('**Status:** active', '**Status:** reached'));
+    refused(/LMK-0DA cannot retire: no whole-landmark review verdict is recorded for its current content \(current digest [0-9a-f]{12}\)/, ...retire());
+    // Reached, with an open direct Task.
+    writeAt(root, `${lmk}/tasks/TK-0DC/TASK.md`, landmarkTaskRecord({ id: 'TK-0DC', landmarkId: 'LMK-0DA', slice: 'Late open work' }));
+    refused(/LMK-0DA cannot retire: it has open children: TK-0DC \(ready, not done\)/, ...retire());
+    fs.rmSync(path.join(root, lmk, 'tasks/TK-0DC'), { recursive: true, force: true });
+    fs.writeFileSync(landmarkFile, landmarkText);
+
+    // The whole-landmark review passes and reaches the landmark.
+    const passed = json(cli('verdict', 'LMK-0DA', '--candidate', headSha(root), '--result', 'pass', '--findings', 'none', '--reviewer', reviewer, '--json'));
+    assert.equal(passed.reached, true, passed.notReached?.join('; '));
+    commitAll(root, 'record the passing whole-landmark review');
+
+    // A dirty tree, a page outside the Wiki lane, and a page whose
+    // source_paths names the live route rather than the historical one.
+    fs.writeFileSync(path.join(root, 'stray.txt'), 'uncommitted\n');
+    refused(/retire-landmark refuses a dirty working tree/, ...retire());
+    fs.rmSync(path.join(root, 'stray.txt'));
+    refused(/--wiki docs\/landmark-retiring-direction\.md must name a page under the Wiki lane/, ...retire('docs/landmark-retiring-direction.md'));
+    refused(new RegExp(`source_paths must name LMK-0DA's historical route ${escapeForRegExp(historicalRoute)}`), ...retire());
+
+    // A valid, routed page - and still no owner approval: refused, and the
+    // refusal records nothing.
+    writeAt(root, page, landmarkPage([historicalRoute]));
+    commitAll(root, 'name the historical LANDMARK.md route');
+    const beforeApproval = fs.readFileSync(landmarkFile, 'utf8');
+    refused(/LMK-0DA cannot retire: no owner Human QA approval is recorded for LMK-0DA \(current digest [0-9a-f]{12}\)/, ...retire());
+    assert.equal(fs.readFileSync(landmarkFile, 'utf8'), beforeApproval, 'retire-landmark never records an approval itself');
+    assert.doesNotMatch(beforeApproval, /owner-qa/);
+    assert.equal(execFileSync('git', ['-C', root, 'status', '--porcelain'], { encoding: 'utf8' }), '', 'every refusal leaves the tree clean');
+
+    // `approve LMK-###` records the owner's approval as the operator supplies
+    // it, bound to the landmark's committed content on integration.
+    const candidate = headSha(root);
+    const digest = json(cli('report', 'LMK-0DA', '--json')).landmarkDigest;
+    refused(/does not exist in this repository/, 'approve', 'LMK-0DA', '--candidate', 'deadbeef'.repeat(5), '--owner', owner);
+    refused(/requires --owner/, 'approve', 'LMK-0DA', '--candidate', candidate);
+    refused(/digest 000000000000 named for candidate .* does not match/, 'approve', 'LMK-0DA', '--candidate', candidate, '--owner', owner, '--digest', '0'.repeat(64));
+    refused(/approve LMK-### records the owner's approval only/, 'approve', 'LMK-0DA', '--candidate', candidate, '--owner', owner, '--finding', 'new Task: Another gap');
+    assert.equal(fs.readFileSync(landmarkFile, 'utf8'), beforeApproval, 'a refused approval writes nothing');
+    const approved = json(cli('approve', 'LMK-0DA', '--candidate', candidate, '--owner', owner, '--digest', digest, '--json'));
+    assert.equal(approved.landmarkId, 'LMK-0DA');
+    assert.equal(approved.result, 'approve');
+    assert.equal(approved.owner, owner);
+    const approvalRow = `| ${TODAY} | owner-qa | Owner QA: approve at ${candidate} [${digest.slice(0, 12)}] #1 | none | ${owner} | none |`;
+    assert.ok(fs.readFileSync(landmarkFile, 'utf8').split('\n').includes(approvalRow), fs.readFileSync(landmarkFile, 'utf8'));
+    refused(/identical owner QA entry/, 'approve', 'LMK-0DA', '--candidate', candidate, '--owner', owner);
+    const approvedReport = json(cli('report', 'LMK-0DA', '--json'));
+    assert.equal(approvedReport.landmarkDigest, digest, 'recording the approval leaves the digest unchanged');
+    assert.equal(approvedReport.latestOwnerApproval?.owner, owner);
+    commitAll(root, 'record the simulated owner approval');
+
+    // Retirement: the whole folder moves, every live reference follows it,
+    // the retirement row lands in the moved log, and the result is staged.
+    const result = json(cli(...retire()));
+    assert.equal(result.landmarkId, 'LMK-0DA');
+    assert.equal(result.route, historicalRoute);
+    assert.equal(result.wikiNote, page);
+    assert.equal(result.ownerApproval.approvedBy, owner);
+    assert.equal(result.verdict.result, 'pass');
+    assert.ok(result.referencesRewrittenCount >= 2, JSON.stringify(result.referencesRewritten));
+    assert.ok(!fs.existsSync(path.join(root, lmk)), 'the active folder is gone');
+    for (const moved of ['LANDMARK.md', 'tasks/TK-0DA/TASK.md', 'specs/S-0DA-retiring-child/SPEC.md']) {
+      assert.ok(fs.existsSync(path.join(root, retiredDir, moved)), `${moved} travels with the landmark`);
+    }
+    assert.match(fs.readFileSync(path.join(root, 'AGENTS.md'), 'utf8'), new RegExp(`\\(${escapeForRegExp(historicalRoute)}\\)`), 'a live control link follows the move');
+    assert.match(fs.readFileSync(path.join(root, page), 'utf8'), /\(\.\.\/\.\.\/landmarks\/retired\/LMK-0DA-retiring-direction\/LANDMARK\.md\)/, 'the page link follows the move');
+    const retiredText = fs.readFileSync(path.join(root, historicalRoute), 'utf8');
+    assert.ok(retiredText.split('\n').includes(result.evidenceRow), retiredText);
+    assert.match(result.evidenceRow, new RegExp(`^\\| ${TODAY} \\| landmark \\| Landmark retired to ${escapeForRegExp(historicalRoute)} \\| ${escapeForRegExp(page)} \\|`));
+    assert.ok(retiredText.split('\n').includes(approvalRow), 'the approval row travels with the landmark');
+    assert.match(retiredText, /^\*\*Next gate:\*\* none$/m);
+    const porcelain = execFileSync('git', ['-C', root, 'status', '--porcelain'], { encoding: 'utf8' }).split('\n').filter(Boolean);
+    assert.ok(porcelain.length > 0 && porcelain.every((line) => /^[MADRC] /.test(line)), `the retirement is staged whole:\n${porcelain.join('\n')}`);
+    commitAll(root, 'retire LMK-0DA');
+
+    // `show` finds the retired landmark and its child Spec by their
+    // historical routes; the room carries no blocking finding; the page
+    // stays a valid Wiki note whose recorded source exists.
+    const shown = json(cli('show', 'LMK-0DA', '--json'));
+    assert.equal(shown.lifecycleFolder, 'retired');
+    assert.equal(shown.path, historicalRoute);
+    assert.match(shown.body, new RegExp(`^Retired: ${escapeForRegExp(historicalRoute)} \\(historical route`));
+    assert.equal(json(cli('show', 'S-0DA', '--json')).path, `${retiredDir}/specs/S-0DA-retiring-child/SPEC.md`);
+    assert.deepEqual(doctor(root).filter((item) => ['all', 'selection'].includes(item.blocks)).map((item) => `${item.code}: ${item.message}`), []);
+    assert.deepEqual(validateWiki(root).filter((item) => item.note === page), []);
+    refused(/LMK-0DA is already retired/, ...retire());
+    refused(/LMK-0DA is retired/, 'approve', 'LMK-0DA', '--candidate', headSha(root), '--owner', owner);
+    console.log('ok - S-003Z TK-008I: retire-landmark refuses by name a landmark not reached, with an open child, without a current pass verdict, on a dirty tree, with a page outside the Wiki lane or not naming the historical LANDMARK.md route, or without the owner approval approve LMK-### records; then moves the whole folder link-safely and show finds it by its historical route');
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+}
