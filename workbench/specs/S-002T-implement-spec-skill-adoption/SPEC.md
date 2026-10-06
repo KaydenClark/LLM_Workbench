@@ -8,8 +8,8 @@
 **Updated:** 2026-10-06
 **Catalog description:** Run a sliced Spec through Worker implementation and assembly to a PR ready for integration review.
 **Blockers:** none; the skills draft wiki collection (S-002L) is delivered on integration.
-**Latest event:** Owner confirmed the complete nine-step draft and authorized usable installation.
-**Next gate:** Activate and claim TK-006X, deliver the callable skill and reconcile its boundaries.
+**Latest event:** TK-006X claimed by codex-s002t.
+**Next gate:** Close TK-006X with verification and documentation proof.
 
 > **Citation anchors.** pre=`9aa0c30e99bb7da26f5c2b89b5e5c04a507da513` post=`9aa0c30e99bb7da26f5c2b89b5e5c04a507da513`.
 

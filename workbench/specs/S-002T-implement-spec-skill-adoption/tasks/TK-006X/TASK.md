@@ -3,11 +3,12 @@
 **Task ID:** TK-006X
 **Spec ID:** S-002T
 **Slice:** Install and exercise the confirmed implement-spec operation
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: The installed entry preserves the confirmed nine-step wording and is callable in this Workbench with reconciled boundaries and named proof.
 **Planned verification:** Red missing-source catalog check; green catalog/discovery; Wiki validation/lint; full RUNBOOK suite; self-drift and guardrail pre/post; fresh-context scenario; immutable review and remote containment.
+**Claimed by:** codex-s002t
 
 ## Scope and authority
 
