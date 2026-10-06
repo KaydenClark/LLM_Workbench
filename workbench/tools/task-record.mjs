@@ -71,7 +71,17 @@ const DESTINATION_PATTERN = /^(spec-acceptance|wiki-claim):\s*(.+)$/;
 // S-00J TK-02J: `owner:<decision>` records a wait on an owner decision. The
 // decision is a lowercase kebab-case slug. The resolver never satisfies it;
 // it clears only when the entry is removed from the record.
-const BLOCKER_ID_PATTERN = /^(?:(?:S|TK)-[0-9A-Za-z]+(?::[A-Za-z][0-9A-Za-z-]*)?|owner:[a-z][a-z0-9]*(?:-[a-z0-9]+)*)$/;
+//
+// S-003Z TK-008G: a blocker may also name a landmark (`LMK-###`), which a
+// reached landmark satisfies; Blockers stay a closed list of S-, TK- and LMK-
+// identifiers (plus the owner decision grammar), never prose.
+const BLOCKER_ID_PATTERN = /^(?:(?:S|TK|LMK)-[0-9A-Za-z]+(?::[A-Za-z][0-9A-Za-z-]*)?|owner:[a-z][a-z0-9]*(?:-[a-z0-9]+)*)$/;
+// S-003Z TK-008G: a Task names exactly one parent - the Spec it sits under
+// (`**Spec ID:**`) or, for a Task directly under a landmark (ADR-000U), that
+// landmark (`**Landmark ID:**`). Which folder may hold which is the loaders'
+// decision; this reader only refuses a record naming both or neither.
+const SPEC_ID_PATTERN = /^S-[0-9A-Za-z]{3,}$/;
+const LANDMARK_ID_PATTERN = /^LMK-[0-9A-Za-z]{3,}$/;
 
 export function parseTaskRecord(content, filePath, root) {
   const label = filePath ? path.relative(root ?? path.dirname(filePath), filePath) : '<in-memory Task record>';
@@ -90,10 +100,16 @@ export function parseTaskRecord(content, filePath, root) {
   if (!id || !/^TK-[0-9A-Za-z]+$/.test(id)) throw new Error(`${label} has an invalid or missing Task ID`);
   const titleMatch = content.match(new RegExp(`^# ${escapeRegExp(id)} - (.+)$`, 'm'));
   if (!titleMatch) throw new Error(`${id} has no matching title`);
-  const required = ['Spec ID', 'Slice', 'Status', 'Blockers', 'Destination'];
+  const hasSpec = Object.prototype.hasOwnProperty.call(fields, 'Spec ID');
+  const hasLandmark = Object.prototype.hasOwnProperty.call(fields, 'Landmark ID');
+  if (hasSpec && hasLandmark) throw new Error(`${id} names both a Spec ID and a Landmark ID; a Task names exactly one of Spec ID or Landmark ID`);
+  if (!hasSpec && !hasLandmark) throw new Error(`${id} is missing Spec ID or Landmark ID`);
+  const required = ['Slice', 'Status', 'Blockers', 'Destination'];
   for (const name of required) if (!fields[name]) throw new Error(`${id} is missing ${name}`);
-  const specId = fields['Spec ID'];
-  if (!/^S-[0-9A-Za-z]{3,}$/.test(specId)) throw new Error(`${id} has an invalid Spec ID: ${specId}`);
+  const specId = hasSpec ? fields['Spec ID'] : null;
+  const landmarkId = hasLandmark ? fields['Landmark ID'] : null;
+  if (hasSpec && !SPEC_ID_PATTERN.test(specId)) throw new Error(`${id} has an invalid Spec ID: ${specId}`);
+  if (hasLandmark && !LANDMARK_ID_PATTERN.test(landmarkId)) throw new Error(`${id} has an invalid Landmark ID: ${landmarkId}`);
   if (!TASK_STATUSES.includes(fields.Status)) {
     throw new Error(`${id} has an invalid status "${fields.Status}"; the closed set is ${TASK_STATUSES.join(', ')}`);
   }
@@ -121,6 +137,9 @@ export function parseTaskRecord(content, filePath, root) {
     // widened it, or null for a record that never widened.
     formerId: parseFormerId(fields['Former ID'], id),
     specId,
+    // S-003Z TK-008G: null for a Task under a Spec; `specId` is null instead
+    // for a Task directly under a landmark.
+    landmarkId,
     slice: fields.Slice,
     status: fields.Status,
     blockers: parseBlockers(fields.Blockers, id),
@@ -275,13 +294,14 @@ export function updateTaskFields(content, values) {
 // The bytes one Task record is written as. Kept beside the parser so the two
 // cannot drift; every caller validates the result by parsing it back before
 // writing it, so a record this produces is never one the reader refuses.
-export function formatTaskRecord({ id, formerId, specId, slice, status, blockers, destination, plannedVerification, proof }) {
+export function formatTaskRecord({ id, formerId, specId, landmarkId, slice, status, blockers, destination, plannedVerification, proof }) {
+  if (Boolean(specId) === Boolean(landmarkId)) throw new Error(`${id} needs exactly one parent: a specId or a landmarkId`);
   const lines = [
     `# ${id} - ${slice}`,
     '',
     `**Task ID:** ${id}`,
     ...(formerId ? [`**Former ID:** ${formerId}`] : []),
-    `**Spec ID:** ${specId}`,
+    specId ? `**Spec ID:** ${specId}` : `**Landmark ID:** ${landmarkId}`,
     `**Slice:** ${slice}`,
     `**Status:** ${status}`,
     `**Blockers:** ${blockers}`,

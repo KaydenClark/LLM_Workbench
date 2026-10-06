@@ -3,6 +3,22 @@ import { compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.m
 export const TASKBOARD_LANES = Object.freeze(['backlog', 'toDo', 'inProgress', 'blocked', 'needsReview', 'complete']);
 const SPEC_STATES = new Set(['planned', 'active', 'blocked', 'needs-review', 'complete', 'superseded']);
 const TASK_LANES = Object.freeze({ ready: 'toDo', 'in-progress': 'inProgress', blocked: 'blocked', 'needs-review': 'needsReview', done: 'complete', deferred: 'backlog' });
+// S-003Z TK-008G: a landmark (ADR-000U) projects as a card one size above a
+// Spec, with its direct Tasks as its children. Its closed status set maps onto
+// the Spec states the lane calculation already reads: `reached` is a landmark's
+// completion. The caller marks a landmark source with `kind: 'landmark'`.
+const LANDMARK_STATES = Object.freeze({ planned: 'planned', active: 'active', reached: 'complete' });
+const CARD_PREFIXES = Object.freeze(['S', 'TK', 'LMK']);
+
+// The identity of the parent a Task names: its Spec, or the landmark a
+// landmark-direct Task sits under.
+function parentOf(task) {
+  return task.specId ?? task.landmarkId;
+}
+
+function parentStatus(parent) {
+  return parent.kind === 'landmark' ? LANDMARK_STATES[parent.status] : parent.status;
+}
 
 // Source-qualified calculation shared by preview and execution consumers.
 // Dependencies and capability facts come from existing source resolvers; the
@@ -11,8 +27,8 @@ export function taskboardTaskEntry(spec, task, { resolvedStatus = task.status, d
   const lane = TASK_LANES[task.status === 'ready' ? 'ready' : resolvedStatus];
   if (!lane) throw taskboardSourceError(`${task.id} has invalid status ${task.status}`);
   const fields = sourceFields(task.content, false);
-  const declaredParent = fields['Spec ID'] ?? task.specId;
-  if (declaredParent !== undefined && visibleIdKey(declaredParent) !== visibleIdKey(spec.id)) {
+  const declaredParent = fields['Spec ID'] ?? fields['Landmark ID'] ?? parentOf(task);
+  if (declaredParent !== undefined && declaredParent !== null && visibleIdKey(declaredParent) !== visibleIdKey(spec.id)) {
     throw taskboardSourceError(`${task.id} names ${declaredParent}, expected parent ${spec.id}`);
   }
   const priority = fields.Priority === undefined ? spec.priority : Number(fields.Priority);
@@ -46,14 +62,15 @@ export function buildTaskboard(specs, { resolveTask = () => ({}) } = {}) {
   const identities = new Map();
   function add(id, lane, card, source) {
     const key = visibleIdKey(id);
-    if (!key || !['S', 'TK'].includes(visibleIdParts(id).prefix)) throw new Error(`taskboard-source: invalid WBID ${id} at ${source}`);
+    if (!key || !CARD_PREFIXES.includes(visibleIdParts(id).prefix)) throw new Error(`taskboard-source: invalid WBID ${id} at ${source}`);
     const previous = identities.get(key);
     if (previous) throw new Error(`taskboard-collision: ${previous.id} at ${previous.source} and ${id} at ${source} share a flat card identity; source numeric Task labels retain their Spec scope`);
     identities.set(key, { id, source });
     entries.push({ id, lane, card });
   }
   for (const spec of specs) {
-    if (!SPEC_STATES.has(spec.status)) throw new Error(`taskboard-source: ${spec.id} has invalid status ${spec.status}`);
+    const landmark = spec.kind === 'landmark';
+    if (!SPEC_STATES.has(parentStatus(spec))) throw new Error(`taskboard-source: ${spec.id} has invalid status ${spec.status}`);
     if (!(spec.priority === null && spec.status === 'planned') && (!Number.isFinite(spec.priority) || spec.priority < 0)) throw new Error(`taskboard-source: ${spec.id} has invalid priority`);
     const children = [
       ...spec.rows.map(row => ({ ...row, specId: spec.id, relativePath: spec.relativePath })),
@@ -62,7 +79,7 @@ export function buildTaskboard(specs, { resolveTask = () => ({}) } = {}) {
     ];
     const childEntries = children.map(child => taskboardTaskEntry(spec, child, resolveTask(spec, child)));
     for (const [index, child] of children.entries()) {
-      if (visibleIdKey(child.specId) !== visibleIdKey(spec.id)) throw new Error(`taskboard-source: ${child.relativePath} names ${child.specId}, expected parent ${spec.id}`);
+      if (visibleIdKey(parentOf(child)) !== visibleIdKey(spec.id)) throw new Error(`taskboard-source: ${child.relativePath} names ${parentOf(child)}, expected parent ${spec.id}`);
       const entry = childEntries[index], lane = entry.lane;
       const retired = Boolean(spec.lifecycleFolder || child.lifecycleFolder);
       const card = makeCard({
@@ -73,8 +90,9 @@ export function buildTaskboard(specs, { resolveTask = () => ({}) } = {}) {
       });
       // SCR-1/SCR-7 refine Task review to waiting for assembled Spec review;
       // this never creates a separate destination-level Task approval.
-      card.requiredQA = lane === 'needsReview' ? ['assembled-spec-review'] : [];
-      card.specId = child.specId;
+      card.requiredQA = lane === 'needsReview' ? [landmark ? 'landmark-review' : 'assembled-spec-review'] : [];
+      if (landmark) card.landmarkId = child.landmarkId;
+      else card.specId = child.specId;
       add(child.id, lane, card, child.relativePath);
     }
     const lane = taskboardSpecLane(spec, childEntries);
@@ -88,8 +106,8 @@ export function buildTaskboard(specs, { resolveTask = () => ({}) } = {}) {
     // Destination-level QA obligations remain visible during delivery. These
     // labels are requirements only; verdict and owner-approval evidence stays
     // in the existing report/gate readers, never inferred from a board lane.
-    card.requiredQA = ['complete', 'superseded'].includes(spec.status) && lane === 'complete'
-      ? [] : ['assembled-spec-review', 'owner-human-qa'];
+    card.requiredQA = ['complete', 'superseded'].includes(parentStatus(spec)) && lane === 'complete'
+      ? [] : [landmark ? 'landmark-review' : 'assembled-spec-review', 'owner-human-qa'];
     add(spec.id, lane, card, spec.relativePath);
   }
   const board = { schemaVersion: 1, lanes: Object.fromEntries(TASKBOARD_LANES.map(lane => [lane, {}])) };
@@ -103,12 +121,13 @@ export function taskboardSpecLane(spec, children) {
   if (!(spec.priority === null && spec.status === 'planned') && (!Number.isInteger(spec.priority) || spec.priority < 0)) {
     throw taskboardSourceError(`${spec.id} has invalid priority`);
   }
-  if (spec.status === 'planned') return 'backlog';
-  if (spec.status === 'blocked') return 'blocked';
+  const status = parentStatus(spec);
+  if (status === 'planned') return 'backlog';
+  if (status === 'blocked') return 'blocked';
   const allDone = children.every(child => child.lane === 'complete');
-  if (allDone && ['complete', 'superseded'].includes(spec.status)) return 'complete';
+  if (allDone && ['complete', 'superseded'].includes(status)) return 'complete';
   const allReviewReady = children.every(child => ['needsReview', 'complete'].includes(child.lane));
-  if (allReviewReady && spec.status === 'needs-review') return 'needsReview';
+  if (allReviewReady && status === 'needs-review') return 'needsReview';
   if (children.some(child => child.lane === 'inProgress')) return 'inProgress';
   if (children.some(child => child.lane === 'toDo') || children.length === 0) return 'toDo';
   if (children.some(child => child.lane === 'blocked')) return 'blocked';

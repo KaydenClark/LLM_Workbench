@@ -12,7 +12,7 @@ source_paths:
   - workbench/docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md
 parent: none
 authorized_by: the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages)
-last_verified: 2026-10-04
+last_verified: 2026-10-06
 ---
 
 # Landmark: Landmark Tracker
@@ -151,11 +151,15 @@ cards below.
   larger scope, the landmark JSON record is retired into question cards, and a
   Spec has at most one parent landmark. The cards' statements that several Specs
   contribute and that landmarks overlap are revised accordingly. The decision is
-  accepted; its delivery is not installed. The Specs for it are
+  accepted. Its artifact half is installed: the
   [LANDMARK.md Artifact And Lane Runtime (S-003Z)](../../specs/S-003Z-landmark-md-artifact-and-lane-runtime/SPEC.md)
-  and
+  delivered `LANDMARK.md`, nested Specs and Tasks, the landmark review and
+  retirement to integration (see
+  [Landmarks: The LANDMARK.md Artifact One Size Above A Spec](landmarks-one-size-above-specs.md)).
+  Retiring the JSON records into question cards and regrouping the Tracker
+  remain with
   [Landmark Record Migration And Tracker Regrouping (S-004A)](../../specs/S-004A-landmark-record-migration-and-tracker-regrouping/SPEC.md),
-  both planned with no Tasks cut.
+  still planned.
 - Identifiers on Wiki pages: the card on the four pieces says Wiki pages carry
   no identifiers. The decision record
   ["The Wiki is the evolving synthesis every agent reads and updates"](../../docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md)
@@ -219,3 +223,4 @@ planned only. Definitions are in the [Lexicon](../../../LEXICON.md).
 ## History
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
+- 2026-10-06: The LANDMARK.md Artifact And Lane Runtime Spec (S-003Z), Task TK-008J (landmark templates and documentation), replaced the stale "its delivery is not installed" statement: the artifact half is installed and only the record migration and Tracker regrouping (S-004A) remain. The cards are unchanged.

@@ -13,7 +13,7 @@ import { finding } from './diagnostics.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { allocateWorkbenchId, isWorkbenchId } from './visible-ids.mjs';
 import { templatePlaceholders } from './template-placeholders.mjs';
-import { ADDITIVE_COLLECTIONS, COLLECTIONS, LANES, PRE_DDR_COLLECTIONS, PRE_FEATURE_COLLECTIONS, SIX_LANES, SCHEMA_VERSION, IGNORED_COLLECTIONS, WIKI_PROFILES, collectionRelative, declaredGit, laneRelative, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative, trackerDeclaration } from './workbench-paths.mjs';
+import { ADDITIVE_COLLECTIONS, COLLECTIONS, LANES, PRE_DDR_COLLECTIONS, PRE_FEATURE_COLLECTIONS, PRE_LANDMARK_COLLECTIONS, SIX_LANES, SCHEMA_VERSION, IGNORED_COLLECTIONS, WIKI_PROFILES, collectionRelative, declaredGit, laneRelative, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative, trackerDeclaration } from './workbench-paths.mjs';
 
 // Exported (not just used locally) so a test can build the exact historical
 // v3.0.0-v3.2.0 fixture rows from this frozen array directly, rather than
@@ -117,9 +117,15 @@ const legacyCollections = Object.fromEntries(Object.entries(notepadCollections).
 // S-00I TK-01U: every pre-feature shape stays valid exactly as stamped, and
 // each may carry the additive `features` collection appended at its declared
 // path. S-003X TK-004W: each may also carry `features` then `ddr`, the order a
-// room gains them. The live `collections` is the fully appended current shape.
+// room gains them. S-003Z TK-008D: and then `landmarks`. The live
+// `collections` is the fully appended current shape.
 const allowedCollectionShapes = [PRE_FEATURE_COLLECTIONS, notepadCollections, legacyCollections]
-  .flatMap((shape) => [shape, { ...shape, features: collections.features }, { ...shape, features: collections.features, ddr: collections.ddr }]);
+  .flatMap((shape) => [
+    shape,
+    { ...shape, features: collections.features },
+    { ...shape, features: collections.features, ddr: collections.ddr },
+    { ...shape, features: collections.features, ddr: collections.ddr, landmarks: collections.landmarks }
+  ]);
 // S-003X TK-004W: the decision-record lifecycle folders the `ddr` collection
 // is created with, the same closed set the ADR collection uses (ADR-000I):
 // accepted records at the top, `proposed/` and the permanent `archive/`.
@@ -964,6 +970,22 @@ function addDdrCollection(project) {
   return {};
 }
 
+// S-003Z TK-008D: add the additive landmarks collection to an existing room:
+// the empty folder, kept by a `.gitkeep`, and nothing else. An existing
+// ordinary folder is adopted with its contents untouched; `LANDMARK.md`
+// artifacts are never read or written here, and the Tracker's JSON landmark
+// records are a different collection that stays where it is.
+function addLandmarksCollection(project) {
+  const relative = collections.landmarks;
+  try { assertSafeWritePath(project, path.join(project, relative, '.gitkeep')); }
+  catch (error) { return fail('lane-collision', error.message); }
+  const entry = lstatOrNull(path.join(project, relative));
+  if (entry && (entry.isSymbolicLink() || !entry.isDirectory())) return fail('lane-collision', `${relative} must be an ordinary directory.`);
+  fs.mkdirSync(path.join(project, relative), { recursive: true });
+  if (!fs.readdirSync(path.join(project, relative)).length) fs.writeFileSync(path.join(project, relative, '.gitkeep'), '');
+  return {};
+}
+
 function validateManifestShape(manifest) {
   if (!/^v\d+\.\d+\.\d+$/.test(manifest.workbenchVersion ?? '')) return fail('invalid-version', 'Workbench version must use vMAJOR.MINOR.PATCH.');
   if (!['genesis', 'adoption', 'upgrade'].includes(manifest.provenance.lifecycle)) return fail('invalid-provenance', 'Provenance must be genesis, adoption, or upgrade.');
@@ -1011,10 +1033,12 @@ function migrateUnlocked(options) {
     // tool) and the declaration is appended; nothing else changes.
     // S-003X TK-004W: the same route appends every later additive collection
     // the room lacks, in declaration order, so a pre-feature room also gains
-    // `ddr` and a room stamped with the current pre-DDR set gains only `ddr`.
-    // Every addition is checked before the first one writes.
-    const additive = JSON.stringify(manifest.collections) === JSON.stringify(PRE_FEATURE_COLLECTIONS) ? ['features', 'ddr']
-      : JSON.stringify(manifest.collections) === JSON.stringify(PRE_DDR_COLLECTIONS) ? ['ddr'] : null;
+    // `ddr` and a room stamped with the pre-DDR set gains `ddr` onward.
+    // S-003Z TK-008D: a room stamped with the current pre-landmark set gains
+    // only `landmarks`. Every addition is checked before the first one writes.
+    const additive = JSON.stringify(manifest.collections) === JSON.stringify(PRE_FEATURE_COLLECTIONS) ? ['features', 'ddr', 'landmarks']
+      : JSON.stringify(manifest.collections) === JSON.stringify(PRE_DDR_COLLECTIONS) ? ['ddr', 'landmarks']
+      : JSON.stringify(manifest.collections) === JSON.stringify(PRE_LANDMARK_COLLECTIONS) ? ['landmarks'] : null;
     if (additive) {
       const blocked = additivePreflight(project, additive);
       if (blocked) return blocked;
@@ -1024,8 +1048,12 @@ function migrateUnlocked(options) {
         if (added.status) return added;
         seeded = added.seeded;
       }
-      const addedDdr = addDdrCollection(project);
-      if (addedDdr.status) return addedDdr;
+      if (additive.includes('ddr')) {
+        const addedDdr = addDdrCollection(project);
+        if (addedDdr.status) return addedDdr;
+      }
+      const addedLandmarks = addLandmarksCollection(project);
+      if (addedLandmarks.status) return addedLandmarks;
       const updated = { ...manifest, collections };
       writeSafeFile(project, manifestPath, `${JSON.stringify(updated, null, 2)}\n`);
       return report('migrated', { manifestPath, manifest: updated, moved: [], added: additive.map(name => `collections.${name}`), ...(seeded ? { seeded } : {}) });
@@ -1059,6 +1087,8 @@ function migrateUnlocked(options) {
     if (addedFeatures.status) return addedFeatures;
     const addedDdr = addDdrCollection(project);
     if (addedDdr.status) return addedDdr;
+    const addedLandmarks = addLandmarksCollection(project);
+    if (addedLandmarks.status) return addedLandmarks;
     writeSessionsIgnore(project);
     const updated = { ...manifest, workbenchId: manifest.workbenchId ?? allocateWorkbenchId(), collections, provenance: { ...manifest.provenance, layout: { source } } };
     writeSafeFile(project, manifestPath, `${JSON.stringify(updated, null, 2)}\n`);
@@ -1200,6 +1230,7 @@ export const RUNTIME_TOOLS = Object.freeze([
   'diagnostics.mjs',
   'github-coordination.mjs',
   'host-floor.mjs',
+  'landmark-artifact.mjs',
   'landmark-tracker.mjs',
   'landmark-wiki.mjs',
   'markdown-table.mjs',
