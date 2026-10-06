@@ -1,0 +1,10 @@
+# TK-008H - A whole-landmark review reports, is refused while a child is open or from a participating context, and a failed verdict opens corrective Tasks without blocking a child merge
+
+**Task ID:** TK-008H
+**Spec ID:** S-003Z
+**Slice:** A whole-landmark review reports, is refused while a child is open or from a participating context, and a failed verdict opens corrective Tasks without blocking a child merge
+**Status:** ready
+**Stance:** Builder
+**Blockers:** TK-008E, TK-008G
+**Destination:** spec-acceptance: A landmark with an open child Spec or Task cannot be verified or retire; a failed whole-landmark review creates corrective Tasks and does not block a child Spec's merge.
+**Planned verification:** Red: `report LMK-0AA --candidate SHA` and `verdict LMK-0AA ...` are refused as unknown Spec ids; green: `report LMK-### --candidate SHA` assembles the landmark's success checks, its child Specs (each with status, latest verdict and retirement), its direct Tasks, its decision-record section and a content digest bound to `LANDMARK.md` plus every live child record, and names each open child as a gap; `verify LMK-###` is refused by name while any child Spec is not complete or retired or any direct Task is not done; `verdict LMK-### --candidate SHA --digest D --result pass|fail --findings TEXT --reviewer CONTEXT` records on the landmark's evidence log, refuses a stale digest or a nonexistent candidate, and refuses a `--reviewer` whose context name appears as an agent in any child Spec's claims, Receipts or verdicts or in the landmark's own Task claims (the separate landmark review comes from a context with no part in that landmark); a `fail` verdict writes `continue TK-###`/`new Task:` dispositions as corrective Tasks under the landmark; `gate --spec <child> --candidate SHA` and the child's merge are unaffected by the parent's failed verdict. A `pass` verdict with every child done sets the landmark `reached`. Targeted tests in `tools/test-spec-report.mjs` and `tools/test-spec-workbench.mjs`, then the full Runbook suite on the committed candidate.
