@@ -915,9 +915,11 @@ assert.doesNotMatch(improveHarness, /workbench\/specs\/|node tools\/test-|\/User
 // room's own files and later history, not only the conversation. A
 // test-without run that also closes the job shows the intervention is not what
 // closed it. Spec and Task records are conditional on the room keeping them.
+// Each section is read with its line wrapping collapsed, so a pinned phrase
+// survives a rewrap.
 const improveHarnessSection = (heading) => {
   const position = improveHarnessHeadings.indexOf(heading);
-  return improveHarness.slice(improveHarnessSections[position], improveHarnessSections[position + 1]);
+  return improveHarness.slice(improveHarnessSections[position], improveHarnessSections[position + 1]).replace(/\s+/g, ' ');
 };
 const takingInFeedback = improveHarnessSection('## Taking In Feedback');
 assert.doesNotMatch(takingInFeedback, /row moves from new to/,

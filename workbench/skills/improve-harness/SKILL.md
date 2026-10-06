@@ -157,8 +157,8 @@ evidence named.
 ## 4. Verify Through The Target's Native Checks
 
 Confirm the authority to change, then make the intervention through the
-room's normal workflow: its branch rules, its Spec and Task records, its
-red/green practice and its documentation owners. Keep the diff narrow enough
+room's normal workflow: its branch rules, its Spec and Task records when the
+room keeps them, its red/green practice and its documentation owners. Keep the diff narrow enough
 that the hypothesis stays intelligible. Verify two layers: the room's own
 checks that protect its internal contracts, and the user or operational
 journey that establishes the accepted outcome. Collect the evidence the
@@ -176,9 +176,13 @@ Rerun the same class of job with the same model, agent configuration and
 authority envelope and a materially equivalent external state, in a fresh
 session from an isolated, equivalent starting state that preserves unrelated
 work, so the rerun inherits no hidden help from the conversation that made
-the change. Confirm the intervention was available, retrieved or invoked, and
-relevant: a good outcome says nothing about an instruction or tool the run
-never used. Compare the rerun with the baseline on separate dimensions:
+the change. Hidden help can also sit in the room itself: the isolated starting
+state exposes no later history, such as tags or refs a clone can reach, and
+the rerun record names every room source the worker read that could have
+supplied the behavior, such as an earlier run record that names the answer. A
+source that sat in the room before the change confounds the comparison.
+Confirm the intervention was available, retrieved or invoked, and relevant: a
+good outcome says nothing about an instruction or tool the run never used. Compare the rerun with the baseline on separate dimensions:
 accepted outcome and claim-matched proof; human relay, steering and review
 convergence; elapsed time and retries; authority and recovery behavior; new
 failure modes or displaced complexity; and ongoing maintenance and latency
@@ -194,7 +198,11 @@ intervention was actually used, the evidence fits the hypothesized mechanism
 and the apparent gain justifies the carrying cost. Revise it when the gap was
 located correctly but the interface is still hard to retrieve or use. When the
 room's existing material may already supply the behavior, withhold the
-intervention and rerun before deciding. Remove it when it adds noise,
+intervention and rerun before deciding. A test-without run that also closes
+the job shows the intervention is not what closed the job, so the pass claims
+no agent-outcome improvement from it: the change stays only when it corrects a
+control that was otherwise wrong or incomplete, recorded as that correction,
+and is otherwise removed. Remove it when it adds noise,
 duplicates a better owner or repeatedly fails to improve the job. Record the
 decision where the room keeps its history: the owner, the evidence, any
 follow-up case and the condition under which the intervention is reconsidered
@@ -242,8 +250,10 @@ Harness feedback is the loop's entry. A row in the room's append-only feedback
 record, a downstream room's return channel, a review finding or a dogfooding
 observation names an observed job and a suspected gap: take it as the job
 contract's seed, run the loop on it, and write the lesson back into that
-record so the row moves from new to landed or declined with its reason. Triage
-accepted follow-up into its owning Spec rather than a new store. The lane that
+record without editing earlier rows: the pass appends a new row that names the
+original row, the result record and the outcome in the room's own disposition
+terms, and records the disposition in the owning Spec when the room keeps
+Specs. Triage accepted follow-up into its owning Spec rather than a new store. The lane that
 harvests feedback from many rooms, validates a candidate against its evaluation
 conditions and ships a new harness version keeps those steps with its own
 evaluation procedures; this loop supplies the per-job evidence they consume.
