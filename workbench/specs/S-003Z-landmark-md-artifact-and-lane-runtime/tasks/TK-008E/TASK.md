@@ -3,7 +3,7 @@
 **Task ID:** TK-008E
 **Spec ID:** S-003Z
 **Slice:** The Spec tools find, claim, close, report, gate and retire a Spec nested in its landmark's folder
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-008D
 **Destination:** spec-acceptance: A Spec nested in its landmark's folder is found, claimed, closed, reported, gated and retired by the Spec tools, and `unstable-path` no longer reports it.

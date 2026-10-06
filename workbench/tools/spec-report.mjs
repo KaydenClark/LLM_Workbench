@@ -33,7 +33,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
-import { appendEvidence, atomicWrite, findSpec, loadRetiredSpecs, loadSpecs, occupiedIdentities, resolveIntegrationContainmentRef, resolveSpecsRoot, slicesOf } from './spec-workbench.mjs';
+import { appendEvidence, atomicWrite, findSpec, loadRetiredSpecs, loadSpecs, occupiedIdentities, resolveIntegrationContainmentRef, slicesOf } from './spec-workbench.mjs';
 import { appendContinuationToContent, formatTaskRecord, listTaskRecords, parseTaskRecord, readContinuations, taskStatus, updateTaskFields } from './task-record.mjs';
 import { readReceiptFromFile } from './task-receipt.mjs';
 import { assertSafeWritePath } from './workbench-paths.mjs';
@@ -234,7 +234,9 @@ function committedSpecDirectory(root, spec, candidate, relativeDir, committed) {
   if (regularBlob(candidate, currentFile)) return relativeDir;
 
   const refuse = () => { throw new Error(`Cannot prove the committed retirement source for ${spec.id} at ${candidate}`); };
-  const { specsPrefix } = resolveSpecsRoot(root);
+  // S-003Z TK-008E: the move stays within the Spec's own home, so a nested
+  // Spec's retirement source is `<landmark>/specs/<dir>`.
+  const { specsPrefix } = spec;
   const basename = path.posix.basename(relativeDir);
   if (relativeDir !== `${specsPrefix}/retired/${basename}` || !basename.startsWith(`${spec.id}-`)) refuse();
   const sourceDir = `${specsPrefix}/${basename}`;

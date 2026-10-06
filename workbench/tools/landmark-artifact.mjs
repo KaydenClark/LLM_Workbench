@@ -5,8 +5,10 @@
 // child Specs and direct Tasks nest beside it. This module parses and
 // validates one artifact the way spec-packet.mjs parses a Spec packet, lists
 // the roster at both homes, and reports doctor's findings for the collection.
-// Nesting, the link-safe move, the review rung and retirement are later
-// Tasks of the same Spec; nothing here reads a child Spec. TK-008G added the
+// The link-safe move, the review rung and retirement are later Tasks of the
+// same Spec; TK-008E added `landmarkSpecHomes`, the child-Spec home of each
+// landmark folder, which the Spec tools read beside `workbench/specs/`
+// (nothing here parses a child Spec). TK-008G added the
 // direct Task records' readability to doctor's findings; the lifecycle
 // commands that work on those Tasks live in spec-workbench.mjs.
 import fs from 'node:fs';
@@ -134,6 +136,27 @@ function locateArtifacts(root) {
     located.push(...artifactPaths(path.join(collection, folder)).map(filePath => ({ filePath, prefix, lifecycleFolder: folder })));
   }
   return located;
+}
+
+// S-003Z TK-008E: the Spec home inside every landmark folder, at both homes
+// of the collection - `<collection>/LMK-###-slug/specs/` and the same under a
+// lifecycle folder, so a retired landmark's child Specs stay reachable and
+// keep their identities. Read without parsing the artifact, so a malformed
+// landmark (named by `landmarkFindings`) never hides its child Specs; the
+// parent is the identity the artifact declares. A home that does not exist
+// yet is listed too; readers skip it. The Blueprint-level home is not listed
+// here: `specHomes` in spec-workbench.mjs puts it first.
+export function landmarkSpecHomes(root) {
+  const base = path.resolve(root);
+  return locateArtifacts(base).map(item => {
+    const specsRoot = path.join(path.dirname(item.filePath), 'specs');
+    return {
+      specsRoot,
+      specsPrefix: path.relative(base, specsRoot).split(path.sep).join('/'),
+      landmarkId: declaredId(fs.readFileSync(item.filePath, 'utf8'), item.filePath),
+      landmarkLifecycleFolder: item.lifecycleFolder
+    };
+  });
 }
 
 function readArtifact(root, { filePath, prefix, lifecycleFolder }) {
