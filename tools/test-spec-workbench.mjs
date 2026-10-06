@@ -6245,6 +6245,7 @@ function landmarkFromTemplate(id, overrides = {}) {
   let content = template
     .replaceAll('LMK-[###]', id)
     .replaceAll('[###]', '000A')
+    .replaceAll('[slug]', 'fixture-slug')
     .replaceAll('[0-9]', '2')
     .replaceAll('[YYYY-MM-DD]', '2026-10-05')
     .replaceAll('[HARNESS_VERSION]', '0.0.0');
