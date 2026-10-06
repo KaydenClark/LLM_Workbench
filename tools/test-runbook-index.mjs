@@ -998,3 +998,31 @@ test('S-003Z TK-008Y: the Runbooks and the implement skill name the Claimed by r
   }
   assert.match(normalize(read('workbench/skills/implement/SKILL.md')), /appends the agent to its `Claimed by` list/, 'the implement skill names the Claimed by list');
 });
+
+// S-003Z TK-008Z: the Lexicon carriers describe the delivered LANDMARK.md
+// artifact (folders, statuses, prefix, retirement source, a Task's landmark
+// parent), and the room-checks skill lists the landmarks collection.
+function lexiconRow(text, term) {
+  return text.split('\n').find((line) => line.startsWith(`| **${term}** |`)) ?? '';
+}
+for (const lexicon of ['LEXICON.md', 'templates/LEXICON.md']) {
+  test(`S-003Z TK-008Z: ${lexicon} describes the delivered landmark artifact`, () => {
+    const text = read(lexicon);
+    const landmark = lexiconRow(text, 'Landmark');
+    assert.doesNotMatch(landmark, /not installed yet/, 'the Landmark row no longer says the artifact is not installed');
+    assert.match(landmark, /`LANDMARK\.md` artifact/, 'the Landmark row names the artifact');
+    for (const phrase of ['`specs` folder', '`tasks` folder', '`planned`, `active` and `reached`', '`LMK-`', 'reviewed one size above a Spec']) assert.ok(landmark.includes(phrase), `the Landmark row names ${phrase}`);
+    assert.match(lexiconRow(text, 'Landmark Wiki page'), /a reached landmark retires into it/, 'the Landmark Wiki page row names the retirement');
+    assert.match(lexiconRow(text, 'Map'), /folder path carries every parent/, 'the Map row names the parent path');
+    const task = lexiconRow(text, 'Task');
+    assert.doesNotMatch(task, /Tasks directly under a landmark[^|]*no delivered home/, 'the Task row no longer says landmark-direct Tasks have no home');
+    assert.doesNotMatch(task, /today ordinary Tasks are Spec-bound/, 'the Task row no longer says every Task is Spec-bound');
+    assert.match(task, /a Task's parent is its Spec or, directly, (an assigned and active|its) landmark/, 'the Task row names a landmark as a possible parent');
+  });
+}
+test('S-003Z TK-008Z: the room-checks skill lists the landmarks collection', () => {
+  const skill = normalize(read('workbench/skills/workbench-room-checks/SKILL.md'));
+  assert.match(skill, /thirteen collections/);
+  assert.match(skill, /`docs\/ddr` and `landmarks`/);
+  assert.match(skill, /\(`features`, then `ddr`, then `landmarks`\)/);
+});
