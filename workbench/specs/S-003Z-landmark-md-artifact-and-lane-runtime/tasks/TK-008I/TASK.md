@@ -3,7 +3,7 @@
 **Task ID:** TK-008I
 **Spec ID:** S-003Z
 **Slice:** A reached landmark retires into its Landmark Wiki page with LANDMARK.md as the page's recorded source
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-008H
 **Destination:** spec-acceptance: A reached landmark retires into its Landmark Wiki page with `LANDMARK.md` as its recorded source.
