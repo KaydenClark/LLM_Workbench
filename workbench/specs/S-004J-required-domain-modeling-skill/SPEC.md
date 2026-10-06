@@ -8,8 +8,8 @@
 **Updated:** 2026-10-06
 **Catalog description:** Ship domain modeling in every room's skills lane as the Align companion that shows the downstream consequences of an upstream name, boundary or relationship before it settles, and hands settled meaning to promotion instead of writing Canon inline.
 **Blockers:** none
-**Latest event:** TK-006U claimed by codex-s004j-dispatcher.
-**Next gate:** Close TK-006U with verification and documentation proof.
+**Latest event:** TK-006U staged corrected source at 01f74241b1c9c5d04bbd77c0fa2bbc398967be0f with scoped red/green and the completed mandatory command set; in-progress source checkpoint only.
+**Next gate:** Submit the partial draft checkpoint to the Director; establish the shared writer slot and continue TK-006U fresh-context proof before closure or any distribution/landing work.
 
 > **Citation anchors.** pre=`46ad978956a74a3ee1bda22c36eb16207dcd98fd` post=`46ad978956a74a3ee1bda22c36eb16207dcd98fd`.
 
@@ -83,6 +83,35 @@ Checked at the pre anchor unless a line says otherwise.
   read this skill's boundary for their keep, fold or retire verdicts.
 - **Wiki.** [Domain Modeling article](../../wiki/skill-domain-modeling.md)
   explains the method and Matt's comparison; this pass points it at this Spec.
+
+### Source checkpoint checked at 01f74241b1c9c5d04bbd77c0fa2bbc398967be0f
+
+The earlier pre-anchor observations above are retained as the author's dated
+input. The assigned source checkpoint starts from integration
+`ef704e366da478f5d5ecfdab0947ab16d2520f0e`. The adapted
+[candidate skill](candidate/domain-modeling/SKILL.md) is outside the managed
+lane; the [scoped test](../../../tools/test-required-domain-modeling-candidate.mjs)
+checks its contract, absence from bundle/policy/adapters and the preserved
+pending-source digest. It is not installed, discoverable, release-stamped or
+Contract-routed. Core membership/version and both adapters are unchanged.
+
+The source preserves the bounded consequence trace and Matt's active moves.
+It replaces inline Canon writes during modeling with promotion or scoped Task
+work after locked and confirmed meaning, preserves Confirm's established
+endpoint authority without another ceremony, and chooses ADR/DDR by scope at
+Map through `to-docs`/`adr.mjs`. The formal RED test is unchanged at GREEN.
+Retained source authorship is r's original commit
+`84779a9058727c40db9c0077f5c19f3bd1b42a5e` and its exact inherited
+`Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>` trailer; input remains
+`e3e0b5f068bff80861d68c254441b2c94d7015fb`. These are provenance, not new
+approval or inherited behavioral proof.
+
+The one-command demo is
+`node --test tools/test-required-domain-modeling-candidate.mjs` (14 source
+checks). Its structural wording and non-discovery checks do not establish an
+agent's conversational judgment. The final source corrected a blanket
+confirmation denial found by Director validation even while structural checks
+were green; that limit is why fresh-context scenarios remain necessary.
 
 ## Desired Behavior
 
@@ -198,6 +227,13 @@ Verify review, integration delivery, owner Human QA and owner main verification
 remain open. Structural source checks do not establish conversational behavior
 or whole-Spec acceptance. No acceptance box is checked by this source checkpoint.
 
+`benchmarks/RESULTS.md` also has no safe writer slot in this bounded attempt.
+The Runbook's guardrail ledger reconciliation is deferred there; the before/after
+score and remaining recommendations are retained in this Spec. Guardrail is
+73/100 before and after: fresh Taskboard proof, repeated real outcomes, comparison
+with controls/prior harness, recent outcome evidence and uncertainty remain
+missing. No score, criteria, ledger or outcome claim is improved by this stage.
+
 ## Vertical Implementation Slices
 
 One authorized source Task is cut from live Actuality at activation with
@@ -266,9 +302,34 @@ Record `Docs checked; no update needed` for any other owner checked.
 | 2026-10-04 | planning | Authored from the owner's remap direction, replacing S-002H; no Task cut | Live sources read at 46ad9789: manifest, layout, skills catalog, grilling, pending source, ledger answers PW-4, GX-2, FND-Q09 and FND-Q13, DDR-000J, ADR-000M, ADR-000S, ADR-000W, ADR-000X, ADR-000Y; PR #251 candidate at e3e0b5f0; personal copy read-only | Spec authored; Wiki article and router now point here | Activation, Tasks, delivery and every verification gate |
 | 2026-10-06 | planning | Assigned non-Astra Director released one isolated staged-source Task and authorized native activation; no shared writer slot | Actuality ef704e366da478f5d5ecfdab0947ab16d2520f0e; native remote claims contain no S-004J claim; next-id proposed TK-006U with no visibleIdKey alias across local and remote tips (first-free allocator, not the handoff's TK-008Y expectation); PR #251 input e3e0b5f068bff80861d68c254441b2c94d7015fb, inherited source commit 84779a9058727c40db9c0077f5c19f3bd1b42a5e by r; pre guardrail 73/100; pre self-drift blocked/cleanUpdate false with 21 findings (10 blocked-slice, 5 stale-claim, 5 stale-seed, 1 unverified-provenance), receipts at /Users/kayden/Documents/Codex/2026-10-06/task-2/s004j-evidence | Source/Wiki/controls checked; only S-004J records and derived board/catalog may change during planning; generic mirrors exempt because this is isolated room-specific source scaffolding | Shared writer slot, distribution/Runbook, fresh-context proof, Wiki reconciliation, release identity, Verify review, integration and owner gates; no clean-update or outcome claim |
 
+### Director preservation validation
+
+During verification of immutable source `01f74241b1c9c5d04bbd77c0fa2bbc398967be0f`,
+the Director rechecked the original checkout separately: HEAD stayed
+`46ad978956a74a3ee1bda22c36eb16207dcd98fd`, its `origin/integration` stayed
+`ef704e366da478f5d5ecfdab0947ab16d2520f0e`, and dirty state stayed limited to
+the two original files. `workbench/grill-board/items.json` SHA256 remained
+`7511cb1d36ddf79410bd55a96d9a1cf50650194db05696c6471df2401fa1a4a6`;
+`workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md`
+remained `68b4945512cba4e80ed62a05e31d10f624219b6f0507d99c34f2f6ac19b5fff8`.
+This is preservation evidence from the Director, not independent assembled
+Review or owner approval. This attempt touched no original worktree/ref.
+
 ## Completion Result
 
 Not complete.
+
+TK-006U remains in progress. Code source
+`01f74241b1c9c5d04bbd77c0fa2bbc398967be0f` has scoped GREEN 14/14 and
+successful results for every unchanged mandatory Runbook command: the first
+attempt was 50/51 because the sandbox refused command 47's localhost listeners;
+the approved unchanged `node tools/test-grill-board.mjs` rerun passed 16/16 on
+the same clean source. This is a completed command set, not a one-pass 51/51 run.
+Later native receipt/record commits preserve these exact source bytes and receive
+focused render/doctor/append-only checks; no full-suite rerun on those later SHAs
+is implied. Self-drift still exits 1 with the same 21 baseline findings and
+`cleanUpdate: false`; guardrail remains 73/100. The partial draft handoff
+authorizes no merge, assembled PASS, owner approval or whole-v4 completion.
 
 ## Supersession
 
