@@ -89,7 +89,7 @@ These are the Plan's choices where the owner delegated the how, or left a form o
 
 Open, not decided here:
 
-- Whether `LEXICON.md` is a contract artifact or a routing artifact (the owner deferred it).
+- Answered 2026-10-05 by the amendment below: `LEXICON.md` is neither; it retires.
 - Whether the Runbook index should also be imported by a host adapter, after the cost is measured.
 
 
