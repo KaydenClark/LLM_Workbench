@@ -3,7 +3,7 @@
 **Task ID:** TK-008N
 **Spec ID:** S-004L
 **Slice:** One Wiki page for the one skill with the family as history
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-008L
 **Destination:** wiki-claim: workbench/wiki/skill-improve-harness.md

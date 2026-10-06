@@ -3,7 +3,7 @@
 **Task ID:** TK-008M
 **Spec ID:** S-004L
 **Slice:** Point the Runbook's harness feedback and evaluation rows at the one skill
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-008L
 **Destination:** spec-acceptance: The Runbook's harness feedback and evaluation rows point at the one skill, and the Wiki has one validated page for it.
