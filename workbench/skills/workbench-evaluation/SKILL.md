@@ -74,6 +74,11 @@ making claims.
 
 ## Harness Feedback Loop
 
+Taking in one feedback row, running the loop on its observed job and writing
+the lesson back into the record follow the
+[improve-harness skill](../improve-harness/SKILL.md#taking-in-feedback). This
+section keeps only this repository's maintainer harvest steps around that loop.
+
 Downstream projects built from `templates/` carry a `WORKBENCH_FEEDBACK.md` return
 channel (legacy copies named `HARNESS_FEEDBACK.md` are still discovered): an
 append-only log of where the harness rules themselves were unclear,
@@ -167,6 +172,11 @@ that scheduler adapter and any persisted automation definition; change it only
 from an explicitly authorized GPT_OS task.
 
 ## Manual Harness Feedback Reports
+
+A pass of the
+[improve-harness loop](../improve-harness/SKILL.md#result-record) writes its
+result record in the feedback lane's declared report format, the one step 3
+uses. This section keeps only this repository's maintainer report steps.
 
 Run this workflow after a setup-only Round One check succeeds. It assesses the
 assigned target; it never authorizes a repair or invokes automated repair.

@@ -57,7 +57,7 @@ Contract change.
 | Transport sessions privately | Private session transport is configured and selected collections must sync. | [save](workbench/skills/save/SKILL.md#optional-private-session-transport) |
 | Save, promote or add a room-local skill | Authorized work must be saved to its owners, or the room adds its own skill. | [save](workbench/skills/save/SKILL.md#how-save-and-promote-compose); room-local skills: [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#room-local-skills) |
 | Promote claims to an owner | Selected supported claims must reach their durable owner. | [promote](workbench/skills/promote/SKILL.md#command-reference) |
-| Evaluate a harness change | You must show that a harness change is an improvement. | [Evaluation And Benchmarking](#evaluation-and-benchmarking) |
+| Evaluate a harness change | You must show that a harness change is an improvement. | [improve-harness](workbench/skills/improve-harness/SKILL.md#improve-harness); comparative claims and trials: [Evaluation And Benchmarking](#evaluation-and-benchmarking) |
 | Transfer work through a handoff | Work goes to another agent or chat as a job, investigation, report or update. | [handoff](workbench/skills/handoff/SKILL.md#transfer-procedure) |
 | Improve against a benchmark | Agent rules, control docs, evaluation criteria or process change and need a baseline first. | [implement](workbench/skills/implement/SKILL.md#benchmark-driven-improvement) |
 | Pick the claims to test | An evaluation must name the claim it tests. | [Claims To Test](#claims-to-test) |
@@ -488,6 +488,10 @@ rule in `AGENTS.md`; it is not cleared by a green `validate`.
 
 Use this section to prove whether the workbench or project process is improving.
 The goal is evidence, not taste.
+Improving one harnessed job, from its baseline through a fresh rerun to a
+retain, revise or remove decision, follows the one loop in the
+[`improve-harness` skill](workbench/skills/improve-harness/SKILL.md#improve-harness);
+a comparative claim needs the claims, design and trials below.
 
 ### Handoff Transfer
 
