@@ -37,7 +37,7 @@
 | [001C](001C-agents-md-is-the-map-and-the-only-contract-file.md) | AGENTS.md is the map and the only Contract file | accepted | 2026-10-05 | AGENTS.md |
 | [001D](001D-the-runbook-lines-the-workflow-verbs-up-next-to-their-scenarios-and-binds-nothing.md) | The Runbook lines the workflow verbs up next to their scenarios and binds nothing | accepted | 2026-10-05 | AGENTS.md |
 | [001E](001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md) | The Lexicon retires: terms live in the Wiki and ownership, routes and invariants live in ARCHITECTURE.md | accepted | 2026-10-05 | AGENTS.md |
-| [001F](proposed/001F-maintainer-only-procedures-live-in-a-directory-scoped-agents-md.md) | Maintainer-only procedures live in a directory-scoped AGENTS.md | proposed | 2026-10-05 | AGENTS.md |
+| [001F](001F-maintainer-only-procedures-live-in-a-directory-scoped-agents-md.md) | Maintainer-only procedures live in a directory-scoped AGENTS.md | accepted | 2026-10-05 | AGENTS.md |
 | [001G](proposed/001G-the-blueprint-keeps-its-name-and-decision-records-are-the-design-doc-layer.md) | The Blueprint keeps its name and decision records are the design-doc layer | proposed | 2026-10-05 | BLUEPRINT.md |
 | [001H](proposed/001H-the-twelve-harness-engineering-directions-are-landmarks.md) | The twelve harness-engineering directions are landmarks | proposed | 2026-10-05 | BLUEPRINT.md |
 | [001I](proposed/001I-harness-improvement-is-one-playbook-not-a-family-of-review-skills.md) | Harness improvement is one playbook, not a family of review skills | proposed | 2026-10-05 | AGENTS.md |
