@@ -8,8 +8,8 @@
 **Updated:** 2026-10-06
 **Catalog description:** Deliver LANDMARK.md as an artifact one size above a Spec, with Specs and Tasks nested beneath it, a lane rather than a branch, and review and retirement one size up.
 **Blockers:** none. The prefix and the DDR listing are settled (2026-10-05); this Spec goes first in the Director's lane order.
-**Latest event:** TK-008K closed with proof.
-**Next gate:** Complete TK-008J.
+**Latest event:** TK-008J claimed by claude-s003z-dispatcher.
+**Next gate:** Close TK-008J with verification and documentation proof.
 
 > **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a`.
 
