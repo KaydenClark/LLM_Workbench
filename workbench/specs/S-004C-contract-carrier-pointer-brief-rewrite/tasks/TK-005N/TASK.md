@@ -52,3 +52,7 @@ later").
 
 No edit while another candidate holds the Lexicon. No decision on the Lexicon's
 own contract-artifact status. The accepted decision record stays history.
+
+## Narrowed, 2026-10-05
+
+The owner decided the Lexicon retires ([the decision](../../../../docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md)); its retirement is owned by [Lexicon Retirement And ARCHITECTURE.md](../../../S-004O-lexicon-retirement-and-architecture-md/SPEC.md). This Task edits only the carrier-definition, pointer and routing rows and the orientation text, so the Lexicon reads true until it retires, and does not start the retirement.

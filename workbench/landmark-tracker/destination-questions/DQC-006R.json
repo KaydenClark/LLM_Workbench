@@ -1,0 +1,48 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-006R",
+  "revision": 1,
+  "title": "Durable Plans",
+  "question": "How do landmarks, Specs and Tasks carry a plan across sessions, agents and providers without a human relay?",
+  "answer": null,
+  "confirmation": null,
+  "expectedResult": null,
+  "result": null,
+  "uncertainty": [
+    "Which existing landmark records fold into this direction, and what its reached check is"
+  ],
+  "sources": [
+    {
+      "id": "DDR-001H",
+      "revision": null
+    }
+  ],
+  "landmarks": [],
+  "assessment": null,
+  "related": [],
+  "claims": [],
+  "origin": {
+    "title": "Durable Plans",
+    "question": "How do landmarks, Specs and Tasks carry a plan across sessions, agents and providers without a human relay?",
+    "sources": [
+      {
+        "id": "DDR-001H",
+        "revision": null
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-06T04:30:43.055Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-06T04:30:43.055Z",
+      "reason": "Owner made this harness-engineering direction a landmark on 2026-10-05; captured at Confirm before the LANDMARK.md artifact exists",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    }
+  ]
+}
