@@ -8045,7 +8045,12 @@ function parseTaskRecordForTest(content) {
     writeAt(root, `${lmk}/tasks/TK-0DA/TASK.md`, landmarkTaskRecord({ id: 'TK-0DA', landmarkId: 'LMK-0DA', slice: 'Advance the retiring direction', status: 'done' }).replace('**Planned verification:**', '**Proof:** landed\n**Planned verification:**'));
     writeAt(root, `${lmk}/specs/S-0DA-retiring-child/SPEC.md`, completeFixtureSpec('S-0DA').replaceAll('TK-001', 'TK-0DB'));
     fs.writeFileSync(path.join(root, 'AGENTS.md'), `# Agents\n\nRoutes to workbench/wiki. The [Retiring Direction landmark](${lmk}/LANDMARK.md) holds the fixture direction.\n`);
-    const pageBody = '# Landmark: Retiring Direction\n\nThe Retiring Direction landmark ([Retiring Direction landmark](../../landmarks/LMK-0DA-retiring-direction/LANDMARK.md)) reached its destination; this page is its evolving synthesis.\n';
+    const pageBody = [
+      '# Landmark: Retiring Direction', '',
+      'The Retiring Direction landmark ([Retiring Direction landmark](../../landmarks/LMK-0DA-retiring-direction/LANDMARK.md)) reached its destination; this page is its evolving synthesis.', '',
+      '## Evidence and Sources', '', '- The Retiring Direction landmark record, named in source_paths.', '',
+      '## History', '', '- 2026-10-06: written at retirement.', ''
+    ].join('\n');
     const landmarkPage = (sourcePaths) => retirementGuidebookNote(historicalRoute, {
       type: 'design-concept', knowledgeRole: 'curated', sourcePaths,
       authorizedBy: 'the LANDMARK.md Artifact And Lane Runtime Spec (S-003Z) retirement fixture', parent: 'none', body: pageBody

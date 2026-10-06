@@ -532,7 +532,9 @@ test('retire-landmark refuses a Landmark Wiki page with a bare identifier and re
   const landmarkPage = body => ['---', 'type: design-concept', 'status: active', 'sensitivity: normal', 'knowledge_role: curated',
     'provenance:', '  - fixture', 'source_paths:', `  - ${historicalRoute}`, 'last_verified: 2026-10-06',
     'authorized_by: the LANDMARK.md Artifact And Lane Runtime Spec (S-003Z) retirement fixture', 'parent: none', '---', '',
-    '# Landmark: Wiki Bound Direction', '', body, ''].join('\n');
+    '# Landmark: Wiki Bound Direction', '', body, '', '## Evidence and Sources', '',
+    '- [Wiki Bound Direction landmark](../../landmarks/LMK-0EA-wiki-bound-direction/LANDMARK.md)', '',
+    '## History', '', '- 2026-10-06: written at retirement.', ''].join('\n');
   write(page, landmarkPage('Reached as LMK-0EA.'));
   write('workbench/wiki/MEMORY.md', '# Fixture Room Brain\n\nSee [Landmark: Wiki Bound Direction](design-concepts/landmark-wiki-bound-direction.md).\n');
   const specTool = path.join(root, 'workbench/tools/spec-workbench.mjs');
@@ -561,6 +563,7 @@ test('retire-landmark refuses a Landmark Wiki page with a bare identifier and re
   const retired = spec('retire-landmark', 'LMK-0EA', '--wiki', page, '--json');
   assert.equal(retired.status, 0, retired.stdout + retired.stderr);
   assert.equal(JSON.parse(retired.stdout).route, historicalRoute);
+  assert.match(fs.readFileSync(path.join(dir, page), 'utf8'), /\(\.\.\/\.\.\/landmarks\/retired\/LMK-0EA-wiki-bound-direction\/LANDMARK\.md\)/, 'the page link follows the move');
   assert.ok(fs.existsSync(path.join(dir, historicalRoute)), 'the page names a recorded source that exists');
   assert.deepEqual(validateLandmarkArticle(dir, page), { status: 'valid', article: page, findings: [] });
   assert.deepEqual(validateWiki(dir).filter(item => item.note === page), []);
