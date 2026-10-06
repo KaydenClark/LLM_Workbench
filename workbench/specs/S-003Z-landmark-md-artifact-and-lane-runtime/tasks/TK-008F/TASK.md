@@ -3,7 +3,7 @@
 **Task ID:** TK-008F
 **Spec ID:** S-003Z
 **Slice:** A Spec moves into, out of or between landmarks through the link-safe move that rewrites every live reference
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-008E
 **Destination:** spec-acceptance: Moving a Spec into a landmark through the link-safe operation rewrites every live reference and counts the historical ones; moving it out or to another parent also works.
