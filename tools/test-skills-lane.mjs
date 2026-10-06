@@ -109,6 +109,50 @@ test('the release lays the lane into a fresh room with a receipt and adapters, v
   }
 });
 
+// S-004L TK-008L: a room laid out before the one harness-improvement skill
+// joined the bundle lacks `improve-harness`; the explicit skills update lays it
+// down through the lane and both discovery roots, and a skill the room added
+// keeps its bytes.
+test('TK-008L: the skills update installs improve-harness into a room that lacks it and leaves a room-added skill untouched', () => {
+  const workspace = fixture('skills-lane-improve-');
+  try {
+    const project = path.join(workspace, 'room');
+    fs.mkdirSync(project);
+    run(project, 'git', ['init', '-q', '-b', 'main']);
+    const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
+    const version = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
+    json(node(root, layout, 'init', '--project', project, '--provenance', 'genesis', '--version', version, '--name', 'Improve Room', '--default-branch', 'main', '--integration-branch', 'integration'));
+    json(node(root, path.join(root, 'tools', 'workbench-tools.mjs'), 'install', '--project', project));
+    const skillsTool = path.join(root, 'tools', 'workbench-skills.mjs');
+    json(node(root, skillsTool, 'install', '--project', project));
+    const manifest = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'manifest.json'), 'utf8'));
+    assert.ok(manifest.skillPolicy.required.includes('improve-harness'), 'the generated room requires improve-harness');
+    const lane = path.join(project, manifest.lanes.skills);
+    fs.rmSync(path.join(lane, 'improve-harness'), { recursive: true, force: true });
+    const roomSkill = '---\nname: room-release-notes\ndescription: Write this room\'s release notes.\n---\n\n# Room release notes\n';
+    fs.mkdirSync(path.join(lane, 'room-release-notes'));
+    fs.writeFileSync(path.join(lane, 'room-release-notes', 'SKILL.md'), roomSkill);
+    const doctorTool = path.join(project, 'workbench', 'tools', 'spec-workbench.mjs');
+    assert.match(node(project, doctorTool, 'doctor').stdout, /skill-lane-missing/, 'the missing skill is reported before the update');
+
+    const updated = json(node(root, skillsTool, 'update', '--project', project, '--explicit-update', '--home', scrubbedHome));
+    assert.equal(updated.status, 'updated', JSON.stringify(updated));
+    assert.deepEqual(updated.changed, ['improve-harness'], 'the update lays down exactly the missing skill');
+    assert.ok(fs.statSync(path.join(lane, 'improve-harness', 'SKILL.md')).isFile(), 'improve-harness is in the lane after the update');
+    for (const discoveryRoot of manifest.skillPolicy.discovery) {
+      const file = path.join(project, discoveryRoot, 'improve-harness', 'SKILL.md');
+      assert.ok(fs.statSync(file).isFile(), `${discoveryRoot}/improve-harness/SKILL.md resolves`);
+      assert.ok(insideLane(file, fs.realpathSync(lane)), `${discoveryRoot}/improve-harness resolves inside the lane`);
+    }
+    assert.ok(JSON.stringify(JSON.parse(fs.readFileSync(path.join(lane, '.workbench-skills.json'), 'utf8'))).includes('improve-harness'), 'the receipt names the installed skill');
+    assert.equal(fs.readFileSync(path.join(lane, 'room-release-notes', 'SKILL.md'), 'utf8'), roomSkill, 'the update leaves the room-added skill untouched');
+    assert.equal(json(node(root, skillsTool, 'verify', '--project', project)).status, 'valid');
+    assert.doesNotMatch(node(project, doctorTool, 'doctor').stdout, /skill-lane-missing/, 'doctor no longer names a missing skill');
+  } finally {
+    fs.rmSync(workspace, { recursive: true, force: true });
+  }
+});
+
 // S-004C TK-005M: a room updating to the pointer-brief shape gets the
 // operations index only after the skills update lays down every core skill it
 // points to. Landed first, an index row naming a skill the room's lane lacks
