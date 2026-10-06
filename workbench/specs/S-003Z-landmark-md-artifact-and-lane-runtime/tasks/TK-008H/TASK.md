@@ -3,7 +3,7 @@
 **Task ID:** TK-008H
 **Spec ID:** S-003Z
 **Slice:** A whole-landmark review reports, is refused while a child is open or from a participating context, and a failed verdict opens corrective Tasks without blocking a child merge
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-008E, TK-008G
 **Destination:** spec-acceptance: A landmark with an open child Spec or Task cannot be verified or retire; a failed whole-landmark review creates corrective Tasks and does not block a child Spec's merge.

@@ -8,8 +8,8 @@
 **Updated:** 2026-10-06
 **Catalog description:** Deliver LANDMARK.md as an artifact one size above a Spec, with Specs and Tasks nested beneath it, a lane rather than a branch, and review and retirement one size up.
 **Blockers:** TK-008Z (the Lexicon and room-checks skill lines) waits on the [Contract Carrier Pointer-Brief Rewrite](../S-004C-contract-carrier-pointer-brief-rewrite/SPEC.md) writer, whose open PR #358 (TK-005N) holds `LEXICON.md` and `templates/LEXICON.md`, and on the [Harness Improvement Playbook Skill](../S-004L-harness-improvement-playbook-skill/SPEC.md) PR #372 (TK-008L), which holds the `workbench-room-checks` skill. The Director released the Runbook and AGENTS lines to this Spec (TK-008Y).
-**Latest event:** 2026-10-06: the separate-context Spec review failed the assembled candidate d684eaad (verdict #1); TK-008H and TK-008Y returned to ready with continuation handoffs.
-**Next gate:** Continue TK-008H (landmark participation keeps a closed Task's claimant) and TK-008Y (carrier lines cover the root Lexicon Task row), reassemble, then a fresh separate-context Spec review; TK-008Z applies the routed Lexicon and room-checks lines once PR #358 and PR #372 release their files.
+**Latest event:** TK-008H claimed by claude-s003z-dispatcher.
+**Next gate:** Close TK-008H with verification and documentation proof.
 
 > **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a`.
 
