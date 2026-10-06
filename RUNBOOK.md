@@ -74,17 +74,17 @@ Contract change.
 | Read a diagnostic and its blocking effect | A runtime tool reports a finding and you need its severity and what it blocks. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#diagnostics-and-blocking-effects) |
 | Use the socket contract registry | Work touches the Foundry socket contract registry. | [workbench-room-checks](workbench/skills/workbench-room-checks/SKILL.md#socket-contract-registry) |
 | Hold test coverage | You add or change tests, or judge whether coverage is enough. | [implement](workbench/skills/implement/SKILL.md#test-coverage-policy); this room's policy for the evaluator and trial tooling: [Test Coverage Policy](#test-coverage-policy) |
-| Evaluate a harness change | You must show that a harness change is an improvement. | [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#workbench-evaluation) |
+| Evaluate a harness change | You must show that a harness change is an improvement. | [improve-harness](workbench/skills/improve-harness/SKILL.md#improve-harness); comparative claims and trials: [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#workbench-evaluation) |
 | Run the guardrail audit | A harness change needs its guardrail baseline and after-score. | [implement](workbench/skills/implement/SKILL.md#benchmark-driven-improvement); this room's audit: [Guardrail North-Star Audit](#guardrail-north-star-audit) |
 | Pick the claims to test | An evaluation must name the claim it tests. | [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#claims-to-test) |
 | Design an evaluation | You set up task-outcome scoring or trials. | [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#evaluation-design) |
 | Run the evaluation commands | You run the static rubric or the trial framework. | [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#commands) |
-| Take in harness feedback | Feedback arrives from a downstream room. | [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#harness-feedback-loop) |
+| Take in harness feedback | Feedback arrives from a downstream room. | [improve-harness](workbench/skills/improve-harness/SKILL.md#taking-in-feedback); this repository's harvest steps: [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#harness-feedback-loop) |
 | Run the automated feedback gate | Scheduled feedback automation runs or is configured. | [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#automated-feedback-gate) |
 | Record an automation run outcome | A scheduled run finished and its outcome must be recorded. | [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#automation-run-outcomes) |
 | Branch and open a pull request | You create a task branch or open a PR into integration, or need this room's Git commands. | [implement](workbench/skills/implement/SKILL.md#version-control-procedures); this room's commands: [Version-Control Procedures](#version-control-procedures) |
 | Merge, prove containment and clean up a branch | A Task's merge answers are validated, or an assembled Spec candidate's Verify review passed: merge, prove integration contains it and delete the merged branch. | [implement](workbench/skills/implement/SKILL.md#branch-completion); this room's closeout commands: [Version-Control Procedures](#version-control-procedures) |
-| Write a manual harness feedback report | A setup-only Round One check succeeded and an assessment is assigned. | [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#manual-harness-feedback-reports) |
+| Write a manual harness feedback report | A setup-only Round One check succeeded and an assessment is assigned. | [improve-harness](workbench/skills/improve-harness/SKILL.md#result-record); this repository's report steps: [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#manual-harness-feedback-reports) |
 | Troubleshoot a known failure | A command fails with a symptom listed there. | [Troubleshooting](#troubleshooting) |
 | Recover or roll back | A change fails and its touched files must be restored or reverted. | [implement](workbench/skills/implement/SKILL.md#recovery-and-rollback); this room's data and backup branches: [Recovery And Rollback](#recovery-and-rollback) |
 | Record operational proof | A command changed durable project state. | [Operational Proof](#operational-proof) |
@@ -700,7 +700,10 @@ coverage rules follow the
 
 Use this section to prove whether a harness change is an improvement. The goal
 is evidence, not taste.
-The evaluation and feedback procedures are maintainer procedures of this
+Improving one harnessed job, from its baseline through a fresh rerun to a
+retain, revise or remove decision, follows the one loop in the
+[`improve-harness` skill](workbench/skills/improve-harness/SKILL.md#improve-harness).
+The evaluation and feedback procedures around that loop are maintainer procedures of this
 repository in the
 [`workbench-evaluation` skill](workbench/skills/workbench-evaluation/SKILL.md#workbench-evaluation);
 the guardrail audit follows.
@@ -745,7 +748,10 @@ The static rubric and trial framework commands: a maintainer procedure of this r
 
 ### Harness Feedback Loop
 
-Taking in harness feedback from downstream rooms: a maintainer procedure of this repository, in the
+Taking in harness feedback follows the
+[`improve-harness` skill](workbench/skills/improve-harness/SKILL.md#taking-in-feedback):
+a feedback row seeds one pass of its loop, and the lesson is written back into
+that record. Harvesting feedback from downstream rooms: a maintainer procedure of this repository, in the
 [`workbench-evaluation` skill](workbench/skills/workbench-evaluation/SKILL.md#harness-feedback-loop).
 
 ### Automated Feedback Gate
@@ -853,7 +859,10 @@ still requires the reviewed PR and remote containment read-back.
 
 ## Manual Harness Feedback Reports
 
-Writing a manual harness feedback report: a maintainer procedure of this repository, in the
+A manual harness feedback report is written in the feedback lane's declared
+report format, which the
+[`improve-harness` skill](workbench/skills/improve-harness/SKILL.md#result-record)
+result record also uses. Writing a manual harness feedback report: a maintainer procedure of this repository, in the
 [`workbench-evaluation` skill](workbench/skills/workbench-evaluation/SKILL.md#manual-harness-feedback-reports).
 
 ## Troubleshooting
