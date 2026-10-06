@@ -38,6 +38,16 @@ to me and wait for my answer.
 5. **Lock, update the map, continue.** After confirmation, lock the decision,
    update the decision map, and only then ask the next question.
 
+A batch of answers gets the same readback. When I answer several questions at
+once, read every answer back as pending in one reply and lock none of them
+until I confirm. An agent recommendation is intent too: my "yes" confirms it as
+written, and anything you add to it is new intent that needs its own readback.
+The rule is the same outside an interview: confirmation is what moves a claim
+from Intent into Enduring Context, so read a claim back before any change puts
+it on that plane or above. A review surface whose items carry their own Confirm
+control is the one exception: pressing Confirm is the confirmation, and a
+correction or a note sends the item around again until it is confirmed.
+
 ## The decision map
 
 Keep a working map of the major branches, their prerequisites, open

@@ -17,9 +17,9 @@ The owner confirmed these points in a grilling on 2026-10-02:
    defines verbs one at a time, each in its own Lexicon row, and workflows are
    composed from them. The owner had been calling this the workflow while it
    kept being called the ladder, or the steps.
-2. **Journey.** Journey is Implement, Check, Review and Verify, repeated until
-   the confirmed concept is built; Map and Plan come before it and are not part
-   of it. It is a workflow verb because the build repeats until the concept is
+2. **Journey.** Journey is Implement, Check, QA and Submit; Map and Plan come
+   before it, and Review comes after it and decides whether another Journey is
+   needed. It is a workflow verb because the build repeats until the concept is
    built. Journey is only the loop-level name, not a stage a card can sit at.
 3. **Verbs can be passed through.** When there is nothing to map, the workflow
    can move from Confirm to Plan. Review and Verify are not as clean a cut as
@@ -104,6 +104,26 @@ text reads at `git show f2d12337a5511b169c46633ad3377366239b5819:workbench/docs/
   Review and Verify, and Map and Plan are not part of it.
 - Nothing is superseded, because adding verbs replaces nothing. Points 3 to 6
   and the Consequences stand.
+
+Amended 2026-10-05, again, because the owner changed the Journey to correct
+per-Task review spending his tokens. The text before this amendment reads at
+`git show 4bec733a0246a73b5db05d314f61a4d6bd7de75a:workbench/docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md`.
+
+- Point 2 said Journey is Implement, Check, Review and Verify, repeated. The
+  owner: "Instead of Journey being Implement → Check → Review → Verify, It
+  should now be Implement → Check → QA → Submit → Review → Verify. We are
+  adding a self evaluation and submit step between Check and Review. Check's
+  are deterministic verifications that runs in the environment, the QA is a
+  self judgement check on the work. And then the review is after the Journey
+  is over. It is the deciding factor in if we need to start another Journey."
+  QA and Submit are new workflow verbs. The delivery workflow now reads Idea,
+  Align, Confirm, Map, Plan, Journey, Review, Verify, Approve, Delivered, Clean
+  Up, and a failed Review goes back to Map, Plan and Journey before Verify
+  ("if its wrong, we Map, Plan, and Journey again before we can verify").
+- Review is an Automated review of a Spec, sometimes a landmark, or the
+  Workbench as a whole against its decision records and Blueprint, never of a
+  Task: "while reviewing the whole spec, we will find tasks that were not
+  done." Points 3 to 6 stand; QA and Submit have no plane assigned.
 
 The Lexicon's Workflow, Journey and verb rows carry the current meanings. The
 release proof decision

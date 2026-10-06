@@ -155,6 +155,7 @@ The owner adopted terms from the AI Coding Dictionary on 2026-10-03. These entri
 
 - [Lexicon: AI Coding Terms section](../../LEXICON.md) - one row per adopted term
 - [S-004E - AI Coding Dictionary Terms](../specs/S-004E-ai-coding-dictionary-terms/SPEC.md) - the Spec that owns delivery of the terms and these entries
+- [S-004K - Workbench Term Dictionary Pages](../specs/S-004K-workbench-term-dictionary-pages/SPEC.md) - the Spec that owns brief Lexicon rows plus long dictionary pages for the Workbench's own terms, starting with the workflow verbs
 - [Harness: what the Workbench is loaded into](dictionary-harness.md): the Workbench is an agentic management system a harness such as Claude Code or Codex loads, never a harness itself
 - [Session: one run of the context window](dictionary-session.md): why a Chat is not a session, and why continuity is written to files
 - [Context: what the agent has in front of it now](dictionary-context.md): how it differs from the context window, the Context Map, Enduring Context and Working context
@@ -163,6 +164,7 @@ The owner adopted terms from the AI Coding Dictionary on 2026-10-03. These entri
 - [Stateful: continuity is re-read from the layer below](dictionary-stateful.md): how notepads, handoffs, the Wiki and `AGENTS.md` carry state across sessions
 - [Cache tokens: why the start of a session stays stable](dictionary-cache-tokens.md): why always-loaded content is cheaper when it does not change mid-session
 - [Non-determinism: why one passing run is not proof](dictionary-non-determinism.md): why verification and repeated trials are required
+- [Automated review: the Review verb, after the Journey](dictionary-automated-review.md): what a separate-context review is, that it reviews Specs, landmarks or the whole Workbench and never a Task, and why it runs on the owner's chosen host
 
 ## Roles And Stances
 
