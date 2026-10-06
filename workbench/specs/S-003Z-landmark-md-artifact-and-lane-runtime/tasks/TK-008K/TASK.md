@@ -3,7 +3,7 @@
 **Task ID:** TK-008K
 **Spec ID:** S-003Z
 **Slice:** The twelve harness-engineering directions are authored as LANDMARK.md artifacts with the 24 JSON records mapped into them
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-008D, TK-008E
 **Destination:** spec-acceptance: A `LANDMARK.md` can be authored from the template, validated, and assigned in a fixture room, and a Task under the assigned landmark can be selected and claimed.
