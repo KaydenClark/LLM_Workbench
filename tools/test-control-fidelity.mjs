@@ -1153,12 +1153,18 @@ test('TK-005N: both Lexicons and the README describe the delivered carrier shape
     assert.match(row('| Operations and procedures |'), /RUNBOOK\.md#operations-index/, `${label} Context Map routes operations through the Runbook index`);
     assert.match(row('| Recovery after interruption or failure |'), /RUNBOOK\.md#operations-index/, `${label} Context Map routes recovery through the Runbook index`);
     assert.match(row('| **Root files** |'), /Runbook is an index of operations/, `${label} Root files row states the delivered Runbook shape`);
-    assert.match(row('| **Skill and host adapter** |'), /operations index row points to/, `${label} Skill row states that a pointed lane skill binds`);
-    // TK-005N review correction: both Lexicons name the same Contract carriers.
-    assert.match(row('| **Workbench Contract** |'), /carried by `AGENTS\.md`, `RUNBOOK\.md` and `LEXICON\.md`, plus the explicitly assigned Spec's bounded capability requirements and, while an operation is performed, the binding requirements of the lane skill a Runbook operations index row points to for it\./, `${label} Workbench Contract row names the three carriers, the assigned Spec and pointed lane skills`);
-    // Second review correction: the ownership schema's opening sentence agrees.
-    assert.match(lexicon.replace(/\s+/g, ' '), /The Workbench Contract spans `AGENTS\.md`, `RUNBOOK\.md`, `LEXICON\.md`, the bounded assigned Spec and, while an operation is performed, the lane skill a Runbook operations index row points to; it is not another document\. Other root artifacts are routed by the question they answer\./, `${label} ownership schema names the same Contract carriers`);
-    assert.doesNotMatch(lexicon, /The Workbench Contract spans its existing root files/, `${label} Lexicon no longer says the Contract spans every root file`);
+    // 2026-10-05 narrowing (the AGENTS.md-only Contract, non-binding Runbook
+    // and Lexicon retirement decisions): no Lexicon row may say a Runbook index
+    // row is what makes a skill bind, or that the Runbook is the one place a
+    // binding pointer is declared. The Skill row, the Workbench Contract row
+    // and the ownership-schema opening name the binding route by reference to
+    // `AGENTS.md` Instruction Authority, so they stay true while that list moves.
+    assert.doesNotMatch(lexicon, /Runbook operations index row points to/, `${label} Lexicon still says a Runbook index row makes a skill bind`);
+    assert.doesNotMatch(lexicon, /the one place a pointer declares which skill binds/, `${label} Lexicon still names the Runbook as the binding registry`);
+    assert.match(row('| **Skill and host adapter** |'), /A skill in the tracked skills lane that the Contract points to for an operation binds for that operation, as `AGENTS\.md` Instruction Authority states;/, `${label} Skill row states that a pointed lane skill binds through AGENTS.md`);
+    assert.match(row('| **Workbench Contract** |'), /\| The binding claim set `AGENTS\.md` Instruction Authority names: /, `${label} Workbench Contract row names the claim set by reference to AGENTS.md`);
+    assert.match(lexicon.replace(/\s+/g, ' '), /The Workbench Contract is the claim set `AGENTS\.md` Instruction Authority names, with the bounded assigned Spec and, while an operation is performed, the lane skill the Contract points to for it; it is not another document\./, `${label} ownership schema opening names the Contract by reference to AGENTS.md`);
+    assert.doesNotMatch(lexicon, /The Workbench Contract spans/, `${label} Lexicon no longer lists the Contract's carriers in the schema opening`);
     // Third review correction: every ownership-schema route to the Runbook
     // goes through its operations index.
     for (const name of ['Operations', 'Reusable behavior', 'Evaluation']) {
@@ -1171,6 +1177,21 @@ test('TK-005N: both Lexicons and the README describe the delivered carrier shape
     for (const target of ['AGENTS.md#git-rules', 'RUNBOOK.md#operations-index', 'workbench/skills/code-review/SKILL.md#independent-review-boundaries']) {
       assert.ok(review.includes(`(${target})`), `${label} Review row links ${target} for the review-independence example`);
     }
+  }
+  // Root only: the carrier-definition rows say what the 2026-10-05 decisions
+  // made the carriers, and the gap until AGENTS.md follows them.
+  const rootLexicon = read(root, 'LEXICON.md');
+  const rootRow = (start) => rootLexicon.split('\n').find((line) => line.startsWith(start)) ?? '';
+  const ddr = { contract: '001C-agents-md-is-the-map-and-the-only-contract-file.md', runbook: '001D-the-runbook-lines-the-workflow-verbs-up-next-to-their-scenarios-and-binds-nothing.md', lexicon: '001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md' };
+  for (const [name, needs] of [['Root files', ['contract', 'runbook', 'lexicon']], ['Contract artifact', ['contract', 'runbook', 'lexicon']], ['Routing artifact', ['runbook', 'lexicon']], ['Workbench Contract', ['contract']], ['Context pointer', ['contract']]]) {
+    const cell = rootRow(`| **${name}** |`);
+    assert.ok(cell, `root Lexicon has the ${name} row`);
+    for (const key of needs) assert.ok(cell.includes(`workbench/docs/ddr/${ddr[key]}`), `root ${name} row links the ${key} decision`);
+  }
+  assert.match(rootRow('| **Root files** |'), /binds nothing/, 'root Root files row says the Runbook binds nothing');
+  assert.match(rootRow('| **Workbench Contract** |'), /still names `RUNBOOK\.md` and `LEXICON\.md` as the other carriers/, 'root Workbench Contract row names the gap until AGENTS.md follows the decision');
+  for (const stale of [/decided neither record's kind/, /stays with the owner's later debate/]) {
+    assert.doesNotMatch(rootLexicon, stale, `root Lexicon still leaves the carriers' kind undecided: ${stale}`);
   }
   const readme = read(root, 'README.md');
   assert.doesNotMatch(readme, /Follow AGENTS\.md -> RUNBOOK\.md -> LEXICON\.md/, 'README no longer names the old entry route');
