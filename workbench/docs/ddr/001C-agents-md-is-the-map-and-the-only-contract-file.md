@@ -19,6 +19,6 @@ Why the owner chose it:
 
 Considered and rejected: three Contract carriers with authority flowing through a binding index in the Runbook, the shape of [Contract carriers are briefs that point to skills and authority flows through the pointer](../adr/000W-contract-carriers-are-briefs-that-point-to-skills-and-authority-flows-through-the-pointer.md). This decision keeps that record's pointer rule and narrows the carriers to one.
 
-Consequences: the Instruction Authority list in `AGENTS.md` shrinks to four sources; the Contract carrier rewrite is re-planned around one carrier; the Runbook and Lexicon decisions ([the Runbook](proposed/001D-the-runbook-lines-the-workflow-verbs-up-next-to-their-scenarios-and-binds-nothing.md), [the Lexicon](proposed/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md)) say where their content goes.
+Consequences: the Instruction Authority list in `AGENTS.md` shrinks to four sources; the Contract carrier rewrite is re-planned around one carrier; the Runbook and Lexicon decisions ([the Runbook](001D-the-runbook-lines-the-workflow-verbs-up-next-to-their-scenarios-and-binds-nothing.md), [the Lexicon](proposed/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md)) say where their content goes.
 
 Provenance: the owner's answer on the matklad ARCHITECTURE.md post and the OpenAI map shape, 2026-10-05, read back and confirmed the same day.
