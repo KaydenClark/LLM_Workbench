@@ -6611,6 +6611,7 @@ function landmarkWithDirectTasks(id, overrides, tasks = []) {
     writeAt(root, `${lmk}/LANDMARK.md`, landmarkWithDirectTasks('LMK-0AA', { Status: 'active', Owner: 'director', Priority: '5', Updated: TODAY }, [['TK-000A', 'Advance the direction']]));
     writeAt(root, `${lmk}/tasks/TK-000A/TASK.md`, landmarkTaskRecord({ id: 'TK-000A', landmarkId: 'LMK-0AA', slice: 'Advance the direction' }));
     writeAt(root, 'tools/nested-seam.mjs', '// fixture seam\n');
+    fs.writeFileSync(path.join(root, 'AGENTS.md'), '# Agents\n\nRoutes to workbench/wiki.\n');
     // The nested Spec cites a seam path and links the Blueprint-level Spec it
     // builds on, four folders up from its own directory.
     const nested = `${lmk}/specs/S-0AB-nested-capability`;
@@ -6721,7 +6722,9 @@ function landmarkWithDirectTasks(id, overrides, tasks = []) {
     const movedBlueprint = json(cli('move-spec', 'S-0AH', '--to', 'retired', '--json'));
     assert.equal(movedBlueprint.to, 'workbench/specs/retired/S-0AH-blueprint-complete');
     assert.match(fs.readFileSync(path.join(root, nested, 'SPEC.md'), 'utf8'), /\[S-0AH\]\(\.\.\/\.\.\/\.\.\/\.\.\/specs\/retired\/S-0AH-blueprint-complete\/SPEC\.md\)/, 'the nested Spec is a live reference surface');
-    assert.deepEqual(scanReferences(root), [], 'no live reference dangles after both moves');
+    // (The template-authored LANDMARK.md links a fixture DDR this room never
+    // wrote; only the Spec records' own links are checked here.)
+    assert.deepEqual(scanReferences(root).filter((item) => /\/(SPEC|TASK)\.md$/.test(item.file)), [], 'no Spec or Task record link dangles after both moves');
     assert.equal(cli('render').status, 0);
     publishFixture(root, 'retire the Blueprint-level complete Spec');
     const after = JSON.parse(cli('doctor', '--json').stdout);

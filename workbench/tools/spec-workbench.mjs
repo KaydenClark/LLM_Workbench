@@ -18,7 +18,7 @@ import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath,
 // Spec (ADR-000U). Doctor folds its findings in beside the ADR and DDR
 // collections, and `next-id --prefix LMK` folds its identities with the
 // Tracker's JSON landmark records and every remote tip.
-import { LANDMARK_LIFECYCLE_FOLDERS, LANDMARK_PREFIX, landmarkFindings, loadLandmarks, loadReadableLandmarks, loadRetiredLandmarks, publicLandmark } from './landmark-artifact.mjs';
+import { LANDMARK_LIFECYCLE_FOLDERS, LANDMARK_PREFIX, landmarkFindings, landmarkSpecHomes, loadLandmarks, loadReadableLandmarks, loadRetiredLandmarks, publicLandmark } from './landmark-artifact.mjs';
 import { parseFrontmatter, planReferenceRewrite, splitEvidenceSection, validateAdrs, writeDecisionRegisters } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { ARTIFACT_ID_MIN_WIDTH, allocateArtifactId, compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
@@ -324,7 +324,7 @@ export function occupiedIdentities(rootDir, prefix) {
     // nothing and is not an error.
     const scan = prefix === LANDMARK_PREFIX
       ? { pattern: '^\\*\\*Landmark ID:\\*\\*|"id":', paths: [landmarksLane, ...(trackerLane ? [trackerLane] : [])] }
-      : { pattern: '^\\*\\*(Spec ID|Task ID):\\*\\*|^\\|.*(S-|TK-)', paths: [lane, ...(prefix === 'TK' ? [landmarksLane] : []), ...(manifestResult.status === 0 ? [] : ['specs'])] };
+      : { pattern: '^\\*\\*(Spec ID|Task ID):\\*\\*|^\\|.*(S-|TK-)', paths: [lane, landmarksLane, ...(manifestResult.status === 0 ? [] : ['specs'])] };
     const result = spawnSync('git', ['-C', root, 'grep', '-h', '-E', scan.pattern, ref, '--', ...scan.paths], { encoding: 'utf8', maxBuffer: REF_READ_MAX_BUFFER });
     if (result.error || ![0, 1].includes(result.status)) throw new Error(`Cannot reserve IDs from ${ref}: ${result.error?.message ?? result.stderr.trim()}`);
     occupied.push(...(result.stdout.match(new RegExp(`\\b${prefix}-[0-9A-Za-z]{3,}\\b`, 'g')) ?? []));
@@ -1080,7 +1080,7 @@ export function render(rootDir, options = {}) {
   } else {
     const catalogPath = path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md');
     assertSafeWritePath(root, catalogPath);
-    const relativeCatalog = renderCatalog(specs, retired).replaceAll(`](${resolveSpecsRoot(root).specsPrefix}/`, '](');
+    const relativeCatalog = laneCatalog(root, specs, retired);
     writeSafeFile(root, catalogPath, `# Spec Catalog\n\nDerived from stable specs; includes completed history.\n\n${CATALOG_START}\n${relativeCatalog}\n${CATALOG_END}\n`);
   }
   atomicWrite(taskboardPath, replaceRegion(taskboard, HOT_START, HOT_END, renderHotBoard(specs, retired, landmarks)));
@@ -1091,7 +1091,6 @@ function renderJsonPreview(root) {
   const output = path.join(root, 'TASKBOARD.preview.json');
   assertSafeWritePath(root, output);
   assertSafeReadPath(root, path.join(root, 'workbench', 'manifest.json'));
-  const { specsRoot } = resolveSpecsRoot(root);
   // Refuse linked sources before loaders can skip a symlinked directory or
   // read through it. Traverse only the existing Spec/Task ownership shapes.
   const inspectFile = file => {
@@ -1125,7 +1124,9 @@ function renderJsonPreview(root) {
       }
     }
   };
-  inspectSpecs(specsRoot);
+  // S-003Z TK-008E: every Spec home, the Blueprint-level lane and each
+  // landmark's `specs/`.
+  for (const home of specHomes(root)) inspectSpecs(home.specsRoot);
   // S-003Z TK-008G: a landmark's folder and its direct Tasks get the same
   // ordinary-file refusal before the loaders read them.
   const inspectLandmarks = directory => {
@@ -1185,7 +1186,7 @@ export function doctor(rootDir, options = {}) {
   issues.push(...uncapturedCompleteFindings(root, specs.filter((spec) => !spec.sliceConflict)));
   const blueprint = fs.existsSync(path.join(root, 'BLUEPRINT.md')) ? fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8') : '';
   if (blueprint.includes(CATALOG_START) || blueprint.includes(CATALOG_END)) checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs, retired), issues);
-  else checkRender(root, path.relative(root, path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md')), CATALOG_START, CATALOG_END, renderCatalog(specs, retired).replaceAll(`](${resolveSpecsRoot(root).specsPrefix}/`, ']('), issues);
+  else checkRender(root, path.relative(root, path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md')), CATALOG_START, CATALOG_END, laneCatalog(root, specs, retired), issues);
   checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs, retired, landmarks), issues);
   issues.push(...collectionFindings(root));
   issues.push(...skillFindings(root));
@@ -1550,17 +1551,25 @@ function collectionFindings(root) {
 // reader - S-00J TK-001's assembled-Spec report - composes this module's own
 // parsing and one-slice-truth resolution rather than reimplementing it. No
 // lifecycle command in this file changed to use a different reading path.
+//
+// S-003Z TK-008E: the active roster is the top level of every Spec home
+// (`specHomes`): the Blueprint-level lane, then each landmark folder's
+// `specs/`. Each Spec names the home it sits in (`specsPrefix`) and its
+// parent landmark (`landmarkId`, `null` at the Blueprint level).
 export function loadSpecs(rootDir, options = {}) {
   const root = path.resolve(rootDir);
-  const { specsRoot, specsPrefix } = resolveSpecsRoot(root);
-  if (!fs.existsSync(specsRoot)) return [];
-  const paths = [];
-  for (const entry of fs.readdirSync(specsRoot, { withFileTypes: true })) {
-    if (!entry.isDirectory()) continue;
-    const filePath = path.join(specsRoot, entry.name, 'SPEC.md');
-    if (fs.existsSync(filePath)) paths.push(filePath);
+  const located = [];
+  for (const home of specHomes(root)) {
+    if (!fs.existsSync(home.specsRoot)) continue;
+    const paths = [];
+    for (const entry of fs.readdirSync(home.specsRoot, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue;
+      const filePath = path.join(home.specsRoot, entry.name, 'SPEC.md');
+      if (fs.existsSync(filePath)) paths.push(filePath);
+    }
+    located.push(...paths.sort().map((filePath) => ({ filePath, home })));
   }
-  const specs = paths.sort().map((filePath) => {
+  const specs = located.map(({ filePath, home }) => {
     const specDir = path.dirname(filePath);
     const records = listTaskRecords(specDir, root);
     // S-00I TK-004: a Task's own historical route, read alongside the active
@@ -1571,7 +1580,7 @@ export function loadSpecs(rootDir, options = {}) {
     const retiredRecords = listRetiredTaskRecords(specDir, root);
     const recordBacked = fs.existsSync(path.join(specDir, 'tasks'));
     const content = options.contentOverrides?.get(filePath) ?? fs.readFileSync(filePath, 'utf8');
-    const spec = { ...parseSpecPacket(content, filePath, root, { recordBacked }), specsPrefix, records, retiredRecords, recordBacked };
+    const spec = { ...parseSpecPacket(content, filePath, root, { recordBacked }), specsPrefix: home.specsPrefix, landmarkId: home.landmarkId, records, retiredRecords, recordBacked };
     spec.formerId = specFormerId(content, spec.id);
     assertOneSliceTruth(spec);
     return spec;
@@ -1604,10 +1613,11 @@ function specFormerId(content, id) {
 // treating an absent `retired/` directory as an error.
 export function loadRetiredSpecs(rootDir) {
   const root = path.resolve(rootDir);
-  const { specsRoot, specsPrefix } = resolveSpecsRoot(root);
   const specs = [];
-  for (const folder of SPEC_LIFECYCLE_FOLDERS) {
-    const folderRoot = path.join(specsRoot, folder);
+  // S-003Z TK-008E: each Spec home's own lifecycle folders, so a nested Spec
+  // retires into `<landmark>/specs/retired/` and is read back from there.
+  for (const home of specHomes(root)) for (const folder of SPEC_LIFECYCLE_FOLDERS) {
+    const folderRoot = path.join(home.specsRoot, folder);
     if (!fs.existsSync(folderRoot)) continue;
     const paths = [];
     for (const entry of fs.readdirSync(folderRoot, { withFileTypes: true })) {
@@ -1621,7 +1631,7 @@ export function loadRetiredSpecs(rootDir) {
       const retiredRecords = listRetiredTaskRecords(specDir, root);
       const recordBacked = fs.existsSync(path.join(specDir, 'tasks'));
       const content = fs.readFileSync(filePath, 'utf8');
-      const spec = { ...parseSpecPacket(content, filePath, root, { recordBacked }), specsPrefix, records, retiredRecords, recordBacked, lifecycleFolder: folder };
+      const spec = { ...parseSpecPacket(content, filePath, root, { recordBacked }), specsPrefix: home.specsPrefix, landmarkId: home.landmarkId, records, retiredRecords, recordBacked, lifecycleFolder: folder };
       spec.formerId = specFormerId(content, spec.id);
       assertOneSliceTruth(spec);
       specs.push(spec);
@@ -1638,8 +1648,9 @@ export function loadRetiredSpecs(rootDir) {
 // record-backed Spec uses: a landmark parent is the parsed landmark
 // (landmark-artifact.mjs) shaped like a loaded Spec - `kind: 'landmark'`, no
 // slice table, its direct Task records active and retired - so one path
-// serves both parents and a Spec's behavior is unchanged. Specs nested under
-// a landmark are a separate slice; nothing here reads `<landmark>/specs/`.
+// serves both parents and a Spec's behavior is unchanged. A Spec nested in a
+// landmark's `specs/` folder is an ordinary Spec read through `specHomes`
+// (TK-008E), never a landmark parent.
 export function isLandmarkId(value) {
   return typeof value === 'string' && /^LMK-/i.test(value);
 }
@@ -2123,8 +2134,9 @@ function identityFindings(specs, retiredSpecs = [], landmarks = []) {
   return findings;
 }
 
-// Exported so spec-report.mjs resolves the same specs lane, without a second,
-// possibly-drifting copy of this manifest-aware lookup.
+// Exported so other readers resolve the same Blueprint-level specs lane,
+// without a second, possibly-drifting copy of this manifest-aware lookup;
+// `specHomes` below adds the landmark homes (S-003Z TK-008E).
 export function resolveSpecsRoot(root) {
   const manifestPath = path.join(root, 'workbench', 'manifest.json');
   if (!fs.existsSync(manifestPath)) return { specsRoot: path.join(root, 'specs'), specsPrefix: 'specs' };
@@ -2138,6 +2150,31 @@ export function resolveSpecsRoot(root) {
     specsRoot: path.join(root, validation.manifest.lanes.specs),
     specsPrefix: validation.manifest.lanes.specs
   };
+}
+
+// S-003Z TK-008E: every home a Spec can sit in, the one reader the Spec tools
+// resolve a Spec through: the Blueprint-level lane (`resolveSpecsRoot`)
+// first, then the `specs/` folder of every landmark at both homes of the
+// landmarks collection (`landmarkSpecHomes`). Each home names its prefix and
+// its parent landmark (`null` for the Blueprint level); the home's own
+// lifecycle folders (`retired/`) sit beneath it. A room with no landmarks has
+// exactly the one home it always had.
+export function specHomes(rootDir) {
+  const root = path.resolve(rootDir);
+  const { specsRoot, specsPrefix } = resolveSpecsRoot(root);
+  return [{ specsRoot, specsPrefix, landmarkId: null, landmarkLifecycleFolder: null }, ...landmarkSpecHomes(root)];
+}
+
+// The catalog as `CATALOG.md` prints it: links relative to the Blueprint-level
+// lane it lives in, so a nested Spec's link climbs out to its landmark home.
+function laneCatalog(root, specs, retired) {
+  const { specsPrefix } = resolveSpecsRoot(root);
+  let catalog = renderCatalog(specs, retired).replaceAll(`](${specsPrefix}/`, '](');
+  for (const spec of [...specs, ...retired]) {
+    if (spec.specsPrefix === specsPrefix) continue;
+    catalog = catalog.replaceAll(`](${spec.relativePath})`, `](${path.posix.relative(specsPrefix, spec.relativePath)})`);
+  }
+  return catalog;
 }
 
 // S-00I TK-003: `retired` (default `[]`) is what keeps `CATALOG.md`'s claim
@@ -2375,7 +2412,9 @@ function collectSpecReferenceFiles(root, excludeDir) {
   walk(resolveSpecsRoot(root).specsRoot, (name) => name === 'SPEC.md' || name === 'TASK.md');
   // S-003Z TK-008G: a landmark's own record and its direct Task records are
   // live surfaces too (its Direct Tasks list links each Task record).
-  walk(collectionPath(root, 'landmarks'), (name) => name === 'LANDMARK.md' || name === 'TASK.md');
+  // S-003Z TK-008E: so are the Specs nested in each landmark's `specs/` home
+  // and their Task records, which this one walk of the collection reaches.
+  walk(collectionPath(root, 'landmarks'), (name) => name === 'LANDMARK.md' || name === 'TASK.md' || name === 'SPEC.md');
   const seen = new Set();
   return files.filter((file) => {
     if (excludeDir && (file === excludeDir || file.startsWith(excludeDir + path.sep))) return false;
@@ -2533,7 +2572,10 @@ export function moveSpecDirectory(rootDir, specId, folder) {
   if (gitStatus.stdout.trim() !== '') {
     throw new Error('move-spec refuses a dirty working tree; commit or stash first so the candidate shows only this move');
   }
-  const { specsRoot, specsPrefix } = resolveSpecsRoot(root);
+  // S-003Z TK-008E: a Spec moves within its own home, so a nested Spec
+  // retires into `<landmark>/specs/retired/`.
+  const specsPrefix = spec.specsPrefix;
+  const specsRoot = path.join(root, specsPrefix);
   const oldSpecDir = path.dirname(spec.filePath);
   if (path.dirname(oldSpecDir) !== specsRoot) {
     throw new Error(`${specId} is not at the top level of ${specsPrefix}; move-spec only moves an active-roster Spec`);
@@ -2806,7 +2848,7 @@ function recoverTaskCollision(rootDir, specId, taskId, folder, options) {
       else if (!entry.isFile()) fail('source entries must be ordinary files or directories');
     }
   };
-  ordinaryTree(resolveSpecsRoot(root).specsRoot);
+  for (const home of specHomes(root)) ordinaryTree(home.specsRoot);
   const owners = [...loadSpecs(root, { allowDuplicates: true }), ...loadRetiredSpecs(root)];
   const selected = owners.filter(owner => visibleIdKey(owner.id) === visibleIdKey(specId));
   if (selected.length !== 1) fail('assigned Spec must resolve uniquely');
@@ -2843,7 +2885,7 @@ function recoverTaskCollision(rootDir, specId, taskId, folder, options) {
   }
   const foreignPath = options.collisionPath;
   if (typeof foreignPath !== 'string' || path.isAbsolute(foreignPath) || foreignPath.split('/').some(part => !part || part === '.' || part === '..')
-      || !foreignPath.startsWith(`${resolveSpecsRoot(root).specsPrefix}/`) || !foreignPath.endsWith('/TASK.md')) fail('collision evidence requires an ordinary explicit Task path');
+      || ![resolveSpecsRoot(root).specsPrefix, collectionRelative(root, 'landmarks')].some(prefix => foreignPath.startsWith(`${prefix}/`)) || !foreignPath.endsWith('/TASK.md')) fail('collision evidence requires an ordinary explicit Task path');
   const foreign = parseTaskRecord(blob(options.collisionRevision, foreignPath).toString('utf8'), path.join(root, foreignPath), root);
   const foreignDir = path.posix.dirname(foreignPath);
   const foreignTasks = path.posix.dirname(foreignDir);
@@ -2873,13 +2915,18 @@ function recoverTaskCollision(rootDir, specId, taskId, folder, options) {
   for (const ref of git('for-each-ref', '--format=%(refname)', 'refs/remotes').split('\n').filter(Boolean)) {
     // Pre-manifest tips retain the same legacy lane inventory as next-id.
     // A present but malformed manifest still refuses instead of guessing.
-    let lanes = [...new Set([resolveSpecsRoot(root).specsPrefix, 'specs'])];
+    // S-003Z TK-008E: Specs nested in landmark folders are read there too.
+    let lanes = [...new Set([resolveSpecsRoot(root).specsPrefix, 'specs', collectionRelative(root, 'landmarks')])];
     if (git('ls-tree', '--name-only', ref, '--', 'workbench/manifest.json')) {
       let lane;
       try { lane = JSON.parse(blob(ref, 'workbench/manifest.json')).lanes?.specs; }
       catch { fail('cannot inspect an observed remote manifest'); }
       if (typeof lane !== 'string' || path.isAbsolute(lane) || lane.split('/').some(part => !part || part === '.' || part === '..')) fail('observed remote Spec lane is invalid');
-      lanes = [lane];
+      let landmarksLane;
+      try { landmarksLane = JSON.parse(blob(ref, 'workbench/manifest.json')).collections?.landmarks ?? collectionRelative(root, 'landmarks'); }
+      catch { fail('cannot inspect an observed remote manifest'); }
+      if (typeof landmarksLane !== 'string' || path.isAbsolute(landmarksLane) || landmarksLane.split('/').some(part => !part || part === '.' || part === '..')) fail('observed remote landmarks collection is invalid');
+      lanes = [lane, landmarksLane];
     }
     const result = spawnSync('git', ['--no-lazy-fetch', '--no-optional-locks', '-C', root, 'grep', '-h', '-E', '^\\*\\*(Task ID|Former ID):\\*\\*', ref, '--', ...lanes], { encoding: 'utf8', maxBuffer: REF_READ_MAX_BUFFER, env: { ...process.env, GIT_NO_REPLACE_OBJECTS: '1' } });
     if (result.error || ![0, 1].includes(result.status)) fail('cannot inspect remote replacement records');
@@ -3011,7 +3058,8 @@ function widenSpecIdentity(root, selector) {
   if (spec.formerId) throw new Error(`${id} already records Former ID ${spec.formerId}; an identity widens once`);
   requireCleanWidenTree(root);
   refuseDiscardedAlias(root, 'S', id);
-  const { specsRoot, specsPrefix } = resolveSpecsRoot(root);
+  const specsPrefix = spec.specsPrefix;
+  const specsRoot = path.join(root, specsPrefix);
   const oldDir = path.dirname(spec.filePath);
   const base = path.basename(oldDir);
   if (path.dirname(oldDir) !== specsRoot || !base.startsWith(`${id}-`)) {
@@ -3291,8 +3339,7 @@ function durableOwnerRefusal(root, specId, historicalRoute, noteAbsolute, { feat
 // retired, otherwise the retired route `retireSpec` will move it to.
 function specHistoricalRoute(root, spec) {
   if (spec.lifecycleFolder) return spec.relativePath;
-  const { specsPrefix } = resolveSpecsRoot(root);
-  return `${specsPrefix}/${SPEC_LIFECYCLE_FOLDERS[0]}/${path.basename(path.dirname(spec.filePath))}/SPEC.md`;
+  return `${spec.specsPrefix}/${SPEC_LIFECYCLE_FOLDERS[0]}/${path.basename(path.dirname(spec.filePath))}/SPEC.md`;
 }
 
 // S-00I TK-01U: the features article that captures `spec`, or `null`. A note
@@ -3428,9 +3475,8 @@ export function retireSpec(rootDir, specId, options = {}) {
   }
 
   const folder = SPEC_LIFECYCLE_FOLDERS[0];
-  const { specsPrefix } = resolveSpecsRoot(root);
   const specBasename = path.basename(path.dirname(spec.filePath));
-  const historicalRoute = `${specsPrefix}/${folder}/${specBasename}/SPEC.md`;
+  const historicalRoute = `${spec.specsPrefix}/${folder}/${specBasename}/SPEC.md`;
 
   const wikiRoot = lanePath(root, 'wiki');
   const wikiNoteAbsolute = path.resolve(root, wikiNoteGiven);
@@ -4163,6 +4209,8 @@ function publicSpec(spec) {
     id: spec.id,
     // S-01W TK-002O: present only on a record `widen-id` widened.
     ...(spec.formerId ? { formerId: spec.formerId } : {}),
+    // S-003Z TK-008E: present only on a Spec nested in a landmark's folder.
+    ...(spec.landmarkId ? { landmarkId: spec.landmarkId } : {}),
     title: spec.title,
     status: spec.status,
     priority: spec.priority,
