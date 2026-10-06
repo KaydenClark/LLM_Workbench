@@ -3,6 +3,7 @@ date: 2026-10-05
 supersedes:
 canonicalized_in:
   - AGENTS.md
+deprecation_reason: Recorded on 2026-10-05 from a stale checkout that still showed the maintainer-home question open; the owner had answered it on 2026-10-04 (option A, a declared maintainer-skill list) and that answer is delivered on integration by TK-006L and TK-005K. The nested-guide answer was confirmed on a false premise and does not reopen the delivered home; a new owner decision would.
 ---
 
 # Maintainer-only procedures live in a directory-scoped AGENTS.md
