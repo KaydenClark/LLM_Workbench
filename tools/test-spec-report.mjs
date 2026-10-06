@@ -3004,3 +3004,181 @@ function doneTaskWithDecisions({ id, specId, rows }) {
     }
   }
 }
+
+// S-003Z TK-008H: the whole-landmark review, one size above a Spec's.
+// `report LMK-### --candidate SHA` assembles the landmark's reached checks,
+// its nested child Specs (status, latest verdict, retirement), its direct
+// Tasks and decision records under a content digest bound to LANDMARK.md and
+// every live child record, naming each open child as a gap; `verify LMK-###`
+// is refused while a child is open; `verdict LMK-###` records on the
+// landmark's evidence log, refuses a stale digest, a missing candidate and a
+// reviewer that took part in the landmark, turns a fail into corrective Tasks
+// under the landmark without touching a child Spec's gate, and a pass with
+// every child done and every check ticked sets the landmark reached.
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'landmark-review-'));
+  initManagedRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const branch = currentBranch(root);
+    declareGit(root, { defaultBranch: branch, integrationBranch: branch });
+    const tool = path.resolve('workbench/tools/spec-workbench.mjs');
+    const cli = (...args) => spawnSync(process.execPath, [tool, ...args, '--path', root], { encoding: 'utf8' });
+    const json = (run) => { assert.equal(run.status, 0, run.stdout + run.stderr); return JSON.parse(run.stdout); };
+    const lmk = 'workbench/landmarks/LMK-0BA-review-direction';
+    const landmarkFile = path.join(root, lmk, 'LANDMARK.md');
+    writeAt(root, `${lmk}/LANDMARK.md`, landmarkArtifact('LMK-0BA')
+      .replace(/^\*\*Owner:\*\* .*$/m, '**Owner:** lane-director')
+      .replace(/^\*\*Latest event:\*\* .*$/m, '**Latest event:** TK-0BA claimed by landmark-worker.'));
+    const landmarkTask = (id, status, slice = 'Advance the direction') => [
+      `# ${id} - ${slice}`, '', `**Task ID:** ${id}`, '**Landmark ID:** LMK-0BA', `**Slice:** ${slice}`,
+      `**Status:** ${status}`, '**Blockers:** none', '**Destination:** spec-acceptance: LMK-0BA What Success Looks Like', ''
+    ].join('\n');
+    const directTask = path.join(root, lmk, 'tasks/TK-0BA/TASK.md');
+    writeAt(root, `${lmk}/tasks/TK-0BA/TASK.md`, appendReceiptRowToContent(landmarkTask('TK-0BA', 'ready'), {
+      branch: 'claude/landmark-direction', headSha: 'a'.repeat(40), upstream: '0', dirty: 0,
+      testsRun: 'fixture suite run by receipt-runner: pass', docsTouched: 'none', remainingGap: 'none'
+    }));
+    const doneChild = `${lmk}/specs/S-0BA-delivered-child`;
+    writeAt(root, `${doneChild}/SPEC.md`, tableSpec({ id: 'S-0BA', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-19 | TK-001 | done | tested | docs | none |' })
+      .replace('**Status:** active', '**Status:** complete').replace('**Owner:** agent', '**Owner:** child-dispatcher'));
+    const openChild = `${lmk}/specs/S-0BB-open-child`;
+    const openChildText = tableSpec({ id: 'S-0BB', taskStatus: 'in-progress', checked: false, completion: 'Pending.' })
+      .replace('**Latest event:** Spec activated.', '**Latest event:** TK-001 claimed by child-claimant.');
+    writeAt(root, `${openChild}/SPEC.md`, openChildText);
+    const c1 = commitFixture(root);
+    recordReviewVerdict(root, 'S-0BA', { candidate: c1, result: 'pass', findings: 'none', reviewer: 'child-reviewer' });
+    const childGateBefore = gate(root, { spec: 'S-0BA', candidate: c1 });
+    assert.equal(childGateBefore.refused, false, childGateBefore.reason);
+
+    // The report, bound to the named candidate.
+    const report = json(cli('report', 'LMK-0BA', '--candidate', c1, '--json'));
+    assert.equal(report.id, 'LMK-0BA');
+    assert.equal(report.kind, 'landmark');
+    assert.equal(report.path, `${lmk}/LANDMARK.md`);
+    assert.deepEqual(report.successChecks, [{ text: 'Filled what success looks like', done: false }]);
+    assert.deepEqual(report.childSpecs.map((child) => [child.id, child.status, child.retired, child.open]),
+      [['S-0BA', 'complete', false, false], ['S-0BB', 'active', false, true]]);
+    assert.equal(report.childSpecs[0].latestVerdict?.result, 'pass', 'a child Spec carries its latest verdict');
+    assert.equal(report.childSpecs[0].latestVerdict?.reviewer, 'child-reviewer');
+    assert.equal(report.childSpecs[1].latestVerdict, null);
+    assert.deepEqual(report.directTasks.map((task) => [task.id, task.status, task.open]), [['TK-0BA', 'ready', true]]);
+    assert.equal(report.decisionRecords.length, 1, 'the Decision Records section is assembled');
+    assert.match(report.landmarkDigest, /^[0-9a-f]{64}$/);
+    assert.equal(report.candidate.existsInRepository, true);
+    assert.equal(report.candidate.matchesContent, true, report.candidate.contentError);
+    assert.deepEqual(report.openChildren.map((child) => child.id), ['S-0BB', 'TK-0BA']);
+    assert.ok(report.gaps.some((gap) => /S-0BB/.test(gap)) && report.gaps.some((gap) => /TK-0BA/.test(gap)), report.gaps.join('; '));
+    assert.ok(!report.gaps.some((gap) => /S-0BA/.test(gap)), 'a complete child is not a gap');
+    assert.equal(report.latestVerdict, null);
+
+    // The digest binds LANDMARK.md and every live child record, never a
+    // Receipt row or an evidence row.
+    fs.writeFileSync(directTask, appendReceiptRowToContent(fs.readFileSync(directTask, 'utf8'), {
+      branch: 'claude/landmark-direction', headSha: 'b'.repeat(40), upstream: '0', dirty: 0,
+      testsRun: 'second run: pass', docsTouched: 'none', remainingGap: 'none'
+    }));
+    assert.equal(json(cli('report', 'LMK-0BA', '--json')).landmarkDigest, report.landmarkDigest, 'a Receipt row leaves the digest unchanged');
+    writeAt(root, `${openChild}/SPEC.md`, openChildText.replace('Expected behavior is verified.', 'Expected behavior is verified twice.'));
+    assert.notEqual(json(cli('report', 'LMK-0BA', '--json')).landmarkDigest, report.landmarkDigest, 'a child Spec edit moves the digest');
+    writeAt(root, `${openChild}/SPEC.md`, openChildText);
+    const landmarkText = fs.readFileSync(landmarkFile, 'utf8');
+    fs.writeFileSync(landmarkFile, landmarkText.replace('Filled where this landmark points', 'Changed direction'));
+    assert.notEqual(json(cli('report', 'LMK-0BA', '--json')).landmarkDigest, report.landmarkDigest, 'a LANDMARK.md edit moves the digest');
+    fs.writeFileSync(landmarkFile, landmarkText);
+    assert.equal(json(cli('report', 'LMK-0BA', '--json')).landmarkDigest, report.landmarkDigest);
+
+    // verify is refused by name while a child is open.
+    const refusedVerify = cli('verify', 'LMK-0BA');
+    assert.notEqual(refusedVerify.status, 0, 'verify refuses a landmark with an open child');
+    assert.match(refusedVerify.stderr, /LMK-0BA/);
+    assert.match(refusedVerify.stderr, /S-0BB/);
+    assert.match(refusedVerify.stderr, /TK-0BA/);
+    assert.doesNotMatch(refusedVerify.stderr, /S-0BA/);
+
+    // verdict refusals write nothing.
+    const reviewer = 'independent landmark reviewer';
+    const verdictArgs = (overrides = {}) => {
+      const values = { candidate: c1, digest: report.landmarkDigest, result: 'pass', findings: 'none', reviewer, ...overrides };
+      return ['verdict', 'LMK-0BA', ...Object.entries(values).flatMap(([key, value]) => [`--${key}`, value]), '--json'];
+    };
+    const stale = cli(...verdictArgs({ digest: '0'.repeat(64) }));
+    assert.notEqual(stale.status, 0, 'a stale digest is refused');
+    assert.match(stale.stderr, /digest/);
+    const missing = cli(...verdictArgs({ candidate: 'deadbeef'.repeat(5) }));
+    assert.notEqual(missing.status, 0, 'a nonexistent candidate is refused');
+    assert.match(missing.stderr, /does not exist/);
+    for (const participant of ['lane-director', 'landmark-worker', 'receipt-runner', 'child-dispatcher', 'child-claimant', 'child-reviewer', 'Child-Reviewer (opus, fresh context)']) {
+      const refused = cli(...verdictArgs({ reviewer: participant }));
+      assert.notEqual(refused.status, 0, `a reviewer that took part in the landmark (${participant}) is refused`);
+      assert.match(refused.stderr, /took part in LMK-0BA/, refused.stderr);
+    }
+    const undisposed = cli(...verdictArgs({ result: 'fail', findings: 'The integration gap is open' }));
+    assert.notEqual(undisposed.status, 0, 'a fail finding with no disposition is refused');
+    assert.equal(fs.readFileSync(landmarkFile, 'utf8'), landmarkText, 'every refused verdict leaves LANDMARK.md unchanged');
+
+    // A fail verdict opens corrective Tasks under the landmark.
+    const failed = json(cli(...verdictArgs({ result: 'fail', findings: 'new Task: Close the integration gap the review found; continue TK-0BA: also check the reached result' })));
+    assert.equal(failed.landmarkId, 'LMK-0BA');
+    assert.equal(failed.result, 'fail');
+    assert.match(fs.readFileSync(landmarkFile, 'utf8'), new RegExp(`\\| review \\| Review verdict: fail at ${c1} \\[${report.landmarkDigest.slice(0, 12)}\\] #1 \\| new Task: Close the integration gap`));
+    assert.equal(failed.correctiveTasks.length, 1);
+    const corrective = failed.correctiveTasks[0];
+    assert.match(corrective.filePath, new RegExp(`^${lmk}/tasks/TK-[0-9A-Za-z]+/TASK\\.md$`));
+    const correctiveRecord = readTaskRecord(path.join(root, corrective.filePath), root);
+    assert.equal(correctiveRecord.landmarkId, 'LMK-0BA', 'the corrective Task sits directly under the landmark');
+    assert.equal(correctiveRecord.status, 'ready');
+    assert.match(correctiveRecord.plannedVerification, /^Answers evidence row \d+ \(fail verdict at /);
+    assert.deepEqual(failed.continuedTasks.map((task) => task.id), ['TK-0BA']);
+    assert.equal(readContinuations(fs.readFileSync(directTask, 'utf8'), 'TK-0BA').length, 1);
+    const afterFail = json(cli('report', 'LMK-0BA', '--json'));
+    assert.equal(afterFail.verdicts.length, 1);
+    assert.ok(afterFail.directTasks.some((task) => task.id === corrective.id && task.open), 'the corrective Task is an open direct Task');
+
+    // The parent's failed verdict blocks no child Spec's gate or merge.
+    const childGateAfter = gate(root, { spec: 'S-0BA', candidate: c1 });
+    assert.equal(childGateAfter.refused, false, childGateAfter.reason);
+    assert.equal(childGateAfter.specDigest, childGateBefore.specDigest);
+    const openChildPr = gate(root, { spec: 'S-0BB', task: 'TK-001' });
+    assert.equal(openChildPr.refused, false, openChildPr.reason);
+
+    // Every child done: verify passes; a pass with an unticked check records
+    // without reaching; with every check ticked a pass sets reached.
+    writeAt(root, `${openChild}/SPEC.md`, tableSpec({ id: 'S-0BB', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-20 | TK-001 | done | tested | docs | none |' }).replace('**Status:** active', '**Status:** complete'));
+    fs.writeFileSync(directTask, fs.readFileSync(directTask, 'utf8').replace(/^\*\*Status:\*\* .*$/m, '**Status:** done'));
+    const correctiveFile = path.join(root, corrective.filePath);
+    fs.writeFileSync(correctiveFile, fs.readFileSync(correctiveFile, 'utf8').replace(/^\*\*Status:\*\* .*$/m, '**Status:** done'));
+    const c2 = commitFixture(root);
+    const verified = json(cli('verify', 'LMK-0BA', '--json'));
+    assert.equal(verified.verified, true);
+    assert.equal(verified.landmarkId, 'LMK-0BA');
+    assert.deepEqual(verified.openChildren, []);
+    assert.deepEqual(verified.uncheckedSuccessChecks, ['Filled what success looks like']);
+    const ready = json(cli('report', 'LMK-0BA', '--candidate', c2, '--json'));
+    assert.deepEqual(ready.openChildren, []);
+    const early = json(cli('verdict', 'LMK-0BA', '--candidate', c2, '--digest', ready.landmarkDigest, '--result', 'pass', '--findings', 'none', '--reviewer', reviewer, '--json'));
+    assert.equal(early.reached, false, 'a pass with an unticked reached check does not reach the landmark');
+    assert.match(early.notReached.join('; '), /Filled what success looks like/);
+    assert.match(fs.readFileSync(landmarkFile, 'utf8'), /^\*\*Status:\*\* active$/m);
+    fs.writeFileSync(landmarkFile, fs.readFileSync(landmarkFile, 'utf8').replace('- [ ] Filled what success looks like', '- [x] Filled what success looks like'));
+    const c3 = commitFixture(root);
+    const ticked = json(cli('report', 'LMK-0BA', '--candidate', c3, '--json'));
+    assert.deepEqual(ticked.gaps, []);
+    const passed = json(cli('verdict', 'LMK-0BA', '--candidate', c3, '--digest', ticked.landmarkDigest, '--result', 'pass', '--findings', 'none', '--reviewer', reviewer, '--json'));
+    assert.equal(passed.reached, true);
+    const reachedText = fs.readFileSync(landmarkFile, 'utf8');
+    assert.match(reachedText, /^\*\*Status:\*\* reached$/m, 'a pass with every child done sets the landmark reached');
+    assert.match(reachedText, /^\*\*Latest event:\*\* Whole-landmark review passed at /m);
+    const reachedReport = json(cli('report', 'LMK-0BA', '--json'));
+    assert.equal(reachedReport.landmarkDigest, ticked.landmarkDigest, 'reaching the landmark leaves its digest unchanged');
+    assert.equal(reachedReport.latestVerdict?.result, 'pass');
+    assert.equal(json(cli('verify', 'LMK-0BA', '--json')).reached, true);
+    const afterReach = cli('verdict', 'LMK-0BA', '--candidate', c3, '--result', 'fail', '--findings', 'new Task: Another gap', '--reviewer', 'second landmark reviewer');
+    assert.notEqual(afterReach.status, 0, 'no corrective Task is written under a reached landmark');
+    assert.match(afterReach.stderr, /LMK-0BA is reached/);
+    assert.ok(!doctor(root).some((item) => item.code === 'contradictory-state' && item.landmarkId === 'LMK-0BA'));
+    console.log('ok - S-003Z TK-008H: a whole-landmark review reports, is refused while a child is open or from a participating context, a fail opens corrective Tasks under the landmark without blocking a child gate, and a pass reaches it');
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+}
