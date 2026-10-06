@@ -1,4 +1,5 @@
-// Derived from the shipped Genesis templates; keep the embedded validator vocabulary exact.
+// Derived from the shipped Genesis templates and the record templates a room
+// copies after Genesis; keep the embedded validator vocabulary exact.
 export const genesisTemplateFiles = [
   "AGENTS.md",
   "BLUEPRINT.md",
@@ -8,6 +9,12 @@ export const genesisTemplateFiles = [
   "README.md",
   "SPEC.md",
   "wiki/MEMORY.project.md"
+];
+
+// S-003Z TK-008J: record templates outside Genesis whose placeholders the
+// vocabulary also holds, so an unfilled one is detected like a Spec's.
+export const recordTemplateFiles = [
+  "LANDMARK.md"
 ];
 
 export const templatePlaceholders = [
@@ -42,6 +49,7 @@ export const templatePlaceholders = [
   "[INSTALL_COMMAND]",
   "[INTEGRATION_BRANCH_OR_DEFAULT]",
   "[Known limit or linked follow-up]",
+  "[LANDMARK_TITLE]",
   "[LICENSE - e.g. MIT. See `LICENSE`.]",
   "[LINT_OR_AUDIT_COMMAND]",
   "[LOG_COMMAND]",
@@ -53,6 +61,7 @@ export const templatePlaceholders = [
   "[OWNER_ONLY_MERGE]",
   "[Observable acceptance gate]",
   "[One sentence for the Blueprint catalog.]",
+  "[One sentence for the landmark catalog.]",
   "[PROJECT_NAME]",
   "[QUESTION THIS ROOM'S MEMORY ANSWERS]",
   "[READABLE_ROOTS]",
@@ -78,6 +87,8 @@ export const templatePlaceholders = [
   "[WHAT THIS IS NOT OR WHICH ALIASES TO AVOID]",
   "[WRITABLE_ROOTS]",
   "[What coherent product capability or user outcome should exist?]",
+  "[Where this landmark points: the destination it moves the product toward and the direction every child Spec and direct Task takes to get there.]",
+  "[Why this direction is worth holding now, and what stays unresolved without it.]",
   "[Why this outcome is worth building now.]",
   "[YYYY-MM-DD]",
   "[active / partial / stale]",
