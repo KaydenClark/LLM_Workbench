@@ -17,7 +17,7 @@ Each maintainer directory of this repository that has invariants worth stating, 
 
 ## Why It Matters
 
-The owner merged the two maintainer-home concepts on 2026-10-05: the declared maintainer skills stay the home of procedures, and the nested guide's non-conflicting part, invariants disclosed by location, is added ([the merged decision](../../docs/ddr/001K-maintainer-procedures-live-in-declared-maintainer-skills-and-directory-scoped-guides-carry-only-a-directory-s-invariants-and-pointers.md)). The root brief pays for every line on every turn; a rule about `templates/` is paid for by an agent that never touches `templates/`. Lopopolo's corpus nests editor-only rules the same way, linked from the [lineage page](../../wiki/harness-engineering-lineage.md).
+The owner merged the two maintainer-home concepts on 2026-10-05: the declared maintainer skills stay the home of procedures, and the nested guide's non-conflicting part, invariants disclosed by location, is added ([the merged decision](../../docs/ddr/001K-maintainer-procedures-live-in-declared-maintainer-skills-and-directory-scoped-guides-carry-only-a-directory-s-invariants-and-pointers.md)). The root brief pays for every line on every turn; a rule about `templates/` is paid for by an agent that never touches `templates/`.
 
 ## Current Verified State
 
