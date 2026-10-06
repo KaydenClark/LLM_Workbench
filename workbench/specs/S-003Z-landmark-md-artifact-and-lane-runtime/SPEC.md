@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
-**Updated:** 2026-10-02
+**Updated:** 2026-10-05
 **Catalog description:** Deliver LANDMARK.md as an artifact one size above a Spec, with Specs and Tasks nested beneath it, a lane rather than a branch, and review and retirement one size up.
-**Blockers:** none for specification. The landmark identifier prefix and how a landmark lists its DDRs are open; implementation awaits Plan and assignment.
-**Latest event:** Authored at the Map step from the owner-confirmed landmark decision records of 2026-10-02; no Task is cut.
-**Next gate:** At Plan, inspect live Actuality and decide whether this capability is one Spec or splits further, then cut small Tasks.
+**Blockers:** none. The prefix and the DDR listing are settled (2026-10-05); this Spec goes first in the Director's lane order and awaits Plan and assignment.
+**Latest event:** 2026-10-05: the owner made twelve harness-engineering directions landmarks and put this artifact first; the `LMK-` prefix stays and a landmark lists its decision records as a linked section; no Task is cut.
+**Next gate:** Dispatch: at Plan, inspect live Actuality, decide whether this capability is one Spec or splits further, cut small Tasks, and author the twelve landmarks as the artifact's first proof.
 
 > **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a`.
 
@@ -56,10 +56,15 @@ No implementation or agent-outcome proof for this capability is claimed by this 
 - The change to the Instruction Authority list that makes an assigned landmark a delegate is carried by the [Contract carrier rewrite](../S-004C-contract-carrier-pointer-brief-rewrite/SPEC.md), which owns that list. Until it lands the current `AGENTS.md` text governs; this Spec must not execute a Task under an unassigned landmark.
 - Landmarks never carry authority from a projection or a link; an Issue, board or tracker view never instructs.
 
+Settled on 2026-10-05, with the sequencing the owner confirmed ([The twelve harness-engineering directions are landmarks](../../docs/ddr/001H-the-twelve-harness-engineering-directions-are-landmarks.md)):
+
+- The visible-identifier prefix stays `LMK-`: the runtime already allocates it and the migrating records keep their identities.
+- A landmark lists the decision records under it as a linked section, the way a Spec lists its decisions; [Decision Record Tooling](../S-003X-decision-record-tooling/SPEC.md) reads that section when it renders a register by landmark.
+- This Spec goes first. Its first proof is the twelve landmarks the owner named: Repo is the System of Record, Progressive Disclosure, Durable Plans, Agent to Agent Review, Mechanical Enforcement, Learn from Failure, Agent Visible Runtime, Continuous Cleanup, Human Attention Minimized, Multi Agent and Provider Coordination, Owner Idea Alignment, and Autonomous Execution. Each has a Destination Question Card captured at Confirm (DQC-006P to DQC-007A). The 24 existing JSON records fold into these where they overlap; [Landmark Record Migration And Tracker Regrouping](../S-004A-landmark-record-migration-and-tracker-regrouping/SPEC.md) carries the migration and reads this Spec's result.
+- Review one size up now carries the owner's Human QA: [Review climbs the ladder](../../docs/ddr/001B-review-climbs-the-ladder-task-by-automated-proof-spec-by-agent-review-landmark-by-integrated-automated-review-and-the-owner-judges-the-concept.md). This Spec delivers the review rung; moving the owner's gate onto it is [Review Ladder And Landmark Human QA](../S-004N-review-ladder-and-landmark-human-qa/SPEC.md).
+
 Open, not decided here:
 
-- The visible-identifier prefix of a landmark. The existing JSON records use `LMK`, and their migration keeps or retires those identifiers; the prefix is the owner's naming choice.
-- How a landmark lists the DDRs under it, shared with [Decision Record Tooling](../S-003X-decision-record-tooling/SPEC.md).
 - Whether the whole capability is one Spec or splits at Plan; the accepted decision names "a landmark Spec" in the singular.
 
 ## Non-Goals
@@ -106,6 +111,7 @@ Maintain the Lexicon Landmark and Map rows if delivery changes them, the Runbook
 |---|---|---|---|---|---|
 | 2026-10-02 | none | Authored at the Map step from the owner-confirmed landmark decision records of 2026-10-02 at integration cbb3d5b81c0081c45d92e0d284078ca13fd54c03. | Map only; the Spec-tool path rules were read, no runtime proof claimed. | This Spec. | Plan, implementation and proof remain; the landmark prefix and DDR listing are open. |
 | 2026-10-02 | none | Re-verified and re-anchored at integration 5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a after four PRs landed. | Map only; the asserted counts, tool commands, collections and the S-00M status were re-read at that tip; no runtime proof claimed. | This Spec. | Plan, implementation and proof remain. |
+| 2026-10-05 | none | Owner decisions of 2026-10-05: twelve directions become landmarks and this artifact goes first; prefix and DDR listing settled; twelve DQCs captured; the Director queued this Spec for dispatch. | Map only; no runtime proof claimed. | This Spec, DDR-001H, DQC-006P to DQC-007A. | Plan, implementation, the twelve landmarks and proof remain. |
 
 ## Completion Result
 

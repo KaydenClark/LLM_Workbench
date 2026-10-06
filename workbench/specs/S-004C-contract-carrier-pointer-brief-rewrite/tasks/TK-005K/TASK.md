@@ -3,10 +3,10 @@
 **Task ID:** TK-005K
 **Spec ID:** S-004C
 **Slice:** Move the maintainer-only operations behind their pointers
-**Status:** blocked
+**Status:** ready
 **Stance:** Builder
-**Blockers:** TK-005J, owner:maintainer-skill-home-decision
-**Destination:** spec-acceptance: An inventory maps every line of `AGENTS.md` and `RUNBOOK.md` to a home, and a check shows every removed line landed (maintainer-operations family), and `RUNBOOK.md` is an operations index in which each operation's procedure is reachable in a skill.
+**Blockers:** none
+**Destination:** spec-acceptance: An inventory maps every line of `AGENTS.md` and `RUNBOOK.md` to a home, and a check shows every removed line landed (maintainer-operations family), and `RUNBOOK.md` is an operations index in which each operation's procedure is reachable in a skill or, for a maintainer-only operation, in the directory-scoped `AGENTS.md`.
 **Planned verification:** Red: the landing check over the family's sections fails for each unplaced line when the bodies are dropped, the index has no pointer from "cut or verify a release", "check the v3 support root", "verify managed runtime tools", "run an adoption migration check", "run the control-fidelity report", "run the self-drift check", "evaluate the harness" or "write a harness feedback report" to a skill that carries the procedure, and a room-owned skill added to this repository's lane for such an operation fails a closed-bundle check. Green: the Builder first establishes, and records, where a maintainer-only skill can live in this repository's lane without breaking the closed-bundle catalog, receipt and installer checks (a room-owned skill under a non-core name is the intended candidate); then every line is classified, the check passes at the candidate, the index points at the skills, the retained headings keep every inbound anchor, and the tests and evals that read these sections pass. The targeted tests the census names (skills lane, skill catalog, workbench layout, adoption, upgrade, round trip, portability, cross-provider, control fidelity, self drift, guardrail audit, evaluate, outcome trials, feedback automation) and the full AGENTS suite pass on the committed candidate; touched Wiki pages lint clean.
 
 ## Outcome
@@ -85,6 +85,10 @@ tradeoff, recorded by the Dispatcher with the token
   operations, and the Runbook stays larger.
 - (C) A tracked maintainer document that is not a skill. Cost: the Spec's homes
   rule does not name it, and it would not bind through the index.
+
+## Owner decision, 2026-10-05
+
+The owner chose a fourth option: a directory-scoped `AGENTS.md` nested beside the tooling the maintainer procedures govern, loaded by both hosts by location, pointed at from the root map, never a core skill ([the decision](../../../../docs/ddr/001F-maintainer-only-procedures-live-in-a-directory-scoped-agents-md.md)). The Director removed `owner:maintainer-skill-home-decision` and set this Task ready. The Builder adds the `nested-agents` home kind to the landing check, places the maintainer sections in that file, points the index rows at it, and adds the one Instruction Authority line that says a directory-scoped guide binds while working there, through the `AGENTS.md` writer.
 
 TK-005M (update route) and TK-005N (Lexicon) wait on this Task because the
 update and control-fidelity procedures and the Context Map routes they rewrite
