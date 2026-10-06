@@ -1,15 +1,15 @@
 # S-004J - Required Domain Modeling Skill
 
 **Spec ID:** S-004J
-**Status:** planned
+**Status:** active
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
-**Updated:** 2026-10-04
+**Updated:** 2026-10-06
 **Catalog description:** Ship domain modeling in every room's skills lane as the Align companion that shows the downstream consequences of an upstream name, boundary or relationship before it settles, and hands settled meaning to promotion instead of writing Canon inline.
 **Blockers:** none
-**Latest event:** Authored from the owner's 2026-10-04 remap direction; replaces the superseded Domain Modeling Skill for the Workbench (S-002H).
-**Next gate:** Activate and cut Tasks from live Actuality with `/to-tasks`.
+**Latest event:** Assigned Director authorized one isolated source checkpoint from integration ef704e366da478f5d5ecfdab0947ab16d2520f0e; native activation and claim follow the executable plan below.
+**Next gate:** Claim TK-006U natively, stage and verify the source contract; wait for the Director's shared writer slot before managed distribution.
 
 > **Citation anchors.** pre=`46ad978956a74a3ee1bda22c36eb16207dcd98fd` post=`46ad978956a74a3ee1bda22c36eb16207dcd98fd`.
 
@@ -165,19 +165,52 @@ Each decision below has an owner answer; none is open.
 
 ## Dependencies And Blockers
 
-No owner blocker. Coordinate one writer with any concurrent lane on the bundle,
+No unanswered owner decision. Coordinate one writer with any concurrent lane on the bundle,
 catalog and count-bearing files (`workbench/manifest.json`,
 `workbench/tools/workbench-layout.mjs`, `workbench/skills/README.md`, RUNBOOK's
 operations index), and with S-00R on the pending source. S-003L and S-003O
 read this skill's delivered boundary.
 
+### 2026-10-06 isolated source writer disposition
+
+The current assignment explicitly authorizes activation/planning and independent
+Spec-owned source/tests in an isolated non-main branch. It permits a partial
+source checkpoint while the distribution writer slot is unavailable. Dispatcher
+is the sole writer of this Spec, its Task records and generated projections;
+one serial Builder Worker writes only the candidate source and scoped test.
+No parallel group is released.
+
+No safe slot is established for `workbench/manifest.json`,
+`workbench/tools/workbench-layout.mjs`, `workbench/skills/README.md`, count-bearing
+documents/templates or RUNBOOK's operations index. The scheduled S-003Z
+TK-008D writer holds manifest/layout/runtime files at
+`97ad26c8eb661843ef88fdfaa7fca87e19332897`; S-004L TK-008L holds
+bundle/catalog/count files at `61ed0855b6edba0fd4155c0de86c36c84bcc078d`,
+with S-004M's manifest/diagnostics work reserved next. S-004C's separate writer
+holds AGENTS/RUNBOOK/LEXICON changes. These paths, neighboring skills, the
+shared Wiki router, pending/personal source and other Specs stay untouched.
+The release identity stays with S-00O. No scheduled Claude lane is changed or
+contacted. The Director must establish the shared writer slot before that
+unfinished work can proceed.
+
+Fresh-context disposable-room scenarios, final Wiki reconciliation, assembled
+Verify review, integration delivery, owner Human QA and owner main verification
+remain open. Structural source checks do not establish conversational behavior
+or whole-Spec acceptance. No acceptance box is checked by this source checkpoint.
+
 ## Vertical Implementation Slices
 
-No Tasks cut. Tasks are cut from live Actuality at activation with `/to-tasks`.
-Intended direction: (1) lane source from the PR #251 candidate, revised to the
-Decisions above, with its scoped test red then green; (2) bundle, catalog,
-counts and the operations index row; (3) fresh-context scenarios in disposable
-rooms; (4) Wiki article reconciliation.
+One authorized source Task is cut from live Actuality at activation with
+`/to-tasks`; its staged contract is a checkable partial checkpoint, not a claim
+that a managed room can invoke the skill. [TK-006U — Stage the accepted domain
+modeling contract](tasks/TK-006U/TASK.md) advances the source behavior and keeps
+its unexercised conversational proof open. It continues until its named proof
+holds; later distribution, routing and Wiki work is uncut while the required
+writer slot remains unavailable. Execution is serial with Dispatcher owning
+Spec/Task/projections and the Worker owning the two source/test paths.
+
+Remaining direction: managed distribution plus catalog/count/operations routing;
+fresh-context disposable-room scenarios; final Wiki article reconciliation.
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
@@ -231,6 +264,7 @@ Record `Docs checked; no update needed` for any other owner checked.
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-10-04 | planning | Authored from the owner's remap direction, replacing S-002H; no Task cut | Live sources read at 46ad9789: manifest, layout, skills catalog, grilling, pending source, ledger answers PW-4, GX-2, FND-Q09 and FND-Q13, DDR-000J, ADR-000M, ADR-000S, ADR-000W, ADR-000X, ADR-000Y; PR #251 candidate at e3e0b5f0; personal copy read-only | Spec authored; Wiki article and router now point here | Activation, Tasks, delivery and every verification gate |
+| 2026-10-06 | planning | Assigned non-Astra Director released one isolated staged-source Task and authorized native activation; no shared writer slot | Actuality ef704e366da478f5d5ecfdab0947ab16d2520f0e; native remote claims contain no S-004J claim; next-id proposed TK-006U with no visibleIdKey alias across local and remote tips (first-free allocator, not the handoff's TK-008Y expectation); PR #251 input e3e0b5f068bff80861d68c254441b2c94d7015fb, inherited source commit 84779a9058727c40db9c0077f5c19f3bd1b42a5e by r; pre guardrail 73/100; pre self-drift blocked/cleanUpdate false with 21 findings (10 blocked-slice, 5 stale-claim, 5 stale-seed, 1 unverified-provenance), receipts at /Users/kayden/Documents/Codex/2026-10-06/task-2/s004j-evidence | Source/Wiki/controls checked; only S-004J records and derived board/catalog may change during planning; generic mirrors exempt because this is isolated room-specific source scaffolding | Shared writer slot, distribution/Runbook, fresh-context proof, Wiki reconciliation, release identity, Verify review, integration and owner gates; no clean-update or outcome claim |
 
 ## Completion Result
 
