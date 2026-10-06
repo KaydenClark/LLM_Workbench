@@ -3,13 +3,13 @@
 **Spec ID:** S-004L
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s004l-worker-n
+**Owner:** claude-s004l-dispatcher (Dispatcher; single writer of this Spec, its Task records and the projections; TK-008M and TK-008N Workers claimed under the labels claude-s004l-worker-n and claude-s004l-worker-m)
 **Stance:** Builder
 **Updated:** 2026-10-06
 **Catalog description:** Ship one improve-one-harnessed-job playbook skill that runs the baseline-to-rerun loop, point the Runbook's harness feedback and evaluation rows at it, and retire the host-installed harness-review family in its favor.
 **Blockers:** none
-**Latest event:** TK-008M claimed by claude-s004l-worker-n.
-**Next gate:** Close TK-008M with verification and documentation proof.
+**Latest event:** TK-008L closed after PR #372 merged at a3d72950; TK-008M and TK-008N claimed for side-by-side Workers.
+**Next gate:** Close TK-008M (Runbook rows) and TK-008N (Wiki page) with proof, TK-008M first; then TK-008O, the fresh-context scenario.
 
 ## Outcome
 
