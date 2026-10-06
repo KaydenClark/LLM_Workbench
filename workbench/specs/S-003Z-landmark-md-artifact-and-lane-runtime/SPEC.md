@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** claude-s003z-dispatcher
 **Stance:** Builder
-**Updated:** 2026-10-05
+**Updated:** 2026-10-06
 **Catalog description:** Deliver LANDMARK.md as an artifact one size above a Spec, with Specs and Tasks nested beneath it, a lane rather than a branch, and review and retirement one size up.
 **Blockers:** none. The prefix and the DDR listing are settled (2026-10-05); this Spec goes first in the Director's lane order.
-**Latest event:** 2026-10-05: Plan at integration 35187ee6; the capability stays one Spec and eight Tasks TK-008D to TK-008K are cut from live Actuality, serialized on the shared Spec-tool writer with the twelve-landmark authoring as a disjoint-file lane.
-**Next gate:** Claim and deliver TK-008D (collection, template and validator), the first tracer bullet every later Task reads.
+**Latest event:** TK-008D claimed by claude-s003z-dispatcher.
+**Next gate:** Close TK-008D with verification and documentation proof.
 
 > **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a`.
 

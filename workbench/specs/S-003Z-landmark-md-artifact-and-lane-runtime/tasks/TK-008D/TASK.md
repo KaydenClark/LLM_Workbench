@@ -3,7 +3,7 @@
 **Task ID:** TK-008D
 **Spec ID:** S-003Z
 **Slice:** A room declares a landmarks collection and validates a LANDMARK.md authored from the template
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: A `LANDMARK.md` can be authored from the template, validated, and assigned in a fixture room, and a Task under the assigned landmark can be selected and claimed.
