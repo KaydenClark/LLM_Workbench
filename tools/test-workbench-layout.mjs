@@ -2684,3 +2684,61 @@ test(`Genesis accepts first spec and task suffix ${suffix} without truncation or
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });
 }
+
+// S-004M TK-008T: the legibility surface is an additive manifest block, like
+// the git block - absent is valid, a malformed block is a malformed manifest.
+const LEGIBILITY = Object.freeze({ run: 'npm start', operate: 'npm run cli -- --help', inspect: 'npm run status', errors: 'npm test; tail -f app.log', journey: 'npm run e2e', measure: 'npm run bench' });
+
+test('the legibility block is additive: absent stays valid, six string entries validate, and a malformed block is invalid-manifest', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    assert.equal(Object.hasOwn(manifest, 'legibility'), false, 'init declares no surface; setup drafts it and grilling confirms it');
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'a manifest without the block stays valid');
+    const write = (legibility) => fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, legibility }, null, 2)}\n`);
+    write(LEGIBILITY);
+    const full = run('validate', '--project', project).report;
+    assert.equal(full.status, 'valid', JSON.stringify(full.error));
+    assert.deepEqual(full.manifest.legibility, LEGIBILITY, 'the validated manifest carries the block as declared');
+    write({ ...LEGIBILITY, confirmation: 'pending' });
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'a setup draft marked pending is a valid declaration');
+    write({ run: '', operate: '[OPERATE_COMMAND]' });
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'an incomplete block is valid at the schema; doctor reports it as attention');
+    for (const [label, malformed] of [['an array', ['npm start']], ['a string', 'npm start'], ['an unknown key', { ...LEGIBILITY, telemetry: 'x' }], ['a non-string entry', { ...LEGIBILITY, run: ['npm', 'start'] }], ['a confirmation other than pending', { ...LEGIBILITY, confirmation: 'done' }]]) {
+      write(malformed);
+      const result = run('validate', '--project', project).report;
+      assert.equal(result.error?.code, 'invalid-manifest', `${label} is a malformed manifest: ${JSON.stringify(result)}`);
+      assert.match(result.error.message, /legibility/);
+    }
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+test('declare-legibility writes the six entries into an existing manifest and changes nothing else', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const before = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    const flags = Object.entries(LEGIBILITY).flatMap(([entry, value]) => [`--${entry}`, value]);
+    const declared = run('declare-legibility', '--project', project, ...flags);
+    assert.equal(declared.status, 0, declared.stdout);
+    assert.equal(declared.report.status, 'declared');
+    assert.deepEqual(declared.report.legibility, LEGIBILITY);
+    const after = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    assert.deepEqual(after.legibility, LEGIBILITY);
+    const { legibility, ...rest } = after;
+    assert.deepEqual(rest, before, 'every other manifest key is unchanged');
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+
+    const pending = run('declare-legibility', '--project', project, ...flags, '--pending');
+    assert.equal(pending.status, 0, pending.stdout);
+    assert.deepEqual(JSON.parse(fs.readFileSync(manifestPath, 'utf8')).legibility, { ...LEGIBILITY, confirmation: 'pending' }, 'a rerun replaces the block; --pending marks it for grilling confirmation');
+
+    const partial = run('declare-legibility', '--project', project, '--run', 'npm start');
+    assert.notEqual(partial.status, 0, 'every entry is required; declare a placeholder rather than omit one');
+    assert.equal(partial.report.error.code, 'invalid-invocation');
+    assert.deepEqual(JSON.parse(fs.readFileSync(manifestPath, 'utf8')).legibility, { ...LEGIBILITY, confirmation: 'pending' }, 'a refused declaration writes nothing');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
