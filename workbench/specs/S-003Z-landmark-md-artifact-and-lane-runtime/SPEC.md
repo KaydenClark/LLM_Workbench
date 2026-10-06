@@ -1,15 +1,15 @@
 # S-003Z - LANDMARK.md Artifact And Lane Runtime
 
 **Spec ID:** S-003Z
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-s003z-dispatcher
 **Stance:** Builder
-**Updated:** 2026-10-05
+**Updated:** 2026-10-06
 **Catalog description:** Deliver LANDMARK.md as an artifact one size above a Spec, with Specs and Tasks nested beneath it, a lane rather than a branch, and review and retirement one size up.
-**Blockers:** none. The prefix and the DDR listing are settled (2026-10-05); this Spec goes first in the Director's lane order and awaits Plan and assignment.
-**Latest event:** 2026-10-05: the owner made twelve harness-engineering directions landmarks and put this artifact first; the `LMK-` prefix stays and a landmark lists its decision records as a linked section; no Task is cut.
-**Next gate:** Dispatch: at Plan, inspect live Actuality, decide whether this capability is one Spec or splits further, cut small Tasks, and author the twelve landmarks as the artifact's first proof.
+**Blockers:** none. The prefix and the DDR listing are settled (2026-10-05); this Spec goes first in the Director's lane order.
+**Latest event:** TK-008D claimed by claude-s003z-dispatcher.
+**Next gate:** Close TK-008D with verification and documentation proof.
 
 > **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a`.
 
@@ -63,9 +63,12 @@ Settled on 2026-10-05, with the sequencing the owner confirmed ([The twelve harn
 - This Spec goes first. Its first proof is the twelve landmarks the owner named: Repo is the System of Record, Progressive Disclosure, Durable Plans, Agent to Agent Review, Mechanical Enforcement, Learn from Failure, Agent Visible Runtime, Continuous Cleanup, Human Attention Minimized, Multi Agent and Provider Coordination, Owner Idea Alignment, and Autonomous Execution. Each has a Destination Question Card captured at Confirm (DQC-006P to DQC-007A). The 24 existing JSON records fold into these where they overlap; [Landmark Record Migration And Tracker Regrouping](../S-004A-landmark-record-migration-and-tracker-regrouping/SPEC.md) carries the migration and reads this Spec's result.
 - Review one size up now carries the owner's Human QA: [Review climbs the ladder](../../docs/ddr/001B-review-climbs-the-ladder-task-by-automated-proof-spec-by-agent-review-landmark-by-integrated-automated-review-and-the-owner-judges-the-concept.md). This Spec delivers the review rung; moving the owner's gate onto it is [Review Ladder And Landmark Human QA](../S-004N-review-ladder-and-landmark-human-qa/SPEC.md).
 
-Open, not decided here:
+Decided at Plan (2026-10-05, Dispatcher, within the Director's dispatch authority):
 
-- Whether the whole capability is one Spec or splits at Plan; the accepted decision names "a landmark Spec" in the singular.
+- The capability stays one Spec. Every slice (collection and validator, nested resolution, the move, direct Tasks, the review rung, retirement, the mirror) changes the same shared writer, `workbench/tools/spec-workbench.mjs`, against one fixture-room seam; splitting it would create three Specs waiting on one writer lane without a boundary any of them could own, and the accepted decision names "a landmark Spec" in the singular. The twelve-landmark authoring touches only `workbench/landmarks/` and runs as a disjoint-file Task inside this Spec.
+- A landmark-direct Task is offered by `next` only while its landmark is `active` and has an owner other than `unassigned`: the Contract's current Instruction Authority names only an assigned Spec, so this Spec's runtime refuses to execute under an unassigned landmark rather than enlarging that list; the list change itself stays with the Contract carrier rewrite.
+- Landmark statuses are `planned`, `active` and `reached`; the lifecycle folder, not a status, says it is retired, as a Spec's does. A landmark folder holds `LANDMARK.md`, `specs/` for its child Specs (with `specs/retired/`) and `tasks/` for its direct Tasks (with `tasks/retired/`), so the landmark, Spec and Task path carries every parent.
+- "Updating a room with no landmarks leaves it unchanged" is read as: the update appends the `landmarks` collection declaration and its empty folder and changes nothing else in that room (no Spec, Task, projection or seeded document byte changes).
 
 ## Non-Goals
 
@@ -75,12 +78,23 @@ Migrating the 24 JSON records or regrouping the Tracker, the Captain and Directo
 
 - [Landmark Records](../S-002A-landmark-records/SPEC.md), [Landmark Tracker View](../S-001Z-landmark-tracker-view/SPEC.md) and [Destination Question Cards](../S-002B-destination-question-cards/SPEC.md) are at their owner gates and own the current JSON record, Tracker and card seams. Their lane owns `workbench/tools/landmark-tracker.mjs`; this Spec reads those seams and does not rewrite them until they land.
 - [Folder Lifecycle For Records](../S-00I-folder-lifecycle-for-records/SPEC.md) and [Spec QA Gate At Integration](../S-00J-spec-qa-gate-at-integration/SPEC.md) own the lifecycle moves and the review gate this Spec extends one size up; consume their delivered seams rather than their closure.
-- `workbench/tools/spec-workbench.mjs` is a shared writer: single writer lane per file, coordinated with [Workflow Canon Rework](../S-00P-workflow-canon-rework/SPEC.md).
+- `workbench/tools/spec-workbench.mjs` is a shared writer: single writer lane per file, coordinated with [Workflow Canon Rework](../S-00P-workflow-canon-rework/SPEC.md). At Plan (integration 35187ee6) its last integration commit was c933c656 (2026-10-03) and no open PR touched it; `workbench/manifest.json` (a861653e), `workbench/tools/workbench-layout.mjs` (39814a43), `workbench/tools/workbench-paths.mjs` (2f06daaf) and `templates/SPEC.md` (f4dae2d8) were likewise unheld. `AGENTS.md`, `RUNBOOK.md` and `LEXICON.md` last moved on 2026-10-05 (80e790f9, 008fa9b7) and open PR #358 (S-004C TK-005N) touches the Lexicon; this Spec's Lexicon and Runbook edits wait for TK-008J and re-check those files before editing. The Dispatcher is the single writer for this Spec's SPEC.md, Task records and projections; one Worker at a time holds `spec-workbench.mjs`.
 - The [release owner](../S-00O-workbench-v4-0-0-release/SPEC.md) retains version, Template and owner gates; changed managed bytes need the normal bundle, version and install proof at implementation time.
 
 ## Vertical Implementation Slices
 
-No Tasks cut. At Plan, use current Actuality to cut small complete-path slices and safe parallel groups, and decide whether the nesting seam in the Spec tools, the review commands and the artifact template are separate Specs. The empty tasks directory keeps this planned capability record-backed.
+Cut at Plan on 2026-10-05 from live Actuality at integration 35187ee6 (the Spec-tool path rules, `moveSpecDirectory`, `retireSpec`, `gate`, `assembleSpecReport`, `parseTaskRecord`, the manifest collection and migrate routes, `RUNTIME_TOOLS`, the 24 JSON landmark records and the twelve Destination Question Cards were read at that tip). Each Task is a `tasks/TK-###/TASK.md` record; identifiers were allocated after the highest Task identifier on every fetched remote tip (TK-008C), because the local `next-id` proposal (TK-006U) did not see sibling lanes' allocations.
+
+| Group | Tasks | Runs | Shared-file writer |
+|---|---|---|---|
+| 1 | TK-008D (collection, template, validator, `LMK` allocation) | first, alone | one Worker holds `spec-workbench.mjs`, `workbench-paths.mjs`, `workbench-layout.mjs`, `workbench/manifest.json`, `templates/LANDMARK.md` |
+| 2 | TK-008E (nested Spec at both homes), TK-008G (landmark-direct Task) | after group 1; E then G, serialized on the Spec-tool writer | one Worker at a time holds `spec-workbench.mjs` and `task-record.mjs` |
+| 3 | TK-008F (link-safe move), TK-008H (review rung) | after group 2; F then H, serialized on the Spec-tool writer | one Worker at a time holds `spec-workbench.mjs` and `spec-report.mjs` |
+| 3 (parallel) | TK-008K (the twelve landmarks) | concurrently with group 3 once TK-008D and TK-008E are merged; touches only `workbench/landmarks/` | the authoring Worker |
+| 4 | TK-008I (retire into the Landmark Wiki page) | after TK-008H | one Worker holds `spec-workbench.mjs` |
+| 5 | TK-008J (templates mirror, docs, update proof) | last | one Worker holds `RUNBOOK.md`, `LEXICON.md`, `templates/`, the Wiki pages it names; re-checks the Lexicon against PR #358 before editing |
+
+Open gates: owner Human QA of the delivered Spec stays the owner's act; the Instruction Authority clause that names an assigned landmark belongs to the Contract carrier rewrite; the migration of the JSON records belongs to the migration Spec.
 
 ## Acceptance Criteria
 
@@ -112,6 +126,7 @@ Maintain the Lexicon Landmark and Map rows if delivery changes them, the Runbook
 | 2026-10-02 | none | Authored at the Map step from the owner-confirmed landmark decision records of 2026-10-02 at integration cbb3d5b81c0081c45d92e0d284078ca13fd54c03. | Map only; the Spec-tool path rules were read, no runtime proof claimed. | This Spec. | Plan, implementation and proof remain; the landmark prefix and DDR listing are open. |
 | 2026-10-02 | none | Re-verified and re-anchored at integration 5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a after four PRs landed. | Map only; the asserted counts, tool commands, collections and the S-00M status were re-read at that tip; no runtime proof claimed. | This Spec. | Plan, implementation and proof remain. |
 | 2026-10-05 | none | Owner decisions of 2026-10-05: twelve directions become landmarks and this artifact goes first; prefix and DDR listing settled; twelve DQCs captured; the Director queued this Spec for dispatch. | Map only; no runtime proof claimed. | This Spec, DDR-001H, DQC-006P to DQC-007A. | Plan, implementation, the twelve landmarks and proof remain. |
+| 2026-10-05 | none | Plan launched by the Dispatcher (claude-s003z-dispatcher) on branch claude/s003z-dispatcher from integration 35187ee6: one Spec, eight Task records TK-008D to TK-008K, Spec activated with convert-tasks --activate. | Actuality inspected at 35187ee6 as the slices section names; doctor no blocking finding; render clean; guardrail baseline 73/100 (recommendations: outcome evidence and a fresh dated evidence row); self-drift pre receipt: 11 findings, 5 blocks-clean-update, all pre-existing stale claims on S-003W, S-00Q, S-01H, S-01P and S-01S and stale v3.1.4 seeds, none from this Spec. | This Spec. | Every Task remains; implementation and proof not claimed. |
 
 ## Completion Result
 

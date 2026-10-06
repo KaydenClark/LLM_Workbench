@@ -1,0 +1,10 @@
+# TK-008K - The twelve harness-engineering directions are authored as LANDMARK.md artifacts with the 24 JSON records mapped into them
+
+**Task ID:** TK-008K
+**Spec ID:** S-003Z
+**Slice:** The twelve harness-engineering directions are authored as LANDMARK.md artifacts with the 24 JSON records mapped into them
+**Status:** ready
+**Stance:** Builder
+**Blockers:** TK-008D, TK-008E
+**Destination:** spec-acceptance: A `LANDMARK.md` can be authored from the template, validated, and assigned in a fixture room, and a Task under the assigned landmark can be selected and claimed.
+**Planned verification:** Twelve `workbench/landmarks/LMK-###-slug/LANDMARK.md` artifacts, one per direction in the twelve-directions decision record (DDR-001H): Repo is the System of Record, Progressive Disclosure, Durable Plans, Agent to Agent Review, Mechanical Enforcement, Learn from Failure, Agent Visible Runtime, Continuous Cleanup, Human Attention Minimized, Multi Agent and Provider Coordination, Owner Idea Alignment, Autonomous Execution. Each identifier is allocated with `next-id --prefix LMK` against the fetched remote tips immediately before commit; each artifact is written from its Destination Question Card (DQC-006P to DQC-007A) and the twelve-directions record, in the owner's direction and the agent's reading kept apart, with a `Direction`, `What Success Looks Like` reached checks drawn from the card's question, a `Decision Records` section linking the DDRs whose `Landmark:` line names it (the review-ladder record under Human Attention Minimized), and a `Folds In` section mapping each of the 24 JSON landmark records (LMK-000A to LMK-000X) to exactly one of the twelve or to the Blueprint, so the migration Spec (Landmark Record Migration And Tracker Regrouping, S-004A) reads one mapping; no JSON record, DQC or Tracker file changes here. Status `planned`, Owner `unassigned`. `doctor`, `render`, `landmark-wiki.mjs validate` on the lineage page, and `python3 tools/check-append-only.py` green; full Runbook suite on the committed candidate.
