@@ -33,9 +33,9 @@ skill's result record is written with it.
 
 ## Acceptance
 
-- [ ] The three root rows and the template evaluation row resolve into the one
+- [x] The three root rows and the template evaluation row resolve into the one
       skill and the skill binds for those operations through the index.
-- [ ] Every inbound anchor for the touched headings still resolves; root and
+- [x] Every inbound anchor for the touched headings still resolves; root and
       template agree.
 
 ## Boundaries
