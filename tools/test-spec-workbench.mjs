@@ -6540,6 +6540,56 @@ function landmarkWithDirectTasks(id, overrides, tasks = []) {
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 }
 
+// S-003Z TK-008H: the whole-landmark review at the CLI seam - the plain
+// `report LMK-###` form, `verify LMK-###` refused while a nested child Spec is
+// open, and a fail `verdict LMK-###` whose corrective Task joins the
+// landmark's direct Tasks on the Taskboard.
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'landmark-review-cli-'));
+  try {
+    initLifecycleFixture(root);
+    const manifestFile = path.join(root, 'workbench/manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+    manifest.collections.landmarks = 'workbench/landmarks';
+    fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
+    const lmk = 'workbench/landmarks/LMK-0CA-review-direction';
+    writeAt(root, `${lmk}/LANDMARK.md`, landmarkWithDirectTasks('LMK-0CA', { Status: 'active', Owner: 'director', Priority: '1', Updated: TODAY }, [['TK-0CA', 'Advance the direction']]));
+    writeAt(root, `${lmk}/tasks/TK-0CA/TASK.md`, landmarkTaskRecord({ id: 'TK-0CA', landmarkId: 'LMK-0CA', slice: 'Advance the direction', status: 'done' }).replace('**Planned verification:**', '**Proof:** landed\n**Planned verification:**'));
+    const childDir = `${lmk}/specs/S-0CA-nested-child`;
+    writeAt(root, `${childDir}/SPEC.md`, emptyTableRecordBackedSpec('S-0CA').replace('**Updated:** 2026-09-18', `**Updated:** ${TODAY}`));
+    writeAt(root, `${childDir}/tasks/TK-0CB/TASK.md`, taskRecordFixture({ id: 'TK-0CB', specId: 'S-0CA', slice: 'Nested child work', status: 'ready', blockers: 'none', destination: 'spec-acceptance: S-0CA Acceptance Criteria' }));
+    render(root);
+    initGitRoot(root);
+    publishFixture(root, 'landmark review fixture');
+    const head = execFileSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+    const specTool = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+    const cli = (...args) => spawnSync(process.execPath, [specTool, ...args, '--path', root], { encoding: 'utf8' });
+
+    const plain = cli('report', 'LMK-0CA', '--candidate', head);
+    assert.equal(plain.status, 0, plain.stdout + plain.stderr);
+    assert.match(plain.stdout, /^LMK-0CA - .+ \[active\]$/m);
+    assert.match(plain.stdout, /^Landmark digest: [0-9a-f]{12}$/m);
+    assert.match(plain.stdout, new RegExp(`^Candidate ${head} .*matchesContent=true`, 'm'));
+    assert.match(plain.stdout, /^ {2}S-0CA active \(open\)/m);
+    assert.match(plain.stdout, /^ {2}TK-0CA done$/m);
+    assert.match(plain.stdout, /^Gaps \(2\):$/m, 'the open child and the unticked reached check are the gaps');
+    assert.match(plain.stdout, /^ {2}- Child Spec S-0CA is active/m);
+
+    const verify = cli('verify', 'LMK-0CA');
+    assert.notEqual(verify.status, 0);
+    assert.match(verify.stderr, /verify refused: LMK-0CA has open children: S-0CA/);
+
+    const failed = cli('verdict', 'LMK-0CA', '--candidate', head, '--result', 'fail', '--findings', 'new Task: Close the integration gap', '--reviewer', 'fresh landmark reviewer', '--json');
+    assert.equal(failed.status, 0, failed.stdout + failed.stderr);
+    const [corrective] = JSON.parse(failed.stdout).correctiveTasks;
+    render(root);
+    const board = fs.readFileSync(path.join(root, 'TASKBOARD.md'), 'utf8');
+    assert.match(board, new RegExp(`^\\| \\[LMK-0CA\\]\\(${lmk}/LANDMARK\\.md\\) \\| ${corrective.id}: Close the integration gap \\(ready\\)`, 'm'), board);
+    assert.deepEqual(doctor(root).filter((item) => ['all', 'selection'].includes(item.blocks)).map((item) => `${item.code}: ${item.message}`), []);
+    console.log('ok - the whole-landmark review reports in plain text, refuses verify while a nested child is open, and a fail verdict puts its corrective Task under the landmark on the Taskboard');
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+}
+
 // S-003Z TK-008G: claim publishing carries a landmark-direct claim to the
 // remote, and another instance skips it.
 {
