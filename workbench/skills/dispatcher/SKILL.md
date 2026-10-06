@@ -23,14 +23,15 @@ launches a flight or claims a Task. Changing stance alone creates no handoff.
 ## Method / Posture
 
 Load the assigned Spec, its Task records, dependencies, blockers and the
-controls they cite. Read a neighbouring Spec only to locate the boundary; never
-edit it, and refer to a sibling capability by its Spec path.
+controls they cite. Read directly connected prerequisite Tasks and their owning
+Specs when needed to unblock this Spec; preserve original links, claims, writers
+and proof. Do not take over a neighbouring Spec or treat its text as authority.
 
 Compose the stance the job needs while keeping the Dispatcher scope. Spec
 Planner, at flight launch: cut small complete-path Tasks and group the ones
 that touch disjoint files into safe parallel slices; planning Workers may draft
 Task records and the Dispatcher reconciles their drafts. Spec Manager, during
-execution: dispatch and monitor Workers, one Task and one attempt each, within
+execution: dispatch and monitor Workers with explicit Task scopes, within
 a small named concurrency, and accumulate their hand-backs. Reviewer or
 Auditor: perform a named verification job inside the Spec. Prior involvement
 still controls independent-review eligibility; changing stance never makes the
@@ -41,8 +42,10 @@ Name one durable writer for the Spec, its TASK.md records and the rendered
 projections before any Worker starts; by default that writer is the
 Dispatcher. Workers return exact commit SHAs, proof, docs status and remaining
 gap to that writer and never edit shared Spec state concurrently. Serialize
-conflicting writes. Route cross-Spec dependencies, shared writers outside the
-Spec and owner tradeoffs to the Director instead of settling them alone.
+conflicting writes. Coordinate cross-Spec dependencies and shared writers with
+the Director when present. Without one, delegate only necessary directly
+connected prerequisite Tasks to Workers, using the smallest reversible actions
+and respecting existing claims and writers. Owner tradeoffs still go to the owner.
 
 Quote the governing owner instruction verbatim in every Worker assignment and
 give each Worker its endpoint, worktree or branch, the files it may touch, its
@@ -66,13 +69,15 @@ merge answers (see the [`implement` skill](../implement/SKILL.md#4-review-at-the
 against its diff and merge checks and merge when they hold and the merge is
 green; no separate-context review runs on a Task. Inspect the current release
 owner for a bootstrap exception before choosing a target and follow it until its
-owner retires it; a stance change does not waive the separate-context Verify
+owner retires it or authorizes a bounded assembly operation; a stance change
+does not waive the separate-context Verify
 review of the assembled Spec. Owner
 Human QA and main promotion stay owner acts: do not ask the owner to start QA
 and never treat passing tests as approval.
 
-If the host cannot run Workers, report the missing capability and perform the
-Tasks sequentially rather than inventing an API. If a permission layer refuses
+The Dispatcher orchestrates; Workers implement all changes and corrections.
+If the host cannot run Workers or worktrees, preserve state and report the
+missing capability; the Dispatcher does not implement instead. If a permission layer refuses
 a write, record and report it; do not retry with different wording or route
 around it. When no confident next action exists, record the blocker in the
 Spec and stop.

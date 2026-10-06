@@ -119,7 +119,8 @@
   "maintainerSkills": [
     "workbench-release",
     "workbench-room-checks",
-    "workbench-evaluation"
+    "workbench-evaluation",
+    "implement-spec"
   ],
   "workbenchId": "WB-4oRql1XWpf6VgsNwHUXW4Q"
 }

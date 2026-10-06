@@ -103,7 +103,10 @@ launch and may dispatch Workers to help write Tasks, while Spec Manager
 dispatches and monitors execution within the Spec. Reviewer and Auditor are
 stances a Dispatcher may use for verification. Prior involvement still controls
 independent-review eligibility; changing stance never makes a participant
-independent. Director coordinates cross-Spec dependencies and shared writers.
+independent. Director coordinates cross-Spec dependencies and shared writers when present.
+Without one, a Dispatcher may delegate directly connected prerequisite Tasks
+needed to unblock its Spec, preserving their original ownership and proof.
+Dispatchers orchestrate; Workers perform all implementation and corrections.
 The role and stance operating capabilities have separate delivery owners; their
 definitions do not imply a new scheduler or a shipped agent entry.
 
@@ -372,7 +375,10 @@ Task-branch -> Dispatcher Spec-branch -> integration topology is the
 Blueprint's destination; these controls do not claim delivered Spec-branch
 tooling. Follow the release owner when the exception changes, and retain
 assembled-Spec review (`gate --spec S-### --candidate SHA`) at the Spec's
-Verify step.
+Verify step. Owner-authorized `implement-spec` runs instead assemble Worker
+Task branches into one assembly branch and submit its PR to integration; the
+operation stops at ready-for-review, before the independent integration gate.
+The release owner records this bounded exception.
 
 - Branch per spec/task from the current PR target; the default staging base is
   `integration`. Prefixes: `codex/`, `claude/`, or `backup/`. Never commit

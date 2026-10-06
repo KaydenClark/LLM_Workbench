@@ -17,3 +17,9 @@ Owner confirmed the draft, invoked implement and requested usable installation. 
 ## Done criteria
 
 Source and adapters resolve to the confirmed operation; operating boundaries agree; required verification and observed scenario proof name limitations; candidate, receipt and closure evidence are remotely recoverable; applicable review and integration containment are proven.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | codex/s002t-implement-spec | 7fedde0570b90202402bddac32af89c79a4f6b9c | ahead 0 behind 0 | 15 | RED: catalog failed ENOENT for declared implement-spec source. GREEN: catalog, skill-inspection and runbook-index checks passed; wiki validate [] and diff check clean. Both adapters resolve source SHA-256 9753f6671a8907d6fe8ff29d2b7de912fcc334cd890b87aed16051528ea5c9ea. | Source, declaration, role/procedure reconciliation and Wiki updated. | Full suite, fresh-context exercise, review, closure and integration remain. Self-drift pre blocked/cleanUpdate false on pre-existing findings. | 42daa408502748f1a3abb9f26486fd0ce5967655b4ab0cab60ff4b2d741e4422 |
