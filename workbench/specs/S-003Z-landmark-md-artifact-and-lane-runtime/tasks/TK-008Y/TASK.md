@@ -3,7 +3,7 @@
 **Task ID:** TK-008Y
 **Spec ID:** S-003Z
 **Slice:** The Contract carriers and their generic mirrors name the landmark commands and meanings the runtime delivers
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: Source behavior, the generic templates, discovery and managed installation agree, and updating a room with no landmarks leaves it unchanged.
