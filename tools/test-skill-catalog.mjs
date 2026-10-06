@@ -280,7 +280,11 @@ assertIncludesAll(grilling, [
   'only the dependent',
   'An empty frontier is not proof',
   'final concept readback',
-  'works without a notepad'
+  'works without a notepad',
+  // Owner, 2026-10-05: a batch of answers is read back before anything locks,
+  // and an agent's recommendation is intent until the owner confirms it.
+  'A batch of answers gets the same readback',
+  'An agent recommendation is intent too'
 ], 'grilling interaction contract');
 assert.doesNotMatch(grilling, /FULL planned question list/,
   'grilling must keep a dynamic decision map, not a full questionnaire up front');
@@ -921,10 +925,22 @@ for (const controls of ['AGENTS.md', 'templates/AGENTS.md']) {
     'never on a Task',
     'goes back to Map, Plan and Journey',
     'no set number of Review rounds',
-    'A rebased Task reruns its Check',
-    'never a fresh Review',
-    'exactly what to do with that provider'
+    'A rebased Task runs its Journey again',
+    'never a Review of its own',
+    'exactly what to do with that provider',
+    // Owner, 2026-10-05 (confirmed readback): Review judges a completed
+    // destination against its Map; repeated failure blocks only on the same
+    // failure twice or three attempts without progress; the reviewer stays on
+    // the session's provider; the owner holds budget and direction.
+    'one agent reviewing another agent\'s work',
+    'a completed destination against its Map',
+    'the same Review failure twice, or three attempts with no real progress',
+    'block, escalate and find the root causes',
+    'same model provider as the session unless the owner specifies otherwise',
+    'the most capable model reasonable for the work',
+    'manages the budget, the usage meter and the direction of the work'
   ], `${controls} Journey verbs and Review placement`);
+  assert.doesNotMatch(flat, /same verification failure twice with no clearly safe next step/, `${controls} drops the replaced stop rule`);
 }
 
 const updateHarness = read('workbench/skills/update-harness/SKILL.md');

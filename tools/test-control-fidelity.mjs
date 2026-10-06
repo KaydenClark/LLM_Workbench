@@ -826,6 +826,12 @@ test('both Lexicons define every workflow verb once and state the delivery workf
     assert.doesNotMatch(review, /before it merges into its Spec's branch|Task pull request/, `${relative} Review row is not a Task review`);
     if (relative === 'LEXICON.md') assert.match(review, /dictionary-automated-review\.md/, `${relative} Review row routes depth to the Wiki dictionary`);
     assert.match(content.split('\n').find((line) => line.startsWith('| **Automated review** (')), /a Spec, sometimes a landmark, or the Workbench as a whole[^|]*never a Task/, `${relative} Automated review row scope`);
+    // Owner, 2026-10-05 (confirmed readback): Review judges a completed
+    // destination against its Map, and confirmation is the gate a claim
+    // passes from Intent to Enduring Context, for one answer or a batch.
+    assert.match(content.split('\n').find((line) => line.startsWith('| **Automated review** (')), /against its Map/, `${relative} Automated review row judges against the Map`);
+    assert.match(rowsOf(content, 'Confirm')[0], /moves from Intent to Enduring Context only by the owner's confirmation/, `${relative} Confirm row states the plane gate`);
+    assert.match(rowsOf(content, 'Confirm')[0], /an agent's recommendation is intent too/, `${relative} Confirm row covers recommendations`);
     assert.match(rowsOf(content, 'Delivered')[0], /Delivered, not Complete/, `${relative} Delivered row`);
     assert.match(rowsOf(content, 'Check')[0], /deterministic verifications the building agent runs in the environment on its own Task/, `${relative} Check row`);
     assert.doesNotMatch(rowsOf(content, 'Align')[0], /not itself implementation permission/, `${relative} Align row drops the old confirmation clause`);

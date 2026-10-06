@@ -340,7 +340,8 @@ Taskboard or rewrite append-only spec evidence rows.
 - Work runs on the agent provider the owner opened the session with. Never run,
   call or brief another provider's agent, CLI or cloud (for example Codex)
   unless the owner tells you, in the current request, exactly what to do with
-  that provider. A past approval, a
+  that provider. The owner manages the budget, the usage meter and the
+  direction of the work, and no agent takes that authority. A past approval, a
   Workbench review step, a memory note, a handoff or another agent's request
   never substitutes. If a step cannot be done without it, stop, record that in
   the owning Task or Spec, and ask the owner how to proceed.
@@ -421,22 +422,27 @@ answers from the Worker that did the Task:
 The Dispatcher, Director or next agent working in that Spec validates those
 answers against the diff and the merge checks, and merges when they hold and
 the merge is green. No separate-context review runs on a Task merge, under any
-route. A rebased Task reruns its Check; it needs a fix only when its Check or
-QA raises an issue, and never a fresh Review, because the Task's own Check and
-QA found it.
+route. A rebased Task runs its Journey again, the same as always, and gets
+never a Review of its own: the next Review of whatever it was rebased into
+covers it.
 
-Review comes after the Journey, as an Automated review in a separate context.
-It runs on a Spec once its last Task has landed (`report` and `verdict`),
-sometimes on a landmark's assembled Specs once they are delivered, and on the
-Workbench as a whole against its decision records and Blueprint, never on a
-Task: reviewing the whole Spec finds any Task that was not done. Landmark and
-whole-Workbench review tooling is accepted destination design; today's runtime
-reviews Specs. Review decides whether another Journey is needed: a failed
-Review goes back to Map, Plan and Journey under the still-open Spec before the
-work can be verified, and there is no set number of Review rounds. The
-reviewer is a fresh context of the agent provider the owner opened the session
-with, and the Director gives the approval; the reviewer's model is the
-Director's choice. A candidate whose content changed needs a fresh Review, a
+Review comes after the Journey, as an Automated review: one agent reviewing
+another agent's work. It judges a completed destination against its Map: a
+Spec once its last Task has landed (`report` and `verdict`), sometimes a
+landmark's assembled Specs once they are delivered, and the Blueprint, which
+for a release means the Workbench as a whole against its decision records and
+Blueprint. It runs never on a Task: the sum of the completed Tasks shows at the
+destination. Landmark and whole-Workbench review tooling is accepted
+destination design; today's runtime reviews Specs. Review decides whether
+another Journey is needed: a failed Review goes back to Map, Plan and Journey
+under the still-open Spec before the work can be verified, and there is no set
+number of Review rounds. But the same Review failure twice, or three attempts
+with no real progress, is a red flag: block, escalate and find the root causes.
+Failures for different reasons while progress is being made do not block. The
+reviewer is a fresh context on the same model provider as the session unless
+the owner specifies otherwise, using the most capable model reasonable for the
+work; the Captain, Director or Spec manager makes that call, and the Director
+gives the approval. A candidate whose content changed needs a fresh Review, a
 rebase that leaves the content unchanged does not, and self-review never
 satisfies it.
 
@@ -486,8 +492,9 @@ After a context summary or long interruption, rerun `doctor`, `next`, and
 the append-only evidence log current. An in-progress claim older than one
 UTC calendar day is stale (the diagnostic compares date-only stamps and
 requires a difference greater than one day); verify branch/commit activity before reclaiming it. After
-the same verification failure twice with no clearly safe next step, record the
-blocker and stop for a decision.
+the same failure twice, or three attempts with no real progress, record the
+blocker, escalate and find the root causes; failures for different reasons
+while progress is being made do not block.
 
 In multi-agent work, use non-overlapping file lanes and one single durable
 writer for shared spec/Taskboard state; subagents return proof to that writer.

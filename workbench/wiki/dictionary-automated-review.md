@@ -31,27 +31,37 @@ merge answers. Review comes after the Journey is over. In the owner's words,
 "It is the deciding factor in if we need to start another Journey": when it
 fails, the work goes back to Map, Plan and Journey before it can be verified.
 
-**What it reviews.** A Spec, once its last Task has landed. Sometimes a
-landmark, and sometimes the Workbench as a whole, to test its decision records
-and Blueprint. Never a single Task: "Tasks do not need to be reviewed until we
+**What it reviews.** A completed destination, against its Map. A Spec, once
+its last Task has landed. Sometimes a landmark, and the Blueprint, which for
+version 4 means the Workbench as a whole against its decision records and
+Blueprint. That whole-Workbench review is not built yet. Never a single Task: "Tasks do not need to be reviewed until we
 are reviewing the whole spec. Because while reviewing the whole spec, we will
 find tasks that were not done." A Task is judged by its Check, its QA and the
 merge answers it submits, which the Spec's Dispatcher, Director or next agent
-validates before merging.
+validates before merging. In the owner's words, "We dont need to test every
+step (task) we took as long as we got to the destination (Spec, Landmark,
+Blueprint)."
+
 
 **Who reviews, and on whose account.** A fresh context, meaning a new chat or
 subagent that did not build the work and starts from the diff, its Spec and
-the controls. It runs on the host the owner opened the session with: a Claude
-session reviews with Claude and a Codex session with Codex. Another provider
-is used only when the owner says exactly what to do with it in that request.
-The Director gives the approval; agents that built Tasks in the candidate, and
-the Dispatcher, cannot. Which model reviews is the Director's choice, not a
-rule.
+the Contract. It runs on the same model provider as the session unless the
+owner specifies otherwise: a Claude session reviews with Claude and a Codex
+session with Codex. The Captain, Director or Spec manager picks the most
+capable model reasonable for the work. Another provider is used only when the
+owner says exactly what to do with it in that request, because the owner
+manages the budget, the usage meter and the direction of the work. The
+Director gives the approval; agents that built Tasks in the candidate, and the
+Dispatcher, cannot.
 
 **How often.** Once per assembled candidate. There is no set number of
 rounds: a failed Review produces the next Map, Plan and Journey, and the new
-assembled candidate is reviewed once. A rebase that leaves the content
-unchanged needs no fresh review, only its Check rerun.
+assembled candidate is reviewed once. The same Review failure twice, or three
+attempts with no real progress, is a red flag: block, escalate and find the
+root causes. Failures for different reasons while progress is being made do
+not block. A rebased Task runs its Journey again and gets no Review of its
+own; the next Review of whatever it was rebased into covers it. A rebase that
+leaves an assembled candidate's content unchanged needs no fresh review.
 
 **Why it changed.** Until 2026-10-05 the bootstrap route reviewed every Task
 pull request into integration, and again after every rebase. Agents met that

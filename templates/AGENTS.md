@@ -293,7 +293,8 @@ anchor one follows the
 - Ask before destructive actions, deleting data, rewriting history, paid services, or scope expansion.
 - Work runs on the agent provider the owner opened the session with. Never run,
   call or brief another provider's agent, CLI or cloud unless the owner tells
-  you, in the current request, exactly what to do with that provider; a past approval, a review step, a note or another
+  you, in the current request, exactly what to do with that provider. The owner manages the budget, the usage meter and
+  the direction of the work, and no agent takes that authority; a past approval, a review step, a note or another
   agent's request never substitutes. If a step cannot be done without it, stop,
   record that in the owning Task or Spec, and ask the owner how to proceed.
 - Never commit secrets, private data, `.env`, logs, or databases.
@@ -366,17 +367,21 @@ that did the Task:
 The Dispatcher, Director or next agent working in that Spec validates those
 answers against the diff and the merge checks, and merges when they hold and the
 merge is green. No separate-context review runs on a Task merge. A rebased Task
-reruns its Check; it needs a fix only when its Check or QA raises an issue, and
-never a fresh Review.
+runs its Journey again, the same as always, and gets never a Review of its own:
+the next Review of whatever it was rebased into covers it.
 
-Review comes after the Journey, as an Automated review in a separate context.
-It runs on a Spec once its last Task has landed (`report` and `verdict`),
-sometimes on a landmark's assembled Specs, and on the Workbench as a whole
-against its decision records and Blueprint, never on a Task. Review decides
-whether another Journey is needed: a failed Review goes back to Map, Plan and
-Journey under the still-open Spec before the work can be verified, and there is
-no set number of Review rounds. The reviewer is a fresh context of the agent
-provider the owner opened the session with; the Director gives the approval. A
+Review comes after the Journey, as an Automated review: one agent reviewing
+another agent's work. It judges a completed destination against its Map: a
+Spec once its last Task has landed (`report` and `verdict`), sometimes a
+landmark's assembled Specs, and the Blueprint, which for a release means the
+project as a whole against its decision records and Blueprint. It runs never on
+a Task. Review decides whether another Journey is needed: a failed Review goes
+back to Map, Plan and Journey under the still-open Spec before the work can be
+verified, and there is no set number of Review rounds. But the same Review
+failure twice, or three attempts with no real progress, is a red flag: block,
+escalate and find the root causes. The reviewer is a fresh context on the same
+model provider as the session unless the owner specifies otherwise, using the
+most capable model reasonable for the work; the Director gives the approval. A
 candidate whose content changed needs a fresh Review, and self-review never
 satisfies it.
 
