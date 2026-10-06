@@ -3,7 +3,7 @@
 **Task ID:** TK-008L
 **Spec ID:** S-004L
 **Slice:** Ship the improve-harness skill in the closed core bundle
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: The one skill exists in the lane, its loop has six named steps each with a checkable artifact, and a scenario in a fixture room runs it end to end.
