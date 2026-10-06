@@ -395,6 +395,41 @@ function verifyNotepadIgnores(project, manifest) {
   return { verification: 'git' };
 }
 
+// S-004M TK-008T: the legibility surface. A room declares how an agent runs
+// the product, operates it, inspects its state, sees its errors, exercises
+// the user journey and measures whether it worked - six entries, each a
+// command, a path or a short pointer the room's own tooling answers. The block
+// is additive like the git block: absent is valid, malformed is a malformed
+// manifest. An empty or bracketed-placeholder entry is valid here and is
+// doctor's attention finding, so a drafted block can be committed and
+// confirmed later; `confirmation: "pending"` is the marker setup writes and
+// grilling removes. The declaration is routing, never authority.
+export const LEGIBILITY_ENTRIES = Object.freeze(['run', 'operate', 'inspect', 'errors', 'journey', 'measure']);
+export const LEGIBILITY_PENDING = 'pending';
+const PLACEHOLDER_ENTRY = /^\[[^\]]*\]$/;
+
+function legibilityShapeIssue(legibility) {
+  if (!legibility || typeof legibility !== 'object' || Array.isArray(legibility)) return 'must be an object';
+  const unknown = Object.keys(legibility).filter((key) => !LEGIBILITY_ENTRIES.includes(key) && key !== 'confirmation');
+  if (unknown.length) return `carries unknown keys ${unknown.join(', ')}; the entries are ${LEGIBILITY_ENTRIES.join(', ')}`;
+  for (const entry of LEGIBILITY_ENTRIES) {
+    if (Object.hasOwn(legibility, entry) && typeof legibility[entry] !== 'string') return `entry ${entry} must be a string`;
+  }
+  if (Object.hasOwn(legibility, 'confirmation') && legibility.confirmation !== LEGIBILITY_PENDING) return `confirmation must be "${LEGIBILITY_PENDING}" or absent`;
+  return null;
+}
+
+// Classify a manifest's declaration for its consumers (doctor, setup): which
+// entries are declared, which are missing, empty or still a placeholder, and
+// whether the block is a setup draft awaiting grilling confirmation.
+export function legibilityState(manifest) {
+  const legibility = manifest?.legibility;
+  if (legibility === undefined) return { declared: false, present: [], undeclared: [...LEGIBILITY_ENTRIES], pending: false };
+  if (legibilityShapeIssue(legibility)) return { declared: false, present: [], undeclared: [...LEGIBILITY_ENTRIES], pending: false, malformed: true };
+  const present = LEGIBILITY_ENTRIES.filter((entry) => typeof legibility[entry] === 'string' && legibility[entry].trim() && !PLACEHOLDER_ENTRY.test(legibility[entry].trim()));
+  return { declared: true, present, undeclared: LEGIBILITY_ENTRIES.filter((entry) => !present.includes(entry)), pending: legibility.confirmation === LEGIBILITY_PENDING };
+}
+
 export function validateManifest(project) {
   const { manifest, failure } = readManifestFile(project);
   if (failure) return failure;
@@ -451,6 +486,10 @@ export function validateManifest(project) {
   // The git block is an additive schema 2 field: absent is valid, malformed is not.
   if (manifest.git !== undefined && (!manifest.git || typeof manifest.git !== 'object' || Array.isArray(manifest.git) || !isBranchName(manifest.git.defaultBranch) || !isBranchName(manifest.git.integrationBranch))) {
     return fail('invalid-manifest', 'Manifest git block must declare defaultBranch and integrationBranch as Git branch names.', { git: manifest.git });
+  }
+  if (manifest.legibility !== undefined) {
+    const issue = legibilityShapeIssue(manifest.legibility);
+    if (issue) return fail('invalid-manifest', `Manifest legibility block ${issue}.`, { legibility: manifest.legibility });
   }
   // Earlier manifests remain readable at the policy their release declared:
   // v3.0.0 and v3.1.0 carried the twelve-skill bundle, v3.1.1 and v3.1.2 the
@@ -854,6 +893,33 @@ function recordSourceUnlocked(options) {
   const updated = { ...manifest, provenance: { ...manifest.provenance, source } };
   writeSafeFile(project, manifestPath, `${JSON.stringify(updated, null, 2)}\n`);
   return report('recorded', { manifestPath, source });
+}
+
+// Declare or replace the legibility surface of an existing room: all six
+// entries at once (declare a bracketed placeholder rather than omit one, so
+// the gap stays visible), optionally marked pending for grilling. Nothing else
+// in the manifest changes, under the same lock every manifest writer takes.
+export function declareLegibility(options) {
+  const project = path.resolve(options['--project']);
+  return withIdentityLock(project, () => declareLegibilityUnlocked(project, options));
+}
+
+function declareLegibilityUnlocked(project, options) {
+  const { manifest, manifestPath, failure } = readManifestFile(project);
+  if (failure) return failure;
+  if (manifest.schemaVersion === 1) {
+    return fail('upgrade-required', 'Manifest schema 1 is the v3.0 five-lane layout; run workbench-layout.mjs migrate --project PATH once.', { schemaVersion: 1 });
+  }
+  if (manifest.schemaVersion !== SCHEMA_VERSION) return fail('invalid-manifest', 'Manifest schemaVersion is invalid.');
+  const legibility = {};
+  for (const entry of LEGIBILITY_ENTRIES) {
+    const value = options[`--${entry}`];
+    if (typeof value !== 'string' || !value.trim()) return fail('invalid-invocation', `declare-legibility requires --${entry}; declare a bracketed placeholder such as [${entry.toUpperCase()}_COMMAND] rather than omit it.`, { entry });
+    legibility[entry] = value;
+  }
+  if (options['--pending']) legibility.confirmation = LEGIBILITY_PENDING;
+  writeSafeFile(project, manifestPath, `${JSON.stringify({ ...manifest, legibility }, null, 2)}\n`);
+  return report('declared', { manifestPath, legibility });
 }
 
 // Assign once in an existing room. Commit this manifest before making clones
@@ -1618,6 +1684,7 @@ if (isMainModule(import.meta.url)) {
     else if (command === 'migrate') result = migrate(parseOptions(args, ['--project']));
     else if (command === 'identify') result = identify(parseOptions(args, ['--project']));
     else if (command === 'record-source') result = recordSource(parseOptions(args, ['--project']));
+    else if (command === 'declare-legibility') result = declareLegibility(parseOptions(args, ['--project', ...LEGIBILITY_ENTRIES.map((entry) => `--${entry}`)], ['--pending']));
     else if (command === 'seed-documents') {
       const options = parseOptions(args, ['--project']);
       result = seedLaneDocuments(options['--project'], options);
@@ -1625,9 +1692,9 @@ if (isMainModule(import.meta.url)) {
     else if (command === 'validate') {
       const requireGenesis = args.includes('--genesis');
       result = validate(parseOptions(args.filter((arg) => arg !== '--genesis'), ['--project']), requireGenesis);
-    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.2.1 [--source-commit SHA] [--source-repository URL] [--wiki-profile project|deployment] [--name NAME] [--default-branch NAME] [--integration-branch NAME] | migrate --project PATH [--version v3.2.1] [--source-commit SHA] [--source-repository URL] [--default-branch NAME] [--integration-branch NAME] | identify --project PATH | record-source --project PATH [--version v3.2.1] [--source-commit SHA] [--source-repository URL] | seed-documents --project PATH [--version v3.2.1] | validate --project PATH [--genesis] (source flags assert the clean release checkout\'s resolved HEAD and origin; a relocated partial copy cannot establish provenance)');
+    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.2.1 [--source-commit SHA] [--source-repository URL] [--wiki-profile project|deployment] [--name NAME] [--default-branch NAME] [--integration-branch NAME] | migrate --project PATH [--version v3.2.1] [--source-commit SHA] [--source-repository URL] [--default-branch NAME] [--integration-branch NAME] | identify --project PATH | record-source --project PATH [--version v3.2.1] [--source-commit SHA] [--source-repository URL] | declare-legibility --project PATH --run CMD --operate CMD --inspect CMD --errors CMD --journey CMD --measure CMD [--pending] | seed-documents --project PATH [--version v3.2.1] | validate --project PATH [--genesis] (source flags assert the clean release checkout\'s resolved HEAD and origin; a relocated partial copy cannot establish provenance)');
     process.stdout.write(`${JSON.stringify(result)}\n`);
-    if (!['initialized', 'valid', 'migrated', 'current', 'recorded', 'seeded', 'identified'].includes(result.status)) process.exitCode = 1;
+    if (!['initialized', 'valid', 'migrated', 'current', 'recorded', 'declared', 'seeded', 'identified'].includes(result.status)) process.exitCode = 1;
   } catch (error) {
     process.stdout.write(`${JSON.stringify(fail('invalid-invocation', error.message))}\n`);
     process.exitCode = 1;
