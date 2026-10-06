@@ -49,3 +49,9 @@ attributed through the Wiki lineage page; the skill copies nothing. No
 Runbook row, Wiki page, feedback format, eval or other skill changes here.
 No version label is stamped: the release owner holds version, Template and
 owner gates.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s004l-tk008l-improve-harness | 79f9805d1cd247fde052973e30aaeb0006782ef6 | ahead 0 behind 0 | 0 | Red a5565e6b (test-skill-catalog, test-skills-lane fail as expected); green at 79f9805d after merging origin/integration 2790ee5a: test-skill-catalog, test-skills-lane, test-workbench-layout, test-runbook-index, test-wiki ok; wiki validate ok; full suite 52/52 ok on committed 79f9805d (log scratchpad/s004l/suite-tk008l-79f9805d.log); guardrails 73/100 before and after; self-drift pre/post 14 attention findings, same set | workbench/skills/improve-harness/SKILL.md (new), workbench/skills/README.md, README.md, LEXICON.md, templates/GENESIS.md, workbench/skills/workbench-room-checks/SKILL.md, workbench/wiki/skill-genesis.md (bundle count 27 to 28) | none for this Task; Runbook rows (TK-008M), Wiki page (TK-008N) and fixture-room scenario (TK-008O) follow | aaa6c6c8bc9d203b5c986f69dd4a0383a3ec6212f0d9899ef0c0a26f5e86980f |
