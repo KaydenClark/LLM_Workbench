@@ -21,7 +21,9 @@ bare `specs/` path. Sections 3 and 4 and the `workbench-room-checks` entry
 under "Outside the six files" remain for Task TK-008Z. TK-008Y run 2 added the root Task row
 to section 3. Apply sections 3 and 4 to the Lexicon as the Contract Carrier
 Pointer-Brief Rewrite (TK-005N, PR #358) left it, changing only the landmark
-statements.
+statements. TK-008Z applied sections 3 and 4 and the `workbench-room-checks` entry on
+2026-10-06 against the post-PR #358 Lexicon, editing only the landmark
+statements of each row; every section of this file is now applied.
 
 Every command below was read from `workbench/tools/spec-workbench.mjs` and
 `workbench/tools/spec-report.mjs` at that tip; the readable explanation is
