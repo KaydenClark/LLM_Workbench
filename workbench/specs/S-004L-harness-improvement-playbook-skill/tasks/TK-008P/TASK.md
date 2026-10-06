@@ -3,11 +3,12 @@
 **Task ID:** TK-008P
 **Spec ID:** S-004L
 **Slice:** Correct the feedback, rerun and test-without wording the fixture scenario found
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-008L
 **Destination:** spec-acceptance: The one skill exists in the lane, its loop has six named steps each with a checkable artifact, and a scenario in a fixture room runs it end to end.
 **Planned verification:** Red: `tools/test-skill-catalog.mjs` pins, in `workbench/skills/improve-harness/SKILL.md`, that Taking In Feedback appends a new row to an append-only feedback record naming the original row and its disposition instead of moving a row's status, that step 5 names hidden help in the room's own files and later history as something the isolated starting state and the rerun record must account for, and that step 6 states what a test-without run that also closes the job establishes; it fails at the committed pre-change tree. Green: the skill text makes it pass; the Wiki page for the skill still agrees (small Wiki lint); `test-skills-lane`, `test-runbook-index`, `test-wiki` and the full suite pass on the committed candidate.
+**Claimed by:** claude-s004l-worker-p
 
 ## Outcome
 
