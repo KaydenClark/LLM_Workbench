@@ -16,3 +16,9 @@ Add the optional `legibility` block to `validateManifest` in `workbench/tools/wo
 ## Boundaries
 
 No registry code, no doctor change, no Genesis or adoption change, no Runbook or AGENTS line. Rebase onto the fresh integration tip before the PR because the landmark lane also edits the manifest.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s004m-dispatcher-land | 1938da8fcefb7e62c51f1a299ee43d50c28865aa | ahead 174 behind 0 | 0 | Full RUNBOOK suite 52/52 pass on committed candidate 1938da8f (merge of origin/integration c5194960 into lane head 0cf58e63; clean tree before and after); targeted red/green in tools/test-workbench-layout.mjs and tools/test-workbench-dogfood.mjs recorded at 6b0140b0; render and doctor clean (attention only) | workbench/manifest.json declares the Workbench legibility surface; Spec plan and Task records; projections re-rendered | none for TK-008T; doctor finding is TK-008U | d26142fd7a2689c971db77c94c5a832c2acb026a9f6841c5b30d86d67c2a81eb |
