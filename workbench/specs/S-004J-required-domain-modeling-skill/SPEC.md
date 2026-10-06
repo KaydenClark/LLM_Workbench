@@ -3,13 +3,13 @@
 **Spec ID:** S-004J
 **Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** codex-s004j-dispatcher
 **Stance:** Builder
 **Updated:** 2026-10-06
 **Catalog description:** Ship domain modeling in every room's skills lane as the Align companion that shows the downstream consequences of an upstream name, boundary or relationship before it settles, and hands settled meaning to promotion instead of writing Canon inline.
 **Blockers:** none
-**Latest event:** Assigned Director authorized one isolated source checkpoint from integration ef704e366da478f5d5ecfdab0947ab16d2520f0e; native activation and claim follow the executable plan below.
-**Next gate:** Claim TK-006U natively, stage and verify the source contract; wait for the Director's shared writer slot before managed distribution.
+**Latest event:** TK-006U claimed by codex-s004j-dispatcher.
+**Next gate:** Close TK-006U with verification and documentation proof.
 
 > **Citation anchors.** pre=`46ad978956a74a3ee1bda22c36eb16207dcd98fd` post=`46ad978956a74a3ee1bda22c36eb16207dcd98fd`.
 

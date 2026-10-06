@@ -3,7 +3,7 @@
 **Task ID:** TK-006U
 **Spec ID:** S-004J
 **Slice:** Stage the accepted domain modeling contract
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: After a locked and confirmed answer, the settled term reaches the Lexicon only through promotion or a scoped Task; no inline Lexicon write occurs.
