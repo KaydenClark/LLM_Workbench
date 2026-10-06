@@ -89,3 +89,9 @@ Gaps found (the scenario's own list, triaged):
 
 One pass proves the loop is followable cold; it does not show the intervention
 generalizes or that the skill improves agent outcomes.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s004l-state-tk008o-close | 6a31931b2cbbd79c101fba6700347ce4cdf90a63 | ahead 0 behind 0 | 0 | Fixture room from integration eef29648 (layout init, tools install, skills install; skill in both discovery roots); fresh-context worker entered via AGENTS.md and the Runbook operations index row Evaluate a harness change and ran all six steps; fresh rerun and test-without runs by fresh workers from isolated clones, both accepted on the first pass with zero relays; decision retain as a documentation repair, no agent-outcome gain claimed; Auditor check of each step's artifact against the room: all held; room doctor ok, node --test 2/2, room main untouched | TK-008O TASK.md Scenario Result section | Skill wording gaps corrected by TK-008P; doctor-placeholder, template evaluation-commands, report-format fit, landed meaning, entry route not read by rerun workers: routed in the Completion Result | d284eeb87953af059802c154b5724733356d7d25058be788fca20aac524cf8da |
