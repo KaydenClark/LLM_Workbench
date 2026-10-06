@@ -41,3 +41,4 @@
 | [001G](001G-the-blueprint-keeps-its-name-and-decision-records-are-the-design-doc-layer.md) | The Blueprint keeps its name and decision records are the design-doc layer | accepted | 2026-10-05 | BLUEPRINT.md |
 | [001H](001H-the-twelve-harness-engineering-directions-are-landmarks.md) | The twelve harness-engineering directions are landmarks | accepted | 2026-10-05 | BLUEPRINT.md |
 | [001I](001I-harness-improvement-is-one-playbook-not-a-family-of-review-skills.md) | Harness improvement is one playbook, not a family of review skills | accepted | 2026-10-05 | AGENTS.md |
+| [001J](001J-every-room-declares-how-an-agent-runs-operates-inspects-and-measures-it.md) | Every room declares how an agent runs, operates, inspects and measures it | accepted | 2026-10-05 | BLUEPRINT.md |
