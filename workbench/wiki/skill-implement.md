@@ -4,12 +4,12 @@ status: partial
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - S-01H TK-00Y source inspection and focused red/green checks, 2026-10-01
+  - S-01H (implement skill rebuild Spec) TK-00Y (Deliver the implement skill destination Task) source inspection and focused red/green checks, 2026-10-01
   - mattpocock/skills pinned comparison at d81f3a183412e71a5b1e84ca21bc1a35eea03a60
-  - S-004C TK-005G moved the Runbook and AGENTS lifecycle procedures behind their index pointers into the skill, 2026-10-03
-  - S-004C TK-005H moved the Git route, pull-request and branch completion procedures behind their index pointers into the skill, 2026-10-03
-  - S-004C TK-005I moved the verification steps, the generic test coverage policy and benchmark-driven improvement behind their index pointers into the skill, 2026-10-04
-  - S-004C TK-005J moved the generic recovery and rollback steps behind their index pointer into the skill, 2026-10-04
+  - S-004C (Contract Carrier Pointer-Brief Rewrite Spec) TK-005G (Move the work-selection, review and closure operations behind their pointers Task) moved the Runbook and AGENTS lifecycle procedures behind their index pointers into the skill, 2026-10-03
+  - S-004C (Contract Carrier Pointer-Brief Rewrite Spec) TK-005H (Move the Git, integration review and branch-completion operations behind their pointers Task) moved the Git route, pull-request and branch completion procedures behind their index pointers into the skill, 2026-10-03
+  - S-004C (Contract Carrier Pointer-Brief Rewrite Spec) TK-005I (Move verification, documentation ownership and the release gate behind their pointers Task) moved the verification steps, the generic test coverage policy and benchmark-driven improvement behind their index pointers into the skill, 2026-10-04
+  - S-004C (Contract Carrier Pointer-Brief Rewrite Spec) TK-005J (Move the operations every room runs behind their pointers Task) moved the generic recovery and rollback steps behind their index pointer into the skill, 2026-10-04
 source_paths:
   - workbench/skills/implement/SKILL.md
   - workbench/skills/implement/references/scenario.md
@@ -46,7 +46,10 @@ from this illustrative example.
 
 The endpoint comes from the assignment. A draft-only run stops with a candidate
 and named pending gates. Normal scoped Task handback is distinct from the
-separate-context review required before integration. Task closure needs scoped
+separate-context review required at the assembled Spec's Verify step. A Task
+merge carries two answers in its merge request, whether it can merge into its
+target branch and whether it completed the Task, which the Spec's Dispatcher,
+Director or next agent validates. Task closure needs scoped
 acceptance and proof; Spec completion and owner Human QA follow the
 [Contract](../../AGENTS.md) and [Runbook](../../RUNBOOK.md), not the skill's own
 judgment. The skill also carries the

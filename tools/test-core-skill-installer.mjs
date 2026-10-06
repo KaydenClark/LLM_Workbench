@@ -700,3 +700,97 @@ test('a linked destination still blocks when it resolves to a file, to nothing, 
     }
   }
 });
+
+// S-004C TK-006L: this repository's lane is also the release source lane. A
+// skill its manifest declares under `maintainerSkills` passes the closed-bundle
+// source check beside the core and is never installed; any other extra lane
+// entry, or a malformed declaration, still blocks before anything is written.
+function producerClone() {
+  const parent = fixtureHome();
+  const clone = path.join(parent, 'release');
+  const cloned = spawnSync('git', ['clone', '-q', '--no-local', root, clone], { encoding: 'utf8' });
+  assert.equal(cloned.status, 0, cloned.stderr);
+  const base = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: clone, encoding: 'utf8' }).stdout.trim();
+  return { parent, clone, base };
+}
+
+function resetClone(clone, base) {
+  assert.equal(spawnSync('git', ['reset', '-q', '--hard', base], { cwd: clone }).status, 0);
+  assert.equal(spawnSync('git', ['clean', '-qfdx'], { cwd: clone }).status, 0);
+}
+
+// `declare` adds names to whatever the checkout already declares, so the
+// fixture holds when this repository declares real maintainer skills;
+// `replace` swaps the whole value for a malformed declaration.
+function mutateClone(clone, { skills = [], declare, replace }) {
+  for (const skill of skills) {
+    const directory = path.join(clone, 'workbench', 'skills', skill);
+    fs.mkdirSync(directory, { recursive: true });
+    fs.writeFileSync(path.join(directory, 'SKILL.md'), `---\nname: ${skill}\ndescription: Fixture maintainer skill.\n---\n\n# ${skill}\n`);
+  }
+  if (declare !== undefined || replace !== undefined) {
+    const manifestPath = path.join(clone, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    manifest.maintainerSkills = replace !== undefined ? replace : [...(manifest.maintainerSkills ?? []), ...declare];
+    fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+  }
+  assert.equal(spawnSync('git', ['add', '-A'], { cwd: clone }).status, 0);
+  const committed = spawnSync('git', ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.test', 'commit', '-qm', 'maintainer fixture'], { cwd: clone, encoding: 'utf8' });
+  assert.equal(committed.status, 0, committed.stderr);
+}
+
+function installFrom(clone, home) {
+  const result = spawnSync(process.execPath, [path.join(clone, 'tools', 'core-skill-installer.mjs'), 'install', '--home', home], { cwd: clone, encoding: 'utf8' });
+  return { ...result, report: result.stdout ? JSON.parse(result.stdout) : null };
+}
+
+test('a declared maintainer skill passes the closed-bundle source check and is never installed', () => {
+  const { parent, clone } = producerClone();
+  const home = fixtureHome();
+  try {
+    mutateClone(clone, { skills: ['maintainer-fixture'], declare: ['maintainer-fixture'] });
+    const result = installFrom(clone, home);
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    assert.equal(result.report.status, 'complete', result.stdout);
+    assert.equal(result.report.installed.length, coreSkills.length * 2, 'only the core skills are installed');
+    assert.ok(result.report.installed.every((item) => item.skill !== 'maintainer-fixture'), 'the maintainer skill is never installed');
+    for (const discoveryRoot of ['.agents/skills', '.claude/skills']) {
+      assert.equal(fs.existsSync(path.join(home, discoveryRoot, 'maintainer-fixture')), false, `${discoveryRoot} never receives a maintainer skill`);
+      assert.deepEqual(fs.readdirSync(path.join(home, discoveryRoot), { withFileTypes: true }).filter((entry) => entry.isDirectory() || entry.isSymbolicLink()).map((entry) => entry.name).sort(), [...coreSkills].sort(), `${discoveryRoot} holds exactly the core skills`);
+    }
+  } finally {
+    fs.rmSync(home, { recursive: true, force: true });
+    fs.rmSync(parent, { recursive: true, force: true });
+  }
+});
+
+test('an undeclared extra lane skill or a malformed maintainer declaration still blocks before anything is written', () => {
+  const { parent, clone, base } = producerClone();
+  const cases = [
+    { name: 'undeclared extra skill', skills: ['stray-fixture'], code: 'invalid-bundled-core' },
+    { name: 'declared but missing from the lane', declare: ['maintainer-fixture'], code: 'invalid-maintainer-skills' },
+    { name: 'declares a core skill', declare: ['genesis'], code: 'invalid-maintainer-skills' },
+    { name: 'declares an unsafe name', skills: ['maintainer-fixture'], declare: ['../maintainer-fixture'], code: 'invalid-maintainer-skills' },
+    { name: 'declares a name twice', skills: ['maintainer-fixture'], declare: ['maintainer-fixture', 'maintainer-fixture'], code: 'invalid-maintainer-skills' },
+    { name: 'declaration is not a list', skills: ['maintainer-fixture'], replace: 'maintainer-fixture', code: 'invalid-maintainer-skills' },
+    { name: 'one declared and one undeclared extra skill', skills: ['maintainer-fixture', 'stray-fixture'], declare: ['maintainer-fixture'], code: 'invalid-bundled-core' }
+  ];
+  try {
+    for (const item of cases) {
+      resetClone(clone, base);
+      mutateClone(clone, item);
+      const home = fixtureHome();
+      try {
+        const result = installFrom(clone, home);
+        assert.notEqual(result.status, 0, item.name);
+        assert.equal(result.report.status, 'blocked', `${item.name}: ${result.stdout}`);
+        assert.equal(result.report.error.code, item.code, `${item.name}: ${result.stdout}`);
+        assert.deepEqual(fs.readdirSync(home), [], `${item.name} writes nothing to the home`);
+      } finally {
+        fs.rmSync(home, { recursive: true, force: true });
+      }
+    }
+  } finally {
+    fs.rmSync(parent, { recursive: true, force: true });
+  }
+});

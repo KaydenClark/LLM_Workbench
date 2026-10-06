@@ -4,7 +4,7 @@ status: partial
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - S-01P TK-01G source review and contract regression, 2026-10-01
+  - S-01P (builder skill rebuild Spec) TK-01G (Deliver the builder skill destination Task) source review and contract regression, 2026-10-01
 source_paths:
   - workbench/skills/builder/SKILL.md
   - workbench/skills/builder/references/verification.md

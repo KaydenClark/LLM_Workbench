@@ -997,6 +997,7 @@ const PINNED_EFFECTS = {
   'stale-note': ['attention', 'wiki', 'none'],
   'room-brain-unrouted': ['attention', 'wiki', 'none'],
   'stale-stamp': ['attention', 'wiki', 'none'],
+  'unsummarized-route': ['attention', 'wiki', 'none'],
   // S-00V: the lane findings mirror `integration-branch-missing` - an error
   // every run shows that blocks nothing, repaired by one release command.
   'skill-lane-missing': ['error', 'skills', 'none'],

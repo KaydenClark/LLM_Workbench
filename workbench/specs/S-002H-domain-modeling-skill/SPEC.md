@@ -1,15 +1,57 @@
 # S-002H - Domain Modeling Skill for the Workbench
 
 **Spec ID:** S-002H
-**Status:** planned
+**Status:** superseded
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
-**Updated:** 2026-09-29
+**Updated:** 2026-10-04
 **Catalog description:** Make active domain modeling precise and usable through the Workbench's Lexicon, Spec, ADR, Wiki, and authority boundaries.
-**Blockers:** The owner must settle whether this is a required room skill or an optional personal extension before distribution changes.
-**Latest event:** Owner requested a comparison with Matt Pocock's skill, a bounded delivery Spec, and a Wiki article.
-**Next gate:** Resolve distribution and source ownership, then activate and cut Tasks from current Actuality.
+**Blockers:** none
+**Latest event:** Superseded on the owner's 2026-10-04 remap direction by Required Domain Modeling Skill (S-004J); see Why Retired.
+**Next gate:** None; superseded by Required Domain Modeling Skill (S-004J).
+
+## Why Retired
+
+The owner, 2026-10-04: "The landscape has shifted, we need to remap the
+environment and destination. We retire things all of the time. why would a
+spec be any different than a task? Create a new map to the correct destination,
+document the 'why' for us retiring the old one."
+
+This map no longer leads to the finished product, for four design reasons:
+
+1. **Its gate is a fork the destination removed.** It waited on "required room
+   skill or optional personal extension". The finished Workbench has no optional
+   personal tier for a behavior agents need: needed behaviors ship inside every
+   room and the personal catalog is a backup, never a dependency
+   ([DDR-000J](../../docs/ddr/000J-the-behaviors-agents-need-ship-inside-every-room.md),
+   [ADR-000M](../../docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md)),
+   and the owner named domain modeling a required Workbench skill on 2026-09-29.
+2. **It aimed at the wrong job.** It mapped Matt Pocock's glossary discipline.
+   The owner's skill is for seeing "the downstream impacts of my choices while I
+   am still upstream", including the consequences of names (2026-09-29). That is
+   the skill's centre, not an addendum.
+3. **Its write route predates the workflow.** It let an authorized pass edit the
+   Lexicon inline and offered ADRs only. The destination writes no Canon during
+   Align, promotes a locked and confirmed answer through `promote` or scoped
+   Task work, keeps only settled meaning in the Lexicon, and chooses between an
+   ADR and a DDR by scope
+   ([ADR-000Y](../../docs/adr/000Y-a-locked-and-confirmed-answer-is-promoted-without-further-ceremony.md),
+   [ADR-000S](../../docs/adr/000S-destination-decision-records-are-decision-records-beside-adrs.md),
+   [ADR-000X](../../docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md)).
+4. **Its delivery parked an enduring behavior in scaffolding.** Its lane (PR
+   #251, closed unmerged) staged the skill source inside this Spec's folder to
+   wait for a release identity. A Spec is scaffolding cleared away once its
+   knowledge is kept
+   ([DDR-000M](../../docs/ddr/000M-working-artifacts-are-scaffolding-cleared-away-once-their-knowledge-is-kept.md));
+   a required skill's source belongs in the skills lane from its first
+   delivered form.
+
+The new map is [Required Domain Modeling Skill (S-004J)](../S-004J-required-domain-modeling-skill/SPEC.md).
+The PR #251 candidate, its scoped test and its scenario rows stay recoverable
+at `e3e0b5f068bff80861d68c254441b2c94d7015fb` as input to that Spec. This record
+uses the `superseded` status because `retire-spec` accepts only a complete
+Spec; retiring an undelivered Spec has no tool route yet.
 
 ## Outcome
 
@@ -93,10 +135,11 @@ This planning pass creates the [individual article](../../wiki/skill-domain-mode
 | 2026-09-29 | planning | Compared upstream guide/source and format, preserved pending source, read-only personal copy, and live Workbench owners at 86c8fad1; authored planned Spec with no Task | Pre self-drift: machineResult blocked and cleanUpdate false from existing findings; render and doctor succeeded (doctor reported existing attention plus untracked new Spec); Wiki validation passed; test-wiki 13/13 and spec-citation-anchors 3/3 passed; no behavior trial or installed distribution verification claimed | Spec and individual Wiki article authored; sole Wiki router linked and validated | Owner distribution choice, implementation, fresh-context trials, full delivery verification, and independent review remain open |
 | 2026-09-29 | planning verification | Checked clean candidate a25fc2b4026497068544fdd393fb706b50f2630e against the AGENTS full suite | All 48 commands passed. Wiki validation passed separately. Post self-drift reported the same 8 existing attention findings as pre, machineResult blocked and cleanUpdate false; bounded read-back found no new current-facing contradiction in the touched Spec, Wiki route, article or Catalog. The first sandboxed suite attempt had one EPERM while a layout test tried to write the worktree manifest; the full rerun with worktree write access passed. | Article and router remain aligned with the planned Spec; no skill source or distribution change | Independent review of the final planning candidate and all delivery gates remain open |
 | 2026-09-29 | planning review correction | Separate-context review of 9a09e1d9d7b33c659763b5ad9c284f0bcef9821a found the Wiki router placed an optional/planned skill under a core-only heading; moved it to Planned And Optional Skill References | Review finding was source-backed; corrected route awaits Wiki validation, targeted checks and fresh candidate review | Wiki MEMORY now identifies the open distribution choice at the link | Final candidate review and delivery remain open |
+| 2026-10-04 | supersession | Superseded on the owner's 2026-10-04 remap direction; Why Retired records the design reasons; S-004J authored as the new map; PR #251 closed unmerged with its branch kept | Live sources read at 46ad9789 (DDR-000J, DDR-000M, ADR-000M, ADR-000S, ADR-000X, ADR-000Y, ledger PW-4, GX-2, FND-Q09, FND-Q13); `retire-spec` refuses a non-complete Spec, so the status is superseded | Spec header, Why Retired, Completion Result and Supersession; Wiki article and router repointed to S-004J | None for this record; delivery moves to S-004J |
 
 ## Completion Result
 
-Pending. Planning and Wiki creation do not establish delivered skill behavior.
+Not delivered. Superseded on 2026-10-04 by Required Domain Modeling Skill (S-004J); planning and Wiki creation did not establish delivered skill behavior.
 
 ## Remaining Limitations Or Follow-Up Specs
 
@@ -106,4 +149,4 @@ Pending. Planning and Wiki creation do not establish delivered skill behavior.
 ## Supersession
 
 - Supersedes: none
-- Superseded by: none
+- Superseded by: [Required Domain Modeling Skill (S-004J)](../S-004J-required-domain-modeling-skill/SPEC.md), 2026-10-04

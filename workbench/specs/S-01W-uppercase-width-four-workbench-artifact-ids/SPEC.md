@@ -28,7 +28,7 @@ The owner selected two separate build Specs and the order WBID -> board ->
 S-00P controls -> S-00O release. The board needs consistent identities before
 its own records and consumers are built. A bulk rename would contradict the
 owner's touch-and-update rule and endanger recoverable historical references.
-Durable source: [destination audit ledger](../../wiki/grilling-destination-audit-ledger.json),
+Durable source: [destination audit ledger](../../sessions/grilling-destination-audit-ledger.json),
 rows E-6, E-7 and E-8, including their decision/correction lineage.
 
 ## Current Verified State

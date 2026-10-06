@@ -63,7 +63,11 @@ Five kinds of page, mapped onto the collections below. This is a first cut
 and may be revised when something does not fit.
 
 - **Overview**: `MEMORY.md`, the router, carrying a one-line summary beside
-  every link so a reader can choose a page without opening it.
+  every link so a reader can choose a page without opening it. Write a list
+  entry as `- [Schema](SCHEMA.md) - what the page is for` (the link, a dash, an
+  en or em dash or a colon, then at least two words), or give a table row a second cell that
+  says what the page is for. `wiki.mjs validate` reports a routed Wiki page
+  without one as attention (`unsummarized-route`), never as a failure.
 - **Synthesis**: one evolving page per landmark, in `design-concepts/`,
   summarizing that landmark's question cards and what they add up to.
 - **Entity pages**: one page per capability (`features/`), and per skill,
@@ -154,7 +158,8 @@ did the router get its summary line, was a concept mentioned that has no
 page. At Spec review, when the Spec's work is verified, lint the whole wiki
 the same way against the current controls and question cards. Findings
 become corrective Tasks. This is a reading job for an agent; the structural
-validator below keeps running on every change and does not replace it.
+validator below keeps running on every change and does not replace it. The
+checklist for both cadences is the Runbook's Wiki Lint section (`RUNBOOK.md`).
 
 ## Concurrency
 

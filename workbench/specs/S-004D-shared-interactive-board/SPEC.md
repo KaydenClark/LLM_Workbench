@@ -3,12 +3,12 @@
 **Spec ID:** S-004D
 **Status:** planned
 **Stance:** Builder
-**Updated:** 2026-10-02
-**Catalog description:** Post-v4 browser workspace for connected Taskboard and Tracker cards, discussion and update requests, preserving their distinct source and progress semantics.
-**Release scope:** Post-v4 backlog; excluded from v4 requirements, acceptance and release gates. No later release is assigned.
-**Blockers:** owner:shared-board-activation
-**Latest event:** Owner requested backlog capture of the shared-board concept, explicitly outside v4.
-**Next gate:** Owner chooses a post-v4 planning window; resolve the open design choices against live sources before activation and Task cutting.
+**Updated:** 2026-10-04
+**Catalog description:** The browser workspace the Grill Board grows into: connected Taskboard and Tracker cards, discussion and update requests, preserving their distinct source and progress semantics.
+**Release scope:** In scope since the owner's 2026-10-04 answer; no release is assigned.
+**Blockers:** none
+**Latest event:** Owner answered 2026-10-04 that the Grill Board is this board's first working form; activation gate cleared and the map remapped from the Grill Board.
+**Next gate:** Activate and cut Tasks from live Actuality with `/to-tasks`, starting from the Grill Board; settle the open design choices as each slice needs them.
 
 > **Citation anchors.** pre=`f6af4c339b543988a3212b1940581157f573818d` post=`f6af4c339b543988a3212b1940581157f573818d`.
 
@@ -20,9 +20,11 @@ request corrections or updates, and see what happened to those requests.
 Taskboard and Tracker share familiar card interactions and can appear together,
 with execution and understanding available as different views.
 
-This record captures future capability intent only. It remains planned with no
-claimed owner or Tasks. It adds no dependency to the v4 release and authorizes
-no website implementation, deployment or changes to existing board semantics.
+The [Grill Board](../../grill-board/README.md) is this board's first working
+form, already in use: the owner answers pending items in a local browser page
+and agents carry the answers into their owners. This Spec is the destination it
+grows into. It remains planned with no claimed owner or Tasks; the remaining
+work is the path from the Grill Board to the outcome above.
 
 ## Why It Matters
 
@@ -35,8 +37,51 @@ need not force all underlying artifacts into one storage format.
 
 ## Current Verified State
 
+### The Grill Board, the first working form
+
+Checked at `46ad978956a74a3ee1bda22c36eb16207dcd98fd`. The Grill Board landed
+through PRs #333 to #336 without a claimed Task under this Spec.
+
+- [`tools/grill-board.mjs`](../../../tools/grill-board.mjs) serves one local
+  page from `workbench/grill-board/` on `127.0.0.1` (default port 4646) and
+  offers `status`, `pending`, `show`, `add`, `revise`, `apply`, `withdraw` and
+  `validate`. [The procedure](../../grill-board/README.md) owns its rules.
+- `items.json` holds 180 items in six kinds (`approve-spec` 46, `choice` 36,
+  `confirm-dqc` 35, `confirm-ddr` 33, `owner-decision` 28, `confirm-text` 2):
+  Spec owner gates and owner decisions drawn from the Specs and `TASKBOARD.md`,
+  unconfirmed Destination Question Cards from the Landmark Tracker records, DDR
+  texts written from locked answers, open choices and prepared decision-record
+  questions citing the ADRs, DDRs, Lexicon and controls, and Blueprint page
+  texts. Each item cites its sources at a commit.
+- Two files, two writers: agents write `items.json` only through the tool; the
+  owner writes the untracked `answers.json` only through the served page. The
+  owner answers items as a package, in fixed batches filtered by topic, kind,
+  scale and workflow stage. An item is never deleted or renumbered; `revise`
+  bumps its revision so an older answer shows as Re-answer; `apply` copies the
+  owner's verdict, note and time into Git with where it landed; `withdraw`
+  keeps a retired item visible.
+- A Read menu opens full current AGENTS, RUNBOOK, BLUEPRINT, LEXICON, Landmark,
+  ADR and DDR pages, each identified by a content SHA-256 and checkout commit,
+  with a revision notice on a 15-second poll.
+- `node tools/test-grill-board.mjs` passed 16/16 at this tree.
+
+What each Desired Behavior item has today:
+
+| # | Desired behavior | Grill Board today |
+|---|---|---|
+| 1 | Mixed connected cards in one workspace, execution and understanding views | Partly: one page of items from Spec gates, question cards and decision records, with filters; items carry snapshots and source links, not live Taskboard or Tracker cards; no execution or understanding view |
+| 2 | Consistent card inspector | Partly: brief, sources at a commit, history and related card histories; full reader pages for root controls, Landmarks, ADRs and DDRs; no Spec or Task reader and no discussion thread |
+| 3 | Execution lanes and understanding distributions kept distinct | Not yet: neither is shown; the page's counts are review progress only |
+| 4 | Comments and update requests on stable identities, with disposition | Partly: one verdict and note per stable `GB-####` item and revision, with answer history and Applied disposition; attached to board items rather than the artifacts; owner words reach Git only when applied |
+| 5 | Updates through owning operations; no gate bypass | Partly: agents carry answers through the owning commands and the page edits no artifact; projections are not refreshed by the board |
+| 6 | Identity across views; no collisions or mixed progress numbers | Partly: stable item identity and one count per item; Task and Spec identities are not shown as cards |
+| 7 | Honest stale and conflicting state; coordinated writers; recovery | Partly: stale answers are refused and shown as Re-answer, and reader text shows revision changes; nothing checks who sends the page's save request, and `items.json` writes are atomic replacements with no cross-writer check |
+| 8 | Bounded agent retrieval through the same operations | Partly: `status`, `pending --json` and `show` serve agents the same records; size and latency are not measured |
+
+### Board sources
+
 These are dated observations at `f6af4c339b543988a3212b1940581157f573818d`,
-not promises about the eventual activation baseline:
+not promises about the baseline when Tasks are cut:
 
 - [Generated JSON Taskboard](../S-01X-generated-json-taskboard/SPEC.md) owns the
   six-lane execution board. Its current contract explicitly supersedes the
@@ -92,8 +137,13 @@ not promises about the eventual activation baseline:
 
 ## Decisions And Contracts
 
-- Owner accepted capturing the shared-board concept and explicitly excluded it
-  from v4 on 2026-10-02. Backlog capture is the authorized endpoint.
+- **The Grill Board is this board's first form.** The owner, 2026-10-04: "No
+  the shared board is the grilling board. that is good to know that there was a
+  spec for that." And: "Hold on, so that shared board spec is what the grilling
+  board is supposed to turn into". The Grill Board and this Spec are one product
+  line: this Spec is the destination and the Grill Board grows into it, not a
+  second board. These answers clear `owner:shared-board-activation` and replace
+  the 2026-10-02 backlog capture that excluded the board from v4.
 - Existing Taskboard, Tracker, Spec, Task, DQC and Landmark owners retain their
   contracts. A shared visual shell does not require identical persisted schemas
   or a universal status. The UI may derive display metadata without adding
@@ -104,13 +154,13 @@ not promises about the eventual activation baseline:
 - General Markdown-to-JSON migration is unnecessary to this outcome. The
   browser consumes data and operations supplied by the appropriate owners.
 
-## Open Design Choices And Activation Gate
+## Open Design Choices
 
-The `owner:shared-board-activation` blocker remains until the owner chooses to
-activate this post-v4 capability. Before activation, settle and record:
+Settle and record each within the slice that needs it:
 
-- The first deployable slice and hosting/access boundary: local-only versus a
-  remotely accessible self-hosted service. No framework or database is selected.
+- The hosting/access boundary of the finished board: the Grill Board is
+  local-only today; whether the destination stays local or becomes a remotely
+  accessible self-hosted service is open. No framework or database is selected.
 - Mixed-view grouping and interaction rules, especially the meaning of a drag
   for cards with fractional understanding progress.
 - The durable owner, identity/revision references, attribution and disposition
@@ -126,7 +176,8 @@ policies. Resolve them within the existing owners before adding executable work.
 
 ## Non-Goals
 
-- Any v4 work, v4 release gate, activation, Task creation or implementation now.
+- Task creation or implementation in this Map pass.
+- A second board beside the Grill Board.
 - Replacing Taskboard or Tracker sources with a new authoritative mega-board.
 - Flattening execution and understanding into one lifecycle or one percentage.
 - A general Wiki/dictionary website, Lexicon migration, new scheduler, automatic
@@ -141,15 +192,18 @@ At activation, consume the verified seams of Generated JSON Taskboard
 [Landmark Records](../S-002A-landmark-records/SPEC.md), and the then-current
 identity and lifecycle tools. These are architectural relationships, not an
 assertion that every owning Spec must reach owner closure before a bounded
-browser slice can be planned. Do not add this Spec to their dependencies or
-to [Workbench v4.0.0 Release](../S-00O-workbench-v4-0-0-release/SPEC.md).
+browser slice can be planned. Do not add this Spec to their dependencies. No
+release is assigned; this record does not add it to
+[Workbench v4.0.0 Release](../S-00O-workbench-v4-0-0-release/SPEC.md).
 
 ## Vertical Implementation Slices
 
-No Tasks are cut. At owner-authorized activation, plan the smallest useful
-vertical slice from live Actuality. A read-only mixed-card browser is a candidate
-first slice; durable discussion and validated updates follow only through
-explicitly scoped Tasks. This sequence is a proposal, not an assignment.
+No Tasks are cut. The Grill Board is the delivered first slice, built outside
+a claimed Task. At activation, cut the next slices from live Actuality along
+the "Not yet" and "Partly" rows above, growing the Grill Board rather than
+starting a new page; for example, live Taskboard and Tracker cards with their
+distinct dimensions, then discussion attached to artifact identities. This
+sequence is a proposal, not an assignment.
 
 ## Acceptance Criteria
 
@@ -180,8 +234,10 @@ The applicable full suite and owner evaluation remain future delivery gates.
 
 ## Documentation Impact
 
-This planning change adds the Spec and a future-work link in the existing
-Landmark Tracker Wiki article, then regenerates catalog/board projections.
+The 2026-10-02 planning change added the Spec and a link in the Landmark
+Tracker Wiki article. The 2026-10-04 remap links this Spec and the
+[Grill Board procedure](../../grill-board/README.md) both ways and updates that
+Wiki article.
 Generic templates and runtime are unchanged because no harness behavior or
 portable contract is being delivered. At implementation, maintain the existing
 operation owners, add browser usage/recovery instructions and update the Wiki
@@ -194,3 +250,4 @@ with verified capability and limits. No general documentation migration is in sc
 | 2026-10-02 | Owner requested post-v4 backlog capture | Accepted shared-board direction from this conversation; explicitly outside v4. Planned only, no Tasks, implementation or release assignment. |
 | 2026-10-02 | Pinned preflight | Base f6af4c339b543988a3212b1940581157f573818d; doctor has no blocking findings. Self-drift pre receipt reports cleanUpdate=false; existing drift remains outside this planning scope. Dated source investigation and focused results are recorded above, not website verification. |
 | 2026-10-02 | Planning validation | Render succeeded; doctor had no blocking findings; whole-Wiki validation returned no findings; diff whitespace check passed. Pre/post self-drift retained the same seven findings (one stale claim, five historical seed limitations, one provenance limitation), cleanUpdate=false. Manual read-back confirmed planned state, explicit v4 exclusion, no Tasks and unchanged runtime/templates/release owner. Existing unrelated drift is not repaired or claimed clean. |
+| 2026-10-04 | Owner answer; remapped from the Grill Board | Owner, 2026-10-04: "No the shared board is the grilling board. that is good to know that there was a spec for that." and "Hold on, so that shared board spec is what the grilling board is supposed to turn into". `owner:shared-board-activation` cleared; v4 exclusion and future-intent-only wording removed; release unassigned. Grill Board read at 46ad9789 (tool, README, items.json: 180 items) and `node tools/test-grill-board.mjs` 16/16; Desired Behavior mapped to partly delivered or not yet. Status stays planned: no Task is cut and the Grill Board was built outside a claimed Task. Grill Board item GB-0017 withdrawn as answered here. Map only; no code. |

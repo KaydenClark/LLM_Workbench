@@ -5,11 +5,11 @@
 **Priority:** 1
 **Owner:** DISPATCHER
 **Stance:** Builder
-**Updated:** 2026-09-26
-**Catalog description:** Reconcile the v4 build scope and delivery proof: WBID, JSON Taskboard, workflow controls, direct Blueprint Tasks and feature capture, followed by the preserved Template upgrade gate and full WF-11 project cycle.
-**Blockers:** Release execution remains blocked on the expanded build scope and delivery-versus-closure reconciliation. S-01W/S-01X are owned by Lane I and deliver identity then board; direct-Task ownership remains a proposal. No version bump or downstream update is authorized by the current planning assignment.
-**Latest event:** Lane I rebuilt the 2026-09-26 planning candidate on integration 1a6f6e0, renumbering its identity and board Specs to S-01W and S-01X. No release Task is claimed or completed.
-**Next gate:** Deliver remaining workflow and identity/board proof plus the linked GitHub Coordination capabilities and reviewed claim cutover. Release Tasks retain their S-00P blockers; version, Template, owner QA and main gates remain open.
+**Updated:** 2026-10-04
+**Catalog description:** Reconcile the v4 build scope and delivery proof: WBID, JSON Taskboard, workflow controls, GitHub coordination, direct Blueprint Tasks and feature capture, followed by the Template upgrade gate, the Puffer Pond release proof and the owner's main-readiness acts.
+**Blockers:** Release execution waits on agent-owned v4 build delivery (see Current release state — 2026-10-04): the remaining build Specs, the GitHub Coordination package (S-003P active; S-003Q to S-003V planned with no Tasks), a direct Blueprint Task owner the Director still has to allocate, the integration target binding carried into S-00J, and the release-proof Spec S-004I. Release direction is settled; the open owner decisions this record depends on are GitHub Projects (Grill Board GB-0023), claim-mechanism coexistence (GB-0025) and the release-proof decision record's verb-list correction (GB-0026). The PC test is an owner act at main readiness, never a blocker.
+**Latest event:** 2026-10-04: the v3 release records S-014, S-022, S-050 and S-054 were superseded, S-052 TK-004 moved into the owner's PC test at v4 main readiness, and this Spec's remaining work was restated against live evidence.
+**Next gate:** Agents deliver the remaining v4 build Specs and the S-004I release proof, then run TK-001 (build delivery and self-drift check). Owner acts come last: Human QA approvals, the PC test and main promotion in both repositories.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -97,8 +97,103 @@ At the pre anchor:
    pilots are supporting evidence only.
 5. The release receipt distinguishes readiness from publication. Main
    promotion stays owner-only in both repositories.
+6. Before release, an Automated Review judges the Workbench as a whole
+   against its Blueprint and decision records: the Review at the destination's
+   largest scale, after the Spec and landmark Reviews. The owner, 2026-10-05:
+   "When we do the automated review for version 4, it would be against the
+   whole workbench." It is not built: no procedure or tooling for it exists
+   yet, and this Spec owns specifying it.
 
 ## Decisions And Contracts
+
+### Current release state — 2026-10-04
+
+Read against integration `46ad978956a74a3ee1bda22c36eb16207dcd98fd` and rechecked
+after merging integration `145ab2f9555dfbd77e14739ab7150036d72ba962`, the
+[destination ledger](../../sessions/grilling-destination-audit-ledger.json), the
+destination decision records DDR-000A to DDR-000Y in `workbench/docs/ddr/`,
+the Grill Board and the owner's own messages. It replaces the 2026-09-26
+blocker wording; the reconciliation entries below remain as history.
+
+**Direction is settled.** The owner has answered over 350 questions on the
+version 4 direction (more than 100 on 2026-10-03 alone) and said on
+2026-10-04 that "we are working on version 4 right now". This Spec needs no
+"release direction" from him. The v3 line is closed: v3.2.0 is on `main`
+(owner merge PR #86, 2026-09-09) and the superseded records
+[S-014](../S-014-workbench-release-candidate/SPEC.md),
+[S-022](../S-022-llm-workbench-v3-1-release/SPEC.md),
+[S-050](../S-050-workbench-v3-2-0-release/SPEC.md) and
+[S-054](../S-054-v3-2-1-review-boundary-integrity/SPEC.md) each say why in
+their own Why Retired section. `v4.0.0` is this Spec's working label for the
+stamp; the owner speaks of "version 4" and has not asked for another label,
+so TK-002 stamps `v4.0.0` without an owner question.
+
+**Agent work that remains**, each with its owner:
+
+| Item | Owner | State on integration |
+|---|---|---|
+| Workflow Canon controls | [S-00P](../S-00P-workflow-canon-rework/SPEC.md), codex-s00p-dispatcher | Fresh whole-Spec PASS recorded; final containment of the administrative PR head remains before its integration delivery is closed out. |
+| Uppercase width-four IDs | [S-01W](../S-01W-uppercase-width-four-workbench-artifact-ids/SPEC.md), claude-lane-I | Reviewed integration delivery (PR #272, `de3d9c84`); only owner Human QA, main and `complete` remain. |
+| Generated JSON Taskboard | [S-01X](../S-01X-generated-json-taskboard/SPEC.md), codex-s01x-stage2 | TK-004N closeout delta review; the GitHub composition extension waits on the S-003Q Issue graph and S-003S operational seams; direct-Task coverage waits on the direct-Task owner. |
+| Retirement lifecycle and feature capture | [S-00I](../S-00I-folder-lifecycle-for-records/SPEC.md), codex-close-directory-recovery | Tasks done, including TK-01U (the `features` Wiki collection, and retirement refuses a Spec without a captured feature article) and TK-01V (the continuous closure-capture demonstration). Acceptance and completion result to confirm. Each Spec's own capture happens at its closure after main verification ([DDR-000M](../../docs/ddr/000M-working-artifacts-are-scaffolding-cleared-away-once-their-knowledge-is-kept.md)). |
+| Spec QA gate | [S-00J](../S-00J-spec-qa-gate-at-integration/SPEC.md), codex-v4-verdict | Integration target binding carried in from S-054 on 2026-10-04 needs a Task; separate close and corrective-batch recovery (draft PR #257) remain its engineering work. |
+| GitHub Coordination package | [S-003P](../S-003P-github-coordination-room-binding-and-identity/SPEC.md) (codex-github-binding) to [S-003V](../S-003V-github-coordination-claim-authority-cutover/SPEC.md) | S-003P active with its first binding slices closed; S-003Q to S-003V planned with no Tasks, cut in the dependency order of the table above, with the claim cutover last. The owner settled the actor policy, Issue write floor and per-item claim authority on 2026-10-02. |
+| Direct Blueprint Tasks | Director: allocate the successor the [ownership proposal](direct-blueprint-task-proposal.md) names | In v4: ledger E-3 ("Not every Task has to belong to a Spec") and E-9 (home `workbench/tasks/TK-XXXX/TASK.md`), and ADR-000U lets Tasks sit directly under a landmark. No owning Spec exists and `workbench/tasks/` does not exist yet. Allocating the owner is a Director disposition, not an owner question. |
+| Template Upgrade Release Gate | This Spec, TK-003 | Unchanged procedure; the five update-tool gaps recorded under TK-003 still need an owning delivery or a named limit. [S-01N](../S-01N-update-harness-skill-rebuild/SPEC.md) (update-harness skill rebuild) is planned and unassigned. |
+| Release proof (Puffer Pond) | [S-004I](../S-004I-template-release-proof-puffer-pond/SPEC.md), unassigned | [DDR-000Q](../../docs/ddr/000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md) (locked 2026-10-03): the Template, updated to the release and deployed in the cloud, builds Puffer Pond from a prewritten grill-me-and-genesis script in one pass. S-004I's cloud form, script content and build landing are its own Plan items. |
+| Every other v4 Spec | Each Spec's named owner | The owner's WF-12 answer is "I want every spec completed before we call this done". At integration 145ab2f9 plus this change, 55 Specs are active and 47 planned (the Taskboard and `CATALOG.md` project them); TK-001 checks which are v4 scope, since anything outside v4 went to the backlog (ledger E-4A). |
+| Integration target binding | S-00J (above) | Open requirement carried from S-054, not yet delivered: review evidence must name the expected integration tip and the merge path must refuse a moved tip. S-00J has no Task for it yet. |
+
+**How the release proof relates to the Template gate and WF-11.** DDR-000Q
+leaves this relationship to the release-proof Spec to state. It is stated here
+as an agent reading of owner-locked sources, not a new owner answer: the
+Template Upgrade Release Gate (TK-003) produces the release-updated Template,
+and the S-004I Puffer Pond run on that Template is the full cycle on "another
+workbench" that the WF-11 answer requires. This Spec already defaulted the
+WF-11 target to the Template unless the owner named another, and DDR-000Q
+names the Template. TK-004 is therefore carried out by S-004I's proof.
+
+**Owner decisions still open that this record depends on.** Searched the
+ledger, DDRs, Grill Board answers and the owner's messages; no answer exists
+for these three, and all three are already on the Grill Board:
+
+- Is GitHub Projects a mandatory v4 requirement (GB-0023)? His 2026-10-02 words
+  ("Yes please on the github issues and projects") were read once as "Projects
+  optional", and a separate review rejected that reading.
+- May the remote-tip claim and the Issue claim coexist for different items
+  during the transition (GB-0025)? He set claim authority per item of work on
+  2026-10-02, but did not answer coexistence.
+- Does he confirm correcting the release-proof decision record
+  ([DDR-000Q](../../docs/ddr/000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md))
+  so its verb list matches the open verb set and the Journey correction he
+  confirmed on 2026-10-03 (GB-0026, raised by S-004G)? DDRs are
+  owner-confirmed, so the S-004I proof plan reads the stale verbs until he
+  answers.
+
+The other open owner-decision items on the Grill Board (16 at integration
+5361417d plus this change)
+belong to their own Specs and gate those Specs, not this record directly; the
+board's `pending` list is their live view.
+
+**Owner acts by Contract**, not blockers and not questions:
+
+- Human QA approval of each delivered Spec on `integration` (the Grill Board
+  carries the approve items, for example GB-0105 for S-00P and GB-0108 for
+  S-01W), and of this Spec's own receipt before `complete`.
+- Approve on the Puffer Pond result, the owner's only step in the DDR-000Q
+  release proof.
+- The Windows PC deployment test, which he runs himself once when agents judge
+  `integration` ready for `main`
+  ([PC test at main readiness](../../wiki/pc-test-at-main-readiness.md)). It
+  includes [Private Session Transport — S-052](../S-052-private-session-transport/SPEC.md)
+  TK-004, the real Mac/Windows Claude/Codex continuation. Never list it as a
+  blocker.
+- Promotion of `integration` to `main` in LLM_Workbench and in
+  Workbench_Template.
+
+Spec-branch tooling stays outside this rollout under exemption 2 (directive-018;
+ROLE-4 preserved the exception on 2026-09-27); the branch-relationship design
+card on the Grill Board (GB-0085) does not gate this release.
 
 ### Audience for v4 - 2026-10-02
 
@@ -110,7 +205,7 @@ use the owner's own GitHub account, and no multi-user trust model is built.
 ### Current release planning reconciliation — 2026-09-26
 
 Source comparison is pinned to `89d4042fb8931b9d720af75bffea1c28803d72aa`:
-the [destination ledger](../../wiki/grilling-destination-audit-ledger.json)
+the [destination ledger](../../sessions/grilling-destination-audit-ledger.json)
 entries E-6, E-7, E-8, E-9 and TT-Q10, and the retired
 [Task Artifact Spec](../retired/S-00H-task-artifact-and-terminology-migration/SPEC.md)
 including its 2026-09-17 TT-Q10 evidence. The Current Verified State above is
@@ -184,13 +279,18 @@ surface. The reworked Blueprint describes the nested topology as the intended
 destination; a later Spec derived from it delivers the tooling and ends this
 exemption.
 
-**Retained during the exemptions.** The `AGENTS.md` integration gate stays in
-force: every PR into `integration` gets a separate-context review of its
-immutable candidate before merge, and a new candidate needs a fresh review.
-This is the current Contract's rule for the `integration` boundary, not the
-per-Task review ceremony WF-8B rejected; it applies because the merge target
-is `integration`, and it is what makes exemption 2 safe. The Template Upgrade
-Release Gate runs before any tag. Owner-only `main` promotion is unchanged.
+**Retained during the exemptions.** The Template Upgrade Release Gate runs
+before any tag. Owner-only `main` promotion is unchanged.
+
+**Owner change, 2026-10-05: no per-PR review.** This paragraph used to retain a
+separate-context review of every PR into `integration`. The owner withdrew it:
+each Task PR into `integration` now carries its two merge answers (can it merge
+into the branch it targets, and did it complete the Task or is more needed),
+validated by the Spec's Dispatcher, Director or next agent, and separate-context
+review runs once per assembled candidate at the Spec's Verify step, by a fresh
+context of the provider the session runs on. Exemption 2 still decides where a
+Task lands; it no longer decides how a Task is judged. `AGENTS.md` Git Rules
+own the rule ([Task Merge Answers And Verify Review](../../../AGENTS.md#task-merge-answers-and-verify-review)).
 
 ### Integration decision and progress reconciliation
 
@@ -220,8 +320,9 @@ implementation gate is satisfied. Planning does not authorize a version bump.
 | Generated six-lane `TASKBOARD.json`, shared lane derivation and consumers | [Generated JSON Taskboard — S-01X](../S-01X-generated-json-taskboard/SPEC.md) | S-01W delivery; direct-Task seam coordinated | Reproducible JSON board and consumer proof |
 | Retirement lifecycle by folder, reconciliation into durable owners, verified discard | [S-00I](../S-00I-folder-lifecycle-for-records/SPEC.md) | S-00H delivered; coordinate QA/capture work | Reviewed delivery plus separately tracked main/capture closure |
 | Assembled-Spec review, corrective-Task return path, owner QA and closure binding | [S-00J](../S-00J-spec-qa-gate-at-integration/SPEC.md) | S-00H delivered; coordinate lifecycle/ownership | Reviewed delivery plus separately tracked owner QA/closure |
-| Direct Blueprint Task home, reader, lifecycle and role chain | Artifact-model capability proposed; Director disposition needed | WBID; coordinated S-00G/J/I/P and board seams | Small direct Task demonstrated without parent Spec |
-| Feature capture before transient-record cleanup | S-00I proposal, coordinated with S-00J and S-00G | Feature schema/owner and main-verification proof | Continuous capture, retirement, discard and recovery proof |
+| Direct Blueprint Task home, reader, lifecycle and role chain | Successor Spec the Director allocates from the ownership proposal (2026-10-04: still unallocated) | WBID; coordinated S-00G/J/I/P and board seams | Small direct Task demonstrated without parent Spec |
+| Feature capture before transient-record cleanup | [S-00I](../S-00I-folder-lifecycle-for-records/SPEC.md) TK-01U/TK-01V (delivered on integration), coordinated with S-00J and S-00G | Main verification before each Spec's capture | Continuous capture, retirement, discard and recovery proof |
+| Release proof: the Template builds Puffer Pond in one pass | [S-004I](../S-004I-template-release-proof-puffer-pond/SPEC.md) | TK-003 Template gate | DDR-000Q proof recorded, carrying TK-004's WF-11 cycle |
 | AGENTS, RUNBOOK, LEXICON and `templates/` rewrite; ADR-000F, ADR-000G and ADR-000I reconciled | S-00P TK-002 onward | WBID then board; delivered S-00H/I/J mechanics; ownership coordination | Reviewed integration delivery; closure tracked separately |
 | v4.0.0 stamp, Template gate, WF-11 cycle, release receipt | This Spec | Expanded map, S-00P and resolved closure mechanics | Readiness verdict, then separately authorized publication |
 
@@ -292,7 +393,11 @@ shared-logic Tasks that change `next`, `claim`, `doctor` or the Spec QA gate;
 the reviewer never uses the builder's model. This guides who is dispatched and
 decides nothing about the product. For this assignment the Director instead
 specifies Sol for ordinary implementation, Luna for small deterministic checks
-and Astra for ambiguous contracts or consequential reviews.
+and Astra for ambiguous contracts or consequential reviews. Superseded for
+reviews by the owner's confirmed rule of 2026-10-05: the reviewer runs on the
+same model provider as the session unless the owner specifies otherwise, with
+the most capable model reasonable for the work, and "never the builder's model"
+is no longer a rule ([Task Merge Answers And Verify Review](../../../AGENTS.md#task-merge-answers-and-verify-review)).
 
 ## Non-Goals
 
@@ -313,15 +418,18 @@ delivery-versus-closure repair in S-00P/I/J. Do not use their administrative
 `complete` state as a substitute for verified delivered behavior, or bypass the
 existing runtime gate. The legacy Task edges below remain conservative until
 that shared mechanism is reconciled; this planning pass claims no release Task. The
-WF-11 cycle needs a target workbench the owner names before TK-004 is claimed;
-the Template updated by TK-003 is the default candidate unless the owner names
-another.
+WF-11 cycle runs on the Template updated by TK-003 (the default this Spec set,
+and the workbench DDR-000Q names); since 2026-10-04 it is carried out by the
+S-004I Puffer Pond proof. TK-001 waits on S-00P's reviewed integration delivery
+(`S-00P:delivered`), not its final `complete`: final completion needs main
+verification, and main promotion follows this release, so a plain `S-00P`
+blocker would be a cycle.
 
 ## Vertical Implementation Slices
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Verify expanded build delivery and run the bounded self-drift check | ready | S-00P | Red: required capability delivery proof is missing, or current-facing records misstate remaining work; green: the expanded capability map has reviewed integration proof and the RUNBOOK self-drift check is recorded without bypassing unresolved closure mechanics |
+| TK-001 | Verify expanded build delivery and run the bounded self-drift check | ready | S-00P:delivered | Red: required capability delivery proof is missing, or current-facing records misstate remaining work; green: the expanded capability map has reviewed integration proof and the RUNBOOK self-drift check is recorded without bypassing unresolved closure mechanics |
 | TK-002 | Stamp v4.0.0 and validate the stamp | blocked | TK-001 | Red: a stamp check fails while the manifest says v4.0.0 and a control stamp, template stamp or managed runtime receipt still says v3.2.1; green: every stamp names v4.0.0 and the full suite passes |
 | TK-003 | Pass the Template Upgrade Release Gate against Workbench_Template | blocked | TK-002 | Red: `tools/workbench-tools.mjs verify --project TEMPLATE_ROOT` from the pinned v4.0.0 source reports a version or managed-hash mismatch before the update; green: matching versions and exact managed bytes, Template full suite, separate-context review, merge into its integration branch, remote containment and fresh-clone rerun recorded |
 | TK-004 | Run one full WF-11 cycle on another workbench | blocked | TK-003 | Red: the cycle stalls at any rung; green: create or update, grilling, contract and Specs, Tasks created and executed through `next` and `claim`, Spec verified and on that workbench's integration branch for owner review, with pass or fail evidence per rung |
@@ -394,9 +502,10 @@ release receipt as a known limit.
 
 **Stance:** Builder
 
-The owner names the target workbench before this slice is claimed; the
-Template updated by TK-003 is the default candidate. Do not select a private
-project without a separate user request. Run the whole cycle from decision-077:
+Since 2026-10-04 the target is the Template updated by TK-003, and the cycle is
+the [S-004I](../S-004I-template-release-proof-puffer-pond/SPEC.md) Puffer Pond
+proof (DDR-000Q); this slice records that proof's result rung by rung. Do not
+select a private project without a separate user request. Run the whole cycle from decision-077:
 LLM_Workbench creates or updates the workbench, a grilling session runs, the
 contract and Specs are created or updated, Tasks are created and executed
 through `next` and `claim`, and the Spec is verified and on that workbench's
@@ -429,6 +538,7 @@ verdict on the receipt candidate and an owner Human QA approval naming the
 - [ ] One full WF-11 cycle on another workbench is recorded rung by rung with the Spec verified and on that workbench's integration branch for owner review.
 - [ ] TT-Q10 remains recorded as settled (`TK` is the Task prefix), E-8's later width/alphabet requirements retain their separate lineage, and no artifact in the release promotes the correction-019 shorthand.
 - [ ] The release receipt distinguishes readiness from publication and names what it does not authorize.
+- [ ] An Automated Review of the Workbench as a whole against its Blueprint and decision records ran before release, and its findings went back through Map, Plan and Journey.
 
 ## Testing Seams
 
@@ -482,12 +592,17 @@ workflow is owned by S-00P, not here.
 | 2026-09-27 | none | Verify role groundwork and decision reconciliation candidate b010449977348922159ef984ffe4d66a02f66e7c | All 48 AGENTS commands passed with clean unchanged HEAD; independent full-candidate review PASS; post self-drift retains seven baseline findings and guardrail78 | INTEGRATION-RECONCILIATION.md records method, source pins and limitations; evidence rows placed under Evidence Log | No runtime delivery, exhaustive historical assessment, clean-update or Human QA approval claim; final evidence candidate review and landing PR establish integration delivery |
 
 | 2026-10-02 | none | Owner decisions recorded: single-owner v4 audience; GitHub trusted actor policy, write floor and per-item claim authority carried into the GitHub coordination capability Specs and the proposed decision record | Promotion only; no runtime proof claimed | This Spec, the GitHub coordination Specs named, the proposed GitHub coordination decision record and the GitHub Coordination Wiki article | Structured-record fields and validation undefined; coexistence of both claim mechanisms for different items undecided; the Projects requirement is still open |
+| 2026-10-04 | spec | Remaining v4 release work restated against live evidence; v3 release records superseded | Read at integration 46ad978: ledger (E-3, E-4A, E-9, WF-11, WF-12, CAND-N, FND-Q16), DDR-000M/000P/000Q, Grill Board items and answers, dependency Spec headers and Task states, owner messages of 2026-09-23 and 2026-10-04; render and doctor on the committed candidate | Header, new Current release state section, capability map rows, Dependencies, TK-001 blocker (`S-00P:delivered`) and TK-004 target reconciled; S-014, S-022, S-050 and S-054 superseded; S-052 TK-004 moved into the owner PC test | Build delivery, the direct-Task owner allocation, S-004I, the Template gate and owner acts remain; open owner decisions GB-0023 and GB-0025 |
+| 2026-10-04 | spec | Workbench self-drift pre/post for the v3 release retirement | `self-drift.mjs --phase pre` at integration 46ad978 and `--phase post` at candidate 42353d9 report the same seven baseline findings (one stale-claim, five stale-seed, one unverified-provenance; machineResult blocked, cleanUpdate false); the hot board no longer projects S-014, S-022 or S-050, and S-052 no longer shows a blocker | Bounded manual check found current-facing drift outside this change's writers: RUNBOOK Composed round trip section still calls the real cross-provider resume S-022's release gate (RUNBOOK is held by the S-004C lane); S-00N disposition rows and S-00Q TK-0Q8 still route S-050 TK-006 and S-014/S-022 disposition as open; ledger BPR-7/7A/7B1 dated readings still say S-050 is open | Not a clean update: the drift named here belongs to its owners' writers |
+| 2026-10-04 | spec | Review correction: open owner decisions now include the release-proof verb-list correction (GB-0026) | Separate-context review of f0f9169 (Codex gpt-5.5, read-only) FAIL, one Medium: the current-state section named only GB-0023 and GB-0025 while GB-0026 is open and release-proof related; Grill Board read at the candidate shows 20 open owner-decision items | Header Blockers and the Current release state owner-decision list name GB-0023, GB-0025 and GB-0026 and scope the other 17 to their own Specs | Fresh separate-context review of the corrected candidate |
+| 2026-10-04 | spec | Review correction: the integration target binding row reads as an open requirement, not delivered behavior | Separate-context review of 2cf10bf (Codex gpt-5.5, read-only) FAIL, one Medium: the S-00O row stated the S-054 binding as present while S-054 and S-00J record it undelivered; all other checks passed | The Current release state row now says the requirement is open in S-00J with no Task | Fresh separate-context review of the corrected candidate |
+| 2026-10-05 | spec | Owner-confirmed readback adds the whole-Workbench Automated Review to the release destination (Desired Behavior 6 and its acceptance box) | Owner confirmed after readback in chat, 2026-10-05; grilling note review-timing-and-codex-spend-2026-10-05 decision for question 1 | Docs: this Spec; the Automated review dictionary page names it unbuilt | No procedure or tooling for a whole-Workbench Review exists |
 
 ## Completion Result
 
-Release pending. The September 26 planning increment provides S-01W/S-01X
-capability owners and the linked direct-Task ownership proposal. Their runtime
-acceptance remains open; this is not a version stamp or readiness verdict.
+Release pending. The remaining agent work, open owner decisions and owner acts
+are listed under Current release state — 2026-10-04. This is not a version
+stamp or readiness verdict.
 
 ## Remaining Limitations Or Follow-Up Specs
 

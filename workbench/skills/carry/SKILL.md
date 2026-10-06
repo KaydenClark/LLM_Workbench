@@ -60,15 +60,16 @@ invocation of `carry` moves it.
 Do not stop short of that endpoint and report progress as completion. Stopping
 before an already-authorized step is the failure this skill exists to remove.
 
-That endpoint still has one gate `carry` cannot supply for itself. `AGENTS.md` Git Rules requires a separate-context review before branches combine into the integration branch, and self-review alone never satisfies it.
-At integration that review is of the assembled Spec, obtained with `report S-### --candidate <sha>` and bound to its content digest, recorded with `verdict`; while the room's Task-PR exemption holds (exemption 2 of its release Spec, which lands each Task as its own PR), each Task still lands as its own PR reviewed as an immutable candidate against exact `BASE_SHA` and `HEAD_SHA`, reported by `gate --task TK-### --spec S-###`.
-A green suite and your own reading are not a PASS. Where no separate context is available to review the candidate, that is an **Unavailable resource** under section 4 - a reason to stop and say so, never a reason to merge.
+A Task merge needs no separate-context review: write its two merge answers
+(`/implement` section 4) in the merge request, and the Spec's Dispatcher,
+Director or next agent validates them. The assembled Spec at its Verify step has one gate `carry` cannot supply for itself. `AGENTS.md` Git Rules requires a separate-context review of the assembled Spec, obtained with `report S-### --candidate <sha>` and bound to its content digest, recorded with `verdict`, and self-review alone never satisfies it.
+A green suite and your own reading are not a PASS. Where no separate context of the session's own provider is available to review the candidate, that is an **Unavailable resource** under section 4 - a reason to stop and say so, never a reason to merge and never a reason to use another provider the owner did not ask for.
 
 ## 3. Run it
 
 Execute through the existing contracts: `/implement` for a task's red/green
 loop, `/tracer-bullet` when the slice needs cutting, `/to-docs` for changed
-truth, `/code-review` for the separate-context gate before integration, and
+truth, `/code-review` for the separate-context review at a Spec's Verify step, and
 `/save` for persistence and the proven recovery boundary. Use the stance the
 SPEC and TASK assign.
 

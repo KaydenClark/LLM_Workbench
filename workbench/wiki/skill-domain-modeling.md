@@ -7,26 +7,27 @@ provenance:
   - Owner-directed Domain Modeling comparison and article, 2026-09-29
   - Matt Pocock public skill and AI Hero guide, retrieved 2026-09-29
 source_paths:
+  - workbench/specs/S-004J-required-domain-modeling-skill/SPEC.md
   - workbench/specs/S-002H-domain-modeling-skill/SPEC.md
   - skills-pending/domain-modeling/SKILL.md
   - workbench/skills/README.md
   - workbench/skills/grilling/SKILL.md
   - LEXICON.md
   - AGENTS.md
-last_verified: 2026-09-29
+last_verified: 2026-10-04
 ---
 
 # Domain Modeling: sharpen the Workbench's language as decisions form
 
 Domain modeling is the active practice of noticing when the words in a design conversation hide two meanings, a missing boundary, or a contradiction with the product. The agent challenges the wording while the decision is being made, uses a concrete scenario to test it, and routes the supported result to its proper owner. Looking up an established term in [LEXICON.md](../../LEXICON.md) is ordinary orientation; it does not need this skill.
 
-**Current status:** the Workbench does not ship domain-modeling in its required skills lane. [Grilling](../skills/grilling/SKILL.md) mentions it as an optional companion, and the older [pending source](../../skills-pending/domain-modeling/SKILL.md) is preserved outside discovery. A personal installed adaptation was inspected read-only on 2026-09-29. Its presence does not show that another room can invoke it. [Domain Modeling Skill for the Workbench - S-002H](../specs/S-002H-domain-modeling-skill/SPEC.md) plans delivery and keeps the distribution choice open. This article explains the method and the desired local adaptation; it is not an instruction to edit Canon.
+**Current status:** the Workbench does not ship domain-modeling in its required skills lane. [Grilling](../skills/grilling/SKILL.md) mentions it as an optional companion, and the older [pending source](../../skills-pending/domain-modeling/SKILL.md) is preserved outside discovery. A personal installed adaptation was inspected read-only on 2026-09-29. Its presence does not show that another room can invoke it. The owner settled on 2026-09-29 that domain modeling is a required Workbench skill, used during grilling to see the downstream consequences of a name or boundary while the choice is still upstream. [Required Domain Modeling Skill - S-004J](../specs/S-004J-required-domain-modeling-skill/SPEC.md) now maps its delivery into every room's skills lane; it replaced the superseded [Domain Modeling Skill for the Workbench - S-002H](../specs/S-002H-domain-modeling-skill/SPEC.md) on 2026-10-04, whose Why Retired section gives the reasons. Where the sections below name S-002H (Domain Modeling Skill for the Workbench Spec)'s plan, read them as that superseded plan: in particular, S-004J (Required Domain Modeling Skill Spec) writes no Canon inline from a modeling conversation (settled meaning moves through promotion) and offers an ADR or a DDR by scope. S-004J (Required Domain Modeling Skill Spec)'s delivery reconciles this article. It is not an instruction to edit Canon.
 
 ## Goal, place in the workflow, and shape
 
 The goal is a shared domain model precise enough that an owner, agent, reviewer and future reader mean the same thing by a consequential term. The useful output is often one corrected sentence in a conversation, one settled definition, or no new document. A qualifying architectural tradeoff may also produce an ADR.
 
-This is a **candidate reference Primitive**, not a stance or a workflow entry that launches another agent. It can be invoked directly when terminology is the problem. During [grilling](skill-grilling.md), it challenges a concept without taking over the interview or its one-question, pending-readback rhythm. During [to-spec](skill-to-spec.md), it tests names and boundaries so acceptance refers to the right concept. During delivery or review, it checks whether implementation and accepted language still agree. Composition inherits the caller's authority and endpoint. The current Workbench treats the reference as optional; S-002H does not silently make it required.
+This is a **candidate reference Primitive**, not a stance or a workflow entry that launches another agent. It can be invoked directly when terminology is the problem. During [grilling](skill-grilling.md), it challenges a concept without taking over the interview or its one-question, pending-readback rhythm. During [to-spec](skill-to-spec.md), it tests names and boundaries so acceptance refers to the right concept. During delivery or review, it checks whether implementation and accepted language still agree. Composition inherits the caller's authority and endpoint. The current lane does not yet ship it; S-004J (Required Domain Modeling Skill Spec) delivers it as a required room skill that grilling still completes without.
 
 | Situation | Modeling move | Durable destination, if any |
 |---|---|---|
@@ -63,7 +64,7 @@ The agent checks the relevant accepted owner and live source before claiming how
 
 ## Lexicon discipline and ADR threshold
 
-Matt's current public source uses GLOSSARY.md and, for several contexts, a GLOSSARY-MAP.md. The repository's [preserved earlier source](../../skills-pending/domain-modeling/CONTEXT-FORMAT.md) uses CONTEXT.md and CONTEXT-MAP.md. Both formats favor short definitions, explicit avoided synonyms, and terms specific to the domain. The Workbench already has a root Lexicon that combines accepted terminology with ownership and navigation. S-002H proposes the same concise term discipline inside that owner, without adding a parallel file or erasing the router. Avoid glossary growth into a specification, implementation diary, or scratch pad.
+Matt's current public source uses GLOSSARY.md and, for several contexts, a GLOSSARY-MAP.md. The repository's [preserved earlier source](../../skills-pending/domain-modeling/CONTEXT-FORMAT.md) uses CONTEXT.md and CONTEXT-MAP.md. Both formats favor short definitions, explicit avoided synonyms, and terms specific to the domain. The Workbench already has a root Lexicon that combines accepted terminology with ownership and navigation. S-002H (Domain Modeling Skill for the Workbench Spec) proposes the same concise term discipline inside that owner, without adding a parallel file or erasing the router. Avoid glossary growth into a specification, implementation diary, or scratch pad.
 
 An ADR is **offered only when all three are true**:
 
@@ -71,7 +72,7 @@ An ADR is **offered only when all three are true**:
 2. The choice would surprise a later reader without its reason.
 3. Genuine alternatives were weighed.
 
-A routine, obvious or easy-to-reverse choice stays out of the ADR collection. Matt's [ADR format](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/ADR-FORMAT.md) deliberately permits a short paragraph. The Workbench uses its own [ADR register and format](../docs/adr/REGISTER.md), active decision status, and operational owner. An ADR explains why a decision was made; the binding requirement lands in the relevant control or assigned Spec in the same authorized work. A proposed answer or a Wiki explanation cannot substitute for either.
+A routine, obvious or easy-to-reverse choice stays out of the ADR collection. Matt's [ADR format file](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/ADR-FORMAT.md) (upstream ADR format file) deliberately permits a short paragraph. The Workbench uses its own [ADR register and format](../docs/adr/REGISTER.md), active decision status, and operational owner. An ADR explains why a decision was made; the binding requirement lands in the relevant control or assigned Spec in the same authorized work. A proposed answer or a Wiki explanation cannot substitute for either.
 
 ## Authority and unresolved meaning
 
@@ -85,7 +86,7 @@ The distinction matters at three boundaries:
 
 ## Upstream comparison and local gaps
 
-The public [AI Hero guide](https://www.aihero.dev/skills-domain-modeling) and [upstream skill](https://github.com/mattpocock/skills/tree/main/skills/engineering/domain-modeling) were read on 2026-09-29. The guide reports two practical issues: automatic companion invocation is unreliable, and glossaries can absorb material that belongs elsewhere. Those are reasons to test direct invocation and composition in a fresh context, and to check that terminology entries stay lean. The public main branch is mutable; S-002H requires pinning an exact revision before implementation claims parity.
+The public [AI Hero guide](https://www.aihero.dev/skills-domain-modeling) and [upstream skill](https://github.com/mattpocock/skills/tree/main/skills/engineering/domain-modeling) were read on 2026-09-29. The guide reports two practical issues: automatic companion invocation is unreliable, and glossaries can absorb material that belongs elsewhere. Those are reasons to test direct invocation and composition in a fresh context, and to check that terminology entries stay lean. The public main branch is mutable; S-002H (Domain Modeling Skill for the Workbench Spec) requires pinning an exact revision before implementation claims parity.
 
 | Upstream behavior | Workbench disposition |
 |---|---|
@@ -97,19 +98,20 @@ The public [AI Hero guide](https://www.aihero.dev/skills-domain-modeling) and [u
 | Offer an ADR only at the three-part threshold | Preserve, using current Workbench ADR ownership and format |
 | Underlying reference used by other skills | Keep composition scoped; distribution is an open owner decision |
 
-The personal installed copy already maps much of the method to Lexicon and ADR paths. It lacks a repository-owned delivery and an exercised behavior result. The preserved pending copy is older and remains historical; its presence in Git is not a live skill. S-002H owns the supported delivery decision and proof, while [S-00R](../specs/S-00R-core-skill-lifecycle-and-optional-source-disposition/SPEC.md) owns the optional-source disposition.
+The personal installed copy already maps much of the method to Lexicon and ADR paths. It lacks a repository-owned delivery and an exercised behavior result. The preserved pending copy is older and remains historical; its presence in Git is not a live skill. S-002H (Domain Modeling Skill for the Workbench Spec) owns the supported delivery decision and proof, while [S-00R](../specs/S-00R-core-skill-lifecycle-and-optional-source-disposition/SPEC.md) owns the optional-source disposition.
 
 ## What proof would show it works
 
-S-002H asks for a fresh-context scenario in which an agent actually interrupts an overloaded term, invents a useful edge case, and cites the source behind a contradiction. Another scenario must show a grilling-only confirmation with no Canon write, followed by a separately authorized documentation request that updates the right owner during the work. The ADR cases must include each failed threshold and a qualifying choice. A skills catalog check can prove discovery links and a Wiki validator can prove route integrity; neither proves conversational judgment.
+S-002H (Domain Modeling Skill for the Workbench Spec) asks for a fresh-context scenario in which an agent actually interrupts an overloaded term, invents a useful edge case, and cites the source behind a contradiction. Another scenario must show a grilling-only confirmation with no Canon write, followed by a separately authorized documentation request that updates the right owner during the work. The ADR cases must include each failed threshold and a qualifying choice. A skills catalog check can prove discovery links and a Wiki validator can prove route integrity; neither proves conversational judgment.
 
-**Verified for this article on 2026-09-29:** the live catalog, pending source, personal copy, Lexicon, AGENTS, S-00W, and upstream public source were inspected. No redesigned skill source, agent scenario, installed-room discovery check, or owner Human QA was completed by this planning pass. Pre-existing self-drift findings are reported in the Spec rather than treated as successful update proof.
+**Verified for this article on 2026-09-29:** the live catalog, pending source, personal copy, Lexicon, AGENTS, S-00W (Concept Grilling And Notepad Composition Spec), and upstream public source were inspected. No redesigned skill source, agent scenario, installed-room discovery check, or owner Human QA was completed by this planning pass. Pre-existing self-drift findings are reported in the Spec rather than treated as successful update proof.
 
 ## Sources and history
 
-- [Delivery Spec](../specs/S-002H-domain-modeling-skill/SPEC.md), [pending source](../../skills-pending/domain-modeling/SKILL.md), and [core catalog](../skills/README.md)
+- [Delivery Spec](../specs/S-004J-required-domain-modeling-skill/SPEC.md) and its [superseded predecessor](../specs/S-002H-domain-modeling-skill/SPEC.md), [pending source](../../skills-pending/domain-modeling/SKILL.md), and [core catalog](../skills/README.md)
 - [Lexicon ownership](../../LEXICON.md#artifact-ownership-schema), [Contract](../../AGENTS.md), [Runbook behavior selection](../../RUNBOOK.md#behavior-selection), and [Wiki router](MEMORY.md)
 - [Grilling composition owner](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md), [optional-source owner](../specs/S-00R-core-skill-lifecycle-and-optional-source-disposition/SPEC.md), and [ADR register](../docs/adr/REGISTER.md)
-- [Matt Pocock's skill](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/SKILL.md), [format](https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/domain-modeling/GLOSSARY-FORMAT.md), [ADR format](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/ADR-FORMAT.md), and [AI Hero guide](https://www.aihero.dev/skills-domain-modeling)
+- [Matt Pocock's skill](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/SKILL.md), [format](https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/domain-modeling/GLOSSARY-FORMAT.md), [ADR format file](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/ADR-FORMAT.md), and [AI Hero guide](https://www.aihero.dev/skills-domain-modeling)
 
-- 2026-09-29: Created on the owner's explicit request for a Domain Modeling Wiki article and comparison. It records current availability separately from S-002H's intended behavior; no skill implementation is claimed.
+- 2026-09-29: Created on the owner's explicit request for a Domain Modeling Wiki article and comparison. It records current availability separately from S-002H (Domain Modeling Skill for the Workbench Spec)'s intended behavior; no skill implementation is claimed.
+- 2026-10-04: Status repointed to Required Domain Modeling Skill (S-004J) after S-002H (Domain Modeling Skill for the Workbench Spec) was superseded; the owner's required-skill answer recorded; body sections left as the superseded plan until S-004J (Required Domain Modeling Skill Spec) delivery reconciles them.

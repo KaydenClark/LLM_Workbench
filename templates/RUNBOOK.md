@@ -39,7 +39,8 @@ Contract change.
 | Run the Workbench runtime tools | You run doctor, selection, records, decision records or diagnostics from the installed tools lane. | [Workbench Lifecycle, Diagnostics, And Decision Records](#workbench-lifecycle-diagnostics-and-decision-records) |
 | Write or accept a decision record | A decision record (ADR or DDR) is proposed, accepted, superseded, deprecated, read, linked or validated. | [to-docs](workbench/skills/to-docs/SKILL.md#decision-records) |
 | Read a diagnostic and its blocking effect | A runtime tool reports a finding and you need its severity and what it blocks. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#diagnostics-and-blocking-effects) |
-| Validate the Wiki | A Wiki page changed, or doctor reports a Wiki finding. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#wiki-validation) |
+| Validate the Wiki | A Wiki page changed or must move to another collection, or doctor reports a Wiki finding. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#wiki-validation) |
+| Lint the Wiki | A Wiki update is ending (lint the pages it touched), or a Spec's work is verified and its review begins (lint the whole Wiki). | [Wiki Lint](#wiki-lint) |
 | Repair installed state | doctor reports installed state that a room command rewrites. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#installed-state-the-harness-wrote) |
 | Deliver a Spec through its lifecycle | You pick up, deliver, review or close an assigned Spec and its Tasks. | [Spec Lifecycle And Retrieval](#spec-lifecycle-and-retrieval) |
 | Pick, claim and close a Task | Every pickup or resume of assigned work: selection, claim, receipt, close and blocker rules. | [implement](workbench/skills/implement/SKILL.md#work-selection-and-lifecycle) |
@@ -65,7 +66,7 @@ Contract change.
 | Operate project data | The project has seed data, migrations, imports, local databases or generated feeds. | [Data Operations](#data-operations) |
 | Deploy or start services | The project has deployment, scheduled jobs or service startup. | [Deployment Or Startup](#deployment-or-startup) |
 | Branch and open a pull request | You create a task branch or open a PR into integration, or need this room's Git commands. | [implement](workbench/skills/implement/SKILL.md#version-control-procedures); this room's commands: [Version-Control Procedures](#version-control-procedures) |
-| Merge, prove containment and clean up a branch | The integration review passed: merge the reviewed candidate, prove integration contains it and delete the merged branch. | [implement](workbench/skills/implement/SKILL.md#branch-completion); this room's closeout commands: [Version-Control Procedures](#version-control-procedures) |
+| Merge, prove containment and clean up a branch | A Task's merge answers are validated, or an assembled Spec candidate's Verify review passed: merge, prove integration contains it and delete the merged branch. | [implement](workbench/skills/implement/SKILL.md#branch-completion); this room's closeout commands: [Version-Control Procedures](#version-control-procedures) |
 | Upgrade the harness | The project moves to a newer Workbench version. | [Upgrading The Harness](#upgrading-the-harness) |
 | Write a manual harness feedback report | A setup-only Round One check succeeded and an assessment is assigned. | [Manual Harness Feedback Reports](#manual-harness-feedback-reports) |
 | Troubleshoot a known failure | A command fails with a symptom listed there. | [Troubleshooting](#troubleshooting) |
@@ -74,7 +75,7 @@ Contract change.
 | Size and continue work | You size a Task or leave work a fresh context can resume. | [Evidence And Continuation Practices](#evidence-and-continuation-practices); [notepad](workbench/skills/notepad/SKILL.md#continuing-after-a-save-or-handoff); [save](workbench/skills/save/SKILL.md#evidence-partitioning); [to-tasks](workbench/skills/to-tasks/SKILL.md#sizing-a-task) |
 | Check the Workbench connection identity | The room's `workbenchId` is created, read or compared. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#workbench-connection-identity) |
 | Check configured-host capabilities | A host is set up, or its lanes, skill discovery or tool execution are in doubt. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#configured-host-capability-checks) |
-| Review a candidate independently | A candidate needs separate-context review before integration, or a main-readiness or incident-claim review is requested. | [code-review](workbench/skills/code-review/SKILL.md#independent-review-boundaries) |
+| Review a candidate independently | An assembled Spec or landmark is at its Verify step and needs separate-context review, or a main-readiness or incident-claim review is requested. | [code-review](workbench/skills/code-review/SKILL.md#independent-review-boundaries) |
 
 ## Ordinary Entry
 
@@ -149,7 +150,7 @@ authorized by ordinary language; do not wait for a second skill invocation.
 | Preserve or resume meaningful work | `notepad`; verify live state and returned revision |
 | Reconcile agreed claims | `promote` with `to-docs` and `save`; no implied implementation |
 | Write specifications only | `to-spec` and needed `to-tasks`; stop at the specified endpoint |
-| Deliver assigned work | `carry` with `implement`, verification, independent integration review and `save` |
+| Deliver assigned work | `carry` with `implement`, verification, Task merge answers, independent Verify review of the assembled Spec and `save` |
 | Transfer a job or report to another context | core `handoff`; recipient purpose, instructions and context within assigned role scope |
 | Review a candidate or readiness | `code-review`; report only, no implementation or main merge |
 
@@ -369,6 +370,59 @@ Reconcile selected supported claims into an existing durable owner with
 `sessions.mjs promote` through the procedure in the
 [`promote` skill](workbench/skills/promote/SKILL.md#command-reference).
 
+### Wiki Lint
+
+Lint is a reading job an agent performs; no command does it, and
+`node workbench/tools/wiki.mjs validate` keeps
+running on every change without replacing it. The obligation and its two
+cadences are owned by [`AGENTS.md`](AGENTS.md#documentation-ownership-and-proof)
+and [`workbench/wiki/SCHEMA.md`](workbench/wiki/SCHEMA.md#lint); this section
+is the checklist, not a second statement of them.
+
+**Small lint, at the end of every Wiki update, on the pages it touched:**
+
+1. Run `wiki.mjs validate`. The touched pages add no finding: properties,
+   collection shape, relative links and sources are the validator's, not the
+   reader's.
+2. Read each touched page against the pages it links to and the pages that
+   link to it. It contradicts none of them.
+3. Every claim still has its source. A claim checked in this operation is
+   stated plainly; an inferred claim says `Inference:`; a dated one says its
+   date. `last_verified` moved only for facts actually checked
+   ([SCHEMA Update](workbench/wiki/SCHEMA.md#update)).
+4. The router `workbench/wiki/MEMORY.md` links the page with a one-line
+   summary, and the summary still says what the page now says.
+5. Every identifier on the page carries the artifact's name and a little
+   context. Add what is missing; never strip an identifier.
+6. Each truth lives once: the page links to its owner (Spec, decision record,
+   Lexicon, Runbook) instead of restating it, and copies no live task state.
+7. No concept the page mentions lacks a page or a Lexicon row it should have.
+8. An article in `design-concepts/` or `features/` has its `History` line for
+   this operation, and a design concept's `authorized_by` names it.
+
+Repair what the update itself can fix on the same branch. A finding not
+resolved in the update becomes a corrective Task under the owning, still-open
+Spec ([SCHEMA Lint](workbench/wiki/SCHEMA.md#lint)); it is not left unrecorded.
+
+**Whole-Wiki lint, at Spec review when the Spec's work is verified:** the
+agent doing the review reads every page against the current controls and the
+question cards, asking the small-lint questions across the whole Wiki and
+these:
+
+- Does any page contradict `AGENTS.md`, the Lexicon, an active decision record
+  or the schema?
+- Is any page stale (marked `status: stale` and not repaired) or orphaned
+  (not routed from the router, or with a link or source that no longer
+  resolves)?
+- Does every delivered capability have its article in `workbench/wiki/features/`?
+- Does every router summary line still describe its page?
+- Does each landmark's synthesis page still match its question cards' current
+  answers?
+
+Each finding becomes a corrective Task under the still-open Spec, following
+the [assembled review and corrective return](workbench/skills/dispatcher/SKILL.md#assembled-review-and-corrective-return)
+rule in `AGENTS.md`; it is not cleared by a green `validate`.
+
 ## Evaluation And Benchmarking
 
 Use this section to prove whether the workbench or project process is improving.
@@ -524,7 +578,8 @@ commands and expected results here:
 
 Expected result: [clean scope, verified base/target, reviewable PR].
 
-Closeout, once the integration review has passed. A pushed branch is
+Closeout, once the Task's merge answers are validated or the Spec candidate's
+Verify review has passed. A pushed branch is
 recoverable, not delivered; finish the merge and clean up after yourself:
 
 ```bash
@@ -557,6 +612,11 @@ To upgrade:
    `v[HARNESS_VERSION]`.
 2. Re-copy only the changed template sections; keep this project's filled-in
    specifics. Never let `[BRACKETED]` placeholders leak back into filled docs.
+   Land a changed operations index only after step 3, so every row points to a
+   skill this project's lane holds; keep this project's own index rows and
+   sections, any divergence it recorded and any skill it added to the lane. The
+   control fidelity report's generation labels tell the template's changes from
+   this project's own.
 3. Update managed runtime tools only with that checkout's
    `node tools/workbench-tools.mjs update --project PATH --home HOME --explicit-update`
    and the managed core skills only with
@@ -658,8 +718,9 @@ assigned target; it never authorizes a repair or invokes automated repair.
 5. At a meaningful continuation boundary, a fresh session should find the report,
    its linked spec, and the next executable action or owner gate using repository
    state only. No universal handoff or new self-created task is required.
-6. Before integration, the candidate's separate-context review challenges the
-   report's consequential claims and recommendations along with the change.
+6. At the Spec's Verify step, the assembled candidate's separate-context review
+   challenges the report's consequential claims and recommendations along with
+   the change.
 
 ## Troubleshooting
 
@@ -716,6 +777,6 @@ discovery and invocation, managed-tool execution) through the procedure in the
 
 ## Independent Review Boundaries
 
-Task and integration review, main-readiness review and incident-claim evidence
+Verify review of an assembled Spec, main-readiness review and incident-claim evidence
 follow the
 [`code-review` skill](workbench/skills/code-review/SKILL.md#independent-review-boundaries).

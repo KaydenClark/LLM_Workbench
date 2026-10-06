@@ -3,9 +3,9 @@
 **Task ID:** TK-005N
 **Spec ID:** S-004C
 **Slice:** Make the Lexicon and the orientation text say what the carriers now are
-**Status:** blocked
+**Status:** ready
 **Stance:** Builder
-**Blockers:** TK-005K, owner:lexicon-writer-turn-released
+**Blockers:** TK-005K
 **Destination:** spec-acceptance: The Lexicon says what terms mean and where each kind of information belongs (Desired Behavior items 1 to 3), and the Documentation Impact of this Spec (Lexicon rows, Context Map routes, README setup text, routed Wiki articles) is applied once the carriers have their new shape.
 **Planned verification:** Red: `tools/test-control-fidelity.mjs` or `tools/test-controls-vocabulary-sweep.mjs` gains a check that fails while the root Lexicon still says the carriers' rewrite is "not yet specified", still describes the accepted destination as a future shape, or the Context Map still routes "Operations and procedures" to Runbook sections whose bodies moved, and while `templates/LEXICON.md` and the README setup text name the old shape. Green: those checks pass, the Lexicon's carrier-definition and Context Map rows and `templates/LEXICON.md` agree with the delivered shape and name the Runbook index as the route to an operation, the README setup text agrees, the Wiki lint of touched pages is clean, and `tools/test-governance-core.mjs`, `node tools/evaluate-workbench.mjs --path templates --include-controls` (score held) and the full AGENTS suite pass on the committed candidate.
 

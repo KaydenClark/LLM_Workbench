@@ -21,7 +21,7 @@ The Blueprint says the owner is needed only to unblock and to judge the finished
 
 ## Current Verified State
 
-At integration `46ad9789` (2026-10-05): `AGENTS.md` Owner Closure And Reconciliation reads reviewed delivery on integration, then owner approval, then verification on main, then `complete`; `approve S-### --candidate SHA --owner NAME` records approval per Spec and `complete` requires it; the rendered Taskboard shows 39 lines naming Human QA or owner QA, almost all per Spec; the `director` and `dispatcher` skills carry the per-Spec closure; `gate --spec` checks a Spec candidate and there is no landmark review command. The Blueprint at this branch already promises the ladder. No implementation or agent-outcome proof for this capability is claimed by this Map record.
+At integration `ec65203d` (2026-10-05): `AGENTS.md` Owner Closure And Reconciliation reads reviewed delivery on integration, then owner approval, then verification on main, then `complete`; `approve S-### --candidate SHA --owner NAME` records approval per Spec and `complete` requires it; the owner's rule of 2026-10-05 already judges a Task by its merge answers and reviews only at Spec Verify, so the Task and Spec rungs of the ladder are in place and this Spec adds the landmark rung and moves the owner's gate onto it; the rendered Taskboard shows 40 lines naming Human QA or owner QA, almost all per Spec; the `director` and `dispatcher` skills carry the per-Spec closure; `gate --spec` checks a Spec candidate and there is no landmark review command. The Blueprint at this branch already promises the ladder. No implementation or agent-outcome proof for this capability is claimed by this Map record.
 
 ## Desired Behavior
 
@@ -40,7 +40,7 @@ At integration `46ad9789` (2026-10-05): `AGENTS.md` Owner Closure And Reconcilia
 
 ## Non-Goals
 
-Building the LANDMARK.md artifact or its review commands, changing who approves or promotes, removing separate-context review of a Spec, changing the Task-PR exemption, implementing another capability.
+Building the LANDMARK.md artifact or its review commands, changing who approves or promotes, removing separate-context review of a Spec, changing how a Task is judged by its merge answers, implementing another capability.
 
 ## Dependencies And Blockers
 
@@ -76,7 +76,7 @@ Run the targeted Spec-tool, render and control tests, then the full AGENTS suite
 
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
-| 2026-10-05 | none | Authored at the Map step from the owner's review-ladder decision of 2026-10-05 at integration 46ad9789. | Map only; the closure sequence, approve verb and Taskboard were read, no runtime proof claimed. | This Spec. | Plan waits on the LANDMARK.md artifact; implementation and proof remain. |
+| 2026-10-05 | none | Authored at the Map step from the owner's review-ladder decision of 2026-10-05 and re-verified at integration ec65203d. | Map only; the closure sequence, approve verb and Taskboard were read, no runtime proof claimed. | This Spec. | Plan waits on the LANDMARK.md artifact; implementation and proof remain. |
 
 ## Completion Result
 

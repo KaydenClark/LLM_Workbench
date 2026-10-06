@@ -145,7 +145,8 @@ For the v3 spec-centered Workbench:
 - create stable `workbench/specs/S-###-slug/SPEC.md` capability packets in the
   lane the manifest declares;
 - make `TASKBOARD.md` a generated hot projection;
-- keep exact commands and recovery in `RUNBOOK.md`;
+- keep `RUNBOOK.md` an operations index whose rows point to the skills that
+  carry each procedure, with the room's own exact commands and recovery;
 - keep `CLAUDE.md` as the thin `@AGENTS.md` bridge;
 - preserve public setup in `README.md` and harness friction in
   `WORKBENCH_FEEDBACK.md` (legacy `HARNESS_FEEDBACK.md`);
@@ -160,6 +161,28 @@ For the v3 spec-centered Workbench:
   which replaces only changed core skills, backs the previous directories up,
   records a rollback path and leaves room-added skills alone; never hand-copy
   a core skill and never touch the provider home to update a room.
+
+A room whose `AGENTS.md` and `RUNBOOK.md` still hold the earlier long shape
+reconciles them to the brief and operations index this way:
+
+1. Update the core skills first (`workbench-skills.mjs update --explicit-update`,
+   or `install` for a room without the lane). An index row that points to a
+   skill the room's lane does not hold binds nothing, and `doctor` reports it
+   as `skill-pointer-dangling`, so the new index lands only after the skills it
+   points to are in the lane.
+2. Bring in the new brief and index from the templates, and keep the room's own
+   lines, its own Runbook rows and sections, and every divergence it recorded.
+   Never replace a room-owned line silently; a line the room deliberately
+   changed is restored or recorded as a decision, as section 5 says.
+3. Run the control fidelity report with the room's earlier template
+   generation: `--previous-templates PATH`, or nothing when the room manifest's
+   recorded source commit is in the release checkout. A line labeled a
+   generation difference (`earlier-template`, `newer-template` or
+   `template-changed`) is the template's change, reconciled to the new shape;
+   an unlabeled `added`, `dropped` or `changed` line is the room's own.
+4. A skill the room added to its lane is not pointed to by the shipped index
+   and teaches only; pointing a row of the room's own at it is the room's
+   decision.
 
 The one-time v2 route, `tools/workbench-upgrade.mjs upgrade --explicit-update`
 (or its `--layout-only` mode; the two are exclusive), lays the skills lane and
@@ -242,8 +265,9 @@ Run the same full project suite as the baseline, plus harness-specific checks:
 
   Every `dropped` or `changed` line it lists for `AGENTS.md` is either restored
   or recorded as a decision in the upgrade spec or an ADR under
-  `workbench/docs/adr/`; the report labels a checkout-versus-manifest version
-  mismatch and never blocks.
+  `workbench/docs/adr/`, except a line labeled a generation difference, which
+  is the template's own change and is reconciled to the current shape; the
+  report labels a checkout-versus-manifest version mismatch and never blocks.
 - feedback harvest: append observed harness friction to the manifest-declared
   feedback lane, or record `none observed` with the reason in the upgrade spec.
 

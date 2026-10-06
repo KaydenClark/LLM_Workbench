@@ -8,6 +8,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const skillsRoot = path.join(root, 'workbench', 'skills');
 const archivedSkillsRoot = path.join(root, 'skills-archive', 'optional-active-2026-09-01');
 import { coordinationSkills, coreSkills as runtimeCoreSkills } from '../workbench/tools/workbench-layout.mjs';
+import { readMaintainerSkills } from './maintainer-skills.mjs';
 const coreSkills = [...runtimeCoreSkills].sort();
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
 const assertIncludesAll = (content, requiredTerms, label) => {
@@ -33,8 +34,29 @@ const catalogNames = catalogRegion[1]
 
 assert.deepEqual(catalogNames, coreSkills,
   `the documented source bundle must contain exactly the locked ${coreSkills.length} skills`);
-assert.deepEqual(directoryNames(skillsRoot), coreSkills,
-  `live discovery source must contain exactly the locked ${coreSkills.length} skills`);
+// S-004C TK-006L: this repository's lane is also the release source lane. The
+// maintainer skills its manifest declares sit beside the closed core, are
+// catalogued in their own region and never join the core or its policy.
+const maintainerSkills = readMaintainerSkills(root);
+const maintainerRegion = catalog.match(
+  /<!-- maintainer-skills:start -->([\s\S]*?)<!-- maintainer-skills:end -->/
+);
+assert.ok(maintainerRegion, 'workbench/skills/README.md must declare the maintainer-skill region');
+const maintainerCatalogNames = maintainerRegion[1]
+  .split('\n')
+  .filter((line) => /^\| `[^`]+` \|/.test(line))
+  .map((line) => line.split('|')[1].trim().replaceAll('`', ''))
+  .sort();
+assert.deepEqual(maintainerCatalogNames, maintainerSkills,
+  'the maintainer-skill catalog region must list exactly the skills workbench/manifest.json declares under maintainerSkills');
+const declaredPolicy = JSON.parse(read('workbench/manifest.json')).skillPolicy.required;
+for (const skill of maintainerSkills) {
+  assert.ok(!declaredPolicy.includes(skill), `${skill} is a maintainer skill and must not join skillPolicy.required`);
+  assert.match(read(`workbench/skills/${skill}/SKILL.md`), new RegExp(`^---\\nname: ${skill}\\n`),
+    `${skill} must retain skill frontmatter naming itself`);
+}
+assert.deepEqual(directoryNames(skillsRoot), [...coreSkills, ...maintainerSkills].sort(),
+  `live discovery source must contain exactly the locked ${coreSkills.length} skills and the ${maintainerSkills.length} declared maintainer skills`);
 for (const skill of coreSkills) {
   const source = path.join(skillsRoot, skill, 'SKILL.md');
   assert.ok(fs.statSync(source).isFile(), `${skill} must contain SKILL.md`);
@@ -92,7 +114,8 @@ for (const [relative, expected] of [
   ['workbench/skills/README.md', [`closed ${bundleSize}-skill bundle`, `${workflowWord} workflow skills`,
     `${words[coordinationSkills.length]} coordination skills`, 'four portable stances']],
   ['README.md', [`closed ${bundleSize}-skill core bundle`]],
-  ['RUNBOOK.md', [`the ${bundleSize} core skills`]],
+  // S-004C TK-005K: the Skills lane check moved into a maintainer skill.
+  ['workbench/skills/workbench-room-checks/SKILL.md', [`the ${bundleSize} core skills`]],
   ['LEXICON.md', [`closed set of ${workflowWord} workflow skills`]],
   ['templates/GENESIS.md', [`exact ${bundleSize}-skill policy`]]
 ]) {
@@ -105,7 +128,7 @@ for (const [relative, expected] of [
 // a mismatch with `invalid-source-identity` - a root control shipping a command
 // that cannot run. Every documented `--version` literal must be this release.
 const VERSION = JSON.parse(read('workbench/manifest.json')).workbenchVersion;
-for (const relative of ['RUNBOOK.md', 'templates/ADOPTION.md', 'workbench/skills/adoption/SKILL.md',
+for (const relative of ['RUNBOOK.md', ...maintainerSkills.map((skill) => `workbench/skills/${skill}/SKILL.md`), 'templates/ADOPTION.md', 'workbench/skills/adoption/SKILL.md',
   'workbench/skills/update-harness/SKILL.md', 'tools/workbench-upgrade.mjs', 'tools/workbench-adoption.mjs',
   'workbench/tools/workbench-layout.mjs']) {
   const stale = [...read(relative).matchAll(/--version (v\d+\.\d+\.\d+)/g)]
@@ -257,7 +280,11 @@ assertIncludesAll(grilling, [
   'only the dependent',
   'An empty frontier is not proof',
   'final concept readback',
-  'works without a notepad'
+  'works without a notepad',
+  // Owner, 2026-10-05: a batch of answers is read back before anything locks,
+  // and an agent's recommendation is intent until the owner confirms it.
+  'A batch of answers gets the same readback',
+  'An agent recommendation is intent too'
 ], 'grilling interaction contract');
 assert.doesNotMatch(grilling, /FULL planned question list/,
   'grilling must keep a dynamic decision map, not a full questionnaire up front');
@@ -840,13 +867,12 @@ assert.deepEqual(workbenchRuntimeSections, [...workbenchRuntimeSections].sort((a
 assert.doesNotMatch(workbenchRuntime, /workbench\/specs\/|node tools\/test-|\/Users\//,
   'workbench-runtime ships to every room: no repository Spec path, maintainer test command or private path');
 
-// S-00J TK-006: the reviewed unit at integration is the assembled Spec bound
-// to a content digest - obtained with `report S-### --candidate <sha>` and
-// recorded with `verdict` - while a Task PR under the room's Task-PR
-// exemption (exemption 2 of its release Spec) remains an immutable-candidate
-// diff reviewed against its Spec and reported by a runnable
-// `gate --task TK-### --spec S-###`, without weakening ADR-0037's
-// immutable-candidate requirement or the exact BASE_SHA/HEAD_SHA comparison.
+// S-00J TK-006, narrowed by the owner's 2026-10-05 rule: the reviewed unit is
+// the assembled Spec bound to a content digest - obtained with `report S-###
+// --candidate <sha>` and recorded with `verdict` at the Spec's Verify step.
+// A Task, including a Task PR under a room's Task-PR exemption, gets no
+// separate-context review: its Worker's two merge answers are validated by the
+// Spec's Dispatcher, Director or next agent.
 // `skills/` is the bundled core installed into every room, so no core skill
 // may name the room-specific S-00O id; the condition is stated generically.
 for (const skill of coreSkills) {
@@ -865,19 +891,57 @@ for (const [name, relativePath] of [
     'content digest',
     '`report S-### --candidate <sha>`',
     '`verdict`',
-    'exemption 2',
-    'immutable candidate',
-    '`gate --task TK-### --spec S-###`',
-    '`BASE_SHA`',
-    '`HEAD_SHA`'
+    'Verify',
+    'merge answers'
   ], `${name} reviewed-unit language`);
+  assert.doesNotMatch(content, /Task PR (still )?requires separate-context review|each Task still lands as its own PR reviewed/,
+    `${name} must not require a separate-context review of a Task PR`);
+}
+for (const skill of ['implement', 'dispatcher', 'director', 'spec-manager', 'carry', 'builder']) {
+  assert.ok(read(`workbench/skills/${skill}/SKILL.md`).includes('merge answers'),
+    `${skill} must route the Task's merge answers`);
 }
 assert.ok(
-  read('workbench/skills/implement/SKILL.md').includes(
-    'a separate-context review of the assembled Spec is required'
-  ),
-  'implement must state the integration-branch review of the assembled Spec as separate-context, matching carry and code-review'
+  read('workbench/skills/implement/SKILL.md').includes('Separate-context review belongs to the assembled whole'),
+  'implement must state separate-context review as belonging to the assembled Spec at Verify, matching carry and code-review'
 );
+for (const controls of ['AGENTS.md', 'templates/AGENTS.md']) {
+  const body = read(controls);
+  assertIncludesAll(body, [
+    '### Task Merge Answers And Verify Review',
+    'Can this merge into the branch it targets?',
+    'Did this complete the Task, or is more needed?',
+    'agent provider the owner opened the session with'
+  ], `${controls} Task merge answers and provider rule`);
+  // Owner, 2026-10-05: the Journey is Implement, Check, QA and Submit; Review
+  // comes after it, never on a Task, with no set number of rounds; a failed
+  // Review goes back to Map, Plan and Journey; a rebase never needs a Review;
+  // another host runs only when the owner says exactly what to do with it.
+  const flat = body.replace(/\s+/g, ' ');
+  assertIncludesAll(flat, [
+    'Implement, Check, QA and Submit',
+    'QA is the building agent\'s self-judgement',
+    'Review comes after the Journey',
+    'never on a Task',
+    'goes back to Map, Plan and Journey',
+    'no set number of Review rounds',
+    'A rebased Task runs its Journey again',
+    'never a Review of its own',
+    'exactly what to do with that provider',
+    // Owner, 2026-10-05 (confirmed readback): Review judges a completed
+    // destination against its Map; repeated failure blocks only on the same
+    // failure twice or three attempts without progress; the reviewer stays on
+    // the session's provider; the owner holds budget and direction.
+    'one agent reviewing another agent\'s work',
+    'a completed destination against its Map',
+    'the same Review failure twice, or three attempts with no real progress',
+    'block, escalate and find the root causes',
+    'same model provider as the session unless the owner specifies otherwise',
+    'the most capable model reasonable for the work',
+    'manages the budget, the usage meter and the direction of the work'
+  ], `${controls} Journey verbs and Review placement`);
+  assert.doesNotMatch(flat, /same verification failure twice with no clearly safe next step/, `${controls} drops the replaced stop rule`);
+}
 
 const updateHarness = read('workbench/skills/update-harness/SKILL.md');
 assert.match(updateHarness, /checked-out LLM Workbench repository/,
@@ -904,7 +968,7 @@ assert.ok(adoptionOpening.includes('workbench-upgrade.mjs upgrade --layout-only'
   'adoption must point an already-adopted room at the layout-only route by name');
 assert.match(read('templates/ADOPTION.md'), /already-adopted[^.]*`tools\/workbench-upgrade\.mjs upgrade --layout-only`/,
   'templates/ADOPTION.md must name the layout-only route for an already-adopted room');
-assert.match(read('RUNBOOK.md'), /--layout-only/, 'the Runbook must document the layout-only mode');
+assert.match(read('workbench/skills/workbench-room-checks/SKILL.md'), /--layout-only/, 'the explicit upgrade procedure (workbench-room-checks, S-004C TK-005K) must document the layout-only mode');
 assert.match(read('LEXICON.md'), /--layout-only/, 'the Lexicon distinction must gain the layout-only mode');
 
 for (const name of ['grilling', 'checkpoint', 'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'implement', 'code-review', 'carry', 'notepad']) {

@@ -8,6 +8,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import test from 'node:test';
 import { validateWiki } from '../workbench/tools/wiki.mjs';
+import { validateLandmarkArticle } from '../workbench/tools/landmark-wiki.mjs';
 import { install, verify, RECEIPT_NAME } from './workbench-tools.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -59,6 +60,179 @@ test('valid explicitly designated article passes CLI/API without touching articl
   assert.deepEqual(snapshot(dir), before);
 });
 
+// Name-and-context rule (S-003W TK-003): an identifier is welcome when the
+// artifact's name sits beside it; only a bare identifier is reported.
+const NAMED_FORMS = [
+  ['name then parenthesized identifier', 'The Landmark Records Spec (S-002A) owns the validator.'],
+  ['identifier then parenthesized name', 'S-002A (Landmark Records Spec) owns the validator.'],
+  ['title-case name beside identifier', 'The Landmark Records Spec S-002A owns the validator.'],
+  ['identifier, colon, name', 'TK-003: Name and context identifier validator.'],
+  ['identifier, dash, name', 'ADR-000R - The Wiki is the evolving synthesis.'],
+  ['link text names the identifier in its target', '[Landmark Records Spec](../specs/S-002A/SPEC.md)'],
+  ['path slug names the identifier', '[records](../specs/S-002A-landmark-records/SPEC.md)'],
+  ['reference definition names its target', '[Landmark Records Spec]: ../landmarks/LMK-000A.json'],
+  ['slug whose later segments start with a digit', 'workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md'],
+  ['slug with a version-like first segment', 'workbench/specs/S-036-v3-2-evidence-corrections/SPEC.md'],
+  ['metadata path with a slug', '---\nsource_paths:\n  - workbench/specs/S-002A-landmark-records/SPEC.md\n---'],
+  ['name with a dotted version token', 'S-00O (Workbench v4.0.0 Release Spec) is the release.'],
+  ['name with a short version token', 'Workbench v4 Release Spec (S-00O) is the release.'],
+  ['two named identifiers on one line', 'Landmark Records Spec (S-002A) and Landmark Tracker Foundation Spec (S-01T).'],
+  ['bold name with identifier', '**Wiki Routing And Version Stamps** (S-00X) is delivered.'],
+  ['connection identity with its name', 'Workbench connection identity (WB-0123456789ABCDEFGHIJKL) names this room.']
+];
+for (const [label, text] of NAMED_FORMS) {
+  test(`name-and-context: ${label} passes without writes`, t => {
+    const dir = room(t);
+    fs.writeFileSync(path.join(dir, article), `${readable}\n${text}\n`);
+    const before = snapshot(dir);
+    const result = cli(dir, 'validate', article, '--json');
+    assert.equal(result.status, 0, JSON.stringify(result.report));
+    assert.deepEqual(result.report, { status: 'valid', article, findings: [] });
+    assert.deepEqual(snapshot(dir), before);
+  });
+}
+
+const BARE_FORMS = [
+  ['unqualified prose', 'Built through TK-002T.'],
+  ['kind word only', 'See Spec S-002A.'],
+  ['bare identifier list', 'Related: S-002A / S-01T / TK-003.'],
+  ['identifier as its own link text', '[S-002A](../records/overview.md)'],
+  ['link text of one word without a slug', '[records](../landmarks/LMK-000A.json)'],
+  ['bare metadata value', '---\nsource_paths: [S-001]\n---'],
+  ['version-like slug with one word segment', 'https://example.invalid/ADR-0041-v3-1'],
+  ['one-word slug', 'https://example.invalid/ADR-0041-history'],
+  ['name-less identifier after a closing bracket', '(TK-002T) is done.'],
+  ['bare code span', 'Run `S-002A` now.']
+];
+for (const [label, text] of BARE_FORMS) {
+  test(`name-and-context: ${label} is reported with a repair message`, t => {
+    const dir = room(t);
+    fs.writeFileSync(path.join(dir, article), `${readable}\n${text}\n`);
+    const before = snapshot(dir);
+    const result = cli(dir, 'validate', article, '--json');
+    assert.equal(result.status, 1, text);
+    assert.equal(result.report.status, 'invalid');
+    assert.ok(result.report.findings.length >= 1);
+    for (const hit of result.report.findings) {
+      assert.equal(hit.code, 'landmark-bare-id');
+      assert.match(hit.message, new RegExp(hit.id));
+      assert.match(hit.message, /add the artifact's name and context/);
+      assert.match(hit.message, /keep the identifier/);
+      assert.doesNotMatch(hit.message, /remove the identifier|outside readable/);
+    }
+    assert.deepEqual(snapshot(dir), before);
+  });
+}
+
+test('name-and-context: only the bare identifier of a mixed line is reported', t => {
+  const dir = room(t);
+  fs.writeFileSync(path.join(dir, article), `${readable}\nLandmark Records Spec (S-002A) and then S-01T.\n`);
+  const result = cli(dir, 'validate', article, '--json');
+  assert.equal(result.status, 1);
+  assert.deepEqual(result.report.findings.map(hit => hit.id), ['S-01T']);
+});
+
+test('name-and-context: an ambiguous undesignated token passes only with its name beside it', t => {
+  const dir = room(t);
+  fs.writeFileSync(path.join(dir, article), `${readable}\nThe Custom Records Spec (CUSTOM-000A) is a room type.\n`);
+  assert.equal(cli(dir, 'validate', article, '--json').status, 0);
+  fs.writeFileSync(path.join(dir, article), `${readable}\nSee CUSTOM-000A.\n`);
+  const result = cli(dir, 'validate', article, '--json');
+  assert.equal(result.status, 1);
+  assert.equal(result.report.status, 'incomplete');
+  assert.equal(result.report.findings[0].code, 'landmark-ambiguous');
+  assert.match(result.report.findings[0].message, /--prefix/);
+  assert.match(result.report.findings[0].message, /name and context/);
+});
+
+// Non-identifier escape (S-003W TK-006Q): placeholders, algorithm names and
+// word-shaped tokens merely fit the identity grammar; real identifiers do not
+// get an escape.
+const NOT_IDENTIFIERS = ['YYYY-MM', 'YYYY-MM-DD', 'MM-DD', 'HH-MM', 'SHA-1', 'SHA-256', 'SHA-512', 'UTF-8', 'ISO-8601',
+  'PRD-shaped', 'CSV-export', 'PDF-statement', 'TASK-ID', 'GLOSSARY-MAP', 'CONTEXT-MAP', 'SCR-reconciled', 'HTTP-API'];
+for (const token of NOT_IDENTIFIERS) {
+  test(`non-identifier escape: ${token} is not reported`, t => {
+    const dir = room(t);
+    fs.writeFileSync(path.join(dir, article), `${readable}\nUse ${token}.\n`);
+    const before = snapshot(dir);
+    const result = cli(dir, 'validate', article, '--json');
+    assert.equal(result.status, 0, JSON.stringify(result.report));
+    assert.deepEqual(result.report, { status: 'valid', article, findings: [] });
+    assert.deepEqual(snapshot(dir), before);
+  });
+}
+
+test('non-identifier escape never hides a real or ID-looking identifier', t => {
+  const dir = room(t);
+  const expected = [
+    ['S-002A', 'landmark-bare-id'], ['TK-003', 'landmark-bare-id'], ['ADR-000P', 'landmark-bare-id'], ['DQC-004L', 'landmark-bare-id'],
+    ['LMK-000A', 'landmark-bare-id'], ['N-000A', 'landmark-bare-id'], ['WB-0123456789ABCDEFGHIJKL', 'landmark-bare-id'],
+    ['S-curve', 'landmark-bare-id'], ['ADR-FORMAT', 'landmark-bare-id'],
+    ['XS-001', 'landmark-ambiguous'], ['CUSTOM-000A', 'landmark-ambiguous'], ['E-4B', 'landmark-ambiguous'], ['ROLE-1', 'landmark-ambiguous'],
+    ['TT-Q10', 'landmark-ambiguous'], ['SHA-2560', 'landmark-ambiguous'], ['SHA-3', 'landmark-ambiguous'], ['MM-DD1', 'landmark-ambiguous']
+  ];
+  fs.writeFileSync(path.join(dir, article), `${readable}\n${expected.map(([id]) => `Next ${id}\n`).join('')}`);
+  const report = cli(dir, 'validate', article, '--json').report;
+  assert.deepEqual(report.findings.map(hit => [hit.id, hit.code]), expected);
+});
+
+test('non-identifier escape yields to an explicit designation', t => {
+  const dir = room(t);
+  fs.writeFileSync(path.join(dir, article), `${readable}\nUse HTTP-API and SHA-256.\n`);
+  assert.equal(cli(dir, 'validate', article, '--json').status, 0);
+  const designated = cli(dir, 'validate', article, '--prefix', 'HTTP', '--prefix', 'SHA', '--json');
+  assert.equal(designated.status, 1);
+  assert.deepEqual(designated.report.findings.map(hit => [hit.id, hit.code]), [['HTTP-API', 'landmark-bare-id'], ['SHA-256', 'landmark-bare-id']]);
+});
+
+// Link-text classes (S-003W TK-006Q): an identifier inside link text passes when
+// the text names the artifact beside it, or when the link target's slug does.
+const LINK_NAMED = [
+  ['name with a version token around the identifier', '- [Workbench v4.0.0 Release (S-00O)](../specs/S-00O/SPEC.md) - the release'],
+  ['identifier, comma, title', '- [ADR-000S, Destination Decision Records are decision records](../docs/adr/000S/ADR.md):'],
+  ['identifier-only text with the identifier and a naming slug in its target', '[S-01R](../specs/S-01R-reviewer-skill-rebuild/SPEC.md#delivery)'],
+  ['identifier-only text with the suffix and a naming slug in its target', '[ADR-000P](../docs/adr/000P-roles-scope-work-and-stances-define-the-job.md)'],
+  ['code-wrapped identifier text with a naming slug', '[`S-00H`](../../specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md)']
+];
+for (const [label, text] of LINK_NAMED) {
+  test(`link-text rule: ${label} passes`, t => {
+    const dir = room(t);
+    fs.writeFileSync(path.join(dir, article), `${readable}\n${text}\n`);
+    const result = cli(dir, 'validate', article, '--json');
+    assert.equal(result.status, 0, JSON.stringify(result.report));
+    assert.deepEqual(result.report, { status: 'valid', article, findings: [] });
+  });
+}
+
+const LINK_BARE = [
+  ['identifier plus one word of text and an unnamed target', '[S-00H (retired)](../specs/retired/other/SPEC.md)'],
+  ['kind word and identifier', '[see S-00O](../specs/SPEC.md)'],
+  ['two identifiers as link text', '[S-00O, S-00P](../specs/SPEC.md)'],
+  ['one-word slug in the target', '[ADR-000P](../docs/adr/000P-history.md)'],
+  ['a different identifier names the target', '[ADR-000P](../docs/adr/0041-roles-scope-work-and-stances.md)'],
+  ['naming slug beside the suffix only inside a longer word', '[ADR-000P](../docs/adr/x000P-roles-scope-work-and-stances.md)']
+];
+for (const [label, text] of LINK_BARE) {
+  test(`link-text rule: ${label} is still reported`, t => {
+    const dir = room(t);
+    fs.writeFileSync(path.join(dir, article), `${readable}\n${text}\n`);
+    const result = cli(dir, 'validate', article, '--json');
+    assert.equal(result.status, 1, text);
+    assert.ok(result.report.findings.length >= 1);
+    assert.ok(result.report.findings.every(hit => hit.code === 'landmark-bare-id'));
+  });
+}
+
+test('the usage note states the name-and-context rule and its finding code', () => {
+  const note = fs.readFileSync(path.join(root, 'workbench/landmark-tracker/LANDMARK-WIKI.md'), 'utf8');
+  assert.match(note, /name-and-context/i);
+  assert.match(note, /landmark-bare-id/);
+  assert.match(note, /replaced that ban/);
+  assert.match(note, /Tokens that are not identifiers/);
+  for (const token of NOT_IDENTIFIERS.filter(token => /^(YYYY-MM|MM-DD|SHA-256|UTF-8)$/.test(token))) assert.ok(note.includes(`\`${token}\``), `${token} documented`);
+  assert.match(note, /identifier-only link text passes only through rule 2/i);
+});
+
 test('human-readable CLI output identifies refusals and absolute in-root paths work', t => {
   const dir = room(t);
   const before = snapshot(dir);
@@ -68,7 +242,7 @@ test('human-readable CLI output identifies refusals and absolute in-root paths w
   fs.writeFileSync(path.join(dir, article), `${readable}S-001\n`);
   const invalid = spawnSync(process.execPath, [tool, 'validate', article, '--path', dir], { encoding: 'utf8' });
   assert.equal(invalid.status, 1);
-  assert.match(invalid.stdout, /landmark-wbid: S-001 at workbench\/wiki\/landmark.md:4:1/);
+  assert.match(invalid.stdout, /landmark-bare-id: S-001 at workbench\/wiki\/landmark.md:4:1/);
   fs.writeFileSync(path.join(dir, article), readable);
   assert.deepEqual(snapshot(dir), before);
 });
@@ -108,8 +282,8 @@ test('explicit custom namespaces cover metadata and links without inventory read
     assert.throws(() => validateLandmarkArticle(dir, article, { extraPrefixes: [prefix] }), error => error.code === 'invalid-invocation');
   }
   for (const extraPrefixes of [null, 'CUSTOM', [42]]) assert.throws(() => validateLandmarkArticle(dir, article, { extraPrefixes }), error => error.code === 'invalid-invocation');
-  fs.writeFileSync(path.join(dir, article), `${readable}S-curve and HTTP-API.\n`);
-  assert.deepEqual(cli(dir, 'validate', article, '--json').report.findings.map(hit => [hit.id, hit.code]), [['S-curve', 'landmark-wbid'], ['HTTP-API', 'landmark-ambiguous']]);
+  fs.writeFileSync(path.join(dir, article), `${readable}S-curve and XS-001.\n`);
+  assert.deepEqual(cli(dir, 'validate', article, '--json').report.findings.map(hit => [hit.id, hit.code]), [['S-curve', 'landmark-bare-id'], ['XS-001', 'landmark-ambiguous']]);
   fs.writeFileSync(path.join(dir, article), Buffer.from(before[article], 'base64'));
   assert.deepEqual(snapshot(dir), before);
 });
@@ -134,7 +308,7 @@ for (const [area, text, id] of [
     assert.equal(result.report.status, 'invalid');
     assert.equal(result.report.findings.length, 1);
     const hit = result.report.findings[0];
-    assert.equal(hit.code, 'landmark-wbid');
+    assert.equal(hit.code, 'landmark-bare-id');
     assert.equal(hit.id, id);
     assert.equal(hit.article, article);
     const offset = Buffer.from(content).indexOf(Buffer.from(id));
@@ -161,7 +335,7 @@ test('all legacy/current type identities and widened suffixes are found, ordinar
 
 test('default generic namespace candidates refuse as incomplete rather than silently pass', t => {
   const dir = room(t);
-  for (const id of ['XS-001', 'CUSTOM-000A', 'HTTP-API', 'UTF-8']) {
+  for (const id of ['XS-001', 'CUSTOM-000A', 'E-4B', 'TT-Q10']) {
     fs.writeFileSync(path.join(dir, article), `${readable}${id}\n`);
     const before = snapshot(dir);
     const result = cli(dir, 'validate', article, '--json');
@@ -278,4 +452,35 @@ test('managed installation exposes the actual receipt-backed validator CLI and A
   const { validateLandmarkArticle } = await import(pathToFileURL(installed).href);
   assert.deepEqual(validateLandmarkArticle(dir, article, { extraPrefixes: ['CUSTOM'] }), report);
   assert.deepEqual(snapshot(dir), before);
+});
+
+// Wiki Evolving-Synthesis Migration (S-003W) Task TK-004: every landmark record
+// has one routed synthesis page in the design-concepts collection that names
+// its own record and passes the name-and-context identifier rule.
+test('every landmark has one routed synthesis page that passes the identifier rule', () => {
+  const landmarkDir = path.join(root, 'workbench/landmark-tracker/landmarks');
+  const conceptDir = path.join(root, 'workbench/wiki/design-concepts');
+  const ids = fs.readdirSync(landmarkDir).filter(name => /^LMK-[0-9A-Z]+\.json$/.test(name)).map(name => name.replace(/\.json$/, ''));
+  assert.ok(ids.length >= 24, `expected the 24 landmark records, found ${ids.length}`);
+  // A synthesis page is a `landmark-*.md` whose first heading is `# Landmark: <Title>`; the
+  // Landmark Tracker concept article keeps its own shape and is not one.
+  const pages = fs.readdirSync(conceptDir).filter(name => /^landmark-.+\.md$/.test(name) && /^# Landmark: /m.test(fs.readFileSync(path.join(conceptDir, name), 'utf8')));
+  const router = fs.readFileSync(path.join(root, 'workbench/wiki/MEMORY.md'), 'utf8');
+  const section = router.split(/^## Landmark Synthesis Pages\s*$/m)[1]?.split(/^## /m)[0] ?? '';
+  assert.ok(section, 'the router needs a "## Landmark Synthesis Pages" section');
+  const missing = [];
+  for (const id of ids) {
+    const record = JSON.parse(fs.readFileSync(path.join(landmarkDir, `${id}.json`), 'utf8'));
+    const owners = pages.filter(name => fs.readFileSync(path.join(conceptDir, name), 'utf8').includes(`landmarks/${id}.json`));
+    if (owners.length !== 1) { missing.push(`${id} "${record.title}": ${owners.length} synthesis pages`); continue; }
+    const relative = `workbench/wiki/design-concepts/${owners[0]}`;
+    const text = fs.readFileSync(path.join(root, relative), 'utf8');
+    assert.match(text, /^type: design-concept$/m, `${relative} must be a design-concept`);
+    assert.match(text, /^authorized_by: .*Wiki Evolving-Synthesis Migration/m, `${relative} must name its authorizing operation`);
+    const line = section.split('\n').find(row => row.includes(`design-concepts/${owners[0]})`));
+    if (!line || !/\) - \S/.test(line)) missing.push(`${id} "${record.title}": ${owners[0]} is not routed with a summary line in the Landmark Synthesis Pages section`);
+    const result = validateLandmarkArticle(root, relative);
+    assert.deepEqual(result.findings, [], `${relative} must carry every identifier with its name and context`);
+  }
+  assert.deepEqual(missing, []);
 });

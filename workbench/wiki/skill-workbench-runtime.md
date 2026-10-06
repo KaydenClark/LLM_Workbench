@@ -4,7 +4,7 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - S-004C TK-005J moved the Runbook procedures for the operations every room runs on its installed runtime tools into this new core skill, 2026-10-04
+  - S-004C (Contract Carrier Pointer-Brief Rewrite Spec) TK-005J (Move the operations every room runs behind their pointers Task) moved the Runbook procedures for the operations every room runs on its installed runtime tools into this new core skill, 2026-10-04
 source_paths:
   - workbench/skills/workbench-runtime/SKILL.md
   - workbench/tools/workbench-layout.mjs

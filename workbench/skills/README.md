@@ -38,6 +38,31 @@ The checked-out LLM Workbench release owns the exact source versions.
 | `reconciler` | Leave achieved work and its existing truth owners consistent for continuation. |
 <!-- core-skills:end -->
 
+## Maintainer skills
+
+This lane is also this repository's own room lane, so a procedure only its
+maintainers run (cutting a release, the support-root, adoption, upgrade and
+self-drift checks, evaluation and feedback) can live here as a maintainer
+skill. A maintainer skill is declared by name under `maintainerSkills` in
+[`workbench/manifest.json`](../manifest.json) and listed in the region below.
+The closed-bundle checks (`tools/core-skill-installer.mjs`,
+`tools/workbench-upgrade.mjs` and `tools/test-skill-catalog.mjs`) accept exactly
+the core skills plus the declared maintainer skills and refuse any other lane
+entry, a declaration naming a core skill, an unsafe or duplicate name, or a
+declared skill missing from the lane (`invalid-maintainer-skills`). A
+maintainer skill is never installed, laid into a room's lane, counted in the
+core bundle or named in `skillPolicy.required`; a generated room has none. An
+operations index row in `RUNBOOK.md` that points to one makes it bind for that
+operation in this repository, like any pointed lane skill.
+
+<!-- maintainer-skills:start -->
+| Skill | Purpose |
+|---|---|
+| `workbench-release` | Cut, prove and publish a release: version labels, the reference Template upgrade, the composed round trip, portability and cross-provider proofs, derivation from recorded decisions and personal-catalog publication. |
+| `workbench-room-checks` | Check the routes that lay out, install, adopt, upgrade and update a room, plus the self-drift, carrier line-landing, GitHub binding and socket contract checks. |
+| `workbench-evaluation` | Evaluate a harness change and run the feedback loop: claims, design, commands, feedback intake, the automated gate, run outcomes and manual reports. |
+<!-- maintainer-skills:end -->
+
 ## Normal setup
 
 Run the checked-out helper on a brand-new host:

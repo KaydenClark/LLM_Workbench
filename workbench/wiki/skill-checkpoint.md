@@ -4,9 +4,9 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - S-048 checkpoint retirement, completed 2026-09-09
-  - S-01E TK-00V source audit and fresh-context scenario, 2026-09-26
-  - S-004C TK-005F moved the Runbook procedure behind its index pointer into the skill, 2026-10-03
+  - S-048 (Checkpoint Retirement Spec) checkpoint retirement, completed 2026-09-09
+  - S-01E (checkpoint skill rebuild Spec) TK-00V (Deliver the checkpoint skill destination Task) source audit and fresh-context scenario, 2026-09-26
+  - S-004C (Contract Carrier Pointer-Brief Rewrite Spec) TK-005F (Move the continuity and promotion operations behind their pointers Task) moved the Runbook procedure behind its index pointer into the skill, 2026-10-03
 source_paths:
   - workbench/skills/checkpoint/SKILL.md
   - workbench/tools/sessions.mjs
@@ -36,7 +36,7 @@ The files already in `workbench/sessions/checkpoints/` are frozen history. The c
 
 ### Example, from the verification run
 
-In the S-01E scenario, a scratch room held one frozen record from an earlier investigation, `billing-export-2026-08-30.md`. The session being carried had two findings about duplicate invoice rows in a nightly export, one of them an unconfirmed hypothesis. It also had one user decision (keep the column order), one open question and one next action. The user said "checkpoint this session". The agent, given only this skill, recorded the frozen file's hash and created one note in `workbench/sessions/notepads/work/`. It appended the two findings (the hypothesis labeled unconfirmed), the decision and the user's keep-it-local instruction, then validated the note at revision 5. It did not run the retired command or promote anything, because nothing was settled or authorized to become durable. It told the user that checkpoint copies are no longer used, that the save is local and git-ignored and won't follow them to another device, and that it would re-check the code before continuing. Afterward, every file under `workbench/sessions/` hashed the same as before, apart from the one new ignored note. Running the retired command in the same room afterward exited 1 and changed nothing.
+In the S-01E (checkpoint skill rebuild Spec) scenario, a scratch room held one frozen record from an earlier investigation, `billing-export-2026-08-30.md`. The session being carried had two findings about duplicate invoice rows in a nightly export, one of them an unconfirmed hypothesis. It also had one user decision (keep the column order), one open question and one next action. The user said "checkpoint this session". The agent, given only this skill, recorded the frozen file's hash and created one note in `workbench/sessions/notepads/work/`. It appended the two findings (the hypothesis labeled unconfirmed), the decision and the user's keep-it-local instruction, then validated the note at revision 5. It did not run the retired command or promote anything, because nothing was settled or authorized to become durable. It told the user that checkpoint copies are no longer used, that the save is local and git-ignored and won't follow them to another device, and that it would re-check the code before continuing. Afterward, every file under `workbench/sessions/` hashed the same as before, apart from the one new ignored note. Running the retired command in the same room afterward exited 1 and changed nothing.
 
 ## Composition
 
@@ -44,11 +44,11 @@ In the S-01E scenario, a scratch room held one frozen record from an earlier inv
 
 ## Upstream relationship
 
-`checkpoint` is Workbench-native: `THIRD_PARTY_NOTICES.md` lists no external source for it. It began in PR #35 (`bc2b419`, 2026-07-17) as "commit a resumable notepad". S-048 retired copying in `31a9d89` (2026-09-08), and the file moved unchanged into the skills lane in `4b6d05c`. The source audited here is git blob `1e297ce2abde3672d1efc56490974bbed9d2a884` at `4b6d05c`. S-01E made no source change. [ADR-0054](../docs/adr/0054-direct-promotion-into-durable-owners.md) partially supersedes [ADR-0028](../docs/adr/0028-live-session-records-stay-untracked-and-checkpoints-are-durable.md), where the checkpoint was the only durable destination.
+`checkpoint` is Workbench-native: `THIRD_PARTY_NOTICES.md` lists no external source for it. It began in PR #35 (`bc2b419`, 2026-07-17) as "commit a resumable notepad". S-048 (Checkpoint Retirement Spec) retired copying in `31a9d89` (2026-09-08), and the file moved unchanged into the skills lane in `4b6d05c`. The source audited here is git blob `1e297ce2abde3672d1efc56490974bbed9d2a884` at `4b6d05c`. S-01E (checkpoint skill rebuild Spec) made no source change. [ADR-0054](../docs/adr/0054-direct-promotion-into-durable-owners.md) partially supersedes [ADR-0028](../docs/adr/0028-live-session-records-stay-untracked-and-checkpoints-are-durable.md), where the checkpoint was the only durable destination.
 
 ## Verified behavior and limits
 
-**Verified 2026-09-26:** `tools/test-sessions.mjs` checks that the retired command refuses through both the function and the CLI, and that it leaves the source note, a frozen record and the checkpoint directory listing unchanged. It also checks that the six retained files in the repository (five records and `.gitkeep`) still match their S-048 inventory sizes and hashes. `tools/test-skill-catalog.mjs` holds the retirement and no-write wording. One fresh-context agent followed the notepad route in the scenario above. The run is recorded in the [Spec evidence](../specs/S-01E-checkpoint-skill-rebuild/SPEC.md#append-only-evidence-and-execution-log).
+**Verified 2026-09-26:** `tools/test-sessions.mjs` checks that the retired command refuses through both the function and the CLI, and that it leaves the source note, a frozen record and the checkpoint directory listing unchanged. It also checks that the six retained files in the repository (five records and `.gitkeep`) still match their S-048 (Checkpoint Retirement Spec) inventory sizes and hashes. `tools/test-skill-catalog.mjs` holds the retirement and no-write wording. One fresh-context agent followed the notepad route in the scenario above. The run is recorded in the [Spec evidence](../specs/S-01E-checkpoint-skill-rebuild/SPEC.md#append-only-evidence-and-execution-log).
 
 **Limits:** that was one run with one model, a scripted user, and a room with no Runbook and no copy of the `notepad` skill. The agent drove `notepads.mjs` directly, so the skill's "read the Runbook" step was not exercised. The scripted user declined promotion, so the promote route was not exercised in that run. This is not owner Human QA and not a repeated trial. Two runtime details are imprecise but do not break the accepted behavior. The refusal carries the shared `invalid-note` finding code rather than a code specific to retirement. The `sessions.mjs` usage line still lists the old `checkpoint --from … --topic …` form without marking it retired. Installed personal copies of the skill are not changed by this Spec.
 
@@ -63,4 +63,4 @@ In the S-01E scenario, a scratch room held one frozen record from an earlier inv
 
 ## History
 
-- 2026-09-26: Created by S-01E TK-00V after a source audit found no defect, with one fresh-context scenario.
+- 2026-09-26: Created by S-01E (checkpoint skill rebuild Spec) TK-00V (Deliver the checkpoint skill destination Task) after a source audit found no defect, with one fresh-context scenario.

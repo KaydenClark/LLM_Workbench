@@ -4,10 +4,10 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - S-01J planning packet, 2026-09-24
-  - S-01J TK-01A source change and fresh-context scenario, 2026-09-26
-  - S-004C TK-005I moved the AGENTS documentation-ownership table behind the Lexicon schema pointer and the citation-anchor procedure into the skill, 2026-10-04
-  - S-004C TK-005J moved the Runbook decision-record procedure and the amendment-first rule into the skill, 2026-10-04
+  - S-01J (to-docs skill rebuild Spec) planning packet, 2026-09-24
+  - S-01J (to-docs skill rebuild Spec) TK-01A (Deliver the to-docs skill destination Task) source change and fresh-context scenario, 2026-09-26
+  - S-004C (Contract Carrier Pointer-Brief Rewrite Spec) TK-005I (Move verification, documentation ownership and the release gate behind their pointers Task) moved the AGENTS documentation-ownership table behind the Lexicon schema pointer and the citation-anchor procedure into the skill, 2026-10-04
+  - S-004C (Contract Carrier Pointer-Brief Rewrite Spec) TK-005J (Move the operations every room runs behind their pointers Task) moved the Runbook decision-record procedure and the amendment-first rule into the skill, 2026-10-04
 source_paths:
   - workbench/skills/to-docs/SKILL.md
   - workbench/specs/S-01J-to-docs-skill-rebuild/SPEC.md
@@ -37,7 +37,7 @@ The [skill](../skills/to-docs/SKILL.md) owns the judgment. The [Lexicon ownershi
 
 ### Example, from the verification run
 
-In the S-01J scenario, a small scratch project had a Runbook restore procedure, a Wiki article about backups and a working note on a failed restore. The note held three entries. A finding said the restore tool extracts the whole archive to a temporary folder on the target disk, and that a restore failed because the disk had only 1.4 times the archive's size free. A `decision` confirmed a new step: check free space and require twice the uncompressed size before restoring. A pending `source_record`, still listed in `current.unresolved`, said the owner might want three restore points instead of two. The owner said: "The restore investigation is settled. Put what we found into the docs."
+In the S-01J (to-docs skill rebuild Spec) scenario, a small scratch project had a Runbook restore procedure, a Wiki article about backups and a working note on a failed restore. The note held three entries. A finding said the restore tool extracts the whole archive to a temporary folder on the target disk, and that a restore failed because the disk had only 1.4 times the archive's size free. A `decision` confirmed a new step: check free space and require twice the uncompressed size before restoring. A pending `source_record`, still listed in `current.unresolved`, said the owner might want three restore points instead of two. The owner said: "The restore investigation is settled. Put what we found into the docs."
 
 The fresh agent stated its destinations before editing. The confirmed free-space step, with its commands and threshold, went into the Runbook restore procedure as a new step 3. The explanation of the temporary extraction and the failed restore went into the Wiki article as a new section. That section links to the Runbook step for the threshold and commands instead of repeating them. The Runbook step links back to the explanation. The agent left the three-restore-points idea out of every owner and kept it in the note, and it did not cite the note as evidence. It then searched the tracked docs to confirm each fact appeared in one owner only. The Wiki check command did not exist in the scratch project, so it reported that check as not run rather than passed.
 
@@ -48,7 +48,7 @@ The fresh agent stated its destinations before editing. The confirmed free-space
 ## Verified behavior and limits
 
 **Verified 2026-09-26:**
-- `tools/test-skill-catalog.mjs` pins the routing list, the render and doctor finish, and the rule against restarting discovery or adding stores. It now also pins the S-01J contract: route each claim once, split a mixed finding, link rather than copy, recognize pending meaning, never cite an ignored live path, keep transient history out of the Spec, and read each changed owner back.
+- `tools/test-skill-catalog.mjs` pins the routing list, the render and doctor finish, and the rule against restarting discovery or adding stores. It now also pins the S-01J (to-docs skill rebuild Spec) contract: route each claim once, split a mixed finding, link rather than copy, recognize pending meaning, never cite an ignored live path, keep transient history out of the Spec, and read each changed owner back.
 - `tools/test-wiki.mjs` covers the runtime side of "never a copied live queue". `wiki.mjs validate` reports a note that copies task rows or Spec evidence as `copied-task-state`. That test was unchanged and green; to-docs needed no runtime change.
 - One fresh-context agent, given only the skill source, did the scenario above. The run record is in the [Spec evidence](../specs/S-01J-to-docs-skill-rebuild/SPEC.md#append-only-evidence-and-execution-log).
 
@@ -65,5 +65,5 @@ The fresh agent stated its destinations before editing. The confirmed free-space
 
 ## History
 
-- 2026-09-26: Created by S-01J TK-01A. The source now states once-per-claim routing for a mixed finding, link-not-copy, pending recognition, durable-only evidence and owner read-back. One fresh-context scenario was recorded.
-- 2026-10-04: S-004C TK-005J moved the Runbook's decision-record procedure and the amendment-first rule into the skill behind the operations index; no behavior change.
+- 2026-09-26: Created by S-01J (to-docs skill rebuild Spec) TK-01A (Deliver the to-docs skill destination Task). The source now states once-per-claim routing for a mixed finding, link-not-copy, pending recognition, durable-only evidence and owner read-back. One fresh-context scenario was recorded.
+- 2026-10-04: S-004C (Contract Carrier Pointer-Brief Rewrite Spec) TK-005J (Move the operations every room runs behind their pointers Task) moved the Runbook's decision-record procedure and the amendment-first rule into the skill behind the operations index; no behavior change.

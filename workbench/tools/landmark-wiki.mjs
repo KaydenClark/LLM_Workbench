@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+// Name-and-context identifier rule (Wiki schema, Update section; AGENTS.md
+// Documentation Ownership And Proof): an identifier is welcome on a page when
+// the artifact's name sits beside it, and only a BARE identifier is reported.
 // Explicit article designation keeps this rule separate from general Wiki
 // provenance. Read raw content, never rendered prose or selected metadata.
 import fs from 'node:fs';
@@ -11,6 +14,15 @@ import { isWorkbenchId, visibleIdParts } from './visible-ids.mjs';
 // namespace. They must never silently pass as identifier-free content.
 const ARTIFACT_PREFIXES = new Set(['S', 'TK', 'ADR', 'N', 'LMK', 'DQC']);
 
+// Tokens that merely fit the identity grammar are not identifiers. A closed
+// list covers date placeholders, hash names and standard encodings; any other
+// undesignated token whose suffix has no digit is an ordinary hyphenated word
+// (`PRD-shaped`, `TASK-ID`). Both escapes apply only to an undesignated type:
+// the six default prefixes, `WB` identities and `--prefix` namespaces keep
+// every spelling reportable, so designating a namespace restores detection.
+const NON_IDENTIFIER_TOKENS = new Set(['YYYY-MM', 'MM-DD', 'HH-MM', 'SHA-1', 'SHA-224', 'SHA-256', 'SHA-384', 'SHA-512', 'UTF-8', 'UTF-16', 'UTF-32', 'ISO-8601']);
+const isNonIdentifier = id => NON_IDENTIFIER_TOKENS.has(id) || !/[0-9]/.test(visibleIdParts(id)?.suffix ?? '');
+
 export class LandmarkWikiRefusal extends Error {
   constructor(code, message) {
     super(message);
@@ -20,6 +32,90 @@ export class LandmarkWikiRefusal extends Error {
 }
 
 function refuse(code, message) { throw new LandmarkWikiRefusal(code, message); }
+
+// A name is a phrase of words; identifiers and punctuation are not words.
+// Lowercase function words and bare artifact-kind words ("Spec", "Task") do
+// not make a phrase a name, so "See Spec S-002A" stays bare.
+// A name word is a letter word or a version token ("v4", "v4.0.0", "3.2.1"), so a
+// real title such as "Workbench v4.0.0 Release" stays one name phrase.
+const WORD = "(?:[A-Za-z][A-Za-z'’]*(?:-[A-Za-z][A-Za-z'’]*)*|v?\\d+(?:\\.\\d+)+|v\\d+)";
+const NON_NAME = new Set(['a', 'an', 'the', 'of', 'in', 'on', 'to', 'for', 'and', 'or', 'by', 'as', 'at', 'is', 'are', 'was', 'were', 'be', 'it', 'its', 'this', 'that', 'these', 'those', 'with', 'from', 'through', 'see', 'per', 'via', 'also', 'then', 'now',
+  'spec', 'specs', 'task', 'tasks', 'adr', 'adrs', 'note', 'notes', 'notepad', 'notepads', 'card', 'cards', 'decision', 'decisions', 'question', 'questions', 'id', 'ids', 'identifier', 'identifiers']);
+const BEFORE_PHRASE = new RegExp(`(?<![A-Za-z0-9_'’-])(${WORD}(?:[ \\t]+${WORD})*)([\\s:\\-–—()\\[\\]\`*_"“”'’]*)$`);
+const AFTER_PHRASE = new RegExp(`^([\\s)\\]\`*_"”'’]*)([:\\-–—(\\[]?)([\\s"“\`*_]*)(${WORD}(?:[ \\t]+${WORD})*)(?![A-Za-z0-9_])`);
+// A path slug is lowercase hyphenated segments after the identifier. Later
+// segments may start with a digit ("-v3-1-2-follow-ups"), but at least two
+// segments must start with a letter so "-v3-1" or "-history" stays bare.
+const SLUG_AFTER = /^(?:-[a-z0-9]+)+/;
+const slugNamesArtifact = after => {
+  const slug = SLUG_AFTER.exec(after);
+  return Boolean(slug) && slug[0].split('-').slice(1).filter(segment => /^[a-z]/.test(segment)).length >= 2;
+};
+
+const capitalized = word => /^[A-Z]/.test(word);
+const substantive = words => words.filter(word => !NON_NAME.has(word.toLowerCase()));
+
+// Two substantive lowercase-tolerant words, or two capitalized words with one
+// substantive, make a name. `delimited` means a wrapper or separator sits
+// between the phrase and the identifier.
+function phraseIsName(words, delimited, fromEnd) {
+  if (delimited) return substantive(words).length >= 2;
+  const run = [];
+  for (const word of fromEnd ? [...words].reverse() : words) {
+    if (!capitalized(word)) break;
+    run.push(word);
+  }
+  return run.length >= 2 && substantive(run).length >= 1;
+}
+
+function linkTextIsName(text) {
+  const words = [...text.matchAll(new RegExp(WORD, 'g'))].map(match => match[0]).filter(word => !NON_NAME.has(word.toLowerCase()));
+  return words.length >= 2;
+}
+
+// A link target names the artifact when a path segment starts with the
+// identifier, or with its suffix as an ADR file name does (`000P-...md`), and
+// a slug of two or more letter-leading words follows.
+const escapeRegExp = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+function targetNamesIdentifier(target, id) {
+  const suffix = id.slice(id.indexOf('-') + 1);
+  for (const hit of target.matchAll(new RegExp(`(?:^|/)(?:${escapeRegExp(id)}|${escapeRegExp(suffix)})(?=-)`, 'g'))) {
+    if (slugNamesArtifact(target.slice(hit.index + hit[0].length))) return true;
+  }
+  return false;
+}
+
+// Decide whether the identifier `id` at `column` of one masked line has the
+// artifact's name beside it: inside a link whose text names it (the target
+// slug may name an identifier-only text), followed by a path slug of two or
+// more words, or adjacent to a name phrase. `raw` is the unmasked line.
+function hasNameAndContext(masked, column, id, raw) {
+  const length = id.length;
+  const before = masked.slice(0, column);
+  const after = masked.slice(column + length);
+  if (slugNamesArtifact(after)) return true;
+  const plain = value => value.replace(/[*_`#]/g, ' ');
+  for (const link of masked.matchAll(/\[([^\]]*)\]\(([^)]*)\)/g)) {
+    const textStart = link.index + 1;
+    const targetStart = textStart + link[1].length + 2;
+    if (column >= targetStart && column < targetStart + link[2].length) return linkTextIsName(plain(link[1]));
+    if (column >= textStart && column < textStart + link[1].length && (linkTextIsName(plain(link[1])) || targetNamesIdentifier(raw.slice(targetStart, targetStart + link[2].length), id))) return true;
+  }
+  const reference = /^\s*\[([^\]]+)\]:\s*(\S+)/.exec(masked);
+  if (reference) {
+    const textStart = masked.indexOf('[') + 1;
+    if (column > textStart + reference[1].length) return linkTextIsName(plain(reference[1]));
+    if (column >= textStart && (linkTextIsName(plain(reference[1])) || targetNamesIdentifier(/^\s*\[[^\]]+\]:\s*(\S+)/.exec(raw)[1], id))) return true;
+  }
+  const beforeMatch = BEFORE_PHRASE.exec(before);
+  if (beforeMatch && phraseIsName(beforeMatch[1].split(/[ \t]+/), /\S/.test(beforeMatch[2]), true)) return true;
+  const afterMatch = AFTER_PHRASE.exec(after);
+  if (afterMatch) {
+    const opener = afterMatch[2] || /["“`*_]/.test(afterMatch[3]);
+    if (phraseIsName(afterMatch[4].split(/[ \t]+/), Boolean(opener), false)) return true;
+  }
+  return false;
+}
 
 export function validateLandmarkArticle(root, article, options = {}) {
   if (typeof root !== 'string' || !root.trim() || root.includes('\0') || typeof article !== 'string' || !article.trim() || article.includes('\0')) {
@@ -70,21 +166,29 @@ export function validateLandmarkArticle(root, article, options = {}) {
     } else decoded += content[index];
   }
   const findings = [];
-  for (const match of decoded.matchAll(/(?<![A-Za-z0-9])([A-Z][A-Z0-9]{0,15}-[0-9A-Za-z]+)(?![A-Za-z0-9])/g)) {
+  const ID_PATTERN = /(?<![A-Za-z0-9])([A-Z][A-Z0-9]{0,15}-[0-9A-Za-z]+)(?![A-Za-z0-9])/g;
+  for (const match of decoded.matchAll(ID_PATTERN)) {
     const id = match[1];
+    const lineStart = decoded.lastIndexOf('\n', match.index - 1) + 1;
+    const lineEndAt = decoded.indexOf('\n', match.index);
+    const text = decoded.slice(lineStart, lineEndAt === -1 ? decoded.length : lineEndAt);
+    // Other identifiers on the line never count as the name of this one.
+    const masked = text.replace(ID_PATTERN, hit => '#'.repeat(hit.length));
     const known = prefixes.has(visibleIdParts(id)?.prefix) || isWorkbenchId(id);
+    if (!known && isNonIdentifier(id)) continue;
+    if (hasNameAndContext(masked, match.index - lineStart, id, text)) continue;
     const before = content.slice(0, positions[match.index]);
     const line = before.split('\n').length;
     const column = Array.from(before.slice(before.lastIndexOf('\n') + 1)).length + 1;
     findings.push({
-      code: known ? 'landmark-wbid' : 'landmark-ambiguous', id, article: relative, line, column,
+      code: known ? 'landmark-bare-id' : 'landmark-ambiguous', id, article: relative, line, column,
       byteOffset: Buffer.byteLength(before, 'utf8'),
       message: known
-        ? `${id} at ${relative}:${line}:${column}; keep identity provenance in structured records, outside readable Landmark article bytes.`
-        : `${id} at ${relative}:${line}:${column} matches visible identity grammar with an undesignated type; designate its namespace with --prefix or clarify the article wording.`
+        ? `${id} at ${relative}:${line}:${column} is a bare identifier; add the artifact's name and context beside it, for example "<artifact name> (${id})", and keep the identifier.`
+        : `${id} at ${relative}:${line}:${column} matches visible identity grammar with an undesignated type and has no name beside it; add the artifact's name and context, or designate its namespace with --prefix if it is an identifier, and keep the token.`
     });
   }
-  const status = findings.some(hit => hit.code === 'landmark-wbid') ? 'invalid' : findings.length ? 'incomplete' : 'valid';
+  const status = findings.some(hit => hit.code === 'landmark-bare-id') ? 'invalid' : findings.length ? 'incomplete' : 'valid';
   return { status, article: relative, findings };
 }
 

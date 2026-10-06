@@ -21,7 +21,7 @@ The Workbench made the repository legible to agents; the running product is stil
 
 ## Current Verified State
 
-At integration `46ad9789` (2026-10-05): the manifest declares lanes, collections, Git branches, the landmark tracker and provenance; it has no block that says how to run, operate, inspect or measure the product. `doctor` reports installed-state, claim and seed findings and nothing about a runtime surface. The `run` skill on the host finds a project skill for launching the app or falls back to patterns per project type; nothing in the room declares the answer. No implementation or agent-outcome proof for this capability is claimed by this Map record.
+At integration `ec65203d` (2026-10-05): the manifest declares lanes, collections, Git branches, the landmark tracker and provenance; it has no block that says how to run, operate, inspect or measure the product. `doctor` reports installed-state, claim and seed findings and nothing about a runtime surface. The `run` skill on the host finds a project skill for launching the app or falls back to patterns per project type; nothing in the room declares the answer. No implementation or agent-outcome proof for this capability is claimed by this Map record.
 
 ## Desired Behavior
 
@@ -73,7 +73,7 @@ The manifest's documentation, the Runbook's diagnostics row, a Wiki page for the
 
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
-| 2026-10-05 | none | Authored at the Map step from the owner's legibility decision of 2026-10-05 at integration 46ad9789. | Map only; the manifest and doctor were read, no runtime proof claimed. | This Spec. | Plan, implementation and proof remain. |
+| 2026-10-05 | none | Authored at the Map step from the owner's legibility decision of 2026-10-05 and re-verified at integration ec65203d. | Map only; the manifest and doctor were read, no runtime proof claimed. | This Spec. | Plan, implementation and proof remain. |
 
 ## Completion Result
 

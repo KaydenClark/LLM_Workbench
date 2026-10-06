@@ -144,8 +144,9 @@ docs look like. Copy from `templates/`, not from the root.
    detailed capability truth in specs.
 5. Preserve Task proof and Spec evidence with a <1-minute product demo. The
    Dispatcher verifies the assembled destination; a separate Director reviews
-   the immutable integration candidate. The current Task-PR exception is
-   described in AGENTS, not a separate Task approval ceremony.
+   the immutable integration candidate at the Spec's Verify step. A Task's own
+   verify step is its two merge answers, validated by the Spec's Dispatcher,
+   Director or next agent; the current Task-PR exception is described in AGENTS.
 6. The owner chooses Human QA timing and explicitly approves per-Spec delivered
    content. Only the owner promotes to main. Main verification precedes
    `complete`; routed features Wiki capture follows complete and precedes
@@ -244,12 +245,13 @@ The portable layout and skill-install contract is implemented in
 [`S-021`](workbench/specs/S-021-portable-workbench-v3/SPEC.md). The separate
 current release-readiness owner is
 [`S-00O`](workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md); only the owner
-may promote `integration` to `main`. S-014 and S-022 preserve historical release
-packets whose current obligations are routed to these owners; their blocked
-status retains unexecuted historical tasks without presenting a new assignment. The earlier v3.2 delivery receipt and its
-remaining cross-device/private-service acceptance stay with
-[`S-050`](workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md) and
-[`S-052`](workbench/specs/S-052-private-session-transport/SPEC.md).
+may promote `integration` to `main`. The v3 release records S-014, S-022 and
+[`S-050`](workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md) (the v3.2.0
+delivery receipt, now on `main`) and the unreleased v3.2.1 docket S-054 were
+superseded on 2026-10-04; each says why in its own Why Retired section. The
+real cross-device continuation proof stays with
+[`S-052`](workbench/specs/S-052-private-session-transport/SPEC.md) and runs
+inside the owner's own PC test at v4 main readiness.
 
 To pull later harness improvements into a downstream project, follow that
 project's `RUNBOOK.md` -> Upgrading The Harness: re-copy only changed template

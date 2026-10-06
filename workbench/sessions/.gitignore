@@ -1,4 +1,6 @@
 # Live session records stay local; only checkpoints/ is durable evidence.
+# The tracked grilling-destination-audit-ledger.json at this lane's root is an
+# interim home for that record while its rows become question cards.
 grilling/*
 !grilling/.gitkeep
 handoffs/*

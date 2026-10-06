@@ -356,8 +356,12 @@ test('the protocols run the report and route AGENTS.md divergences to a recorded
   const section5 = upgrade.slice(upgrade.indexOf('## 5.'), upgrade.indexOf('## 6.'));
   assert.match(section5, /node tools\/control-fidelity\.mjs report --project/, 'update-harness section 5 runs the report');
   assert.match(section5, /`dropped` or `changed`[\s\S]*`AGENTS\.md`[\s\S]*(restored|restore)[\s\S]*(recorded|record)[\s\S]*ADR/, 'update-harness section 5 requires each AGENTS.md divergence to be restored or recorded');
+  // S-004C TK-005K: the procedure moved from the Runbook section into the
+  // workbench-room-checks maintainer skill, which the Runbook index points to.
   const runbook = fs.readFileSync(path.join(root, 'RUNBOOK.md'), 'utf8');
-  assert.match(runbook, /node tools\/control-fidelity\.mjs report --project/, 'the Runbook documents the report command');
+  assert.match(runbook, /workbench\/skills\/workbench-room-checks\/SKILL\.md#control-fidelity-report/, 'the Runbook points the report operation at its procedure');
+  const roomChecks = fs.readFileSync(path.join(root, 'workbench', 'skills', 'workbench-room-checks', 'SKILL.md'), 'utf8');
+  assert.match(roomChecks, /node tools\/control-fidelity\.mjs report --project/, 'the workbench-room-checks skill documents the report command');
   // The Full suite list has one home, the Runbook's Test And Build (S-004C
   // TK-005I): the fidelity test is a member there, and AGENTS.md points to it.
   const suite = runbook.slice(runbook.search(/^Full suite for controls/m));
@@ -519,7 +523,7 @@ function taskWorkflowContract(content, generic = false) {
     ['Delivered blocker', lifecycle, /`S-###:delivered`[\s\S]*content-bound[\s\S]*fetch integration/],
     ['Owner-decision blocker', lifecycle, /`owner:<decision>`[^.]*removed/],
     ['Blocker diagnostics', lifecycle, /`blocked-without-blocker`[\s\S]*`unknown-blocker-qualifier`/],
-    ['Current branch exception', git, generic ? /route actually declared[\s\S]*temporary Task-PR exception requires immutable separate-context[\s\S]*review before integration/ : /S-00O[\s\S]*exemption 2[\s\S]*Task PR[^.]*`integration`[\s\S]*separate-context review/],
+    ['Current branch exception', git, generic ? /route actually declared[\s\S]*temporary Task-PR exception changes where a Task lands[\s\S]*no\s+separate-context review/ : /S-00O[\s\S]*exemption 2[\s\S]*Task PR[^.]*`integration`[\s\S]*gets no separate-context review/],
     ['Flexible owner QA', git, /milestones[\s\S]*accumulated work[\s\S]*exhausted\s+Specs[\s\S]*valued Spec[\s\S]*Director escalation/],
     ['Failed QA retained', git, /does not reset a failed\s+Human QA gate/],
     ['Owner-only main', git, generic ? /owner-only final merge:[\s\S]*`\[OWNER_ONLY_MERGE\]`/ : /only the owner merges `integration` into `main`/]
@@ -800,7 +804,7 @@ test('both Lexicons define the Workbench terms once and use "controls" only for 
 // S-004G: each workflow verb has exactly one row stating its confirmed
 // meaning, and the Workflow row states the open verb set and the delivery
 // workflow, with Journey as the build loop and Delivered replacing Complete.
-const WORKFLOW_VERBS = ['Idea', 'Align', 'Confirm', 'Prototype', 'Map', 'Plan', 'Implement', 'Check', 'Review', 'Verify', 'Journey', 'Approve', 'Delivered', 'Clean Up'];
+const WORKFLOW_VERBS = ['Idea', 'Align', 'Confirm', 'Prototype', 'Map', 'Plan', 'Implement', 'Check', 'QA', 'Submit', 'Review', 'Verify', 'Journey', 'Approve', 'Delivered', 'Clean Up'];
 
 test('both Lexicons define every workflow verb once and state the delivery workflow with Journey as the build loop', () => {
   const rowsOf = (content, term) => content.split('\n').filter((line) => line.startsWith(`| **${term}** |`));
@@ -808,12 +812,28 @@ test('both Lexicons define every workflow verb once and state the delivery workf
     const content = read(root, relative);
     for (const verb of [...WORKFLOW_VERBS, 'Workflow verb', 'Workflow']) assert.equal(rowsOf(content, verb).length, 1, `${relative} has exactly one ${verb} row`);
     const workflow = rowsOf(content, 'Workflow')[0];
-    assert.match(workflow, /Idea, Align, Confirm, Map, Plan, Journey, Approve, Delivered, Clean Up/, `${relative} Workflow row names the delivery workflow`);
+    assert.match(workflow, /Idea, Align, Confirm, Map, Plan, Journey, Review, Verify, Approve, Delivered, Clean Up/, `${relative} Workflow row names the delivery workflow`);
     assert.match(workflow, /verb set stays open/, `${relative} Workflow row says the set is open`);
     assert.doesNotMatch(workflow, /eight verbs Idea|official workflow verbs everywhere/, `${relative} Workflow row drops the closed list`);
-    assert.match(rowsOf(content, 'Journey')[0], /Implement, Check, Review and Verify, repeated until the confirmed concept is built\. Map and Plan come before it and are not part of it/, `${relative} Journey row`);
+    // Owner, 2026-10-05: QA and Submit join the Journey; Review comes after it
+    // and decides whether another Journey is needed.
+    assert.match(rowsOf(content, 'Journey')[0], /Journey is Implement, Check, QA and Submit\. Map and Plan come before it; Review comes after it and decides whether another Journey is needed/, `${relative} Journey row`);
+    assert.doesNotMatch(rowsOf(content, 'Journey')[0], /Implement, Check, Review and Verify, repeated/, `${relative} Journey row drops the replaced loop`);
+    assert.match(rowsOf(content, 'QA')[0], /self-judgement/, `${relative} QA row`);
+    assert.match(rowsOf(content, 'Submit')[0], /merge request/, `${relative} Submit row`);
+    const review = rowsOf(content, 'Review')[0];
+    assert.match(review, /decides whether another Journey is needed/, `${relative} Review row`);
+    assert.doesNotMatch(review, /before it merges into its Spec's branch|Task pull request/, `${relative} Review row is not a Task review`);
+    if (relative === 'LEXICON.md') assert.match(review, /dictionary-automated-review\.md/, `${relative} Review row routes depth to the Wiki dictionary`);
+    assert.match(content.split('\n').find((line) => line.startsWith('| **Automated review** (')), /a Spec, sometimes a landmark, or the Workbench as a whole[^|]*never a Task/, `${relative} Automated review row scope`);
+    // Owner, 2026-10-05 (confirmed readback): Review judges a completed
+    // destination against its Map, and confirmation is the gate a claim
+    // passes from Intent to Enduring Context, for one answer or a batch.
+    assert.match(content.split('\n').find((line) => line.startsWith('| **Automated review** (')), /against its Map/, `${relative} Automated review row judges against the Map`);
+    assert.match(rowsOf(content, 'Confirm')[0], /moves from Intent to Enduring Context only by the owner's confirmation/, `${relative} Confirm row states the plane gate`);
+    assert.match(rowsOf(content, 'Confirm')[0], /an agent's recommendation is intent too/, `${relative} Confirm row covers recommendations`);
     assert.match(rowsOf(content, 'Delivered')[0], /Delivered, not Complete/, `${relative} Delivered row`);
-    assert.match(rowsOf(content, 'Check')[0], /automated checks the building agent runs on its own Task/, `${relative} Check row`);
+    assert.match(rowsOf(content, 'Check')[0], /deterministic verifications the building agent runs in the environment on its own Task/, `${relative} Check row`);
     assert.doesNotMatch(rowsOf(content, 'Align')[0], /not itself implementation permission/, `${relative} Align row drops the old confirmation clause`);
     assert.match(rowsOf(content, 'Confirm')[0], /authorizes the agents to carry the concept to its endpoint/, `${relative} Confirm row`);
     assert.equal(content.split('\n').filter((line) => /^\| \*\*Map\*\* \|/.test(line)).length, 1, `${relative} keeps one Map row for noun and verb`);
@@ -855,7 +875,8 @@ test('the workflow verbs decision carries the Journey correction and no active r
   for (const [file, text] of records) assert.doesNotMatch(text, /Journey is Map, Plan, Implement, Review and Verify/, `${file} still states the replaced Journey`);
   const workflow = records.find(([file]) => /\/000X-the-workflow-is-eight-verbs/.test(file));
   assert.ok(workflow, 'the workflow verbs decision stays an active accepted record');
-  assert.match(workflow[1], /Journey is Implement, Check, Review and Verify, repeated until the confirmed concept is built; Map and Plan come before it and are not part of it/);
+  assert.match(workflow[1], /Journey is Implement, Check, QA and Submit; Map and Plan come before it, and Review comes after it and decides whether another Journey is needed/);
+  assert.match(workflow[1], /Amended 2026-10-05/);
   assert.match(workflow[1], /the verb set is open/i);
   assert.match(workflow[1], /Amended 2026-10-03/);
   assert.match(workflow[1], /git show [0-9a-f]{7,40}:workbench\/docs\/adr\/000X-/, 'the amendment names where the earlier text reads');
@@ -868,9 +889,9 @@ test('the workflow Wiki pages state the delivery workflow and Journey as the bui
   for (const file of ['workflow-verbs.md', 'idea-to-delivery-workflow.md']) {
     const page = read(root, `workbench/wiki/design-concepts/${file}`).replace(/\s+/g, ' ');
     assert.doesNotMatch(page, /Journey \(Map, Plan, Implement, Review, Verify\)|Map, Plan, Implement, Review and Verify together are a \*\*Journey|Map through Verify together are one Journey/, `${file} still states the replaced Journey`);
-    assert.match(page, /Idea, Align, Confirm, Map, Plan, Journey, Approve, Delivered, Clean Up/, `${file} names the delivery workflow`);
+    assert.match(page, /Idea, Align, Confirm, Map, Plan, Journey, Review, Verify, Approve, Delivered, Clean Up/, `${file} names the delivery workflow`);
   }
-  assert.match(read(root, 'workbench/wiki/design-concepts/workflow-verbs.md').replace(/\s+/g, ' '), /Journey is the build loop: Implement, Check, Review and Verify, repeated until the confirmed concept is built/);
+  assert.match(read(root, 'workbench/wiki/design-concepts/workflow-verbs.md').replace(/\s+/g, ' '), /Journey is the build loop: Implement, Check, QA and Submit/);
 });
 
 // S-004E: each AI Coding Dictionary term the owner adopted has exactly one
@@ -967,6 +988,7 @@ const AI_CODING_WIKI_ENTRIES = {
   'dictionary-harness.md': 'harness', 'dictionary-session.md': 'session', 'dictionary-context.md': 'context',
   'dictionary-context-window.md': 'context-window', 'dictionary-stateless.md': 'stateless', 'dictionary-stateful.md': 'stateful',
   'dictionary-cache-tokens.md': 'cache-tokens', 'dictionary-non-determinism.md': 'non-determinism',
+  'dictionary-automated-review.md': 'automated-review',
 };
 
 test('each AI Coding Dictionary Wiki entry is routed from MEMORY.md and links its row, its dictionary entry and its owners', () => {
@@ -1015,4 +1037,100 @@ test('AGENTS, its template and the to-tasks skill state the corrective-work rule
   assert.doesNotMatch(toTasks, /for a corrective Task after retirement/);
   assert.equal(read(root, 'AGENTS.md').includes('## Assembled Review') || read(root, 'AGENTS.md').includes('### Assembled Review And Corrective Return'), true, 'the heading other records link to stays');
   assert.match(read(root, 'AGENTS.md'), /### Owner Closure And Reconciliation/);
+});
+
+// S-004C TK-005M: a room still on the earlier, long template shape is compared
+// against the pointer-brief shape. Without the room's own template generation
+// every old-shape line looks room-owned (`added`) and every new pointer line
+// looks dropped by the room. With that generation (named explicitly, or
+// resolved from the room manifest's recorded source commit in this checkout),
+// each such line carries a `generation` label, so the room is told which
+// differences are the template's and which are its own.
+const LONG_SHAPE_COMMIT = 'd7ffffe9f44c96f2e43b1465b99ccb721942c4f8';
+
+function templatesAt(commit) {
+  const directory = fixture('control-fidelity-previous-');
+  for (const name of controls) {
+    const shown = spawnSync('git', ['show', `${commit}:templates/${name}`], { cwd: root, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+    assert.equal(shown.status, 0, `git show ${commit}:templates/${name}: ${shown.stderr}`);
+    write(directory, name, shown.stdout);
+  }
+  return directory;
+}
+
+function wordOverlap(a, b) {
+  const left = new Set(a.toLowerCase().match(/[a-z0-9_]+/g) ?? []);
+  const right = b.toLowerCase().match(/[a-z0-9_]+/g) ?? [];
+  return right.filter((word) => left.has(word)).length / Math.max(right.length, 1);
+}
+
+function normalizedLines(content) {
+  return content.split('\n').map((line) => line.trim().replace(/\s+/g, ' ')).filter((line) => /[a-z0-9]{3,}/i.test(line) && !/\[[A-Z]/.test(line));
+}
+
+test('TK-005M: an old-shape room is told which differences are a template generation difference and which are its own', () => {
+  const previous = templatesAt(LONG_SHAPE_COMMIT);
+  const project = fixture('control-fidelity-old-shape-');
+  for (const name of controls) write(project, name, fill(read(previous, name)));
+  write(project, 'CLAUDE.md', '@AGENTS.md\n');
+  const ownRule = 'Room rule: never edit the vendored payments adapter without the payments owner.';
+  write(project, 'AGENTS.md', `${read(project, 'AGENTS.md')}\n## Room Boundaries\n\n${ownRule}\n`);
+  // A recorded divergence: the room rewrote a line both generations ship.
+  const shared = normalizedLines(read(previous, 'AGENTS.md')).find((line) => line.length > 60 && normalizedLines(read(productTemplates, 'AGENTS.md')).includes(line) && read(project, 'AGENTS.md').includes(line));
+  assert.ok(shared, 'both template generations share a line to diverge from');
+  const diverged = `${shared} The room records this divergence in its upgrade Spec.`;
+  write(project, 'AGENTS.md', read(project, 'AGENTS.md').replace(shared, diverged));
+  // The room also rewrote a line only the earlier template ships; that is the
+  // room's own change, not a template difference, even though the current
+  // template no longer carries the line.
+  // Pick a line the current template removed outright (no current line shares
+  // half its words), so the room's rewrite cannot also be a template rewrite.
+  const currentLines = normalizedLines(read(productTemplates, 'AGENTS.md'));
+  const earlierOnly = normalizedLines(read(previous, 'AGENTS.md')).find((line) => line.length > 60 && !currentLines.includes(line) && read(project, 'AGENTS.md').includes(line) && currentLines.every((other) => wordOverlap(line, other) < 0.5 && wordOverlap(other, line) < 0.5));
+  assert.ok(earlierOnly, 'the earlier generation has a line the current one dropped');
+  const customized = `${earlierOnly} This room tightened the rule for its payments adapter.`;
+  write(project, 'AGENTS.md', read(project, 'AGENTS.md').replace(earlierOnly, customized));
+  const current = normalizedLines(read(productTemplates, 'AGENTS.md'));
+  const earlier = normalizedLines(read(previous, 'AGENTS.md'));
+  const newOnly = current.find((line) => line.length > 40 && !earlier.includes(line));
+  assert.ok(newOnly, 'the two generations differ in AGENTS.md');
+  const roomOwn = ['## Room Boundaries', ownRule];
+  const roomOwnAdded = (text) => roomOwn.includes(text) || text.includes('This room tightened the rule for its payments adapter.');
+
+  const plain = reportFidelity({ project, templates: productTemplates, manifestRelease: VERSION, checkoutVersion: VERSION });
+  assert.equal(plain.previousTemplates, null, 'no earlier generation is named or recorded, so none is used');
+  const plainAgents = control(plain, 'AGENTS.md');
+  assert.ok(plainAgents.lines.every((line) => line.generation === undefined), 'without an earlier generation no line is labeled');
+
+  for (const report of [
+    reportFidelity({ project, templates: productTemplates, previousTemplates: previous, manifestRelease: VERSION, checkoutVersion: VERSION }),
+    (write(project, 'workbench/manifest.json', `${JSON.stringify({ ...JSON.parse(manifest(VERSION)), provenance: { lifecycle: 'genesis', source: { release: VERSION, commit: LONG_SHAPE_COMMIT } } }, null, 2)}\n`),
+      reportFidelity({ project, templates: productTemplates, manifestRelease: VERSION, checkoutVersion: VERSION }))
+  ]) {
+    assert.ok(report.previousTemplates, 'the earlier generation is reported');
+    const agents = control(report, 'AGENTS.md');
+    const byRoom = (text) => agents.lines.find((line) => line.room !== undefined && line.room.trim().replace(/\s+/g, ' ') === text);
+    const byTemplate = (text) => agents.lines.find((line) => line.template !== undefined && line.template.trim().replace(/\s+/g, ' ') === text && line.kind === 'dropped');
+    assert.equal(byRoom(ownRule)?.kind, 'added', 'the room-owned rule is added');
+    assert.equal(byRoom(ownRule)?.generation, undefined, 'the room-owned rule is the room\'s own, not a generation difference');
+    const unlabeled = (kind) => agents.lines.filter((line) => !line.trivial && line.kind === kind && line.generation === undefined);
+    assert.ok(agents.lines.some((line) => line.kind === 'added' && line.generation === 'earlier-template' && earlier.includes(line.room.trim().replace(/\s+/g, ' ')) && !current.includes(line.room.trim().replace(/\s+/g, ' '))), 'an old-shape line the current template no longer carries is labeled as the earlier template generation');
+    assert.ok(unlabeled('added').every((line) => roomOwnAdded(line.room.trim())), 'only the room\'s own lines stay unlabeled additions');
+    for (const text of roomOwn) assert.ok(unlabeled('added').some((line) => line.room.trim() === text), `the room's own line stays an unlabeled addition: ${text}`);
+    const tightened = agents.lines.find((line) => line.room !== undefined && line.room.includes('This room tightened the rule for its payments adapter.'));
+    assert.ok(tightened && tightened.generation === undefined, 'a room\'s rewrite of a line only the earlier template shipped stays the room\'s own, never a generation difference');
+    assert.deepEqual(unlabeled('dropped').map((line) => line.template), [], 'a room that kept the earlier shape dropped nothing of its own');
+    assert.ok(agents.lines.some((line) => line.kind === 'dropped' && line.generation === 'newer-template' && !earlier.includes(line.template.trim().replace(/\s+/g, ' '))), 'a new-shape line the room never had is labeled as the newer template generation');
+    assert.ok(byTemplate(newOnly) === undefined || byTemplate(newOnly).generation === 'newer-template', 'a dropped new-shape line is never left unlabeled');
+    const divergence = agents.lines.find((line) => line.room !== undefined && line.room.includes('The room records this divergence'));
+    assert.equal(divergence?.kind, 'changed', 'the recorded divergence stays a change the room made');
+    assert.equal(divergence?.generation, undefined, 'the recorded divergence is not a generation difference');
+    assert.ok(agents.generationCounts['earlier-template'] > 0 && agents.generationCounts['newer-template'] > 0, 'the control counts its generation differences');
+    const runbook = control(report, 'RUNBOOK.md');
+    const indexRow = runbook.lines.find((line) => line.kind === 'dropped' && /^\| Enter a session \|/.test(line.template ?? ''));
+    assert.equal(indexRow?.generation, 'newer-template', 'an operations index row the old room never had is a generation difference');
+    assert.match(report.markdown, /generation difference/i, 'the Markdown report names generation differences');
+  }
+  fs.rmSync(previous, { recursive: true, force: true });
+  fs.rmSync(project, { recursive: true, force: true });
 });

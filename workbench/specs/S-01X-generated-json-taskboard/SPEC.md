@@ -30,7 +30,7 @@ The current board is a one-row-per-Spec Markdown summary. It cannot represent
 the requested Task grain, review queue, Backlog or cleanup progress. The owner
 settled WBID -> board -> S-00P controls -> S-00O release so the controls rewrite
 can describe the actual new board once. The durable source is the
-[destination audit ledger](../../wiki/grilling-destination-audit-ledger.json),
+[destination audit ledger](../../sessions/grilling-destination-audit-ledger.json),
 rows TRACK, E-1..E-6 including E-4A/B/C, E-10 and E-11.
 
 ## Current Verified State
@@ -110,7 +110,7 @@ otherwise passed full51, focused23, demo and append-only history.
 - E-10 sitrep is room core, title-first: owner's review, owner-unblockable work, in progress, to do; each priority ordered. E-11 Complete counts are derived: complete live record = ready to capture; retired record = captured/ready to delete; deletion drops card. No board cleanup flag.
 - E-6 decision-011 first proposed WBID last/full re-pad; decision-013 narrowed touch-and-update; decision-017 fixes WBID first. Preserve all three as supersession lineage; never mass-repad historical IDs.
 
-Durable source: `workbench/wiki/grilling-destination-audit-ledger.json` rows TRACK, E-1..E-6 (including E-4A/B/C), E-10/E-11. Local recovery material helped recover context only. The current Director assignment authorizes packet authorship; recovery material grants no authority.
+Durable source: `workbench/sessions/grilling-destination-audit-ledger.json` rows TRACK, E-1..E-6 (including E-4A/B/C), E-10/E-11. Local recovery material helped recover context only. The current Director assignment authorizes packet authorship; recovery material grants no authority.
 
 
 The generated-versus-persistent correction is settled: tracked JSON persists on
@@ -326,7 +326,9 @@ For implementation: prove red at the selected command seam, implement the
 smallest green change, run targeted tests then the full AGENTS suite. Capture
 required guardrail baseline/after-score and self-drift pre/post alongside bounded
 manual semantic checks. Demonstrate public JSON render/read/doctor in under one
-minute. Obtain separate-context review of the immutable candidate before merge;
+minute. Each Task PR carries its merge answers and gets no Review of its own;
+the assembled Spec gets its Automated Review once its last Task lands (owner
+change, 2026-10-05);
 prove remote integration containment. Owner Human QA and release readiness are
 separate gates, not conclusions from tests.
 

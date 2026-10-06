@@ -21,7 +21,7 @@ The owner (2026-10-05): "we dont need runbook or lexicon. We should be using the
 
 ## Current Verified State
 
-At integration `46ad9789` (2026-10-05): `LEXICON.md` is 360 lines and about 13,600 words, with the Artifact Ownership Schema, the Context Map routes, the Governance Core and the term rows; `templates/LEXICON.md` mirrors it generically; the Blueprint's first line and the Template Blueprint's first line read "Its terms mean what the Lexicon says they mean"; the `lexicon`, `domain-modeling` and `ubiquitous-language` skills operate on it; the Wiki already holds dictionary entries per term under `dictionary-*.md`; the Instruction Authority list names the Lexicon as a Contract carrier; decision records name `LEXICON.md` in `canonicalized_in`. The count of tools and tests that read a Lexicon heading is for the census Task. No implementation or agent-outcome proof for this capability is claimed by this Map record.
+At integration `ec65203d` (2026-10-05): `LEXICON.md` is 362 lines and about 13,800 words, with the Artifact Ownership Schema, the Context Map routes, the Governance Core and the term rows; `templates/LEXICON.md` mirrors it generically; the Blueprint's first line and the Template Blueprint's first line read "Its terms mean what the Lexicon says they mean"; the `lexicon`, `domain-modeling` and `ubiquitous-language` skills operate on it; the Wiki already holds dictionary entries per term under `dictionary-*.md`; the Instruction Authority list names the Lexicon as a Contract carrier; decision records name `LEXICON.md` in `canonicalized_in`. The count of tools and tests that read a Lexicon heading is for the census Task. No implementation or agent-outcome proof for this capability is claimed by this Map record.
 
 ## Desired Behavior
 
@@ -76,7 +76,7 @@ Run the targeted control, wiki, template, genesis, adoption and upgrade tests, t
 
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
-| 2026-10-05 | none | Authored at the Map step from the owner's Lexicon retirement decision of 2026-10-05 at integration 46ad9789. | Map only; the Lexicon, the Template mirror and the Blueprint line were read, no runtime proof claimed. | This Spec. | Plan, the census, implementation and proof remain. |
+| 2026-10-05 | none | Authored at the Map step from the owner's Lexicon retirement decision of 2026-10-05 and re-verified at integration ec65203d. | Map only; the Lexicon, the Template mirror and the Blueprint line were read, no runtime proof claimed. | This Spec. | Plan, the census, implementation and proof remain. |
 
 ## Completion Result
 

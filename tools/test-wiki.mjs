@@ -7,7 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
-import { normalizeWiki, validateWiki } from '../workbench/tools/wiki.mjs';
+import { moveNote, normalizeWiki, validateWiki } from '../workbench/tools/wiki.mjs';
 import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -201,7 +201,7 @@ test('the validator rejects retired metadata, absolute sources, bad enums, copie
   }
 });
 
-test('design-concept articles need the owner-directed shape and stale notes are attention only', () => {
+test('design-concept articles need the authorized-operation shape and stale notes are attention only', () => {
   const project = seededWiki();
   try {
     const concepts = path.join(project, 'workbench', 'wiki', 'design-concepts');
@@ -210,7 +210,10 @@ test('design-concept articles need the owner-directed shape and stale notes are 
     fs.writeFileSync(path.join(concepts, 'Half Article.md'), note({ type: 'project' }, '# Half Article\n\nNo sections.\n'));
     const messages = validateWiki(project).map((item) => item.message);
     assert.ok(messages.some((message) => /type design-concept/.test(message)));
-    assert.ok(messages.some((message) => /authorized_by/.test(message)));
+    const authorizedBy = messages.filter((message) => /authorized_by/.test(message));
+    assert.equal(authorizedBy.length, 1);
+    assert.match(authorizedBy[0], /the operation that authorized/);
+    assert.doesNotMatch(authorizedBy[0], /owner/);
     assert.ok(messages.some((message) => /parent/.test(message)));
     assert.ok(messages.some((message) => /Evidence and Sources/.test(message)));
     assert.ok(messages.some((message) => /History/.test(message)));
@@ -277,6 +280,65 @@ test('a wiki stamp naming a version other than the manifest is attention only, a
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
   }
+});
+
+test('a routed Wiki page with no one-line summary beside its link is attention only, and the summary convention clears it', () => {
+  const project = seededWiki();
+  try {
+    const wiki = path.join(project, 'workbench', 'wiki');
+    const router = fs.readFileSync(path.join(wiki, 'MEMORY.md'), 'utf8');
+    fs.writeFileSync(path.join(wiki, 'Release Habits.md'), note());
+    fs.writeFileSync(path.join(wiki, 'Deploy Notes.md'), note());
+    const route = (body) => fs.writeFileSync(path.join(wiki, 'MEMORY.md'), `${router}\n## Notes\n\n${body}\n`);
+    const unsummarized = () => validateWiki(project).filter((item) => item.code === 'unsummarized-route');
+    assert.deepEqual(validateWiki(project), [], 'the generated router, whose table rows carry a description cell, is clean');
+
+    route('- [Release Habits](Release%20Habits.md)\n- [Deploy Notes](Deploy%20Notes.md) - how this room ships a release');
+    const [bare, ...others] = unsummarized();
+    assert.equal(others.length, 0, 'only the link with no summary is reported');
+    assert.deepEqual([bare.code, bare.severity, bare.blocks, bare.note], ['unsummarized-route', 'attention', 'none', 'workbench/wiki/MEMORY.md']);
+    assert.equal(bare.target, 'workbench/wiki/Release Habits.md');
+    assert.match(bare.message, /Release Habits/);
+    assert.match(bare.message, /\[Title\]\(path\) - summary/, 'the message states the convention');
+    assert.deepEqual(doctor(project).filter((item) => item.code === 'unsummarized-route').map((item) => item.target), ['workbench/wiki/Release Habits.md'], 'doctor carries the finding');
+    const cli = spawnSync(process.execPath, [wikiTool, 'validate', '--path', project], { cwd: project, encoding: 'utf8' });
+    assert.equal(cli.status, 0, 'a missing summary never fails the command');
+    assert.match(cli.stdout, /unsummarized-route \[attention/);
+
+    for (const summarized of [
+      '- [Release Habits](Release%20Habits.md) - how this room ships',
+      '- [Release Habits](Release%20Habits.md): how this room ships',
+      '- [Release Habits](Release%20Habits.md) — how this room ships',
+      'Start with [Release Habits](Release%20Habits.md) - how this room ships.',
+      '| Question | Read first |\n|---|---|\n| How this room ships | [Release Habits](Release%20Habits.md) |'
+    ]) {
+      route(summarized);
+      assert.deepEqual(unsummarized(), [], `${summarized} carries a summary`);
+    }
+    for (const missing of [
+      '- [Release Habits](Release%20Habits.md) explains how this room ships',
+      '- [Release Habits](Release%20Habits.md) - ',
+      '- [Release Habits](Release%20Habits.md) - ships',
+      '- [Release Habits](Release%20Habits.md) ([Deploy Notes](Deploy%20Notes.md))',
+      '| [Release Habits](Release%20Habits.md) | |',
+      '| [Release Habits](Release%20Habits.md) | [Deploy Notes](Deploy%20Notes.md) |'
+    ]) {
+      route(missing);
+      assert.ok(unsummarized().some((item) => /Release Habits/.test(item.message)), `${missing} has no one-line summary`);
+    }
+    route('- [BLUEPRINT.md](../../BLUEPRINT.md)\n- `[Release Habits](Release%20Habits.md)`\n- [Site](https://example.com/page.md)\n- [Folder](guidebooks/)\n- [[Release Habits]]');
+    assert.deepEqual(unsummarized(), [], 'a page outside the Wiki, a code span, an external link, a folder and a wikilink are not routed pages');
+    route('```\n- [Release Habits](Release%20Habits.md)\n```');
+    assert.deepEqual(unsummarized(), [], 'a fenced example is not a route');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('the router template shows the summary-line convention and the product router keeps every routed Wiki page summarized', () => {
+  const template = fs.readFileSync(path.join(root, 'templates', 'wiki', 'MEMORY.project.md'), 'utf8');
+  assert.match(template, /`- \[Schema\]\(SCHEMA\.md\) - what the page is for`/, 'the template router shows a summary-line example');
+  assert.deepEqual(validateWiki(root).filter((item) => item.code === 'unsummarized-route'), [], 'this repository routes no Wiki page without a summary');
 });
 
 test('this repository stamps its wiki contract files with its manifest version and routes to its room brain', () => {
@@ -449,4 +511,399 @@ test('a feature article validates in the features collection, normalize infers i
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
   }
+});
+
+// S-003W TK-001: the link-safe note move. A fixture room carries a per-Spec
+// design-concept article, and every kind of surface that links to it: the
+// router, a sibling note, a root control, a Spec (live prose and its
+// append-only evidence), a Task record and a landmark question card.
+function moveFixture() {
+  const project = seededWiki();
+  const wiki = path.join(project, 'workbench', 'wiki');
+  const concepts = path.join(wiki, 'design-concepts');
+  const specDir = path.join(project, 'workbench', 'specs', 'S-700-fixture');
+  const taskDir = path.join(specDir, 'tasks', 'TK-001');
+  const cards = path.join(project, 'workbench', 'landmark-tracker', 'destination-questions');
+  for (const directory of [concepts, path.join(wiki, 'features'), taskDir, cards]) fs.mkdirSync(directory, { recursive: true });
+  const article = note({
+    type: 'design-concept', authorized_by: 'owner', parent: 'none', provenance: ['owner-directed reconciliation, 2026-09-19'],
+    source_paths: ['workbench/specs/S-700-fixture/SPEC.md']
+  }, '# Fixture Article\n\nSee the [Spec](../../specs/S-700-fixture/SPEC.md), the [sibling](sibling.md#part) and [the blueprint](../../../BLUEPRINT.md), also [verbose](../../../workbench/specs/S-700-fixture/SPEC.md).\n\n## Evidence and Sources\n\n- [Spec](../../specs/S-700-fixture/SPEC.md)\n\n## History\n\n- 2026-09-19: Created.\n');
+  fs.writeFileSync(path.join(concepts, 'spec-S-700-fixture.md'), article);
+  fs.writeFileSync(path.join(concepts, 'sibling.md'), note({ type: 'design-concept', authorized_by: 'owner', parent: 'none' }, '# Sibling\n\nBack to [the article](spec-S-700-fixture.md).\n\n## Evidence and Sources\n\n- none\n\n## History\n\n- 2026-09-19: Created.\n'));
+  fs.appendFileSync(path.join(wiki, 'MEMORY.md'), '\n- [Fixture Article](design-concepts/spec-S-700-fixture.md)\n');
+  fs.appendFileSync(path.join(project, 'README.md'), '\nSee [the article](workbench/wiki/design-concepts/spec-S-700-fixture.md).\n');
+  fs.writeFileSync(path.join(specDir, 'SPEC.md'), '# S-700 - Fixture\n\nArticle: [Fixture Article](../../wiki/design-concepts/spec-S-700-fixture.md).\n\n## Append-Only Evidence And Execution Log\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| 2026-09-19 | - | captured in [the article](../../wiki/design-concepts/spec-S-700-fixture.md) | none | none | none |\n');
+  fs.writeFileSync(path.join(taskDir, 'TASK.md'), '# TK-001\n\nRead [the article](../../../../wiki/design-concepts/spec-S-700-fixture.md#what).\n');
+  fs.writeFileSync(path.join(cards, 'DQC-7000.json'), `${JSON.stringify({ id: 'DQC-7000', answer: 'Documented in [the article](../../wiki/design-concepts/spec-S-700-fixture.md).' }, null, 2)}\n`);
+  return { project, wiki, concepts, specDir, taskDir, cards };
+}
+
+function treeSnapshot(directory) {
+  const entries = {};
+  const walk = (current) => {
+    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+      const full = path.join(current, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else entries[path.relative(directory, full)] = fs.readFileSync(full, 'utf8');
+    }
+  };
+  walk(directory);
+  return entries;
+}
+
+test('move-note retypes, renames and relocates one note, rewrites every live link, counts the historical one and leaves the wiki valid', () => {
+  const fixtureRoom = moveFixture();
+  const { project, wiki, concepts, specDir, taskDir, cards } = fixtureRoom;
+  try {
+    const result = moveNote(project, { note: 'workbench/wiki/design-concepts/spec-S-700-fixture.md', to: 'features', name: 'fixture-capability', retype: 'feature' });
+    assert.equal(result.from, 'workbench/wiki/design-concepts/spec-S-700-fixture.md');
+    assert.equal(result.to, 'workbench/wiki/features/fixture-capability.md');
+    assert.equal(result.type, 'feature');
+    assert.equal(fs.existsSync(path.join(concepts, 'spec-S-700-fixture.md')), false, 'the old path is gone');
+    const moved = fs.readFileSync(path.join(wiki, 'features', 'fixture-capability.md'), 'utf8');
+    assert.match(moved, /^---\ntype: feature\n/, 'the note is retyped in its frontmatter');
+    assert.match(moved, /\(\.\.\/\.\.\/specs\/S-700-fixture\/SPEC\.md\)/, 'a same-depth outgoing link is untouched');
+    assert.match(moved, /\(\.\.\/\.\.\/\.\.\/workbench\/specs\/S-700-fixture\/SPEC\.md\)/, 'a link that still resolves keeps its author\'s spelling instead of being shortened');
+    assert.match(moved, /\(\.\.\/design-concepts\/sibling\.md#part\)/, 'an outgoing link to a note left behind is recomputed and keeps its fragment');
+
+    const read = (file) => fs.readFileSync(file, 'utf8');
+    assert.match(read(path.join(wiki, 'MEMORY.md')), /\]\(features\/fixture-capability\.md\)/);
+    assert.match(read(path.join(concepts, 'sibling.md')), /\]\(\.\.\/features\/fixture-capability\.md\)/);
+    assert.match(read(path.join(project, 'README.md')), /\]\(workbench\/wiki\/features\/fixture-capability\.md\)/);
+    assert.match(read(path.join(specDir, 'SPEC.md')), /Article: \[Fixture Article\]\(\.\.\/\.\.\/wiki\/features\/fixture-capability\.md\)/);
+    assert.match(read(path.join(taskDir, 'TASK.md')), /\]\(\.\.\/\.\.\/\.\.\/\.\.\/wiki\/features\/fixture-capability\.md#what\)/, 'a Task record link keeps its fragment');
+    assert.match(read(path.join(cards, 'DQC-7000.json')), /\]\(\.\.\/\.\.\/wiki\/features\/fixture-capability\.md\)/, 'a question card link is rewritten');
+    assert.match(read(path.join(specDir, 'SPEC.md')), /captured in \[the article\]\(\.\.\/\.\.\/wiki\/design-concepts\/spec-S-700-fixture\.md\)/, 'an append-only evidence row is history and keeps its old link');
+
+    assert.deepEqual(result.historicalReferencesLeft, { 'workbench/specs/S-700-fixture/SPEC.md': 1 });
+    assert.equal(result.referencesRewritten['workbench/wiki/MEMORY.md'], 1);
+    assert.equal(result.referencesRewritten['workbench/wiki/design-concepts/sibling.md'], 1);
+    assert.equal(result.referencesRewritten['workbench/specs/S-700-fixture/SPEC.md'], 1);
+    assert.equal(result.referencesRewritten['workbench/wiki/features/fixture-capability.md'], 1, 'the moved note is reported under its new path, counting only the link that needed repair');
+    assert.equal(result.usesGit, false);
+    const afterMove = validateWiki(project).filter((item) => item.note === 'workbench/wiki/features/fixture-capability.md');
+    assert.ok(afterMove.length > 0 && afterMove.every((item) => /must carry a .* section/.test(item.message)), 'the retyped note is in the right collection with the right type; only the feature sections remain for its author to write');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('move-note recomputes a moved note\'s outgoing links when it changes depth, and a dry run writes nothing', () => {
+  const project = seededWiki();
+  try {
+    const wiki = path.join(project, 'workbench', 'wiki');
+    fs.writeFileSync(path.join(wiki, 'Loose.md'), note({}, '# Loose\n\nSee [the blueprint](../../BLUEPRINT.md), [the router](MEMORY.md#top) and [the web](https://example.com/a).\n'));
+    fs.appendFileSync(path.join(wiki, 'MEMORY.md'), '\n- [Loose](Loose.md)\n');
+    const before = treeSnapshot(project);
+    const planned = moveNote(project, { note: 'workbench/wiki/Loose.md', to: 'archive', dryRun: true });
+    assert.equal(planned.dryRun, true);
+    assert.equal(planned.to, 'workbench/wiki/archive/Loose.md');
+    assert.deepEqual(treeSnapshot(project), before, 'a dry run writes nothing');
+    moveNote(project, { note: 'workbench/wiki/Loose.md', to: 'archive' });
+    const moved = fs.readFileSync(path.join(wiki, 'archive', 'Loose.md'), 'utf8');
+    assert.match(moved, /\]\(\.\.\/\.\.\/\.\.\/BLUEPRINT\.md\)/, 'a link out of the note is recomputed for its new depth');
+    assert.match(moved, /\]\(\.\.\/MEMORY\.md#top\)/);
+    assert.match(moved, /\]\(https:\/\/example\.com\/a\)/, 'a web link is never touched');
+    assert.match(fs.readFileSync(path.join(wiki, 'MEMORY.md'), 'utf8'), /\]\(archive\/Loose\.md\)/);
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('move-note refuses unsafe moves with a clear reason and writes nothing', () => {
+  const { project, wiki, concepts } = moveFixture();
+  try {
+    fs.writeFileSync(path.join(wiki, 'features', 'taken.md'), featureArticle());
+    fs.writeFileSync(path.join(wiki, 'features', 'sibling-name.md'), featureArticle());
+    fs.writeFileSync(path.join(wiki, 'Bare.md'), '# Bare\n\nNo frontmatter.\n');
+    fs.writeFileSync(path.join(wiki, 'Wikilinked.md'), note({}, '# Wikilinked\n\nSee [[Orphaned Name]].\n'));
+    fs.writeFileSync(path.join(wiki, 'Orphaned Name.md'), note({}, '# Orphaned\n'));
+    const article = 'workbench/wiki/design-concepts/spec-S-700-fixture.md';
+    const before = treeSnapshot(project);
+    const refuse = (options, pattern, label) => {
+      assert.throws(() => moveNote(project, options), pattern, label);
+      assert.deepEqual(treeSnapshot(project), before, `${label}: nothing was written`);
+    };
+    refuse({ note: article, to: 'features' }, /features does not accept type design-concept/, 'a type the destination does not accept');
+    refuse({ note: article, to: 'features', retype: 'guidebook' }, /features does not accept type guidebook/, 'a retype the destination does not accept');
+    refuse({ note: article, to: 'guidebooks', retype: 'bogus' }, /type bogus is not one of/, 'an unknown retype');
+    refuse({ note: article, to: 'features', retype: 'feature', name: 'taken' }, /already exists/, 'an occupied destination');
+    refuse({ note: article, to: 'design-concepts', name: 'sibling' }, /already exists/, 'an occupied destination in the same collection');
+    refuse({ note: article, to: 'archive', name: 'taken' }, /basename taken is not unique/, 'a basename another collection already holds');
+    refuse({ note: article, to: 'design-concepts' }, /already lives in/, 'a no-op move');
+    refuse({ note: article, to: 'nowhere' }, /unknown destination collection nowhere/, 'an unknown collection');
+    refuse({ note: article, to: 'features', retype: 'feature', name: '../escape' }, /name must be a plain note name/, 'a path in the new name');
+    refuse({ note: 'workbench/wiki/MEMORY.md', to: 'archive' }, /router and contract files do not move/, 'the router');
+    refuse({ note: 'workbench/wiki/design-concepts/README.md', to: 'archive' }, /router and contract files do not move/, 'a collection README');
+    refuse({ note: 'workbench/wiki/missing.md', to: 'archive' }, /does not exist/, 'a missing note');
+    refuse({ note: 'README.md', to: 'archive' }, /must be inside the wiki lane/, 'a note outside the wiki lane');
+    refuse({ note: 'workbench/wiki/Bare.md', to: 'archive' }, /has no frontmatter/, 'a note with no frontmatter');
+    refuse({ note: 'workbench/wiki/Orphaned Name.md', to: 'archive', name: 'Renamed' }, /wikilink/, 'a rename that would orphan a wikilink');
+    assert.equal(fs.existsSync(path.join(concepts, 'spec-S-700-fixture.md')), true);
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('move-note in a Git room records a rename and stages only the files it changed; the CLI reports JSON and refuses with exit 1', () => {
+  const { project, wiki } = moveFixture();
+  try {
+    const git = (...args) => spawnSync('git', ['-C', project, ...args], { encoding: 'utf8' });
+    assert.equal(git('init', '-q').status, 0);
+    git('config', 'user.email', 'fixture@example.com');
+    git('config', 'user.name', 'Fixture');
+    git('add', '-A');
+    assert.equal(git('commit', '-q', '-m', 'fixture').status, 0);
+    fs.writeFileSync(path.join(project, 'unrelated.txt'), 'unrelated dirty work\n');
+    const cli = spawnSync(process.execPath, [wikiTool, 'move-note', 'workbench/wiki/design-concepts/spec-S-700-fixture.md', '--to', 'features', '--name', 'fixture-capability', '--retype', 'feature', '--path', project, '--json'], { cwd: project, encoding: 'utf8' });
+    assert.equal(cli.status, 0, cli.stderr);
+    const report = JSON.parse(cli.stdout);
+    assert.equal(report.usesGit, true);
+    assert.equal(report.to, 'workbench/wiki/features/fixture-capability.md');
+    const status = git('status', '--porcelain').stdout;
+    assert.match(status, /^R  workbench\/wiki\/design-concepts\/spec-S-700-fixture\.md -> workbench\/wiki\/features\/fixture-capability\.md$/m, 'git sees a rename');
+    assert.match(status, /^\?\? unrelated\.txt$/m, 'unrelated work is never staged');
+    assert.doesNotMatch(status, /^.M /m, 'every changed file is staged, none is left half-edited');
+    const refused = spawnSync(process.execPath, [wikiTool, 'move-note', 'workbench/wiki/features/fixture-capability.md', '--to', 'design-concepts', '--path', project], { cwd: project, encoding: 'utf8' });
+    assert.equal(refused.status, 1);
+    assert.match(refused.stderr, /design-concepts does not accept type feature/);
+    const usage = spawnSync(process.execPath, [wikiTool, 'move-note', '--path', project], { cwd: project, encoding: 'utf8' });
+    assert.equal(usage.status, 1);
+    assert.match(usage.stderr, /move-note NOTE --to COLLECTION/);
+    assert.equal(fs.existsSync(path.join(wiki, 'features', 'fixture-capability.md')), true);
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+// S-002L TK-006M: the draft skills wiki lives in `workbench/wiki/skills-draft/`,
+// one folder per group, and is the Wiki's second nesting exception beside
+// `archive/`. It is a repo-only prototype, so it is named by SCHEMA.md and this
+// validator rather than declared in the manifest's closed collection set. A
+// draft article is `skills-draft/<group>/<skill>.md` with the scoped
+// `status: draft`, and the scoped status is refused everywhere else.
+const DRAFT_GROUPS = ['getting-started', 'main-workflow', 'shaping', 'upkeep', 'primitives', 'productivity', 'stances', 'foundry'];
+
+const READER_SECTIONS = ['What it does', 'When to reach for it', 'What it needs', 'What it reads and writes', 'How it works', 'Common questions', 'It\'s working if', 'Where it fits'];
+const DRAFT_ONLY_SECTIONS = ['Compared with Matt\'s', 'Findings', 'Sources and history'];
+const FINDING_KINDS = ['dangling', 'stale-name', 'overlap', 'gap', 'conflict', 'missing-skill'];
+
+// A complete draft body: the eight reader sections, the draft-only marker, then
+// the three draft-only sections. `findings` replaces the Findings section text.
+function draftBody({ skip = [], findings = 'F:wayfinder:01 | gap | no home is named for pre-Spec decisions | wayfinder Spec\nF:wayfinder:02 | dangling | names a skill that does not exist | owning Spec' } = {}) {
+  const lines = ['# Wayfinder: chart a large effort one decision at a time', ''];
+  const section = (name) => { if (!skip.includes(name)) lines.push(`## ${name}`, '', name === 'Findings' ? findings : 'Filled.', ''); };
+  READER_SECTIONS.forEach(section);
+  if (!skip.includes('marker')) lines.push('--- draft only, stripped on promotion ---', '');
+  DRAFT_ONLY_SECTIONS.forEach(section);
+  return lines.join('\n');
+}
+
+function draftArticle(overrides = {}, body = draftBody()) {
+  return note({
+    type: 'memory',
+    status: 'draft',
+    skill: 'wayfinder',
+    group: 'shaping',
+    skill_source: 'pending',
+    origin: 'matt',
+    matt_counterpart: 'wayfinder',
+    provenance: ['draft skills wiki pilot, upstream pin d81f3a1'],
+    source_paths: ['BLUEPRINT.md'],
+    last_verified: '2026-10-04',
+    ...overrides
+  }, body);
+}
+
+test('a nested draft article validates in the skills-draft collection, and a misplaced, mis-grouped or wrongly scoped one is refused by name', () => {
+  const project = seededWiki();
+  try {
+    const wiki = path.join(project, 'workbench', 'wiki');
+    const drafts = path.join(wiki, 'skills-draft');
+    for (const group of DRAFT_GROUPS) fs.mkdirSync(path.join(drafts, group), { recursive: true });
+    fs.writeFileSync(path.join(drafts, 'README.md'), note({ type: 'meta', knowledge_role: 'canonical' }, '# Skills draft wiki\n\nIndex.\n'));
+    fs.writeFileSync(path.join(drafts, 'shaping', 'wayfinder.md'), draftArticle());
+    assert.deepEqual(validateWiki(project), [], 'a placed, well-formed draft with an index README validates with no finding');
+
+    const noteFindings = (relative) => validateWiki(project).filter((item) => item.note === `workbench/wiki/${relative}`);
+    const refused = (relative, pattern, why) => assert.ok(noteFindings(relative).some((item) => item.code === 'invalid-note' && pattern.test(item.message)), why);
+
+    fs.writeFileSync(path.join(wiki, 'flat-draft.md'), draftArticle());
+    refused('flat-draft.md', /status draft belongs in workbench\/wiki\/skills-draft/, 'status draft outside the collection is refused');
+    fs.rmSync(path.join(wiki, 'flat-draft.md'));
+
+    fs.writeFileSync(path.join(drafts, 'shaping', 'not-a-draft.md'), draftArticle({ status: 'active', skill: 'not-a-draft' }));
+    refused('skills-draft/shaping/not-a-draft.md', /must declare status draft/, 'a note in the collection must declare status draft');
+    fs.rmSync(path.join(drafts, 'shaping', 'not-a-draft.md'));
+
+    fs.writeFileSync(path.join(drafts, 'shaping', 'regroup.md'), draftArticle({ skill: 'regroup', group: 'upkeep' }));
+    refused('skills-draft/shaping/regroup.md', /group upkeep does not match its folder shaping/, 'a draft names the group folder it sits in');
+    fs.rmSync(path.join(drafts, 'shaping', 'regroup.md'));
+
+    fs.writeFileSync(path.join(drafts, 'shaping', 'anonymous.md'), draftArticle({ skill: undefined, group: undefined }));
+    refused('skills-draft/shaping/anonymous.md', /must declare group shaping/, 'a draft that omits its group is refused');
+    refused('skills-draft/shaping/anonymous.md', /must declare skill anonymous/, 'a draft that omits its skill is refused');
+    fs.rmSync(path.join(drafts, 'shaping', 'anonymous.md'));
+
+    fs.writeFileSync(path.join(drafts, 'shaping', 'renamed.md'), draftArticle({ skill: 'someone-else' }));
+    refused('skills-draft/shaping/renamed.md', /skill someone-else does not match its file name renamed/, 'a draft names the skill its file is called');
+    fs.rmSync(path.join(drafts, 'shaping', 'renamed.md'));
+
+    fs.mkdirSync(path.join(drafts, 'extras'));
+    fs.writeFileSync(path.join(drafts, 'extras', 'stray.md'), draftArticle({ skill: 'stray', group: 'extras' }));
+    refused('skills-draft/extras/stray.md', /folder extras is not one of the group folders/, 'an unknown group folder is refused');
+    fs.rmSync(path.join(drafts, 'extras'), { recursive: true });
+
+    fs.writeFileSync(path.join(drafts, 'loose.md'), draftArticle({ skill: 'loose' }));
+    refused('skills-draft/loose.md', /must sit directly inside a group folder/, 'a draft loose at the collection root is refused');
+    fs.rmSync(path.join(drafts, 'loose.md'));
+
+    fs.mkdirSync(path.join(drafts, 'shaping', 'deeper'));
+    fs.writeFileSync(path.join(drafts, 'shaping', 'deeper', 'buried.md'), draftArticle({ skill: 'buried' }));
+    refused('skills-draft/shaping/deeper/buried.md', /must sit directly inside a group folder/, 'a draft nested below its group folder is refused');
+    fs.rmSync(path.join(drafts, 'shaping', 'deeper'), { recursive: true });
+
+    assert.deepEqual(validateWiki(project), [], 'removing every refused note leaves the wiki clean');
+
+    fs.writeFileSync(path.join(drafts, 'shaping', 'Bare Draft.md'), '# Bare Draft\n\nNo metadata yet.\n');
+    const result = normalizeWiki(project, { date: '2026-10-04' });
+    assert.deepEqual(result.changed.map((entry) => entry.note), ['workbench/wiki/skills-draft/shaping/Bare Draft.md']);
+    assert.match(fs.readFileSync(path.join(drafts, 'shaping', 'Bare Draft.md'), 'utf8'), /^---\ntype: memory\nstatus: partial\n/, 'normalize infers type memory inside the draft collection and never invents the draft status');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('the product wiki carries the skills-draft collection with every group folder tracked', () => {
+  for (const group of DRAFT_GROUPS) {
+    assert.equal(fs.existsSync(path.join(root, 'workbench', 'wiki', 'skills-draft', group, '.gitkeep')), true, `skills-draft/${group} must be a tracked folder`);
+  }
+  assert.match(fs.readFileSync(path.join(root, 'workbench', 'wiki', 'SCHEMA.md'), 'utf8'), /skills-draft\//, 'SCHEMA.md names the draft collection as its nesting exception');
+});
+
+
+// S-002L TK-006N: a draft carries the owner-approved reader sections and the
+// draft-only tail, every finding is one greppable line in the fixed format, and
+// the collection's TEMPLATE.md is the template the validator accepts.
+function templateFence(template) {
+  const match = template.match(/```markdown\n(---\n[\s\S]*?)\n```/);
+  assert.ok(match, 'TEMPLATE.md carries the article template in a markdown fence');
+  return match[1] + '\n';
+}
+
+test('a draft must carry the template sections and one well-formed finding per line, and every refusal names the rule', () => {
+  const project = seededWiki();
+  try {
+    const wiki = path.join(project, 'workbench', 'wiki');
+    const drafts = path.join(wiki, 'skills-draft');
+    for (const group of DRAFT_GROUPS) fs.mkdirSync(path.join(drafts, group), { recursive: true });
+    const target = path.join(drafts, 'shaping', 'wayfinder.md');
+    const refusedWith = (article, pattern, why) => {
+      fs.writeFileSync(target, article);
+      const found = validateWiki(project).filter((item) => item.note === 'workbench/wiki/skills-draft/shaping/wayfinder.md');
+      assert.ok(found.some((item) => item.code === 'invalid-note' && pattern.test(item.message)), `${why}: ${found.map((item) => item.message).join(' | ')}`);
+    };
+
+    fs.writeFileSync(target, draftArticle());
+    assert.deepEqual(validateWiki(project), [], 'a complete draft with well-formed findings validates');
+    fs.writeFileSync(target, draftArticle({}, draftBody({ findings: 'none' })));
+    assert.deepEqual(validateWiki(project), [], 'a draft that records no finding says none');
+    fs.writeFileSync(target, draftArticle({}, draftBody({ findings: '<!-- F:<skill>:NN | kind | one line | who fixes it -->\nF:wayfinder:01 | overlap | two skills write the same note | to-docs Spec' })));
+    assert.deepEqual(validateWiki(project), [], 'a single-line comment is allowed beside findings');
+
+    for (const section of [...READER_SECTIONS, ...DRAFT_ONLY_SECTIONS]) {
+      refusedWith(draftArticle({}, draftBody({ skip: [section] })), new RegExp(`must carry a .${section.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}. section`), `a draft missing ${section} is refused`);
+    }
+    refusedWith(draftArticle({}, draftBody({ skip: ['marker'] })), /draft-only marker/, 'a draft without the draft-only marker line is refused');
+
+    refusedWith(draftArticle({}, draftBody({ findings: 'F:wayfinder:1 | gap | number is not two digits | owner' })), /malformed finding line/, 'a finding with a one-digit number is refused');
+    refusedWith(draftArticle({}, draftBody({ findings: 'F:wayfinder:01 | gap | only three fields' })), /malformed finding line/, 'a finding with three fields is refused');
+    refusedWith(draftArticle({}, draftBody({ findings: '- F:wayfinder:01 | gap | bulleted | owner' })), /malformed finding line/, 'a bulleted finding is refused so the roll-up can anchor on F:');
+    refusedWith(draftArticle({}, draftBody({ findings: 'Some prose about the skill.' })), /malformed finding line/, 'prose inside Findings is refused');
+    refusedWith(draftArticle({}, draftBody({ findings: 'F:wayfinder:01 | nonsense | bad kind | owner' })), new RegExp(`finding kind nonsense is not one of ${FINDING_KINDS.join(', ')}`), 'an unknown finding kind is refused');
+    refusedWith(draftArticle({}, draftBody({ findings: 'F:someone-else:01 | gap | wrong skill | owner' })), /finding names skill someone-else, not wayfinder/, 'a finding for another skill is refused');
+    refusedWith(draftArticle({}, draftBody({ findings: 'F:wayfinder:01 | gap | first | owner\nF:wayfinder:01 | gap | repeated number | owner' })), /finding number 01 is used twice/, 'a repeated finding number is refused');
+
+    fs.writeFileSync(target, draftArticle({ origin: 'other' }));
+    assert.deepEqual(validateWiki(project), [], 'a skill from none of the three origins says other');
+    refusedWith(draftArticle({ origin: 'workbench # foundry = revisit later' }), /origin .* is not one of workbench, matt, foundry, other/, 'an origin carrying a trailing comment is refused');
+    refusedWith(draftArticle({ skill_source: 'somewhere' }), /skill_source somewhere is not one of core, pending, personal, new/, 'an unknown skill_source is refused');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('the collection TEMPLATE.md fixes the finding line and kinds, and the template it carries validates once filled', () => {
+  const templatePath = path.join(root, 'workbench', 'wiki', 'skills-draft', 'TEMPLATE.md');
+  assert.equal(fs.existsSync(templatePath), true, 'skills-draft/TEMPLATE.md must exist');
+  const template = fs.readFileSync(templatePath, 'utf8');
+  assert.match(template, /F:<skill>:NN \| kind \| one line \| who fixes it/, 'TEMPLATE.md fixes the finding line format');
+  for (const kind of FINDING_KINDS) assert.match(template, new RegExp('`' + kind + '`'), `TEMPLATE.md names the finding kind ${kind}`);
+  const fence = templateFence(template);
+  for (const section of [...READER_SECTIONS, ...DRAFT_ONLY_SECTIONS]) assert.match(fence, new RegExp(`^## ${section.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'm'), `the template carries the ${section} section`);
+  assert.match(fence, /^--- draft only, stripped on promotion ---$/m, 'the template carries the draft-only marker');
+  const project = seededWiki();
+  try {
+    const drafts = path.join(project, 'workbench', 'wiki', 'skills-draft');
+    fs.mkdirSync(path.join(drafts, 'shaping'), { recursive: true });
+    const filled = fence
+      .replace('<skill-name>', 'wayfinder').replace('<group-folder>', 'shaping')
+      .replace('<core | pending | personal | new>', 'pending').replace('<workbench | matt | foundry | other>', 'matt')
+      .replace('YYYY-MM-DD', '2026-10-04').replace('<repository-relative path>', 'BLUEPRINT.md');
+    assert.doesNotMatch(filled, /<skill-name>|<group-folder>/, 'the named placeholders were all substituted');
+    fs.writeFileSync(path.join(drafts, 'shaping', 'wayfinder.md'), filled);
+    assert.deepEqual(validateWiki(project), [], 'the template, filled with only its named placeholders, is a valid draft');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+// S-002L TK-006O: the collection's index README lists every group with its
+// article count and every planned article with its owning Spec, as plain text
+// until the owning Spec delivers the article, and the router links it once.
+test('the skills-draft index lists the eight groups and 81 planned articles with real owning Specs, and the router links it once', () => {
+  const wiki = path.join(root, 'workbench', 'wiki');
+  const readme = fs.readFileSync(path.join(wiki, 'skills-draft', 'README.md'), 'utf8');
+  const counts = { 'getting-started': 7, 'main-workflow': 14, shaping: 7, upkeep: 21, primitives: 12, productivity: 5, stances: 6, foundry: 9 };
+  const specFolders = [];
+  const collect = (directory, depth) => {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue;
+      if (/^S-[0-9A-Za-z]+-/.test(entry.name)) specFolders.push(entry.name);
+      else if (depth < 2) collect(path.join(directory, entry.name), depth + 1);
+    }
+  };
+  collect(path.join(root, 'workbench', 'specs'), 0);
+  let total = 0;
+  for (const group of DRAFT_GROUPS) {
+    const section = readme.split(new RegExp(`^## ${group}$`, 'm'))[1]?.split(/^## /m)[0];
+    assert.ok(section, `the index has a ${group} section`);
+    const rows = section.split('\n').filter((line) => /^\| [^|-]/.test(line) && !/^\| Skill \|/.test(line));
+    assert.equal(rows.length, counts[group], `${group} lists ${counts[group]} planned articles`);
+    for (const row of rows) {
+      const [, skill, , owner] = row.split('|').map((cell) => cell.trim());
+      assert.doesNotMatch(skill, /\[|\]\(/, `${skill} is plain text until its article exists`);
+      const id = owner.match(/^(S-[0-9A-Za-z]+) \(/)?.[1];
+      assert.ok(id, `${skill} names an owning Spec as "S-### (name)": ${owner}`);
+      assert.ok(specFolders.some((name) => name.startsWith(`${id}-`)), `${skill}'s owning Spec ${id} exists`);
+      assert.equal(fs.existsSync(path.join(wiki, 'skills-draft', group, `${skill}.md`)), false, `${skill} has no article yet, so its row must stay plain text`);
+    }
+    total += rows.length;
+  }
+  assert.equal(total, 81, 'the index lists 81 planned articles');
+  assert.deepEqual(readme.match(/^\| \[[a-z-]+\]\(#[a-z-]+\) \| (\d+) \|/gm).map((line) => Number(line.match(/\| (\d+) \|/)[1])), DRAFT_GROUPS.map((group) => counts[group]), 'the summary table carries the per-group counts in group order');
+
+  const command = readme.match(/```bash\n(grep [^\n]+)\n```/)?.[1];
+  assert.ok(command, 'the index documents the one command that lists every finding');
+  const listed = spawnSync('sh', ['-c', command], { cwd: root, encoding: 'utf8' });
+  assert.doesNotMatch(listed.stdout, /F:<skill>:NN/, 'the documented findings command does not list the template\'s own format line');
+
+  const router = fs.readFileSync(path.join(wiki, 'MEMORY.md'), 'utf8');
+  assert.equal(router.split('skills-draft/README.md').length - 1, 1, 'MEMORY.md links the collection README exactly once');
+  assert.doesNotMatch(router, /skills-draft\/[a-z-]+\//, 'MEMORY.md routes to no draft article directly');
+  for (const name of fs.readdirSync(wiki).filter((entry) => /^skill-.*\.md$/.test(entry))) {
+    assert.ok(router.includes(`(${name})`), `${name} stays routed from MEMORY.md`);
+  }
+  assert.deepEqual(validateWiki(root).filter((item) => item.severity === 'error'), [], 'the product wiki validates without error findings');
 });

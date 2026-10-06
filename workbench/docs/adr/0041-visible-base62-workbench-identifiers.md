@@ -48,7 +48,7 @@ already integrated.
 ## Artifact alphabet and width (S-01W, 2026-09-26)
 
 Owner decision E-8 in the
-[destination audit ledger](../../wiki/grilling-destination-audit-ledger.json)
+[destination audit ledger](../../sessions/grilling-destination-audit-ledger.json)
 settles the details the original decision left open, for artifact labels only:
 new WBIDs use uppercase `0-9A-Z` suffixes of minimum width four, and the
 allocator treats short, widened and case spellings (`S-00Q`, `S-000Q`,

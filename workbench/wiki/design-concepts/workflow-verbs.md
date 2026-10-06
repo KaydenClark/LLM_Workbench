@@ -12,7 +12,7 @@ source_paths:
   - workbench/docs/adr/000Y-a-locked-and-confirmed-answer-is-promoted-without-further-ceremony.md
 parent: none
 authorized_by: the owner's promotion of the 2026-10-02 grilling
-last_verified: 2026-10-03
+last_verified: 2026-10-05
 ---
 
 # The Workflow Verbs
@@ -22,25 +22,33 @@ and that people use in ordinary language. The set is open: the owner defines
 verbs one at a time, each in its own row of the [Lexicon](../../../LEXICON.md),
 and workflows are composed from them. Idea, Align, Confirm, Map, Plan,
 Implement, Review and Verify were the first standardization, accepted on
-2026-10-02; Prototype, Check, Approve, Delivered and Clean Up and the Journey
-verb have been defined since. The owner had been calling the delivery sequence
+2026-10-02; Prototype, Check, QA, Submit, Approve, Delivered and Clean Up and
+the Journey verb have been defined since. The owner had been calling the delivery sequence
 the workflow while it kept being called the ladder or the steps. This page
 explains the verbs and how they decide where a claim is written. It authorizes
 nothing; the Lexicon holds the definitions.
 
 ## The delivery workflow
 
-The delivery workflow reads Idea, Align, Confirm, Map, Plan, Journey, Approve,
-Delivered, Clean Up. Delivered replaced Complete as the verb for approved work
+The delivery workflow reads Idea, Align, Confirm, Map, Plan, Journey, Review,
+Verify, Approve, Delivered, Clean Up. Delivered replaced Complete as the verb for approved work
 that is on main. A send-back at Approve returns to Align at the scope the
 failure implicates.
 
 ## The loop
 
-Journey is the build loop: Implement, Check, Review and Verify, repeated until
-the confirmed concept is built. Map and Plan come before it and are not part of
-it. An earlier version of this page, and of the workflow verbs decision, put Map
-and Plan inside the Journey; the owner corrected that on 2026-10-03. Journey is
+Journey is the build loop: Implement, Check, QA and Submit, run for each Task.
+Check is the deterministic verification the building agent runs in the
+environment; QA is its self-judgement of its own work; Submit is the merge
+request that carries the Task's merge answers into its parent branch. Map and
+Plan come before the Journey. Review comes after it, on the assembled Spec (and
+sometimes a landmark or the whole Workbench), never on a Task, and decides
+whether another Journey is needed: a failed Review goes back to Map, Plan and
+Journey before the work can be verified. The owner set this on 2026-10-05,
+adding QA and Submit and moving Review out of the Journey, because review on
+every Task was spending his tokens and doing no work. Earlier, the 2026-10-02
+decision put Map and Plan inside the Journey (corrected 2026-10-03), and the
+2026-10-03 loop was Implement, Check, Review and Verify. Journey is
 itself a workflow verb, but only the loop-level name, so a Destination Question
 Card cannot sit at Journey as a stage.
 
@@ -52,8 +60,8 @@ saying so.
 ## Which verb writes what
 
 The [Governance Planes](../../../LEXICON.md) are the lens. The owner assigned
-planes to the first eight verbs only; Prototype, Check, Journey, Approve,
-Delivered and Clean Up have none assigned. Applied claim by claim as work moves
+planes to the first eight verbs only; Prototype, Check, QA, Submit, Journey,
+Approve, Delivered and Clean Up have none assigned. Applied claim by claim as work moves
 through the workflow, most of the time:
 
 | Verbs | Plane | What they write |
@@ -110,3 +118,5 @@ and renaming them is the owner's call.
 - 2026-10-03: rewritten for the open verb set, the added verbs, the delivery
   workflow and the Journey correction (the Workbench Terms And Workflow Verb
   Rows Spec).
+- 2026-10-05: the owner added QA and Submit to the Journey and moved Review
+  after it, with a failed Review going back to Map, Plan and Journey.

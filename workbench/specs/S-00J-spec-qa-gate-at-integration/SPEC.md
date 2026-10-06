@@ -5,11 +5,11 @@
 **Priority:** 3
 **Owner:** codex-v4-verdict
 **Stance:** Builder
-**Updated:** 2026-10-01
+**Updated:** 2026-10-04
 **Catalog description:** Make a separate context review the assembled Spec against its Task results, route a failed review into corrective Tasks under the still-open Spec, keep `integration` as the owner's Human QA surface, and refuse to close a Spec without a passed review and recorded owner approval.
 **Blockers:** TK-004M corrects the independent replacement-object finding before fresh review. Separate close and corrective-batch recovery remain owned engineering work; owner Human QA/main gates are unapproved.
-**Latest event:** TK-004M closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** 2026-10-04: the undelivered integration target binding from the superseded S-054 was carried in as a requirement with one unchecked acceptance line; TK-004M closed with proof before that.
+**Next gate:** Cut and deliver a Task for the integration target binding carried from S-054, then confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -164,7 +164,7 @@ completed Task records and evidence remain history. Human QA remains owner-led
 and separate, at useful owner-selected review points; main promotion stays
 owner-only. Final closure follows verification of the delivered content on main.
 
-The existing [decision-routing ledger](../../wiki/grilling-destination-audit-ledger.json)
+The existing [decision-routing ledger](../../sessions/grilling-destination-audit-ledger.json)
 records FND-Q21C's four-tier rule and explicit S-00J destination: durable Task
 choices escalate at close and remain a gap until reconciled. Task bodies carry
 choices; Receipts carry run facts. TT-Q12 is only partially answered: its
@@ -190,7 +190,7 @@ the closure point and is not a new gate), WF-8F and FND-Q07 (discard only after
 verified main) and the separate-context-review grilling decisions 009, 011 and
 012 of 2026-09-24 (closure, meaning features capture and record cleanup, waits
 for verification on main; TASK.md stays the record until cleanup). The
-[ledger](../../wiki/grilling-destination-audit-ledger.json) carries the WF and
+[ledger](../../sessions/grilling-destination-audit-ledger.json) carries the WF and
 FND rows; the SCR decisions, owner answers in grilling notes, are promoted as the
 ledger's SCR rows and accepted ADR-000F.
 
@@ -210,6 +210,37 @@ only the delivered behavior on integration consumes T0 through an explicit
 reviewed-delivery blocker (TK-01T); a dependent that needs final closure keeps
 a plain Spec blocker and consumes T3. Existing blocker edges are kept, never
 deleted to unblock work.
+
+### Integration target binding carried from S-054 — 2026-10-04
+
+The retired [v3.2.1 Review-Boundary Integrity — S-054](../S-054-v3-2-1-review-boundary-integrity/SPEC.md)
+asked that an integration review bind to the exact result that reaches
+`integration`. Read against integration
+`46ad978956a74a3ee1bda22c36eb16207dcd98fd`, this Spec already delivers the
+candidate-content binding, the source-head check (`--match-head-commit`) and
+separate PASS, merge and containment evidence. Four parts remain undelivered
+and are carried here as one requirement, because this Spec owns the review
+gate at the integration boundary and the merge-preparation workflow:
+
+1. The review evidence for a candidate presented to `integration` also names
+   the integration tip the reviewed result was derived from (the expected
+   integration parent), not only the candidate SHA and content digest.
+2. The harness's merge-preparation path refuses, before `integration`
+   advances, when that tip has moved since review, using a tested
+   compare-and-update or an equivalent provider operation that does not
+   bypass branch protection. A post-merge containment check alone does not
+   satisfy this.
+3. When target movement changes the resulting content, the changed result
+   needs its affected verification and a fresh separate-context review; a
+   result proven unchanged proceeds without new ceremony. The comparison is
+   proven, not inferred from branch names or timing.
+4. The root and generic closeout procedures, the `implement` and
+   `code-review` skills and a disposable target-movement case in
+   `tools/test-branch-closeout.mjs` express the same boundary.
+
+This adds no per-Task review ceremony and no GitHub-level enforcement (both
+remain Non-Goals). No Task is cut by this carry; this Spec's writer cuts one
+from current Actuality.
 
 ## Vertical Implementation Slices
 
@@ -329,6 +360,11 @@ answer, without weakening the immutable-candidate requirement from ADR-0037.
       stale local branch cannot hide reviewed delivery (TK-002N).
 - [x] Corrective delivery preserves S-00U F1/F2/F3/F6 and supplies fresh full-suite,
       Dispatcher whole-Spec QA and separate Director immutable-candidate review.
+- [ ] Integration target binding carried from S-054: review evidence names the
+      expected integration tip, the merge-preparation path refuses a moved
+      tip before `integration` advances, a changed result is re-verified and
+      freshly reviewed while a proven-unchanged one is not, and procedures,
+      skills and a disposable target-movement test agree.
 
 ## Testing Seams
 
@@ -400,6 +436,7 @@ TK-005.
 
 | 2026-10-01 | TK-004M | Immutable candidate Git reader correction verified | Public red `b039c397` reproduces replacement refs making an empty commit impersonate Spec content. Source `9cf0d216acc73c9cacfd66cbd6b136fcf4ece5db`: replacement and inherited GIT_DIR/GIT_WORK_TREE cases refuse PASS/FAIL and gate without Spec/Task writes. Missing promisor commit/tree/blob refuse without transport and preserve every Git metadata byte. All51 required commands PASS at exact clean source; focused report and previous binding regressions PASS. Intermediate shebang composition failure retained and corrected | Scoped candidateGit applies selected repository semantics, no replacements or lazy fetch, caller Git selector isolation and optional-lock suppression to candidate resolution/content/ancestry readers. Owned source comments document the boundary; existing tests retain normalization, non-HEAD and retired lifecycle behavior. No root/template procedure or bundle changes | Native receipt/closure, exact independent successor review and integration containment pending. Separate partial-write recovery and owner QA/main gates remain open. No CI or clean-update claim |
 | 2026-10-01 | TK-004M | Task closed | Verified source 9cf0d216acc73c9cacfd66cbd6b136fcf4ece5db passed all 51 required checks and focused Git replacement, ambient selector, and missing promisor object probes; source committed and pushed before this close. Independent successor review remains pending. | Updated owned verdict candidate-content implementation, bounded Git reads, regression fixtures and source verification record. | Independent exact successor review and integration containment pending. Separate corrective-batch partial-write recovery and owner QA/main approval remain open. |
+| 2026-10-04 | spec | Requirement carried in from superseded S-054 (integration target binding) | S-054 Desired Behavior read against integration 46ad978: candidate-content binding, source-head check and separate PASS/merge/containment evidence delivered; integration-tip binding, moved-target refusal, result comparison and closeout-test coverage not delivered | New section "Integration target binding carried from S-054" and one unchecked acceptance line; no Task cut, header state unchanged | The carried requirement is undelivered; this Spec's writer cuts its Task |
 
 ## Completion Result
 

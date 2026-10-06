@@ -21,7 +21,7 @@ The owner (2026-10-05): "I feel like the Playbook is what I was trying to have t
 
 ## Current Verified State
 
-At integration `46ad9789` (2026-10-05): the tracked skills lane holds no `harness-*` skill. The family lives only in the owner's host skills root: `harness-feedback-review`, which composes fourteen `harness-review-*` stage skills (scope, canon, grounding, actuality, reconnaissance, map gaps, classify causes, meta risks, diagnosis, actions, disposition, report, feedback lifecycle, assay follow-up). The repository names none of them; its Runbook carries the procedures under Harness Feedback Loop, Automated Feedback Gate, Manual Harness Feedback Reports and Evaluation And Benchmarking, and the feedback reports live in `workbench/feedback/`. No tracked skill carries the baseline-to-rerun loop as one procedure. No implementation or agent-outcome proof for this capability is claimed by this Map record.
+At integration `ec65203d` (2026-10-05): the tracked skills lane holds no `harness-*` skill; its declared maintainer skills are `workbench-release`, `workbench-room-checks` and `workbench-evaluation`. The family lives only in the owner's host skills root: `harness-feedback-review`, which composes fourteen `harness-review-*` stage skills (scope, canon, grounding, actuality, reconnaissance, map gaps, classify causes, meta risks, diagnosis, actions, disposition, report, feedback lifecycle, assay follow-up). The repository names none of them; its Runbook index rows under Evaluation And Benchmarking, Harness Feedback Loop, Automated Feedback Gate and Manual Harness Feedback Reports point at the `workbench-evaluation` maintainer skill, which carries those procedures, and the feedback reports live in `workbench/feedback/`. No tracked skill carries the six-step baseline-to-rerun loop as one procedure. No implementation or agent-outcome proof for this capability is claimed by this Map record.
 
 ## Desired Behavior
 
@@ -43,7 +43,7 @@ Changing the feedback record format, the evals or outcome trials, the guardrail 
 
 ## Dependencies And Blockers
 
-- The skills lane and the Runbook are shared writers with the [Contract carrier rewrite](../S-004C-contract-carrier-pointer-brief-rewrite/SPEC.md); coordinate the Runbook row and any `AGENTS.md` line through that Spec's writer.
+- The `workbench-evaluation` maintainer skill owns the procedures this skill replaces; the skills lane and the Runbook are shared writers with the [Contract carrier rewrite](../S-004C-contract-carrier-pointer-brief-rewrite/SPEC.md); coordinate the Runbook row and any `AGENTS.md` line through that Spec's writer.
 - The [release owner](../S-00O-workbench-v4-0-0-release/SPEC.md) retains version, Template and owner gates; a changed closed bundle needs the normal bundle, version and install proof.
 
 ## Vertical Implementation Slices
@@ -74,7 +74,7 @@ The Runbook rows, one Wiki skill page, the lineage page's pointer to the skill, 
 
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
-| 2026-10-05 | none | Authored at the Map step from the owner's playbook decision of 2026-10-05 at integration 46ad9789. | Map only; the family was counted in the host skills root and the lane was read, no runtime proof claimed. | This Spec. | Plan, implementation and proof remain. |
+| 2026-10-05 | none | Authored at the Map step from the owner's playbook decision of 2026-10-05 and re-verified at integration ec65203d. | Map only; the family was counted in the host skills root and the lane was read, no runtime proof claimed. | This Spec. | Plan, implementation and proof remain. |
 
 ## Completion Result
 

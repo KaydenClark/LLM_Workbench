@@ -7,7 +7,7 @@ provenance:
   - LLM Workbench template wiki
 source_paths:
   - workbench/wiki/features
-last_verified: 2026-09-26
+last_verified: 2026-10-04
 ---
 
 # Features
@@ -68,8 +68,12 @@ last_verified: YYYY-MM-DD
 ## Limits
 
 ## Evidence and Sources
+
+## History
 ```
 
+- `History` is a dated list of what created and changed the article and the
+  operation that authorized each change; see `SCHEMA.md` Update.
 - `type: feature` belongs in this collection only; a note here of any other
   type, or a feature article anywhere else, is invalid.
 - `knowledge_role` is `canonical` or `curated` for the article to serve as the
@@ -77,7 +81,16 @@ last_verified: YYYY-MM-DD
 - `source_paths` names the Spec's retired route,
   `workbench/specs/retired/<spec directory>/SPEC.md`, which is the provenance
   retirement and discard read, plus the source and tests that prove it.
-- Route every article from `MEMORY.md` with a relative link. This collection
-  keeps no index of its own.
+- Name the article for the capability it delivers, not for the identifier of
+  the Spec that delivered it. Where it names an identifier, it also names the
+  artifact and what it is for.
+- Route every article from `MEMORY.md` with a relative link and a one-line
+  summary beside it, so a reader can choose the article without opening it.
+  This collection keeps no index of its own.
 - Design Concept and guidebook notes remain valid retirement owners for
   earlier Specs; a Task record's discard waits for a features article.
+
+## This Room's Articles
+
+The `MEMORY.md` router lists every article under Feature Articles; this
+collection keeps no index of its own.

@@ -124,7 +124,7 @@ Groups loosely follow the dictionary's reading order and are only a batching aid
 | Term | Meaning, restated | Where the Workbench already touches it |
 |---|---|---|
 | [Permission request](https://www.aihero.dev/ai-coding-dictionary/permission-request) | A prompt the harness raises for the user ahead of any tool call lacking prior approval. It is how a person gets a say in what the agent does. | The template's `.claude/README.md` sorts actions into allow, deny and ask buckets, and skills mention a permission layer refusing a write; the term is undefined. |
-| [Permission mode](https://www.aihero.dev/ai-coding-dictionary/permission-mode) | The part of an agent mode that decides which tool calls prompt the user and which run on their own. | Nothing found as a term. The nearest neighbors are the allow, deny and ask buckets in the template's `.claude/README.md` and the [Permission Scope Matches Lanes](../../wiki/design-concepts/spec-S-030-permission-scope-matches-lanes.md) design concept. |
+| [Permission mode](https://www.aihero.dev/ai-coding-dictionary/permission-mode) | The part of an agent mode that decides which tool calls prompt the user and which run on their own. | Nothing found as a term. The nearest neighbors are the allow, deny and ask buckets in the template's `.claude/README.md` and the [Permission Scope Matches Lanes](../../wiki/features/mechanical-permission-scope-and-declared-lanes.md) design concept. |
 | [Agent mode](https://www.aihero.dev/ai-coding-dictionary/agent-mode) | A preset that bundles a permission mode with behavior instructions added to the system prompt, and can change partway through a session. | Nothing found. |
 
 **Model behavior, knowledge and attention (9)**

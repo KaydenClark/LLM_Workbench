@@ -6,9 +6,10 @@ knowledge_role: canonical
 provenance:
   - S-021 dogfood migration 2026-09-01; S-025 contract adoption 2026-09-04
   - S-00V TK-00I Agent Operating Knowledge route, 2026-09-26
+  - Wiki Evolving-Synthesis Migration (S-003W) router changes 2026-10-04: feature article, landmark synthesis and summary-line routes, and the whole-Wiki lint corrections of its corrective Task TK-006P (Wiki wording)
 source_paths:
   - workbench/wiki
-last_verified: 2026-09-04
+last_verified: 2026-10-04
 ---
 
 # LLM Workbench Memory
@@ -39,24 +40,20 @@ kinds onto the Workbench's own.
 
 ## Landmark Tracker
 
-[Landmark Tracker](design-concepts/landmark-tracker.md) explains the approved
-relationship between DQCs, landmarks, documentation progress, grilling notes
-and readable knowledge, including the evolving starting inventory.
-[Landmark Tracker Foundation](../specs/S-01T-landmark-tracker-foundation/SPEC.md)
-owns delivery and distinguishes the accepted design from available runtime.
+- [Landmark Tracker](design-concepts/landmark-tracker.md) - the approved relationship between DQCs, landmarks, documentation progress, grilling notes and readable knowledge, including the evolving starting inventory
+- [S-01T - Landmark Tracker Foundation](../specs/S-01T-landmark-tracker-foundation/SPEC.md) - the Spec that owns delivery and distinguishes the accepted design from available runtime
 
 ## Notepad Foundation Routing
 
-For accepted objective continuity and JSON direction, follow
-[S-046](../specs/S-046-json-notepad-foundation/SPEC.md) and
-[ADR-0040](../docs/adr/0040-json-notepads-preserve-objective-continuity.md).
-Visible identifier semantics belong to
-[S-047](../specs/S-047-visible-workbench-identifiers/SPEC.md) and
-[ADR-0041](../docs/adr/0041-visible-base62-workbench-identifiers.md); the
-uppercase width-four artifact policy, dual-form selection and `widen-id` belong
-to the [S-01W Uppercase Width-Four Workbench Artifact IDs Spec](../specs/S-01W-uppercase-width-four-workbench-artifact-ids/SPEC.md).
-Checkpoint rationale and retirement belong to
-[S-048](../specs/S-048-checkpoint-retirement/SPEC.md).
+For accepted objective continuity and JSON direction, follow these owners:
+
+- [S-046 - JSON Notepad Foundation](../specs/S-046-json-notepad-foundation/SPEC.md) - the Spec for objective continuity in local JSON notepads with safe updates and selective retrieval
+- [ADR-0040 - JSON notepads preserve objective continuity](../docs/adr/0040-json-notepads-preserve-objective-continuity.md) - the decision record behind that direction
+- [S-047 - Visible Workbench Identifiers](../specs/S-047-visible-workbench-identifiers/SPEC.md) - the Spec for visible identifier semantics
+- [ADR-0041 - Visible base-62 Workbench identifiers](../docs/adr/0041-visible-base62-workbench-identifiers.md) - the decision record for those identifiers
+- [S-01W - Uppercase Width-Four Workbench Artifact IDs](../specs/S-01W-uppercase-width-four-workbench-artifact-ids/SPEC.md) - the uppercase width-four artifact policy, dual-form selection and `widen-id`
+- [S-048 - Checkpoint Retirement](../specs/S-048-checkpoint-retirement/SPEC.md) - the checkpoint rationale and its retirement
+
 The shared runtime is `workbench/tools/notepads.mjs`; its operations are
 documented in [RUNBOOK](../../RUNBOOK.md) and its judgment in the `notepad`
 skill. This router does not copy their state or the local grilling queue.
@@ -64,55 +61,55 @@ skill. This router does not copy their state or the local grilling queue.
 ## Skills Reference
 
 The individual pages below explain core skills and link to their executable or
-planned source. They are curated context, not
-instruction authority. [S-00W](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md)
-preserves the accepted shared concept for grilling, notepad and grill-me; each
-linked page names its individual delivery Spec. Other core skill articles belong to their individual Specs as
-they are authored.
+planned source. They are curated context, not instruction authority. Each
+linked page names its individual delivery Spec. Other core skill articles
+belong to their individual Specs as they are authored.
 
-- [Grilling: arrive at a shared design concept](skill-grilling.md)
-- [Grill-me: start a saved design inquiry](skill-grill-me.md)
-- [Notepad: preserve one objective's working context](skill-notepad.md)
-- [Workbench runtime: read what the installed tools report and repair what they name](skill-workbench-runtime.md)
-- [To-docs: route settled truth to the owner that holds it](skill-to-docs.md)
-- [Promote: move settled working claims into their durable owners](skill-promote.md)
-- [Checkpoint: route a retired request to current continuity](skill-checkpoint.md)
-- [Auditor: check named claims against pinned evidence](skill-auditor.md)
-- [Builder: deliver one assigned result with checkable proof](skill-builder.md)
-- [Reviewer: assess one eligible immutable candidate](skill-reviewer.md)
-- [Reconciler: compare governed claims against pinned evidence](skill-reconciler.md)
-- [Implement: deliver one assigned Task with checkable proof](skill-implement.md)
-- [Make-it-so: carry approved work to the endpoint the owner named](skill-make-it-so.md)
-- [Carry: take assigned work to its authorized endpoint](skill-carry.md) ([S-01C](../specs/S-01C-carry-skill-rebuild/SPEC.md))
-- [To-spec: turn a settled decision into one bounded Spec](skill-to-spec.md)
-- [Save: persist authorized work and prove where it landed](skill-save.md)
-- [Handoff: pass one objective to a named recipient](skill-handoff.md) ([S-01A](../specs/S-01A-handoff-skill-rebuild/SPEC.md))
-- [Code review: check one fixed candidate against both contracts](skill-code-review.md)
-- [To-tasks: cut an activated Spec into executable Tasks](skill-to-tasks.md)
-- [Adoption: bring an existing project into the Workbench once](skill-adoption.md)
-- [Genesis: start a new room from a founding prompt](skill-genesis.md)
+- [S-00W - Concept Grilling And Notepad Composition](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md) - the accepted shared concept for grilling, notepad and grill-me, which each skill's own Spec delivers
+
+- [Grilling](skill-grilling.md) - arrive at a shared design concept
+- [Grill-me](skill-grill-me.md) - start a saved design inquiry
+- [Notepad](skill-notepad.md) - preserve one objective's working context
+- [Workbench runtime](skill-workbench-runtime.md) - read what the installed tools report and repair what they name
+- [To-docs](skill-to-docs.md) - route settled truth to the owner that holds it
+- [Promote](skill-promote.md) - move settled working claims into their durable owners
+- [Checkpoint](skill-checkpoint.md) - route a retired request to current continuity
+- [Auditor](skill-auditor.md) - check named claims against pinned evidence
+- [Builder](skill-builder.md) - deliver one assigned result with checkable proof
+- [Reviewer](skill-reviewer.md) - assess one eligible immutable candidate
+- [Reconciler](skill-reconciler.md) - compare governed claims against pinned evidence
+- [Implement](skill-implement.md) - deliver one assigned Task with checkable proof
+- [Make-it-so](skill-make-it-so.md) - carry approved work to the endpoint the owner named
+- [Carry](skill-carry.md) - take assigned work to its authorized endpoint (delivery Spec [S-01C - carry skill rebuild](../specs/S-01C-carry-skill-rebuild/SPEC.md))
+- [To-spec](skill-to-spec.md) - turn a settled decision into one bounded Spec
+- [Save](skill-save.md) - persist authorized work and prove where it landed
+- [Handoff](skill-handoff.md) - pass one objective to a named recipient (delivery Spec [S-01A - handoff skill rebuild](../specs/S-01A-handoff-skill-rebuild/SPEC.md))
+- [Code review](skill-code-review.md) - check one fixed candidate against both contracts
+- [To-tasks](skill-to-tasks.md) - cut an activated Spec into executable Tasks
+- [Adoption](skill-adoption.md) - bring an existing project into the Workbench once
+- [Genesis](skill-genesis.md) - start a new room from a founding prompt
+- [Skills draft wiki](skills-draft/README.md) - the prototype collection and its article template for drafting each skill's connection findings; no draft article is written yet
 
 ## Planned And Optional Skill References
 
-[Domain Modeling: sharpen the Workbench's language as decisions form](skill-domain-modeling.md)
-explains the optional personal method and the proposed Workbench adaptation.
-[Domain Modeling Skill for the Workbench - S-002H](../specs/S-002H-domain-modeling-skill/SPEC.md)
-keeps its required-room versus optional-extension distribution choice open.
-This route does not claim that every room can discover the skill today.
+- [Domain Modeling](skill-domain-modeling.md) - sharpen the Workbench's language as decisions form: the method and the proposed Workbench adaptation
+- [Required Domain Modeling Skill (S-004J)](../specs/S-004J-required-domain-modeling-skill/SPEC.md) - maps the skill into every room's skills lane as a required skill, replacing the superseded Domain Modeling Skill for the Workbench Spec (S-002H); until it is delivered, no room's skills lane carries it
 
 ## Release And Distribution Routing
 
-The reconciled release scope and complete historical inventory live in
-[S-050](../specs/S-050-workbench-v3-2-0-release/SPEC.md). Follow its named owners
-for skill ownership/compatibility, optional private session transport and the
-configured-host capability floor. This route preserves their open gates without
-copying task state here.
+- [Workbench v4.0.0 Release (S-00O)](../specs/S-00O-workbench-v4-0-0-release/SPEC.md) - current release work
+- [Superseded v3.2.0 release record (S-050)](../specs/S-050-workbench-v3-2-0-release/SPEC.md) - keeps the reconciled v3.2 scope and complete historical inventory
+- [V4 integration decision and progress reconciliation](../specs/S-00O-workbench-v4-0-0-release/INTEGRATION-RECONCILIATION.md) - the receipt of the Workbench v4.0.0 Release (S-00O) that identifies recovered sources, branch-only work and remaining gaps
 
-## Grilling Destination Audit Ledger
+Follow the superseded record's named owners for skill ownership/compatibility,
+optional private session transport and the configured-host capability floor.
+This route copies no task state here.
 
-For the owner's current package review, the [Consequential Decision Record
-(shared Grill Board)](../grill-board/README.md) bundles questions, named owners,
-proposals, consequences and original question history. Topic cards explain
+## Consequential Decision Record And Grill Board
+
+- [Consequential Decision Record (shared Grill Board)](../grill-board/README.md) - the owner's current package review, bundling questions, named owners, proposals, consequences and original question history
+
+Topic cards explain
 what to think about; decision kind, workflow stage and destination scale can
 be combined into a small fixed batch. Saved answers and applied answers have
 separate counts. The board README owns these navigation and completion rules;
@@ -125,19 +122,14 @@ the reader's procedure, source/revision labels and local serving limits.
 Its saved answers and revision protocol are shared by Claude and Codex. Read
 the existing package before revising it; its working review context does not
 replace this ledger or the underlying decision and delivery owners.
+The Grill Board is the first working form of the
+[Shared Interactive Workbench Board (S-004D)](../specs/S-004D-shared-interactive-board/SPEC.md),
+the destination it grows into.
 
-Every unique grilling question put to the owner, with its answer, reason and
-intended result, is recorded in
-[grilling-destination-audit-ledger.json](grilling-destination-audit-ledger.json).
-Its progress assessment is historical and pinned; use the linked Specs and current
-Taskboard for delivery state. The [v4 reconciliation receipt](../specs/S-00O-workbench-v4-0-0-release/INTEGRATION-RECONCILIATION.md) identifies recovered sources, branch-only work and remaining gaps.
-That JSON file is the ledger itself, not a projection: readable views are
-rendered from it and never edited by hand. It is the destination the v4
-Workbench is audited against; look a question up by its `id`, or audit one
-artifact by the `result` entries that name it. Each question also carries a
-separate `progress` reading of how far that result is built, pinned by
-`progress_assessment` to one `integration` commit; re-run the assessment to
-refresh it, and never mix progress into the destination fields.
+The question-by-question ledger of every unique grilling question put to the
+owner is a session record, not a Wiki page: it lives in the sessions lane as
+`workbench/sessions/grilling-destination-audit-ledger.json` while its rows
+become destination question cards, and the router does not route into it.
 `tools/test-grilling-ledger.mjs` keeps it valid.
 
 ## Task Artifact And Lifecycle Routing
@@ -145,30 +137,32 @@ refresh it, and never mix progress into the destination fields.
 What a Task carries in and out (the Packet it loads, the append-only Receipt
 it closes with), the derived per-Task board signal, and why `Ticket` is
 retired as a live term while historical `TK-###` identifiers are never
-rewritten, are explained in
-[design-concepts/task-artifact-and-lifecycle.md](design-concepts/task-artifact-and-lifecycle.md).
-That article is this capability's durable owner, reconciled from
-[S-00H](../specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md)
-(retired) and
-[ADR-000H](../docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md);
-this route preserves the retired Spec's historical reachability without
-copying its evidence log here.
+rewritten, are explained in the article below. That article is this capability's durable
+owner, reconciled from the retired Spec and the decision record below; this
+route preserves the retired Spec's historical reachability without copying its
+evidence log here.
+
+- [The Task Artifact And Its Lifecycle](design-concepts/task-artifact-and-lifecycle.md) - the durable owner: what a Task carries in and out, the derived board signal and why `Ticket` is retired as a live term
+- [S-00H - Task Artifact And Terminology Migration](../specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md) - the retired Spec that delivered the standalone `TASK.md`, kept reachable as history
+- [ADR-000H - A Task is a standalone artifact and Task replaces Ticket as the execution-slice term](../docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md) - the decision record for the Task artifact and the term
 
 ## Decision Records
 
-[Decision Records and the Concept Map](design-concepts/decision-records-and-the-concept-map.md) explains how the Blueprint, Destination Decision Records, ADRs, landmarks and Specs fit together, how a DDR differs from an ADR, and how landmarks and Specs form the map at two scales with the Destination Packet linking an agent to it.
+- [Decision Records and the Concept Map](design-concepts/decision-records-and-the-concept-map.md) - how the Blueprint, Destination Decision Records, ADRs, landmarks and Specs fit together, how a DDR differs from an ADR, and how landmarks and Specs form the map at two scales with the Destination Packet linking an agent to it.
 
 ## The Workflow Verbs
 
-[The Workflow Verbs](design-concepts/workflow-verbs.md) explains the eight workflow verbs, Journey and the loop, and which verb writes each kind of artifact.
-
+- [The Workflow Verbs](design-concepts/workflow-verbs.md) - the workflow verbs, Journey and the loop, and which verb writes each kind of artifact
 - [The Workflow From Idea To Delivery](design-concepts/idea-to-delivery-workflow.md): the owner's workflow map rewritten in the workflow verbs, with the QA gates, Human QA and closure in plain words
 - [The Three Altitudes Of Delivery](design-concepts/delivery-altitudes.md): Blueprint, Spec and Task as counting to 100, and what the Blueprint is for
 
 ## AI Coding Dictionary Entries
 
-The owner adopted terms from the AI Coding Dictionary on 2026-10-03; the [Lexicon's AI Coding Terms section](../../LEXICON.md) holds one row per term, and [AI Coding Dictionary Terms](../specs/S-004E-ai-coding-dictionary-terms/SPEC.md) owns delivery. These entries explain only the terms that need more than their row, in Workbench words, and authorize nothing.
+The owner adopted terms from the AI Coding Dictionary on 2026-10-03. These entries explain only the terms that need more than their row, in Workbench words, and authorize nothing.
 
+- [Lexicon: AI Coding Terms section](../../LEXICON.md) - one row per adopted term
+- [S-004E - AI Coding Dictionary Terms](../specs/S-004E-ai-coding-dictionary-terms/SPEC.md) - the Spec that owns delivery of the terms and these entries
+- [S-004K - Workbench Term Dictionary Pages](../specs/S-004K-workbench-term-dictionary-pages/SPEC.md) - the Spec that owns brief Lexicon rows plus long dictionary pages for the Workbench's own terms, starting with the workflow verbs
 - [Harness: what the Workbench is loaded into](dictionary-harness.md): the Workbench is an agentic management system a harness such as Claude Code or Codex loads, never a harness itself
 - [Session: one run of the context window](dictionary-session.md): why a Chat is not a session, and why continuity is written to files
 - [Context: what the agent has in front of it now](dictionary-context.md): how it differs from the context window, the Context Map, Enduring Context and Working context
@@ -177,11 +171,11 @@ The owner adopted terms from the AI Coding Dictionary on 2026-10-03; the [Lexico
 - [Stateful: continuity is re-read from the layer below](dictionary-stateful.md): how notepads, handoffs, the Wiki and `AGENTS.md` carry state across sessions
 - [Cache tokens: why the start of a session stays stable](dictionary-cache-tokens.md): why always-loaded content is cheaper when it does not change mid-session
 - [Non-determinism: why one passing run is not proof](dictionary-non-determinism.md): why verification and repeated trials are required
+- [Automated review: the Review verb, after the Journey](dictionary-automated-review.md): what a separate-context review is, that it reviews Specs, landmarks or the whole Workbench and never a Task, and why it runs on the owner's chosen host
 
 ## Roles And Stances
 
-[Roles and stances](design-concepts/roles-and-stances.md) explains scope versus job and routes to each separately owned capability.
-
+- [Roles and stances](design-concepts/roles-and-stances.md) - scope versus job, and the route to each separately owned capability
 - [Director](skill-director.md): the whole project and its integration branch; assign one Spec to each Dispatcher, name one writer per shared artifact, route separate-context review of each candidate and leave Human QA and main promotion to the owner
 - [Dispatcher](skill-dispatcher.md): one Spec and its branch; plan its Tasks, dispatch Workers to one durable writer, verify the assembled Spec and hand the candidate to the Director
 - [Spec Planner](skill-spec-planner.md): the Dispatcher's flight-launch stance; plan one assigned Spec from live Actuality into small complete-path Tasks with one writer per shared file and hand the plan to Spec Manager
@@ -190,16 +184,16 @@ The owner adopted terms from the AI Coding Dictionary on 2026-10-03; the [Lexico
 
 ## GitHub Coordination
 
-[GitHub coordination](design-concepts/github-coordination.md) explains the accepted move of live assignment to GitHub Issues, whose records count, the per-item claim rule and what is not built yet.
+- [GitHub coordination](design-concepts/github-coordination.md) - the accepted move of live assignment to GitHub Issues, whose records count, the per-item claim rule and what is not built yet.
 
 ## Agent Operating Knowledge
 
 How agents are expected to work in this repository, and tool behavior that
 surprises them, promoted from host memory so a fresh clone or a cloud instance
-has it ([S-00V](../specs/S-00V-portable-workbench/SPEC.md) Desired Behavior 6).
+has it (Desired Behavior 6 of the Portable Workbench Spec, [S-00V - Portable Workbench](../specs/S-00V-portable-workbench/SPEC.md)).
 The controls still decide what is authorized; these entries explain and route.
-The provenance of every promoted and excluded memory file is in
-[archive/host-memory-audit-2026-09-26.md](archive/host-memory-audit-2026-09-26.md).
+The provenance of every promoted and excluded memory file is in the final
+entry.
 
 - [Finish authorized work](finish-authorized-work.md): the owner's instruction is the authorization; no manufactured gates
 - [Owner-authored ADRs are accepted](owner-authored-adrs-are-accepted.md): treat their content as settled, surface only tradeoffs
@@ -211,7 +205,9 @@ The provenance of every promoted and excluded memory file is in
 - [Suite needs a committed candidate](suite-needs-a-committed-candidate.md): a dirty tree fails about thirty tests through `invalid-source-identity`
 - [Lifecycle tool behaviors](lifecycle-tool-behaviors.md): claim, close, append-only and promote surprises
 - [Parallel lane dispatch](parallel-lane-dispatch.md): worktree lanes, read-only suite runner, one-at-a-time merges
-- [Separate-context review with Codex](separate-context-review-with-codex.md): a working `codex exec` route and its stdin trap
+- [Separate-context review with Codex](separate-context-review-with-codex.md): not a route unless the owner asks for Codex in that request; kept for its stdin trap and CLI notes
+- [Host-Memory Audit, 2026-09-26](archive/host-memory-audit-2026-09-26.md): the provenance record naming every promoted and excluded host memory file
+- [Maintainer skills](maintainer-skills.md): this repository's maintainer-only lane skills, which the release checks allow and never ship
 
 ## Leaving The Wiki
 
@@ -226,7 +222,7 @@ The provenance of every promoted and excluded memory file is in
 | [docs/adr/REGISTER.md](../docs/adr/REGISTER.md) | The derived register of decision records |
 | [SCHEMA.md](SCHEMA.md) | What the Wiki is, its page kinds, ingest, lint, concurrency, metadata and freshness rules |
 | [design-concepts/](design-concepts/README.md) | Articles explaining durable design models and each landmark's evolving synthesis |
-| [features/](features/README.md) | One entity page per delivered capability (empty; the per-Spec articles below are to move here) |
+| [features/](features/README.md) | One entity page per delivered capability, routed under Feature Articles |
 | [guidebooks/](guidebooks/) | Ordered procedures that outgrew the Runbook (empty) |
 
 ## Routing
@@ -240,66 +236,100 @@ The provenance of every promoted and excluded memory file is in
 This product repository keeps no personal, machine, or deployment notes; it is
 a `project` profile wiki. `guidebooks/` ships empty until a procedure outgrows
 the Runbook; `design-concepts/` carries the articles routed above;
-`features/` stays empty until a completed Spec is captured at its closure
-point.
+`features/` holds one article per delivered capability, routed under Feature
+Articles, including a completed Spec's article at its closure point.
 
 ## Up-Link
 
 Standalone room; no deployment wiki.
 
-## Individual Spec Articles
+## Landmark Synthesis Pages
 
-One article per Spec preserves capability knowledge and distinguishes historical
-proof from current behavior. Original records remain intact pending lifecycle gates.
+One evolving synthesis page per landmark, seeded from its question cards'
+current answers and updated whenever a card changes. Each line carries a
+one-line summary beside its link. The convention is in
+[design-concepts/README.md](design-concepts/README.md#landmark-synthesis-pages) - the design-concepts collection shape and the landmark synthesis page convention.
 
-- [Spec-Centered Progressive Disclosure](design-concepts/spec-S-001-progressive-disclosure.md)
-- [Held-Out Path-Safety Evaluation](design-concepts/spec-S-002-heldout-evaluation.md)
-- [Dependency-Safe Direct Claiming](design-concepts/spec-S-004-safe-direct-claim.md)
-- [Consistent Bootstrap Ownership Guidance](design-concepts/spec-S-005-bootstrap-doc-alignment.md)
-- [Evidence-Gated Harness Feedback](design-concepts/spec-S-006-feedback-automation.md)
-- [Import-Safe Feedback Helper Entry](design-concepts/spec-S-007-feedback-helper-import.md)
-- [Portable Verification Boundaries](design-concepts/spec-S-008-windows-verification-portability.md)
-- [Adoption When Git Writes Are Unavailable](design-concepts/spec-S-009-git-write-constrained-adoption.md)
-- [S-00A: Blueprint, Active ADRs And The Context Map](design-concepts/spec-S-00A-blueprint-active-adr-and-context-map.md)
-- [S-00B: Workbench Template Reformation](design-concepts/spec-S-00B-workbench-template-reformation.md)
-- [S-00C: Project Evidence And Blueprint Grilling Preparation](design-concepts/spec-S-00C-project-evidence-and-blueprint-grilling.md)
-- [S-00D: Genesis From Blueprint And ADR Decisions](design-concepts/spec-S-00D-genesis-from-blueprint-and-adrs.md)
-- [S-00E: Fresh Template Project Proof](design-concepts/spec-S-00E-fresh-template-project-proof.md)
-- [S-00F: The Named Template Upgrade Release Gate](design-concepts/spec-S-00F-template-upgrade-release-gate.md)
-- [S-00L: Lexicon Freshness Repair](design-concepts/spec-S-00L-lexicon-freshness-repair.md)
-- [Canonical Evaluator Invocation](design-concepts/spec-S-010-canonical-evaluator-entry.md)
-- [Reproducible Adoption Provenance](design-concepts/spec-S-012-adoption-provenance-proof.md)
-- [Verified Automation Run Outcomes](design-concepts/spec-S-013-automation-run-outcomes.md)
-- [Operable Genesis Readiness](design-concepts/spec-S-015-portable-v3-release-audit-recovery.md)
-- [Bounded Team Coordination (S-020)](design-concepts/spec-S-020-spec-native-team-coordination.md)
-- [Portable Workbench Architecture (S-021)](design-concepts/spec-S-021-portable-workbench-v3.md)
-- [Historical v3.1 Release Packet (S-022)](design-concepts/spec-S-022-llm-workbench-v3-1-release.md)
-- [Manifest And Managed Runtime (S-023)](design-concepts/spec-S-023-manifest-and-managed-runtime.md)
-- [Governance Claims And Diagnostics (S-024)](design-concepts/spec-S-024-governance-core-and-diagnostics.md)
-- [Portable Wiki Knowledge (S-025)](design-concepts/spec-S-025-portable-wiki-and-design-concepts.md)
-- [Workflow Composition And Cold Continuation (S-026)](design-concepts/spec-S-026-workflow-composition-and-cold-resume.md)
-- [Assigned Work, Portable Stances And Delivery Boundaries](design-concepts/spec-S-027-workbench-v3-1-1-boundaries.md)
-- [Feedback And Migration Integrity](design-concepts/spec-S-028-harness-feedback-integrity.md)
-- [Declared Integration And Recoverable Completion](design-concepts/spec-S-029-declared-integration-branch.md)
-- [Mechanical Permission Scope And Declared Lanes](design-concepts/spec-S-030-permission-scope-matches-lanes.md)
-- [Installed Skill Identity And Inspection](design-concepts/spec-S-031-installed-skill-generation.md)
-- [Upgrade Layout Without Replacing Skills](design-concepts/spec-S-032-upgrade-route-and-source-provenance.md)
-- [Wiki Routing, Version Stamps And Safe Source Reads](design-concepts/spec-S-033-silent-gap-diagnostics.md)
-- [Control Fidelity Without Forced Uniformity](design-concepts/spec-S-034-control-fidelity-report.md)
-- [Release Candidate Proof And Historical Disposition](design-concepts/spec-S-035-workbench-v3-1-2-candidate.md)
-- [Evidence-Bounded Upgrade Claims (S-036)](design-concepts/spec-S-036-evidence-corrections.md)
-- [Line-Ending-Aware Records (S-037)](design-concepts/spec-S-037-line-ending-agnostic-records.md)
-- [Source-Checked Finding Disposition (S-038)](design-concepts/spec-S-038-upstream-finding-disposition.md)
-- [Installed Runtime Integrity (S-039)](design-concepts/spec-S-039-installed-runtime-integrity.md)
-- [Skill Presence And Repair Routes (S-040)](design-concepts/spec-S-040-skill-gate-route-selection.md)
-- [Recorded Baseline Availability (S-041)](design-concepts/spec-S-041-recorded-baseline-availability.md)
-- [Installed State Reporting And Repair (S-042)](design-concepts/spec-S-042-installed-state-repair.md)
-- [Diagnostics Ordered By Consequence (S-043)](design-concepts/spec-S-043-diagnostic-output-legibility.md)
-- [Adoption Preflight And Legacy Classification (S-044)](design-concepts/spec-S-044-adoption-and-legacy-classification.md)
-- [Linked Follow-Up Reconciliation (S-045)](design-concepts/spec-S-045-linked-follow-up-reconciliation.md)
-- [S-046: JSON Notepad Foundation](design-concepts/spec-S-046-json-notepad-foundation.md)
-- [S-047: Visible Workbench Identifiers](design-concepts/spec-S-047-visible-workbench-identifiers.md)
-- [S-048: Checkpoint Retirement And Direct Promotion](design-concepts/spec-S-048-checkpoint-retirement.md)
-- [S-049: Assignment Ownership And Coordination Records](design-concepts/spec-S-049-assignment-ownership-and-coordination-record.md)
-- [S-051: Core Skill Ownership And Compatibility](design-concepts/spec-S-051-core-skill-ownership-and-compatibility.md)
-- [S-053: Configured Host Capabilities](design-concepts/spec-S-053-configured-host-capabilities.md)
+- [Landmark: GitHub Coordination](design-concepts/landmark-github-coordination.md) - live coordination of delivery moves to GitHub Issues: who may act and what counts, per-item claim authority, composed views, room binding, and what is still open or unbuilt.
+- [Landmark: Portable Workbench](design-concepts/landmark-portable-workbench.md) - a fresh agent can clone a room, find its skills, manifest and host knowledge there, do authorized work and end clean; the accepted answers, what the owner left open and what is not yet delivered.
+- [Landmark: Workbench Boundaries](design-concepts/landmark-workbench-boundaries.md) - rooms work without the personal skill catalog and coordination machinery stays Foundry augmentation; recurring maintenance is unanswered.
+- [Landmark: Agent Autonomy](design-concepts/landmark-agent-autonomy.md) - agents finish authorized work, investigate before asking and never manufacture their next task; coordinator and Foundry machinery are deferred until single-Task execution is proven.
+- [Landmark: Workbench and Project Relationships](design-concepts/landmark-workbench-and-project-relationships.md) - the room, Project, Blueprint, Spec, Task and Chat cardinalities, and the rule for when a Master Workbench would be justified.
+- [Landmark: Artifact Types](design-concepts/landmark-artifact-types.md) - what each Workbench record is for: the eight-file root destination, one job per artifact, decision tiers and Canon, the destination-only Blueprint, and how Specs, Tasks and ADRs are retired while staying reachable.
+- [Landmark: Workbench Updates](design-concepts/landmark-workbench-updates.md) - how rooms receive upstream improvements: version contract, release-owned skills with explicit updates, ownership-origin divergence, recoverable migration, producer self-drift repair, and what a release must prove.
+- [Landmark: Verification](design-concepts/landmark-verification.md) - how Task proof, assembled-Spec review, Human QA and closure gates, plus portable-layout proof, keep evidence distinct from review and owner approval.
+- [Landmark: Skills](design-concepts/landmark-skills.md) - the tracked skills lane, release-owned versions with explicit-update-only replacement, stance and carry skills, the Wiki skills reference, and the still-unbuilt DQC skills.
+- [Landmark: Wiki](design-concepts/landmark-wiki.md) - the Wiki as evolving synthesis: the skills reference, feature articles, who keeps pages current, and where older cards conflict with the newer Wiki decision.
+- [Landmark: Workbench Workflow](design-concepts/landmark-workbench-workflow.md) - the journey from idea to delivery: the Blueprint, Spec and Task chain, the Task as unit, branches and claims, review and return, integration and main control, and what newer decisions revise.
+- [Landmark: Context Map](design-concepts/landmark-context-map.md) - ordinary entry, the Lexicon-owned single Context Map, and guidebook routing, with what is deferred or not yet reflected in the controls.
+- [Landmark: Ownership Model](design-concepts/landmark-ownership-model.md) - every kind of truth has an identifiable owner, separate from authority to act: the three-carrier Contract, claim-level Governance Planes, and the planned ownership map.
+- [Landmark: Durable Knowledge](design-concepts/landmark-durable-knowledge.md) - Specs and Tasks as scaffolding, retirement and capture, feature articles, promotion of confirmed answers, and how the Tracker and Wiki keep links recoverable.
+- [Landmark: Grilling and Shared Understanding](design-concepts/landmark-grilling-and-shared-understanding.md) - how an idea becomes a confirmed shared concept and reaches its durable owners: working versus confirmed versus promoted, where pre-delivery understanding lives, and open conflicts with later decisions.
+- [Landmark: Handoffs](design-concepts/landmark-handoffs.md) - handoffs as readable Markdown that preserve the named scope, cold continuation through existing owners, notes as transport, and where handoff authority answers conflict with current controls.
+- [Landmark: Taskboard](design-concepts/landmark-taskboard.md) - a generated six-lane board that projects Spec and Task state, one shared lane calculation, review and Complete cleanup rules, and `sitrep`, with delivery status stated honestly.
+- [Landmark: Agent Stances](design-concepts/landmark-agent-stances.md) - the four portable stance skills change method, not authority, and the Spec and Task set the normal stance; routes to the Roles and stances article.
+- [Landmark: Notepads](design-concepts/landmark-notepads.md) - what working notes and handoffs preserve, that a notepad belongs to its objective, promote-before-end with temporary committed transport, and where pre-delivery understanding lives.
+- [Landmark: Session Transport](design-concepts/landmark-session-transport.md) - promote before end with notes allowed to travel temporarily, optional private Git transport, and private recovery material kept out of the public tree.
+- [Landmark: Genesis and Adoption](design-concepts/landmark-genesis-and-adoption.md) - the three entry routes (Genesis, Adoption, update), what each preserves, shadow retirement, and the staged Template-proof path to a personalized room.
+- [Landmark: Workbench Template](design-concepts/landmark-workbench-template.md) - what the reference Template provides, the upgrade each version must prove, staged personalization, and the fixture exercises.
+- [Landmark: Harness Feedback Review](design-concepts/landmark-harness-feedback-review.md) - chat-only Round One precedes reports, reports live in the feedback lane without repairing their target, every finding gets one disposition, and cost and outcome measurement belong to the audit workbench.
+- [Landmark: Landmark Tracker](design-concepts/landmark-landmark-tracker.md) - the four-piece model, card and landmark lifecycle, step distributions and maintenance, routing to the Landmark Tracker concept article for the model itself.
+
+## Feature Articles
+
+One article per delivered capability, named for what it delivers. Each line
+carries a one-line summary beside its link so a reader can choose a page
+without opening it. The collection's shape and capture convention are in
+[features/README.md](features/README.md) - the features collection's article shape and capture rules.
+
+- [Adoption Preflight And Legacy Classification](features/adoption-preflight-and-legacy-classification.md) - reports every unreconciled root control at once and classifies a room as genesis, adoption, upgrade or unclassifiable from evidence.
+- [Adoption When Git Writes Are Unavailable](features/adoption-when-git-writes-are-unavailable.md) - adoption on a host that refuses Git writes records a visible blocker and reversible work, never forced Git or invented proof.
+- [Assigned Work, Portable Stances And Delivery Boundaries](features/assigned-work-portable-stances-and-delivery-boundaries.md) - the entry route, the Builder, Auditor, Reviewer and Reconciler stances, and delivery through independent review and verified containment.
+- [Assignment Ownership And Coordination Records](features/assignment-ownership-and-coordination-records.md) - the Carry skill owns an assigned endpoint, and routine coordination the owner supplied by hand is recorded.
+- [Blueprint, Active ADRs And The Context Map](features/blueprint-active-adrs-and-the-context-map.md) - the Blueprint states the finished product, active ADR decisions carry architectural Canon, and the Context Map routes questions to owners.
+- [Bounded Team Coordination](features/bounded-team-coordination.md) - optional team templates and an overlap demonstration: disjoint edit paths, one coordinator, one writer of shared state, no locking service.
+- [Canonical Evaluator Invocation](features/canonical-evaluator-invocation.md) - the evaluator emits its report when run directly through a path alias, checked by report content and not just exit status.
+- [Checkpoint Retirement And Direct Promotion](features/checkpoint-retirement-and-direct-promotion.md) - retires checkpoint copy creation, keeps history and promotes selected supported claims straight to their durable owners.
+- [Configured Host Capabilities](features/configured-host-capabilities.md) - five bounded host checks that keep capability, enforcement and agent reliability separate.
+- [Consistent Bootstrap Ownership Guidance](features/consistent-bootstrap-ownership-guidance.md) - setup, Genesis and Adoption entry points route to the current owners: contract for behavior, Spec for requirements and proof, Taskboard as view.
+- [Control Fidelity Without Forced Uniformity](features/control-fidelity-without-forced-uniformity.md) - a report that compares a room's controls with the templates and labels each line unchanged, filled, changed, dropped or added, without failing on divergence.
+- [Copyable Workbench Template Reference Room](features/copyable-workbench-template-reference-room.md) - the reference room became a copyable Workbench Template whose installed controls, identity and provenance survive an upgrade.
+- [Core Skill Ownership And Compatibility](features/core-skill-ownership-and-compatibility.md) - a versioned core skill source with explicit compatibility ranges that keeps missing or conflicting skills visible.
+- [Declared Integration And Recoverable Completion](features/declared-integration-and-recoverable-completion.md) - the manifest declares the integration branch, doctor reports it missing, and completed work lands committed on a prefixed branch.
+- [Dependency-Safe Direct Claiming](features/dependency-safe-direct-claiming.md) - direct Task claiming uses the same dependency eligibility as selection and refuses blocked work before changing anything.
+- [Diagnostics Ordered By Consequence](features/diagnostics-ordered-by-consequence.md) - doctor groups findings as blocking, selected-slice, then informational, so effect leads severity.
+- [Evidence-Bounded Upgrade Claims](features/evidence-bounded-upgrade-claims.md) - upgrade reports that separate what a check observes from what an operator might infer: matcher uncertainty, fidelity and source identity.
+- [Evidence-Gated Harness Feedback](features/evidence-gated-harness-feedback.md) - feedback discovery ranks candidates and an independent decision passes, denies or blocks each on reproduction, regression, suite and safety evidence.
+- [Feedback And Migration Integrity](features/feedback-and-migration-integrity.md) - strict feedback ingestion, manifest-aware guardrail evaluation, and adoption that reports the residue it leaves.
+- [Fresh Template To Independent Project Proof](features/fresh-template-to-independent-project-proof.md) - the recorded proof that a clean Template copy became an independent project room and was continued in a fresh agent context, with its limits.
+- [Genesis From Blueprint Decisions And Active ADRs](features/genesis-from-blueprint-decisions-and-active-adrs.md) - creates a new room from a clean Template, a prepared note and an explicit plan, deriving one first capability from locked questions and active ADRs.
+- [Governance Planes, ADR Decisions And Scoped Diagnostics](features/governance-planes-adr-decisions-and-scoped-diagnostics.md) - claims classified by plane, authority kept apart from state resolution, and diagnostics with their own severity, scope and blocking effect.
+- [Held-Out Path-Safety Evaluation](features/held-out-path-safety-evaluation.md) - a held-out path-handling eval task and grader scoring correctness, scope, verification honesty and doc upkeep separately.
+- [Historical v3.1 Release Proof Packet](features/historical-v3-1-release-proof-packet.md) - the superseded v3.1 release proof packet: what it preserved, what it never completed, and the current owners of release state.
+- [Import-Safe Feedback Helper Entry](features/import-safe-feedback-helper-entry.md) - the feedback helper can be imported inline without running its CLI, because its entry guard handles an absent script path.
+- [Installed Runtime Integrity](features/installed-runtime-integrity.md) - a room compares its installed runtime files with its managed-tools receipt hashes and classifies drift; verify reports and repair stays separate.
+- [Installed Skill Identity And Inspection](features/installed-skill-identity-and-inspection.md) - managed skill markers with a content hash and compatibility range, and read-only inspection that tells an installed copy from its source.
+- [Installed State Reporting And Repair](features/installed-state-reporting-and-repair.md) - reports stale seeded documents and repairs missing metadata without reinstalling or replacing project-owned content.
+- [JSON Notepad Foundation](features/json-notepad-foundation.md) - a local revision-checked JSON notepad that preserves working context for continuation without granting authority.
+- [Lexicon Freshness Repair](features/lexicon-freshness-repair.md) - repairs stale release, version and source-boundary claims in the Lexicon by checking them against the manifest, Git containment and links.
+- [Line-Ending-Aware Records](features/line-ending-aware-records.md) - ADR and Wiki readers that accept LF and CRLF checkouts through one shared parser, with writers that keep the destination's line terminator.
+- [Linked Follow-Up Reconciliation](features/linked-follow-up-reconciliation.md) - gives accepted obligations left by completed Specs a new owner instead of leaving them in closed records.
+- [Manifest Schema 2 Lanes And Managed Runtime](features/manifest-schema-2-lanes-and-managed-runtime.md) - manifest-declared support lanes and collections, and managed runtime tools installed against a recorded receipt.
+- [Mechanical Permission Scope And Declared Lanes](features/mechanical-permission-scope-and-declared-lanes.md) - a diagnostic that compares the permission file with each declared lane and reports drift without rewriting settings.
+- [Named Template Upgrade Release Gate](features/named-template-upgrade-release-gate.md) - requires each new Workbench version to be exercised in the named Workbench_Template installation before release readiness.
+- [Operable Genesis Readiness](features/operable-genesis-readiness.md) - Genesis readiness checks that a cold agent can follow the layout, read filled controls and select a ready first Spec packet, not only find filenames.
+- [Portable Verification Boundaries](features/portable-verification-boundaries.md) - context labels use forward slashes, spec comparison ignores CRLF, and eval fixtures use the running interpreter and Windows launchers.
+- [Portable Wiki Knowledge And Collections](features/portable-wiki-knowledge-and-collections.md) - the Wiki's one router, schema and note properties, and the named collections that hold durable explanations with explicit sources.
+- [Portable Workbench Installation, Adoption And Upgrade](features/portable-workbench-installation-adoption-and-upgrade.md) - how a Workbench is created, adopted and upgraded, with presence kept separate from replacement of installed skills.
+- [Project Evidence Preparation For Blueprint Grilling](features/project-evidence-preparation-for-blueprint-grilling.md) - turns named project sources into a bounded provisional grilling note that keeps source identity and uncertainty and answers no owner question.
+- [Recorded Baseline Availability](features/recorded-baseline-availability.md) - a Spec can record an unavailable application baseline with evidence and one of three closed reasons so a harness-only change can proceed.
+- [Release Candidate Proof And Historical Disposition](features/release-candidate-proof-and-historical-disposition.md) - what a release candidate must join: capability delivery, version identity and a disposition of feedback, with the proof kept historical.
+- [Reproducible Adoption Provenance](features/reproducible-adoption-provenance.md) - adoption proof carries the source remote, ref, resolved commit, executed self-tests and checksum, so a cold reviewer can reproduce it.
+- [Skill Presence And Repair Routes](features/skill-presence-and-repair-routes.md) - skill installation that recognizes linked destinations and names the supported route in refusals, with one shared presence judgment.
+- [Source-Checked Finding Disposition](features/source-checked-finding-disposition.md) - how an upstream fix list is reconciled: each finding is source-checked, routed to a named capability, and corrected premises are preserved.
+- [Spec-Centered Progressive Disclosure](features/spec-centered-progressive-disclosure.md) - ordinary entry stays small: contract, routes, then the assigned Spec and its source, with no historical catalog read first.
+- [Upgrade Layout Without Replacing Skills](features/upgrade-layout-without-replacing-skills.md) - a layout-only upgrade route for an adopted legacy room whose skills cannot be replaced, with source provenance checked against the real checkout.
+- [Verified Automation Run Outcomes](features/verified-automation-run-outcomes.md) - six run-outcome categories and an idle count that only a verified idle advances, so a pause is recommended on real absence of work.
+- [Visible Workbench Identifiers](features/visible-workbench-identifiers.md) - the visible type-prefixed identity readers see, with legacy compatibility and the uppercase width-four amendment.
+- [Wiki Routing, Version Stamps And Safe Source Reads](features/wiki-routing-version-stamps-and-safe-source-reads.md) - the checks that tell a room its Wiki router is unreachable or its Wiki files are stamped with a stale version, and the safe-read boundary continuity input must pass.
+- [Workflow Composition And Cold Continuation](features/workflow-composition-and-cold-continuation.md) - how composed work resumes from repository evidence alone, with a round-trip fixture and checkpoint copying retired in favor of promotion.
