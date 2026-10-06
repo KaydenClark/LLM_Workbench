@@ -3,13 +3,13 @@
 **Spec ID:** S-004L
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s004l-dispatcher (Dispatcher; single writer of this Spec, its Task records and the projections; TK-008M and TK-008N Workers claimed under the labels claude-s004l-worker-n and claude-s004l-worker-m)
+**Owner:** claude-s004l-dispatcher (Dispatcher; single writer of this Spec, its Task records and the projections; TK-008O claimed under the label claude-s004l-dispatcher-auditor for the Dispatcher in the Auditor stance)
 **Stance:** Builder
 **Updated:** 2026-10-06
 **Catalog description:** Ship one improve-one-harnessed-job playbook skill that runs the baseline-to-rerun loop, point the Runbook's harness feedback and evaluation rows at it, and retire the host-installed harness-review family in its favor.
 **Blockers:** none
-**Latest event:** TK-008L closed after PR #372 merged at a3d72950; TK-008M and TK-008N claimed for side-by-side Workers.
-**Next gate:** Close TK-008M (Runbook rows) and TK-008N (Wiki page) with proof, TK-008M first; then TK-008O, the fresh-context scenario.
+**Latest event:** TK-008O claimed by claude-s004l-dispatcher-auditor.
+**Next gate:** Close TK-008O with verification and documentation proof.
 
 ## Outcome
 
@@ -87,6 +87,8 @@ The Runbook rows, one Wiki skill page, the lineage page's pointer to the skill, 
 | 2026-10-05 | TK-008L, TK-008M, TK-008N, TK-008O | Plan: four Tasks cut and the Spec activated at integration 35187ee6. | Actuality inspected: lane listing, `coreSkills` in workbench/tools/workbench-layout.mjs, the Runbook index rows and tools/test-runbook-index.mjs pins, `gh pr list --base integration` (no open candidate holds RUNBOOK.md), the TK identifiers on every remote tip (highest TK-008K; Director block TK-008L to TK-008S). | This Spec. | Implementation and proof remain; S-003K supersession routed to the Director. |
 | 2026-10-06 | TK-008L | Lane stopped by the Director on session wind-down; TK-008L candidate 61ed0855 on claude/s004l-tk008l-improve-harness (worktree .worktrees/s004l-tk008l, pushed) with its PR open, not merged. | Red a5565e6b, green 61ed0855 on test-skill-catalog, test-skills-lane, test-workbench-layout, test-core-skill-installer, test-workbench-upgrade, test-runbook-index, test-skill-inspection; wiki validate ok; guardrails 73/100 before and after; self-drift pre/post 14 attention findings, same set; full suite in progress (11/51 ok, no failure) when stopped. | TASK.md records only; the skill, catalog row and counts are in the candidate. | Next Dispatcher: rerun the full suite on 61ed0855, record the receipt, validate the merge answers, merge the PR, close TK-008L, re-render; then TK-008M and TK-008N side by side from integration (draft patch scripts and the Wiki page draft were session-local and are not durable), then TK-008O. |
 | 2026-10-06 | TK-008L | Task closed | PR #372 merged at a3d72950 (candidate f85af35a, contained in integration); full suite 52/52 ok on committed 79f9805d; targeted test-skill-catalog, test-skills-lane, test-workbench-layout, test-runbook-index, test-wiki ok; red a5565e6b; guardrails 73/100 before and after; self-drift 14 attention findings pre/post, same set | improve-harness SKILL.md new; skills README, README, LEXICON, templates/GENESIS, workbench-room-checks and the genesis Wiki page carry the 28-skill count | none for this Task; TK-008M, TK-008N, TK-008O remain |
+| 2026-10-06 | TK-008M | Task closed | PR #389 merged at eef29648 (candidate a3dedc3c, contained); full suite 52/52 on committed d081e10a; test-runbook-index 58/58, test-skill-inspection, test-governance-core, test-control-fidelity, test-carrier-landing, test-skill-catalog ok; carrier line-landing on RUNBOOK.md 6 removed, 6 landed; red 5ef903b5; guardrails 73/100 before and after; self-drift 12 findings pre/post, same set | RUNBOOK.md three rows and three section bodies, templates/RUNBOOK.md evaluation row and intro, workbench-evaluation two sections, workbench/wiki/maintainer-skills.md | Template rows Return harness feedback and Write a manual harness feedback report keep their own sections (routed to Spec QA) |
+| 2026-10-06 | TK-008N | Task closed | PR #388 merged at 3208c7f5 (candidate 376f2b87, contained); full suite 52/52 on committed e0bec7e1; wiki validate 0 findings; test-wiki 25/25, test-skills-lane 6/6, test-landmark-wiki 79/79; small Wiki lint eight items pass on four touched pages; guardrails 73/100 before and after; self-drift 12 findings pre/post, same set | workbench/wiki/skill-improve-harness.md new; MEMORY.md, harness-engineering-lineage.md, skills-draft/README.md | Harness Feedback Review landmark page does not name improve-harness; test-wiki draft-index wording for the retired rows (routed to Spec QA) |
 
 ## Completion Result
 
