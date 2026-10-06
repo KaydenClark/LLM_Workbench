@@ -544,7 +544,9 @@ node workbench/tools/spec-workbench.mjs retire-landmark LMK-001 --wiki workbench
 - `report`, `verify` and `verdict` on a landmark are the whole-landmark review:
   `verify` refuses while a child Spec is neither complete nor retired or a
   direct Task is not done; `verdict` refuses a reviewer who took part in the
-  landmark, answers a fail with corrective Tasks under the landmark without
+  landmark, including every agent a direct or child Task record lists under
+  `Claimed by` (each `claim` appends its agent there and refuses an agent name
+  with a comma or line break), answers a fail with corrective Tasks under the landmark without
   touching a child Spec's gate, and sets the landmark `reached` on a pass with
   every child closed and every reached check ticked.
 - `approve LMK-###` records only the owner's actual approval, bound to the

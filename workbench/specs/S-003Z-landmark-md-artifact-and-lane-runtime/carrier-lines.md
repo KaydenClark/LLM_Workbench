@@ -18,7 +18,10 @@ bracketed value placeholders in the command examples written in the Runbook's
 own `SHA` and `"..."` convention (root controls carry no template
 placeholders) and the template naming the landmark's `specs` folder without a
 bare `specs/` path. Sections 3 and 4 and the `workbench-room-checks` entry
-under "Outside the six files" remain for Task TK-008Z.
+under "Outside the six files" remain for Task TK-008Z. TK-008Y run 2 added the root Task row
+to section 3. Apply sections 3 and 4 to the Lexicon as the Contract Carrier
+Pointer-Brief Rewrite (TK-005N, PR #358) left it, changing only the landmark
+statements.
 
 Every command below was read from `workbench/tools/spec-workbench.mjs` and
 `workbench/tools/spec-report.mjs` at that tip; the readable explanation is
@@ -191,6 +194,21 @@ records in the Landmark Tracker; the artifact is not installed yet" and names
 the delivered folders, statuses and prefix; the Landmark Wiki page row drops
 "As the accepted destination" and names the retirement; the Map row adds the
 folder path that carries every parent.
+
+Root Task row (added by TK-008Y run 2 for the fail verdict #1 finding): in the
+`| **Task** |` row, replace the sentence
+
+```markdown
+Small direct Blueprint Tasks, and Tasks directly under a landmark ([ADR-000U](workbench/docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md)), remain accepted destination design with no delivered home; today ordinary Tasks are Spec-bound, and a `wiki-claim` destination
+```
+
+with
+
+```markdown
+Small direct Blueprint Tasks remain accepted destination design with no delivered home; a Task's parent is its Spec or, directly, an assigned and active landmark ([ADR-000U](workbench/docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md)), and a `wiki-claim` destination
+```
+
+and keep the rest of the row as the Lexicon then has it.
 
 ## 4. `templates/LEXICON.md`
 

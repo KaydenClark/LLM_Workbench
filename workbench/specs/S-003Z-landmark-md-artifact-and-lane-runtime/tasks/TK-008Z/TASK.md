@@ -5,9 +5,9 @@
 **Slice:** The Lexicon carriers and the room-checks skill name the delivered landmark artifact
 **Status:** blocked
 **Stance:** Builder
-**Blockers:** TK-005N, TK-008L
+**Blockers:** TK-005N
 **Destination:** spec-acceptance: Source behavior, the generic templates, discovery and managed installation agree, and updating a room with no landmarks leaves it unchanged.
-**Planned verification:** Red: `tools/test-runbook-index.mjs` (or the Lexicon's own carrier test) gains a case asserting that the Landmark row in `LEXICON.md` and `templates/LEXICON.md` no longer says the artifact is not installed and names the `LANDMARK.md` folders, statuses and `LMK-` prefix, that the Landmark Wiki page and Map rows match sections 3 and 4 of [carrier-lines.md](../../carrier-lines.md), that the template Lexicon's Task row names a landmark as a possible parent, and that the `workbench-room-checks` skill's V3 support-root check lists the `landmarks` collection; green once those lines are applied, re-read against the then-current anchors. Full Runbook suite on the committed candidate.
+**Planned verification:** Red: `tools/test-runbook-index.mjs` (or the Lexicon's own carrier test) gains a case asserting that the Landmark row in `LEXICON.md` and `templates/LEXICON.md` no longer says the artifact is not installed and names the `LANDMARK.md` folders, statuses and `LMK-` prefix, that the Landmark Wiki page and Map rows match sections 3 and 4 of [carrier-lines.md](../../carrier-lines.md), that the root and template Lexicon Task rows name a landmark as a possible parent (the root row no longer says Tasks directly under a landmark have no delivered home), and that the `workbench-room-checks` skill's V3 support-root check lists the `landmarks` collection; green once those lines are applied, re-read against the then-current anchors. Full Runbook suite on the committed candidate.
 
 ## Origin
 
