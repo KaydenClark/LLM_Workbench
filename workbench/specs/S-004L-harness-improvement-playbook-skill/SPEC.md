@@ -3,13 +3,13 @@
 **Spec ID:** S-004L
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s004l-dispatcher (Dispatcher; single writer of this Spec, its Task records and the projections)
+**Owner:** claude-s004l-dispatcher (Dispatcher; single writer of this Spec, its Task records and the projections; TK-008M and TK-008N Workers claimed under the labels claude-s004l-worker-n and claude-s004l-worker-m)
 **Stance:** Builder
-**Updated:** 2026-10-05
+**Updated:** 2026-10-06
 **Catalog description:** Ship one improve-one-harnessed-job playbook skill that runs the baseline-to-rerun loop, point the Runbook's harness feedback and evaluation rows at it, and retire the host-installed harness-review family in its favor.
 **Blockers:** none
-**Latest event:** Planned 2026-10-05 at integration 35187ee6: four Tasks cut (TK-008L to TK-008O) from the Director's identifier block TK-008L to TK-008S.
-**Next gate:** Claim and deliver TK-008L (the skill and the bundle change); TK-008M and TK-008N follow it and may run side by side; TK-008O is the fresh-context scenario last.
+**Latest event:** TK-008L closed after PR #372 merged at a3d72950; TK-008M and TK-008N claimed for side-by-side Workers.
+**Next gate:** Close TK-008M (Runbook rows) and TK-008N (Wiki page) with proof, TK-008M first; then TK-008O, the fresh-context scenario.
 
 ## Outcome
 
@@ -86,6 +86,7 @@ The Runbook rows, one Wiki skill page, the lineage page's pointer to the skill, 
 | 2026-10-05 | none | Authored at the Map step from the owner's playbook decision of 2026-10-05 and re-verified at integration ec65203d. | Map only; the family was counted in the host skills root and the lane was read, no runtime proof claimed. | This Spec. | Plan, implementation and proof remain. |
 | 2026-10-05 | TK-008L, TK-008M, TK-008N, TK-008O | Plan: four Tasks cut and the Spec activated at integration 35187ee6. | Actuality inspected: lane listing, `coreSkills` in workbench/tools/workbench-layout.mjs, the Runbook index rows and tools/test-runbook-index.mjs pins, `gh pr list --base integration` (no open candidate holds RUNBOOK.md), the TK identifiers on every remote tip (highest TK-008K; Director block TK-008L to TK-008S). | This Spec. | Implementation and proof remain; S-003K supersession routed to the Director. |
 | 2026-10-06 | TK-008L | Lane stopped by the Director on session wind-down; TK-008L candidate 61ed0855 on claude/s004l-tk008l-improve-harness (worktree .worktrees/s004l-tk008l, pushed) with its PR open, not merged. | Red a5565e6b, green 61ed0855 on test-skill-catalog, test-skills-lane, test-workbench-layout, test-core-skill-installer, test-workbench-upgrade, test-runbook-index, test-skill-inspection; wiki validate ok; guardrails 73/100 before and after; self-drift pre/post 14 attention findings, same set; full suite in progress (11/51 ok, no failure) when stopped. | TASK.md records only; the skill, catalog row and counts are in the candidate. | Next Dispatcher: rerun the full suite on 61ed0855, record the receipt, validate the merge answers, merge the PR, close TK-008L, re-render; then TK-008M and TK-008N side by side from integration (draft patch scripts and the Wiki page draft were session-local and are not durable), then TK-008O. |
+| 2026-10-06 | TK-008L | Task closed | PR #372 merged at a3d72950 (candidate f85af35a, contained in integration); full suite 52/52 ok on committed 79f9805d; targeted test-skill-catalog, test-skills-lane, test-workbench-layout, test-runbook-index, test-wiki ok; red a5565e6b; guardrails 73/100 before and after; self-drift 14 attention findings pre/post, same set | improve-harness SKILL.md new; skills README, README, LEXICON, templates/GENESIS, workbench-room-checks and the genesis Wiki page carry the 28-skill count | none for this Task; TK-008M, TK-008N, TK-008O remain |
 
 ## Completion Result
 
