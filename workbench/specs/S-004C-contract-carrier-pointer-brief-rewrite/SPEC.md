@@ -3,13 +3,13 @@
 **Spec ID:** S-004C
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s004c-tk005n
+**Owner:** claude-s004c-tk005n-r2
 **Stance:** Builder
-**Updated:** 2026-10-05
+**Updated:** 2026-10-06
 **Catalog description:** Rewrite AGENTS.md as a short standing brief and RUNBOOK.md as an operations index of context pointers, with each operation's procedure and binding requirements in a tracked skill the carrier points to.
 **Blockers:** Remaining Tasks wait on gates recorded as Task blockers: the Worker and Captain role skills (TK-005L, on S-002E and S-004B delivery); delivery of the `LANDMARK.md` artifact (TK-005O, on S-003Z); and all of them (TK-005P). TK-005N is ready.
-**Latest event:** 2026-10-05: the owner decided that `AGENTS.md` is the only Contract file, the Runbook binds nothing and the Lexicon retires; the Director amended this Spec's plan below. TK-005M closed with proof on 2026-10-04.
-**Next gate:** TK-005N (Lexicon and orientation text); TK-005L waits on S-002E and S-004B delivery, TK-005O on S-003Z delivery, and TK-005P on all of them.
+**Latest event:** TK-005N claimed by claude-s004c-tk005n-r2.
+**Next gate:** Close TK-005N with verification and documentation proof.
 
 > **Citation anchors.** pre=`226212f1790badce0a5bdcd934d2e48e3981e05f` post=`226212f1790badce0a5bdcd934d2e48e3981e05f`.
 
