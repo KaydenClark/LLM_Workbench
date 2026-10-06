@@ -432,8 +432,9 @@ Spec once its last Task has landed (`report` and `verdict`), sometimes a
 landmark's assembled Specs once they are delivered, and the Blueprint, which
 for a release means the Workbench as a whole against its decision records and
 Blueprint. It runs never on a Task: the sum of the completed Tasks shows at the
-destination. Landmark and whole-Workbench review tooling is accepted
-destination design; today's runtime reviews Specs. Review decides whether
+destination. Landmark review tooling is delivered (`report`, `verify` and
+`verdict` on a landmark); whole-Workbench review tooling is accepted
+destination design. Review decides whether
 another Journey is needed: a failed Review goes back to Map, Plan and Journey
 under the still-open Spec before the work can be verified, and there is no set
 number of Review rounds. But the same Review failure twice, or three attempts

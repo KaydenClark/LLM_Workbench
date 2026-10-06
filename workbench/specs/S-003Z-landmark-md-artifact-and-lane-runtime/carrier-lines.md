@@ -12,6 +12,14 @@ lands it in a carrier. Written by S-003Z Task TK-008J (landmark templates and
 documentation) on 2026-10-06 against integration d14cf315; re-read each
 anchor before applying, since the carriers may have moved.
 
+**Applied so far (2026-10-06):** sections 1, 2, 5 and 6 were applied by Task
+TK-008Y (Runbook and AGENTS carrier lines) on the Director's routing, with the
+bracketed value placeholders in the command examples written in the Runbook's
+own `SHA` and `"..."` convention (root controls carry no template
+placeholders) and the template naming the landmark's `specs` folder without a
+bare `specs/` path. Sections 3 and 4 and the `workbench-room-checks` entry
+under "Outside the six files" remain for Task TK-008Z.
+
 Every command below was read from `workbench/tools/spec-workbench.mjs` and
 `workbench/tools/spec-report.mjs` at that tip; the readable explanation is
 [Landmarks: The LANDMARK.md Artifact One Size Above A Spec](../../wiki/design-concepts/landmarks-one-size-above-specs.md).

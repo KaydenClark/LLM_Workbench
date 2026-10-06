@@ -373,7 +373,8 @@ the next Review of whatever it was rebased into covers it.
 Review comes after the Journey, as an Automated review: one agent reviewing
 another agent's work. It judges a completed destination against its Map: a
 Spec once its last Task has landed (`report` and `verdict`), sometimes a
-landmark's assembled Specs, and the Blueprint, which for a release means the
+landmark's assembled Specs (`report`, `verify` and `verdict` on the
+landmark), and the Blueprint, which for a release means the
 project as a whole against its decision records and Blueprint. It runs never on
 a Task. Review decides whether another Journey is needed: a failed Review goes
 back to Map, Plan and Journey under the still-open Spec before the work can be
