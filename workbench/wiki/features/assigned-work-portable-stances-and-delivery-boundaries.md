@@ -33,9 +33,9 @@ together with several repairs to update, rollback and adoption behavior.
 ## What It Does
 
 - **Entry route.** The normal entry route is `AGENTS.md` -> the `RUNBOOK.md`
-  operations index -> `LEXICON.md` (the Contract Carrier Pointer-Brief Rewrite,
-  S-004C, made the Runbook an index of pointers to the skills that hold each
-  procedure), followed by the assigned capability
+  operations index -> `LEXICON.md` (the
+  Contract Carrier Pointer-Brief Rewrite (S-004C) made the Runbook an index of
+  pointers to the skills that hold each procedure), followed by the assigned capability
   and only its relevant context. The Blueprint is loaded for architecture and
   product direction. An agent investigates missing information inside its
   assignment and does not invent a new queue item merely because it reaches a
@@ -89,4 +89,4 @@ delivered work.
 - 2026-09-19: Created on owner direction as one article for this legacy Spec after reading its full record and checking named live sources. Evolved or superseded claims are identified explicitly. No Spec was moved, retired or discarded, and no retrospective Human QA is asserted.
 - 2026-09-30: Repaired live skill links and source_paths after relocation to workbench/skills; verified destinations only, without revalidating historical capability claims.
 - 2026-10-04: Moved from `design-concepts/spec-S-027-workbench-v3-1-1-boundaries.md` into the features collection under this name with `wiki.mjs move-note`, retyped `feature` and restructured into the four feature sections from its existing prose, for the Wiki Evolving-Synthesis Migration Spec (S-003W) Task TK-002 (Move And Retype The Remaining Per-Spec Articles). Every live link to it was rewritten by the move; no claim was changed. This move checked that the named current source paths (the first entry names the Spec's eventual retired route, which does not exist yet) and the immutable commit exist, not the behavior of the capability itself.
-- 2026-10-04: The entry route names the Runbook operations index, which the Contract Carrier Pointer-Brief Rewrite (S-004C TK-005N) delivered.
+- 2026-10-04: The entry route names the Runbook operations index, which the Contract Carrier Pointer-Brief Rewrite (S-004C) Lexicon And Orientation Wording Task (TK-005N) delivered.

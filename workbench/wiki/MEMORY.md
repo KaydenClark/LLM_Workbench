@@ -4,8 +4,8 @@ status: active
 sensitivity: normal
 knowledge_role: canonical
 provenance:
-  - S-021 dogfood migration 2026-09-01; S-025 contract adoption 2026-09-04
-  - S-00V TK-00I Agent Operating Knowledge route, 2026-09-26
+  - v3 Portable Workbench Spec (S-021) dogfood migration 2026-09-01; Portable Wiki And Design Concepts Spec (S-025) contract adoption 2026-09-04
+  - Portable Workbench Spec (S-00V) Host Memory To Wiki Task (TK-00I) Agent Operating Knowledge route, 2026-09-26
   - Wiki Evolving-Synthesis Migration (S-003W) router changes 2026-10-04: feature article, landmark synthesis and summary-line routes, and the whole-Wiki lint corrections of its corrective Task TK-006P (Wiki wording)
 source_paths:
   - workbench/wiki

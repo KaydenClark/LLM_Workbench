@@ -7,7 +7,7 @@ provenance:
   - v3.1.2 parallel merge run of six Builder lanes, 2026-09-05
   - v4 build dispatcher phases one and two, 2026-09-16 to 2026-09-18
   - Duplicate-lane discovery, 2026-09-16
-  - Promoted from host auto-memory by the S-00V TK-00I audit, 2026-09-26
+  - Promoted from host auto-memory by the Portable Workbench Spec (S-00V) Host Memory To Wiki Task (TK-00I) audit, 2026-09-26
   - Owner-confirmed review rules (Task merge answers, no per-Task or rebase Review), 2026-10-05
 source_paths:
   - AGENTS.md

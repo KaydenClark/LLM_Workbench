@@ -4,8 +4,8 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - Owner directive in the foundation grilling, 2026-09-11 (ledger FND-Q04)
-  - Promoted from host auto-memory by the S-00V TK-00I audit, 2026-09-26
+  - Owner directive in the foundation grilling, 2026-09-11 (ledger FND-Q04: Software-only or general work)
+  - Promoted from host auto-memory by the Portable Workbench Spec (S-00V) Host Memory To Wiki Task (TK-00I) audit, 2026-09-26
 source_paths:
   - workbench/sessions/grilling-destination-audit-ledger.json
   - workbench/feedback/REPORT-foundation-question-review-2026-09-11.md

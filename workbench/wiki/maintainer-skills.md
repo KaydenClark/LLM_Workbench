@@ -4,10 +4,10 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - Owner chose option A for the maintainer-skill home on the Contract Carrier Pointer-Brief Rewrite (S-004C) TK-005K blocker, 2026-10-04
-  - S-004C TK-006L built the declared maintainer-skill list, 2026-10-04
-  - S-004C TK-005K declared the first three maintainer skills, 2026-10-04
-  - Harness Improvement Playbook Skill (S-004L) TK-008M pointed the feedback rows at the improve-harness loop, 2026-10-06
+  - Owner chose option A for the maintainer-skill home on the Contract Carrier Pointer-Brief Rewrite (S-004C) Maintainer-only Operations Task (TK-005K) blocker, 2026-10-04
+  - Contract Carrier Pointer-Brief Rewrite Spec (S-004C) Maintainer Skill Declaration Task (TK-006L) built the declared maintainer-skill list, 2026-10-04
+  - Contract Carrier Pointer-Brief Rewrite Spec (S-004C) Maintainer-only Operations Task (TK-005K) declared the first three maintainer skills, 2026-10-04
+  - Harness Improvement Playbook Skill Spec (S-004L) Runbook Feedback Rows Task (TK-008M) pointed the feedback rows at the improve-harness loop, 2026-10-06
 source_paths:
   - tools/maintainer-skills.mjs
   - tools/core-skill-installer.mjs
@@ -61,7 +61,7 @@ in a document that does not bind.
   added.
 
 Three maintainer skills are declared (Contract Carrier Pointer-Brief Rewrite
-TK-005K moved the maintainer-only Runbook procedures into them):
+Maintainer-only Operations Task (TK-005K) moved the maintainer-only Runbook procedures into them):
 
 - [`workbench-release`](../skills/workbench-release/SKILL.md): version labels,
   the reference Template upgrade gate, the composed round trip, the
@@ -74,8 +74,9 @@ TK-005K moved the maintainer-only Runbook procedures into them):
 - [`workbench-evaluation`](../skills/workbench-evaluation/SKILL.md): claims,
   evaluation design and commands, this repository's feedback harvest and
   manual report steps around the core
-  [`improve-harness`](../skills/improve-harness/SKILL.md) loop (Harness
-  Improvement Playbook Skill, S-004L), the automated gate and run outcomes.
+  [`improve-harness`](../skills/improve-harness/SKILL.md) loop from the
+  Harness Improvement Playbook Skill (S-004L), the automated gate and run
+  outcomes.
 
 Each Runbook section that held one of these procedures keeps its heading and a
 pointer, and the operations index row points at the skill section, so the

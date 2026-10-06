@@ -4,7 +4,7 @@ status: active
 sensitivity: normal
 knowledge_role: canonical
 provenance:
-  - owner direction via S-00I TK-005's dispatcher handoff, 2026-09-18 (workbench/sessions/handoffs/v4-lane-S-00I-TK-005-reconcile-and-retire-2026-09-18.md)
+  - owner direction via the Retirement Lifecycle By Folder For Records Spec (S-00I) Reconcile And Retire Task's (TK-005) dispatcher handoff, 2026-09-18 (workbench/sessions/handoffs/v4-lane-S-00I-TK-005-reconcile-and-retire-2026-09-18.md)
 source_paths:
   - workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md
   - workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md
@@ -20,7 +20,7 @@ last_verified: 2026-09-18
 # The Task Artifact And Its Lifecycle
 
 A **Task** is a standalone artifact, `TASK.md`, living at
-`<spec-directory>/tasks/<TK-id>/TASK.md`. It is a bounded, executable thin
+`<spec-directory>/tasks/<Task folder name (TK-id)>/TASK.md`. It is a bounded, executable thin
 vertical slice of a `SPEC.md`, carrying its own blocking relationships so
 independent Tasks can complete in parallel. It replaced an embedded row in
 the Spec's own slice table, because a table row cannot occupy a folder and
@@ -36,8 +36,8 @@ Spec's own evidence trail.
 
 Every claim below is either read straight from the room's own live tool
 (`task-record.mjs`, `task-receipt.mjs`, `task-packet.mjs`,
-`spec-workbench.mjs`) or from ADR-000H's accepted decision text - never
-copied from S-00H's Spec body or its Tasks' own evidence rows, which stay
+`spec-workbench.mjs`) or from the Standalone Task Artifact ADR's (ADR-000H) accepted decision text - never
+copied from Task Artifact And Terminology Migration's (S-00H) Spec body or its Tasks' own evidence rows, which stay
 `SPEC.md`'s and `TASK.md`'s own append-only history at their retired route.
 When this article, accepted Canon and a live tool disagree, follow
 `AGENTS.md` State Resolution: newer Canon identifies an implementation gap,
@@ -95,7 +95,7 @@ they sit in append-only evidence rows inside Specs that are themselves frozen
 by their own retention rule, and rewriting them would edit a record precisely
 because it is being read as history. They remain readable as `TK-###` history
 even though the identifier form was never changed - only newly allocated
-Tasks and the vocabulary describing them changed at ADR-000H's acceptance.
+Tasks and the vocabulary describing them changed at the Standalone Task Artifact ADR's (ADR-000H) acceptance.
 
 ## One Task, One Context
 
@@ -119,6 +119,6 @@ folded into a single oversized one.
 
 ## History
 
-- 2026-09-18: created on owner direction, via S-00I TK-005's dispatcher
-  handoff, to serve as the durable Wiki owner of S-00H's surviving current
+- 2026-09-18: created on owner direction, via the Retirement Lifecycle By Folder For Records Spec (S-00I) Reconcile And Retire Task's (TK-005) dispatcher
+  handoff, to serve as the durable Wiki owner of Task Artifact And Terminology Migration's (S-00H) surviving current
   claims ahead of its retirement into `workbench/specs/retired/`.

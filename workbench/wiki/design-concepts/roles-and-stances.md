@@ -95,7 +95,7 @@ establish these Spec-bound roles.
 - [AGENTS](../../../AGENTS.md): assignment, authority and integration review.
 - [Blueprint](../../../BLUEPRINT.md): coordinated delivery destination.
 - [Runbook](../../../RUNBOOK.md#role-and-stance-coordination): operating route.
-- [Destination ledger](../../sessions/grilling-destination-audit-ledger.json): ROLE-1 through ROLE-4 and the explicit SCR-4A supersession.
+- [Destination ledger](../../sessions/grilling-destination-audit-ledger.json): Role and stance separation (ROLE-1) through Integration-first continuity (ROLE-4) and the explicit Roles are not branches (SCR-4A) supersession.
 - [Release reconciliation](../../specs/S-00O-workbench-v4-0-0-release/INTEGRATION-RECONCILIATION.md): source inventory and delivery limits.
 
 ## History

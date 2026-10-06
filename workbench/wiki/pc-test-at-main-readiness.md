@@ -5,7 +5,7 @@ sensitivity: normal
 knowledge_role: curated
 provenance:
   - Owner direction 2026-09-23
-  - Promoted from host auto-memory by the S-00V TK-00I audit, 2026-09-26
+  - Promoted from host auto-memory by the Portable Workbench Spec (S-00V) Host Memory To Wiki Task (TK-00I) audit, 2026-09-26
 source_paths:
   - workbench/specs/S-052-private-session-transport/SPEC.md
   - AGENTS.md
