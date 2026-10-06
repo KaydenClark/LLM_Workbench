@@ -97,6 +97,12 @@ At the pre anchor:
    pilots are supporting evidence only.
 5. The release receipt distinguishes readiness from publication. Main
    promotion stays owner-only in both repositories.
+6. Before release, an Automated Review judges the Workbench as a whole
+   against its Blueprint and decision records: the Review at the destination's
+   largest scale, after the Spec and landmark Reviews. The owner, 2026-10-05:
+   "When we do the automated review for version 4, it would be against the
+   whole workbench." It is not built: no procedure or tooling for it exists
+   yet, and this Spec owns specifying it.
 
 ## Decisions And Contracts
 
@@ -273,13 +279,18 @@ surface. The reworked Blueprint describes the nested topology as the intended
 destination; a later Spec derived from it delivers the tooling and ends this
 exemption.
 
-**Retained during the exemptions.** The `AGENTS.md` integration gate stays in
-force: every PR into `integration` gets a separate-context review of its
-immutable candidate before merge, and a new candidate needs a fresh review.
-This is the current Contract's rule for the `integration` boundary, not the
-per-Task review ceremony WF-8B rejected; it applies because the merge target
-is `integration`, and it is what makes exemption 2 safe. The Template Upgrade
-Release Gate runs before any tag. Owner-only `main` promotion is unchanged.
+**Retained during the exemptions.** The Template Upgrade Release Gate runs
+before any tag. Owner-only `main` promotion is unchanged.
+
+**Owner change, 2026-10-05: no per-PR review.** This paragraph used to retain a
+separate-context review of every PR into `integration`. The owner withdrew it:
+each Task PR into `integration` now carries its two merge answers (can it merge
+into the branch it targets, and did it complete the Task or is more needed),
+validated by the Spec's Dispatcher, Director or next agent, and separate-context
+review runs once per assembled candidate at the Spec's Verify step, by a fresh
+context of the provider the session runs on. Exemption 2 still decides where a
+Task lands; it no longer decides how a Task is judged. `AGENTS.md` Git Rules
+own the rule ([Task Merge Answers And Verify Review](../../../AGENTS.md#task-merge-answers-and-verify-review)).
 
 ### Integration decision and progress reconciliation
 
@@ -382,7 +393,11 @@ shared-logic Tasks that change `next`, `claim`, `doctor` or the Spec QA gate;
 the reviewer never uses the builder's model. This guides who is dispatched and
 decides nothing about the product. For this assignment the Director instead
 specifies Sol for ordinary implementation, Luna for small deterministic checks
-and Astra for ambiguous contracts or consequential reviews.
+and Astra for ambiguous contracts or consequential reviews. Superseded for
+reviews by the owner's confirmed rule of 2026-10-05: the reviewer runs on the
+same model provider as the session unless the owner specifies otherwise, with
+the most capable model reasonable for the work, and "never the builder's model"
+is no longer a rule ([Task Merge Answers And Verify Review](../../../AGENTS.md#task-merge-answers-and-verify-review)).
 
 ## Non-Goals
 
@@ -523,6 +538,7 @@ verdict on the receipt candidate and an owner Human QA approval naming the
 - [ ] One full WF-11 cycle on another workbench is recorded rung by rung with the Spec verified and on that workbench's integration branch for owner review.
 - [ ] TT-Q10 remains recorded as settled (`TK` is the Task prefix), E-8's later width/alphabet requirements retain their separate lineage, and no artifact in the release promotes the correction-019 shorthand.
 - [ ] The release receipt distinguishes readiness from publication and names what it does not authorize.
+- [ ] An Automated Review of the Workbench as a whole against its Blueprint and decision records ran before release, and its findings went back through Map, Plan and Journey.
 
 ## Testing Seams
 
@@ -580,6 +596,7 @@ workflow is owned by S-00P, not here.
 | 2026-10-04 | spec | Workbench self-drift pre/post for the v3 release retirement | `self-drift.mjs --phase pre` at integration 46ad978 and `--phase post` at candidate 42353d9 report the same seven baseline findings (one stale-claim, five stale-seed, one unverified-provenance; machineResult blocked, cleanUpdate false); the hot board no longer projects S-014, S-022 or S-050, and S-052 no longer shows a blocker | Bounded manual check found current-facing drift outside this change's writers: RUNBOOK Composed round trip section still calls the real cross-provider resume S-022's release gate (RUNBOOK is held by the S-004C lane); S-00N disposition rows and S-00Q TK-0Q8 still route S-050 TK-006 and S-014/S-022 disposition as open; ledger BPR-7/7A/7B1 dated readings still say S-050 is open | Not a clean update: the drift named here belongs to its owners' writers |
 | 2026-10-04 | spec | Review correction: open owner decisions now include the release-proof verb-list correction (GB-0026) | Separate-context review of f0f9169 (Codex gpt-5.5, read-only) FAIL, one Medium: the current-state section named only GB-0023 and GB-0025 while GB-0026 is open and release-proof related; Grill Board read at the candidate shows 20 open owner-decision items | Header Blockers and the Current release state owner-decision list name GB-0023, GB-0025 and GB-0026 and scope the other 17 to their own Specs | Fresh separate-context review of the corrected candidate |
 | 2026-10-04 | spec | Review correction: the integration target binding row reads as an open requirement, not delivered behavior | Separate-context review of 2cf10bf (Codex gpt-5.5, read-only) FAIL, one Medium: the S-00O row stated the S-054 binding as present while S-054 and S-00J record it undelivered; all other checks passed | The Current release state row now says the requirement is open in S-00J with no Task | Fresh separate-context review of the corrected candidate |
+| 2026-10-05 | spec | Owner-confirmed readback adds the whole-Workbench Automated Review to the release destination (Desired Behavior 6 and its acceptance box) | Owner confirmed after readback in chat, 2026-10-05; grilling note review-timing-and-codex-spend-2026-10-05 decision for question 1 | Docs: this Spec; the Automated review dictionary page names it unbuilt | No procedure or tooling for a whole-Workbench Review exists |
 
 ## Completion Result
 

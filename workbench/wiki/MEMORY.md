@@ -31,6 +31,10 @@ note (`AGENTS.md` -> State Resolution). The wiki is a map, not a Governance
 Plane: it routes to Canon, Grounding, and verified Actuality and authorizes
 nothing.
 
+## Harness engineering lineage
+
+- [Harness engineering: the philosophy the Workbench implements](harness-engineering-lineage.md) - links and attributes the OpenAI article and Ryan Lopopolo's corpus, names the twelve directions the owner made landmarks, and maps the article's document kinds onto the Workbench's own.
+
 ## Landmark Tracker
 
 - [Landmark Tracker](design-concepts/landmark-tracker.md) - the approved relationship between DQCs, landmarks, documentation progress, grilling notes and readable knowledge, including the evolving starting inventory
@@ -81,6 +85,7 @@ belong to their individual Specs as they are authored.
 - [To-tasks](skill-to-tasks.md) - cut an activated Spec into executable Tasks
 - [Adoption](skill-adoption.md) - bring an existing project into the Workbench once
 - [Genesis](skill-genesis.md) - start a new room from a founding prompt
+- [Improve harness](skill-improve-harness.md) - improve one harnessed job through one loop and keep only what earns its cost; the fifteen-skill harness-review family it replaces is its history
 - [Skills draft wiki](skills-draft/README.md) - the prototype collection and its article template for drafting each skill's connection findings; no draft article is written yet
 
 ## Planned And Optional Skill References
@@ -139,6 +144,10 @@ evidence log here.
 - [S-00H - Task Artifact And Terminology Migration](../specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md) - the retired Spec that delivered the standalone `TASK.md`, kept reachable as history
 - [ADR-000H - A Task is a standalone artifact and Task replaces Ticket as the execution-slice term](../docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md) - the decision record for the Task artifact and the term
 
+## The LANDMARK.md Artifact
+
+- [Landmarks: The LANDMARK.md Artifact One Size Above A Spec](design-concepts/landmarks-one-size-above-specs.md) - what a `LANDMARK.md` holds, how Specs and Tasks nest under it, the link-safe move, the whole-landmark review and retirement into its Landmark Wiki page, installation and what is not delivered yet
+
 ## Decision Records
 
 - [Decision Records and the Concept Map](design-concepts/decision-records-and-the-concept-map.md) - how the Blueprint, Destination Decision Records, ADRs, landmarks and Specs fit together, how a DDR differs from an ADR, and how landmarks and Specs form the map at two scales with the Destination Packet linking an agent to it.
@@ -155,6 +164,7 @@ The owner adopted terms from the AI Coding Dictionary on 2026-10-03. These entri
 
 - [Lexicon: AI Coding Terms section](../../LEXICON.md) - one row per adopted term
 - [S-004E - AI Coding Dictionary Terms](../specs/S-004E-ai-coding-dictionary-terms/SPEC.md) - the Spec that owns delivery of the terms and these entries
+- [S-004K - Workbench Term Dictionary Pages](../specs/S-004K-workbench-term-dictionary-pages/SPEC.md) - the Spec that owns brief Lexicon rows plus long dictionary pages for the Workbench's own terms, starting with the workflow verbs
 - [Harness: what the Workbench is loaded into](dictionary-harness.md): the Workbench is an agentic management system a harness such as Claude Code or Codex loads, never a harness itself
 - [Session: one run of the context window](dictionary-session.md): why a Chat is not a session, and why continuity is written to files
 - [Context: what the agent has in front of it now](dictionary-context.md): how it differs from the context window, the Context Map, Enduring Context and Working context
@@ -163,6 +173,7 @@ The owner adopted terms from the AI Coding Dictionary on 2026-10-03. These entri
 - [Stateful: continuity is re-read from the layer below](dictionary-stateful.md): how notepads, handoffs, the Wiki and `AGENTS.md` carry state across sessions
 - [Cache tokens: why the start of a session stays stable](dictionary-cache-tokens.md): why always-loaded content is cheaper when it does not change mid-session
 - [Non-determinism: why one passing run is not proof](dictionary-non-determinism.md): why verification and repeated trials are required
+- [Automated review: the Review verb, after the Journey](dictionary-automated-review.md): what a separate-context review is, that it reviews Specs, landmarks or the whole Workbench and never a Task, and why it runs on the owner's chosen host
 
 ## Roles And Stances
 
@@ -196,7 +207,7 @@ entry.
 - [Suite needs a committed candidate](suite-needs-a-committed-candidate.md): a dirty tree fails about thirty tests through `invalid-source-identity`
 - [Lifecycle tool behaviors](lifecycle-tool-behaviors.md): claim, close, append-only and promote surprises
 - [Parallel lane dispatch](parallel-lane-dispatch.md): worktree lanes, read-only suite runner, one-at-a-time merges
-- [Separate-context review with Codex](separate-context-review-with-codex.md): a working `codex exec` route and its stdin trap
+- [Separate-context review with Codex](separate-context-review-with-codex.md): not a route unless the owner asks for Codex in that request; kept for its stdin trap and CLI notes
 - [Host-Memory Audit, 2026-09-26](archive/host-memory-audit-2026-09-26.md): the provenance record naming every promoted and excluded host memory file
 - [Maintainer skills](maintainer-skills.md): this repository's maintainer-only lane skills, which the release checks allow and never ship
 

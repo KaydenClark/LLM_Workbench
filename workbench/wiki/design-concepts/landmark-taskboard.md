@@ -169,8 +169,8 @@ cards below.
   still speak of Specs as Journeys and Tasks as Paths. The owner's later
   decision
   ["The workflow is eight verbs and each verb writes the plane its claims live on"](../../docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md)
-  defines Journey as the loop of Implement, Check, Review and Verify, so that
-  wording is historical.
+  defines Journey as Implement, Check, QA and Submit, with Review after it
+  (amended 2026-10-05), so that wording is historical.
 - Delivery, not design: Inference from the repository as read on 2026-10-04.
   The root board is still the generated Markdown file, there is no
   `workbench/skills/sitrep/` skill, and the Spec for `sitrep`

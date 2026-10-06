@@ -129,9 +129,11 @@ records the achieved delivery (card [DQC-006J: "What do a card's Expected result
   opens only when the fix rewrites it. The cards have not yet been updated.
 - The cards describe the destination, with no Task gate and review only at the
   assembled Spec. The current controls record a bootstrap route in which each
-  Task pull request into integration gets a separate-context review
-  ([AGENTS](../../../AGENTS.md#git-rules)); the cards do not describe that
-  exception.
+  Task pull request lands directly in integration, and, since the owner's
+  2026-10-05 rule, gets its two merge answers validated rather than a
+  separate-context review ([AGENTS](../../../AGENTS.md#task-merge-answers-and-verify-review)),
+  so review now sits only at the assembled Spec's Verify step, as the cards
+  describe.
 - The cards name "the Director" as the approver. The decision record
   [Captain, Director, Dispatcher and Worker scope work and role skills own each job](../../docs/adr/000V-captain-director-dispatcher-and-worker-scope-work-and-role-skills-own-each-job.md)
   narrows the Director to one landmark lane under a Captain.

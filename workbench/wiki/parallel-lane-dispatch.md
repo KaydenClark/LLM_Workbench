@@ -8,11 +8,12 @@ provenance:
   - v4 build dispatcher phases one and two, 2026-09-16 to 2026-09-18
   - Duplicate-lane discovery, 2026-09-16
   - Promoted from host auto-memory by the Portable Workbench Spec (S-00V) Host Memory To Wiki Task (TK-00I) audit, 2026-09-26
+  - Owner-confirmed review rules (Task merge answers, no per-Task or rebase Review), 2026-10-05
 source_paths:
   - AGENTS.md
   - RUNBOOK.md
   - workbench/specs/S-00V-portable-workbench/SPEC.md
-last_verified: 2026-09-26
+last_verified: 2026-10-05
 ---
 
 # Parallel lane dispatch
@@ -20,17 +21,19 @@ last_verified: 2026-09-26
 How a dispatcher session runs several builder lanes at once without losing work
 or review evidence. The rules it serves are in
 [AGENTS](../../AGENTS.md): one single durable writer for shared Spec and
-Taskboard state, non-overlapping file lanes, and a separate-context review of
-the immutable candidate before it combines into `integration`. The merge and
+Taskboard state, non-overlapping file lanes, merge answers on every Task pull
+request, and one Automated Review of the assembled Spec once its last Task has
+landed ([Task Merge Answers And Verify Review](../../AGENTS.md#task-merge-answers-and-verify-review)). The merge and
 cleanup commands are RUNBOOK -> Version-Control Procedures.
 
 ## Shape
 
 - **The dispatcher is the single durable writer.** It claims, dispatches a
   builder into its own worktree with a Markdown lane handoff as sole
-  instruction, receives proof with a SHA, gets the separate-context review (never
-  from the builder's own context or model), lands through the RUNBOOK closeout,
-  then closes and re-renders.
+  instruction, receives proof with a SHA and the Task's two merge answers,
+  validates them against the diff and the merge checks, lands through the
+  RUNBOOK closeout, then closes and re-renders. A Task gets no Review of its
+  own (owner, 2026-10-05).
 - **Check for an existing lane before building.** Handoffs name the Task state,
   and `doctor`/`show` report a claim, but neither says who is executing it. Run
   `git worktree list` and `git branch -a --list '*<TASK-ID>*'` first; worktrees
@@ -55,16 +58,14 @@ cleanup commands are RUNBOOK -> Version-Control Procedures.
 ## Merging overlapping lanes
 
 When lanes touch the same files, merge one at a time. Review content at the
-branch's own SHA; at its turn the builder rebases onto the current tip. The
-rebased tip is a new candidate, and the `AGENTS.md` integration gate governs
-it: a new candidate needs a fresh separate-context review, and self-review
-cannot satisfy that gate. A diff-equality check (`git diff <base> <approved>`
-against `git diff <newtip> <rebased>`, excluding generated regions) is
-preparatory evidence handed to that reviewer, which keeps the fresh review a
-short delta check; it is never a substitute for it. Then open the PR and merge
-with `--match-head-commit`. Conflicts are almost always generated
-Taskboard/Blueprint regions (resolve by re-running `render`), registries, and
-test-file tails. Keep reviewer agents alive so delta re-checks are cheap.
+branch's own SHA; at its turn the builder rebases onto the current tip. A
+rebased Task runs its Journey again, the same as always, and gets no Review of
+its own: the next Review of the Spec covers it. A diff-equality check (`git
+diff <base> <approved>` against `git diff <newtip> <rebased>`, excluding
+generated regions) is evidence for the rebased Task's merge answers. Then open
+the PR and merge with `--match-head-commit`. Conflicts are almost always
+generated Taskboard/Blueprint regions (resolve by re-running `render`),
+registries, and test-file tails.
 
 ## What review keeps finding
 

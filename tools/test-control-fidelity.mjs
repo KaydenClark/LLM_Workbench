@@ -523,7 +523,7 @@ function taskWorkflowContract(content, generic = false) {
     ['Delivered blocker', lifecycle, /`S-###:delivered`[\s\S]*content-bound[\s\S]*fetch integration/],
     ['Owner-decision blocker', lifecycle, /`owner:<decision>`[^.]*removed/],
     ['Blocker diagnostics', lifecycle, /`blocked-without-blocker`[\s\S]*`unknown-blocker-qualifier`/],
-    ['Current branch exception', git, generic ? /route actually declared[\s\S]*temporary Task-PR exception requires immutable separate-context[\s\S]*review before integration/ : /S-00O[\s\S]*exemption 2[\s\S]*Task PR[^.]*`integration`[\s\S]*separate-context review/],
+    ['Current branch exception', git, generic ? /route actually declared[\s\S]*temporary Task-PR exception changes where a Task lands[\s\S]*no\s+separate-context review/ : /S-00O[\s\S]*exemption 2[\s\S]*Task PR[^.]*`integration`[\s\S]*gets no separate-context review/],
     ['Flexible owner QA', git, /milestones[\s\S]*accumulated work[\s\S]*exhausted\s+Specs[\s\S]*valued Spec[\s\S]*Director escalation/],
     ['Failed QA retained', git, /does not reset a failed\s+Human QA gate/],
     ['Owner-only main', git, generic ? /owner-only final merge:[\s\S]*`\[OWNER_ONLY_MERGE\]`/ : /only the owner merges `integration` into `main`/]
@@ -804,7 +804,7 @@ test('both Lexicons define the Workbench terms once and use "controls" only for 
 // S-004G: each workflow verb has exactly one row stating its confirmed
 // meaning, and the Workflow row states the open verb set and the delivery
 // workflow, with Journey as the build loop and Delivered replacing Complete.
-const WORKFLOW_VERBS = ['Idea', 'Align', 'Confirm', 'Prototype', 'Map', 'Plan', 'Implement', 'Check', 'Review', 'Verify', 'Journey', 'Approve', 'Delivered', 'Clean Up'];
+const WORKFLOW_VERBS = ['Idea', 'Align', 'Confirm', 'Prototype', 'Map', 'Plan', 'Implement', 'Check', 'QA', 'Submit', 'Review', 'Verify', 'Journey', 'Approve', 'Delivered', 'Clean Up'];
 
 test('both Lexicons define every workflow verb once and state the delivery workflow with Journey as the build loop', () => {
   const rowsOf = (content, term) => content.split('\n').filter((line) => line.startsWith(`| **${term}** |`));
@@ -812,12 +812,28 @@ test('both Lexicons define every workflow verb once and state the delivery workf
     const content = read(root, relative);
     for (const verb of [...WORKFLOW_VERBS, 'Workflow verb', 'Workflow']) assert.equal(rowsOf(content, verb).length, 1, `${relative} has exactly one ${verb} row`);
     const workflow = rowsOf(content, 'Workflow')[0];
-    assert.match(workflow, /Idea, Align, Confirm, Map, Plan, Journey, Approve, Delivered, Clean Up/, `${relative} Workflow row names the delivery workflow`);
+    assert.match(workflow, /Idea, Align, Confirm, Map, Plan, Journey, Review, Verify, Approve, Delivered, Clean Up/, `${relative} Workflow row names the delivery workflow`);
     assert.match(workflow, /verb set stays open/, `${relative} Workflow row says the set is open`);
     assert.doesNotMatch(workflow, /eight verbs Idea|official workflow verbs everywhere/, `${relative} Workflow row drops the closed list`);
-    assert.match(rowsOf(content, 'Journey')[0], /Implement, Check, Review and Verify, repeated until the confirmed concept is built\. Map and Plan come before it and are not part of it/, `${relative} Journey row`);
+    // Owner, 2026-10-05: QA and Submit join the Journey; Review comes after it
+    // and decides whether another Journey is needed.
+    assert.match(rowsOf(content, 'Journey')[0], /Journey is Implement, Check, QA and Submit\. Map and Plan come before it; Review comes after it and decides whether another Journey is needed/, `${relative} Journey row`);
+    assert.doesNotMatch(rowsOf(content, 'Journey')[0], /Implement, Check, Review and Verify, repeated/, `${relative} Journey row drops the replaced loop`);
+    assert.match(rowsOf(content, 'QA')[0], /self-judgement/, `${relative} QA row`);
+    assert.match(rowsOf(content, 'Submit')[0], /merge request/, `${relative} Submit row`);
+    const review = rowsOf(content, 'Review')[0];
+    assert.match(review, /decides whether another Journey is needed/, `${relative} Review row`);
+    assert.doesNotMatch(review, /before it merges into its Spec's branch|Task pull request/, `${relative} Review row is not a Task review`);
+    if (relative === 'LEXICON.md') assert.match(review, /dictionary-automated-review\.md/, `${relative} Review row routes depth to the Wiki dictionary`);
+    assert.match(content.split('\n').find((line) => line.startsWith('| **Automated review** (')), /a Spec, sometimes a landmark, or the Workbench as a whole[^|]*never a Task/, `${relative} Automated review row scope`);
+    // Owner, 2026-10-05 (confirmed readback): Review judges a completed
+    // destination against its Map, and confirmation is the gate a claim
+    // passes from Intent to Enduring Context, for one answer or a batch.
+    assert.match(content.split('\n').find((line) => line.startsWith('| **Automated review** (')), /against its Map/, `${relative} Automated review row judges against the Map`);
+    assert.match(rowsOf(content, 'Confirm')[0], /moves from Intent to Enduring Context only by the owner's confirmation/, `${relative} Confirm row states the plane gate`);
+    assert.match(rowsOf(content, 'Confirm')[0], /an agent's recommendation is intent too/, `${relative} Confirm row covers recommendations`);
     assert.match(rowsOf(content, 'Delivered')[0], /Delivered, not Complete/, `${relative} Delivered row`);
-    assert.match(rowsOf(content, 'Check')[0], /automated checks the building agent runs on its own Task/, `${relative} Check row`);
+    assert.match(rowsOf(content, 'Check')[0], /deterministic verifications the building agent runs in the environment on its own Task/, `${relative} Check row`);
     assert.doesNotMatch(rowsOf(content, 'Align')[0], /not itself implementation permission/, `${relative} Align row drops the old confirmation clause`);
     assert.match(rowsOf(content, 'Confirm')[0], /authorizes the agents to carry the concept to its endpoint/, `${relative} Confirm row`);
     assert.equal(content.split('\n').filter((line) => /^\| \*\*Map\*\* \|/.test(line)).length, 1, `${relative} keeps one Map row for noun and verb`);
@@ -859,7 +875,8 @@ test('the workflow verbs decision carries the Journey correction and no active r
   for (const [file, text] of records) assert.doesNotMatch(text, /Journey is Map, Plan, Implement, Review and Verify/, `${file} still states the replaced Journey`);
   const workflow = records.find(([file]) => /\/000X-the-workflow-is-eight-verbs/.test(file));
   assert.ok(workflow, 'the workflow verbs decision stays an active accepted record');
-  assert.match(workflow[1], /Journey is Implement, Check, Review and Verify, repeated until the confirmed concept is built; Map and Plan come before it and are not part of it/);
+  assert.match(workflow[1], /Journey is Implement, Check, QA and Submit; Map and Plan come before it, and Review comes after it and decides whether another Journey is needed/);
+  assert.match(workflow[1], /Amended 2026-10-05/);
   assert.match(workflow[1], /the verb set is open/i);
   assert.match(workflow[1], /Amended 2026-10-03/);
   assert.match(workflow[1], /git show [0-9a-f]{7,40}:workbench\/docs\/adr\/000X-/, 'the amendment names where the earlier text reads');
@@ -872,9 +889,9 @@ test('the workflow Wiki pages state the delivery workflow and Journey as the bui
   for (const file of ['workflow-verbs.md', 'idea-to-delivery-workflow.md']) {
     const page = read(root, `workbench/wiki/design-concepts/${file}`).replace(/\s+/g, ' ');
     assert.doesNotMatch(page, /Journey \(Map, Plan, Implement, Review, Verify\)|Map, Plan, Implement, Review and Verify together are a \*\*Journey|Map through Verify together are one Journey/, `${file} still states the replaced Journey`);
-    assert.match(page, /Idea, Align, Confirm, Map, Plan, Journey, Approve, Delivered, Clean Up/, `${file} names the delivery workflow`);
+    assert.match(page, /Idea, Align, Confirm, Map, Plan, Journey, Review, Verify, Approve, Delivered, Clean Up/, `${file} names the delivery workflow`);
   }
-  assert.match(read(root, 'workbench/wiki/design-concepts/workflow-verbs.md').replace(/\s+/g, ' '), /Journey is the build loop: Implement, Check, Review and Verify, repeated until the confirmed concept is built/);
+  assert.match(read(root, 'workbench/wiki/design-concepts/workflow-verbs.md').replace(/\s+/g, ' '), /Journey is the build loop: Implement, Check, QA and Submit/);
 });
 
 // S-004E: each AI Coding Dictionary term the owner adopted has exactly one
@@ -971,6 +988,7 @@ const AI_CODING_WIKI_ENTRIES = {
   'dictionary-harness.md': 'harness', 'dictionary-session.md': 'session', 'dictionary-context.md': 'context',
   'dictionary-context-window.md': 'context-window', 'dictionary-stateless.md': 'stateless', 'dictionary-stateful.md': 'stateful',
   'dictionary-cache-tokens.md': 'cache-tokens', 'dictionary-non-determinism.md': 'non-determinism',
+  'dictionary-automated-review.md': 'automated-review',
 };
 
 test('each AI Coding Dictionary Wiki entry is routed from MEMORY.md and links its row, its dictionary entry and its owners', () => {
@@ -1115,4 +1133,67 @@ test('TK-005M: an old-shape room is told which differences are a template genera
   }
   fs.rmSync(previous, { recursive: true, force: true });
   fs.rmSync(project, { recursive: true, force: true });
+});
+
+// S-004C TK-005N: once the carriers have their pointer-brief shape, the
+// Lexicons and the README describe it as delivered, not as a planned future
+// shape, route an operation through the Runbook operations index to its skill,
+// and make the review-independence example reachable through all three
+// carriers: AGENTS states the rule, the Runbook index points to the skill that
+// prepares, records and checks it, and the Lexicon says what counts as
+// independent review and links to both.
+test('TK-005N: both Lexicons and the README describe the delivered carrier shape and route operations through the Runbook index', () => {
+  for (const [label, relative] of [['root', 'LEXICON.md'], ['template', 'templates/LEXICON.md']]) {
+    const lexicon = read(root, relative);
+    for (const stale of [/their rewrite is planned/, /As the accepted destination, a skill/, /left to the Contract carrier rewrite/, /follow it as the accepted destination/, /is the Contract carrier rewrite's work/]) {
+      assert.doesNotMatch(lexicon, stale, `${label} Lexicon still presents the carrier shape as future: ${stale}`);
+    }
+    assert.match(lexicon, /The ordinary entry route is `AGENTS\.md` -> the \[`RUNBOOK\.md` operations index\]\(RUNBOOK\.md#operations-index\) -> `LEXICON\.md`\./, `${label} Lexicon names the entry route through the Runbook index`);
+    const row = (start) => lexicon.split('\n').find((line) => line.startsWith(start)) ?? '';
+    assert.match(row('| Operations and procedures |'), /RUNBOOK\.md#operations-index/, `${label} Context Map routes operations through the Runbook index`);
+    assert.match(row('| Recovery after interruption or failure |'), /RUNBOOK\.md#operations-index/, `${label} Context Map routes recovery through the Runbook index`);
+    assert.match(row('| **Root files** |'), /Runbook is an index of operations/, `${label} Root files row states the delivered Runbook shape`);
+    // 2026-10-05 narrowing (the AGENTS.md-only Contract, non-binding Runbook
+    // and Lexicon retirement decisions): no Lexicon row may say a Runbook index
+    // row is what makes a skill bind, or that the Runbook is the one place a
+    // binding pointer is declared. The Skill row, the Workbench Contract row
+    // and the ownership-schema opening name the binding route by reference to
+    // `AGENTS.md` Instruction Authority, so they stay true while that list moves.
+    assert.doesNotMatch(lexicon, /Runbook operations index row points to/, `${label} Lexicon still says a Runbook index row makes a skill bind`);
+    assert.doesNotMatch(lexicon, /the one place a pointer declares which skill binds/, `${label} Lexicon still names the Runbook as the binding registry`);
+    assert.match(row('| **Skill and host adapter** |'), /A skill in the tracked skills lane that the Contract points to for an operation binds for that operation, as `AGENTS\.md` Instruction Authority states;/, `${label} Skill row states that a pointed lane skill binds through AGENTS.md`);
+    assert.match(row('| **Workbench Contract** |'), /\| The binding claim set `AGENTS\.md` Instruction Authority names: /, `${label} Workbench Contract row names the claim set by reference to AGENTS.md`);
+    assert.match(lexicon.replace(/\s+/g, ' '), /The Workbench Contract is the claim set `AGENTS\.md` Instruction Authority names, with the bounded assigned Spec and, while an operation is performed, the lane skill the Contract points to for it; it is not another document\./, `${label} ownership schema opening names the Contract by reference to AGENTS.md`);
+    assert.doesNotMatch(lexicon, /The Workbench Contract spans/, `${label} Lexicon no longer lists the Contract's carriers in the schema opening`);
+    // Third review correction: every ownership-schema route to the Runbook
+    // goes through its operations index.
+    for (const name of ['Operations', 'Reusable behavior', 'Evaluation']) {
+      const cell = row(`| **${name}** |`);
+      assert.ok(cell, `${label} Lexicon has the ${name} ownership row`);
+      assert.match(cell, /Runbook operations index/, `${label} ${name} row routes through the Runbook operations index`);
+      assert.doesNotMatch(cell, /\[Runbook\]\(RUNBOOK\.md\)|\| Runbook -> /, `${label} ${name} row has no route that skips the index`);
+    }
+    const review = row('| **Review** |');
+    for (const target of ['AGENTS.md#git-rules', 'RUNBOOK.md#operations-index', 'workbench/skills/code-review/SKILL.md#independent-review-boundaries']) {
+      assert.ok(review.includes(`(${target})`), `${label} Review row links ${target} for the review-independence example`);
+    }
+  }
+  // Root only: the carrier-definition rows say what the 2026-10-05 decisions
+  // made the carriers, and the gap until AGENTS.md follows them.
+  const rootLexicon = read(root, 'LEXICON.md');
+  const rootRow = (start) => rootLexicon.split('\n').find((line) => line.startsWith(start)) ?? '';
+  const ddr = { contract: '001C-agents-md-is-the-map-and-the-only-contract-file.md', runbook: '001D-the-runbook-lines-the-workflow-verbs-up-next-to-their-scenarios-and-binds-nothing.md', lexicon: '001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md' };
+  for (const [name, needs] of [['Root files', ['contract', 'runbook', 'lexicon']], ['Contract artifact', ['contract', 'runbook', 'lexicon']], ['Routing artifact', ['runbook', 'lexicon']], ['Workbench Contract', ['contract']], ['Context pointer', ['contract']]]) {
+    const cell = rootRow(`| **${name}** |`);
+    assert.ok(cell, `root Lexicon has the ${name} row`);
+    for (const key of needs) assert.ok(cell.includes(`workbench/docs/ddr/${ddr[key]}`), `root ${name} row links the ${key} decision`);
+  }
+  assert.match(rootRow('| **Root files** |'), /binds nothing/, 'root Root files row says the Runbook binds nothing');
+  assert.match(rootRow('| **Workbench Contract** |'), /still names `RUNBOOK\.md` and `LEXICON\.md` as the other carriers/, 'root Workbench Contract row names the gap until AGENTS.md follows the decision');
+  for (const stale of [/decided neither record's kind/, /stays with the owner's later debate/]) {
+    assert.doesNotMatch(rootLexicon, stale, `root Lexicon still leaves the carriers' kind undecided: ${stale}`);
+  }
+  const readme = read(root, 'README.md');
+  assert.doesNotMatch(readme, /Follow AGENTS\.md -> RUNBOOK\.md -> LEXICON\.md/, 'README no longer names the old entry route');
+  assert.match(readme, /AGENTS\.md -> the RUNBOOK\.md operations index -> LEXICON\.md/, 'README names the entry route through the Runbook index');
 });

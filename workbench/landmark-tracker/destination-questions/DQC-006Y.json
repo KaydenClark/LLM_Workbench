@@ -1,0 +1,48 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-006Y",
+  "revision": 1,
+  "title": "Multi Agent and Provider Coordination",
+  "question": "How do many agents on Claude Code and Codex, on any device or in the cloud, work one project at once and combine their checked results?",
+  "answer": null,
+  "confirmation": null,
+  "expectedResult": null,
+  "result": null,
+  "uncertainty": [
+    "Which existing landmark records fold into this direction, and what its reached check is"
+  ],
+  "sources": [
+    {
+      "id": "DDR-001H",
+      "revision": null
+    }
+  ],
+  "landmarks": [],
+  "assessment": null,
+  "related": [],
+  "claims": [],
+  "origin": {
+    "title": "Multi Agent and Provider Coordination",
+    "question": "How do many agents on Claude Code and Codex, on any device or in the cloud, work one project at once and combine their checked results?",
+    "sources": [
+      {
+        "id": "DDR-001H",
+        "revision": null
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-06T04:30:43.955Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-06T04:30:43.955Z",
+      "reason": "Owner made this harness-engineering direction a landmark on 2026-10-05; captured at Confirm before the LANDMARK.md artifact exists",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    }
+  ]
+}

@@ -390,7 +390,7 @@ const FAMILIES = [
         operation: 'Review a candidate independently', pointer: 'workbench/skills/code-review/SKILL.md#independent-review-boundaries',
         section: 'Independent Review Boundaries', stub: true,
         carries: [
-          'Task/integration review uses a fresh context and immutable candidate', 'a prior PASS is not approval of changed content',
+          'Verify review of an assembled Spec uses a fresh context of the session', 'a prior PASS is not approval of changed content',
           'Whole-Workbench main-readiness review is separately requested, review-only work.', 'Only the owner approves/merges main.',
           "A summary's omission is not proof of non-occurrence.", 'Repeated controlled trials are needed for reliability.'
         ]
@@ -402,7 +402,7 @@ const FAMILIES = [
         keeps: [
           /workbench\/skills\/implement\/SKILL\.md#version-control-procedures/, /workbench\/skills\/code-review\/SKILL\.md#independent-review-boundaries/,
           /RUNBOOK\.md#operations-index/, /[Nn]ever commit (directly )?to/, /Default PR target/, /force-push shared history/,
-          /separate-context reviewer must check the immutable candidate/, /self-review alone cannot satisfy the integration gate/,
+          /Task PR carries the merge answers below and gets no separate-context review|Task carries the merge answers below and gets no separate-context review/,
           /local notes and unmerged branches must not be their only discovery route/, /does not reset a failed Human QA gate/
         ],
         moved: [/normal route is a Worker Task-branch merge/, /A Task merge is containment/]
@@ -719,6 +719,45 @@ const FAMILIES = [
       keeps: [/does not substitute for the\s+Workbench self-drift check/, /S-00K-workbench-self-drift-check/, /workbench-room-checks\/SKILL\.md#workbench-self-drift-check/],
       moved: [/bounded manual semantic check in\s+RUNBOOK/]
     }]
+  },
+  {
+    // S-004L TK-008M: harness improvement is one loop, the improve-harness
+    // core skill. The evaluation row in both Runbooks points at the loop; the
+    // comparison tooling (claims, design, commands, automated gate, run
+    // outcomes) stays on the workbench-evaluation maintainer skill, whose
+    // TK-005K rows above keep holding.
+    task: 'S-004L TK-008M the evaluation row points at the one loop',
+    rows: [
+      {
+        operation: 'Evaluate a harness change', pointer: 'workbench/skills/improve-harness/SKILL.md#improve-harness',
+        section: 'Evaluation And Benchmarking', stub: false,
+        carries: [
+          'baseline -> earliest gap -> smallest owning intervention',
+          "Comparative, causal or longitudinal claims need the room's evaluation procedures, not this loop."
+        ]
+      }
+    ],
+    agents: []
+  },
+  {
+    // S-004L TK-008M, root only: feedback intake and the manual report point at
+    // the loop's feedback entry and result record. The maintainer harvest and
+    // report steps keep their workbench-evaluation pointers (TK-005K above).
+    task: 'S-004L TK-008M harness feedback and report rows point at the one loop',
+    only: 'root',
+    rows: [
+      {
+        operation: 'Take in harness feedback', pointer: 'workbench/skills/improve-harness/SKILL.md#taking-in-feedback',
+        section: { root: 'Harness Feedback Loop', template: null }, stub: { root: true, template: false },
+        carries: ["Harness feedback is the loop's entry.", 'write the lesson back into that record']
+      },
+      {
+        operation: 'Write a manual harness feedback report', pointer: 'workbench/skills/improve-harness/SKILL.md#result-record',
+        section: { root: 'Manual Harness Feedback Reports', template: null }, stub: { root: true, template: false },
+        carries: ['in the report format that lane declares when it has one', 'Decision: retain | revise | remove']
+      }
+    ],
+    agents: []
   }
 ];
 
@@ -779,6 +818,30 @@ for (const family of FAMILIES) {
     }
   });
 }
+
+// S-004L TK-008M: the workbench-evaluation Harness Feedback Loop and Manual
+// Harness Feedback Reports sections keep only this repository's maintainer
+// harvest and report steps, behind a pointer to the improve-harness loop.
+test('S-004L TK-008M: workbench-evaluation keeps its harvest and report steps behind a pointer to the loop', () => {
+  const skillFile = 'workbench/skills/workbench-evaluation/SKILL.md';
+  const sections = headings(read(skillFile));
+  for (const { title, pointer, keeps } of [
+    {
+      title: 'Harness Feedback Loop', pointer: '../improve-harness/SKILL.md#taking-in-feedback',
+      keeps: ['This repo is the harvest destination.', 'Collect feedback rows from downstream projects', 'as a `c3_candidate`', 'Ship it as a new harness version']
+    },
+    {
+      title: 'Manual Harness Feedback Reports', pointer: '../improve-harness/SKILL.md#result-record',
+      keeps: ['Run this workflow after a setup-only Round One check succeeds.', 'Write `REPORT-topic-date.md` in the declared feedback lane using its `REPORT_FORMAT.md`', 'A report is not a work assignment.']
+    }
+  ]) {
+    const section = sections.find((heading) => heading.title === title);
+    assert.ok(section, `${skillFile}: "${title}" survives`);
+    assert.ok(links(section.body).includes(pointer), `${skillFile} ${title} points at the loop: ${pointer}`);
+    const body = normalize(section.body);
+    for (const phrase of keeps) assert.ok(body.includes(normalize(phrase)), `${skillFile} ${title} keeps the maintainer step: ${phrase}`);
+  }
+});
 
 // S-004C TK-005J: the claim-age diagnostic and the amendment-first decision
 // rule left Evidence And Continuation Practices for the skills that carry
@@ -892,4 +955,74 @@ test('every relative Markdown link in a lane skill resolves from the skill folde
   }
   assert.ok(checked > 10, `the scan found the lane skill links (${checked})`);
   assert.deepEqual(broken, []);
+});
+
+// S-003Z TK-008Y: the Runbook carriers name the delivered landmark commands in
+// one Landmark Lifecycle section the index reaches, and the AGENTS carriers no
+// longer present landmark review tooling as undelivered. The Lexicon rows are
+// a separate Task held by the Contract carrier writer.
+const LANDMARK_COMMANDS = [
+  'next-id --prefix LMK', 'move-spec S-001 --landmark LMK-001', 'move-spec S-001 --landmark none',
+  'claim LMK-001 --agent NAME', 'show LMK-001', 'receipt LMK-001 --task TK-001', 'close LMK-001',
+  'gate --task TK-001 --landmark LMK-001', 'move-task LMK-001 --task TK-001 --to retired',
+  'report LMK-001 --candidate', 'verify LMK-001', 'verdict LMK-001 --candidate', 'approve LMK-001 --candidate',
+  'retire-landmark LMK-001 --wiki'
+];
+for (const carrier of carriers) {
+  test(`S-003Z TK-008Y: the ${carrier.label} Runbook names the landmark commands in a Landmark Lifecycle section the index reaches`, () => {
+    const { all, rows } = indexOf(carrier.runbook);
+    const section = all.find((heading) => heading.title === 'Landmark Lifecycle');
+    assert.ok(section, `${carrier.runbook} has a Landmark Lifecycle section`);
+    assert.ok(rows.some((row) => row.cells[2]?.includes('(#landmark-lifecycle)')), `${carrier.runbook} index reaches #landmark-lifecycle`);
+    for (const command of LANDMARK_COMMANDS) assert.ok(section.body.includes(`node workbench/tools/spec-workbench.mjs ${command}`), `${carrier.runbook} Landmark Lifecycle names ${command}`);
+    assert.ok(rows.some((row) => row.cells[0] === 'Allocate a visible identifier' && /landmark/.test(row.cells[1])), `${carrier.runbook} identifier row names a landmark`);
+  });
+  test(`S-003Z TK-008Y: ${carrier.agents} presents landmark review tooling as delivered`, () => {
+    const text = normalize(read(carrier.agents));
+    assert.doesNotMatch(text, /Landmark and whole-Workbench review tooling is accepted destination design/, 'the stale clause is gone');
+    assert.match(text, /`report`, `verify` and `verdict` on (the|a) landmark/, `${carrier.agents} names the landmark review commands`);
+  });
+}
+
+test('S-003Z TK-008Y: the Full suite runs the Landmark Wiki page test', () => {
+  assert.ok(suiteBlock(read('RUNBOOK.md')).includes('node tools/test-landmark-wiki.mjs'), 'the suite runs tools/test-landmark-wiki.mjs');
+});
+
+// S-003Z TK-008Y run 2: a claim persists its claimant on the Task record
+// (`Claimed by`), which the whole-landmark review reads; the carriers and the
+// implement skill say so.
+test('S-003Z TK-008Y: the Runbooks and the implement skill name the Claimed by record field', () => {
+  for (const carrier of carriers) {
+    const section = headings(read(carrier.runbook)).find((heading) => heading.title === 'Landmark Lifecycle');
+    assert.match(normalize(section.body), /`Claimed by`/, `${carrier.runbook} Landmark Lifecycle names the Claimed by field`);
+  }
+  assert.match(normalize(read('workbench/skills/implement/SKILL.md')), /appends the agent to its `Claimed by` list/, 'the implement skill names the Claimed by list');
+});
+
+// S-003Z TK-008Z: the Lexicon carriers describe the delivered LANDMARK.md
+// artifact (folders, statuses, prefix, retirement source, a Task's landmark
+// parent), and the room-checks skill lists the landmarks collection.
+function lexiconRow(text, term) {
+  return text.split('\n').find((line) => line.startsWith(`| **${term}** |`)) ?? '';
+}
+for (const lexicon of ['LEXICON.md', 'templates/LEXICON.md']) {
+  test(`S-003Z TK-008Z: ${lexicon} describes the delivered landmark artifact`, () => {
+    const text = read(lexicon);
+    const landmark = lexiconRow(text, 'Landmark');
+    assert.doesNotMatch(landmark, /not installed yet/, 'the Landmark row no longer says the artifact is not installed');
+    assert.match(landmark, /`LANDMARK\.md` artifact/, 'the Landmark row names the artifact');
+    for (const phrase of ['`specs` folder', '`tasks` folder', '`planned`, `active` and `reached`', '`LMK-`', 'reviewed one size above a Spec']) assert.ok(landmark.includes(phrase), `the Landmark row names ${phrase}`);
+    assert.match(lexiconRow(text, 'Landmark Wiki page'), /a reached landmark retires into it/, 'the Landmark Wiki page row names the retirement');
+    assert.match(lexiconRow(text, 'Map'), /folder path carries every parent/, 'the Map row names the parent path');
+    const task = lexiconRow(text, 'Task');
+    assert.doesNotMatch(task, /Tasks directly under a landmark[^|]*no delivered home/, 'the Task row no longer says landmark-direct Tasks have no home');
+    assert.doesNotMatch(task, /today ordinary Tasks are Spec-bound/, 'the Task row no longer says every Task is Spec-bound');
+    assert.match(task, /a Task's parent is its Spec or, directly, (an assigned and active|its) landmark/, 'the Task row names a landmark as a possible parent');
+  });
+}
+test('S-003Z TK-008Z: the room-checks skill lists the landmarks collection', () => {
+  const skill = normalize(read('workbench/skills/workbench-room-checks/SKILL.md'));
+  assert.match(skill, /thirteen collections/);
+  assert.match(skill, /`docs\/ddr` and `landmarks`/);
+  assert.match(skill, /\(`features`, then `ddr`, then `landmarks`\)/);
 });

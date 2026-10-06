@@ -7,22 +7,27 @@ provenance:
   - Observed during the grilling skill rebuild Spec (S-00X) Grilling Skill Destination Task (TK-00O) review, 2026-09-24
   - stdin hang observed during the grill-me skill rebuild Spec (S-00Z) review, 2026-09-26
   - Promoted from host auto-memory by the Portable Workbench Spec (S-00V) Host Memory To Wiki Task (TK-00I) audit, 2026-09-26
+  - Owner rule that Codex runs only on his request, 2026-10-05
 source_paths:
   - AGENTS.md
   - RUNBOOK.md
-last_verified: 2026-09-26
+last_verified: 2026-10-05
 ---
 
 # Separate-context review with Codex
 
-[AGENTS](../../AGENTS.md#git-rules) requires a separate-context reviewer to
-check the immutable candidate before it combines into `integration`. When the
-Codex CLI is available on the host, this is one working route. It is an
-optional host capability, not part of the floor; any separate context that can
-read the diff satisfies the rule.
+**Not a route unless the owner asks.** The owner's rule, 2026-10-05: an agent
+never runs Codex, or briefs a subagent to, unless he asks for Codex in the
+current request ([AGENTS](../../AGENTS.md#safety-and-change-control)). Lanes
+that ran repeated `codex exec` reviews on his account used up his Codex quota
+for the week. A past approval does not carry over, and this page is not
+authorization. Separate-context review also now runs only at a Spec's Verify
+step, not on each Task ([AGENTS](../../AGENTS.md#task-merge-answers-and-verify-review)),
+by a fresh context of the provider the session is running on.
 
-Observed 2026-09-24 to 2026-09-26 (CLI behavior can change; re-check when it
-misbehaves):
+The notes below are kept only so that an owner-requested Codex review can
+start from what was already learned. Observed 2026-09-24 to 2026-09-26 (CLI
+behavior can change; re-check when it misbehaves):
 
 - `codex review --base origin/integration "<brief>"` exits 2: the CLI refuses a
   custom prompt together with `--base`, so nothing is reviewed.

@@ -30,6 +30,7 @@ import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
+import { specHomes } from '../workbench/tools/spec-workbench.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SPECS = path.join(root, 'workbench', 'specs');
@@ -55,6 +56,7 @@ const PRE_SECTIONS = new Set([
 const EVIDENCE = 'Append-Only Evidence And Execution Log';
 
 export function anchoredSpecs(directory = SPECS) {
+  if (!fs.existsSync(directory)) return [];
   return fs.readdirSync(directory)
     .filter((name) => {
       const suffix = /^S-([0-9A-Za-z]{3,})-/.exec(name)?.[1];
@@ -62,6 +64,13 @@ export function anchoredSpecs(directory = SPECS) {
     })
     .filter((d) => fs.existsSync(path.join(directory, d, 'SPEC.md')))
     .sort();
+}
+
+// S-003Z TK-008E: a Spec lives at the Blueprint-level home or nested in its
+// landmark's folder; the corpus is every anchored Spec at every home the Spec
+// tools read (`specHomes`), as SPEC.md paths relative to `base`.
+export function anchoredSpecFiles(base = root) {
+  return specHomes(base).flatMap((home) => anchoredSpecs(home.specsRoot).map((name) => `${home.specsPrefix}/${name}/SPEC.md`));
 }
 
 // Live citations are the ones a reader is invited to follow now. Evidence rows
@@ -220,8 +229,8 @@ function fileLines(sha, file, cache) {
 }
 
 test('every spec from S-036 that carries a live bare citation declares its anchors', () => {
-  for (const spec of anchoredSpecs()) {
-    const text = fs.readFileSync(path.join(SPECS, spec, 'SPEC.md'), 'utf8');
+  for (const spec of anchoredSpecFiles()) {
+    const text = fs.readFileSync(path.join(root, spec), 'utf8');
     if (liveCitations(text).length === 0) continue;
     assert.match(text, ANCHOR,
       `${spec} carries a bare citation in a live section and declares no Citation anchors block; ` +
@@ -231,8 +240,8 @@ test('every spec from S-036 that carries a live bare citation declares its ancho
 
 test('both declared anchors are commits in this repository', () => {
   const failures = [];
-  for (const spec of anchoredSpecs()) {
-    const declared = fs.readFileSync(path.join(SPECS, spec, 'SPEC.md'), 'utf8').match(ANCHOR);
+  for (const spec of anchoredSpecFiles()) {
+    const declared = fs.readFileSync(path.join(root, spec), 'utf8').match(ANCHOR);
     if (!declared) continue;
     // Checked independently of whether any citation happens to use that side,
     // or a spec whose citations all fall on one side could declare a garbage
@@ -248,8 +257,8 @@ test('every declared anchor still resolves the citations it covers', () => {
   const trees = new Map();
   const blobs = new Map();
   const failures = [];
-  for (const spec of anchoredSpecs()) {
-    const text = fs.readFileSync(path.join(SPECS, spec, 'SPEC.md'), 'utf8');
+  for (const spec of anchoredSpecFiles()) {
+    const text = fs.readFileSync(path.join(root, spec), 'utf8');
     const declared = text.match(ANCHOR);
     if (!declared) continue;
     const [, pre, post] = declared;
@@ -285,6 +294,20 @@ test('new alphanumeric and grown spec IDs remain in citation-anchor coverage', (
       fs.writeFileSync(path.join(folder, name, 'SPEC.md'), '# Fixture');
     }
     assert.deepEqual(anchoredSpecs(folder), ['S-00A-new', 'S-036-rule', 'S-1000-grown']);
+  } finally { fs.rmSync(folder, { recursive: true, force: true }); }
+});
+
+test('a Spec nested in its landmark folder is in citation-anchor coverage', () => {
+  const folder = fs.mkdtempSync(path.join(os.tmpdir(), 'citation-homes-'));
+  try {
+    const version = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
+    execFileSync(process.execPath, [path.join(root, 'workbench', 'tools', 'workbench-layout.mjs'), 'init', '--project', folder, '--provenance', 'genesis', '--version', version], { stdio: 'ignore' });
+    for (const spec of ['workbench/specs/S-036-rule', 'workbench/landmarks/LMK-0AA-direction/specs/S-0AB-nested', 'workbench/landmarks/LMK-0AA-direction/specs/S-001-legacy']) {
+      fs.mkdirSync(path.join(folder, spec), { recursive: true });
+      fs.writeFileSync(path.join(folder, spec, 'SPEC.md'), '# Fixture');
+    }
+    fs.writeFileSync(path.join(folder, 'workbench/landmarks/LMK-0AA-direction/LANDMARK.md'), '# LMK-0AA - Direction\n\n**Landmark ID:** LMK-0AA\n');
+    assert.deepEqual(anchoredSpecFiles(folder), ['workbench/specs/S-036-rule/SPEC.md', 'workbench/landmarks/LMK-0AA-direction/specs/S-0AB-nested/SPEC.md']);
   } finally { fs.rmSync(folder, { recursive: true, force: true }); }
 });
 

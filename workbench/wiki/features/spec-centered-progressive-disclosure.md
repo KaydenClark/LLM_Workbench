@@ -31,7 +31,11 @@ Progressive disclosure keeps ordinary entry small: read the agent contract,
 follow the Runbook and Lexicon routes, then load the assigned capability and
 its relevant source. A Spec carries the assignment and its proof; the hot
 Taskboard derives an operational view. Reading an entire historical catalog is
-not a prerequisite for doing one bounded piece of work. The implementation
+not a prerequisite for doing one bounded piece of work. The Contract Carrier
+Pointer-Brief Rewrite (S-004C) carried the same principle into the carriers:
+`AGENTS.md` is a short brief and the Runbook an operations index whose rows
+point to the skills that hold each procedure, so entry reads the brief and the
+index and loads a procedure only when the work needs it. The implementation
 still provides selection, direct claiming, closure, rendering and diagnostic
 seams in the manifest-resolved spec runtime.
 
@@ -68,3 +72,4 @@ question instead of copying its answer into every startup surface.
 
 - 2026-09-19: Created on owner direction as one article for this legacy Spec; read the full historical record and checked the named live sources. Historical proof is distinguished from current behavior. No Spec was moved, retired or discarded, and no retrospective Human QA is asserted.
 - 2026-10-04: Moved from `design-concepts/spec-S-001-progressive-disclosure.md` into the features collection under this name with `wiki.mjs move-note`, retyped `feature` and restructured into the four feature sections from its existing prose, for the Move And Retype The Remaining Per-Spec Articles Task (TK-002) of the Wiki Evolving-Synthesis Migration Spec (S-003W). Every live link to it was rewritten by the move; no claim was changed.
+- 2026-10-04: Noted that the Contract Carrier Pointer-Brief Rewrite (S-004C TK-005N) applies progressive disclosure to the carriers.

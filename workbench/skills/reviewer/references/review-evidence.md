@@ -13,8 +13,8 @@ result, not proof that all acceptance passed. If the requested comparison is
 ambiguous or unavailable, return the missing facts without guessing a pin.
 
 Read the candidate at the pin, not a moving branch label. Before reporting,
-recheck that the requested candidate and digest still match; a new SHA needs a
-fresh review. Preserve the old report as history, never transfer its PASS.
+recheck that the requested candidate and digest still match; changed content
+needs a fresh review, and a rebase that leaves the content unchanged needs no fresh review. Preserve the old report as history, never transfer its PASS.
 Tests run on a different or dirty checkout must say so and cannot silently
 stand for checks of the pinned candidate.
 

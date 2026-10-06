@@ -3178,8 +3178,8 @@
       "hash": "db537626e2c4b8fef3e38b9a6b9aa744073e7716ed81f10c2c5150b7aa03b636",
       "homeKind": "restates-owner",
       "homePath": "LEXICON.md",
-      "landedText": "[Runbook](RUNBOOK.md) -> named procedure and tool.",
-      "reason": "TK-005I: the documentation-ownership table restated the Lexicon Artifact Ownership Schema, which holds this route; AGENTS.md now points to that schema and keeps the always-true rules and the Wiki route (`workbench/wiki/`). The Lexicon Procedures and Recovery rows route commands and troubleshooting to the Runbook."
+      "landedText": "[Runbook operations index](RUNBOOK.md#operations-index) -> the row's pointed skill or named procedure and tool.",
+      "reason": "TK-005I: the documentation-ownership table restated the Lexicon Artifact Ownership Schema, which holds this route; AGENTS.md now points to that schema and keeps the always-true rules and the Wiki route (`workbench/wiki/`). The Lexicon Procedures and Recovery rows route commands and troubleshooting to the Runbook. TK-005N routed the Lexicon Procedures row through the Runbook operations index, so the landed text follows that row."
     },
     {
       "line": 433,

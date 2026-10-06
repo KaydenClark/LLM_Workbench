@@ -66,10 +66,11 @@ comparison uses the repository's code-review entry and imports no outside
 workflow or preference.
 
 Worker self-check supports ordinary Task hand-back to the Dispatcher. Dispatcher
-owns whole-Spec QA; the independent assembled integration review belongs to a
+owns whole-Spec QA; the independent assembled Verify review belongs to a
 separate uninvolved Director context. The current release exception routes
-Task PRs directly to integration with independent review; the
-[controls](../../AGENTS.md#git-rules) own that exception and its gates.
+Task PRs directly to integration, judged by their merge answers rather than a
+Reviewer pass; the [controls](../../AGENTS.md#git-rules) own that exception and
+its gates.
 
 Review ends when its exact candidate, findings, coverage and limits are
 recoverable, or an inability identifies the missing item and responsible

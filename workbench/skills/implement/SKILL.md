@@ -98,14 +98,47 @@ approval. It does not authorize a Worker to approve the assembled Spec, record
 owner Human QA, or merge a candidate still awaiting review. A draft-only endpoint
 stops with the immutable candidate and pending gates named.
 
-While the room's Task-PR exemption holds (exemption 2 of its release Spec, which lands each Task as its own PR), a Task PR still requires separate-context review of its fixed diff as an immutable candidate before it lands: run `/code-review` against exact `BASE_SHA` and `HEAD_SHA`, including controls, the assigned spec, tests and consequential report claims, reported by `gate --task TK-### --spec S-###`.
-Repair only authorized findings, create a new truthful checkpoint, and re-review the changed candidate. The exact-head review must pass before the Task PR lands.
-At the declared integration branch (`git.integrationBranch` in `workbench/manifest.json`), a separate-context review of the assembled Spec is required, obtained with `report S-### --candidate <sha>` and bound to its content digest, recorded with `verdict`. Do not call an intermediate checkpoint or green self-review an integration PASS.
+A Task's Journey is Implement, Check, QA and Submit. **Check** runs the
+deterministic verifications in the environment: tests, builds, lints and
+diagnostics. **QA** is your self-judgement of the work: does it actually do
+what the Task asked, beyond what Check can prove; say what you judged and what
+you could not. **Submit** is the merge request that carries the Task into its
+parent branch with the two merge answers below. Review comes after the Journey,
+on the assembled whole, never on a Task.
+
+The Task's own verify step is two answers the Worker writes into the Task's
+merge request description, whatever the target branch (today `integration`,
+including under a release's Task-PR exemption, where `gate --task TK-### --spec
+S-###` reports the Task-PR form):
+
+1. **Can this merge into the branch it targets?** Name the target branch, the
+   exact `BASE_SHA` and `HEAD_SHA`, the checks run and their results, conflict
+   or rebase state, and what was not verified.
+2. **Did this complete the Task, or is more needed?** Answer complete, the same
+   Task continues with its adjusted handoff, or a new Task is needed with the
+   gap named.
+
+The Dispatcher, Director or next agent working in the Spec validates those
+answers against the diff and the merge checks, and merges when they hold and the
+merge is green. No separate-context review runs on a Task merge, and the Worker
+does not request one. A rebased Task reruns its Check; it needs a fix only when
+its Check or QA raises an issue, and never a fresh Review.
+Separate-context review belongs to the assembled whole: at the declared
+integration branch (`git.integrationBranch` in `workbench/manifest.json`), the
+Spec at its Verify step, obtained with `report S-### --candidate <sha>`, bound to
+its content digest and recorded with `verdict`, by a fresh context of the session's own agent
+provider (another provider only when the owner tells you, in the current
+request, exactly what to do with it). Review decides whether another Journey is
+needed: a failed Review goes back to Map, Plan and Journey under the still-open
+Spec. Repair only authorized findings, create a new truthful checkpoint, and
+the next assembled candidate gets one fresh review. Do not call an intermediate checkpoint, a Task
+merge or a green self-review a Verify PASS.
 
 ## 5. Close and recover remotely
 
 Close the task only after its scoped acceptance and required proof are met.
-If the task includes integration, the separate-context gate above also applies:
+If the task includes integration, the merge answers above also apply, and an
+assembled Spec candidate also needs its Verify review:
 
 ```bash
 node workbench/tools/spec-workbench.mjs close S-### \
@@ -141,8 +174,9 @@ Unless the user names work directly:
 4. Load only the returned Spec with `show S-###` and its selected Task record;
    inspect the assigned destination, blockers and referenced source/tests.
 5. Claim before editing: `claim S-### --agent NAME`. This selects one eligible Task
-   in that Spec and writes its record to `in-progress`; it takes a Spec ID,
-   not a `TASK.md` path. Follow the assigned stance and single writer lane.
+   in that Spec, writes its record to `in-progress` and appends the agent to
+   its `Claimed by` list; it takes a Spec ID (or `LMK-###` for a Task directly
+   under a landmark), not a `TASK.md` path. Follow the assigned stance and single writer lane.
 6. Implement that tracer-bullet Task using red/green TDD, actual behavior checks
    and owned documentation. Preserve proof and unresolved gaps as work proceeds.
 7. Worker self-checks the scoped result and hands proof to the Dispatcher;
@@ -269,7 +303,8 @@ node workbench/tools/spec-workbench.mjs receipt S-001 --task TK-001 \
 ```
 
 Self-check acceptance, actual behavior, documentation and remaining gaps; hand
-those results to the Dispatcher. Normal Task hand-back has no separate Task
+those results to the Dispatcher, and put the two merge answers (section 4) in
+the merge request description. Normal Task hand-back has no separate Task
 approval ceremony. Commit and push the verified candidate and Receipt before
 close; compare local HEAD to the actual remote branch tip. `close` refuses dirty
 or unpushed work unless `--git-state-reason` records the truthful exception; it
@@ -317,7 +352,8 @@ in its `RUNBOOK.md`
 For coordinated Spec delivery, the normal route is a Worker Task-branch merge
 request into the Dispatcher Spec branch, then an independently reviewed Spec
 merge request into integration under Director coordination. A Task merge is
-containment; its Worker supplies self-check and proof. A release-specific
+containment; its Worker supplies self-check, proof and the two merge answers
+(section 4), and no separate-context review applies to it. A release-specific
 bootstrap exception may name a different route and its gate explicitly; read
 that owner rather than silently applying the intended route to unsupported
 current tooling. Accepted decisions and current progress are reconciled into
@@ -325,14 +361,16 @@ tracked owners on integration through reviewed changes; local notes and
 unmerged branches must not be their only discovery route.
 
 Before creating a branch or PR, verify the live base and preserve dirty work.
-PR descriptions state what changed, why, risks, and verification.
+PR descriptions state what changed, why, risks, and verification. A Task PR's
+description also carries its two merge answers (section 4).
 
 ## Branch completion
 
 A task is not finished at the push. A pushed branch is recoverable, not
-delivered. When the integration review passes, open the PR into the declared
-integration branch with the Runbook's PR command, merge it, and confirm that
-branch contains the work. Do not stall on an approved candidate or leave a
+delivered. When the Task's merge answers are validated, or the assembled
+candidate's Verify review passes, open the PR into the declared integration
+branch with the Runbook's PR command, merge it, and confirm that branch
+contains the work. Do not stall on an approved candidate or leave a
 passed PR waiting for the owner; only the owner-only final merge named in
 `AGENTS.md` Git Rules stays with the owner. "Never merge a PR left open for
 review" means a PR whose review is still pending, not one that already passed.

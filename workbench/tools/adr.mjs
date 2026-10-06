@@ -835,7 +835,7 @@ export function resolveRecord(root, id) {
 // Every live Markdown surface a decision-record move repairs a reference in:
 // the root controls, the Wiki, the skills lane (and a pre-lane root
 // `skills/`), `team templates/`, both decision-record collections and every
-// Spec and Task record. Generated registers are regenerated, not rewritten;
+// Spec and Task record at every Spec home, plus each LANDMARK.md. Generated registers are regenerated, not rewritten;
 // `templates/` is the blank product and never names this room's records.
 export function collectRecordReferenceFiles(root) {
   const files = [];
@@ -860,6 +860,10 @@ export function collectRecordReferenceFiles(root) {
   walk(path.join(root, 'team templates'), markdown);
   for (const kind of Object.keys(RECORD_KINDS)) walk(collectionPath(root, RECORD_KINDS[kind].collection), (name) => markdown(name) && name !== REGISTER_NAME && name !== HISTORY_NAME);
   walk(path.join(root, laneRelative(root, 'specs')), (name) => name === 'SPEC.md' || name === 'TASK.md');
+  // S-003Z TK-008E: every Spec nested in a landmark's `specs/` home and its
+  // Task records, the landmark's own direct Task records and its LANDMARK.md,
+  // whose Decision Records section links decision records.
+  walk(collectionPath(root, 'landmarks'), (name) => name === 'SPEC.md' || name === 'TASK.md' || name === 'LANDMARK.md');
   return [...new Set(files)];
 }
 
