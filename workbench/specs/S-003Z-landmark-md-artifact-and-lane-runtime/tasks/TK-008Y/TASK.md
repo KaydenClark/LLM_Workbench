@@ -3,9 +3,9 @@
 **Task ID:** TK-008Y
 **Spec ID:** S-003Z
 **Slice:** The Contract carriers and their generic mirrors name the landmark commands and meanings the runtime delivers
-**Status:** blocked
+**Status:** ready
 **Stance:** Builder
-**Blockers:** TK-005N
+**Blockers:** none
 **Destination:** spec-acceptance: Source behavior, the generic templates, discovery and managed installation agree, and updating a room with no landmarks leaves it unchanged.
 **Planned verification:** Red: `tools/test-workbench-round-trip.mjs` or `tools/test-runbook-index.mjs` gains a case asserting that `RUNBOOK.md`, `templates/RUNBOOK.md` and the Runbook operations index name the landmark commands (`move-spec --landmark`, `report|verify|verdict|approve LMK-###`, `retire-landmark`, `next-id --prefix LMK`, `claim|close|receipt|show|move-task LMK-###`, `gate --task TK-### --landmark LMK-###`) and that the Lexicon Landmark row in `LEXICON.md` and `templates/LEXICON.md` no longer says the artifact is not installed; green once the lines in [carrier-lines.md](../../carrier-lines.md) are applied, re-read against the carriers' then-current anchors. The `AGENTS.md` sentence that says landmark review tooling is only destination design is corrected in `AGENTS.md` and `templates/AGENTS.md`. `tools/test-landmark-wiki.mjs` joins the Runbook suite list if it is not otherwise run. Full Runbook suite on the committed candidate.
 
