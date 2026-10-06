@@ -16,7 +16,7 @@ source_paths:
   - workbench/skills/notepad/SKILL.md
 parent: none
 authorized_by: owner
-last_verified: 2026-10-04
+last_verified: 2026-10-06
 ---
 
 # Landmark Tracker
@@ -59,8 +59,12 @@ landmark forms when groupings appear in the question cards and destination
 decisions, parents its Specs, and retires into its Landmark Wiki page once
 reached. Landmarks no longer overlap through shared children: a Spec has at
 most one. The current JSON landmark records turn into question cards, because
-they were a way of nesting cards. None of this is installed yet; until the
-landmark Spec lands, the Tracker keeps grouping by the JSON records.
+they were a way of nesting cards. The artifact and its runtime are installed
+([Landmarks: The LANDMARK.md Artifact One Size Above A Spec](landmarks-one-size-above-specs.md));
+the migration of the JSON records into question cards and the Tracker's
+regrouping by `LANDMARK.md` are not, so until
+[Landmark Record Migration And Tracker Regrouping (S-004A)](../../specs/S-004A-landmark-record-migration-and-tracker-regrouping/SPEC.md)
+lands, the Tracker keeps grouping by the JSON records.
 
 **Tracker** generates the compact view of those records and their relationships.
 It monitors the documenting process; Taskboard monitors implementation. Existing
@@ -258,3 +262,4 @@ reach their source owners and generated views are rebuilt.
 - 2026-10-03: Reconciled the recovered Lexicon family with the later Wiki, landmark and workflow decisions; retained the installed-validator mismatch, verification distinctions and DQC reconciliation boundary.
 - 2026-10-04: The Runbook's accepted-design and available-operation text moved into the notepad skill behind the Runbook operations index (S-004C TK-005J); the Runbook keeps the delivery route.
 - 2026-10-04: The shared browser workspace is no longer a post-v4 backlog: the owner named the Grill Board its first working form, so the section links the Grill Board and Shared Interactive Workbench Board (S-004D) as one product line.
+- 2026-10-06: The `LANDMARK.md` artifact and its runtime are installed by the LANDMARK.md Artifact And Lane Runtime Spec (S-003Z); only the JSON-record migration and the Tracker regrouping remain, so the "none of this is installed yet" line now says so (S-003Z, Task TK-008J (landmark templates and documentation)).

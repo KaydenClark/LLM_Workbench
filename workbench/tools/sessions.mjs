@@ -15,6 +15,7 @@ import { listAdrs, validateAdrs } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { controls, containsPlaceholder } from './workbench-layout.mjs';
 import { laneRelative, IGNORED_COLLECTIONS } from './workbench-paths.mjs';
+import { landmarkSpecHomes } from './landmark-artifact.mjs';
 
 export function checkpoint() {
   return { status: 'blocked', error: finding('invalid-note', 'Checkpoint copy creation is retired; use notepads for local continuity and sessions.mjs promote for selected durable-owner reconciliation. Existing checkpoint history remains unchanged.') };
@@ -91,7 +92,9 @@ function validatePromotionOwner(root, destination, content, original) {
     if (containsPlaceholder(content) || /\[BRACKETED(?:_[A-Z]+)*\]/.test(content)) throw new Error('A root control cannot contain template placeholders');
     return 'control';
   }
-  if (beneath(laneRelative(root, 'specs')) && path.basename(destination.absolute) === 'SPEC.md') {
+  // S-003Z TK-008E: a Spec at any Spec home, the Blueprint-level lane or a
+  // landmark folder's `specs/`.
+  if ([laneRelative(root, 'specs'), ...landmarkSpecHomes(root).map(home => home.specsPrefix)].some(beneath) && path.basename(destination.absolute) === 'SPEC.md') {
     const before = parseSpecPacket(original, destination.absolute, root);
     const after = parseSpecPacket(content, destination.absolute, root);
     if (before.id !== after.id) throw new Error('Promotion cannot change the existing spec identity');

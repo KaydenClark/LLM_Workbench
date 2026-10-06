@@ -4,13 +4,14 @@
 // this release through Adoption's migration and never reads, compares or
 // replaces a skill in the provider home.
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
-import { coreSkills } from '../workbench/tools/workbench-layout.mjs';
+import { RUNTIME_TOOLS, coreSkills } from '../workbench/tools/workbench-layout.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
@@ -267,6 +268,113 @@ test('an undeclared extra skill in the release lane still blocks the upgrade bef
     fs.rmSync(project, { recursive: true, force: true });
     fs.rmSync(home, { recursive: true, force: true });
     fs.rmSync(parent, { recursive: true, force: true });
+  }
+});
+
+// S-003Z TK-008J: the ordinary managed update route of an existing room that
+// predates landmarks - `workbench-layout.mjs migrate`, then
+// `workbench-tools.mjs update --explicit-update` and `workbench-skills.mjs
+// update --explicit-update` from the release checkout - leaves the room's work
+// unchanged. Its Specs, Task records, projections and seeded documents stay
+// byte-identical; the manifest gains only the appended `landmarks`
+// collection with its empty folder, and the managed tools lane gains the
+// `landmark-artifact.mjs` runtime tool and the receipt key that names it.
+// The fixture room is a current room rewound to the pre-landmark shape a room
+// stamped before the landmarks collection carries.
+function snapshot(project) {
+  const files = {};
+  const walk = (relative) => {
+    for (const entry of fs.readdirSync(path.join(project, relative), { withFileTypes: true })) {
+      const child = relative ? `${relative}/${entry.name}` : entry.name;
+      if (child === '.git') continue;
+      if (entry.isDirectory()) walk(child);
+      else files[child] = fs.lstatSync(path.join(project, child)).isSymbolicLink() ? `link:${fs.readlinkSync(path.join(project, child))}` : fs.readFileSync(path.join(project, child), 'utf8');
+    }
+  };
+  walk('');
+  return files;
+}
+
+test('updating a room with no landmarks through the managed route leaves its work unchanged and installs the landmark runtime tool', () => {
+  const project = fixture('workbench-upgrade-project-');
+  const home = fixture('workbench-upgrade-home-');
+  const git = (...args) => spawnSync('git', ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.test', ...args], { cwd: project, encoding: 'utf8' });
+  const roomTool = (...args) => spawnSync(process.execPath, [path.join(project, 'workbench', 'tools', 'spec-workbench.mjs'), ...args], { cwd: project, encoding: 'utf8' });
+  try {
+    seedProject(project);
+    const upgraded = run(tool, 'upgrade', '--project', project, '--home', home, '--version', VERSION, '--explicit-update');
+    assert.equal(upgraded.status, 0, upgraded.stdout + upgraded.stderr);
+    // The room's work: its Spec's slice becomes a Task record and render
+    // writes the projections, so the update has Specs, Tasks and generated
+    // regions to leave alone.
+    const converted = roomTool('convert-tasks', 'S-101');
+    assert.equal(converted.status, 0, converted.stdout + converted.stderr);
+    assert.ok(fs.existsSync(path.join(project, 'workbench', 'specs', 'S-101-upgrade', 'tasks', 'TK-001', 'TASK.md')), 'the room holds a Task record');
+    const rendered = roomTool('render');
+    assert.equal(rendered.status, 0, rendered.stdout + rendered.stderr);
+
+    // Rewind to the room as it stood before landmarks: no `landmarks`
+    // collection or folder, and a tools lane installed before
+    // `landmark-artifact.mjs` existed (neither the file nor its receipt key).
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const current = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    assert.equal(Object.keys(current.collections).at(-1), 'landmarks', 'landmarks is the last additive collection');
+    const { landmarks, ...preLandmarkCollections } = current.collections;
+    const preLandmark = { ...current, collections: preLandmarkCollections };
+    fs.writeFileSync(manifestPath, `${JSON.stringify(preLandmark, null, 2)}\n`);
+    fs.rmSync(path.join(project, landmarks), { recursive: true });
+    const receiptPath = path.join(project, 'workbench', 'tools', '.workbench-tools.json');
+    const toolsReceipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
+    delete toolsReceipt.files['landmark-artifact.mjs'];
+    fs.writeFileSync(receiptPath, `${JSON.stringify(toolsReceipt, null, 2)}\n`);
+    fs.rmSync(path.join(project, 'workbench', 'tools', 'landmark-artifact.mjs'));
+    assert.equal(git('add', '-A').status, 0);
+    assert.equal(git('commit', '-qm', 'room before landmarks').status, 0);
+    const before = snapshot(project);
+
+    // The managed update route, in the update-harness order.
+    const migrated = spawnSync(process.execPath, [path.join(root, 'workbench', 'tools', 'workbench-layout.mjs'), 'migrate', '--project', project], { cwd: root, encoding: 'utf8' });
+    assert.equal(migrated.status, 0, migrated.stdout + migrated.stderr);
+    assert.deepEqual(JSON.parse(migrated.stdout).added, ['collections.landmarks']);
+    const tools = run(path.join(root, 'tools', 'workbench-tools.mjs'), 'update', '--project', project, '--home', home, '--explicit-update');
+    assert.equal(tools.status, 0, tools.stdout + tools.stderr);
+    assert.equal(tools.report.status, 'updated');
+    assert.deepEqual(tools.report.changed, ['landmark-artifact.mjs'], 'only the missing landmark runtime tool changes');
+    const skills = run(path.join(root, 'tools', 'workbench-skills.mjs'), 'update', '--project', project, '--home', home, '--explicit-update');
+    assert.equal(skills.status, 0, skills.stdout + skills.stderr);
+
+    const after = snapshot(project);
+    const changed = [...new Set([...Object.keys(before), ...Object.keys(after)])].filter((file) => before[file] !== after[file]).sort();
+    assert.deepEqual(changed, [
+      'workbench/landmarks/.gitkeep',
+      'workbench/manifest.json',
+      'workbench/tools/.workbench-tools.json',
+      'workbench/tools/landmark-artifact.mjs'
+    ], 'no Spec, Task, projection, seeded document, skill or other file changes');
+    assert.equal(after['workbench/landmarks/.gitkeep'], '', 'the landmarks collection starts empty and kept in Git');
+    assert.equal(after['workbench/manifest.json'], `${JSON.stringify({ ...preLandmark, collections: { ...preLandmarkCollections, landmarks: 'workbench/landmarks' } }, null, 2)}\n`, 'the manifest gains only the appended landmarks collection');
+    assert.equal(after['workbench/tools/landmark-artifact.mjs'], fs.readFileSync(path.join(root, 'workbench', 'tools', 'landmark-artifact.mjs'), 'utf8'), 'the managed bundle installs the landmark runtime tool from the release');
+    const updatedReceipt = JSON.parse(after['workbench/tools/.workbench-tools.json']);
+    assert.equal(updatedReceipt.files['landmark-artifact.mjs'], createHash('sha256').update(fs.readFileSync(path.join(root, 'workbench', 'tools', 'landmark-artifact.mjs'))).digest('hex'), 'the installed receipt names the landmark runtime tool');
+    assert.deepEqual(Object.keys(updatedReceipt.files).sort(), [...RUNTIME_TOOLS].sort(), 'the receipt accounts for every managed runtime tool');
+    const verified = run(path.join(root, 'tools', 'workbench-tools.mjs'), 'verify', '--project', project);
+    assert.equal(verified.status, 0, verified.stdout + verified.stderr);
+    assert.equal(verified.report.status, 'valid');
+
+    // The updated room's own runtime renders its projections unchanged and
+    // reads its work exactly as before.
+    const rerendered = roomTool('render');
+    assert.equal(rerendered.status, 0, rerendered.stdout + rerendered.stderr);
+    assert.deepEqual(snapshot(project), after, 'render after the update leaves every projection unchanged');
+    const doctor = roomTool('doctor', '--json');
+    const findings = JSON.parse(doctor.stdout);
+    assert.ok(Array.isArray(findings), doctor.stdout);
+    assert.deepEqual(findings.filter((finding) => ['all', 'selection'].includes(finding.blocks)), [], doctor.stdout);
+    assert.deepEqual(findings.filter((finding) => /landmark/.test(finding.code)), [], 'the empty landmarks collection raises no landmark finding');
+    assert.equal(JSON.parse(roomTool('next', '--json').stdout)?.specId, 'S-101', 'the room still selects its own work');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
   }
 });
 

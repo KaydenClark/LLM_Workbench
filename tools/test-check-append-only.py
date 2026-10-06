@@ -30,6 +30,18 @@ TARGET = "workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md"   # outside the old h
 # this case, exactly as its own retirement evidence row is the fixture the
 # discard gate reads.
 RETIRED_TARGET = "workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md"
+# S-003Z TK-008J: a LANDMARK.md carries the same Append-Only Evidence And
+# Execution Log a SPEC.md does, and a Spec may nest in its landmark's
+# `specs/` folder, so the enumeration that only walked `workbench/specs`
+# left every landmark log - and every Spec nested under a landmark - outside
+# enforcement. LMK-001A is one of the room's real landmarks; the retired
+# landmark and the nested Spec are planted by a fixture commit in the clone,
+# because the room holds neither yet.
+LANDMARK_TARGET = "workbench/landmarks/LMK-001A-durable-plans/LANDMARK.md"
+RETIRED_LANDMARK_SOURCE = "workbench/landmarks/LMK-001J-autonomous-execution"
+RETIRED_LANDMARK_TARGET = "workbench/landmarks/retired/LMK-001J-autonomous-execution/LANDMARK.md"
+NESTED_SPEC_TARGET = "workbench/landmarks/LMK-001A-durable-plans/specs/S-9ZZ-nested-fixture/SPEC.md"
+NESTED_RETIRED_SPEC_TARGET = "workbench/landmarks/LMK-001A-durable-plans/specs/retired/S-9ZY-retired-nested-fixture/SPEC.md"
 failures = []
 
 def rows(text):
@@ -57,13 +69,39 @@ CASES = [
     ("orphan appended after a blank line inside the table", orphan_after_blank, TARGET, TARGET),
     ("rewritten row that keeps its leading pipe", piped_orphan, TARGET, TARGET),
     ("in-place rewrite inside a retired Spec's evidence log, invisible to a top-level-only enumeration", rewrite_last_row, "S-00H", RETIRED_TARGET),
+    ("in-place rewrite inside a landmark's evidence log", rewrite_last_row, "LMK-001A", LANDMARK_TARGET),
+    ("in-place rewrite inside a retired landmark's evidence log", rewrite_last_row, "LMK-001J", RETIRED_LANDMARK_TARGET),
+    ("in-place rewrite inside a Spec nested under a landmark", rewrite_last_row, "S-9ZZ", NESTED_SPEC_TARGET),
+    ("orphan appended inside a nested retired Spec's evidence table", orphan_after_blank, "S-9ZY", NESTED_RETIRED_SPEC_TARGET),
 ]
+
+def nested_spec(spec_id, title):
+    return "\n".join([
+        f"# {spec_id} - {title}", "", f"**Spec ID:** {spec_id}", "",
+        "## Append-Only Evidence And Execution Log", "",
+        "| Date | Task | Event | Verification | Docs | Remaining gap |", "|---|---|---|---|---|---|",
+        f"| 2026-10-06 | none | Fixture row for {spec_id}. | none | none | none |", "",
+        "## Completion Result", "", "Pending.", ""])
+
+def plant_landmark_fixtures(work):
+    # A retired landmark and two nested Specs, committed so their rows are
+    # published history the checker replays.
+    git = lambda *a: subprocess.run(["git", "-c", "user.name=Fixture", "-c", "user.email=fixture@example.test", *a], cwd=work, check=True, capture_output=True)
+    (pathlib.Path(work) / "workbench/landmarks/retired").mkdir(parents=True, exist_ok=True)
+    git("mv", RETIRED_LANDMARK_SOURCE, str(pathlib.Path(RETIRED_LANDMARK_TARGET).parent))
+    for target, spec_id, title in ((NESTED_SPEC_TARGET, "S-9ZZ", "Nested Fixture"), (NESTED_RETIRED_SPEC_TARGET, "S-9ZY", "Retired Nested Fixture")):
+        path = pathlib.Path(work) / target
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(nested_spec(spec_id, title))
+        git("add", target)
+    git("commit", "-qm", "landmark append-only fixtures")
 
 work = tempfile.mkdtemp(prefix="append-only-")
 try:
     subprocess.run(["git", "clone", "-q", "--shared", str(ROOT), work], check=True, capture_output=True)
     subprocess.run(["git", "checkout", "-q", "--detach", "HEAD"], cwd=work, check=True, capture_output=True)
     shutil.copy(ROOT / REL, pathlib.Path(work) / REL)   # test the working tree, not the last commit
+    plant_landmark_fixtures(work)
 
     def run():
         r = subprocess.run([sys.executable, REL], cwd=work, capture_output=True, text=True)

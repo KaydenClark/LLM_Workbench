@@ -1,8 +1,11 @@
 # S-[###] - [CAPABILITY_TITLE]
 
 > Generated from LLM Workbench v[HARNESS_VERSION]. Copy this file to
-> `workbench/specs/S-[###]-[slug]/SPEC.md`; lifecycle moves use the link-safe
-> `move-spec` operation after its gates pass, never a manual folder move.
+> `workbench/specs/S-[###]-[slug]/SPEC.md`, or, for a Spec with a parent
+> landmark, to the same folder inside that landmark's `specs` folder under
+> `workbench/landmarks/`; lifecycle moves use the link-safe `move-spec`
+> operation (`--to retired` after its gates pass, `--landmark LMK-[###]|none`
+> to change its parent), never a manual folder move.
 
 **Spec ID:** S-[###]
 **Status:** planned

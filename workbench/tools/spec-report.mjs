@@ -33,9 +33,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
-import { appendEvidence, atomicWrite, findSpec, loadRetiredSpecs, loadSpecs, occupiedIdentities, resolveIntegrationContainmentRef, resolveSpecsRoot, slicesOf } from './spec-workbench.mjs';
+import { appendEvidence, atomicWrite, findLandmarkParent, findSpec, isLandmarkId, loadRetiredSpecs, loadSpecs, occupiedIdentities, resolveIntegrationContainmentRef, slicesOf, updateFields } from './spec-workbench.mjs';
 import { appendContinuationToContent, formatTaskRecord, listTaskRecords, parseTaskRecord, readContinuations, taskStatus, updateTaskFields } from './task-record.mjs';
-import { readReceiptFromFile } from './task-receipt.mjs';
+import { readReceipt, readReceiptFromFile } from './task-receipt.mjs';
 import { assertSafeWritePath } from './workbench-paths.mjs';
 import { allocateArtifactId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 
@@ -234,7 +234,9 @@ function committedSpecDirectory(root, spec, candidate, relativeDir, committed) {
   if (regularBlob(candidate, currentFile)) return relativeDir;
 
   const refuse = () => { throw new Error(`Cannot prove the committed retirement source for ${spec.id} at ${candidate}`); };
-  const { specsPrefix } = resolveSpecsRoot(root);
+  // S-003Z TK-008E: the move stays within the Spec's own home, so a nested
+  // Spec's retirement source is `<landmark>/specs/<dir>`.
+  const { specsPrefix } = spec;
   const basename = path.posix.basename(relativeDir);
   if (relativeDir !== `${specsPrefix}/retired/${basename}` || !basename.startsWith(`${spec.id}-`)) refuse();
   const sourceDir = `${specsPrefix}/${basename}`;
@@ -661,7 +663,11 @@ export function createCorrectiveTasks(rootDir, specId, options = {}) {
   // direction and the plan, never the destination, so no corrective Task
   // anchors to a claim; a later gap becomes a new Spec.
   if (options.wikiClaim) throw new Error(`createCorrectiveTasks refuses a Wiki-claim anchor: ${NEW_SPEC_ROUTE}.`);
-  const spec = findSpec(root, specId);
+  // S-003Z TK-008H: a failed whole-landmark verdict answers with corrective
+  // Tasks directly under the landmark (`<landmark>/tasks/`), through this same
+  // seam; the landmark parent is shaped like a record-backed Spec.
+  const spec = isLandmarkId(specId) ? findLandmarkParent(root, specId) : findSpec(root, specId);
+  const landmark = spec.kind === 'landmark';
   assertSpecOpenForCorrection(spec);
   const evidence = parseEvidence(spec.content);
   const anchor = findCorrectiveAnchor(evidence, candidate);
@@ -752,11 +758,11 @@ export function createCorrectiveTasks(rootDir, specId, options = {}) {
     const plannedVerification = `${answeredMarker}: ${entry.text}${entry.rewrites ? ` (rewrites ${entry.rewrites})` : ''}`;
     const content = formatTaskRecord({
       id,
-      specId,
+      ...(landmark ? { landmarkId: spec.id } : { specId }),
       slice: entry.text,
       status: 'ready',
       blockers: 'none',
-      destination: `spec-acceptance: ${specId} Acceptance Criteria`,
+      destination: landmark ? `spec-acceptance: ${spec.id} What Success Looks Like` : `spec-acceptance: ${specId} Acceptance Criteria`,
       plannedVerification
     });
     // Parsed back before it is staged, matching `convertSpecSlices`'s own
@@ -802,6 +808,12 @@ export const NEW_SPEC_ROUTE = 'a later gap against delivered work becomes a new 
 // miss found by a check continues its Task or opens a new one (DDR-000Y);
 // after delivery it is a new Spec. Checked before any write.
 function assertSpecOpenForCorrection(spec) {
+  // S-003Z TK-008H: a reached or retired landmark is delivered work too.
+  if (spec.kind === 'landmark') {
+    const delivered = spec.lifecycleFolder ? `retired in ${spec.lifecycleFolder}/` : (spec.status === 'reached' ? 'reached' : null);
+    if (delivered) throw new Error(`${spec.id} is ${delivered}; a corrective Task is not written under a delivered landmark: ${NEW_SPEC_ROUTE}.`);
+    return;
+  }
   const state = spec.lifecycleFolder === 'retired' ? 'retired' : (['complete', 'superseded'].includes(spec.status) ? spec.status : null);
   if (state) throw new Error(`${spec.id} is ${state}; a corrective Task is not written against delivered work: ${NEW_SPEC_ROUTE}.`);
 }
@@ -1362,6 +1374,511 @@ export function formatSpecReport(report) {
   if (report.decisionCoverage.unknown.length > 0) {
     lines.push(`Decision coverage unknown: ${report.decisionCoverage.unknown.join(', ')} (no ## Decisions section; informational, not a gap)`);
   }
+  lines.push(`Gaps (${report.gaps.length}):`);
+  for (const gap of report.gaps) lines.push(`  - ${gap}`);
+  return lines.join('\n');
+}
+
+// ---- S-003Z TK-008H: the whole-landmark review, one size above a Spec's ----
+// A landmark (ADR-000U) is reviewed as a whole once its children have landed:
+// `report LMK-###` assembles it for a reviewer, `verify LMK-###` says whether
+// it can be verified at all, and `verdict LMK-###` records the separate
+// context's judgement on the landmark's own evidence log. The rung reuses the
+// Spec review's seams rather than copying them: the same verdict row grammar
+// (`parseVerdicts`), the same content-binding rule ("content binds, location
+// does not"), the same corrective dispositions (`createCorrectiveTasks`, here
+// writing landmark-direct Tasks) and each child Spec's own digest
+// (`computeSpecDigest`). A landmark is a lane, not a branch: nothing here
+// reads or changes a child Spec's verdict, gate or merge, so a failed
+// whole-landmark review never blocks a child's integration.
+
+// A landmark's child Specs are the Specs nested in its own folder's `specs/`
+// home (TK-008E), active and retired, located by path so a landmark elsewhere
+// that declares the same identity never lends its children.
+function landmarkChildren(root, parent) {
+  const landmarkDir = path.dirname(parent.filePath);
+  return [...loadSpecs(root), ...loadRetiredSpecs(root)]
+    .filter((spec) => spec.filePath.startsWith(`${landmarkDir}${path.sep}`))
+    .sort((a, b) => compareVisibleIds(a.id, b.id));
+}
+
+// One child Spec as the reviewer sees it: its status, its latest verdict for
+// its own current content, and whether it is retired. A child is open until
+// it is complete or retired.
+function childSpecEntry(root, spec) {
+  const specDigest = computeSpecDigest(root, spec);
+  const verdicts = parseVerdicts(parseEvidence(spec.content));
+  const retired = Boolean(spec.lifecycleFolder);
+  return {
+    id: spec.id,
+    title: spec.title,
+    status: spec.status,
+    path: spec.relativePath,
+    lifecycleFolder: spec.lifecycleFolder ?? null,
+    retired,
+    open: !(retired || spec.status === 'complete'),
+    specDigest,
+    verdictCount: verdicts.length,
+    latestVerdict: latestVerdictFor(verdicts, specDigest)
+  };
+}
+
+// The landmark's direct Tasks, live and retired, enriched exactly as a Spec's
+// Tasks are. A live Task is open until it is done; a retired one is history.
+function directTaskEntries(parent) {
+  const live = slicesOf(parent).map((slice) => ({ ...taskEntry(slice), retired: false }));
+  const retired = parent.retiredRecords.map((task) => ({ ...retiredTaskEntry(task), retired: true }));
+  return [...live, ...retired]
+    .map((task) => ({ ...task, open: !task.retired && task.status !== 'done' }))
+    .sort((a, b) => compareVisibleIds(a.id, b.id));
+}
+
+function openChildrenOf(childSpecs, directTasks) {
+  return [
+    ...childSpecs.filter((child) => child.open).map((child) => ({ kind: 'spec', id: child.id, status: child.status })),
+    ...directTasks.filter((task) => task.open).map((task) => ({ kind: 'task', id: task.id, status: task.status }))
+  ];
+}
+
+function openChildReason(child) {
+  return child.kind === 'spec'
+    ? `Child Spec ${child.id} is ${child.status}, not complete or retired`
+    : `Direct Task ${child.id} is ${child.status}, not done`;
+}
+
+// The landmark's content digest: SHA-256 over its normalized LANDMARK.md, its
+// direct Task records (Receipt sections excluded) and each child Spec's own
+// content digest, framed exactly as `computeSpecDigest` frames its entries.
+// The volatile parts excluded are the Spec digest's equivalents: every
+// evidence DATA row (so recording a verdict never moves the digest it binds
+// to), the `Updated`, `Latest event` and `Next gate` header values, and the
+// administrative `reached` status a passing verdict writes. A child Spec is
+// hashed by identity, not location, so its retirement into
+// `<landmark>/specs/retired/` leaves the digest unchanged, as its own digest
+// already does. With a candidate, the same entries are read from that commit
+// (each child through `computeSpecDigest`'s own committed read), and the set of
+// child Spec folders committed under the landmark must equal the working
+// tree's, so a child moved in or out after the candidate refuses rather than
+// matching by omission.
+export function computeLandmarkDigest(root, parent, children, candidate = null) {
+  const hash = crypto.createHash('sha256');
+  function addEntry(name, content) {
+    hash.update(name);
+    hash.update('\n');
+    hash.update(String(Buffer.byteLength(content, 'utf8')));
+    hash.update('\n');
+    hash.update(content);
+    hash.update('\n');
+  }
+  const landmarkDir = path.dirname(parent.filePath);
+  const relativeDir = path.relative(root, landmarkDir).split(path.sep).join('/');
+  function committed(args) {
+    const result = candidateGit(root, args);
+    if (result.status !== 0) throw new Error(`Cannot read committed content for ${parent.id} at ${candidate}: ${result.stderr?.trim() || result.error?.message || 'Git read failed'}`);
+    return result.stdout;
+  }
+  const landmarkContent = candidate ? committed(['show', `${candidate}:${relativeDir}/LANDMARK.md`]) : parent.content;
+  addEntry('LANDMARK.md', stripVolatileLandmarkFields(stripEvidenceRows(landmarkContent)));
+  let taskNames;
+  if (candidate) {
+    taskNames = committed(['ls-tree', '-r', '--name-only', '-z', candidate, '--', `${relativeDir}/tasks/`])
+      .split('\0').filter(Boolean).map((name) => name.slice(relativeDir.length + 1));
+  } else {
+    taskNames = [];
+    for (const folder of ['tasks', 'tasks/retired']) {
+      const directory = path.join(landmarkDir, folder);
+      if (!fs.existsSync(directory)) continue;
+      for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+        if (entry.isDirectory() && fs.existsSync(path.join(directory, entry.name, 'TASK.md'))) taskNames.push(`${folder}/${entry.name}/TASK.md`);
+      }
+    }
+  }
+  for (const name of taskNames.filter((name) => /^tasks\/(?:retired\/)?[^/]+\/TASK\.md$/.test(name)).sort()) {
+    const content = candidate ? committed(['show', `${candidate}:${relativeDir}/${name}`]) : fs.readFileSync(path.join(landmarkDir, name), 'utf8');
+    addEntry(name, stripReceiptSection(content));
+  }
+  if (candidate) {
+    const committedChildren = committed(['ls-tree', '-r', '--name-only', '-z', candidate, '--', `${relativeDir}/specs/`])
+      .split('\0').filter(Boolean).map((name) => name.slice(relativeDir.length + 1))
+      .filter((name) => /^specs\/(?:retired\/)?[^/]+\/SPEC\.md$/.test(name)).map((name) => name.split('/').at(-2)).sort();
+    const currentChildren = children.map((spec) => path.basename(path.dirname(spec.filePath))).sort();
+    if (JSON.stringify(committedChildren) !== JSON.stringify(currentChildren)) {
+      throw new Error(`The child Specs committed under ${parent.id} at ${candidate} (${committedChildren.join(', ') || 'none'}) differ from the working tree's (${currentChildren.join(', ') || 'none'})`);
+    }
+  }
+  for (const spec of children) addEntry(`spec ${spec.id}`, computeSpecDigest(root, spec, candidate));
+  return hash.digest('hex');
+}
+
+function stripVolatileLandmarkFields(content) {
+  return content
+    .replace(/^\*\*Status:\*\* reached$/m, '**Status:** active')
+    .replace(/^\*\*Updated:\*\*.*$/m, '**Updated:**')
+    .replace(/^\*\*Latest event:\*\*.*$/m, '**Latest event:**')
+    .replace(/^\*\*Next gate:\*\*.*$/m, '**Next gate:**');
+}
+
+function landmarkContentBinding(root, parent, children, candidate, currentDigest) {
+  try {
+    const contentDigest = computeLandmarkDigest(root, parent, children, candidate);
+    return { contentDigest, matchesContent: contentDigest === currentDigest, contentError: null };
+  } catch (error) {
+    return { contentDigest: null, matchesContent: false, contentError: error.message };
+  }
+}
+
+// `report LMK-### [--candidate SHA]`: informs and refuses nothing. Each open
+// child (a child Spec not complete or retired, a live direct Task not done)
+// and each unticked reached check is a named gap; `openChildren` carries the
+// children alone, which is what `verify` refuses on.
+export function assembleLandmarkReport(rootDir, landmarkId, options = {}) {
+  const root = path.resolve(rootDir);
+  const parent = findLandmarkParent(root, landmarkId);
+  const children = landmarkChildren(root, parent);
+  const childSpecs = children.map((spec) => childSpecEntry(root, spec));
+  const directTasks = directTaskEntries(parent);
+  const landmarkDigest = computeLandmarkDigest(root, parent, children);
+  const candidate = options.candidate ? candidateBinding(root, options.candidate) : null;
+  if (candidate) Object.assign(candidate, landmarkContentBinding(root, parent, children, options.candidate, landmarkDigest));
+  const evidence = parseEvidence(parent.content);
+  const verdicts = parseVerdicts(evidence);
+  // S-003Z TK-008I: the owner's approval one size up, read exactly as a
+  // Spec's - every owner-qa row, and the latest bound to the landmark's
+  // current digest whose candidate still carries that content.
+  const ownerApproval = parseOwnerApprovals(evidence);
+  const latestOwnerApproval = latestLandmarkApprovalFor(ownerApproval, landmarkDigest, root, parent, children);
+  const openChildren = openChildrenOf(childSpecs, directTasks);
+  const uncheckedSuccessChecks = parent.successChecks.filter((check) => !check.done).map((check) => check.text);
+  const gaps = [
+    ...openChildren.map(openChildReason),
+    ...uncheckedSuccessChecks.map((text) => `Reached check is unticked: ${text}`)
+  ];
+  return {
+    kind: 'landmark',
+    id: parent.id,
+    title: parent.title,
+    status: parent.status,
+    priority: parent.priority,
+    owner: parent.owner,
+    updated: parent.updated,
+    description: parent.description,
+    blockers: parent.blockers,
+    latestEvent: parent.latestEvent,
+    nextGate: parent.nextGate,
+    path: parent.relativePath,
+    lifecycleFolder: parent.lifecycleFolder ?? null,
+    candidate,
+    landmarkDigest,
+    successChecks: parent.successChecks,
+    uncheckedSuccessChecks,
+    childSpecs,
+    directTasks,
+    decisionRecords: parent.decisionRecords,
+    evidence,
+    verdicts,
+    latestVerdict: latestVerdictFor(verdicts, landmarkDigest),
+    ownerApproval,
+    latestOwnerApproval,
+    openChildren,
+    gaps,
+    complete: gaps.length === 0
+  };
+}
+
+// `verify LMK-###`: refused by name while any child Spec is not complete or
+// retired or any live direct Task is not done - a landmark with an open child
+// cannot be verified (and so cannot retire). When it passes it returns the
+// verification result: every child closed, each child's status and latest
+// verdict, the reached checks still unticked, the landmark's latest verdict
+// for its current content, whether it is already reached, and the next step.
+// It writes nothing and needs no candidate: it checks the children's state,
+// while the candidate-bound judgement is the verdict's.
+export function verifyLandmark(rootDir, landmarkId) {
+  const report = assembleLandmarkReport(rootDir, landmarkId);
+  if (report.openChildren.length > 0) {
+    throw new Error(`verify refused: ${report.id} has open children: ${report.openChildren.map((child) => `${child.id} (${child.status}, ${child.kind === 'spec' ? 'not complete or retired' : 'not done'})`).join(', ')}; a landmark is verified only once every child Spec is complete or retired and every direct Task is done`);
+  }
+  const reached = report.status === 'reached';
+  let nextStep;
+  if (reached) nextStep = `Retire ${report.id} into its Landmark Wiki page.`;
+  else if (report.uncheckedSuccessChecks.length > 0) nextStep = `Tick each reached check that has landed on integration, then run the whole-landmark review: report ${report.id} --candidate SHA, then verdict from a context with no part in the landmark.`;
+  else nextStep = `Run the whole-landmark review: report ${report.id} --candidate SHA, then verdict from a context with no part in the landmark.`;
+  return {
+    mode: 'landmark-verify',
+    landmarkId: report.id,
+    verified: true,
+    status: report.status,
+    reached,
+    landmarkDigest: report.landmarkDigest,
+    openChildren: [],
+    childSpecs: report.childSpecs.map(({ id, status, retired, latestVerdict }) => ({ id, status, retired, latestVerdict })),
+    directTasks: report.directTasks.map(({ id, status, retired }) => ({ id, status, retired })),
+    uncheckedSuccessChecks: report.uncheckedSuccessChecks,
+    latestVerdict: report.latestVerdict,
+    nextStep
+  };
+}
+
+// `verdict LMK-### --candidate SHA [--digest D] --result pass|fail --findings
+// TEXT --reviewer CONTEXT`: the Spec verdict's refusals (no candidate commit,
+// a stale digest, committed content that differs, a fail naming no
+// disposition, an exact repeat), plus the landmark's own: a retired landmark,
+// and a reviewer that took part in the landmark (`landmarkParticipation`) -
+// the separate landmark review comes from a context with no part in it, and
+// self-review never counts. The row lands on LANDMARK.md's evidence log. A
+// fail answers with corrective Tasks directly under the landmark; a pass with
+// every child closed and every reached check ticked sets the landmark
+// `reached`, otherwise it records the pass and names what keeps it short.
+export function recordLandmarkVerdict(rootDir, landmarkId, options = {}) {
+  const root = path.resolve(rootDir);
+  const candidate = requiredString(options.candidate, 'verdict LMK-### requires a --candidate SHA');
+  const result = options.result;
+  if (result !== 'pass' && result !== 'fail') {
+    throw new Error(`verdict LMK-### requires --result of pass or fail, got: ${result === undefined ? 'nothing' : result}`);
+  }
+  const findings = requiredString(options.findings, 'verdict LMK-### requires --findings ("none" is accepted on a pass)');
+  const reviewer = requiredString(options.reviewer, 'verdict LMK-### requires --reviewer naming the separate context (model and mode)');
+  if (result === 'fail' && splitFindings(findings).length === 0) {
+    throw new Error(`A fail verdict for candidate ${candidate} on ${landmarkId} names no corrective finding ("${findings}"); a failed verdict that leaves the landmark with no corrective Task is refused.`);
+  }
+  if (!commitExists(root, candidate)) {
+    throw new Error(`Candidate ${candidate} does not exist in this repository (checked via git cat-file -e); a review must bind to a real commit, never an invented or mistyped SHA.`);
+  }
+  const parent = findLandmarkParent(root, landmarkId);
+  if (parent.lifecycleFolder) throw new Error(`${parent.id} is retired in ${parent.lifecycleFolder}/; a retired landmark is not reviewed again: ${NEW_SPEC_ROUTE}.`);
+  const children = landmarkChildren(root, parent);
+  const participation = landmarkParticipation(parent, children, reviewer);
+  if (participation.length > 0) {
+    throw new Error(`Reviewer "${reviewer}" took part in ${parent.id}: ${participation.join('; ')}. The whole-landmark review comes from a separate context with no part in that landmark; self-review never counts.`);
+  }
+  if (result === 'fail') planCorrectiveFindings(root, parent, splitFindings(findings));
+
+  const currentDigest = computeLandmarkDigest(root, parent, children);
+  const givenDigest = options.digest ? String(options.digest).trim() : null;
+  if (givenDigest && givenDigest !== currentDigest) {
+    throw new Error(`The digest ${givenDigest.slice(0, 12)} named for candidate ${candidate} on ${parent.id} does not match this working tree's current landmark digest ${currentDigest.slice(0, 12)}; the landmark or a child record has changed since that digest was computed. Read a fresh --digest from a new report before recording this verdict, or omit --digest to record against the current content.`);
+  }
+  const digest = givenDigest ?? currentDigest;
+  const committed = landmarkContentBinding(root, parent, children, candidate, digest);
+  if (!committed.matchesContent) {
+    throw new Error(`Candidate ${candidate} does not contain the reviewed committed content for ${parent.id}: ${committed.contentError ?? `candidate digest ${committed.contentDigest.slice(0, 12)} differs from reviewed content digest ${digest.slice(0, 12)}`}. Commit the assembled landmark and review that immutable candidate before recording a verdict.`);
+  }
+  const digest12 = digest.slice(0, 12);
+  const existingVerdicts = parseVerdicts(parseEvidence(parent.content));
+  const duplicate = existingVerdicts.find((verdict) =>
+    verdict.candidate === candidate && verdict.result === result && verdict.digest === digest12
+    && verdict.findings === findings && verdict.reviewer === reviewer);
+  if (duplicate) {
+    throw new Error(`An identical verdict (${result} at ${candidate} [${digest12}], findings "${findings}", reviewer "${reviewer}") is already recorded for ${parent.id} as row #${duplicate.ordinal}; recording the exact same review twice is refused rather than duplicated.`);
+  }
+  const ordinal = existingVerdicts.length + 1;
+
+  const date = new Date().toISOString().slice(0, 10);
+  const remainingGap = findingsGap(findings);
+  const cells = [date, 'review', `Review verdict: ${result} at ${candidate} [${digest12}] #${ordinal}`, findings, reviewer, remainingGap];
+  const row = `| ${cells.map(escapeMarkdownTableCell).join(' | ')} |`;
+  let content = appendEvidence(parent.content, row);
+  let reached = false;
+  let notReached = [];
+  if (result === 'pass') {
+    const openChildren = openChildrenOf(children.map((spec) => childSpecEntry(root, spec)), directTaskEntries(parent));
+    notReached = [
+      ...openChildren.map(openChildReason),
+      ...parent.successChecks.filter((check) => !check.done).map((check) => `Reached check is unticked: ${check.text}`)
+    ];
+    if (notReached.length === 0) {
+      content = updateFields(content, {
+        Status: 'reached',
+        Updated: date,
+        'Latest event': `Whole-landmark review passed at ${candidate} by ${reviewer}; ${parent.id} reached.`,
+        'Next gate': `Retire ${parent.id} into its Landmark Wiki page.`
+      });
+      reached = true;
+    }
+  }
+  atomicWrite(parent.filePath, content);
+
+  // Row-then-Tasks, exactly as `recordReviewVerdict`: the row is durable
+  // first, and `createCorrectiveTasks(root, LMK-###, ...)` is the recovery
+  // call if the process stops between the two.
+  let correctiveTasks;
+  let continuedTasks;
+  if (result === 'fail') {
+    ({ created: correctiveTasks, continued: continuedTasks } = createCorrectiveTasks(root, parent.id, { candidate, findings }));
+  }
+  return {
+    landmarkId: parent.id, candidate, result, findings, reviewer, date, remainingGap, digest, digest12, ordinal, row,
+    ...(result === 'pass' ? { reached, notReached } : {}),
+    ...(correctiveTasks ? { correctiveTasks, continuedTasks } : {})
+  };
+}
+
+// The latest owner-qa entry bound to the landmark's current digest whose
+// candidate still carries that content, or `null` - `latestOwnerApprovalFor`
+// one size up.
+function latestLandmarkApprovalFor(approvals, landmarkDigest, root, parent, children) {
+  const digest12 = landmarkDigest.slice(0, 12);
+  for (let index = approvals.length - 1; index >= 0; index -= 1) {
+    if (approvals[index].digest !== digest12) continue;
+    try {
+      if (computeLandmarkDigest(root, parent, children, approvals[index].candidate) === landmarkDigest) return approvals[index];
+    } catch { /* Missing content or a moved child cannot prove approval. */ }
+  }
+  return null;
+}
+
+// S-003Z TK-008I: `approve LMK-### --candidate SHA --owner NAME [--digest D]`,
+// the Spec's `approve` seam one size up. It records the owner's approval as
+// the operator supplies it - the runtime never fabricates one, and
+// `retire-landmark` refuses without it and never records it itself. The
+// Spec form's refusals apply: no candidate commit, a candidate the declared
+// integration branch does not contain, committed content that differs from
+// the current landmark digest, and an exact repeat; so do the verdict's
+// stale `--digest` and retired landmark. The row lands on LANDMARK.md's
+// evidence log. Only an approval is recorded: while the landmark is open its
+// work continues through its child Specs and direct Tasks, and a gap found
+// against a reached landmark is delivered work (`NEW_SPEC_ROUTE`).
+export function recordLandmarkApproval(rootDir, landmarkId, options = {}) {
+  const root = path.resolve(rootDir);
+  const result = options.result ?? 'approve';
+  if (result !== 'approve' || options.findings || options.destinationChange) {
+    throw new Error(`approve LMK-### records the owner's approval only; an owner finding is not recorded on a landmark: while it is open its work continues through its child Specs and direct Tasks, and against a reached landmark ${NEW_SPEC_ROUTE}.`);
+  }
+  const candidate = requiredString(options.candidate, 'approve LMK-### requires a --candidate SHA');
+  const owner = requiredString(options.owner, 'approve LMK-### requires --owner naming who performed Human QA (the name as given, never inferred from Git config)');
+  if (!commitExists(root, candidate)) {
+    throw new Error(`Candidate ${candidate} does not exist in this repository (checked via git cat-file -e); an owner approval must bind to a real commit, never an invented or mistyped SHA.`);
+  }
+  const integrationContainment = resolveIntegrationContainmentRef(root);
+  const integrationBranch = integrationContainment.branch;
+  if (integrationBranch && !isAncestorOfBranch(root, candidate, integrationContainment.ref)) {
+    const checked = `${integrationContainment.ref} ${integrationContainment.sha ? `at ${integrationContainment.sha}` : '(does not resolve)'}`;
+    throw new Error(`Candidate ${candidate} is not contained in the declared integration branch '${integrationBranch}' (checked ${checked} via git merge-base --is-ancestor; local refs only, nothing fetched); an owner approval binds to a SHA on integration, never a lane tip.`);
+  }
+  const parent = findLandmarkParent(root, landmarkId);
+  if (parent.lifecycleFolder) throw new Error(`${parent.id} is retired in ${parent.lifecycleFolder}/; a retired landmark is not approved again: ${NEW_SPEC_ROUTE}.`);
+  const children = landmarkChildren(root, parent);
+  const currentDigest = computeLandmarkDigest(root, parent, children);
+  const givenDigest = options.digest ? String(options.digest).trim() : null;
+  if (givenDigest && givenDigest !== currentDigest) {
+    throw new Error(`The digest ${givenDigest.slice(0, 12)} named for candidate ${candidate} on ${parent.id} does not match this working tree's current landmark digest ${currentDigest.slice(0, 12)}; the landmark or a child record has changed since that digest was computed. Read a fresh --digest from a new report before recording this approval, or omit --digest to record against the current content.`);
+  }
+  const committed = landmarkContentBinding(root, parent, children, candidate, currentDigest);
+  if (!committed.matchesContent) {
+    throw new Error(`Owner QA candidate content at ${candidate} does not match the current assembled landmark for ${parent.id}: ${committed.contentError ?? `candidate digest ${committed.contentDigest.slice(0, 12)} differs from current digest ${currentDigest.slice(0, 12)}`}; inspect and name the committed content being approved before recording Human QA.`);
+  }
+  const digest12 = currentDigest.slice(0, 12);
+  const existing = parseOwnerApprovals(parseEvidence(parent.content));
+  const duplicate = existing.find((entry) => entry.candidate === candidate && entry.result === 'approve' && entry.digest === digest12 && entry.owner === owner);
+  if (duplicate) {
+    throw new Error(`An identical owner QA entry (approve at ${candidate} [${digest12}], owner "${owner}") is already recorded for ${parent.id} as row #${duplicate.ordinal}; recording the exact same entry twice is refused rather than duplicated.`);
+  }
+  const ordinal = existing.length + 1;
+  const remainingGap = integrationBranch === null ? 'integration branch undeclared; containment unchecked' : 'none';
+  const date = new Date().toISOString().slice(0, 10);
+  const cells = [date, 'owner-qa', `Owner QA: approve at ${candidate} [${digest12}] #${ordinal}`, 'none', owner, remainingGap];
+  const row = `| ${cells.map(escapeMarkdownTableCell).join(' | ')} |`;
+  atomicWrite(parent.filePath, appendEvidence(parent.content, row));
+  return { landmarkId: parent.id, candidate, owner, result: 'approve', findings: 'none', date, remainingGap, digest: currentDigest, digest12, ordinal, row, integrationContainment };
+}
+
+// Every place the reviewer's context appears as a participant in the
+// landmark, as a list of where. A participant name is structured: the
+// landmark's Owner (the Director holding the lane), a child Spec's Owner (its
+// claimant), any `claimed by <agent>` in a Latest event or evidence row, and a
+// child Spec verdict's reviewer; these match when either the reviewer names
+// the participant or the participant names the reviewer. Free text - a
+// direct or child Task's Receipt rows, and the child Specs' and the
+// landmark's own evidence rows - matches when it names the reviewer. The
+// landmark's own earlier verdict rows are excluded, so a reviewer may review
+// again after corrective work. A name matches as a whole token, ignoring
+// case: bounded by anything other than a letter, digit, `_` or `-`.
+const NO_PARTICIPANT = /^(?:|unassigned|none|-|n\/a)$/i;
+
+function landmarkParticipation(parent, children, reviewer) {
+  const hits = [];
+  const named = (participant, where) => {
+    const name = String(participant ?? '').trim();
+    if (NO_PARTICIPANT.test(name)) return;
+    if (namesContext(reviewer, name) || namesContext(name, reviewer)) hits.push(`${where} names ${name}`);
+  };
+  const claimants = (text, where) => {
+    for (const match of String(text ?? '').matchAll(/\bclaimed by (\S+)/gi)) named(match[1].replace(/[.,;:)]+$/, ''), where);
+  };
+  const mentioned = (text, where) => {
+    if (namesContext(text, reviewer)) hits.push(`${where} names ${reviewer}`);
+  };
+  const receipts = (records, where) => {
+    for (const record of records) {
+      for (const row of readReceipt(record.content, record.filePath)) {
+        mentioned([row.branch, row.testsRun, row.docsTouched, row.remainingGap].join(' | '), `${where}/${record.id} Receipt run ${row.run}`);
+      }
+    }
+  };
+
+  named(parent.owner, `${parent.id} Owner`);
+  claimants(parent.latestEvent, `${parent.id} Latest event`);
+  parseEvidence(parent.content).rows.forEach(({ cells }, index) => {
+    if (cells[1] === 'review') return;
+    claimants(cells.join(' | '), `${parent.id} evidence row ${index + 1}`);
+    mentioned(cells.join(' | '), `${parent.id} evidence row ${index + 1}`);
+  });
+  receipts([...parent.records, ...parent.retiredRecords], parent.id);
+  for (const spec of children) {
+    named(spec.owner, `${spec.id} Owner`);
+    claimants(spec.latestEvent, `${spec.id} Latest event`);
+    parseEvidence(spec.content).rows.forEach(({ cells }, index) => {
+      if (cells[1] === 'owner-qa') return;
+      if (cells[1] === 'review' && VERDICT_PATTERN.test(cells[2] ?? '')) {
+        named(cells[4], `${spec.id} review verdict row ${index + 1}`);
+        return;
+      }
+      claimants(cells.join(' | '), `${spec.id} evidence row ${index + 1}`);
+      mentioned(cells.join(' | '), `${spec.id} evidence row ${index + 1}`);
+    });
+    receipts([...(spec.records ?? []), ...(spec.retiredRecords ?? [])], spec.id);
+  }
+  return [...new Set(hits)];
+}
+
+function namesContext(text, name) {
+  const haystack = String(text ?? '').toLowerCase();
+  const needle = String(name ?? '').trim().toLowerCase();
+  if (!needle) return false;
+  for (let index = haystack.indexOf(needle); index >= 0; index = haystack.indexOf(needle, index + 1)) {
+    const before = index === 0 ? '' : haystack[index - 1];
+    const after = haystack[index + needle.length] ?? '';
+    if (!/[a-z0-9_-]/.test(before) && !/[a-z0-9_-]/.test(after)) return true;
+  }
+  return false;
+}
+
+// The plain `report LMK-###` form, a rendering of the same object `--json`
+// prints: the landmark line, its digest and candidate, its latest verdict,
+// the reached checks, each child Spec and direct Task, and the gaps.
+export function formatLandmarkReport(report) {
+  const lines = [];
+  lines.push(`${report.id} - ${report.title} [${report.status}]`);
+  lines.push(`Landmark digest: ${report.landmarkDigest.slice(0, 12)}`);
+  const c = report.candidate;
+  lines.push(c
+    ? `Candidate ${c.sha} (resolved ${c.resolvedSha ?? 'none'}) exists=${c.existsInRepository} matchesHead=${c.matchesHead} matchesContent=${c.matchesContent} (head ${c.headSha ?? 'none'}; committed digest ${c.contentDigest ?? 'unavailable'}${c.contentError ? `; ${c.contentError}` : ''})`
+    : 'Candidate: none named');
+  const v = report.latestVerdict;
+  lines.push(v ? `Verdict: ${v.result} at ${v.candidate} by ${v.reviewer} (${v.date}) [digest ${v.digest}]` : 'Verdict: none for this content');
+  lines.push('Reached checks:');
+  for (const check of report.successChecks) lines.push(`  [${check.done ? 'x' : ' '}] ${check.text}`);
+  const state = (item) => `${item.open ? ' (open)' : ''}${item.retired ? ' [retired]' : ''}`;
+  lines.push('Child Specs:');
+  if (report.childSpecs.length === 0) lines.push('  none');
+  for (const child of report.childSpecs) {
+    const verdict = child.latestVerdict ? `${child.latestVerdict.result} by ${child.latestVerdict.reviewer}` : 'none';
+    lines.push(`  ${child.id} ${child.status}${state(child)} verdict ${verdict}`);
+  }
+  lines.push('Direct Tasks:');
+  if (report.directTasks.length === 0) lines.push('  none');
+  for (const task of report.directTasks) lines.push(`  ${task.id} ${task.status}${state(task)}`);
+  lines.push(`Decision records: ${report.decisionRecords.length}`);
   lines.push(`Gaps (${report.gaps.length}):`);
   for (const gap of report.gaps) lines.push(`  - ${gap}`);
   return lines.join('\n');

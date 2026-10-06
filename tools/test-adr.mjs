@@ -1257,6 +1257,28 @@ test('supersede archives an accepted ADR and DDR under exactly one accepted succ
   }
 });
 
+// S-003Z TK-008E: a Spec nested in its landmark's folder, its Task record and
+// the landmark's own LANDMARK.md are live reference surfaces of a decision
+// move, read through the same Spec homes the Spec tools use.
+test('supersede repairs a live link in a Spec nested under a landmark, its Task record and the LANDMARK.md', () => {
+  const dir = lifecycleRoom();
+  try {
+    const landmark = path.join(dir, 'workbench', 'landmarks', 'LMK-0AA-direction');
+    const nested = path.join(landmark, 'specs', 'S-0AB-nested');
+    fs.mkdirSync(path.join(nested, 'tasks', 'TK-0AC'), { recursive: true });
+    fs.writeFileSync(path.join(landmark, 'LANDMARK.md'), '# LMK-0AA - Direction\n\n**Landmark ID:** LMK-0AA\n\n## Decision Records\n\n- [destination choice](../../docs/ddr/000A-destination-choice.md)\n');
+    fs.writeFileSync(path.join(nested, 'SPEC.md'), '# S-0AB - Nested\n\nLive link: [destination choice](../../../../docs/ddr/000A-destination-choice.md).\n');
+    fs.writeFileSync(path.join(nested, 'tasks', 'TK-0AC', 'TASK.md'), '# TK-0AC - Nested slice\n\nSee [destination choice](../../../../../../docs/ddr/000A-destination-choice.md).\n');
+    gitCommitAll(dir, 'Seed a nested Spec');
+    supersedeRecord(dir, 'DDR-000A', 'DDR-000B');
+    assert.match(fs.readFileSync(path.join(nested, 'SPEC.md'), 'utf8'), /\(\.\.\/\.\.\/\.\.\/\.\.\/docs\/ddr\/archive\/000A-destination-choice\.md\)/, 'the nested Spec link is repaired');
+    assert.match(fs.readFileSync(path.join(nested, 'tasks', 'TK-0AC', 'TASK.md'), 'utf8'), /\(\.\.\/\.\.\/\.\.\/\.\.\/\.\.\/\.\.\/docs\/ddr\/archive\/000A-destination-choice\.md\)/, 'the nested Task record link is repaired');
+    assert.match(fs.readFileSync(path.join(landmark, 'LANDMARK.md'), 'utf8'), /\(\.\.\/\.\.\/docs\/ddr\/archive\/000A-destination-choice\.md\)/, 'the landmark\'s Decision Records link is repaired');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test('deprecate archives an accepted record with its stated reason and no successor', () => {
   const dir = lifecycleRoom();
   try {
