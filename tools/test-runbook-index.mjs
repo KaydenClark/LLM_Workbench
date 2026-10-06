@@ -719,6 +719,45 @@ const FAMILIES = [
       keeps: [/does not substitute for the\s+Workbench self-drift check/, /S-00K-workbench-self-drift-check/, /workbench-room-checks\/SKILL\.md#workbench-self-drift-check/],
       moved: [/bounded manual semantic check in\s+RUNBOOK/]
     }]
+  },
+  {
+    // S-004L TK-008M: harness improvement is one loop, the improve-harness
+    // core skill. The evaluation row in both Runbooks points at the loop; the
+    // comparison tooling (claims, design, commands, automated gate, run
+    // outcomes) stays on the workbench-evaluation maintainer skill, whose
+    // TK-005K rows above keep holding.
+    task: 'S-004L TK-008M the evaluation row points at the one loop',
+    rows: [
+      {
+        operation: 'Evaluate a harness change', pointer: 'workbench/skills/improve-harness/SKILL.md#improve-harness',
+        section: 'Evaluation And Benchmarking', stub: false,
+        carries: [
+          'baseline -> earliest gap -> smallest owning intervention',
+          "Comparative, causal or longitudinal claims need the room's evaluation procedures, not this loop."
+        ]
+      }
+    ],
+    agents: []
+  },
+  {
+    // S-004L TK-008M, root only: feedback intake and the manual report point at
+    // the loop's feedback entry and result record. The maintainer harvest and
+    // report steps keep their workbench-evaluation pointers (TK-005K above).
+    task: 'S-004L TK-008M harness feedback and report rows point at the one loop',
+    only: 'root',
+    rows: [
+      {
+        operation: 'Take in harness feedback', pointer: 'workbench/skills/improve-harness/SKILL.md#taking-in-feedback',
+        section: { root: 'Harness Feedback Loop', template: null }, stub: { root: true, template: false },
+        carries: ["Harness feedback is the loop's entry.", 'write the lesson back into that record']
+      },
+      {
+        operation: 'Write a manual harness feedback report', pointer: 'workbench/skills/improve-harness/SKILL.md#result-record',
+        section: { root: 'Manual Harness Feedback Reports', template: null }, stub: { root: true, template: false },
+        carries: ['in the report format that lane declares when it has one', 'Decision: retain | revise | remove']
+      }
+    ],
+    agents: []
   }
 ];
 
@@ -779,6 +818,30 @@ for (const family of FAMILIES) {
     }
   });
 }
+
+// S-004L TK-008M: the workbench-evaluation Harness Feedback Loop and Manual
+// Harness Feedback Reports sections keep only this repository's maintainer
+// harvest and report steps, behind a pointer to the improve-harness loop.
+test('S-004L TK-008M: workbench-evaluation keeps its harvest and report steps behind a pointer to the loop', () => {
+  const skillFile = 'workbench/skills/workbench-evaluation/SKILL.md';
+  const sections = headings(read(skillFile));
+  for (const { title, pointer, keeps } of [
+    {
+      title: 'Harness Feedback Loop', pointer: '../improve-harness/SKILL.md#taking-in-feedback',
+      keeps: ['This repo is the harvest destination.', 'Collect feedback rows from downstream projects', 'as a `c3_candidate`', 'Ship it as a new harness version']
+    },
+    {
+      title: 'Manual Harness Feedback Reports', pointer: '../improve-harness/SKILL.md#result-record',
+      keeps: ['Run this workflow after a setup-only Round One check succeeds.', 'Write `REPORT-topic-date.md` in the declared feedback lane using its `REPORT_FORMAT.md`', 'A report is not a work assignment.']
+    }
+  ]) {
+    const section = sections.find((heading) => heading.title === title);
+    assert.ok(section, `${skillFile}: "${title}" survives`);
+    assert.ok(links(section.body).includes(pointer), `${skillFile} ${title} points at the loop: ${pointer}`);
+    const body = normalize(section.body);
+    for (const phrase of keeps) assert.ok(body.includes(normalize(phrase)), `${skillFile} ${title} keeps the maintainer step: ${phrase}`);
+  }
+});
 
 // S-004C TK-005J: the claim-age diagnostic and the amendment-first decision
 // rule left Evidence And Continuation Practices for the skills that carry
