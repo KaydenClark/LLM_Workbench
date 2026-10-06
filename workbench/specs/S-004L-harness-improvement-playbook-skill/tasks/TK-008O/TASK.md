@@ -28,9 +28,9 @@ in this Task.
 
 ## Acceptance
 
-- [ ] The fresh context found the skill through the index and produced a
+- [x] The fresh context found the skill through the index and produced a
       result record with all six steps and the job contract.
-- [ ] The Auditor named each step's artifact in the room and every gap found.
+- [x] The Auditor named each step's artifact in the room and every gap found.
 
 ## Boundaries
 

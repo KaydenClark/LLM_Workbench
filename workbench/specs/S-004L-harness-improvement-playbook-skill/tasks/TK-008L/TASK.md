@@ -36,11 +36,11 @@ version gains it.
 
 ## Acceptance
 
-- [ ] The skill ships in the lane with six named loop steps, each with a
+- [x] The skill ships in the lane with six named loop steps, each with a
       checkable artifact, and a result-record shape.
-- [ ] The core catalog, every count statement, the manifest policy and the
+- [x] The core catalog, every count statement, the manifest policy and the
       layout catalog agree on 28 skills; the closed-bundle checks pass.
-- [ ] The update route installs the skill into a room that lacks it without
+- [x] The update route installs the skill into a room that lacks it without
       touching the room's own skill.
 
 ## Boundaries

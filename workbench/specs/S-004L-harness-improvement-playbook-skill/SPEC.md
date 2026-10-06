@@ -8,8 +8,8 @@
 **Updated:** 2026-10-06
 **Catalog description:** Ship one improve-one-harnessed-job playbook skill that runs the baseline-to-rerun loop, point the Runbook's harness feedback and evaluation rows at it, and retire the host-installed harness-review family in its favor.
 **Blockers:** none
-**Latest event:** TK-008P closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** All five Tasks closed (TK-008L, TK-008M, TK-008N, TK-008O, TK-008P); whole-Spec QA assembled for separate Director review.
+**Next gate:** Separate-context Director review of the assembled candidate (`report S-004L --candidate SHA`, then `verdict`); then owner Human QA. No approval is claimed.
 
 ## Outcome
 
@@ -21,7 +21,7 @@ The owner (2026-10-05): "I feel like the Playbook is what I was trying to have t
 
 ## Current Verified State
 
-At integration `ec65203d` (2026-10-05): the tracked skills lane holds no `harness-*` skill; its declared maintainer skills are `workbench-release`, `workbench-room-checks` and `workbench-evaluation`. The family lives only in the owner's host skills root: `harness-feedback-review`, which composes fourteen `harness-review-*` stage skills (scope, canon, grounding, actuality, reconnaissance, map gaps, classify causes, meta risks, diagnosis, actions, disposition, report, feedback lifecycle, assay follow-up). The repository names none of them; its Runbook index rows under Evaluation And Benchmarking, Harness Feedback Loop, Automated Feedback Gate and Manual Harness Feedback Reports point at the `workbench-evaluation` maintainer skill, which carries those procedures, and the feedback reports live in `workbench/feedback/`. No tracked skill carries the six-step baseline-to-rerun loop as one procedure. No implementation or agent-outcome proof for this capability is claimed by this Map record.
+At integration `ec65203d` (2026-10-05): the tracked skills lane holds no `harness-*` skill; its declared maintainer skills are `workbench-release`, `workbench-room-checks` and `workbench-evaluation`. The family lives only in the owner's host skills root: `harness-feedback-review`, which composes fourteen `harness-review-*` stage skills (scope, canon, grounding, actuality, reconnaissance, map gaps, classify causes, meta risks, diagnosis, actions, disposition, report, feedback lifecycle, assay follow-up). The repository names none of them; its Runbook index rows under Evaluation And Benchmarking, Harness Feedback Loop, Automated Feedback Gate and Manual Harness Feedback Reports point at the `workbench-evaluation` maintainer skill, which carries those procedures, and the feedback reports live in `workbench/feedback/`. No tracked skill carries the six-step baseline-to-rerun loop as one procedure. No implementation or agent-outcome proof for this capability is claimed by this Map record. At assembly (2026-10-06) the delivered state is the Completion Result below; this paragraph stays as the Map-time record.
 
 ## Desired Behavior
 
@@ -62,11 +62,11 @@ What the one skill keeps from the family, decided at Plan from reading `harness-
 
 ## Acceptance Criteria
 
-- [ ] The one skill exists in the lane, its loop has six named steps each with a checkable artifact, and a scenario in a fixture room runs it end to end.
-- [ ] The one skill is in the catalog, the install receipt and the Template, the closed-bundle checks pass, and the Spec records the host family as retired in its favor.
-- [ ] The Runbook's harness feedback and evaluation rows point at the one skill, and the Wiki has one validated page for it.
-- [ ] Updating a room installs the one skill without touching the room's own skills.
-- [ ] The full suite passes on the committed candidate; named verification and remaining limitations are recorded without claiming owner approval.
+- [x] The one skill exists in the lane, its loop has six named steps each with a checkable artifact, and a scenario in a fixture room runs it end to end.
+- [x] The one skill is in the catalog, the install receipt and the Template, the closed-bundle checks pass, and the Spec records the host family as retired in its favor.
+- [x] The Runbook's harness feedback and evaluation rows point at the one skill, and the Wiki has one validated page for it.
+- [x] Updating a room installs the one skill without touching the room's own skills.
+- [x] The full suite passes on the committed candidate; named verification and remaining limitations are recorded without claiming owner approval.
 
 ## Testing Seams
 
@@ -93,10 +93,31 @@ The Runbook rows, one Wiki skill page, the lineage page's pointer to the skill, 
 | 2026-10-06 | TK-008P | Corrective Task cut from the TK-008O fixture-room scenario (in progress): the skill's Taking In Feedback wording contradicts the append-only feedback record and the Feedback Dispositions set, step 5 covers only conversational hidden help, and step 6 has no reading for a test-without run that also closes the job. TK-008P takes the first identifier of the lane's reserved block (TK-008P to TK-008S), unused on every origin tip and open PR. | Scenario evidence: fixture room scratchpad/s004l/fixture/tally, result record workbench/feedback/runs/2026-10-06-add-lines-flag-result.md there; the scenario worker's hand-back items 1, 4, 11 and 12. | This Spec; TK-008P TASK.md. | TK-008P implementation; TK-008O close after the scenario decision. |
 | 2026-10-06 | TK-008O | Task closed | Fresh-context fixture-room scenario: the worker found improve-harness through the Runbook operations index row Evaluate a harness change and produced a result record with the job contract and all six steps; fresh rerun and test-without runs by fresh workers; Auditor (Dispatcher in the Auditor stance) named each step's artifact in the room and every gap (TASK.md Scenario Result); no source change in this Task | TK-008O TASK.md Scenario Result | Skill wording findings carried by TK-008P; other-owner findings routed in the Completion Result; one pass claims no agent-outcome improvement |
 | 2026-10-06 | TK-008P | Task closed | PR #395 merged at 50f19e64 (candidate 9418092e, contained); red 98fae067; full suite 52/52 on committed cd5b0ec6; test-skill-catalog, test-skills-lane, test-runbook-index, test-wiki, test-skill-inspection ok; guardrails 73/100 before and after; self-drift 11 findings pre/post, same set | improve-harness SKILL.md steps 4, 5, 6 and Taking In Feedback; workbench/wiki/skill-improve-harness.md | Corrected text not rerun by a fresh context; pins prove the text only |
+| 2026-10-06 | none | Whole-Spec QA: all five Tasks closed; acceptance checked against Actuality; Completion Result written with routed gaps; the stale Harness Feedback Review landmark page repaired. | Bounded Wiki lint: wiki validate ok on the whole Wiki; pages naming the family, the feedback loop or the skill (router, lineage, skills-draft index, maintainer-skills, skill-improve-harness, the Harness Feedback Review landmark page; the archive page is history) read against each other, only the landmark page was stale; test-wiki and test-landmark-wiki ok. Guardrails 73/100 at assembly, unchanged from the TK-008L baseline. Full suite, self-drift, render, doctor and the report digest on the committed assembled candidate are in the Dispatcher hand-back. | workbench/wiki/design-concepts/landmark-harness-feedback-review.md; this Spec and the five Task records. | Separate-context Director review, owner Human QA and the routed gaps in the Completion Result. |
 
 ## Completion Result
 
-Pending.
+Delivered on integration through Task PRs #372 (TK-008L), #389 (TK-008M), #388 (TK-008N) and #395 (TK-008P), each merged on its two merge answers and a green full suite on its candidate, with state PRs #373, #387, #391, #393 and #394 carrying the records and the TK-008O scenario:
+
+- `workbench/skills/improve-harness/SKILL.md` carries the loop in six named steps (observe the baseline, locate the earliest gap, state the smallest owning intervention, verify through the target's native checks, rerun on a fresh trajectory, retain, revise or remove), each naming its artifact, with a job contract, a result record and feedback intake; it keeps the read-only posture until a change is authorized, the Governance Plane reading of claims, the rule that one trajectory never establishes a worker limitation, and the append-only feedback record (TK-008L, corrected by TK-008P).
+- It is the 28th skill of the closed core bundle: the layout catalog, the manifest policy, the skills catalog and every count statement (README, LEXICON, templates/GENESIS, workbench-room-checks, the genesis Wiki page) agree, the install receipt carries its hash, and the explicit skills update lays it into a room without touching the room's own skill (TK-008L).
+- The Runbook rows "Evaluate a harness change", "Take in harness feedback" and "Write a manual harness feedback report", and the template row "Evaluate a harness change", point at the skill first; `workbench-evaluation` keeps only this repository's harvest and report steps around the loop (TK-008M).
+- The Wiki has one validated page, [Improve harness](../../wiki/skill-improve-harness.md), naming the family as history; the lineage page, the router, the skills-draft index, the maintainer-skills page and the Harness Feedback Review landmark page agree (TK-008N, TK-008M, Spec QA).
+- A fresh context in a fixture room found the skill through the Runbook operations index and ran all six steps end to end, including a fresh rerun and a test-without run; the Auditor named each step's artifact and every gap (TK-008O). The three skill-wording defects it found were corrected under TK-008P.
+- The host-installed harness-review family (`harness-feedback-review` and its fourteen `harness-review-*` stages) is retired in favor of `improve-harness`; its removal from the owner's host skills root is the owner's step and is not claimed done.
+
+Routed gaps (not fixed here; each names its owner):
+
+- [harness feedback review skill family alignment (S-003K)](../S-003K-harness-feedback-review-skill-family-alignment/SPEC.md) is overtaken by the playbook decision and needs supersession by this Spec: Director.
+- Version label and the reference Template upgrade for the 28-skill bundle: the [release owner](../S-00O-workbench-v4-0-0-release/SPEC.md).
+- The template Runbook's "Return harness feedback" and "Write a manual harness feedback report" rows still point at the template's own sections, and the template report format (written for the setup-only Round One) only partly fits a loop result record: a later feedback-format Spec under the Continuous Cleanup landmark (see Remaining Limitations).
+- `doctor` passes a room whose Runbook verification commands are unfilled template placeholders (the scenario's baseline gap): the diagnostics owner.
+- The template Runbook's Workbench Evaluation Commands name producer-only `tools/` and `evals/`: the template Runbook's owner.
+- The template feedback legend does not say whether a room-local change merged to integration is `landed`: the feedback-format owner.
+- `tools/test-wiki.mjs` still describes the fifteen retired family rows of the skills-draft index as planned articles: the Wiki tooling owner.
+- The Harness Feedback Review landmark's question cards were not revised for the retirement; only its Wiki page was: the landmark's card owner.
+
+No agent-outcome improvement is claimed: the scenario is one pass of one job, and the TK-008P wording has not been rerun by a fresh context. No owner approval is claimed; the separate-context Spec review and owner Human QA remain.
 
 ## Remaining Limitations Or Follow-Up Specs
 

@@ -34,13 +34,13 @@ the job. The skill states each correctly in the Workbench's own words.
 
 ## Acceptance
 
-- [ ] Taking In Feedback appends instead of editing, names the original row,
+- [x] Taking In Feedback appends instead of editing, names the original row,
       and uses the room's disposition set, recorded in the owning Spec when the
       room has one.
-- [ ] Step 5 requires the isolated starting state to exclude later history and
+- [x] Step 5 requires the isolated starting state to exclude later history and
       the rerun record to name every room source that could have supplied the
       behavior.
-- [ ] Step 6 says a test-without run that also closes the job shows no
+- [x] Step 6 says a test-without run that also closes the job shows no
       agent-outcome improvement from the intervention, and how the decision
       follows.
 

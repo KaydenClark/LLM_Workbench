@@ -27,9 +27,9 @@ the owner that retired them.
 
 ## Acceptance
 
-- [ ] The page validates, is routed, names the family as history and links
+- [x] The page validates, is routed, names the family as history and links
       the skill source, this Spec and the playbook decision.
-- [ ] The lineage page's playbook sentence links the skill.
+- [x] The lineage page's playbook sentence links the skill.
 
 ## Boundaries
 
