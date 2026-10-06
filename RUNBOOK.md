@@ -53,11 +53,13 @@ Contract change.
 | Correct a failed review | A verdict or owner finding failed and its findings return to the still-open Spec. | [dispatcher](workbench/skills/dispatcher/SKILL.md#assembled-review-and-corrective-return) |
 | Record owner Human QA and complete | The owner approves delivered work, or main containment must be proven before `complete`. | [director](workbench/skills/director/SKILL.md#owner-human-qa-and-main-before-complete); closure rules: [director](workbench/skills/director/SKILL.md#owner-closure-and-reconciliation) |
 | Capture, retire or recover a completed Spec | After `complete`: feature capture, retirement, discard or recovery. | [director](workbench/skills/director/SKILL.md#documentation-feature-capture-retirement-and-recovery); this room's examples: [Documentation: feature capture, retirement and recovery](#documentation-feature-capture-retirement-and-recovery) |
+| Deliver a landmark through its lifecycle | You author, assign, nest a Spec or Task under, review, approve or retire a `LANDMARK.md`. | [Landmark Lifecycle](#landmark-lifecycle) |
+| Move a Spec into, out of or between landmarks | A Spec gains, changes or drops its parent landmark. | [Landmark Lifecycle](#landmark-lifecycle) |
 | Write or accept a decision record | A decision record (ADR or DDR) is proposed, accepted, superseded, deprecated, read, linked or validated. | [to-docs](workbench/skills/to-docs/SKILL.md#decision-records) |
 | Prove the composed round trip | Full verification runs, or the composed workflow changed. | [workbench-release](workbench/skills/workbench-release/SKILL.md#composed-round-trip) |
 | Check the portability and privacy matrix | A release matrix row or its privacy check changed. | [workbench-release](workbench/skills/workbench-release/SKILL.md#portability-and-privacy-matrix) |
 | Prove cross-provider resume | A release gate needs proof that another provider resumes from a clean clone. | [workbench-release](workbench/skills/workbench-release/SKILL.md#cross-provider-resume-proof) |
-| Allocate a visible identifier | You need a new Spec, Task, note or other visible identifier. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#visible-identifiers) |
+| Allocate a visible identifier | You need a new Spec, Task, landmark, note or other visible identifier. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#visible-identifiers) |
 | Answer or process the Grill Board | The owner answers pending items (Spec gates, decisions, cards, decision-record texts) as a package, or an agent carries his saved answers into their owners and marks them applied. | [Grill Board](workbench/grill-board/README.md#grill-board) |
 | Use the Landmark Tracker | Concept understanding (DQCs, landmarks) changes, or the Tracker view is needed. | [notepad](workbench/skills/notepad/SKILL.md#landmark-tracker-accepted-design-and-available-operations) |
 | Keep a JSON notepad | Meaningful work needs a local note created, resumed, appended, trimmed or cleaned up. | [notepad](workbench/skills/notepad/SKILL.md#runtime-reference) |
@@ -72,17 +74,17 @@ Contract change.
 | Read a diagnostic and its blocking effect | A runtime tool reports a finding and you need its severity and what it blocks. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#diagnostics-and-blocking-effects) |
 | Use the socket contract registry | Work touches the Foundry socket contract registry. | [workbench-room-checks](workbench/skills/workbench-room-checks/SKILL.md#socket-contract-registry) |
 | Hold test coverage | You add or change tests, or judge whether coverage is enough. | [implement](workbench/skills/implement/SKILL.md#test-coverage-policy); this room's policy for the evaluator and trial tooling: [Test Coverage Policy](#test-coverage-policy) |
-| Evaluate a harness change | You must show that a harness change is an improvement. | [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#workbench-evaluation) |
+| Evaluate a harness change | You must show that a harness change is an improvement. | [improve-harness](workbench/skills/improve-harness/SKILL.md#improve-harness); comparative claims and trials: [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#workbench-evaluation) |
 | Run the guardrail audit | A harness change needs its guardrail baseline and after-score. | [implement](workbench/skills/implement/SKILL.md#benchmark-driven-improvement); this room's audit: [Guardrail North-Star Audit](#guardrail-north-star-audit) |
 | Pick the claims to test | An evaluation must name the claim it tests. | [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#claims-to-test) |
 | Design an evaluation | You set up task-outcome scoring or trials. | [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#evaluation-design) |
 | Run the evaluation commands | You run the static rubric or the trial framework. | [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#commands) |
-| Take in harness feedback | Feedback arrives from a downstream room. | [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#harness-feedback-loop) |
+| Take in harness feedback | Feedback arrives from a downstream room. | [improve-harness](workbench/skills/improve-harness/SKILL.md#taking-in-feedback); this repository's harvest steps: [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#harness-feedback-loop) |
 | Run the automated feedback gate | Scheduled feedback automation runs or is configured. | [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#automated-feedback-gate) |
 | Record an automation run outcome | A scheduled run finished and its outcome must be recorded. | [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#automation-run-outcomes) |
 | Branch and open a pull request | You create a task branch or open a PR into integration, or need this room's Git commands. | [implement](workbench/skills/implement/SKILL.md#version-control-procedures); this room's commands: [Version-Control Procedures](#version-control-procedures) |
 | Merge, prove containment and clean up a branch | A Task's merge answers are validated, or an assembled Spec candidate's Verify review passed: merge, prove integration contains it and delete the merged branch. | [implement](workbench/skills/implement/SKILL.md#branch-completion); this room's closeout commands: [Version-Control Procedures](#version-control-procedures) |
-| Write a manual harness feedback report | A setup-only Round One check succeeded and an assessment is assigned. | [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#manual-harness-feedback-reports) |
+| Write a manual harness feedback report | A setup-only Round One check succeeded and an assessment is assigned. | [improve-harness](workbench/skills/improve-harness/SKILL.md#result-record); this repository's report steps: [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#manual-harness-feedback-reports) |
 | Troubleshoot a known failure | A command fails with a symptom listed there. | [Troubleshooting](#troubleshooting) |
 | Recover or roll back | A change fails and its touched files must be restored or reverted. | [implement](workbench/skills/implement/SKILL.md#recovery-and-rollback); this room's data and backup branches: [Recovery And Rollback](#recovery-and-rollback) |
 | Record operational proof | A command changed durable project state. | [Operational Proof](#operational-proof) |
@@ -293,6 +295,7 @@ node tools/test-controls-vocabulary-sweep.mjs
 node tools/test-carrier-landing.mjs
 node tools/test-runbook-index.mjs
 node tools/test-spec-report.mjs
+node tools/test-landmark-wiki.mjs
 node tools/test-self-drift.mjs
 node tools/test-feedback-inventory.mjs
 node tools/test-grilling-ledger.mjs
@@ -499,6 +502,64 @@ Allocate and widen the visible identifiers of Specs, Tasks, decision records
 and notepads through the procedure in the
 [`workbench-runtime` skill](workbench/skills/workbench-runtime/SKILL.md#visible-identifiers).
 
+### Landmark Lifecycle
+
+A landmark is a `LANDMARK.md` artifact one size above a Spec
+([ADR-000U](workbench/docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md)):
+its folder `workbench/landmarks/LMK-###-slug/` holds `LANDMARK.md`, its child
+Specs in `specs/` and its direct Tasks in `tasks/`, each with a `retired/`
+lifecycle folder. Copy `templates/LANDMARK.md`; `doctor` reports a broken
+artifact as `malformed-landmark` and a misnamed folder as `unstable-path`.
+Examples name LMK-001, S-001 and TK-001; substitute the actual IDs and quoted
+values. The [Landmarks article](workbench/wiki/design-concepts/landmarks-one-size-above-specs.md)
+explains the model.
+
+```bash
+node workbench/tools/spec-workbench.mjs next-id --prefix LMK --json
+node workbench/tools/spec-workbench.mjs move-spec S-001 --landmark LMK-001
+node workbench/tools/spec-workbench.mjs move-spec S-001 --landmark none
+node workbench/tools/spec-workbench.mjs claim LMK-001 --agent NAME
+node workbench/tools/spec-workbench.mjs show LMK-001
+node workbench/tools/spec-workbench.mjs receipt LMK-001 --task TK-001 --tests "..." --docs "..." --remaining-gap "..."
+node workbench/tools/spec-workbench.mjs close LMK-001 --proof "..." --docs "..." --remaining-gap "..."
+node workbench/tools/spec-workbench.mjs gate --task TK-001 --landmark LMK-001
+node workbench/tools/spec-workbench.mjs move-task LMK-001 --task TK-001 --to retired
+node workbench/tools/spec-workbench.mjs report LMK-001 --candidate SHA
+node workbench/tools/spec-workbench.mjs verify LMK-001
+node workbench/tools/spec-workbench.mjs verdict LMK-001 --candidate SHA --digest DIGEST --result pass|fail --findings "..." --reviewer "..."
+node workbench/tools/spec-workbench.mjs approve LMK-001 --candidate INTEGRATION_SHA --digest DIGEST --owner "..."
+node workbench/tools/spec-workbench.mjs retire-landmark LMK-001 --wiki workbench/wiki/design-concepts/landmark-durable-plans.md
+```
+
+- `move-spec --landmark LMK-###|none` moves an active-roster Spec into a
+  landmark, between landmarks or back to `workbench/specs/` through the
+  link-safe move: every live reference is rewritten, historical ones counted,
+  and the moved record's links to unmoved files recomputed. It never combines
+  with `--to`, and it does not edit the landmark's Child Specs list.
+- A Task directly under a landmark names `**Landmark ID:**` in place of
+  `**Spec ID:**`. `next` and `claim LMK-###` offer it only while the landmark is
+  `active` and its Owner is not `unassigned`; `close` appends to the landmark's
+  evidence log, and `gate --task --landmark` reports its Task PR under the same
+  exemption a Spec's Task PR uses.
+- `report`, `verify` and `verdict` on a landmark are the whole-landmark review:
+  `verify` refuses while a child Spec is neither complete nor retired or a
+  direct Task is not done; `verdict` refuses a reviewer who took part in the
+  landmark, including every agent a direct or child Task record lists under
+  `Claimed by` (each `claim` appends its agent there and refuses an agent name
+  with a comma or line break), answers a fail with corrective Tasks under the landmark without
+  touching a child Spec's gate, and sets the landmark `reached` on a pass with
+  every child closed and every reached check ticked.
+- `approve LMK-###` records only the owner's actual approval, bound to the
+  landmark's committed content; it records no owner finding.
+- `retire-landmark LMK-### --wiki PAGE` refuses by name until the landmark is
+  reached with no open child, a current pass verdict, a clean tree, the owner's
+  approval and a Landmark Wiki page in the Wiki lane whose `source_paths` names
+  the historical `LANDMARK.md` route; then it moves the whole folder to
+  `workbench/landmarks/retired/`, staged and uncommitted.
+
+A landmark-direct Task executes only under an assigned landmark until the
+Instruction Authority list in `AGENTS.md` names an assigned landmark.
+
 ### Landmark Tracker: accepted design and available operations
 
 The [Landmark Tracker Foundation specification](workbench/specs/S-01T-landmark-tracker-foundation/SPEC.md)
@@ -641,7 +702,10 @@ coverage rules follow the
 
 Use this section to prove whether a harness change is an improvement. The goal
 is evidence, not taste.
-The evaluation and feedback procedures are maintainer procedures of this
+Improving one harnessed job, from its baseline through a fresh rerun to a
+retain, revise or remove decision, follows the one loop in the
+[`improve-harness` skill](workbench/skills/improve-harness/SKILL.md#improve-harness).
+The evaluation and feedback procedures around that loop are maintainer procedures of this
 repository in the
 [`workbench-evaluation` skill](workbench/skills/workbench-evaluation/SKILL.md#workbench-evaluation);
 the guardrail audit follows.
@@ -686,7 +750,10 @@ The static rubric and trial framework commands: a maintainer procedure of this r
 
 ### Harness Feedback Loop
 
-Taking in harness feedback from downstream rooms: a maintainer procedure of this repository, in the
+Taking in harness feedback follows the
+[`improve-harness` skill](workbench/skills/improve-harness/SKILL.md#taking-in-feedback):
+a feedback row seeds one pass of its loop, and the lesson is written back into
+that record. Harvesting feedback from downstream rooms: a maintainer procedure of this repository, in the
 [`workbench-evaluation` skill](workbench/skills/workbench-evaluation/SKILL.md#harness-feedback-loop).
 
 ### Automated Feedback Gate
@@ -794,7 +861,10 @@ still requires the reviewed PR and remote containment read-back.
 
 ## Manual Harness Feedback Reports
 
-Writing a manual harness feedback report: a maintainer procedure of this repository, in the
+A manual harness feedback report is written in the feedback lane's declared
+report format, which the
+[`improve-harness` skill](workbench/skills/improve-harness/SKILL.md#result-record)
+result record also uses. Writing a manual harness feedback report: a maintainer procedure of this repository, in the
 [`workbench-evaluation` skill](workbench/skills/workbench-evaluation/SKILL.md#manual-harness-feedback-reports).
 
 ## Troubleshooting

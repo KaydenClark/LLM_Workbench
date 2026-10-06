@@ -867,6 +867,77 @@ assert.deepEqual(workbenchRuntimeSections, [...workbenchRuntimeSections].sort((a
 assert.doesNotMatch(workbenchRuntime, /workbench\/specs\/|node tools\/test-|\/Users\//,
   'workbench-runtime ships to every room: no repository Spec path, maintainer test command or private path');
 
+// S-004L TK-008L: `improve-harness` is the one core skill that carries harness
+// improvement for one observed job: baseline, earliest gap, smallest owning
+// intervention, native verification, fresh rerun, then retain, revise or
+// remove. It replaces the fifteen-skill host-installed harness-review family
+// (the playbook decision of 2026-10-05) and keeps what that family proved: the
+// read-only posture until a change is authorized, the Governance Plane reading
+// of each claim (Canon, Grounding, Actuality) and the append-only feedback
+// record as where the lesson is written. Its shape follows Ryan Lopopolo's
+// improve-harness playbook (CC BY 4.0), attributed and never copied. It joins
+// the workflow half of the bundle after workbench-runtime, ahead of the
+// coordination entries, so every coordination and stance slice stays exact. It
+// ships to every room, so it names no repository Spec path, no maintainer test
+// command and no private path.
+assert.ok(runtimeCoreSkills.includes('improve-harness'), 'improve-harness must be a declared core skill');
+assert.ok(!coordinationSkills.includes('improve-harness'), 'improve-harness is a workflow skill, not a coordination entry');
+assert.equal(runtimeCoreSkills.indexOf('improve-harness'), runtimeCoreSkills.indexOf('workbench-runtime') + 1,
+  'improve-harness follows workbench-runtime in the live bundle');
+const improveHarness = read('workbench/skills/improve-harness/SKILL.md');
+assert.match(improveHarness, /^name: improve-harness$/m, 'improve-harness must declare its skill name');
+const improveHarnessHeadings = ['## Purpose', '## Method', '## Obligations', '## Completion', '## Job Contract',
+  '## 1. Observe The Baseline', '## 2. Locate The Earliest Gap', '## 3. State The Smallest Owning Intervention',
+  "## 4. Verify Through The Target's Native Checks", '## 5. Rerun On A Fresh Trajectory', '## 6. Retain, Revise Or Remove',
+  '## Result Record', '## Taking In Feedback'];
+const improveHarnessSections = improveHarnessHeadings.map((heading) => improveHarness.indexOf(`\n${heading}\n`));
+assert.ok(improveHarnessSections.every((index) => index >= 0), 'improve-harness carries its contract sections, the job contract, the six loop steps, the result record and the feedback entry');
+assert.deepEqual(improveHarnessSections, [...improveHarnessSections].sort((a, b) => a - b),
+  'improve-harness states its contract, then the six steps in loop order');
+for (const [position, heading] of improveHarnessHeadings.entries()) {
+  if (!/^## \d\. /.test(heading)) continue;
+  const start = improveHarnessSections[position];
+  const end = improveHarnessSections[position + 1];
+  assert.match(improveHarness.slice(start, end), /\*\*Artifact:\*\* /, `${heading} names the checkable artifact the step leaves`);
+}
+for (const kept of ['read-only', 'Canon', 'Grounding', 'Actuality', 'append-only']) {
+  assert.ok(improveHarness.includes(kept), `improve-harness keeps the family's ${kept} discipline`);
+}
+assert.ok(improveHarness.includes('Lopopolo') && improveHarness.includes('CC BY 4.0'), 'improve-harness attributes the playbook its loop follows');
+assert.doesNotMatch(improveHarness, /workbench\/specs\/|node tools\/test-|\/Users\//,
+  'improve-harness ships to every room: no repository Spec path, maintainer test command or private path');
+
+// S-004L TK-008P: the fresh-context fixture-room scenario (TK-008O) found three
+// places where the skill misled a cold reader. A feedback record is
+// append-only, so the pass appends a new row naming the original row instead
+// of moving a row's status, using the room's disposition terms, recorded in
+// the owning Spec when the room keeps Specs. Hidden help can come from the
+// room's own files and later history, not only the conversation. A
+// test-without run that also closes the job shows the intervention is not what
+// closed it. Spec and Task records are conditional on the room keeping them.
+// Each section is read with its line wrapping collapsed, so a pinned phrase
+// survives a rewrap.
+const improveHarnessSection = (heading) => {
+  const position = improveHarnessHeadings.indexOf(heading);
+  return improveHarness.slice(improveHarnessSections[position], improveHarnessSections[position + 1]).replace(/\s+/g, ' ');
+};
+const takingInFeedback = improveHarnessSection('## Taking In Feedback');
+assert.doesNotMatch(takingInFeedback, /row moves from new to/,
+  'Taking In Feedback never moves an append-only row from one status to another');
+for (const phrase of ['appends a new row', 'names the original row', 'disposition', 'owning Spec when the room keeps']) {
+  assert.ok(takingInFeedback.includes(phrase), `Taking In Feedback appends a row that ${phrase}`);
+}
+assert.ok(improveHarnessSection("## 4. Verify Through The Target's Native Checks").includes('Spec and Task records when the room keeps them'),
+  'step 4 asks for Spec and Task records only when the room keeps them');
+const freshRerun = improveHarnessSection('## 5. Rerun On A Fresh Trajectory');
+for (const phrase of ['later history', 'tags', 'every room source']) {
+  assert.ok(freshRerun.includes(phrase), `step 5 accounts for hidden help in the room itself: ${phrase}`);
+}
+const retainReviseRemove = improveHarnessSection('## 6. Retain, Revise Or Remove');
+for (const phrase of ['test-without run', 'not what closed the job', 'no agent-outcome improvement', 'otherwise wrong or incomplete']) {
+  assert.ok(retainReviseRemove.includes(phrase), `step 6 says what a test-without run that closes the job means: ${phrase}`);
+}
+
 // S-00J TK-006, narrowed by the owner's 2026-10-05 rule: the reviewed unit is
 // the assembled Spec bound to a content digest - obtained with `report S-###
 // --candidate <sha>` and recorded with `verdict` at the Spec's Verify step.

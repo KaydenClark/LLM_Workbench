@@ -85,6 +85,7 @@ belong to their individual Specs as they are authored.
 - [To-tasks](skill-to-tasks.md) - cut an activated Spec into executable Tasks
 - [Adoption](skill-adoption.md) - bring an existing project into the Workbench once
 - [Genesis](skill-genesis.md) - start a new room from a founding prompt
+- [Improve harness](skill-improve-harness.md) - improve one harnessed job through one loop and keep only what earns its cost; the fifteen-skill harness-review family it replaces is its history
 - [Skills draft wiki](skills-draft/README.md) - the prototype collection and its article template for drafting each skill's connection findings; no draft article is written yet
 
 ## Planned And Optional Skill References
@@ -142,6 +143,10 @@ evidence log here.
 - [The Task Artifact And Its Lifecycle](design-concepts/task-artifact-and-lifecycle.md) - the durable owner: what a Task carries in and out, the derived board signal and why `Ticket` is retired as a live term
 - [S-00H - Task Artifact And Terminology Migration](../specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md) - the retired Spec that delivered the standalone `TASK.md`, kept reachable as history
 - [ADR-000H - A Task is a standalone artifact and Task replaces Ticket as the execution-slice term](../docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md) - the decision record for the Task artifact and the term
+
+## The LANDMARK.md Artifact
+
+- [Landmarks: The LANDMARK.md Artifact One Size Above A Spec](design-concepts/landmarks-one-size-above-specs.md) - what a `LANDMARK.md` holds, how Specs and Tasks nest under it, the link-safe move, the whole-landmark review and retirement into its Landmark Wiki page, installation and what is not delivered yet
 
 ## Decision Records
 

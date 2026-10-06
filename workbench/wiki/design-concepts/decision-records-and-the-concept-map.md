@@ -15,7 +15,7 @@ source_paths:
   - workbench/specs/S-003Z-landmark-md-artifact-and-lane-runtime/SPEC.md
 parent: none
 authorized_by: the owner's promotions of the 2026-10-01 and 2026-10-02 grillings
-last_verified: 2026-10-03
+last_verified: 2026-10-06
 ---
 
 # Decision Records and the Concept Map
@@ -65,8 +65,10 @@ a Spec with a much larger scope, saying which way the work goes and what
 success looks like. Landmarks and Specs are the map at two scales; Tasks are
 the steps taken on it. A Spec belongs to at most one landmark and a DDR to
 exactly one, or else to the Blueprint, so no record is pulled toward two
-destinations. Spec folders will nest inside their landmark's folder, so one
-link down the landmark, Spec and Task path carries every parent.
+destinations. Spec folders nest inside their landmark's folder, so one link
+down the landmark, Spec and Task path carries every parent
+([Landmarks: The LANDMARK.md Artifact One Size Above A Spec](landmarks-one-size-above-specs.md)
+explains the installed artifact).
 
 That link is most of what the owner calls the **Destination Packet**:
 everything an agent needs to work out the destination and direction of its
@@ -139,10 +141,10 @@ Spec; the [DDR register](../../docs/ddr/REGISTER.md) lists them. The rest of the
 splits three more ways: destination chunks that group several decisions become
 landmarks, explanations of durable models become design-concept articles, and
 what remains is one short page saying what the product is, who it serves, its
-promised outcomes and its non-goals. Landmarks as artifacts are not installed
-either; the planned
+promised outcomes and its non-goals. Landmarks as artifacts are installed: the
 [LANDMARK.md Artifact And Lane Runtime Spec (S-003Z)](../../specs/S-003Z-landmark-md-artifact-and-lane-runtime/SPEC.md)
-delivers them, and settles how a DDR records the one landmark it belongs to.
+delivered them to integration, and a landmark lists the decision records under
+it in its Decision Records section.
 
 ## Evidence and Sources
 
@@ -161,7 +163,7 @@ delivers them, and settles how a DDR records the one landmark it belongs to.
   when decision records, Destination Question Cards and Wiki pages are written.
 - [Decision Record Tooling Spec (S-003X)](../../specs/S-003X-decision-record-tooling/SPEC.md)
   and [LANDMARK.md Artifact And Lane Runtime Spec (S-003Z)](../../specs/S-003Z-landmark-md-artifact-and-lane-runtime/SPEC.md):
-  the delivered DDR tooling and the planned landmark artifacts.
+  the delivered DDR tooling and the delivered landmark artifacts.
 
 ## History
 
@@ -181,3 +183,4 @@ delivers them, and settles how a DDR records the one landmark it belongs to.
 - 2026-10-03: replaced the claim that no DDR exists with the first teardown DDRs.
 - 2026-10-03: aligned when a DDR is written with the workflow-verbs decision (at Map, through `to-docs`).
 - 2026-10-03: recorded that the Blueprint is now the four-part short page, from the Blueprint Short Page work.
+- 2026-10-06: recorded that landmarks as `LANDMARK.md` artifacts are installed, from the LANDMARK.md Artifact And Lane Runtime Spec (S-003Z), Task TK-008J (landmark templates and documentation).

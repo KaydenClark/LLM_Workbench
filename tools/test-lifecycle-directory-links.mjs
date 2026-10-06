@@ -11,13 +11,15 @@ const sourceOption = process.argv.indexOf('--source');
 const source = sourceOption < 0
   ? path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
   : path.resolve(process.argv[sourceOption + 1]);
-const { render, moveSpecDirectory, moveTaskRecord, scanReferences } = await import(
+const { render, moveSpecDirectory, moveSpecToLandmark, moveTaskRecord, scanReferences } = await import(
   pathToFileURL(path.join(source, 'workbench/tools/spec-workbench.mjs')));
 const version = JSON.parse(fs.readFileSync(path.join(source, 'workbench/manifest.json'), 'utf8')).workbenchVersion;
 
 const kindOption = process.argv.indexOf('--kind');
-const kinds = kindOption < 0 ? ['spec', 'task'] : [process.argv[kindOption + 1]];
-assert.ok(kinds.every(kind => ['spec', 'task'].includes(kind)), '--kind must be spec or task');
+// S-003Z TK-008F: `landmark` moves an active Spec under a landmark with
+// `move-spec --landmark`, the same link-safe move retirement uses.
+const kinds = kindOption < 0 ? ['spec', 'task', 'landmark'] : [process.argv[kindOption + 1]];
+assert.ok(kinds.every(kind => ['spec', 'task', 'landmark'].includes(kind)), '--kind must be spec, task or landmark');
 for (const kind of kinds) {
   const room = fs.mkdtempSync(path.join(os.tmpdir(), 'lifecycle-directory-links-'));
   const aliases = fs.mkdtempSync(path.join(os.tmpdir(), 'lifecycle-directory-aliases-'));
@@ -43,9 +45,11 @@ for (const kind of kinds) {
     write('README.md', '# Directory link fixture\n');
     const spec = 'workbench/specs/S-616-directory-links';
     const task = `${spec}/tasks/TK-001`;
-    const oldDir = kind === 'spec' ? spec : task;
-    const newDir = kind === 'spec' ? 'workbench/specs/retired/S-616-directory-links' : `${spec}/tasks/retired/TK-001`;
-    const primary = kind === 'spec' ? 'SPEC.md' : 'TASK.md';
+    const landmarkDir = 'workbench/landmarks/LMK-0AA-directory-parent';
+    const oldDir = kind === 'task' ? task : spec;
+    const newDir = kind === 'spec' ? 'workbench/specs/retired/S-616-directory-links'
+      : kind === 'landmark' ? `${landmarkDir}/specs/S-616-directory-links` : `${spec}/tasks/retired/TK-001`;
+    const primary = kind === 'task' ? 'TASK.md' : 'SPEC.md';
     write(`${spec}/SPEC.md`, `# S-616 - Directory Links
 
 **Spec ID:** S-616
@@ -94,6 +98,12 @@ Fixture complete.
     const parenthesisLinks = file => parentheses.map(([label, name]) => `[${label}](${link(file, `${oldDir}/nested folder/deeper/${name}`)}/#proof?fragment)`).join('\n');
     write(outgoing, `${outgoingSeed}${parenthesisLinks(outgoing)}\n`);
     const skills = ['workbench/skills/directory-probe/SKILL.md', 'skills/directory-probe/SKILL.md'];
+    // The landmark the Spec moves under lists it as a child Spec, so its own
+    // LANDMARK.md is one of the live referrers the move must repair.
+    const landmarkFile = `${landmarkDir}/LANDMARK.md`;
+    if (kind === 'landmark') {
+      write(landmarkFile, `# LMK-0AA - Directory Parent\n\n**Landmark ID:** LMK-0AA\n**Status:** active\n**Priority:** 1\n**Owner:** fixture\n**Updated:** 2026-09-30\n**Catalog description:** Parents the directory link fixture.\n**Blockers:** none\n**Latest event:** Landmark captured.\n**Next gate:** none\n\n## Direction\n\nFixture.\n\n## What Success Looks Like\n\n- [ ] Directory links survive the move.\n\n## Decision Records\n\n- none\n\n## Child Specs\n\n- [S-616 - Directory Links](${link(landmarkFile, `${spec}/SPEC.md`)})\n\n## Append-Only Evidence And Execution Log\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n\n## Reached Result\n\nPending.\n`);
+    }
     const histories = new Map();
     const untouched = new Map();
     for (const file of skills) {
@@ -108,7 +118,8 @@ Fixture complete.
     git('init', '--quiet'); git('config', 'user.email', 'fixture@example.invalid'); git('config', 'user.name', 'Fixture');
     render(room); commit('seed directory link fixture');
     assert.deepEqual(scanReferences(room), [], `${kind}: all live links initially resolve`);
-    const move = () => kind === 'spec' ? moveSpecDirectory(room, 'S-616', 'retired') : moveTaskRecord(room, 'S-616', 'TK-001', 'retired');
+    const move = () => kind === 'spec' ? moveSpecDirectory(room, 'S-616', 'retired')
+      : kind === 'landmark' ? moveSpecToLandmark(room, 'S-616', 'LMK-0AA') : moveTaskRecord(room, 'S-616', 'TK-001', 'retired');
 
     const result = move();
     for (const file of skills) {
@@ -126,6 +137,10 @@ Fixture complete.
       assert.ok(content.includes(histories.get(file)), `${kind}: historical directory links stay byte-identical`);
       assert.equal(result.historicalReferencesLeft[file], 2, `${kind}: historical directory links are counted`);
     }
+    if (kind === 'landmark') {
+      assert.ok(fs.readFileSync(path.join(room, landmarkFile), 'utf8').includes(`(specs/S-616-directory-links/SPEC.md)`), "landmark: the parent's LANDMARK.md child link is rewritten");
+      assert.equal(result.referencesRewritten[landmarkFile], 1, 'landmark: the LANDMARK.md rewrite is counted');
+    }
     const movedOutgoing = `${newDir}/navigation.md`;
     const outgoingBytes = fs.readFileSync(path.join(room, movedOutgoing), 'utf8');
     assert.ok(outgoingBytes.includes(`[Shared](${link(movedOutgoing, 'assets/shared space')}/#shared)`), `${kind}: outgoing unmoved directory adjusts relative depth`);
@@ -141,7 +156,7 @@ Fixture complete.
     commit('record supported fixture retirement');
     git('mv', newDir, oldDir); commit('restore active fixture for preflight refusal probes');
     write(outgoing, outgoingSeed);
-    for (const file of [...skills, directoryOnly]) {
+    for (const file of [...skills, directoryOnly, ...(kind === 'landmark' ? [landmarkFile] : [])]) {
       write(file, fs.readFileSync(path.join(room, file), 'utf8').replaceAll(link(file, newDir), link(file, oldDir)));
     }
     commit('restore incoming directory targets');
@@ -158,7 +173,7 @@ Fixture complete.
     commit('plant linked directory target'); const beforeLink = snapshot();
     assert.throws(move, /symbolic link|ordinary path/, `${kind}: linked directory target refuses before rename`);
     assert.deepEqual(snapshot(), beforeLink, `${kind}: linked directory refusal preserves files, index, HEAD and refs`);
-    console.log(`ok - ${kind} retirement preserves live directory links, immutable history and pre-move safety`);
+    console.log(`ok - ${kind} ${kind === 'landmark' ? 'move' : 'retirement'} preserves live directory links, immutable history and pre-move safety`);
   } finally {
     fs.rmSync(room, { recursive: true, force: true });
     fs.rmSync(aliases, { recursive: true, force: true });

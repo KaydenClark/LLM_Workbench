@@ -1134,3 +1134,66 @@ test('TK-005M: an old-shape room is told which differences are a template genera
   fs.rmSync(previous, { recursive: true, force: true });
   fs.rmSync(project, { recursive: true, force: true });
 });
+
+// S-004C TK-005N: once the carriers have their pointer-brief shape, the
+// Lexicons and the README describe it as delivered, not as a planned future
+// shape, route an operation through the Runbook operations index to its skill,
+// and make the review-independence example reachable through all three
+// carriers: AGENTS states the rule, the Runbook index points to the skill that
+// prepares, records and checks it, and the Lexicon says what counts as
+// independent review and links to both.
+test('TK-005N: both Lexicons and the README describe the delivered carrier shape and route operations through the Runbook index', () => {
+  for (const [label, relative] of [['root', 'LEXICON.md'], ['template', 'templates/LEXICON.md']]) {
+    const lexicon = read(root, relative);
+    for (const stale of [/their rewrite is planned/, /As the accepted destination, a skill/, /left to the Contract carrier rewrite/, /follow it as the accepted destination/, /is the Contract carrier rewrite's work/]) {
+      assert.doesNotMatch(lexicon, stale, `${label} Lexicon still presents the carrier shape as future: ${stale}`);
+    }
+    assert.match(lexicon, /The ordinary entry route is `AGENTS\.md` -> the \[`RUNBOOK\.md` operations index\]\(RUNBOOK\.md#operations-index\) -> `LEXICON\.md`\./, `${label} Lexicon names the entry route through the Runbook index`);
+    const row = (start) => lexicon.split('\n').find((line) => line.startsWith(start)) ?? '';
+    assert.match(row('| Operations and procedures |'), /RUNBOOK\.md#operations-index/, `${label} Context Map routes operations through the Runbook index`);
+    assert.match(row('| Recovery after interruption or failure |'), /RUNBOOK\.md#operations-index/, `${label} Context Map routes recovery through the Runbook index`);
+    assert.match(row('| **Root files** |'), /Runbook is an index of operations/, `${label} Root files row states the delivered Runbook shape`);
+    // 2026-10-05 narrowing (the AGENTS.md-only Contract, non-binding Runbook
+    // and Lexicon retirement decisions): no Lexicon row may say a Runbook index
+    // row is what makes a skill bind, or that the Runbook is the one place a
+    // binding pointer is declared. The Skill row, the Workbench Contract row
+    // and the ownership-schema opening name the binding route by reference to
+    // `AGENTS.md` Instruction Authority, so they stay true while that list moves.
+    assert.doesNotMatch(lexicon, /Runbook operations index row points to/, `${label} Lexicon still says a Runbook index row makes a skill bind`);
+    assert.doesNotMatch(lexicon, /the one place a pointer declares which skill binds/, `${label} Lexicon still names the Runbook as the binding registry`);
+    assert.match(row('| **Skill and host adapter** |'), /A skill in the tracked skills lane that the Contract points to for an operation binds for that operation, as `AGENTS\.md` Instruction Authority states;/, `${label} Skill row states that a pointed lane skill binds through AGENTS.md`);
+    assert.match(row('| **Workbench Contract** |'), /\| The binding claim set `AGENTS\.md` Instruction Authority names: /, `${label} Workbench Contract row names the claim set by reference to AGENTS.md`);
+    assert.match(lexicon.replace(/\s+/g, ' '), /The Workbench Contract is the claim set `AGENTS\.md` Instruction Authority names, with the bounded assigned Spec and, while an operation is performed, the lane skill the Contract points to for it; it is not another document\./, `${label} ownership schema opening names the Contract by reference to AGENTS.md`);
+    assert.doesNotMatch(lexicon, /The Workbench Contract spans/, `${label} Lexicon no longer lists the Contract's carriers in the schema opening`);
+    // Third review correction: every ownership-schema route to the Runbook
+    // goes through its operations index.
+    for (const name of ['Operations', 'Reusable behavior', 'Evaluation']) {
+      const cell = row(`| **${name}** |`);
+      assert.ok(cell, `${label} Lexicon has the ${name} ownership row`);
+      assert.match(cell, /Runbook operations index/, `${label} ${name} row routes through the Runbook operations index`);
+      assert.doesNotMatch(cell, /\[Runbook\]\(RUNBOOK\.md\)|\| Runbook -> /, `${label} ${name} row has no route that skips the index`);
+    }
+    const review = row('| **Review** |');
+    for (const target of ['AGENTS.md#git-rules', 'RUNBOOK.md#operations-index', 'workbench/skills/code-review/SKILL.md#independent-review-boundaries']) {
+      assert.ok(review.includes(`(${target})`), `${label} Review row links ${target} for the review-independence example`);
+    }
+  }
+  // Root only: the carrier-definition rows say what the 2026-10-05 decisions
+  // made the carriers, and the gap until AGENTS.md follows them.
+  const rootLexicon = read(root, 'LEXICON.md');
+  const rootRow = (start) => rootLexicon.split('\n').find((line) => line.startsWith(start)) ?? '';
+  const ddr = { contract: '001C-agents-md-is-the-map-and-the-only-contract-file.md', runbook: '001D-the-runbook-lines-the-workflow-verbs-up-next-to-their-scenarios-and-binds-nothing.md', lexicon: '001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md' };
+  for (const [name, needs] of [['Root files', ['contract', 'runbook', 'lexicon']], ['Contract artifact', ['contract', 'runbook', 'lexicon']], ['Routing artifact', ['runbook', 'lexicon']], ['Workbench Contract', ['contract']], ['Context pointer', ['contract']]]) {
+    const cell = rootRow(`| **${name}** |`);
+    assert.ok(cell, `root Lexicon has the ${name} row`);
+    for (const key of needs) assert.ok(cell.includes(`workbench/docs/ddr/${ddr[key]}`), `root ${name} row links the ${key} decision`);
+  }
+  assert.match(rootRow('| **Root files** |'), /binds nothing/, 'root Root files row says the Runbook binds nothing');
+  assert.match(rootRow('| **Workbench Contract** |'), /still names `RUNBOOK\.md` and `LEXICON\.md` as the other carriers/, 'root Workbench Contract row names the gap until AGENTS.md follows the decision');
+  for (const stale of [/decided neither record's kind/, /stays with the owner's later debate/]) {
+    assert.doesNotMatch(rootLexicon, stale, `root Lexicon still leaves the carriers' kind undecided: ${stale}`);
+  }
+  const readme = read(root, 'README.md');
+  assert.doesNotMatch(readme, /Follow AGENTS\.md -> RUNBOOK\.md -> LEXICON\.md/, 'README no longer names the old entry route');
+  assert.match(readme, /AGENTS\.md -> the RUNBOOK\.md operations index -> LEXICON\.md/, 'README names the entry route through the Runbook index');
+});

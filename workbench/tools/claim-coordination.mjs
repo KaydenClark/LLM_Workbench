@@ -9,7 +9,9 @@
 // or an explicit `--local` - keeps today's local behavior and reports why.
 //
 // The overlay follows `occupiedIdentities` in spec-workbench.mjs (read the
-// specs lane at every `refs/remotes` tip); branch, upstream and dirty state
+// specs lane at every `refs/remotes` tip, and - S-003Z TK-008G - the landmarks
+// collection, whose direct Tasks are claimed the same way under
+// `LMK-###/TK-###`); branch, upstream and dirty state
 // come from `readRepositoryState` (workbench-layout.mjs), never a second
 // reader.
 import fs from 'node:fs';
@@ -48,7 +50,7 @@ function failure(result) {
 // remote exists but cannot be fetched: a claim that cannot read the remote
 // cannot be made visible to it either. `next` answers from the last fetched
 // refs instead and reports the failure.
-export function coordinationContext(root, { specsPrefix, local = false, fetch = true, requireFetch = false } = {}) {
+export function coordinationContext(root, { specsPrefix, landmarksPrefix = null, local = false, fetch = true, requireFetch = false } = {}) {
   if (local) return { mode: 'local', reason: 'requested with --local' };
   const state = readRepositoryState(root);
   if (!state.known) return { mode: 'local', reason: `not a Git work tree (${state.reason})` };
@@ -83,7 +85,7 @@ export function coordinationContext(root, { specsPrefix, local = false, fetch = 
   const listed = gitOk(root, ['for-each-ref', '--format=%(refname)%00%(symref)', `refs/remotes/${COORDINATION_REMOTE}`], 'cannot list remote refs');
   const tips = listed.split('\n').filter(Boolean).map((line) => line.split('\0'))
     .filter(([ref, symref]) => !symref && !shared.has(ref) && !own.has(ref)).map(([ref]) => ref);
-  const statuses = readTaskStatusesAt(root, [baseRef, ...tips], specsPrefix);
+  const statuses = readTaskStatusesAt(root, [baseRef, ...tips], specsPrefix, landmarksPrefix);
   const baseStatuses = statuses.get(baseRef) ?? new Map();
   const claims = new Map();
   for (const tip of tips) {
@@ -98,11 +100,13 @@ export function coordinationContext(root, { specsPrefix, local = false, fetch = 
 
 // Task status per `SPEC-ID/TK-ID` at each ref, from Task records and the
 // slice rows of table-backed Specs, in one `git grep` across every ref.
-export function readTaskStatusesAt(root, refs, specsPrefix) {
+// S-003Z TK-008G: with `landmarksPrefix`, a landmark-direct Task record keys
+// as `LMK-ID/TK-ID` from its `**Landmark ID:**` field.
+export function readTaskStatusesAt(root, refs, specsPrefix, landmarksPrefix = null) {
   const statuses = new Map();
   if (refs.length === 0) return statuses;
-  const pattern = '^\\*\\*(Spec ID|Task ID|Status):\\*\\*|^\\|[[:space:]]*TK-';
-  const result = git(root, ['grep', '-I', '-E', pattern, ...refs, '--', specsPrefix]);
+  const pattern = '^\\*\\*(Spec ID|Landmark ID|Task ID|Status):\\*\\*|^\\|[[:space:]]*TK-';
+  const result = git(root, ['grep', '-I', '-E', pattern, ...refs, '--', specsPrefix, ...(landmarksPrefix ? [landmarksPrefix] : [])]);
   if (![0, 1].includes(result.status)) throw new Error(`Cannot read remote claims: ${failure(result)}`);
   const byLength = [...refs].sort((a, b) => b.length - a.length);
   const files = new Map();
@@ -118,7 +122,7 @@ export function readTaskStatusesAt(root, refs, specsPrefix) {
     const key = `${ref}\0${file}`;
     if (!files.has(key)) files.set(key, { ref, file, fields: {}, rows: [] });
     const entry = files.get(key);
-    const field = text.match(/^\*\*(Spec ID|Task ID|Status):\*\*\s*(\S+)/);
+    const field = text.match(/^\*\*(Spec ID|Landmark ID|Task ID|Status):\*\*\s*(\S+)/);
     if (field) entry.fields[field[1]] ??= field[2];
     else entry.rows.push(text);
   }
@@ -126,12 +130,13 @@ export function readTaskStatusesAt(root, refs, specsPrefix) {
     if (!statuses.has(ref)) statuses.set(ref, new Map());
     const map = statuses.get(ref);
     const specId = fields['Spec ID'];
-    if (!specId) continue;
+    const parentId = specId ?? fields['Landmark ID'];
+    if (!parentId) continue;
     if (path.posix.basename(file) === 'TASK.md') {
-      if (fields['Task ID'] && TASK_STATUSES.includes(fields.Status)) map.set(`${specId}/${fields['Task ID']}`, fields.Status);
+      if (fields['Task ID'] && TASK_STATUSES.includes(fields.Status)) map.set(`${parentId}/${fields['Task ID']}`, fields.Status);
       continue;
     }
-    if (path.posix.basename(file) !== 'SPEC.md') continue;
+    if (path.posix.basename(file) !== 'SPEC.md' || !specId) continue;
     for (const row of rows) {
       const cells = parseMarkdownTableRow(row);
       if (/^TK-[0-9A-Za-z]{3,}$/.test(cells[0] ?? '') && TASK_STATUSES.includes(cells[2])) map.set(`${specId}/${cells[0]}`, cells[2]);
@@ -186,15 +191,16 @@ function listFiles(files) {
 // the first write - including a rejected push - restores the exact prior
 // checkout and removes the branch it cut, so nothing reports a claim that did
 // not reach the remote.
-export function publishClaim(root, context, { agent, branch: requestedBranch, specsPrefix, apply, project }) {
+export function publishClaim(root, context, { agent, branch: requestedBranch, specsPrefix, landmarksPrefix = null, apply, project }) {
   const { state } = context;
   const cuts = state.head.detached || [context.integrationBranch, context.defaultBranch].includes(state.head.branch);
   const where = state.head.detached ? 'the detached HEAD' : state.head.branch;
   if (cuts && state.dirty.length > 0) {
     throw new Error(`claim refused: ${where} has uncommitted changes (${listFiles(state.dirty)}); claim cuts the task branch from ${context.base} and must not carry them - commit or set them aside first`);
   }
-  // Only the claim's own writes may enter the claim commit.
-  const claimPaths = [specsPrefix, 'TASKBOARD.md', 'BLUEPRINT.md'].filter((item, index, all) => all.indexOf(item) === index);
+  // Only the claim's own writes may enter the claim commit. S-003Z TK-008G: a
+  // landmark-direct claim writes under the landmarks collection.
+  const claimPaths = [specsPrefix, ...(landmarksPrefix ? [landmarksPrefix] : []), 'TASKBOARD.md', 'BLUEPRINT.md'].filter((item, index, all) => all.indexOf(item) === index);
   const preexisting = pendingPaths(root, claimPaths);
   if (preexisting.length > 0) {
     throw new Error(`claim refused: uncommitted changes under the claim's own paths would be swept into the claim commit (${listFiles(preexisting.map((item) => item.file))}); commit them first`);
