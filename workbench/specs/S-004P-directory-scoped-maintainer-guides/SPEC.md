@@ -21,14 +21,14 @@ The owner merged the two maintainer-home concepts on 2026-10-05: the declared ma
 
 ## Current Verified State
 
-At integration `35187ee6` (2026-10-05): the manifest declares three maintainer skills, `workbench-release`, `workbench-room-checks` and `workbench-evaluation`, excluded from the core bundle and reached from Runbook index rows. The root `AGENTS.md` Edit Scope section carries the dogfood boundary for `templates/` and the Workbench update drift boundary as always-loaded lines. No directory under this repository holds a nested `AGENTS.md` or `CLAUDE.md`; the only host adapter is the root `CLAUDE.md`, pinned to `@AGENTS.md`. Which nested guide files Claude Code and Codex each load by location is not recorded in the repository. No implementation or agent-outcome proof for this capability is claimed by this Map record.
+At integration `35187ee6` (2026-10-05): the manifest declares three maintainer skills, `workbench-release`, `workbench-room-checks` and `workbench-evaluation`, excluded from the core bundle and reached from Runbook index rows. The root `AGENTS.md` Edit Scope section carries the dogfood boundary for `templates/` and the Workbench update drift boundary as always-loaded lines. The only nested guides are `workbench/wiki/AGENTS.md` and its Template mirror `templates/wiki/AGENTS.md`, wiki-lane guides that ship to every room by design; no maintainer directory holds one, and the only host adapter is the root `CLAUDE.md`, pinned to `@AGENTS.md`. The wiki guide is the precedent for a guide disclosed by location; whether it is folded into the one shape this Spec defines or named a room-guide exception is decided at Plan. Which nested guide files Claude Code and Codex each load by location is not recorded in the repository. No implementation or agent-outcome proof for this capability is claimed by this Map record.
 
 ## Desired Behavior
 
 1. A directory-scoped guide has one shape: the directory's invariants as short declarative lines, the owner of each kind of file in it, and a pointer per procedure to the maintainer-skill row in the operations index. A mechanical check refuses a guide line that is a step of a procedure or that names a skill as binding.
 2. Each host loads the guide by location. The Plan establishes the file each host reads in a subdirectory and whether a nested host adapter is needed, and records it; the guide is written once and the adapter, if any, only imports it.
 3. The root brief loses the lines a guide now carries, through the carrier rewrite's landing check, and no line leaves before its guide exists.
-4. The guides are this repository's own: the closed core bundle, the Template, Genesis, adoption and the update route are unchanged, and a generated room receives none of them.
+4. The maintainer guides are this repository's own: the closed core bundle, the Template, Genesis, adoption and the update route are unchanged, and a generated room receives none of them. The wiki-lane guide keeps shipping as it does today.
 5. One line in the Instruction Authority list says a directory-scoped guide binds while working in that directory. That line is written by the carrier rewrite's `AGENTS.md` writer on this Spec's behalf.
 
 ## Decisions And Contracts
@@ -55,7 +55,7 @@ No Tasks cut. At Plan, cut small complete-path slices: the host-loading proof fo
 - [ ] A recorded proof shows which file each host loads in a subdirectory, and every guide is reached that way.
 - [ ] Every maintainer directory with invariants has one guide in the one shape, and the mechanical check refuses a procedure step or a binding claim inside a guide.
 - [ ] Each line moved from the root brief has its guide as its landed home in the landing check, and the root brief is shorter by those lines.
-- [ ] The Template, a fresh Genesis room, an adopted project and an updated room contain no guide, and the closed-bundle checks pass.
+- [ ] The Template, a fresh Genesis room, an adopted project and an updated room contain no maintainer guide, the wiki-lane guide is unchanged, and the closed-bundle checks pass.
 - [ ] The Instruction Authority list carries the one line, written by the carrier writer, and the full suite passes on the committed candidate; named verification and remaining limitations are recorded without claiming owner approval.
 
 ## Testing Seams
