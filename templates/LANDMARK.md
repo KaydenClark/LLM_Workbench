@@ -25,8 +25,7 @@
 
 ## Direction
 
-[Where this landmark points: the destination it moves the product toward and
-the direction every child Spec and direct Task takes to get there.]
+[Where this landmark points: the destination it moves the product toward and the direction every child Spec and direct Task takes to get there.]
 
 ## Why It Matters
 

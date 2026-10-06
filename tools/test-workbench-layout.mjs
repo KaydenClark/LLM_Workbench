@@ -10,6 +10,7 @@ import test from 'node:test';
 import { doctor, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
 import { coordinationSkills, coreSkills, legacyCoreSkills, validateManifest, readContextUnit, ContextUnitUndeclaredError } from '../workbench/tools/workbench-layout.mjs';
 import { genesisTemplateFiles, templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
+import * as placeholderVocabulary from '../workbench/tools/template-placeholders.mjs';
 import { COLLECTIONS, LANES, collectionRelative } from '../workbench/tools/workbench-paths.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -152,9 +153,14 @@ test('copy-ready v3 templates route active spec authority through workbench/spec
   assert.match(fs.readFileSync(path.join(templateRoot, 'GENESIS.md'), 'utf8'), /workbench\/feedback\/WORKBENCH_FEEDBACK\.md/, 'Genesis places the feedback file in the lane');
 });
 
-test('the committed placeholder vocabulary exactly matches the shipped Genesis templates', () => {
+// S-003Z TK-008J: the vocabulary also covers the record templates a room
+// copies after Genesis, starting with LANDMARK.md, so an unfilled landmark
+// placeholder is detected like an unfilled Spec placeholder.
+test('the committed placeholder vocabulary exactly matches the shipped Genesis and record templates', () => {
+  const recordTemplateFiles = placeholderVocabulary.recordTemplateFiles ?? [];
+  assert.ok(recordTemplateFiles.includes('LANDMARK.md'), 'the LANDMARK.md template is covered by the placeholder vocabulary');
   const actual = new Set();
-  for (const name of genesisTemplateFiles) {
+  for (const name of [...genesisTemplateFiles, ...recordTemplateFiles]) {
     const content = fs.readFileSync(path.join(root, 'templates', name), 'utf8');
     for (const match of content.matchAll(/(?<!\[)\[(?!\[|[ xX]\])[^\]\n]+\](?!\()/g)) actual.add(match[0]);
   }

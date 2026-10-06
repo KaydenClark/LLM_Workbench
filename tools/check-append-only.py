@@ -37,7 +37,36 @@ def discover_specs(spec_root):
                 if os.path.isfile(os.path.join(full,sub,"SPEC.md")):
                     specs.append(f"{name}/{sub}")
     return specs
-SPECS=discover_specs(SPEC_ROOT)
+# S-003Z TK-008J: a LANDMARK.md carries the same Append-Only Evidence And
+# Execution Log a SPEC.md does, and a Spec with a parent landmark lives in
+# that landmark's `specs/` folder (with its own `specs/retired/`), so walking
+# `workbench/specs` alone left every landmark log and every nested Spec
+# outside enforcement. `LANDMARK_LIFECYCLE_FOLDERS` mirrors the list
+# `workbench/tools/landmark-artifact.mjs` exports under that name.
+LANDMARK_ROOT="workbench/landmarks"
+LANDMARK_LIFECYCLE_FOLDERS=["retired"]
+def discover_landmarks(landmark_root):
+    landmarks=[]
+    if not os.path.isdir(landmark_root): return landmarks
+    for name in sorted(os.listdir(landmark_root)):
+        full=os.path.join(landmark_root,name)
+        if not os.path.isdir(full): continue
+        if os.path.isfile(os.path.join(full,"LANDMARK.md")):
+            landmarks.append(name)
+        elif name in LANDMARK_LIFECYCLE_FOLDERS:
+            for sub in sorted(os.listdir(full)):
+                if os.path.isfile(os.path.join(full,sub,"LANDMARK.md")):
+                    landmarks.append(f"{name}/{sub}")
+    return landmarks
+# Every checked log as (label, path). A Blueprint-level Spec keeps its old
+# label (its folder below workbench/specs); a landmark or a nested Spec is
+# labelled by its path below workbench/.
+LOGS=[(spec,f"{SPEC_ROOT}/{spec}/SPEC.md") for spec in discover_specs(SPEC_ROOT)]
+for landmark in discover_landmarks(LANDMARK_ROOT):
+    home=f"{LANDMARK_ROOT}/{landmark}"
+    LOGS.append((f"landmarks/{landmark}",f"{home}/LANDMARK.md"))
+    if os.path.isdir(f"{home}/specs"):
+        LOGS+=[(f"landmarks/{landmark}/specs/{spec}",f"{home}/specs/{spec}/SPEC.md") for spec in discover_specs(f"{home}/specs")]
 def sh(*a): return subprocess.run(a,capture_output=True,text=True)
 commits=[c for c in ("288c821","d31bf2c","a5e7fe0") if sh("git","cat-file","-e",c+"^{commit}").returncode==0]
 commits+=sh("git","rev-list","--reverse","5561906..HEAD").stdout.split()
@@ -84,17 +113,17 @@ class GitBlobs:
 
 blobs = GitBlobs()
 bad=0
-for spec in SPECS:
+for spec,log in LOGS:
     first={}      # identity -> (text, commit) first published
     variants={}   # identity -> set of texts ever seen
     for c in commits:
-        text=blobs.read(c,f"workbench/specs/{spec}/SPEC.md")
+        text=blobs.read(c,log)
         if text is None: continue
         for row in rows(text):
             k=ident(row)
             first.setdefault(k,(row,c[:7]))
             variants.setdefault(k,set()).add(row)
-    cur={ident(r):r for r in rows(open(f"workbench/specs/{spec}/SPEC.md",encoding="utf-8").read())}
+    cur={ident(r):r for r in rows(open(log,encoding="utf-8").read())}
     problems=[]
     for k,(text,c) in first.items():
         if k not in cur: problems.append(("DELETED",k,c,text))
@@ -147,8 +176,7 @@ def orphans(path):
             else:
                 out.append((i,l))
     return out
-for spec in SPECS+[None]:
-    path=f"workbench/specs/{spec}/SPEC.md" if spec else LEDGER
+for path in [log for _,log in LOGS]+[LEDGER]:
     for i,l in orphans(path):
         bad+=1; print(f"  VIOLATION {path}:{i}: a non-row line inside an evidence table - a rewritten row without its prefix looks exactly like this")
         print(f"     {l[:90]}")

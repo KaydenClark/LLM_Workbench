@@ -3,7 +3,7 @@
 **Task ID:** TK-008J
 **Spec ID:** S-003Z
 **Slice:** Source behavior, the generic templates, discovery and managed installation agree, and updating a landmark-free room leaves its work unchanged
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-008I, TK-008K
 **Destination:** spec-acceptance: Source behavior, the generic templates, discovery and managed installation agree, and updating a room with no landmarks leaves it unchanged.
