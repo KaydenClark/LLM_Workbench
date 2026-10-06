@@ -10423,8 +10423,8 @@
       "hash": "6978d65c6aea630af6c743633cc43c29bf5beb082aeaf593c882f981bbcc3bc8",
       "homeKind": "skill",
       "homePath": "workbench/skills/workbench-release/SKILL.md",
-      "landedText": "or private home path. The real cross-provider resume with agents is S-022's",
-      "reason": "TK-005K moved this line verbatim to the workbench-release maintainer skill, which the Runbook operations index points to for its operation."
+      "landedText": "or private home path. The real cross-provider resume with agents is the [Cross-provider resume proof](#cross-provider-resume-proof), run for the current release under its release owner;",
+      "reason": "TK-005K moved this line verbatim to the workbench-release maintainer skill, which the Runbook operations index points to for its operation. The Dispatcher's 2026-10-04 drift repair then retired the line's route to a superseded v3 release Spec, and the landed text follows."
     },
     {
       "line": 1384,
@@ -10432,8 +10432,8 @@
       "hash": "cac4b44875c60ae8208a840491e3a8e212fe2b6ba9012c3e22edba84d07224e1",
       "homeKind": "skill",
       "homePath": "workbench/skills/workbench-release/SKILL.md",
-      "landedText": "release gate.",
-      "reason": "TK-005K moved this line verbatim to the workbench-release maintainer skill, which the Runbook operations index points to for its operation."
+      "landedText": "the retired v3.1 release Spec that once named it a gate is superseded.",
+      "reason": "TK-005K moved this line verbatim to the workbench-release maintainer skill, which the Runbook operations index points to for its operation. The Dispatcher's 2026-10-04 drift repair then retired the line's route to a superseded v3 release Spec, and the landed text follows."
     },
     {
       "line": 1388,
@@ -13978,8 +13978,8 @@
       "hash": "4dbd60a60b2c69b9417c75d1109a5ed16cb53570d9e40fa47e267ab593d0d195",
       "homeKind": "skill",
       "homePath": "workbench/skills/workbench-release/SKILL.md",
-      "landedText": "row. The owner explicitly waived the stamped-label rule for the current v3.2.0",
-      "reason": "TK-005K moved this line verbatim to the workbench-release maintainer skill, which the Runbook operations index points to for its operation (previously classified stays)."
+      "landedText": "row. The owner explicitly waived the stamped-label rule for the v3.2.0 repair only (S-050/S-051, history; the v3.2.0 release Spec is superseded):",
+      "reason": "TK-005K moved this line verbatim to the workbench-release maintainer skill, which the Runbook operations index points to for its operation (previously classified stays). The Dispatcher's 2026-10-04 drift repair then retired the line's route to a superseded v3 release Spec, and the landed text follows."
     },
     {
       "line": 1843,
@@ -13987,8 +13987,8 @@
       "hash": "3e4c22a8d6e07987a55613682b7537a6e4d808116b1b55a534f5356c5e350c31",
       "homeKind": "skill",
       "homePath": "workbench/skills/workbench-release/SKILL.md",
-      "landedText": "repair only (S-050/S-051): its original twenty-skill policy remains readable,",
-      "reason": "TK-005K moved this line verbatim to the workbench-release maintainer skill, which the Runbook operations index points to for its operation (previously classified stays)."
+      "landedText": "its original twenty-skill policy remains readable,",
+      "reason": "TK-005K moved this line verbatim to the workbench-release maintainer skill, which the Runbook operations index points to for its operation (previously classified stays). The Dispatcher's 2026-10-04 drift repair then retired the line's route to a superseded v3 release Spec, and the landed text follows."
     },
     {
       "line": 1844,
