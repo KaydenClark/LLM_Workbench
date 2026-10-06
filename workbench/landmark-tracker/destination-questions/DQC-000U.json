@@ -1,0 +1,202 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-000U",
+  "revision": 7,
+  "title": "How does the source Workbench prove it uses the same layout it distributes?",
+  "question": "How does the source Workbench prove it uses the same layout it distributes?",
+  "answer": "V3-12B: Yes. Move this repository's own affected durable support records under workbench/ with Git history preserved, \"so the published source proves the same contract it generates.\"\nBPR-7: The comprehensive ownership and routing repair is part of v3.2 and covers the full upstream LLM_Workbench source and generic templates, not only the newest Blueprint section. Downstream project Workbenches get it only through their own explicit update path; an upstream release alone does not change them.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-12B, BPR-7 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "V3-12B update workbench/specs/S-021-portable-workbench-v3/SPEC.md TK-006: This repo moves its support records under workbench/ with history preserved and dogfoods v3. | V3-12B create workbench/manifest.json: This repo carries its own manifest-backed workbench/ support root. | V3-12B create tools/test-workbench-dogfood.mjs: Asserts the manifest exists, root specs/ is gone, and specs live under workbench/specs/. | BPR-7 update workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md: Include the full ownership and routing repair in the v3.2.0 release scope. | BPR-7 create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Deliver the repair across root controls and their templates/ mirrors. | BPR-7 update AGENTS.md, RUNBOOK.md, LEXICON.md, BLUEPRINT.md and their templates/ mirrors: Agree on one ownership model and Context Map.",
+    "home": "workbench/specs/S-021-portable-workbench-v3/SPEC.md TK-006; workbench/manifest.json; tools/test-workbench-dogfood.mjs; workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md; AGENTS.md, RUNBOOK.md, LEXICON.md, BLUEPRINT.md and their templates/ mirrors",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "V3-12B",
+      "revision": "56b459da"
+    },
+    {
+      "id": "BPR-7",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000B",
+    "LMK-000H"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "V3-12B",
+      "revision": "56b459da",
+      "reason": "Ledger row V3-12B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "BPR-7",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-7 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How does the source Workbench prove it uses the same layout it distributes?",
+    "question": "How does the source Workbench prove it uses the same layout it distributes?",
+    "sources": [
+      {
+        "id": "V3-12B",
+        "revision": "56b459da"
+      },
+      {
+        "id": "BPR-7",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:17.171Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:17.171Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 014 of the 2026-09-26 grouping (\"Layout, manifest and path evolution\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The producer moves its own durable support records under the declared layout with history preserved, rather than only generating it for others.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:17.183Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "V3-12B: Yes. Move this repository's own affected durable support records under workbench/ with Git history preserved, \"so the published source proves the same contract it generates.\"\nBPR-7: The comprehensive ownership and routing repair is part of v3.2 and covers the full upstream LLM_Workbench source and generic templates, not only the newest Blueprint section. Downstream project Workbenches get it only through their own explicit update path; an upstream release alone does not change them."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: V3-12B, BPR-7 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "V3-12B update workbench/specs/S-021-portable-workbench-v3/SPEC.md TK-006: This repo moves its support records under workbench/ with history preserved and dogfoods v3. | V3-12B create workbench/manifest.json: This repo carries its own manifest-backed workbench/ support root. | V3-12B create tools/test-workbench-dogfood.mjs: Asserts the manifest exists, root specs/ is gone, and specs live under workbench/specs/. | BPR-7 update workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md: Include the full ownership and routing repair in the v3.2.0 release scope. | BPR-7 create workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md: Deliver the repair across root controls and their templates/ mirrors. | BPR-7 update AGENTS.md, RUNBOOK.md, LEXICON.md, BLUEPRINT.md and their templates/ mirrors: Agree on one ownership model and Context Map.",
+            "home": "workbench/specs/S-021-portable-workbench-v3/SPEC.md TK-006; workbench/manifest.json; tools/test-workbench-dogfood.mjs; workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md; AGENTS.md, RUNBOOK.md, LEXICON.md, BLUEPRINT.md and their templates/ mirrors",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:17.194Z",
+      "reason": "Ledger row V3-12B (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "V3-12B",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:17.205Z",
+      "reason": "Ledger row BPR-7 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-7",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:17.218Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:53.497Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Portable Workbench pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000B"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:49:55.640Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Verification pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000B"
+          ],
+          "to": [
+            "LMK-000B",
+            "LMK-000H"
+          ]
+        }
+      ]
+    }
+  ]
+}

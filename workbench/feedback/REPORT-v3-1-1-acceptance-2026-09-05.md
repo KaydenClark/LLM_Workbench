@@ -310,3 +310,18 @@ The two consequential claims that most need challenge before any repair is
 accepted are the reading of `hasContradictorySpecState` as unconditionally
 passing under schema 2, and the claim that selection returns finished work from
 a stale checkout. Both are reproducible read-only from the locations cited.
+
+
+## Disposition Reconciliation (2026-09-19)
+
+Original findings above remain historical evidence. The owner reconciliation is
+[S-00N](../specs/S-00N-feedback-finding-dispositions/SPEC.md#existing-finding-disposition-register).
+Read the named capability Specs and tests at `git show 279341a:PATH`; these
+classes record supported mechanisms, not fresh native-host or release proof.
+
+| Finding | Disposition | Existing owner / gap | Evidence and retained limit |
+|---|---|---|---|
+| F-004 | `test` | S-028 | Schema-2 guardrail contradiction regression in tools/test-guardrail-audit.mjs. |
+| F-005 | `diagnostic` | S-031; S-051 | stale-skill and skill-generation-unknown expose installed-copy drift; source/host ownership later reconciled by S-051. This does not prove native installation or repair every host ignored lane. |
+| F-006 | `diagnostic` | S-029 | complete-on-integration exposes completed work on the declared integration branch; stale branch state is not inferred from local next alone. |
+| F-007 | `test` | S-029 TK-002 | tools/test-governance-core.mjs and tools/test-branch-closeout.mjs cover Runbook scratch/prune closeout. Existing host worktrees were not deleted by this reconciliation. |

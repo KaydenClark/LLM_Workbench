@@ -1,4 +1,5 @@
-// Derived from the shipped Genesis templates; keep the embedded validator vocabulary exact.
+// Derived from the shipped Genesis templates and the record templates a room
+// copies after Genesis; keep the embedded validator vocabulary exact.
 export const genesisTemplateFiles = [
   "AGENTS.md",
   "BLUEPRINT.md",
@@ -8,6 +9,12 @@ export const genesisTemplateFiles = [
   "README.md",
   "SPEC.md",
   "wiki/MEMORY.project.md"
+];
+
+// S-003Z TK-008J: record templates outside Genesis whose placeholders the
+// vocabulary also holds, so an unfilled one is detected like a Spec's.
+export const recordTemplateFiles = [
+  "LANDMARK.md"
 ];
 
 export const templatePlaceholders = [
@@ -28,25 +35,21 @@ export const templatePlaceholders = [
   "[DELETE_MERGED_BRANCH_COMMAND]",
   "[DIFF_CHECK_COMMAND]",
   "[Decision or invariant]",
-  "[Describe how the product should be created, updated, repaired, validated and deployed.]",
-  "[Describe how the product should feel and behave in its main situations, including failures and recovery.]",
-  "[Describe qualities, client-wide requirements and constraints that apply across the product, including privacy/safety boundaries and the evidence required to claim verified behavior.]",
-  "[Describe the desired finished product and how its parts form one useful whole.]",
+  "[Describe the desired finished product and how its parts form one useful whole. Link no record that carries an identifier (an ADR, DDR, Spec, Task or landmark), since decision records name this Blueprint in canonicalized_in instead.]",
   "[Describe the durable results users should achieve, with concrete boundaries.]",
   "[Docs to update, or why no update is needed]",
   "[ENV_VAR]",
-  "[Explain how the major parts cooperate to deliver those outcomes. Link active architectural decisions inline only when they materially explain or constrain the destination.]",
   "[Explicitly excluded work]",
   "[FAST_TEST_COMMAND]",
   "[FORBIDDEN_PATHS]",
   "[FULL_COMMAND]",
   "[FULL_TEST_COMMAND]",
-  "[FULL_VERIFICATION_COMMAND]",
   "[HARNESS_VERSION]",
   "[INSTALL COMMAND]",
   "[INSTALL_COMMAND]",
   "[INTEGRATION_BRANCH_OR_DEFAULT]",
   "[Known limit or linked follow-up]",
+  "[LANDMARK_TITLE]",
   "[LICENSE - e.g. MIT. See `LICENSE`.]",
   "[LINT_OR_AUDIT_COMMAND]",
   "[LOG_COMMAND]",
@@ -58,6 +61,7 @@ export const templatePlaceholders = [
   "[OWNER_ONLY_MERGE]",
   "[Observable acceptance gate]",
   "[One sentence for the Blueprint catalog.]",
+  "[One sentence for the landmark catalog.]",
   "[PROJECT_NAME]",
   "[QUESTION THIS ROOM'S MEMORY ANSWERS]",
   "[READABLE_ROOTS]",
@@ -74,16 +78,17 @@ export const templatePlaceholders = [
   "[STOP_COMMAND]",
   "[Small end-to-end slice]",
   "[Source-backed behavior and gaps.]",
-  "[State what the desired product intentionally is not. Adapt headings to the product and omit a genuinely inapplicable section rather than inventing boilerplate.]",
+  "[State what the desired product intentionally is not.]",
   "[Symptom]",
   "[TARGETED_COMMAND]",
-  "[TARGETED_TEST_COMMAND]",
   "[TERM]",
   "[TEST COMMAND]",
   "[VERIFY_INTEGRATION_CONTAINS_WORK_COMMAND]",
   "[WHAT THIS IS NOT OR WHICH ALIASES TO AVOID]",
   "[WRITABLE_ROOTS]",
   "[What coherent product capability or user outcome should exist?]",
+  "[Where this landmark points: the destination it moves the product toward and the direction every child Spec and direct Task takes to get there.]",
+  "[Why this direction is worth holding now, and what stays unresolved without it.]",
   "[Why this outcome is worth building now.]",
   "[YYYY-MM-DD]",
   "[active / partial / stale]",

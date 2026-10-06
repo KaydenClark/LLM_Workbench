@@ -28,3 +28,87 @@ Append-only evidence log for LLM Workbench benchmark runs. Use actual command ou
 | 2026-09-08 | Correction to the row above: S-046 TK-002 candidate at `1c4f85d` | Same method: `node tools/audit-guardrails.mjs --path .` and the 31-command union in isolated LF checkouts, re-run after two rounds of review repairs | The row above names `8b387be` as the candidate. That commit predates every repair the two independent reviews required, and the runtime repair landed in `7791688`. The measurements are unchanged at the repaired tree - guardrail **78/100**, suite **24 pass / 6 fail**, the same six as baseline `2127627` - so nothing in the row's numbers is withdrawn; only the commit it points a reader at is wrong. The candidate is `1c4f85d` | Remaining recommendations unchanged and all four in Outcome evidence | Recorded as a new row rather than an edit because `tools/check-append-only.py` covers this ledger. Worth pricing with the row above: the second review found that two of the first round's repairs were themselves defective - a widened privacy scan that stopped one field short, under a test whose name claimed it covered them all, and a repair to a skill that replaced an inaccurate sentence with an impossible instruction. Twelve accepted findings across two rounds, none caught by a green suite or a clean `doctor` |
 | 2026-09-08 | Second correction to the two rows above: S-046 TK-002 candidate at `a21c96d` | Same method, re-run after a third round of review repairs: `node tools/audit-guardrails.mjs --path .` and the 31-command union in isolated LF checkouts | The row above replaced a wrong commit citation with `1c4f85d` - and `1c4f85d` is reachable from no branch. It was a work-in-progress commit squashed away before the push, so the row written to fix a citation defect shipped a worse one: the previous commit was at least in the history, and this one will be garbage-collected. The candidate is `a21c96d`, which `git branch --contains` confirms before this row is written. Measurements are unchanged across all three repair rounds - guardrail **78/100**, suite **24 pass / 6 fail**, the same six as baseline `2127627` | Remaining recommendations unchanged and all four in Outcome evidence | Recorded as a new row rather than an edit, per `tools/check-append-only.py`. The pattern across these three rows is the one worth pricing: each correction carried a defect of the kind it corrected. Three independent reviews returned CHANGES REQUIRED, seventeen accepted findings, and not one was caught by a green suite or a clean `doctor` - every candidate was green when it was submitted. The reviews found a runtime that would strand a correction, a migration that silently dropped a workflow field, two tests that could not fail for the defects they named, and a scan that stopped one field short of its own documented promise |
 | 2026-09-08 | Third correction to the rows above: S-046 TK-002 candidate at `8736beb` | Same method: `node tools/audit-guardrails.mjs --path .` and the union suite in isolated LF checkouts, **run from Git Bash**, after five rounds of review repairs | The row above still asserts "suite **24 pass / 6 fail**, the same six as baseline" for `a21c96d`. The spec spent the fourth round withdrawing exactly that: `tools/test-check-append-only.py` was a **candidate-introduced failure** from `a21c96d` onward, because an append-only evidence row had been rewritten in place, and this ledger's last word was the claim being corrected. It is repaired and the checker reports CLEAN at this commit. The shell matters too and no earlier row said so: `test-branch-closeout` spawns `bash` and `test-control-fidelity` spawns `sh`, neither on the Windows machine PATH outside Git Bash, which is the whole of the 24/6-versus-22/8 disagreement between the author and the fourth review. Guardrail is **78/100** on both trees, unchanged across all five rounds | Remaining recommendations unchanged and all four in Outcome evidence | **Five independent reviews, every one CHANGES REQUIRED, and every candidate green on its own suite when it was submitted.** Rounds 2, 4 and 5 each found defects inside the previous round's repairs - a scan one field short under a test named for covering them all, a migration that stringified structured owner tradeoffs into "[object Object]", an id guard built for generated ids under a promise written for every id. The recurring cause is not careless code but fixtures and checks scoped to the case the author was looking at rather than to the contract, and a verification step that timed out being recorded as "not a failure" for three rounds. Recorded here because that is the number worth pricing, not the 78/100 |
+
+## 2026-09-09 S-00C through S-00E v3.2.1 baseline
+
+Guardrail baseline at `c0ac60a` and after evidence intake at `2f01f31`: **78/100**
+using `node tools/audit-guardrails.mjs --path .`. Static contract20, drift25,
+benchmark discipline25, outcome evidence8. Remaining recommendations are real
+repeated outcome trials, controls/prior/candidate comparison, recent candidate
+evidence, and uncertainty estimates. Deterministic safety checks and one native
+fresh-project continuation do not establish a general agent-reliability gain.
+
+| 2026-09-19 | S-00U approval and lifecycle repair, baseline bc370fe and candidate f47d57f | Root guardrail audit before/after; targeted report and branch-closeout regressions | 78/100 before and after, unchanged criteria | Repeated real outcomes, controls/prior/candidate comparison, recent outcome evidence and uncertainty remain missing; no reliability claim; full assembled verification separately recorded |
+## 2026-09-19 S-00T lifecycle repair baseline
+
+Guardrail audit is **78/100 before and after** (baseline f9f77a8; runtime
+candidate9611b59). Static20, drift25, discipline25, outcomes8. Remaining
+recommendations are repeated real trials, control/prior/candidate comparison,
+recent candidate evidence and uncertainty estimates. Disposable lifecycle
+regressions and static score preservation do not prove agent reliability.
+
+## 2026-09-24 S-00P owner workflow map
+
+Guardrail audit using `node tools/audit-guardrails.mjs --path .` measured
+**78/100 before** at `6ae38b9` and **78/100 after** at `cb8ff78`, with no
+criteria change (static 20/20, drift 25/25, discipline 25/25, outcome evidence
+8/30). The corrected candidate passed all 48 AGENTS suite commands and a
+separate-context full-branch review found no actionable issue. The audit still
+recommends repeated real outcome trials, controls/prior/candidate comparison,
+recent outcome evidence and uncertainty estimates. This documentation and
+contract check does not establish improved agent outcomes.
+
+## 2026-09-27 v4 role groundwork
+
+Guardrail audit using `node tools/audit-guardrails.mjs --path .` measured
+**78/100 before** at `b00a2e338436ef7b281b0cc53e74f891af32f18c` and
+**78/100 after** at `950cf1bd988da8ee622fd3cbe4fb7a031c19ed16`, with
+unchanged criteria (static20, drift25, discipline25, outcome evidence8).
+Repeated real outcome trials, controls/prior/candidate comparison, recent
+outcome evidence and uncertainty estimates remain missing. These documentation
+and planning changes establish no improvement in agent outcomes. Final
+verification is recorded in S-00O's integration reconciliation receipt.
+
+## 2026-09-29 ADR-000B/C/D acceptance documentation
+
+Guardrail audit using `node tools/audit-guardrails.mjs --path .` measured
+**78/100 before** on clean S-00G parent `ef2b129692ba051b65214331b67b44a8542f27a3`
+and **78/100 after** on the ADR acceptance candidate tree. Criteria were
+unchanged: static contract 20/20, drift resistance 25/25, benchmark discipline
+25/25, outcome evidence 8/30. Remaining recommendations are repeated real
+outcome trials, controls/prior/candidate comparison, recent real outcome
+evidence, and uncertainty estimates. This documentation change adds no agent
+outcome evidence and makes no reliability claim. The S-00G evidence log names
+the verified candidate commit and checks after save.
+
+## 2026-09-30 FND-Q16 existing ADR reconciliation
+
+Guardrail audit using `node tools/audit-guardrails.mjs --path .` measured
+**78/100 before** at `065a7ce4436e46ae6726985b567b6b94ed94660c` and
+**78/100 after** on the amendment candidate tree. Criteria remain unchanged:
+static contract 20/20, drift resistance 25/25, benchmark discipline 25/25,
+outcome evidence 8/30. Remaining recommendations are repeated real outcome
+trials, controls/prior/candidate comparison, recent real evidence and uncertainty
+estimates. These documentation amendments establish no agent outcome improvement.
+S-00P records the immutable candidate verification and self-drift limits.
+
+## 2026-10-01 — GitHub binding inspector
+
+S-003P/TK-004A candidate `4d9a24b8692e90ab63c11b07515b12cae0ab2ee7`
+passed 51/51 required and Task-focused commands after regeneration corrected
+Receipt projection drift. Public source/refusal and fresh receipt-backed
+installed-inspector tests passed 7/7. This is metadata/source/installed-runtime
+proof; GitHub Issue operations, cross-host outcomes and integration review are
+separate and remain open at this checkpoint.
+
+Guardrail score is 78/100 before and after. Remaining recommendations are
+repeated real outcome trials, comparisons against controls and prior/candidate
+harnesses, recent non-synthetic evidence and uncertainty reporting. No score
+criteria were weakened and no agent-outcome gain is claimed. Read-only
+self-drift retains seven existing findings and `cleanUpdate: false`; this is
+not a clean-update, owner Human QA or release-readiness verdict.
+
+
+## 2026-10-01 Handoff role-authority promotion
+
+Guardrail audit measured **78/100 before** at `574df962fcfdd8045ec4dd405ba7f548216f7d4a` and **78/100 after** on `f98f0ea183e2507231ca494c9166472cd9f963f2`, with unchanged criteria (static20, drift25, discipline25, outcome8). Remaining recommendations are repeated real outcome trials, controls/prior/candidate comparison, recent real evidence and uncertainty estimates. All 48 required AGENTS commands passed on that immutable candidate. Pre/post self-drift retain seven existing findings and `cleanUpdate: false`. This is promotion and documentation proof; role-based handoff implementation and new behavioral trials remain open in S-01A. No agent-outcome improvement, owner Human QA or clean-update result is claimed.

@@ -6,14 +6,57 @@
 > between status folders.
 
 **Spec ID:** S-022
-**Status:** blocked
+**Status:** superseded
 **Priority:** 0
 **Owner:** claude-fable-5-1
-**Updated:** 2026-09-05
-**Catalog description:** Release v3.1.0 as the first public v3 Workbench from one independently audited exact candidate proven by a cross-provider cold resume with Foundry absent.
-**Blockers:** Owner release-direction reconciliation remains pending; integration testing is authorized, main/release publication is not.
-**Latest event:** S-027 delivered the reviewed v3.1.1 candidate through PR #48 at integration 09f0875; historical release proof remains preserved.
-**Next gate:** Reconcile this historical release procedure and version intent with owner direction before any publication; do not reopen S-027 or require CIC for ordinary testing.
+**Updated:** 2026-10-04
+**Catalog description:** Historical v3.1 release packet, superseded by the v4.0.0 release; its unexecuted audit and v3.1.0 stamp step is withdrawn and remains visible as history.
+**Blockers:** none
+**Latest event:** Superseded on 2026-10-04 by the [Workbench v4.0.0 Release — S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md); TK-004 withdrawn unexecuted.
+**Next gate:** None; superseded by the [Workbench v4.0.0 Release — S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md).
+
+## Why Retired
+
+Retired 2026-10-04. This packet was to publish v3.1.0 as the first public v3
+release. Its round-trip and portability proofs ran (TK-002, TK-003), but
+TK-004, the exact-SHA audit, v3.1.0 stamp and S-014 handoff, waited on
+"owner release direction" and never ran. That direction has since been given
+many times over, and it points elsewhere: the v3 line continued through
+v3.1.1 to v3.2.0, which the owner promoted to `main` on 2026-09-09 (PR #86);
+v3.1.0 was never released; and on 2026-10-04 the owner said "we are working on
+version 4 right now", having answered "over 350 so far on the version 4
+direction".
+
+The design reason is the owner's lifecycle rule: obsolete release promises
+become historical or superseded while still-needed obligations remain
+reachable (grilling ledger FND-Q16, locked 2026-09-30), and "We retire things
+all of the time. why would a spec be any different than a task?" (owner,
+2026-10-04).
+
+Nothing still needed is dropped. Current release work is the
+[Workbench v4.0.0 Release — S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md);
+promotion of `integration` to `main` is the owner's own act; the real
+cross-device continuation proof is
+[Private Session Transport — S-052](../S-052-private-session-transport/SPEC.md)
+TK-004, which runs inside the owner's own PC test at v4 main readiness and
+never blocks agent work.
+
+On 2026-09-19 a first supersession of this packet was retracted because
+`doctor` refuses a superseded Spec with unfinished rows, and the record kept
+the rule never to mark unexecuted Tasks done just to silence that check. What
+changed is the owner's decision, not the check: FND-Q16 (locked 2026-09-30)
+makes obsolete release promises historical or superseded, and on 2026-10-04
+he directed retirement in place of keeping old records open. The Task status
+set still has no withdrawn value, so each unfinished row below now reads
+`done` with a proof cell that says it was withdrawn unexecuted and claims no
+proof. Every unchecked acceptance box, every evidence row and the original
+requirements stay as historical record.
+
+The original generation/stable-path notice and original requirements below are
+historical context. AGENTS owns today's folder-lifecycle rules. This disposition
+moves no file, publishes no release and authorizes no installation or deletion.
+No current CIC/Sol consumer read-back was established during this local
+reconciliation; any such consumer must be checked before reusing its old flow.
 
 ## Outcome
 
@@ -76,7 +119,7 @@ refreshed checkout and remote evidence.
 - v3.0.0 is documented as an unreleased internal candidate; v3.1.0 is the
   first public v3 release. No v3.0 promotion PR is opened.
 - Exactly seven root controls remain; the Workbench Contract is a claim set,
-  not a file ([ADR-0033](../../docs/adr/0033-workbench-contract-is-a-claim-set.md)).
+  not a file ([ADR-0033](../../docs/adr/archive/0033-workbench-contract-is-a-claim-set.md)).
 - Ownership routing: Lexicon owns meanings, AGENTS owns authority and
   behavior, Blueprint owns cross-cutting architecture, the selected spec owns
   bounded capability requirements, Runbook owns procedures, Taskboard is
@@ -111,7 +154,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | TK-001 | Promote the greenlight and amendments into controls, ADRs, and five linked specs, and push the planning checkpoint | done | none | Planning checkpoint commit on `claude/v3.1-release`; render and doctor green; see evidence log |
 | TK-002 | Prove the primary acceptance round trip: planning checkpoint, forced interruption, cross-provider clean-clone resume with Foundry absent | done | S-023, S-024, S-025, S-026 | Cross-provider resume proof passed: Claude planned with the candidate's own workbench/tools (tools/cross-provider-resume.mjs plan), pushed planning checkpoint f31cc00, destroyed the planning clone; Codex gpt-5.6-terra resumed from a fresh clone with an isolated CODEX_HOME holding only the candidate's twelve skills and the receipt-backed candidate tools, ran doctor, next --json, show, wrote the failing test first, implemented, closed, rendered, passed doctor, and pushed e480d25; verify from a third fresh clone passed with foundry false and privatePaths false; the provider-free fixture test proves a recoverable checkpoint and a fail-closed verify; the promoted record is workbench/sessions/checkpoints/s022-cross-provider-resume-2026-09-04.md |
 | TK-003 | Run the portability and privacy matrix on the exact candidate and record every result | done | S-023, S-024, S-025, S-026 | tools/test-portability-matrix.mjs 4/4: no tracked paths differ only by case and capitalised, spaced, traversing, or backslash lanes are rejected; a backslash or capitalised manifest lane fails before any lane is read and a CRLF manifest validates; active surfaces name no retired lane, hidden notepad directory, host temp lane, private skill catalog, Foundry-dependent path, or private home path (one real private path stripped from RUNBOOK.md); the shared privacy patterns find nothing on the active surfaces. Schema migration, mixed Adoption, symlink invocation, collisions, and stale links are covered by the cited tests; full 32-command union suite green |
-| TK-004 | Obtain the independent exact-SHA audit, land the v3.1.0 version bump, and hand the candidate to S-014 | blocked | owner release direction | pending |
+| TK-004 | Obtain the independent exact-SHA audit, land the v3.1.0 version bump, and hand the candidate to S-014 | done | none | Withdrawn unexecuted on supersession 2026-10-04: no audit, v3.1.0 stamp or handoff happened and none is claimed; the owner's direction is v4 (S-00O) |
 
 ### TK-002 - Primary acceptance round trip
 
@@ -180,9 +223,14 @@ remote SHA read-back.
 
 | 2026-09-05 | release | S-027 integration delivery verified at `09f0875` via PR #48; release remains paused | Exact reviewed `fa04e27` is an ancestor of remote integration; main unchanged | Current gate reconciled; original baseline and append-only evidence preserved | Owner release-direction reconciliation, not S-027 preparation |
 
+| 2026-09-19 | S-00K TK-0SA | Reconciled obsolete release assignment to S-050; historical acceptance not completed | Read complete S-014/S-022/S-050/S-052 packets and S-00O release scope at parent `1a26de9`; current owners preserve release and live-host gates | Current disposition and README route updated; all prior evidence rows preserved | S-050 TK-006 and S-052 TK-004 remain open; current S-00O build/release and owner main approval remain open; CIC/Sol consumer state unverified |
+
+| 2026-09-19 | S-00K TK-0SA correction | Restored blocked status after the superseded candidate failed existing lifecycle validation; retained current-owner routing and all unfinished historical evidence | Doctor reports contradictory-state for superseded Specs with unfinished tasks; no runtime rule changed and no task was marked done | Current Disposition explains the remaining projection limitation; README no longer treats this packet as the current release gate | Current release and live-device gates remain with the mapped owners; historical tasks are unexecuted, not completed or silently dropped |
+| 2026-10-04 | spec | Superseded by S-00O; TK-004 withdrawn unexecuted | origin/main manifest declares v3.2.0 (owner merge PR #86, 2026-09-09); v3.1.0 never released; integration is 1762 commits ahead with v4 work; owner direction 2026-10-04 and ledger FND-Q16 cited in Why Retired | Current Disposition replaced by Why Retired; header, TK-004 row and Supersession reconciled; Wiki article updated | None for this record |
+
 ## Completion Result
 
-Pending.
+Superseded 2026-10-04 without its audit or stamp step (see Why Retired); current release work is S-00O. Original text: Not completed. Current operational obligations follow S-050; original unchecked acceptance and unfinished task evidence remain preserved. This packet stays blocked because current lifecycle validation cannot represent supersession with unfinished historical tasks.
 
 ## Remaining Limitations Or Follow-Up Specs
 
@@ -193,4 +241,4 @@ Pending.
 ## Supersession
 
 - Supersedes: none
-- Superseded by: none
+- Superseded by: S-00O ([Workbench v4.0.0 Release](../S-00O-workbench-v4-0-0-release/SPEC.md)), 2026-10-04. See Why Retired.

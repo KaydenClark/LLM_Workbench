@@ -1,0 +1,194 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-002Z",
+  "revision": 6,
+  "title": "What work should a dispatcher or director perform without executing Tasks?",
+  "question": "What work should a dispatcher or director perform without executing Tasks?",
+  "answer": "TT-Q4: A Task should be 1:1 with a Chat. A few Chats for one Task is allowed but 'is not how it should be done': make the Task smaller, still vertical. One Chat should not do several Tasks: 'The chat should complete the task, clean up, and be done.' A dispatcher or director watches the Spec, writes handoffs and opens a new Chat per unblocked Task, and approves; it never executes Tasks itself.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: TT-Q4 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "TT-Q4 update LEXICON.md (Task, Chat, Director rows) and templates/LEXICON.md: One Task per Chat; a Chat ends after its Task; Director, Dispatcher and Worker are separate roles per SCR-4 (Dispatcher is not an alias). | TT-Q4 update workbench/skills/carry/SKILL.md: Carrying a Spec means directing it (a new Chat per Task), or carry is not used on a Spec. | TT-Q4 update AGENTS.md and RUNBOOK.md (Director way of working) plus templates mirrors: Document the Director as the way a Spec is worked. | TT-Q4 create Spec 'Artifact model and definitions' (proposed in TT note finding-037): Owns the carry and Director changes.",
+    "home": "LEXICON.md (Task, Chat, Director rows) and templates/LEXICON.md; workbench/skills/carry/SKILL.md; AGENTS.md and RUNBOOK.md (Director way of working) plus templates mirrors; Spec 'Artifact model and definitions' (proposed in TT note finding-037)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [
+    "FND-Q17d (open, no owner answer): Is any missing behavior left after Q02 or Q03, or were these merely possible implementations?"
+  ],
+  "sources": [
+    {
+      "id": "TT-Q4",
+      "revision": "56b459da"
+    },
+    {
+      "id": "E-2",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q17d",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000R"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "TT-Q4",
+      "revision": "56b459da",
+      "reason": "Ledger row TT-Q4 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q17d",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q17d (open) at 56b459da; assessed Aligning from its status only.",
+      "assessment": {
+        "contributions": {
+          "Aligning": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What work should a dispatcher or director perform without executing Tasks?",
+    "question": "What work should a dispatcher or director perform without executing Tasks?",
+    "sources": [
+      {
+        "id": "TT-Q4",
+        "revision": "56b459da"
+      },
+      {
+        "id": "E-2",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q17d",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:22.386Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:22.386Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 074 of the 2026-09-26 grouping (\"Shared claims, host capabilities and coordination\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The source describes direction, handoffs and opening worker Chats, distinct from executing their Tasks. The withdrawn director question supplies context, not a new accepted spec. Not related: E-2 (withdrawn).",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:22.406Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "TT-Q4: A Task should be 1:1 with a Chat. A few Chats for one Task is allowed but 'is not how it should be done': make the Task smaller, still vertical. One Chat should not do several Tasks: 'The chat should complete the task, clean up, and be done.' A dispatcher or director watches the Spec, writes handoffs and opens a new Chat per unblocked Task, and approves; it never executes Tasks itself."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: TT-Q4 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "TT-Q4 update LEXICON.md (Task, Chat, Director rows) and templates/LEXICON.md: One Task per Chat; a Chat ends after its Task; Director, Dispatcher and Worker are separate roles per SCR-4 (Dispatcher is not an alias). | TT-Q4 update workbench/skills/carry/SKILL.md: Carrying a Spec means directing it (a new Chat per Task), or carry is not used on a Spec. | TT-Q4 update AGENTS.md and RUNBOOK.md (Director way of working) plus templates mirrors: Document the Director as the way a Spec is worked. | TT-Q4 create Spec 'Artifact model and definitions' (proposed in TT note finding-037): Owns the carry and Director changes.",
+            "home": "LEXICON.md (Task, Chat, Director rows) and templates/LEXICON.md; workbench/skills/carry/SKILL.md; AGENTS.md and RUNBOOK.md (Director way of working) plus templates mirrors; Spec 'Artifact model and definitions' (proposed in TT note finding-037)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:22.427Z",
+      "reason": "Ledger row TT-Q4 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "TT-Q4",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:22.450Z",
+      "reason": "Ledger row FND-Q17d (open) at 56b459da; assessed Aligning from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q17d",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:22.474Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:00.820Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Agent Stances pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000R"
+          ]
+        }
+      ]
+    }
+  ]
+}

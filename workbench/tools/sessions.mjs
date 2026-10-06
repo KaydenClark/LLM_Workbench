@@ -15,6 +15,7 @@ import { listAdrs, validateAdrs } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { controls, containsPlaceholder } from './workbench-layout.mjs';
 import { laneRelative, IGNORED_COLLECTIONS } from './workbench-paths.mjs';
+import { landmarkSpecHomes } from './landmark-artifact.mjs';
 
 export function checkpoint() {
   return { status: 'blocked', error: finding('invalid-note', 'Checkpoint copy creation is retired; use notepads for local continuity and sessions.mjs promote for selected durable-owner reconciliation. Existing checkpoint history remains unchanged.') };
@@ -75,14 +76,15 @@ function validatePromotionOwner(root, destination, content, original) {
   const beneath = relative => destination.relative.startsWith(`${relative}/`);
   const forbidden = [...IGNORED_COLLECTIONS, 'checkpoints', 'notepad-templates'].map(name => collectionRelative(root, name));
   if (forbidden.some(beneath)) throw new Error('A live record, template or frozen checkpoint cannot be the promotion destination');
-  // Candidate text is authored by the agent. A link to an ignored working
-  // record is not durable provenance, even if that source currently exists.
+  // Candidate text is authored by the agent. A link to a live working record
+  // is not durable provenance, even if that source currently exists or has
+  // been committed temporarily for a continuation (S-00V TK-00J).
   for (const citation of markdownReferences(content)) {
     const reference = decodeURIComponent(citation.split('#')[0]);
     if (!reference || /^[a-z][a-z0-9+.-]*:/i.test(reference)) continue;
     const target = path.resolve(path.dirname(destination.absolute), reference);
     const relative = path.relative(fs.realpathSync.native(root), canonicalReference(target)).split(path.sep).join('/');
-    if (IGNORED_COLLECTIONS.some(name => relative.startsWith(`${collectionRelative(root, name)}/`)) && !relative.startsWith(`${collectionRelative(root, 'notepad-templates')}/`)) throw new Error('Durable provenance cannot cite an ignored live record');
+    if (IGNORED_COLLECTIONS.some(name => relative.startsWith(`${collectionRelative(root, name)}/`)) && !relative.startsWith(`${collectionRelative(root, 'notepad-templates')}/`)) throw new Error('Durable provenance cannot cite a live record, even a committed one');
   }
   const overrides = { contentOverrides: new Map([[destination.absolute, content]]) };
   let findings = [];
@@ -90,7 +92,9 @@ function validatePromotionOwner(root, destination, content, original) {
     if (containsPlaceholder(content) || /\[BRACKETED(?:_[A-Z]+)*\]/.test(content)) throw new Error('A root control cannot contain template placeholders');
     return 'control';
   }
-  if (beneath(laneRelative(root, 'specs')) && path.basename(destination.absolute) === 'SPEC.md') {
+  // S-003Z TK-008E: a Spec at any Spec home, the Blueprint-level lane or a
+  // landmark folder's `specs/`.
+  if ([laneRelative(root, 'specs'), ...landmarkSpecHomes(root).map(home => home.specsPrefix)].some(beneath) && path.basename(destination.absolute) === 'SPEC.md') {
     const before = parseSpecPacket(original, destination.absolute, root);
     const after = parseSpecPacket(content, destination.absolute, root);
     if (before.id !== after.id) throw new Error('Promotion cannot change the existing spec identity');

@@ -14,3 +14,9 @@ evals/results/tmp_*.jsonl
 
 # Local-only reference material (owner decides if/when to publish)
 research papers/
+
+# Linked git worktrees created for isolated review/audit checkouts
+.worktrees/
+
+# Grill Board owner answers: written by the served page only, local to the owner
+workbench/grill-board/answers.json

@@ -44,17 +44,30 @@ export function parseBaselineRecord(value, specId) {
   return { state, reason: null, evidence: detail, proceeds: true, stop: null };
 }
 
-export function parseSpecPacket(content, filePath, root) {
+// `recordBacked` says this Spec's slices live in standalone Task records
+// beneath its own directory (S-00H TK-002). Its embedded table then holds
+// completed history only and may be empty, so an absent row set is valid
+// rather than a Spec with no implementation slices at all.
+export function parseSpecPacket(content, filePath, root, options = {}) {
   const fields = {};
   for (const match of content.matchAll(/^\*\*([^*]+):\*\*\s*(.+)$/gm)) fields[match[1].trim()] = match[2].trim();
   const id = fields['Spec ID'];
   if (!id || !/^S-[0-9A-Za-z]{3,}$/.test(id)) throw new Error(`${path.relative(root, filePath)} has an invalid or missing Spec ID`);
   const titleMatch = content.match(new RegExp(`^# ${id} - (.+)$`, 'm'));
   if (!titleMatch) throw new Error(`${id} has no matching title`);
-  const required = ['Status', 'Priority', 'Owner', 'Updated', 'Catalog description', 'Blockers', 'Latest event', 'Next gate'];
+  // Backlog may carry only its identity, explicit planned status and title intent.
+  // Activation must still satisfy the full active packet contract.
+  const planned = fields.Status === 'planned';
+  if (!titleMatch[1].trim()) throw new Error(`${id} has no title intent`);
+  const required = planned ? ['Status'] : ['Status', 'Priority', 'Owner', 'Updated', 'Catalog description', 'Blockers', 'Latest event', 'Next gate'];
   for (const name of required) if (!fields[name]) throw new Error(`${id} is missing ${name}`);
   const baseline = fields.Baseline ? parseBaselineRecord(fields.Baseline, id) : null;
-  const tickets = parseTickets(section(content, 'Vertical Implementation Slices'), id);
+  // `rows` are the slice-table rows embedded in this Spec's own Markdown, as
+  // opposed to standalone `TASK.md` records (`spec.records` in
+  // spec-workbench.mjs). The table's header cell wording is decorative and
+  // varies by when the Spec was written; this scan never reads that header
+  // text, only the `TK-###` row prefix, so any wording parses.
+  const rows = parseTaskRows(section(content, 'Vertical Implementation Slices'), id, options.recordBacked === true || planned);
   return {
     root,
     filePath,
@@ -63,29 +76,29 @@ export function parseSpecPacket(content, filePath, root) {
     id,
     title: titleMatch[1].trim(),
     status: fields.Status,
-    priority: Number(fields.Priority),
-    owner: fields.Owner,
-    updated: fields.Updated,
-    description: fields['Catalog description'],
-    blockers: fields.Blockers,
-    latestEvent: fields['Latest event'],
-    nextGate: fields['Next gate'],
+    priority: fields.Priority === undefined && planned ? null : Number(fields.Priority),
+    owner: fields.Owner ?? null,
+    updated: fields.Updated ?? null,
+    description: fields['Catalog description'] ?? titleMatch[1].trim(),
+    blockers: fields.Blockers ?? 'none',
+    latestEvent: fields['Latest event'] ?? null,
+    nextGate: fields['Next gate'] ?? null,
     baseline,
-    tickets
+    rows
   };
 }
 
-function parseTickets(value, specId) {
-  const tickets = [];
+function parseTaskRows(value, specId, recordBacked) {
+  const rows = [];
   for (const line of value.split('\n')) {
     if (!/^\|\s*TK-/.test(line)) continue;
     const cells = parseMarkdownTableRow(line);
-    if (cells.length !== 5) throw new Error(`${specId} has a malformed ticket row`);
-    if (!/^TK-[0-9A-Za-z]+$/.test(cells[0])) throw new Error(`${specId} has an invalid ticket ID: ${cells[0]}`);
-    tickets.push({ id: cells[0], slice: cells[1], status: cells[2], blockers: cells[3], proof: cells[4] });
+    if (cells.length !== 5) throw new Error(`${specId} has a malformed task row`);
+    if (!/^TK-[0-9A-Za-z]+$/.test(cells[0])) throw new Error(`${specId} has an invalid task ID: ${cells[0]}`);
+    rows.push({ id: cells[0], slice: cells[1], status: cells[2], blockers: cells[3], proof: cells[4] });
   }
-  if (tickets.length === 0) throw new Error(`${specId} has no implementation slices`);
-  return tickets;
+  if (rows.length === 0 && !recordBacked) throw new Error(`${specId} has no implementation slices`);
+  return rows;
 }
 
 function section(content, heading) {

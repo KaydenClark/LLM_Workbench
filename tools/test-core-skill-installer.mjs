@@ -33,6 +33,107 @@ function maintain(home, command, ...args) {
   return { ...result, report: JSON.parse(result.stdout) };
 }
 
+test('empty ancestor Git sentinels remain untouched through install update and rollback', () => {
+  const container = fixtureHome();
+  const marker = path.join(container, '.git');
+  try {
+    fs.mkdirSync(marker);
+    fs.chmodSync(marker, 0o555);
+    const markerMode = fs.statSync(marker).mode;
+    const home = path.join(container, 'home');
+    fs.mkdirSync(home);
+    const installed = install(home);
+    assert.equal(installed.report.status, 'complete', installed.stdout);
+    assert.deepEqual(installed.report.gitOwnedRoots, []);
+    assert.equal(installed.report.installed.length, coreSkills.length * 2);
+    const repeated = install(home);
+    assert.equal(repeated.report.status, 'complete', repeated.stdout);
+    assert.equal(repeated.report.installed.length, 0);
+    assert.equal(repeated.report.skipped.length, coreSkills.length * 2);
+    const file = path.join(home, '.agents/skills/genesis/SKILL.md');
+    fs.writeFileSync(file, '# Prior managed implementation\n');
+    const updated = maintain(home, 'update', '--explicit-update');
+    assert.equal(updated.report.status, 'updated', updated.stdout);
+    const restored = maintain(home, 'rollback', '--backup', updated.report.backup);
+    assert.equal(restored.report.status, 'rolled-back', restored.stdout);
+    assert.equal(fs.readFileSync(file, 'utf8'), '# Prior managed implementation\n');
+    assert.deepEqual(fs.readdirSync(marker), []);
+    assert.equal(fs.statSync(marker).mode, markerMode);
+  } finally {
+    if (fs.existsSync(marker)) fs.chmodSync(marker, 0o755);
+    fs.rmSync(container, { recursive: true, force: true });
+  }
+});
+
+test('an empty nested Git marker does not hide its real repository owner', () => {
+  const repository = fixtureHome();
+  try {
+    assert.equal(spawnSync('git', ['init', '-q', repository]).status, 0);
+    const home = path.join(repository, 'home');
+    const marker = path.join(home, '.git');
+    fs.mkdirSync(marker, { recursive: true });
+    const installed = install(home);
+    assert.equal(installed.report.status, 'complete', installed.stdout);
+    assert.deepEqual(installed.report.gitOwnedRoots, [fs.realpathSync(repository)]);
+    assert.deepEqual(fs.readdirSync(marker), []);
+    const updated = maintain(home, 'update', '--explicit-update');
+    assert.equal(updated.report.status, 'blocked', updated.stdout);
+    assert.equal(updated.report.error.code, 'foreign-git-root');
+    assert.equal(fs.readdirSync(home).some(name => name.startsWith('.workbench-core-backup-')), false);
+  } finally { fs.rmSync(repository, { recursive: true, force: true }); }
+});
+
+test('malformed Git metadata stays fail-closed before any skill installation', () => {
+  for (const outerRepository of [false, true]) {
+  for (const kind of ['gitfile', 'directory', 'linked-directory']) {
+    const container = fixtureHome();
+    try {
+      if (outerRepository) assert.equal(spawnSync('git', ['init', '-q', container]).status, 0);
+      const boundary = path.join(container, 'broken');
+      const home = path.join(boundary, 'home');
+      fs.mkdirSync(home, { recursive: true });
+      const marker = path.join(boundary, '.git');
+      if (kind === 'gitfile') fs.writeFileSync(marker, 'gitdir: missing-worktree-metadata\n');
+      else if (kind === 'directory') {
+        fs.mkdirSync(marker);
+        fs.writeFileSync(path.join(marker, 'HEAD'), 'ref: refs/heads/main\n');
+      } else {
+        const target = path.join(container, 'empty-metadata');
+        fs.mkdirSync(target);
+        fs.symlinkSync(target, marker, 'dir');
+      }
+      const installed = install(home);
+      assert.equal(installed.report.status, 'blocked', `${kind}: ${installed.stdout}`);
+      assert.equal(fs.existsSync(path.join(home, '.agents')), false, kind);
+      assert.equal(fs.existsSync(path.join(home, '.claude')), false, kind);
+      if (kind === 'gitfile') assert.equal(fs.readFileSync(marker, 'utf8'), 'gitdir: missing-worktree-metadata\n');
+      else if (kind === 'directory') assert.equal(fs.readFileSync(path.join(marker, 'HEAD'), 'utf8'), 'ref: refs/heads/main\n');
+      else assert.equal(fs.lstatSync(marker).isSymbolicLink(), true);
+    } finally { fs.rmSync(container, { recursive: true, force: true }); }
+  }
+  }
+});
+
+test('a valid linked worktree remains a Git-owned provider home', () => {
+  const container = fixtureHome();
+  try {
+    const repository = path.join(container, 'repository');
+    const home = path.join(container, 'worktree');
+    assert.equal(spawnSync('git', ['init', '-q', repository]).status, 0);
+    assert.equal(spawnSync('git', ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.test', 'commit', '--allow-empty', '-qm', 'fixture'], { cwd: repository }).status, 0);
+    assert.equal(spawnSync('git', ['worktree', 'add', '--detach', '-q', home, 'HEAD'], { cwd: repository }).status, 0);
+    const marker = fs.readFileSync(path.join(home, '.git'));
+    const installed = install(home);
+    assert.equal(installed.report.status, 'complete', installed.stdout);
+    assert.deepEqual(installed.report.gitOwnedRoots, [fs.realpathSync(home)]);
+    assert.deepEqual(fs.readFileSync(path.join(home, '.git')), marker);
+    assert.equal(spawnSync('git', ['status', '--porcelain'], { cwd: home, encoding: 'utf8' }).stdout, '');
+    const updated = maintain(home, 'update', '--explicit-update');
+    assert.equal(updated.report.error.code, 'foreign-git-root', updated.stdout);
+    assert.equal(fs.readdirSync(home).some(name => name.startsWith('.workbench-core-backup-')), false);
+  } finally { fs.rmSync(container, { recursive: true, force: true }); }
+});
+
 test('explicit update preserves changed core bytes in a backup and rollback restores both content and adapter topology', () => {
   const home = fixtureHome();
   try {
@@ -46,7 +147,7 @@ test('explicit update preserves changed core bytes in a backup and rollback rest
     assert.equal(fs.readFileSync(path.join(canonical, 'SKILL.md'), 'utf8'), changed);
     const result = maintain(home, 'update', '--explicit-update');
     assert.equal(result.report.status, 'updated', result.stdout);
-    assert.equal(fs.readFileSync(path.join(canonical, 'SKILL.md'), 'utf8'), fs.readFileSync(path.join(root, 'skills/genesis/SKILL.md'), 'utf8'));
+    assert.equal(fs.readFileSync(path.join(canonical, 'SKILL.md'), 'utf8'), fs.readFileSync(path.join(root, 'workbench/skills/genesis/SKILL.md'), 'utf8'));
     assert.equal(fs.realpathSync(adapter), fs.realpathSync(canonical));
     const restored = maintain(home, 'rollback', '--backup', result.report.backup);
     assert.equal(restored.report.status, 'rolled-back', restored.stdout);
@@ -284,7 +385,7 @@ test('normal setup installs only missing bundled core skills in both user discov
     );
     assert.equal(
       fs.readFileSync(path.join(home, '.agents', 'skills', 'adoption', 'SKILL.md'), 'utf8'),
-      fs.readFileSync(path.join(root, 'skills', 'adoption', 'SKILL.md'), 'utf8')
+      fs.readFileSync(path.join(root, 'workbench', 'skills', 'adoption', 'SKILL.md'), 'utf8')
     );
     assert.ok(result.report.skipped.some((entry) =>
       entry.engine === 'codex' && entry.skill === 'genesis' && entry.reason === 'already-present'
@@ -321,7 +422,7 @@ test('a Git-owned discovery root installs the missing skills and leaves Git unto
     assert.equal(result.report.status, 'complete');
     assert.equal(
       fs.readFileSync(path.join(gitRoot, 'genesis', 'SKILL.md'), 'utf8'),
-      fs.readFileSync(path.join(root, 'skills', 'genesis', 'SKILL.md'), 'utf8'));
+      fs.readFileSync(path.join(root, 'workbench', 'skills', 'genesis', 'SKILL.md'), 'utf8'));
     assert.equal(JSON.parse(fs.readFileSync(path.join(gitRoot, 'genesis', '.workbench-skill.json'), 'utf8')).release, VERSION,
       'the installed copy still carries its marker');
 
@@ -404,7 +505,7 @@ test('a Git-owned parent of a missing discovery root installs into it just the s
   }
 });
 
-// S-045 TK-005: the layout that sent this ticket here. `~/.claude/skills` is a
+// S-045 TK-005: the layout that sent this task here. `~/.claude/skills` is a
 // link to `~/.agents/skills`, so the two discovery roots are one directory. The
 // route resolves the link and writes into the real directory; the link itself
 // is never written over, and the second engine finds the skill already present.
@@ -496,7 +597,7 @@ test('all four stances are available through one-level discovery and a repeated 
     for (const provider of ['.agents', '.claude']) {
       for (const stance of ['builder', 'auditor', 'reviewer', 'reconciler']) {
         const file = path.join(home, provider, 'skills', stance, 'SKILL.md');
-        assert.equal(fs.readFileSync(file, 'utf8'), fs.readFileSync(path.join(root, 'skills', stance, 'SKILL.md'), 'utf8'));
+        assert.equal(fs.readFileSync(file, 'utf8'), fs.readFileSync(path.join(root, 'workbench', 'skills', stance, 'SKILL.md'), 'utf8'));
       }
     }
     for (const stance of ['builder', 'auditor', 'reviewer', 'reconciler']) {
@@ -597,5 +698,99 @@ test('a linked destination still blocks when it resolves to a file, to nothing, 
     } finally {
       fs.rmSync(home, { recursive: true, force: true });
     }
+  }
+});
+
+// S-004C TK-006L: this repository's lane is also the release source lane. A
+// skill its manifest declares under `maintainerSkills` passes the closed-bundle
+// source check beside the core and is never installed; any other extra lane
+// entry, or a malformed declaration, still blocks before anything is written.
+function producerClone() {
+  const parent = fixtureHome();
+  const clone = path.join(parent, 'release');
+  const cloned = spawnSync('git', ['clone', '-q', '--no-local', root, clone], { encoding: 'utf8' });
+  assert.equal(cloned.status, 0, cloned.stderr);
+  const base = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: clone, encoding: 'utf8' }).stdout.trim();
+  return { parent, clone, base };
+}
+
+function resetClone(clone, base) {
+  assert.equal(spawnSync('git', ['reset', '-q', '--hard', base], { cwd: clone }).status, 0);
+  assert.equal(spawnSync('git', ['clean', '-qfdx'], { cwd: clone }).status, 0);
+}
+
+// `declare` adds names to whatever the checkout already declares, so the
+// fixture holds when this repository declares real maintainer skills;
+// `replace` swaps the whole value for a malformed declaration.
+function mutateClone(clone, { skills = [], declare, replace }) {
+  for (const skill of skills) {
+    const directory = path.join(clone, 'workbench', 'skills', skill);
+    fs.mkdirSync(directory, { recursive: true });
+    fs.writeFileSync(path.join(directory, 'SKILL.md'), `---\nname: ${skill}\ndescription: Fixture maintainer skill.\n---\n\n# ${skill}\n`);
+  }
+  if (declare !== undefined || replace !== undefined) {
+    const manifestPath = path.join(clone, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    manifest.maintainerSkills = replace !== undefined ? replace : [...(manifest.maintainerSkills ?? []), ...declare];
+    fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+  }
+  assert.equal(spawnSync('git', ['add', '-A'], { cwd: clone }).status, 0);
+  const committed = spawnSync('git', ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.test', 'commit', '-qm', 'maintainer fixture'], { cwd: clone, encoding: 'utf8' });
+  assert.equal(committed.status, 0, committed.stderr);
+}
+
+function installFrom(clone, home) {
+  const result = spawnSync(process.execPath, [path.join(clone, 'tools', 'core-skill-installer.mjs'), 'install', '--home', home], { cwd: clone, encoding: 'utf8' });
+  return { ...result, report: result.stdout ? JSON.parse(result.stdout) : null };
+}
+
+test('a declared maintainer skill passes the closed-bundle source check and is never installed', () => {
+  const { parent, clone } = producerClone();
+  const home = fixtureHome();
+  try {
+    mutateClone(clone, { skills: ['maintainer-fixture'], declare: ['maintainer-fixture'] });
+    const result = installFrom(clone, home);
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    assert.equal(result.report.status, 'complete', result.stdout);
+    assert.equal(result.report.installed.length, coreSkills.length * 2, 'only the core skills are installed');
+    assert.ok(result.report.installed.every((item) => item.skill !== 'maintainer-fixture'), 'the maintainer skill is never installed');
+    for (const discoveryRoot of ['.agents/skills', '.claude/skills']) {
+      assert.equal(fs.existsSync(path.join(home, discoveryRoot, 'maintainer-fixture')), false, `${discoveryRoot} never receives a maintainer skill`);
+      assert.deepEqual(fs.readdirSync(path.join(home, discoveryRoot), { withFileTypes: true }).filter((entry) => entry.isDirectory() || entry.isSymbolicLink()).map((entry) => entry.name).sort(), [...coreSkills].sort(), `${discoveryRoot} holds exactly the core skills`);
+    }
+  } finally {
+    fs.rmSync(home, { recursive: true, force: true });
+    fs.rmSync(parent, { recursive: true, force: true });
+  }
+});
+
+test('an undeclared extra lane skill or a malformed maintainer declaration still blocks before anything is written', () => {
+  const { parent, clone, base } = producerClone();
+  const cases = [
+    { name: 'undeclared extra skill', skills: ['stray-fixture'], code: 'invalid-bundled-core' },
+    { name: 'declared but missing from the lane', declare: ['maintainer-fixture'], code: 'invalid-maintainer-skills' },
+    { name: 'declares a core skill', declare: ['genesis'], code: 'invalid-maintainer-skills' },
+    { name: 'declares an unsafe name', skills: ['maintainer-fixture'], declare: ['../maintainer-fixture'], code: 'invalid-maintainer-skills' },
+    { name: 'declares a name twice', skills: ['maintainer-fixture'], declare: ['maintainer-fixture', 'maintainer-fixture'], code: 'invalid-maintainer-skills' },
+    { name: 'declaration is not a list', skills: ['maintainer-fixture'], replace: 'maintainer-fixture', code: 'invalid-maintainer-skills' },
+    { name: 'one declared and one undeclared extra skill', skills: ['maintainer-fixture', 'stray-fixture'], declare: ['maintainer-fixture'], code: 'invalid-bundled-core' }
+  ];
+  try {
+    for (const item of cases) {
+      resetClone(clone, base);
+      mutateClone(clone, item);
+      const home = fixtureHome();
+      try {
+        const result = installFrom(clone, home);
+        assert.notEqual(result.status, 0, item.name);
+        assert.equal(result.report.status, 'blocked', `${item.name}: ${result.stdout}`);
+        assert.equal(result.report.error.code, item.code, `${item.name}: ${result.stdout}`);
+        assert.deepEqual(fs.readdirSync(home), [], `${item.name} writes nothing to the home`);
+      } finally {
+        fs.rmSync(home, { recursive: true, force: true });
+      }
+    }
+  } finally {
+    fs.rmSync(parent, { recursive: true, force: true });
   }
 });

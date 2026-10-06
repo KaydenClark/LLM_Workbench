@@ -1,0 +1,267 @@
+# S-00M - Completion Claims Against Repository State
+
+**Spec ID:** S-00M
+**Status:** active
+**Priority:** 2
+**Owner:** claude-s00m-carry
+**Stance:** Builder
+**Updated:** 2026-10-02
+**Catalog description:** Make a completion claim unable to hide uncommitted or unpushed work, by surfacing Git state in `doctor` and refusing `close` unless the Receipt records the state and a reason.
+**Blockers:** none
+**Latest event:** Reviewed integration delivery: PR #271 merged into `integration` as `cdea242`, containing the reviewed candidate `7d13499` (review pass #4) and its verdict row (`6840285`).
+**Next gate:** Owner Human QA on `integration`, then owner promotion to `main` and `complete S-00M`.
+
+> **Citation anchors.** pre=`87c1d45cd6c32ceea12e05590eae966c0d6d4ecf` post=`6154167f48a4ed2474713d043a9cac18833d6a2a`.
+
+## Outcome
+
+A run cannot report a slice as done while its work sits uncommitted or
+unpushed. Two mechanisms do two different jobs: `doctor` surfaces Git state
+that no diagnostic currently observes, and `close` refuses a claim the
+repository contradicts unless the Receipt records that state and says why.
+
+## Why It Matters
+
+`close` writes "closed with proof" after reading two strings. It reads no
+repository state at all, so a slice can be closed as done, with proof, on a
+dirty unpushed tree, and nothing observes it. The diagnostic registry cannot
+catch it either: nothing it registers observes HEAD, the working tree,
+untracked files or upstream distance.
+
+The failure is not hypothetical. The session that settled this decision was
+itself detached with 39 porcelain entries, thirteen of them untracked ADRs and
+Specs under the controls and spec lanes, and no control named it. A completion
+report written from that state would have been accepted by every check the
+Workbench has.
+
+## Current Verified State
+
+At the pre anchor, `workbench/tools/diagnostics.mjs` declares `git` in `SCOPES`
+and registers two findings against it, `integration-branch-undeclared` and
+`integration-branch-missing`. Both check the declared integration branch. No
+finding observes HEAD, the working tree, untracked files or upstream distance,
+so the state this Spec surfaces is unobserved even though the scope is not
+empty.
+
+`workbench/tools/spec-workbench.mjs` `closeTicket` (renamed `closeTask` by S-00H TK-003 after this anchor) requires `--proof`,
+`--docs` and `--remaining-gap`, sets the latest event to "closed with proof",
+and appends an evidence row. It parses files; it never shells out to Git and
+never reads repository state.
+
+## Desired Behavior
+
+An agent runs `doctor` and sees, without being blocked, that HEAD is detached
+or that untracked files sit under the controls, ADR or spec lanes. An agent
+runs `close` on a dirty or unpushed branch and is refused, with the refusal
+naming what it found. The same agent, having recorded that state and its
+reason in the Receipt, closes successfully, and the reason survives in the
+Receipt where a reviewer reads it rather than being consumed by the check.
+
+A detached HEAD never blocks `doctor` at effect `all`. Detached is a
+legitimate inspection state — the session that decided this was in one — and
+blocking there would disable the tool in the situation that most needs it.
+
+## Decisions And Contracts
+
+- The two mechanisms, their severities and the recorded-reason escape hatch:
+  [ADR-000J](../../docs/adr/000J-completion-claims-are-checked-against-repository-state.md).
+- The Receipt this writes into, its per-run rows and its `upstream distance`
+  field:
+  [ADR-000H](../../docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md),
+  delivered by
+  [S-00H](../retired/S-00H-task-artifact-and-terminology-migration/SPEC.md).
+- Registered blocking semantics, which the new findings must declare rather
+  than invent:
+  [ADR-0029](../../docs/adr/0029-diagnostics-carry-registered-blocking-semantics.md).
+- A check may block only the change it evaluates:
+  [ADR-0020](../../docs/adr/0020-a-check-blocks-only-the-change-it-evaluates.md).
+
+## Non-Goals
+
+- **Blocking `doctor` on Git state.** Every finding here is `attention` with
+  blocking effect `none`, by ADR-000J's explicit rejection of the alternative.
+- **Closing the escape hatch.** A recorded state and reason permits the close.
+  ADR-000J accepts that this is also the hole a future agent can route around,
+  and answers it by preserving the reason for a reader, not by removing it.
+- Any change to what `proof`, `docs` or `remaining-gap` mean.
+- Rewriting historical evidence rows to add Git state they never carried.
+
+## Dependencies And Blockers
+
+None blocking. ADR-000J routes `upstream distance` into the Receipt, but the
+criterion that checks it belongs to
+[S-00H](../retired/S-00H-task-artifact-and-terminology-migration/SPEC.md) TK-006, which
+owns the Receipt's fields — this Spec's TK-001 makes the value readable and
+claims nothing further about it. Neither Spec waits on the other.
+
+## Vertical Implementation Slices
+
+| Ticket | Slice | Status | Blockers | Proof |
+|---|---|---|---|---|
+| TK-001 | Read repository state at a stable seam | done | none | Red at d6545ca+tests: node --test --test-name-pattern=readRepositoryState tools/test-diagnostics.mjs failed with SyntaxError: workbench-layout.mjs does not provide an export named readRepositoryState. Green at 97bb945: same command, 3/3 pass (branch/dirty/untracked-lane/upstream ahead 1 behind 1 against a manifest-declared spec lane; detached HEAD, no upstream as null, gone upstream; unknown for non-repo, missing dir, undefined root, absent Git via options.git and via empty PATH, unreadable manifest). node tools/test-diagnostics.mjs 27/27. Full AGENTS.md suite at 97bb945: pass=48 fail=0. |
+| TK-002 | Register and surface the git-state findings | done | none | Red at c261c96+tests: node --test with a --test-name-pattern selecting the three new S-00M tests and the two pin tests in tools/test-diagnostics.mjs failed 4 of 5: Error: Unregistered diagnostic code: detached-head; the long list is still reported; detached-head must stay registered; PINNED_EFFECTS must equal the registry exactly (the unknown-state guard passed, as it asserts absence). Green at f6e1f58: same command 5/5; node tools/test-diagnostics.mjs 30/30; node tools/test-workbench-layout.mjs 70/70. Exit-code and next proof: on one committed fixture, detaching HEAD and adding untracked RUNBOOK.md, workbench/docs/adr/draft-notes.txt and workbench/specs/S-001-first/notes.md makes doctor report exactly detached-head and untracked-controls (attention, git, none) while the CLI doctor exit code equals the clean run (0) and next --json stdout is byte-identical. Unknown state (not a repository; Git absent from PATH) yields neither finding, no throw and the same exit code; chosen behavior is no output, since integration-branch-missing already names the not-a-repository case. Adapted expectations: tools/test-diagnostics.mjs now sets aside only untracked-controls for tests of other findings (fixtures never commit controls/specs) and reads the whole report in the byte-compare test; tools/test-workbench-layout.mjs expects exactly untracked-controls in four uncommitted-room assertions. Full AGENTS.md suite at f6e1f58: pass=48 fail=0. |
+| TK-003 | Refuse `close` on a dirty or unpushed branch unless the Receipt records it | done | none | Git-state refusal (2baae9a): red at efb7227+tests: node --test --test-name-pattern=readRepositoryState tools/test-diagnostics.mjs failed 3/4 (untrackedOther undefined); node tools/test-spec-workbench.mjs failed (1) dirty tree: Missing expected exception, close proceeded; (2) clean unpushed branch: Missing expected exception, close proceeded; (3) --git-state-reason on dirty+unpushed: refused anyway (close refused: dirty-tree (1 file: scratch.txt) and unpushed (ahead 1 behind 0 of origin/main)); (4) clean+reason guard proven by mutation (removing the throw fails the test with Missing expected exception). Green: reader 4/4; close refuses naming dirty-tree/unpushed with files and upstream distance (or no upstream, detached HEAD, no remote) and writes nothing; with a reason the state and reason are read back from the Receipt row (readReceiptFromFile, checksum chain valid) and the Spec evidence row; clean+pushed closes unchanged; clean+reason refused; unknown state (not a repository) closes unchanged. Ready-task refusal (cd9ebdc): red: close on a Spec whose only open Task was ready closed the unclaimed TK-001 as done (reproduced via CLI: TK-001 done, Latest event TK-001 closed with proof); green: refuses with S-### has no in-progress task to close; claim one first, Spec and record byte-identical. node tools/test-spec-workbench.mjs, test-diagnostics, test-workbench-round-trip, test-visible-id-consumers, test-spec-report pass; 2baae9a spec-workbench and diagnostics tests pass in isolation. Full AGENTS.md suite at cd9ebdc: pass=48 fail=0. Dogfood: this close ran clean and pushed at cd9ebdc with no --git-state-reason and was not refused. |
+| TK-004 | Document both mechanisms in their control owners | done | none | Red at 590794d plus tests: node --test --test-name-pattern=completion-claim tools/test-control-fidelity.mjs 0/2 (AGENTS.md completion obligations: recorded reason stays readable). Green at 6ffbcaa: same pattern 3/3 with a mutation test over 3 AGENTS.md claims, 7 RUNBOOK.md claims and the generic code list; node tools/test-control-fidelity.mjs 26/26; wiki.mjs validate ok. Full AGENTS.md suite at 6ffbcaa (dirty: []): pass=48 fail=0. Guardrail 78/100 before and after; self-drift pre/post the same 7 pre-existing findings. Dogfood: this close ran clean and pushed at 2817d9d with no --git-state-reason and was not refused. |
+
+### TK-001 - Read repository state at a stable seam
+
+**Stance:** Builder
+
+One function, one seam, no callers yet. It reports whether HEAD is detached,
+which files are dirty, which untracked files sit under the controls, ADR and
+spec lanes, and the branch's distance from its upstream. Write the failing
+test against a fixture repository first.
+
+A host without Git, or a directory that is not a repository, is a state this
+reader reports as unknown. It must not throw: every later caller runs inside
+`doctor` or `close`, and a reader that throws converts a missing tool into a
+broken command.
+
+### TK-002 - Register and surface the git-state findings
+
+**Stance:** Builder
+
+`detached-head` and `untracked-controls` join the registry in the `git` scope
+at severity `attention` with blocking effect `none`. ADR-0029 requires the
+registered semantics to be declared, and ADR-000J requires these two to stay
+non-blocking, so the test asserts the registration itself and not only the
+message. Prove that `doctor`'s exit code and `next`'s selection are unchanged
+by their presence.
+
+### TK-003 - Refuse `close` on a dirty or unpushed branch unless the Receipt records it
+
+**Stance:** Builder
+
+This is the slice that does the work ADR-000J exists for: an `attention`
+finding stays visible without blocking by its own registered definition, so
+visibility alone cannot stop a false completion report. The false claim is
+made at `close`.
+
+`closeTask` gains a dependency on repository state it has never had, moving
+from pure file parsing to reading Git. Keep the reading inside TK-001's seam
+so the parsing path stays testable without a repository.
+
+The recorded reason must be present in the written record after a permitted
+close. A check that consumes the reason to decide and then discards it leaves
+a reviewer with a green close and no way to see what was waived.
+
+### TK-004 - Document both mechanisms in their control owners
+
+**Stance:** Builder
+
+`AGENTS.md` gains the rule at its completion obligations; `RUNBOOK.md` gains
+the new diagnostic codes, the refusal and its remediation. Do not document a
+command or a code before the slice that implements it has landed.
+
+## Acceptance Criteria
+
+- [x] `doctor` reports a detached HEAD and untracked files under the controls,
+      ADR and spec lanes.
+- [x] Both findings are registered `attention` with blocking effect `none`, and
+      neither changes `doctor`'s exit code or `next`'s selection, proven by a
+      test that failed before the change.
+- [x] `close` refuses on a dirty tree, proven by a test that failed before the
+      change.
+- [x] `close` refuses on an unpushed branch, proven by a test that failed
+      before the change.
+- [x] `close` succeeds when the Receipt records the state and a reason, and the
+      reason text is readable in the record afterward.
+- [x] The state reader reports unknown rather than throwing where Git is
+      unavailable.
+- [x] `AGENTS.md` and `RUNBOOK.md` describe both mechanisms.
+- [x] The full verification suite passes and `doctor` carries no blocking
+      finding.
+
+## Testing Seams
+
+The repository-state reader from TK-001; the `diagnostics.mjs` registry;
+`spec-workbench.mjs` `closeTask`; the existing coverage in
+`tools/test-diagnostics.mjs` and `tools/test-spec-workbench.mjs`.
+
+## Verification Procedure
+
+Run the targeted test for the touched seam, then the full verification suite
+named in `AGENTS.md`, then
+`node workbench/tools/spec-workbench.mjs doctor`.
+
+## Documentation Impact
+
+`AGENTS.md` and `RUNBOOK.md` at TK-004. ADR-000J's `canonicalized_in` already
+names this Spec as of its acceptance.
+
+TK-004 also mirrored both mechanisms into `templates/AGENTS.md` and
+`templates/RUNBOOK.md`, locked the wording in `tools/test-control-fidelity.mjs`
+against the diagnostics registry, and corrected the `close` section of
+`workbench/wiki/lifecycle-tool-behaviors.md`, which still said `close` falls
+back to a ready Task.
+
+## Append-Only Evidence And Execution Log
+
+| Date | Commit | Claim | Method | Result |
+|---|---|---|---|---|
+| 2026-09-15 | 87c1d45 | Spec authored at owner acceptance of ADR-000J, which recorded that no Spec owned its implementation | Read ADR-000J against `workbench/tools/diagnostics.mjs` and `workbench/tools/spec-workbench.mjs` at the pre anchor | Confirmed no registered finding observes HEAD, the working tree, untracked files or upstream distance, and that `closeTicket` reads no repository state; no implementation performed |
+| 2026-09-15 | 87c1d45 | ADR-000J's own verification sentence claimed the `git` scope had "no finding currently using it" | Ran `grep -n "'git'" workbench/tools/diagnostics.mjs` at the pre anchor and against `git show c0ac60a:workbench/tools/diagnostics.mjs`, the ADR's own anchor | The claim was false at the anchor it cited: `integration-branch-undeclared` and `integration-branch-missing` both used the scope then and now. The ADR's substantive claim — no finding observes Git working state — holds. Corrected the sentence in ADR-000J at acceptance rather than accepting a false evidence line into Canon |
+| 2026-09-15 | 8a32f41 | Separate-context review of the acceptance candidate | Reviewer ran `adr validate`, `doctor`, `next --json`, the append-only check, projection regeneration and seven suite tests against commit `8a32f41`, and challenged the Spec's verified-state claims, slice statuses and next gate | PASS with four should-fix findings. Two applied here: `Next gate` named a `claim` the tooling refuses for a `planned` Spec, and Dependencies stated an `upstream distance` obligation this Spec has no criterion for. Reviewer confirmed the Current Verified State claims about the `git` scope, the 66 registered codes and `closeTicket` are accurate |
+| 2026-09-15 | e7beea3 | Fresh review of the corrected candidate returned PASS with no blocking or should-fix finding; it also caught two characterization slips in the row above | Reviewer re-read that row against its own prior report | The `upstream distance` item was recorded there as one of "four should-fix findings"; it was note 7. "Seven suite tests" undercounts: the reviewer ran ten node suites plus the template evaluator and the append-only checker. Both slips err toward over-severity and under-credit, so neither overclaims. The row above is append-only and stands as written; this row is the correction |
+| 2026-09-26 | TK-001 | Task closed | Red at d6545ca+tests: node --test --test-name-pattern=readRepositoryState tools/test-diagnostics.mjs failed with SyntaxError: workbench-layout.mjs does not provide an export named readRepositoryState. Green at 97bb945: same command, 3/3 pass (branch/dirty/untracked-lane/upstream ahead 1 behind 1 against a manifest-declared spec lane; detached HEAD, no upstream as null, gone upstream; unknown for non-repo, missing dir, undefined root, absent Git via options.git and via empty PATH, unreadable manifest). node tools/test-diagnostics.mjs 27/27. Full AGENTS.md suite at 97bb945: pass=48 fail=0. | Docs checked; no update needed because the reader has no caller yet and TK-004 owns the AGENTS.md/RUNBOOK.md text; the contract is documented in the comment above readRepositoryState in workbench/tools/workbench-layout.mjs. | No caller until TK-002 (doctor findings) and TK-003 (close refusal); the Receipt's upstream distance field is S-00H TK-006's criterion and is not wired here. |
+| 2026-09-26 | 97bb945 | TK-001 closed (restates the `close` row above in this table's five-column schema; that row put the Task ID under Commit and a sixth cell GitHub does not render) | Red at d6545ca+tests: node --test --test-name-pattern=readRepositoryState tools/test-diagnostics.mjs failed with SyntaxError: workbench-layout.mjs does not provide an export named readRepositoryState. Green at 97bb945: same command, 3/3 pass (branch/dirty/untracked-lane/upstream ahead 1 behind 1 against a manifest-declared spec lane; detached HEAD, no upstream as null, gone upstream; unknown for non-repo, missing dir, undefined root, absent Git via options.git and via empty PATH, unreadable manifest). node tools/test-diagnostics.mjs 27/27. Full AGENTS.md suite at 97bb945: pass=48 fail=0. | Docs checked; no update needed because the reader has no caller yet and TK-004 owns the AGENTS.md/RUNBOOK.md text; the contract is documented in the comment above readRepositoryState in workbench/tools/workbench-layout.mjs. Remaining gap: No caller until TK-002 (doctor findings) and TK-003 (close refusal); the Receipt's upstream distance field is S-00H TK-006's criterion and is not wired here. |
+| 2026-09-26 | review | Review verdict: pass at cf5f7e11b0a6266c01b59396a907fbb40e466f0e [d652dbeef899] #1 | No blocking or should-fix findings. Note: subdirectory-root handling via --show-prefix is covered only by a manual check; TK-002/TK-003 callers pass the resolved Workbench root. Reviewer could not run fixture tests (sandbox EPERM on mkdtemp); builder suite 48/0 at 5d0ed89 and dispatcher trial merge onto ebb01dc (4fee566) 48/0. | Codex gpt-5.5, codex exec -s read-only, separate context from the builder and dispatcher | 3 |
+| 2026-09-26 | TK-002 | Task closed | Red at c261c96+tests: node --test with a --test-name-pattern selecting the three new S-00M tests and the two pin tests in tools/test-diagnostics.mjs failed 4 of 5: Error: Unregistered diagnostic code: detached-head; the long list is still reported; detached-head must stay registered; PINNED_EFFECTS must equal the registry exactly (the unknown-state guard passed, as it asserts absence). Green at f6e1f58: same command 5/5; node tools/test-diagnostics.mjs 30/30; node tools/test-workbench-layout.mjs 70/70. Exit-code and next proof: on one committed fixture, detaching HEAD and adding untracked RUNBOOK.md, workbench/docs/adr/draft-notes.txt and workbench/specs/S-001-first/notes.md makes doctor report exactly detached-head and untracked-controls (attention, git, none) while the CLI doctor exit code equals the clean run (0) and next --json stdout is byte-identical. Unknown state (not a repository; Git absent from PATH) yields neither finding, no throw and the same exit code; chosen behavior is no output, since integration-branch-missing already names the not-a-repository case. Adapted expectations: tools/test-diagnostics.mjs now sets aside only untracked-controls for tests of other findings (fixtures never commit controls/specs) and reads the whole report in the byte-compare test; tools/test-workbench-layout.mjs expects exactly untracked-controls in four uncommitted-room assertions. Full AGENTS.md suite at f6e1f58: pass=48 fail=0. | Docs checked; no update needed: TK-004 documents the codes in AGENTS.md/RUNBOOK.md after this lands; the registry summaries and the comment above repositoryStateFindings in workbench/tools/spec-workbench.mjs carry the contract meanwhile. No check required documenting the codes (test-control-fidelity passed). | RUNBOOK.md needs both codes in its blocking-effect table (none/attention row) - TK-004. The close refusal on a dirty or unpushed branch is TK-003. untracked-controls also reports the spec-lane CATALOG.md and .gitkeep files when uncommitted, which is correct but means a fresh uncommitted Genesis room carries it until its first commit. |
+| 2026-09-26 | f6e1f58 | TK-002 closed (restates the close row above in this table's five-column schema) | Red at c261c96+tests: node --test with a --test-name-pattern selecting the three new S-00M tests and the two pin tests in tools/test-diagnostics.mjs failed 4 of 5: Error: Unregistered diagnostic code: detached-head; the long list is still reported; detached-head must stay registered; PINNED_EFFECTS must equal the registry exactly (the unknown-state guard passed, as it asserts absence). Green at f6e1f58: same command 5/5; node tools/test-diagnostics.mjs 30/30; node tools/test-workbench-layout.mjs 70/70. Exit-code and next proof: on one committed fixture, detaching HEAD and adding untracked RUNBOOK.md, workbench/docs/adr/draft-notes.txt and workbench/specs/S-001-first/notes.md makes doctor report exactly detached-head and untracked-controls (attention, git, none) while the CLI doctor exit code equals the clean run (0) and next --json stdout is byte-identical. Unknown state (not a repository; Git absent from PATH) yields neither finding, no throw and the same exit code; chosen behavior is no output, since integration-branch-missing already names the not-a-repository case. Adapted expectations: tools/test-diagnostics.mjs now sets aside only untracked-controls for tests of other findings (fixtures never commit controls/specs) and reads the whole report in the byte-compare test; tools/test-workbench-layout.mjs expects exactly untracked-controls in four uncommitted-room assertions. Full AGENTS.md suite at f6e1f58: pass=48 fail=0. | Docs checked; no update needed: TK-004 documents the codes in AGENTS.md/RUNBOOK.md after this lands; the registry summaries and the comment above repositoryStateFindings in workbench/tools/spec-workbench.mjs carry the contract meanwhile. No check required documenting the codes (test-control-fidelity passed). Remaining gap: RUNBOOK.md needs both codes in its blocking-effect table (none/attention row) - TK-004. The close refusal on a dirty or unpushed branch is TK-003. untracked-controls also reports the spec-lane CATALOG.md and .gitkeep files when uncommitted, which is correct but means a fresh uncommitted Genesis room carries it until its first commit. |
+| 2026-09-26 | review | Review verdict: pass at a83bbd3dfe3095c5f518fe6c2ad7e124476a4bae [a4041120a85d] #1 | No blocking or should-fix findings. Notes: adapted legacy tests filter only untracked-controls while the TK-002 tests assert unfiltered doctor codes, registry semantics, CLI exit code and unchanged next --json; reviewer could not run fixture tests (sandbox EPERM on mkdtemp); builder suite 48/0 at a83bbd3. | Codex gpt-5.5, codex exec -s read-only, separate context from the builder and dispatcher | 3 |
+| 2026-09-26 | TK-003 | Task closed | Git-state refusal (2baae9a): red at efb7227+tests: node --test --test-name-pattern=readRepositoryState tools/test-diagnostics.mjs failed 3/4 (untrackedOther undefined); node tools/test-spec-workbench.mjs failed (1) dirty tree: Missing expected exception, close proceeded; (2) clean unpushed branch: Missing expected exception, close proceeded; (3) --git-state-reason on dirty+unpushed: refused anyway (close refused: dirty-tree (1 file: scratch.txt) and unpushed (ahead 1 behind 0 of origin/main)); (4) clean+reason guard proven by mutation (removing the throw fails the test with Missing expected exception). Green: reader 4/4; close refuses naming dirty-tree/unpushed with files and upstream distance (or no upstream, detached HEAD, no remote) and writes nothing; with a reason the state and reason are read back from the Receipt row (readReceiptFromFile, checksum chain valid) and the Spec evidence row; clean+pushed closes unchanged; clean+reason refused; unknown state (not a repository) closes unchanged. Ready-task refusal (cd9ebdc): red: close on a Spec whose only open Task was ready closed the unclaimed TK-001 as done (reproduced via CLI: TK-001 done, Latest event TK-001 closed with proof); green: refuses with S-### has no in-progress task to close; claim one first, Spec and record byte-identical. node tools/test-spec-workbench.mjs, test-diagnostics, test-workbench-round-trip, test-visible-id-consumers, test-spec-report pass; 2baae9a spec-workbench and diagnostics tests pass in isolation. Full AGENTS.md suite at cd9ebdc: pass=48 fail=0. Dogfood: this close ran clean and pushed at cd9ebdc with no --git-state-reason and was not refused. | Docs checked; no update needed: TK-004 owns the AGENTS.md/RUNBOOK.md text for the refusal, --git-state-reason and the in-progress requirement; the contracts are documented in the comments above readRepositoryState (workbench/tools/workbench-layout.mjs) and gitStateAtClose/closeTask (workbench/tools/spec-workbench.mjs). | Orphan corrective close path (closeOrphanCorrectiveTask, close TK-###) does not run the git-state check. close contract change: close now refuses when no Task is in progress (refusal only; no new option). Dirty file count in the refusal lists every untracked file while the Receipt Dirty column collapses untracked directories, so counts can differ though both are non-zero together. A reason given in an unknown state is recorded beside unknown (<reason>). AGENTS.md/RUNBOOK.md wording is TK-004. |
+| 2026-09-26 | cd9ebdc | TK-003 closed (restates the `close` row above in this table's five-column schema; that row put the Task ID under Commit and a sixth cell GitHub does not render) | Git-state refusal (2baae9a): red at efb7227+tests: node --test --test-name-pattern=readRepositoryState tools/test-diagnostics.mjs failed 3/4 (untrackedOther undefined); node tools/test-spec-workbench.mjs failed (1) dirty tree: Missing expected exception, close proceeded; (2) clean unpushed branch: Missing expected exception, close proceeded; (3) --git-state-reason on dirty+unpushed: refused anyway (close refused: dirty-tree (1 file: scratch.txt) and unpushed (ahead 1 behind 0 of origin/main)); (4) clean+reason guard proven by mutation (removing the throw fails the test with Missing expected exception). Green: reader 4/4; close refuses naming dirty-tree/unpushed with files and upstream distance (or no upstream, detached HEAD, no remote) and writes nothing; with a reason the state and reason are read back from the Receipt row (readReceiptFromFile, checksum chain valid) and the Spec evidence row; clean+pushed closes unchanged; clean+reason refused; unknown state (not a repository) closes unchanged. Ready-task refusal (cd9ebdc): red: close on a Spec whose only open Task was ready closed the unclaimed TK-001 as done (reproduced via CLI: TK-001 done, Latest event TK-001 closed with proof); green: refuses with S-### has no in-progress task to close; claim one first, Spec and record byte-identical. node tools/test-spec-workbench.mjs, test-diagnostics, test-workbench-round-trip, test-visible-id-consumers, test-spec-report pass; 2baae9a spec-workbench and diagnostics tests pass in isolation. Full AGENTS.md suite at cd9ebdc: pass=48 fail=0. Dogfood: this close ran clean and pushed at cd9ebdc with no --git-state-reason and was not refused. | Docs checked; no update needed: TK-004 owns the AGENTS.md/RUNBOOK.md text for the refusal, --git-state-reason and the in-progress requirement; the contracts are documented in the comments above readRepositoryState (workbench/tools/workbench-layout.mjs) and gitStateAtClose/closeTask (workbench/tools/spec-workbench.mjs). Remaining gap: Orphan corrective close path (closeOrphanCorrectiveTask, close TK-###) does not run the git-state check. close contract change: close now refuses when no Task is in progress (refusal only; no new option). Dirty file count in the refusal lists every untracked file while the Receipt Dirty column collapses untracked directories, so counts can differ though both are non-zero together. A reason given in an unknown state is recorded beside unknown (<reason>). AGENTS.md/RUNBOOK.md wording is TK-004. |
+| 2026-09-26 | review | Review verdict: pass at eed0be931c3702b7fd88ddde80dc68b7dcc92398 [41918182b126] #3 | No blocking or should-fix findings over c9dccb9..eed0be9. Notes: the refusal runs before every write; the reason is readable in the Receipt and Spec evidence rows; a source comment calls the close dirty count exactly the Receipt Dirty count although the reader uses --untracked-files=all (the count difference is disclosed in the close evidence); orphan close TK-### bypasses the check (recorded gap); TK-004 deferred with free-text hold is tooling-consistent. Reviewer could not run fixture tests (sandbox EPERM); dispatcher suite 48/0 at eed0be9. | Codex gpt-5.5, codex exec -s read-only, separate context from the builder and dispatcher | 6 |
+| 2026-09-26 | b4ab9b0 | Drift reconciliation after TK-001 to TK-003 (Lane E, writer for this Spec after Lane D ended): six acceptance lines checked, the TK-004 Blockers cell set to S-00P TK-002 (it said none while the header and Next gate name that hold), and the Completion Result replaced (it still said Not started) | Each checked line cites its proving close row above: detached HEAD and untracked controls/ADR/spec-lane files reported by `doctor`, and both findings `attention`/`none` with unchanged exit code and `next --json`, from the TK-002 row (red at c261c96, green at f6e1f58); dirty-tree refusal, unpushed refusal, and the recorded reason read back from the Receipt and Spec evidence, from the TK-003 row (red at efb7227, green at 2baae9a); unknown rather than throwing where Git is absent, from the TK-001 row (green at 97bb945). Found by the Lane E post-merge drift review of PRs #159, #166 and #170 (Codex gpt-5.5 read-only) | TK-004's documentation line and the final suite-and-doctor line stay unchecked; Docs checked; no update needed: record-only change |
+| 2026-10-02 | 5adcbaa | TK-004 released: its hold on S-00P TK-002 is resolved, so the row moves from `deferred` to `ready` with Blockers `none` | `git fetch origin`; `git merge-base --is-ancestor 76932f5ba7643a55fa140320cb86550ab7fc99bb origin/integration` (S-00P TK-002's recorded integration containment of delivery PR #238) exited 0 at integration `5adcbaa`; S-00P TK-002 through TK-005 records read `done`, so the `AGENTS.md`, `RUNBOOK.md`, `LEXICON.md` and template rewrites the hold guarded against have landed. Release by claude-s00m-carry under the owner's 2026-10-02 instruction to carry S-00M to completion | Header Blockers, Latest event, Next gate and the TK-004 row updated; no other content changed. Docs checked; no update needed: record-only release |
+| 2026-10-02 | 6ffbcaa | TK-004 gates before close: both mechanisms documented in the root and generic controls, red then green | Red at 590794d plus the new tests: `node --test --test-name-pattern=completion-claim tools/test-control-fidelity.mjs` passed 0 of 2, both failing `AGENTS.md completion obligations: recorded reason stays readable` (the dirty-or-unpushed sentence S-00P TK-002 already wrote passed). Green at 6ffbcaa: same pattern 3/3, including a mutation test in which removing each of 3 AGENTS.md claims, 7 RUNBOOK.md claims and the generic Runbook's code list fails the contract; `node tools/test-control-fidelity.mjs` 26/26; `node workbench/tools/wiki.mjs validate` ok. Full AGENTS.md suite on the committed candidate 6ffbcaa (first line `dirty: []`): pass=48 fail=0. Guardrail `node tools/audit-guardrails.mjs --path .` 78/100 before (5adcbaa) and after (6ffbcaa), report identical apart from its path line; the remaining recommendations are the four Outcome-evidence items (real repeated outcome trials), and the static score claims nothing about agent outcomes. Self-drift `--phase pre` at 5adcbaa and `--phase post` at 6ffbcaa: the same 7 findings (S-00Q stale-claim, five stale-seed, unverified-provenance), cleanUpdate false, none introduced; the manual semantic check found no other current-facing text describing the retired ready-Task fallback | Docs: AGENTS.md (completion obligations), RUNBOOK.md (Worker close procedure; blocking-effect table `none` (attention) row and an explanation beneath it), the templates/AGENTS.md and templates/RUNBOOK.md mirrors, and the close section of workbench/wiki/lifecycle-tool-behaviors.md. RUNBOOK has no separate `close` options list, so `--git-state-reason "<why>"` is documented in the prose beside the close example rather than added to the routine example, which stays the clean, pushed close. TK-004 is a table row with no Task record, so `receipt` does not apply and this row carries its run evidence |
+| 2026-10-02 | TK-004 | Task closed | Red at 590794d plus tests: node --test --test-name-pattern=completion-claim tools/test-control-fidelity.mjs 0/2 (AGENTS.md completion obligations: recorded reason stays readable). Green at 6ffbcaa: same pattern 3/3 with a mutation test over 3 AGENTS.md claims, 7 RUNBOOK.md claims and the generic code list; node tools/test-control-fidelity.mjs 26/26; wiki.mjs validate ok. Full AGENTS.md suite at 6ffbcaa (dirty: []): pass=48 fail=0. Guardrail 78/100 before and after; self-drift pre/post the same 7 pre-existing findings. Dogfood: this close ran clean and pushed at 2817d9d with no --git-state-reason and was not refused. | AGENTS.md and templates/AGENTS.md (completion obligations: recorded reason in Receipt and Spec evidence, no-in-progress refusal, non-blocking detached-head/untracked-controls); RUNBOOK.md and templates/RUNBOOK.md (close refusals dirty-tree/unpushed, remediation, unknown state, no-in-progress refusal, orphan close gap; both codes in the blocking-effect table and doctor prose); workbench/wiki/lifecycle-tool-behaviors.md close section; tools/test-control-fidelity.mjs locks the wording against the registry. | Orphan corrective close (close TK-###) still skips the Git-state check; no Spec owns the repair. Owner Human QA on integration and complete S-00M remain. |
+| 2026-10-02 | 6ffbcaa | TK-004 closed (restates the `close` row above in this table's five-column schema; that row put the Task ID under Commit and a sixth cell GitHub does not render) | Red at 590794d plus tests: node --test --test-name-pattern=completion-claim tools/test-control-fidelity.mjs 0/2 (AGENTS.md completion obligations: recorded reason stays readable). Green at 6ffbcaa: same pattern 3/3 with a mutation test over 3 AGENTS.md claims, 7 RUNBOOK.md claims and the generic code list; node tools/test-control-fidelity.mjs 26/26; wiki.mjs validate ok. Full AGENTS.md suite at 6ffbcaa (dirty: []): pass=48 fail=0. Guardrail 78/100 before and after; self-drift pre/post the same 7 pre-existing findings. Dogfood: this close ran clean and pushed at 2817d9d with no --git-state-reason and was not refused. | AGENTS.md and templates/AGENTS.md (completion obligations: recorded reason in Receipt and Spec evidence, no-in-progress refusal, non-blocking detached-head/untracked-controls); RUNBOOK.md and templates/RUNBOOK.md (close refusals dirty-tree/unpushed, remediation, unknown state, no-in-progress refusal, orphan close gap; both codes in the blocking-effect table and doctor prose); workbench/wiki/lifecycle-tool-behaviors.md close section; tools/test-control-fidelity.mjs locks the wording against the registry. Remaining gap: Orphan corrective close (close TK-###) still skips the Git-state check; no Spec owns the repair. Owner Human QA on integration and complete S-00M remain. |
+| 2026-10-02 | 5adcbaa | Carry hand-back: TK-004's resolved hold was invisible to selection, so the owner had to name S-00M to restart it | Occurrence: at selection, the owner's 2026-10-02 instruction to carry S-00M supplied routing the record should have carried. S-00P TK-002's delivery PR #238 had been contained in integration at `76932f5` since 2026-10-01, but `next` never offers a `deferred` row and the hold sat in free text. Cause (missing): the blocker grammar has no cross-Spec Task form. A plain `TK-###` resolves only against its own Spec's rows and records (`satisfiedIds` in `workbench/tools/spec-workbench.mjs`), and `S-00P:delivered` waits on the whole Spec's reviewed delivery, which S-00P has still not reached, so the dependency could not be recorded where `next` reads it. The board compounded it (incorrect projection): with no active Task, `render` labels a Spec `Acceptance / owner gate`, so TASKBOARD presented open authorized work as waiting on the owner | Correction: released by hand in this run (row above). The general repair, a cross-Spec Task blocker token or a board cell that names a `deferred` Task instead of the owner gate, belongs to the `spec-workbench.mjs` blocker grammar and `render`, which no active Spec owns; recorded here as that gap. No other hand-back so far in this run |
+| 2026-10-02 | review | Review verdict: pass at 7d13499a6bc063aa470343bc160a35511ba7ac95 [26c0a71e4a6c] #4 | No High, Medium or Low findings against base 5adcbaa. The reviewer ran git diff --stat, git diff and git diff --check against BASE, doctor (no blocking finding), report S-00M at the candidate (content matches, gaps 0), the completion-claim tests 3/3, wiki.mjs validate and check-append-only.py (clean), and confirmed the candidate is a fast-forward of integration; it judged the templates generic and the new tests non-vacuous. 12 older fixture tests in test-control-fidelity failed in its sandbox with EPERM on mkdtemp; builder full suite 48/48 at 6ffbcaa. | Codex gpt-5.5, codex exec -s read-only, separate context from the builder, on a detached checkout of the candidate | 3 |
+| 2026-10-02 | cdea242 | Reviewed integration delivery recorded, with the carry run's hand-back tally | PR #271 merged into `integration` as `cdea2427a7262834a6b8ced82df8b84dc2cd8dec` (parents `5adcbaa`, `6840285`) with `gh pr merge --merge --match-head-commit 68402859f0a3b93e701f1fc14dae94a1657b0b0a`. After `git fetch origin`, `git merge-base --is-ancestor` proved the reviewed candidate `7d13499a6bc063aa470343bc160a35511ba7ac95` and the verdict-row commit `68402859` ancestors of `origin/integration`; `gate --spec S-00M --candidate 7d13499` and `gate --task TK-004 --spec S-00M` were not refused before the merge. This follow-up rewrites the Completion Result, which the review digest binds, because it still named the review and merge as open, so it carries its own separate-context review | Header Latest event and Next gate now name the merged delivery and the owner gates that remain; the Completion Result names PR #271. Carry run tally: one coordination hand-back (the row naming TK-004's invisible hold); none arose during review, gating or merge. Docs: workbench/wiki/lifecycle-tool-behaviors.md gains the digest-bound Completion Result trap this follow-up hit |
+| 2026-10-02 | review | Review verdict: pass at 9c23bbe3bf2a422bf8cae84184df6104fd209eb8 [2ffe974f42dc] #5 | No High, Medium or Low findings against base cdea242 (PR #271 merge). Records-only follow-up: the header names no owner approval, main promotion or completion; the new evidence row's merge parents and the ancestry of 7d13499 and 68402859 match Git; the Completion Result now leaves only the owner gates open; the new Wiki verdict section matches computeSpecDigest's exclusions. The reviewer ran git diff/--check against BASE, git log/show and merge-base checks, doctor, report S-00M at the candidate, check-append-only.py and wiki.mjs validate. Builder full suite 48/48 at 9c23bbe. | Codex gpt-5.5, codex exec -s read-only, separate context from the builder, on a detached checkout of the candidate | 4 |
+
+## Completion Result
+
+All four Tasks are done with proof and all eight acceptance criteria are
+checked; the Spec is not complete. TK-001 reads repository state at one seam
+that never throws. TK-002 adds the `detached-head` and `untracked-controls`
+findings (scope `git`, `attention`, blocking effect `none`), which change
+neither `doctor`'s exit code nor `next`'s selection. TK-003 makes `close`
+refuse a dirty or unpushed tree unless `--git-state-reason` records the state
+and the reason in the Receipt and Spec evidence rows, and refuse a Spec with no
+in-progress Task. TK-004 documents both mechanisms in `AGENTS.md`,
+`RUNBOOK.md` and their template mirrors, locked by
+`tools/test-control-fidelity.mjs`. TK-001 to TK-003 merged through PRs #159,
+#166 and #170, and TK-004 through PR #271 (`integration` `cdea242`) after a
+separate-context review passed the assembled candidate `7d13499`. The full
+suite passed 48/48 at `6ffbcaa` and `doctor` carries no blocking finding.
+
+Still open: owner Human QA on `integration`, owner promotion to `main` and
+`complete S-00M`.
+
+## Remaining Limitations Or Follow-Up Specs
+
+The recorded-reason escape hatch is deliberate and remains available to any
+agent willing to write the reason. ADR-000J accepts that cost. Whether a
+reviewer actually reads those recorded reasons is a review-practice question
+this Spec does not answer.
+
+The orphan corrective close path (`close TK-###`, `closeOrphanCorrectiveTask`
+in `workbench/tools/spec-workbench.mjs`) does not run the Git-state check, so
+a corrective Task anchored to a Wiki claim can still be closed on a dirty or
+unpushed tree. TK-003 recorded the gap and TK-004 documents it in both
+Runbooks; no Spec owns the repair yet.
+
+TK-003's smaller disclosed differences stand: the refusal lists every
+untracked file while the Receipt's Dirty column collapses untracked
+directories, so the two counts can differ although both are non-zero
+together; a reason given where Git state is unknown is recorded beside
+`unknown (<reason>)`; and `untracked-controls` reports a room's spec-lane
+`CATALOG.md` and `.gitkeep` files until its first commit. A table-backed Task
+has no Receipt, so its recorded reason lands only in the Spec evidence row.
+
+## Supersession
+
+None.

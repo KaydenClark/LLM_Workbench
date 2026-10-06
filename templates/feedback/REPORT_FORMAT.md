@@ -29,6 +29,16 @@ action. Explain why the harness causes the friction when making that causal
 claim. Report no findings when that is what the evidence supports; do not
 invent work or label every limitation a defect.
 
+**Disposition (required):** exactly one of `diagnostic`, `test`, `repaired`, `declined`, or `accepted-open`, using the Lexicon's definitions.
+Record it in the owning Spec and link the report finding to that owner and its
+evidence. Name the registered code or test for those outcomes, the implementing
+commit for `repaired`, the reason for `declined`, or the accepted owning Spec
+for `accepted-open`. If ownership is missing, state that gap explicitly; a
+disposition neither schedules nor authorizes a repair. A missing disposition
+makes the finding incomplete against this format.
+
+Example field shape: `Disposition: [DISPOSITION]; owner: [SPEC_ID]; evidence: [EVIDENCE_REFERENCE]`.
+
 Finding identifiers are report-scoped. Cross-report aggregation keys on the
 report identity plus finding ID, or on an explicit shared recurrence key; a bare
 `F-001` never silently aliases another report's `F-001`.

@@ -1,101 +1,43 @@
 # LLM Workbench - Blueprint
 
-## Product Destination
+Its terms mean what the Lexicon says they mean.
 
-LLM Workbench is a portable operating harness through which a person can entrust
-an AI agent with a software project. The project itself carries enough product
-understanding, authority boundaries, working context and evidence for another
-capable agent to continue it without the owner reconstructing the conversation.
+## What it is
 
-## People And Problems Served
+LLM Workbench is an agentic management system: the workbench Claude Code and Codex use to align the owner's ideas and implement the owner's design concepts. Agents map and plan each confirmed concept and carry it through the Journey, and the owner approves the result or sends it back until the concept is realized.
 
-The owner supplies intent and consequential decisions. Agents turn that intent
-into scoped, verified work and maintain the sources that make it understandable.
-The Workbench serves both: it reduces repeated explanation and routine owner
-coordination while keeping meaningful choices and publication under human control.
-A fresh collaborator can understand the product without reading its whole history.
+A harness runs one agent in one session; it does not know what the owner wants built, what has already been decided, what another agent is doing or what is left. The workbench manages exactly that, so the owner does not have to.
 
-## Promised Outcomes
+In LLM Workbench's own room, the project is the next workbench, built with the current one. Every workbench is built to run as one room among many in an autonomous factory, the Foundry, and the Foundry needs the workbench proven first.
 
-An agent can find the right owner, reconstruct the desired result, select the
-appropriate behavior and finish the authorized assignment. Decisions retain their
-meaning and corrections; unfinished work remains reachable. Verification states
-what actually happened, and delivery claims identify the achieved recovery boundary.
-The owner can inspect both the product direction and the evidence behind progress.
+## Who it serves
 
-## Desired Experience And Behavior
+### The owner
 
-Ordinary language is sufficient to start deciding, specifying, building or
-handing off. An agent follows the [Context Map](LEXICON.md#task-routing), loads
-only relevant owners, and resolves routine details without asking the owner to
-repeat settled answers. A specification-only request stays specification-only
-through every composed skill and every receiving agent.
+The owner brings ideas and aligns on them with the agents, usually by grilling, until the design concept is shared, then confirms it. After that the owner is needed only to unblock, and to judge each finished landmark and the concept in Human QA: approve it or send it back. The owner gets a checked result without managing agents, sees what is running, changed, blocked or waiting on a decision, never explains the project twice, and can step in at any time.
 
-Grilling records answers and corrections as they arrive. Working notes remain
-compact and useful through interruption; a resumed agent checks live state and
-continues the same objective. A requested handoff is readable Markdown containing
-the job, its boundaries, accessible context and one next action. Failed operations
-remain visible and recoverable instead of becoming unsupported completion claims.
+### The agents
 
-## Integrated System Design
+The agents, in Claude Code and Codex, on any of the owner's devices or in the cloud, carry a confirmed concept the rest of the way: they map and plan it, implement it, check their own work, have it reviewed by an agent that did not build it before it merges, verify it once it lands, then see it delivered and clean up. They get a workbench that hands each session only the context its work needs, tells them what is decided and who owns each part, and carries their progress to the next agent.
 
-The root controls form the entry surface. This Blueprint describes the desired
-product, active ADR decisions explain cross-cutting architectural choices, the
-Lexicon connects meanings and owners, and stable Specs hold scoped delivery and
-proof. The Wiki supplies enduring context. [Claim-level ownership](workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md)
-keeps these surfaces coherent without making a whole file one kind of authority.
+## Promised outcomes
 
-A manifest resolves the support collections and managed local runtime. Core skills
-compose reusable behavior within the caller's scope. One upstream-owned global
-core is shared by provider discovery adapters, alongside independently owned
-optional personal skills and project extensions. [Core ownership](workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md)
-keeps the base independent of a personal catalog.
+- Review climbs a ladder: a Task is proven by automation, a Spec is reviewed by an agent that did not build it, a landmark passes integrated automated review, and the owner judges the concept. Work reaches the owner's Human QA at the landmark, after every automated check and review has passed it.
+- An agent pays context only for information that can change what it does next; everything else is reached by a pointer when the work needs it.
+- Many agents work one project at once, on any of the owner's devices or in the cloud, and combine their checked results.
+- Work is mapped and planned so every session stays in the smart zone and spends its tokens efficiently.
+- Everything a session needs lives in the project's GitHub repository; through progressive disclosure, a fresh session loads only what its work needs.
+- Every kind of truth has one maintained home, so an agent knows where to read it and where a change is written, and nothing is kept twice.
+- Claims of done say what actually happened; gaps are flagged, never faked.
+- Every room declares how an agent runs, operates, inspects and measures its product, so a claim of done can show the running product and not only the repository.
+- What the work teaches lives on in the Wiki and decision records; the scaffolding is cleared away.
+- The skills agents need ship inside every room, where the workbench regulates and monitors them; a room adds the skills, scaffolding and procedures its work needs without tearing apart what is proven to work.
+- Setup drafts the workbench from one line or an existing project, and grilling confirms it; updates never cost a project its knowledge, unfinished work or deliberate choices.
+- Every release is proven by a project made from the Workbench Template taking a confirmed concept to the owner's approval in one pass.
 
-Local JSON notepads hold unfinished reasoning, source references and corrections.
-Supported settled claims move into their durable owners before cleanup. Optional
-private transport can carry selected live context across devices with explicit
-acknowledgment and conflict preservation; ordinary local work remains independent.
+## Non-goals
 
-## Cross-Cutting Qualities And Constraints
-
-Portability, safe autonomy, source fidelity and recoverability apply throughout.
-Plain files and small deterministic local tools support multiple configured hosts.
-The system exposes compatibility and unavailable capabilities without silently
-replacing personal work or claiming support from file presence alone.
-
-Instructions, accepted design, verified behavior and historical evidence remain
-distinguishable. Privacy covers working content and metadata. Unrelated changes,
-original decisions, corrections and completed evidence survive migration.
-A structural check proves only its boundary; claims of improved agent reliability
-require repeated controlled observations with uncertainty and failures preserved.
-
-## Desired Lifecycle
-
-New projects receive a coherent starter; existing projects adopt or explicitly
-update it while preserving their product truth and deliberate local differences.
-Development proceeds through bounded specifications, useful tests, implementation,
-owned documentation and independent review of the integration candidate. The
-Workbench Template exercises the same update contract as a real installed room.
-Whole-product readiness examines the combined system before owner-controlled
-publication. Installation and remote delivery are verified where they occur.
-
-Failures lead to investigation, the smallest supported repair and corrected
-records. Working context is saved before it can be lost; cleanups follow verified
-reconciliation. Each completed assignment leaves an executable continuation or
-truthful completion without a new mandatory coordination system.
-
-## Non-Goals
-
-The Workbench is not a portfolio scheduler, autonomous source of permission,
-provider-specific control plane, marketplace, transcript archive or proof that
-an agent always follows instructions. It does not require Foundry, a graph
-service, a private catalog or network access for ordinary local work. It cannot
-guarantee capture after an immediate interruption or move a running process by
-synchronizing files. Publication and unrelated project rollout are owner choices.
-
-It does not become a hosted tracker, database, paid service, broad MCP server or
-general project-management application. Personal task management and replacement
-of Command Information Center are outside its purpose. Startup context has no
-permanent Done lane or proof archive; historical tasks are not retrofitted into
-manufactured specifications. The portable Workbench does not import Foundry
-FUIDs, Job Orders, flights, Claims, orchestration or CIC release machinery.
+- Not a harness.
+- Not a source of permission, and not proof that an agent always follows instructions.
+- Not a general-purpose project-management application or personal task manager.
+- Not a transcript or proof archive.

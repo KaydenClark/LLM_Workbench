@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { scoreWorkbench } from './evaluate-workbench.mjs';
+import { isFourPartBlueprint, scoreWorkbench } from './evaluate-workbench.mjs';
 import { isSafeRelative, SCHEMA_VERSION } from '../workbench/tools/workbench-paths.mjs';
 
 const SKIP_DIRS = new Set(['.git', 'node_modules', '.next', 'dist', 'build']);
@@ -135,7 +135,7 @@ function driftResistanceCategory(files, today) {
       'no contradictory task status',
       5,
       !hasContradictoryTaskStatus(taskboard) && !hasContradictorySpecState(files),
-      'A legacy task cannot be active and Done; a complete spec cannot remain hot or contain unfinished tickets.',
+      'A legacy task cannot be active and Done; a complete spec cannot remain hot or contain unfinished tasks.',
       'Resolve contradictory task status or spec lifecycle state and preserve completion evidence in the stable spec.'
     ),
     booleanCheck(
@@ -292,8 +292,17 @@ function patternCheck(id, label, weight, haystack, pattern, evidence, action) {
   return booleanCheck(id, label, weight, pattern.test(haystack), evidence, action);
 }
 
+// A destination-shaped Blueprint is either the eight-section destination or the
+// four-part short page; neither carries a review date or a version stamp.
+function isDestinationBlueprint(text) {
+  // A page that declares the four-part shape is judged only as that page; a legacy
+  // heading appended to a malformed one cannot make it destination-shaped.
+  if (/^## What it is$/m.test(text)) return isFourPartBlueprint(text);
+  return /^## Product Destination$/m.test(text);
+}
+
 function controlDocsAreFresh(files, today, maxAgeDays) {
-  const destination = /^## Product Destination$/m.test(files['BLUEPRINT.md'] ?? '');
+  const destination = isDestinationBlueprint(files['BLUEPRINT.md'] ?? '');
   const docs = destination ? ['TASKBOARD.md', 'RUNBOOK.md'] : ['BLUEPRINT.md', 'TASKBOARD.md', 'RUNBOOK.md'];
   if (destination) {
     const date = parseDate((files['RUNBOOK.md'] ?? '').match(/\*\*Blueprint reviewed:\*\*\s*(\d{4}-\d{2}-\d{2})/i)?.[1]);
@@ -307,7 +316,7 @@ function controlDocsAreFresh(files, today, maxAgeDays) {
 }
 
 function versionContractIsConsistent(files) {
-  const destination = /^## Product Destination$/m.test(files['BLUEPRINT.md'] ?? '');
+  const destination = isDestinationBlueprint(files['BLUEPRINT.md'] ?? '');
   let manifest;
   try { manifest = JSON.parse(files['workbench/manifest.json'] ?? '{}'); } catch { return false; }
   const hasRootVersion = destination ? /^v\d+\.\d+\.\d+$/.test(manifest.workbenchVersion ?? '') : /\*\*Harness version:\*\*\s*v\d+(?:\.\d+)*/i.test(files['BLUEPRINT.md'] ?? '');

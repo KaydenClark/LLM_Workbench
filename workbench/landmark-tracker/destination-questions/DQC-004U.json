@@ -1,0 +1,144 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-004U",
+  "revision": 5,
+  "title": "How should private recovery material be preserved outside the public product?",
+  "question": "How should private recovery material be preserved outside the public product?",
+  "answer": "U313-7: Move it to the GPT_OS workbench root (a private repo): 'We can do something with it later.' The private copy must be byte-identical by sha256, and no copy stays in the LLM_Workbench tree.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: U313-7 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "U313-7 create llm-workbench-decision-recovery.zip in the GPT_OS workbench root (private, outside this repo): Holds the zip privately, byte-identical to the original by sha256. | U313-7 retire workbench/feedback/llm-workbench-decision-recovery.zip: No copy in the public LLM_Workbench tree. | U313-7 update workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (evidence) and workbench/feedback/REPORT-decision-triage-2026-09-07.md, decision-triage-2026-09-07.json, decision-triage-second-pass-2026-09-07/first-pass-snapshot.json: Record the relocation and its sha256 check, and cite the private location rather than the old repo path.",
+    "home": "llm-workbench-decision-recovery.zip in the GPT_OS workbench root (private, outside this repo); workbench/feedback/llm-workbench-decision-recovery.zip; workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (evidence) and workbench/feedback/REPORT-decision-triage-2026-09-07.md, decision-triage-2026-09-07.json, decision-triage-second-pass-2026-09-07/first-pass-snapshot.json",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "U313-7",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000T"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 4
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "U313-7",
+      "revision": "56b459da",
+      "reason": "Ledger row U313-7 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How should private recovery material be preserved outside the public product?",
+    "question": "How should private recovery material be preserved outside the public product?",
+    "sources": [
+      {
+        "id": "U313-7",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:28.579Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:28.579Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 121 of the 2026-09-26 grouping (\"Continuity, notes, handoffs and transport\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The concrete recovery-archive direction required a byte-identical private copy and removal from the public Workbench tree.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:28.606Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "U313-7: Move it to the GPT_OS workbench root (a private repo): 'We can do something with it later.' The private copy must be byte-identical by sha256, and no copy stays in the LLM_Workbench tree."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: U313-7 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "U313-7 create llm-workbench-decision-recovery.zip in the GPT_OS workbench root (private, outside this repo): Holds the zip privately, byte-identical to the original by sha256. | U313-7 retire workbench/feedback/llm-workbench-decision-recovery.zip: No copy in the public LLM_Workbench tree. | U313-7 update workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (evidence) and workbench/feedback/REPORT-decision-triage-2026-09-07.md, decision-triage-2026-09-07.json, decision-triage-second-pass-2026-09-07/first-pass-snapshot.json: Record the relocation and its sha256 check, and cite the private location rather than the old repo path.",
+            "home": "llm-workbench-decision-recovery.zip in the GPT_OS workbench root (private, outside this repo); workbench/feedback/llm-workbench-decision-recovery.zip; workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (evidence) and workbench/feedback/REPORT-decision-triage-2026-09-07.md, decision-triage-2026-09-07.json, decision-triage-second-pass-2026-09-07/first-pass-snapshot.json",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:28.633Z",
+      "reason": "Ledger row U313-7 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "U313-7",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:28.665Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:50:01.423Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Session Transport pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000T"
+          ]
+        }
+      ]
+    }
+  ]
+}

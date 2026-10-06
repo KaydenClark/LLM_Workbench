@@ -1,0 +1,184 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-001G",
+  "revision": 6,
+  "title": "How does an agent navigate from a question to its smallest relevant owner?",
+  "question": "How does an agent navigate from a question to its smallest relevant owner?",
+  "answer": "BPR-2: Only AGENTS.md, RUNBOOK.md and LEXICON.md are universal reading on every run; Blueprint and ADRs are not universal startup context and are reached by routing. LEXICON.md owns the single Context Map, RUNBOOK.md owns the ordinary entry procedure and points to it, and AGENTS.md requires traverse-don't-search without duplicating the map.\nFND-Q09: The Lexicon is the Workbench's shared dictionary, Context Map, record of shared understanding and hub of the Navlink system: settled terms, what they mean to the owner and agents, and a link from each to the artifact holding deeper context. It is the starting surface for Traverse, don't search. Unsettled questions do not belong in the Lexicon as if they were defined meaning.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-2, FND-Q09 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "BPR-2 update LEXICON.md (Task Routing / Context Map entry routes) and templates/LEXICON.md: Hold the one Context Map from needs to owning artifacts. | BPR-2 update RUNBOOK.md (entry procedure) and templates/RUNBOOK.md: Own ordinary entry AGENTS -> RUNBOOK -> LEXICON and direct agents to the Lexicon map. | BPR-2 update AGENTS.md (opening, Traverse Don't Search) and templates/AGENTS.md: Require traversal from the entry route and link to the map without copying it. | BPR-2 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: State that the Lexicon owns the only Context Map. | FND-Q09 update LEXICON.md (header and Task Routing / Context Map) and templates/LEXICON.md: Describes the Lexicon as dictionary, Context Map, shared-understanding record and Navlink hub, holding only settled meaning. | FND-Q09 update owner's personal installed lexicon skill (outside the repo): Carries no instruction to record unsettled questions beside settled terms.",
+    "home": "LEXICON.md (Task Routing / Context Map entry routes) and templates/LEXICON.md; RUNBOOK.md (entry procedure) and templates/RUNBOOK.md; AGENTS.md (opening, Traverse Don't Search) and templates/AGENTS.md; workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md; LEXICON.md (header and Task Routing / Context Map) and templates/LEXICON.md; owner's personal installed lexicon skill (outside the repo)",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "BPR-2",
+      "revision": "56b459da"
+    },
+    {
+      "id": "FND-Q09",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000L"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 5
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "BPR-2",
+      "revision": "56b459da",
+      "reason": "Ledger row BPR-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "FND-Q09",
+      "revision": "56b459da",
+      "reason": "Ledger row FND-Q09 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How does an agent navigate from a question to its smallest relevant owner?",
+    "question": "How does an agent navigate from a question to its smallest relevant owner?",
+    "sources": [
+      {
+        "id": "BPR-2",
+        "revision": "56b459da"
+      },
+      {
+        "id": "FND-Q09",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:18.068Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:18.068Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: draft card 027 of the 2026-09-26 grouping (\"Entry, authority and ownership\"), grilling ledger at 56b459da. Agent synthesis from that draft, not owner-confirmed: The Lexicon’s Context Map routes questions to existing owners; Runbook explains entry, and AGENTS requires traversal.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:18.081Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "BPR-2: Only AGENTS.md, RUNBOOK.md and LEXICON.md are universal reading on every run; Blueprint and ADRs are not universal startup context and are reached by routing. LEXICON.md owns the single Context Map, RUNBOOK.md owns the ordinary entry procedure and points to it, and AGENTS.md requires traverse-don't-search without duplicating the map.\nFND-Q09: The Lexicon is the Workbench's shared dictionary, Context Map, record of shared understanding and hub of the Navlink system: settled terms, what they mean to the owner and agents, and a link from each to the artifact holding deeper context. It is the starting surface for Traverse, don't search. Unsettled questions do not belong in the Lexicon as if they were defined meaning."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: BPR-2, FND-Q09 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "BPR-2 update LEXICON.md (Task Routing / Context Map entry routes) and templates/LEXICON.md: Hold the one Context Map from needs to owning artifacts. | BPR-2 update RUNBOOK.md (entry procedure) and templates/RUNBOOK.md: Own ordinary entry AGENTS -> RUNBOOK -> LEXICON and direct agents to the Lexicon map. | BPR-2 update AGENTS.md (opening, Traverse Don't Search) and templates/AGENTS.md: Require traversal from the entry route and link to the map without copying it. | BPR-2 create workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md: State that the Lexicon owns the only Context Map. | FND-Q09 update LEXICON.md (header and Task Routing / Context Map) and templates/LEXICON.md: Describes the Lexicon as dictionary, Context Map, shared-understanding record and Navlink hub, holding only settled meaning. | FND-Q09 update owner's personal installed lexicon skill (outside the repo): Carries no instruction to record unsettled questions beside settled terms.",
+            "home": "LEXICON.md (Task Routing / Context Map entry routes) and templates/LEXICON.md; RUNBOOK.md (entry procedure) and templates/RUNBOOK.md; AGENTS.md (opening, Traverse Don't Search) and templates/AGENTS.md; workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md; LEXICON.md (header and Task Routing / Context Map) and templates/LEXICON.md; owner's personal installed lexicon skill (outside the repo)",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:18.094Z",
+      "reason": "Ledger row BPR-2 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "BPR-2",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:18.108Z",
+      "reason": "Ledger row FND-Q09 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "FND-Q09",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:18.122Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:58.150Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Context Map pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000L"
+          ]
+        }
+      ]
+    }
+  ]
+}

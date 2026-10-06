@@ -1,0 +1,132 @@
+# S-01R - reviewer skill rebuild
+
+**Spec ID:** S-01R
+**Status:** active
+**Priority:** 2
+**Owner:** codex-s01r
+**Stance:** Builder
+**Updated:** 2026-10-03
+**Catalog description:** Challenge candidate correctness, downstream impact and consequential claims.
+**Blockers:** none.
+**Latest event:** TK-01I closed with proof.
+**Next gate:** Whole-Spec QA: confirm acceptance criteria 1, 2, 4 and 5 against the landed Reviewer source, its routed article and the recorded fresh-context observation; owner Human QA follows.
+
+> **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`02a30100443e725cbb1baad6fe5e771bfe85f648`.
+
+## Outcome
+
+Challenge candidate correctness, downstream impact and consequential claims. This Spec owns the reviewer skill's source review, supported repair or update, focused behavioral verification and its individual Wiki article. A source change is required only when the review finds an actual gap against accepted behavior.
+
+## Why It Matters
+
+The prior Skills Wiki packet grouped the whole core inventory into one completion gate. A skill-sized owner lets reviewer reach a checkable destination without waiting for unrelated skill rebuilds. The article explains the result to readers; it does not instruct the agent or replace the executable source.
+
+## Current Verified State
+
+- Source candidate `02a30100443e725cbb1baad6fe5e771bfe85f648` contains the reviewer
+  entry, bundled evidence reference, individual article and focused tests.
+- The source-contract test was red on the prior entry and green after repair.
+  It proves wording and routes, not model decisions. The public synthetic
+  fresh-context run observed actionable findings, evidence limits and target
+  preservation; [scenario evidence](proof/scenario-observation.md) records its
+  exact fixture pins, commands and limits.
+- The individual article exists and is reachable through the sole MEMORY index, applied by the coordinator in this assembly.
+- Required-suite evidence and pre/post self-drift are recorded in
+  [delivery proof](proof/README.md). Independent review of this implementation,
+  integration containment, owner Human QA and main remain separate open gates.
+
+## Desired Behavior
+
+1. The assigned Reviewer stance inspects the immutable candidate and its acceptance/proof in a separate context at the integration gate.
+2. It does not repair the candidate while claiming to be independent or treat a new SHA as already reviewed.
+3. The skill's declared source, catalog/discovery route, tests, and one routed Wiki article agree on verified current behavior, intended limits and source revision. The article gives purpose, when to use it, a concrete example, inputs/outputs, completion signs, composition, limits and governing links.
+
+## Decisions And Contracts
+
+- ROLE-3 confirms this is a stance, not a separate role. A Dispatcher may use
+  it within its Spec scope; its job does not widen role authority or erase
+  prior involvement for independent-review eligibility. The
+  [role model](../../wiki/design-concepts/roles-and-stances.md) owns composition
+  explanation. Existing Tasks and proof are preserved; no duplicate capability
+  or new Task is created by the 2026-09-27 reconciliation.
+
+- This Spec owns reviewer alone. Shared controls, manifest, catalog and the sole Wiki router are edited only as required by this skill's proven change; neighboring skill specs retain their own source and article ownership.
+- A Wiki article is curated context, not instruction authority or proof of behavior. Current source and tests establish Actuality; accepted controls and this assigned Spec establish the target.
+- The oversized unmerged Skills Wiki packet is planning evidence, not a live S-00V owner. S-00V now names Portable Workbench. For the shared grilling/notepad/grill-me journey, S-00W remains the design source while the individual skill Specs own delivery.
+
+## Non-Goals
+
+- Rebuilding another skill, changing an unrelated room or publishing to a personal catalog.
+- Treating a source review, string assertion, article or green suite as owner Human QA.
+- Introducing a new skill taxonomy, Wiki collection, parallel router or global installation.
+
+## Dependencies And Blockers
+
+No other skill rebuild is a blanket prerequisite. Check current controls and the relevant source owner before changing shared wording. A newly observed architecture, safety or public-contract choice remains an owner gate in this Spec; do not invent its answer.
+
+## Vertical Implementation Slices
+
+| Task | Slice | Status | Blockers | Proof |
+|---|---|---|---|---|
+
+### TK-01I - Deliver the reviewer skill destination
+
+**Stance:** Builder
+
+Inspect the current source, its callers/composition and relevant tests. Demonstrate the first meaningful gap at a stable seam or record that no source defect was found. Repair only the supported gap, exercise the scenario below, reconcile this skill's Wiki article and router, then record exact evidence and limits. Keep this task one skill wide.
+
+## Acceptance Criteria
+
+- [ ] The assigned Reviewer stance inspects the immutable candidate and its acceptance/proof in a separate context at the integration gate.
+- [ ] It does not repair the candidate while claiming to be independent or treat a new SHA as already reviewed.
+- [x] The named scenario is observed in a fresh or otherwise independent context: A fixed candidate receives actionable findings or a pass with named limits.
+- [ ] `workbench/wiki/skill-reviewer.md` accurately distinguishes verified current behavior from remaining intended behavior, links the current source and governing owners, and is reachable from `workbench/wiki/MEMORY.md`.
+- [ ] Relevant targeted tests/scenarios, Wiki validation, the required full suite, Workbench self-drift pre/post receipts and separate-context review are recorded at their proper gates; no unrun check is reported as passing.
+
+## Testing Seams
+
+Use the skill's public entry and its nearest source/test seam for the scenario: A fixed candidate receives actionable findings or a pass with named limits. Structural catalog and Wiki checks prove routing, not agent behavior. If the skill changes behavior, show red then green at the closest meaningful seam. A human review may still be needed for conversational fidelity.
+
+## Verification Procedure
+
+Run targeted tests for the changed source and `node workbench/tools/wiki.mjs validate`, then the current full suite in AGENTS.md. Run `node workbench/tools/spec-workbench.mjs render` and `doctor`; capture the self-drift pre/post receipts and a bounded semantic check. Review the immutable candidate separately before integration. Record actual commands and results in this Spec.
+
+## Documentation Impact
+
+Maintain `workbench/wiki/skill-reviewer.md` and its sole router entry alongside the skill change. Update shared controls or generic template wording only where this skill changes their meaning; record `Docs checked; no update needed` with a reason when they do not change.
+
+## Draft-wiki alignment (owner direction 2026-09-30)
+
+Group: stances. Matt counterpart: none. Enabling Spec: S-002L.
+Intended slice direction: the six per-skill steps of the draft skills wiki
+(1 investigate ours, 2 draft the article, 3 investigate Matt's skill at
+`mattpocock/skills@d81f3a183412e71a5b1e84ca21bc1a35eea03a60`, 4 compare,
+5 align the article, 6 fix or create the skill), to be cut into Tasks by
+`/to-tasks` (at activation for a planned Spec; as additional Tasks when the
+Dispatcher takes up an already-active one). Tasks already cut stay as they
+are. This section changes none of this Spec's acceptance, evidence or status;
+steps 1-5 touch only the draft wiki and step 6 only this skill's lane. When there is no Matt counterpart, steps 3 and 4 compare with the named nearest neighbor skill instead.
+
+## Append-Only Evidence And Execution Log
+
+| Date | Task | Event | Verification | Docs | Remaining gap |
+|---|---|---|---|---|---|
+| 2026-09-24 | planning | Owner directed one delivery Spec per skill; this Spec names reviewer's destination and first slice | Current manifest, core catalog, source presence and Wiki route inspected at pre anchor; no behavior change or scenario trial | This Spec authored; article remains future work | TK-01I and independent delivery proof remain open |
+| 2026-09-24 | planning verification | Skill-sized ownership and routing checked on the isolated candidate | All 47 required AGENTS commands passed; Wiki validation and exact 21 core plus one proposed entry coverage passed; doctor has no blocking finding; pre/post self-drift at 4940233 retained the same seven pre-existing findings and cleanUpdate false | No skill source or new article authored in this planning pass | Immutable separate-context review and actual skill behavior remain open |
+
+| 2026-10-01 | TK-01I | Owner assigned reviewer-only rebuild; fresh fetch found 124 remote refs, three S-01R variants all planned/unassigned; native conversion retained existing ID and native claim found no remote claimant | Activation c1b0f08a; native claim published 41c39c6f79ab24d195100458a99136064efb1471 on codex/s01r-tk01i-reviewer-rebuild, based on d90785908b26517068a474bb88136c81995a2f18 | No second Task allocated; source lane, article and owned records only; native projection changes retained | MEMORY sole writer remains coordinator; no private scenario transfer, no carry changes |
+| 2026-10-01 | TK-01I | Repair accepted gaps in independent eligibility, immutable binding, evidence classes and inability hand-back; source 02a30100443e725cbb1baad6fe5e771bfe85f648 | Focused source regression 0/3 red then 3/3 green; intermediate whitespace-sensitive assertion corrected; fresh uninvolved fixture review reproduced negative validation defect, identified missing throughput evidence and preserved target | Reviewer entry/reference and individual article; nearest-neighbor comparison uses code-review, no Matt counterpart; source-regression.json and scenario-observation.md preserve limits | Source assertions are not behavior; one synthetic observation is not installed discovery, reliability, owner QA or independent approval of this rebuild |
+
+| 2026-10-01 | TK-01I | Committed-source verification completed; first sweep and projection correction retained | Exact AGENTS/RUNBOOK union 51/51 plus three scoped commands passed; source/tools/tests unchanged during committed-source sweep from 00dff080 to e8d68ef1, native S-01R receipt projection refreshed during run; verification.json records full commands and limits | Final post self-drift at e8d68ef1436685826f44b7fa56ca460c381585fe has exactly seven baseline findings, cleanUpdate false; guardrail remains 78/100; bounded semantic owner check recorded in proof | MEMORY route and independent review remain open; current integration 25d3f4d2 has same command union but its new runtime assembly is not tested by this branch; GitHub GraphQL returned Forbidden |
+
+| 2026-10-01 | TK-01I | Public draft PR #259 opened through connected GitHub app after CLI GraphQL Forbidden; initial remote candidate 514bf0da519ee399ece22d13a4853c638969b927 verified | Final source regression, Wiki/doctor, 15 citation checks and direct append-only checker pass; sequential report/drift retry succeeds after transient citation fixture cleanup; same seven baseline drift findings | Public proof corrects API limitation to historical CLI refusal; native Receipt refreshed without rewriting prior evidence | Draft unapproved/unmerged, API mergeable false; coordinator route/current-integration assembly and independent review remain required |
+| 2026-10-03 | TK-01I | Task closed | Full AGENTS suite 48/48 PASS at cffc9792 on current integration; node tools/test-reviewer-stance.mjs PASS; wiki validate ok; fresh-context scenario observation in the Spec proof | Reviewer skill/reference and skill-reviewer.md from the Task; MEMORY.md Reviewer router line applied at assembly | One synthetic observation is not installed discovery or repeated-outcome proof; acceptance criteria 1, 2, 4 and 5 await whole-Spec QA; owner Human QA pending |
+
+## Completion Result
+
+Draft implementation on existing TK-01I is verified with 51 required commands, three scoped checks and one public fresh-context scenario. The sole MEMORY index now routes the Reviewer article. The assembly was merged with current integration and landed through the Lane A consolidation after a separate-context review of the landing candidate, with TK-01I closed. Acceptance criteria 1, 2, 4 and 5 await whole-Spec QA. No owner Human QA or main promotion is claimed.
+
+## Supersession
+
+- Supersedes: the reviewer article assignment in the unmerged oversized Skills Wiki packet, not its historical evidence.
+- Superseded by: none.

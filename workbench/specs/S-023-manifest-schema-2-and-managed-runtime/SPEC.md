@@ -73,7 +73,7 @@ every consumer fail visibly instead.
 
 ## Decisions And Contracts
 
-- [ADR-0017](../../docs/adr/0017-workbench-support-directory-has-six-lanes.md),
+- [ADR-0017](../../docs/adr/archive/0017-workbench-support-directory-has-six-lanes.md),
   [ADR-0031](../../docs/adr/0031-runtime-tools-are-workbench-managed-in-the-tools-lane.md),
   [ADR-0032](../../docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md),
   and [ADR-0028](../../docs/adr/0028-live-session-records-stay-untracked-and-checkpoints-are-durable.md)

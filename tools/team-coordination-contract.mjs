@@ -3,7 +3,7 @@ const requirements = [
   ['manager', /exactly one approved role\s+contract/i, 'manager must require exactly one role contract per task'],
   ['manager', /No two open tasks may edit the same files/i, 'manager must require disjoint durable write lanes'],
   ['manager', /primary writer/i, 'manager must reserve one primary durable writer'],
-  ['readme', /only ticket and proof store/i, 'README must make the stable spec the only ticket and proof store'],
+  ['readme', /only task and proof store/i, 'README must make the stable spec the only task and proof store'],
   ['readme', /generated read-only projection/i, 'README must describe the project TASKBOARD.md as a generated read-only projection'],
   ['subagent', /Scout and Auditor tasks are read-only/i, 'SUBAGENT must keep Scout and Auditor read-only'],
   ['subagent', /Do not combine role authorities/i, 'SUBAGENT must prohibit combined role authority'],

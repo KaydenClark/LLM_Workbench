@@ -1,0 +1,242 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-006A",
+  "revision": 8,
+  "title": "How do the Tracker and the Taskboard divide alignment from delivery, and where does Frontier fit?",
+  "question": "How do the Tracker and the Taskboard divide alignment from delivery, and where does Frontier fit?",
+  "answer": "LD-9: Two boards: Landmark Board (alignment) and Taskboard (delivery). No third grilling board.\nLD-16: Tracker monitors documentation and alignment; Taskboard monitors implementation. The earlier sole-board language must be reconciled to that accepted division while preserving historical answers.\nLD-11: Landmark and Destination Question have the approved distinct meanings; neither should be folded into Frontier. FND-Q17b records a ready-Task meaning of Frontier, while later discussion uses it more broadly for evolving understanding. Proposed reconciliation: retain the technical ready-Task meaning and describe the broader concept explicitly without silently redefining the term. Exact formal wording is not owner-confirmed.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: LD-9, LD-16, LD-11 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "LD-9 update LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows): Frontier and Landmark Tracker rows: Taskboard projects implementation; Landmark Tracker shows documentation and alignment. | LD-16 update LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows): Frontier row narrowed: Taskboard for implementation, Landmark Tracker separately for documentation. | LD-16 update workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md: Notes that its sole-view claim is superseded by the additive Tracker. | LD-11 update LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows): Frontier keeps its ready-Task meaning; the Frontier row points to the Landmark Tracker for evolving understanding.",
+    "home": "LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows); workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [],
+  "sources": [
+    {
+      "id": "LD-9",
+      "revision": "56b459da"
+    },
+    {
+      "id": "LD-16",
+      "revision": "56b459da"
+    },
+    {
+      "id": "LD-11",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000Q",
+    "LMK-000X"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 6
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "LD-9",
+      "revision": "56b459da",
+      "reason": "Ledger row LD-9 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "LD-16",
+      "revision": "56b459da",
+      "reason": "Ledger row LD-16 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 4
+      }
+    },
+    {
+      "type": "grilling-question",
+      "id": "LD-11",
+      "revision": "56b459da",
+      "reason": "Ledger row LD-11 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 5
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "How do the Tracker and the Taskboard divide alignment from delivery, and where does Frontier fit?",
+    "question": "How do the Tracker and the Taskboard divide alignment from delivery, and where does Frontier fit?",
+    "sources": [
+      {
+        "id": "LD-9",
+        "revision": "56b459da"
+      },
+      {
+        "id": "LD-16",
+        "revision": "56b459da"
+      },
+      {
+        "id": "LD-11",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:34.850Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:34.850Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: a card written from ledger rows that postdate the 2026-09-26 draft grouping, grilling ledger at 56b459da.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:34.884Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "LD-9: Two boards: Landmark Board (alignment) and Taskboard (delivery). No third grilling board.\nLD-16: Tracker monitors documentation and alignment; Taskboard monitors implementation. The earlier sole-board language must be reconciled to that accepted division while preserving historical answers.\nLD-11: Landmark and Destination Question have the approved distinct meanings; neither should be folded into Frontier. FND-Q17b records a ready-Task meaning of Frontier, while later discussion uses it more broadly for evolving understanding. Proposed reconciliation: retain the technical ready-Task meaning and describe the broader concept explicitly without silently redefining the term. Exact formal wording is not owner-confirmed."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: LD-9, LD-16, LD-11 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "LD-9 update LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows): Frontier and Landmark Tracker rows: Taskboard projects implementation; Landmark Tracker shows documentation and alignment. | LD-16 update LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows): Frontier row narrowed: Taskboard for implementation, Landmark Tracker separately for documentation. | LD-16 update workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md: Notes that its sole-view claim is superseded by the additive Tracker. | LD-11 update LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows): Frontier keeps its ready-Task meaning; the Frontier row points to the Landmark Tracker for evolving understanding.",
+            "home": "LEXICON.md (Destination Question Card (DQC), Landmark, Landmark Tracker, Landmark Wiki page and Frontier rows); workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:34.918Z",
+      "reason": "Ledger row LD-9 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "LD-9",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:34.956Z",
+      "reason": "Ledger row LD-16 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "LD-16",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:34.995Z",
+      "reason": "Ledger row LD-11 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "LD-11",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:49:35.035Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "at": "2026-10-01T23:50:00.739Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Taskboard pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000Q"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "at": "2026-10-01T23:50:02.475Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000Q"
+          ],
+          "to": [
+            "LMK-000Q",
+            "LMK-000X"
+          ]
+        }
+      ]
+    }
+  ]
+}

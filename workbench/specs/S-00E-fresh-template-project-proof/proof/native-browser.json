@@ -1,0 +1,493 @@
+{
+  "generatedAt": "2026-09-10T00:23:37.313Z",
+  "url": "http://127.0.0.1:4173/",
+  "playwrightPackage": "host-provided Playwright package",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "viewports": [
+    {
+      "name": "desktop1536x1024",
+      "requestedViewport": {
+        "name": "desktop1536x1024",
+        "width": 1536,
+        "height": 1024,
+        "isMobile": false
+      },
+      "screenshot": "desktop1536x1024.png",
+      "browserEvents": {
+        "consoleErrors": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "httpErrors": []
+      },
+      "checks": {
+        "title": "Puffer Pond",
+        "viewport": {
+          "width": 1536,
+          "height": 1024
+        },
+        "scroll": {
+          "documentClientWidth": 1536,
+          "documentScrollWidth": 1536,
+          "documentClientHeight": 1024,
+          "documentScrollHeight": 1024,
+          "bodyClientWidth": 1536,
+          "bodyScrollWidth": 1536,
+          "bodyClientHeight": 1024,
+          "bodyScrollHeight": 1024
+        },
+        "noDocumentOverflow": true,
+        "sceneRect": {
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024,
+          "top": 0,
+          "right": 1536,
+          "bottom": 1024,
+          "left": 0
+        },
+        "waterlineY": 593.90625,
+        "pufferCount": 5,
+        "snailCount": 2,
+        "animalCount": 7,
+        "allAnimalImagesLoaded": true,
+        "allAnimalsBelowWaterline": true,
+        "allAnimalsFullyInViewport": true,
+        "imageStates": [
+          {
+            "src": "public/assets/pond-environment.png",
+            "complete": true,
+            "naturalWidth": 1536,
+            "naturalHeight": 1024,
+            "renderedWidth": 1536,
+            "renderedHeight": 1024
+          },
+          {
+            "src": "public/assets/puffer.webp",
+            "complete": true,
+            "naturalWidth": 1254,
+            "naturalHeight": 1254,
+            "renderedWidth": 127.18841552734375,
+            "renderedHeight": 127.1884765625
+          },
+          {
+            "src": "public/assets/puffer.webp",
+            "complete": true,
+            "naturalWidth": 1254,
+            "naturalHeight": 1254,
+            "renderedWidth": 113.95669555664062,
+            "renderedHeight": 113.9566650390625
+          },
+          {
+            "src": "public/assets/puffer.webp",
+            "complete": true,
+            "naturalWidth": 1254,
+            "naturalHeight": 1254,
+            "renderedWidth": 133.6024169921875,
+            "renderedHeight": 133.6024169921875
+          },
+          {
+            "src": "public/assets/puffer.webp",
+            "complete": true,
+            "naturalWidth": 1254,
+            "naturalHeight": 1254,
+            "renderedWidth": 103.20843505859375,
+            "renderedHeight": 103.20843505859375
+          },
+          {
+            "src": "public/assets/puffer.webp",
+            "complete": true,
+            "naturalWidth": 1254,
+            "naturalHeight": 1254,
+            "renderedWidth": 115.6695556640625,
+            "renderedHeight": 115.66961669921875
+          },
+          {
+            "src": "public/assets/snail.webp",
+            "complete": true,
+            "naturalWidth": 1254,
+            "naturalHeight": 1254,
+            "renderedWidth": 92.74008178710938,
+            "renderedHeight": 92.74005126953125
+          },
+          {
+            "src": "public/assets/snail.webp",
+            "complete": true,
+            "naturalWidth": 1254,
+            "naturalHeight": 1254,
+            "renderedWidth": 103.25,
+            "renderedHeight": 103.25
+          }
+        ],
+        "animalStates": [
+          {
+            "alt": "puffer profile mint-drift",
+            "className": "pond-animal pond-animal--puffer",
+            "top": 636.3663940429688,
+            "bottom": 763.5548706054688,
+            "left": 173.36941528320312,
+            "right": 300.5578308105469,
+            "width": 127.18841552734375,
+            "height": 127.1884765625,
+            "belowWaterline": true,
+            "inViewport": true
+          },
+          {
+            "alt": "puffer profile sunset-skip",
+            "className": "pond-animal pond-animal--puffer pond-animal--flipped",
+            "top": 666.2869873046875,
+            "bottom": 780.24365234375,
+            "left": 480.5782165527344,
+            "right": 594.534912109375,
+            "width": 113.95669555664062,
+            "height": 113.9566650390625,
+            "belowWaterline": true,
+            "inViewport": true
+          },
+          {
+            "alt": "puffer profile deep-dart",
+            "className": "pond-animal pond-animal--puffer",
+            "top": 683.36181640625,
+            "bottom": 816.9642333984375,
+            "left": 902.0941162109375,
+            "right": 1035.696533203125,
+            "width": 133.6024169921875,
+            "height": 133.6024169921875,
+            "belowWaterline": true,
+            "inViewport": true
+          },
+          {
+            "alt": "puffer profile reed-hover",
+            "className": "pond-animal pond-animal--puffer pond-animal--flipped",
+            "top": 773.3723754882812,
+            "bottom": 876.580810546875,
+            "left": 672.8702392578125,
+            "right": 776.0786743164062,
+            "width": 103.20843505859375,
+            "height": 103.20843505859375,
+            "belowWaterline": true,
+            "inViewport": true
+          },
+          {
+            "alt": "puffer profile shell-peek",
+            "className": "pond-animal pond-animal--puffer",
+            "top": 716.0067749023438,
+            "bottom": 831.6763916015625,
+            "left": 1307.79443359375,
+            "right": 1423.4639892578125,
+            "width": 115.6695556640625,
+            "height": 115.66961669921875,
+            "belowWaterline": true,
+            "inViewport": true
+          },
+          {
+            "alt": "snail profile stone-spiral",
+            "className": "pond-animal pond-animal--snail",
+            "top": 834.4580688476562,
+            "bottom": 927.1981201171875,
+            "left": 356.4509582519531,
+            "right": 449.1910400390625,
+            "width": 92.74008178710938,
+            "height": 92.74005126953125,
+            "belowWaterline": true,
+            "inViewport": true
+          },
+          {
+            "alt": "snail profile river-crawl",
+            "className": "pond-animal pond-animal--snail pond-animal--flipped",
+            "top": 860.1328125,
+            "bottom": 963.3828125,
+            "left": 1189.9361572265625,
+            "right": 1293.1861572265625,
+            "width": 103.25,
+            "height": 103.25,
+            "belowWaterline": true,
+            "inViewport": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "phone390x844",
+      "requestedViewport": {
+        "name": "phone390x844",
+        "width": 390,
+        "height": 844,
+        "isMobile": true
+      },
+      "screenshot": "phone390x844.png",
+      "browserEvents": {
+        "consoleErrors": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "httpErrors": []
+      },
+      "checks": {
+        "title": "Puffer Pond",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "scroll": {
+          "documentClientWidth": 390,
+          "documentScrollWidth": 390,
+          "documentClientHeight": 844,
+          "documentScrollHeight": 844,
+          "bodyClientWidth": 390,
+          "bodyScrollWidth": 390,
+          "bodyClientHeight": 844,
+          "bodyScrollHeight": 844
+        },
+        "noDocumentOverflow": true,
+        "sceneRect": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 844,
+          "top": 0,
+          "right": 390,
+          "bottom": 844,
+          "left": 0
+        },
+        "waterlineY": 489.515625,
+        "pufferCount": 5,
+        "snailCount": 2,
+        "animalCount": 7,
+        "allAnimalImagesLoaded": true,
+        "allAnimalsBelowWaterline": true,
+        "allAnimalsFullyInViewport": true,
+        "imageStates": [
+          {
+            "src": "public/assets/pond-environment.png",
+            "complete": true,
+            "naturalWidth": 1536,
+            "naturalHeight": 1024,
+            "renderedWidth": 390,
+            "renderedHeight": 844
+          },
+          {
+            "src": "public/assets/puffer.webp",
+            "complete": true,
+            "naturalWidth": 1254,
+            "naturalHeight": 1254,
+            "renderedWidth": 48.49663162231445,
+            "renderedHeight": 48.49664306640625
+          },
+          {
+            "src": "public/assets/puffer.webp",
+            "complete": true,
+            "naturalWidth": 1254,
+            "naturalHeight": 1254,
+            "renderedWidth": 43.428985595703125,
+            "renderedHeight": 43.428955078125
+          },
+          {
+            "src": "public/assets/puffer.webp",
+            "complete": true,
+            "naturalWidth": 1254,
+            "naturalHeight": 1254,
+            "renderedWidth": 50.892242431640625,
+            "renderedHeight": 50.8922119140625
+          },
+          {
+            "src": "public/assets/puffer.webp",
+            "complete": true,
+            "naturalWidth": 1254,
+            "naturalHeight": 1254,
+            "renderedWidth": 39.29203796386719,
+            "renderedHeight": 39.2919921875
+          },
+          {
+            "src": "public/assets/puffer.webp",
+            "complete": true,
+            "naturalWidth": 1254,
+            "naturalHeight": 1254,
+            "renderedWidth": 44.017974853515625,
+            "renderedHeight": 44.01800537109375
+          },
+          {
+            "src": "public/assets/snail.webp",
+            "complete": true,
+            "naturalWidth": 1254,
+            "naturalHeight": 1254,
+            "renderedWidth": 35.31211853027344,
+            "renderedHeight": 35.3121337890625
+          },
+          {
+            "src": "public/assets/snail.webp",
+            "complete": true,
+            "naturalWidth": 1254,
+            "naturalHeight": 1254,
+            "renderedWidth": 39.32598876953125,
+            "renderedHeight": 39.325927734375
+          }
+        ],
+        "animalStates": [
+          {
+            "alt": "puffer profile mint-drift",
+            "className": "pond-animal pond-animal--puffer",
+            "top": 528.4879150390625,
+            "bottom": 576.9845581054688,
+            "left": 42.261531829833984,
+            "right": 90.75816345214844,
+            "width": 48.49663162231445,
+            "height": 48.49664306640625,
+            "belowWaterline": true,
+            "inViewport": true
+          },
+          {
+            "alt": "puffer profile sunset-skip",
+            "className": "pond-animal pond-animal--puffer pond-animal--flipped",
+            "top": 551.3561401367188,
+            "bottom": 594.7850952148438,
+            "left": 122.40138244628906,
+            "right": 165.8303680419922,
+            "width": 43.428985595703125,
+            "height": 43.428955078125,
+            "belowWaterline": true,
+            "inViewport": true
+          },
+          {
+            "alt": "puffer profile deep-dart",
+            "className": "pond-animal pond-animal--puffer",
+            "top": 565.5076904296875,
+            "bottom": 616.39990234375,
+            "left": 230.33502197265625,
+            "right": 281.2272644042969,
+            "width": 50.892242431640625,
+            "height": 50.8922119140625,
+            "belowWaterline": true,
+            "inViewport": true
+          },
+          {
+            "alt": "puffer profile reed-hover",
+            "className": "pond-animal pond-animal--puffer pond-animal--flipped",
+            "top": 637.908447265625,
+            "bottom": 677.200439453125,
+            "left": 172.3712921142578,
+            "right": 211.663330078125,
+            "width": 39.29203796386719,
+            "height": 39.2919921875,
+            "belowWaterline": true,
+            "inViewport": true
+          },
+          {
+            "alt": "puffer profile shell-peek",
+            "className": "pond-animal pond-animal--puffer",
+            "top": 589.3485107421875,
+            "bottom": 633.3665161132812,
+            "left": 334.2306213378906,
+            "right": 378.24859619140625,
+            "width": 44.017974853515625,
+            "height": 44.01800537109375,
+            "belowWaterline": true,
+            "inViewport": true
+          },
+          {
+            "alt": "snail profile stone-spiral",
+            "className": "pond-animal pond-animal--snail",
+            "top": 687.9064331054688,
+            "bottom": 723.2185668945312,
+            "left": 90.83165740966797,
+            "right": 126.1437759399414,
+            "width": 35.31211853027344,
+            "height": 35.3121337890625,
+            "belowWaterline": true,
+            "inViewport": true
+          },
+          {
+            "alt": "snail profile river-crawl",
+            "className": "pond-animal pond-animal--snail pond-animal--flipped",
+            "top": 709.1182861328125,
+            "bottom": 748.4442138671875,
+            "left": 303.02239990234375,
+            "right": 342.348388671875,
+            "width": 39.32598876953125,
+            "height": 39.325927734375,
+            "belowWaterline": true,
+            "inViewport": true
+          }
+        ]
+      }
+    }
+  ],
+  "reducedMotion": {
+    "viewport": "phone390x844",
+    "browserEvents": {
+      "consoleErrors": [],
+      "pageErrors": [],
+      "requestFailures": [],
+      "httpErrors": []
+    },
+    "checks": {
+      "mediaMatches": true,
+      "animalCount": 7,
+      "animationStates": [
+        {
+          "alt": "puffer profile mint-drift",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "animationPlayState": "running",
+          "webAnimations": []
+        },
+        {
+          "alt": "puffer profile sunset-skip",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "animationPlayState": "running",
+          "webAnimations": []
+        },
+        {
+          "alt": "puffer profile deep-dart",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "animationPlayState": "running",
+          "webAnimations": []
+        },
+        {
+          "alt": "puffer profile reed-hover",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "animationPlayState": "running",
+          "webAnimations": []
+        },
+        {
+          "alt": "puffer profile shell-peek",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "animationPlayState": "running",
+          "webAnimations": []
+        },
+        {
+          "alt": "snail profile stone-spiral",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "animationPlayState": "running",
+          "webAnimations": []
+        },
+        {
+          "alt": "snail profile river-crawl",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "animationPlayState": "running",
+          "webAnimations": []
+        }
+      ],
+      "animationsPausedOrRemoved": true
+    }
+  },
+  "passed": true,
+  "summary": {
+    "noBrowserErrors": true,
+    "desktopPassed": true,
+    "phonePassed": true,
+    "reducedMotionPassed": true
+  },
+  "finalCommit": "ce6a43c54c9f7bef0a54efb55b24eab6dbd735fd",
+  "finalCommitRecordedAt": "2026-09-10T00:26:51.680Z",
+  "publication_redaction": {
+    "scope": "Absolute project and tool installation paths replaced with portable labels; command outcomes, failures, timestamps and geometry unchanged.",
+    "source_candidate": "dab5e606b4418b65f0e339928b2b90fae068d073",
+    "source_sha256": "3e4c45216c3358593b67355e87b6228e10dc18ad77d83e5f8e95430395090389"
+  }
+}

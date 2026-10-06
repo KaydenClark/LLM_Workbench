@@ -37,13 +37,14 @@ nothing.
 | Go to | For |
 |---|---|
 | [AGENTS.md](../../AGENTS.md) | Authority, scope, safety, and the work loop |
-| [BLUEPRINT.md](../../BLUEPRINT.md) | Product map, architecture, and the spec catalog |
+| [BLUEPRINT.md](../../BLUEPRINT.md) | What the product is, who it serves, the outcomes it promises and what it is not |
 | [LEXICON.md](../../LEXICON.md) | Shared terms, the Governance Core, and design-concept routing |
 | [TASKBOARD.md](../../TASKBOARD.md) | Current execution state |
 | `workbench/specs/` | Stable capability records, acceptance, evidence, and proof |
 | [RUNBOOK.md](../../RUNBOOK.md) | Exact operating and verification commands |
 | [SCHEMA.md](SCHEMA.md) | Wiki CRUD, metadata, sensitivity, and freshness rules |
-| [design-concepts/](design-concepts/README.md) | Owner-directed articles explaining durable design models |
+| [design-concepts/](design-concepts/README.md) | Articles explaining durable design models and each landmark's evolving synthesis |
+| [features/](features/README.md) | Readable articles capturing each completed Spec's delivered capability |
 | [guidebooks/](guidebooks/) | Ordered procedures that outgrew the Runbook |
 
 ## Routing
@@ -56,6 +57,12 @@ nothing.
 Add a row only when a durable note exists to route to. A young room may have an
 empty table; that is fine. Grow flat notes beside this router and inside the
 declared collections; only `archive/` may nest.
+
+Every page this router links carries a one-line summary beside its link, so a
+reader can choose a page without opening it. In a list, write
+`- [Schema](SCHEMA.md) - what the page is for`; in a table, give the
+link's row a second cell that says what the page is for. `wiki.mjs validate`
+reports a routed page without one as attention, never as a failure.
 
 ## Up-Link
 

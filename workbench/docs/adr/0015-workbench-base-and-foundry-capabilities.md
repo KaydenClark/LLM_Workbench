@@ -1,5 +1,4 @@
 ---
-status: accepted
 date: 2026-09-04
 ported_from: GPT_OS ADR-0015 (accepted 2026-09-03)
 canonicalized_in:

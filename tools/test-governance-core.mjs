@@ -46,7 +46,10 @@ test('template Blueprint and Runbook route decision records, diagnostics, and th
   assert.match(route, /workbench\/docs\/adr\//, 'the Context Map names the ADR collection');
   assert.match(route, /Workbench Contract/, 'the Lexicon names the contract');
   const runbook = read('templates/RUNBOOK.md');
-  assert.match(runbook, /node workbench\/tools\/adr\.mjs/, 'the template Runbook names the ADR command');
+  // S-004C TK-005J: the decision-record procedure lives in the to-docs skill
+  // the template Runbook points to; the Runbook keeps the runtime command list.
+  assert.ok(runbook.includes('](workbench/skills/to-docs/SKILL.md#decision-records)'), 'the template Runbook points decision records to the to-docs skill');
+  assert.match(read('workbench/skills/to-docs/SKILL.md'), /node workbench\/tools\/adr\.mjs/, 'the pointed skill names the ADR command');
   assert.match(runbook, /node workbench\/tools\/spec-workbench\.mjs doctor/, 'the template Runbook names the doctor command');
   assert.match(runbook, /attention/, 'the template Runbook explains attention findings');
 });
@@ -56,9 +59,13 @@ test('the ADR corpus is reconciled: ADR-0008 is not ported and ADR-0025 records 
   assert.equal(adrs.some((adr) => adr.number === '0008'), false, 'ADR-0008 must not be ported with its categorical rule');
   const claimLevel = adrs.find((adr) => adr.number === '0025');
   assert.ok(claimLevel, 'ADR-0025 exists');
-  assert.equal(claimLevel.data.status, 'superseded');
+  // S-00I TK-002: lifecycle is now the folder, so a migrated record's
+  // frontmatter `status` key is gone; `status` is the derived effective
+  // lifecycle (folder for 000A's top level, the `superseded_by` fact for
+  // 0025's archive/), which is what a reader now relies on.
+  assert.equal(claimLevel.status, 'superseded');
   assert.equal(claimLevel.data.superseded_by, '000A-active-adr-decisions-and-destination-blueprints.md');
-  assert.equal(adrs.find(adr => adr.number === '000A').data.status, 'accepted');
+  assert.equal(adrs.find(adr => adr.number === '000A').status, 'accepted');
   assert.match(String(claimLevel.data.ported_from), /ADR-0008/);
   assert.match(String(claimLevel.data.supersedes), /Grounding/);
   for (const adr of adrs) {
@@ -68,31 +75,27 @@ test('the ADR corpus is reconciled: ADR-0008 is not ported and ADR-0025 records 
   }
 });
 
+// S-004C TK-005H: the brief keeps the always-true branch completion rules and
+// points to the implement skill, which carries the merge, containment and
+// merged-branch cleanup procedure.
 test('root and template AGENTS define branch completion and merged-branch cleanup', () => {
+  const skillFile = 'workbench/skills/implement/SKILL.md';
+  const skill = read(skillFile);
+  const start = skill.indexOf('\n## Branch completion\n');
+  assert.ok(start > -1, `${skillFile} carries the branch completion procedure`);
+  const completion = skill.slice(start, skill.indexOf('\n## ', start + 1) > -1 ? skill.indexOf('\n## ', start + 1) : undefined);
   for (const relative of ['AGENTS.md', 'templates/AGENTS.md']) {
     const agents = read(relative);
     assert.match(agents, /^### Branch Completion$/m, `${relative} names the branch completion contract`);
-    assert.match(
-      agents,
-      /A task is not finished at the push/,
-      `${relative} states that a pushed branch is not a finished task`
-    );
-    assert.match(
-      agents,
-      /git branch -d/,
-      `${relative} names the safe merged-branch delete`
-    );
-    assert.match(
-      agents,
-      /never force it with\s+`-D`/,
-      `${relative} forbids forcing a delete past the merged check`
-    );
-    assert.match(
-      agents,
-      /already ancestors of\s+the merged tip/,
-      `${relative} resolves stacked branches without a separate merge`
-    );
+    const section = agents.slice(agents.indexOf('### Branch Completion'), agents.indexOf('\n## ', agents.indexOf('### Branch Completion')));
+    assert.match(section, /A task is not finished at the push/, `${relative} states that a pushed branch is not a finished task`);
+    assert.match(section, /workbench\/skills\/implement\/SKILL\.md#branch-completion/, `${relative} points to the branch completion procedure`);
+    assert.match(section, /Never force a branch delete with\s+`-D`/, `${relative} forbids forcing a delete past the merged check`);
   }
+  assert.match(completion, /A task is not finished at the push/, `${skillFile} states that a pushed branch is not a finished task`);
+  assert.match(completion, /git branch -d/, `${skillFile} names the safe merged-branch delete`);
+  assert.match(completion, /never force it with\s+`-D`/, `${skillFile} forbids forcing a delete past the merged check`);
+  assert.match(completion, /already ancestors of\s+the merged tip/, `${skillFile} resolves stacked branches without a separate merge`);
 });
 
 test('the safety rule exempts a provably merged branch from the ask-first gate', () => {
@@ -118,7 +121,7 @@ test('the Runbook carries the operational branch closeout commands', () => {
 
 test('the Runbook closeout proves integration containment without a local integration checkout', () => {
   const runbook = read('RUNBOOK.md');
-  const start = runbook.indexOf('Closeout, once the integration review has passed');
+  const start = runbook.indexOf('Closeout, once the Task\'s merge answers are validated');
   const end = runbook.indexOf('## Manual Harness Feedback Reports');
   assert.ok(start > -1 && end > start, 'RUNBOOK.md carries a closeout block before the feedback-report section');
   const closeout = runbook.slice(start, end);
@@ -138,11 +141,11 @@ test('feedback and transition docs preserve review ownership and harvest observe
     assert.match(format, /explicit(?:ly)? supplied destination/i,
       `${relative} lets an assigned independent review write to its external evidence owner`);
   }
-  for (const relative of ['templates/ADOPTION.md', 'templates/GENESIS.md', 'skills/update-harness/SKILL.md']) {
+  for (const relative of ['templates/ADOPTION.md', 'templates/GENESIS.md', 'workbench/skills/update-harness/SKILL.md']) {
     const content = read(relative);
     assert.match(content, /none observed/i, `${relative} requires a truthful feedback-harvest result`);
   }
-  const update = read('skills/update-harness/SKILL.md');
+  const update = read('workbench/skills/update-harness/SKILL.md');
   assert.match(update, /workbench-upgrade\.mjs upgrade --explicit-update/,
     'the existing update route owns explicitly authorized v2-root to v3-support-root transitions');
   assert.doesNotMatch(update, /Foundry\/Halls\/Forge/,
@@ -158,7 +161,7 @@ test('controls, protocols, and core skills resolve the integration branch from t
   assert.match(gitRules, /declared integration branch/, 'the template names the declared integration branch');
   const root = read('AGENTS.md');
   assert.match(root, /`workbench\/manifest\.json`[^\n]*`git\.integrationBranch`|`git\.integrationBranch`[^\n]*`workbench\/manifest\.json`/, 'root AGENTS.md names the manifest declaration of its integration branch');
-  for (const relative of ['skills/genesis/SKILL.md', 'skills/adoption/SKILL.md']) {
+  for (const relative of ['workbench/skills/genesis/SKILL.md', 'workbench/skills/adoption/SKILL.md']) {
     const skill = read(relative);
     assert.match(skill, /git\.integrationBranch/, `${relative} resolves the branch from the manifest`);
     assert.match(skill, /create[^\n]*from the default branch/i, `${relative} creates the declared branch from the default branch when authorization permits`);
@@ -167,7 +170,7 @@ test('controls, protocols, and core skills resolve the integration branch from t
 });
 
 test('Genesis, Adoption, and update-harness completion require a committed prefixed branch and a resolving declared integration branch', () => {
-  for (const relative of ['templates/GENESIS.md', 'templates/ADOPTION.md', 'skills/update-harness/SKILL.md']) {
+  for (const relative of ['templates/GENESIS.md', 'templates/ADOPTION.md', 'workbench/skills/update-harness/SKILL.md']) {
     const content = read(relative);
     assert.match(content, /^- \[ \] [^\n]*exists as a commit on a prefixed task branch/m, `${relative} requires the run to exist as a commit on a prefixed branch`);
     assert.match(content, /^- \[ \] [^\n]*declared integration branch[\s\S]{0,400}records the explicit reason/m, `${relative} requires the declared integration branch on the remote or a recorded omission reason`);
@@ -176,11 +179,14 @@ test('Genesis, Adoption, and update-harness completion require a committed prefi
 
 test('the Runbook closeout prunes linked worktrees and names where disposable review checkouts live', () => {
   const runbook = read('RUNBOOK.md');
-  const closeout = runbook.slice(runbook.indexOf('Closeout, once the integration review has passed'), runbook.indexOf('## Manual Harness Feedback Reports'));
+  const closeout = runbook.slice(runbook.indexOf('Closeout, once the Task\'s merge answers are validated'), runbook.indexOf('## Manual Harness Feedback Reports'));
   assert.match(closeout, /^\s*git worktree prune$/m, 'RUNBOOK.md closeout prunes linked worktrees');
   assert.match(closeout, /disposable review (?:clones|checkouts)[^\n]*live/i, 'RUNBOOK.md names where disposable review clones live');
   const template = read('templates/RUNBOOK.md');
-  const templateCloseout = template.slice(template.indexOf('Closeout, once the integration review has passed'), template.indexOf('## Upgrading The Harness'));
+  const templateCloseout = template.slice(template.indexOf('Closeout, once the Task\'s merge answers are validated'), template.indexOf('## Upgrading The Harness'));
   assert.match(templateCloseout, /git worktree prune/, 'templates/RUNBOOK.md closeout prunes linked worktrees');
-  assert.match(template, /integration-branch-missing/, 'templates/RUNBOOK.md names the declared-branch doctor finding');
+  // S-004C TK-005J: the diagnostic explanations live in the workbench-runtime
+  // skill the template Runbook points to.
+  assert.ok(template.includes('](workbench/skills/workbench-runtime/SKILL.md#diagnostics-and-blocking-effects)'), 'templates/RUNBOOK.md points diagnostics to the workbench-runtime skill');
+  assert.match(read('workbench/skills/workbench-runtime/SKILL.md'), /integration-branch-missing/, 'the pointed skill names the declared-branch doctor finding');
 });

@@ -38,7 +38,7 @@ These four rules are the entire safety mechanism at this scale. There is no
 queue, no locking, no heartbeats — you replace all of that by partitioning
 before you dispatch.
 
-1. **One owning spec.** The assigned stable spec is the only ticket and proof
+1. **One owning spec.** The assigned stable spec is the only task and proof
    store for this run. Do not create a second Taskboard, proof log, or ledger.
    The project `TASKBOARD.md` is a generated read-only projection; nobody
    hand-edits it.
@@ -101,7 +101,7 @@ When a task reports back, **do not trust the claim — check the proof.**
 ### 5. Consolidate
 
 - As the reserved primary writer, update the owning spec exactly once per
-  closed slice: ticket status, append-only evidence row, docs status, and
+  closed slice: task status, append-only evidence row, docs status, and
   remaining gap. Then render the generated Taskboard projection.
 - Run the **full** verification suite (`RUNBOOK.md` → Test And Build);
   subagents run targeted checks, the full suite is your gate.

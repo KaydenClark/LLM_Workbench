@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "workbenchVersion": "v3.2.0",
+  "workbenchVersion": "v3.2.1",
   "provenance": {
     "lifecycle": "adoption",
     "migratedFrom": 1,
@@ -21,13 +21,18 @@
     "defaultBranch": "main",
     "integrationBranch": "integration"
   },
+  "githubCoordination": {
+    "schemaVersion": 1,
+    "repository": "KaydenClark/LLM_Workbench"
+  },
   "lanes": {
     "docs": "workbench/docs",
     "specs": "workbench/specs",
     "wiki": "workbench/wiki",
     "sessions": "workbench/sessions",
     "feedback": "workbench/feedback",
-    "tools": "workbench/tools"
+    "tools": "workbench/tools",
+    "skills": "workbench/skills"
   },
   "collections": {
     "adr": "workbench/docs/adr",
@@ -39,10 +44,31 @@
     "checkpoints": "workbench/sessions/checkpoints",
     "notepads": "workbench/sessions/notepads",
     "notepad-templates": "workbench/sessions/notepads/templates",
-    "recovery": "workbench/sessions/recovery"
+    "recovery": "workbench/sessions/recovery",
+    "features": "workbench/wiki/features",
+    "ddr": "workbench/docs/ddr",
+    "landmarks": "workbench/landmarks"
+  },
+  "landmarkTracker": {
+    "root": "workbench/landmark-tracker",
+    "collections": {
+      "destination-questions": "workbench/landmark-tracker/destination-questions",
+      "landmarks": "workbench/landmark-tracker/landmarks"
+    }
   },
   "wiki": {
     "profile": "project"
+  },
+  "contextUnit": {
+    "value": 200000,
+    "unit": "tokens",
+    "decisionDate": "2026-09-12",
+    "source": "owner",
+    "consideredAlternatives": [
+      150000,
+      250000
+    ],
+    "reason": "250k is where a context is compacted or gone while roughly 200k is where answer quality begins to degrade, and planning to the ceiling plans work into the degraded tail."
   },
   "skillPolicy": {
     "required": [
@@ -55,7 +81,7 @@
       "make-it-so",
       "to-docs",
       "to-spec",
-      "to-tickets",
+      "to-tasks",
       "tracer-bullet",
       "update-harness",
       "carry",
@@ -63,6 +89,13 @@
       "save",
       "promote",
       "handoff",
+      "grill-me",
+      "workbench-runtime",
+      "improve-harness",
+      "director",
+      "dispatcher",
+      "spec-planner",
+      "spec-manager",
       "builder",
       "auditor",
       "reviewer",
@@ -72,8 +105,13 @@
       ".agents/skills",
       ".claude/skills"
     ],
-    "normalSetup": "presence-only",
-    "updates": "explicit-only"
+    "normalSetup": "lane-install",
+    "updates": "workbench-update"
   },
+  "maintainerSkills": [
+    "workbench-release",
+    "workbench-room-checks",
+    "workbench-evaluation"
+  ],
   "workbenchId": "WB-4oRql1XWpf6VgsNwHUXW4Q"
 }

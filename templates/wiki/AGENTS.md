@@ -40,8 +40,12 @@ maintenance.
 - Follow `SCHEMA.md` for properties, provenance, sensitivity, and freshness.
 - Update an existing owning note before creating another.
 - Keep collections flat; never copy live task state.
-- Design Concept articles: suggest, repair from direct proof, or mark stale.
-  Never create one without the owner's direction.
+- Any agent creates or updates a Design Concept article its operation touched;
+  record the authorizing operation in `authorized_by` and `History`. Repair
+  from direct proof or mark stale; see `SCHEMA.md` Create and Update.
+- Reading and updating the Wiki is part of every use: ingest follows `SCHEMA.md`
+  Update, and the lint of touched pages and of the whole Wiki follows `SCHEMA.md`
+  Lint and the Runbook's Wiki Lint section.
 - Run `node workbench/tools/wiki.mjs validate` after maintained-note changes.
 
 ## Documentation

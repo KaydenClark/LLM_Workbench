@@ -11,6 +11,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const tool = path.join(root, 'tools', 'workbench-adoption.mjs');
 import { coreSkills } from '../workbench/tools/workbench-layout.mjs';
+import { templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
 
 function fixture() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-adoption-'));
@@ -60,7 +61,7 @@ function fixtureSpec() {
     '',
     '## Vertical Implementation Slices',
     '',
-    '| Ticket | Slice | Status | Blockers | Proof |',
+    '| Task | Slice | Status | Blockers | Proof |',
     '|---|---|---|---|---|',
     '| TK-001 | Preserve project truth | ready | none | pending |',
     '',
@@ -70,7 +71,7 @@ function fixtureSpec() {
     '',
     '## Append-Only Evidence And Execution Log',
     '',
-    '| Date | Ticket | Event | Verification | Docs | Remaining gap |',
+    '| Date | Task | Event | Verification | Docs | Remaining gap |',
     '|---|---|---|---|---|---|',
     '',
     '## Completion Result',
@@ -83,6 +84,63 @@ function fixtureSpec() {
     '- Superseded by: none',
     ''
   ].join('\n');
+}
+
+// Reconciliation keeps a working product and its controls/history, while the
+// installed runtime can convert the compatibility seed into an actual Task.
+{
+  const project = fixture();
+  const home = fixture();
+  try {
+    seedUserSkills(home);
+    const controls = {};
+    for (const name of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md']) {
+      let content = name === 'CLAUDE.md' ? '@AGENTS.md\n' : fs.readFileSync(path.join(root, 'templates', name), 'utf8');
+      for (const placeholder of templatePlaceholders) content = content.split(placeholder).join('Room-owned value');
+      write(project, name, content);
+      controls[name] = content;
+    }
+    const product = "export const pond = () => 'Pond: ~~~ puffer ~~~';\n";
+    write(project, 'src/pond.mjs', product);
+    write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
+    const git = (...args) => {
+      const result = spawnSync('git', ['-c', 'user.name=Adoption Fixture', '-c', 'user.email=adoption@invalid.example', ...args], { cwd: project, encoding: 'utf8' });
+      assert.equal(result.status, 0, result.stdout + result.stderr);
+      return result.stdout.trim();
+    };
+    git('init', '-q', '-b', 'main'); git('add', '-A'); git('commit', '-q', '-m', 'Room-owned product and reconciled controls');
+    git('branch', 'integration');
+    const before = git('rev-parse', 'HEAD');
+    const result = run('migrate', '--project', project, '--home', home, '--version', VERSION);
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    for (const [name, content] of Object.entries(controls)) {
+      // Only the declared generated board region changes during render.
+      const owned = body => body.replace(/<!-- hot-specs:start -->[\s\S]*?<!-- hot-specs:end -->/, '<!-- generated -->');
+      assert.equal(name === 'TASKBOARD.md' ? owned(read(project, name)) : read(project, name), name === 'TASKBOARD.md' ? owned(content) : content, `${name}: adoption preserves room-owned control bytes outside generated regions`);
+    }
+    assert.equal(read(project, 'src/pond.mjs'), product);
+    assert.equal(git('rev-parse', 'HEAD'), before, 'adoption does not rewrite product history');
+    assert.equal(git('show', `${before}:src/pond.mjs`), product.trim());
+    const installed = (...args) => {
+      const result = spawnSync(process.execPath, ['workbench/tools/spec-workbench.mjs', ...args], { cwd: project, encoding: 'utf8' });
+      assert.equal(result.status, 0, result.stdout + result.stderr);
+      return result.stdout.trim();
+    };
+    assert.equal(JSON.parse(installed('next', '--json', '--local')).specId, 'S-101');
+    installed('show', 'S-101');
+    installed('convert-tasks', 'S-101');
+    git('add', '-A'); git('commit', '-q', '-m', 'Preserve adoption and convert the live seed');
+    installed('claim', 'S-101', '--agent', 'adoption-fixture', '--local');
+    assert.match(read(project, 'workbench/specs/S-101-adopted/tasks/TK-001/TASK.md'), /\*\*Status:\*\* in-progress/);
+    assert.equal(read(project, 'src/pond.mjs'), product);
+    for (const name of ['AGENTS.md', 'RUNBOOK.md', 'README.md']) assert.equal(read(project, name), controls[name]);
+    const receipt = JSON.parse(read(project, 'workbench/tools/.workbench-tools.json'));
+    assert.equal(receipt.source.commit, JSON.parse(read(project, 'workbench/manifest.json')).provenance.source.commit);
+    console.log(`ok - adoption retains product/control bytes and original ${before.slice(0, 8)}; installed ${receipt.source.commit.slice(0, 8)} selects and claims a real Task (local fixture)`);
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
 }
 
 {
@@ -360,7 +418,84 @@ function fixtureSpec() {
   }
 }
 
+// S-01D TK-00U: adoption happens once. A room this helper has already adopted
+// refuses a second run before any mutation, so its one `adoption` provenance
+// and its recovery record stay exactly as the first run left them; the skill
+// routes such a room to update-harness instead. The provider home here is
+// empty and stays empty: the core skills come from the release, not the home.
+{
+  const project = fixture();
+  const home = fixture();
+  try {
+    seedControls(project);
+    write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
+    const first = run('migrate', '--project', project, '--home', home, '--version', VERSION, '--date', '2026-09-26');
+    assert.equal(first.status, 0, first.stdout);
+    assert.equal(JSON.parse(first.stdout).status, 'complete', 'the first adoption completes with an empty provider home');
+    assert.deepEqual(fs.readdirSync(home), [], 'adoption writes nothing into the provider home');
+    const manifestBefore = read(project, 'workbench/manifest.json');
+    const recoveryBefore = read(project, 'workbench/sessions/recovery/adoption-recovery.json');
+    assert.equal(JSON.parse(manifestBefore).provenance.lifecycle, 'adoption');
+
+    const second = run('migrate', '--project', project, '--home', home, '--version', VERSION, '--date', '2026-09-27');
+    assert.notEqual(second.status, 0, 'a second adoption of an adopted room must be refused');
+    const refusal = JSON.parse(second.stdout);
+    assert.equal(refusal.status, 'blocked');
+    assert.equal(refusal.error.code, 'support-root-exists');
+    assert.deepEqual(refusal.moved, [], 'the refused second adoption moves nothing');
+    assert.equal(read(project, 'workbench/manifest.json'), manifestBefore, 'the first adoption provenance is not rewritten');
+    assert.equal(read(project, 'workbench/sessions/recovery/adoption-recovery.json'), recoveryBefore,
+      'the first recovery record is not rewritten');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+}
+
 console.log('ok - mixed v2 adoption preserves durable truth and blocks collisions');
+
+// S-00H TK-004 follow-up: adoption preserves the project's own pre-existing
+// root controls rather than overwriting them from templates/ (that is the
+// distinction from Genesis), so there is no template-derived control body to
+// sweep in an adopted room. What an onboarded agent actually gets from this
+// candidate is the skills a fresh install puts in the discovery root; sweep
+// those for the retired vocabulary the same way
+// tools/test-genesis-from-decisions.mjs and tools/test-workbench-round-trip.mjs
+// do after their own room-building steps.
+{
+  const project = fixture();
+  const home = fixture();
+  try {
+    seedControls(project);
+    write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
+    const installedSkills = spawnSync(process.execPath, [path.join(root, 'tools', 'core-skill-installer.mjs'), 'install', '--home', home], { encoding: 'utf8' });
+    assert.equal(installedSkills.status, 0, installedSkills.stdout + installedSkills.stderr);
+    assert.equal(JSON.parse(installedSkills.stdout).status, 'complete', installedSkills.stdout);
+    const result = run('migrate', '--project', project, '--home', home, '--version', VERSION, '--date', '2026-09-05');
+    assert.equal(result.status, 0, result.stdout);
+
+    const skillHits = [];
+    for (const engineRoot of [path.join(home, '.agents', 'skills'), path.join(home, '.claude', 'skills')]) {
+      (function walk(dir) {
+        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+          const full = path.join(dir, entry.name);
+          if (entry.isDirectory()) { walk(full); continue; }
+          if (entry.name !== 'SKILL.md') continue;
+          const relative = path.relative(home, full).split(path.sep).join('/');
+          fs.readFileSync(full, 'utf8').split('\n').forEach((line, index) => {
+            if (/ticket/i.test(line)) skillHits.push(`${relative}:${index + 1}: ${line.trim()}`);
+          });
+        }
+      })(engineRoot);
+    }
+    assert.deepEqual(skillHits, [],
+      `the skills an adopted room's owner installs from this candidate must not say Ticket:\n${skillHits.join('\n')}`);
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+}
+console.log('ok - an adopted room installs skills that do not say Ticket');
 
 {
   const project = fixture(); const home = fixture();

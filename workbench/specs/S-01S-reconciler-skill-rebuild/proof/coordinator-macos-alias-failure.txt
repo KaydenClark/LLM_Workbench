@@ -1,0 +1,44 @@
+✔ public entry routes to executable observations and owns reconciliation, not approval (1.099959ms)
+✔ pinned owner read ignores newer HEAD and preserves dirty unrelated work (373.26375ms)
+✔ unknown commit and absent owner fail visibly instead of using HEAD (251.241041ms)
+✔ fixed comparison disables target-controlled external diff and text conversion (464.235625ms)
+✔ containment distinguishes a branch candidate from landed content without changing acceptance (325.151959ms)
+✔ replacement commit cannot substitute completion text under the original candidate SHA (447.382792ms)
+✔ replacement parent cannot manufacture integration containment (283.854375ms)
+✖ inherited Git repository and index selectors cannot redirect an observation (224.63325ms)
+✔ inherited object stores, replacement namespaces and config injection cannot alter pinned reads (523.5415ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 8
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2898.787708
+
+✖ failing tests:
+
+test at tools/test-reconciler-skill.mjs:125:1
+✖ inherited Git repository and index selectors cannot redirect an observation (224.63325ms)
+  AssertionError [ERR_ASSERTION]: unprotected Git really selects the other repository
+  + actual - expected
+  
+  + '/private/var/folders/h2/4pvfvm191m7gnfm51mvsf9m40000gn/T/reconciler-zkrPZJ/foreign'
+  - '/var/folders/h2/4pvfvm191m7gnfm51mvsf9m40000gn/T/reconciler-zkrPZJ/foreign'
+  
+      at file:///Users/kayden/Documents/Codex/2026-10-01/task/reconciler-current-assembly/tools/test-reconciler-skill.mjs:133:10
+      at fixture (file:///Users/kayden/Documents/Codex/2026-10-01/task/reconciler-current-assembly/tools/test-reconciler-skill.mjs:37:5)
+      at TestContext.<anonymous> (file:///Users/kayden/Documents/Codex/2026-10-01/task/reconciler-current-assembly/tools/test-reconciler-skill.mjs:125:91)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '/private/var/folders/h2/4pvfvm191m7gnfm51mvsf9m40000gn/T/reconciler-zkrPZJ/foreign',
+    expected: '/var/folders/h2/4pvfvm191m7gnfm51mvsf9m40000gn/T/reconciler-zkrPZJ/foreign',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

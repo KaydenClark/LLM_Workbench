@@ -10,9 +10,30 @@
 | [0003](0003-full-crud-with-artifact-conditions.md) | All six planes support full CRUD with conditions | accepted | 2026-09-04 | AGENTS.md |
 | [0005](0005-machine-enforcement-requires-running-consumers.md) | Machine enforcement requires running policy consumers | accepted | 2026-09-04 | AGENTS.md, RUNBOOK.md |
 | [000A](000A-active-adr-decisions-and-destination-blueprints.md) | Active ADR decisions and destination Blueprints | accepted | 2026-09-09 | AGENTS.md, LEXICON.md, BLUEPRINT.md, RUNBOOK.md |
-| [0013](0013-seven-file-workbench-contract.md) | The portable Workbench has seven root files | accepted | 2026-09-04 | BLUEPRINT.md, LEXICON.md |
+| [000B](000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md) | The Workbench root surface is eight files and Contract membership is separate from root placement | accepted | 2026-09-12 | AGENTS.md, LEXICON.md, BLUEPRINT.md |
+| [000C](000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md) | The Workbench Contract is the obligation claim set carried by three root controls and the assigned spec | accepted | 2026-09-12 | AGENTS.md, LEXICON.md, RUNBOOK.md |
+| [000D](000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md) | The ownership map is an exhaustive type-level framework answered by structured query | accepted | 2026-09-12 | LEXICON.md, AGENTS.md |
+| [000F](000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md) | Work passes two QA gates: spec branch to integration and integration to main | accepted | 2026-09-12 | BLUEPRINT.md, LEXICON.md, AGENTS.md, RUNBOOK.md |
+| [000G](000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md) | Blueprint, Spec and Task are three altitudes of one delivery chain | accepted | 2026-09-12 | BLUEPRINT.md, AGENTS.md, LEXICON.md |
+| [000H](000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md) | A Task is a standalone artifact and Task replaces Ticket as the execution-slice term | accepted | 2026-09-12 | LEXICON.md, AGENTS.md, RUNBOOK.md, workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md |
+| [000I](000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md) | Record lifecycle is expressed by folder location with permanent archive and transient retired | accepted | 2026-09-12 | AGENTS.md, LEXICON.md, RUNBOOK.md |
+| [000J](000J-completion-claims-are-checked-against-repository-state.md) | Completion claims are checked against repository state | accepted | 2026-09-12 | AGENTS.md, RUNBOOK.md, workbench/specs/S-00M-completion-claims-against-repository-state/SPEC.md |
+| [000K](000K-every-feedback-finding-carries-one-of-four-dispositions.md) | Every feedback finding carries one of five dispositions | accepted | 2026-09-12 | LEXICON.md, RUNBOOK.md, workbench/specs/S-00N-feedback-finding-dispositions/SPEC.md |
+| [000L](000L-a-notepad-belongs-to-its-objective-and-every-chat-working-that-objective-writes-to-it.md) | A notepad belongs to its objective and every chat working that objective writes to it | accepted | 2026-09-30 | AGENTS.md, LEXICON.md |
+| [000M](000M-core-skills-ship-in-the-workbench-skills-lane.md) | Core skills ship in the workbench skills lane | accepted | 2026-09-23 | RUNBOOK.md, LEXICON.md, BLUEPRINT.md, workbench/specs/S-00V-portable-workbench/SPEC.md |
+| [000N](000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md) | Landmark Tracker connects evolving understanding to durable knowledge | accepted | 2026-09-26 | BLUEPRINT.md, LEXICON.md, AGENTS.md, RUNBOOK.md, workbench/specs/S-01T-landmark-tracker-foundation/SPEC.md |
+| [000O](000O-claims-are-pushed-on-the-task-branch-and-read-from-every-remote-tip.md) | Claims are pushed on the task branch and read from every remote tip | accepted | 2026-09-26 | workbench/specs/S-00V-portable-workbench/SPEC.md |
+| [000P](000P-roles-scope-work-and-stances-define-the-job.md) | Roles scope work and stances define the job | accepted | 2026-09-27 | AGENTS.md, LEXICON.md, BLUEPRINT.md, RUNBOOK.md |
+| [000R](000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md) | The Wiki is the evolving synthesis every agent reads and updates | accepted | 2026-10-01 | LEXICON.md, AGENTS.md, BLUEPRINT.md, RUNBOOK.md, workbench/specs/S-003W-wiki-evolving-synthesis-migration/SPEC.md |
+| [000S](000S-destination-decision-records-are-decision-records-beside-adrs.md) | Destination Decision Records are decision records beside ADRs | accepted | 2026-10-02 | LEXICON.md |
+| [000T](000T-records-share-one-set-of-read-words-list-show-search-history-and-inspect.md) | Records share one set of read words: list, show, search, history and inspect | accepted | 2026-10-02 | LEXICON.md |
+| [000U](000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md) | Landmarks are LANDMARK.md artifacts one size above Specs | accepted | 2026-10-02 | LEXICON.md |
+| [000V](000V-captain-director-dispatcher-and-worker-scope-work-and-role-skills-own-each-job.md) | Captain, Director, Dispatcher and Worker scope work and role skills own each job | accepted | 2026-10-02 | LEXICON.md |
+| [000W](000W-contract-carriers-are-briefs-that-point-to-skills-and-authority-flows-through-the-pointer.md) | Contract carriers are briefs that point to skills and authority flows through the pointer | accepted | 2026-10-02 | LEXICON.md |
+| [000X](000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md) | The workflow is eight verbs and each verb writes the plane its claims live on | accepted | 2026-10-02 | LEXICON.md, BLUEPRINT.md |
+| [000Y](000Y-a-locked-and-confirmed-answer-is-promoted-without-further-ceremony.md) | A locked and confirmed answer is promoted without further ceremony | accepted | 2026-10-02 | LEXICON.md |
+| [000Z](000Z-overlapping-notepad-writes-are-refused-not-lost.md) | Overlapping notepad writes are refused, not lost | accepted | 2026-10-03 | RUNBOOK.md |
 | [0015](0015-workbench-base-and-foundry-capabilities.md) | Workbench supplies the base and Foundry adds coordination | accepted | 2026-09-04 | BLUEPRINT.md |
-| [0017](0017-workbench-support-directory-has-six-lanes.md) | The Workbench support directory has six lowercase lanes | accepted | 2026-09-04 | BLUEPRINT.md, RUNBOOK.md |
 | [0018](0018-the-wiki-is-the-knowledge-base.md) | The wiki is the knowledge base and holds collections | accepted | 2026-09-04 | AGENTS.md, LEXICON.md |
 | [0020](0020-a-check-blocks-only-the-change-it-evaluates.md) | A check may block only the change it evaluates | accepted | 2026-09-04 | AGENTS.md, RUNBOOK.md |
 | [0023](0023-mechanical-guarantees-and-agent-obligations.md) | Tools check structure; agents carry judgment | accepted | 2026-09-04 | AGENTS.md |
@@ -23,7 +44,6 @@
 | [0030](0030-every-workbench-declares-a-design-concepts-collection.md) | Every Workbench declares a design-concepts collection of owner-directed articles | accepted | 2026-09-04 | LEXICON.md, AGENTS.md |
 | [0031](0031-runtime-tools-are-workbench-managed-in-the-tools-lane.md) | Portable runtime tools are Workbench-managed in the tools lane; root tools stay application-owned | accepted | 2026-09-04 | BLUEPRINT.md, RUNBOOK.md |
 | [0032](0032-manifest-schema-2-declares-lanes-and-collections.md) | Manifest schema 2 declares six lanes and every machine-used collection | accepted | 2026-09-04 | BLUEPRINT.md, RUNBOOK.md |
-| [0033](0033-workbench-contract-is-a-claim-set.md) | The Workbench Contract is a claim set carried by the seven controls and the assigned spec | accepted | 2026-09-04 | LEXICON.md, BLUEPRINT.md |
 | [0034](0034-required-steps-must-enable-delivery.md) | Required steps must enable direct delivery | accepted | 2026-09-04 | AGENTS.md, BLUEPRINT.md |
 | [0035](0035-reduced-entry-and-assigned-autonomy.md) | Reduced entry and autonomy within assigned work | accepted | 2026-09-04 | AGENTS.md, RUNBOOK.md, LEXICON.md |
 | [0036](0036-stances-change-method-not-authority.md) | Assigned portable stances change method, not authority | accepted | 2026-09-04 | AGENTS.md, LEXICON.md |
@@ -45,3 +65,4 @@
 | [0052](0052-node-javascript-remains-the-portable-runtime.md) | Node/JavaScript remains the portable runtime | accepted | 2026-09-08 | BLUEPRINT.md, workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md |
 | [0053](0053-minimum-configured-host-capability-and-evidence-boundaries.md) | Minimum configured-host capability and evidence boundaries | accepted | 2026-09-08 | BLUEPRINT.md, workbench/specs/S-053-configured-host-capabilities/SPEC.md |
 | [0054](0054-direct-promotion-into-durable-owners.md) | Direct promotion into durable owners | accepted | 2026-09-08 | BLUEPRINT.md, AGENTS.md, RUNBOOK.md, workbench/specs/S-048-checkpoint-retirement/SPEC.md |
+| [0055](0055-workbench-update-requires-self-drift-check.md) | Workbench updates require a Workbench self-drift check | accepted | 2026-09-10 | AGENTS.md, BLUEPRINT.md, LEXICON.md, RUNBOOK.md, workbench/specs/S-00K-workbench-self-drift-check/SPEC.md |

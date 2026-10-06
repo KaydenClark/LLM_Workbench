@@ -1,0 +1,26 @@
+{
+  "schema": "landmark-tracker/landmark@1",
+  "id": "LMK-000A",
+  "revision": 1,
+  "title": "GitHub Coordination",
+  "summary": "GitHub Issues as required live coordination for normal delivery: claim authority and its migration from pushed Task-branch claims, the Issue graph and composed views, room binding and fresh-host continuation, and the deferred extended-outage recovery.",
+  "importance": "It changes which owner holds live assignment state for every role and supersedes ADR-000O at a reviewed cutover; mistakes would create two claim authorities or let Issue text enlarge authority.",
+  "origin": {
+    "title": "GitHub Coordination",
+    "summary": "GitHub Issues as required live coordination for normal delivery: claim authority and its migration from pushed Task-branch claims, the Issue graph and composed views, room binding and fresh-host continuation, and the deferred extended-outage recovery.",
+    "revision": 1,
+    "at": "2026-10-01T01:55:06.584Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T01:55:06.584Z",
+      "reason": "Emerged from DQC-000B through DQC-000E, captured from the owner-accepted GitHub coordination direction.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    }
+  ]
+}

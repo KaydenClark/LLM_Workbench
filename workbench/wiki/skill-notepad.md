@@ -1,0 +1,78 @@
+---
+type: memory
+status: active
+sensitivity: normal
+knowledge_role: curated
+provenance:
+  - Owner-accepted concept and S-00W (Concept Grilling And Notepad Composition Spec) planning, 2026-09-23
+  - S-00Y (notepad skill rebuild Spec) TK-00P (Deliver the notepad skill destination) source change and fresh-context scenario, 2026-09-24
+  - S-004C (Contract Carrier Pointer-Brief Rewrite Spec) TK-005J (Move the operations every room runs behind their pointers) moved the Runbook Landmark Tracker design and available operations into the skill, 2026-10-04
+source_paths:
+  - workbench/skills/notepad/SKILL.md
+  - workbench/tools/notepads.mjs
+  - workbench/specs/S-00Y-notepad-skill-rebuild/SPEC.md
+  - workbench/specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md
+  - tools/test-notepads.mjs
+  - tools/test-skill-catalog.mjs
+  - RUNBOOK.md
+last_verified: 2026-10-04
+---
+
+# Notepad: preserve one objective's working context
+
+Use `notepad` when meaningful work needs to survive an interruption: owner direction, findings, corrections, uncertainty and the next executable action. It is a reusable continuity primitive, including for objectives that have nothing to do with a design interview. A note is provisional context. The current controls and verified source still determine what is true and authorized.
+
+**Inputs:** one objective, plus what the work learns as it goes. **Output:** one local, untracked JSON note with an append-only entry history and a compact current view (state, unresolved work, next action). **Done when:** a fresh reader can state the objective, current state, unresolved work and next action from the note, and everything the note no longer holds can be found in a durable owner it names.
+
+## How it works
+
+The [skill](../skills/notepad/SKILL.md) selects or creates one note per objective through the [shared runtime](../tools/notepads.mjs). The agent reads the returned revision and saves consequential context as it appears, with writes checked against that revision. Every free-text field is privacy-scanned before it reaches the file. Since the notepad concurrent-write safety Spec (S-003Y, Task TK-006H (Barrier regression test and compare-and-swap publish for every revision-guarded notepad write)) every revision-checked write publishes inside a per-revision publish token beside the note, so of two writers that read the same revision exactly one succeeds and the other is refused `stale-revision` with nothing of its write in the file; one writer per note remains the working rule, and the guard makes an overlap honest rather than merging it.
+
+- **Corrections link, never rewrite.** A `correction` entry names the entry it corrects, and both stay. Reading a topic returns the matched entries plus their corrections and declared dependencies, each marked `match` or `context`.
+- **Resume reads before it relies.** The current view carries no entries and no corrections. Before relying on a saved claim, the agent reads its topic so the correction travels with it. The correction supersedes the original, but both only record what was believed when they were written, so the agent rechecks live state before relying on either.
+- **Pending is not confirmed.** When a design inquiry saves an owner answer before its readback is confirmed, it appends a `source_record` entry: the owner's words as content, the readback as interpretation, and a question ID when the inquiry has one. The pending readback goes in `current.unresolved`. A revised readback is a `correction` of that entry. Only a `decision` entry records the confirmed answer. No new kind, status or schema is involved. [Grilling](skill-grilling.md) uses exactly this convention.
+- **Cleanup preserves what is still needed.** Settled claims reach durable owners through separately authorized promotion. Trim then removes only landed material, and refuses to strand a retained dependency or to drop a correction while keeping what it corrects. A declared Markdown handoff blocks cleanup until it is explicitly cleared.
+
+### Example, from the verification run
+
+In the S-00Y (notepad skill rebuild Spec) scenario, an unrelated code investigation had been interrupted. Its note held a finding that the job retry limit was 3, set in a config file, plus a correction saying the config was ignored and the limit was 5, hard-coded in the source. The resuming agent read both entries, then opened the live code before acting. The code said neither: it read an environment variable and fell back to 4. The agent appended a second correction linked to the first, and only then made the planned change. Asked in the same session what the owner had decided about welcome-email timing, it found a pending answer with a corrected readback and no `decision`. It reported that nothing was decided yet, read back the corrected version and waited. When the owner said "Yes, that's right", it appended the `decision` and cleared the pending item from the current view.
+
+## Composition with a design interview
+
+The [accepted S-00W design](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md) keeps storage mechanics in `notepad`. [Grilling](skill-grilling.md) owns the interview and composes this primitive when the session needs saved context. [Grill-me](skill-grill-me.md) is the planned entry that composes both by default; its delivery belongs to S-00Z (grill-me skill rebuild Spec). The composing skill owns the question map and statuses. The notepad keeps pending, corrected and confirmed meaning readable, so an interrupted interview resumes at the pending confirmation rather than at the next question.
+
+The approved [Landmark Tracker model](design-concepts/landmark-tracker.md) adds
+a current concept account in DQCs and landmark records before delivery artifacts
+exist. As that capability is delivered, grilling notepads become more historical
+and handoff-like, preserving useful origins, corrections and continuation. This
+does not retire the general notepad primitive or claim that Tracker storage is
+already available. The skill's
+[Landmark Tracker section](../skills/notepad/SKILL.md#landmark-tracker-accepted-design-and-available-operations)
+carries the accepted design and the operations available now, which the
+[Runbook operations index](../../RUNBOOK.md#operations-index) points to.
+
+## Verified behavior and limits
+
+**Verified 2026-09-24:** the runtime behaviors above are covered by `tools/test-notepads.mjs`. That includes a characterization of the pending → correction → decision sequence, which passed without any runtime change. `tools/test-skill-catalog.mjs` holds the source wording for the pending convention and the corrected-resume recheck. One fresh-context agent, given only the skill source, followed both in the three-turn scenario above. The turn-by-turn record is in the [Spec evidence](../specs/S-00Y-notepad-skill-rebuild/SPEC.md#append-only-evidence-and-execution-log).
+
+**Limits:** that was one run with one model, against a scripted owner. It is not owner Human QA and not a repeated trial. In that run the agent read all entries instead of one topic; both routes return the correction with its original. At that time two writers that read the same revision could both write, as the then-proposed ADR-000L (A notepad belongs to its objective) (PR #92) recorded, and S-00Y (notepad skill rebuild Spec) did not change that; the notepad concurrent-write safety Spec (S-003Y, Task TK-006H (Barrier regression test and compare-and-swap publish for every revision-guarded notepad write)) has since closed it with the publish-token guard described above. Installed personal copies of the skill are not updated by this source change. The composed grilling, notepad and grill-me journey is checked by [S-00W](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md) after all three skills are delivered.
+
+## Sources
+
+- [Notepad source](../skills/notepad/SKILL.md) and [runtime](../tools/notepads.mjs)
+- [Individual delivery Spec](../specs/S-00Y-notepad-skill-rebuild/SPEC.md)
+- [Concept and acceptance](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md)
+- [Runtime foundation: S-046](../specs/S-046-json-notepad-foundation/SPEC.md) and [ADR-0040](../docs/adr/0040-json-notepads-preserve-objective-continuity.md)
+- [Runbook behavior selection](../../RUNBOOK.md#behavior-selection)
+- [Wiki router](MEMORY.md)
+
+## History
+
+- 2026-09-23: Created as the individual skill article; current continuity behavior separated from the planned grilling composition.
+- 2026-09-24: Source links reconciled to the managed skills lane; S-00Y (notepad skill rebuild Spec) owns this skill's future delivery. No behavior change claimed.
+- 2026-09-24: S-00Y (notepad skill rebuild Spec) TK-00P (Deliver the notepad skill destination) stated the pending-versus-confirmed convention and the corrected-resume recheck in the source, and recorded one fresh-context scenario.
+
+- 2026-09-26: Clarified the owner-confirmed relationship between grilling notes
+  and planned DQC/landmark understanding; existing runtime claims unchanged.
+- 2026-10-04: S-004C (Contract Carrier Pointer-Brief Rewrite Spec) TK-005J (Move the operations every room runs behind their pointers) moved the Runbook's Landmark Tracker design and
+  available operations into the skill behind the operations index; no behavior change.

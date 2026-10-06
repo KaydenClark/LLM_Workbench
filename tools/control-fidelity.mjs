@@ -5,6 +5,7 @@
 // reports and never enforces: divergence is legitimate, silence is the defect.
 // The tool reads the room and the release checkout; it never writes.
 import fs from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
@@ -14,9 +15,18 @@ const productRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 export const templatedControls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'README.md'];
 export const CLAUDE_CONTROL = '@AGENTS.md';
 export const KINDS = ['filled', 'unchanged', 'dropped', 'changed', 'added'];
+// S-004C TK-005M: given the room's earlier template generation, a difference
+// the template made is labeled instead of passing as the room's own: a room
+// line that only the earlier template carried (`earlier-template`), a current
+// template line the earlier one did not carry (`newer-template`), and a room
+// line kept from the earlier template where the template itself changed the
+// line (`template-changed`).
+export const GENERATIONS = ['earlier-template', 'newer-template', 'template-changed'];
 // Two lines are the same line when their word tokens overlap at least this much.
 const SIMILARITY_THRESHOLD = 0.5;
-const wikiContractFiles = ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md'];
+// Mirrors workbench-layout.mjs `wikiContractFiles` (S-00I TK-01U added the
+// features collection README).
+const wikiContractFiles = ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md', 'features/README.md'];
 const memoryTemplates = { project: 'MEMORY.project.md', deployment: 'MEMORY.root.md' };
 // Beside the declared vocabulary, an all-uppercase bracket token or an
 // `[OPTIONAL: ...]` note marks a line the room was expected to fill.
@@ -282,7 +292,56 @@ export function fidelityTargets(project, manifest) {
   return targets;
 }
 
-function compareTarget(project, templates, target) {
+// The room's earlier template generation: a templates directory named with
+// --previous-templates, or the templates at the room manifest's recorded
+// source commit when this checkout holds that commit. Null when neither.
+function previousGeneration(options, manifest) {
+  if (options.previousTemplates) {
+    const directory = path.resolve(options.previousTemplates);
+    if (!fs.existsSync(directory) || !fs.statSync(directory).isDirectory()) return { error: fail('invalid-previous-templates', `${directory} must be a templates directory.`) };
+    return { source: 'option', path: directory, read: (relative) => readOrdinary(path.join(directory, relative)) };
+  }
+  const commit = manifest?.provenance?.source?.commit;
+  if (typeof commit !== 'string' || !/^[0-9a-f]{40}$/.test(commit)) return null;
+  const present = spawnSync('git', ['cat-file', '-e', `${commit}^{tree}`], { cwd: productRoot, encoding: 'utf8' });
+  if (present.status !== 0) return null;
+  return {
+    source: 'provenance',
+    ref: commit,
+    read: (relative) => {
+      const shown = spawnSync('git', ['show', `${commit}:templates/${relative}`], { cwd: productRoot, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+      return shown.status === 0 ? shown.stdout : null;
+    }
+  };
+}
+
+function labelGenerations(result, previousContent, templateContent, roomContent) {
+  const kept = ['unchanged', 'filled'];
+  const roomLines = classifyLines(previousContent, roomContent).lines;
+  const roomAgainstPrevious = new Map(roomLines.filter((line) => line.roomLine !== undefined).map((line) => [line.roomLine, line.kind]));
+  // The earlier template lines the room still holds as shipped (or filled).
+  const previousKept = new Set(roomLines.filter((line) => line.templateLine !== undefined && kept.includes(line.kind)).map((line) => line.templateLine));
+  const templateLines = classifyLines(previousContent, templateContent).lines.filter((line) => line.roomLine !== undefined);
+  const templateAgainstPrevious = new Map(templateLines.map((line) => [line.roomLine, line.kind]));
+  const earlierVersion = new Map(templateLines.filter((line) => line.kind === 'changed').map((line) => [line.roomLine, line.templateLine]));
+  for (const line of result.lines) {
+    if (line.trivial) continue;
+    const templateKind = templateAgainstPrevious.get(line.templateLine);
+    // Only a line the room kept as the earlier template shipped it (or filled
+    // it) is the template's; a line the room rewrote stays the room's own.
+    if (line.kind === 'added' && kept.includes(roomAgainstPrevious.get(line.roomLine))) line.generation = 'earlier-template';
+    // Template against template, a `filled` pairing means an earlier
+    // all-placeholder line was matched by shape to new text: a new line.
+    else if (line.kind === 'dropped' && ['added', 'filled'].includes(templateKind)) line.generation = 'newer-template';
+    // The template rewrote this line and the room still holds the earlier version.
+    else if (line.kind === 'dropped' && templateKind === 'changed' && previousKept.has(earlierVersion.get(line.templateLine))) line.generation = 'template-changed';
+    else if (line.kind === 'changed' && kept.includes(roomAgainstPrevious.get(line.roomLine)) && ['changed', 'added', 'filled'].includes(templateKind)) line.generation = 'template-changed';
+  }
+  result.generationCounts = Object.fromEntries(GENERATIONS.map((generation) => [generation, result.lines.filter((line) => line.generation === generation).length]));
+  return result;
+}
+
+function compareTarget(project, templates, target, previous = null) {
   const base = { control: target.control, template: target.template ?? CLAUDE_CONTROL, optional: target.optional };
   const roomContent = readOrdinary(path.join(project, target.control));
   if (roomContent === null) {
@@ -296,7 +355,9 @@ function compareTarget(project, templates, target) {
   if (templateContent === null) {
     return { ...base, status: 'template-missing', counts: Object.fromEntries(KINDS.map((kind) => [kind, 0])), lines: [], note: `${target.template} is not an ordinary file under ${templates}.` };
   }
-  return { ...base, status: 'compared', ...classifyLines(templateContent, roomContent) };
+  const result = { ...base, status: 'compared', ...classifyLines(templateContent, roomContent) };
+  const previousContent = previous ? previous.read(target.template) : null;
+  return previousContent === null ? result : labelGenerations(result, previousContent, templateContent, roomContent);
 }
 
 function excerpt(line) {
@@ -319,16 +380,19 @@ export function summarizeMarkdown(report) {
   const out = ['# Control fidelity report', ''];
   out.push(`Project: \`${report.project}\`. Templates: \`${report.templates}\` (checkout ${report.checkoutVersion ?? 'unknown'}). Room manifest release: ${report.manifestRelease ?? 'unknown'}${report.sourceRelease ? ` (adopted from ${report.sourceRelease})` : ''}.`);
   out.push('', report.versionNote, '');
+  if (report.previousTemplates) out.push(`Earlier template generation: ${report.previousTemplates.source === 'option' ? `\`${report.previousTemplates.path}\`` : `templates at source commit ${report.previousTemplates.ref}`}. A line labeled a generation difference is the template's change, not the room's; reconcile it to the current shape.`, '');
   for (const control of report.controls) {
     out.push(`## ${control.control}`, '');
     if (control.status === 'absent') { out.push(`Optional; not present in the room.`, ''); continue; }
     if (control.status === 'missing' || control.status === 'template-missing') { out.push(`${control.status}: ${control.note}`, ''); continue; }
-    out.push(`Template \`${control.template}\` (${control.status}): ${headlineCounts(control)}.`, '');
+    const generations = control.generationCounts ? Object.values(control.generationCounts).reduce((sum, count) => sum + count, 0) : 0;
+    out.push(`Template \`${control.template}\` (${control.status}): ${headlineCounts(control)}${control.generationCounts ? `; generation differences ${generations}` : ''}.`, '');
     const notable = control.lines.filter((line) => !line.trivial && ['dropped', 'changed', 'added'].includes(line.kind));
     for (const line of notable) {
-      if (line.kind === 'changed') out.push(`- changed L${line.templateLine} -> L${line.roomLine}: \`${excerpt(line.template)}\` -> \`${excerpt(line.room)}\``);
-      else if (line.kind === 'dropped') out.push(`- dropped L${line.templateLine}: \`${excerpt(line.template)}\``);
-      else out.push(`- added L${line.roomLine}: \`${excerpt(line.room)}\``);
+      const label = line.generation ? ` (generation difference: ${line.generation})` : '';
+      if (line.kind === 'changed') out.push(`- changed${label} L${line.templateLine} -> L${line.roomLine}: \`${excerpt(line.template)}\` -> \`${excerpt(line.room)}\``);
+      else if (line.kind === 'dropped') out.push(`- dropped${label} L${line.templateLine}: \`${excerpt(line.template)}\``);
+      else out.push(`- added${label} L${line.roomLine}: \`${excerpt(line.room)}\``);
     }
     if (notable.length) out.push('');
   }
@@ -350,6 +414,8 @@ export function reportFidelity(options) {
   const checkoutVersion = options.checkoutVersion ?? productManifest?.workbenchVersion ?? null;
   const manifestRelease = options.manifestRelease ?? manifest?.workbenchVersion ?? null;
   const sourceRelease = manifest?.provenance?.source?.release ?? null;
+  const previous = previousGeneration(options, manifest);
+  if (previous?.error) return previous.error;
   let targets = fidelityTargets(project, manifest);
   if (options.control) {
     targets = targets.filter((target) => target.control === options.control);
@@ -365,7 +431,8 @@ export function reportFidelity(options) {
     versionMatch: compareVersions(checkoutVersion, manifestRelease) === 'same',
     versionNote: versionNote(checkoutVersion, manifestRelease),
     manifestNote,
-    controls: targets.map((target) => compareTarget(project, templates, target))
+    previousTemplates: previous ? (previous.source === 'option' ? { source: 'option', path: previous.path } : { source: 'provenance', ref: previous.ref }) : null,
+    controls: targets.map((target) => compareTarget(project, templates, target, previous))
   };
   report.markdown = summarizeMarkdown(report);
   return report;
@@ -384,7 +451,7 @@ function parseOptions(args) {
   return options;
 }
 
-const usage = 'Usage: control-fidelity.mjs report --project PATH [--control NAME] [--templates PATH] [--format json|markdown]';
+const usage = 'Usage: control-fidelity.mjs report --project PATH [--control NAME] [--templates PATH] [--previous-templates PATH] [--format json|markdown]';
 
 if (isMainModule(import.meta.url)) {
   process.stdout.on('error', (error) => {
@@ -395,7 +462,7 @@ if (isMainModule(import.meta.url)) {
     const [command, ...args] = process.argv.slice(2);
     if (command !== 'report') throw new Error(usage);
     const options = parseOptions(args);
-    const report = reportFidelity({ project: options['--project'], control: options['--control'], templates: options['--templates'] });
+    const report = reportFidelity({ project: options['--project'], control: options['--control'], templates: options['--templates'], previousTemplates: options['--previous-templates'] });
     if (report.status !== 'reported') {
       process.stdout.write(`${JSON.stringify(report)}\n`);
       process.exitCode = 1;

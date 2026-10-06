@@ -1,0 +1,415 @@
+[
+  {
+    "id": "WB-0001",
+    "source_file": "evidence/wb-0001.md",
+    "source_hash": "d718d7952057ea4325646e06fa6294b612408f6c885b813b9b8d7573787c0b18",
+    "relationship": "Retain unchanged",
+    "proposal": "No amendment proposed"
+  },
+  {
+    "id": "WB-0002",
+    "source_file": "evidence/wb-0002.md",
+    "source_hash": "3fd8e4540894cd4c5870d1d52f648cc0536fb3e409c50f80a87ff73cf4a192ae",
+    "relationship": "Retain unchanged",
+    "proposal": "No amendment proposed"
+  },
+  {
+    "id": "WB-0003",
+    "source_file": "evidence/wb-0003.md",
+    "source_hash": "cce2686dff1926a3aaab53a8579aa3000e294654df215f02c766147cb1fec6f3",
+    "relationship": "Retain unchanged",
+    "proposal": "No amendment proposed"
+  },
+  {
+    "id": "WB-0005",
+    "source_file": "evidence/wb-0005.md",
+    "source_hash": "f79a7edf0a5e32c221fcfb4a0a3d51e9346db8f42f311e9688b35b2e94631857",
+    "relationship": "Retain; clarify/cross-link",
+    "proposal": "Cross-link CAND-P capability/enforcement boundary"
+  },
+  {
+    "id": "WB-0013",
+    "source_file": "evidence/wb-0013.md",
+    "source_hash": "f4478e9216a8c09abd7dd616da0d2f417578b772af61af3a86cca87066c5679c",
+    "relationship": "Retain unchanged",
+    "proposal": "No amendment proposed"
+  },
+  {
+    "id": "WB-0015",
+    "source_file": "evidence/wb-0015.md",
+    "source_hash": "06169836231241a51ccc2f099c5fffa13b3b81e6ac4fd522661858d4d8cece65",
+    "relationship": "Retain unchanged",
+    "proposal": "No amendment proposed"
+  },
+  {
+    "id": "WB-0017",
+    "source_file": "evidence/wb-0017.md",
+    "source_hash": "e5e6187311a48647be87f45c28c60a51ab7eb38d946bec74c34dfee5eaaa1862",
+    "relationship": "Retain unchanged",
+    "proposal": "No amendment proposed"
+  },
+  {
+    "id": "WB-0018",
+    "source_file": "evidence/wb-0018.md",
+    "source_hash": "7d59e6cec4aff608e5f60f9b7ba62b0c8d9246db08e6131fd75a4d48c4a4b46b",
+    "relationship": "Retain unchanged",
+    "proposal": "No amendment proposed"
+  },
+  {
+    "id": "WB-0020",
+    "source_file": "evidence/wb-0020.md",
+    "source_hash": "34d3d5928d8cccfa333aa02e0bb4050990e26e6a1984dc8d02ec204c06647803",
+    "relationship": "Retain unchanged",
+    "proposal": "No amendment proposed"
+  },
+  {
+    "id": "WB-0023",
+    "source_file": "evidence/wb-0023.md",
+    "source_hash": "166d23b1ad359cd6d868eb0a006f61937565a7034a34ffd7a929688f3c89abb0",
+    "relationship": "Retain unchanged",
+    "proposal": "No amendment proposed"
+  },
+  {
+    "id": "WB-0025",
+    "source_file": "evidence/wb-0025.md",
+    "source_hash": "82536fc40e4dd5a24e99f65b5d3a49b11bc49b18d1ccbebef1799c38cc2c9154",
+    "relationship": "Retain unchanged",
+    "proposal": "No amendment proposed"
+  },
+  {
+    "id": "WB-0026",
+    "source_file": "evidence/wb-0026.md",
+    "source_hash": "62e044ee9e534276575af1b501bc686b7e47bdc73054ec80e637a7be666e1b1f",
+    "relationship": "Retain; clarify/cross-link",
+    "proposal": "Clarify generic source/deployment/audit and private-instance boundaries; deployment names remain local examples"
+  },
+  {
+    "id": "WB-0027",
+    "source_file": "evidence/wb-0027.md",
+    "source_hash": "f6ffacaefe1ecb07442dce6f39eb98a761a2a7df0b604fb3e830263591d20d69",
+    "relationship": "Retain; clarify/cross-link",
+    "proposal": "Clarify proof/judgment/authorization and bounded composition; CAND-B"
+  },
+  {
+    "id": "WB-0028",
+    "source_file": "evidence/wb-0028.md",
+    "source_hash": "a70d497356a8521f104eca5218ee06388e56e27edca6a83a2550abb39fe25143",
+    "relationship": "Retain historical record; partial supersession proposed",
+    "proposal": "Partially supersede with Q; narrow local-only via N; preserve legacy evidence/privacy rule"
+  },
+  {
+    "id": "WB-0029",
+    "source_file": "evidence/wb-0029.md",
+    "source_hash": "59f9e1a86b6da0eab09d3cceaf7eea55a354f09e3d5ef8e44bcbd8f6f8fc897b",
+    "relationship": "Retain unchanged",
+    "proposal": "No amendment proposed"
+  },
+  {
+    "id": "WB-0030",
+    "source_file": "evidence/wb-0030.md",
+    "source_hash": "1cebd8bae801ac0e0eeb354e8f6b8c3e8221d838b8eddf0f603f9e9b85137832",
+    "relationship": "Retain unchanged",
+    "proposal": "No amendment proposed"
+  },
+  {
+    "id": "WB-0031",
+    "source_file": "evidence/wb-0031.md",
+    "source_hash": "11867d8113e78962043ec737270e50c1172b820191d05c63ad7387c51162daf2",
+    "relationship": "Retain; clarify/cross-link",
+    "proposal": "Cross-link G/H/F ownership and distinct component identities"
+  },
+  {
+    "id": "WB-0032",
+    "source_file": "evidence/wb-0032.md",
+    "source_hash": "5cb5334a7be7d1eaed786bf15632c074ec27cd55760438e5d9c3be0b80e3c916",
+    "relationship": "Retain unchanged",
+    "proposal": "No amendment proposed"
+  },
+  {
+    "id": "WB-0033",
+    "source_file": "evidence/wb-0033.md",
+    "source_hash": "f36cf2dee005aad5a43abab8e0af75f7e13bde5fdea9e810abc9ff3b580b4aad",
+    "relationship": "Retain unchanged",
+    "proposal": "No amendment proposed"
+  },
+  {
+    "id": "WB-0034",
+    "source_file": "evidence/wb-0034.md",
+    "source_hash": "73ceff782854e029945e57b7cff5418dde1cc9e302055e721866ac7feaef8c2d",
+    "relationship": "Retain unchanged",
+    "proposal": "No amendment proposed"
+  },
+  {
+    "id": "WB-0035",
+    "source_file": "evidence/wb-0035.md",
+    "source_hash": "4c41d682ca38e880b56d702d32d8910f8e07b3e40dd5e9084d8e7de5005fced7",
+    "relationship": "Retain; clarify/cross-link",
+    "proposal": "Cross-link A continuity outcome and Q replacing checkpoint-specific continuation wording"
+  },
+  {
+    "id": "WB-0036",
+    "source_file": "evidence/wb-0036.md",
+    "source_hash": "fa666056fbf8906180e47824362de7fd1eaa10ed42a59faf0c2cbd57c750d4da",
+    "relationship": "Retain unchanged",
+    "proposal": "No amendment proposed"
+  },
+  {
+    "id": "WB-0037",
+    "source_file": "evidence/wb-0037.md",
+    "source_hash": "a7fc1c325c2cc916a04b7ab13b6a7ab2065f7140adaeaf91bd72a39a060d0501",
+    "relationship": "Retain; clarify/cross-link",
+    "proposal": "Clarify assessed merge result, target movement and exact containment; B/I"
+  },
+  {
+    "id": "WB-0038",
+    "source_file": "evidence/wb-0038.md",
+    "source_hash": "3dac6e8f093589e3e6a5706421c7522cb61e31f3bcd67149e64d464e9baf5949",
+    "relationship": "Retain unchanged",
+    "proposal": "No amendment proposed"
+  },
+  {
+    "id": "WB-0039",
+    "source_file": "evidence/wb-0039.md",
+    "source_hash": "ce678402d05ef4de86792641d1b57f53dfc700b08463b0785fa400695c4c5641",
+    "relationship": "Retain unchanged",
+    "proposal": "No amendment proposed"
+  },
+  {
+    "id": "WB-0040",
+    "source_file": "evidence/wb-0040.md",
+    "source_hash": "059084b77527b5220bb24999514d07513cd2d94a9bce39d6254b24b93efac55b",
+    "relationship": "Retain; clarify/cross-link",
+    "proposal": "N private transport exception; Q direct promotion; R052 stable question identity"
+  },
+  {
+    "id": "WB-0041",
+    "source_file": "evidence/wb-0041.md",
+    "source_hash": "8d88895ac89b848f81a9abfa7d7f168c091b758a5244fbd3e365f9b7ad84e19c",
+    "relationship": "Retain; clarify/cross-link",
+    "proposal": "N now requires a Workbench connection identity; keep artifact IDs separately scoped"
+  },
+  {
+    "id": "WB-0042",
+    "source_file": "evidence/wb-0042.md",
+    "source_hash": "f9f14a069fc1008c3214098ceb06bf12abcf103307551b6b4125e34a55ac4f7c",
+    "relationship": "Retain; clarify/cross-link",
+    "proposal": "R179 reachable owner for accepted unfinished obligations; no autonomous task creation"
+  },
+  {
+    "id": "GO-0001",
+    "source_file": "evidence/go-0001.md",
+    "source_hash": "60ef18650bb7ba23571ff6b0499631c5ffb27cb1547966ddcc3e5452c021302a",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0002",
+    "source_file": "evidence/go-0002.md",
+    "source_hash": "7a7e859106b8e921d75060ab44d3f9aa5015f8b205dc0ff94b352fd7c44c94bd",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0003",
+    "source_file": "evidence/go-0003.md",
+    "source_hash": "378b8624671821300c3e61a1f242acfbb712ac39467a1932a0fc0e6f30693978",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0004",
+    "source_file": "evidence/go-0004.md",
+    "source_hash": "ffc7aa77f857678e1a38d11cc3e10d76c5de2360dbda08e41f0aa448fdc717aa",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0005",
+    "source_file": "evidence/go-0005.md",
+    "source_hash": "641b171b818aba249c5ad172430dda05126bccc42513ae685cf09b3d53618952",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0006",
+    "source_file": "evidence/go-0006.md",
+    "source_hash": "72cdf0e68ca58f70f38851177720f159acf12bfbf45e68c58144bf0937bc53aa",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0007",
+    "source_file": "evidence/go-0007.md",
+    "source_hash": "9acf4dd4b5ee53071fc00b35dabf76d2e9dc93cab9f86d4c48eebd8d16026606",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0008",
+    "source_file": "evidence/go-0008.md",
+    "source_hash": "96a7df87c93a741b91a7a7d7c29bec8269d3dc6cbdc5edd55853001de7e2720d",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0009",
+    "source_file": "evidence/go-0009.md",
+    "source_hash": "c8d55e1f6fc2a0fb5f6cb30ccaca81141f39f6390766b9c61518b3c3e420bb91",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0010",
+    "source_file": "evidence/go-0010.md",
+    "source_hash": "1e4168ec09a6e8a9c281bd63ea088869d6828e8ee3f2da7c85abce6387225ba7",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0011",
+    "source_file": "evidence/go-0011.md",
+    "source_hash": "75c801f6a40e9159fa038c7927d4b2555c35f1f5264d6383014a229240f2d07e",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0012",
+    "source_file": "evidence/go-0012.md",
+    "source_hash": "cbcc6ea1024e0a736f86ba865fb821111358e73724ffe43e557a3e1ea15ede8f",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0013",
+    "source_file": "evidence/go-0013.md",
+    "source_hash": "f223f92f2e5deb72d67c30dc34c669002704bd383525857304b4c5dbf4da6119",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0014",
+    "source_file": "evidence/go-0014.md",
+    "source_hash": "25adcbedfdb34c816a2ef960f13c668c684e0a8a1c0de330da9f777e3c6372e2",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0015",
+    "source_file": "evidence/go-0015.md",
+    "source_hash": "b1b980c1f48915464a251c42a72338cfbe9b951ce0f8fccac2a5b398e031995e",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0016",
+    "source_file": "evidence/go-0016.md",
+    "source_hash": "852e0d4d8c7d41832cead0cc8adf6fc91f70331371833b16faed7d2a260dcd06",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0017",
+    "source_file": "evidence/go-0017.md",
+    "source_hash": "67f2eaf0f43c010e7f39bcb604a591c10d6ee7cd563986018b4e74983ec38c1a",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0018",
+    "source_file": "evidence/go-0018.md",
+    "source_hash": "1500354e6ff6c513c159b755c546bea8edd32222e004a2ffaf602708e94db297",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0019",
+    "source_file": "evidence/go-0019.md",
+    "source_hash": "92ede1ec00ef79eaa975a7c5ba67e2d6babbaebddd5100319cd36fe57001a3b6",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0020",
+    "source_file": "evidence/go-0020.md",
+    "source_hash": "f8e6ff5851d1fef44cf5f86b66a61e476a1620aeb1b38e922742c0537f8aed59",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0021",
+    "source_file": "evidence/go-0021.md",
+    "source_hash": "597131612950b2ac7f8902a7bd194f145c1f203e5e7da72ce9879f6089375309",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0022",
+    "source_file": "evidence/go-0022.md",
+    "source_hash": "98fcaf7f1ef0ad1217ee341ea8ab5e2af843c4f476df4667aa85ff4a2a75d19b",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0023",
+    "source_file": "evidence/go-0023.md",
+    "source_hash": "ed017a7a41fcdb7b3fa2c8e3109029717204574b78905e0f5ebb86acab309281",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "GO-0024",
+    "source_file": "evidence/go-0024.md",
+    "source_hash": "20d1d1004818e0d475ae2dca78cf90de4455305eabe4c0884705048952e358d5",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "AU-0001",
+    "source_file": "evidence/au-0001.md",
+    "source_hash": "e3511e610f00e38ae39805cdb0bab02436b5e3157b4abcfa0e0f6340647cd0d0",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "AU-0002",
+    "source_file": "evidence/au-0002.md",
+    "source_hash": "a4467e81cc901be88a8ca7fbc181ba3924d46076b92edfad0cb9c8253c5127c8",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "AU-0003",
+    "source_file": "evidence/au-0003.md",
+    "source_hash": "9d934a7781a3aac9582c370fb9c072927fade24341bc5c4c772fd67416436b8b",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "AU-0004",
+    "source_file": "evidence/au-0004.md",
+    "source_hash": "df653b559e81a7aef7db3412a01b2733e4d4bd15132dea0fc12c61da391789ed",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "AU-0005",
+    "source_file": "evidence/au-0005.md",
+    "source_hash": "4713416522412a48ae277d5f7c517385b2cbb1f1124a82e0dfe7fcf0bc8cc9b3",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "AU-0006",
+    "source_file": "evidence/au-0006.md",
+    "source_hash": "dedf9d5e5cc90b841830ae40d1c4cf2d4b990e128bd955d1e4b8ff68e03dc65d",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  },
+  {
+    "id": "AU-0007",
+    "source_file": "evidence/au-0007.md",
+    "source_hash": "e078183e162ff3baf2369ebf120b3fe53884307a434ade370b91040c152855c0",
+    "relationship": "Retain historical downstream mapping; no upstream record created automatically",
+    "proposal": "Original scope, supersession and open status remain in the source packet"
+  }
+]

@@ -23,7 +23,7 @@ import { isSafeRelative } from '../workbench/tools/workbench-paths.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
-const ACTIVE_SURFACES = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md', 'templates', 'skills', 'workbench/manifest.json', 'workbench/tools', 'workbench/docs', 'workbench/wiki', 'workbench/sessions/checkpoints'];
+const ACTIVE_SURFACES = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md', 'templates', 'skills', 'workbench/manifest.json', 'workbench/tools', 'workbench/docs', 'workbench/wiki', 'workbench/sessions/checkpoints', 'workbench/sessions/grilling-destination-audit-ledger.json', 'workbench/specs/S-00E-fresh-template-project-proof/proof', 'workbench/specs/S-00E-fresh-template-project-proof/PROOF.md'];
 const RETIRED = [
   { label: 'hidden notepad directory', pattern: /\.agents\/grilling diary/ },
   // The two v3.0 lane names may appear only where the one-time migration is
@@ -45,6 +45,82 @@ function activeFiles() {
   return trackedFiles().filter((file) => ACTIVE_SURFACES.some((surface) => file === surface || file.startsWith(`${surface}/`)))
     .filter((file) => /\.(md|mjs|json)$/.test(file));
 }
+
+// A locked ledger question can preserve a rejected proposal. Scan its settled
+// answer and every operational field, while distinguishing explicitly bounded
+// historical proposal text from an instruction to use the retired path.
+function retiredContent(file, content) {
+  if (file !== 'workbench/sessions/grilling-destination-audit-ledger.json') return content;
+  const ledger = JSON.parse(content);
+  if (ledger.schema !== 'grilling-destination-ledger/1' || !Array.isArray(ledger.questions)) return content;
+  // Recognize nominal path proposals only; nearby history markers must never
+  // hide an instruction or a different path in the same sentence/parenthesis.
+  const historical = /\bearlier\s+(?:status-folder\s+and\s+)?workbench\/(?:grilling|handoffs)\/?\s+proposals?\s+are\s+(?:superseded|unselected)(?:\s+or\s+(?:superseded|unselected))?\./gi;
+  const proposed = /\(\s*workbench\/(?:grilling|handoffs)\/?\s+proposed\s*\)/gi;
+  const legacyLane = /workbench\/(?:grilling|handoffs)\b/g;
+  for (const row of ledger.questions) {
+    if (row.status !== 'locked' || typeof row.answer !== 'string' || typeof row.notes !== 'string'
+      || RETIRED.some(({ pattern }) => pattern.test(row.answer))) continue;
+    if (!row.notes.match(historical)) continue;
+    if (typeof row.question === 'string') {
+      row.question = row.question.replace(proposed, (proposal) => proposal.replace(legacyLane, '[historical lane]'));
+    }
+    row.notes = row.notes.replace(historical, (history) => history.replace(legacyLane, '[historical lane]'));
+  }
+  return JSON.stringify(ledger);
+}
+
+test('historical ledger proposals remain recoverable while active retired routes are rejected', () => {
+  const file = 'workbench/sessions/grilling-destination-audit-ledger.json';
+  const retired = RETIRED.find(({ label }) => label === 'v3.0 grilling lane').pattern;
+  const row = {
+    status: 'locked', question: 'Which root (workbench/grilling/ proposed)?',
+    answer: 'Use workbench/landmark-tracker/.',
+    notes: 'Earlier workbench/grilling/ proposals are superseded or unselected.'
+  };
+  const encode = (value) => JSON.stringify({ schema: 'grilling-destination-ledger/1', questions: [value] });
+  assert.equal(retired.test(retiredContent(file, encode(row))), false);
+  for (const changed of [
+    { ...row, answer: 'Use workbench/grilling/.' },
+    { ...row, status: 'open' },
+    { ...row, question: 'Use workbench/grilling/ now. Which root (old proposal proposed)?' },
+    { ...row, notes: `${row.notes} Now use workbench/grilling/.` },
+    { ...row, progress: { evidence: 'Live root is workbench/grilling/.' } },
+    { ...row, result: [{ artifact: 'workbench/grilling/' }] }
+  ]) assert.equal(retired.test(retiredContent(file, encode(changed))), true, JSON.stringify(changed));
+  assert.equal(retired.test(retiredContent('workbench/wiki/another.json', encode(row))), true);
+  const privateHistory = encode({ ...row, notes: 'Earlier /Users/private/workbench/grilling/ proposals are superseded or unselected.' });
+  assert.equal(RETIRED.find(({ label }) => label === 'private home path').pattern.test(retiredContent(file, privateHistory)), true, 'historical classification never masks private paths');
+});
+
+test('historical markers never mask operational text surrounding a legacy path', () => {
+  const file = 'workbench/sessions/grilling-destination-audit-ledger.json';
+  const encode = (row) => JSON.stringify({ schema: 'grilling-destination-ledger/1', questions: [row] });
+  for (const lane of ['grilling', 'handoffs']) {
+    const retired = RETIRED.find(({ label }) => label === `v3.0 ${lane} lane`).pattern;
+    const legacyPath = `workbench/${lane}/`;
+    const row = {
+      status: 'locked', question: `Which root (${legacyPath} proposed)?`,
+      answer: 'Use workbench/landmark-tracker/.',
+      notes: `Earlier status-folder and ${legacyPath} proposals are superseded or unselected.`
+    };
+    assert.equal(retired.test(retiredContent(file, encode(row))), false, `${lane} nominal history remains recoverable`);
+    assert.equal(retired.test(retiredContent(file, encode({ ...row, question: `Which root (workbench/${lane} proposed)?` }))), false, `${lane} historical token without trailing slash`);
+    for (const changed of [
+      { ...row, question: `Which root (the old name was proposed; now use ${legacyPath})?` },
+      { ...row, question: `Which root (${legacyPath} proposed; now use ${legacyPath})?` },
+      { ...row, question: `Which root (${legacyPath}live proposed)?` },
+      { ...row, question: `${row.question} Now use ${legacyPath}.` },
+      { ...row, notes: `Earlier the old name was proposed; now use ${legacyPath} proposals are superseded or unselected.` },
+      { ...row, notes: `Earlier use ${legacyPath} proposals are superseded or unselected.` },
+      { ...row, notes: `Earlier ${legacyPath} proposals are superseded or unselected; now use ${legacyPath}.` },
+      { ...row, notes: `${row.notes} Now use ${legacyPath}.` },
+      { ...row, answer: `Use ${legacyPath}.` },
+      { ...row, progress: { evidence: `Live root is ${legacyPath}.` } },
+      { ...row, result: [{ artifact: legacyPath }] }
+    ]) assert.equal(retired.test(retiredContent(file, encode(changed))), true, JSON.stringify(changed));
+  }
+});
 
 test('tracked paths never differ only by case, and lanes must be lowercase without spaces or backslashes', () => {
   const seen = new Map();
@@ -83,13 +159,13 @@ test('a manifest with a backslash or capitalised lane is rejected before any lan
 
 test('active surfaces carry no retired lane, private path, private catalog, or Foundry-dependent path', () => {
   for (const file of activeFiles()) {
-    const content = fs.readFileSync(path.join(root, file), 'utf8');
+    const content = retiredContent(file, fs.readFileSync(path.join(root, file), 'utf8'));
     for (const { label, pattern, allow } of RETIRED) {
-      const hit = content.match(pattern);
-      if (!hit) continue;
-      const key = allow && Object.keys(allow).find((prefix) => file === prefix || (prefix.endsWith('/') && file.startsWith(prefix)));
-      const allowed = key && allow[key].test(content.slice(Math.max(0, hit.index - 200), hit.index + 200));
-      assert.ok(allowed, `${file} names a ${label}: ${hit[0]}`);
+      for (const hit of content.matchAll(new RegExp(pattern.source, 'g'))) {
+        const key = allow && Object.keys(allow).find((prefix) => file === prefix || (prefix.endsWith('/') && file.startsWith(prefix)));
+        const allowed = key && allow[key].test(content.slice(Math.max(0, hit.index - 200), hit.index + 200));
+        assert.ok(allowed, `${file} names a ${label}: ${hit[0]}`);
+      }
     }
   }
 });

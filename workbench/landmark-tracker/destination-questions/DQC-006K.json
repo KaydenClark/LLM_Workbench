@@ -1,0 +1,164 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-006K",
+  "revision": 6,
+  "title": "What makes a concept Confirmed after Align, and how do the later steps advance?",
+  "question": "What makes a concept Confirmed after Align, and how do the later steps advance?",
+  "answer": "GX-1: Aligned is a locked grilling answer with no Tracker card yet. At session completion each locked answer is added to an existing DQC, or to a new DQC where it evolves independently, which makes it Confirmed. Mapped uses selective ADRs from DQCs where warranted, then Specs as small destinations. Planned means ready Tasks. Journey means implementation. Review is distinct code and QA review with TDD proof. Verified compares delivered work against the DQC's expected understanding and result. Existing workflow skills maintain DQCs at each step, preferably through one focused DQC primitive; there is no DQC-specific review skill.",
+  "confirmation": {
+    "basis": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: GX-1 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed.",
+    "revision": 2
+  },
+  "expectedResult": {
+    "change": "GX-1 update LEXICON.md (Align, DQC, Landmark Tracker rows); workbench/specs/S-01T-landmark-tracker-foundation/SPEC.md; workbench/landmark-tracker/README.md: Define Aligned, Confirmed and the later steps as answered, reconciling the documentation-only step reading.",
+    "home": "LEXICON.md (Align, DQC, Landmark Tracker rows); workbench/specs/S-01T-landmark-tracker-foundation/SPEC.md; workbench/landmark-tracker/README.md",
+    "revision": 2
+  },
+  "result": null,
+  "uncertainty": [
+    "GX-1..GX-3 (ledger note): the step meanings in these answers conflict with S-01T, LEXICON.md and workbench/tools/landmark-tracker.mjs, which say the steps describe documentation progress, never Task status or implementation effort; reconcile before Canon changes."
+  ],
+  "sources": [
+    {
+      "id": "GX-1",
+      "revision": "56b459da"
+    }
+  ],
+  "landmarks": [
+    "LMK-000O",
+    "LMK-000X"
+  ],
+  "assessment": {
+    "derived": "related",
+    "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+    "revision": 4
+  },
+  "related": [
+    {
+      "type": "grilling-question",
+      "id": "GX-1",
+      "revision": "56b459da",
+      "reason": "Ledger row GX-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "assessment": {
+        "contributions": {
+          "Confirmed": 1
+        },
+        "basis": "derived from the ledger row status at 56b459da; no build-progress label converted",
+        "evidence": [
+          "workbench/wiki/grilling-destination-audit-ledger.json@56b459dac8574cc96af353c3da6a790809546f28"
+        ],
+        "revision": 3
+      }
+    }
+  ],
+  "claims": [],
+  "origin": {
+    "title": "What makes a concept Confirmed after Align, and how do the later steps advance?",
+    "question": "What makes a concept Confirmed after Align, and how do the later steps advance?",
+    "sources": [
+      {
+        "id": "GX-1",
+        "revision": "56b459da"
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-01T23:49:36.598Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-01T23:49:36.598Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: a card written from ledger rows that postdate the 2026-09-26 draft grouping, grilling ledger at 56b459da.",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "at": "2026-10-01T23:49:36.632Z",
+      "reason": "Records the owner-settled source answers from the grilling ledger at 56b459da, with the confirmation scope and, where the ledger result items name them, the Expected result.",
+      "changes": [
+        {
+          "field": "answer",
+          "from": null,
+          "to": "GX-1: Aligned is a locked grilling answer with no Tracker card yet. At session completion each locked answer is added to an existing DQC, or to a new DQC where it evolves independently, which makes it Confirmed. Mapped uses selective ADRs from DQCs where warranted, then Specs as small destinations. Planned means ready Tasks. Journey means implementation. Review is distinct code and QA review with TDD proof. Verified compares delivered work against the DQC's expected understanding and result. Existing workflow skills maintain DQCs at each step, preferably through one focused DQC primitive; there is no DQC-specific review skill."
+        },
+        {
+          "field": "confirmation",
+          "from": null,
+          "to": "Each source answer was owner-settled in its grilling session, per the grilling ledger at 56b459da: GX-1 (locked). The card's grouping, title and synthesis are agent work (2026-09-26 draft grouping and the 2026-10-01 ledger backfill), not separately owner-confirmed."
+        },
+        {
+          "field": "expectedResult",
+          "from": null,
+          "to": {
+            "change": "GX-1 update LEXICON.md (Align, DQC, Landmark Tracker rows); workbench/specs/S-01T-landmark-tracker-foundation/SPEC.md; workbench/landmark-tracker/README.md: Define Aligned, Confirmed and the later steps as answered, reconciling the documentation-only step reading.",
+            "home": "LEXICON.md (Align, DQC, Landmark Tracker rows); workbench/specs/S-01T-landmark-tracker-foundation/SPEC.md; workbench/landmark-tracker/README.md",
+            "revision": 2
+          }
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-01T23:49:36.667Z",
+      "reason": "Ledger row GX-1 (locked) at 56b459da; assessed Confirmed from its status only.",
+      "changes": [
+        {
+          "field": "related",
+          "from": null,
+          "to": {
+            "type": "grilling-question",
+            "id": "GX-1",
+            "revision": "56b459da"
+          }
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "at": "2026-10-01T23:49:36.707Z",
+      "reason": "Card assessment derived from its related ledger rows, each assessed from its status only.",
+      "changes": [
+        {
+          "field": "assessment",
+          "from": null,
+          "to": "derived"
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "at": "2026-10-01T23:49:59.826Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Grilling and Shared Understanding pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [],
+          "to": [
+            "LMK-000O"
+          ]
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "at": "2026-10-01T23:50:02.801Z",
+      "reason": "Ledger-to-DQC backfill, 2026-10-01: the card's destination question belongs to the Landmark Tracker pillar (agent grouping, not owner-confirmed).",
+      "changes": [
+        {
+          "field": "landmarks",
+          "from": [
+            "LMK-000O"
+          ],
+          "to": [
+            "LMK-000O",
+            "LMK-000X"
+          ]
+        }
+      ]
+    }
+  ]
+}

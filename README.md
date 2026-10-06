@@ -3,7 +3,7 @@
 LLM Workbench is a reusable control-doc template for AI-agent projects. It gives
 a new or existing repository the files an agent needs before it starts changing
 code: always-on operating rules, a compact product map, on-demand capability
-specs, a hot execution projection, operational commands, and durable proof.
+specs, Task records, a hot execution projection, operational commands, and durable proof.
 
 Use it when you want agents to work from the same local source of truth instead
 of relying on chat history or one-off instructions.
@@ -23,9 +23,11 @@ The blank, copyable templates live in `templates/`:
   owner, blocker, latest event, and next gate.
 - `templates/SPEC.md` - concise on-demand capability work packet. Copy it to a
   manifest-declared `workbench/specs/S-###-slug/SPEC.md`; it owns detailed requirements, decisions,
-  acceptance, evidence, completion, and supersession.
-- `templates/RUNBOOK.md` - setup, run, test, build, troubleshooting, recovery,
-  and evaluation procedure.
+  acceptance, evidence, completion, and supersession. Active Tasks carry their own
+  `tasks/TK-###/TASK.md` state, Packet and Receipt; retained done tables are history.
+- `templates/RUNBOOK.md` - an operations index whose rows point to the skills
+  that carry each procedure, plus the room's own setup, run, test, build,
+  troubleshooting, recovery and evaluation sections.
 - `templates/README.md` - a blank, user-facing product README for the target
   project (points readers at the control surfaces). The root README you are
   reading is the workbench's own and is not meant to be copied.
@@ -57,6 +59,23 @@ The blank, copyable templates live in `templates/`:
 `BLUEPRINT.md`, capability truth in specs, and only active execution state in
 `TASKBOARD.md`.
 
+## From Project Evidence To A Fresh Workbench
+
+Prepare a named project's source evidence and unanswered Blueprint questions
+with the installed `project-evidence.mjs` tool. Once the relevant decisions are
+recorded, the release-side `genesis-from-decisions.mjs` command can assemble a
+new independent room from reviewed control drafts, selected active ADRs and
+scoped capability inputs. It preserves source lineage and validates the room;
+it does not invent owner answers or prove a product works.
+
+Follow [the Runbook](RUNBOOK.md#prepare-project-evidence-and-blueprint-questions)
+for the commands and input boundary, then [Genesis](templates/GENESIS.md) for
+implementation, project checks and remote recovery. An existing project follows
+[Adoption](templates/ADOPTION.md). The source capabilities are
+[S-00C](workbench/specs/S-00C-project-evidence-and-blueprint-grilling/SPEC.md),
+[S-00D](workbench/specs/S-00D-genesis-from-blueprint-and-adrs/SPEC.md) and the
+[S-00E fresh-project proof](workbench/specs/S-00E-fresh-template-project-proof/SPEC.md).
+
 ## This Repo Dogfoods Its Own Harness
 
 The root-level `AGENTS.md`, `BLUEPRINT.md`, `LEXICON.md`, `TASKBOARD.md`, and `RUNBOOK.md`
@@ -66,9 +85,14 @@ docs look like. Copy from `templates/`, not from the root.
 
 ## Supporting Files
 
-- `skills/` - the closed 21-skill public source bundle. Missing-only setup installs canonical
-  source under `.agents/skills` and Claude adapters to that source; this
-  repository does not use it as a project-local discovery tree.
+- `workbench/skills/` - the closed 28-skill core bundle, shipped inside every
+  room as the manifest's `skills` lane. The tracked `.agents/skills` (Codex)
+  and `.claude/skills` (Claude Code) links resolve into it, so a fresh clone
+  discovers the skills with no provider home or personal catalog. Genesis and
+  Adoption lay the lane down from the release; the Workbench update refreshes
+  it (`tools/workbench-skills.mjs`). The two links are Git symlinks: a host
+  that checks them out as plain files (Windows without symlink support)
+  reports `skill-adapter-broken` in `doctor` until they are restored.
 - `skills-pending/` - preserved selected baselines that remain non-invocable
   until their Workbench rewrites pass review.
 - `team templates/` - optional manager/subagent coordination templates for
@@ -108,17 +132,26 @@ docs look like. Copy from `templates/`, not from the root.
    `templates/LEXICON.md`, `templates/TASKBOARD.md`, `templates/RUNBOOK.md`,
    `templates/README.md`, and `templates/SPEC.md` into the target project; copy
    `templates/wiki/MEMORY.project.md` in as `workbench/wiki/MEMORY.md` (the room brain);
-   initialize `workbench/manifest.json` and create its declared `workbench/specs/` lane for stable work
+   initialize `workbench/manifest.json` and create its declared `workbench/specs/` lane for bounded work
    packets and copy `workbench/tools/spec-workbench.mjs` when using the local interface.
 2. Replace bracketed placeholders with project-specific paths, commands, rules,
    and task items. For Claude Code, also copy `templates/.claude/settings.json`
    and fill it from the same edit scope to enforce the boundary mechanically.
 3. Keep `AGENTS.md` as the always-loaded operating system; normal selection runs
-   `spec-workbench next` and loads one returned spec.
+   `spec-workbench next` and loads one returned Spec and Task record. Follow
+   [Runbook lifecycle](RUNBOOK.md#spec-lifecycle-and-retrieval) for claim,
+   red/green work, Receipt, self-check and hand-back.
 4. Keep Blueprint product-level, Lexicon definition-only, Taskboard hot, and
    detailed capability truth in specs.
-5. Append proof to the owning spec and require a <1-minute demo artifact for
-   milestones so acceptance rests on product truth, not passing tests alone.
+5. Preserve Task proof and Spec evidence with a <1-minute product demo. The
+   Dispatcher verifies the assembled destination; a separate Director reviews
+   the immutable integration candidate at the Spec's Verify step. A Task's own
+   verify step is its two merge answers, validated by the Spec's Dispatcher,
+   Director or next agent; the current Task-PR exception is described in AGENTS.
+6. The owner chooses Human QA timing and explicitly approves per-Spec delivered
+   content. Only the owner promotes to main. Main verification precedes
+   `complete`; routed features Wiki capture follows complete and precedes
+   retirement/discard. A green suite, merge or observation is not owner approval.
 
 The templates are intentionally plain Markdown so they work with Codex, Claude,
 or any other agent that reads repository instructions.
@@ -134,7 +167,7 @@ hand, copy `templates/GENESIS.md` alongside the control templates and hand the
 agent the prompt plus GENESIS. GENESIS walks the agent through framing the
 prompt, writing `BLUEPRINT.md`, choosing an architecture, scaffolding the
 smallest thing that runs, filling `AGENTS.md` scopes and `RUNBOOK.md` commands,
-and seeding the first stable spec plus hot projection - then defines what a
+and seeding the first Spec and Task packet plus hot projection - then defines what a
 finished bootstrap must prove.
 GENESIS runs once; after handoff AGENTS plus the progressive spec flow govern.
 
@@ -164,7 +197,7 @@ so a cold reviewer can reproduce the proof without the original checkout or chat
 
 Each copied control doc carries a `Generated from LLM Workbench v[HARNESS_VERSION]`
 stamp so a downstream project can tell which harness version it is running. The
-current harness version is **v3.2.0** (recorded in `BLUEPRINT.md` and
+current harness version is **v3.2.1** (recorded in
 `workbench/manifest.json`). v3.0.0 and v3.1.0 were unreleased.
 [`S-027`](workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md) continued
 that baseline as v3.1.1 and
@@ -189,6 +222,19 @@ distinguish the repaired bundle.
 Actual cross-device acceptance and rollout readiness remain explicitly separate.
 This repo is the source, so its own docs are not stamped.
 
+Updating a downstream project requires checking that project's own drift. Any
+update to this canonical Workbench also requires a separate Workbench self-drift
+check over the controls, Specs, projections, procedures, manifest, templates
+and managed artifacts that a cold-start agent would read. A passing render,
+doctor or test suite does not prove that current-facing guidance is fresh.
+
+Every new version must also upgrade and verify the existing
+[Workbench_Template](https://github.com/KaydenClark/Workbench_Template)
+reference repository before release readiness is approved. Its installed update,
+independent integration review and fresh-clone checks are the
+[Template upgrade release gate](RUNBOOK.md#template-upgrade-release-gate).
+Passing source tests or creating a new project does not satisfy this gate.
+
 LLM_Workbench produces the canonical harness and scoped update instructions.
 Named project owners authorize installation, recovery and local verification.
 Historical GPT_OS/Audit_Workbench examples in ADR-0026 explain earlier roles;
@@ -198,20 +244,32 @@ from it. This assignment explicitly updates the Workbench Template only.
 
 The portable layout and skill-install contract is implemented in
 [`S-021`](workbench/specs/S-021-portable-workbench-v3/SPEC.md). The separate
-exact-head `integration` to `main` release gate remains owned by S-014.
+current release-readiness owner is
+[`S-00O`](workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md); only the owner
+may promote `integration` to `main`. The v3 release records S-014, S-022 and
+[`S-050`](workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md) (the v3.2.0
+delivery receipt, now on `main`) and the unreleased v3.2.1 docket S-054 were
+superseded on 2026-10-04; each says why in its own Why Retired section. The
+real cross-device continuation proof stays with
+[`S-052`](workbench/specs/S-052-private-session-transport/SPEC.md) and runs
+inside the owner's own PC test at v4 main readiness.
 
 To pull later harness improvements into a downstream project, follow that
 project's `RUNBOOK.md` -> Upgrading The Harness: re-copy only changed template
 sections, keep the project's filled-in specifics, bump the stamp, re-verify, and
-record the upgrade in a dedicated spec. Completed spec evidence remains at its
-stable path; stale claims are diagnosed per `AGENTS.md` -> Long Session Control.
+record the upgrade in a dedicated Spec. Completed evidence remains reachable
+through link-safe lifecycle moves and immutable Git anchors; post-completion
+capability knowledge belongs in the routed features Wiki before retirement or
+discard. Stale claims are diagnosed per `AGENTS.md` -> Long Session Control.
 
 The upgrade path is a loop, not a one-way copy. Downstream projects record where
 the harness helped or hurt in their `WORKBENCH_FEEDBACK.md` (legacy copies may still be named `HARNESS_FEEDBACK.md`); those lessons are
 harvested back here, turned into template changes, and validated with `evals/`
 before shipping as a new harness version. A template change is only called
-"better" when the evidence supports it - see `RUNBOOK.md` -> Evaluation And
-Benchmarking. This is the "ruleset that updates the ruleset".
+"better" when the evidence supports it - see the
+[`workbench-evaluation` skill](workbench/skills/workbench-evaluation/SKILL.md)
+the `RUNBOOK.md` operations index points to. This is the "ruleset that updates
+the ruleset".
 
 ## Visual And Asset Guidance
 
@@ -245,7 +303,7 @@ node tools/evaluate-workbench.mjs --github KaydenClark/LLM_Workbench \
 ```
 
 The static scorer proves coverage of expected control surfaces. For stronger
-evidence, use `RUNBOOK.md` -> Evaluation And Benchmarking plus `evals/` or
+evidence, use the `workbench-evaluation` skill the Runbook index points to plus `evals/` or
 `outcomes/` to run controlled task trials and record outcomes.
 
 For harness changes, capture the guardrail score before editing and report the
@@ -310,8 +368,19 @@ MIT. See `LICENSE`.
 
 ## Ordinary Agent Entry
 
-Follow AGENTS.md -> RUNBOOK.md -> LEXICON.md, then the assigned SPEC and only
-its relevant owners. Builder, Auditor, Reviewer and Reconciler are assigned
+Follow AGENTS.md -> the RUNBOOK.md operations index -> LEXICON.md, then the assigned SPEC and only
+its Task record and relevant owners. Roles assign Director/Dispatcher/Worker
+responsibility; Builder, Auditor, Reviewer and Reconciler are assigned
 stances within existing authority. Work autonomously inside the assigned task;
-independent review is required before integration. The setup-only Round One
+Worker self-check returns to Dispatcher whole-Spec QA, and separate-context
+Director review is required before integration. Failed review preserves original
+proof and creates corrective Tasks. Existing failed Human QA stays in its
+corrective cycle until the owner resolves it. The Runbook operations index
+points to the skills that carry the exact content-bound review,
+main-before-complete and capture/recovery procedures.
+The setup-only Round One
 proof returns in chat; feedback reporting follows it in the declared lane.
+
+Version 3.2.1 adds project-evidence preparation and source-linked Genesis.
+The [fresh Puffer Pond proof](workbench/specs/S-00E-fresh-template-project-proof/PROOF.md)
+records the native continuation and its one-host limitations.

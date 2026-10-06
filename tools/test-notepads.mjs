@@ -11,7 +11,8 @@ import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { Worker } from 'node:worker_threads';
 import test from 'node:test';
 import { NOTEPAD_SCHEMA_VERSION, LEGACY_SCHEMA_VERSIONS, checkStructure, createNote, appendEntry, setCurrent, readNote, validateNote, listNotes, trimEntries, migrateNote } from '../workbench/tools/notepads.mjs';
 import { RUNTIME_TOOLS } from '../workbench/tools/workbench-layout.mjs';
@@ -165,6 +166,34 @@ test('read returns one topic with its correction context and excludes unrelated 
     assert.equal(missing.status, 'read');
     assert.deepEqual(missing.entries, []);
     assert.equal(missing.page.matched, 0);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('a design inquiry keeps a pending answer, its correction and the confirmed decision apart on resume', () => {
+  const dir = project();
+  try {
+    // S-00Y: the convention the notepad and grilling skills document, with no
+    // new kind or status. A pending answer is a source_record listed as
+    // unresolved; only a decision records the confirmed meaning.
+    const created = seed(dir, { objective: 'reading-list-design' });
+    appendEntry(dir, { note: created.note, revision: 1, kind: 'source_record', topic: 'purpose', 'question-id': '1', content: 'Nudges are for reading.', interpretation: 'Pending readback: nudges never suggest discarding.' });
+    appendEntry(dir, { note: created.note, revision: 2, kind: 'correction', topic: 'purpose', corrects: 'source_record-001', content: 'Owner corrected the readback: an archive button is still allowed.' });
+    setCurrent(dir, { note: created.note, revision: 3, 'next-action': 'Confirm the corrected purpose readback.', unresolved: 'purpose readback pending confirmation' });
+
+    const pending = readNote(dir, { note: created.note, entry: 'correction-001' });
+    assert.deepEqual(pending.entries.map((entry) => [entry.id, entry.included_as]),
+      [['correction-001', 'match'], ['source_record-001', 'context']],
+      'resuming from the correction returns the original it corrects');
+    assert.deepEqual(pending.current.unresolved, ['purpose readback pending confirmation']);
+    assert.deepEqual(readNote(dir, { note: created.note, kind: 'decision' }).entries, [], 'nothing is confirmed while the readback is pending');
+
+    appendEntry(dir, { note: created.note, revision: 4, kind: 'decision', topic: 'purpose', 'question-id': '1', content: 'Confirmed: nudges are for reading; archive stays.' });
+    setCurrent(dir, { note: created.note, revision: 5, unresolved: '' });
+    const confirmed = readNote(dir, { note: created.note, topic: 'purpose' });
+    assert.deepEqual(confirmed.entries.map((entry) => entry.kind), ['source_record', 'correction', 'decision'], 'pending, corrected and confirmed meaning stay distinguishable');
+    assert.deepEqual(confirmed.current.unresolved, []);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
@@ -743,14 +772,15 @@ test("the grilling skill's documented command produces the record it shows", () 
     // tool did not write, then instructing a write no path could perform. The
     // command and the example are held to each other here so the next drift
     // fails rather than ships.
-    const skill = fs.readFileSync(path.join(root, 'skills', 'grilling', 'SKILL.md'), 'utf8');
-    const documented = skill.match(/```bash\r?\n([\s\S]*?)```/);
+    const skill = fs.readFileSync(path.join(root, 'workbench', 'skills', 'grilling', 'SKILL.md'), 'utf8');
+    const documented = [...skill.matchAll(/```bash\r?\n([\s\S]*?)```/g)]
+      .find((block) => /notepads\.mjs create/.test(block[1]));
     const example = skill.match(/```json\r?\n([\s\S]*?)```/);
     assert.ok(documented && example, 'the skill must show a create command and the record it writes');
     assert.match(documented[1], /notepads\.mjs create/, 'the documented command is a notepad create');
 
     const argv = argvOf(documented[1].replace(/\\\r?\n/g, ' '))
-      .filter((token) => !['node', 'workbench/tools/notepads.mjs'].includes(token))
+      .filter((tokenDir) => !['node', 'workbench/tools/notepads.mjs'].includes(tokenDir))
       .map((token) => token.replace('TOPIC-YYYY-MM-DD', 'topic-2026-01-31').replace('OBJECTIVE_KEY', 'objective-key'));
     const run = spawnSync(process.execPath, [notepadsTool, ...argv, '--path', dir], { encoding: 'utf8' });
     assert.equal(run.status, 0, run.stdout || run.stderr);
@@ -949,6 +979,9 @@ for (const operation of ['read', 'create']) {
   });
 }
 
+// S-01W TK-002Q: notepad allocation follows the one artifact policy -
+// uppercase `0-9A-Z`, minimum width four, letter-bearing - while every legacy
+// spelling keeps its file, bytes and identity.
 test('visible ID allocation and lookup preserve existing note paths', () => {
   const dir = project();
   try {
@@ -957,12 +990,44 @@ test('visible ID allocation and lookup preserve existing note paths', () => {
     for (let i = 1; i <= 9; i++) seed(dir, { note: `reserved-${i}`, id: `N-${String(i).padStart(3, '0')}` });
     const allocated = cli(dir, ['allocate', '--prefix', 'N', '--objective', 'notepad-runtime', '--title', 'Allocated note']);
     assert.equal(allocated.status, 0, allocated.stdout);
-    assert.equal(allocated.json.id, 'N-00A');
-    assert.equal(allocated.json.note, 'workbench/sessions/notepads/work/N-00A.json');
-    assert.equal(cli(dir, ['read', '--id', 'N-00A', '--view', 'current']).json.id, 'N-00A');
+    assert.equal(allocated.json.id, 'N-000A', 'uppercase, width four, letter-bearing');
+    assert.equal(allocated.json.note, 'workbench/sessions/notepads/work/N-000A.json');
+    assert.equal(cli(dir, ['read', '--id', 'N-000A', '--view', 'current']).json.id, 'N-000A');
     assert.equal(cli(dir, ['read', '--id', 'N-010', '--view', 'current']).json.note, 'workbench/sessions/notepads/work/legacy-numeric.json');
+    assert.equal(cli(dir, ['read', '--id', 'N-0010', '--view', 'current']).json.note, 'workbench/sessions/notepads/work/legacy-numeric.json', 'a widened spelling reaches the legacy record');
     assert.deepEqual(fs.readFileSync(path.join(dir, 'workbench/sessions/notepads/work/legacy-numeric.json')), before);
-    assert.ok(listNotes(dir).notes.some(note => note.id === 'N-00A'));
+    assert.ok(listNotes(dir).notes.some(note => note.id === 'N-000A'));
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('width-three and lowercase legacy note IDs reserve their identities and stay readable after allocation', () => {
+  const dir = project();
+  try {
+    const short = seed(dir, { note: 'legacy-short', id: 'N-00A' });
+    const lower = seed(dir, { note: 'legacy-lower', id: 'N-00b' });
+    const bytes = [short, lower].map(item => [item.note, fs.readFileSync(path.join(dir, item.note))]);
+    const allocated = cli(dir, ['allocate', '--prefix', 'N', '--objective', 'notepad-runtime', '--title', 'After legacy labels']);
+    assert.equal(allocated.status, 0, allocated.stdout);
+    assert.equal(allocated.json.id, 'N-000C', 'N-00A occupies N-000A and N-00b occupies N-000B');
+    assert.equal(cli(dir, ['read', '--id', 'N-000A', '--view', 'current']).json.note, short.note);
+    assert.equal(cli(dir, ['read', '--id', 'N-00B', '--view', 'current']).json.note, lower.note);
+    for (const [note, before] of bytes) assert.deepEqual(fs.readFileSync(path.join(dir, note)), before, `${note} keeps its bytes`);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('allocation refuses an inventory where two notes alias one visible identity', () => {
+  const dir = project();
+  try {
+    seed(dir, { note: 'first-alias', id: 'N-00A' });
+    const work = path.join(dir, 'workbench/sessions/notepads/work');
+    const copy = JSON.parse(fs.readFileSync(path.join(work, 'first-alias.json'), 'utf8'));
+    fs.writeFileSync(path.join(work, 'second-alias.json'), `${JSON.stringify({ ...copy, id: 'N-000a' }, null, 2)}\n`);
+    const before = fs.readdirSync(work).sort();
+    const result = cli(dir, ['allocate', '--prefix', 'N', '--objective', 'notepad-runtime', '--title', 'Must not pick a winner']);
+    assert.equal(result.status, 1, result.stdout);
+    assert.equal(result.json.status, 'blocked');
+    assert.match(result.json.error.message, /collision/i);
+    assert.deepEqual(fs.readdirSync(work).sort(), before);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
@@ -1034,10 +1099,10 @@ test('identity lookup and legacy filename lookup remain explicit and cannot shad
 test('allocation skips a legacy filename whose visible ID belongs to another record', () => {
   const dir = project();
   try {
-    const original = seed(dir, { note: 'N-001', id: 'different-note' });
+    const original = seed(dir, { note: 'N-000A', id: 'different-note' });
     const before = fs.readFileSync(path.join(dir, original.note));
     const allocated = cli(dir, ['allocate', '--prefix', 'N', '--objective', 'notepad-runtime', '--title', 'Skip occupied filename']);
-    assert.equal(allocated.json.id, 'N-002', allocated.stdout);
+    assert.equal(allocated.json.id, 'N-000B', allocated.stdout);
     assert.deepEqual(fs.readFileSync(path.join(dir, original.note)), before);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
@@ -1045,10 +1110,10 @@ test('allocation skips a legacy filename whose visible ID belongs to another rec
 test('allocation reserves visible destination aliases independently of filesystem sensitivity', () => {
   const dir = project();
   try {
-    const original = seed(dir, { note: 'N-0001', id: 'legacy-name' });
+    const original = seed(dir, { note: 'N-00a', id: 'legacy-name' });
     const before = fs.readFileSync(path.join(dir, original.note));
     const result = cli(dir, ['allocate', '--prefix', 'N', '--objective', 'notepad-runtime', '--title', 'Reserve destination aliases']);
-    assert.equal(result.json.id, 'N-002');
+    assert.equal(result.json.id, 'N-000B', 'the width-three lowercase filename N-00a reserves N-000A');
     assert.deepEqual(fs.readFileSync(path.join(dir, original.note)), before);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
@@ -1143,4 +1208,172 @@ test('declared Markdown handoff dependency blocks cleanup until explicitly recon
   setCurrent(dir,{note:n.note,revision:3,'view-field':['active_handoffs=[]']});
   assert.equal(trimEntries(dir,{note:n.note,revision:4,entry:['finding-001']}).status,'trimmed');
  }finally{fs.rmSync(dir,{recursive:true,force:true});}
+});
+
+// ---------------------------------------------------------------- S-003Y
+// Overlapping writers. The racers are worker threads released by one
+// Atomics.notify, so every racer is inside the write call at the same moment
+// and nothing depends on process start-up timing. Each racer reports what the
+// runtime told it; the note is then read once and compared with those reports.
+const RACER = `
+import { parentPort, workerData } from 'node:worker_threads';
+const runtime = await import(workerData.runtime);
+const flags = new Int32Array(workerData.shared);
+Atomics.add(flags, 0, 1);
+Atomics.notify(flags, 0);
+while (Atomics.load(flags, 1) === 0) Atomics.wait(flags, 1, 0);
+const [command, options] = workerData.write;
+parentPort.postMessage({ command, result: runtime[command](workerData.dir, options) });
+`;
+
+async function race(dir, writes) {
+  const shared = new SharedArrayBuffer(8);
+  const flags = new Int32Array(shared);
+  const runtime = pathToFileURL(notepadsTool).href;
+  return new Promise((resolve, reject) => {
+    const reports = [];
+    let exited = 0;
+    for (const write of writes) {
+      const worker = new Worker(RACER, { eval: true, workerData: { runtime, shared, dir, write } });
+      worker.on('message', (report) => reports.push(report));
+      worker.on('error', reject);
+      worker.on('exit', () => { if (++exited === writes.length) resolve(reports); });
+    }
+    const release = () => {
+      if (Atomics.load(flags, 0) < writes.length) return void setTimeout(release, 1);
+      Atomics.store(flags, 1, 1);
+      Atomics.notify(flags, 1);
+    };
+    release();
+  });
+}
+
+function tokenPath(dir, note, revision) {
+  const absolute = path.join(dir, note);
+  return path.join(path.dirname(absolute), `.${path.basename(absolute)}.rev${revision}.publish`);
+}
+
+test('barrier race: twelve appends at one revision keep exactly the entries whose writers were told appended', async () => {
+  const dir = project();
+  try {
+    const created = seed(dir, { note: 'race-append' });
+    const writes = Array.from({ length: 12 }, (_, index) => ['appendEntry', { note: created.note, revision: 1, kind: 'finding', topic: 'race', content: `racer ${index}` }]);
+    const reports = await race(dir, writes);
+    assert.equal(reports.length, 12);
+    const note = JSON.parse(fs.readFileSync(path.join(dir, created.note), 'utf8'));
+    const appended = reports.filter((report) => report.result.status === 'appended');
+    const refused = reports.filter((report) => report.result.status !== 'appended');
+    assert.ok(appended.length >= 1, 'one writer must land');
+    assert.equal(note.entries.length, appended.length, `the note holds ${note.entries.length} entries but ${appended.length} writers were told appended`);
+    assert.equal(note.revision, 1 + appended.length, 'the revision counts exactly the landed writes');
+    for (const report of appended) {
+      assert.ok(note.entries.some((entry) => entry.id === report.result.entry), `${report.result.entry} was reported appended but is not in the note`);
+      assert.equal(report.result.revision, note.revision);
+    }
+    for (const report of refused) {
+      assert.equal(report.result.status, 'blocked');
+      assert.equal(report.result.error.code, 'stale-revision');
+      assert.ok(Number.isInteger(report.result.error.revision), 'a refusal names the revision on disk');
+    }
+    assert.equal(validateNote(dir, created.note).status, 'valid');
+    assert.ok(!fs.existsSync(tokenPath(dir, created.note, 2)), 'no publish token outlives the write');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('barrier race: mixed append, current and trim writers at one revision never report a success that is not in the note', async () => {
+  const dir = project();
+  try {
+    const created = seed(dir, { note: 'race-mixed' });
+    assert.equal(appendEntry(dir, { note: created.note, revision: 1, kind: 'finding', topic: 'seed', content: 'Seed entry' }).status, 'appended');
+    const writes = [
+      ...Array.from({ length: 4 }, (_, index) => ['appendEntry', { note: created.note, revision: 2, kind: 'decision', topic: 'race', content: `decision ${index}` }]),
+      ...Array.from({ length: 4 }, (_, index) => ['setCurrent', { note: created.note, revision: 2, state: `state ${index}` }]),
+      ...Array.from({ length: 4 }, () => ['trimEntries', { note: created.note, revision: 2, entry: ['finding-001'] }])
+    ];
+    const reports = await race(dir, writes);
+    const note = JSON.parse(fs.readFileSync(path.join(dir, created.note), 'utf8'));
+    const succeeded = reports.filter((report) => report.result.status !== 'blocked');
+    assert.ok(succeeded.length >= 1);
+    assert.equal(note.revision, 2 + succeeded.length, `revision ${note.revision} does not count ${succeeded.length} reported successes`);
+    for (const report of succeeded) {
+      if (report.command === 'appendEntry') assert.ok(note.entries.some((entry) => entry.id === report.result.entry), 'a reported append is in the note');
+      if (report.command === 'setCurrent') assert.match(note.current.state, /^state \d$/, 'a reported current update is in the note');
+      if (report.command === 'trimEntries') assert.ok(!note.entries.some((entry) => entry.id === 'finding-001'), 'a reported trim removed the entry');
+    }
+    for (const report of reports.filter((item) => item.result.status === 'blocked')) assert.equal(report.result.error.code, 'stale-revision');
+    assert.equal(validateNote(dir, created.note).status, 'valid');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('a held publish token refuses the write as stale-revision and leaves the note byte-identical; an abandoned one is reclaimed', () => {
+  const dir = project();
+  try {
+    const created = seed(dir, { note: 'token-note' });
+    const file = path.join(dir, created.note);
+    const before = fs.readFileSync(file);
+    const tokenDir = tokenPath(dir, created.note, 2);
+    fs.mkdirSync(tokenDir);
+    fs.writeFileSync(path.join(tokenDir, 'owner'), JSON.stringify({ nonce: 'someone-else', pid: 0 }));
+    const held = appendEntry(dir, { note: created.note, revision: 1, kind: 'finding', topic: 'held', content: 'Must not land' });
+    assert.equal(held.status, 'blocked');
+    assert.equal(held.error.code, 'stale-revision');
+    assert.equal(held.error.revision, 1, 'the refusal names the revision on disk');
+    assert.deepEqual(fs.readFileSync(file), before, 'nothing of the refused write reached the file');
+    assert.ok(fs.existsSync(tokenDir), 'a fresh token is not reclaimed');
+    const viaCli = cli(dir, ['current', '--note', created.note, '--revision', '1', '--state', 'Must not land']);
+    assert.equal(viaCli.status, 1);
+    assert.equal(viaCli.json.error.code, 'stale-revision');
+    assert.deepEqual(fs.readFileSync(file), before);
+
+    // An interrupted writer leaves its token behind. Once it is older than the
+    // reclaim age the next writer removes it and proceeds; the previous valid
+    // record was never touched.
+    // A stalled holder stages the bytes it was about to publish inside its
+    // token; reclaiming the token removes them, so they can never land late.
+    fs.mkdirSync(path.join(tokenDir, 'stalled-nonce'));
+    fs.writeFileSync(path.join(tokenDir, 'stalled-nonce', 'content'), JSON.stringify({ ...JSON.parse(before), revision: 2, title: 'Forged by a stalled writer' }));
+    const abandoned = new Date(Date.now() - 60_000);
+    for (const entry of ['owner', 'stalled-nonce/content', 'stalled-nonce', '']) fs.utimesSync(path.join(tokenDir, entry), abandoned, abandoned);
+    const reclaimed = appendEntry(dir, { note: created.note, revision: 1, kind: 'finding', topic: 'reclaimed', content: 'Lands after reclaim' });
+    assert.equal(reclaimed.status, 'appended', JSON.stringify(reclaimed));
+    assert.equal(reclaimed.revision, 2);
+    assert.ok(!fs.existsSync(tokenDir), 'the abandoned token is gone');
+    const stored = JSON.parse(fs.readFileSync(file, 'utf8'));
+    assert.equal(stored.entries.length, 1);
+    assert.equal(stored.entries[0].content, 'Lands after reclaim');
+    assert.equal(stored.title, 'Notepad runtime', 'the stalled writer\'s staged bytes were discarded with its token');
+    assert.ok(!fs.readdirSync(path.dirname(file)).some((name) => name.startsWith('.write-') || name.endsWith('.publish')), 'no staging or token directory outlives the write');
+    assert.equal(validateNote(dir, created.note).status, 'valid');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('delete goes through the same guard: a held token refuses cleanup and the note survives', () => {
+  const dir = project();
+  try {
+    const created = seed(dir, { note: 'delete-token', status: 'RECONCILED' });
+    const file = path.join(dir, created.note);
+    const tokenDir = tokenPath(dir, created.note, 2);
+    fs.mkdirSync(tokenDir);
+    const refused = cli(dir, ['delete', '--note', created.note, '--revision', '1']);
+    assert.equal(refused.json.error?.code, 'stale-revision', refused.stdout);
+    assert.ok(fs.existsSync(file), 'the note survives a refused delete');
+    fs.rmSync(tokenDir, { recursive: true, force: true });
+    // An abandoned token does not block cleanup either.
+    fs.mkdirSync(tokenDir);
+    const abandoned = new Date(Date.now() - 60_000);
+    fs.utimesSync(tokenDir, abandoned, abandoned);
+    const deleted = cli(dir, ['delete', '--note', created.note, '--revision', '1']);
+    assert.equal(deleted.json.status, 'deleted', deleted.stdout);
+    assert.ok(!fs.existsSync(file));
+    assert.ok(!fs.existsSync(tokenDir));
+    assert.ok(!fs.readdirSync(path.dirname(file)).some((name) => name.endsWith('.publish') || name.includes('.abandoned-')), 'nothing of the token outlives cleanup');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 });

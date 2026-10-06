@@ -17,7 +17,7 @@ export const MARKER_SCHEMA_VERSION = 2;
 // The release identity is one Git lookup per run: callers resolve it once
 // with `markerSourceIdentity()` and pass it to every marker they write.
 export function markerSourceIdentity() {
-  const { release, commit } = sourceIdentity({ managedPaths: ['skills'] });
+  const { release, commit } = sourceIdentity({ managedPaths: ['workbench/skills'] });
   return { release, commit };
 }
 

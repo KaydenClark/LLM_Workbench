@@ -1,7 +1,11 @@
 # S-[###] - [CAPABILITY_TITLE]
 
-> Generated from LLM Workbench v[HARNESS_VERSION]. Copy this file to the stable
-> path `workbench/specs/S-[###]-[slug]/SPEC.md`; never move it between status folders.
+> Generated from LLM Workbench v[HARNESS_VERSION]. Copy this file to
+> `workbench/specs/S-[###]-[slug]/SPEC.md`, or, for a Spec with a parent
+> landmark, to the same folder inside that landmark's `specs` folder under
+> `workbench/landmarks/`; lifecycle moves use the link-safe `move-spec`
+> operation (`--to retired` after its gates pass, `--landmark LMK-[###]|none`
+> to change its parent), never a manual folder move.
 
 **Spec ID:** S-[###]
 **Status:** planned
@@ -10,6 +14,10 @@
 **Stance:** Builder
 **Updated:** [YYYY-MM-DD]
 **Catalog description:** [One sentence for the Blueprint catalog.]
+
+The legacy placeholder name is retained for Genesis vocabulary compatibility.
+Fill it with a description of this capability for the Spec catalog; it
+does not generate a catalog inside the product Blueprint.
 **Blockers:** none
 **Latest event:** Spec captured.
 **Next gate:** Refine and activate the first eligible slice.
@@ -51,9 +59,12 @@
 
 ## Vertical Implementation Slices
 
-Tickets are temporary tracer bullets within this stable capability record.
+Tasks are temporary tracer bullets reaching or repairing this scoped destination.
+This table is a compatibility seed: before record-backed execution, convert
+unfinished rows with `convert-tasks` as the Runbook describes. Once `tasks/`
+exists, TASK.md owns active Task state; retain only done table rows as history.
 
-| Ticket | Slice | Status | Blockers | Proof |
+| Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | [Small end-to-end slice] | ready | none | pending |
 
@@ -84,7 +95,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 
 ## Append-Only Evidence And Execution Log
 
-| Date | Ticket | Event | Verification | Docs | Remaining gap |
+| Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 
 ## Completion Result
