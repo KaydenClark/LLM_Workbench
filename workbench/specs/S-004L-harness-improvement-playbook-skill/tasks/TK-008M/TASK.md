@@ -43,3 +43,9 @@ The Runbook and `AGENTS.md` are shared writers with the Contract carrier
 rewrite: before editing, confirm no open candidate holds `RUNBOOK.md`; if one
 does, wait and record it in the Spec. `AGENTS.md` is untouched (no binding line
 names the family). No command, finding or format changes meaning.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s004l-tk008m-runbook-rows | d081e10a46699cfca445c9a65ae03a1435fea031 | ahead 0 behind 0 | 0 | Red 5ef903b5 (test-runbook-index 6 expected failures); green e506de5d: test-runbook-index 58/58, test-skill-inspection 9/9, test-governance-core 12/12, test-control-fidelity 38/38, test-carrier-landing 17/17, test-skill-catalog 3/3; carrier line-landing on RUNBOOK.md: 6 removed, 6 landed; after merging origin/integration 237d65a3 and the maintainer-skills Wiki line, full suite 52/52 ok on committed d081e10a (log scratchpad/s004l/suite-tk008m-d081e10a.log); wiki validate ok; guardrails 73/100 before and after; self-drift 12 findings pre/post, same set | RUNBOOK.md (three index rows, Evaluation And Benchmarking intro, Harness Feedback Loop and Manual Harness Feedback Reports bodies), templates/RUNBOOK.md (evaluation row and intro), workbench-evaluation SKILL.md (two sections point at the loop), workbench/wiki/maintainer-skills.md (workbench-evaluation keeps harvest steps around the loop) | The template's Return harness feedback and Write a manual harness feedback report rows keep their own sections (out of this Task's scope; routed at Spec QA) | 9ea2b0146405b854a707ba74975f6902997dc6155101a0e322b5e07d4ec104c9 |

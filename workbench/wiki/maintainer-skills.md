@@ -7,6 +7,7 @@ provenance:
   - Owner chose option A for the maintainer-skill home on the Contract Carrier Pointer-Brief Rewrite (S-004C) TK-005K blocker, 2026-10-04
   - S-004C TK-006L built the declared maintainer-skill list, 2026-10-04
   - S-004C TK-005K declared the first three maintainer skills, 2026-10-04
+  - Harness Improvement Playbook Skill (S-004L) TK-008M pointed the feedback rows at the improve-harness loop, 2026-10-06
 source_paths:
   - tools/maintainer-skills.mjs
   - tools/core-skill-installer.mjs
@@ -18,7 +19,8 @@ source_paths:
   - workbench/skills/workbench-release/SKILL.md
   - workbench/skills/workbench-room-checks/SKILL.md
   - workbench/skills/workbench-evaluation/SKILL.md
-last_verified: 2026-10-04
+  - workbench/skills/improve-harness/SKILL.md
+last_verified: 2026-10-06
 ---
 
 # Maintainer skills
@@ -70,8 +72,10 @@ TK-005K moved the maintainer-only Runbook procedures into them):
   adoption, control fidelity, explicit upgrade and self-drift checks, plus the
   carrier line-landing, GitHub binding and socket contract checks.
 - [`workbench-evaluation`](../skills/workbench-evaluation/SKILL.md): claims,
-  evaluation design and commands, the feedback loop, the automated gate, run
-  outcomes and manual feedback reports.
+  evaluation design and commands, this repository's feedback harvest and
+  manual report steps around the core
+  [`improve-harness`](../skills/improve-harness/SKILL.md) loop (Harness
+  Improvement Playbook Skill, S-004L), the automated gate and run outcomes.
 
 Each Runbook section that held one of these procedures keeps its heading and a
 pointer, and the operations index row points at the skill section, so the

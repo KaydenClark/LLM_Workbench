@@ -20,8 +20,8 @@ The core machine catalog is `coreSkills` in the layout runtime; documentation
 and tests derive its size from that catalog. The current candidate includes
 save/promote while preserving checkpoint as a no-write compatibility notice.
 The v3.1.4 eighteen-skill manifest policy remains readable as a frozen legacy
-row. The owner explicitly waived the stamped-label rule for the current v3.2.0
-repair only (S-050/S-051): its original twenty-skill policy remains readable,
+row. The owner explicitly waived the stamped-label rule for the v3.2.0
+repair only (S-050/S-051, history; the v3.2.0 release Spec is superseded): its original twenty-skill policy remains readable,
 while the repaired twenty-one-skill core is identified by source commit and
 content hashes. This exception does not authorize publication.
 
@@ -210,8 +210,10 @@ notepad never enters the commit), deletes the working clone, resumes from a
 fresh clone with a scrubbed environment using only repository state, drives a
 red/green slice, closes, renders, passes doctor, pushes, reads the remote SHA
 back, and scans the clone and the transcript for any Foundry name, mechanism,
-or private home path. The real cross-provider resume with agents is S-022's
-release gate.
+or private home path. The real cross-provider resume with agents is the
+[Cross-provider resume proof](#cross-provider-resume-proof), run for the current
+release under its release owner; the retired v3.1 release Spec that once named
+it a gate is superseded.
 
 ## Portability and privacy matrix
 
