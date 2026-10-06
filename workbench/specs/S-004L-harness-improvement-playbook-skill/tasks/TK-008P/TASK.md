@@ -51,3 +51,9 @@ skill. The remaining scenario findings that belong to other owners (template
 placeholders `doctor` does not flag, the template Runbook's evaluation commands
 naming producer tools) are routed in the Spec's Completion Result, not fixed
 here.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s004l-tk008p-skill-wording | 5cca852a686f9ef22f52d7cb582d83927edebe74 | ahead 5 behind 0 | 0 | Red 98fae067 (test-skill-catalog pins fail as expected); green cd5b0ec6: test-skill-catalog, test-skills-lane, test-runbook-index, test-wiki, test-skill-inspection ok; full suite 52/52 on committed cd5b0ec6 (log scratchpad/s004l/suite-tk008p-cd5b0ec.log); wiki validate ok; after merging integration b85c0535 (S-004L records only) render, doctor and append-only clean | workbench/skills/improve-harness/SKILL.md (steps 4, 5, 6 and Taking In Feedback), workbench/wiki/skill-improve-harness.md (feedback entry, pinned behavior, History) | none for this Task | cbccd843a144aa4908fc247bf9962d63aa95838935eabb7fa61edb9e34c2aef8 |
