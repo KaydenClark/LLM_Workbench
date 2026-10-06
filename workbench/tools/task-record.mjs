@@ -154,8 +154,38 @@ export function parseTaskRecord(content, filePath, root) {
     // row at conversion. It is a plan, not evidence, and is kept in its own
     // field so no reader - the Packet TK-005 assembles above all - can present
     // it as proof of anything.
-    plannedVerification: fields['Planned verification'] ?? null
+    plannedVerification: fields['Planned verification'] ?? null,
+    // S-003Z TK-008H run 2: every agent that ever claimed this Task, oldest
+    // first (`withClaimant`). Optional: a record no claim has touched since
+    // the field arrived names nobody.
+    claimedBy: parseClaimedBy(fields['Claimed by'], id)
   };
+}
+
+// S-003Z TK-008H run 2: the claimant record. `claim` writes the claiming
+// agent into the Task record's own optional `**Claimed by:**` field, a
+// comma-separated list that accumulates every claimant across runs (a
+// continuation re-claim appends; a returning claimant is kept once). The
+// parent Spec's Owner and Latest event and a landmark's Latest event are
+// overwritten by the next claim or close, so the record is where the fact
+// survives close, re-claim, retirement and moves; landmark participation
+// (spec-report.mjs) reads it. Like Status, it is part of the record's
+// reviewed bytes: a claim changes both in the same write.
+export function withClaimant(claimedBy, agent) {
+  const name = String(agent ?? '').trim();
+  if (!name) throw new Error('A claim needs a non-empty --agent to record in Claimed by');
+  if (/[\r\n]/.test(name)) throw new Error(`--agent ${JSON.stringify(name)} contains a line break; Claimed by holds one line`);
+  if (name.includes(',')) throw new Error(`--agent "${name}" contains a comma; Claimed by is a comma-separated list of claimants`);
+  const list = [...(claimedBy ?? [])];
+  if (!list.includes(name)) list.push(name);
+  return list.join(', ');
+}
+
+function parseClaimedBy(value, id) {
+  if (value === undefined) return [];
+  const names = value.split(',').map((item) => item.trim());
+  if (names.some((item) => item === '')) throw new Error(`${id} has an empty entry in Claimed by: ${value}`);
+  return names;
 }
 
 // `root` is optional and, when omitted, `relativePath` on the returned
@@ -294,7 +324,7 @@ export function updateTaskFields(content, values) {
 // The bytes one Task record is written as. Kept beside the parser so the two
 // cannot drift; every caller validates the result by parsing it back before
 // writing it, so a record this produces is never one the reader refuses.
-export function formatTaskRecord({ id, formerId, specId, landmarkId, slice, status, blockers, destination, plannedVerification, proof }) {
+export function formatTaskRecord({ id, formerId, specId, landmarkId, slice, status, blockers, destination, plannedVerification, proof, claimedBy }) {
   if (Boolean(specId) === Boolean(landmarkId)) throw new Error(`${id} needs exactly one parent: a specId or a landmarkId`);
   const lines = [
     `# ${id} - ${slice}`,
@@ -309,6 +339,7 @@ export function formatTaskRecord({ id, formerId, specId, landmarkId, slice, stat
   ];
   if (plannedVerification) lines.push(`**Planned verification:** ${plannedVerification}`);
   if (proof) lines.push(`**Proof:** ${proof}`);
+  if (claimedBy?.length) lines.push(`**Claimed by:** ${claimedBy.join(', ')}`);
   lines.push('');
   return lines.join('\n');
 }

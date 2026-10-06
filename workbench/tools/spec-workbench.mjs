@@ -22,7 +22,7 @@ import { LANDMARK_LIFECYCLE_FOLDERS, LANDMARK_PREFIX, findLandmark, landmarkFind
 import { parseFrontmatter, planReferenceRewrite, splitEvidenceSection, validateAdrs, writeDecisionRegisters } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { ARTIFACT_ID_MIN_WIDTH, allocateArtifactId, compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
-import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseFormerId, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
+import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseFormerId, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields, withClaimant } from './task-record.mjs';
 import { appendReceiptRow, appendReceiptRowToContent, readGitFacts, readReceipt, readReceiptFromFile } from './task-receipt.mjs';
 import { buildTaskboard, taskboardTaskEntry, taskboardSpecLane, compareTaskboardEntries } from './taskboard.mjs';
 import { NEW_SPEC_ROUTE, assembleLandmarkReport, assembleSpecReport, computeSpecDigest, formatLandmarkReport, formatSpecReport, isAncestorOfBranch, recordLandmarkApproval, recordLandmarkVerdict, recordOwnerApproval, recordReviewVerdict, verifyLandmark } from './spec-report.mjs';
@@ -384,6 +384,8 @@ function discardedLabels(root, prefix) {
 export function claimWork(rootDir, id, options) {
   refuseBlockedRuntime(rootDir);
   requireValue(options?.agent, '--agent is required');
+  // Refuse an agent the Task record's Claimed by list cannot hold before any write.
+  withClaimant([], options.agent);
   const root = path.resolve(rootDir);
   if (discardedReferences(root).length) throw new Error('discarded-reference: selection is blocked until current references are reconciled');
   const { specsPrefix } = resolveSpecsRoot(root);
@@ -457,7 +459,12 @@ function claimInTree(rootDir, id, options, remoteClaims) {
   // while updating the header cannot leave the Spec announcing a claim that
   // the record never took.
   // A capability block this session now satisfies is cleared as it is claimed.
-  if (task.source === 'record') writeTaskStatus(task.record, task.missingCapabilities.length > 0 ? { Status: 'in-progress', 'Missing capabilities': 'none' } : { Status: 'in-progress' });
+  // S-003Z TK-008H run 2: the claim also records its agent on the Task
+  // record's accumulated `Claimed by` list (task-record.mjs `withClaimant`),
+  // the one place a claimant survives `close` overwriting the parent's
+  // Latest event; landmark participation reads it.
+  const claimedBy = { 'Claimed by': withClaimant(task.record?.claimedBy, options.agent) };
+  if (task.source === 'record') writeTaskStatus(task.record, task.missingCapabilities.length > 0 ? { Status: 'in-progress', 'Missing capabilities': 'none', ...claimedBy } : { Status: 'in-progress', ...claimedBy });
   if (spec.lifecycleFolder === 'retired') return withRouting(showSpec(rootDir, id));
   const content = task.source === 'record'
     ? spec.content
