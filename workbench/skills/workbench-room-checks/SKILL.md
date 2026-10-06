@@ -78,16 +78,16 @@ extra lane entry (`invalid-bundled-core`) or a malformed declaration
 Genesis uses the bounded layout helper to create and validate its declared
 support root. Schema 2 declares seven lowercase lanes (`docs`, `specs`, `wiki`,
 `sessions`, `feedback`, `tools`, `skills`; a room stamped before the skills
-lane still validates with six until it updates) and twelve collections
+lane still validates with six until it updates) and thirteen collections
 (`docs/adr`, `wiki/design-concepts`, `wiki/guidebooks`, `wiki/archive`,
 `sessions/grilling`, `sessions/handoffs`, `sessions/checkpoints`,
 `sessions/notepads`, `sessions/notepads/templates`, `sessions/recovery`, and
-the additive `wiki/features` and `docs/ddr`), the wiki profile, and the exact
+the additive `wiki/features`, `docs/ddr` and `landmarks`), the wiki profile, and the exact
 source release and commit. `init` creates `docs/ddr` with the decision-record
 lifecycle folders `proposed/` and `archive/`, as the ADR collection uses them.
 A room stamped before an additive collection still validates; from the release
 checkout, `workbench-layout.mjs migrate --project PATH` appends each missing
-additive collection in order (`features`, then `ddr`), creates its folders as
+additive collection in order (`features`, then `ddr`, then `landmarks`), creates its folders as
 ordinary directories, adopts an existing ordinary folder with its contents, and
 changes no ADR record or other manifest key; a link or file in the way refuses
 as `lane-collision` before anything is written. `workbench/sessions/.gitignore`
