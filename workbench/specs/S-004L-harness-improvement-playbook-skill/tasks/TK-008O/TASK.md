@@ -3,7 +3,7 @@
 **Task ID:** TK-008O
 **Spec ID:** S-004L
 **Slice:** A fresh context runs the loop end to end in a fixture room
-**Status:** ready
+**Status:** in-progress
 **Stance:** Auditor
 **Blockers:** TK-008L, TK-008M, TK-008N
 **Destination:** spec-acceptance: The one skill exists in the lane, its loop has six named steps each with a checkable artifact, and a scenario in a fixture room runs it end to end.
