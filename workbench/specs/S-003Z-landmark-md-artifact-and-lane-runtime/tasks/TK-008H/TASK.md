@@ -3,7 +3,7 @@
 **Task ID:** TK-008H
 **Spec ID:** S-003Z
 **Slice:** A whole-landmark review reports, is refused while a child is open or from a participating context, and a failed verdict opens corrective Tasks without blocking a child merge
-**Status:** done
+**Status:** ready
 **Stance:** Builder
 **Blockers:** TK-008E, TK-008G
 **Destination:** spec-acceptance: A landmark with an open child Spec or Task cannot be verified or retire; a failed whole-landmark review creates corrective Tasks and does not block a child Spec's merge.
@@ -15,3 +15,9 @@
 | Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
 |---|---|---|---|---|---|---|---|---|
 | 1 | claude/s003z-tk008i | 662b198924a4a7ebebacba99ed4582b172fee290 | ahead 0 behind 0 | 0 | PR #379 merged into integration at 662b198924a4a7ebebacba99ed4582b172fee290 (merge of candidate 537f0fd7bd70d88a0a3ed76001ab1c8475861aa1, base 06e8fb84); red at 43c3b240 (Unknown spec ID: LMK-0BA / LMK-0CA); full Runbook suite run twice on 537f0fd7: each run 50/51 with a different environmental temp-directory race in an untouched pre-existing test (run 1 test-spec-workbench closure-capture git clone copy failure after 60/60 pass; run 2 test-workbench-layout ENOTEMPTY rmSync), every command passed in at least one run on the same candidate and each failing command passed on isolated rerun (test-spec-workbench 60/0 exit 0, test-workbench-layout 74/0); test-spec-report exit 0; render no diff; doctor no blocking finding; check-append-only CLEAN | Docs checked; no update needed in this Task: report/verify/verdict LMK-###, the digest rule, participation refusal, corrective Tasks and the reached transition are routed to TK-008J by the Spec's slice plan | check-append-only.py does not scan LANDMARK.md evidence logs; corrective Tasks are not added to LANDMARK.md's Direct Tasks list; participation reads current fields, evidence and Receipt rows, not Git-history-only claims; a pass reaches the landmark only with every reached check ticked (Dispatcher-accepted reading); suite temp-directory flakes observed twice | 19dc7ac61f576abd98dd7bf323f5df3974f36881669ab72bab982eb4b3cecee9 |
+
+## Continuation
+
+| Run | Date | Answers | Adjusted handoff |
+|---|---|---|---|
+| 1 | 2026-10-06 | evidence row 15 (fail verdict at d684eaadf69a8e01e13b5ce5cf7775426d72a3aa on 2026-10-06) | landmark participation (spec-report.mjs landmarkParticipation) forgets a Task's claimant once close overwrites the Latest event, so a Worker who claimed and closed a Task under the landmark passed the landmark verdict (fixture: rev2 claimed, receipted and closed corrective TK-004O under LMK-001K, then verdict LMK-001K --result pass --reviewer rev2 was accepted), and the tests only plant open-claim Latest events. Persist the claimant in a record the check reads (Task record or close evidence row) for landmark-direct and child-Spec Tasks, and add a red/green case refusing the Worker of a closed Task |
