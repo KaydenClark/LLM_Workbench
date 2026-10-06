@@ -25,7 +25,7 @@ import { ARTIFACT_ID_MIN_WIDTH, allocateArtifactId, compareVisibleIds, visibleId
 import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseFormerId, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
 import { appendReceiptRow, appendReceiptRowToContent, readGitFacts, readReceipt, readReceiptFromFile } from './task-receipt.mjs';
 import { buildTaskboard, taskboardTaskEntry, taskboardSpecLane, compareTaskboardEntries } from './taskboard.mjs';
-import { NEW_SPEC_ROUTE, assembleSpecReport, computeSpecDigest, formatSpecReport, isAncestorOfBranch, recordOwnerApproval, recordReviewVerdict } from './spec-report.mjs';
+import { NEW_SPEC_ROUTE, assembleLandmarkReport, assembleSpecReport, computeSpecDigest, formatLandmarkReport, formatSpecReport, isAncestorOfBranch, recordLandmarkVerdict, recordOwnerApproval, recordReviewVerdict, verifyLandmark } from './spec-report.mjs';
 
 // One closed status vocabulary for an execution slice, owned by the record
 // reader and re-exported here so the lifecycle commands and the record share
@@ -1693,7 +1693,9 @@ function resolveLandmarkId(rootDir, selector) {
 }
 
 // The active roster first, then the lifecycle folders, as `findSpec` does.
-function findLandmarkParent(rootDir, selector) {
+// S-003Z TK-008H: exported so the whole-landmark review in spec-report.mjs
+// reads the landmark through this one parent shape.
+export function findLandmarkParent(rootDir, selector) {
   const id = resolveLandmarkId(rootDir, selector);
   const parents = loadLandmarkParents(rootDir).filter((parent) => parent.id === id);
   const active = parents.filter((parent) => !parent.lifecycleFolder);
@@ -1753,7 +1755,8 @@ function showLandmark(rootDir, selector) {
 // --landmark LMK-###`): reported under the same exemption a Spec's Task PR
 // is, never refused for the landmark being unfinished, but refused by name
 // when the landmark holds no such Task or is already reached or retired. The
-// whole-landmark review gate is a later slice and is not this command.
+// whole-landmark review is `report`/`verify`/`verdict LMK-###` (S-003Z
+// TK-008H, spec-report.mjs), not this command.
 function landmarkTaskGate(root, options) {
   const parent = findLandmarkParent(root, requireValue(options.landmark, 'gate --landmark requires LMK-###'));
   if (!options.task) throw new Error('gate --landmark requires --task TK-###; it reports a landmark-direct Task PR');
@@ -4312,7 +4315,9 @@ function publicSpec(spec) {
 // already uses a function replacer for the same reason (S-00H TK-001); this
 // is the matching fix for a Spec's own header fields (S-00H TK-002 remaining
 // gap).
-function updateFields(content, values) {
+// S-003Z TK-008H: exported so a passing whole-landmark verdict moves the
+// landmark header through this same field writer.
+export function updateFields(content, values) {
   let result = content;
   for (const [name, value] of Object.entries(values)) {
     const pattern = new RegExp(`^\\*\\*${escapeRegExp(name)}:\\*\\*\\s*.+$`, 'm');
@@ -4518,8 +4523,17 @@ async function main() {
   else if (command === 'receipt') result = receiptTask(root, id, options);
   else if (command === 'complete') result = completeSpec(root, id, options);
   else if (command === 'convert-tasks') result = convertSpecSlices(root, id, { destinations: options.destinations ? JSON.parse(options.destinations) : undefined, activate: options.activate === true });
-  else if (command === 'report') result = assembleSpecReport(root, resolveSpecId(root, id), { candidate: options.candidate });
-  else if (command === 'verdict') result = recordReviewVerdict(root, resolveSpecId(root, id), { candidate: options.candidate, result: options.result, findings: options.findings, reviewer: options.reviewer, digest: options.digest });
+  // S-003Z TK-008H: `report`, `verdict` and `verify` on a landmark are the
+  // whole-landmark review one size above a Spec's (spec-report.mjs).
+  else if (command === 'report') result = isLandmarkId(id) ? assembleLandmarkReport(root, id, { candidate: options.candidate }) : assembleSpecReport(root, resolveSpecId(root, id), { candidate: options.candidate });
+  else if (command === 'verdict') {
+    const verdictOptions = { candidate: options.candidate, result: options.result, findings: options.findings, reviewer: options.reviewer, digest: options.digest };
+    result = isLandmarkId(id) ? recordLandmarkVerdict(root, id, verdictOptions) : recordReviewVerdict(root, resolveSpecId(root, id), verdictOptions);
+  }
+  else if (command === 'verify') {
+    if (!isLandmarkId(id)) throw new Error('verify takes a landmark identity (verify LMK-###); a Spec candidate is checked with gate --spec S-### --candidate SHA');
+    result = verifyLandmark(root, id);
+  }
   else if (command === 'approve') {
     // S-00J TK-005: the CLI verb only ever names `approve`; whether it
     // records an approval or a finding is inferred from what the caller
@@ -4558,12 +4572,12 @@ async function main() {
     result = doctorRun.json;
     process.exitCode = doctorRun.exitCode;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|approve|move-spec|move-task|widen-id|retire-spec|discard|render|doctor [S-###] [options] (show|claim|close|receipt|move-task LMK-### for a Task directly under a landmark; move-spec S-### --to retired|--landmark LMK-###|none; gate --task TK-### --spec S-###|--landmark LMK-###; widen-id S-###|TK-### [--spec S-###]; discard S-### [--task TK-###]; doctor [--host]; next|claim|close [--capabilities a,b]; next|claim [--local]; claim [--branch NAME])');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|verify|gate|approve|move-spec|move-task|widen-id|retire-spec|discard|render|doctor [S-###] [options] (show|claim|close|receipt|move-task LMK-### for a Task directly under a landmark; report|verdict|verify LMK-### for the whole-landmark review; move-spec S-### --to retired|--landmark LMK-###|none; gate --task TK-### --spec S-###|--landmark LMK-###; widen-id S-###|TK-### [--spec S-###]; discard S-### [--task TK-###]; doctor [--host]; next|claim|close [--capabilities a,b]; next|claim [--local]; claim [--branch NAME])');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
   else if (command === 'doctor') console.log(doctorRun.text);
-  else if (command === 'report') console.log(formatSpecReport(result));
+  else if (command === 'report') console.log(result.kind === 'landmark' ? formatLandmarkReport(result) : formatSpecReport(result));
   else if (command === 'next' && result?.taskId === null) console.log(formatCapabilityBlockedNext(result));
   else console.log(result === null ? 'No eligible work.' : JSON.stringify(result, null, 2));
   if (command === 'claim') coordination = result?.coordination ?? null;

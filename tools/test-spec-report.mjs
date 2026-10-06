@@ -3084,7 +3084,7 @@ function doneTaskWithDecisions({ id, specId, rows }) {
     assert.notEqual(json(cli('report', 'LMK-0BA', '--json')).landmarkDigest, report.landmarkDigest, 'a child Spec edit moves the digest');
     writeAt(root, `${openChild}/SPEC.md`, openChildText);
     const landmarkText = fs.readFileSync(landmarkFile, 'utf8');
-    fs.writeFileSync(landmarkFile, landmarkText.replace('Filled where this landmark points', 'Changed direction'));
+    fs.writeFileSync(landmarkFile, landmarkText.replace('Filled why this direction is worth holding now', 'Changed reason'));
     assert.notEqual(json(cli('report', 'LMK-0BA', '--json')).landmarkDigest, report.landmarkDigest, 'a LANDMARK.md edit moves the digest');
     fs.writeFileSync(landmarkFile, landmarkText);
     assert.equal(json(cli('report', 'LMK-0BA', '--json')).landmarkDigest, report.landmarkDigest);
