@@ -18,7 +18,7 @@ import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath,
 // Spec (ADR-000U). Doctor folds its findings in beside the ADR and DDR
 // collections, and `next-id --prefix LMK` folds its identities with the
 // Tracker's JSON landmark records and every remote tip.
-import { LANDMARK_LIFECYCLE_FOLDERS, LANDMARK_PREFIX, landmarkFindings, landmarkSpecHomes, loadLandmarks, loadReadableLandmarks, loadRetiredLandmarks, publicLandmark } from './landmark-artifact.mjs';
+import { LANDMARK_LIFECYCLE_FOLDERS, LANDMARK_PREFIX, findLandmark, landmarkFindings, landmarkSpecHomes, loadLandmarks, loadReadableLandmarks, loadRetiredLandmarks, publicLandmark } from './landmark-artifact.mjs';
 import { parseFrontmatter, planReferenceRewrite, splitEvidenceSection, validateAdrs, writeDecisionRegisters } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { ARTIFACT_ID_MIN_WIDTH, allocateArtifactId, compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
@@ -2458,13 +2458,24 @@ function lifecycleMoveLocations(root, oldDir, newDir, movingFiles, unmoved) {
     }
   };
   movingDirectories(oldDir);
+  const moving = new Set(movingFiles);
   for (const file of [...movingFiles, ...unmoved]) {
     if (!file.endsWith('.md')) continue;
     const { prefix, suffix } = splitEvidenceSection(fs.readFileSync(file, 'utf8'));
     for (const link of [...localLinks(prefix), ...localLinks(suffix)]) {
       const target = path.resolve(path.dirname(file), link);
       if (target !== root && !target.startsWith(root + path.sep)) continue;
-      if (!fs.existsSync(target) || !fs.statSync(target).isDirectory()) continue;
+      if (!fs.existsSync(target)) continue;
+      // S-003Z TK-008F: a moved record's own outgoing link to an unmoved file
+      // that is not itself a reference surface (a tool, a JSON proof, an
+      // asset) still needs its relative depth recomputed - a move under a
+      // landmark changes that depth by more than one folder - so the target
+      // is mapped to itself, exactly as every unmoved reference surface is.
+      if (moving.has(file) && fs.statSync(target).isFile()) {
+        if (!locations.has(target)) locations.set(target, target);
+        continue;
+      }
+      if (!fs.statSync(target).isDirectory()) continue;
       if (target !== root) assertSafeReadPath(root, target);
       if (!locations.has(target)) locations.set(target, target);
       directoryTargets.add(target);
@@ -2565,13 +2576,7 @@ export function moveSpecDirectory(rootDir, specId, folder) {
   if (spec.status !== 'complete') {
     throw new Error(`${specId} is ${spec.status}, not complete; only a completed Spec may move to ${folder}`);
   }
-  const gitStatus = spawnSync('git', ['-C', root, 'status', '--porcelain'], { encoding: 'utf8' });
-  if (gitStatus.status !== 0) {
-    throw new Error('move-spec requires a Git working tree so the move is recoverable; none was found');
-  }
-  if (gitStatus.stdout.trim() !== '') {
-    throw new Error('move-spec refuses a dirty working tree; commit or stash first so the candidate shows only this move');
-  }
+  assertMoveSpecGitTree(root);
   // S-003Z TK-008E: a Spec moves within its own home, so a nested Spec
   // retires into `<landmark>/specs/retired/`.
   const specsPrefix = spec.specsPrefix;
@@ -2580,9 +2585,30 @@ export function moveSpecDirectory(rootDir, specId, folder) {
   if (path.dirname(oldSpecDir) !== specsRoot) {
     throw new Error(`${specId} is not at the top level of ${specsPrefix}; move-spec only moves an active-roster Spec`);
   }
-  const destinationRoot = path.join(specsRoot, folder);
-  const newSpecDir = path.join(destinationRoot, path.basename(oldSpecDir));
-  if (fs.existsSync(newSpecDir)) throw new Error(`move-spec destination already exists: ${path.relative(root, newSpecDir)}`);
+  const newSpecDir = path.join(specsRoot, folder, path.basename(oldSpecDir));
+  return { specId, folder, ...relocateSpecDirectory(root, specId, oldSpecDir, newSpecDir) };
+}
+
+// The Git preconditions every `move-spec` form shares: a Git working tree, so
+// the move is recoverable, and a clean one, so the candidate shows only this
+// move.
+function assertMoveSpecGitTree(root) {
+  const gitStatus = spawnSync('git', ['-C', root, 'status', '--porcelain'], { encoding: 'utf8' });
+  if (gitStatus.status !== 0) {
+    throw new Error('move-spec requires a Git working tree so the move is recoverable; none was found');
+  }
+  if (gitStatus.stdout.trim() !== '') {
+    throw new Error('move-spec refuses a dirty working tree; commit or stash first so the candidate shows only this move');
+  }
+}
+
+// S-003Z TK-008F: the link-safe move itself, shared by retirement
+// (`moveSpecDirectory`) and a change of parent (`moveSpecToLandmark`) once the
+// caller has chosen the destination: one `git mv` of the whole Spec directory
+// and the repair of every live reference it would otherwise dangle.
+function relocateSpecDirectory(root, specId, oldSpecDir, newSpecDir) {
+  if (fs.existsSync(newSpecDir)) throw new Error(`move-spec destination already exists: ${path.relative(root, newSpecDir).split(path.sep).join('/')}`);
+  const destinationRoot = path.dirname(newSpecDir);
 
   // Snapshot every file the move carries before touching the filesystem;
   // `oldSpecDir` will not exist once the directory itself has moved.
@@ -2636,13 +2662,63 @@ export function moveSpecDirectory(rootDir, specId, folder) {
   spawnSync('git', ['-C', root, 'add', '-A']);
 
   return {
-    specId,
-    folder,
     from: path.relative(root, oldSpecDir).split(path.sep).join('/'),
     to: path.relative(root, newSpecDir).split(path.sep).join('/'),
     usesGit: true,
     referencesRewritten: totals.referencesRewritten,
     historicalReferencesLeft: totals.historicalReferencesLeft
+  };
+}
+
+// S-003Z TK-008F: `move-spec S-### --landmark LMK-###|none` changes a Spec's
+// parent through the same link-safe move retirement uses
+// (`relocateSpecDirectory`): an active-roster Spec directory, Task records and
+// all, moves under `<landmark>/specs/`, between two landmarks, or back to the
+// Blueprint-level lane with `none`, and every live reference is rewritten.
+// Any status moves - a planned or active Spec gains its landmark - because
+// the complete-only rule belongs to retirement alone. Refuses by name: a
+// missing landmark value, an unknown Spec or landmark, a retired Spec or
+// landmark, a Spec already under that parent, an occupied destination, a
+// dirty tree and a room with no Git tree.
+export function moveSpecToLandmark(rootDir, specId, landmarkSelector) {
+  const root = path.resolve(rootDir);
+  if (typeof landmarkSelector !== 'string' || landmarkSelector.trim() === '') {
+    throw new Error('move-spec --landmark requires a landmark identity or none');
+  }
+  specId = resolveSpecId(root, specId);
+  const matches = loadSpecs(root).filter((item) => item.id === specId);
+  if (matches.length > 1) throw new Error(`Duplicate spec ID: ${specId}`);
+  if (matches.length === 0) {
+    const alreadyRetired = loadRetiredSpecs(root).some((item) => item.id === specId);
+    throw new Error(alreadyRetired ? `${specId} is already retired; move-spec --landmark only moves an active-roster Spec` : `Unknown spec ID: ${specId}`);
+  }
+  const spec = matches[0];
+  let landmark = null;
+  let newSpecsRoot;
+  if (landmarkSelector === 'none') {
+    if (spec.landmarkId === null) throw new Error(`${specId} is already at the Blueprint level (${spec.specsPrefix})`);
+    newSpecsRoot = resolveSpecsRoot(root).specsRoot;
+  } else {
+    landmark = findLandmark(root, landmarkSelector);
+    if (landmark.lifecycleFolder !== null) {
+      throw new Error(`${landmark.id} is retired (${landmark.relativePath}); a Spec moves only under an active-roster landmark`);
+    }
+    if (spec.landmarkId !== null && visibleIdKey(spec.landmarkId) === visibleIdKey(landmark.id)) {
+      throw new Error(`${specId} is already under ${landmark.id} (${spec.relativePath})`);
+    }
+    newSpecsRoot = path.join(path.dirname(landmark.filePath), 'specs');
+  }
+  assertMoveSpecGitTree(root);
+  const oldSpecDir = path.dirname(spec.filePath);
+  if (path.dirname(oldSpecDir) !== path.join(root, spec.specsPrefix)) {
+    throw new Error(`${specId} is not at the top level of ${spec.specsPrefix}; move-spec only moves an active-roster Spec`);
+  }
+  const newSpecDir = path.join(newSpecsRoot, path.basename(oldSpecDir));
+  return {
+    specId,
+    fromLandmarkId: spec.landmarkId,
+    landmarkId: landmark ? landmark.id : null,
+    ...relocateSpecDirectory(root, specId, oldSpecDir, newSpecDir)
   };
 }
 
@@ -4466,7 +4542,12 @@ async function main() {
     result = gate(root, { spec: options.spec, task: options.task, candidate: options.candidate, landmark: options.landmark });
     if (result.refused) process.exitCode = 1;
   }
-  else if (command === 'move-spec') result = moveSpecDirectory(root, id, options.to);
+  else if (command === 'move-spec') {
+    // S-003Z TK-008F: `--landmark LMK-###|none` changes the Spec's parent;
+    // `--to FOLDER` retires it. One move does one of the two.
+    if ('landmark' in options && options.to !== undefined) throw new Error('move-spec takes --to FOLDER or --landmark LMK-###|none, not both');
+    result = 'landmark' in options ? moveSpecToLandmark(root, id, options.landmark) : moveSpecDirectory(root, id, options.to);
+  }
   else if (command === 'move-task') result = moveTaskRecord(root, id, options.task, options.to, options);
   else if (command === 'widen-id') result = widenId(root, id, { spec: options.spec });
   else if (command === 'retire-spec') result = retireSpec(root, id, { wikiNote: options.wiki });
@@ -4477,7 +4558,7 @@ async function main() {
     result = doctorRun.json;
     process.exitCode = doctorRun.exitCode;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|approve|move-spec|move-task|widen-id|retire-spec|discard|render|doctor [S-###] [options] (show|claim|close|receipt|move-task LMK-### for a Task directly under a landmark; gate --task TK-### --spec S-###|--landmark LMK-###; widen-id S-###|TK-### [--spec S-###]; discard S-### [--task TK-###]; doctor [--host]; next|claim|close [--capabilities a,b]; next|claim [--local]; claim [--branch NAME])');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|approve|move-spec|move-task|widen-id|retire-spec|discard|render|doctor [S-###] [options] (show|claim|close|receipt|move-task LMK-### for a Task directly under a landmark; move-spec S-### --to retired|--landmark LMK-###|none; gate --task TK-### --spec S-###|--landmark LMK-###; widen-id S-###|TK-### [--spec S-###]; discard S-### [--task TK-###]; doctor [--host]; next|claim|close [--capabilities a,b]; next|claim [--local]; claim [--branch NAME])');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
