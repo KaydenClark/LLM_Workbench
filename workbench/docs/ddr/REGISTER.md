@@ -34,3 +34,4 @@
 | [000Z](000Z-harness-engineering-is-the-philosophy-and-the-workbench-is-its-implementation.md) | Harness engineering is the philosophy and the Workbench is its implementation | accepted | 2026-10-05 | BLUEPRINT.md |
 | [001A](001A-an-agent-pays-context-only-for-information-that-can-change-what-it-does-next.md) | An agent pays context only for information that can change what it does next | accepted | 2026-10-05 | BLUEPRINT.md, AGENTS.md |
 | [001B](001B-review-climbs-the-ladder-task-by-automated-proof-spec-by-agent-review-landmark-by-integrated-automated-review-and-the-owner-judges-the-concept.md) | Review climbs the ladder: Task by automated proof, Spec by agent review, Landmark by integrated automated review, and the owner judges the concept | accepted | 2026-10-05 | BLUEPRINT.md, AGENTS.md |
+| [001C](001C-agents-md-is-the-map-and-the-only-contract-file.md) | AGENTS.md is the map and the only Contract file | accepted | 2026-10-05 | AGENTS.md |
