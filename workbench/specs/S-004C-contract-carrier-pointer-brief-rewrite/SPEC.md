@@ -5,10 +5,10 @@
 **Priority:** 2
 **Owner:** claude-s004c-tk005m
 **Stance:** Builder
-**Updated:** 2026-10-04
+**Updated:** 2026-10-05
 **Catalog description:** Rewrite AGENTS.md as a short standing brief and RUNBOOK.md as an operations index of context pointers, with each operation's procedure and binding requirements in a tracked skill the carrier points to.
 **Blockers:** Remaining Tasks wait on gates recorded as Task blockers: the Worker and Captain role skills (TK-005L, on S-002E and S-004B delivery); delivery of the `LANDMARK.md` artifact (TK-005O, on S-003Z); and all of them (TK-005P). TK-005N is ready.
-**Latest event:** TK-005M closed with proof.
+**Latest event:** 2026-10-05: the owner decided that `AGENTS.md` is the only Contract file, the Runbook binds nothing and the Lexicon retires; the Director amended this Spec's plan below. TK-005M closed with proof on 2026-10-04.
 **Next gate:** TK-005N (Lexicon and orientation text); TK-005L waits on S-002E and S-004B delivery, TK-005O on S-003Z delivery, and TK-005P on all of them.
 
 > **Citation anchors.** pre=`226212f1790badce0a5bdcd934d2e48e3981e05f` post=`226212f1790badce0a5bdcd934d2e48e3981e05f`.
@@ -103,8 +103,21 @@ install receipt and version label are unchanged by it.
 
 Open, not decided here:
 
-- Whether `LEXICON.md` is a contract artifact or a routing artifact (the owner deferred it).
+- Answered 2026-10-05 by the amendment below: `LEXICON.md` is neither; it retires.
 - Whether the Runbook index should also be imported by a host adapter, after the cost is measured.
+
+
+### Amendment, 2026-10-05: owner decisions that change this plan
+
+The owner decided, and the Director recorded as accepted decision records, three things that narrow the plan above. The Plan decisions and Desired Behavior lines they contradict are read through this section; the rest of the plan, including the delivered maintainer-skill home, stands.
+
+- **One Contract file.** [AGENTS.md is the map and the only Contract file](../../docs/ddr/001C-agents-md-is-the-map-and-the-only-contract-file.md). The surfaced conflict above is resolved: the Instruction Authority list shrinks to the user, `AGENTS.md` with platform limits, the assigned Spec or Landmark, and a skill `AGENTS.md` points to while that operation runs. Binding runs from `AGENTS.md` straight to the skill; the Plan decision that a binding pointer is declared in the Runbook index is withdrawn, and Desired Behavior 10's second clause moves to `AGENTS.md`: the map is the one place a pointer declares which skill binds.
+- **The Runbook binds nothing.** [The Runbook lines the workflow verbs up next to their scenarios and binds nothing](../../docs/ddr/001D-the-runbook-lines-the-workflow-verbs-up-next-to-their-scenarios-and-binds-nothing.md). The delivered index is re-shaped by a later Task: the workflow verbs in order, each next to the scenario it is used in and the skill that carries it, off-path arrivals as scenario rows, kept small the way the Blueprint and `AGENTS.md` are, with no line limit. The entry-read line in `AGENTS.md` stays. The acceptance line "the one place a pointer declares which skill binds" now names `AGENTS.md`.
+- **The Lexicon retires.** [The Lexicon retires: terms live in the Wiki and ownership, routes and invariants live in ARCHITECTURE.md](../../docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md). The open question "whether `LEXICON.md` is a contract artifact or a routing artifact" is answered: neither, it retires. Its retirement is owned by [Lexicon Retirement And ARCHITECTURE.md](../S-004O-lexicon-retirement-and-architecture-md/SPEC.md), which reuses this Spec's landing-check tool. TK-005N narrows to the carrier-definition, pointer and routing rows and the orientation text that must say what the carriers now are, so the Lexicon reads true until it retires; the `lexicon` home kind stays valid until then.
+
+The maintainer-skill home is not changed by this amendment: the owner chose the declared maintainer-skill list on 2026-10-04 and it is delivered (TK-006L, TK-005K). A Director reading from a stale checkout on 2026-10-05 presented the question as still open and recorded a nested-guide answer as DDR-001F; that record is deprecated with that reason, and the delivered home stands unless the owner reopens it.
+
+The test every retained line must pass is the owner's: [An agent pays context only for information that can change what it does next](../../docs/ddr/001A-an-agent-pays-context-only-for-information-that-can-change-what-it-does-next.md). No line count is set.
 
 ## Non-Goals
 
@@ -143,7 +156,7 @@ Starting section map at the pre anchor (headings, to be confirmed by the baselin
 - [ ] An inventory maps every line of `AGENTS.md` and `RUNBOOK.md` to a home (stays, skill, pointer, Lexicon, Wiki, or restates another owner and goes nowhere), and a check shows every removed line landed.
 - [ ] `AGENTS.md` meets the brief definition: short declarative always-true lines and pointers, with its size and loaded cost recorded before and after.
 - [ ] `RUNBOOK.md` is an operations index in which each pointer has a stable path and a when-to-follow description, and each operation's procedure is reachable in a skill.
-- [ ] The Runbook index is read at every session entry through a line in `AGENTS.md`, is the one place a pointer declares which skill binds, and its measured loaded cost together with `AGENTS.md` is recorded against the baseline.
+- [ ] The Runbook index is read at every session entry through a line in `AGENTS.md`, `AGENTS.md` is the one place a pointer declares which skill binds (amended 2026-10-05), and the index's measured loaded cost together with `AGENTS.md` is recorded against the baseline.
 - [ ] The Instruction Authority list states that a pointed lane skill binds for its operation and the lane copy wins, and names an assigned landmark once that artifact is delivered.
 - [ ] A skill no carrier points to teaches and does not instruct, and a room-added skill is shown not to bind.
 - [ ] Every tool and test that read the old shape passes against the new one, and the full suite is green.
@@ -198,6 +211,7 @@ This Spec rewrites the Contract carriers and their `templates/` mirrors. Update 
 | 2026-10-04 | TK-005K | Reviewed and merged | Separate-context Codex gpt-5.5 review number 4 of 73613a50: VERDICT PASS, no findings (fixture tests not runnable in its sandbox); reviews 1 to 3 each failed on one P3, all corrected under TK-005K as the earlier rows record. PR #350 merged at 33e55533, containing 73613a50; on the merged integration test-runbook-index, test-skill-catalog, test-control-fidelity, wiki validate, doctor and the landing check pass. Full suite 51/51 at 73613a50 (dirty []). Branch deleted after containment. | PR #350 comment records the verdicts. | TK-005M and TK-005N implementation. |
 | 2026-10-04 | TK-005M | Task closed | Full suite 51/51 at 613ae2fd (dirty []); red 511a172f, green test-control-fidelity 38/38 with generation labels; update fixture (test-skills-lane 5/5) and Genesis new-shape assertions green; landing check ok vs pin d7ffffe9; guardrails 106.6/113 and 78/100 held | control-fidelity.mjs generation labels and --previous-templates; update-harness skill; templates/RUNBOOK.md Upgrading The Harness; workbench-room-checks Control fidelity report; Wiki control fidelity feature article | Control reconciliation stays the agent's update-harness step; a room whose source commit the checkout lacks needs --previous-templates; no version bump |
 | 2026-10-04 | TK-005M | Dispatcher correction after review pass | Separate-context Codex gpt-5.5 review of 9ccd6303 passed with no findings, but the Dispatcher found before merging that a room line the room rewrote from a line only the earlier template shipped was labeled `earlier-template`, so reconciling to the new shape could drop the room's customization. Red 5f5f0494 (test-control-fidelity: the rewrite must stay the room's own), fix labels `earlier-template` only for lines the room kept as shipped or filled; test-control-fidelity 38/38; full suite 51/51 at 9ccd6303 before the fix. | tools/control-fidelity.mjs; tools/test-control-fidelity.mjs; workbench-room-checks Control fidelity report section. | A fresh separate-context review of the corrected head precedes the integration merge. |
+| 2026-10-05 | none | Owner decisions of 2026-10-05 recorded as DDR-001C, 001D and 001E; the Director amended the plan (one Contract file, non-binding Runbook, Lexicon retirement owned by S-004O) and narrowed TK-005N. DDR-001F, recorded from a stale checkout as a new maintainer-home answer, is deprecated; the 2026-10-04 answer stands as delivered. | Map only; no line moved, no runtime proof claimed. | This Spec, TK-005N, DDR-001F. | TK-005N resumes narrowed; TK-005L, TK-005O and TK-005P keep their gates. |
 
 ## Completion Result
 

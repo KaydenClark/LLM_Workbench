@@ -12,8 +12,8 @@
     "Verified"
   ],
   "workbench": {
-    "items": 444,
-    "denominator": 444,
+    "items": 456,
+    "denominator": 456,
     "status": "incomplete",
     "counted": [
       "dqc:DQC-000A",
@@ -187,6 +187,18 @@
       "dqc:DQC-006M",
       "dqc:DQC-006N",
       "dqc:DQC-006O",
+      "dqc:DQC-006P",
+      "dqc:DQC-006Q",
+      "dqc:DQC-006R",
+      "dqc:DQC-006S",
+      "dqc:DQC-006T",
+      "dqc:DQC-006U",
+      "dqc:DQC-006V",
+      "dqc:DQC-006W",
+      "dqc:DQC-006X",
+      "dqc:DQC-006Y",
+      "dqc:DQC-006Z",
+      "dqc:DQC-007A",
       "grilling-question:ACC-1",
       "grilling-question:ACC-2",
       "grilling-question:ACC-3",
@@ -473,8 +485,8 @@
     },
     "distribution": {
       "Idea": 0,
-      "Aligning": 4.93994,
-      "Confirmed": 93.033033,
+      "Aligning": 4.809942,
+      "Confirmed": 90.584795,
       "Mapped": 0,
       "Planned": 0,
       "Journey": 0,
@@ -483,6 +495,18 @@
     },
     "unassessed": [
       "dqc:DQC-000A",
+      "dqc:DQC-006P",
+      "dqc:DQC-006Q",
+      "dqc:DQC-006R",
+      "dqc:DQC-006S",
+      "dqc:DQC-006T",
+      "dqc:DQC-006U",
+      "dqc:DQC-006V",
+      "dqc:DQC-006W",
+      "dqc:DQC-006X",
+      "dqc:DQC-006Y",
+      "dqc:DQC-006Z",
+      "dqc:DQC-007A",
       "spec:S-01X",
       "spec:S-003P",
       "spec:S-003Q",
@@ -496,7 +520,7 @@
     "invalid": [],
     "bySourceType": {
       "dqc": {
-        "items": 171,
+        "items": 183,
         "status": "incomplete",
         "counted": [
           "dqc:DQC-000A",
@@ -669,7 +693,19 @@
           "dqc:DQC-006L",
           "dqc:DQC-006M",
           "dqc:DQC-006N",
-          "dqc:DQC-006O"
+          "dqc:DQC-006O",
+          "dqc:DQC-006P",
+          "dqc:DQC-006Q",
+          "dqc:DQC-006R",
+          "dqc:DQC-006S",
+          "dqc:DQC-006T",
+          "dqc:DQC-006U",
+          "dqc:DQC-006V",
+          "dqc:DQC-006W",
+          "dqc:DQC-006X",
+          "dqc:DQC-006Y",
+          "dqc:DQC-006Z",
+          "dqc:DQC-007A"
         ],
         "numerators": {
           "Idea": 0,
@@ -683,8 +719,8 @@
         },
         "distribution": {
           "Idea": 0,
-          "Aligning": 6.393762,
-          "Confirmed": 93.021442,
+          "Aligning": 5.974499,
+          "Confirmed": 86.921676,
           "Mapped": 0,
           "Planned": 0,
           "Journey": 0,
@@ -4152,6 +4188,150 @@
         "derivedFrom": [
           "grilling-question:SCR-8"
         ]
+      },
+      {
+        "key": "dqc:DQC-006P",
+        "type": "dqc",
+        "id": "DQC-006P",
+        "state": "unassessed",
+        "contributions": null,
+        "basis": null,
+        "evidence": [],
+        "revision": null,
+        "holder": "DQC-006P",
+        "itemRevision": null
+      },
+      {
+        "key": "dqc:DQC-006Q",
+        "type": "dqc",
+        "id": "DQC-006Q",
+        "state": "unassessed",
+        "contributions": null,
+        "basis": null,
+        "evidence": [],
+        "revision": null,
+        "holder": "DQC-006Q",
+        "itemRevision": null
+      },
+      {
+        "key": "dqc:DQC-006R",
+        "type": "dqc",
+        "id": "DQC-006R",
+        "state": "unassessed",
+        "contributions": null,
+        "basis": null,
+        "evidence": [],
+        "revision": null,
+        "holder": "DQC-006R",
+        "itemRevision": null
+      },
+      {
+        "key": "dqc:DQC-006S",
+        "type": "dqc",
+        "id": "DQC-006S",
+        "state": "unassessed",
+        "contributions": null,
+        "basis": null,
+        "evidence": [],
+        "revision": null,
+        "holder": "DQC-006S",
+        "itemRevision": null
+      },
+      {
+        "key": "dqc:DQC-006T",
+        "type": "dqc",
+        "id": "DQC-006T",
+        "state": "unassessed",
+        "contributions": null,
+        "basis": null,
+        "evidence": [],
+        "revision": null,
+        "holder": "DQC-006T",
+        "itemRevision": null
+      },
+      {
+        "key": "dqc:DQC-006U",
+        "type": "dqc",
+        "id": "DQC-006U",
+        "state": "unassessed",
+        "contributions": null,
+        "basis": null,
+        "evidence": [],
+        "revision": null,
+        "holder": "DQC-006U",
+        "itemRevision": null
+      },
+      {
+        "key": "dqc:DQC-006V",
+        "type": "dqc",
+        "id": "DQC-006V",
+        "state": "unassessed",
+        "contributions": null,
+        "basis": null,
+        "evidence": [],
+        "revision": null,
+        "holder": "DQC-006V",
+        "itemRevision": null
+      },
+      {
+        "key": "dqc:DQC-006W",
+        "type": "dqc",
+        "id": "DQC-006W",
+        "state": "unassessed",
+        "contributions": null,
+        "basis": null,
+        "evidence": [],
+        "revision": null,
+        "holder": "DQC-006W",
+        "itemRevision": null
+      },
+      {
+        "key": "dqc:DQC-006X",
+        "type": "dqc",
+        "id": "DQC-006X",
+        "state": "unassessed",
+        "contributions": null,
+        "basis": null,
+        "evidence": [],
+        "revision": null,
+        "holder": "DQC-006X",
+        "itemRevision": null
+      },
+      {
+        "key": "dqc:DQC-006Y",
+        "type": "dqc",
+        "id": "DQC-006Y",
+        "state": "unassessed",
+        "contributions": null,
+        "basis": null,
+        "evidence": [],
+        "revision": null,
+        "holder": "DQC-006Y",
+        "itemRevision": null
+      },
+      {
+        "key": "dqc:DQC-006Z",
+        "type": "dqc",
+        "id": "DQC-006Z",
+        "state": "unassessed",
+        "contributions": null,
+        "basis": null,
+        "evidence": [],
+        "revision": null,
+        "holder": "DQC-006Z",
+        "itemRevision": null
+      },
+      {
+        "key": "dqc:DQC-007A",
+        "type": "dqc",
+        "id": "DQC-007A",
+        "state": "unassessed",
+        "contributions": null,
+        "basis": null,
+        "evidence": [],
+        "revision": null,
+        "holder": "DQC-007A",
+        "itemRevision": null
       },
       {
         "key": "grilling-question:ACC-1",
@@ -8490,7 +8670,7 @@
         "itemRevision": "9f5bd5ab"
       }
     ],
-    "unassessedPercent": 2.027027
+    "unassessedPercent": 4.605263
   },
   "landmarks": [
     {
@@ -24234,7 +24414,19 @@
       "DQC-003W",
       "DQC-003X",
       "DQC-003Y",
-      "DQC-003Z"
+      "DQC-003Z",
+      "DQC-006P",
+      "DQC-006Q",
+      "DQC-006R",
+      "DQC-006S",
+      "DQC-006T",
+      "DQC-006U",
+      "DQC-006V",
+      "DQC-006W",
+      "DQC-006X",
+      "DQC-006Y",
+      "DQC-006Z",
+      "DQC-007A"
     ]
   },
   "items": [
@@ -25774,6 +25966,114 @@
       "id": "DQC-006O",
       "resolution": "tracker",
       "state": "derived",
+      "holders": [],
+      "relatedBy": []
+    },
+    {
+      "key": "dqc:DQC-006P",
+      "type": "dqc",
+      "id": "DQC-006P",
+      "resolution": "tracker",
+      "state": "unassessed",
+      "holders": [],
+      "relatedBy": []
+    },
+    {
+      "key": "dqc:DQC-006Q",
+      "type": "dqc",
+      "id": "DQC-006Q",
+      "resolution": "tracker",
+      "state": "unassessed",
+      "holders": [],
+      "relatedBy": []
+    },
+    {
+      "key": "dqc:DQC-006R",
+      "type": "dqc",
+      "id": "DQC-006R",
+      "resolution": "tracker",
+      "state": "unassessed",
+      "holders": [],
+      "relatedBy": []
+    },
+    {
+      "key": "dqc:DQC-006S",
+      "type": "dqc",
+      "id": "DQC-006S",
+      "resolution": "tracker",
+      "state": "unassessed",
+      "holders": [],
+      "relatedBy": []
+    },
+    {
+      "key": "dqc:DQC-006T",
+      "type": "dqc",
+      "id": "DQC-006T",
+      "resolution": "tracker",
+      "state": "unassessed",
+      "holders": [],
+      "relatedBy": []
+    },
+    {
+      "key": "dqc:DQC-006U",
+      "type": "dqc",
+      "id": "DQC-006U",
+      "resolution": "tracker",
+      "state": "unassessed",
+      "holders": [],
+      "relatedBy": []
+    },
+    {
+      "key": "dqc:DQC-006V",
+      "type": "dqc",
+      "id": "DQC-006V",
+      "resolution": "tracker",
+      "state": "unassessed",
+      "holders": [],
+      "relatedBy": []
+    },
+    {
+      "key": "dqc:DQC-006W",
+      "type": "dqc",
+      "id": "DQC-006W",
+      "resolution": "tracker",
+      "state": "unassessed",
+      "holders": [],
+      "relatedBy": []
+    },
+    {
+      "key": "dqc:DQC-006X",
+      "type": "dqc",
+      "id": "DQC-006X",
+      "resolution": "tracker",
+      "state": "unassessed",
+      "holders": [],
+      "relatedBy": []
+    },
+    {
+      "key": "dqc:DQC-006Y",
+      "type": "dqc",
+      "id": "DQC-006Y",
+      "resolution": "tracker",
+      "state": "unassessed",
+      "holders": [],
+      "relatedBy": []
+    },
+    {
+      "key": "dqc:DQC-006Z",
+      "type": "dqc",
+      "id": "DQC-006Z",
+      "resolution": "tracker",
+      "state": "unassessed",
+      "holders": [],
+      "relatedBy": []
+    },
+    {
+      "key": "dqc:DQC-007A",
+      "type": "dqc",
+      "id": "DQC-007A",
+      "resolution": "tracker",
+      "state": "unassessed",
       "holders": [],
       "relatedBy": []
     },
@@ -103337,6 +103637,1674 @@
                 "LMK-000H",
                 "LMK-000K"
               ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DQC-006P",
+      "title": "Repo is the System of Record",
+      "question": "What must be true for the repository to be the only system of record an agent needs, and how is that enforced mechanically?",
+      "answer": null,
+      "answered": false,
+      "confirmation": null,
+      "expectedResult": null,
+      "result": null,
+      "uncertainty": [
+        "Which existing landmark records fold into this direction, and what its reached check is"
+      ],
+      "landmarks": [],
+      "landmarkDisplay": "No landmark",
+      "assessment": {
+        "state": "unassessed"
+      },
+      "distribution": {
+        "items": 1,
+        "denominator": 1,
+        "status": "incomplete",
+        "counted": [
+          "dqc:DQC-006P"
+        ],
+        "numerators": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "distribution": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "unassessed": [
+          "dqc:DQC-006P"
+        ],
+        "unknown": [],
+        "invalid": [],
+        "bySourceType": {
+          "dqc": {
+            "items": 1,
+            "status": "incomplete",
+            "counted": [
+              "dqc:DQC-006P"
+            ],
+            "numerators": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            },
+            "distribution": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            }
+          }
+        },
+        "contributions": [
+          {
+            "key": "dqc:DQC-006P",
+            "type": "dqc",
+            "id": "DQC-006P",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": "DQC-006P",
+            "itemRevision": null
+          }
+        ],
+        "unassessedPercent": 100
+      },
+      "related": [],
+      "relatedBy": [],
+      "lineage": {
+        "key": "dqc:DQC-006P",
+        "type": "dqc",
+        "id": "DQC-006P",
+        "resolution": "tracker",
+        "state": "unassessed",
+        "related": []
+      },
+      "claims": [],
+      "reconciliation": [],
+      "sources": [
+        {
+          "id": "DDR-001H",
+          "revision": null
+        }
+      ],
+      "origin": {
+        "title": "Repo is the System of Record",
+        "question": "What must be true for the repository to be the only system of record an agent needs, and how is that enforced mechanically?",
+        "sources": [
+          {
+            "id": "DDR-001H",
+            "revision": null
+          }
+        ],
+        "revision": 1,
+        "at": "2026-10-06T04:30:42.797Z"
+      },
+      "corrections": [],
+      "revision": 1,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-06T04:30:42.797Z",
+          "reason": "Owner made this harness-engineering direction a landmark on 2026-10-05; captured at Confirm before the LANDMARK.md artifact exists",
+          "changes": [
+            {
+              "field": "captured"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DQC-006Q",
+      "title": "Progressive Disclosure",
+      "question": "What does a cold agent receive at entry, and how does it reach deeper context only when that context can change what it does next?",
+      "answer": null,
+      "answered": false,
+      "confirmation": null,
+      "expectedResult": null,
+      "result": null,
+      "uncertainty": [
+        "Which existing landmark records fold into this direction, and what its reached check is"
+      ],
+      "landmarks": [],
+      "landmarkDisplay": "No landmark",
+      "assessment": {
+        "state": "unassessed"
+      },
+      "distribution": {
+        "items": 1,
+        "denominator": 1,
+        "status": "incomplete",
+        "counted": [
+          "dqc:DQC-006Q"
+        ],
+        "numerators": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "distribution": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "unassessed": [
+          "dqc:DQC-006Q"
+        ],
+        "unknown": [],
+        "invalid": [],
+        "bySourceType": {
+          "dqc": {
+            "items": 1,
+            "status": "incomplete",
+            "counted": [
+              "dqc:DQC-006Q"
+            ],
+            "numerators": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            },
+            "distribution": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            }
+          }
+        },
+        "contributions": [
+          {
+            "key": "dqc:DQC-006Q",
+            "type": "dqc",
+            "id": "DQC-006Q",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": "DQC-006Q",
+            "itemRevision": null
+          }
+        ],
+        "unassessedPercent": 100
+      },
+      "related": [],
+      "relatedBy": [],
+      "lineage": {
+        "key": "dqc:DQC-006Q",
+        "type": "dqc",
+        "id": "DQC-006Q",
+        "resolution": "tracker",
+        "state": "unassessed",
+        "related": []
+      },
+      "claims": [],
+      "reconciliation": [],
+      "sources": [
+        {
+          "id": "DDR-001H",
+          "revision": null
+        }
+      ],
+      "origin": {
+        "title": "Progressive Disclosure",
+        "question": "What does a cold agent receive at entry, and how does it reach deeper context only when that context can change what it does next?",
+        "sources": [
+          {
+            "id": "DDR-001H",
+            "revision": null
+          }
+        ],
+        "revision": 1,
+        "at": "2026-10-06T04:30:42.939Z"
+      },
+      "corrections": [],
+      "revision": 1,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-06T04:30:42.939Z",
+          "reason": "Owner made this harness-engineering direction a landmark on 2026-10-05; captured at Confirm before the LANDMARK.md artifact exists",
+          "changes": [
+            {
+              "field": "captured"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DQC-006R",
+      "title": "Durable Plans",
+      "question": "How do landmarks, Specs and Tasks carry a plan across sessions, agents and providers without a human relay?",
+      "answer": null,
+      "answered": false,
+      "confirmation": null,
+      "expectedResult": null,
+      "result": null,
+      "uncertainty": [
+        "Which existing landmark records fold into this direction, and what its reached check is"
+      ],
+      "landmarks": [],
+      "landmarkDisplay": "No landmark",
+      "assessment": {
+        "state": "unassessed"
+      },
+      "distribution": {
+        "items": 1,
+        "denominator": 1,
+        "status": "incomplete",
+        "counted": [
+          "dqc:DQC-006R"
+        ],
+        "numerators": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "distribution": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "unassessed": [
+          "dqc:DQC-006R"
+        ],
+        "unknown": [],
+        "invalid": [],
+        "bySourceType": {
+          "dqc": {
+            "items": 1,
+            "status": "incomplete",
+            "counted": [
+              "dqc:DQC-006R"
+            ],
+            "numerators": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            },
+            "distribution": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            }
+          }
+        },
+        "contributions": [
+          {
+            "key": "dqc:DQC-006R",
+            "type": "dqc",
+            "id": "DQC-006R",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": "DQC-006R",
+            "itemRevision": null
+          }
+        ],
+        "unassessedPercent": 100
+      },
+      "related": [],
+      "relatedBy": [],
+      "lineage": {
+        "key": "dqc:DQC-006R",
+        "type": "dqc",
+        "id": "DQC-006R",
+        "resolution": "tracker",
+        "state": "unassessed",
+        "related": []
+      },
+      "claims": [],
+      "reconciliation": [],
+      "sources": [
+        {
+          "id": "DDR-001H",
+          "revision": null
+        }
+      ],
+      "origin": {
+        "title": "Durable Plans",
+        "question": "How do landmarks, Specs and Tasks carry a plan across sessions, agents and providers without a human relay?",
+        "sources": [
+          {
+            "id": "DDR-001H",
+            "revision": null
+          }
+        ],
+        "revision": 1,
+        "at": "2026-10-06T04:30:43.055Z"
+      },
+      "corrections": [],
+      "revision": 1,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-06T04:30:43.055Z",
+          "reason": "Owner made this harness-engineering direction a landmark on 2026-10-05; captured at Confirm before the LANDMARK.md artifact exists",
+          "changes": [
+            {
+              "field": "captured"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DQC-006S",
+      "title": "Agent to Agent Review",
+      "question": "How does an agent that did not build a change review it, and what does that review have to prove before a merge?",
+      "answer": null,
+      "answered": false,
+      "confirmation": null,
+      "expectedResult": null,
+      "result": null,
+      "uncertainty": [
+        "Which existing landmark records fold into this direction, and what its reached check is"
+      ],
+      "landmarks": [],
+      "landmarkDisplay": "No landmark",
+      "assessment": {
+        "state": "unassessed"
+      },
+      "distribution": {
+        "items": 1,
+        "denominator": 1,
+        "status": "incomplete",
+        "counted": [
+          "dqc:DQC-006S"
+        ],
+        "numerators": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "distribution": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "unassessed": [
+          "dqc:DQC-006S"
+        ],
+        "unknown": [],
+        "invalid": [],
+        "bySourceType": {
+          "dqc": {
+            "items": 1,
+            "status": "incomplete",
+            "counted": [
+              "dqc:DQC-006S"
+            ],
+            "numerators": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            },
+            "distribution": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            }
+          }
+        },
+        "contributions": [
+          {
+            "key": "dqc:DQC-006S",
+            "type": "dqc",
+            "id": "DQC-006S",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": "DQC-006S",
+            "itemRevision": null
+          }
+        ],
+        "unassessedPercent": 100
+      },
+      "related": [],
+      "relatedBy": [],
+      "lineage": {
+        "key": "dqc:DQC-006S",
+        "type": "dqc",
+        "id": "DQC-006S",
+        "resolution": "tracker",
+        "state": "unassessed",
+        "related": []
+      },
+      "claims": [],
+      "reconciliation": [],
+      "sources": [
+        {
+          "id": "DDR-001H",
+          "revision": null
+        }
+      ],
+      "origin": {
+        "title": "Agent to Agent Review",
+        "question": "How does an agent that did not build a change review it, and what does that review have to prove before a merge?",
+        "sources": [
+          {
+            "id": "DDR-001H",
+            "revision": null
+          }
+        ],
+        "revision": 1,
+        "at": "2026-10-06T04:30:43.171Z"
+      },
+      "corrections": [],
+      "revision": 1,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-06T04:30:43.171Z",
+          "reason": "Owner made this harness-engineering direction a landmark on 2026-10-05; captured at Confirm before the LANDMARK.md artifact exists",
+          "changes": [
+            {
+              "field": "captured"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DQC-006T",
+      "title": "Mechanical Enforcement",
+      "question": "Which invariants are executable checks rather than prose, and how is a new rule made executable?",
+      "answer": null,
+      "answered": false,
+      "confirmation": null,
+      "expectedResult": null,
+      "result": null,
+      "uncertainty": [
+        "Which existing landmark records fold into this direction, and what its reached check is"
+      ],
+      "landmarks": [],
+      "landmarkDisplay": "No landmark",
+      "assessment": {
+        "state": "unassessed"
+      },
+      "distribution": {
+        "items": 1,
+        "denominator": 1,
+        "status": "incomplete",
+        "counted": [
+          "dqc:DQC-006T"
+        ],
+        "numerators": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "distribution": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "unassessed": [
+          "dqc:DQC-006T"
+        ],
+        "unknown": [],
+        "invalid": [],
+        "bySourceType": {
+          "dqc": {
+            "items": 1,
+            "status": "incomplete",
+            "counted": [
+              "dqc:DQC-006T"
+            ],
+            "numerators": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            },
+            "distribution": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            }
+          }
+        },
+        "contributions": [
+          {
+            "key": "dqc:DQC-006T",
+            "type": "dqc",
+            "id": "DQC-006T",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": "DQC-006T",
+            "itemRevision": null
+          }
+        ],
+        "unassessedPercent": 100
+      },
+      "related": [],
+      "relatedBy": [],
+      "lineage": {
+        "key": "dqc:DQC-006T",
+        "type": "dqc",
+        "id": "DQC-006T",
+        "resolution": "tracker",
+        "state": "unassessed",
+        "related": []
+      },
+      "claims": [],
+      "reconciliation": [],
+      "sources": [
+        {
+          "id": "DDR-001H",
+          "revision": null
+        }
+      ],
+      "origin": {
+        "title": "Mechanical Enforcement",
+        "question": "Which invariants are executable checks rather than prose, and how is a new rule made executable?",
+        "sources": [
+          {
+            "id": "DDR-001H",
+            "revision": null
+          }
+        ],
+        "revision": 1,
+        "at": "2026-10-06T04:30:43.294Z"
+      },
+      "corrections": [],
+      "revision": 1,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-06T04:30:43.294Z",
+          "reason": "Owner made this harness-engineering direction a landmark on 2026-10-05; captured at Confirm before the LANDMARK.md artifact exists",
+          "changes": [
+            {
+              "field": "captured"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DQC-006U",
+      "title": "Learn from Failure",
+      "question": "How does an observed failure improve the environment through one bounded loop instead of another prompt?",
+      "answer": null,
+      "answered": false,
+      "confirmation": null,
+      "expectedResult": null,
+      "result": null,
+      "uncertainty": [
+        "Which existing landmark records fold into this direction, and what its reached check is"
+      ],
+      "landmarks": [],
+      "landmarkDisplay": "No landmark",
+      "assessment": {
+        "state": "unassessed"
+      },
+      "distribution": {
+        "items": 1,
+        "denominator": 1,
+        "status": "incomplete",
+        "counted": [
+          "dqc:DQC-006U"
+        ],
+        "numerators": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "distribution": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "unassessed": [
+          "dqc:DQC-006U"
+        ],
+        "unknown": [],
+        "invalid": [],
+        "bySourceType": {
+          "dqc": {
+            "items": 1,
+            "status": "incomplete",
+            "counted": [
+              "dqc:DQC-006U"
+            ],
+            "numerators": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            },
+            "distribution": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            }
+          }
+        },
+        "contributions": [
+          {
+            "key": "dqc:DQC-006U",
+            "type": "dqc",
+            "id": "DQC-006U",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": "DQC-006U",
+            "itemRevision": null
+          }
+        ],
+        "unassessedPercent": 100
+      },
+      "related": [],
+      "relatedBy": [],
+      "lineage": {
+        "key": "dqc:DQC-006U",
+        "type": "dqc",
+        "id": "DQC-006U",
+        "resolution": "tracker",
+        "state": "unassessed",
+        "related": []
+      },
+      "claims": [],
+      "reconciliation": [],
+      "sources": [
+        {
+          "id": "DDR-001H",
+          "revision": null
+        }
+      ],
+      "origin": {
+        "title": "Learn from Failure",
+        "question": "How does an observed failure improve the environment through one bounded loop instead of another prompt?",
+        "sources": [
+          {
+            "id": "DDR-001H",
+            "revision": null
+          }
+        ],
+        "revision": 1,
+        "at": "2026-10-06T04:30:43.433Z"
+      },
+      "corrections": [],
+      "revision": 1,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-06T04:30:43.433Z",
+          "reason": "Owner made this harness-engineering direction a landmark on 2026-10-05; captured at Confirm before the LANDMARK.md artifact exists",
+          "changes": [
+            {
+              "field": "captured"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DQC-006V",
+      "title": "Agent Visible Runtime",
+      "question": "How does a room declare how an agent runs, operates, inspects, sees errors in, exercises and measures its product?",
+      "answer": null,
+      "answered": false,
+      "confirmation": null,
+      "expectedResult": null,
+      "result": null,
+      "uncertainty": [
+        "Which existing landmark records fold into this direction, and what its reached check is"
+      ],
+      "landmarks": [],
+      "landmarkDisplay": "No landmark",
+      "assessment": {
+        "state": "unassessed"
+      },
+      "distribution": {
+        "items": 1,
+        "denominator": 1,
+        "status": "incomplete",
+        "counted": [
+          "dqc:DQC-006V"
+        ],
+        "numerators": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "distribution": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "unassessed": [
+          "dqc:DQC-006V"
+        ],
+        "unknown": [],
+        "invalid": [],
+        "bySourceType": {
+          "dqc": {
+            "items": 1,
+            "status": "incomplete",
+            "counted": [
+              "dqc:DQC-006V"
+            ],
+            "numerators": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            },
+            "distribution": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            }
+          }
+        },
+        "contributions": [
+          {
+            "key": "dqc:DQC-006V",
+            "type": "dqc",
+            "id": "DQC-006V",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": "DQC-006V",
+            "itemRevision": null
+          }
+        ],
+        "unassessedPercent": 100
+      },
+      "related": [],
+      "relatedBy": [],
+      "lineage": {
+        "key": "dqc:DQC-006V",
+        "type": "dqc",
+        "id": "DQC-006V",
+        "resolution": "tracker",
+        "state": "unassessed",
+        "related": []
+      },
+      "claims": [],
+      "reconciliation": [],
+      "sources": [
+        {
+          "id": "DDR-001H",
+          "revision": null
+        }
+      ],
+      "origin": {
+        "title": "Agent Visible Runtime",
+        "question": "How does a room declare how an agent runs, operates, inspects, sees errors in, exercises and measures its product?",
+        "sources": [
+          {
+            "id": "DDR-001H",
+            "revision": null
+          }
+        ],
+        "revision": 1,
+        "at": "2026-10-06T04:30:43.572Z"
+      },
+      "corrections": [],
+      "revision": 1,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-06T04:30:43.572Z",
+          "reason": "Owner made this harness-engineering direction a landmark on 2026-10-05; captured at Confirm before the LANDMARK.md artifact exists",
+          "changes": [
+            {
+              "field": "captured"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DQC-006W",
+      "title": "Continuous Cleanup",
+      "question": "What mechanism retires stale rules, duplicated knowledge, finished scaffolding and bad patterns faster than they are added?",
+      "answer": null,
+      "answered": false,
+      "confirmation": null,
+      "expectedResult": null,
+      "result": null,
+      "uncertainty": [
+        "Which existing landmark records fold into this direction, and what its reached check is"
+      ],
+      "landmarks": [],
+      "landmarkDisplay": "No landmark",
+      "assessment": {
+        "state": "unassessed"
+      },
+      "distribution": {
+        "items": 1,
+        "denominator": 1,
+        "status": "incomplete",
+        "counted": [
+          "dqc:DQC-006W"
+        ],
+        "numerators": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "distribution": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "unassessed": [
+          "dqc:DQC-006W"
+        ],
+        "unknown": [],
+        "invalid": [],
+        "bySourceType": {
+          "dqc": {
+            "items": 1,
+            "status": "incomplete",
+            "counted": [
+              "dqc:DQC-006W"
+            ],
+            "numerators": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            },
+            "distribution": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            }
+          }
+        },
+        "contributions": [
+          {
+            "key": "dqc:DQC-006W",
+            "type": "dqc",
+            "id": "DQC-006W",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": "DQC-006W",
+            "itemRevision": null
+          }
+        ],
+        "unassessedPercent": 100
+      },
+      "related": [],
+      "relatedBy": [],
+      "lineage": {
+        "key": "dqc:DQC-006W",
+        "type": "dqc",
+        "id": "DQC-006W",
+        "resolution": "tracker",
+        "state": "unassessed",
+        "related": []
+      },
+      "claims": [],
+      "reconciliation": [],
+      "sources": [
+        {
+          "id": "DDR-001H",
+          "revision": null
+        }
+      ],
+      "origin": {
+        "title": "Continuous Cleanup",
+        "question": "What mechanism retires stale rules, duplicated knowledge, finished scaffolding and bad patterns faster than they are added?",
+        "sources": [
+          {
+            "id": "DDR-001H",
+            "revision": null
+          }
+        ],
+        "revision": 1,
+        "at": "2026-10-06T04:30:43.709Z"
+      },
+      "corrections": [],
+      "revision": 1,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-06T04:30:43.709Z",
+          "reason": "Owner made this harness-engineering direction a landmark on 2026-10-05; captured at Confirm before the LANDMARK.md artifact exists",
+          "changes": [
+            {
+              "field": "captured"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DQC-006X",
+      "title": "Human Attention Minimized",
+      "question": "Where on the ladder does the owner's attention sit, and what reaches the owner only after automated proof and agent review?",
+      "answer": null,
+      "answered": false,
+      "confirmation": null,
+      "expectedResult": null,
+      "result": null,
+      "uncertainty": [
+        "Which existing landmark records fold into this direction, and what its reached check is"
+      ],
+      "landmarks": [],
+      "landmarkDisplay": "No landmark",
+      "assessment": {
+        "state": "unassessed"
+      },
+      "distribution": {
+        "items": 1,
+        "denominator": 1,
+        "status": "incomplete",
+        "counted": [
+          "dqc:DQC-006X"
+        ],
+        "numerators": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "distribution": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "unassessed": [
+          "dqc:DQC-006X"
+        ],
+        "unknown": [],
+        "invalid": [],
+        "bySourceType": {
+          "dqc": {
+            "items": 1,
+            "status": "incomplete",
+            "counted": [
+              "dqc:DQC-006X"
+            ],
+            "numerators": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            },
+            "distribution": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            }
+          }
+        },
+        "contributions": [
+          {
+            "key": "dqc:DQC-006X",
+            "type": "dqc",
+            "id": "DQC-006X",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": "DQC-006X",
+            "itemRevision": null
+          }
+        ],
+        "unassessedPercent": 100
+      },
+      "related": [],
+      "relatedBy": [],
+      "lineage": {
+        "key": "dqc:DQC-006X",
+        "type": "dqc",
+        "id": "DQC-006X",
+        "resolution": "tracker",
+        "state": "unassessed",
+        "related": []
+      },
+      "claims": [],
+      "reconciliation": [],
+      "sources": [
+        {
+          "id": "DDR-001H",
+          "revision": null
+        }
+      ],
+      "origin": {
+        "title": "Human Attention Minimized",
+        "question": "Where on the ladder does the owner's attention sit, and what reaches the owner only after automated proof and agent review?",
+        "sources": [
+          {
+            "id": "DDR-001H",
+            "revision": null
+          }
+        ],
+        "revision": 1,
+        "at": "2026-10-06T04:30:43.835Z"
+      },
+      "corrections": [],
+      "revision": 1,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-06T04:30:43.835Z",
+          "reason": "Owner made this harness-engineering direction a landmark on 2026-10-05; captured at Confirm before the LANDMARK.md artifact exists",
+          "changes": [
+            {
+              "field": "captured"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DQC-006Y",
+      "title": "Multi Agent and Provider Coordination",
+      "question": "How do many agents on Claude Code and Codex, on any device or in the cloud, work one project at once and combine their checked results?",
+      "answer": null,
+      "answered": false,
+      "confirmation": null,
+      "expectedResult": null,
+      "result": null,
+      "uncertainty": [
+        "Which existing landmark records fold into this direction, and what its reached check is"
+      ],
+      "landmarks": [],
+      "landmarkDisplay": "No landmark",
+      "assessment": {
+        "state": "unassessed"
+      },
+      "distribution": {
+        "items": 1,
+        "denominator": 1,
+        "status": "incomplete",
+        "counted": [
+          "dqc:DQC-006Y"
+        ],
+        "numerators": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "distribution": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "unassessed": [
+          "dqc:DQC-006Y"
+        ],
+        "unknown": [],
+        "invalid": [],
+        "bySourceType": {
+          "dqc": {
+            "items": 1,
+            "status": "incomplete",
+            "counted": [
+              "dqc:DQC-006Y"
+            ],
+            "numerators": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            },
+            "distribution": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            }
+          }
+        },
+        "contributions": [
+          {
+            "key": "dqc:DQC-006Y",
+            "type": "dqc",
+            "id": "DQC-006Y",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": "DQC-006Y",
+            "itemRevision": null
+          }
+        ],
+        "unassessedPercent": 100
+      },
+      "related": [],
+      "relatedBy": [],
+      "lineage": {
+        "key": "dqc:DQC-006Y",
+        "type": "dqc",
+        "id": "DQC-006Y",
+        "resolution": "tracker",
+        "state": "unassessed",
+        "related": []
+      },
+      "claims": [],
+      "reconciliation": [],
+      "sources": [
+        {
+          "id": "DDR-001H",
+          "revision": null
+        }
+      ],
+      "origin": {
+        "title": "Multi Agent and Provider Coordination",
+        "question": "How do many agents on Claude Code and Codex, on any device or in the cloud, work one project at once and combine their checked results?",
+        "sources": [
+          {
+            "id": "DDR-001H",
+            "revision": null
+          }
+        ],
+        "revision": 1,
+        "at": "2026-10-06T04:30:43.955Z"
+      },
+      "corrections": [],
+      "revision": 1,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-06T04:30:43.955Z",
+          "reason": "Owner made this harness-engineering direction a landmark on 2026-10-05; captured at Confirm before the LANDMARK.md artifact exists",
+          "changes": [
+            {
+              "field": "captured"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DQC-006Z",
+      "title": "Owner Idea Alignment",
+      "question": "How does an owner's idea become a confirmed shared concept that agents can carry to its endpoint without re-explaining it?",
+      "answer": null,
+      "answered": false,
+      "confirmation": null,
+      "expectedResult": null,
+      "result": null,
+      "uncertainty": [
+        "Which existing landmark records fold into this direction, and what its reached check is"
+      ],
+      "landmarks": [],
+      "landmarkDisplay": "No landmark",
+      "assessment": {
+        "state": "unassessed"
+      },
+      "distribution": {
+        "items": 1,
+        "denominator": 1,
+        "status": "incomplete",
+        "counted": [
+          "dqc:DQC-006Z"
+        ],
+        "numerators": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "distribution": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "unassessed": [
+          "dqc:DQC-006Z"
+        ],
+        "unknown": [],
+        "invalid": [],
+        "bySourceType": {
+          "dqc": {
+            "items": 1,
+            "status": "incomplete",
+            "counted": [
+              "dqc:DQC-006Z"
+            ],
+            "numerators": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            },
+            "distribution": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            }
+          }
+        },
+        "contributions": [
+          {
+            "key": "dqc:DQC-006Z",
+            "type": "dqc",
+            "id": "DQC-006Z",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": "DQC-006Z",
+            "itemRevision": null
+          }
+        ],
+        "unassessedPercent": 100
+      },
+      "related": [],
+      "relatedBy": [],
+      "lineage": {
+        "key": "dqc:DQC-006Z",
+        "type": "dqc",
+        "id": "DQC-006Z",
+        "resolution": "tracker",
+        "state": "unassessed",
+        "related": []
+      },
+      "claims": [],
+      "reconciliation": [],
+      "sources": [
+        {
+          "id": "DDR-001H",
+          "revision": null
+        }
+      ],
+      "origin": {
+        "title": "Owner Idea Alignment",
+        "question": "How does an owner's idea become a confirmed shared concept that agents can carry to its endpoint without re-explaining it?",
+        "sources": [
+          {
+            "id": "DDR-001H",
+            "revision": null
+          }
+        ],
+        "revision": 1,
+        "at": "2026-10-06T04:30:44.081Z"
+      },
+      "corrections": [],
+      "revision": 1,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-06T04:30:44.081Z",
+          "reason": "Owner made this harness-engineering direction a landmark on 2026-10-05; captured at Confirm before the LANDMARK.md artifact exists",
+          "changes": [
+            {
+              "field": "captured"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DQC-007A",
+      "title": "Autonomous Execution",
+      "question": "What has to hold for humans to steer and agents to execute a Task end to end, and what does a Task execution fix point back to?",
+      "answer": null,
+      "answered": false,
+      "confirmation": null,
+      "expectedResult": null,
+      "result": null,
+      "uncertainty": [
+        "Which existing landmark records fold into this direction, and what its reached check is"
+      ],
+      "landmarks": [],
+      "landmarkDisplay": "No landmark",
+      "assessment": {
+        "state": "unassessed"
+      },
+      "distribution": {
+        "items": 1,
+        "denominator": 1,
+        "status": "incomplete",
+        "counted": [
+          "dqc:DQC-007A"
+        ],
+        "numerators": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "distribution": {
+          "Idea": 0,
+          "Aligning": 0,
+          "Confirmed": 0,
+          "Mapped": 0,
+          "Planned": 0,
+          "Journey": 0,
+          "Review": 0,
+          "Verified": 0
+        },
+        "unassessed": [
+          "dqc:DQC-007A"
+        ],
+        "unknown": [],
+        "invalid": [],
+        "bySourceType": {
+          "dqc": {
+            "items": 1,
+            "status": "incomplete",
+            "counted": [
+              "dqc:DQC-007A"
+            ],
+            "numerators": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            },
+            "distribution": {
+              "Idea": 0,
+              "Aligning": 0,
+              "Confirmed": 0,
+              "Mapped": 0,
+              "Planned": 0,
+              "Journey": 0,
+              "Review": 0,
+              "Verified": 0
+            }
+          }
+        },
+        "contributions": [
+          {
+            "key": "dqc:DQC-007A",
+            "type": "dqc",
+            "id": "DQC-007A",
+            "state": "unassessed",
+            "contributions": null,
+            "basis": null,
+            "evidence": [],
+            "revision": null,
+            "holder": "DQC-007A",
+            "itemRevision": null
+          }
+        ],
+        "unassessedPercent": 100
+      },
+      "related": [],
+      "relatedBy": [],
+      "lineage": {
+        "key": "dqc:DQC-007A",
+        "type": "dqc",
+        "id": "DQC-007A",
+        "resolution": "tracker",
+        "state": "unassessed",
+        "related": []
+      },
+      "claims": [],
+      "reconciliation": [],
+      "sources": [
+        {
+          "id": "DDR-001H",
+          "revision": null
+        }
+      ],
+      "origin": {
+        "title": "Autonomous Execution",
+        "question": "What has to hold for humans to steer and agents to execute a Task end to end, and what does a Task execution fix point back to?",
+        "sources": [
+          {
+            "id": "DDR-001H",
+            "revision": null
+          }
+        ],
+        "revision": 1,
+        "at": "2026-10-06T04:30:44.220Z"
+      },
+      "corrections": [],
+      "revision": 1,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-06T04:30:44.220Z",
+          "reason": "Owner made this harness-engineering direction a landmark on 2026-10-05; captured at Confirm before the LANDMARK.md artifact exists",
+          "changes": [
+            {
+              "field": "captured"
             }
           ]
         }

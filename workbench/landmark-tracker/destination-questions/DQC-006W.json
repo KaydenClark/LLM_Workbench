@@ -1,0 +1,48 @@
+{
+  "schema": "landmark-tracker/destination-question@2",
+  "id": "DQC-006W",
+  "revision": 1,
+  "title": "Continuous Cleanup",
+  "question": "What mechanism retires stale rules, duplicated knowledge, finished scaffolding and bad patterns faster than they are added?",
+  "answer": null,
+  "confirmation": null,
+  "expectedResult": null,
+  "result": null,
+  "uncertainty": [
+    "Which existing landmark records fold into this direction, and what its reached check is"
+  ],
+  "sources": [
+    {
+      "id": "DDR-001H",
+      "revision": null
+    }
+  ],
+  "landmarks": [],
+  "assessment": null,
+  "related": [],
+  "claims": [],
+  "origin": {
+    "title": "Continuous Cleanup",
+    "question": "What mechanism retires stale rules, duplicated knowledge, finished scaffolding and bad patterns faster than they are added?",
+    "sources": [
+      {
+        "id": "DDR-001H",
+        "revision": null
+      }
+    ],
+    "revision": 1,
+    "at": "2026-10-06T04:30:43.709Z"
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-10-06T04:30:43.709Z",
+      "reason": "Owner made this harness-engineering direction a landmark on 2026-10-05; captured at Confirm before the LANDMARK.md artifact exists",
+      "changes": [
+        {
+          "field": "captured"
+        }
+      ]
+    }
+  ]
+}

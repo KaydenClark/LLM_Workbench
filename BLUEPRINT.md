@@ -14,7 +14,7 @@ In LLM Workbench's own room, the project is the next workbench, built with the c
 
 ### The owner
 
-The owner brings ideas and aligns on them with the agents, usually by grilling, until the design concept is shared, then confirms it. After that the owner is needed only to unblock, and to judge the finished result in Human QA: approve it or send it back. The owner gets a checked result without managing agents, sees what is running, changed, blocked or waiting on a decision, never explains the project twice, and can step in at any time.
+The owner brings ideas and aligns on them with the agents, usually by grilling, until the design concept is shared, then confirms it. After that the owner is needed only to unblock, and to judge each finished landmark and the concept in Human QA: approve it or send it back. The owner gets a checked result without managing agents, sees what is running, changed, blocked or waiting on a decision, never explains the project twice, and can step in at any time.
 
 ### The agents
 
@@ -22,12 +22,14 @@ The agents, in Claude Code and Codex, on any of the owner's devices or in the cl
 
 ## Promised outcomes
 
-- Work reaches the owner's Human QA only after automated checks and automated review pass it.
+- Review climbs a ladder: a Task is proven by automation, a Spec is reviewed by an agent that did not build it, a landmark passes integrated automated review, and the owner judges the concept. Work reaches the owner's Human QA at the landmark, after every automated check and review has passed it.
+- An agent pays context only for information that can change what it does next; everything else is reached by a pointer when the work needs it.
 - Many agents work one project at once, on any of the owner's devices or in the cloud, and combine their checked results.
 - Work is mapped and planned so every session stays in the smart zone and spends its tokens efficiently.
 - Everything a session needs lives in the project's GitHub repository; through progressive disclosure, a fresh session loads only what its work needs.
 - Every kind of truth has one maintained home, so an agent knows where to read it and where a change is written, and nothing is kept twice.
 - Claims of done say what actually happened; gaps are flagged, never faked.
+- Every room declares how an agent runs, operates, inspects and measures its product, so a claim of done can show the running product and not only the repository.
 - What the work teaches lives on in the Wiki and decision records; the scaffolding is cleared away.
 - The skills agents need ship inside every room, where the workbench regulates and monitors them; a room adds the skills, scaffolding and procedures its work needs without tearing apart what is proven to work.
 - Setup drafts the workbench from one line or an existing project, and grilling confirms it; updates never cost a project its knowledge, unfinished work or deliberate choices.
