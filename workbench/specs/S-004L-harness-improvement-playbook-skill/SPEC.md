@@ -1,15 +1,15 @@
 # S-004L - Harness Improvement Playbook Skill
 
 **Spec ID:** S-004L
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-s004l-dispatcher (Dispatcher; single writer of this Spec, its Task records and the projections)
 **Stance:** Builder
 **Updated:** 2026-10-05
 **Catalog description:** Ship one improve-one-harnessed-job playbook skill that runs the baseline-to-rerun loop, point the Runbook's harness feedback and evaluation rows at it, and retire the host-installed harness-review family in its favor.
-**Blockers:** none for specification. Implementation awaits Plan and assignment.
-**Latest event:** Authored at the Map step from the owner's playbook decision of 2026-10-05; no Task is cut.
-**Next gate:** At Plan, read each family skill, decide what the one skill keeps, and cut small Tasks.
+**Blockers:** none
+**Latest event:** Planned 2026-10-05 at integration 35187ee6: four Tasks cut (TK-008L to TK-008O) from the Director's identifier block TK-008L to TK-008S.
+**Next gate:** Claim and deliver TK-008L (the skill and the bundle change); TK-008M and TK-008N follow it and may run side by side; TK-008O is the fresh-context scenario last.
 
 ## Outcome
 
@@ -44,11 +44,20 @@ Changing the feedback record format, the evals or outcome trials, the guardrail 
 ## Dependencies And Blockers
 
 - The `workbench-evaluation` maintainer skill owns the procedures this skill replaces; the skills lane and the Runbook are shared writers with the [Contract carrier rewrite](../S-004C-contract-carrier-pointer-brief-rewrite/SPEC.md); coordinate the Runbook row and any `AGENTS.md` line through that Spec's writer.
-- The [release owner](../S-00O-workbench-v4-0-0-release/SPEC.md) retains version, Template and owner gates; a changed closed bundle needs the normal bundle, version and install proof.
+- The [release owner](../S-00O-workbench-v4-0-0-release/SPEC.md) retains version, Template and owner gates; a changed closed bundle needs the normal bundle, version and install proof. This Spec stamps no version label and does not upgrade the reference Template; it records both as the release owner's remaining work.
+- The family's own planned Spec, [harness feedback review skill family alignment](../S-003K-harness-feedback-review-skill-family-alignment/SPEC.md), is overtaken by the playbook decision; its supersession is routed to the Director, not edited here.
 
 ## Vertical Implementation Slices
 
-No Tasks cut. At Plan, use current Actuality to cut small complete-path slices: the one skill with a red/green check of its loop; the lane, catalog and bundle retirement; the Runbook row and Wiki page. The empty tasks directory keeps this planned capability record-backed.
+The Tasks are the records under `tasks/`; their state lives there, not here. Cut 2026-10-05 from Actuality at integration `35187ee6`: the lane holds no `harness-*` or `improve-*` skill, `coreSkills` ends its workflow half at `workbench-runtime` (27 entries), the Runbook rows "Evaluate a harness change" and "Take in harness feedback" point at the `workbench-evaluation` maintainer skill, and no open candidate holds `RUNBOOK.md`. The slicing and its order:
+
+- First: [the skill and the bundle change](tasks/TK-008L/TASK.md), the independent tracer bullet that proves the loop is a lane skill the closed-bundle checks and the update route accept.
+- After it, side by side (disjoint files): [the Runbook rows](tasks/TK-008M/TASK.md), which also carry the one `workbench-evaluation` section change, and [the Wiki page](tasks/TK-008N/TASK.md).
+- Last: [the fresh-context scenario](tasks/TK-008O/TASK.md), by an Auditor, through the delivered route.
+
+Writers: the Dispatcher writes `SPEC.md`, every Task record and the projections. `RUNBOOK.md` and `templates/RUNBOOK.md` have one writer (TK-008M), which checks for an open Contract-carrier candidate before editing. The host-installed family is read as evidence only and never edited; the Completion Result records it as retired in favor of the one skill.
+
+What the one skill keeps from the family, decided at Plan from reading `harness-feedback-review` and its stages in the owner's host skills root (evidence, not Canon): the read-only posture until a change is authorized; the Governance Plane reading of each claim (Canon, Grounding, Actuality); the rule that one failed trajectory never establishes a worker limitation; the append-only feedback record as where the lesson is written. Dropped: the fourteen-stage decomposition, the separate reconnaissance, diagnosis and disposition composites and the stand-alone report as the unit of work.
 
 ## Acceptance Criteria
 
@@ -75,6 +84,7 @@ The Runbook rows, one Wiki skill page, the lineage page's pointer to the skill, 
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-10-05 | none | Authored at the Map step from the owner's playbook decision of 2026-10-05 and re-verified at integration ec65203d. | Map only; the family was counted in the host skills root and the lane was read, no runtime proof claimed. | This Spec. | Plan, implementation and proof remain. |
+| 2026-10-05 | TK-008L, TK-008M, TK-008N, TK-008O | Plan: four Tasks cut and the Spec activated at integration 35187ee6. | Actuality inspected: lane listing, `coreSkills` in workbench/tools/workbench-layout.mjs, the Runbook index rows and tools/test-runbook-index.mjs pins, `gh pr list --base integration` (no open candidate holds RUNBOOK.md), the TK identifiers on every remote tip (highest TK-008K; Director block TK-008L to TK-008S). | This Spec. | Implementation and proof remain; S-003K supersession routed to the Director. |
 
 ## Completion Result
 
