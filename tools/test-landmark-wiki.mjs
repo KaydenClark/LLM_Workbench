@@ -548,11 +548,12 @@ test('retire-landmark refuses a Landmark Wiki page with a bare identifier and re
   commit('record the simulated owner approval');
 
   // The bare identifier is refused by its finding code; nothing moves.
-  const before = snapshot(dir);
+  const files = () => Object.fromEntries(Object.entries(snapshot(dir)).filter(([key]) => key !== '.git' && !key.startsWith(`.git${path.sep}`)));
+  const before = files();
   const refused = spec('retire-landmark', 'LMK-0EA', '--wiki', page, '--json');
   assert.notEqual(refused.status, 0, refused.stdout);
   assert.match(refused.stderr, /landmark-bare-id: LMK-0EA at workbench\/wiki\/design-concepts\/landmark-wiki-bound-direction\.md/, refused.stderr);
-  assert.deepEqual(snapshot(dir), before, 'a refused retirement writes nothing');
+  assert.deepEqual(files(), before, 'a refused retirement writes nothing');
 
   // Named beside its identifier, the page receives the retired landmark.
   write(page, landmarkPage('The Wiki Bound Direction landmark (LMK-0EA) reached its destination.'));

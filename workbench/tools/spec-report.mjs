@@ -1542,6 +1542,11 @@ export function assembleLandmarkReport(rootDir, landmarkId, options = {}) {
   if (candidate) Object.assign(candidate, landmarkContentBinding(root, parent, children, options.candidate, landmarkDigest));
   const evidence = parseEvidence(parent.content);
   const verdicts = parseVerdicts(evidence);
+  // S-003Z TK-008I: the owner's approval one size up, read exactly as a
+  // Spec's - every owner-qa row, and the latest bound to the landmark's
+  // current digest whose candidate still carries that content.
+  const ownerApproval = parseOwnerApprovals(evidence);
+  const latestOwnerApproval = latestLandmarkApprovalFor(ownerApproval, landmarkDigest, root, parent, children);
   const openChildren = openChildrenOf(childSpecs, directTasks);
   const uncheckedSuccessChecks = parent.successChecks.filter((check) => !check.done).map((check) => check.text);
   const gaps = [
@@ -1572,6 +1577,8 @@ export function assembleLandmarkReport(rootDir, landmarkId, options = {}) {
     evidence,
     verdicts,
     latestVerdict: latestVerdictFor(verdicts, landmarkDigest),
+    ownerApproval,
+    latestOwnerApproval,
     openChildren,
     gaps,
     complete: gaps.length === 0
@@ -1704,6 +1711,75 @@ export function recordLandmarkVerdict(rootDir, landmarkId, options = {}) {
     ...(result === 'pass' ? { reached, notReached } : {}),
     ...(correctiveTasks ? { correctiveTasks, continuedTasks } : {})
   };
+}
+
+// The latest owner-qa entry bound to the landmark's current digest whose
+// candidate still carries that content, or `null` - `latestOwnerApprovalFor`
+// one size up.
+function latestLandmarkApprovalFor(approvals, landmarkDigest, root, parent, children) {
+  const digest12 = landmarkDigest.slice(0, 12);
+  for (let index = approvals.length - 1; index >= 0; index -= 1) {
+    if (approvals[index].digest !== digest12) continue;
+    try {
+      if (computeLandmarkDigest(root, parent, children, approvals[index].candidate) === landmarkDigest) return approvals[index];
+    } catch { /* Missing content or a moved child cannot prove approval. */ }
+  }
+  return null;
+}
+
+// S-003Z TK-008I: `approve LMK-### --candidate SHA --owner NAME [--digest D]`,
+// the Spec's `approve` seam one size up. It records the owner's approval as
+// the operator supplies it - the runtime never fabricates one, and
+// `retire-landmark` refuses without it and never records it itself. The
+// Spec form's refusals apply: no candidate commit, a candidate the declared
+// integration branch does not contain, committed content that differs from
+// the current landmark digest, and an exact repeat; so do the verdict's
+// stale `--digest` and retired landmark. The row lands on LANDMARK.md's
+// evidence log. Only an approval is recorded: while the landmark is open its
+// work continues through its child Specs and direct Tasks, and a gap found
+// against a reached landmark is delivered work (`NEW_SPEC_ROUTE`).
+export function recordLandmarkApproval(rootDir, landmarkId, options = {}) {
+  const root = path.resolve(rootDir);
+  const result = options.result ?? 'approve';
+  if (result !== 'approve' || options.findings || options.destinationChange) {
+    throw new Error(`approve LMK-### records the owner's approval only; an owner finding is not recorded on a landmark: while it is open its work continues through its child Specs and direct Tasks, and against a reached landmark ${NEW_SPEC_ROUTE}.`);
+  }
+  const candidate = requiredString(options.candidate, 'approve LMK-### requires a --candidate SHA');
+  const owner = requiredString(options.owner, 'approve LMK-### requires --owner naming who performed Human QA (the name as given, never inferred from Git config)');
+  if (!commitExists(root, candidate)) {
+    throw new Error(`Candidate ${candidate} does not exist in this repository (checked via git cat-file -e); an owner approval must bind to a real commit, never an invented or mistyped SHA.`);
+  }
+  const integrationContainment = resolveIntegrationContainmentRef(root);
+  const integrationBranch = integrationContainment.branch;
+  if (integrationBranch && !isAncestorOfBranch(root, candidate, integrationContainment.ref)) {
+    const checked = `${integrationContainment.ref} ${integrationContainment.sha ? `at ${integrationContainment.sha}` : '(does not resolve)'}`;
+    throw new Error(`Candidate ${candidate} is not contained in the declared integration branch '${integrationBranch}' (checked ${checked} via git merge-base --is-ancestor; local refs only, nothing fetched); an owner approval binds to a SHA on integration, never a lane tip.`);
+  }
+  const parent = findLandmarkParent(root, landmarkId);
+  if (parent.lifecycleFolder) throw new Error(`${parent.id} is retired in ${parent.lifecycleFolder}/; a retired landmark is not approved again: ${NEW_SPEC_ROUTE}.`);
+  const children = landmarkChildren(root, parent);
+  const currentDigest = computeLandmarkDigest(root, parent, children);
+  const givenDigest = options.digest ? String(options.digest).trim() : null;
+  if (givenDigest && givenDigest !== currentDigest) {
+    throw new Error(`The digest ${givenDigest.slice(0, 12)} named for candidate ${candidate} on ${parent.id} does not match this working tree's current landmark digest ${currentDigest.slice(0, 12)}; the landmark or a child record has changed since that digest was computed. Read a fresh --digest from a new report before recording this approval, or omit --digest to record against the current content.`);
+  }
+  const committed = landmarkContentBinding(root, parent, children, candidate, currentDigest);
+  if (!committed.matchesContent) {
+    throw new Error(`Owner QA candidate content at ${candidate} does not match the current assembled landmark for ${parent.id}: ${committed.contentError ?? `candidate digest ${committed.contentDigest.slice(0, 12)} differs from current digest ${currentDigest.slice(0, 12)}`}; inspect and name the committed content being approved before recording Human QA.`);
+  }
+  const digest12 = currentDigest.slice(0, 12);
+  const existing = parseOwnerApprovals(parseEvidence(parent.content));
+  const duplicate = existing.find((entry) => entry.candidate === candidate && entry.result === 'approve' && entry.digest === digest12 && entry.owner === owner);
+  if (duplicate) {
+    throw new Error(`An identical owner QA entry (approve at ${candidate} [${digest12}], owner "${owner}") is already recorded for ${parent.id} as row #${duplicate.ordinal}; recording the exact same entry twice is refused rather than duplicated.`);
+  }
+  const ordinal = existing.length + 1;
+  const remainingGap = integrationBranch === null ? 'integration branch undeclared; containment unchecked' : 'none';
+  const date = new Date().toISOString().slice(0, 10);
+  const cells = [date, 'owner-qa', `Owner QA: approve at ${candidate} [${digest12}] #${ordinal}`, 'none', owner, remainingGap];
+  const row = `| ${cells.map(escapeMarkdownTableCell).join(' | ')} |`;
+  atomicWrite(parent.filePath, appendEvidence(parent.content, row));
+  return { landmarkId: parent.id, candidate, owner, result: 'approve', findings: 'none', date, remainingGap, digest: currentDigest, digest12, ordinal, row, integrationContainment };
 }
 
 // Every place the reviewer's context appears as a participant in the

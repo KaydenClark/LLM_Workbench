@@ -8,7 +8,8 @@
 // The link-safe move, the review rung and retirement are later Tasks of the
 // same Spec; TK-008E added `landmarkSpecHomes`, the child-Spec home of each
 // landmark folder, which the Spec tools read beside `workbench/specs/`
-// (nothing here parses a child Spec). TK-008G added the
+// (nothing here parses a child Spec), and TK-008I `landmarkHistoricalRoute`,
+// the retired route a Landmark Wiki page records as its source. TK-008G added the
 // direct Task records' readability to doctor's findings; the lifecycle
 // commands that work on those Tasks live in spec-workbench.mjs.
 import fs from 'node:fs';
@@ -250,6 +251,15 @@ export function publicLandmark(landmark) {
     childSpecs: landmark.childSpecs,
     directTasks: landmark.directTasks
   };
+}
+
+// S-003Z TK-008I: the route a landmark's Landmark Wiki page names in
+// `source_paths` - its own path once retired, otherwise the retired route
+// `retire-landmark` moves it to - mirroring `specHistoricalRoute` one size up.
+// `LANDMARK.md` is the page's recorded raw source, never the page itself.
+export function landmarkHistoricalRoute(landmark) {
+  if (landmark.lifecycleFolder) return landmark.relativePath;
+  return `${landmark.landmarksPrefix}/${LANDMARK_LIFECYCLE_FOLDERS[0]}/${path.basename(path.dirname(landmark.filePath))}/${LANDMARK_FILE}`;
 }
 
 // One landmark by identity, active roster first and then the lifecycle

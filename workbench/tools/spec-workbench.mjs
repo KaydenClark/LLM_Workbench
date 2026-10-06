@@ -18,14 +18,15 @@ import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath,
 // Spec (ADR-000U). Doctor folds its findings in beside the ADR and DDR
 // collections, and `next-id --prefix LMK` folds its identities with the
 // Tracker's JSON landmark records and every remote tip.
-import { LANDMARK_LIFECYCLE_FOLDERS, LANDMARK_PREFIX, findLandmark, landmarkFindings, landmarkSpecHomes, loadLandmarks, loadReadableLandmarks, loadRetiredLandmarks, publicLandmark } from './landmark-artifact.mjs';
+import { LANDMARK_LIFECYCLE_FOLDERS, LANDMARK_PREFIX, findLandmark, landmarkFindings, landmarkHistoricalRoute, landmarkSpecHomes, loadLandmarks, loadReadableLandmarks, loadRetiredLandmarks, publicLandmark } from './landmark-artifact.mjs';
 import { parseFrontmatter, planReferenceRewrite, splitEvidenceSection, validateAdrs, writeDecisionRegisters } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { ARTIFACT_ID_MIN_WIDTH, allocateArtifactId, compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
 import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseFormerId, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
 import { appendReceiptRow, appendReceiptRowToContent, readGitFacts, readReceipt, readReceiptFromFile } from './task-receipt.mjs';
 import { buildTaskboard, taskboardTaskEntry, taskboardSpecLane, compareTaskboardEntries } from './taskboard.mjs';
-import { NEW_SPEC_ROUTE, assembleLandmarkReport, assembleSpecReport, computeSpecDigest, formatLandmarkReport, formatSpecReport, isAncestorOfBranch, recordLandmarkVerdict, recordOwnerApproval, recordReviewVerdict, verifyLandmark } from './spec-report.mjs';
+import { NEW_SPEC_ROUTE, assembleLandmarkReport, assembleSpecReport, computeSpecDigest, formatLandmarkReport, formatSpecReport, isAncestorOfBranch, recordLandmarkApproval, recordLandmarkVerdict, recordOwnerApproval, recordReviewVerdict, verifyLandmark } from './spec-report.mjs';
+import { validateLandmarkArticle } from './landmark-wiki.mjs';
 
 // One closed status vocabulary for an execution slice, owned by the record
 // reader and re-exported here so the lifecycle commands and the record share
@@ -963,7 +964,8 @@ function approvalGapReason(report) {
     return `no owner Human QA approval is recorded for ${report.id}`;
   }
   if (!report.latestOwnerApproval) {
-    return `${report.id}'s recorded owner Human QA entries are all for earlier content - the current digest ${report.specDigest.slice(0, 12)} matches none of them, so the owner must approve again`;
+    // S-003Z TK-008I: a landmark report names its digest `landmarkDigest`.
+    return `${report.id}'s recorded owner Human QA entries are all for earlier content - the current digest ${(report.specDigest ?? report.landmarkDigest).slice(0, 12)} matches none of them, so the owner must approve again`;
   }
   if (report.latestOwnerApproval.result !== 'approve') {
     return `${report.id}'s latest owner Human QA for the current content is a finding, recorded ${report.latestOwnerApproval.date} by ${report.latestOwnerApproval.owner}`;
@@ -3361,7 +3363,9 @@ function retiredSpecWikiOwnerStatus(root, historicalRoute) {
 // `source_paths`, pass `validateWiki` with no `copied-task-state`,
 // `invalid-note` or `secret-like-content` finding against it, and be linked
 // from the Wiki lane's `MEMORY.md` router.
-function durableOwnerRefusal(root, specId, historicalRoute, noteAbsolute, { featureOnly = false } = {}) {
+// S-003Z TK-008I: `retire-landmark` reuses it one size up, passing its own
+// `command` so the missing-note refusal names the command that was run.
+function durableOwnerRefusal(root, specId, historicalRoute, noteAbsolute, { featureOnly = false, command = 'retire-spec' } = {}) {
   const wikiRoot = lanePath(root, 'wiki');
   const noteRelative = path.relative(root, noteAbsolute).split(path.sep).join('/');
   // Review corrective (High, separate-context review of 10bdf5b): the note
@@ -3374,7 +3378,7 @@ function durableOwnerRefusal(root, specId, historicalRoute, noteAbsolute, { feat
   let entry = null;
   try { entry = fs.lstatSync(noteAbsolute); } catch (error) { if (error.code !== 'ENOENT') throw error; }
   if (!entry?.isFile()) {
-    return `retire-spec found no Wiki note at ${noteRelative}; ${specId}'s surviving claims name no durable owner`;
+    return `${command} found no Wiki note at ${noteRelative}; ${specId}'s surviving claims name no durable owner`;
   }
   const content = fs.readFileSync(noteAbsolute, 'utf8');
   const frontmatter = parseFrontmatter(content).data;
@@ -3638,6 +3642,115 @@ export function retireSpec(rootDir, specId, options = {}) {
     historicalReferencesLeft: moveResult.historicalReferencesLeft,
     branches,
     unmergedBranchesNamingSpec,
+    ownerApproval,
+    evidenceRow: row
+  };
+}
+
+// S-003Z TK-008I: `retire-landmark LMK-### --wiki <page>`, the Spec's
+// `retire-spec` one size up. A reached landmark retires into its Landmark Wiki
+// page, as a completed Spec retires into its feature article; `LANDMARK.md`
+// is that page's recorded raw source (its `source_paths` names the
+// landmark's historical route, `landmarkHistoricalRoute`) and is not the page.
+//
+// Every precondition is refused by name before any write, in this order:
+//   - the landmark must exist on the active roster, never already retired;
+//   - its status must be `reached` (the whole-landmark review's pass sets it);
+//   - no child Spec may be open (not complete or retired) and no live direct
+//     Task open (not done) - `assembleLandmarkReport`'s own `openChildren`,
+//     the set `verify LMK-###` refuses on;
+//   - the latest whole-landmark review verdict for the landmark's current
+//     digest must be a pass;
+//   - the working tree must be a clean Git tree, so the move is recoverable
+//     and the candidate shows only this retirement;
+//   - the page must sit under the Wiki lane and pass `durableOwnerRefusal`
+//     (the owner predicate `retire-spec` uses: type, knowledge_role, the
+//     historical route in `source_paths`, Wiki validation and the MEMORY.md
+//     route), and keep the Landmark Wiki page's name-and-context identifier
+//     rule (`validateLandmarkArticle`, landmark-wiki.mjs);
+//   - the owner's approval of the current digest must be recorded
+//     (`approve LMK-###`, spec-report.mjs `recordLandmarkApproval`), judged by
+//     `approvalGapReason` exactly as `retire-spec` judges a Spec's. The
+//     approval is the owner's alone: this command reads it and never records
+//     it.
+// Then the whole landmark folder - `LANDMARK.md`, nested Specs and direct
+// Tasks, live and retired - moves to `<collection>/retired/LMK-###-slug/`
+// through the link-safe move retirement and reparenting share
+// (`relocateSpecDirectory`): every live reference is rewritten and every
+// historical one counted. The retirement row is appended to the moved log,
+// the header says it is retired, and the projections are re-rendered; the
+// result is staged and never committed, as `retire-spec` leaves it.
+export function retireLandmark(rootDir, landmarkId, options = {}) {
+  const root = path.resolve(rootDir);
+  const wikiNoteGiven = requireValue(options.wikiNote, 'retire-landmark requires --wiki <Landmark Wiki page path>');
+  const parent = findLandmarkParent(root, requireValue(landmarkId, 'retire-landmark requires a landmark identity (LMK-###)'));
+  if (parent.lifecycleFolder) throw new Error(`${parent.id} is already retired (${parent.relativePath})`);
+  if (parent.status !== 'reached') {
+    throw new Error(`${parent.id} is ${parent.status}, not reached; only a reached landmark retires (a passing whole-landmark verdict with every child closed and every reached check ticked sets it)`);
+  }
+  const report = assembleLandmarkReport(root, parent.id);
+  const digest12 = report.landmarkDigest.slice(0, 12);
+  if (report.openChildren.length > 0) {
+    throw new Error(`${parent.id} cannot retire: it has open children: ${report.openChildren.map((child) => `${child.id} (${child.status}, ${child.kind === 'spec' ? 'not complete or retired' : 'not done'})`).join(', ')}; close them or move them to another parent first`);
+  }
+  if (!report.latestVerdict) {
+    throw new Error(`${parent.id} cannot retire: no whole-landmark review verdict is recorded for its current content (current digest ${digest12}); run report ${parent.id} --candidate SHA, then a verdict from a separate context`);
+  }
+  if (report.latestVerdict.result !== 'pass') {
+    throw new Error(`${parent.id} cannot retire: its latest whole-landmark review verdict for the current content is ${report.latestVerdict.result}, recorded ${report.latestVerdict.date} by ${report.latestVerdict.reviewer} (current digest ${digest12})`);
+  }
+  const gitStatus = spawnSync('git', ['-C', root, 'status', '--porcelain'], { encoding: 'utf8' });
+  if (gitStatus.status !== 0) throw new Error('retire-landmark requires a Git working tree so the move is recoverable; none was found');
+  if (gitStatus.stdout.trim() !== '') throw new Error('retire-landmark refuses a dirty working tree; commit or stash first so the candidate shows only this retirement');
+
+  const wikiRoot = lanePath(root, 'wiki');
+  const wikiNoteAbsolute = path.resolve(root, wikiNoteGiven);
+  if (!wikiNoteAbsolute.startsWith(wikiRoot + path.sep)) {
+    throw new Error(`--wiki ${wikiNoteGiven} must name a page under the Wiki lane; a landmark cannot retire without its Landmark Wiki page there`);
+  }
+  const wikiNoteRelative = path.relative(root, wikiNoteAbsolute).split(path.sep).join('/');
+  const historicalRoute = landmarkHistoricalRoute(parent);
+  const ownerRefusal = durableOwnerRefusal(root, parent.id, historicalRoute, wikiNoteAbsolute, { command: 'retire-landmark' });
+  if (ownerRefusal) throw new Error(ownerRefusal);
+  const article = validateLandmarkArticle(root, wikiNoteRelative);
+  if (article.status !== 'valid') {
+    throw new Error(`${wikiNoteRelative} breaks the Landmark Wiki page's name-and-context rule, so ${parent.id} cannot retire into it: ${article.findings.map((item) => `${item.code}: ${item.message}`).join('; ')}`);
+  }
+  const approvalReason = approvalGapReason(report);
+  if (approvalReason) throw new Error(`${parent.id} cannot retire: ${approvalReason} (current digest ${digest12})`);
+  const ownerApproval = { approvedBy: report.latestOwnerApproval.owner, date: report.latestOwnerApproval.date, candidate: report.latestOwnerApproval.candidate, digest: digest12 };
+  const verdict = { result: report.latestVerdict.result, candidate: report.latestVerdict.candidate, reviewer: report.latestVerdict.reviewer, date: report.latestVerdict.date };
+
+  const oldDir = path.dirname(parent.filePath);
+  const newDir = path.join(root, path.dirname(historicalRoute));
+  if (fs.existsSync(newDir)) throw new Error(`retire-landmark destination already exists: ${path.dirname(historicalRoute)}`);
+  const moveResult = relocateSpecDirectory(root, parent.id, oldDir, newDir);
+
+  const moved = findLandmarkParent(root, parent.id);
+  const referencesRewrittenCount = Object.values(moveResult.referencesRewritten).reduce((a, b) => a + b, 0);
+  const date = today();
+  const row = `| ${escapeCell(date)} | landmark | Landmark retired to ${escapeCell(historicalRoute)} | ${escapeCell(wikiNoteRelative)} | ${escapeCell(`owner approval by ${ownerApproval.approvedBy} [${digest12}]`)} | ${escapeCell(String(referencesRewrittenCount))} |`;
+  const content = updateFields(appendEvidence(moved.content, row), {
+    Updated: date,
+    'Latest event': `Retired into its Landmark Wiki page ${wikiNoteRelative}.`,
+    'Next gate': 'none'
+  });
+  atomicWrite(moved.filePath, content);
+
+  render(root);
+  writeDecisionRegisters(root);
+  spawnSync('git', ['-C', root, 'add', '-A']);
+
+  return {
+    landmarkId: parent.id,
+    route: historicalRoute,
+    from: moveResult.from,
+    to: moveResult.to,
+    wikiNote: wikiNoteRelative,
+    referencesRewritten: moveResult.referencesRewritten,
+    referencesRewrittenCount,
+    historicalReferencesLeft: moveResult.historicalReferencesLeft,
+    verdict,
     ownerApproval,
     evidenceRow: row
   };
@@ -4544,7 +4657,10 @@ async function main() {
     // wants to say so plainly - recordOwnerApproval itself always requires
     // one of the two literal values.
     const inferredResult = options.result ?? ((options.finding || options.destinationChange) ? 'finding' : 'approve');
-    result = recordOwnerApproval(root, resolveSpecId(root, id), {
+    // S-003Z TK-008I: `approve LMK-###` records the owner's approval of a
+    // landmark, one size up (spec-report.mjs `recordLandmarkApproval`).
+    if (isLandmarkId(id)) result = recordLandmarkApproval(root, id, { candidate: options.candidate, owner: options.owner, result: inferredResult, findings: options.finding, destinationChange: options.destinationChange, digest: options.digest });
+    else result = recordOwnerApproval(root, resolveSpecId(root, id), {
       candidate: options.candidate,
       owner: options.owner,
       result: inferredResult,
@@ -4565,6 +4681,7 @@ async function main() {
   else if (command === 'move-task') result = moveTaskRecord(root, id, options.task, options.to, options);
   else if (command === 'widen-id') result = widenId(root, id, { spec: options.spec });
   else if (command === 'retire-spec') result = retireSpec(root, id, { wikiNote: options.wiki });
+  else if (command === 'retire-landmark') result = retireLandmark(root, id, { wikiNote: options.wiki });
   else if (command === 'discard') result = options.task ? discardRetiredTask(root, id, options.task) : discardRetiredSpec(root, id);
   else if (command === 'render') result = render(root, { format: options.format });
   else if (command === 'doctor') {
@@ -4572,7 +4689,7 @@ async function main() {
     result = doctorRun.json;
     process.exitCode = doctorRun.exitCode;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|verify|gate|approve|move-spec|move-task|widen-id|retire-spec|discard|render|doctor [S-###] [options] (show|claim|close|receipt|move-task LMK-### for a Task directly under a landmark; report|verdict|verify LMK-### for the whole-landmark review; move-spec S-### --to retired|--landmark LMK-###|none; gate --task TK-### --spec S-###|--landmark LMK-###; widen-id S-###|TK-### [--spec S-###]; discard S-### [--task TK-###]; doctor [--host]; next|claim|close [--capabilities a,b]; next|claim [--local]; claim [--branch NAME])');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|verify|gate|approve|move-spec|move-task|widen-id|retire-spec|retire-landmark|discard|render|doctor [S-###] [options] (show|claim|close|receipt|move-task LMK-### for a Task directly under a landmark; report|verdict|verify|approve LMK-### for the whole-landmark review; retire-landmark LMK-### --wiki PAGE; move-spec S-### --to retired|--landmark LMK-###|none; gate --task TK-### --spec S-###|--landmark LMK-###; widen-id S-###|TK-### [--spec S-###]; discard S-### [--task TK-###]; doctor [--host]; next|claim|close [--capabilities a,b]; next|claim [--local]; claim [--branch NAME])');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
