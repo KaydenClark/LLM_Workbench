@@ -987,3 +987,14 @@ for (const carrier of carriers) {
 test('S-003Z TK-008Y: the Full suite runs the Landmark Wiki page test', () => {
   assert.ok(suiteBlock(read('RUNBOOK.md')).includes('node tools/test-landmark-wiki.mjs'), 'the suite runs tools/test-landmark-wiki.mjs');
 });
+
+// S-003Z TK-008Y run 2: a claim persists its claimant on the Task record
+// (`Claimed by`), which the whole-landmark review reads; the carriers and the
+// implement skill say so.
+test('S-003Z TK-008Y: the Runbooks and the implement skill name the Claimed by record field', () => {
+  for (const carrier of carriers) {
+    const section = headings(read(carrier.runbook)).find((heading) => heading.title === 'Landmark Lifecycle');
+    assert.match(normalize(section.body), /`Claimed by`/, `${carrier.runbook} Landmark Lifecycle names the Claimed by field`);
+  }
+  assert.match(normalize(read('workbench/skills/implement/SKILL.md')), /appends the agent to its `Claimed by` list/, 'the implement skill names the Claimed by list');
+});
