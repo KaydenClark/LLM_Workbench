@@ -32,3 +32,4 @@
 | [000X](000X-every-workbench-is-built-to-run-as-one-room-among-many-in-an-autonomous-factory-the-foundry.md) | Every workbench is built to run as one room among many in an autonomous factory, the Foundry | accepted | 2026-10-03 | BLUEPRINT.md |
 | [000Y](000Y-a-miss-found-by-a-check-continues-the-same-task-unless-the-fix-rewrites-it.md) | A miss found by a check continues the same Task unless the fix rewrites it | accepted | 2026-10-03 | BLUEPRINT.md, AGENTS.md |
 | [000Z](000Z-harness-engineering-is-the-philosophy-and-the-workbench-is-its-implementation.md) | Harness engineering is the philosophy and the Workbench is its implementation | accepted | 2026-10-05 | BLUEPRINT.md |
+| [001A](001A-an-agent-pays-context-only-for-information-that-can-change-what-it-does-next.md) | An agent pays context only for information that can change what it does next | accepted | 2026-10-05 | BLUEPRINT.md, AGENTS.md |
