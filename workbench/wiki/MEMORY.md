@@ -33,10 +33,7 @@ nothing.
 
 ## Harness engineering lineage
 
-[Harness engineering: the philosophy the Workbench implements](harness-engineering-lineage.md)
-links and attributes the OpenAI article and Ryan Lopopolo's corpus, names the
-twelve directions the owner made landmarks, and maps the article's document
-kinds onto the Workbench's own.
+- [Harness engineering: the philosophy the Workbench implements](harness-engineering-lineage.md) - links and attributes the OpenAI article and Ryan Lopopolo's corpus, names the twelve directions the owner made landmarks, and maps the article's document kinds onto the Workbench's own.
 
 ## Landmark Tracker
 
