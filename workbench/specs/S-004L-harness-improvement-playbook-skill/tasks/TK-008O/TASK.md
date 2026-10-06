@@ -3,11 +3,12 @@
 **Task ID:** TK-008O
 **Spec ID:** S-004L
 **Slice:** A fresh context runs the loop end to end in a fixture room
-**Status:** in-progress
+**Status:** done
 **Stance:** Auditor
 **Blockers:** TK-008L, TK-008M, TK-008N
 **Destination:** spec-acceptance: The one skill exists in the lane, its loop has six named steps each with a checkable artifact, and a scenario in a fixture room runs it end to end.
 **Planned verification:** A fixture room laid out from the committed candidate (`workbench-layout.mjs init`, `workbench-tools.mjs install`, `workbench-skills.mjs install`) carries the skill through both discovery roots and its Runbook row; a fresh-context Worker, given only the room and the row, runs the six steps on one small observed job and hands back the result record naming each step's artifact; the Auditor checks the record against the skill's steps and the room's state and records what held and what did not. No agent-outcome improvement is claimed from one pass.
+**Proof:** Fresh-context fixture-room scenario: the worker found improve-harness through the Runbook operations index row Evaluate a harness change and produced a result record with the job contract and all six steps; fresh rerun and test-without runs by fresh workers; Auditor (Dispatcher in the Auditor stance) named each step's artifact in the room and every gap (TASK.md Scenario Result); no source change in this Task
 
 ## Outcome
 
@@ -95,3 +96,4 @@ generalizes or that the skill improves agent outcomes.
 | Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
 |---|---|---|---|---|---|---|---|---|
 | 1 | claude/s004l-state-tk008o-close | 6a31931b2cbbd79c101fba6700347ce4cdf90a63 | ahead 0 behind 0 | 0 | Fixture room from integration eef29648 (layout init, tools install, skills install; skill in both discovery roots); fresh-context worker entered via AGENTS.md and the Runbook operations index row Evaluate a harness change and ran all six steps; fresh rerun and test-without runs by fresh workers from isolated clones, both accepted on the first pass with zero relays; decision retain as a documentation repair, no agent-outcome gain claimed; Auditor check of each step's artifact against the room: all held; room doctor ok, node --test 2/2, room main untouched | TK-008O TASK.md Scenario Result section | Skill wording gaps corrected by TK-008P; doctor-placeholder, template evaluation-commands, report-format fit, landed meaning, entry route not read by rerun workers: routed in the Completion Result | d284eeb87953af059802c154b5724733356d7d25058be788fca20aac524cf8da |
+| 2 | claude/s004l-state-tk008o-close | f083d09efbf990f85cf6485e7f6efe33be6e9d82 | ahead 0 behind 0 | 0 | Fresh-context fixture-room scenario: the worker found improve-harness through the Runbook operations index row Evaluate a harness change and produced a result record with the job contract and all six steps; fresh rerun and test-without runs by fresh workers; Auditor (Dispatcher in the Auditor stance) named each step's artifact in the room and every gap (TASK.md Scenario Result); no source change in this Task | TK-008O TASK.md Scenario Result | Skill wording findings carried by TK-008P; other-owner findings routed in the Completion Result; one pass claims no agent-outcome improvement | 9dc90a6f6fa0eb4fa96274bd8585932de4d6b7efdf0c9001f6727fe59d1382d9 |
