@@ -8,8 +8,8 @@
 **Updated:** 2026-10-06
 **Catalog description:** Ship one improve-one-harnessed-job playbook skill that runs the baseline-to-rerun loop, point the Runbook's harness feedback and evaluation rows at it, and retire the host-installed harness-review family in its favor.
 **Blockers:** none
-**Latest event:** TK-008O closed with proof.
-**Next gate:** Complete TK-008P.
+**Latest event:** TK-008P closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 ## Outcome
 
@@ -92,6 +92,7 @@ The Runbook rows, one Wiki skill page, the lineage page's pointer to the skill, 
 | 2026-10-06 | TK-008N | Task closed | PR #388 merged at 3208c7f5 (candidate 376f2b87, contained); full suite 52/52 on committed e0bec7e1; wiki validate 0 findings; test-wiki 25/25, test-skills-lane 6/6, test-landmark-wiki 79/79; small Wiki lint eight items pass on four touched pages; guardrails 73/100 before and after; self-drift 12 findings pre/post, same set | workbench/wiki/skill-improve-harness.md new; MEMORY.md, harness-engineering-lineage.md, skills-draft/README.md | Harness Feedback Review landmark page does not name improve-harness; test-wiki draft-index wording for the retired rows (routed to Spec QA) |
 | 2026-10-06 | TK-008P | Corrective Task cut from the TK-008O fixture-room scenario (in progress): the skill's Taking In Feedback wording contradicts the append-only feedback record and the Feedback Dispositions set, step 5 covers only conversational hidden help, and step 6 has no reading for a test-without run that also closes the job. TK-008P takes the first identifier of the lane's reserved block (TK-008P to TK-008S), unused on every origin tip and open PR. | Scenario evidence: fixture room scratchpad/s004l/fixture/tally, result record workbench/feedback/runs/2026-10-06-add-lines-flag-result.md there; the scenario worker's hand-back items 1, 4, 11 and 12. | This Spec; TK-008P TASK.md. | TK-008P implementation; TK-008O close after the scenario decision. |
 | 2026-10-06 | TK-008O | Task closed | Fresh-context fixture-room scenario: the worker found improve-harness through the Runbook operations index row Evaluate a harness change and produced a result record with the job contract and all six steps; fresh rerun and test-without runs by fresh workers; Auditor (Dispatcher in the Auditor stance) named each step's artifact in the room and every gap (TASK.md Scenario Result); no source change in this Task | TK-008O TASK.md Scenario Result | Skill wording findings carried by TK-008P; other-owner findings routed in the Completion Result; one pass claims no agent-outcome improvement |
+| 2026-10-06 | TK-008P | Task closed | PR #395 merged at 50f19e64 (candidate 9418092e, contained); red 98fae067; full suite 52/52 on committed cd5b0ec6; test-skill-catalog, test-skills-lane, test-runbook-index, test-wiki, test-skill-inspection ok; guardrails 73/100 before and after; self-drift 11 findings pre/post, same set | improve-harness SKILL.md steps 4, 5, 6 and Taking In Feedback; workbench/wiki/skill-improve-harness.md | Corrected text not rerun by a fresh context; pins prove the text only |
 
 ## Completion Result
 
