@@ -18,7 +18,7 @@ import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath,
 // Spec (ADR-000U). Doctor folds its findings in beside the ADR and DDR
 // collections, and `next-id --prefix LMK` folds its identities with the
 // Tracker's JSON landmark records and every remote tip.
-import { LANDMARK_PREFIX, landmarkFindings, loadLandmarks, loadRetiredLandmarks } from './landmark-artifact.mjs';
+import { LANDMARK_LIFECYCLE_FOLDERS, LANDMARK_PREFIX, landmarkFindings, loadLandmarks, loadReadableLandmarks, loadRetiredLandmarks, publicLandmark } from './landmark-artifact.mjs';
 import { parseFrontmatter, planReferenceRewrite, splitEvidenceSection, validateAdrs, writeDecisionRegisters } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { ARTIFACT_ID_MIN_WIDTH, allocateArtifactId, compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
@@ -75,7 +75,7 @@ export function nextSelection(rootDir, options = {}) {
   refuseBlockedRuntime(rootDir);
   const root = path.resolve(rootDir);
   if (discardedReferences(root).length) return { result: null, coordination: null };
-  const context = coordinationContext(root, { specsPrefix: resolveSpecsRoot(root).specsPrefix, local: options.local === true, fetch: options.fetch !== false });
+  const context = coordinationContext(root, { specsPrefix: resolveSpecsRoot(root).specsPrefix, landmarksPrefix: collectionRelative(root, 'landmarks'), local: options.local === true, fetch: options.fetch !== false });
   const session = capabilitySession(root, options);
   if (options.review === true) {
     const { review, excluded, remoteClaimed } = selectReviewWork([...loadSpecs(root), ...loadRetiredSpecs(root)], { session, remoteClaims: context.claims });
@@ -84,7 +84,7 @@ export function nextSelection(rootDir, options = {}) {
     if (context.mode === 'remote') result.coordination = coordination;
     return { result, coordination };
   }
-  const { candidate, capabilityBlocked, remoteClaimed } = selectWork([...loadSpecs(rootDir), ...loadRetiredSpecs(rootDir)], { session, remoteClaims: context.claims });
+  const { candidate, capabilityBlocked, remoteClaimed } = selectWork([...loadSpecs(rootDir), ...loadRetiredSpecs(rootDir), ...loadLandmarkParents(rootDir)], { session, remoteClaims: context.claims });
   let result = candidate;
   if (capabilityBlocked.length > 0) result = result ? { ...result, capabilityBlocked } : { specId: null, taskId: null, capabilityBlocked };
   const coordination = publicCoordination(context, remoteClaimed);
@@ -152,31 +152,31 @@ function selectWork(specs, { specId, session = null, remoteClaims = null } = {})
   const capabilityBlocked = [];
   const remoteClaimed = [];
   for (const spec of specs) {
-    if ((spec.status !== 'active' && spec.lifecycleFolder !== 'retired') || (specId && spec.id !== specId)) continue;
+    if (!executable(spec) || (specId && spec.id !== specId)) continue;
     const satisfied = satisfiedIds(spec, completed);
     for (const slice of executionSlices(spec)) {
       const entry = taskboardEntryForSlice(spec, slice, satisfied, session);
       const status = entry.status;
       if (session && status === 'blocked' && slice.missingCapabilities.length > 0) {
         const missing = session.missing(slice.missingCapabilities);
-        if (missing.names.length > 0) capabilityBlocked.push({ specId: spec.id, taskId: slice.id, missing: missing.names, recorded: true, reason: missing.reason });
+        if (missing.names.length > 0) capabilityBlocked.push({ ...parentKey(spec), taskId: slice.id, missing: missing.names, recorded: true, reason: missing.reason });
         continue;
       }
       if (!entry.eligible) continue;
       const claimedOn = remoteClaims?.get(`${spec.id}/${slice.id}`);
       if (claimedOn) {
-        remoteClaimed.push({ specId: spec.id, taskId: slice.id, refs: [...claimedOn].sort() });
+        remoteClaimed.push({ ...parentKey(spec), taskId: slice.id, refs: [...claimedOn].sort() });
         continue;
       }
       if (session && slice.capabilities.length > 0) {
         const missing = session.missing(slice.capabilities);
         if (missing.names.length > 0) {
-          capabilityBlocked.push({ specId: spec.id, taskId: slice.id, missing: missing.names, recorded: false, reason: missing.reason });
+          capabilityBlocked.push({ ...parentKey(spec), taskId: slice.id, missing: missing.names, recorded: false, reason: missing.reason });
           continue;
         }
       }
       candidates.push({
-        specId: spec.id,
+        ...parentKey(spec),
         title: spec.title,
         taskId: slice.id,
         slice: slice.slice,
@@ -190,8 +190,8 @@ function selectWork(specs, { specId, session = null, remoteClaims = null } = {})
     }
   }
   candidates.sort((a, b) => compareTaskboardEntries({ ...a, id: a.taskId, title: a.cardTitle }, { ...b, id: b.taskId, title: b.cardTitle }));
-  capabilityBlocked.sort((a, b) => compareVisibleIds(a.specId, b.specId) || compareVisibleIds(a.taskId, b.taskId));
-  remoteClaimed.sort((a, b) => compareVisibleIds(a.specId, b.specId) || compareVisibleIds(a.taskId, b.taskId));
+  capabilityBlocked.sort((a, b) => compareVisibleIds(parentIdOf(a), parentIdOf(b)) || compareVisibleIds(a.taskId, b.taskId));
+  remoteClaimed.sort((a, b) => compareVisibleIds(parentIdOf(a), parentIdOf(b)) || compareVisibleIds(a.taskId, b.taskId));
   if (candidates.length === 0) return { candidate: null, capabilityBlocked, remoteClaimed };
   const { cardTitle: _cardTitle, ...result } = candidates[0];
   return { candidate: result, capabilityBlocked, remoteClaimed };
@@ -258,6 +258,8 @@ function selectReviewWork(specs, { session, remoteClaims }) {
 // names the same route structurally) so `console.log(result.body)` - the
 // CLI's own `show` output - carries it as the first line printed.
 export function showSpec(rootDir, id) {
+  // S-003Z TK-008G: `show LMK-###` shows a landmark with its direct Tasks.
+  if (isLandmarkId(id)) return showLandmark(rootDir, id);
   const spec = findSpec(rootDir, id);
   const body = spec.lifecycleFolder
     ? `Retired: ${spec.relativePath} (historical route; out of ordinary discovery, reachable only by this explicit lookup)\n\n${spec.content}`
@@ -270,8 +272,16 @@ export function nextIdentity(rootDir, specId, options = {}) {
   const specs = loadSpecs(rootDir);
   const prefix = options.prefix;
   if (!['S', 'TK', LANDMARK_PREFIX].includes(prefix)) throw new Error(`--prefix must be S, TK or ${LANDMARK_PREFIX}`);
-  if (prefix === 'TK') specId = resolveSpecId(rootDir, specId);
-  if (prefix === 'TK' && !specs.some(spec => spec.id === specId)) throw new Error('Task identity proposals require an existing assigned spec ID');
+  // S-003Z TK-008G: a Task may sit directly under a landmark, so a Task
+  // proposal names either its Spec or its landmark as the parent.
+  let landmarkId = null;
+  if (prefix === 'TK' && isLandmarkId(specId)) {
+    landmarkId = findLandmarkParent(rootDir, specId).id;
+    specId = null;
+  } else {
+    if (prefix === 'TK') specId = resolveSpecId(rootDir, specId);
+    if (prefix === 'TK' && !specs.some(spec => spec.id === specId)) throw new Error('Task identity proposals require an existing assigned spec or landmark ID');
+  }
   if (prefix === 'S' && specId) throw new Error('A spec identity proposal takes no existing spec ID');
   if (prefix === LANDMARK_PREFIX && specId) throw new Error('A landmark identity proposal takes no existing spec ID');
   const occupied = occupiedIdentities(rootDir, prefix);
@@ -279,7 +289,7 @@ export function nextIdentity(rootDir, specId, options = {}) {
   // reuse removed historical decimal IDs; numeric tasks also retain their old
   // spec-qualified interpretation.
   const id = allocateArtifactId(prefix, occupied);
-  return { status: 'proposed', id, reserved: false, ...(specId ? { specId } : {}) };
+  return { status: 'proposed', id, reserved: false, ...(specId ? { specId } : {}), ...(landmarkId ? { landmarkId } : {}) };
 }
 
 // Identity is retained outside ordinary selection: retirement and discard do
@@ -314,7 +324,7 @@ export function occupiedIdentities(rootDir, prefix) {
     // nothing and is not an error.
     const scan = prefix === LANDMARK_PREFIX
       ? { pattern: '^\\*\\*Landmark ID:\\*\\*|"id":', paths: [landmarksLane, ...(trackerLane ? [trackerLane] : [])] }
-      : { pattern: '^\\*\\*(Spec ID|Task ID):\\*\\*|^\\|.*(S-|TK-)', paths: [lane, ...(manifestResult.status === 0 ? [] : ['specs'])] };
+      : { pattern: '^\\*\\*(Spec ID|Task ID):\\*\\*|^\\|.*(S-|TK-)', paths: [lane, ...(prefix === 'TK' ? [landmarksLane] : []), ...(manifestResult.status === 0 ? [] : ['specs'])] };
     const result = spawnSync('git', ['-C', root, 'grep', '-h', '-E', scan.pattern, ref, '--', ...scan.paths], { encoding: 'utf8', maxBuffer: REF_READ_MAX_BUFFER });
     if (result.error || ![0, 1].includes(result.status)) throw new Error(`Cannot reserve IDs from ${ref}: ${result.error?.message ?? result.stderr.trim()}`);
     occupied.push(...(result.stdout.match(new RegExp(`\\b${prefix}-[0-9A-Za-z]{3,}\\b`, 'g')) ?? []));
@@ -324,10 +334,12 @@ export function occupiedIdentities(rootDir, prefix) {
 
 // The Spec and Task identities a room holds in its records: every Spec at both
 // homes, every slice row and Task record, retired Tasks and corrective Tasks.
+// S-003Z TK-008G: a landmark's direct Tasks, active and retired, hold their
+// identities too.
 function specAndTaskIdentities(root, prefix) {
   const specs = [...loadSpecs(root), ...loadRetiredSpecs(root)];
   return prefix === 'S' ? specs.map(spec => spec.id)
-    : [...specs.flatMap(spec => [...spec.rows, ...spec.records, ...(spec.retiredRecords ?? [])].map(item => item.id)), ...loadCorrectiveTasks(root).map(task => task.id)];
+    : [...[...specs, ...loadLandmarkParents(root)].flatMap(spec => [...spec.rows, ...spec.records, ...(spec.retiredRecords ?? [])].map(item => item.id)), ...loadCorrectiveTasks(root).map(task => task.id)];
 }
 
 // S-003Z TK-008D: the landmark identities a room holds: every `LANDMARK.md`
@@ -374,12 +386,14 @@ export function claimWork(rootDir, id, options) {
   const root = path.resolve(rootDir);
   if (discardedReferences(root).length) throw new Error('discarded-reference: selection is blocked until current references are reconciled');
   const { specsPrefix } = resolveSpecsRoot(root);
-  const context = coordinationContext(root, { specsPrefix, local: options?.local === true, requireFetch: true });
+  const landmarksPrefix = collectionRelative(root, 'landmarks');
+  const context = coordinationContext(root, { specsPrefix, landmarksPrefix, local: options?.local === true, requireFetch: true });
   if (context.mode !== 'remote') return { ...claimInTree(rootDir, id, options, null).result, coordination: publicCoordination(context) };
   return publishClaim(root, context, {
     agent: options.agent,
     branch: options.branch,
     specsPrefix,
+    landmarksPrefix,
     apply: (remoteClaims) => claimInTree(rootDir, id, options, remoteClaims),
     project: () => render(root)
   });
@@ -387,16 +401,24 @@ export function claimWork(rootDir, id, options) {
 
 // The ordinary claim in the working tree: select, route, and write the Task
 // record and Spec header. Returns the shown Spec plus the claimed ids.
+// S-003Z TK-008G: `claim LMK-###` claims a Task directly under that landmark
+// through the same selection, refusing an unassigned or non-active landmark;
+// `specId` in the returned ids is then the landmark, the claim's parent.
 function claimInTree(rootDir, id, options, remoteClaims) {
   // S-004F TK-005S: a Task ID names no Spec; the standalone corrective route is retired.
   if (/^TK-/.test(id)) refuseStandaloneCorrective(path.resolve(rootDir), 'claim', id);
-  id = resolveSpecId(rootDir, id);
+  const landmark = isLandmarkId(id);
+  id = landmark ? resolveLandmarkId(rootDir, id) : resolveSpecId(rootDir, id);
   const date = validDate(options?.date ?? today());
-  const specs = [...loadSpecs(rootDir), ...loadRetiredSpecs(rootDir)];
+  const specs = [...loadSpecs(rootDir), ...loadRetiredSpecs(rootDir), ...loadLandmarkParents(rootDir)];
   const matches = specs.filter((item) => item.id === id);
-  if (matches.length !== 1) throw new Error(matches.length ? `Duplicate spec ID: ${id}` : `Unknown spec ID: ${id}`);
+  const kind = landmark ? 'landmark' : 'spec';
+  if (matches.length !== 1) throw new Error(matches.length ? `Duplicate ${kind} ID: ${id}` : `Unknown ${kind} ID: ${id}`);
   const spec = matches[0];
-  if (spec.status !== 'active' && spec.lifecycleFolder !== 'retired') throw new Error(`${id} is ${spec.status}, not active`);
+  if (landmark) {
+    const refusal = landmarkRefusal(spec);
+    if (refusal) throw new Error(`claim refused: ${refusal}`);
+  } else if (spec.status !== 'active' && spec.lifecycleFolder !== 'retired') throw new Error(`${id} is ${spec.status}, not active`);
   const session = capabilitySession(path.resolve(rootDir), options);
   const { candidate, capabilityBlocked, remoteClaimed } = selectWork(specs, { specId: id, session, remoteClaims });
   const slices = executionSlices(spec);
@@ -442,8 +464,10 @@ function claimInTree(rootDir, id, options, remoteClaims) {
       cells[2] = 'in-progress';
       return cells;
     });
+  // A landmark's Owner is the Director holding its lane, not the Task's
+  // claimant, so a landmark-direct claim records the claimant in the event.
   const updated = updateFields(content, {
-    Owner: options.agent,
+    ...(landmark ? {} : { Owner: options.agent }),
     Updated: date,
     'Latest event': `${task.id} claimed by ${options.agent}.`,
     'Next gate': `Close ${task.id} with verification and documentation proof.`
@@ -456,12 +480,15 @@ export function closeTask(rootDir, id, options) {
   const root = path.resolve(rootDir);
   // S-004F TK-005S: a Task ID names no Spec; the standalone corrective route is retired.
   if (/^TK-/.test(id)) refuseStandaloneCorrective(root, 'close', id);
-  id = resolveSpecId(root, id);
+  // S-003Z TK-008G: `close LMK-###` closes the claimed Task directly under
+  // that landmark and appends its row to the landmark's own evidence log.
+  const landmark = isLandmarkId(id);
+  id = landmark ? resolveLandmarkId(root, id) : resolveSpecId(root, id);
   const proof = requireValue(options?.proof, '--proof is required');
   const docs = requireValue(options?.docs, '--docs is required');
   const remainingGap = requireValue(options?.remainingGap, '--remaining-gap is required');
   const date = validDate(options?.date ?? today());
-  const spec = findSpec(root, id);
+  const spec = landmark ? findLandmarkParent(root, id) : findSpec(root, id);
   assertCloseTaskDirectories(root, spec);
   const slices = executionSlices(spec);
   // A published close takes precedence over normal selection, including when
@@ -610,7 +637,7 @@ function finishRecordClose(root, spec, task, slices) {
     if (spec.lifecycleFolder !== 'retired') content = updateFields(content, {
       Updated: date,
       'Latest event': `${task.id} closed with proof.`,
-      'Next gate': remaining ? `Complete ${remaining.id}.` : 'Confirm acceptance criteria and completion result.'
+      'Next gate': closedNextGate(spec, remaining)
     });
     content = appendEvidence(content, pending.row);
     writeSafeFile(root, spec.filePath, content);
@@ -673,8 +700,11 @@ export function receiptTask(rootDir, id, options) {
   const testsRun = requireValue(options?.tests, '--tests is required');
   const docsTouched = requireValue(options?.docs, '--docs is required');
   const remainingGap = requireValue(options?.remainingGap, '--remaining-gap is required');
-  id = resolveSpecId(root, id);
-  const spec = findSpec(root, id);
+  // S-003Z TK-008G: `receipt LMK-### --task TK-###` appends to a Task
+  // directly under that landmark.
+  const landmark = isLandmarkId(id);
+  id = landmark ? resolveLandmarkId(root, id) : resolveSpecId(root, id);
+  const spec = landmark ? findLandmarkParent(root, id) : findSpec(root, id);
   taskId = resolveTaskId(spec, taskId);
   const task = slicesOf(spec).find((item) => item.id === taskId);
   if (!task || task.source !== 'record') {
@@ -684,7 +714,7 @@ export function receiptTask(rootDir, id, options) {
     throw new Error(`${id}/${taskId} is ${task.declared}, not in-progress; the receipt verb appends only to an in-progress Task`);
   }
   const row = appendReceiptRow(task.record.filePath, { repoRoot: root, testsRun, docsTouched, remainingGap });
-  return { specId: id, taskId, row };
+  return { ...parentKey(spec), taskId, row };
 }
 
 // The one-time migration from an embedded slice table to standalone Task
@@ -975,6 +1005,10 @@ const TASK_PR_EXEMPTION = 'S-00O exemption 2 (WF-7 deferred): every Task lands a
 // is `null` when the manifest declares none.
 export function gate(rootDir, options = {}) {
   const root = path.resolve(rootDir);
+  if (options.landmark !== undefined) {
+    if (options.spec !== undefined) throw new Error('gate names either --spec or --landmark, not both');
+    return landmarkTaskGate(root, options);
+  }
   const specId = resolveSpecId(root, requireValue(options.spec, 'gate requires --spec S-###'));
   const taskId = options.task ? resolveTaskId(findSpec(root, specId), options.task) : null;
   const integrationBranch = declaredGit(root)?.integrationBranch ?? null;
@@ -1035,6 +1069,7 @@ export function render(rootDir, options = {}) {
   if (options.format !== undefined && options.format !== 'markdown') throw new Error(`Unsupported render format: ${options.format}; use json for the opt-in preview or markdown for the existing projection`);
   const specs = loadSpecs(root);
   const retired = loadRetiredSpecs(root);
+  const landmarks = loadLandmarkParents(root);
   const blueprintPath = path.join(root, 'BLUEPRINT.md');
   const taskboardPath = path.join(root, 'TASKBOARD.md');
   const blueprint = fs.readFileSync(blueprintPath, 'utf8');
@@ -1048,7 +1083,7 @@ export function render(rootDir, options = {}) {
     const relativeCatalog = renderCatalog(specs, retired).replaceAll(`](${resolveSpecsRoot(root).specsPrefix}/`, '](');
     writeSafeFile(root, catalogPath, `# Spec Catalog\n\nDerived from stable specs; includes completed history.\n\n${CATALOG_START}\n${relativeCatalog}\n${CATALOG_END}\n`);
   }
-  atomicWrite(taskboardPath, replaceRegion(taskboard, HOT_START, HOT_END, renderHotBoard(specs, retired)));
+  atomicWrite(taskboardPath, replaceRegion(taskboard, HOT_START, HOT_END, renderHotBoard(specs, retired, landmarks)));
   return { specs: specs.length, active: specs.filter((spec) => isHot(spec)).length, retired: retired.length };
 }
 
@@ -1091,7 +1126,25 @@ function renderJsonPreview(root) {
     }
   };
   inspectSpecs(specsRoot);
-  const specs = [...loadSpecs(root), ...loadRetiredSpecs(root)];
+  // S-003Z TK-008G: a landmark's folder and its direct Tasks get the same
+  // ordinary-file refusal before the loaders read them.
+  const inspectLandmarks = directory => {
+    assertSafeReadPath(root, directory);
+    if (!fs.existsSync(directory)) return;
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const child = path.join(directory, entry.name);
+      assertSafeReadPath(root, child);
+      if (!entry.isDirectory()) continue;
+      if (LANDMARK_LIFECYCLE_FOLDERS.includes(entry.name)) inspectLandmarks(child);
+      else {
+        const file = path.join(child, 'LANDMARK.md');
+        inspectFile(file);
+        if (fs.existsSync(file)) inspectTasks(path.join(child, 'tasks'));
+      }
+    }
+  };
+  inspectLandmarks(collectionPath(root, 'landmarks'));
+  const specs = [...loadSpecs(root), ...loadRetiredSpecs(root), ...loadLandmarkParents(root)];
   const completed = satisfiedBlockers(specs);
   const board = buildTaskboard(specs, { resolveTask(spec, task) {
     const slice = {
@@ -1123,12 +1176,17 @@ export function doctor(rootDir, options = {}) {
   } catch (error) {
     return [finding(['upgrade-required', 'invalid-manifest'].includes(error.code) ? error.code : 'malformed-spec', error.message)];
   }
-  issues.push(...packetFindings(specs, options, retired, root));
+  // S-003Z TK-008G: a landmark whose artifact or direct Task record cannot be
+  // read is reported by name as `malformed-landmark` (landmarkFindings, through
+  // collectionFindings below, reads the same files); the rest of the room is
+  // still checked against the landmarks that could be read.
+  const landmarks = readableLandmarkParents(root);
+  issues.push(...packetFindings(specs, options, retired, root, landmarks));
   issues.push(...uncapturedCompleteFindings(root, specs.filter((spec) => !spec.sliceConflict)));
   const blueprint = fs.existsSync(path.join(root, 'BLUEPRINT.md')) ? fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8') : '';
   if (blueprint.includes(CATALOG_START) || blueprint.includes(CATALOG_END)) checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs, retired), issues);
   else checkRender(root, path.relative(root, path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md')), CATALOG_START, CATALOG_END, renderCatalog(specs, retired).replaceAll(`](${resolveSpecsRoot(root).specsPrefix}/`, ']('), issues);
-  checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs, retired), issues);
+  checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs, retired, landmarks), issues);
   issues.push(...collectionFindings(root));
   issues.push(...skillFindings(root));
   issues.push(...gitFindings(root, specs, issues));
@@ -1158,12 +1216,12 @@ export function doctorCommand(rootDir, options = {}) {
 // Validate proposed spec bytes without touching files or inspecting the host.
 export function validateSpecCandidate(root, filePath, content) {
   const specs = loadSpecs(root, { allowDuplicates: true, contentOverrides: new Map([[path.resolve(filePath), content]]) });
-  return packetFindings(specs);
+  return packetFindings(specs, {}, [], null, readableLandmarkParents(root));
 }
 
-function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
+function packetFindings(specs, options = {}, retiredSpecs = [], root = null, landmarks = []) {
   const issues = [];
-  issues.push(...identityFindings(specs, retiredSpecs));
+  issues.push(...identityFindings(specs, retiredSpecs, landmarks));
   // S-00I TK-006: doctor's safety net for a discard that bypassed the gate
   // (a raw `git rm`) or a reference added back afterward. `root` is only
   // available from `doctor`, exactly like the wiki-owner check below, never
@@ -1184,7 +1242,7 @@ function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
   // corrective Tasks alone retain their execution dependency checks.
   for (const spec of retiredSpecs) {
     if (!spec.sliceConflict) {
-      const completed = satisfiedBlockers([...specs, ...retiredSpecs]);
+      const completed = satisfiedBlockers([...specs, ...retiredSpecs, ...landmarks]);
       const satisfied = satisfiedIds(spec, completed);
       const head = executionSlices(spec).find(slice => ['in-progress', 'ready'].includes(slice.declared));
       if (head?.declared === 'ready' && !blockersSatisfied(head.blockers, satisfied)) {
@@ -1218,14 +1276,14 @@ function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
   // own Tasks individually before or independently of its own retirement).
   // `retiredRecords` is never read by `slicesOf`, so this is the one place a
   // retired Task's own disagreeing Status becomes visible.
-  for (const spec of [...specs, ...retiredSpecs]) {
+  for (const spec of [...specs, ...retiredSpecs, ...landmarks]) {
     for (const task of spec.retiredRecords ?? []) {
       if (taskStatus(task) !== 'done') {
-        issues.push(finding('retired-task-not-done', `${spec.id}/${task.id} is retired in tasks/${task.lifecycleFolder}/ but its Status is ${taskStatus(task)}, not done`, { specId: spec.id, taskId: task.id }));
+        issues.push(finding('retired-task-not-done', `${spec.id}/${task.id} is retired in tasks/${task.lifecycleFolder}/ but its Status is ${taskStatus(task)}, not done`, { ...parentKey(spec), taskId: task.id }));
       }
     }
   }
-  const completed = satisfiedBlockers([...specs, ...retiredSpecs]);
+  const completed = satisfiedBlockers([...specs, ...retiredSpecs, ...landmarks]);
   for (const spec of specs) {
     if (!SPEC_STATUSES.has(spec.status)) issues.push(finding('invalid-state', `${spec.id} has invalid status ${spec.status}`, { specId: spec.id }));
     if (!spec.relativePath.startsWith(`${spec.specsPrefix}/${spec.id}-`)) issues.push(finding('unstable-path', `${spec.id} path must start ${spec.specsPrefix}/${spec.id}-`, { specId: spec.id }));
@@ -1240,62 +1298,97 @@ function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
     }
     const satisfied = satisfiedIds(spec, completed);
     const slices = slicesOf(spec);
-    for (const slice of slices) {
-      if (!TASK_STATUSES.includes(slice.declared)) issues.push(finding('invalid-state', `${spec.id}/${slice.id} has invalid status ${slice.declared}`, { specId: spec.id, taskId: slice.id }));
-      if (slice.declared === 'done' && (!slice.proof || /^pending$/i.test(slice.proof))) issues.push(finding('missing-evidence', `${spec.id}/${slice.id} is done without proof`, { specId: spec.id, taskId: slice.id }));
-      // S-00J TK-01T: an unknown qualifier already fails closed (it never
-      // enters the satisfied set); naming it here is what keeps that from
-      // being a silent wait. A done slice's blockers no longer gate anything.
-      if (slice.declared !== 'done') {
-        for (const token of slice.blockerIds.filter((item) => blockerKind(item) === 'unknown-qualifier')) {
-          issues.push(finding('unknown-blocker-qualifier', `${spec.id}/${slice.id} names blocker ${token}, whose qualifier is not known blocker grammar (a plain S-### or TK-###, S-###:delivered, or owner:<decision>); it stays unmet until corrected`, { specId: spec.id, taskId: slice.id, blocker: token }));
-        }
-      }
-      // S-00J TK-02J: the resolver keeps such a record blocked instead of
-      // handing it out; naming it keeps that from being a silent wait.
-      if (slice.source === 'record' && slice.declared === 'blocked' && !namesResolvableBlocker(slice)) {
-        issues.push(finding('blocked-without-blocker', `${spec.id}/${slice.id} is declared blocked but names no resolvable blocker (Blockers: ${slice.blockers}); it stays blocked until a real blocker is recorded or its Status is corrected`, { specId: spec.id, taskId: slice.id }));
-      }
-      // A malformed Receipt or an altered earlier row fails closed on read
-      // (task-receipt.mjs's own checksum chain); reported here by name so
-      // doctor keeps reporting every other spec, slice and scope instead of
-      // the raw exception this used to throw straight through the board.
-      if (slice.source === 'record') {
-        try {
-          readReceiptFromFile(slice.record.filePath);
-        } catch (error) {
-          issues.push(finding('receipt-corrupt', `${spec.id}/${slice.id} Receipt: ${error.message}`, { specId: spec.id, taskId: slice.id }));
-        }
-      }
-    }
-    // Every authored To-do with unmet dependencies stays visible and unoffered.
-    // Existing registered selected-slice findings name each wait; declared
-    // blocked sequencing remains separate and never becomes a new global gate.
-    for (const slice of slices) {
-      let entry;
-      try { entry = taskboardEntryForSlice(spec, slice, satisfied); }
-      catch (error) {
-        if (error.code !== 'taskboard-source') throw error;
-        if (TASK_STATUSES.includes(slice.declared)) issues.push(finding('invalid-state', error.message, { specId: spec.id, taskId: slice.id }));
-        continue;
-      }
-      if (spec.status === 'active' && entry.lane === 'toDo' && !entry.dependenciesMet) {
-        issues.push(finding('blocked-slice', `${spec.id}/${slice.id} waits on ${slice.blockers}`, { specId: spec.id, taskId: slice.id }));
-      }
-    }
+    issues.push(...sliceFindings(spec, slices, satisfied));
     if (['complete', 'superseded'].includes(spec.status) && slices.some((slice) => slice.declared !== 'done')) {
       issues.push(finding('contradictory-state', `${spec.id} is ${spec.status} with unfinished tasks`, { specId: spec.id }));
     }
-    const updated = Date.parse(`${spec.updated}T00:00:00Z`);
-    const now = Date.parse(`${options.today ?? today()}T00:00:00Z`);
-    if (slices.some((slice) => slice.declared === 'in-progress') && Number.isFinite(updated) && now - updated > 86_400_000) {
-      issues.push(finding('stale-claim', `${spec.id} has an in-progress task last updated ${spec.updated}`, { specId: spec.id }));
-    }
+    issues.push(...staleClaimFindings(spec, slices, options));
     for (const link of localLinks(spec.content)) {
       const target = path.resolve(path.dirname(spec.filePath), link);
       if (!target.startsWith(spec.root + path.sep) || !fs.existsSync(target)) issues.push(finding('broken-link', `${spec.id} links to missing ${link}`, { specId: spec.id }));
     }
     issues.push(...liveRecordCitations(spec));
+  }
+  issues.push(...landmarkTaskFindings(landmarks, completed, options));
+  return issues;
+}
+
+// The per-slice checks every parent's Task records get, a Spec's or a
+// landmark's (S-003Z TK-008G): status vocabulary, proof on a done Task, blocker
+// grammar, a declared block with nothing to clear, a corrupt Receipt, a
+// malformed source, and an authored To-do waiting on an unmet dependency.
+function sliceFindings(spec, slices, satisfied) {
+  const issues = [];
+  const owner = parentKey(spec);
+  for (const slice of slices) {
+    if (!TASK_STATUSES.includes(slice.declared)) issues.push(finding('invalid-state', `${spec.id}/${slice.id} has invalid status ${slice.declared}`, { ...owner, taskId: slice.id }));
+    if (slice.declared === 'done' && (!slice.proof || /^pending$/i.test(slice.proof))) issues.push(finding('missing-evidence', `${spec.id}/${slice.id} is done without proof`, { ...owner, taskId: slice.id }));
+    // S-00J TK-01T: an unknown qualifier already fails closed (it never
+    // enters the satisfied set); naming it here is what keeps that from
+    // being a silent wait. A done slice's blockers no longer gate anything.
+    if (slice.declared !== 'done') {
+      for (const token of slice.blockerIds.filter((item) => blockerKind(item) === 'unknown-qualifier')) {
+        issues.push(finding('unknown-blocker-qualifier', `${spec.id}/${slice.id} names blocker ${token}, whose qualifier is not known blocker grammar (a plain S-###, TK-### or LMK-###, S-###:delivered, or owner:<decision>); it stays unmet until corrected`, { ...owner, taskId: slice.id, blocker: token }));
+      }
+    }
+    // S-00J TK-02J: the resolver keeps such a record blocked instead of
+    // handing it out; naming it keeps that from being a silent wait.
+    if (slice.source === 'record' && slice.declared === 'blocked' && !namesResolvableBlocker(slice)) {
+      issues.push(finding('blocked-without-blocker', `${spec.id}/${slice.id} is declared blocked but names no resolvable blocker (Blockers: ${slice.blockers}); it stays blocked until a real blocker is recorded or its Status is corrected`, { ...owner, taskId: slice.id }));
+    }
+    // A malformed Receipt or an altered earlier row fails closed on read
+    // (task-receipt.mjs's own checksum chain); reported here by name so
+    // doctor keeps reporting every other spec, slice and scope instead of
+    // the raw exception this used to throw straight through the board.
+    if (slice.source === 'record') {
+      try {
+        readReceiptFromFile(slice.record.filePath);
+      } catch (error) {
+        issues.push(finding('receipt-corrupt', `${spec.id}/${slice.id} Receipt: ${error.message}`, { ...owner, taskId: slice.id }));
+      }
+    }
+  }
+  // Every authored To-do with unmet dependencies stays visible and unoffered.
+  // Existing registered selected-slice findings name each wait; declared
+  // blocked sequencing remains separate and never becomes a new global gate.
+  for (const slice of slices) {
+    let entry;
+    try { entry = taskboardEntryForSlice(spec, slice, satisfied); }
+    catch (error) {
+      if (error.code !== 'taskboard-source') throw error;
+      if (TASK_STATUSES.includes(slice.declared)) issues.push(finding('invalid-state', error.message, { ...owner, taskId: slice.id }));
+      continue;
+    }
+    if (spec.status === 'active' && entry.lane === 'toDo' && !entry.dependenciesMet) {
+      issues.push(finding('blocked-slice', `${spec.id}/${slice.id} waits on ${slice.blockers}`, { ...owner, taskId: slice.id }));
+    }
+  }
+  return issues;
+}
+
+function staleClaimFindings(spec, slices, options) {
+  const updated = Date.parse(`${spec.updated}T00:00:00Z`);
+  const now = Date.parse(`${options.today ?? today()}T00:00:00Z`);
+  if (slices.some((slice) => slice.declared === 'in-progress') && Number.isFinite(updated) && now - updated > 86_400_000) {
+    return [finding('stale-claim', `${spec.id} has an in-progress task last updated ${spec.updated}`, parentKey(spec))];
+  }
+  return [];
+}
+
+// S-003Z TK-008G: a landmark's direct Tasks get the slice checks a Spec's get,
+// plus a reached landmark that still holds an unfinished direct Task. The
+// landmark artifact itself is checked by landmarkFindings (collectionFindings).
+function landmarkTaskFindings(landmarks, completed, options) {
+  const issues = [];
+  for (const parent of landmarks) {
+    const slices = slicesOf(parent);
+    if (!parent.lifecycleFolder) {
+      issues.push(...sliceFindings(parent, slices, satisfiedIds(parent, completed)));
+      issues.push(...staleClaimFindings(parent, slices, options));
+    }
+    if (parent.status === 'reached' && slices.some((slice) => slice.declared !== 'done')) {
+      issues.push(finding('contradictory-state', `${parent.id} is reached with unfinished direct Tasks`, { landmarkId: parent.id }));
+    }
   }
   return issues;
 }
@@ -1537,6 +1630,141 @@ export function loadRetiredSpecs(rootDir) {
   return specs;
 }
 
+// ---- S-003Z TK-008G: Tasks directly under a landmark ----
+// A landmark (ADR-000U) may hold direct Tasks at `<landmark>/tasks/TK-###/
+// TASK.md`, each naming it in `**Landmark ID:**` (task-record.mjs). The
+// lifecycle commands read the landmark as the parent those Tasks sit under,
+// through the slice, selection, claim, close, receipt, render and move code a
+// record-backed Spec uses: a landmark parent is the parsed landmark
+// (landmark-artifact.mjs) shaped like a loaded Spec - `kind: 'landmark'`, no
+// slice table, its direct Task records active and retired - so one path
+// serves both parents and a Spec's behavior is unchanged. Specs nested under
+// a landmark are a separate slice; nothing here reads `<landmark>/specs/`.
+export function isLandmarkId(value) {
+  return typeof value === 'string' && /^LMK-/i.test(value);
+}
+
+function landmarkParent(root, landmark) {
+  const dir = path.dirname(landmark.filePath);
+  return {
+    ...landmark,
+    kind: 'landmark',
+    blockers: landmark.blockers.length > 0 ? landmark.blockers.join(', ') : 'none',
+    rows: [],
+    records: listTaskRecords(dir, root),
+    retiredRecords: listRetiredTaskRecords(dir, root),
+    recordBacked: true
+  };
+}
+
+// Every landmark at both homes as a parent. A malformed landmark or direct
+// Task record refuses the load, as a malformed Spec refuses `loadSpecs`.
+export function loadLandmarkParents(rootDir) {
+  const root = path.resolve(rootDir);
+  return [...loadLandmarks(root), ...loadRetiredLandmarks(root)].map((landmark) => landmarkParent(root, landmark));
+}
+
+// Doctor's reading: every landmark parent that can be read. An unreadable
+// artifact or direct Task record is skipped here because doctor names it as
+// `malformed-landmark` through landmarkFindings, which reads the same files.
+function readableLandmarkParents(rootDir) {
+  const root = path.resolve(rootDir);
+  const parents = [];
+  for (const landmark of loadReadableLandmarks(root)) {
+    try { parents.push(landmarkParent(root, landmark)); } catch { /* named by landmarkFindings */ }
+  }
+  return parents;
+}
+
+function resolveLandmarkId(rootDir, selector) {
+  const root = path.resolve(rootDir);
+  return resolveStoredId('landmark', selector, [...loadLandmarks(root), ...loadRetiredLandmarks(root)].map((landmark) => ({ id: landmark.id, where: landmark.relativePath })));
+}
+
+// The active roster first, then the lifecycle folders, as `findSpec` does.
+function findLandmarkParent(rootDir, selector) {
+  const id = resolveLandmarkId(rootDir, selector);
+  const parents = loadLandmarkParents(rootDir).filter((parent) => parent.id === id);
+  const active = parents.filter((parent) => !parent.lifecycleFolder);
+  const found = active.length > 0 ? active : parents;
+  if (found.length > 1) throw new Error(`Duplicate landmark ID: ${id}`);
+  if (found.length === 1) return found[0];
+  throw new Error(`Unknown landmark ID: ${id}`);
+}
+
+// No Task runs under a landmark that is retired, not `active`, or held by no
+// one: the Spec's decision, since the Contract's Instruction Authority names
+// only an assigned delegate. `null` when its Tasks may run.
+function landmarkRefusal(parent) {
+  if (parent.lifecycleFolder) return `${parent.id} is retired in ${parent.lifecycleFolder}/; no Task runs under a retired landmark`;
+  if (parent.status !== 'active') return `${parent.id} is ${parent.status}, not active`;
+  if (parent.owner === 'unassigned') return `${parent.id} is unassigned (Owner: unassigned); no Task runs under an unassigned landmark`;
+  return null;
+}
+
+// Whether `next` and `claim` may select a Task under this parent: an active
+// Spec, a retired Spec's anchored corrective Tasks, or an assigned active
+// landmark.
+function executable(parent) {
+  if (parent.kind === 'landmark') return landmarkRefusal(parent) === null;
+  return parent.status === 'active' || parent.lifecycleFolder === 'retired';
+}
+
+// The key a result names a Task's parent by: `specId`, or `landmarkId` for a
+// landmark-direct Task.
+function parentKey(parent) {
+  return parent.kind === 'landmark' ? { landmarkId: parent.id } : { specId: parent.id };
+}
+
+function parentIdOf(item) {
+  return item.specId ?? item.landmarkId;
+}
+
+function closedNextGate(parent, remaining) {
+  if (remaining) return `Complete ${remaining.id}.`;
+  return parent.kind === 'landmark' ? 'Confirm the reached checks and the reached result.' : 'Confirm acceptance criteria and completion result.';
+}
+
+function showLandmark(rootDir, selector) {
+  const parent = findLandmarkParent(rootDir, selector);
+  const body = parent.lifecycleFolder
+    ? `Retired: ${parent.relativePath} (historical route; out of ordinary discovery, reachable only by this explicit lookup)\n\n${parent.content}`
+    : parent.content;
+  return {
+    ...publicLandmark({ ...parent, blockers: splitBlockers(parent.blockers) }),
+    tasks: slicesOf(parent).map(publicSlice),
+    retiredTasks: parent.retiredRecords.map(publicRetiredTask),
+    body
+  };
+}
+
+// The Task-PR form of `gate` for a landmark-direct Task (`gate --task TK-###
+// --landmark LMK-###`): reported under the same exemption a Spec's Task PR
+// is, never refused for the landmark being unfinished, but refused by name
+// when the landmark holds no such Task or is already reached or retired. The
+// whole-landmark review gate is a later slice and is not this command.
+function landmarkTaskGate(root, options) {
+  const parent = findLandmarkParent(root, requireValue(options.landmark, 'gate --landmark requires LMK-###'));
+  if (!options.task) throw new Error('gate --landmark requires --task TK-###; it reports a landmark-direct Task PR');
+  const taskId = resolveTaskId(parent, options.task);
+  let reason = null;
+  if (![...parent.records, ...parent.retiredRecords].some((task) => task.id === taskId)) {
+    reason = `No Task record named ${taskId} exists under ${parent.id}; a Task PR must name a Task that actually belongs to the landmark it presents.`;
+  } else if (parent.lifecycleFolder || parent.status === 'reached') {
+    reason = `${parent.id} is already ${parent.lifecycleFolder ? `retired in ${parent.lifecycleFolder}/` : 'reached'}; a Task PR is reported only while its landmark is still open.`;
+  }
+  return {
+    mode: 'task-pr',
+    taskId,
+    landmarkId: parent.id,
+    integrationBranch: declaredGit(root)?.integrationBranch ?? null,
+    exemption: TASK_PR_EXEMPTION,
+    landmarkStatus: parent.status,
+    refused: reason !== null,
+    reason
+  };
+}
+
 // One source of slice truth per Spec. A Spec is record-backed when its own
 // `tasks/` directory exists; its embedded table then holds completed history
 // only, which `close` and the Spec's evidence log still own. An unfinished
@@ -1656,6 +1884,11 @@ function satisfiedIds(spec, completed) {
 function satisfiedBlockers(specs) {
   const satisfied = new Set();
   for (const spec of specs) {
+    // S-003Z TK-008G: a reached landmark satisfies `LMK-###`, at either home.
+    if (spec.kind === 'landmark') {
+      if (spec.status === 'reached') satisfied.add(spec.id);
+      continue;
+    }
     if (!['complete', 'superseded'].includes(spec.status)) continue;
     satisfied.add(spec.id);
     satisfied.add(`${spec.id}:delivered`);
@@ -1685,11 +1918,13 @@ function satisfiedBlockers(specs) {
 // `unknown-qualifier` (any other `<id>:<qualifier>` the Task-record parser
 // admits so doctor can name it), or `other` (legacy slice-table prose, left
 // exactly as unmet as it always was).
+// S-003Z TK-008G: a plain `LMK-###` names a landmark, satisfied once that
+// landmark is reached (`satisfiedBlockers`).
 function blockerKind(token) {
-  if (/^(?:S|TK)-[0-9A-Za-z]+$/.test(token)) return 'plain';
+  if (/^(?:S|TK|LMK)-[0-9A-Za-z]+$/.test(token)) return 'plain';
   if (/^S-[0-9A-Za-z]+:delivered$/.test(token)) return 'delivered';
   if (/^owner:[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/.test(token)) return 'owner';
-  if (/^(?:S|TK)-[0-9A-Za-z]+:[A-Za-z][0-9A-Za-z-]*$/.test(token)) return 'unknown-qualifier';
+  if (/^(?:S|TK|LMK)-[0-9A-Za-z]+:[A-Za-z][0-9A-Za-z-]*$/.test(token)) return 'unknown-qualifier';
   return 'other';
 }
 
@@ -1831,13 +2066,19 @@ function publicRetiredTask(task) {
 // and a retired Task still holds its id against a new Spec claiming it -
 // `loadSpecs`'s own duplicate guard above calls this with one argument and
 // is unaffected.
-function identityFindings(specs, retiredSpecs = []) {
+// S-003Z TK-008G: `landmarks` (landmark parents) join the Task identity
+// checks only - a duplicated landmark identity is landmarkFindings' to name -
+// so a landmark-direct Task cannot reuse a letter-bearing Task ID any Spec or
+// other landmark holds.
+function identityFindings(specs, retiredSpecs = [], landmarks = []) {
   const findings = [];
   const specIds = new Map();
   const globalTasks = new Map();
-  for (const spec of [...specs, ...retiredSpecs]) {
+  for (const spec of [...specs, ...retiredSpecs, ...landmarks]) {
     const specKey = visibleIdKey(spec.id);
-    if (specIds.has(specKey)) findings.push(finding('duplicate-id', `Duplicate spec ID: ${spec.id} conflicts with ${specIds.get(specKey)}`, { specId: spec.id }));
+    const owner = parentKey(spec);
+    if (spec.kind === 'landmark') { /* identity checked by landmarkFindings */ }
+    else if (specIds.has(specKey)) findings.push(finding('duplicate-id', `Duplicate spec ID: ${spec.id} conflicts with ${specIds.get(specKey)}`, { specId: spec.id }));
     else specIds.set(specKey, spec.id);
     // Local duplicates are checked per source: two rows sharing an id, two
     // records sharing an id, or two retired records sharing an id (each
@@ -1852,7 +2093,7 @@ function identityFindings(specs, retiredSpecs = []) {
       const localTasks = new Map();
       for (const item of source) {
         const key = visibleIdKey(item.id);
-        if (localTasks.has(key)) findings.push(finding('duplicate-id', `Duplicate task ID: ${spec.id}/${item.id}`, { specId: spec.id, taskId: item.id }));
+        if (localTasks.has(key)) findings.push(finding('duplicate-id', `Duplicate task ID: ${spec.id}/${item.id}`, { ...owner, taskId: item.id }));
         localTasks.set(key, item.id);
       }
     }
@@ -1863,7 +2104,7 @@ function identityFindings(specs, retiredSpecs = []) {
     const activeIds = new Set((spec.records ?? []).map((item) => visibleIdKey(item.id)));
     for (const task of spec.retiredRecords ?? []) {
       const key = visibleIdKey(task.id);
-      if (activeIds.has(key)) findings.push(finding('duplicate-id', `Duplicate task ID: ${spec.id}/${task.id} is both active and retired`, { specId: spec.id, taskId: task.id }));
+      if (activeIds.has(key)) findings.push(finding('duplicate-id', `Duplicate task ID: ${spec.id}/${task.id} is both active and retired`, { ...owner, taskId: task.id }));
     }
     // The global (cross-spec) reservation is deduplicated within this spec
     // first: a letter-bearing id held by both a row and a record here is the
@@ -1875,7 +2116,7 @@ function identityFindings(specs, retiredSpecs = []) {
     const idsInSpec = new Map([...spec.rows, ...(spec.records ?? []), ...(spec.retiredRecords ?? [])].map((item) => [visibleIdKey(item.id), item.id]));
     for (const [key, id] of idsInSpec) {
       if (/^TK-\d+$/.test(id)) continue;
-      if (globalTasks.has(key)) findings.push(finding('duplicate-id', `Duplicate task ID: ${spec.id}/${id} conflicts with ${globalTasks.get(key)}`, { specId: spec.id, taskId: id }));
+      if (globalTasks.has(key)) findings.push(finding('duplicate-id', `Duplicate task ID: ${spec.id}/${id} conflicts with ${globalTasks.get(key)}`, { ...owner, taskId: id }));
       else globalTasks.set(key, `${spec.id}/${id}`);
     }
   }
@@ -1925,11 +2166,17 @@ function renderCatalog(specs, retired = []) {
   return lines.join('\n');
 }
 
-function renderHotBoard(specs, retired = []) {
+// S-003Z TK-008G: `landmarks` (the landmark parents, `loadLandmarkParents`)
+// add a row for each landmark on the active roster holding an open direct
+// Task, so the board shows that Task under its landmark; a landmark with no
+// open direct Task adds nothing, so a room without one renders as before.
+function renderHotBoard(specs, retired = [], landmarks = []) {
   const all = [...specs, ...retired];
-  const hot = all.filter((spec) => spec.lifecycleFolder === 'retired'
+  const hotLandmarks = landmarks.filter((parent) => !parent.lifecycleFolder
+    && slicesOf(parent).some((slice) => ['ready', 'blocked', 'in-progress', 'needs-review'].includes(slice.declared)));
+  const hot = [...all.filter((spec) => spec.lifecycleFolder === 'retired'
     ? !spec.sliceConflict && executionSlices(spec).some(slice => ['ready', 'blocked', 'in-progress'].includes(slice.declared))
-    : isHot(spec)).sort((a, b) => a.priority - b.priority || compareVisibleIds(a.id, b.id));
+    : isHot(spec)), ...hotLandmarks].sort((a, b) => a.priority - b.priority || compareVisibleIds(a.id, b.id));
   const lines = [
     '| Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |',
     '|---|---|---|---|---|---|'
@@ -1943,7 +2190,7 @@ function renderHotBoard(specs, retired = []) {
   // the owner gate rather than a slice. That derivation is what makes the
   // board show whether an objective is active; the Spec header Status stays
   // the Spec's lifecycle truth and no command writes a second one.
-  const completed = satisfiedBlockers(all);
+  const completed = satisfiedBlockers([...all, ...landmarks]);
   for (const spec of hot) {
     // A row/record collision already carries its own `row-record-collision`
     // finding from `packetFindings`; the board falls back to the owner-gate
@@ -2126,6 +2373,9 @@ function collectSpecReferenceFiles(root, excludeDir) {
   // S-003X TK-004Y: links inside Destination Decision Records are repaired too.
   walk(collectionPath(root, 'ddr'), (name) => name.endsWith('.md'));
   walk(resolveSpecsRoot(root).specsRoot, (name) => name === 'SPEC.md' || name === 'TASK.md');
+  // S-003Z TK-008G: a landmark's own record and its direct Task records are
+  // live surfaces too (its Direct Tasks list links each Task record).
+  walk(collectionPath(root, 'landmarks'), (name) => name === 'LANDMARK.md' || name === 'TASK.md');
   const seen = new Set();
   return files.filter((file) => {
     if (excludeDir && (file === excludeDir || file.startsWith(excludeDir + path.sep))) return false;
@@ -2380,8 +2630,11 @@ export function moveTaskRecord(rootDir, specId, taskId, folder, options = {}) {
   if (!TASK_LIFECYCLE_FOLDERS.includes(folder)) {
     throw new Error(`move-task refuses folder "${folder}"; the closed set is ${TASK_LIFECYCLE_FOLDERS.join(', ')}`);
   }
-  specId = resolveSpecId(root, specId);
-  const spec = findSpec(root, specId);
+  // S-003Z TK-008G: `move-task LMK-### --task TK-###` retires a Task directly
+  // under that landmark into `<landmark>/tasks/retired/`.
+  const landmark = isLandmarkId(specId);
+  specId = landmark ? resolveLandmarkId(root, specId) : resolveSpecId(root, specId);
+  const spec = landmark ? findLandmarkParent(root, specId) : findSpec(root, specId);
   taskId = resolveTaskId(spec, taskId);
   const activeTask = (spec.records ?? []).find((task) => task.id === taskId);
   if (!activeTask) {
@@ -2470,7 +2723,7 @@ export function moveTaskRecord(rootDir, specId, taskId, folder, options = {}) {
   spawnSync('git', ['-C', root, 'add', '-A']);
 
   return {
-    specId,
+    ...parentKey(spec),
     taskId,
     folder,
     from: path.relative(root, oldTaskDir).split(path.sep).join('/'),
@@ -3455,7 +3708,7 @@ function preflightDiscardRender(root, { specId, taskId } = {}) {
   const blueprint = fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8');
   const board = fs.readFileSync(path.join(root, 'TASKBOARD.md'), 'utf8');
   if (blueprint.includes(CATALOG_START) || blueprint.includes(CATALOG_END)) replaceRegion(blueprint, CATALOG_START, CATALOG_END, renderCatalog(specs, retired));
-  replaceRegion(board, HOT_START, HOT_END, renderHotBoard(specs, retired));
+  replaceRegion(board, HOT_START, HOT_END, renderHotBoard(specs, retired, loadLandmarkParents(root)));
 }
 
 function stageDiscard(root) {
@@ -4118,7 +4371,7 @@ export function parseCliArgs(argv) {
 // still says "No eligible work." and then names each one, so the capability
 // is never hidden behind an empty answer.
 function formatCapabilityBlockedNext(result) {
-  return ['No eligible work.', ...result.capabilityBlocked.map((entry) => `capability-blocked: ${entry.specId}/${entry.taskId} needs ${entry.missing.join(', ')} (${entry.recorded ? 'recorded' : 'not yet recorded'}) - ${entry.reason}`)].join('\n');
+  return ['No eligible work.', ...result.capabilityBlocked.map((entry) => `capability-blocked: ${parentIdOf(entry)}/${entry.taskId} needs ${entry.missing.join(', ')} (${entry.recorded ? 'recorded' : 'not yet recorded'}) - ${entry.reason}`)].join('\n');
 }
 
 function toCamel(value) {
@@ -4162,7 +4415,7 @@ async function main() {
     });
   }
   else if (command === 'gate') {
-    result = gate(root, { spec: options.spec, task: options.task, candidate: options.candidate });
+    result = gate(root, { spec: options.spec, task: options.task, candidate: options.candidate, landmark: options.landmark });
     if (result.refused) process.exitCode = 1;
   }
   else if (command === 'move-spec') result = moveSpecDirectory(root, id, options.to);
@@ -4176,7 +4429,7 @@ async function main() {
     result = doctorRun.json;
     process.exitCode = doctorRun.exitCode;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|approve|move-spec|move-task|widen-id|retire-spec|discard|render|doctor [S-###] [options] (widen-id S-###|TK-### [--spec S-###]; discard S-### [--task TK-###]; doctor [--host]; next|claim|close [--capabilities a,b]; next|claim [--local]; claim [--branch NAME])');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|approve|move-spec|move-task|widen-id|retire-spec|discard|render|doctor [S-###] [options] (show|claim|close|receipt|move-task LMK-### for a Task directly under a landmark; gate --task TK-### --spec S-###|--landmark LMK-###; widen-id S-###|TK-### [--spec S-###]; discard S-### [--task TK-###]; doctor [--host]; next|claim|close [--capabilities a,b]; next|claim [--local]; claim [--branch NAME])');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
@@ -4200,7 +4453,7 @@ function formatCoordinationNote(command, coordination) {
   }
   const lines = [];
   if (coordination.fetched === false) lines.push(`${command}: could not fetch from ${coordination.remote} (${coordination.fetchError}); remote claims are read from the last fetched refs`);
-  for (const item of coordination.remoteClaimed ?? []) lines.push(`${command}: skipped ${item.specId}/${item.taskId}, claimed on ${item.refs.join(', ')}`);
+  for (const item of coordination.remoteClaimed ?? []) lines.push(`${command}: skipped ${parentIdOf(item)}/${item.taskId}, claimed on ${item.refs.join(', ')}`);
   if (command === 'claim' && coordination.pushed) lines.push(`claim: committed ${coordination.commit.slice(0, 7)} on ${coordination.branch}${coordination.created ? ' (new task branch)' : ''} and pushed to ${coordination.remote}`);
   return lines.length > 0 ? lines.join('\n') : null;
 }

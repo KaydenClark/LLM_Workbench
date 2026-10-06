@@ -8,8 +8,8 @@
 **Updated:** 2026-10-06
 **Catalog description:** Deliver LANDMARK.md as an artifact one size above a Spec, with Specs and Tasks nested beneath it, a lane rather than a branch, and review and retirement one size up.
 **Blockers:** none. The prefix and the DDR listing are settled (2026-10-05); this Spec goes first in the Director's lane order.
-**Latest event:** TK-008D claimed by claude-s003z-dispatcher.
-**Next gate:** Close TK-008D with verification and documentation proof.
+**Latest event:** TK-008G claimed by claude-s003z-dispatcher.
+**Next gate:** Close TK-008G with verification and documentation proof.
 
 > **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a`.
 
@@ -127,6 +127,7 @@ Maintain the Lexicon Landmark and Map rows if delivery changes them, the Runbook
 | 2026-10-02 | none | Re-verified and re-anchored at integration 5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a after four PRs landed. | Map only; the asserted counts, tool commands, collections and the S-00M status were re-read at that tip; no runtime proof claimed. | This Spec. | Plan, implementation and proof remain. |
 | 2026-10-05 | none | Owner decisions of 2026-10-05: twelve directions become landmarks and this artifact goes first; prefix and DDR listing settled; twelve DQCs captured; the Director queued this Spec for dispatch. | Map only; no runtime proof claimed. | This Spec, DDR-001H, DQC-006P to DQC-007A. | Plan, implementation, the twelve landmarks and proof remain. |
 | 2026-10-05 | none | Plan launched by the Dispatcher (claude-s003z-dispatcher) on branch claude/s003z-dispatcher from integration 35187ee6: one Spec, eight Task records TK-008D to TK-008K, Spec activated with convert-tasks --activate. | Actuality inspected at 35187ee6 as the slices section names; doctor no blocking finding; render clean; guardrail baseline 73/100 (recommendations: outcome evidence and a fresh dated evidence row); self-drift pre receipt: 11 findings, 5 blocks-clean-update, all pre-existing stale claims on S-003W, S-00Q, S-01H, S-01P and S-01S and stale v3.1.4 seeds, none from this Spec. | This Spec. | Every Task remains; implementation and proof not claimed. |
+| 2026-10-06 | TK-008D | Task closed | PR #375 merged into integration at 26a969cbe11d94ca054b4ad6f0eda2a75bd75ec8 (merge of candidate 92cfb0e46c9d1ab792c16444476291eb5f4958df, base 4bdf2b0f); full Runbook suite 51/51 on 92cfb0e4 (DONE total=51 fail=0); targeted red at 932226c6 then green: test-spec-workbench 59/0, test-workbench-layout 74/0, test-diagnostics 36/0; render clean; doctor no blocking finding; check-append-only CLEAN; gate --task TK-008D --spec S-003Z Task-PR form not refused | templates/LANDMARK.md added; workbench/manifest.json migrated; Runbook, Lexicon and Wiki updates are routed to TK-008J by the Spec's slice plan | none for this Task; out-of-lane diagnostics.mjs registration of malformed-landmark reported in PR #375 |
 
 ## Completion Result
 

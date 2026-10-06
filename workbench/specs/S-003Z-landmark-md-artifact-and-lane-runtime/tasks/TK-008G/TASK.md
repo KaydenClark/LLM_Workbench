@@ -3,7 +3,7 @@
 **Task ID:** TK-008G
 **Spec ID:** S-003Z
 **Slice:** A Task directly under an assigned landmark is selected, claimed, closed and receipted with its own Task-PR gate
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-008D
 **Destination:** spec-acceptance: A `LANDMARK.md` can be authored from the template, validated, and assigned in a fixture room, and a Task under the assigned landmark can be selected and claimed.
