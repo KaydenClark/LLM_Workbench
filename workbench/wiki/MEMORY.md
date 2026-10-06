@@ -85,6 +85,7 @@ belong to their individual Specs as they are authored.
 - [To-tasks](skill-to-tasks.md) - cut an activated Spec into executable Tasks
 - [Adoption](skill-adoption.md) - bring an existing project into the Workbench once
 - [Genesis](skill-genesis.md) - start a new room from a founding prompt
+- [Improve harness](skill-improve-harness.md) - improve one harnessed job through one loop and keep only what earns its cost; the fifteen-skill harness-review family it replaces is its history
 - [Skills draft wiki](skills-draft/README.md) - the prototype collection and its article template for drafting each skill's connection findings; no draft article is written yet
 
 ## Planned And Optional Skill References
