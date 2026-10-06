@@ -3,12 +3,11 @@
 **Task ID:** TK-005N
 **Spec ID:** S-004C
 **Slice:** Make the Lexicon and the orientation text say what the carriers now are
-**Status:** done
+**Status:** ready
 **Stance:** Builder
 **Blockers:** TK-005K
 **Destination:** spec-acceptance: The Lexicon says what terms mean and where each kind of information belongs (Desired Behavior items 1 to 3), and the Documentation Impact of this Spec (Lexicon rows, Context Map routes, README setup text, routed Wiki articles) is applied once the carriers have their new shape.
 **Planned verification:** Red: `tools/test-control-fidelity.mjs` or `tools/test-controls-vocabulary-sweep.mjs` gains a check that fails while the root Lexicon still says the carriers' rewrite is "not yet specified", still describes the accepted destination as a future shape, or the Context Map still routes "Operations and procedures" to Runbook sections whose bodies moved, and while `templates/LEXICON.md` and the README setup text name the old shape. Green: those checks pass, the Lexicon's carrier-definition and Context Map rows and `templates/LEXICON.md` agree with the delivered shape and name the Runbook index as the route to an operation, the README setup text agrees, the Wiki lint of touched pages is clean, and `tools/test-governance-core.mjs`, `node tools/evaluate-workbench.mjs --path templates --include-controls` (score held) and the full AGENTS suite pass on the committed candidate.
-**Proof:** Full suite 51/51 at 2cbe4976 (dirty []); red a48eb272, green test-control-fidelity 39/39 (Lexicons and README describe the delivered shape and route operations through the Runbook index; review-independence example reachable through all three carriers); landing check ok vs pin d7ffffe9; evaluator 106.6/113 and 113/113, guardrails 78/100 held
 
 ## Outcome
 
@@ -53,6 +52,10 @@ later").
 
 No edit while another candidate holds the Lexicon. No decision on the Lexicon's
 own contract-artifact status. The accepted decision record stays history.
+
+## Narrowed, 2026-10-05
+
+The owner decided the Lexicon retires ([the decision](../../../../docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md)); its retirement is owned by [Lexicon Retirement And ARCHITECTURE.md](../../../S-004O-lexicon-retirement-and-architecture-md/SPEC.md). This Task edits only the carrier-definition, pointer and routing rows and the orientation text, so the Lexicon reads true until it retires, and does not start the retirement.
 
 ## Receipt
 

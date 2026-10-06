@@ -53,11 +53,13 @@ Contract change.
 | Correct a failed review | A verdict or owner finding failed and its findings return to the still-open Spec. | [dispatcher](workbench/skills/dispatcher/SKILL.md#assembled-review-and-corrective-return) |
 | Record owner Human QA and complete | The owner approves delivered work, or main containment must be proven before `complete`. | [director](workbench/skills/director/SKILL.md#owner-human-qa-and-main-before-complete); closure rules: [director](workbench/skills/director/SKILL.md#owner-closure-and-reconciliation) |
 | Capture, retire or recover a completed Spec | After `complete`: feature capture, retirement, discard or recovery. | [director](workbench/skills/director/SKILL.md#documentation-feature-capture-retirement-and-recovery); this room's examples: [Documentation: feature capture, retirement and recovery](#documentation-feature-capture-retirement-and-recovery) |
+| Deliver a landmark through its lifecycle | You author, assign, nest a Spec or Task under, review, approve or retire a `LANDMARK.md`. | [Landmark Lifecycle](#landmark-lifecycle) |
+| Move a Spec into, out of or between landmarks | A Spec gains, changes or drops its parent landmark. | [Landmark Lifecycle](#landmark-lifecycle) |
 | Write or accept a decision record | A decision record (ADR or DDR) is proposed, accepted, superseded, deprecated, read, linked or validated. | [to-docs](workbench/skills/to-docs/SKILL.md#decision-records) |
 | Prove the composed round trip | Full verification runs, or the composed workflow changed. | [workbench-release](workbench/skills/workbench-release/SKILL.md#composed-round-trip) |
 | Check the portability and privacy matrix | A release matrix row or its privacy check changed. | [workbench-release](workbench/skills/workbench-release/SKILL.md#portability-and-privacy-matrix) |
 | Prove cross-provider resume | A release gate needs proof that another provider resumes from a clean clone. | [workbench-release](workbench/skills/workbench-release/SKILL.md#cross-provider-resume-proof) |
-| Allocate a visible identifier | You need a new Spec, Task, note or other visible identifier. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#visible-identifiers) |
+| Allocate a visible identifier | You need a new Spec, Task, landmark, note or other visible identifier. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#visible-identifiers) |
 | Answer or process the Grill Board | The owner answers pending items (Spec gates, decisions, cards, decision-record texts) as a package, or an agent carries his saved answers into their owners and marks them applied. | [Grill Board](workbench/grill-board/README.md#grill-board) |
 | Use the Landmark Tracker | Concept understanding (DQCs, landmarks) changes, or the Tracker view is needed. | [notepad](workbench/skills/notepad/SKILL.md#landmark-tracker-accepted-design-and-available-operations) |
 | Keep a JSON notepad | Meaningful work needs a local note created, resumed, appended, trimmed or cleaned up. | [notepad](workbench/skills/notepad/SKILL.md#runtime-reference) |
@@ -81,7 +83,7 @@ Contract change.
 | Run the automated feedback gate | Scheduled feedback automation runs or is configured. | [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#automated-feedback-gate) |
 | Record an automation run outcome | A scheduled run finished and its outcome must be recorded. | [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#automation-run-outcomes) |
 | Branch and open a pull request | You create a task branch or open a PR into integration, or need this room's Git commands. | [implement](workbench/skills/implement/SKILL.md#version-control-procedures); this room's commands: [Version-Control Procedures](#version-control-procedures) |
-| Merge, prove containment and clean up a branch | The integration review passed: merge the reviewed candidate, prove integration contains it and delete the merged branch. | [implement](workbench/skills/implement/SKILL.md#branch-completion); this room's closeout commands: [Version-Control Procedures](#version-control-procedures) |
+| Merge, prove containment and clean up a branch | A Task's merge answers are validated, or an assembled Spec candidate's Verify review passed: merge, prove integration contains it and delete the merged branch. | [implement](workbench/skills/implement/SKILL.md#branch-completion); this room's closeout commands: [Version-Control Procedures](#version-control-procedures) |
 | Write a manual harness feedback report | A setup-only Round One check succeeded and an assessment is assigned. | [workbench-evaluation](workbench/skills/workbench-evaluation/SKILL.md#manual-harness-feedback-reports) |
 | Troubleshoot a known failure | A command fails with a symptom listed there. | [Troubleshooting](#troubleshooting) |
 | Recover or roll back | A change fails and its touched files must be restored or reverted. | [implement](workbench/skills/implement/SKILL.md#recovery-and-rollback); this room's data and backup branches: [Recovery And Rollback](#recovery-and-rollback) |
@@ -89,7 +91,7 @@ Contract change.
 | Size and continue work | You size a Task or leave work a fresh context can resume. | [Evidence And Continuation Practices](#evidence-and-continuation-practices); [notepad](workbench/skills/notepad/SKILL.md#continuing-after-a-save-or-handoff); [save](workbench/skills/save/SKILL.md#evidence-partitioning); [to-tasks](workbench/skills/to-tasks/SKILL.md#sizing-a-task) |
 | Check the Workbench connection identity | A room's `workbenchId` is created, read or compared. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#workbench-connection-identity) |
 | Check configured-host capabilities | A host is set up, or its lanes, skill discovery or tool execution are in doubt. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#configured-host-capability-checks) |
-| Review a candidate independently | A candidate needs separate-context review before integration, or a main-readiness or incident-claim review is requested. | [code-review](workbench/skills/code-review/SKILL.md#independent-review-boundaries) |
+| Review a candidate independently | An assembled Spec or landmark is at its Verify step and needs separate-context review, or a main-readiness or incident-claim review is requested. | [code-review](workbench/skills/code-review/SKILL.md#independent-review-boundaries) |
 
 ## Release Identity
 
@@ -183,7 +185,7 @@ authorized by ordinary language; do not wait for a second skill invocation.
 | Preserve or resume meaningful work | `notepad`; verify live state and returned revision |
 | Reconcile agreed claims | `promote` with `to-docs` and `save`; no implied implementation |
 | Write specifications only | `to-spec` and needed `to-tasks`; stop at the specified endpoint |
-| Deliver assigned work | `carry` with `implement`, verification, independent integration review and `save` |
+| Deliver assigned work | `carry` with `implement`, verification, Task merge answers, independent Verify review of the assembled Spec and `save` |
 | Transfer a job or report to another context | core `handoff`; recipient purpose, instructions and context within assigned role scope |
 | Review a candidate or readiness | `code-review`; report only, no implementation or main merge |
 
@@ -293,6 +295,7 @@ node tools/test-controls-vocabulary-sweep.mjs
 node tools/test-carrier-landing.mjs
 node tools/test-runbook-index.mjs
 node tools/test-spec-report.mjs
+node tools/test-landmark-wiki.mjs
 node tools/test-self-drift.mjs
 node tools/test-feedback-inventory.mjs
 node tools/test-grilling-ledger.mjs
@@ -498,6 +501,62 @@ The cross-provider resume release proof: a maintainer procedure of this reposito
 Allocate and widen the visible identifiers of Specs, Tasks, decision records
 and notepads through the procedure in the
 [`workbench-runtime` skill](workbench/skills/workbench-runtime/SKILL.md#visible-identifiers).
+
+### Landmark Lifecycle
+
+A landmark is a `LANDMARK.md` artifact one size above a Spec
+([ADR-000U](workbench/docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md)):
+its folder `workbench/landmarks/LMK-###-slug/` holds `LANDMARK.md`, its child
+Specs in `specs/` and its direct Tasks in `tasks/`, each with a `retired/`
+lifecycle folder. Copy `templates/LANDMARK.md`; `doctor` reports a broken
+artifact as `malformed-landmark` and a misnamed folder as `unstable-path`.
+Examples name LMK-001, S-001 and TK-001; substitute the actual IDs and quoted
+values. The [Landmarks article](workbench/wiki/design-concepts/landmarks-one-size-above-specs.md)
+explains the model.
+
+```bash
+node workbench/tools/spec-workbench.mjs next-id --prefix LMK --json
+node workbench/tools/spec-workbench.mjs move-spec S-001 --landmark LMK-001
+node workbench/tools/spec-workbench.mjs move-spec S-001 --landmark none
+node workbench/tools/spec-workbench.mjs claim LMK-001 --agent NAME
+node workbench/tools/spec-workbench.mjs show LMK-001
+node workbench/tools/spec-workbench.mjs receipt LMK-001 --task TK-001 --tests "..." --docs "..." --remaining-gap "..."
+node workbench/tools/spec-workbench.mjs close LMK-001 --proof "..." --docs "..." --remaining-gap "..."
+node workbench/tools/spec-workbench.mjs gate --task TK-001 --landmark LMK-001
+node workbench/tools/spec-workbench.mjs move-task LMK-001 --task TK-001 --to retired
+node workbench/tools/spec-workbench.mjs report LMK-001 --candidate SHA
+node workbench/tools/spec-workbench.mjs verify LMK-001
+node workbench/tools/spec-workbench.mjs verdict LMK-001 --candidate SHA --digest DIGEST --result pass|fail --findings "..." --reviewer "..."
+node workbench/tools/spec-workbench.mjs approve LMK-001 --candidate INTEGRATION_SHA --digest DIGEST --owner "..."
+node workbench/tools/spec-workbench.mjs retire-landmark LMK-001 --wiki workbench/wiki/design-concepts/landmark-durable-plans.md
+```
+
+- `move-spec --landmark LMK-###|none` moves an active-roster Spec into a
+  landmark, between landmarks or back to `workbench/specs/` through the
+  link-safe move: every live reference is rewritten, historical ones counted,
+  and the moved record's links to unmoved files recomputed. It never combines
+  with `--to`, and it does not edit the landmark's Child Specs list.
+- A Task directly under a landmark names `**Landmark ID:**` in place of
+  `**Spec ID:**`. `next` and `claim LMK-###` offer it only while the landmark is
+  `active` and its Owner is not `unassigned`; `close` appends to the landmark's
+  evidence log, and `gate --task --landmark` reports its Task PR under the same
+  exemption a Spec's Task PR uses.
+- `report`, `verify` and `verdict` on a landmark are the whole-landmark review:
+  `verify` refuses while a child Spec is neither complete nor retired or a
+  direct Task is not done; `verdict` refuses a reviewer who took part in the
+  landmark, answers a fail with corrective Tasks under the landmark without
+  touching a child Spec's gate, and sets the landmark `reached` on a pass with
+  every child closed and every reached check ticked.
+- `approve LMK-###` records only the owner's actual approval, bound to the
+  landmark's committed content; it records no owner finding.
+- `retire-landmark LMK-### --wiki PAGE` refuses by name until the landmark is
+  reached with no open child, a current pass verdict, a clean tree, the owner's
+  approval and a Landmark Wiki page in the Wiki lane whose `source_paths` names
+  the historical `LANDMARK.md` route; then it moves the whole folder to
+  `workbench/landmarks/retired/`, staged and uncommitted.
+
+A landmark-direct Task executes only under an assigned landmark until the
+Instruction Authority list in `AGENTS.md` names an assigned landmark.
 
 ### Landmark Tracker: accepted design and available operations
 
@@ -716,10 +775,12 @@ git diff --check
 gh pr create --base integration --fill
 ```
 
-Closeout, once the integration review has passed. Export `TASK_BRANCH`,
+Closeout, once the Task's merge answers are validated or the Spec candidate's
+Verify review has passed. Export `TASK_BRANCH`,
 `PR_NUMBER`, and the reviewed full commit SHA as `EXPECTED_HEAD` before running
 this block. Export `CLEANUP=no` when the owner defers cleanup; otherwise use
-`CLEANUP=yes`. Review must cover the live integration comparison before merging.
+`CLEANUP=yes`. The merge answers or Verify review must cover the live integration
+comparison before merging.
 Export `SPEC_ID` naming the Spec this candidate is presented for. Export
 `TASK_ID` when the candidate is a Task PR (a Task ID with its Spec still
 open - what every PR is while S-00O exemption 2 holds); leave it unset for a
@@ -862,6 +923,6 @@ discovery and invocation, managed-tool execution) through the procedure in the
 
 ## Independent Review Boundaries
 
-Task and integration review, main-readiness review and incident-claim evidence
+Verify review of an assembled Spec, main-readiness review and incident-claim evidence
 follow the
 [`code-review` skill](workbench/skills/code-review/SKILL.md#independent-review-boundaries).

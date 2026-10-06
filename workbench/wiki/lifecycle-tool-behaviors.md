@@ -11,12 +11,14 @@ provenance:
   - close refusals and the verdict digest scope re-verified against source while documenting them for S-00M TK-004, 2026-10-02
   - Finding dispositions and the retired Wiki-claim corrective close re-verified against source for S-004F TK-005R and TK-005S, 2026-10-03
   - S-004C TK-005G moved the Runbook and AGENTS lifecycle procedures behind their index pointers into the implement, dispatcher and director skills, 2026-10-03
+  - The move-spec section and the append-only scope checked against source for the LANDMARK.md Artifact And Lane Runtime Spec (S-003Z), Task TK-008J (landmark templates and documentation), 2026-10-06
 source_paths:
   - workbench/tools/spec-workbench.mjs
   - tools/check-append-only.py
   - workbench/tools/sessions.mjs
   - workbench/tools/workbench-layout.mjs
   - workbench/tools/spec-report.mjs
+  - workbench/tools/landmark-artifact.mjs
   - RUNBOOK.md
   - workbench/skills/implement/SKILL.md
   - workbench/skills/dispatcher/SKILL.md
@@ -27,7 +29,8 @@ last_verified: 2026-10-03
 # Lifecycle tool behaviors
 
 Non-obvious behaviors of the Workbench lifecycle tools, each re-checked against
-source on 2026-09-26 (the `close` and `verdict` sections on 2026-10-02). The
+source on 2026-09-26 (the `close` and `verdict` sections on 2026-10-02, the
+`move-spec` section and the append-only scope on 2026-10-06). The
 commands themselves are documented in the lane skills the
 [RUNBOOK operations index](../../RUNBOOK.md#operations-index) points to:
 [implement](../skills/implement/SKILL.md#worker-selection-implementation-and-hand-back),
@@ -95,14 +98,35 @@ surprises agents.
   merge as open there; that belongs in `Next gate`), or the post-merge records
   update moves the digest and needs a fresh review.
 
+## `spec-workbench.mjs move-spec`
+
+- **A Spec has two homes, and a move changes one or the other, never both.**
+  `move-spec S-### --to retired` retires a Spec within its own home;
+  `move-spec S-### --landmark LMK-###` moves an active-roster Spec into a
+  landmark's `specs/` folder or between landmarks, and `--landmark none` moves
+  it back to the Blueprint-level `workbench/specs/`. Giving both is refused,
+  and an already retired Spec is not reparented.
+- **Every link is recomputed, not only Markdown ones.** The move rewrites
+  every live reference to the Spec and counts the historical ones, and the
+  moved record's own outgoing links to files that did not move, non-Markdown
+  files included, are recomputed for the new folder depth.
+- **The landmark's lists are not edited.** Moving a Spec into a landmark does
+  not add it to that `LANDMARK.md`'s Child Specs list, and a move out can leave
+  an empty, untracked `specs/` folder behind; edit the list and remove the
+  folder by hand. The artifact itself is explained in
+  [Landmarks: The LANDMARK.md Artifact One Size Above A Spec](design-concepts/landmarks-one-size-above-specs.md).
+
 ## Append-only evidence
 
 `tools/check-append-only.py` identifies a row by its Date, Task and Event cells
 and requires the text first published for that identity to survive verbatim. It
-scans every commit on the branch, merged or not. So a wrong row is corrected by
-appending a correction row; if the Event cell itself is wrong, an in-place edit
-forks the identity and restoring it reads as a deletion, so cut a fresh branch
-(`cherry-pick -n`, correct, commit once) rather than force-push.
+scans every commit on the branch, merged or not, across every Blueprint-level
+Spec, every `LANDMARK.md` (active and retired) and every Spec nested in a
+landmark's `specs/` folder. So a wrong row is corrected by appending a
+correction row; if the Event cell itself is wrong, an in-place edit forks the
+identity and restoring it reads as a deletion, so cut a fresh branch
+(`cherry-pick -n`, correct, commit once) rather than force-push. The history is
+read per path, so a record's replay restarts at its new path after a move.
 
 ## `sessions.mjs promote`
 

@@ -4,8 +4,8 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - S-002F TK-003E article, 2026-09-29
-  - Owner-confirmed minimum role/stance buildout ROLE-1..ROLE-4, 2026-09-27
+  - S-002F (Spec Planner Stance Spec) TK-003E (Route the spec-planner article from the Wiki router) article, 2026-09-29
+  - Owner-confirmed minimum role/stance buildout ROLE-1 (Role and stance separation)..ROLE-4 (Integration-first continuity), 2026-09-27
 source_paths:
   - workbench/skills/spec-planner/SKILL.md
   - workbench/specs/S-002F-spec-planner-stance/SPEC.md
@@ -38,9 +38,9 @@ The mechanics follow `to-tasks`. Every new ID comes from `spec-workbench.mjs nex
 
 ### Example, from the verification run
 
-A disposable room held a small CLI ledger app, one planned Spec S-001 (export the ledger to CSV, share one formatter, reject negative amounts, keep one test entry point) with an open owner decision about the timestamp format, a planned sibling S-002 for a dashboard, and two Worker drafts. Draft A proposed two Tasks that both edited the formatter and said they could run at once. Draft B proposed one in-scope Task and one dashboard Task "because the demo is Friday".
+A disposable room held a small CLI ledger app, one planned Spec S-001 (export the ledger to CSV, share one formatter, reject negative amounts, keep one test entry point) with an open owner decision about the timestamp format, a planned sibling S-002 (planned dashboard sibling Spec) for a dashboard, and two Worker drafts. Draft A proposed two Tasks that both edited the formatter and said they could run at once. Draft B proposed one in-scope Task and one dashboard Task "because the demo is Friday".
 
-The planner read the Spec, S-002, the source and the single test file before cutting anything, ran the test entry point and two CLI probes (a negative amount was accepted; `export` was parsed as an amount), and noticed from the source that the ledger lived only in process memory. It cut three Tasks with IDs from `next-id` and activated the Spec once. Because every slice writes the one test file, and two of them also write the CLI or the formatter, it ran the groups in series and gave each shared file an ordered writer table rather than letting draft A's two Tasks race. It kept draft B's dashboard Task out of S-001, since S-002 owns it and S-001 lists a dashboard as a Non-Goal, and surfaced it to the Director without acting on the Friday pressure. It left the timestamp slice uncut behind its open owner decision. It also found a second open decision, whether entries should persist between CLI runs, recorded it in the Spec with options and a recommendation, and did not cut a persistence slice. Its hand-off told Spec Manager the dispatch order, what each Worker may write, the open gates and that the IDs were proposals held only on the Spec branch until the plan reached integration.
+The planner read the Spec, S-002 (planned dashboard sibling Spec), the source and the single test file before cutting anything, ran the test entry point and two CLI probes (a negative amount was accepted; `export` was parsed as an amount), and noticed from the source that the ledger lived only in process memory. It cut three Tasks with IDs from `next-id` and activated the Spec once. Because every slice writes the one test file, and two of them also write the CLI or the formatter, it ran the groups in series and gave each shared file an ordered writer table rather than letting draft A's two Tasks race. It kept draft B's dashboard Task out of S-001 (ledger CSV export scenario Spec), since S-002 (planned dashboard sibling Spec) owns it and S-001 (ledger CSV export scenario Spec) lists a dashboard as a Non-Goal, and surfaced it to the Director without acting on the Friday pressure. It left the timestamp slice uncut behind its open owner decision. It also found a second open decision, whether entries should persist between CLI runs, recorded it in the Spec with options and a recommendation, and did not cut a persistence slice. Its hand-off told Spec Manager the dispatch order, what each Worker may write, the open gates and that the IDs were proposals held only on the Spec branch until the plan reached integration.
 
 ## Not the historical Planner role
 
@@ -55,9 +55,9 @@ The GPT_OS Planner informed this model as an example of Task preparation, in the
 
 ## Verified behavior and limits
 
-**Verified 2026-09-30:** `tools/test-skill-catalog.mjs` holds the source contract: the four stance sections and the shared authority sentences, composition with the Dispatcher role, no Tasks for a merely planned Spec, complete-path slices, one named writer per shared file, concurrency groups, proposed versus executable Tasks, `next-id`, `convert-tasks --activate`, the Spec Manager hand-off and the Director escalation. It also pins the bundle position: `spec-planner` follows `dispatcher` in the coordination group; since S-002G it sits immediately before `spec-manager`, which precedes `builder`. One fresh-context agent, given only the skill text, the room's `AGENTS.md` and a scripted Dispatcher assignment, produced the plan in the example above. The fixture room's `doctor` reported no blocking finding afterwards, and the app source, the drafts and S-002 were unchanged. The evidence is in the [Spec evidence](../specs/S-002F-spec-planner-stance/SPEC.md#append-only-evidence-and-execution-log).
+**Verified 2026-09-30:** `tools/test-skill-catalog.mjs` holds the source contract: the four stance sections and the shared authority sentences, composition with the Dispatcher role, no Tasks for a merely planned Spec, complete-path slices, one named writer per shared file, concurrency groups, proposed versus executable Tasks, `next-id`, `convert-tasks --activate`, the Spec Manager hand-off and the Director escalation. It also pins the bundle position: `spec-planner` follows `dispatcher` in the coordination group; since S-002G (Spec Manager Stance Spec) it sits immediately before `spec-manager`, which precedes `builder`. One fresh-context agent, given only the skill text, the room's `AGENTS.md` and a scripted Dispatcher assignment, produced the plan in the example above. The fixture room's `doctor` reported no blocking finding afterwards, and the app source, the drafts and S-002 (planned dashboard sibling Spec) were unchanged. The evidence is in the [Spec evidence](../specs/S-002F-spec-planner-stance/SPEC.md#append-only-evidence-and-execution-log).
 
-**Limits:** that was one run with one model. The owner, the Director and both Worker drafts were scripted, and no Worker ran. The room had no remote, so `next-id` reservations and claims were local only. The run shows the method being followed once, not that it improves outcomes, and it is not owner Human QA. The skill named the Dispatcher role, the Spec Manager stance, ADR-000P and the role model by paths in this repository, and the agent reported that those paths were missing from the fixture room. S-002G replaced the two Spec-path references with the shipped `dispatcher` and `spec-manager` skill names; the ADR-000P and role-model paths remain repository-only, so an installed room still lacks those two.
+**Limits:** that was one run with one model. The owner, the Director and both Worker drafts were scripted, and no Worker ran. The room had no remote, so `next-id` reservations and claims were local only. The run shows the method being followed once, not that it improves outcomes, and it is not owner Human QA. The skill named the Dispatcher role, the Spec Manager stance, ADR-000P (Roles scope work and stances define the job) and the role model by paths in this repository, and the agent reported that those paths were missing from the fixture room. S-002G (Spec Manager Stance Spec) replaced the two Spec-path references with the shipped `dispatcher` and `spec-manager` skill names; the ADR-000P (Roles scope work and stances define the job) and role-model paths remain repository-only, so an installed room still lacks those two.
 
 ## Sources
 
@@ -72,6 +72,6 @@ The GPT_OS Planner informed this model as an example of Task preparation, in the
 
 ## History
 
-- 2026-09-29: Created by S-002F TK-003E.
-- 2026-09-30: Example and verified behavior reconciled from the TK-003F scenario; linked the landed Dispatcher entry.
-- 2026-09-30: S-002G cross-link pass: sibling capabilities link their articles; Spec-path limit and bundle position updated.
+- 2026-09-29: Created by S-002F (Spec Planner Stance Spec) TK-003E (Route the spec-planner article from the Wiki router).
+- 2026-09-30: Example and verified behavior reconciled from the TK-003F (Prove the planning scenario with a fresh-context Dispatcher) scenario; linked the landed Dispatcher entry.
+- 2026-09-30: S-002G (Spec Manager Stance Spec) cross-link pass: sibling capabilities link their articles; Spec-path limit and bundle position updated.

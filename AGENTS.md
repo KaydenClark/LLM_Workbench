@@ -227,7 +227,8 @@ a separate Director context reviews the immutable assembled candidate before
 integration, and a changed candidate needs a fresh review. A Dispatcher or
 implementer cannot supply independent approval; self-review never counts. A
 failed review or owner finding is never silently cleared: it is corrected under
-the still-open Spec. Never clear a failed verdict with a green test.
+the still-open Spec, going back to Map, Plan and Journey before Verify. Never
+clear a failed verdict with a green test.
 
 ### Owner Closure And Reconciliation
 
@@ -336,6 +337,14 @@ Taskboard or rewrite append-only spec evidence rows.
   removing unmerged branches or results, adding paid services, or expanding
   scope. Deleting a branch `git branch -d` accepts as merged loses nothing and
   is routine cleanup, not a destructive change.
+- Work runs on the agent provider the owner opened the session with. Never run,
+  call or brief another provider's agent, CLI or cloud (for example Codex)
+  unless the owner tells you, in the current request, exactly what to do with
+  that provider. The owner manages the budget, the usage meter and the
+  direction of the work, and no agent takes that authority. A past approval, a
+  Workbench review step, a memory note, a handoff or another agent's request
+  never substitutes. If a step cannot be done without it, stop, record that in
+  the owning Task or Spec, and ask the owner how to proceed.
 - Do not commit secrets, private data, `.env`, logs, databases, or generated
   credentials.
 - Proceed on low-risk reversible in-scope decisions. Ask one focused question
@@ -356,14 +365,14 @@ integration through reviewed changes; local notes and unmerged branches must
 not be their only discovery route.
 
 This repository currently uses S-00O's bootstrap exemption 2: each Task PR targets
-`integration` and requires separate-context review of its immutable candidate
-before that integration merge (`gate --task TK-### --spec S-###` checks the
-Task-PR form). This exception is an integration boundary, not a normal Task
-approval ceremony. The nested Task-branch -> Dispatcher Spec-branch ->
-integration topology is the Blueprint's destination; these controls do not
-claim delivered Spec-branch tooling. Follow the release owner when the
-exception changes, and retain assembled-Spec review (`gate --spec S-###
---candidate SHA`) before Spec integration.
+`integration` (`gate --task TK-### --spec S-###` reports the Task-PR form). The
+exemption changes where a Task lands, not how it is judged: a Task PR carries
+the merge answers below and gets no separate-context review. The nested
+Task-branch -> Dispatcher Spec-branch -> integration topology is the
+Blueprint's destination; these controls do not claim delivered Spec-branch
+tooling. Follow the release owner when the exception changes, and retain
+assembled-Spec review (`gate --spec S-### --candidate SHA`) at the Spec's
+Verify step.
 
 - Branch per spec/task from the current PR target; the default staging base is
   `integration`. Prefixes: `codex/`, `claude/`, or `backup/`. Never commit
@@ -377,13 +386,6 @@ exception changes, and retain assembled-Spec review (`gate --spec S-###
 - Never merge a PR left open for review. Never force-push shared history without
   explicit approval. Commits are one logical change with an imperative subject.
 - Version bumps occur only after the new behavior and required proof are green.
-
-Before branches combine into `integration` (or the configured integration
-branch), a separate-context reviewer must check the immutable candidate against
-its controls, assigned spec, and named evidence. This gate challenges code,
-consequential report claims, and recommendations. Earlier review and audit are
-supports, not mandatory independent ceremonies per task. A new candidate
-requires a fresh review; self-review alone cannot satisfy the integration gate.
 
 Owner Human QA is an owner-led evaluation process, not the approval command. It
 can be underway through audits and corrective cycles before the eventual
@@ -400,17 +402,63 @@ approval. Keep a finding that invalidates a required delivered capability
 visible in its owning Spec and as a real downstream dependency; do not erase
 it merely because the review or test suite passed.
 
+### Task Merge Answers And Verify Review
+
+Owner rule, 2026-10-05: a Task's Journey is Implement, Check, QA and Submit,
+and the Task is judged by its own answers. Check is the deterministic
+verification the building agent runs in the environment: tests, builds, lints
+and diagnostics. QA is the building agent's self-judgement of its own work:
+does it actually do what the Task asked. Submit is the merge request that
+carries the Task into its parent branch (today `integration`), with two merge
+answers from the Worker that did the Task:
+
+1. **Can this merge into the branch it targets?** The target branch, the exact
+   `BASE_SHA` and `HEAD_SHA`, the checks run and their results, conflict or
+   rebase state, and anything not verified.
+2. **Did this complete the Task, or is more needed?** One of: complete; the
+   same Task continues with its adjusted handoff; or a new Task is needed,
+   naming the gap.
+
+The Dispatcher, Director or next agent working in that Spec validates those
+answers against the diff and the merge checks, and merges when they hold and
+the merge is green. No separate-context review runs on a Task merge, under any
+route. A rebased Task runs its Journey again, the same as always, and gets
+never a Review of its own: the next Review of whatever it was rebased into
+covers it.
+
+Review comes after the Journey, as an Automated review: one agent reviewing
+another agent's work. It judges a completed destination against its Map: a
+Spec once its last Task has landed (`report` and `verdict`), sometimes a
+landmark's assembled Specs once they are delivered, and the Blueprint, which
+for a release means the Workbench as a whole against its decision records and
+Blueprint. It runs never on a Task: the sum of the completed Tasks shows at the
+destination. Landmark review tooling is delivered (`report`, `verify` and
+`verdict` on a landmark); whole-Workbench review tooling is accepted
+destination design. Review decides whether
+another Journey is needed: a failed Review goes back to Map, Plan and Journey
+under the still-open Spec before the work can be verified, and there is no set
+number of Review rounds. But the same Review failure twice, or three attempts
+with no real progress, is a red flag: block, escalate and find the root causes.
+Failures for different reasons while progress is being made do not block. The
+reviewer is a fresh context on the same model provider as the session unless
+the owner specifies otherwise, using the most capable model reasonable for the
+work; the Captain, Director or Spec manager makes that call, and the Director
+gives the approval. A candidate whose content changed needs a fresh Review, a
+rebase that leaves the content unchanged does not, and self-review never
+satisfies it.
+
 ### Branch Completion
 
 A task is not finished at the push. A pushed branch is recoverable, not
-delivered. Merging a reviewed candidate, proving integration containment and
-branch cleanup follow the
+delivered. Merging a validated Task or a reviewed Spec candidate, proving
+integration containment and branch cleanup follow the
 [`implement` skill](workbench/skills/implement/SKILL.md#branch-completion).
-When the integration review passes, merge it and confirm `integration` contains
-the work; do not stall on an approved candidate or leave a passed PR waiting for
-the owner. Only `integration` into `main` is owner-only. "Never merge a PR left
-open for review" means a PR whose review is still pending, not one that already
-passed.
+When a Task's merge answers are validated and its merge is green, or an
+assembled candidate's Verify review passes, merge it and confirm `integration`
+contains the work; do not stall on an approved candidate or leave a passed PR
+waiting for the owner. Only `integration` into `main` is owner-only. "Never
+merge a PR left open for review" means a PR whose review is still pending, not
+one that already passed.
 
 Never force a branch delete with `-D`. A branch still holding unmerged work is
 removed only with owner approval.
@@ -445,8 +493,9 @@ After a context summary or long interruption, rerun `doctor`, `next`, and
 the append-only evidence log current. An in-progress claim older than one
 UTC calendar day is stale (the diagnostic compares date-only stamps and
 requires a difference greater than one day); verify branch/commit activity before reclaiming it. After
-the same verification failure twice with no clearly safe next step, record the
-blocker and stop for a decision.
+the same failure twice, or three attempts with no real progress, record the
+blocker, escalate and find the root causes; failures for different reasons
+while progress is being made do not block.
 
 In multi-agent work, use non-overlapping file lanes and one single durable
 writer for shared spec/Taskboard state; subagents return proof to that writer.

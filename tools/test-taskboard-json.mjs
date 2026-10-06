@@ -799,4 +799,39 @@ if (process.argv.includes('--demo')) {
     assert.equal(fs.readFileSync(path.join(root, 'TASKBOARD.md'), 'utf8'), board);
     assert.equal(fs.readFileSync(path.join(root, 'workbench/specs/CATALOG.md'), 'utf8'), catalog);
   }));
+
+  // S-003Z TK-008G: a Task directly under a landmark is a card under that
+  // landmark's card in both projections, offered only while the landmark is
+  // active and held by an owner other than `unassigned`.
+  test('a landmark-direct Task projects under its landmark and is offered only while the landmark is assigned', () => withRoom(root => {
+    const dir = 'workbench/landmarks/LMK-0AA-fixture';
+    const landmark = (owner) => `# LMK-0AA - Hold a readable direction\n\n**Landmark ID:** LMK-0AA\n**Status:** active\n**Priority:** 1\n**Owner:** ${owner}\n**Updated:** 2026-09-30\n**Catalog description:** Fixture direction\n**Blockers:** none\n**Latest event:** Fixture source\n**Next gate:** Reach the direction\n\n## Direction\n\nToward the fixture destination.\n\n## What Success Looks Like\n\n- [ ] The direction is reached.\n\n## Decision Records\n\n- none\n\n## Direct Tasks\n\n- [TK-00AA - Take a direct step](tasks/TK-00AA/TASK.md)\n\n## Append-Only Evidence And Execution Log\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n\n## Reached Result\n\nPending.\n`;
+    put(root, `${dir}/LANDMARK.md`, landmark('fixture-director'));
+    put(root, `${dir}/tasks/TK-00AA/TASK.md`, '# TK-00AA - Take a direct step\n\n**Task ID:** TK-00AA\n**Landmark ID:** LMK-0AA\n**Slice:** Take a direct step\n**Status:** ready\n**Blockers:** none\n**Destination:** spec-acceptance: LMK-0AA What Success Looks Like\n');
+    const later = spec(root, { id: 'S-00AB', priority: 5 });
+    task(root, later, { id: 'TK-00AB' });
+
+    const board = preview(root);
+    const card = board.lanes.toDo['TK-00AA'];
+    assert.ok(card, JSON.stringify(board.lanes));
+    assert.equal(card.landmarkId, 'LMK-0AA', 'the Task card names its landmark');
+    assert.equal(card.specId, undefined, 'and no Spec');
+    assert.deepEqual(card.sourceLinks, [`${dir}/tasks/TK-00AA/TASK.md`, `${dir}/LANDMARK.md`]);
+    const landmarkCard = board.lanes.toDo['LMK-0AA'];
+    assert.ok(landmarkCard, 'the landmark is a card of its own');
+    assert.equal(landmarkCard.assignee, 'fixture-director');
+    assert.deepEqual(landmarkCard.progress, { complete: 0, total: 1 });
+    assert.deepEqual(landmarkCard.sourceLinks, [`${dir}/LANDMARK.md`]);
+
+    const offered = selected(root, '--local');
+    assert.deepEqual([offered.landmarkId, offered.taskId], ['LMK-0AA', 'TK-00AA']);
+    assert.equal(command(root, 'render').status, 0);
+    assert.match(fs.readFileSync(path.join(root, 'TASKBOARD.md'), 'utf8'), /^\| \[LMK-0AA\]\(workbench\/landmarks\/LMK-0AA-fixture\/LANDMARK\.md\) \| TK-00AA: Take a direct step \(ready\) \| fixture-director \|/m);
+    assert.equal(command(root, 'doctor').status, 0, command(root, 'doctor').stdout);
+
+    // Unassigned: the card stays visible and the Task is never offered.
+    put(root, `${dir}/LANDMARK.md`, landmark('unassigned'));
+    assert.ok(preview(root).lanes.toDo['TK-00AA'], 'an unassigned landmark\'s Task stays visible');
+    assert.equal(selected(root, '--local').taskId, 'TK-00AB', 'and next passes it over');
+  }));
 }

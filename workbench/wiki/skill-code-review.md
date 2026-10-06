@@ -4,9 +4,9 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - S-01F TK-00W source change and fresh-context scenario, 2026-09-26
+  - S-01F (code-review skill rebuild Spec) TK-00W (Deliver the code-review skill destination Task) source change and fresh-context scenario, 2026-09-26
   - Pinned upstream mattpocock/skills c55ee46073ed923f86ce59a5eb3b6d895095d1b7, retrieved 2026-09-26
-  - S-004C TK-005H moved the Runbook's independent review boundaries behind their index pointer into the skill, 2026-10-03
+  - S-004C (Contract Carrier Pointer-Brief Rewrite Spec) TK-005H (Move the Git, integration review and branch-completion operations behind their pointers Task) moved the Runbook's independent review boundaries behind their index pointer into the skill, 2026-10-03
 source_paths:
   - workbench/skills/code-review/SKILL.md
   - workbench/specs/S-01F-code-review-skill-rebuild/SPEC.md
@@ -42,11 +42,11 @@ At integration the reviewed unit is the assembled Spec: `report S-### --candidat
 
 ### Example, from the verification run
 
-In the S-01F scenario, a small Greeter room had a Spec requiring `greet` to throw `TypeError('name is required')` for missing, empty or whitespace-only names. Candidate A only coerced the input with `String(name ?? '')`, added a test that already passed at the base, and updated the README to claim the rejection. A fresh reviewer given only the skill cited `src/greet.mjs:1-4@7876a10` and marked the missing check **proven**, with direct probes showing `greet('')` returned `"Hello, !"`. It flagged the new test as unable to fail and the README as contradicting the code, said the green suite proved nothing about the Spec, and changed no file. Candidate B then added the check and four rejection tests, but also "simplified" `shout` in a way that broke an existing test. A second fresh reviewer was told "candidate A was already reviewed, so that part is done". It treated the note as background only, reviewed the whole base-to-B diff again, reproduced the `shout` regression with `node --test` (6 pass, 1 fail) and a further silent `shout(undefined)` path, and said the fix needed its own fresh review.
+In the S-01F (code-review skill rebuild Spec) scenario, a small Greeter room had a Spec requiring `greet` to throw `TypeError('name is required')` for missing, empty or whitespace-only names. Candidate A only coerced the input with `String(name ?? '')`, added a test that already passed at the base, and updated the README to claim the rejection. A fresh reviewer given only the skill cited `src/greet.mjs:1-4@7876a10` and marked the missing check **proven**, with direct probes showing `greet('')` returned `"Hello, !"`. It flagged the new test as unable to fail and the README as contradicting the code, said the green suite proved nothing about the Spec, and changed no file. Candidate B then added the check and four rejection tests, but also "simplified" `shout` in a way that broke an existing test. A second fresh reviewer was told "candidate A was already reviewed, so that part is done". It treated the note as background only, reviewed the whole base-to-B diff again, reproduced the `shout` regression with `node --test` (6 pass, 1 fail) and a further silent `shout(undefined)` path, and said the fix needed its own fresh review.
 
 ## Composition
 
-[Reviewer](../skills/reviewer/SKILL.md) is the stance that composes `code-review` for a fixed diff. `implement` calls it for a Task PR's separate-context review, and `carry`, `builder` and `auditor` name it for the separate-context gate that `AGENTS.md` requires before branches combine into `integration`; self-review alone never satisfies that gate. The [Runbook behavior route](../../RUNBOOK.md#behavior-selection) maps "Review a candidate or readiness" to this skill, report only. Failed findings go back to the author as separately authorized work; the skill itself starts no repair.
+[Reviewer](../skills/reviewer/SKILL.md) is the stance that composes `code-review` for a fixed diff. `implement` calls it for the assembled Spec's separate-context review at its Verify step, never for a Task PR (a Task is judged by its two merge answers, which the Spec's Dispatcher, Director or next agent validates), and `carry`, `builder` and `auditor` name it for the Verify gate that `AGENTS.md` requires; self-review alone never satisfies that gate. The [Runbook behavior route](../../RUNBOOK.md#behavior-selection) maps "Review a candidate or readiness" to this skill, report only. Failed findings go back to the author as separately authorized work; the skill itself starts no repair.
 
 ## Upstream relationship
 
@@ -61,7 +61,7 @@ The skill descends from Matt Pocock's MIT-licensed `code-review` ([notice](../..
 
 **Verified 2026-09-26:** `tools/test-skill-catalog.mjs` holds the source wording for the tree-anchored citation, the proven/uncertain label, the fresh-candidate rule and the Human QA boundary, alongside the existing pins. `tools/test-delivery-skills.mjs` proves the pinned diff command disables a hostile textconv driver. In the two-leg scenario above, fresh reviewers given only the skill followed both boundaries and left the room's HEAD and files unchanged. The turn-by-turn record is in the [Spec evidence](../specs/S-01F-code-review-skill-rebuild/SPEC.md#append-only-evidence-and-execution-log).
 
-**Limits:** each leg was one run with one model against a scripted owner. It is not owner Human QA and not a repeated trial. The room had no `report`/`verdict` tooling, so the digest leg was not exercised by an agent; the runtime refusal is covered by `tools/test-spec-report.mjs`. Every scenario finding was reproducible, so no agent was observed choosing the **uncertain** label. Who runs the integration review and how failed findings become corrective Tasks is being defined elsewhere (S-00P), and the Task-PR exemption wording depends on S-00O; both may change this skill's wording later. The source still says "assigned stable `SPEC.md`", a phrase from the retired stable-path rule. Installed personal copies of the skill are not updated by this source change.
+**Limits:** each leg was one run with one model against a scripted owner. It is not owner Human QA and not a repeated trial. The room had no `report`/`verdict` tooling, so the digest leg was not exercised by an agent; the runtime refusal is covered by `tools/test-spec-report.mjs`. Every scenario finding was reproducible, so no agent was observed choosing the **uncertain** label. Who runs the integration review and how failed findings become corrective Tasks is being defined elsewhere (S-00P [Workflow Canon Rework Spec]), and the Task-PR exemption wording depends on S-00O (Workbench v4.0.0 Release); both may change this skill's wording later. The source still says "assigned stable `SPEC.md`", a phrase from the retired stable-path rule. Installed personal copies of the skill are not updated by this source change.
 
 ## Sources
 
@@ -74,4 +74,4 @@ The skill descends from Matt Pocock's MIT-licensed `code-review` ([notice](../..
 
 ## History
 
-- 2026-09-26: Created by S-01F TK-00W with the finding label, fresh-candidate rule and Human QA boundary in the source, the pinned upstream comparison and one two-leg fresh-context scenario.
+- 2026-09-26: Created by S-01F (code-review skill rebuild Spec) TK-00W (Deliver the code-review skill destination Task) with the finding label, fresh-candidate rule and Human QA boundary in the source, the pinned upstream comparison and one two-leg fresh-context scenario.

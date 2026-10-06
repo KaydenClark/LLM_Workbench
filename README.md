@@ -145,8 +145,9 @@ docs look like. Copy from `templates/`, not from the root.
    detailed capability truth in specs.
 5. Preserve Task proof and Spec evidence with a <1-minute product demo. The
    Dispatcher verifies the assembled destination; a separate Director reviews
-   the immutable integration candidate. The current Task-PR exception is
-   described in AGENTS, not a separate Task approval ceremony.
+   the immutable integration candidate at the Spec's Verify step. A Task's own
+   verify step is its two merge answers, validated by the Spec's Dispatcher,
+   Director or next agent; the current Task-PR exception is described in AGENTS.
 6. The owner chooses Human QA timing and explicitly approves per-Spec delivered
    content. Only the owner promotes to main. Main verification precedes
    `complete`; routed features Wiki capture follows complete and precedes

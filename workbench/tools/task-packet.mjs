@@ -28,6 +28,7 @@ import path from 'node:path';
 import { readTaskRecord } from './task-record.mjs';
 import { lanePath } from './workbench-paths.mjs';
 import { parseFrontmatter } from './adr.mjs';
+import { landmarkSpecHomes } from './landmark-artifact.mjs';
 
 const SPEC_ACCEPTANCE_PATTERN = /^(S-[0-9A-Za-z]+)\s+(.+)$/;
 const WIKI_CLAIM_PATTERN = /^([^#]+\.md)#(.+)$/;
@@ -119,13 +120,16 @@ function resolveWikiClaim(root, reference, taskId) {
   return { type: 'wiki-claim', notePath: relative(root, resolved), heading, text };
 }
 
+// S-003Z TK-008E: the active roster of every Spec home - the Blueprint-level
+// lane, then each landmark folder's `specs/` (`landmarkSpecHomes`).
 function findSpecFile(root, specId) {
-  const specsRoot = lanePath(root, 'specs');
-  if (!fs.existsSync(specsRoot)) return null;
-  for (const entry of fs.readdirSync(specsRoot, { withFileTypes: true })) {
-    if (!entry.isDirectory() || !entry.name.startsWith(`${specId}-`)) continue;
-    const candidate = path.join(specsRoot, entry.name, 'SPEC.md');
-    if (fs.existsSync(candidate)) return candidate;
+  for (const specsRoot of [lanePath(root, 'specs'), ...landmarkSpecHomes(root).map((home) => home.specsRoot)]) {
+    if (!fs.existsSync(specsRoot)) continue;
+    for (const entry of fs.readdirSync(specsRoot, { withFileTypes: true })) {
+      if (!entry.isDirectory() || !entry.name.startsWith(`${specId}-`)) continue;
+      const candidate = path.join(specsRoot, entry.name, 'SPEC.md');
+      if (fs.existsSync(candidate)) return candidate;
+    }
   }
   return null;
 }

@@ -60,10 +60,14 @@ controls require. Record what could not be verified as a gap; never report an
 unrun check as passing.
 
 Normal containment is a Worker Task-branch merge request into the Spec branch,
-then a separately reviewed Spec-branch merge request into integration under
-Director coordination. Inspect the current release owner for a bootstrap
-exception before choosing a target and follow it until its owner retires it; a
-stance change does not waive the separate-context integration review. Owner
+then a Spec-branch merge request into integration under Director coordination,
+after the Spec's separate-context Verify review. Validate each Task's two
+merge answers (see the [`implement` skill](../implement/SKILL.md#4-review-at-the-relevant-boundary))
+against its diff and merge checks and merge when they hold and the merge is
+green; no separate-context review runs on a Task. Inspect the current release
+owner for a bootstrap exception before choosing a target and follow it until its
+owner retires it; a stance change does not waive the separate-context Verify
+review of the assembled Spec. Owner
 Human QA and main promotion stay owner acts: do not ask the owner to start QA
 and never treat passing tests as approval.
 

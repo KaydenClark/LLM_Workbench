@@ -326,7 +326,9 @@ For implementation: prove red at the selected command seam, implement the
 smallest green change, run targeted tests then the full AGENTS suite. Capture
 required guardrail baseline/after-score and self-drift pre/post alongside bounded
 manual semantic checks. Demonstrate public JSON render/read/doctor in under one
-minute. Obtain separate-context review of the immutable candidate before merge;
+minute. Each Task PR carries its merge answers and gets no Review of its own;
+the assembled Spec gets its Automated Review once its last Task lands (owner
+change, 2026-10-05);
 prove remote integration containment. Owner Human QA and release readiness are
 separate gates, not conclusions from tests.
 

@@ -4,7 +4,7 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - S-01R TK-01I reviewer source reconciliation, 2026-10-01
+  - S-01R (reviewer skill rebuild Spec) TK-01I (Deliver the reviewer skill destination Task) reviewer source reconciliation, 2026-10-01
 source_paths:
   - workbench/skills/reviewer/SKILL.md
   - workbench/skills/reviewer/references/review-evidence.md
@@ -66,10 +66,11 @@ comparison uses the repository's code-review entry and imports no outside
 workflow or preference.
 
 Worker self-check supports ordinary Task hand-back to the Dispatcher. Dispatcher
-owns whole-Spec QA; the independent assembled integration review belongs to a
+owns whole-Spec QA; the independent assembled Verify review belongs to a
 separate uninvolved Director context. The current release exception routes
-Task PRs directly to integration with independent review; the
-[controls](../../AGENTS.md#git-rules) own that exception and its gates.
+Task PRs directly to integration, judged by their merge answers rather than a
+Reviewer pass; the [controls](../../AGENTS.md#git-rules) own that exception and
+its gates.
 
 Review ends when its exact candidate, findings, coverage and limits are
 recoverable, or an inability identifies the missing item and responsible

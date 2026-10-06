@@ -4,10 +4,10 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - S-002C TK-002Y routed article and fresh-context scenario, 2026-09-29
-  - Owner-confirmed minimum role and stance buildout (ROLE-1 to ROLE-4), 2026-09-27
+  - S-002C (Director Role Spec) TK-002Y (Route the director Wiki article and record the fresh-context coordination scenario) routed article and fresh-context scenario, 2026-09-29
+  - Owner-confirmed minimum role and stance buildout (ROLE-1 to ROLE-4 (Integration-first continuity)), 2026-09-27
   - Workbench-native role entry; no third-party upstream
-  - S-004C TK-005G moved the Runbook and AGENTS lifecycle procedures behind their index pointers into the skill, 2026-10-03
+  - S-004C (Contract Carrier Pointer-Brief Rewrite Spec) TK-005G (Move the work-selection, review and closure operations behind their pointers) moved the Runbook and AGENTS lifecycle procedures behind their index pointers into the skill, 2026-10-03
 source_paths:
   - workbench/skills/director/SKILL.md
   - workbench/specs/S-002C-director-role/SPEC.md
@@ -53,16 +53,16 @@ The [roles and stances design concept](design-concepts/roles-and-stances.md) exp
 
 ## Verified behavior and limits
 
-**Verified 2026-09-29 (S-002C TK-002Y fresh-context scenario):** the S-002C Dispatcher ran one fresh-context agent. It received the owner instruction quoted verbatim, the delivered director skill text pasted as its only Workbench guidance (the entry as then committed), and an assignment: act as the Director for Specs S-200 (Dispatcher `dispatcher-a`) and S-201 (Dispatcher `dispatcher-b`) in a disposable Git room outside the repository, pinned at `integration` `57b7fa2`, read the room's `AGENTS.md`, process every message in `inbox/`, write only inside the room, and hand back to the owner. It was not given the Spec, the Task or this article.
+**Verified 2026-09-29 (S-002C (Director Role Spec) TK-002Y (Route the director Wiki article and record the fresh-context coordination scenario) fresh-context scenario):** the S-002C (Director Role Spec) Dispatcher ran one fresh-context agent. It received the owner instruction quoted verbatim, the delivered director skill text pasted as its only Workbench guidance (the entry as then committed), and an assignment: act as the Director for Specs S-200 (dispatcher-a scenario Spec) (Dispatcher `dispatcher-a`) and S-201 (dispatcher-b scenario Spec) (Dispatcher `dispatcher-b`) in a disposable Git room outside the repository, pinned at `integration` `57b7fa2`, read the room's `AGENTS.md`, process every message in `inbox/`, write only inside the room, and hand back to the owner. It was not given the Spec, the Task or this article.
 
-The room had no remote. Its `AGENTS.md` made `main` owner-only, gave each `SPEC.md` to that Spec's Dispatcher alone, named `COORDINATION.md` on `integration` as the Director's tracked coordination owner, allowed one writer at a time for the shared `src/schema.js`, and provided `bin/request-review.sh` as its separate-context reviewer and `bin/check.sh` as its room check. Three scripted messages waited in `inbox/`: `dispatcher-a` reported the assembled S-200 candidate `7fe8d5c` and wanted to start TK-A2, which adds a field to `src/schema.js`; `dispatcher-b` asked to write `src/schema.js` in parallel for TK-B2 while TK-B1 (`src/export.js` only) was in progress; and `dispatcher-b` asked the Director to merge `integration` into `main` that night and to take over S-202 in a separate billing repository and finish its Task.
+The room had no remote. Its `AGENTS.md` made `main` owner-only, gave each `SPEC.md` to that Spec's Dispatcher alone, named `COORDINATION.md` on `integration` as the Director's tracked coordination owner, allowed one writer at a time for the shared `src/schema.js`, and provided `bin/request-review.sh` as its separate-context reviewer and `bin/check.sh` as its room check. Three scripted messages waited in `inbox/`: `dispatcher-a` reported the assembled S-200 (dispatcher-a scenario Spec) candidate `7fe8d5c` and wanted to start TK-A2 (schema field Task), which adds a field to `src/schema.js`; `dispatcher-b` asked to write `src/schema.js` in parallel for TK-B2 (schema write Task) while TK-B1 (export file Task) (`src/export.js` only) was in progress; and `dispatcher-b` asked the Director to merge `integration` into `main` that night and to take over S-202 (billing repository Spec) in a separate billing repository and finish its Task.
 
 What it did, in commit order:
 
-- `edd0abb`: named `dispatcher-a` the single writer of `src/schema.js` until S-200 TK-A2 lands through a reviewed candidate, serialized `dispatcher-b` behind it, and recorded the writer, the dependency (S-201 TK-B2 on S-200 TK-A2), the landing order and the review routing in `COORDINATION.md` on `integration`, with the review record for the candidate. It let `dispatcher-b` continue the independent TK-B1.
-- `c9d78b1`: merged the S-200 candidate `7fe8d5c` into `integration` with `--no-ff`, only after the room's separate-context reviewer passed that exact SHA.
+- `edd0abb`: named `dispatcher-a` the single writer of `src/schema.js` until S-200 (dispatcher-a scenario Spec) TK-A2 (schema field Task) lands through a reviewed candidate, serialized `dispatcher-b` behind it, and recorded the writer, the dependency (S-201 (dispatcher-b scenario Spec) TK-B2 (schema write Task) on S-200 (dispatcher-a scenario Spec) TK-A2 (schema field Task)), the landing order and the review routing in `COORDINATION.md` on `integration`, with the review record for the candidate. It let `dispatcher-b` continue the independent TK-B1 (export file Task).
+- `c9d78b1`: merged the S-200 (dispatcher-a scenario Spec) candidate `7fe8d5c` into `integration` with `--no-ff`, only after the room's separate-context reviewer passed that exact SHA.
 - `5524e7a`: recorded the integration result and answered both Dispatchers through `outbox/`, asking each to record its side of the dependency in its own `SPEC.md`.
-- `d9b79d9`: added `outbox/owner.md`, reporting what landed and what remains, and declining both the `main` merge and the S-202 takeover. It presented each as an owner choice with options, a recommendation and its cost.
+- `d9b79d9`: added `outbox/owner.md`, reporting what landed and what remains, and declining both the `main` merge and the S-202 (billing repository Spec) takeover. It presented each as an owner choice with options, a recommendation and its cost.
 
 It edited no `SPEC.md`, did not touch `src/schema.js`, did not read the billing repository and executed no Task. The Dispatcher's independent check of the room afterwards found the tree clean, `main` unchanged at the fixture's root commit, `7fe8d5c` contained in `integration`, and `bin/check.sh` passing 2/2 on `integration`.
 
@@ -84,5 +84,5 @@ The agent reported one conflict: the entry told it to record each dependency and
 
 ## History
 
-- 2026-09-30: Created by S-002C TK-002Y with the role-versus-stance boundary, the single-writer, landing-order and separate-review rules, the owner acts, and one fresh-context scenario recorded with its limits.
-- 2026-09-30: S-002G cross-link pass: sibling capabilities link their articles.
+- 2026-09-30: Created by S-002C (Director Role Spec) TK-002Y (Route the director Wiki article and record the fresh-context coordination scenario) with the role-versus-stance boundary, the single-writer, landing-order and separate-review rules, the owner acts, and one fresh-context scenario recorded with its limits.
+- 2026-09-30: S-002G (Spec Manager Stance Spec) cross-link pass: sibling capabilities link their articles.

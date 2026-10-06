@@ -35,11 +35,11 @@ what the evidence establishes and to return a bounded result.
   changing stance or opening a separate context. Disclose involvement; return
   an inability to supply an independent verdict if ineligible. A separate,
   uninvolved Director context owns the assembled integration review.
-- Pin an immutable candidate. For a Task PR while the room's Task-PR exemption
-  holds (exemption 2 of its release Spec), compose `/code-review` against exact
-  `BASE_SHA` and `HEAD_SHA`; `gate --task TK-### --spec S-###` reports that gate.
-  This bootstrap integration boundary is not a normal Task approval ceremony.
-- For integration, obtain the assembled Spec with
+- Pin an immutable candidate. A Task PR gets no Reviewer pass: its Worker's two
+  merge answers are validated by the Spec's Dispatcher, Director or next agent.
+  Reviewer is assigned to the assembled Spec, or a landmark's assembled Specs,
+  at its Verify step.
+- At Verify, obtain the assembled Spec with
   `report S-### --candidate <sha>`. Bind the review to its candidate, content
   digest, controls, acceptance and named proof. Record the result with `verdict`
   only when assigned and eligible to do so. A report or gate command does not

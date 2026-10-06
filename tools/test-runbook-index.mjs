@@ -390,7 +390,7 @@ const FAMILIES = [
         operation: 'Review a candidate independently', pointer: 'workbench/skills/code-review/SKILL.md#independent-review-boundaries',
         section: 'Independent Review Boundaries', stub: true,
         carries: [
-          'Task/integration review uses a fresh context and immutable candidate', 'a prior PASS is not approval of changed content',
+          'Verify review of an assembled Spec uses a fresh context of the session', 'a prior PASS is not approval of changed content',
           'Whole-Workbench main-readiness review is separately requested, review-only work.', 'Only the owner approves/merges main.',
           "A summary's omission is not proof of non-occurrence.", 'Repeated controlled trials are needed for reliability.'
         ]
@@ -402,7 +402,7 @@ const FAMILIES = [
         keeps: [
           /workbench\/skills\/implement\/SKILL\.md#version-control-procedures/, /workbench\/skills\/code-review\/SKILL\.md#independent-review-boundaries/,
           /RUNBOOK\.md#operations-index/, /[Nn]ever commit (directly )?to/, /Default PR target/, /force-push shared history/,
-          /separate-context reviewer must check the immutable candidate/, /self-review alone cannot satisfy the integration gate/,
+          /Task PR carries the merge answers below and gets no separate-context review|Task carries the merge answers below and gets no separate-context review/,
           /local notes and unmerged branches must not be their only discovery route/, /does not reset a failed Human QA gate/
         ],
         moved: [/normal route is a Worker Task-branch merge/, /A Task merge is containment/]
@@ -892,4 +892,35 @@ test('every relative Markdown link in a lane skill resolves from the skill folde
   }
   assert.ok(checked > 10, `the scan found the lane skill links (${checked})`);
   assert.deepEqual(broken, []);
+});
+
+// S-003Z TK-008Y: the Runbook carriers name the delivered landmark commands in
+// one Landmark Lifecycle section the index reaches, and the AGENTS carriers no
+// longer present landmark review tooling as undelivered. The Lexicon rows are
+// a separate Task held by the Contract carrier writer.
+const LANDMARK_COMMANDS = [
+  'next-id --prefix LMK', 'move-spec S-001 --landmark LMK-001', 'move-spec S-001 --landmark none',
+  'claim LMK-001 --agent NAME', 'show LMK-001', 'receipt LMK-001 --task TK-001', 'close LMK-001',
+  'gate --task TK-001 --landmark LMK-001', 'move-task LMK-001 --task TK-001 --to retired',
+  'report LMK-001 --candidate', 'verify LMK-001', 'verdict LMK-001 --candidate', 'approve LMK-001 --candidate',
+  'retire-landmark LMK-001 --wiki'
+];
+for (const carrier of carriers) {
+  test(`S-003Z TK-008Y: the ${carrier.label} Runbook names the landmark commands in a Landmark Lifecycle section the index reaches`, () => {
+    const { all, rows } = indexOf(carrier.runbook);
+    const section = all.find((heading) => heading.title === 'Landmark Lifecycle');
+    assert.ok(section, `${carrier.runbook} has a Landmark Lifecycle section`);
+    assert.ok(rows.some((row) => row.cells[2]?.includes('(#landmark-lifecycle)')), `${carrier.runbook} index reaches #landmark-lifecycle`);
+    for (const command of LANDMARK_COMMANDS) assert.ok(section.body.includes(`node workbench/tools/spec-workbench.mjs ${command}`), `${carrier.runbook} Landmark Lifecycle names ${command}`);
+    assert.ok(rows.some((row) => row.cells[0] === 'Allocate a visible identifier' && /landmark/.test(row.cells[1])), `${carrier.runbook} identifier row names a landmark`);
+  });
+  test(`S-003Z TK-008Y: ${carrier.agents} presents landmark review tooling as delivered`, () => {
+    const text = normalize(read(carrier.agents));
+    assert.doesNotMatch(text, /Landmark and whole-Workbench review tooling is accepted destination design/, 'the stale clause is gone');
+    assert.match(text, /`report`, `verify` and `verdict` on (the|a) landmark/, `${carrier.agents} names the landmark review commands`);
+  });
+}
+
+test('S-003Z TK-008Y: the Full suite runs the Landmark Wiki page test', () => {
+  assert.ok(suiteBlock(read('RUNBOOK.md')).includes('node tools/test-landmark-wiki.mjs'), 'the suite runs tools/test-landmark-wiki.mjs');
 });

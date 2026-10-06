@@ -41,18 +41,27 @@ export const COLLECTIONS = Object.freeze({
   // `docs/adr` (ADR-000S), with the ADR's folder lifecycle (`proposed/`,
   // `archive/`). Like `features` it is additive and appended last, so every
   // earlier key keeps its place.
-  ddr: 'workbench/docs/ddr'
+  ddr: 'workbench/docs/ddr',
+  // S-003Z TK-008D: the landmarks collection, home of the `LANDMARK.md`
+  // artifacts one size above a Spec (ADR-000U). Additive and appended last,
+  // like `features` and `ddr`; the Tracker's JSON `landmarks` collection under
+  // `landmarkTracker` is a different declaration and is left as it is.
+  landmarks: 'workbench/landmarks'
 });
 // The additive collections, in the order a room gains them. A room stamped
 // before one of them declares an earlier shape; `validateManifest` keeps
 // reading those shapes and `migrate` appends what is missing.
-export const ADDITIVE_COLLECTIONS = Object.freeze(['features', 'ddr']);
+export const ADDITIVE_COLLECTIONS = Object.freeze(['features', 'ddr', 'landmarks']);
 // Every room stamped before the features collection declares one of the
 // pre-feature shapes derived from this set; it excludes every additive
 // collection, so appending a later one cannot redefine what an older room held.
 export const PRE_FEATURE_COLLECTIONS = Object.freeze(Object.fromEntries(Object.entries(COLLECTIONS).filter(([name]) => !ADDITIVE_COLLECTIONS.includes(name))));
-// The current room shape before the ddr collection: everything but `ddr`.
-export const PRE_DDR_COLLECTIONS = Object.freeze(Object.fromEntries(Object.entries(COLLECTIONS).filter(([name]) => name !== 'ddr')));
+// The room shape before the ddr collection: everything before `ddr`, so it
+// excludes `ddr` and every additive collection appended after it.
+export const PRE_DDR_COLLECTIONS = Object.freeze(Object.fromEntries(Object.entries(COLLECTIONS).filter(([name]) => !['ddr', 'landmarks'].includes(name))));
+// S-003Z TK-008D: the current room shape before the landmarks collection -
+// everything but `landmarks` - which every room stamped before it declares.
+export const PRE_LANDMARK_COLLECTIONS = Object.freeze(Object.fromEntries(Object.entries(COLLECTIONS).filter(([name]) => name !== 'landmarks')));
 // Live records stay untracked. The templates subcollection is explicitly
 // excluded from live-note operations and remains tracked in project Git.
 export const UNTRACKED_COLLECTIONS = Object.freeze(['grilling', 'handoffs', 'notepads']);
