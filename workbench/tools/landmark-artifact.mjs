@@ -6,12 +6,15 @@
 // validates one artifact the way spec-packet.mjs parses a Spec packet, lists
 // the roster at both homes, and reports doctor's findings for the collection.
 // Nesting, the link-safe move, the review rung and retirement are later
-// Tasks of the same Spec; nothing here reads a child Spec or Task.
+// Tasks of the same Spec; nothing here reads a child Spec. TK-008G added the
+// direct Task records' readability to doctor's findings; the lifecycle
+// commands that work on those Tasks live in spec-workbench.mjs.
 import fs from 'node:fs';
 import path from 'node:path';
 import { collectionPath, collectionRelative, findRoot, isMainModule } from './workbench-paths.mjs';
 import { finding } from './diagnostics.mjs';
 import { visibleIdKey } from './visible-ids.mjs';
+import { listRetiredTaskRecords, listTaskRecords } from './task-record.mjs';
 
 export const LANDMARK_PREFIX = 'LMK';
 export const LANDMARK_FILE = 'LANDMARK.md';
@@ -191,6 +194,16 @@ export function landmarkFindings(root) {
     if (!landmark.relativePath.startsWith(expected)) {
       findings.push(finding('unstable-path', `${landmark.id} path must start ${expected}`, { landmarkId: landmark.id, path: relativePath }));
     }
+    // S-003Z TK-008G: the landmark's direct Task records (`tasks/` and its
+    // lifecycle folders) must read; one that does not is named here, since
+    // the lifecycle commands refuse a room holding it.
+    const landmarkDir = path.dirname(item.filePath);
+    try {
+      listTaskRecords(landmarkDir, base);
+      listRetiredTaskRecords(landmarkDir, base);
+    } catch (error) {
+      findings.push(finding('malformed-landmark', `${landmark.id} at ${relativePath}: a direct Task record cannot be read: ${error.message}`, { landmarkId: landmark.id, path: relativePath }));
+    }
   }
   return findings;
 }
@@ -229,6 +242,17 @@ export function findLandmark(root, id) {
     return { ...parseLandmarkArtifact(content, item.filePath, base), landmarksPrefix: item.prefix, lifecycleFolder: item.lifecycleFolder };
   }
   throw new Error(`Unknown landmark ID: ${id}`);
+}
+
+// S-003Z TK-008G: every artifact that parses, at both homes, skipping one that
+// does not - doctor names that one through `landmarkFindings`, so the rest of
+// the room is still checked against the landmarks that could be read.
+export function loadReadableLandmarks(root) {
+  const landmarks = [];
+  for (const item of locateArtifacts(root)) {
+    try { landmarks.push(readArtifact(root, item)); } catch { /* named by landmarkFindings */ }
+  }
+  return landmarks;
 }
 
 // Validate one landmark by identity, or the whole collection when no identity
