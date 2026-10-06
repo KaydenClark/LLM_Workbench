@@ -349,6 +349,67 @@ function headingShadowSpec(id) {
   } finally { fs.rmSync(root, {recursive:true, force:true}); }
 }
 
+// S-003Z TK-008E: a Spec nested in its landmark's folder is reported, given a
+// verdict, gated, approved, completed and retired by the same seams, and
+// retires into its own home's lifecycle folder (`<landmark>/specs/retired/`);
+// the approval made before the move still binds through the committed rename.
+function landmarkArtifact(id) {
+  let content = fs.readFileSync(path.resolve('templates/LANDMARK.md'), 'utf8')
+    .replaceAll('LMK-[###]', id).replaceAll('[###]', '000A').replaceAll('[slug]', 'fixture-slug')
+    .replaceAll('[0-9]', '2').replaceAll('[YYYY-MM-DD]', '2026-10-05').replaceAll('[HARNESS_VERSION]', '0.0.0');
+  content = content.replace(/\[([^\]\n]*[A-Za-z][^\]\n]*)\](?!\()/g, (_token, inner) => `Filled ${inner.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()}`);
+  return content.replace(/^\*\*Status:\*\* .*$/m, '**Status:** active').replace(/^\*\*Owner:\*\* .*$/m, '**Owner:** director');
+}
+
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'nested-spec-report-'));
+  initManagedRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const branch = currentBranch(root);
+    declareGit(root, { defaultBranch: branch, integrationBranch: branch });
+    const lmk = 'workbench/landmarks/LMK-0AA-report-direction';
+    writeAt(root, `${lmk}/LANDMARK.md`, landmarkArtifact('LMK-0AA'));
+    const specDir = `${lmk}/specs/S-0AB-nested-fixture`;
+    writeAt(root, `${specDir}/SPEC.md`, tableSpec({ id: 'S-0AB', taskStatus: 'done', checked: true,
+      completion: 'Delivered.', evidenceRow: '| 2026-09-19 | TK-001 | done | tested | docs | none |' }));
+    const current = commitFixture(root);
+    const report = assembleSpecReport(root, 'S-0AB', { candidate: current });
+    assert.equal(report.path, `${specDir}/SPEC.md`);
+    assert.equal(report.complete, true, report.gaps.join('; '));
+    assert.equal(report.candidate.matchesContent, true, report.candidate.contentError);
+    recordReviewVerdict(root, 'S-0AB', { candidate: current, result: 'pass', findings: 'none', reviewer: 'separate fixture context' });
+    assert.match(fs.readFileSync(path.join(root, specDir, 'SPEC.md'), 'utf8'), /Review verdict: pass at/);
+    const gated = gate(root, { spec: 'S-0AB', candidate: current });
+    assert.equal(gated.refused, false, gated.reason);
+    recordOwnerApproval(root, 'S-0AB', { candidate: current, owner: 'Fixture owner', result: 'approve' });
+    pinRemoteTracking(root, branch, current);
+    completeSpec(root, 'S-0AB');
+    const historicalRoute = `${lmk}/specs/retired/S-0AB-nested-fixture/SPEC.md`;
+    const wikiPath = 'workbench/wiki/guidebooks/s0ab-capability.md';
+    writeAt(root, wikiPath, [
+      '---', 'type: guidebook', 'status: active', 'sensitivity: normal',
+      'knowledge_role: curated', 'provenance:', '  - fixture review', 'source_paths:',
+      `  - ${historicalRoute}`, 'last_verified: 2026-09-19', '---',
+      '', '# Nested capability', '', 'Describes the verified nested capability and its limits.', ''
+    ].join('\n'));
+    writeAt(root, 'workbench/wiki/MEMORY.md', '# Wiki\n\n[Capability](guidebooks/s0ab-capability.md)\n');
+    commitFixture(root);
+    const retired = spawnSync(process.execPath, [path.resolve('workbench/tools/spec-workbench.mjs'), 'retire-spec', 'S-0AB', '--wiki', wikiPath, '--path', root, '--json'], { encoding: 'utf8' });
+    assert.equal(retired.status, 0, retired.stdout + retired.stderr);
+    assert.equal(JSON.parse(retired.stdout).ownerApproval.approvedBy, 'Fixture owner');
+    assert.ok(fs.existsSync(path.join(root, historicalRoute)), 'the nested Spec retires into its own home\'s retired folder');
+    assert.ok(!fs.existsSync(path.join(root, specDir)));
+    commitFixture(root);
+    const afterRetirement = assembleSpecReport(root, 'S-0AB', { candidate: current });
+    assert.equal(afterRetirement.path, historicalRoute);
+    assert.equal(afterRetirement.candidate.matchesContent, true, afterRetirement.candidate.contentError);
+    assert.equal(afterRetirement.latestOwnerApproval?.result, 'approve', 'the approval binds through the committed rename');
+    assert.ok(!doctor(root).some((item) => item.code === 'unstable-path'), 'the retired nested Spec sits at a stable path');
+    console.log('ok - a Spec nested in its landmark folder is reported, reviewed, gated, approved, completed and retired into <landmark>/specs/retired/');
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+}
+
 {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-heading-shadow-'));
   initGitRoot(root);

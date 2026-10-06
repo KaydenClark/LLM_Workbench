@@ -182,6 +182,22 @@ test('a committed notepad and handoff stay privacy-checked', () => {
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
+// S-003Z TK-008E: a Spec nested in its landmark's folder is a Spec owner for
+// promotion, checked by the same identity and evidence rules.
+test('promotion into a Spec nested under a landmark is checked as a Spec owner', () => {
+  const { dir, revision, entry } = committedRoom();
+  try {
+    write(dir, 'workbench/landmarks/LMK-0AA-direction/LANDMARK.md', '# LMK-0AA - Direction\n\n**Landmark ID:** LMK-0AA\n');
+    const owner = 'workbench/landmarks/LMK-0AA-direction/specs/S-0AB-nested/SPEC.md';
+    write(dir, owner, fixtureSpec().replaceAll('S-001', 'S-0AB'));
+    const expected = createHash('sha256').update(fs.readFileSync(path.join(dir, owner))).digest('hex');
+    write(dir, 'draft.md', fixtureSpec().replaceAll('S-001', 'S-0AC'));
+    const promoted = promote(dir, { from: COMMITTED_NOTE, revision: String(revision), entries: entry, to: owner, expected, content: 'draft.md' });
+    assert.equal(promoted.status, 'blocked');
+    assert.match(promoted.error.message, /Promotion cannot change the existing spec identity/);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
 test('a durable citation naming a committed notepad or handoff is refused as non-durable', () => {
   const { dir, revision, entry } = committedRoom();
   try {

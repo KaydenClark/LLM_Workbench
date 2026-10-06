@@ -27,6 +27,7 @@ import {
   moveTaskRecord,
   nextWork,
   nextIdentity,
+  occupiedIdentities,
   parseCliArgs,
   receiptTask,
   referencesToPath,
@@ -42,6 +43,7 @@ import { TASK_STATUSES, listRetiredTaskRecords, listTaskRecords, readTaskRecord,
 import { assembleTaskPacket } from '../workbench/tools/task-packet.mjs';
 import { appendReceiptRowToContent, readReceiptFromFile } from '../workbench/tools/task-receipt.mjs';
 import { parseMarkdownTableRow } from '../workbench/tools/markdown-table.mjs';
+import { readTaskStatusesAt } from '../workbench/tools/claim-coordination.mjs';
 // S-00I TK-01U: features capture reads the Wiki validator and note frontmatter.
 import { moveNote, validateWiki } from '../workbench/tools/wiki.mjs';
 import { parseFrontmatter } from '../workbench/tools/adr.mjs';
@@ -6585,6 +6587,153 @@ function landmarkWithDirectTasks(id, overrides, tasks = []) {
     assert.deepEqual(next.coordination.remoteClaimed, [{ landmarkId: 'LMK-0AA', taskId: 'TK-000A', refs: ['origin/alpha/lmk0aa-tk000a'] }]);
     console.log('ok - a landmark-direct claim is committed and pushed on its task branch, and another instance skips it');
   } finally { fs.rmSync(base, { recursive: true, force: true }); }
+}
+
+// ---- S-003Z TK-008E: a Spec nested in its landmark's folder ----
+// A Spec may sit at `<landmark>/specs/S-###-slug/` as well as at the
+// Blueprint-level `workbench/specs/`. One `specHomes(root)` reader lists both
+// homes, so the Spec tools find, select, claim, receipt, close, report, gate,
+// move and render a nested Spec as they do a Blueprint-level one; the loaded
+// Spec names the home it sits in (`specsPrefix`) and its parent landmark
+// (`landmarkId`, `null` at the Blueprint level); and `unstable-path` judges a
+// nested Spec against its own home. The fixture room holds one landmark (with
+// a direct Task), a nested Spec with a Task record, a Blueprint-level Spec and
+// two completed Specs to move.
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'landmark-nested-spec-'));
+  try {
+    initLifecycleFixture(root);
+    const manifestFile = path.join(root, 'workbench/manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+    manifest.collections.landmarks = 'workbench/landmarks';
+    fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
+    const lmk = 'workbench/landmarks/LMK-0AA-first-direction';
+    writeAt(root, `${lmk}/LANDMARK.md`, landmarkWithDirectTasks('LMK-0AA', { Status: 'active', Owner: 'director', Priority: '5', Updated: TODAY }, [['TK-000A', 'Advance the direction']]));
+    writeAt(root, `${lmk}/tasks/TK-000A/TASK.md`, landmarkTaskRecord({ id: 'TK-000A', landmarkId: 'LMK-0AA', slice: 'Advance the direction' }));
+    writeAt(root, 'tools/nested-seam.mjs', '// fixture seam\n');
+    // The nested Spec cites a seam path and links the Blueprint-level Spec it
+    // builds on, four folders up from its own directory.
+    const nested = `${lmk}/specs/S-0AB-nested-capability`;
+    const blueprintLink = '../../../../specs/S-0AH-blueprint-complete/SPEC.md';
+    writeAt(root, `${nested}/SPEC.md`, emptyTableRecordBackedSpec('S-0AB')
+      .replace('**Updated:** 2026-09-18', `**Updated:** ${TODAY}`)
+      .replace('## Acceptance Criteria', `## Testing Seams\n\n\`tools/nested-seam.mjs\` after [S-0AH](${blueprintLink}).\n\n## Acceptance Criteria`));
+    writeAt(root, `${nested}/tasks/TK-0AC/TASK.md`, taskRecordFixture({ id: 'TK-0AC', specId: 'S-0AB', slice: 'Nested slice', status: 'ready', blockers: 'none', destination: 'spec-acceptance: S-0AB Testing Seams' }));
+    const blueprintSpec = 'workbench/specs/S-0AD-blueprint-level';
+    writeAt(root, `${blueprintSpec}/SPEC.md`, emptyTableRecordBackedSpec('S-0AD').replace('**Priority:** 0', '**Priority:** 9').replace('**Updated:** 2026-09-18', `**Updated:** ${TODAY}`));
+    writeAt(root, `${blueprintSpec}/tasks/TK-0AE/TASK.md`, taskRecordFixture({ id: 'TK-0AE', specId: 'S-0AD', slice: 'Blueprint slice', status: 'ready', blockers: 'none', destination: 'spec-acceptance: S-0AD Acceptance Criteria' }));
+    writeAt(root, 'workbench/specs/S-0AH-blueprint-complete/SPEC.md', completeFixtureSpec('S-0AH').replaceAll('TK-001', 'TK-0AI'));
+    writeAt(root, `${lmk}/specs/S-0AJ-nested-complete/SPEC.md`, completeFixtureSpec('S-0AJ').replaceAll('TK-001', 'TK-0AK'));
+    initGitRoot(root);
+    publishFixture(root, 'nested spec fixture');
+
+    const specTool = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+    const cli = (...args) => spawnSync(process.execPath, [specTool, ...args, '--path', root], { encoding: 'utf8' });
+    const json = (run) => { assert.equal(run.status, 0, run.stdout + run.stderr); return JSON.parse(run.stdout); };
+
+    // render then doctor: the nested Spec joins the catalog and the hot board,
+    // and the room carries no blocking finding.
+    assert.equal(cli('render').status, 0);
+    const catalog = fs.readFileSync(path.join(root, 'workbench/specs/CATALOG.md'), 'utf8');
+    assert.match(catalog, /\[S-0AB - Task Lifecycle Fixture\]\(\.\.\/landmarks\/LMK-0AA-first-direction\/specs\/S-0AB-nested-capability\/SPEC\.md\)/, catalog);
+    assert.match(catalog, /\[S-0AD - Task Lifecycle Fixture\]\(S-0AD-blueprint-level\/SPEC\.md\)/, 'a Blueprint-level link keeps its catalog-relative form');
+    assert.match(fs.readFileSync(path.join(root, 'TASKBOARD.md'), 'utf8'), /^\| \[S-0AB\]\(workbench\/landmarks\/LMK-0AA-first-direction\/specs\/S-0AB-nested-capability\/SPEC\.md\) \|/m);
+    const doctored = cli('doctor', '--json');
+    const findings = JSON.parse(doctored.stdout);
+    assert.deepEqual(findings.filter((item) => ['all', 'selection'].includes(item.blocks)).map((item) => `${item.code}: ${item.message}`), [], 'the room carries no blocking finding');
+    assert.ok(!findings.some((item) => item.code === 'unstable-path'), 'unstable-path does not fire for a Spec at its landmark home');
+    assert.equal(doctored.status, 0);
+
+    // The loaded Spec names its home and its parent.
+    const loaded = new Map(loadSpecs(root).map((spec) => [spec.id, spec]));
+    assert.equal(loaded.get('S-0AB').specsPrefix, `${lmk}/specs`);
+    assert.equal(loaded.get('S-0AB').landmarkId, 'LMK-0AA');
+    assert.equal(loaded.get('S-0AD').specsPrefix, 'workbench/specs');
+    assert.equal(loaded.get('S-0AD').landmarkId, null);
+
+    // show and next find the nested Spec (priority 0 beats the landmark's 5
+    // and the Blueprint-level Spec's 9).
+    const shown = json(cli('show', 'S-0AB', '--json'));
+    assert.equal(shown.path, `${nested}/SPEC.md`);
+    assert.equal(shown.landmarkId, 'LMK-0AA', 'show names the landmark the Spec sits under');
+    assert.deepEqual(shown.tasks.map((task) => task.id), ['TK-0AC']);
+    const offered = json(cli('next', '--json', '--local'));
+    assert.deepEqual([offered.specId, offered.taskId, offered.path], ['S-0AB', 'TK-0AC', `${nested}/SPEC.md`], JSON.stringify(offered));
+
+    // The Task packet resolves its destination in the nested Spec.
+    const packet = assembleTaskPacket(root, `${nested}/tasks/TK-0AC/TASK.md`);
+    assert.equal(packet.destination.specPath, `${nested}/SPEC.md`);
+    assert.deepEqual(packet.citedPaths, ['tools/nested-seam.mjs']);
+
+    // A new Spec identity skips the nested ones.
+    assert.ok(!['S-0AB', 'S-0AJ'].includes(nextIdentity(root, undefined, { prefix: 'S' }).id));
+    assert.ok(occupiedIdentities(root, 'S').includes('S-0AJ'), 'a nested Spec identity is occupied');
+    // Remote claim coordination reads the nested Spec's Task status from the
+    // landmarks collection at a ref.
+    assert.equal(readTaskStatusesAt(root, ['HEAD'], 'workbench/specs', 'workbench/landmarks').get('HEAD').get('S-0AB/TK-0AC'), 'ready');
+
+    // claim, receipt, gate --task and close work on the nested Spec's Task.
+    const claimed = json(cli('claim', 'S-0AB', '--agent', 'worker', '--local', '--date', TODAY, '--json'));
+    assert.equal(claimed.id, 'S-0AB');
+    const taskFile = path.join(root, nested, 'tasks/TK-0AC/TASK.md');
+    assert.match(fs.readFileSync(taskFile, 'utf8'), /^\*\*Status:\*\* in-progress$/m);
+    assert.match(fs.readFileSync(path.join(root, nested, 'SPEC.md'), 'utf8'), /^\*\*Owner:\*\* worker$/m);
+    const receipt = json(cli('receipt', 'S-0AB', '--task', 'TK-0AC', '--tests', 'fixture run', '--docs', 'none', '--remaining-gap', 'none', '--json'));
+    assert.equal(receipt.specId, 'S-0AB');
+    const taskGate = json(cli('gate', '--task', 'TK-0AC', '--spec', 'S-0AB', '--json'));
+    assert.equal(taskGate.refused, false, taskGate.reason);
+    assert.equal(cli('render').status, 0);
+    publishFixture(root, 'receipt the nested Task');
+    const closed = json(cli('close', 'S-0AB', '--proof', 'nested fixture proof', '--docs', 'Docs checked; no update needed', '--remaining-gap', 'none', '--date', TODAY, '--json'));
+    assert.equal(closed.id, 'S-0AB');
+    assert.match(fs.readFileSync(taskFile, 'utf8'), /^\*\*Status:\*\* done$/m);
+    assert.ok(fs.readFileSync(path.join(root, nested, 'SPEC.md'), 'utf8').split('\n').includes(`| ${TODAY} | TK-0AC | Task closed | nested fixture proof | Docs checked; no update needed | none |`), 'close appends to the nested Spec log');
+
+    // report and verdict read the nested Spec.
+    assert.equal(cli('render').status, 0);
+    publishFixture(root, 'close the nested Task');
+    const candidate = headSha(root);
+    const report = json(cli('report', 'S-0AB', '--candidate', candidate, '--json'));
+    assert.equal(report.path, `${nested}/SPEC.md`);
+    assert.equal(report.candidate.existsInRepository, true);
+    const verdict = json(cli('verdict', 'S-0AB', '--candidate', candidate, '--digest', report.specDigest, '--result', 'fail', '--findings', 'new Task: tick the acceptance line', '--reviewer', 'separate fixture context', '--json'));
+    assert.equal(verdict.result, 'fail');
+    assert.match(fs.readFileSync(path.join(root, nested, 'SPEC.md'), 'utf8'), /Review verdict: fail at/, 'the verdict lands in the nested Spec log');
+    assert.equal(fs.readdirSync(path.join(root, nested, 'tasks')).length, 2, 'the corrective Task is written beside the nested Spec');
+    const specGate = cli('gate', '--spec', 'S-0AB', '--candidate', candidate, '--json');
+    assert.equal(specGate.status, 1, 'an incomplete nested Spec is refused at the review gate');
+    assert.match(JSON.parse(specGate.stdout).reason, /S-0AB is not complete/);
+    assert.equal(cli('render').status, 0);
+    publishFixture(root, 'record the nested verdict');
+
+    // move-spec moves a completed nested Spec into its own home's retired
+    // folder; show still finds it there.
+    const movedNested = json(cli('move-spec', 'S-0AJ', '--to', 'retired', '--json'));
+    assert.equal(movedNested.to, `${lmk}/specs/retired/S-0AJ-nested-complete`);
+    assert.ok(fs.existsSync(path.join(root, lmk, 'specs/retired/S-0AJ-nested-complete/SPEC.md')));
+    const retiredShown = json(cli('show', 'S-0AJ', '--json'));
+    assert.equal(retiredShown.path, `${lmk}/specs/retired/S-0AJ-nested-complete/SPEC.md`);
+    assert.deepEqual(loadRetiredSpecs(root).map((spec) => [spec.id, spec.specsPrefix, spec.landmarkId]), [['S-0AJ', `${lmk}/specs`, 'LMK-0AA']]);
+    assert.equal(cli('render').status, 0);
+    publishFixture(root, 'retire the nested complete Spec');
+
+    // move-spec of a Blueprint-level Spec rewrites the nested Spec's link.
+    const movedBlueprint = json(cli('move-spec', 'S-0AH', '--to', 'retired', '--json'));
+    assert.equal(movedBlueprint.to, 'workbench/specs/retired/S-0AH-blueprint-complete');
+    assert.match(fs.readFileSync(path.join(root, nested, 'SPEC.md'), 'utf8'), /\[S-0AH\]\(\.\.\/\.\.\/\.\.\/\.\.\/specs\/retired\/S-0AH-blueprint-complete\/SPEC\.md\)/, 'the nested Spec is a live reference surface');
+    assert.deepEqual(scanReferences(root), [], 'no live reference dangles after both moves');
+    assert.equal(cli('render').status, 0);
+    publishFixture(root, 'retire the Blueprint-level complete Spec');
+    const after = JSON.parse(cli('doctor', '--json').stdout);
+    assert.deepEqual(after.filter((item) => ['all', 'selection'].includes(item.blocks)).map((item) => `${item.code}: ${item.message}`), []);
+
+    // unstable-path judges a nested Spec against its own home.
+    writeAt(root, `${lmk}/specs/misfiled-folder/SPEC.md`, emptyTableRecordBackedSpec('S-0AM'));
+    fs.mkdirSync(path.join(root, lmk, 'specs/misfiled-folder/tasks'));
+    const unstable = doctor(root).filter((item) => item.code === 'unstable-path');
+    assert.deepEqual(unstable.map((item) => [item.specId, item.message]), [['S-0AM', `S-0AM path must start ${lmk}/specs/S-0AM-`]]);
+    console.log('ok - a Spec nested in its landmark folder is rendered, shown, offered, claimed, receipted, gated, closed, reported, given a verdict and moved, and unstable-path judges it against its own home');
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
 }
 
 // ---- S-00J TK-01T: reviewed-delivery blocker `S-###:delivered` (begin) ----
