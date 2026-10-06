@@ -3182,3 +3182,88 @@ function doneTaskWithDecisions({ id, specId, rows }) {
     console.log('ok - S-003Z TK-008H: a whole-landmark review reports, is refused while a child is open or from a participating context, a fail opens corrective Tasks under the landmark without blocking a child gate, and a pass reaches it');
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 }
+
+// S-003Z TK-008H run 2 (fail verdict #1 at d684eaad): landmark participation
+// must not forget a Task's claimant once `close` overwrites the Latest event.
+// The reviewer's fixture: a Worker claims, receipts and closes a Task
+// directly under the landmark, and another Worker claims and closes a child
+// Spec Task before a second claimant replaces the child's Owner. Neither name
+// survives in any Owner, Latest event, evidence row or Receipt, yet both took
+// part, so each is refused as the whole-landmark reviewer, naming the Task
+// record that holds the claim; a context with no part still records its pass.
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'landmark-closed-claimants-'));
+  initManagedRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const branch = currentBranch(root);
+    declareGit(root, { defaultBranch: branch, integrationBranch: branch });
+    const tool = path.resolve('workbench/tools/spec-workbench.mjs');
+    const cli = (...args) => spawnSync(process.execPath, [tool, ...args, '--path', root], { encoding: 'utf8' });
+    const json = (run) => { assert.equal(run.status, 0, run.stdout + run.stderr); return JSON.parse(run.stdout); };
+    const lmk = 'workbench/landmarks/LMK-0CA-closed-claimants';
+    const landmarkFile = path.join(root, lmk, 'LANDMARK.md');
+    writeAt(root, `${lmk}/LANDMARK.md`, landmarkArtifact('LMK-0CA'));
+    writeAt(root, `${lmk}/tasks/TK-0CA/TASK.md`, [
+      '# TK-0CA - Close the corrective gap', '', '**Task ID:** TK-0CA', '**Landmark ID:** LMK-0CA', '**Slice:** Close the corrective gap',
+      '**Status:** ready', '**Blockers:** none', '**Destination:** spec-acceptance: LMK-0CA What Success Looks Like', ''
+    ].join('\n'));
+    const child = `${lmk}/specs/S-0CA-record-child`;
+    writeAt(root, `${child}/SPEC.md`, recordBackedSpec('S-0CA')
+      .replace('| TK-001 | First slice | done | none | landed |\n', '')
+      .replace('**Latest event:** TK-001 closed with proof.', '**Latest event:** Spec activated.')
+      .replace('**Next gate:** Complete TK-002.', '**Next gate:** Complete the open Task.')
+      .replace('| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |\n', ''));
+    for (const id of ['TK-0CB', 'TK-0CC']) {
+      writeAt(root, `${child}/tasks/${id}/TASK.md`, taskRecordFixture({ id, specId: 'S-0CA', slice: `Child slice ${id}`, status: 'ready', blockers: 'none', destination: 'spec-acceptance: S-0CA Acceptance Criteria' }));
+    }
+    commitFixture(root);
+    const noRemote = ['--git-state-reason', 'fixture room has no remote'];
+
+    // rev2 claims, receipts and closes the Task directly under the landmark.
+    json(cli('claim', 'LMK-0CA', '--agent', 'rev2', '--local', '--json'));
+    const directFile = path.join(root, lmk, 'tasks/TK-0CA/TASK.md');
+    assert.match(fs.readFileSync(directFile, 'utf8'), /^\*\*Claimed by:\*\* rev2$/m, 'a landmark-direct claim persists its claimant on the Task record');
+    json(cli('receipt', 'LMK-0CA', '--task', 'TK-0CA', '--tests', 'fixture run', '--docs', 'none', '--remaining-gap', 'none', '--json'));
+    json(cli('close', 'LMK-0CA', '--proof', 'corrective fixture proof', '--docs', 'Docs checked; no update needed', '--remaining-gap', 'none', ...noRemote, '--json'));
+    assert.match(fs.readFileSync(directFile, 'utf8'), /^\*\*Claimed by:\*\* rev2$/m, 'close keeps the claimant on the record');
+
+    // child-worker-a claims and closes a child Spec Task; child-worker-b then
+    // claims the next one, replacing the child's Owner and Latest event.
+    json(cli('claim', 'S-0CA', '--agent', 'child-worker-a', '--local', '--json'));
+    assert.match(fs.readFileSync(path.join(root, child, 'tasks/TK-0CB/TASK.md'), 'utf8'), /^\*\*Claimed by:\*\* child-worker-a$/m, 'a Spec-level claim persists its claimant on the Task record');
+    json(cli('close', 'S-0CA', '--proof', 'child fixture proof', '--docs', 'Docs checked; no update needed', '--remaining-gap', 'none', ...noRemote, '--json'));
+    json(cli('claim', 'S-0CA', '--agent', 'child-worker-b', '--local', '--json'));
+    json(cli('close', 'S-0CA', '--proof', 'second child fixture proof', '--docs', 'Docs checked; no update needed', '--remaining-gap', 'none', ...noRemote, '--json'));
+
+    // A claimant who returns after a continuation is added, never replacing
+    // the first: the field accumulates every claimant across runs.
+    const secondFile = path.join(root, child, 'tasks/TK-0CC/TASK.md');
+    fs.writeFileSync(secondFile, fs.readFileSync(secondFile, 'utf8').replace(/^\*\*Status:\*\* done$/m, '**Status:** ready'));
+    json(cli('claim', 'S-0CA', '--agent', 'child-worker-c', '--local', '--json'));
+    assert.match(fs.readFileSync(secondFile, 'utf8'), /^\*\*Claimed by:\*\* child-worker-b, child-worker-c$/m, 'a re-claim accumulates its claimant');
+    json(cli('close', 'S-0CA', '--proof', 'continued child fixture proof', '--docs', 'Docs checked; no update needed', '--remaining-gap', 'none', ...noRemote, '--json'));
+
+    // The gap the review found: neither name survives anywhere the old check read.
+    const landmarkText = fs.readFileSync(landmarkFile, 'utf8');
+    const childText = fs.readFileSync(path.join(root, child, 'SPEC.md'), 'utf8');
+    assert.doesNotMatch(landmarkText, /rev2/, 'the landmark no longer names rev2 once close overwrote its Latest event');
+    assert.doesNotMatch(childText, /child-worker-a|child-worker-b/, 'the child Spec no longer names its earlier claimants');
+    assert.match(childText, /^\*\*Owner:\*\* child-worker-c$/m);
+
+    const candidate = commitFixture(root);
+    const report = json(cli('report', 'LMK-0CA', '--candidate', candidate, '--json'));
+    assert.deepEqual(report.openChildren.map((item) => item.id), ['S-0CA'], 'every Task is closed; only the child Spec awaits its own delivery');
+    const verdict = (reviewer) => cli('verdict', 'LMK-0CA', '--candidate', candidate, '--digest', report.landmarkDigest, '--result', 'pass', '--findings', 'none', '--reviewer', reviewer, '--json');
+    for (const [participant, where] of [['rev2', /LMK-0CA\/TK-0CA Claimed by names rev2/], ['child-worker-a', /S-0CA\/TK-0CB Claimed by names child-worker-a/], ['child-worker-b', /S-0CA\/TK-0CC Claimed by names child-worker-b/]]) {
+      const refused = verdict(participant);
+      assert.notEqual(refused.status, 0, `the Worker of a closed Task (${participant}) is refused as the landmark reviewer`);
+      assert.match(refused.stderr, /took part in LMK-0CA/, refused.stderr);
+      assert.match(refused.stderr, where, refused.stderr);
+    }
+    assert.equal(fs.readFileSync(landmarkFile, 'utf8'), landmarkText, 'every refused verdict leaves LANDMARK.md unchanged');
+    const passed = json(verdict('independent landmark reviewer'));
+    assert.equal(passed.result, 'pass', 'a context with no part in the landmark still records its pass');
+    console.log('ok - S-003Z TK-008H run 2: claim persists every claimant on the Task record, so the Worker of a closed landmark-direct or child Spec Task is refused as the whole-landmark reviewer');
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+}

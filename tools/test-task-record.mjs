@@ -5,7 +5,7 @@
 // Blockers stay a closed list of identifiers, which now also names landmarks.
 // tools/test-spec-workbench.mjs imports this file, so the Runbook suite runs it.
 import assert from 'node:assert/strict';
-import { formatTaskRecord, parseTaskRecord } from '../workbench/tools/task-record.mjs';
+import { formatTaskRecord, parseTaskRecord, withClaimant } from '../workbench/tools/task-record.mjs';
 
 function record({ parent = '**Landmark ID:** LMK-0AA', blockers = 'none', extra = '' } = {}) {
   return [
@@ -60,4 +60,28 @@ function record({ parent = '**Landmark ID:** LMK-0AA', blockers = 'none', extra 
   assert.equal(parseTaskRecord(bytes).landmarkId, 'LMK-0AA', 'the writer and the reader agree on a landmark-direct record');
   assert.throws(() => formatTaskRecord({ id: 'TK-000A', specId: 'S-0AA', landmarkId: 'LMK-0AA', slice: 'x', status: 'ready', blockers: 'none', destination: 'spec-acceptance: x' }), /exactly one/);
   console.log('ok - formatTaskRecord writes a landmark-direct record the reader accepts');
+}
+
+// S-003Z TK-008H run 2: `claim` persists every claimant on the Task record
+// itself in one optional `**Claimed by:**` field, accumulated across runs, so
+// the fact survives `close` overwriting the parent's Latest event, a re-claim,
+// a retirement and a move. A record without the field reads as claimed by
+// nobody; the writer and the reader agree on it.
+{
+  assert.deepEqual(parseTaskRecord(record()).claimedBy, [], 'a record with no Claimed by field names no claimant');
+  const claimed = parseTaskRecord(record({ extra: '**Claimed by:** worker-a, rev2' }));
+  assert.deepEqual(claimed.claimedBy, ['worker-a', 'rev2'], 'Claimed by reads as the ordered list of claimants');
+  assert.throws(() => parseTaskRecord(record({ extra: '**Claimed by:** worker-a, , rev2' })), /TK-000A has an empty entry in Claimed by/,
+    'an empty claimant entry is refused');
+  assert.equal(withClaimant([], 'worker-a'), 'worker-a', 'the first claim starts the list');
+  assert.equal(withClaimant(['worker-a'], 'rev2'), 'worker-a, rev2', 'a later claim appends its claimant');
+  assert.equal(withClaimant(['worker-a', 'rev2'], 'worker-a'), 'worker-a, rev2', 'a returning claimant is recorded once');
+  assert.throws(() => withClaimant([], 'worker, a'), /--agent "worker, a" contains a comma/, 'a claimant the list cannot hold is refused');
+  assert.throws(() => withClaimant([], 'worker\na'), /--agent .* contains a line break/, 'a multi-line claimant is refused');
+  const bytes = formatTaskRecord({ id: 'TK-000A', landmarkId: 'LMK-0AA', slice: 'Advance the direction', status: 'done', blockers: 'none', destination: 'spec-acceptance: LMK-0AA What Success Looks Like', claimedBy: ['worker-a', 'rev2'], proof: 'fixture proof' });
+  assert.match(bytes, /^\*\*Claimed by:\*\* worker-a, rev2$/m);
+  assert.deepEqual(parseTaskRecord(bytes).claimedBy, ['worker-a', 'rev2'], 'formatTaskRecord and parseTaskRecord round-trip the claimants');
+  assert.doesNotMatch(formatTaskRecord({ id: 'TK-000A', landmarkId: 'LMK-0AA', slice: 'x', status: 'ready', blockers: 'none', destination: 'spec-acceptance: x' }), /Claimed by/,
+    'an unclaimed record is written without the field');
+  console.log('ok - a Task record carries its accumulated claimants in an optional Claimed by field');
 }

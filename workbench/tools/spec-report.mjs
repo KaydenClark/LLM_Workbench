@@ -1785,8 +1785,9 @@ export function recordLandmarkApproval(rootDir, landmarkId, options = {}) {
 // Every place the reviewer's context appears as a participant in the
 // landmark, as a list of where. A participant name is structured: the
 // landmark's Owner (the Director holding the lane), a child Spec's Owner (its
-// claimant), any `claimed by <agent>` in a Latest event or evidence row, and a
-// child Spec verdict's reviewer; these match when either the reviewer names
+// claimant), every claimant a direct or child Task record (live or retired)
+// carries in its `Claimed by` field, any `claimed by <agent>` in a Latest
+// event or evidence row, and a child Spec verdict's reviewer; these match when either the reviewer names
 // the participant or the participant names the reviewer. Free text - a
 // direct or child Task's Receipt rows, and the child Specs' and the
 // landmark's own evidence rows - matches when it names the reviewer. The
@@ -1810,6 +1811,9 @@ function landmarkParticipation(parent, children, reviewer) {
   };
   const receipts = (records, where) => {
     for (const record of records) {
+      // S-003Z TK-008H run 2: the record's own accumulated claimants, which
+      // survive `close` overwriting the parent's Latest event.
+      for (const claimant of record.claimedBy ?? []) named(claimant, `${where}/${record.id} Claimed by`);
       for (const row of readReceipt(record.content, record.filePath)) {
         mentioned([row.branch, row.testsRun, row.docsTouched, row.remainingGap].join(' | '), `${where}/${record.id} Receipt run ${row.run}`);
       }
