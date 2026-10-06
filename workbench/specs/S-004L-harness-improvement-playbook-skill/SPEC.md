@@ -3,13 +3,13 @@
 **Spec ID:** S-004L
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s004l-dispatcher (Dispatcher; single writer of this Spec, its Task records and the projections)
+**Owner:** claude-s004l-dispatcher
 **Stance:** Builder
-**Updated:** 2026-10-05
+**Updated:** 2026-10-06
 **Catalog description:** Ship one improve-one-harnessed-job playbook skill that runs the baseline-to-rerun loop, point the Runbook's harness feedback and evaluation rows at it, and retire the host-installed harness-review family in its favor.
 **Blockers:** none
-**Latest event:** Planned 2026-10-05 at integration 35187ee6: four Tasks cut (TK-008L to TK-008O) from the Director's identifier block TK-008L to TK-008S.
-**Next gate:** Claim and deliver TK-008L (the skill and the bundle change); TK-008M and TK-008N follow it and may run side by side; TK-008O is the fresh-context scenario last.
+**Latest event:** TK-008L claimed by claude-s004l-dispatcher.
+**Next gate:** Close TK-008L with verification and documentation proof.
 
 ## Outcome
 

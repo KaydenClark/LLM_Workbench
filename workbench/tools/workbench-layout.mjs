@@ -53,7 +53,11 @@ export const coordinationSkills = ['director', 'dispatcher', 'spec-planner', 'sp
 // validation, installed state, visible identifiers, connection identity,
 // configured-host checks, room-local skills), after `grill-me` and ahead of
 // the coordination entries, so every coordination and stance slice stays exact.
-export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime', ...coordinationSkills, ...stanceSkills];
+// S-004L TK-008L adds `improve-harness`, the one workflow entry that carries
+// harness improvement for one observed job (baseline, earliest gap, smallest
+// owning intervention, native verification, fresh rerun, then retain, revise
+// or remove), after `workbench-runtime` and ahead of the coordination entries.
+export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime', 'improve-harness', ...coordinationSkills, ...stanceSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];

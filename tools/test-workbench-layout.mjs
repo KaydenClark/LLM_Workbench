@@ -273,9 +273,10 @@ test('a six-lane schema 2 manifest gains the skills lane through migrate, after 
     // A room stamped before the lane holds the bundle its release stamped:
     // v3.2.1's frozen twenty-one, without the `grill-me` S-00Z grew the live
     // bundle with, the coordination entries that grew it after, or the
-    // `workbench-runtime` entry S-004C TK-005J added. The provider-home shape
+    // `workbench-runtime` entry S-004C TK-005J added or the `improve-harness`
+    // entry S-004L TK-008L added. The provider-home shape
     // validates only with a stamped row.
-    manifest.skillPolicy = { ...manifest.skillPolicy, required: manifest.skillPolicy.required.filter((name) => !['grill-me', 'workbench-runtime'].includes(name) && !coordinationSkills.includes(name)), normalSetup: 'presence-only', updates: 'explicit-only' };
+    manifest.skillPolicy = { ...manifest.skillPolicy, required: manifest.skillPolicy.required.filter((name) => !['grill-me', 'workbench-runtime', 'improve-harness'].includes(name) && !coordinationSkills.includes(name)), normalSetup: 'presence-only', updates: 'explicit-only' };
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
     // The undeclared directory may already exist, empty (init's .gitkeep) or
     // holding a room-local skill; migrate must accept both, not refuse them.
@@ -1151,10 +1152,11 @@ test('each listed legacy version validates only at the policy its release declar
     assert.equal(outcome('v3.2.0', [...twelve, 'carry', 'notepad', ...current.slice(-4)]), 'invalid-skill-policy');
     // v3.2.1 stamped the twenty-one-skill bundle with `handoff`; S-00Z grew the
     // live bundle with `grill-me`, the coordination entries grew it again and
-    // S-004C TK-005J added `workbench-runtime`, so the v3.2.1 row freezes at
+    // S-004C TK-005J added `workbench-runtime` and S-004L TK-008L added
+    // `improve-harness`, so the v3.2.1 row freezes at
     // twenty-one and a room stamped v3.2.1 validates with either the frozen row
     // or the current policy the Workbench update writes before restamping.
-    const twentyOne = current.filter((name) => !['grill-me', 'workbench-runtime'].includes(name) && !coordinationSkills.includes(name));
+    const twentyOne = current.filter((name) => !['grill-me', 'workbench-runtime', 'improve-harness'].includes(name) && !coordinationSkills.includes(name));
     assert.equal(twentyOne.length, 21);
     assert.equal(outcome('v3.2.1', twentyOne), 'valid');
     assert.equal(outcome('v3.2.1', current), 'valid');
