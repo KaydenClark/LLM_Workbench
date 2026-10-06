@@ -2,8 +2,9 @@
 
 > Generated from LLM Workbench v[HARNESS_VERSION]. Copy this file to
 > `workbench/landmarks/LMK-[###]-[slug]/LANDMARK.md`. A landmark is the
-> artifact one size above a Spec: its child Specs nest in `specs/` and its
-> direct Tasks in `tasks/` beside this file, so one path carries every parent.
+> artifact one size above a Spec: its child Specs nest in the landmark
+> folder's `specs` subfolder and its direct Tasks in its `tasks` subfolder
+> beside this file, so one path carries every parent.
 > Lifecycle moves use the link-safe move operations, never a manual folder move.
 
 **Landmark ID:** LMK-[###]
@@ -47,15 +48,15 @@ record. Each decision record belongs to exactly one landmark.
 
 ## Child Specs
 
-The Specs nested in this landmark's `specs/` folder, one line each, linked to
-the Spec. A Spec has at most one parent landmark.
+The Specs nested in this landmark's `specs` subfolder, one line each, linked
+to the Spec. A Spec has at most one parent landmark.
 
 - none
 
 ## Direct Tasks
 
-The Tasks nested in this landmark's `tasks/` folder, one line each, linked to
-the Task record. Each keeps its own pull-request review.
+The Tasks nested in this landmark's `tasks` subfolder, one line each, linked
+to the Task record. Each keeps its own pull-request review.
 
 - none
 
