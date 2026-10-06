@@ -393,7 +393,11 @@ shared-logic Tasks that change `next`, `claim`, `doctor` or the Spec QA gate;
 the reviewer never uses the builder's model. This guides who is dispatched and
 decides nothing about the product. For this assignment the Director instead
 specifies Sol for ordinary implementation, Luna for small deterministic checks
-and Astra for ambiguous contracts or consequential reviews.
+and Astra for ambiguous contracts or consequential reviews. Superseded for
+reviews by the owner's confirmed rule of 2026-10-05: the reviewer runs on the
+same model provider as the session unless the owner specifies otherwise, with
+the most capable model reasonable for the work, and "never the builder's model"
+is no longer a rule ([Task Merge Answers And Verify Review](../../../AGENTS.md#task-merge-answers-and-verify-review)).
 
 ## Non-Goals
 
