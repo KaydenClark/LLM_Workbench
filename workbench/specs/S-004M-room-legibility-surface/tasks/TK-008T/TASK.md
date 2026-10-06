@@ -3,7 +3,7 @@
 **Task ID:** TK-008T
 **Spec ID:** S-004M
 **Slice:** Manifest legibility block, declare-legibility command and the Workbench's own declaration
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: The Workbench's own manifest declares all six entries and each named command or path exists.

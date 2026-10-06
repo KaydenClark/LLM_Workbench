@@ -8,8 +8,8 @@
 **Updated:** 2026-10-06
 **Catalog description:** Let every room declare how an agent runs, operates, inspects, sees errors in, exercises and measures its product, as a manifest block checked by doctor, with the Workbench's own declaration as the first.
 **Blockers:** none. Runbook or AGENTS wording waits for the S-004C writer and is not cut as a Task.
-**Latest event:** 2026-10-06: Plan at integration 35187ee6; five sequential Tasks TK-008T to TK-008X cut and the Spec activated by the Dispatcher lane.
-**Next gate:** TK-008T (manifest block, declare-legibility and the Workbench's own declaration), then TK-008U to TK-008X in order; Spec Verify review of the assembled candidate before completion.
+**Latest event:** TK-008T claimed by claude-s004m-dispatcher.
+**Next gate:** Close TK-008T with verification and documentation proof.
 
 ## Outcome
 
