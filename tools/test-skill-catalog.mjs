@@ -907,6 +907,37 @@ assert.ok(improveHarness.includes('Lopopolo') && improveHarness.includes('CC BY 
 assert.doesNotMatch(improveHarness, /workbench\/specs\/|node tools\/test-|\/Users\//,
   'improve-harness ships to every room: no repository Spec path, maintainer test command or private path');
 
+// S-004L TK-008P: the fresh-context fixture-room scenario (TK-008O) found three
+// places where the skill misled a cold reader. A feedback record is
+// append-only, so the pass appends a new row naming the original row instead
+// of moving a row's status, using the room's disposition terms, recorded in
+// the owning Spec when the room keeps Specs. Hidden help can come from the
+// room's own files and later history, not only the conversation. A
+// test-without run that also closes the job shows the intervention is not what
+// closed it. Spec and Task records are conditional on the room keeping them.
+// Each section is read with its line wrapping collapsed, so a pinned phrase
+// survives a rewrap.
+const improveHarnessSection = (heading) => {
+  const position = improveHarnessHeadings.indexOf(heading);
+  return improveHarness.slice(improveHarnessSections[position], improveHarnessSections[position + 1]).replace(/\s+/g, ' ');
+};
+const takingInFeedback = improveHarnessSection('## Taking In Feedback');
+assert.doesNotMatch(takingInFeedback, /row moves from new to/,
+  'Taking In Feedback never moves an append-only row from one status to another');
+for (const phrase of ['appends a new row', 'names the original row', 'disposition', 'owning Spec when the room keeps']) {
+  assert.ok(takingInFeedback.includes(phrase), `Taking In Feedback appends a row that ${phrase}`);
+}
+assert.ok(improveHarnessSection("## 4. Verify Through The Target's Native Checks").includes('Spec and Task records when the room keeps them'),
+  'step 4 asks for Spec and Task records only when the room keeps them');
+const freshRerun = improveHarnessSection('## 5. Rerun On A Fresh Trajectory');
+for (const phrase of ['later history', 'tags', 'every room source']) {
+  assert.ok(freshRerun.includes(phrase), `step 5 accounts for hidden help in the room itself: ${phrase}`);
+}
+const retainReviseRemove = improveHarnessSection('## 6. Retain, Revise Or Remove');
+for (const phrase of ['test-without run', 'not what closed the job', 'no agent-outcome improvement', 'otherwise wrong or incomplete']) {
+  assert.ok(retainReviseRemove.includes(phrase), `step 6 says what a test-without run that closes the job means: ${phrase}`);
+}
+
 // S-00J TK-006, narrowed by the owner's 2026-10-05 rule: the reviewed unit is
 // the assembled Spec bound to a content digest - obtained with `report S-###
 // --candidate <sha>` and recorded with `verdict` at the Spec's Verify step.
