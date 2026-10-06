@@ -13,7 +13,12 @@ import { blocksSelection, describe, finding } from './diagnostics.mjs';
 import { checkHostFloor, formatHostFloor } from './host-floor.mjs';
 import { capabilitySession } from './optional-capabilities.mjs';
 import { coordinationContext, publicCoordination, publishClaim } from './claim-coordination.mjs';
-import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, declaredGit, lanePath, liveRecordPath, markdownLinkTargets, readManifest } from './workbench-paths.mjs';
+import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, declaredGit, declaredTracker, lanePath, liveRecordPath, markdownLinkTargets, readManifest } from './workbench-paths.mjs';
+// S-003Z TK-008D: the LANDMARK.md artifact reader, the record one size above a
+// Spec (ADR-000U). Doctor folds its findings in beside the ADR and DDR
+// collections, and `next-id --prefix LMK` folds its identities with the
+// Tracker's JSON landmark records and every remote tip.
+import { LANDMARK_PREFIX, landmarkFindings, loadLandmarks, loadRetiredLandmarks } from './landmark-artifact.mjs';
 import { parseFrontmatter, planReferenceRewrite, splitEvidenceSection, validateAdrs, writeDecisionRegisters } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { ARTIFACT_ID_MIN_WIDTH, allocateArtifactId, compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
@@ -264,10 +269,11 @@ export function nextIdentity(rootDir, specId, options = {}) {
   refuseBlockedRuntime(rootDir);
   const specs = loadSpecs(rootDir);
   const prefix = options.prefix;
-  if (!['S', 'TK'].includes(prefix)) throw new Error('--prefix must be S or TK');
+  if (!['S', 'TK', LANDMARK_PREFIX].includes(prefix)) throw new Error(`--prefix must be S, TK or ${LANDMARK_PREFIX}`);
   if (prefix === 'TK') specId = resolveSpecId(rootDir, specId);
   if (prefix === 'TK' && !specs.some(spec => spec.id === specId)) throw new Error('Task identity proposals require an existing assigned spec ID');
   if (prefix === 'S' && specId) throw new Error('A spec identity proposal takes no existing spec ID');
+  if (prefix === LANDMARK_PREFIX && specId) throw new Error('A landmark identity proposal takes no existing spec ID');
   const occupied = occupiedIdentities(rootDir, prefix);
   // The shared artifact policy is letter-bearing, so new durable labels do not
   // reuse removed historical decimal IDs; numeric tasks also retain their old
@@ -284,24 +290,61 @@ export function nextIdentity(rootDir, specId, options = {}) {
 const REF_READ_MAX_BUFFER = 64 * 1024 * 1024;
 export function occupiedIdentities(rootDir, prefix) {
   const root = path.resolve(rootDir);
-  const specs = [...loadSpecs(root), ...loadRetiredSpecs(root)];
-  const occupied = prefix === 'S' ? specs.map(spec => spec.id)
-    : [...specs.flatMap(spec => [...spec.rows, ...spec.records, ...(spec.retiredRecords ?? [])].map(item => item.id)), ...loadCorrectiveTasks(root).map(task => task.id)];
+  const occupied = prefix === LANDMARK_PREFIX ? landmarkIdentities(root) : specAndTaskIdentities(root, prefix);
   occupied.push(...discardedLabels(root, prefix));
   const refs = spawnSync('git', ['-C', root, 'for-each-ref', '--format=%(refname)', 'refs/remotes'], { encoding: 'utf8' });
   if (refs.status === 0) for (const ref of refs.stdout.trim().split('\n').filter(Boolean)) {
     const manifestResult = spawnSync('git', ['-C', root, 'show', `${ref}:workbench/manifest.json`], { encoding: 'utf8', maxBuffer: REF_READ_MAX_BUFFER });
     if (manifestResult.error) throw new Error(`Cannot reserve IDs from ${ref}: ${manifestResult.error.message}`);
     let lane = resolveSpecsRoot(root).specsPrefix;
+    let landmarksLane = collectionRelative(root, 'landmarks');
+    let trackerLane = declaredTracker(root)?.collections.landmarks ?? null;
     if (manifestResult.status === 0) {
-      try { lane = JSON.parse(manifestResult.stdout).lanes?.specs ?? lane; }
+      let manifest;
+      try { manifest = JSON.parse(manifestResult.stdout); }
       catch { throw new Error(`Cannot reserve IDs from malformed manifest at ${ref}`); }
+      lane = manifest.lanes?.specs ?? lane;
+      landmarksLane = manifest.collections?.landmarks ?? landmarksLane;
+      trackerLane = manifest.landmarkTracker?.collections?.landmarks ?? trackerLane;
     }
-    const result = spawnSync('git', ['-C', root, 'grep', '-h', '-E', `^\\*\\*(Spec ID|Task ID):\\*\\*|^\\|.*(S-|TK-)`, ref, '--', lane, ...(manifestResult.status === 0 ? [] : ['specs'])], { encoding: 'utf8', maxBuffer: REF_READ_MAX_BUFFER });
+    // S-003Z TK-008D: a landmark identity is reserved by a `**Landmark ID:**`
+    // line in the landmarks collection at that tip (active roster and every
+    // lifecycle folder alike) and by the Tracker's JSON records there, whose
+    // `"id"` field names the same prefix; a pathspec absent at the tip matches
+    // nothing and is not an error.
+    const scan = prefix === LANDMARK_PREFIX
+      ? { pattern: '^\\*\\*Landmark ID:\\*\\*|"id":', paths: [landmarksLane, ...(trackerLane ? [trackerLane] : [])] }
+      : { pattern: '^\\*\\*(Spec ID|Task ID):\\*\\*|^\\|.*(S-|TK-)', paths: [lane, ...(manifestResult.status === 0 ? [] : ['specs'])] };
+    const result = spawnSync('git', ['-C', root, 'grep', '-h', '-E', scan.pattern, ref, '--', ...scan.paths], { encoding: 'utf8', maxBuffer: REF_READ_MAX_BUFFER });
     if (result.error || ![0, 1].includes(result.status)) throw new Error(`Cannot reserve IDs from ${ref}: ${result.error?.message ?? result.stderr.trim()}`);
     occupied.push(...(result.stdout.match(new RegExp(`\\b${prefix}-[0-9A-Za-z]{3,}\\b`, 'g')) ?? []));
   }
   return [...new Set(occupied)];
+}
+
+// The Spec and Task identities a room holds in its records: every Spec at both
+// homes, every slice row and Task record, retired Tasks and corrective Tasks.
+function specAndTaskIdentities(root, prefix) {
+  const specs = [...loadSpecs(root), ...loadRetiredSpecs(root)];
+  return prefix === 'S' ? specs.map(spec => spec.id)
+    : [...specs.flatMap(spec => [...spec.rows, ...spec.records, ...(spec.retiredRecords ?? [])].map(item => item.id)), ...loadCorrectiveTasks(root).map(task => task.id)];
+}
+
+// S-003Z TK-008D: the landmark identities a room holds: every `LANDMARK.md`
+// artifact at the active roster and in each lifecycle folder, plus the
+// Tracker's JSON landmark records, which keep their identities until the
+// migration Spec folds them into the artifacts. A malformed artifact refuses
+// the proposal, as a malformed Spec refuses a Spec or Task proposal.
+function landmarkIdentities(root) {
+  const ids = [...loadLandmarks(root), ...loadRetiredLandmarks(root)].map(landmark => landmark.id);
+  const tracker = declaredTracker(root);
+  if (tracker) {
+    const records = path.join(root, tracker.collections.landmarks);
+    if (fs.existsSync(records)) {
+      for (const name of fs.readdirSync(records)) if (name.endsWith('.json')) ids.push(path.basename(name, '.json'));
+    }
+  }
+  return ids;
 }
 
 // Labels the discard register (`DISCARDS.md`) still holds: a discarded record's
@@ -1374,6 +1417,15 @@ function collectionFindings(root) {
     if (fs.existsSync(collectionPath(root, 'ddr'))) findings.push(...validateAdrs(root, { kind: 'ddr' }));
   } catch (error) {
     findings.push(finding('invalid-ddr', `DDR validation failed: ${error.message}`));
+  }
+  // S-003Z TK-008D: the landmarks collection carries its artifact findings
+  // here: each malformed LANDMARK.md by name, a folder off the
+  // `<collection>/LMK-###-` shape, and a duplicated landmark identity. A room
+  // with no landmarks folder has nothing to report.
+  try {
+    if (fs.existsSync(collectionPath(root, 'landmarks'))) findings.push(...landmarkFindings(root));
+  } catch (error) {
+    findings.push(finding('malformed-landmark', `landmark validation failed: ${error.message}`));
   }
   try {
     if (fs.existsSync(lanePath(root, 'wiki'))) findings.push(...validateWiki(root));

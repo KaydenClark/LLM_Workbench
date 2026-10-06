@@ -990,6 +990,9 @@ const PINNED_EFFECTS = {
   'retired-task-not-done': ['attention', 'specs', 'none'],
   'retired-wiki-owner-stale': ['attention', 'specs', 'none'],
   'discarded-reference': ['error', 'specs', 'selection'],
+  // S-003Z TK-008D: a LANDMARK.md artifact that fails its contract is named
+  // and blocks selection exactly as a malformed Spec packet does.
+  'malformed-landmark': ['error', 'specs', 'selection'],
   // S-00I TK-01U: a Spec completed under the closure-capture contract with no
   // captured features article is visible and never blocks; a failed or
   // missing capture never reverts `complete`.

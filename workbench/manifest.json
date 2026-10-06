@@ -46,7 +46,8 @@
     "notepad-templates": "workbench/sessions/notepads/templates",
     "recovery": "workbench/sessions/recovery",
     "features": "workbench/wiki/features",
-    "ddr": "workbench/docs/ddr"
+    "ddr": "workbench/docs/ddr",
+    "landmarks": "workbench/landmarks"
   },
   "landmarkTracker": {
     "root": "workbench/landmark-tracker",
@@ -63,7 +64,10 @@
     "unit": "tokens",
     "decisionDate": "2026-09-12",
     "source": "owner",
-    "consideredAlternatives": [150000, 250000],
+    "consideredAlternatives": [
+      150000,
+      250000
+    ],
     "reason": "250k is where a context is compacted or gone while roughly 200k is where answer quality begins to degrade, and planning to the ceiling plans work into the degraded tail."
   },
   "skillPolicy": {

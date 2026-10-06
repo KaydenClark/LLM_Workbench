@@ -6233,6 +6233,124 @@ function commitAll(dir, message) {
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 }
 
+// ---- S-003Z TK-008D: the landmarks collection and the LANDMARK.md artifact ----
+// A room declares `collections.landmarks` (the third additive collection); a
+// `LANDMARK.md` authored from `templates/LANDMARK.md` validates through the
+// public seams (`doctor`, `landmark-artifact.mjs validate|list`); doctor names
+// a malformed landmark and a folder that does not start `<collection>/LMK-###-`;
+// and `next-id --prefix LMK` folds the Tracker's JSON records, the artifacts at
+// both lifecycle folders and every remote tip into one occupied set.
+function landmarkFromTemplate(id, overrides = {}) {
+  const template = fs.readFileSync(path.join(repoToolRoot(), 'templates', 'LANDMARK.md'), 'utf8');
+  let content = template
+    .replaceAll('LMK-[###]', id)
+    .replaceAll('[###]', '000A')
+    .replaceAll('[slug]', 'fixture-slug')
+    .replaceAll('[0-9]', '2')
+    .replaceAll('[YYYY-MM-DD]', '2026-10-05')
+    .replaceAll('[HARNESS_VERSION]', '0.0.0');
+  // Every remaining fillable placeholder: a bracketed token holding a letter
+  // that is not a Markdown link label. The `- [ ]` reached checks are kept.
+  content = content.replace(/\[([^\]\n]*[A-Za-z][^\]\n]*)\](?!\()/g, (_token, inner) => `Filled ${inner.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()}`);
+  for (const [field, value] of Object.entries(overrides)) {
+    content = content.replace(new RegExp(`^\\*\\*${escapeForRegExp(field)}:\\*\\* .*$`, 'm'), `**${field}:** ${value}`);
+  }
+  return content;
+}
+
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'landmark-artifact-'));
+  try {
+    initLifecycleFixture(root);
+    const manifestFile = path.join(root, 'workbench/manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+    // The declaration a migrated or freshly initialized room carries, plus the
+    // Tracker whose JSON landmark records the migration Spec still owns.
+    manifest.collections.landmarks = 'workbench/landmarks';
+    manifest.landmarkTracker = { root: 'workbench/landmark-tracker', collections: { 'destination-questions': 'workbench/landmark-tracker/destination-questions', landmarks: 'workbench/landmark-tracker/landmarks' } };
+    fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
+    fs.mkdirSync(path.join(root, 'workbench/landmark-tracker/destination-questions'), { recursive: true });
+    writeAt(root, 'workbench/landmark-tracker/landmarks/LMK-000A.json', '{"id":"LMK-000A"}\n');
+    const authored = landmarkFromTemplate('LMK-0AA', { Status: 'active', Owner: 'director' });
+    assert.ok(!/\[[A-Z_]+\]/.test(authored), 'the fixture fills every uppercase placeholder the template ships');
+    writeAt(root, 'workbench/landmarks/LMK-0AA-first-direction/LANDMARK.md', authored);
+    writeAt(root, 'workbench/landmarks/retired/LMK-000B-old-direction/LANDMARK.md', landmarkFromTemplate('LMK-000B', { Status: 'reached' }));
+    execFileSync('git', ['init', '--quiet', root]);
+    execFileSync('git', ['-C', root, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', root, 'config', 'user.name', 'Fixture']);
+    execFileSync('git', ['-C', root, 'add', '-A']);
+    execFileSync('git', ['-C', root, 'commit', '--quiet', '-m', 'local landmarks']);
+    const base = headSha(root);
+    writeAt(root, 'workbench/landmarks/LMK-000C-remote-direction/LANDMARK.md', landmarkFromTemplate('LMK-000C'));
+    execFileSync('git', ['-C', root, 'add', '-A']);
+    execFileSync('git', ['-C', root, 'commit', '--quiet', '-m', 'remote-only landmark']);
+    execFileSync('git', ['-C', root, 'update-ref', 'refs/remotes/origin/parallel', 'HEAD']);
+    execFileSync('git', ['-C', root, 'reset', '--hard', '--quiet', base]);
+
+    const specTool = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+    const artifactTool = path.join(repoToolRoot(), 'workbench', 'tools', 'landmark-artifact.mjs');
+    const doctorJson = () => {
+      const run = spawnSync(process.execPath, [specTool, 'doctor', '--path', root, '--json'], { encoding: 'utf8' });
+      assert.ok(run.stdout.trim(), `doctor printed findings: ${run.stderr}`);
+      return JSON.parse(run.stdout);
+    };
+    const clean = doctorJson();
+    assert.ok(!clean.some(item => ['invalid-manifest', 'invalid-collection', 'malformed-landmark', 'unstable-path'].includes(item.code)),
+      `a room declaring the landmarks collection with a template-authored landmark is clean: ${JSON.stringify(clean.map(item => item.code))}`);
+
+    const next = spawnSync(process.execPath, [specTool, 'next-id', '--prefix', 'LMK', '--path', root], { encoding: 'utf8' });
+    assert.equal(next.status, 0, next.stdout + next.stderr);
+    assert.equal(JSON.parse(next.stdout).id, 'LMK-000D', 'LMK-0AA (active), LMK-000A (Tracker JSON record), LMK-000B (retired) and LMK-000C (remote-only) stay reserved');
+    const withSpec = spawnSync(process.execPath, [specTool, 'next-id', 'S-00A', '--prefix', 'LMK', '--path', root], { encoding: 'utf8' });
+    assert.notEqual(withSpec.status, 0, 'a landmark identity proposal takes no spec ID');
+
+    const validated = spawnSync(process.execPath, [artifactTool, 'validate', 'LMK-0AA', '--path', root, '--json'], { encoding: 'utf8' });
+    assert.equal(validated.status, 0, validated.stdout + validated.stderr);
+    const report = JSON.parse(validated.stdout);
+    assert.equal(report.status, 'valid');
+    assert.equal(report.landmark.id, 'LMK-0AA');
+    assert.equal(report.landmark.status, 'active');
+    assert.equal(report.landmark.owner, 'director');
+    assert.equal(report.landmark.path, 'workbench/landmarks/LMK-0AA-first-direction/LANDMARK.md');
+    assert.deepEqual(report.landmark.successChecks.map(check => check.done), [false], 'the template seeds one unticked reached check');
+    assert.equal(report.landmark.decisionRecords.length, 1, 'the Decision Records section lists one linked record');
+    assert.deepEqual(report.landmark.blockers, [], 'Blockers: none parses as no blockers');
+
+    const listed = spawnSync(process.execPath, [artifactTool, 'list', '--path', root, '--json'], { encoding: 'utf8' });
+    assert.equal(listed.status, 0, listed.stdout + listed.stderr);
+    const roster = JSON.parse(listed.stdout);
+    assert.deepEqual(roster.active.map(item => item.id), ['LMK-0AA']);
+    assert.deepEqual(roster.retired.map(item => [item.id, item.lifecycleFolder]), [['LMK-000B', 'retired']]);
+
+    const missing = spawnSync(process.execPath, [artifactTool, 'validate', 'LMK-0ZZ', '--path', root, '--json'], { encoding: 'utf8' });
+    assert.notEqual(missing.status, 0, 'validating an unknown landmark is refused');
+
+    // Malformed artifacts are named by doctor, one finding each, without
+    // hiding the healthy landmark or aborting the run.
+    writeAt(root, 'workbench/landmarks/LMK-0AB-bad-status/LANDMARK.md', landmarkFromTemplate('LMK-0AB', { Status: 'done' }));
+    writeAt(root, 'workbench/landmarks/LMK-0AC-bad-blockers/LANDMARK.md', landmarkFromTemplate('LMK-0AC', { Blockers: 'waiting on the owner' }));
+    writeAt(root, 'workbench/landmarks/LMK-0AD-no-checks/LANDMARK.md', landmarkFromTemplate('LMK-0AD').replace(/^- \[ \] .*$/m, 'No checks yet.'));
+    writeAt(root, 'workbench/landmarks/unstable-direction/LANDMARK.md', landmarkFromTemplate('LMK-0AE'));
+    const findings = doctorJson();
+    const malformed = findings.filter(item => item.code === 'malformed-landmark');
+    assert.deepEqual(malformed.map(item => item.landmarkId).sort(), ['LMK-0AB', 'LMK-0AC', 'LMK-0AD'], JSON.stringify(findings));
+    assert.ok(malformed.every(item => item.message.includes(item.landmarkId)), 'each malformed landmark is named in its finding');
+    assert.ok(malformed.some(item => item.landmarkId === 'LMK-0AB' && /done/.test(item.message)), 'the bad status is quoted');
+    assert.ok(malformed.some(item => item.landmarkId === 'LMK-0AC' && /Blockers/.test(item.message)), 'the prose blocker is named');
+    assert.ok(malformed.some(item => item.landmarkId === 'LMK-0AD' && /What Success Looks Like/.test(item.message)), 'the missing reached check is named');
+    const unstable = findings.filter(item => item.code === 'unstable-path' && item.landmarkId);
+    assert.deepEqual(unstable.map(item => item.landmarkId), ['LMK-0AE']);
+    assert.match(unstable[0].message, /workbench\/landmarks\/LMK-0AE-/);
+    const refused = spawnSync(process.execPath, [artifactTool, 'validate', 'LMK-0AB', '--path', root, '--json'], { encoding: 'utf8' });
+    assert.notEqual(refused.status, 0, 'validate exits non-zero for a malformed landmark');
+    assert.match(refused.stdout + refused.stderr, /LMK-0AB/);
+
+    const { RUNTIME_TOOLS } = await import('../workbench/tools/workbench-layout.mjs');
+    assert.ok(RUNTIME_TOOLS.includes('landmark-artifact.mjs'), 'landmark-artifact.mjs is one of the Workbench-managed runtime tools');
+    console.log('ok - a room declares the landmarks collection, validates a template-authored LANDMARK.md, names malformed ones, and next-id reserves LMK identities from every source');
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+}
+
 // ---- S-00J TK-01T: reviewed-delivery blocker `S-###:delivered` (begin) ----
 // A dependent that needs only a blocker Spec's reviewed integration delivery
 // (T0 of S-00J's closure-capture transition contract) writes
