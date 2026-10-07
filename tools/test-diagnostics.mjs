@@ -958,6 +958,7 @@ const PINNED_EFFECTS = {
   'invalid-adr': ['error', 'adr', 'none'],
   // S-003X TK-004X: a DDR's own validation finding, beside the ADR's.
   'invalid-ddr': ['error', 'adr', 'none'],
+  'invalid-cdr': ['error', 'adr', 'none'],
   'untracked-provenance': ['error', 'adr', 'none'],
   'invalid-note': ['error', 'wiki', 'none'],
   'copied-task-state': ['error', 'wiki', 'none'],
