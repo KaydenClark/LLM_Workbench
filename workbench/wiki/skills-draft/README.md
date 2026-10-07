@@ -144,7 +144,7 @@ Skills other skills compose: interviews, notes, promotion, documentation, vocabu
 | to-docs | core | S-01J (to docs skill rebuild) | none |
 | save | core | S-01O (save skill rebuild) | none |
 | tracer-bullet | core | S-01M (tracer bullet skill rebuild) | part of to-tickets |
-| domain-modeling | pending | S-002H (domain modeling skill) | domain-modeling |
+| domain-modeling | core | S-004J (required domain modeling skill), which replaced S-002H | domain-modeling |
 | ubiquitous-language | pending | S-003L (ubiquitous language skill alignment) | removed upstream (superseded by domain-modeling) |
 | codebase-design | pending | S-003M (codebase design skill alignment) | codebase-design |
 | tdd | pending | S-003N (tdd skill alignment) | tdd |
