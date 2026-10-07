@@ -8,8 +8,8 @@
 **Updated:** 2026-10-07
 **Catalog description:** Retire LEXICON.md into concise canonical project vocabulary in GLOSSARY.md, richer Wiki explanations and ownership routes in ARCHITECTURE.md, in this room and the Template.
 **Blockers:** none. The Lexicon writer's turn follows S-004E's assembled Lexicon edits; Lexicon edits that land after the census are re-scaffolded by the removal Task (TK-009H).
-**Latest event:** TK-009B closed with proof.
-**Next gate:** Complete TK-009C.
+**Latest event:** TK-009C closed with proof.
+**Next gate:** Complete TK-009D.
 
 ## Outcome
 
@@ -42,6 +42,8 @@ At refreshed integration `42431879fab3057db9e26ae661b4e92512c281f0` (2026-10-06)
 - `ARCHITECTURE.md` is a routing artifact, never a Contract file.
 - Glossary scope, placement and the retained notepad/confirmation/promotion boundary are owned by the refined DDR-001E above. No immediate-write exception is activated.
 
+- Wiki shape (Dispatcher, 2026-10-07, reversible): this room's Wiki explains each glossary term in one flat `dictionary-*` entry, the owner's stated knowledge-base shape, or extends an existing article that already explains it; the Template ships one grouped explanatory article per glossary grouping plus one AI-coding reference article, so a generated room stays lean. The census routed about 118 glossary explanations and 37 Wiki-only entries, too large for one Task, so the Wiki work runs in five batches.
+
 ## Non-Goals
 
 Rewriting `AGENTS.md` or the Runbook (the carrier rewrite owns them), changing what any term means, a build system for the Wiki, implementing another capability.
@@ -56,7 +58,7 @@ Rewriting `AGENTS.md` or the Runbook (the carrier rewrite owns them), changing w
 
 ## Vertical Implementation Slices
 
-Task records live under `tasks/`. Order: TK-009A (census and landing check); then TK-009B (`ARCHITECTURE.md`) and TK-009C (`GLOSSARY.md`) in parallel; then TK-009D (Wiki lexicon articles and validator) and TK-009E (promotion scenario) in parallel; then TK-009F (consumers, links, Blueprint line, Instruction Authority); then TK-009G (installed controls, Genesis and adoption codemap, update route); then TK-009H (removal).
+Task records live under `tasks/`. Order: TK-009A (census and landing check); then TK-009B (`ARCHITECTURE.md`) and TK-009C (`GLOSSARY.md`) in parallel; then TK-009D (first Wiki lexicon batch and the validator rule) and TK-009E (promotion scenario) in parallel; then the remaining Wiki batches TK-009I, TK-009J, TK-009K (Wiki-only reference pages) and TK-009L (Template Wiki), two at a time; then TK-009F (consumers, links, Blueprint line, Instruction Authority); then TK-009G (installed controls, Genesis and adoption codemap, update route); then TK-009H (removal).
 
 Context layout, verified at Plan on 2026-10-06 at assembly base `1f4e2d67`: one root `LEXICON.md` and its generic `templates/LEXICON.md` mirror, no context map and no second vocabulary store in the live room, so this is the ordinary single-context repository and the glossary is root `GLOSSARY.md`. `skills-pending/teach/GLOSSARY-FORMAT.md` and an archived skill's `GLOSSARY.md` are skill material, not contexts.
 
@@ -93,6 +95,8 @@ Run the targeted control, wiki, template, genesis, adoption and upgrade tests, t
 | 2026-10-06 | plan | Activated under the owner's `/implement-spec` request: context layout verified single-context at assembly base `1f4e2d67` (integration `9b524db3` plus the glossary planning commits); Task IDs TK-009A to TK-009H chosen clear of every remote tip and sibling session; eight Tasks cut. | Consumer survey at the base: 23 maintainer tests, 6 runtime tools, 9 workbench skills, about 40 Wiki pages and 13 Template files read the Lexicon; per-line census is TK-009A. | Spec header, slice order and Task records. | All eight Tasks, whole-Spec QA, separate review and integration. |
 | 2026-10-07 | TK-009A | Task closed | Red 6e53091f (glossary/architecture kinds refused) and fac06695 (deleted carrier refused), green 4c4bb495: test-carrier-landing 19/19, test-runbook-index 62/62, both inventories check ok with every entry classified (root 308: glossary 139, architecture 107, wiki 37, restates-owner 5, retired 20; Template 269: 117/100/38/0/14); full suite 53/53 on clean 4860e1d5 (log-tk009a.txt); merged into assembly by PR #409 | tools/check-carrier-landing.mjs header, workbench-room-checks skill Carrier line-landing check, RUNBOOK carrier line-landing pointer; proof inventories and consumer census under the Spec proof directory | Planned landedText for GLOSSARY, ARCHITECTURE and new Wiki homes is verified when TK-009B, C and D write them; Lexicon rows added after base 1f4e2d67 are re-scaffolded by TK-009H |
 | 2026-10-07 | TK-009B | Task closed | Red 709d9b2a (two new governance-core tests fail: ARCHITECTURE.md missing), green: test-governance-core 14/14, every architecture inventory entry lands in root and Template ARCHITECTURE.md, workbench-layout 76/76, control-fidelity 39/39, carrier-landing 19/19, templates evaluator unchanged 106.6/113; full suite 53/53 on clean 60a21707 (log-tk009b.txt); merged into assembly by PR #413 | New ARCHITECTURE.md (171 lines) and templates/ARCHITECTURE.md (156 lines): bird's-eye view, codemap, ownership table and boundaries, routes, invariants; Template codemap placeholder for Genesis and adoption | Installation into rooms and the Genesis/adoption codemap draft are TK-009G; consumers and Instruction Authority are TK-009F; GLOSSARY.md link resolves when TK-009C merges |
+| 2026-10-07 | TK-009C | Task closed | Red e6816ffc (glossary format and landing checks fail, GLOSSARY.md missing), green fba7513d and 7ed2569f: glossary format, scope and landing checks with mutation cases in test-control-fidelity, term-row checks moved to the glossary in test-control-fidelity, test-adr, test-skill-catalog and the vocabulary sweep; full suite 53/53 on 7ed2569f, and 53/53 on merged assembly e387aeed (log-asm-e387.txt); merged by PR #414 | New GLOSSARY.md and templates/GLOSSARY.md in Matt's pinned format (13 groupings, retired names as _Avoid_ aliases); template-placeholders registers GLOSSARY.md with two new placeholders; glossary landedText refined on a few entries without changing meaning | Distinction text and the Lexicon checks still reading Distinction, routing or AI Coding Terms rows are for the Wiki Tasks and TK-009F; the governance-core Lexicon row check is removed with the Lexicon |
+| 2026-10-07 | plan | Re-cut the Wiki slice after the census: TK-009D keeps the validator rule and its first batch, and new TK-009I, TK-009J, TK-009K and TK-009L carry the remaining root batches, the Wiki-only reference pages and the Template Wiki; TK-009F now waits on all five. | Census at TK-009A: about 118 glossary rows name a missing explanation page and 37 entries route to Wiki pages, 26 of them missing; the Template inventory routes 143 more to `templates/wiki/`. | Spec slice order, Wiki shape decision, Task records. | All remaining Tasks, whole-Spec QA, separate review and integration. |
 
 ## Completion Result
 

@@ -5,7 +5,7 @@
 **Slice:** Every Lexicon consumer, link, the Blueprint line and Instruction Authority route to the new owners
 **Status:** ready
 **Stance:** Builder
-**Blockers:** TK-009B, TK-009C, TK-009D
+**Blockers:** TK-009B, TK-009C, TK-009D, TK-009I, TK-009J, TK-009K, TK-009L
 **Destination:** spec-acceptance: Vocabulary, explanation and ownership consumers resolve to their proper owners; neighboring skill acceptance is proven in those Specs.
 **Planned verification:** Red: a repository check that no tracked live file (outside history records: Spec evidence, decision records, feedback reports, landmark cards, session records) links `LEXICON.md` or one of its headings fails first. Green: that check, the runbook-index, control-fidelity, governance-core, skill-catalog, vocabulary-sweep and ADR tests re-pointed, then the full suite.
 
