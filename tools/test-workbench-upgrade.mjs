@@ -415,10 +415,10 @@ function templateLexicon() {
     .replaceAll('[YYYY-MM-DD]', '2026-09-01').replaceAll('[active / partial / stale]', 'active');
 }
 
-function upgradeLexiconRoom(lexicon) {
+function upgradeLexiconRoom(lexicon, extra = {}) {
   const project = fixture('workbench-upgrade-lexicon-');
   const home = fixture('workbench-upgrade-home-');
-  seedProject(project, lexiconControls, { 'LEXICON.md': lexicon });
+  seedProject(project, [...lexiconControls, ...Object.keys(extra)], { 'LEXICON.md': lexicon, ...extra });
   const result = run(tool, 'upgrade', '--project', project, '--home', home, '--version', VERSION, '--layout-only');
   return { project, home, result };
 }
@@ -446,9 +446,17 @@ test('TK-009G: an upgrade keeps a Lexicon whose project-specific row has not lan
     const recovery = JSON.parse(fs.readFileSync(path.join(project, result.report.recoveryPath), 'utf8'));
     assert.equal(recovery.lexicon.status, 'kept', 'the recovery record names the Lexicon outcome');
 
-    // Landing the row in the room's own glossary lets the managed update
-    // route retire the Lexicon on its next run.
-    fs.appendFileSync(path.join(project, 'GLOSSARY.md'), `\n${PROJECT_ROW}\n`);
+    assert.match(result.report.lexicon.finding.message, /remove each landed row from LEXICON\.md/, 'the finding says to remove landed rows before rerunning');
+
+    // S-004O TK-009M: landing the row in Matt's glossary format, a
+    // `**Greeting**:` entry with its definition and the distinction in a Wiki
+    // article, lets the managed update route retire the Lexicon on its next
+    // run; the glossary entry alone, without the distinction, does not.
+    fs.appendFileSync(path.join(project, 'GLOSSARY.md'), '\n**Greeting**:\nThe single line the CLI prints for a name.\n');
+    const partial = spawnSync(process.execPath, [path.join(root, 'workbench', 'tools', 'workbench-layout.mjs'), 'migrate', '--project', project], { cwd: root, encoding: 'utf8' });
+    assert.equal(partial.status, 0, partial.stdout + partial.stderr);
+    assert.deepEqual(JSON.parse(partial.stdout).lexicon.unlanded.map((item) => item.text), [PROJECT_ROW], 'a row whose distinction is not in the Wiki has not landed');
+    write(project, 'workbench/wiki/dictionary-greeting.md', '# Greeting\n\nA **Greeting** is the single line the CLI prints for a name. Not a banner or a log line.\n');
     const migrated = spawnSync(process.execPath, [path.join(root, 'workbench', 'tools', 'workbench-layout.mjs'), 'migrate', '--project', project], { cwd: root, encoding: 'utf8' });
     assert.equal(migrated.status, 0, migrated.stdout + migrated.stderr);
     const report = JSON.parse(migrated.stdout);
@@ -508,6 +516,68 @@ test('TK-009G: an upgrade and the managed update route leave a room without a Le
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
     fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
+// S-004O TK-009M: a generic Template Lexicon line counts as landed only when
+// the room's vocabulary homes carry the Template content: installed from the
+// Template in this run, or still holding the Template's lines. A room whose
+// own GLOSSARY.md predates the update keeps its Lexicon and is told which
+// generic entries have no home.
+test('TK-009M: an upgrade keeps a Lexicon whose generic lines have no Template-carrying glossary and names them', () => {
+  const lexicon = templateLexicon();
+  const glossary = '# Greeter\n\nGreets people.\n\n## Language\n\n**Greeting**:\nThe line printed.\n';
+  const { project, home, result } = upgradeLexiconRoom(lexicon, { 'GLOSSARY.md': glossary });
+  try {
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    assert.equal(result.report.lexicon.status, 'kept', 'the generic definitions have no home, so the Lexicon is kept');
+    assert.equal(fs.readFileSync(path.join(project, 'LEXICON.md'), 'utf8'), lexicon, 'the Lexicon is kept byte for byte');
+    assert.equal(fs.readFileSync(path.join(project, 'GLOSSARY.md'), 'utf8'), glossary, 'the room glossary is untouched');
+    assert.deepEqual(result.report.lexicon.installed, ['ARCHITECTURE.md'], 'only the missing control is installed');
+    assert.deepEqual(result.report.lexicon.genericHomesMissing, ['GLOSSARY.md'], 'the glossary that does not carry the Template content is named');
+    assert.equal(result.report.lexicon.finding.code, 'lexicon-unlanded');
+    assert.match(result.report.lexicon.finding.message, /GLOSSARY\.md does not carry the Template/, 'the finding names the home without the Template content');
+    assert.ok(result.report.lexicon.unlanded.some((item) => item.generic && item.text.startsWith('| **Governance Plane** |')), 'the generic Governance Plane definition is named unlanded');
+    assert.ok(!result.report.lexicon.unlanded.some((item) => item.text.startsWith('**Last reviewed:**')), 'identity stamps are not entries');
+    assert.ok(!fs.existsSync(path.join(project, 'workbench', 'sessions', 'recovery', 'lexicon-retirement')), 'a kept Lexicon has no retirement backup');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
+// S-004O TK-009M: a `| **Term** | Definition | Distinction |` row lands in
+// Matt's glossary format when GLOSSARY.md has a `**Term**:` entry, the
+// Definition (markup stripped) is in the glossary or the Wiki, and any
+// Distinction is in the Wiki.
+test('TK-009M: a Lexicon term row lands as a glossary entry with its distinction in the Wiki', () => {
+  const release = fixture('workbench-upgrade-release-');
+  const project = fixture('workbench-upgrade-matt-row-');
+  try {
+    fs.mkdirSync(path.join(release, 'templates'), { recursive: true });
+    const row = '| **Greeting** | The `greet` line the [CLI](src/cli.md) **prints** for a name. | Not a banner or a log line. |';
+    const twoCell = '| **Farewell** | The line printed on exit. |';
+    write(project, 'LEXICON.md', `# Greeter - Lexicon\n\n${row}\n${twoCell}\n`);
+    const manifest = { lanes: { wiki: 'workbench/wiki' }, provenance: { lifecycle: 'genesis' } };
+    const unlanded = () => layoutRuntime.lexiconLanding(project, { templates: path.join(release, 'templates'), manifest }).unlanded.map((item) => item.text);
+    const glossary = (body) => write(project, 'GLOSSARY.md', `# Greeter\n\nGreets people.\n\n## Language\n\n${body}`);
+    const wiki = (body) => write(project, 'workbench/wiki/dictionary-greeting.md', `# Greeting\n\n${body}\n`);
+    assert.deepEqual(unlanded(), [row, twoCell], 'nothing has landed yet');
+    glossary('**Greeting**:\nThe greet line the CLI prints for a name.\n');
+    assert.deepEqual(unlanded(), [row, twoCell], 'a distinction missing from the Wiki has not landed');
+    glossary('**Greeting**:\nThe greet line the CLI prints for a name.\n_Avoid_: banner\n\nNot a banner or a log line.\n');
+    assert.deepEqual(unlanded(), [row, twoCell], 'a distinction in the glossary but not the Wiki has not landed');
+    glossary('**Salutation**:\nThe greet line the CLI prints for a name.\n');
+    wiki('Not a banner or a log line.');
+    assert.deepEqual(unlanded(), [row, twoCell], 'a definition without a `**Greeting**:` entry has not landed');
+    glossary('**Greeting**:\nThe greet line the CLI prints for a name.\n\n**Farewell**:\nThe line printed on exit.\n');
+    assert.deepEqual(unlanded(), [], 'entry, markup-stripped definition and Wiki distinction land the row; a two-cell row needs no distinction');
+    glossary('**Greeting**:\nA greeting.\n\n**Farewell**:\nA farewell.\n');
+    wiki('The greet line the CLI prints for a name. Not a banner or a log line.');
+    assert.deepEqual(unlanded(), [twoCell], 'a definition in the Wiki lands; a definition found nowhere does not');
+  } finally {
+    fs.rmSync(release, { recursive: true, force: true });
+    fs.rmSync(project, { recursive: true, force: true });
   }
 });
 
