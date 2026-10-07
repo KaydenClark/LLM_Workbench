@@ -9,7 +9,7 @@
 **Catalog description:** Run a sliced Spec through Worker implementation and assembly to a PR ready for integration review.
 **Blockers:** none
 **Latest event:** TK-006X closed with proof.
-**Next gate:** Review and publish the assembled closure records, then owner delivered-content approval and main verification; existing global QA findings are unchanged.
+**Next gate:** Owner delivered-content evaluation and approval, followed by main verification; global release QA findings are unchanged.
 
 > **Citation anchors.** pre=`9aa0c30e99bb7da26f5c2b89b5e5c04a507da513` post=`4bd71da0c614bc8a4b710de055830d5e9e9c332d`.
 
@@ -104,6 +104,7 @@ Maintain catalog, draft article/index, relevant Runbook/AGENTS procedures, role 
 | 2026-10-07 | TK-006X | Task closed | 53/53 full Runbook PASS on4bd71da0; source/record review PASS at e8de1007; PR406 merged into integration8e4a2cce; exact candidate ancestry verified against fetched origin/integration; selector7/Wiki25 and observed scenario24/focused8. | Implemented source/discovery; current manifest/catalog/procedures and role/generic controls; Wiki router, role/synthesis/lifecycle owners, Template2 article and durable evidence. | Spec owner delivered-content approval and main verification remain. Unexercised full production orchestration and pre-existing global drift stay visible; no clean-update or owner-QA claim. |
 
 | 2026-10-07 | TK-006X | Reviewed source integration and native close | PR406 MERGED at 8e4a2cce5f714ff7971ae9b190e7f1830d9ec3d9; fetched origin/integration contains the independently reviewed e8de1007d5823f330dfd5616a2e2fb22edf57231. Native close selected TK-006X explicitly after clean pushed proof. Full53 command logs do not embed candidate headers; binding rests on actual sequential start/HEAD/end tool outputs and clean checkpoints, with logs independently checked | Native Task close/Receipt3 and current Spec result | Final assembled-record review/publication remain; owner approval/main and recorded runtime/global-drift limits persist |
+| 2026-10-07 | review | Review verdict: pass at dc0dcc21c0ea2ea6674064f2dcafa29804829812 [cfda5a4c1e1b] #1 | none | OpenAI/Codex independent read-only child /root/review_implement_spec; inherited root model, exact identifier unavailable; actual assembled review transcribed by single state writer | none |
 
 ## Completion Result
 
