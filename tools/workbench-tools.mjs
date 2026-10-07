@@ -291,7 +291,8 @@ export function rollback(project, options = {}) {
   const saved = new Set(entry.files);
   const previousNames = Object.keys(previous.files);
   const currentNames = Object.keys(current.files);
-  if (previousNames.some(name => !Object.hasOwn(current.files, name))
+  if (RUNTIME_TOOLS.some(name => lstatOrNull(path.join(lane, name)) && !Object.hasOwn(current.files, name))
+      || previousNames.some(name => !Object.hasOwn(current.files, name))
       || entry.files.some(name => !Object.hasOwn(current.files, name))
       || RUNTIME_TOOLS.some(name => Boolean(lstatOrNull(path.join(backupRoot, name))) !== saved.has(name))) {
     return fail('invalid-backup', 'Recorded files do not match the backup or current receipt.');
