@@ -1516,26 +1516,46 @@ test('TK-009C: both glossaries carry the Governance core grouping and the owner 
 // `AGENTS.md` Instruction Authority list, in the room and the Template, does
 // not name the Lexicon (one Contract file and the Lexicon retirement
 // decisions). Live excludes history records, whose mention stays unchanged:
-// Spec records with their proof and Tasks, decision records (including
-// `canonicalized_in`), feedback reports and datasets other than the live
-// report format, landmark records and tracker cards, session records, the
-// generated Taskboard, Grill Board answer data, the Wiki archive, research
-// papers, archived skills, and the two Lexicon files, which their removal Task
-// deletes. Tools and tests are code, not routes; their Lexicon reads move with
-// the installed control set and the removal.
+// feedback reports and datasets other than the live report format, landmark
+// tracker cards, session records, the generated Taskboard, Grill Board answer
+// data, the Wiki archive, research papers and archived skills. A link pinned
+// to a commit (`.../blob/<sha>/LEXICON.md`) is a permalink to history, not a
+// live link. Tools and tests are code, not routes.
+// S-004O TK-009M: Spec and decision records are live in part, so the history
+// exclusion is narrowed to what is history inside them. The body of an
+// active, planned or blocked `SPEC.md` or `LANDMARK.md` is scanned, without its
+// append-only evidence log (pinned by tools/check-append-only.py); a complete,
+// superseded or retired record, a Task record and Spec proof stay history. An
+// accepted ADR or DDR body is scanned, without the frontmatter whose
+// `canonicalized_in` names its owners at acceptance; archived and proposed
+// records and the HISTORY views stay history.
 const LEXICON_HISTORY = [
-  /^workbench\/specs\//, /^workbench\/docs\//, /^workbench\/feedback\/(?!REPORT_FORMAT\.md$)/,
-  /^workbench\/landmark-tracker\//, /^workbench\/landmarks\//, /^workbench\/sessions\//, /^workbench\/wiki\/archive\//,
-  /^workbench\/grill-board\/items\.json$/, /^research papers\//, /^skills-archive\//, /^TASKBOARD\.md$/, /^(?:templates\/)?LEXICON\.md$/
+  /^workbench\/feedback\/(?!REPORT_FORMAT\.md$)/, /^workbench\/landmark-tracker\//, /^workbench\/sessions\//, /^workbench\/wiki\/archive\//,
+  /^workbench\/docs\/(?:adr|ddr)\/(?:archive|proposed)\//, /^workbench\/docs\/(?:adr|ddr)\/HISTORY\.md$/,
+  /^workbench\/grill-board\/items\.json$/, /^research papers\//, /^skills-archive\//, /^TASKBOARD\.md$/
 ];
-const LEXICON_LINK = /\]\((?:[^)\s]*\/)?LEXICON\.md(?:#[^)\s]*)?\)|href="(?:[^"]*\/)?LEXICON\.md(?:#[^"]*)?"|^\s*-\s+(?:\S*\/)?LEXICON\.md(?:#\S*)?\s*$/m;
+const LEXICON_LINK = /\]\((?!https:\/\/github\.com\/[^)\s]+\/blob\/[0-9a-f]{7,40}\/)(?:[^)\s]*\/)?LEXICON\.md(?:#[^)\s]*)?\)|href="(?:[^"]*\/)?LEXICON\.md(?:#[^"]*)?"|^\s*-\s+(?:\S*\/)?LEXICON\.md(?:#\S*)?\s*$/m;
+const LIVE_RECORD_STATUS = /^\*\*Status:\*\* (?:active|planned|blocked)\s*$/m;
+const EVIDENCE_LOG = /^## Append-Only Evidence And Execution Log\n[\s\S]*?(?=^## |(?![\s\S]))/m;
+
+// The part of a tracked file the live-link check reads, or null when the
+// whole file is history.
+function lexiconLinkScope(file, text) {
+  if (LEXICON_HISTORY.some((pattern) => pattern.test(file))) return null;
+  if (/^workbench\/(?:specs|landmarks)\//.test(file)) {
+    if (!/(?:^|\/)(?:SPEC|LANDMARK)\.md$/.test(file) || !LIVE_RECORD_STATUS.test(text)) return null;
+    return text.replace(EVIDENCE_LOG, '');
+  }
+  if (/^workbench\/docs\//.test(file)) return text.replace(/^---\n[\s\S]*?\n---\n/, '');
+  return text;
+}
 
 function liveLexiconLinks(base) {
   const listed = spawnSync('git', ['ls-files', '-z'], { cwd: base, encoding: 'utf8' });
   assert.equal(listed.status, 0, 'git lists the tracked files');
   return listed.stdout.split('\0')
-    .filter((file) => /\.(?:md|html)$/.test(file) && !LEXICON_HISTORY.some((pattern) => pattern.test(file)))
-    .filter((file) => fs.existsSync(path.join(base, file)) && LEXICON_LINK.test(read(base, file)));
+    .filter((file) => /\.(?:md|html)$/.test(file) && fs.existsSync(path.join(base, file)))
+    .filter((file) => LEXICON_LINK.test(lexiconLinkScope(file, read(base, file)) ?? ''));
 }
 
 test('TK-009F: no live file links the Lexicon and Instruction Authority does not name it', () => {
@@ -1544,6 +1564,28 @@ test('TK-009F: no live file links the Lexicon and Instruction Authority does not
     assert.ok(LEXICON_LINK.test(sample), `the link check sees ${JSON.stringify(sample)}`);
   }
   assert.ok(!LEXICON_LINK.test('The Lexicon retired; `LEXICON.md` names history.'), 'a mention that is not a link is not a link');
+  assert.ok(!LEXICON_LINK.test('[LEXICON](https://github.com/KaydenClark/LLM_Workbench/blob/0059669f1e1b81c8048dfea9714d0ce7a9e1d914/LEXICON.md)'), 'a permalink pinned to a commit is history, not a live link');
+  assert.ok(LEXICON_LINK.test('[LEXICON](https://github.com/KaydenClark/LLM_Workbench/blob/main/LEXICON.md)'), 'a link to a branch tip is live');
+  // S-004O TK-009M: mutation samples for the narrowed history exclusion.
+  const spec = (status, body, log = '') => `# S-9ZZ - Fixture\n\n**Status:** ${status}\n\n## Decisions And Contracts\n\n${body}\n\n## Append-Only Evidence And Execution Log\n\n| Date | Task |\n|---|---|\n${log}\n## Supersession\n\n- none\n`;
+  const headingLink = '[LEXICON](../../../LEXICON.md#artifact-boundaries) owns the artifact meanings.';
+  for (const status of ['active', 'planned', 'blocked']) {
+    assert.ok(LEXICON_LINK.test(lexiconLinkScope('workbench/specs/S-9ZZ-fixture/SPEC.md', spec(status, headingLink)) ?? ''), `a Lexicon heading link in a ${status} Spec body is live`);
+  }
+  assert.ok(LEXICON_LINK.test(lexiconLinkScope('workbench/landmarks/LMK-9ZZ-fixture/specs/S-9ZZ-fixture/SPEC.md', spec('planned', headingLink)) ?? ''), 'a Spec nested in a landmark is scanned');
+  assert.ok(!LEXICON_LINK.test(lexiconLinkScope('workbench/specs/S-9ZZ-fixture/SPEC.md', spec('active', 'No link.', `| 2026-10-07 | ${headingLink} |\n`)) ?? ''), 'an append-only evidence row is history');
+  for (const status of ['complete', 'superseded']) {
+    assert.equal(lexiconLinkScope('workbench/specs/S-9ZZ-fixture/SPEC.md', spec(status, headingLink)), null, `a ${status} Spec is history`);
+  }
+  assert.equal(lexiconLinkScope('workbench/specs/S-9ZZ-fixture/tasks/TK-9ZZ/TASK.md', spec('active', headingLink)), null, 'a Task record is history');
+  const decision = (body) => `---\ndate: 2026-09-06\ncanonicalized_in:\n  - AGENTS.md\n  - LEXICON.md\n---\n\n# Fixture\n\n${body}\n`;
+  assert.ok(!LEXICON_LINK.test(lexiconLinkScope('workbench/docs/adr/0ZZZ-fixture.md', decision('No link.')) ?? ''), 'frontmatter canonicalized_in history is not a live link');
+  for (const file of ['workbench/docs/adr/0ZZZ-fixture.md', 'workbench/docs/ddr/0ZZZ-fixture.md']) {
+    assert.ok(LEXICON_LINK.test(lexiconLinkScope(file, decision('Routes in [LEXICON.md](../../../LEXICON.md#task-routing).')) ?? ''), `a Lexicon heading link in an accepted decision body is live: ${file}`);
+  }
+  for (const file of ['workbench/docs/adr/archive/0ZZZ-fixture.md', 'workbench/docs/adr/proposed/0ZZZ-fixture.md', 'workbench/docs/ddr/HISTORY.md']) {
+    assert.equal(lexiconLinkScope(file, decision('[LEXICON.md](../../../LEXICON.md)')), null, `${file} is history`);
+  }
   for (const base of [root, productTemplates]) {
     const authority = read(base, 'AGENTS.md').split('### Instruction Authority\n')[1]?.split('### State Resolution\n')[0] ?? '';
     assert.ok(authority.includes('1. The current user request.'), `${base}: AGENTS.md has its Instruction Authority list`);

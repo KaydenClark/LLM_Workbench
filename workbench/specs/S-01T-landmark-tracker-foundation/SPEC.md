@@ -211,7 +211,7 @@ collection, Task, new command or release. Actuality remains as described above.
 
 The accepted architecture and rejected alternatives are owned by
 [Landmark Tracker connects evolving understanding to durable knowledge](../../docs/adr/000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md).
-Shared definitions belong to [LEXICON](../../../LEXICON.md), cross-cutting
+Shared definitions belong to [GLOSSARY](../../../GLOSSARY.md), cross-cutting
 direction to [BLUEPRINT](../../../BLUEPRINT.md), agent obligations to
 [AGENTS](../../../AGENTS.md), and availability/procedure to [RUNBOOK](../../../RUNBOOK.md).
 

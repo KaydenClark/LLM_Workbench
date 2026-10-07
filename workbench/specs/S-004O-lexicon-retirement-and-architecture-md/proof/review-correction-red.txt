@@ -1,0 +1,33 @@
+S-004O TK-009M red evidence: the failing checks committed at e2677a59 on top of
+claim b7ae1127 (assembled candidate fce242cb plus the Task cut), before any fix.
+
+node --test --test-name-pattern="TK-009F" tools/test-control-fidelity.mjs
+  (finding 1: the narrowed live-link check scans active, planned and blocked
+  Spec bodies and accepted decision bodies)
+ℹ pass 0
+ℹ fail 1
+✖ TK-009F: no live file links the Lexicon and Instruction Authority does not name it
+  AssertionError [ERR_ASSERTION]: live files link GLOSSARY.md, ARCHITECTURE.md or a Wiki lexicon article, not the Lexicon
+  +   'workbench/docs/adr/0042-traverse-dont-search-is-core-workbench-navigation.md',
+  +   'workbench/specs/S-01A-handoff-skill-rebuild/SPEC.md',
+  +   'workbench/specs/S-01T-landmark-tracker-foundation/SPEC.md',
+  +   'workbench/specs/S-01U-lexicon-design-concept-reconciliation/SPEC.md'
+
+node --test tools/test-workbench-upgrade.mjs
+  (findings 2 and 3: a room's own glossary without the generic definitions,
+  and a Matt-format landing of a project term row)
+ℹ pass 11
+ℹ fail 3
+✖ TK-009G: an upgrade keeps a Lexicon whose project-specific row has not landed and names the row
+  AssertionError [ERR_ASSERTION]: the finding says to remove landed rows before rerunning
+✖ TK-009M: an upgrade keeps a Lexicon whose generic lines have no Template-carrying glossary and names them
+  AssertionError [ERR_ASSERTION]: the generic definitions have no home, so the Lexicon is kept
+✖ TK-009M: a Lexicon term row lands as a glossary entry with its distinction in the Wiki
+  AssertionError [ERR_ASSERTION]: entry, markup-stripped definition and Wiki distinction land the row; a two-cell row needs no distinction
+
+Reviewer reproductions at the same base: a filled Template Lexicon with a
+pre-existing one-term GLOSSARY.md gave {"status":"retired","installed":["ARCHITECTURE.md"]}
+with no Governance Plane or Workbench Contract definition in the room; a
+`**Greeting**:` glossary entry plus its distinction in a Wiki article still
+gave `kept`. After the fix the first gives `kept` with 176 unlanded generic
+lines and the second gives `retired`.

@@ -996,13 +996,21 @@ function glossaryGroupTerms(group) {
 
 test('TK-009D: each explained glossary entry lands its Distinction text in a routed lexicon article that declares the term', () => {
   const inventory = JSON.parse(fs.readFileSync(path.join(root, ROOT_INVENTORY), 'utf8'));
+  // S-004O TK-009M: every retired alias records the distinction its Lexicon
+  // row carried (the Task identifier-prefix rule, the Root controls public-name
+  // exception, Portable layout, Portability model).
+  const aliases = inventory.entries.filter((item) => item.aliasOf);
+  assert.equal(aliases.length, 4, 'the root inventory carries four retired aliases');
+  for (const alias of aliases) assert.ok(alias.explanationText, `retired alias line ${alias.line} (${alias.landedText}) records its distinction as explanationText`);
   const router = fs.readFileSync(path.join(root, 'workbench', 'wiki', 'MEMORY.md'), 'utf8');
   const explained = new Map();
   for (const entry of inventory.entries.filter((item) => item.explanationText !== undefined)) {
     // S-004O TK-009J: an AI coding row carries its dictionary link after the
     // term and a boundary entry is a bullet, so the term is read from the
     // glossary entry the line lands as.
-    const term = entry.landedText?.match(/^\*\*(.+?)\*\*:/)?.[1];
+    // S-004O TK-009M: a retired name lands as an `_Avoid_:` alias under its
+    // preferred term, so its distinction is explained in that term's article.
+    const term = entry.aliasOf ?? entry.landedText?.match(/^\*\*(.+?)\*\*:/)?.[1];
     assert.ok(term, `line ${entry.line} lands a glossary term entry`);
     assert.equal(entry.homeKind, 'glossary', `${term} is a glossary entry`);
     const file = path.join(root, entry.explanationHome);

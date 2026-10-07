@@ -527,12 +527,20 @@ last copy before its deletion; only the name, version, review date
 and status stamps match a filled value, and a filled term-row slot is the
 room's own line), or text whose normalized form (the landing check's
 `normalizeText`: trim, collapse whitespace) the room's `GLOSSARY.md`,
-`ARCHITECTURE.md` or Wiki holds. A removed Lexicon is copied first to
+`ARCHITECTURE.md` or Wiki holds. A Template line counts only while the room's
+`GLOSSARY.md`, `ARCHITECTURE.md` and Template Wiki vocabulary articles carry
+every placeholder-free Template line (installed in this run or kept); the
+report names any that does not (`genericHomesMissing`) and each generic line
+then has to land like the room's own. A `| **Term** | Definition |
+Distinction |` row also lands as a `**Term**:` glossary entry whose
+markup-stripped definition is in the glossary or Wiki and whose distinction
+is in the Wiki. A removed Lexicon is copied first to
 `workbench/sessions/recovery/lexicon-retirement/`, and the report and recovery
 record name the backup; the pre-migration commit stays the rollback point.
 Otherwise the Lexicon is kept byte for byte and the report carries a
 `lexicon-unlanded` attention finding naming each unlanded line; once those
-lines reach their homes, the next update retires it. A room without a Lexicon
+lines reach their homes and landed rows are removed from the Lexicon, the next
+update retires it. A room without a Lexicon
 is unchanged by this step. `node tools/test-workbench-upgrade.mjs` and
 `node tools/test-workbench-adoption.mjs` cover the kept, retired and absent
 cases.
