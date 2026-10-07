@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** codex-s002t
 **Stance:** Builder
-**Updated:** 2026-10-06
+**Updated:** 2026-10-07
 **Catalog description:** Run a sliced Spec through Worker implementation and assembly to a PR ready for integration review.
 **Blockers:** none
-**Latest event:** Installed source, observed scenario and all 53 checks passed; reviewed integration delivery remains.
-**Next gate:** Merge the independently reviewed installation candidate into integration, prove containment, then close TK-006X and review the assembled Spec records.
+**Latest event:** TK-006X closed with proof.
+**Next gate:** Owner delivered-content evaluation and approval, followed by main verification; global release QA findings are unchanged.
 
 > **Citation anchors.** pre=`9aa0c30e99bb7da26f5c2b89b5e5c04a507da513` post=`4bd71da0c614bc8a4b710de055830d5e9e9c332d`.
 
@@ -23,7 +23,7 @@ The owner wants to launch one Spec delivery operation without supervising indivi
 
 ## Current Verified State
 
-Source candidate `4bd71da0c614bc8a4b710de055830d5e9e9c332d` installs the confirmed entry and reconciled operating boundaries. Both adapters resolve identical source bytes; the native exact-selector regression passes 7/7, Wiki regression 25/25, and all 53 Runbook commands pass on this clean candidate. Fresh separate-context source review passed. The local scenario and its limits are recorded below. Integration delivery and native Task closure still follow.
+Source candidate `4bd71da0c614bc8a4b710de055830d5e9e9c332d` installs the confirmed entry and reconciled operating boundaries. Both adapters resolve identical source bytes; the native exact-selector regression passes 7/7, Wiki regression 25/25, and all 53 Runbook commands pass on this clean candidate. Fresh separate-context source review passed. The local scenario and its limits are recorded below. Reviewed installation candidate `e8de1007d5823f330dfd5616a2e2fb22edf57231` is contained in integration merge `8e4a2cce5f714ff7971ae9b190e7f1830d9ec3d9` through [PR #406](https://github.com/KaydenClark/LLM_Workbench/pull/406). Native installation Task TK-006X is closed with proof. Closure uses the native report, verdict and integration gate; the current header and append-only evidence name its remaining gate.
 
 At the pre anchor, the draft wiki and Template 2 are delivered. The lane has 28 Core skills and three declared maintainer skills; implement-spec is absent. Dispatcher and Spec Manager permit Dispatcher implementation when Workers are unavailable and route every cross-Spec prerequisite to a Director. Those instructions conflict with the confirmed operation. Original September 30 planning is preserved in Git history and the evidence below.
 
@@ -101,10 +101,14 @@ Maintain catalog, draft article/index, relevant Runbook/AGENTS procedures, role 
 | 2026-10-06 | TK-006X | Whole-Wiki reading and index regression correction | Three contexts read all 145 pages and relevant current card answers. Corrected the remaining Dispatcher exit and lifecycle selector guidance; inherited drift stays visible in the reading evidence. The full run on 7836ecba reached 49 commands: 48 passed and one draft-index test failed because it required permanent plain-text rows. Replaced that obsolete assumption with existing-draft link and missing-draft plain-text checks; Wiki tests 25/25 green. The failed run was stopped before completing the remaining history checks, not counted as a full pass | [Wiki reading evidence](wiki-lint-evidence.md), owning articles and catalog regression | Final clean full run and immutable review remain; global clean-update/Wiki claims are not made |
 
 | 2026-10-06 | TK-006X | Final source verification passed | Full RUNBOOK list: 53/53 commands PASS on clean 4bd71da0c614bc8a4b710de055830d5e9e9c332d; exact selector 7/7 and Wiki tests 25/25. Fresh separate-context source review PASS at that SHA. Machine self-drift findings equal the pre receipt exactly; cleanUpdate remains false. Guardrail 73/100 before and after; no outcome-improvement claim. Earlier interrupted/failed runs remain recorded, and the earlier retirement-assertion attribution was not established; no repair is claimed for it | Installed source, procedure/catalog/manifest owners, generic role mirrors, Wiki and pinned scenario/reading evidence | Integration containment, native closure and final assembled-record review remain; inherited drift and unexercised real PR/correction/cleanup/discovery limits persist |
+| 2026-10-07 | TK-006X | Task closed | 53/53 full Runbook PASS on4bd71da0; source/record review PASS at e8de1007; PR406 merged into integration8e4a2cce; exact candidate ancestry verified against fetched origin/integration; selector7/Wiki25 and observed scenario24/focused8. | Implemented source/discovery; current manifest/catalog/procedures and role/generic controls; Wiki router, role/synthesis/lifecycle owners, Template2 article and durable evidence. | Spec owner delivered-content approval and main verification remain. Unexercised full production orchestration and pre-existing global drift stay visible; no clean-update or owner-QA claim. |
+
+| 2026-10-07 | TK-006X | Reviewed source integration and native close | PR406 MERGED at 8e4a2cce5f714ff7971ae9b190e7f1830d9ec3d9; fetched origin/integration contains the independently reviewed e8de1007d5823f330dfd5616a2e2fb22edf57231. Native close selected TK-006X explicitly after clean pushed proof. Full53 command logs do not embed candidate headers; binding rests on actual sequential start/HEAD/end tool outputs and clean checkpoints, with logs independently checked | Native Task close/Receipt3 and current Spec result | Final assembled-record review/publication remain; owner approval/main and recorded runtime/global-drift limits persist |
+| 2026-10-07 | review | Review verdict: pass at dc0dcc21c0ea2ea6674064f2dcafa29804829812 [cfda5a4c1e1b] #1 | none | OpenAI/Codex independent read-only child /root/review_implement_spec; inherited root model, exact identifier unavailable; actual assembled review transcribed by single state writer | none |
 
 ## Completion Result
 
-The installation is implemented and fully checked on the source candidate. It is ready for reviewed integration delivery; native Task closure and assembled-record review follow containment. Spec completion still requires the owner's actual delivered-content approval and main verification; neither is recorded here.
+The confirmed implement-spec source, declaration, discovery routes, operating boundaries and native Task selector are delivered on integration through PR #406. Required source checks pass 53/53 and fresh independent source/record review passed the exact integrated candidate. All 145 Wiki pages were read; introduced conflicts are corrected and inherited drift remains recorded. Native installation Task TK-006X is done. Closure uses the native content-bound review and publication procedure; the Spec stays active until the owner approves delivered content and main verification is recorded. No owner approval, main promotion, global clean update or reliable autonomous delivery is claimed.
 
 ## Supersession
 
