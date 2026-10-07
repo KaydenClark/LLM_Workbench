@@ -66,13 +66,17 @@ Tasks cut at activation on 2026-10-06 as TK-007U, TK-007V and TK-007W; combined 
 
 ## Acceptance Criteria
 
-- [ ] Both adapters discover the required skill in a fresh clone; manifest, bundle, catalog and counts agree.
-- [ ] Pinned source and article agree on body authoring; the necessary adapter diff and Dex Horthy / Humanlayer lineage are recorded.
-- [ ] A fresh-context scenario produces a useful brief visual summary, actual before/after evidence and accurate door/blast-radius discussion, using supplied canonical glossary terms.
-- [ ] `GLOSSARY.md` stays unchanged in the source reference; any unavailable vocabulary prerequisite is recorded rather than asserted delivered.
-- [ ] The invocation authors a body without opening or merging a PR or changing Git state.
-- [ ] Compatibility accepts valid current30, prior28 and legacy21 cohorts where supported and refuses malformed subsets or unsupported versions; combined-package final proof is recorded without reusing old receipts as new proof.
+- [x] Both adapters discover the required skill in a fresh clone; manifest, bundle, catalog and counts agree.
+  - QA note (correction pass, 2026-10-07): checked on the corrected assembly candidate named in the TK-007V closure; its fresh clone resolves `pr` through `.agents/skills` and `.claude/skills` to the pinned lane file, the catalog test agrees with the manifest, and the last stale current-facing count (landmark Wiki page) is now count-free. Discovery is structural; host invocation from an ordinary prompt is unobserved.
+- [x] Pinned source and article agree on body authoring; the necessary adapter diff and Dex Horthy / Humanlayer lineage are recorded.
+- [x] A fresh-context scenario produces a useful brief visual summary, actual before/after evidence and accurate door/blast-radius discussion, using supplied canonical glossary terms.
+  - Scoped QA note (correction pass, 2026-10-07): checked for the supplied fixture glossary only (`proof/scenario-input/GLOSSARY.md`, condensed from `LEXICON.md`); the room's canonical `GLOSSARY.md` is undelivered (S-004O), so use of the delivered canonical vocabulary is not evidenced. The door and blast radius were correct but restated from facts the input supplied, with one file-count imprecision; independent derivation of Merge Danger from the diff, repeat runs and ordinary-prompt discovery remain unobserved ([scenario result](proof/scenario-result.json)).
+- [x] `GLOSSARY.md` stays unchanged in the source reference; any unavailable vocabulary prerequisite is recorded rather than asserted delivered.
+- [x] The invocation authors a body without opening or merging a PR or changing Git state.
+- [x] Compatibility accepts valid current30, prior28 and legacy21 cohorts where supported and refuses malformed subsets or unsupported versions; combined-package final proof is recorded without reusing old receipts as new proof.
+  - Scoped QA note (correction pass, 2026-10-07): checked for the prior28 and legacy21 cohorts that exist on this base, rerun fresh in the full suite on the corrected candidate named in the TK-007V closure. The current30 cohort (writing-for-agents and retro, S-002P/S-002V) is not on integration, so its transition is unsupported here and belongs to that package merge; no current30 proof is claimed.
 - [ ] Targeted checks, Wiki validation, full suite, render, doctor and required immutable assembled review are recorded with their actual limits before integration delivery is claimed.
+  - QA note (correction pass, 2026-10-07): left unchecked. The correction's suite, Wiki validation, render, doctor and self-drift receipts are recorded in the TK-007V and TK-007W closures, but the fresh independent assembled review of the corrected candidate has not run.
 
 ## Testing Seams
 
@@ -100,7 +104,17 @@ Draft `workbench/wiki/skills-draft/main-workflow/pr.md`, required skills catalog
 
 ## Completion Result
 
-Not complete. Planning reconciliation only.
+Not complete. Delivered on the S-002U assembly and its correction branch, not yet on integration: the `pr` skill in required Core, byte-identical to the Matt pin with its NOTICE and Dex Horthy / Humanlayer lineage; the manifest, runtime Core list, catalog, counts and the Write a PR body operation routes; prior28 and legacy21 compatibility with malformed and unsupported cohorts refused; the main-workflow draft article; one fresh-context body-authoring scenario; and self-drift pre/post receipts.
+
+Open gaps:
+
+- `GLOSSARY.md` is undelivered; [S-004O](../S-004O-lexicon-retirement-and-architecture-md/SPEC.md) owns it, so the skill's vocabulary instruction is a recorded limitation.
+- The current30 cohort transition is unlanded; it belongs to the [S-002P](../S-002P-writing-for-agents-skill-adoption/SPEC.md) and [S-002V](../S-002V-retro-skill-adoption/SPEC.md) package merge.
+- Discovery is structural only; a host discovering `pr` from an ordinary prompt is unobserved.
+- One scenario run with a fixture glossary and supplied merge-danger facts.
+- Draft finding F:pr:01: the template has no place for the merge-safety and completion answers implement requires in a PR description, so the caller adds them. This Spec records it; no repair is scheduled.
+
+A fresh independent assembled review of the corrected candidate and integration delivery remain, followed by owner Human QA and the release owner's gates.
 
 ## Supersession
 
