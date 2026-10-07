@@ -3,11 +3,12 @@
 **Task ID:** TK-007V
 **Spec ID:** S-002U
 **Slice:** Ship pr in required Core with discovery and compatibility
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-007U
 **Destination:** spec-acceptance: Both adapters discover the required skill in a fresh clone; manifest, bundle, catalog and counts agree.
 **Planned verification:** Red catalog and layout checks requiring pr in Core and the prior-cohort transition, then green; fresh-clone discovery through `.agents/skills` and `.claude/skills`; valid prior28 and legacy21 v3.2.1 cohorts accepted, malformed subset and unsupported version refused; full RUNBOOK suite and doctor on the committed candidate.
+**Claimed by:** claude-s002u-worker-v
 
 ## Scope
 
