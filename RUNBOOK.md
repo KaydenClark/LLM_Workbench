@@ -258,6 +258,7 @@ Full suite for controls, templates, tools, evals, or specs:
 
 ```bash
 node tools/test-spec-workbench.mjs
+node tools/test-spec-assembly-selection.mjs
 node tools/test-skill-catalog.mjs
 node tools/test-skill-inspection.mjs
 node tools/test-skills-lane.mjs

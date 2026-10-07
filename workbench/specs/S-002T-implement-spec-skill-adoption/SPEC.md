@@ -65,6 +65,10 @@ Owner-authorized activation: [TK-006X - Install and exercise the confirmed imple
 - [ ] Focused and full RUNBOOK checks pass; self-drift and guardrail pre/post evidence preserves pre-existing findings.
 - [ ] Fresh-context exercise observes the installed entry and actual execution or its honest missing-capability exit; routing checks are distinguished from runtime proof.
 
+## Native selection support
+
+The live runtime silently ignored `--task` on claim/close, always selecting the first eligible or active Task. A public CLI test reproduced wrong-target mutation. This delivery adds optional exact Task selection through the existing eligibility and close paths; it preserves default behavior and all blocker/capability/remote-claim/Git/recovery checks. This is a native primitive, not a deterministic runner.
+
 ## Testing Seams
 
 Declaration/catalog rejects a declared skill without source, then accepts the installed source. Adapter paths resolve to identical bytes. Exercise a fresh agent with the installed entry in a disposable scenario, observing assembly readiness, ownership and stop boundaries without changing real backlog state. Missing capabilities must preserve state and refuse Dispatcher implementation. A text check does not prove autonomous delivery.
@@ -83,6 +87,8 @@ Maintain catalog, draft article/index, relevant Runbook/AGENTS procedures, role 
 |---|---|---|---|---|---|
 | 2026-09-30 | planning | Spec authored from the owner's draft-skills-wiki direction; planning only | Read `spec-manager`, `implement`, `carry` and `dispatcher` sources at the pre anchor; confirmed no `implement-spec` source or Spec exists; Matt's skill not read | This Spec authored; no skill, article, manifest or test changed | S-002L, activation, Tasks and all implementation remain open; distinct-or-fold decision not made |
 | 2026-10-06 | planning | Owner confirmed complete draft and authorized usable installation | Nine-step design confirmed; base 9aa0c30e; draft wiki delivered; no entry installed yet | Existing Spec reconciled and TK-006X cut under the activation request | Installation, exercise, checks, review and integration remain |
+
+| 2026-10-06 | TK-006X | Exact Task selection red/green | CLI selected wrong Task before --task support (4 failures; default test passed); after filtering through existing validation paths, 5/5 pass. The earlier full run was superseded when source edits invalidated its clean-source premise; its pre-existing landmark retirement assertion is being isolated | implement primitive procedure and native selector test | Fresh full committed-candidate run and review remain |
 
 ## Completion Result
 
