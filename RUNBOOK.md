@@ -48,6 +48,7 @@ Contract change.
 | Check carrier line landing | A rewrite removes lines from `AGENTS.md` or `RUNBOOK.md` and must prove each landed. | [workbench-room-checks](workbench/skills/workbench-room-checks/SKILL.md#carrier-line-landing-check) |
 | Deliver a Spec through its lifecycle | You pick up, deliver, review or close an assigned Spec and its Tasks. | [Spec Lifecycle And Retrieval](#spec-lifecycle-and-retrieval) |
 | Pick, claim and close a Task | Every pickup or resume of assigned work: selection, claim, receipt, close and blocker rules. | [implement](workbench/skills/implement/SKILL.md#work-selection-and-lifecycle) |
+| Implement a sliced Spec | The owner launches the Workbench-only assembly operation; stop with its PR ready for integration review. | [implement-spec](workbench/skills/implement-spec/SKILL.md#steps) |
 | Work a Task as Worker | You select, claim, implement, record receipts for, self-check, close and hand back one Task. | [implement](workbench/skills/implement/SKILL.md#worker-selection-implementation-and-hand-back) |
 | Review an assembled Spec | A Dispatcher assembles a candidate, or a separate Director reviews it and records the verdict before integration. | [dispatcher](workbench/skills/dispatcher/SKILL.md#dispatcher-and-separate-director-assembled-review) |
 | Correct a failed review | A verdict or owner finding failed and its findings return to the still-open Spec. | [dispatcher](workbench/skills/dispatcher/SKILL.md#assembled-review-and-corrective-return) |
@@ -159,7 +160,11 @@ assigning Director (project/integration), Dispatcher (one Spec/branch) or Worker
 (one Task). At flight launch, assign Spec Planner to plan small Tasks and safe
 parallel groups from current Actuality; planning Workers may assist. Assign
 Spec Manager to dispatch and monitor execution. Keep one writer for shared
-Spec/projection state and route cross-Spec dependencies to the Director.
+Spec/projection state. Coordinate cross-Spec dependencies with the Director
+when present; otherwise delegate only necessary directly connected prerequisite
+Tasks to Workers, preserving original ownership, claims and proof. Dispatchers
+orchestrate all implementation and corrections; missing Worker capabilities
+leave a recoverable blocker, never a Dispatcher implementation fallback.
 
 Use Reviewer or Auditor stance for the named verification job. Apply the
 existing independent-review eligibility rules to the actual agent/context;
@@ -185,7 +190,7 @@ authorized by ordinary language; do not wait for a second skill invocation.
 | Preserve or resume meaningful work | `notepad`; verify live state and returned revision |
 | Reconcile agreed claims | `promote` with `to-docs` and `save`; no implied implementation |
 | Write specifications only | `to-spec` and needed `to-tasks`; stop at the specified endpoint |
-| Deliver assigned work | `carry` with `implement`, verification, Task merge answers, independent Verify review of the assembled Spec and `save` |
+| Deliver assigned work | `carry` with `implement`, verification, Task merge answers, independent Verify review of the assembled Spec and `save`; explicitly launched sliced-Spec runs use `implement-spec` through its ready-PR endpoint |
 | Transfer a job or report to another context | core `handoff`; recipient purpose, instructions and context within assigned role scope |
 | Review a candidate or readiness | `code-review`; report only, no implementation or main merge |
 
@@ -253,6 +258,7 @@ Full suite for controls, templates, tools, evals, or specs:
 
 ```bash
 node tools/test-spec-workbench.mjs
+node tools/test-spec-assembly-selection.mjs
 node tools/test-skill-catalog.mjs
 node tools/test-skill-inspection.mjs
 node tools/test-skills-lane.mjs

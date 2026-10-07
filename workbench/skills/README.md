@@ -62,6 +62,7 @@ operation in this repository, like any pointed lane skill.
 | `workbench-release` | Cut, prove and publish a release: version labels, the reference Template upgrade, the composed round trip, portability and cross-provider proofs, derivation from recorded decisions and personal-catalog publication. |
 | `workbench-room-checks` | Check the routes that lay out, install, adopt, upgrade and update a room, plus the self-drift, carrier line-landing, GitHub binding and socket contract checks. |
 | `workbench-evaluation` | Evaluate a harness change and run the feedback loop: claims, design, commands, feedback intake, the automated gate, run outcomes and manual reports. |
+| `implement-spec` | Orchestrate a sliced Spec through Workers and assembly to a PR ready for integration review; Workbench-only first delivery. |
 <!-- maintainer-skills:end -->
 
 ## Normal setup

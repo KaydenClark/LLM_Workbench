@@ -96,7 +96,7 @@ Derived from stable specs; includes completed history.
 | [S-002Q - workbench setup step](S-002Q-workbench-setup-step/SPEC.md) | Decide whether project setup is part of Genesis or a skill run after creation, then deliver that one with its draft article. | planned |
 | [S-002R - setup-pre-commit skill alignment](S-002R-setup-pre-commit-skill-alignment/SPEC.md) | Add lightweight, project-appropriate commit-time checks with an explicit recovery path. | planned |
 | [S-002S - setup-ts-deep-modules skill alignment](S-002S-setup-ts-deep-modules-skill-alignment/SPEC.md) | Set up enforceable TypeScript module boundaries in a repo that has chosen deep modules, and prove the rules catch a violation. | planned |
-| [S-002T - implement-spec skill adoption](S-002T-implement-spec-skill-adoption/SPEC.md) | Decide whether the Workbench needs a skill that implements one whole Spec, and if so deliver it with an aligned draft-wiki article. | planned |
+| [S-002T - implement-spec skill adoption](S-002T-implement-spec-skill-adoption/SPEC.md) | Run a sliced Spec through Worker implementation and assembly to a PR ready for integration review. | active |
 | [S-002U - pr skill adoption](S-002U-pr-skill-adoption/SPEC.md) | Open, describe and land a pull request into the room's integration branch, and never into the owner-only final branch. | planned |
 | [S-002V - retro skill adoption](S-002V-retro-skill-adoption/SPEC.md) | Look back over finished work and turn what went wrong or right into a few named lessons, each routed to the owner that should act on it. | planned |
 | [S-002W - wayfinder skill alignment](S-002W-wayfinder-skill-alignment/SPEC.md) | Chart a large, uncertain effort as a map of decisions and resolve them one at a time toward a named destination. | planned |

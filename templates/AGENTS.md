@@ -101,7 +101,10 @@ launch and may dispatch Workers to help write Tasks, while Spec Manager
 dispatches and monitors execution within the Spec. Reviewer and Auditor are
 stances a Dispatcher may use for verification. Prior involvement still controls
 independent-review eligibility; changing stance never makes a participant
-independent. Director coordinates cross-Spec dependencies and shared writers.
+independent. Director coordinates cross-Spec dependencies and shared writers when present.
+Without one, a Dispatcher may delegate directly connected prerequisite Tasks
+needed to unblock its Spec, preserving their original ownership and proof.
+Dispatchers orchestrate; Workers perform all implementation and corrections.
 The role and stance operating capabilities have separate delivery owners; their
 definitions do not imply a new scheduler or a shipped agent entry.
 

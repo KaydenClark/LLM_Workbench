@@ -5,14 +5,17 @@ sensitivity: normal
 knowledge_role: curated
 provenance:
   - Seeded from the current answers of the Workbench Workflow landmark's question cards (landmark record revision 1), 2026-10-04
+  - Implement-spec Skill Adoption Spec (S-002T) qualified the correction-Worker boundary, 2026-10-06
 source_paths:
   - workbench/landmark-tracker/landmarks
   - workbench/landmark-tracker/destination-questions
   - workbench/docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md
   - workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md
   - workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md
+  - workbench/specs/S-002T-implement-spec-skill-adoption/SPEC.md
+  - workbench/skills/spec-manager/SKILL.md
 parent: none
-authorized_by: the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages)
+authorized_by: the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages); the Implement-spec Skill Adoption Spec (S-002T) for the correction exception
 last_verified: 2026-10-04
 ---
 
@@ -65,7 +68,10 @@ the planning goalpost is a declared 200k-token context unit, a goalpost and
 not a gate, recorded with provenance in the [manifest](../../manifest.json).
 Card [DQC-002P: "How many Tasks should one Chat execute?"](../../landmark-tracker/destination-questions/DQC-002P.json), revision 7:
 one Task per Chat; a dispatcher or director watches the Spec and opens a new
-Chat per unblocked Task. Card
+Chat per unblocked Task.
+The [Implement-spec Skill Adoption Spec (S-002T)](../../specs/S-002T-implement-spec-skill-adoption/SPEC.md) records a newer bounded exception for its owner-invoked correction pass. The [Spec Manager stance](../../skills/spec-manager/SKILL.md) may reuse one correction Worker across explicitly named Task scopes, with serial claims and separate per-Task proof; it grants no general multi-Spec authority. The cited question-card answer remains its older source lineage.
+
+Card
 [DQC-002Q: "What belongs in the Task’s entry Packet?"](../../landmark-tracker/destination-questions/DQC-002Q.json), revision 6:
 the Packet is the Task, the Spec acceptance lines it satisfies, cited source
 and test paths and the Contract, with an optional handoff or notepad. Card
@@ -181,5 +187,7 @@ delivered the Task artifact, explained in
 - The decisions and Specs linked under "Where the work lives".
 
 ## History
+
+- 2026-10-06: linked the newer bounded correction exception accepted by the Implement-spec Skill Adoption Spec (S-002T), preserving the question-card revisions and their source lineage.
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.

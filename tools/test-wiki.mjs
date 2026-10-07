@@ -862,7 +862,7 @@ test('the collection TEMPLATE.md fixes the finding line and kinds, and the templ
 // S-002L TK-006O: the collection's index README lists every group with its
 // article count and every planned article with its owning Spec, as plain text
 // until the owning Spec delivers the article, and the router links it once.
-test('the skills-draft index lists the eight groups and 81 planned articles with real owning Specs, and the router links it once', () => {
+test('the skills-draft index lists 81 article slots, links delivered drafts, and routes through its owning collection', () => {
   const wiki = path.join(root, 'workbench', 'wiki');
   const readme = fs.readFileSync(path.join(wiki, 'skills-draft', 'README.md'), 'utf8');
   const counts = { 'getting-started': 7, 'main-workflow': 14, shaping: 7, upkeep: 21, primitives: 12, productivity: 5, stances: 6, foundry: 9 };
@@ -883,11 +883,19 @@ test('the skills-draft index lists the eight groups and 81 planned articles with
     assert.equal(rows.length, counts[group], `${group} lists ${counts[group]} planned articles`);
     for (const row of rows) {
       const [, skill, , owner] = row.split('|').map((cell) => cell.trim());
-      assert.doesNotMatch(skill, /\[|\]\(/, `${skill} is plain text until its article exists`);
+      const link = skill.match(/^\[([a-z][a-z0-9-]*)\]\(([^)]+)\)$/);
+      const name = link ? link[1] : skill;
+      assert.match(name, /^[a-z][a-z0-9-]*$/, `${skill} has a valid skill name`);
+      const article = path.join(wiki, 'skills-draft', group, `${name}.md`);
+      if (fs.existsSync(article)) {
+        assert.ok(link, `${name}'s existing draft must be discoverable from its index row`);
+        assert.equal(link[2], `${group}/${name}.md`, `${name}'s link resolves to its own article in its declared group`);
+      } else {
+        assert.equal(link, null, `${name} has no draft yet, so its row stays plain text`);
+      }
       const id = owner.match(/^(S-[0-9A-Za-z]+) \(/)?.[1];
-      assert.ok(id, `${skill} names an owning Spec as "S-### (name)": ${owner}`);
-      assert.ok(specFolders.some((name) => name.startsWith(`${id}-`)), `${skill}'s owning Spec ${id} exists`);
-      assert.equal(fs.existsSync(path.join(wiki, 'skills-draft', group, `${skill}.md`)), false, `${skill} has no article yet, so its row must stay plain text`);
+      assert.ok(id, `${name} names an owning Spec as "S-### (name)": ${owner}`);
+      assert.ok(specFolders.some((folder) => folder.startsWith(`${id}-`)), `${name}'s owning Spec ${id} exists`);
     }
     total += rows.length;
   }

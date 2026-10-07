@@ -164,6 +164,17 @@ exact candidate and recovery ref, checks, documentation, and next gate. A local
 checkpoint with blocked publication remains partial; never call it remote
 recovery, integration approval, installed behavior, or owner acceptance.
 
+## Explicit Task selection for orchestration
+
+A single durable writer coordinating multiple Tasks may use
+`claim S-### --task TK-### --agent NAME` and
+`close S-### --task TK-### --proof TEXT --docs TEXT --remaining-gap TEXT`.
+The Task must belong to that Spec (or the named landmark) and pass the same
+eligibility, blocker, capability, claim and Git-state checks. Never infer a
+successful close for a different Task from an out-of-order Worker hand-back.
+Without `--task`, the existing first-eligible claim and first-in-progress
+close defaults remain. Recover a pending close before targeting another Task.
+
 ## Work selection and lifecycle
 
 Unless the user names work directly:

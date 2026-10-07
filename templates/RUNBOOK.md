@@ -125,7 +125,11 @@ assigning Director (project/integration), Dispatcher (one Spec/branch) or Worker
 (one Task). At flight launch, assign Spec Planner to plan small Tasks and safe
 parallel groups from current Actuality; planning Workers may assist. Assign
 Spec Manager to dispatch and monitor execution. Keep one writer for shared
-Spec/projection state and route cross-Spec dependencies to the Director.
+Spec/projection state. Coordinate cross-Spec dependencies with the Director
+when present; otherwise delegate only necessary directly connected prerequisite
+Tasks to Workers, preserving original ownership, claims and proof. Dispatchers
+orchestrate all implementation and corrections; missing Worker capabilities
+leave a recoverable blocker, never a Dispatcher implementation fallback.
 
 Use Reviewer or Auditor stance for the named verification job. Apply the
 existing independent-review eligibility rules to the actual agent/context;

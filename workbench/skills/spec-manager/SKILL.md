@@ -30,7 +30,9 @@ states, dependencies and the branch scope, resolved through
 `workbench/manifest.json`. Keep no second queue.
 
 Dispatch Workers only to ready Tasks whose files do not conflict, within a
-small named concurrency: one Task and one attempt per Worker. Quote the
+small named concurrency: one Task scope and claim at a time per Worker. A
+whole-Spec correction pass may use one Worker across explicitly named Task
+scopes in sequence; preserve each Task's ownership and serialize claims. Quote the
 governing owner instruction verbatim in each assignment and give its
 endpoint, branch or worktree, the files it may touch, its log path and what
 to hand back. Hold a Task whose writes conflict with a running one, naming
@@ -41,8 +43,8 @@ and the hand-back, not the Worker's word.
 
 Assess each hand-back (exact commit SHA, proof, docs status, remaining gap)
 by re-running its claimed checks against the named commit; return a claim
-that does not hold. A Worker attempt ends with its chat and nobody resumes
-it. Its pushed Task branch is Dispatcher input: incomplete or failing work
+that does not hold. Preserve the completed attempt; a fresh correction
+assignment names its Task scope and remaining gap. Its pushed Task branch is Dispatcher input: incomplete or failing work
 gets a new attempt of the same Task (same Task ID, same branch, fresh Worker)
 with the remaining gap named, and a new Task only when review finds work
 outside that Task's acceptance. Integrate each proven result through a
@@ -64,12 +66,17 @@ merge answers yourself and merge when they hold and the merge is green, with
 no separate-context review. Read the current release owner for that exemption
 rather than assuming it.
 
-Route cross-Spec issues, shared writers outside the Spec and owner tradeoffs
-to the Director. The Dispatcher never approves its own assembled candidate
+Coordinate cross-Spec prerequisites and shared writers with the Director when
+present. Without one, dispatch only directly connected prerequisite Tasks
+needed to unblock this Spec, taking the smallest reversible actions while
+retaining original Spec links, claims, writers and proof. Owner tradeoffs still
+go to the owner. The Dispatcher never approves its own assembled candidate
 and a Worker never approves its own candidate; changing stance never makes
 the manager independent of work it dispatched. If the host cannot run
-Workers, report the missing capability and run the Tasks sequentially rather
-than inventing an API. If a permission layer refuses a write, record and
+Workers or worktrees, preserve state and report the missing capability. The
+Dispatcher does not implement instead. When no safe work can advance, leave
+the blocker and continuation point visible; do not stop compatible ready work
+merely because another Task is blocked. If a permission layer refuses a write, record and
 report it; never route around it. Import no scheduler or model allocation.
 
 ## Completion / Exit Condition

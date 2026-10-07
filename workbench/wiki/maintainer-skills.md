@@ -8,6 +8,7 @@ provenance:
   - Contract Carrier Pointer-Brief Rewrite Spec (S-004C) Maintainer Skill Declaration Task (TK-006L) built the declared maintainer-skill list, 2026-10-04
   - Contract Carrier Pointer-Brief Rewrite Spec (S-004C) Maintainer-only Operations Task (TK-005K) declared the first three maintainer skills, 2026-10-04
   - Harness Improvement Playbook Skill Spec (S-004L) Runbook Feedback Rows Task (TK-008M) pointed the feedback rows at the improve-harness loop, 2026-10-06
+  - Implement-spec Skill Adoption Spec (S-002T) declared the owner-invoked assembly operation, 2026-10-06
 source_paths:
   - tools/maintainer-skills.mjs
   - tools/core-skill-installer.mjs
@@ -16,6 +17,8 @@ source_paths:
   - workbench/manifest.json
   - workbench/skills/README.md
   - RUNBOOK.md
+  - workbench/skills/implement-spec/SKILL.md
+  - workbench/specs/S-002T-implement-spec-skill-adoption/SPEC.md
   - workbench/skills/workbench-release/SKILL.md
   - workbench/skills/workbench-room-checks/SKILL.md
   - workbench/skills/workbench-evaluation/SKILL.md
@@ -27,7 +30,8 @@ last_verified: 2026-10-06
 
 A maintainer skill is a skill in this repository's `workbench/skills` lane that
 only this repository's maintainers run: cutting a release, the support-root,
-adoption, upgrade and self-drift checks, evaluation and the feedback loop. It
+adoption, upgrade and self-drift checks, evaluation, the feedback loop and
+owner-invoked Spec assembly. It
 binds here when a Runbook operations index row points to it, like any pointed
 lane skill, and it never reaches another room.
 
@@ -60,8 +64,9 @@ in a document that does not bind.
   `skillPolicy.required` and the install receipt do not change when one is
   added.
 
-Three maintainer skills are declared (Contract Carrier Pointer-Brief Rewrite
-Maintainer-only Operations Task (TK-005K) moved the maintainer-only Runbook procedures into them):
+Four maintainer skills are declared. Contract Carrier Pointer-Brief Rewrite
+Maintainer-only Operations Task (TK-005K) moved the first three procedures;
+the [Implement-spec Skill Adoption Spec (S-002T)](../specs/S-002T-implement-spec-skill-adoption/SPEC.md) adds the assembly operation:
 
 - [`workbench-release`](../skills/workbench-release/SKILL.md): version labels,
   the reference Template upgrade gate, the composed round trip, the
@@ -77,6 +82,12 @@ Maintainer-only Operations Task (TK-005K) moved the maintainer-only Runbook proc
   [`improve-harness`](../skills/improve-harness/SKILL.md) loop from the
   Harness Improvement Playbook Skill (S-004L), the automated gate and run
   outcomes.
+
+- [`implement-spec`](../skills/implement-spec/SKILL.md): explicitly invoke
+  Worker orchestration for an already sliced Spec, assemble verified results,
+  evaluate and correct them, and prepare a PR ready for integration review.
+  This initial declaration is Workbench-only; portable Core promotion remains
+  separate.
 
 Each Runbook section that held one of these procedures keeps its heading and a
 pointer, and the operations index row points at the skill section, so the
