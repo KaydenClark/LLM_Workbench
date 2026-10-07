@@ -3,13 +3,13 @@
 **Spec ID:** S-002U
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s002u-correction-worker
+**Owner:** claude-s002u-dispatcher
 **Stance:** Builder
 **Updated:** 2026-10-07
 **Catalog description:** Ship Matt's PR body-authoring skill as required Core in every Workbench, preserving its visual summary, before/after evidence, merge danger and GLOSSARY.md vocabulary reference.
 **Blockers:** none for specification. Delivery coordinates the required-skill package writer and the glossary migration; no pending-lane permission gate remains.
-**Latest event:** TK-007W closed with proof.
-**Next gate:** Fresh independent assembled review of the corrected candidate; acceptance line 7 stays open until it passes.
+**Latest event:** Owner merged PR #412 (uncorrected assembly at e205ea42, carrying the fail verdict) into integration at 6101c237; the one correction pass closed TK-007V and TK-007W at 8a6a4213 and PR #418 into integration is ready for review.
+**Next gate:** Integration review -> verify of PR #418: fresh independent assembled review of the corrected candidate (acceptance line 7), then merge into integration.
 
 > **Citation anchors.** pre=`42431879fab3057db9e26ae661b4e92512c281f0` post=`42431879fab3057db9e26ae661b4e92512c281f0`.
 
@@ -106,7 +106,7 @@ Draft `workbench/wiki/skills-draft/main-workflow/pr.md`, required skills catalog
 
 ## Completion Result
 
-Not complete. Delivered on the S-002U assembly and its correction branch, not yet on integration: the `pr` skill in required Core, byte-identical to the Matt pin with its NOTICE and Dex Horthy / Humanlayer lineage; the manifest, runtime Core list, catalog, counts and the Write a PR body operation routes; prior28 and legacy21 compatibility with malformed and unsupported cohorts refused; the main-workflow draft article; one fresh-context body-authoring scenario; and self-drift pre/post receipts.
+Not complete. PR #412 delivered the skill, declaration, compatibility, article and scenario to integration at 6101c237 (assembly e205ea42, which carries the fail verdict at 24d47f06); the review corrections (self-drift receipts, count-free landmark page, scenario limit, F:pr:01 record and this QA) are at assembly 8a6a4213 in PR #418, ready for review. Together they deliver: the `pr` skill in required Core, byte-identical to the Matt pin with its NOTICE and Dex Horthy / Humanlayer lineage; the manifest, runtime Core list, catalog, counts and the Write a PR body operation routes; prior28 and legacy21 compatibility with malformed and unsupported cohorts refused; the main-workflow draft article; one fresh-context body-authoring scenario; and self-drift pre/post receipts.
 
 Open gaps:
 
@@ -116,7 +116,7 @@ Open gaps:
 - One scenario run with a fixture glossary and supplied merge-danger facts.
 - Draft finding F:pr:01: the template has no place for the merge-safety and completion answers implement requires in a PR description, so the caller adds them. This Spec records it; no repair is scheduled.
 
-A fresh independent assembled review of the corrected candidate and integration delivery remain, followed by owner Human QA and the release owner's gates.
+A fresh independent assembled review of the corrected candidate and integration delivery of PR #418 remain, followed by owner Human QA and the release owner's gates.
 
 ## Supersession
 
