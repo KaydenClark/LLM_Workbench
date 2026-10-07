@@ -87,6 +87,7 @@ Run the targeted control, wiki, template, genesis, adoption and upgrade tests, t
 |---|---|---|---|---|---|
 | 2026-10-05 | none | Authored at the Map step from the owner's Lexicon retirement decision of 2026-10-05 and re-verified at integration ec65203d. | Map only; the Lexicon, the Template mirror and the Blueprint line were read, no runtime proof claimed. | This Spec. | Plan, the census, implementation and proof remain. |
 | 2026-10-06 | planning | Reconciled the owner-confirmed glossary refinement into DDR-001E and this existing planned capability. | Current implementation inspected at integration 42431879fab3057db9e26ae661b4e92512c281f0; no migration or skill proof claimed. | Decision and Spec updated; Blueprint destination and explanatory article reconciled. Template/runtime changes remain assigned delivery. | Activation, context census, Tasks, migration and all delivery gates. |
+| 2026-10-06 | planning-check | Verified documentation reconciliation; all delivery acceptance remains open. | Source `3d40a86505a339096c4629b814eb4fed1c789d5d`: full suite 53/53; ADR/Wiki, citation and diff checks passed. [Shared planning receipt](proof/planning-verification.json) preserves the initial Blueprint-link failure, repair, bounded self-drift summaries and existing doctor findings. | Source owners read back; render regenerated projections. | No implementation, independent assembled review, PR or integration delivery claimed; self-drift remains 15 findings and cleanUpdate false. |
 
 ## Completion Result
 
