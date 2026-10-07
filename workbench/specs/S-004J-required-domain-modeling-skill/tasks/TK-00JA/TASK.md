@@ -21,3 +21,9 @@ Join the required bundle and reach it from the Contract: manifest `skillPolicy.r
 ## Done criteria
 
 Both adapters resolve the lane source; the scoped source test proves the operating contract, the preserved upstream moves and glossary format, and absent shadow stores; distribution tests and the full suite pass on a committed candidate; each adapter is recorded with its reason.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s004j-assembly | bac6db41f207fa4e804e2cb1d3ae5b460663c647 | ahead 0 behind 0 | 0 | RED: test-domain-modeling-skill 0/10 with source absent; test-skill-catalog and test-skills-lane failed on the undeclared skill. GREEN at bac6db41: scoped 10/10, catalog 3/3, skills-lane 6/6, layout 76/76, runbook-index 62/62, installer 33/33; full RUNBOOK suite 54/54 on clean bac6db41 (also 54/54 on 6e5910c2). Self-drift pre/post 18 findings both, cleanUpdate false (pre-existing). Fast-forward merge into assembly verified at bac6db41. | Skill source and verbatim GLOSSARY-FORMAT, skills catalog, count tokens in README, templates/GENESIS, LEXICON and workbench-room-checks, root and template RUNBOOK index row and Full suite list. THIRD_PARTY_NOTICES and AGENTS checked; no update needed. | Fresh-context behavior proof (TK-00JB) and Wiki reconciliation (TK-00JC); two Wiki pages still say 28 skills; release identity for the bundle change is the release owner's. | 4076bf932e77a7f34b9433326c39f744eb6346d1c30acf1d2f1bba26f9a35970 |
