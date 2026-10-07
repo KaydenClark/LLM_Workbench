@@ -73,9 +73,36 @@ and may be revised when something does not fit.
 - **Entity pages**: one page per capability (`features/`), and per skill,
   role, stance and tool (flat notes beside the router).
 - **Concept pages**: durable cross-cutting models, in `design-concepts/`,
-  and a page for any term that needs more than its Lexicon row.
+  and lexicon articles explaining glossary terms beyond their `GLOSSARY.md`
+  definitions (see Lexicon Articles below).
 - **Comparisons**: filed back as a flat note when answering a question
   produced one worth keeping.
+
+## Lexicon Articles
+
+A lexicon article explains terms whose canonical definition is a `**Term**:`
+entry in the room's root `GLOSSARY.md`: the fuller meaning, how each term
+differs from its neighbours and the sources that own it. It is never a link
+stub, and it links `GLOSSARY.md`. The glossary owns the definition; the
+article explains it and authorizes nothing.
+
+The room ships with one grouped vocabulary article per glossary grouping,
+flat beside the router as `vocabulary-<grouping>.md`, each term a section
+headed exactly as its glossary entry, plus `ai-coding-reference.md` for
+general AI coding words that need no glossary entry. `MEMORY.md` routes them
+under Vocabulary. Extend the owning section when a shared word gains
+explanation. A term of this project that needs more than a section gets its
+own flat `dictionary-<term>.md` article, which declares the term in its
+frontmatter, spelled exactly as the glossary entry, and links `GLOSSARY.md`:
+
+```yaml
+glossary_term: Landmark
+```
+
+`wiki.mjs validate` refuses (`invalid-note`) an article whose declared term is
+not a glossary entry, one that does not link the root `GLOSSARY.md`, and one in
+a room that has no `GLOSSARY.md`. A grouped vocabulary article and a general
+reference page declare no term and need no single glossary entry.
 
 ## Required Properties
 

@@ -47,6 +47,27 @@ nothing.
 | [features/](features/README.md) | Readable articles capturing each completed Spec's delivered capability |
 | [guidebooks/](guidebooks/) | Ordered procedures that outgrew the Runbook |
 
+## Vocabulary
+
+The root `GLOSSARY.md` defines the project's shared words. These articles
+explain them, one article per glossary grouping, each word a section linking
+its definition, plus one reference page for general AI coding words. They
+ship with the room; add a section or a page when a word of this project needs
+more than its glossary entry.
+
+- [Destination and direction](vocabulary-destination-and-direction.md) - where the project is going: destinations, maps, question cards and the frontier of ready work
+- [Workflow verbs](vocabulary-workflow-verbs.md) - the actions every workflow is built from, from Idea to Clean Up
+- [Workbench, room and artifacts](vocabulary-workbench-room-and-artifacts.md) - the Workbench, the project and the kinds of artifact agents meet
+- [Specs and Tasks](vocabulary-specs-and-tasks.md) - the units of planned work, their reviews and where their records go
+- [Chats and roles](vocabulary-chats-and-roles.md) - the working contexts agents run in and the scopes they are assigned
+- [Feedback disposition](vocabulary-feedback-disposition.md) - the closed set of outcomes every feedback finding ends with
+- [Workbench meanings of AI coding terms](vocabulary-workbench-meanings-of-ai-coding-terms.md) - the two AI coding words with a distinct Workbench meaning
+- [Continuity terms](vocabulary-continuity-terms.md) - notepads, scoped handoffs and the identifiers that name artifacts
+- [Stance terms](vocabulary-stance-terms.md) - the job each stance does inside an assigned role
+- [Governance core](vocabulary-governance-core.md) - claim roles, authority, lanes, collections and decision records shared by every Workbench
+- [Continuity and evidence boundaries](vocabulary-continuity-and-evidence-boundaries.md) - what transport, promotion, host checks and compatibility do and do not establish
+- [AI coding reference](ai-coding-reference.md) - general AI coding words restated in Workbench words, with attribution
+
 ## Routing
 
 | Question | Read first |
