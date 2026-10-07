@@ -66,6 +66,8 @@ Definition: [GLOSSARY.md, Governance core](../../GLOSSARY.md#governance-core).
 
 ## Collection
 
+The full set: `docs/adr`, `wiki/design-concepts`, `wiki/guidebooks`, `wiki/archive`, `sessions/grilling`, `sessions/handoffs`, `sessions/checkpoints`, `sessions/notepads`, `sessions/notepads/templates`, `sessions/recovery`, and the additive `wiki/features` and `docs/ddr`.
+
 Collection names are lowercase; local notepads may use nested type folders; a collection is never promoted to a lane because its contents differ in kind.
 
 Definition: [GLOSSARY.md, Governance core](../../GLOSSARY.md#governance-core).

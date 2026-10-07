@@ -15,7 +15,7 @@ explains them.
 LLM Workbench is an agentic management system: the workbench Claude Code and
 Codex use to align the owner's ideas and carry confirmed design concepts to
 delivery. In this room the project is the next workbench, built with the
-current one. A room is a Git repository with root controls on top, Workbench
+current one. A room is a Git repository with root files on top, Workbench
 lanes declared by `workbench/manifest.json` underneath, and the project's own
 source beside them. Every kind of truth has one maintained owner; an agent
 enters at `AGENTS.md`, follows a route below to the smallest owner that answers
@@ -25,7 +25,7 @@ its question, and writes a change back to that owner.
 
 | Path | What lives there |
 |---|---|
-| Root controls | `AGENTS.md`, `BLUEPRINT.md`, `GLOSSARY.md`, `ARCHITECTURE.md`, `RUNBOOK.md`, `README.md`, `TASKBOARD.md` and the `CLAUDE.md` host adapter; their jobs are in [Ownership](#ownership). |
+| Root files | `AGENTS.md`, `BLUEPRINT.md`, `GLOSSARY.md`, `ARCHITECTURE.md`, `RUNBOOK.md`, `README.md`, `TASKBOARD.md` and the `CLAUDE.md` host adapter; their jobs are in [Ownership](#ownership). |
 | `workbench/manifest.json` | Declares the room: identity, version, Git branches, lanes, collections and the Wiki profile. Tools resolve every path through it. |
 | `workbench/specs/` | Spec records (`SPEC.md`) with their Task records (`tasks/<Task>/TASK.md`) and proof; `CATALOG.md` indexes them and `retired/` keeps finished ones. |
 | `workbench/landmarks/` | `LANDMARK.md` artifacts, each nesting its own Specs and Tasks. |

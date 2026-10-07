@@ -24,6 +24,8 @@ Definition: [GLOSSARY.md, Workbench, room and artifacts](../../GLOSSARY.md#workb
 
 ## Workbench
 
+It is made of one set of Contract and routing artifacts with exactly one Blueprint. A Workbench can hold many other Workbenches and many Projects, and each Project it holds has its own Workbench, so projects nest; a parent Workbench owns what its children share, and a child owns only what is its own.
+
 Not a harness: Claude Code and Codex are the harnesses that load it. It governs the workflow; it is not the product being built. Nesting is the destination; tooling for a Workbench that holds other Workbenches is not built yet. A Workbench relates to Workbenches one-to-many and to Projects one-to-many; a Project relates to its own Workbench one-to-one.
 
 Definition: [GLOSSARY.md, Workbench, room and artifacts](../../GLOSSARY.md#workbench-room-and-artifacts).
@@ -80,6 +82,8 @@ Definition: [GLOSSARY.md, Workbench, room and artifacts](../../GLOSSARY.md#workb
 
 ## Portable Workbench
 
+Nothing the agent needs lives only on the owner's machine.
+
 It describes the repository, not a host or a session. Host portability and the support root are things it depends on, not the thing itself.
 
 Definition: [GLOSSARY.md, Workbench, room and artifacts](../../GLOSSARY.md#workbench-room-and-artifacts).
@@ -103,6 +107,8 @@ It is separate from a target project's drift check; structural render, doctor, o
 Definition: [GLOSSARY.md, Workbench, room and artifacts](../../GLOSSARY.md#workbench-room-and-artifacts).
 
 ## Blueprint
+
+Each sentence can serve as a map toward an implementation plan, sometimes through maps at several scales; a sentence big enough to need its own map becomes a landmark. A Workbench has exactly one Blueprint, and a Blueprint has many Specs and many Tasks.
 
 The Blueprint makes us ask questions; it does not give definite answers. Definite answers and their details live on other artifacts, and a decision record answers why for one specific decision. A decision is placed by asking whether it maps to a destination at the Blueprint's scale or to a more bounded one. It supports the design concept; it is not current status, an ADR or DDR inventory, a work queue, a glossary, or a proof archive. The accepted destination keeps it standalone and written before the decisions that follow it, so it is never built from DDRs or ADRs: it is not a router to them and links no record that carries an identifier (a DDR, ADR, Spec, Task or Landmark); it may link other artifacts.
 

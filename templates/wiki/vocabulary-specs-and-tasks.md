@@ -24,6 +24,8 @@ Definition: [GLOSSARY.md, Specs and Tasks](../../GLOSSARY.md#specs-and-tasks).
 
 ## Task
 
+One Task is intended for one useful context and one Chat.
+
 It is temporary execution structure. When a check finds a miss and the fix is more of the same work, the same Task continues with an adjusted handoff; a new Task opens only when the fix changes the Task enough that it has to be rewritten. A later gap against delivered work becomes a new Spec under its landmark or the Blueprint, never a revived Spec and never a correction anchored to a Wiki claim. Small direct Blueprint Tasks remain accepted destination design with no delivered home; a Task's parent is its Spec or, directly, its landmark, and a `wiki-claim` destination serves only a Task whose own destination is producing that Wiki page. AGENTS carries the room's actual branch route and any accepted exception.
 
 The alias listed under _Avoid_. Historical `TK-###` identifiers stay readable exactly as written in append-only evidence and are never rewritten; `TK` is the Task identifier prefix, so newly allocated slices keep the `TK-###` form.

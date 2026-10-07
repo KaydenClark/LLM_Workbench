@@ -22,8 +22,12 @@ Separate-context review is an earlier name for it. In this Workbench it judges a
 
 Definition: [GLOSSARY.md, Workbench meanings of AI coding terms](../../GLOSSARY.md#workbench-meanings-of-ai-coding-terms).
 
+Attribution: [AI Coding Dictionary, Automated review](https://www.aihero.dev/ai-coding-dictionary/automated-review).
+
 ## Grilling
 
 The Workbench differs from the dictionary here: a handoff can be written in the middle of a grilling session so that another agent can dig into one question while the grilling agent's context is preserved. Align is usually done by grilling; the `grilling` skill owns the method.
 
 Definition: [GLOSSARY.md, Workbench meanings of AI coding terms](../../GLOSSARY.md#workbench-meanings-of-ai-coding-terms).
+
+Attribution: [AI Coding Dictionary, Grilling](https://www.aihero.dev/ai-coding-dictionary/grilling).
