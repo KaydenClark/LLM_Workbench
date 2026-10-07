@@ -12,6 +12,13 @@ import { coordinationSkills, coreSkills as runtimeCoreSkills } from '../workbenc
 import { readMaintainerSkills } from './maintainer-skills.mjs';
 const coreSkills = [...runtimeCoreSkills].sort();
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
+// S-002U TK-007V: the owner made `pr` required in every Workbench on
+// 2026-10-06, so it must ship in the runtime Core list and the manifest policy.
+for (const name of ['pr']) {
+  assert.ok(coreSkills.includes(name), `${name} must ship in the required Core bundle`);
+  assert.ok(JSON.parse(read('workbench/manifest.json')).skillPolicy.required.includes(name),
+    `${name} must be declared in workbench/manifest.json skillPolicy.required`);
+}
 // S-002U TK-007U: pinned upstream imports, not rewrites. Each hash is the
 // pinned upstream text with checkout line endings and the final newline
 // ignored, so any instruction drift fails here.
@@ -123,8 +130,9 @@ const bundleSize = coreSkills.length;
 const stanceCount = 4;
 const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
   'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen',
-  'nineteen', 'twenty'];
+  'nineteen', 'twenty', 'twenty-one'];
 const workflowWord = words[bundleSize - stanceCount - coordinationSkills.length];
+assert.ok(workflowWord, `extend the words table to spell ${bundleSize - stanceCount - coordinationSkills.length} workflow skills`);
 for (const [relative, expected] of [
   ['workbench/skills/README.md', [`closed ${bundleSize}-skill bundle`, `${workflowWord} workflow skills`,
     `${words[coordinationSkills.length]} coordination skills`, 'four portable stances']],
