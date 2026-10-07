@@ -330,6 +330,34 @@ test('a Lexicon carrier lands its lines in glossary and architecture homes, whic
   } finally { cleanup(dir); }
 });
 
+test('a carrier deleted at the candidate counts every content line as removed, as the Lexicon retirement does', () => {
+  const { dir, base, candidate } = fixture((d) => {
+    fs.rmSync(path.join(d, 'AGENTS.md'));
+    write(d, 'GLOSSARY.md', '# Example\n\n## Language\n\n**Note**:\nKeep notes in JSON.\n');
+  });
+  try {
+    const unclassified = checkCarrierLanding({ repo: dir, base, candidate, inventory: inventoryFor(dir, base) });
+    assert.equal(unclassified.carrierRemoved, true);
+    assert.equal(unclassified.removedLines, 6);
+    assert.equal(unclassified.ok, false);
+    assert.equal(unclassified.unlanded.length, 6);
+    const retire = { homeKind: 'retired-with-reason', reason: 'fixture line with no successor' };
+    const inventory = inventoryFor(dir, base, {
+      'Never commit secrets.': retire,
+      'Ask before destructive changes.': retire,
+      'Keep notes in JSON.': { homeKind: 'glossary', homePath: 'GLOSSARY.md', landedText: '**Note**: Keep notes in JSON.' },
+      'Handoffs are Markdown.': retire,
+      'Old rule with no successor.': retire,
+      'A claim the Lexicon already owns.': { homeKind: 'restates-owner', homePath: 'LEXICON.md', landedText: 'A claim the Lexicon already owns.' }
+    });
+    const report = checkCarrierLanding({ repo: dir, base, candidate, inventory });
+    assert.deepEqual(report.unlanded, []);
+    assert.equal(report.landed, 6);
+    assert.equal(report.ok, true);
+    assert.throws(() => checkCarrierLanding({ repo: dir, base: candidate, candidate, inventory: { ...inventory, baseSha: candidate } }), /does not exist at base/);
+  } finally { cleanup(dir); }
+});
+
 test('a line that stays need not move: reordered and rewrapped lines are not removed', () => {
   const { dir, base, candidate } = fixture((d) => {
     const lines = BASE_CARRIER.split('\n');
