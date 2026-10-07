@@ -9,7 +9,11 @@
 **Destination:** spec-acceptance: The skill source in the Core lane, its catalog route, the bundle assertions and the draft article agree on behavior, source revision and limits.
 **Planned verification:** Red catalog membership check; green catalog, installed lane and frozen policy checks; Wiki validation, full Runbook suite and fresh-context scenario.
 **Claimed by:** codex-retro
-**Proof:** Full Runbook suite 53/53 on clean source 711fc04b41b6be5741098952658e5bb5f8951dab; current source, controls, templates and runtime files unchanged since that candidate. Combined31 catalog/fidelity and exact28/29/30/legacy21 coverage pass. Focused Wiki and native render checks pass; retained scenario identity recovered. Source plus receipts remotely verified at 763f8a4b.
+**Proof:** Full54/54 Runbook commands pass on clean Core32 source d2e12abef7f1b76e63dce8ed9cb001bd60f1680b; six exact historical migration policies and paired/pr/domain source fidelity pass. Rebase evidence is ../../proof/rebase-verification.json. Earlier native close and receipt3 are historical Core31 results. Current assembled review and integration publication follow; no current remote parity, native reliability, Owner Human QA/main or clean-update claim.
+
+## Current32 rebase Check, 2026-10-07
+
+Full54/54 Runbook commands pass on clean Core32 source d2e12abef7f1b76e63dce8ed9cb001bd60f1680b; six exact historical migration policies and paired/pr/domain source fidelity pass. Rebase evidence is ../../proof/rebase-verification.json. Earlier native close and receipt3 are historical Core31 results. Current assembled review and integration publication follow; no current remote parity, native reliability, Owner Human QA/main or clean-update claim.
 
 ## Superseded rewrite implementation evidence
 

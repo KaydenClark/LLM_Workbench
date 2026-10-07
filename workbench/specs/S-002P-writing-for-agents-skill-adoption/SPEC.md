@@ -8,8 +8,8 @@
 **Updated:** 2026-10-07
 **Catalog description:** Write and edit skills so an agent takes the same process every run, adopted from Matt Pocock's writing-for-agents and replacing writing-great-skills.
 **Blockers:** none. The delivered draft collection is available; the current owner request authorizes Core source adoption.
-**Latest event:** TK-006Y closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** Rebased Core32 Check passed; assembled review pending.
+**Next gate:** Record assembled review, then deliver the reviewed package to integration.
 
 > **Citation anchors.** pre=`07edccc57b8f75613ad1d09203a3e414d867b90c` post=`07edccc57b8f75613ad1d09203a3e414d867b90c`.
 
@@ -107,7 +107,7 @@ Steps 1-5 touch only the draft wiki. Step 6 is the only step that touches a skil
 - [x] `workbench/skills/writing-for-agents/SKILL.md` exists, matches the article, and `THIRD_PARTY_NOTICES.md` keeps the upstream MIT notice.
 - [x] Every closed-bundle touchpoint reads 32 consistently (README, Lexicon row, `skillPolicy.required`, catalog tests, the five-archive-directory requirement), and the owner's 2026-09-30 decision is recorded as the S-00R disposition for `writing-great-skills`.
 - [x] A fresh-context scenario shows an agent using the skill to write or edit a skill with the process the skill describes.
-- [ ] The full suite from `AGENTS.md`, `node workbench/tools/wiki.mjs validate`, `render`, `doctor`, the Workbench self-drift pre/post receipts are recorded at their proper gates; no unrun check is reported as passing.
+- [x] The full suite from `AGENTS.md`, `node workbench/tools/wiki.mjs validate`, `render`, `doctor`, the Workbench self-drift pre/post receipts are recorded at their proper gates; no unrun check is reported as passing.
 
 The separate-context review remains mandatory at the immutable assembled Verify gate, after deterministic acceptance and Task closure. It is not its own self-referential acceptance checkbox.
 
@@ -145,9 +145,11 @@ For step 6, run the targeted catalog and skills-lane tests, then `node workbench
 | 2026-10-07 | paired-delivery | Recovered pair combined with required pr; live acceptance reconciled to Core31 | Full Runbook suite 53/53 on clean 711fc04b; exact29/30 RED at689cd598 then focused GREEN4/4; prior28 and legacy21 retained; all3 pinned imports pass fidelity; original scenario identity/primary evidence recovered | Shared Core owners and generic routes, source/draft references, current acceptance and proof reconciled; guardrail reports73/100 before and after with all5 recommendations under proof/ and benchmarks/RESULTS.md | Final native close, binding assembled review and integration tracking follow; native invocation/reliability, owner Human QA/main and existing room drift remain separate; no outcome improvement claim |
 | 2026-10-07 | TK-006Y | Task closed | Full Runbook suite 53/53 on clean source 711fc04b41b6be5741098952658e5bb5f8951dab; current source, controls, templates and runtime files unchanged since that candidate. Combined31 catalog/fidelity and exact28/29/30/legacy21 coverage pass. Focused Wiki and native render checks pass; retained scenario identity recovered. Source plus receipts remotely verified at 763f8a4b. | Paired source/draft, current31 acceptance, delivery verification and room/guardrail receipts; benchmark result; generic routes and shared Core owners aligned. | Separate assembled review and integration delivery next; native-host invocation/reliability, existing drift, owner Human QA/main remain separate. |
 
+| 2026-10-07 | paired-rebase | Current32 rebased Check | Full54/54 Runbook commands pass on clean d2e12abef7f1b76e63dce8ed9cb001bd60f1680b. Exact six historical policies failed RED at377ffcef then passed at4c05ff69; domain catalog conflict failed then passed after2ff2852a. Wiki validates; all paired/pr/domain skill bodies unchanged from their pins. | Required32 catalog, manifest, templates and generic routes align; current and historical proof distinguished. Self-drift21 known findings retained, cleanUpdate false; guardrail73/100 unchanged. New evidence under proof/rebase-verification.json and proof/rebase-room-checks.json. | Binding assembled review and authorized integration publication follow. Native invocation/reliability, Owner Human QA/main and existing drift remain separate. |
+
 ## Completion Result
 
-The paired source and draft are implemented in the required 32-skill Core alongside pr and domain-modeling, preserving all three pinned imports. The earlier clean source 1c44487a passed 53/53 Runbook commands; the new exact 29/30-cohort regression failed at 689cd598 and passed after the frozen transition policies were added. Latest native receipts and proof identify achieved verification, Task closure and review at their actual candidates. Integration containment is recorded after delivery. Native configured-host invocation and reliability, owner Human QA and main closure remain unverified. Existing self-drift is preserved; no clean-update claim is made.
+The paired source and draft are implemented in the required 32-skill Core alongside pr and domain-modeling, preserving the pinned imports. The earlier clean source 1c44487a passed 53/53 Runbook commands; the new exact 29/30-cohort regression failed at 689cd598 and passed after the frozen transition policies were added. Latest native receipts and proof identify achieved verification, Task closure and review at their actual candidates. Integration containment is recorded after delivery. Native configured-host invocation and reliability, owner Human QA and main closure remain unverified. Existing self-drift is preserved; no clean-update claim is made.
 
 ## Supersession
 
