@@ -6,16 +6,19 @@ knowledge_role: curated
 provenance:
   - Owner-confirmed grilling of 2026-10-01 on Destination Decision Records, promoted 2026-10-02
   - Owner-confirmed grilling of 2026-10-02 on landmarks, roles and the Contract carriers
+  - Owner direction of 2026-10-06 on residual CDRs and decision-centered Grill Board reconciliation
 source_paths:
   - LEXICON.md
+  - workbench/docs/cdr/000A-consequential-decisions-preserve-the-why-and-are-reused-before-asking-again.md
+  - workbench/grill-board/README.md
   - workbench/docs/adr/000S-destination-decision-records-are-decision-records-beside-adrs.md
   - workbench/docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md
   - workbench/docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md
   - workbench/specs/S-003X-decision-record-tooling/SPEC.md
   - workbench/specs/S-003Z-landmark-md-artifact-and-lane-runtime/SPEC.md
 parent: none
-authorized_by: the owner's promotions of the 2026-10-01 and 2026-10-02 grillings
-last_verified: 2026-10-06
+authorized_by: the owner's promotions of the 2026-10-01 and 2026-10-02 grillings and board-reconciliation direction of 2026-10-06
+last_verified: 2026-10-07
 ---
 
 # Decision Records and the Concept Map
@@ -29,7 +32,8 @@ sources at the end govern.
 
 Three layers, in order: the Blueprint, then Destination Decision Records, then
 ADRs. In the owner's words: describe the destination we want to reach, record
-the directions we go, record the choices we made along the way.
+the directions we go, record the choices we made along the way. CDRs now join
+that last layer for consequential choices outside architecture and destination.
 
 - **The Blueprint** is the destination. It is how a project tells every agent, whatever task or Spec it is in, where the work is
   headed in the long term, so that agents are not siloed from each other. It is
@@ -166,7 +170,19 @@ promised outcomes and its non-goals. Landmarks as artifacts are installed: the
 delivered them to integration, and a landmark lists the decision records under
 it in its Decision Records section.
 
+The residual CDR category and shared lifecycle are installed in the local board
+checkout. This room opts in through `collections.cdr`; older rooms remain valid
+without it, and migration preserves the declaration when it is present.
+The [CDR register](../../docs/cdr/REGISTER.md) holds the accepted reuse principle
+and three proposed policies. This local change is not an integration or release
+claim.
+
 ## Evidence and Sources
+
+- [CDR-000A, Consequential decisions preserve the why and are reused before asking again](../../docs/cdr/000A-consequential-decisions-preserve-the-why-and-are-reused-before-asking-again.md):
+  the residual category, decision-centered grouping and rationale-reuse direction.
+- [Grill Board procedure](../../grill-board/README.md#decision-reconciliation-and-reuse):
+  how grouped answers reach their owners while preserving their scope.
 
 - [ADR-000S, Destination Decision Records are decision records beside ADRs](../../docs/adr/000S-destination-decision-records-are-decision-records-beside-adrs.md):
   the decision this page explains.
@@ -204,3 +220,6 @@ it in its Decision Records section.
 - 2026-10-03: aligned when a DDR is written with the workflow-verbs decision (at Map, through `to-docs`).
 - 2026-10-03: recorded that the Blueprint is now the four-part short page, from the Blueprint Short Page work.
 - 2026-10-06: recorded that landmarks as `LANDMARK.md` artifacts are installed, from the LANDMARK.md Artifact And Lane Runtime Spec (S-003Z), Task TK-008J (landmark templates and documentation).
+
+- 2026-10-07: added the owner-directed residual CDR category and decision-centered
+  board reconciliation, including local installation and proposed-policy limits.

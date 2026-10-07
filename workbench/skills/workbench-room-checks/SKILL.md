@@ -95,6 +95,10 @@ keeps `grilling/` and `handoffs/` untracked, and also denies the legacy spaced
 `grilling diary/` name that a stale installed skill may still write (an
 existing ignore file keeps its project rules and validates without that line);
 checkpoint history and reusable templates remain tracked; operational recovery stays local.
+The optional `cdr` collection is declared at `workbench/docs/cdr` only when a
+room uses residual Consequential Decision Records. It is not added to every
+room by `init`; existing layouts remain valid, and `migrate` preserves a present
+CDR declaration and its records while adding any missing mandatory collections.
 Exercise it from a disposable project directory:
 
 ```bash

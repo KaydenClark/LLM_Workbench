@@ -1,0 +1,846 @@
+{
+  "operation": "consequential-decision-board-local-reconciliation",
+  "date": "2026-10-07",
+  "comparisonBase": "9b524db33ac00aad96d2faae51348c0b98719c92",
+  "implementationCandidate": "2e30115e1de3e8351fb01ba8a68c48dd79ea9f27",
+  "identityNote": "Implementation verification used the isolated committed source. The final documentation/evidence commit follows this implementation commit; the live shared checkout remains dirty and was updated surgically.",
+  "board": {
+    "originalQuestionsPreserved": 181,
+    "allItemObjects": 190,
+    "newRationalePrompts": 9,
+    "recordHomes": 64,
+    "kindCounts": {
+      "ADR": 32,
+      "DDR": 28,
+      "CDR": 4
+    },
+    "ownerAnswersUnchanged": true,
+    "ownerAnswerSha256": "5c853687294151f72a65138c7ae23d1fbe60024cc764dac9acd8e13a77315993",
+    "mapSha256": "b56b504c5e2ab374765916b8a63718968817e677bd3593d399962c3ea7cc6d77",
+    "acceptedNewCdr": "CDR-000A",
+    "proposedNewCdrs": [
+      "CDR-000B",
+      "CDR-000C",
+      "CDR-000D"
+    ]
+  },
+  "runbookSuite": {
+    "commands": [
+      {
+        "command": "node tools/test-spec-workbench.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "6dfb4b3c87dd4eceeb50977c11ad823cd7c811df82402e068b43abf6baed5867"
+      },
+      {
+        "command": "node tools/test-spec-assembly-selection.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "8298b42155158a86c3f459c2d16906d642cfd2a567de63b6ff358ccab116d825"
+      },
+      {
+        "command": "node tools/test-skill-catalog.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "db957b888d3c44c247912dfb9c55bd904b4ff72fea06378eceacf4ef92277a2e"
+      },
+      {
+        "command": "node tools/test-skill-inspection.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "61648ce7789b317250a08e00f6dff7ab518821e706427e51e7d4ad5ec241015c"
+      },
+      {
+        "command": "node tools/test-skills-lane.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "09e452b41cf7c07dfcf420baa76cdcd597d13c25387d58fe2824361cbe38220c"
+      },
+      {
+        "command": "node tools/test-core-composition.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "ecdf2b06e3a84000437e575a07d2acac0b7dfe2954061c336f776fdc85f4bfd9"
+      },
+      {
+        "command": "node tools/test-project-evidence.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "a28ed34f104848fc97c7958a62a473164ee4ae42a5e06acbcf751e2552062e87"
+      },
+      {
+        "command": "node tools/test-genesis-from-decisions.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "a4453b64dc95504e41461c31dfeaf7dc579c7b4b15b797942ffe6ccb5cb7c40d"
+      },
+      {
+        "command": "node tools/test-blueprint-contract.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "aaea05fdc1448ec4d504f92ff6cb149884bde57a229c329d52776dc8f1a28ee6"
+      },
+      {
+        "command": "node tools/test-session-transport.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "1d0e4c4cdfae441a6a95aa8e5c04be7fe0958353061d86ed261f9567791a40df"
+      },
+      {
+        "command": "node tools/test-configured-host.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "bc6ddba351d272ac15893b2a10249113fc711ecbd675ca1765deac1b01f7d5d4"
+      },
+      {
+        "command": "node tools/test-core-skill-installer.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "dc50952b45dc99d7ec883f35a336b14ffe551286b1a5b5d7fd1be4410771303d"
+      },
+      {
+        "command": "node tools/test-workbench-layout.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "f9304853b41f943b6a26d20eb89a6132ac63704c621f01d4d7db0ef2642ab284"
+      },
+      {
+        "command": "node tools/test-workbench-adoption.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "68fd56b11af8b60891aac0c8975af9877f72f47598741fc3c3e8c5e02ba69041"
+      },
+      {
+        "command": "node tools/test-workbench-upgrade.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "91eb1d6bc47de4b3ad3496f55133ad8ec663e90b1b20ff4188c279b0242523fd"
+      },
+      {
+        "command": "node tools/test-workbench-tools.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "22e8f18721e6caadf6c6bda79120cdf3e6d8f71d488d507ec12aa41984a32690"
+      },
+      {
+        "command": "node tools/test-diagnostics.mjs",
+        "firstExitStatus": 1,
+        "finalResult": "pass",
+        "firstRunLogSha256": "fcd0405357d16ff91c9e2c21ed337f7a5030f9e1b1db202b68d4003a4fc3d1fc",
+        "rerunExitStatus": 0,
+        "rerunLogSha256": "e00285ad071cdf81773b7a63662febcc696eadf7ec1ff11e8d8562edcfc9b085",
+        "repairOrRerunReason": "Added invalid-cdr to the closed diagnostic contract pin."
+      },
+      {
+        "command": "node tools/test-adr.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "36c78ae9039d4c707ab6392db8a81ffbb5c950cb2e459f63c322d16a4ad69c05"
+      },
+      {
+        "command": "node tools/test-governance-core.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "2d5f5d82afa28d062b512645cdf2a8ba275288e307f3e3ebc3432e7c82b6f176"
+      },
+      {
+        "command": "node tools/test-branch-closeout.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "b5f99f881c9f8f404ca6494ea39fe15f216986bfc925e4b435dc1dea9ef47c3f"
+      },
+      {
+        "command": "node tools/test-wiki.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "6af3953dadd52e4d167a839922e7e2e54e361ffed15cd2b6b49d7b7d399bf03e"
+      },
+      {
+        "command": "node tools/test-sessions.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "de5e71547c4a504f9752a04d751b68f9c8e6e90d17a66404829378d59cc2bb81"
+      },
+      {
+        "command": "node tools/test-notepads.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "dfcd251611326010ce1be59a8bfcdbc473594a01964c0f3662ab8344983ce671"
+      },
+      {
+        "command": "node tools/test-visible-ids.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "3ae87f786a572473ca9cb7a313e3f7a1d3e1a0060400b840738bf640a0ac48f5"
+      },
+      {
+        "command": "node tools/test-workbench-identity.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "ddb7a2a4bfdf61f29ff6d7bac734ab1d81054b7e1e4fb724c328b10cc9f3054a"
+      },
+      {
+        "command": "node tools/test-visible-id-consumers.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "cb68ad40603ab129e483c95a748cdb67084436d9ef731aeb77d7999807093760"
+      },
+      {
+        "command": "node tools/test-direct-promotion.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "9a042e41b6369784f2a2ee2186cd02468bda2e2fbef0f5deca0cfc13625c6e0a"
+      },
+      {
+        "command": "node tools/test-workbench-round-trip.mjs",
+        "firstExitStatus": 1,
+        "finalResult": "pass",
+        "firstRunLogSha256": "9e204ed0128b11b876e9082ad76249330171d2a52472de36b530ee4fb9414b4c",
+        "rerunExitStatus": 0,
+        "rerunLogSha256": "e196fd3a13cba3f4e26e150aa21fcd4b84be05d5440ba60f5737d1c56426ece4",
+        "repairOrRerunReason": "Included CDR index files in the Task identity repair rollback."
+      },
+      {
+        "command": "node tools/test-cross-provider-fixture.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "4cedcdbf38344fc6d6bc454ef80a75dfef5b4fdd3ae6cfb205b0fd7af45544b5"
+      },
+      {
+        "command": "node tools/test-portability-matrix.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "b0f25230872316a951774e1c3d640a8a497b67561fcc9b4157167e5f54867452"
+      },
+      {
+        "command": "node tools/test-workbench-dogfood.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "5edca15bea0b229bb194025549b2ca7d1e9c08d549d28169904fa162f06c6ac2"
+      },
+      {
+        "command": "node tools/test-evaluate-workbench.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "2f9a0468ee094a221fb6e84b551484e3ed279bb371f694dbc9993980bb6ab887"
+      },
+      {
+        "command": "node tools/test-guardrail-audit.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "373b04e4a2607c087192de6b9e5890b8340195fc3bd4c17b1a681168289d2051"
+      },
+      {
+        "command": "node tools/test-context-tools.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "6f0f4a88425cd465e3f9b9fbb1ed61a07f4b6182d20fc71da78f8e39713af2a1"
+      },
+      {
+        "command": "node tools/test-outcome-trials.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "e0ef32e1edb1645577979090997c74ea4e9c92c98a9da29a9f4d67c42f42498b"
+      },
+      {
+        "command": "node tools/test-eval-runner.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "419bf47a8c683370dac56456a05da467520cb2e244d98c73d2ff1606d3c8b78d"
+      },
+      {
+        "command": "node tools/test-feedback-automation.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "841f64c4c0bb3461589e16e36202cc8ad61a5542f704c807193d3f1723e1ea12"
+      },
+      {
+        "command": "node tools/test-symlink-invocation.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "03d17769dee8781fa3a263585b46b849ff18d6ec73128d0ff4a206938d299811"
+      },
+      {
+        "command": "node tools/test-control-fidelity.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "70e691ca828b653298296af5e0aaa0367f964774996d3ec4bdb0b1861dccbb76"
+      },
+      {
+        "command": "node tools/test-spec-citation-anchors.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "3ee9bf91f6b5984dd70b3ea73bc87cacaa7e40f43bb3cbdc59efea73393cab94"
+      },
+      {
+        "command": "node tools/test-controls-vocabulary-sweep.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "db05db954d9a33d47fef93f1fec18d654061d4d34641e26e04ac91e667f5ead4"
+      },
+      {
+        "command": "node tools/test-carrier-landing.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "18a9b3959936071712e45fa544db7dcede520c50c59b8435c49c7d75e2ca8b4d"
+      },
+      {
+        "command": "node tools/test-runbook-index.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "b602135f0f89b50ce2033b5b6dae26658b653297039c9620dc44d20ee15f81de"
+      },
+      {
+        "command": "node tools/test-spec-report.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "d54b0291d4bf3885f84f9f843244b483eac26cf6e4ac79b8fa7530f4f7cb73bc"
+      },
+      {
+        "command": "node tools/test-landmark-wiki.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "afc933d25386e0f74c0b7dcf7d5a90ffd50fc0a4619e7e5113d702c0351694fd"
+      },
+      {
+        "command": "node tools/test-self-drift.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "e6a16f43199f4c16067dd2b93c0d4b0f56bd9f89ab0669770c1415330e500f3d"
+      },
+      {
+        "command": "node tools/test-feedback-inventory.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "37d22545d0d02a263079661cc1392ce33ff71f6f54b57b6a5bdc6cb3c9cd55b4"
+      },
+      {
+        "command": "node tools/test-grilling-ledger.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "f11c1edbb5c7685bb74d2891abe725216b116075c7137ee6c8cbb7950c13d78b"
+      },
+      {
+        "command": "node tools/test-grill-board.mjs",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "093e53ddacb95d89da00c3fcccdec04c7bb363e214beb886fbe42ab224b8822d"
+      },
+      {
+        "command": "python3 tools/test-check-append-only.py",
+        "firstExitStatus": null,
+        "finalResult": "pass",
+        "firstRunLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "rerunExitStatus": 0,
+        "rerunLogSha256": "a668244b72add5786b3668d94cd0f069841d0877160c7e419c964ab352bc4eed",
+        "repairOrRerunReason": "The first runner timed out after 240 seconds; direct rerun completed with all nine cases passing."
+      },
+      {
+        "command": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "bd0149c9b483b4ad4fa7e29309e544eda90aaccca0628e5235947f85beaa2195"
+      },
+      {
+        "command": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "3314ccffab2be0a101063d6da325403dc59826134b96358f4d19545e35630e16"
+      },
+      {
+        "command": "node workbench/tools/spec-workbench.mjs doctor",
+        "firstExitStatus": 0,
+        "finalResult": "pass",
+        "firstRunLogSha256": "886697ad042f3c2be80c27b4e402f13b6cdbfe73ed0aef374c99ffa3c01671ab"
+      }
+    ],
+    "firstPass": 50,
+    "total": 53,
+    "eventuallyPassed": 53,
+    "limit": "The full suite ran while repairs were being committed. It is not a first-pass clean run or a single-SHA full-suite claim. Affected commands were rerun after their repairs and the final migration/navigation changes."
+  },
+  "finalAffectedChecks": [
+    {
+      "command": "node tools/test-adr.mjs",
+      "passed": 58,
+      "failed": 0,
+      "exitStatus": 0,
+      "logSha256": "bcd86c25566c0c71b3122573bfbe8b2bc6e44116e685855e86bef92fcc1996f2"
+    },
+    {
+      "command": "node tools/test-grill-board.mjs",
+      "passed": 19,
+      "failed": 0,
+      "exitStatus": 0,
+      "logSha256": "678ea392ef1eb94d74d00c3f312fdf5f2f8d5be986a31114a85741de9faef978"
+    },
+    {
+      "command": "node tools/test-workbench-layout.mjs",
+      "passed": 76,
+      "failed": 0,
+      "exitStatus": 0,
+      "logSha256": "a568b683206715cec91f7f7b83cbbc2873bfdb6bab9d207dfacbb3e5e30706db"
+    },
+    {
+      "command": "node tools/test-workbench-upgrade.mjs",
+      "passed": 8,
+      "failed": 0,
+      "exitStatus": 0,
+      "logSha256": "9140dcfb5a80b6a6e3bcdd01acfb258cbd7b2201069570b42980538942798a62"
+    },
+    {
+      "command": "node --test --test-name-pattern='CDRs use' tools/test-adr.mjs",
+      "passed": 1,
+      "failed": 0,
+      "exitStatus": 0,
+      "logSha256": "af996ba70e17e02b23cde2347734edc1370a2de91af69e94045821cedfa2754b"
+    }
+  ],
+  "otherVerification": {
+    "candidateFastRubric": {
+      "result": "pass",
+      "score": 113,
+      "singleInstructionFileBaseline": 2
+    },
+    "wiki": "both local checkouts validated",
+    "doctor": "no finding that blocks everything; existing selected-slice and informational findings remain visible",
+    "diffWhitespace": "passed"
+  },
+  "browserVerification": {
+    "environment": "disposable board fixture on 127.0.0.1:4648, then live read-only page on 127.0.0.1:4646",
+    "observations": [
+      "Default live view has nine rationale prompts under 64 record homes, with 181 preserved originals.",
+      "CDR reader shows CDR-000A accepted and CDR-000B/C/D proposed.",
+      "Empty principle answer stays Pending; saving a principle with a rationale gives Answered while its original questions stay unanswered and unapplied.",
+      "Saved fixture answer survives record navigation and reload.",
+      "Original-question hash GB-0012 opens the original question from the decision view.",
+      "Pending agent response identifies principle-only scope and the related members."
+    ],
+    "limits": "Fixture answers were test-only. No live owner answer was created or changed; browser observations do not establish provider behavioral acceptance or whole-Spec Human QA."
+  },
+  "selfDriftReceiptExtracts": [
+    {
+      "schemaVersion": 1,
+      "operation": "workbench-self-drift",
+      "phase": "pre",
+      "sourceRevision": "42431879fab3057db9e26ae661b4e92512c281f0",
+      "dirty": true,
+      "workbenchVersion": "v3.2.1",
+      "sourceIdentity": {
+        "repository": "https://github.com/KaydenClark/LLM_Workbench",
+        "release": "v3.1.0",
+        "commit": "57fb22fbbde012c1c8741d46558a9628fae28b82"
+      },
+      "sourceIdentityRole": "historical-adoption",
+      "findings": [
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-003W has an in-progress task last updated 2026-10-04",
+          "expected": "current owner and verified identity",
+          "observed": "S-003W has an in-progress task last updated 2026-10-04",
+          "correction": "S-003W has an in-progress task last updated 2026-10-04",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004L/TK-006W waits on TK-006V",
+          "expected": "current owner and verified identity",
+          "observed": "S-004L/TK-006W waits on TK-006V",
+          "correction": "S-004L/TK-006W waits on TK-006V",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004M/TK-008V waits on TK-008U",
+          "expected": "current owner and verified identity",
+          "observed": "S-004M/TK-008V waits on TK-008U",
+          "correction": "S-004M/TK-008V waits on TK-008U",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004M/TK-008W waits on TK-008V",
+          "expected": "current owner and verified identity",
+          "observed": "S-004M/TK-008W waits on TK-008V",
+          "correction": "S-004M/TK-008W waits on TK-008V",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004M/TK-008X waits on TK-008W",
+          "expected": "current owner and verified identity",
+          "observed": "S-004M/TK-008X waits on TK-008W",
+          "correction": "S-004M/TK-008X waits on TK-008W",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-00Q has an in-progress task last updated 2026-09-19",
+          "expected": "current owner and verified identity",
+          "observed": "S-00Q has an in-progress task last updated 2026-09-19",
+          "correction": "S-00Q has an in-progress task last updated 2026-09-19",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-01H has an in-progress task last updated 2026-10-03",
+          "expected": "current owner and verified identity",
+          "observed": "S-01H has an in-progress task last updated 2026-10-03",
+          "correction": "S-01H has an in-progress task last updated 2026-10-03",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-01P has an in-progress task last updated 2026-10-03",
+          "expected": "current owner and verified identity",
+          "observed": "S-01P has an in-progress task last updated 2026-10-03",
+          "correction": "S-01P has an in-progress task last updated 2026-10-03",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-01S has an in-progress task last updated 2026-10-03",
+          "expected": "current owner and verified identity",
+          "observed": "S-01S has an in-progress task last updated 2026-10-03",
+          "correction": "S-01S has an in-progress task last updated 2026-10-03",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/feedback/REPORT_FORMAT.md",
+          "claim": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/notepad.schema.json",
+          "claim": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/work.example.json",
+          "claim": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/grilling.example.json",
+          "claim": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/handoff.example.json",
+          "claim": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "unverified-provenance",
+          "artifact": "manifest",
+          "claim": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        }
+      ],
+      "machineResult": "blocked",
+      "cleanUpdate": false,
+      "limitations": [
+        "Machine evidence does not establish semantic freshness. Review current-facing claims against their owners and record a no-memory cold-start read-back.",
+        "Target-project drift is a separate operation.",
+        "Installed-source files do not prove native host callability; no installation or repair is performed."
+      ],
+      "fullReportSha256": "3cd153d2548f748fea9af8ba81db0dea7acf8917ef3bd67158a2ea0eb947b1eb"
+    },
+    {
+      "schemaVersion": 1,
+      "operation": "workbench-self-drift",
+      "phase": "post",
+      "sourceRevision": "42431879fab3057db9e26ae661b4e92512c281f0",
+      "dirty": true,
+      "workbenchVersion": "v3.2.1",
+      "sourceIdentity": {
+        "repository": "https://github.com/KaydenClark/LLM_Workbench",
+        "release": "v3.1.0",
+        "commit": "57fb22fbbde012c1c8741d46558a9628fae28b82"
+      },
+      "sourceIdentityRole": "historical-adoption",
+      "findings": [
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-003W has an in-progress task last updated 2026-10-04",
+          "expected": "current owner and verified identity",
+          "observed": "S-003W has an in-progress task last updated 2026-10-04",
+          "correction": "S-003W has an in-progress task last updated 2026-10-04",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004L/TK-006W waits on TK-006V",
+          "expected": "current owner and verified identity",
+          "observed": "S-004L/TK-006W waits on TK-006V",
+          "correction": "S-004L/TK-006W waits on TK-006V",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004M/TK-008V waits on TK-008U",
+          "expected": "current owner and verified identity",
+          "observed": "S-004M/TK-008V waits on TK-008U",
+          "correction": "S-004M/TK-008V waits on TK-008U",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004M/TK-008W waits on TK-008V",
+          "expected": "current owner and verified identity",
+          "observed": "S-004M/TK-008W waits on TK-008V",
+          "correction": "S-004M/TK-008W waits on TK-008V",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004M/TK-008X waits on TK-008W",
+          "expected": "current owner and verified identity",
+          "observed": "S-004M/TK-008X waits on TK-008W",
+          "correction": "S-004M/TK-008X waits on TK-008W",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-00Q has an in-progress task last updated 2026-09-19",
+          "expected": "current owner and verified identity",
+          "observed": "S-00Q has an in-progress task last updated 2026-09-19",
+          "correction": "S-00Q has an in-progress task last updated 2026-09-19",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-01H has an in-progress task last updated 2026-10-03",
+          "expected": "current owner and verified identity",
+          "observed": "S-01H has an in-progress task last updated 2026-10-03",
+          "correction": "S-01H has an in-progress task last updated 2026-10-03",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-01P has an in-progress task last updated 2026-10-03",
+          "expected": "current owner and verified identity",
+          "observed": "S-01P has an in-progress task last updated 2026-10-03",
+          "correction": "S-01P has an in-progress task last updated 2026-10-03",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-01S has an in-progress task last updated 2026-10-03",
+          "expected": "current owner and verified identity",
+          "observed": "S-01S has an in-progress task last updated 2026-10-03",
+          "correction": "S-01S has an in-progress task last updated 2026-10-03",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/feedback/REPORT_FORMAT.md",
+          "claim": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/notepad.schema.json",
+          "claim": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/work.example.json",
+          "claim": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/grilling.example.json",
+          "claim": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/handoff.example.json",
+          "claim": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "unverified-provenance",
+          "artifact": "manifest",
+          "claim": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        }
+      ],
+      "machineResult": "blocked",
+      "cleanUpdate": false,
+      "limitations": [
+        "Machine evidence does not establish semantic freshness. Review current-facing claims against their owners and record a no-memory cold-start read-back.",
+        "Target-project drift is a separate operation.",
+        "Installed-source files do not prove native host callability; no installation or repair is performed."
+      ],
+      "fullReportSha256": "e40d55fb834cfd6869eb4be3ea609929a6b0cb9b2d66c50f952f3a2db84cab5c"
+    }
+  ],
+  "receiptExtractionNote": "Full before/after machine reports were saved locally. These extracts retain the complete findings, identity, machine result and limitations; the large inventory of local filenames and notepad hashes is omitted.",
+  "sharedCheckoutLimitations": {
+    "fastRubric": "The live checkout scores 69.8 with the pre-existing dirty AGENTS rewrite. Replacing only AGENTS in the evaluator input in memory with its committed contents restores score 113; no AGENTS file was changed.",
+    "fixtureInitialization": "The live checkout fixture check refuses invalid-source-identity because manifest/runtime/templates have uncommitted changes. CDR migration and lifecycle tests passed against the isolated committed implementation candidate.",
+    "cleanUpdate": false,
+    "unchangedRoomFindings": 15
+  },
+  "endpoint": {
+    "liveUrl": "http://127.0.0.1:4646/",
+    "localOnly": true,
+    "published": false,
+    "wholeSpecClosed": false,
+    "ownerHumanQaRecorded": false,
+    "specificMemberApprovalsChanged": false
+  }
+}

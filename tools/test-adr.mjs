@@ -29,6 +29,13 @@ test('CDRs use the shared decision lifecycle and keep older rooms valid', () => 
     const migration = spawnSync(process.execPath, [layout, 'migrate', '--project', dir, '--version', VERSION], { encoding: 'utf8' });
     assert.equal(migration.status, 0, migration.stdout + migration.stderr);
     assert.equal(fs.readFileSync(file, 'utf8'), beforeMigration, 'a current room keeps its optional CDR collection during migration');
+    const recordBefore = showRecord(dir, created.id).content;
+    delete manifest.collections.landmarks;
+    fs.writeFileSync(file, JSON.stringify(manifest));
+    const additiveMigration = spawnSync(process.execPath, [layout, 'migrate', '--project', dir, '--version', VERSION], { encoding: 'utf8' });
+    assert.equal(additiveMigration.status, 0, additiveMigration.stdout + additiveMigration.stderr);
+    assert.equal(JSON.parse(fs.readFileSync(file)).collections.cdr, 'workbench/docs/cdr', 'adding a missing mandatory collection retains optional CDRs');
+    assert.equal(showRecord(dir, created.id).content, recordBefore, 'migration preserves the CDR itself');
     writeDecisionRegisters(dir);
     assert.deepEqual(validateDecisionRecords(dir), []);
     assert.equal(listRecords(dir).filter(record => record.kind === 'cdr').length, 1);

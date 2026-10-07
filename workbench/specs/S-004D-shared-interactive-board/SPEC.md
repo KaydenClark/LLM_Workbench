@@ -3,11 +3,11 @@
 **Spec ID:** S-004D
 **Status:** planned
 **Stance:** Builder
-**Updated:** 2026-10-06
+**Updated:** 2026-10-07
 **Catalog description:** The browser workspace the Grill Board grows into: connected Taskboard and Tracker cards, discussion and update requests, preserving their distinct source and progress semantics.
 **Release scope:** In scope since the owner's 2026-10-04 answer; no release is assigned.
 **Blockers:** none
-**Latest event:** 2026-10-06: the owner settled the hosting boundary (local, small), comments as one file each in a folder under the Grill Board, no dragging, and the board's storage model (it reads existing owners and stores only comments).
+**Latest event:** 2026-10-07: local decision-centered reconciliation preserves 181 original questions under 64 ADR/DDR/CDR homes with nine rationale prompts; three CDR policies remain proposed. The wider shared-board Spec remains planned.
 **Next gate:** Activate and cut Tasks from live Actuality with `/to-tasks`, starting from the Grill Board; settle the remaining open design choices as each slice needs them.
 
 > **Citation anchors.** pre=`f6af4c339b543988a3212b1940581157f573818d` post=`f6af4c339b543988a3212b1940581157f573818d`.
@@ -272,8 +272,10 @@ The 2026-10-02 planning change added the Spec and a link in the Landmark
 Tracker Wiki article. The 2026-10-04 remap links this Spec and the
 [Grill Board procedure](../../grill-board/README.md) both ways and updates that
 Wiki article.
-Generic templates and runtime are unchanged because no harness behavior or
-portable contract is being delivered. At implementation, maintain the existing
+Those planning changes left generic templates and runtime unchanged. The
+2026-10-07 local reconciliation adds optional CDR lifecycle support, the
+generic Lexicon definitions, the decision-reuse procedure and this Wiki
+synthesis. Further implementation must maintain the existing
 operation owners, add browser usage/recovery instructions and update the Wiki
 with verified capability and limits. No general documentation migration is in scope.
 
@@ -286,3 +288,4 @@ with verified capability and limits. No general documentation migration is in sc
 | 2026-10-02 | Planning validation | Render succeeded; doctor had no blocking findings; whole-Wiki validation returned no findings; diff whitespace check passed. Pre/post self-drift retained the same seven findings (one stale claim, five historical seed limitations, one provenance limitation), cleanUpdate=false. Manual read-back confirmed planned state, explicit v4 exclusion, no Tasks and unchanged runtime/templates/release owner. Existing unrelated drift is not repaired or claimed clean. |
 | 2026-10-04 | Owner answer; remapped from the Grill Board | Owner, 2026-10-04: "No the shared board is the grilling board. that is good to know that there was a spec for that." and "Hold on, so that shared board spec is what the grilling board is supposed to turn into". `owner:shared-board-activation` cleared; v4 exclusion and future-intent-only wording removed; release unassigned. Grill Board read at 46ad9789 (tool, README, items.json: 180 items) and `node tools/test-grill-board.mjs` 16/16; Desired Behavior mapped to partly delivered or not yet. Status stays planned: no Task is cut and the Grill Board was built outside a claimed Task. Grill Board item GB-0017 withdrawn as answered here. Map only; no code. |
 | 2026-10-06 | Owner answers on hosting, comments, drag and storage | Asked in chat while choosing a Spec to unblock with grilling; each answer read back as pending and confirmed by the owner the same day. Recorded under Decisions And Contracts in his words: local and small hosting, one comment or update-request file each in a folder under the Grill Board, no dragging, and the board reads DQCs, the Taskboard and decision records, shows the Tracker, saves answers to a notepad and stores only its comments. Map only; no Task is cut and no code changed. |
+| 2026-10-07 | Local consequential-decision reconciliation and verification | Owner direction of 2026-10-06; implementation candidate 2e30115e1de3e8351fb01ba8a68c48dd79ea9f27 on codex/consequential-decision-board, pinned base 9b524db33ac00aad96d2faae51348c0b98719c92. Preserved all 181 original item objects and the unchanged owner answer-file hash; mapped 190 total items to 64 ADR/DDR/CDR homes with nine rationale prompts. CDR-000A accepted from direct owner direction; CDR-000B/C/D remain proposed. [Verification receipt](decision-reconciliation-verification-2026-10-07.json) records all 53 Runbook commands eventually passing, the first failures and repairs, final affected checks (ADR 58, board 19, layout 76, upgrade 8), disposable browser answer/navigation checks and complete pre/post room findings. Shared-checkout fast rubric fails on the pre-existing AGENTS draft; fixture initialization refuses its uncommitted source. Isolated candidate passes. Fifteen room findings are unchanged and cleanUpdate=false. Local installation only: no push, merge, Spec closure, owner Human QA or blanket member approval. |
