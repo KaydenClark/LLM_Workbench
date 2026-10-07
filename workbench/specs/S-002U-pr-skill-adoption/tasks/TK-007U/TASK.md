@@ -3,11 +3,12 @@
 **Task ID:** TK-007U
 **Spec ID:** S-002U
 **Slice:** Install the pinned pr source with lineage and its draft article
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: Pinned source and article agree on body authoring; the necessary adapter diff and Dex Horthy / Humanlayer lineage are recorded.
 **Planned verification:** Red pinned-source fidelity check (hash of the pinned upstream text) failing on the missing source, then green; Wiki validate and lint for the draft article; GLOSSARY.md reference unchanged; full RUNBOOK suite on the committed candidate.
+**Claimed by:** claude-s002u-worker-u
 
 ## Scope
 
