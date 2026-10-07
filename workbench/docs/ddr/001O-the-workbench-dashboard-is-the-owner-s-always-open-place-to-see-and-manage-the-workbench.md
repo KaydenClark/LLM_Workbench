@@ -54,7 +54,7 @@ Why the owner chose it:
   where to take action."
 
 Considered and rejected: a page that runs only while a chat has started it.
-The owner set it aside: the site "shouldnt close", and he "shouldnt need to
+The owner set it aside: the site "shouldnt close", and the owner "shouldnt need to
 start a chat to get it open."
 
 Future goals, outside current scope:
@@ -77,4 +77,4 @@ blocked or waiting on a decision; this record names the place, so the
 Blueprint does not change.
 
 Provenance: the owner's words in the Workbench Dashboard conversation of
-2026-10-07, read back to him and confirmed the same day ("All confirmed").
+2026-10-07, read back to the owner and confirmed the same day ("All confirmed").
