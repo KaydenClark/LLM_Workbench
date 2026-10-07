@@ -187,7 +187,7 @@ confirmed requirements, not delivered behavior.
 1. **Five sections.** Destination Tracker (Landmarks and Destination Question
    Cards), Taskboard (Specs and Tasks), Grilling Board (the questions to
    answer, with P/V), Drafts to approve (current text against proposed
-   wording) and Wiki (controls, decision records, Wiki pages, glossary and
+   wording) and Wiki (the root files, decision records, Wiki pages, glossary and
    skills). Architecture, Destination and Consequential Decision Records live
    in the Wiki section, and every question that uses one links to it.
 2. **Answer controls.** The buttons are Confirm, Rework wording, Change the

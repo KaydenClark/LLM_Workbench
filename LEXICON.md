@@ -235,13 +235,14 @@ its requirements and delivery state are owned by the
 | **Taskboard** (Dashboard section) | The section for Specs and Tasks. | It shows the generated Taskboard's records; `TASKBOARD.md` stays the projection of Spec state. |
 | **Grilling Board** (Dashboard section) | The section for the questions the owner answers, each with its Priority and Value. | The Grill Board grows into it; the tool and its files keep the `grill-board` name. |
 | **Drafts to approve** (Dashboard section) | The section showing current text against the proposed wording, per file, each change tagged with the question that owns it. | Approval binds to that exact wording. |
-| **Wiki** (Dashboard section) | The section for controls, decision records, Wiki pages, glossary and skills. | Every question that uses a decision record links to it here. Its test, in the owner's words: "if I need it summarized on this dashboard, it should probably be in the wiki." |
+| **Wiki** (Dashboard section) | The section for the root files, decision records, Wiki pages, glossary and skills. | Every question that uses a decision record links to it here. Its test, in the owner's words: "if I need it summarized on this dashboard, it should probably be in the wiki." |
 
-The Dashboard's answer words carry the owner's meanings:
+The Dashboard's answer words carry the owner's meanings. Its Confirm answer is
+the [Confirm](#core-terms) verb: it is confirmed and nothing needs changing; on
+a question with alternatives it confirms the selected one. The other three:
 
 | Answer | Meaning |
 |---|---|
-| **Confirm** | It is confirmed; nothing needs changing. On a question with alternatives it confirms the selected one. See the Confirm row for what a confirmation authorizes. |
 | **Rework wording** | Mostly correct; it needs to be restated better. |
 | **Change the why** | Something about it is correct, but the underlying reason or cause is wrong. |
 | **Change** | It needs changing, including dropping it. The owner chose Change over Correct: "to me correct means I am telling you its good to go". |

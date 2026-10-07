@@ -28,7 +28,7 @@ least enough for me to know what was missing."
 - **Taskboard:** Specs and Tasks.
 - **Grilling Board:** the questions to answer, with their Priority and Value.
 - **Drafts to approve:** current text against the proposed wording.
-- **Wiki:** controls, decision records, Wiki pages, glossary and skills.
+- **Wiki:** the root files, decision records, Wiki pages, glossary and skills.
   Agent-proposed and owner-confirmed: Architecture, Destination and
   Consequential Decision Records live in this section, and every question that
   uses one links to it.
