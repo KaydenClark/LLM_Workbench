@@ -179,7 +179,7 @@ test('public runtime supports separate decision-record, Map and Plan publication
     const specFiles = [specPath, 'workbench/specs/S-0PA-reports/tasks/.gitkeep', 'workbench/specs/CATALOG.md', 'TASKBOARD.md'];
     publish('codex/spec', commitStage(specFiles, 'Publish the planned report capability'), specFiles);
     assert.match(readRemote(specPath), /\*\*Status:\*\* planned/);
-    assert.equal(node('show', 'S-0PA').tasks.length, 0);
+    assert.equal(node('show', 'S-0PA', '--json').tasks.length, 0);
 
     git(project, ['switch', '-q', '-c', 'codex/tasks']);
     const taskPath = 'workbench/specs/S-0PA-reports/tasks/TK-0PA/TASK.md';

@@ -9,7 +9,7 @@
 **Catalog description:** Orchestrate one confirmed decision through delegated Record, Map, Plan and verified stage publication to integration.
 **Blockers:** none
 **Latest event:** TK-007K claimed by codex-promote.
-**Next gate:** Close TK-007K with verification and documentation proof.
+**Next gate:** Close TK-007K with verification and documentation proof, then independently review the assembled candidate and publish to integration.
 
 ## Outcome
 
@@ -78,7 +78,7 @@ Task records own the scoped delivery work; the generated board projects them.
 - [ ] Existing selected-note reconciliation safeguards and caller scope remain available without recursive save/promote composition.
 - [ ] A disposable Git-remote scenario publishes docs, then a planned Spec, then unclaimed Task records; a separate clone reads every stage while unfinished code stays off integration. It exercises a docs-only endpoint and retry after an interrupted publication.
 - [ ] Skills, catalog, Wiki routes and relevant shared definitions agree; the Workbench-only template exemption, required checks and before/after room checks are recorded with their actual limits.
-- [ ] The reviewed skill delivery is published to integration and its exact commit and owner bytes are read back there.
+- [ ] The publication contract requires fresh per-stage integration containment and changed-owner read-back before dependent work; local application or branch push alone never releases a stage.
 
 ## Testing Seams
 
@@ -99,6 +99,12 @@ observations. Static benchmark scores are separate from that outcome evidence.
 
 Targeted skill-catalog, core-composition and direct-promotion checks; Wiki validation and lint of touched pages; the current Runbook full suite; self-drift pre/post and bounded semantic comparison; independent assembled review at an immutable candidate; fresh remote containment and byte read-back after publication.
 
+Source and fixture acceptance can be assessed before merging this delivery.
+The authorized delivery endpoint remains the reviewed source on integration,
+with fresh containment and owner-byte read-back recorded in the evidence and
+completion result. That final real publication proof is a later delivery gate,
+separate from the disposable fixture's simulated publication.
+
 ## Documentation Impact
 
 New maintainer skill and manifest/catalog registration; Record, Map, Plan and
@@ -116,3 +122,4 @@ Retain prior decision history and S-01B's pending owner Human QA.
 | 2026-10-07 | TK-007K | Captured clean pinned-integration room and benchmark baselines before final delivery | Source d9a353590644f957ae24636d13ce9a41ef1987e9: self-drift has 21 findings, machine blocked and cleanUpdate false; evaluator templates+controls 106.6/113; guardrail templates 43.9/100 evidence-poor | Baseline findings remain under their existing owners; this Spec names the scoped comparison | Unrelated blocked slices, stale claims, stale seeds and provenance remain; detached-head finding came from the inspection clone |
 | 2026-10-07 | TK-007K | Corrected the disposable publication fixture setup | Candidate 9353fb32f1dc32ee62b69c64ebb37980848935cf: core-composition fixture failed because render required BLUEPRINT.md; direct-promotion, skills-lane, runbook-index, grill-board and evaluator self-test passed | Added the fixture's Blueprint input; no skill behavior changed | Affected scenario rerun and full suite remain; this was not a clean first pass |
 | 2026-10-07 | TK-007K | Completed the publication fixture's renderer prerequisites | Rerun at f36f975ad7d5adddcbb9421d9f87288f3fbc992d identified missing TASKBOARD.md; inspected render's exact Blueprint and hot-specs projection inputs before correction | Seeded the required Taskboard markers; no runtime or skill behavior changed | Affected scenario rerun and full suite remain |
+| 2026-10-07 | TK-007K | Corrected the fixture's CLI output contract and clarified the delivery gate | Rerun at aad172c8 used show without --json; inspected showSpec/publicSpec and native activation before correcting its JSON read | Product acceptance now checks truthful stage publication; actual source integration remains the later delivery endpoint | Affected scenario rerun, full suite, assembled review and actual integration proof remain |
