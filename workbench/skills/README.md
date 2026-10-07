@@ -22,14 +22,17 @@ The checked-out LLM Workbench release owns the exact source versions.
 | `tracer-bullet` | Cut a capability into vertically testable slices. |
 | `update-harness` | Reconcile an adopted project with the current Workbench contract. |
 | `carry` | Own an assigned spec or task to its already-authorized endpoint and record what the owner still had to supply. |
+| `notepad` | Keep one objective's local JSON working context: save it as it appears, retrieve a topic with its corrections, trim only what is reconciled. |
 | `save` | Persist authorized work and verify its actual local or remote recovery boundary. |
 | `promote` | Reconcile selected supported claims directly into their existing durable owners. |
 | `handoff` | Author readable, scope-preserving Markdown continuation for the requested destination. |
 | `grill-me` | Start a saved design inquiry: compose grilling with objective-scoped notepad continuity, keeping pending answers pending. |
-| `notepad` | Keep one objective's local JSON working context: save it as it appears, retrieve a topic with its corrections, trim only what is reconciled. |
 | `workbench-runtime` | Operate the room's installed runtime tools: read a finding and what it blocks, validate the Wiki, repair installed state, allocate visible identifiers, keep the connection identity, check a configured host and add a room-local skill. |
 | `improve-harness` | Improve one harnessed job through one loop: baseline, earliest gap, smallest owning intervention, native verification, fresh rerun, then retain, revise or remove, with a result record in the feedback lane. |
+| `domain-modeling` | Sharpen the domain model while choices are upstream: challenge and split terms, probe edge cases, check claims against source and trace a name or boundary to the owners it would reach, capturing pending meaning for promotion. |
 | `pr` | Write a PR body: a small visual summary, actual before/after evidence and merge danger as door reversibility and blast radius; opening, merging and cleanup stay with `implement`. |
+| `writing-for-agents` | Write predictable agent instructions, useful pointers and checkable completion criteria within existing authority. |
+| `retro` | On explicit request, review a session and propose severity-ranked environment improvements with evidence, owners and verification paths. |
 | `director` | Coordinate the whole project across Spec-bound Dispatchers and integrate independently reviewed results. |
 | `dispatcher` | Operate as the assigned Dispatcher for one Spec and its branch: plan its Tasks, dispatch and monitor Workers, own assembled verification and hand the candidate to the Director. |
 | `spec-planner` | Plan small Tasks and parallel vertical slices for one assigned Spec from current Actuality at flight launch, then hand the plan to Spec Manager. |
@@ -38,9 +41,6 @@ The checked-out LLM Workbench release owns the exact source versions.
 | `auditor` | Determine whether named claims hold on the assigned target and evidence. |
 | `reviewer` | Challenge candidate correctness, downstream impact and consequential claims. |
 | `reconciler` | Leave achieved work and its existing truth owners consistent for continuation. |
-| `writing-for-agents` | Write predictable agent instructions, useful pointers and checkable completion criteria within existing authority. |
-| `retro` | On explicit request, review a session and propose severity-ranked environment improvements with evidence, owners and verification paths. |
-| `domain-modeling` | Sharpen the domain model while choices are upstream: challenge and split terms, probe edge cases, check claims against source and trace a name or boundary to the owners it would reach, capturing pending meaning for promotion. |
 <!-- core-skills:end -->
 
 ## Maintainer skills
