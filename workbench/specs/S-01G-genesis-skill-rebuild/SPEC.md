@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** claude-lane-C-worker
 **Stance:** Builder
-**Updated:** 2026-09-26
+**Updated:** 2026-10-06
 **Catalog description:** Create a new Workbench room from a founding prompt and a recoverable remote boundary.
 **Blockers:** none.
-**Latest event:** TK-00X closed with proof.
-**Next gate:** Owner Human QA of conversational fidelity on `integration`, then `complete S-01G`.
+**Latest event:** 2026-10-06: owner Human QA approved at integration `42431879` (the owner, in chat: "Human QA passes. I declare it here.").
+**Next gate:** Owner promotion of the approved content to `main`, then `complete S-01G` on observed `origin/main`.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -107,6 +107,7 @@ The setup question (a Genesis part or a separate `setup-workbench` skill) belong
 | 2026-09-26 | TK-00X | Task closed | Audit found the skill omitted the skills-lane install (validate --genesis refused the room skill-lane-missing) and named no mechanical route check (init --provenance genesis accepts an existing-code folder the classifier calls adoption); red b07df6d then green 690e97a make the skill classify before writing, install the skills lane and name the readiness gate; full AGENTS suite 48/48 at aced185; fresh-context scenario built, validated and pushed a clean room from a founding prompt without Template state and refused an existing-code folder unchanged, routing it to /adoption; wiki validate ok | workbench/skills/genesis/SKILL.md; workbench/wiki/skill-genesis.md and its MEMORY.md router entry; RUNBOOK, BLUEPRINT, LEXICON, templates and skills README checked with no update needed because RUNBOOK and templates/GENESIS.md already state the skills-lane install, classifier and readiness gate | Separate-context candidate review; owner Human QA; tool gap recorded not changed (workbench-layout init --provenance genesis accepts a folder the classifier routes to adoption); protocol ambiguities the scenario surfaced (main at the generation commit, unexercisable Runbook merge commands); installed personal skill copies not updated |
 | 2026-09-26 | TK-00X | Candidate rebased onto current integration `4de4904` | `git range-diff 86b121f..d4a14f4 4de4904..89af0dd` shows every patch identical; commit map: claim `37d1e71`->`55b27ea`, red `b07df6d`->`56f4bf5`, green `690e97a`->`1410997`, article `aced185`->`9991a9c`, evidence `a088367`->`d37874f`, close `d4a14f4`->`89af0dd`. SHAs in the rows above name the pre-rebase commits; the full suite reruns on the final rebased head | None | Separate-context review of the rebased candidate |
 | 2026-09-26 | review | Review verdict: pass at 8f194c28ff891567fd00bec2d60ec6ff4c528e08 [5b49a0a7b728] #1 | none. Separate-context review of immutable d09db28 (base 4de4904): no High/Medium/Low; reviewer ran git diff --check and wiki.mjs validate (pass), confirmed the diff stays in the S-01G skill/test/spec/wiki/projection scope with no AGENTS/RUNBOOK/LEXICON/BLUEPRINT/templates edit, the red/green trail (56f4bf5 red, 1410997 green) is plausible, every named tool and route exists, and the no-upstream claim matches the supplied pinned text. Fresh delta review of landing head 8f194c2 (rebased onto e9ba8db, plus the commit settling the review box, Next gate and Completion Result): PASS, no findings | Codex CLI codex exec -s read-only -m gpt-5.5, separate context from the implementing worker and the dispatcher; node fixtures not run in the read-only sandbox | 2 |
+| 2026-10-07 | owner-qa | Owner QA: approve at 42431879fab3057db9e26ae661b4e92512c281f0 [b9e1a84e4859] #1 | none | Kayden (owner, in chat 2026-10-06: "Human QA passes. I declare it here.") | none |
 
 ## Completion Result
 

@@ -3,12 +3,12 @@
 **Spec ID:** S-004D
 **Status:** planned
 **Stance:** Builder
-**Updated:** 2026-10-04
+**Updated:** 2026-10-06
 **Catalog description:** The browser workspace the Grill Board grows into: connected Taskboard and Tracker cards, discussion and update requests, preserving their distinct source and progress semantics.
 **Release scope:** In scope since the owner's 2026-10-04 answer; no release is assigned.
 **Blockers:** none
-**Latest event:** Owner answered 2026-10-04 that the Grill Board is this board's first working form; activation gate cleared and the map remapped from the Grill Board.
-**Next gate:** Activate and cut Tasks from live Actuality with `/to-tasks`, starting from the Grill Board; settle the open design choices as each slice needs them.
+**Latest event:** 2026-10-06: the owner settled the hosting boundary (local, small), comments as one file each in a folder under the Grill Board, no dragging, and the board's storage model (it reads existing owners and stores only comments).
+**Next gate:** Activate and cut Tasks from live Actuality with `/to-tasks`, starting from the Grill Board; settle the remaining open design choices as each slice needs them.
 
 > **Citation anchors.** pre=`f6af4c339b543988a3212b1940581157f573818d` post=`f6af4c339b543988a3212b1940581157f573818d`.
 
@@ -123,8 +123,8 @@ not promises about the baseline when Tasks are cut:
    across board regeneration and expose the disposition of each request.
 5. Route accepted updates through the owning validated operations, then refresh
    projections. Requests, applied changes and approval evidence remain distinct.
-   A visual move is interpreted according to the artifact's actual transition
-   rules; dragging cannot bypass review, proof or owner gates.
+   The board has no drag (the owner, 2026-10-06), so no visual move can
+   bypass review, proof or owner gates.
 6. Preserve identity across views and navigation. Shared Tasks remain one
    artifact; legacy Spec-scoped identities do not collide. Do not add progress
    numbers with different meanings or double-count related artifacts.
@@ -153,19 +153,34 @@ not promises about the baseline when Tasks are cut:
   during design, rather than becoming hand-authored generated card content.
 - General Markdown-to-JSON migration is unnecessary to this outcome. The
   browser consumes data and operations supplied by the appropriate owners.
+- **Hosting stays local and small.** The owner, 2026-10-06: "its local for
+  now. We dont need anything big, just something for me to answer
+  questions." No server, framework or database is added.
+- **Each comment or update request is its own file.** The owner, 2026-10-06:
+  "They would probably create their own artifact each to handle. either a
+  markdown or json. then they would live in a folder under the grilling
+  board." This folder is the durable owner of discussion.
+- **No dragging.** The owner, 2026-10-06: "No dragging. I agree." Cards are
+  answered, not moved between columns.
+- **The board stores only its comments.** The owner, 2026-10-06, confirming
+  the recommendation as written ("your recommendation is exactly what I was
+  thinking"): the board keeps only one store of its own, the comment folder.
+  It reads questions from DQCs, reads approvals and decisions from the
+  Taskboard and the decision records, shows the Tracker, and saves the
+  owner's answers to a notepad. The Tracker is generated and stores nothing;
+  Spec approvals stay on their Specs and decision confirmations on their
+  decision records, so a DQC is not redefined to carry approvals.
 
 ## Open Design Choices
 
 Settle and record each within the slice that needs it:
 
-- The hosting/access boundary of the finished board: the Grill Board is
-  local-only today; whether the destination stays local or becomes a remotely
-  accessible self-hosted service is open. No framework or database is selected.
-- Mixed-view grouping and interaction rules, especially the meaning of a drag
-  for cards with fractional understanding progress.
-- The durable owner, identity/revision references, attribution and disposition
-  vocabulary for comments and update requests; how a request reaches an agent
-  or maintainer. Automated dispatch is not implied by submitting a comment.
+- Mixed-view grouping rules (the drag question is settled: no drag).
+- Identity/revision references, attribution and disposition vocabulary for
+  comments and update requests, and whether each file is Markdown or JSON;
+  how a request reaches an agent or maintainer. Automated dispatch is not
+  implied by submitting a comment. (Settled: one file each, in a folder under
+  the Grill Board.)
 - Source adapters, conflict handling and writer coordination shared with CLI
   agents, plus fresh-read and projection-recovery behavior.
 - The current board identity/cutover and Landmark migration contracts. Recheck
@@ -251,3 +266,4 @@ with verified capability and limits. No general documentation migration is in sc
 | 2026-10-02 | Pinned preflight | Base f6af4c339b543988a3212b1940581157f573818d; doctor has no blocking findings. Self-drift pre receipt reports cleanUpdate=false; existing drift remains outside this planning scope. Dated source investigation and focused results are recorded above, not website verification. |
 | 2026-10-02 | Planning validation | Render succeeded; doctor had no blocking findings; whole-Wiki validation returned no findings; diff whitespace check passed. Pre/post self-drift retained the same seven findings (one stale claim, five historical seed limitations, one provenance limitation), cleanUpdate=false. Manual read-back confirmed planned state, explicit v4 exclusion, no Tasks and unchanged runtime/templates/release owner. Existing unrelated drift is not repaired or claimed clean. |
 | 2026-10-04 | Owner answer; remapped from the Grill Board | Owner, 2026-10-04: "No the shared board is the grilling board. that is good to know that there was a spec for that." and "Hold on, so that shared board spec is what the grilling board is supposed to turn into". `owner:shared-board-activation` cleared; v4 exclusion and future-intent-only wording removed; release unassigned. Grill Board read at 46ad9789 (tool, README, items.json: 180 items) and `node tools/test-grill-board.mjs` 16/16; Desired Behavior mapped to partly delivered or not yet. Status stays planned: no Task is cut and the Grill Board was built outside a claimed Task. Grill Board item GB-0017 withdrawn as answered here. Map only; no code. |
+| 2026-10-06 | Owner answers on hosting, comments, drag and storage | Asked in chat while choosing a Spec to unblock with grilling; each answer read back as pending and confirmed by the owner the same day. Recorded under Decisions And Contracts in his words: local and small hosting, one comment or update-request file each in a folder under the Grill Board, no dragging, and the board reads DQCs, the Taskboard and decision records, shows the Tracker, saves answers to a notepad and stores only its comments. Map only; no Task is cut and no code changed. |

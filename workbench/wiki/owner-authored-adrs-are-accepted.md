@@ -5,7 +5,7 @@ sensitivity: normal
 knowledge_role: curated
 provenance:
   - Owner statement 2026-09-23 on ADR acceptance
-  - Promoted from host auto-memory by the S-00V TK-00I audit, 2026-09-26
+  - Promoted from host auto-memory by the Portable Workbench Spec (S-00V) Host Memory To Wiki Task (TK-00I) audit, 2026-09-26
 source_paths:
   - workbench/docs/adr/proposed
   - workbench/docs/adr/REGISTER.md
@@ -28,11 +28,11 @@ only when it changes a product tradeoff.
   [`proposed/`](../docs/adr/proposed/) themselves* is an interpretation of that
   statement, not his exact ruling; say which mechanics you read as covered.
 - Unresolved at 2026-09-26: the grilling ledger still carries `ACC-1` (whether
-  ADR-000B/C/D acceptance lands before or after the v4 PC handoff) as open, and
+  Workbench Root Surface ADR (ADR-000B)/C/D acceptance lands before or after the v4 PC handoff) as open, and
   the records the statement named are still under `proposed/`. Check the
   [ledger](../sessions/grilling-destination-audit-ledger.json) and the ADR folder before
   acting; this note does not settle the timing.
-- No root control carries this rule yet; the S-00V TK-00I close records the
+- No root control carries this rule yet; the Portable Workbench Spec (S-00V) Host Memory To Wiki Task (TK-00I) close records the
   wording it would need.
 
 Related: [finish-authorized-work](finish-authorized-work.md).

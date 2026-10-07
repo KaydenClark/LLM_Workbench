@@ -260,6 +260,6 @@ reach their source owners and generated views are rebuilt.
 
 - 2026-10-03: Restated how a landmark relates to the Blueprint (a Blueprint sentence big enough to need its own map becomes a landmark) and repointed the product-direction link to the four-part page, from the Blueprint Short Page work.
 - 2026-10-03: Reconciled the recovered Lexicon family with the later Wiki, landmark and workflow decisions; retained the installed-validator mismatch, verification distinctions and DQC reconciliation boundary.
-- 2026-10-04: The Runbook's accepted-design and available-operation text moved into the notepad skill behind the Runbook operations index (S-004C TK-005J); the Runbook keeps the delivery route.
+- 2026-10-04: The Runbook's accepted-design and available-operation text moved into the notepad skill behind the Runbook operations index (Contract Carrier Pointer-Brief Rewrite Spec (S-004C), Operations Every Room Runs Task (TK-005J)); the Runbook keeps the delivery route.
 - 2026-10-04: The shared browser workspace is no longer a post-v4 backlog: the owner named the Grill Board its first working form, so the section links the Grill Board and Shared Interactive Workbench Board (S-004D) as one product line.
 - 2026-10-06: The `LANDMARK.md` artifact and its runtime are installed by the LANDMARK.md Artifact And Lane Runtime Spec (S-003Z); only the JSON-record migration and the Tracker regrouping remain, so the "none of this is installed yet" line now says so (S-003Z, Task TK-008J (landmark templates and documentation)).

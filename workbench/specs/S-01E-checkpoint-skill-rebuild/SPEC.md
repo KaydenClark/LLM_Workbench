@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** claude-lane-A-worker
 **Stance:** Builder
-**Updated:** 2026-09-26
+**Updated:** 2026-10-06
 **Catalog description:** Keep the retired checkpoint command as an accurate compatibility route.
 **Blockers:** none.
-**Latest event:** TK-00V closed with proof.
-**Next gate:** Owner Human QA on `integration`, then `complete S-01E`.
+**Latest event:** 2026-10-06: owner Human QA approved at integration `42431879` (the owner, in chat: "Human QA passes. I declare it here.").
+**Next gate:** Owner promotion of the approved content to `main`, then `complete S-01E` on observed `origin/main`.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -107,6 +107,7 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane. When ther
 | 2026-09-26 | review | Review verdict: pass at 2da200aa972d13e7f7d3dae20ecc4454a30ced16 [504983ae3042] #1 | none. Corrective re-review of 2da200a (base be918f0): no High/Medium/Low; prior review of 46f7b47 (base 058f089) had two Medium findings (suite proof pinned to 1b2c92e, not the close candidate), resolved by the appended correction row; reviewer confirmed git diff 058f089 46f7b47 equals git diff be918f0 06f1025 outside generated TASKBOARD/CATALOG and that 06f1025..2da200a is one appended row. Full AGENTS suite 48/48 on 2da200a (dispatcher run, log first line dirty: []) | Codex CLI codex exec -s read-only -m gpt-5.5, separate context from the implementing worker and the dispatcher; read-only sandbox could not run fixture tests | 3 |
 | 2026-09-26 | TK-00V retro review | Post-merge separate-context delta review of the landed PR #162 contribution (merge `d16ef63`, head `572f5ea`) against the reviewed candidate `2da200a`: PASS, no findings | Codex gpt-5.5 read-only (Lane E, separate context) compared `git diff be918f0 2da200a` with `git diff d16ef63^1 d16ef63` outside TASKBOARD.md and CATALOG.md: the only differences are the post-review state (Next gate, acceptance line 5, Completion Result, verdict row) and the MEMORY.md intro keep-both with sibling lanes; header, close row, article and route agree; `wiki.mjs validate` passed; fixture tests not run in its sandbox | Docs checked; no update needed: record-only row | none; closes the gap left when the landed tip merged after the review without a fresh one (AGENTS.md integration gate) |
 | 2026-09-26 | review | Review verdict: pass at eec12cf74ee3f649fa199cfe618c67f4df697938 [19e987cfc6be] #2 | none; final-content review of the Spec at eec12cf (checked acceptance lines supported by recorded evidence, Completion Result accurate against source, header and Wiki route consistent); refreshes the digest after the boxes and Completion Result were written post-verdict; fixture tests not run in the reviewer sandbox | Codex CLI codex exec -s read-only -m gpt-5.5, separate context (Lane E log E-gate-review-1.log) | 4 |
+| 2026-10-07 | owner-qa | Owner QA: approve at 42431879fab3057db9e26ae661b4e92512c281f0 [87cf2792c32a] #1 | none | Kayden (owner, in chat 2026-10-06: "Human QA passes. I declare it here.") | none |
 
 ## Completion Result
 

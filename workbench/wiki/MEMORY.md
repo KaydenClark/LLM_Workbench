@@ -4,8 +4,8 @@ status: active
 sensitivity: normal
 knowledge_role: canonical
 provenance:
-  - S-021 dogfood migration 2026-09-01; S-025 contract adoption 2026-09-04
-  - S-00V TK-00I Agent Operating Knowledge route, 2026-09-26
+  - v3 Portable Workbench Spec (S-021) dogfood migration 2026-09-01; Portable Wiki And Design Concepts Spec (S-025) contract adoption 2026-09-04
+  - Portable Workbench Spec (S-00V) Host Memory To Wiki Task (TK-00I) Agent Operating Knowledge route, 2026-09-26
   - Wiki Evolving-Synthesis Migration (S-003W) router changes 2026-10-04: feature article, landmark synthesis and summary-line routes, and the whole-Wiki lint corrections of its corrective Task TK-006P (Wiki wording)
 source_paths:
   - workbench/wiki
@@ -86,11 +86,11 @@ belong to their individual Specs as they are authored.
 - [Adoption](skill-adoption.md) - bring an existing project into the Workbench once
 - [Genesis](skill-genesis.md) - start a new room from a founding prompt
 - [Improve harness](skill-improve-harness.md) - improve one harnessed job through one loop and keep only what earns its cost; the fifteen-skill harness-review family it replaces is its history
-- [Skills draft wiki](skills-draft/README.md) - the prototype collection and its article template for drafting each skill's connection findings; no draft article is written yet
+- [Skills draft wiki](skills-draft/README.md) - the prototype collection, article template and implement-spec draft describing each skill's connections and evidence limits
 
 ## Planned And Optional Skill References
 
-- [Domain Modeling](skill-domain-modeling.md) - sharpen the Workbench's language as decisions form: the method and the proposed Workbench adaptation
+- [Domain Modeling](skill-domain-modeling.md) - active language challenges and consequence tracing; explains the compact glossary and richer Wiki distinction, with delivery and capture boundaries linked to their owners
 - [Required Domain Modeling Skill (S-004J)](../specs/S-004J-required-domain-modeling-skill/SPEC.md) - maps the skill into every room's skills lane as a required skill, replacing the superseded Domain Modeling Skill for the Workbench Spec (S-002H); until it is delivered, no room's skills lane carries it
 
 ## Release And Distribution Routing

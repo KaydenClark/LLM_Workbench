@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** claude-lane-F
 **Stance:** Builder
-**Updated:** 2026-09-30
+**Updated:** 2026-10-06
 **Catalog description:** Plan small Tasks and parallel vertical slices for one Spec from current Actuality when its flight launches.
 **Blockers:** none.
-**Latest event:** Reviewed integration delivery: PR #216 merged as `8a4c0f5c`, containing the reviewed candidate `83a28d77`.
-**Next gate:** Owner Human QA on integration, then complete S-002F
+**Latest event:** 2026-10-06: owner Human QA approved at integration `42431879` (the owner, in chat: "Human QA passes. I declare it here.").
+**Next gate:** Owner promotion of the approved content to `main`, then `complete S-002F` on observed `origin/main`.
 
 > **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`56d1778132cabc6b024489517c6c6c55abb54dbb`.
 
@@ -110,6 +110,7 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane. When ther
 | 2026-09-30 | review | Review verdict: pass at 83a28d7798d6b83ca95d6891d6bb26ccaec98dcc [c3c744700fa3] #1 | No High, Medium or Low findings against base 56d17781. The reviewer ran git diff --stat, git diff, git diff --name-status and git diff --check (clean), wiki.mjs validate (ok), a read-only link check and doctor (no blocking finding, only attention findings), and checked by hand: scope limited to S-002F files and the count-only control edits, the stance contract sections and authority sentences, composition with the Dispatcher role, planning limits, writer and concurrency rules, proposed versus executable Tasks, Spec Manager hand-off, Director escalation, no conflict with the landed dispatcher entry, coordinationSkills and manifest order with the four stances last, 24 catalog rows, acceptance boxes against evidence rows, header and Completion Result consistency, scenario limits, no owner-approval or outcome claim, citation anchors. The reviewer sandbox could not run test-skill-catalog, test-workbench-layout or test-wiki (EPERM on temp writes) and reported them as not run. The Dispatcher's suite passed 48/48 at 83a28d77 | Codex CLI codex exec -s read-only -m gpt-5.5, separate context from the builders and the Dispatcher, fresh clone of 83a28d77 (log F-review-83a28d7.log in the Dispatcher scratchpad, outside the repository) | 1 |
 | 2026-09-30 | assembly | Reviewed integration delivery recorded | PR #216 merged into `integration` as `8a4c0f5c195717a4b5af27fc4b32d8202cf3d873`. The reviewed candidate `83a28d7798d6b83ca95d6891d6bb26ccaec98dcc` and the PR head `b89f1c8dc652f8b67ef366e42d6736843dff41fa` (the reviewed candidate plus its verdict row) are proven ancestors of `origin/integration` with `git merge-base --is-ancestor`. The Spec branch `claude/s-002f-spec-planner-stance-r2` and the TK-003D attempt-2 Task branch `claude/s-002f-tk-003d` were deleted locally with `git branch -d` and remotely with the expected-tip lease. The attempt-1 Worker branches `claude/s-002f-tk-002x` (`5620ff83`) and `claude/s-002f-tk-002y` (`aeabc24e`) are kept: their Worker commits are patch-contained, but the superseded TK-002X/Y/Z plan commits they carry are not contained, so deleting them is the owner's call | Latest event updated; Next gate unchanged | Owner Human QA on integration, then complete S-002F |
 | 2026-09-30 | review | Review verdict: pass at 2cbbda2c15a57c78ec48ac254d82cd8228d7689d [c3c744700fa3] #2 | No High, Medium or Low findings against base 8a4c0f5c (PR #216 merge). Records-only follow-up: only the S-002F Spec and TASKBOARD.md change, the Next gate is unchanged, and the new row is appended with a distinct Event. The reviewer verified BASE's parents, that 83a28d77 and b89f1c8d are ancestors of BASE, and that b89f1c8d differs from 83a28d77 only by the verdict row. git diff --check was clean, doctor reported no blocking finding, and the TASKBOARD row matches the header. The reviewer's DNS was blocked, so it could not check remote branch state; the Dispatcher checked it with git ls-remote. The Dispatcher's suite passed 48/48 at 2cbbda2c | Codex CLI codex exec -s read-only -m gpt-5.5, separate context, fresh clone of 2cbbda2c (log F-review-2cbbda2.log in the Dispatcher scratchpad, outside the repository) | 2 |
+| 2026-10-07 | owner-qa | Owner QA: approve at 42431879fab3057db9e26ae661b4e92512c281f0 [5609507de943] #1 | none | Kayden (owner, in chat 2026-10-06: "Human QA passes. I declare it here.") | none |
 
 ## Completion Result
 

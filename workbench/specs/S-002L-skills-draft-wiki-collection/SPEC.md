@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** claude-director
 **Stance:** Builder
-**Updated:** 2026-10-04
+**Updated:** 2026-10-06
 **Catalog description:** Give the draft skills wiki a declared home, an index and one article template, so every skill's draft article has somewhere to go and its connection problems can be found by grep.
 **Blockers:** none.
-**Latest event:** The assembled review passed at 4708363c (run 2; run 1 failed on two Spec-text findings that the TK-006O continuation corrected); all three Tasks and the review are on record and the Spec awaits owner Human QA.
-**Next gate:** Owner Human QA on integration, then verification on main and `complete S-002L`.
+**Latest event:** 2026-10-06: owner Human QA approved at integration `42431879` (the owner, in chat: "Human QA passes. I declare it here.").
+**Next gate:** Owner promotion of the approved content to `main`, then `complete S-002L` on observed `origin/main`.
 
 > **Citation anchors.** pre=`07edccc57b8f75613ad1d09203a3e414d867b90c` post=`07edccc57b8f75613ad1d09203a3e414d867b90c`.
 
@@ -145,6 +145,7 @@ Touched: `workbench/wiki/SCHEMA.md` (the nesting exception and the index README 
 | 2026-10-04 | review | Review verdict: fail at f37ab2f210b330096207fcdd887180dd82edf925 [27587b123ec9] #1 | continue TK-006O: High - Acceptance line 6 was checked while its own separate-context review had not been recorded so the checked box was unsupported when read and the fix is to reword it to cover only checks that exist and leave the review to the verdict row with the reason recorded in Decisions; continue TK-006O: Medium - Documentation Impact still calls the collection location tentative until slice 1 although DRAFT-LOC is resolved and the fix is to state the confirmed location and the files actually touched | Codex CLI codex exec -s read-only -m gpt-5.5, separate context from the Director and the Task builders, read-only checkout of f37ab2f2 (assembled-Spec review run 1, log review-spec.out in the Director scratchpad outside the repository) | 2 |
 | 2026-10-04 | TK-006O | Task closed (run 2) | Continuation of TK-006O after the failed assembled review: Full suite 51/51 at d2b0d7fe; wiki.mjs validate ok; append-only checker clean; doctor reports no S-002L finding | S-002L SPEC.md acceptance wording, Decisions and Documentation Impact corrected; no other file | fresh assembled-Spec review and owner Human QA remain |
 | 2026-10-04 | review | Review verdict: pass at 4708363cf01ff703636b6c209d9b766ede5525cd [5be84c6d0c96] #2 | none | Codex CLI codex exec -s read-only -m gpt-5.5, separate context from the Director and the Task builders, read-only checkout of 4708363c (assembled-Spec review run 2 after the failed run 1 corrected by the TK-006O continuation; log review-spec-2.out in the Director scratchpad outside the repository). It could not run tests; the Director's full suite passed 51/51 at d2b0d7fe, the last non-state content commit | none |
+| 2026-10-07 | owner-qa | Owner QA: approve at 42431879fab3057db9e26ae661b4e92512c281f0 [5be84c6d0c96] #1 | none | Kayden (owner, in chat 2026-10-06: "Human QA passes. I declare it here.") | none |
 
 ## Completion Result
 

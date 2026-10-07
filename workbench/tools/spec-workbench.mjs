@@ -147,7 +147,7 @@ function selectCandidate(specs, options = {}) {
 // S-00V TK-01L: with `remoteClaims` (a Map of `SPEC/TK` to the remote tips
 // holding a claim), a To-do Task claimed on another tip is taken:
 // it is skipped and reported under `remoteClaimed`.
-function selectWork(specs, { specId, session = null, remoteClaims = null } = {}) {
+function selectWork(specs, { specId, taskId, session = null, remoteClaims = null } = {}) {
   const completed = satisfiedBlockers(specs);
   const candidates = [];
   const capabilityBlocked = [];
@@ -156,6 +156,7 @@ function selectWork(specs, { specId, session = null, remoteClaims = null } = {})
     if (!executable(spec) || (specId && spec.id !== specId)) continue;
     const satisfied = satisfiedIds(spec, completed);
     for (const slice of executionSlices(spec)) {
+      if (taskId && slice.id !== taskId) continue;
       const entry = taskboardEntryForSlice(spec, slice, satisfied, session);
       const status = entry.status;
       if (session && status === 'blocked' && slice.missingCapabilities.length > 0) {
@@ -422,8 +423,11 @@ function claimInTree(rootDir, id, options, remoteClaims) {
     const refusal = landmarkRefusal(spec);
     if (refusal) throw new Error(`claim refused: ${refusal}`);
   } else if (spec.status !== 'active' && spec.lifecycleFolder !== 'retired') throw new Error(`${id} is ${spec.status}, not active`);
+  const taskId = Object.hasOwn(options ?? {}, 'task')
+    ? resolveTaskId(spec, requireValue(options.task, '--task requires a Task ID'))
+    : null;
   const session = capabilitySession(path.resolve(rootDir), options);
-  const { candidate, capabilityBlocked, remoteClaimed } = selectWork(specs, { specId: id, session, remoteClaims });
+  const { candidate, capabilityBlocked, remoteClaimed } = selectWork(specs, { specId: id, taskId, session, remoteClaims });
   const slices = executionSlices(spec);
   // S-00V TK-00K: a ready Task needing an optional capability this session
   // cannot establish is routed to blocked on its own record, naming the
@@ -449,10 +453,10 @@ function claimInTree(rootDir, id, options, remoteClaims) {
     // raised. A table row's refusal is unchanged, since a ready row reaching
     // here always has an unmet blocker.
     const satisfied = satisfiedIds(spec, satisfiedBlockers(specs));
-    const blocked = slices.find((item) => item.declared === 'ready' && !blockersSatisfied(item.blockers, satisfied));
+    const blocked = slices.find((item) => (!taskId || item.id === taskId) && item.declared === 'ready' && !blockersSatisfied(item.blockers, satisfied));
     if (blocked) throw new Error(`${id}/${blocked.id} is blocked by ${blocked.blockers} (blocked-slice); claim refuses a slice whose declared dependency is unmet`);
     if (remoteClaimed.length > 0) throw new Error(`${id} has no eligible ready task to claim; claimed on a remote tip: ${remoteClaimed.map((item) => `${item.taskId} (${item.refs.join(', ')})`).join(', ')}`);
-    throw new Error(`${id} has no eligible ready task to claim`);
+    throw new Error(`${id}${taskId ? `/${taskId}` : ''} has no eligible ready task to claim`);
   }
   // A record-backed Spec's state lives on the record; only the Spec header's
   // owner and event fields move. The record is written first so a failure
@@ -509,11 +513,18 @@ export function closeTask(rootDir, id, options) {
     .filter((record) => /^\*\*Close pending:\*\*/m.test(record.content))
     .map((record) => ({ id: record.id, record }));
   if (pending.length > 1) throw new Error(`${id} has multiple pending closes; reconcile them before closing another Task`);
-  if (pending.length === 1) return finishRecordClose(root, spec, pending[0], slices);
+  const taskId = Object.hasOwn(options ?? {}, 'task')
+    ? resolveTaskId(spec, requireValue(options.task, '--task requires a Task ID'))
+    : null;
+  if (pending.length === 1) {
+    if (taskId && pending[0].id !== taskId) throw new Error(`${id}/${pending[0].id} has a pending close; recover it before closing ${taskId}`);
+    return finishRecordClose(root, spec, pending[0], slices);
+  }
 
   // S-00M TK-003: `close` names no Task, so it closes only a claimed one;
   // falling through to the first ready Task closed work nobody claimed.
-  const task = slices.find((item) => item.declared === 'in-progress');
+  const task = slices.find((item) => item.declared === 'in-progress' && (!taskId || item.id === taskId));
+  if (taskId && !task) throw new Error(`${id}/${taskId} is not in-progress; claim it before closing`);
   if (!task && slices.some((item) => item.declared === 'ready')) throw new Error(`${id} has no in-progress task to close; claim one first`);
   if (!task) throw new Error(`${id} has no open task to close`);
   // S-00V TK-00K: a missing optional capability never lets a Task report

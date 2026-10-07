@@ -6,8 +6,8 @@ knowledge_role: curated
 provenance:
   - Owner direction 2026-09-05 (a passed review and an explicit instruction to push to integration were followed by an unneeded merge question)
   - Owner direction 2026-09-23 (agent-invented owner gates stalled the v4 Specs)
-  - Promoted from host auto-memory by the S-00V TK-00I audit, 2026-09-26
-  - S-004C TK-005H moved the branch completion procedure behind its pointer into the implement skill, 2026-10-03
+  - Promoted from host auto-memory by the Portable Workbench Spec (S-00V) Host Memory To Wiki Task (TK-00I) audit, 2026-09-26
+  - Contract Carrier Pointer-Brief Rewrite Spec (S-004C) Git And Branch-completion Operations Task (TK-005H) moved the branch completion procedure behind its pointer into the implement skill, 2026-10-03
 source_paths:
   - AGENTS.md
   - workbench/skills/implement/SKILL.md

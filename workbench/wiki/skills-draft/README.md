@@ -4,7 +4,7 @@ status: active
 sensitivity: normal
 knowledge_role: canonical
 provenance:
-  - draft skills wiki index authored for S-002L TK-006O on 2026-10-04 from the owner's 2026-09-30 draft-skills-wiki direction
+  - draft skills wiki index authored for the skills draft wiki collection Spec (S-002L) Collection Index README Task (TK-006O) on 2026-10-04 from the owner's 2026-09-30 draft-skills-wiki direction
 source_paths:
   - workbench/wiki/skills-draft/TEMPLATE.md
   - workbench/specs/S-002L-skills-draft-wiki-collection/SPEC.md
@@ -86,7 +86,7 @@ Carry work from an idea to a merged change: specify, cut Tasks, implement, revie
 | dispatcher | core | S-002D (dispatcher role) | none |
 | spec-planner | core | S-002F (spec planner stance) | none |
 | spec-manager | core | S-002G (spec manager stance) | none (nearest implement-spec) |
-| implement-spec | new | S-002T (implement spec skill adoption) | implement-spec |
+| [implement-spec](main-workflow/implement-spec.md) | core lane, Workbench-only maintainer | S-002T (implement spec skill adoption) | implement-spec |
 | pr | new | S-002U (pr skill adoption) | pr |
 | retro | new | S-002V (retro skill adoption) | retro |
 

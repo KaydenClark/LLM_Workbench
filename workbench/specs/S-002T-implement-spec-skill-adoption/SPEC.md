@@ -1,109 +1,116 @@
 # S-002T - implement-spec skill adoption
 
 **Spec ID:** S-002T
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** codex-s002t
 **Stance:** Builder
-**Updated:** 2026-09-30
-**Catalog description:** Decide whether the Workbench needs a skill that implements one whole Spec, and if so deliver it with an aligned draft-wiki article.
-**Blockers:** S-002L Skills draft wiki collection must deliver the draft-wiki location and article template before steps 2-5.
-**Latest event:** Authored from the owner's 2026-09-30 draft-skills-wiki direction.
-**Next gate:** Deliver S-002L, then activate this Spec and cut Tasks from live Actuality with `/to-tasks`.
+**Updated:** 2026-10-06
+**Catalog description:** Run a sliced Spec through Worker implementation and assembly to a PR ready for integration review.
+**Blockers:** none
+**Latest event:** 2026-10-06: owner Human QA approved at integration `42431879` (the owner, in chat: "Human QA passes. I declare it here.").
+**Next gate:** Owner promotion of the approved content to `main`, then main verification and `complete S-002T`; global release QA findings are unchanged.
 
-> **Citation anchors.** pre=`07edccc57b8f75613ad1d09203a3e414d867b90c` post=`07edccc57b8f75613ad1d09203a3e414d867b90c`.
+> **Citation anchors.** pre=`9aa0c30e99bb7da26f5c2b89b5e5c04a507da513` post=`4bd71da0c614bc8a4b710de055830d5e9e9c332d`.
 
 ## Outcome
 
-The draft article, the comparison with Matt Pocock's `engineering/implement-spec`, and the skill source (or the decision not to add one) all describe one behavior. The owner adopted this skill on 2026-09-30 (decision 4: it was a "skip" and is now adopted). This Spec owns the investigation of what we already have, the finding-driven decision on whether `implement-spec` is a distinct skill or folds into an existing one, the draft article, and, only if a distinct skill is justified, its creation.
+An owner-invoked implement-spec operation takes an authorized Spec already sliced into Tasks, orchestrates Workers on an assembly branch, evaluates and corrects their assembled result, and leaves a discoverable assembly-to-integration PR ready for review. This Spec owns source, documentation and the minimal existing-owner reconciliation needed to use it.
 
 ## Why It Matters
 
-The owner wants the draft wiki to expose skills that should connect and do not, and skills that connect and do not work together. A newly adopted skill whose job resembles four existing skills is exactly that test. Without an overlap check first, the Workbench could add a fifth way to implement a Spec, or adopt a name that duplicates a shipped one.
+The owner wants to launch one Spec delivery operation without supervising individual Tasks. Deliver the agent workflow first; deterministic execution and observers remain deferred.
 
 ## Current Verified State
 
-Read at the anchors above. There is no source for `implement-spec` anywhere in the repository: a grep of tracked Markdown and JSON files finds no mention. It has no Spec, Wiki article or manifest entry. Matt's counterpart has not been read; that is step 3.
+Source candidate `4bd71da0c614bc8a4b710de055830d5e9e9c332d` installs the confirmed entry and reconciled operating boundaries. Both adapters resolve identical source bytes; the native exact-selector regression passes 7/7, Wiki regression 25/25, and all 53 Runbook commands pass on this clean candidate. Fresh separate-context source review passed. The local scenario and its limits are recorded below. Reviewed installation candidate `e8de1007d5823f330dfd5616a2e2fb22edf57231` is contained in integration merge `8e4a2cce5f714ff7971ae9b190e7f1830d9ec3d9` through [PR #406](https://github.com/KaydenClark/LLM_Workbench/pull/406). Native installation Task TK-006X is closed with proof. Closure uses the native report, verdict and integration gate; the current header and append-only evidence name its remaining gate.
 
-The nearest Workbench skills, each in `workbench/skills/`:
-
-- `spec-manager/SKILL.md` (S-002G, active): a stance for a Dispatcher who dispatches Workers to the Tasks of one Spec and integrates proven results into the Spec branch. It names the Spec as its scope but works through Workers, not directly. The inventory marks it Matt-nearest. Its Wiki article is `workbench/wiki/skill-spec-manager.md`.
-- `implement/SKILL.md` (S-01H, planned rebuild): implements one eligible Task, not a Spec, through red/green, a remotely verified checkpoint and close. One invocation owns one Task and one writer.
-- `carry/SKILL.md` (S-01C, planned rebuild): carries an assigned Spec or a named Task to its already-authorized endpoint, composing `/implement`, `/tracer-bullet`, `/to-docs` and `/code-review`, and records each owner hand-back. A task-scoped invocation stops at that Task.
-- `dispatcher/SKILL.md` (S-002D, active): the role scoped to one Spec and its branch, which composes the `spec-planner` and `spec-manager` stances. Its Wiki article is `workbench/wiki/skill-dispatcher.md`.
-
-`implement` and `carry` have no skill article yet; `spec-manager` and `dispatcher` do. Whether `implement-spec` would be a fifth route or a name for one already covered is an open question for step 1, not decided here.
+At the pre anchor, the draft wiki and Template 2 are delivered. The lane has 28 Core skills and three declared maintainer skills; implement-spec is absent. Dispatcher and Spec Manager permit Dispatcher implementation when Workers are unavailable and route every cross-Spec prerequisite to a Director. Those instructions conflict with the confirmed operation. Original September 30 planning is preserved in Git history and the evidence below.
 
 ## Desired Behavior
 
-1. Step 1 records, at a named commit, what each nearest skill takes in, writes, and composes with, and where it overlaps a "whole Spec" implementer. Overlaps are logged as `overlap` findings and gaps as `gap` findings.
-2. The draft article for `implement-spec` exists in the draft wiki and answers every Template 2 section. If the skill folds into another, the article records that outcome and names the owner it folds into, as the `to-tickets` retirement note does in S-01L's amendment.
-3. A decision is recorded (see Decisions And Contracts) and the skill source, the article and the catalog agree with it.
+- Dispatcher orchestrates; Workers implement every change and correction. Directors coordinate multiple Dispatchers and Specs.
+- Recover the planned Task graph; dispatch compatible work concurrently with claims and one durable state writer.
+- Branch Workers from assembly, merge verified results serially and check the resulting assembly SHA before releasing dependencies. Readiness requires verified containment in this assembly.
+- Necessary directly connected prerequisite Tasks from other Specs may join assembly, preserving original links, claims, writers and proof. Their original Specs are not complete. Without a Director, take only the smallest reversible unblocking actions.
+- Use one full building-side evaluation and one correction pass, merge corrections through the same assembly path, then focus verification on the final candidate. Remaining findings leave a recoverable draft PR.
+- Publish ready PR, candidate, proof and next gate in the owning Spec and regenerate its projection. Cleanup preserves proof and assembly. Stop before later integration review/merge and owner approval.
 
 ## Decisions And Contracts
 
-- This Spec does not prejudge the outcome. Distinct skill, fold into `spec-manager`, `implement`, `carry` or `dispatcher`, or retirement of the name are all open until the step 4 comparison and the step 5 findings support one. The decision is made in this Spec's evidence, not by the draft article alone.
-- Where an existing skill's own Spec owns the change (S-002G, S-01H, S-01C, S-002D), this Spec records the finding and hands the edit to that owner rather than editing it.
-- Authorization for a new skill's lane. New adopted skills default to Pending (owner decision 1 of 2026-09-30), so step 6 would create the skill under `skills-pending/implement-spec/` unless findings justify another lane. `skills-pending/` is not listed in AGENTS.md Edit Scope, so that edit is authorized only by the owner's 2026-09-30 adoption decisions together with the per-item rule in `workbench/specs/S-00R-core-skill-lifecycle-and-optional-source-disposition/SPEC.md`. The activating Task must name that authority and have the Director confirm it before creating the directory. Promotion to Core is separate: it needs its own owner decision and the Core-bundle touchpoints, and is not part of this Spec.
-- The article is curated context, not instruction authority or proof of behavior. Matt's skill is outside evidence, adopted only as far as the owner's decision reaches.
-- Steps 1-5 touch only the draft wiki. Step 6 is the only step that touches a skill lane.
+- Owner confirmation on October 6: "This looks good. confirm." followed by implement, then "continue as you were to get this working. I want to be able to start using it". The complete nine-step draft is accepted.
+- Initial installation uses this Workbench's existing maintainer-skill declaration: one source at `workbench/skills/implement-spec/SKILL.md`, declared in the manifest and reached through both discovery adapters. This supersedes the earlier Pending-only proposal, without adding to the 28-skill Core bundle or installing in other rooms. Portable Core promotion is separate.
+- Necessary reconciliation may touch Dispatcher, Spec Manager, their Wiki owners and relevant controls/procedures for the confirmed boundaries only. Existing capability ownership is retained through links.
+- Owner-authorized implement-spec runs use Task -> assembly -> integration. The Task-PR bootstrap default remains outside those runs. No deterministic runner or scheduler is added.
+- One correction Worker may address explicitly scoped findings across implicated Tasks, serializing claims and preserving per-Task ownership. This does not grant a Worker general multi-Spec authority.
+- This first version is owner-invoked. Do not assume disable-model-invocation enforces the same behavior on each host or enables autonomous Director invocation.
+- Source/routing checks prove structure only; a fresh-context exercise names observed behavior and its limits. Installation is neither independent integration approval nor owner Human QA approval.
 
 ## Non-Goals
 
-- Editing `spec-manager`, `implement`, `carry` or `dispatcher`, or any other skill's source.
-- Adding a scheduler, a coordination layer or a second queue.
-- Reproducing Matt's skill text or articles beyond short cited summaries.
-- Promoting the skill to Core, or moving, archiving or installing any other skill.
-- Answering Q2A (where `wayfinder` stores pre-Spec decisions) or touching `grill-with-docs`.
+Initial Task planning; executing real backlog during installation; deterministic execution; watchers/webhooks; other room updates; portable Core promotion; changing owner Human QA or main promotion.
 
 ## Dependencies And Blockers
 
-- **S-002L Skills draft wiki collection** must deliver the draft-wiki location and article template before steps 2-5. Until then the article location below is tentative.
-- Step 1 depends on the current source and tests of the four neighbors above. Their Specs are not blockers, but a rebuild landing mid-investigation changes what step 1 recorded, so step 1 names its commit.
-- Step 6 depends on the decision from steps 4-5 and on the authorization named under Decisions And Contracts.
+Skills draft wiki collection (S-002L) delivered the location and Template 2 on the pinned integration base. Its owner closure does not block use of those delivered artifacts. Existing claim/receipt/close, manifest, safety and review rules remain. Workbench v4.0.0 Release (S-00O) retains the bootstrap default and records this operation-specific assembly exception. Missing host capabilities block dependent execution; no API is invented.
 
 ## Vertical Implementation Slices
 
-No Task is cut yet. Tasks are cut at activation from live Actuality with `/to-tasks`. Intended slice direction, in prose:
-
-1. Investigate ours. Read `spec-manager`, `implement`, `carry` and `dispatcher` and their tests at a named commit, since no `implement-spec` source exists. Record inputs, outputs, writes and composition, the overlap with a whole-Spec implementer, and the true `origin`.
-2. Draft the article from Template 2 (owned by S-002L) at `workbench/wiki/skills-draft/main-workflow/implement-spec.md`, tentative until S-002L decides.
-3. Investigate Matt's. Read `engineering/implement-spec` in `mattpocock/skills@d81f3a183412e71a5b1e84ca21bc1a35eea03a60`.
-4. Compare. Fill "Compared with Matt's", with `spec-manager` as the Workbench side per the inventory, and log findings, expecting `overlap` entries against `implement` and `carry`.
-5. Align the article until its wording matches real or intended behavior, record the distinct-or-fold decision and log what is left.
-6. Fix or create the skill. If a distinct skill is justified, add `SKILL.md` in the authorized lane with catalog tests and a fresh-context scenario. If it folds, the work is the finding, the retirement or alias note and the owner Spec's handoff, with no new skill source.
+Owner-authorized activation: [TK-006X - Install and exercise the confirmed implement-spec operation](tasks/TK-006X/TASK.md) pierces source, declaration, discovery, operating boundaries, Wiki and verification. codex-s002t is the single durable writer. No backlog implementation is assigned.
 
 ## Acceptance Criteria
 
-- [ ] Step 1 records the four neighbor skills' inputs, outputs, writes and composition at a named commit, with each overlap logged as an `overlap` finding.
-- [ ] The draft article fills every Template 2 section; every "needs" and "reads/writes" item resolves to something real or is a finding.
-- [ ] The comparison with `engineering/implement-spec` at the d81f3a1 pin is recorded with a verdict (same, close, divergent or missing).
-- [ ] The distinct-or-fold decision is recorded with its supporting findings and the owner Spec for any change to an existing skill.
-- [ ] The skill source, or the recorded decision not to add one, matches the article, and the named authorization for any `skills-pending/` edit is cited.
-- [ ] Suites required by AGENTS.md pass for step 6, and no unrun check is reported as passing.
+- [x] The installed entry preserves the confirmed nine-step wording with the draft notice removed, and is declared/discoverable in this Workbench.
+- [x] Dispatcher and Spec Manager no longer implement as fallback; cross-Spec and correction procedures agree with the operation.
+- [x] The assembly route and later independent integration gate are explicit, with the ordinary bootstrap default preserved.
+- [x] Template 2 article records neighbor overlap, pinned upstream comparison, inputs/outputs, use and evidence limits, and is linked from its index.
+- [x] Focused and full RUNBOOK checks pass; self-drift and guardrail pre/post evidence preserves pre-existing findings.
+- [x] Fresh-context exercise observes the installed entry and actual execution or its honest missing-capability exit; routing checks are distinguished from runtime proof.
+
+## Native selection support
+
+The live runtime silently ignored `--task` on claim/close, always selecting the first eligible or active Task. A public CLI test reproduced wrong-target mutation. This delivery adds optional exact Task selection through the existing eligibility and close paths; it preserves default behavior and all blocker/capability/remote-claim/Git/recovery checks. This is a native primitive, not a deterministic runner.
 
 ## Testing Seams
 
-Steps 1-5 are documentation: read-back of each article claim against source, and the draft wiki's own validation once S-002L defines it. Step 6, if it creates a skill, uses the catalog and skill-inspection tests plus a fresh-context scenario in which a cold agent is asked to implement one whole Spec and must choose between this skill and the existing neighbors without private notes. Structural checks prove routing, not agent behavior.
+Declaration/catalog rejects a declared skill without source, then accepts the installed source. Adapter paths resolve to identical bytes. Exercise a fresh agent with the installed entry in a disposable scenario, observing assembly readiness, ownership and stop boundaries without changing real backlog state. Missing capabilities must preserve state and refuse Dispatcher implementation. A text check does not prove autonomous delivery.
 
 ## Verification Procedure
 
-At activation, the Task records the exact commands it runs. For step 6 that is the targeted catalog and inspection tests, `node workbench/tools/spec-workbench.mjs render` and `doctor`, and the full suite in AGENTS.md from a committed candidate, with the self-drift pre/post receipts. Steps 1-5 need the draft-wiki validation S-002L delivers. The immutable candidate gets a separate-context review before integration.
+Run focused catalog/discovery/Wiki checks, touched-page lint and whole-Wiki lint at review, the full Test And Build list in RUNBOOK, self-drift pre/post and guardrail before/after. Obtain separate-context immutable-candidate review before integration under the owner-supplied AGENTS requirement. Record actual merge answers, receipt, remote recovery and integration containment. Main remains owner-only.
 
 ## Documentation Impact
 
-The draft article at `workbench/wiki/skills-draft/main-workflow/implement-spec.md` (tentative until S-002L decides). Step 6 may touch the new skill's `SKILL.md` under `skills-pending/implement-spec/` and, if the skill folds into a neighbor, a retirement or alias note in that neighbor's owning Spec. It touches no Core-bundle control, since this Spec does not promote the skill.
+Maintain catalog, draft article/index, relevant Runbook/AGENTS procedures, role Wiki owners and roles-and-stances model. Mirror portable role boundaries in generic controls. New Workbench-only entry and its index row are exempt from template installation; generated rooms do not declare it. Keep state, proof and limitations here and in the Task.
 
 ## Append-Only Evidence And Execution Log
 
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-30 | planning | Spec authored from the owner's draft-skills-wiki direction; planning only | Read `spec-manager`, `implement`, `carry` and `dispatcher` sources at the pre anchor; confirmed no `implement-spec` source or Spec exists; Matt's skill not read | This Spec authored; no skill, article, manifest or test changed | S-002L, activation, Tasks and all implementation remain open; distinct-or-fold decision not made |
+| 2026-10-06 | planning | Owner confirmed complete draft and authorized usable installation | Nine-step design confirmed; base 9aa0c30e; draft wiki delivered; no entry installed yet | Existing Spec reconciled and TK-006X cut under the activation request | Installation, exercise, checks, review and integration remain |
+
+| 2026-10-06 | TK-006X | Exact Task selection red/green | CLI selected wrong Task before --task support (4 failures; default test passed); after filtering through existing validation paths, 5/5 pass. The earlier full run was superseded when source edits invalidated its clean-source premise; its pre-existing landmark retirement assertion is being isolated | implement primitive procedure and native selector test | Fresh full committed-candidate run and review remain |
+
+| 2026-10-06 | TK-006X | Behavioral exercise and bounded checks | Real concurrent Workers, serialized checked merges, Task-branch containment and cross-Spec ownership observed; full fixture 24/24, focused 8/8; building-side evaluation passed with no correction needed. Guardrail 73/100 before and after, with repeated real outcome trials and fresh board proof still recommended. Self-drift pre/post retains the same findings and cleanUpdate false. Earlier retirement assertion did not reproduce in an isolated clean-candidate check; earlier broad run was superseded, not a clean pass | [Scenario evidence](scenario-evidence.md), installed entry and Template 2 draft | Final full suite, immutable review, remote closure and integration remain; fixture has no real GitHub PR and uses local lifecycle adapters |
+
+| 2026-10-06 | TK-006X | Independent review finding corrected | Review of e59cb5eb failed on terminal --task silently falling back in claim and close. Public CLI regressions reproduced both mutations (5 pass, 2 expected failures); distinguishing option presence from value turned all 7 tests green, including missing, empty and whitespace values with byte-for-byte no-mutation checks. The e59cb5eb full run was deliberately stopped after 10 passing commands because this correction supersedes that candidate | Native selector and regression test | Fresh full committed-candidate run and immutable review remain |
+
+| 2026-10-06 | TK-006X | Wiki review findings reconciled | Independent lint found a stale maintainer count, the router saying no draft exists and older correction-Worker summaries. Reconciled the existing Wiki owners and linked the newer bounded correction exception without rewriting question cards. Source review of a1697896 passed; its full run was superseded by these documentation corrections after the first ten commands passed | Maintainer article, router, Dispatcher composition and two landmark syntheses | Full final-candidate suite and fresh review remain; unrelated pre-existing Wiki drift is preserved |
+
+| 2026-10-06 | TK-006X | Whole-Wiki reading and index regression correction | Three contexts read all 145 pages and relevant current card answers. Corrected the remaining Dispatcher exit and lifecycle selector guidance; inherited drift stays visible in the reading evidence. The full run on 7836ecba reached 49 commands: 48 passed and one draft-index test failed because it required permanent plain-text rows. Replaced that obsolete assumption with existing-draft link and missing-draft plain-text checks; Wiki tests 25/25 green. The failed run was stopped before completing the remaining history checks, not counted as a full pass | [Wiki reading evidence](wiki-lint-evidence.md), owning articles and catalog regression | Final clean full run and immutable review remain; global clean-update/Wiki claims are not made |
+
+| 2026-10-06 | TK-006X | Final source verification passed | Full RUNBOOK list: 53/53 commands PASS on clean 4bd71da0c614bc8a4b710de055830d5e9e9c332d; exact selector 7/7 and Wiki tests 25/25. Fresh separate-context source review PASS at that SHA. Machine self-drift findings equal the pre receipt exactly; cleanUpdate remains false. Guardrail 73/100 before and after; no outcome-improvement claim. Earlier interrupted/failed runs remain recorded, and the earlier retirement-assertion attribution was not established; no repair is claimed for it | Installed source, procedure/catalog/manifest owners, generic role mirrors, Wiki and pinned scenario/reading evidence | Integration containment, native closure and final assembled-record review remain; inherited drift and unexercised real PR/correction/cleanup/discovery limits persist |
+| 2026-10-07 | TK-006X | Task closed | 53/53 full Runbook PASS on4bd71da0; source/record review PASS at e8de1007; PR406 merged into integration8e4a2cce; exact candidate ancestry verified against fetched origin/integration; selector7/Wiki25 and observed scenario24/focused8. | Implemented source/discovery; current manifest/catalog/procedures and role/generic controls; Wiki router, role/synthesis/lifecycle owners, Template2 article and durable evidence. | Spec owner delivered-content approval and main verification remain. Unexercised full production orchestration and pre-existing global drift stay visible; no clean-update or owner-QA claim. |
+
+| 2026-10-07 | TK-006X | Reviewed source integration and native close | PR406 MERGED at 8e4a2cce5f714ff7971ae9b190e7f1830d9ec3d9; fetched origin/integration contains the independently reviewed e8de1007d5823f330dfd5616a2e2fb22edf57231. Native close selected TK-006X explicitly after clean pushed proof. Full53 command logs do not embed candidate headers; binding rests on actual sequential start/HEAD/end tool outputs and clean checkpoints, with logs independently checked | Native Task close/Receipt3 and current Spec result | Final assembled-record review/publication remain; owner approval/main and recorded runtime/global-drift limits persist |
+| 2026-10-07 | review | Review verdict: pass at dc0dcc21c0ea2ea6674064f2dcafa29804829812 [cfda5a4c1e1b] #1 | none | OpenAI/Codex independent read-only child /root/review_implement_spec; inherited root model, exact identifier unavailable; actual assembled review transcribed by single state writer | none |
+| 2026-10-07 | owner-qa | Owner QA: approve at 42431879fab3057db9e26ae661b4e92512c281f0 [cfda5a4c1e1b] #1 | none | Kayden (owner, in chat 2026-10-06: "Human QA passes. I declare it here.") | none |
 
 ## Completion Result
 
-Not complete.
+The confirmed implement-spec source, declaration, discovery routes, operating boundaries and native Task selector are delivered on integration through PR #406. Required source checks pass 53/53 and fresh independent source/record review passed the exact integrated candidate. All 145 Wiki pages were read; introduced conflicts are corrected and inherited drift remains recorded. Native installation Task TK-006X is done. Closure uses the native content-bound review and publication procedure; the Spec stays active until the owner approves delivered content and main verification is recorded. No owner approval, main promotion, global clean update or reliable autonomous delivery is claimed.
 
 ## Supersession
 
-None.
+The owner-confirmed October 6 design supersedes the earlier open distinct-or-fold choice, Pending-only proposal and prohibition on necessary neighboring-skill reconciliation. Dated evidence is preserved.

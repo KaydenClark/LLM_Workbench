@@ -59,6 +59,14 @@
   "wiki": {
     "profile": "project"
   },
+  "legibility": {
+    "run": "node workbench/tools/spec-workbench.mjs doctor; node workbench/tools/spec-workbench.mjs next --json",
+    "operate": "node workbench/tools/spec-workbench.mjs claim S-### --agent NAME; close S-### --proof TEXT; node workbench/tools/notepads.mjs; node workbench/tools/landmark-tracker.mjs",
+    "inspect": "node workbench/tools/spec-workbench.mjs render; node workbench/tools/spec-workbench.mjs show S-###; TASKBOARD.md; workbench/landmark-tracker/",
+    "errors": "node workbench/tools/spec-workbench.mjs doctor --json; RUNBOOK.md#test-and-build; git status --porcelain",
+    "journey": "node tools/test-workbench-round-trip.mjs; node tools/test-genesis-from-decisions.mjs",
+    "measure": "node tools/audit-guardrails.mjs --path .; node tools/evaluate-workbench.mjs --path . --include-controls; evals/"
+  },
   "contextUnit": {
     "value": 200000,
     "unit": "tokens",
@@ -111,7 +119,8 @@
   "maintainerSkills": [
     "workbench-release",
     "workbench-room-checks",
-    "workbench-evaluation"
+    "workbench-evaluation",
+    "implement-spec"
   ],
   "workbenchId": "WB-4oRql1XWpf6VgsNwHUXW4Q"
 }

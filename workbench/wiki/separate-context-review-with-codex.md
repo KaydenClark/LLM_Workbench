@@ -4,9 +4,9 @@ status: active
 sensitivity: normal
 knowledge_role: curated
 provenance:
-  - Observed during S-00X TK-00O review, 2026-09-24
-  - stdin hang observed during S-00Z review, 2026-09-26
-  - Promoted from host auto-memory by the S-00V TK-00I audit, 2026-09-26
+  - Observed during the grilling skill rebuild Spec (S-00X) Grilling Skill Destination Task (TK-00O) review, 2026-09-24
+  - stdin hang observed during the grill-me skill rebuild Spec (S-00Z) review, 2026-09-26
+  - Promoted from host auto-memory by the Portable Workbench Spec (S-00V) Host Memory To Wiki Task (TK-00I) audit, 2026-09-26
   - Owner rule that Codex runs only on his request, 2026-10-05
 source_paths:
   - AGENTS.md
