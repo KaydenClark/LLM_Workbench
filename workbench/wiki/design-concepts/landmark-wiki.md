@@ -51,8 +51,9 @@ owner-confirmed.
 - **A skills reference.** The owner wants one readable Wiki entry per skill, in the
   shape of a public skills reference
   (card [DQC-001D: "How should the Wiki explain each available skill?"](../../landmark-tracker/destination-questions/DQC-001D.json), revision 6).
-  Pages named `skill-<name>.md` sit beside the router for twenty-five of the
-  twenty-seven skills in the lane.
+  Pages named `skill-<name>.md` sit beside the router for most of the skills in
+  the lane; the [Core skills catalog](../../skills/README.md) holds the current
+  bundle and its count.
 - **Feature articles.** A Wiki collection named features, not capabilities and not a
   widening of design concepts, is designed to hold one article per completed Spec. It is written
   at the Spec's closure point, which follows separate-context review and the owner's
@@ -129,3 +130,4 @@ The tools are the [Wiki validator](../../tools/wiki.mjs), the
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
 - 2026-10-04: corrected after the whole-Wiki lint of the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-006P (Wiki wording): the features collection and the move of the per-Spec articles into it are delivered, so the closed item left the Open list. No card answer was changed.
+- 2026-10-07: corrected after the whole-Wiki lint at review of the pr skill adoption Spec (S-002U), Task TK-007V: the skills-reference item no longer states a skill count, because the Core bundle grew past the twenty-seven skills it named; the catalog owns the count. No card answer was changed.
