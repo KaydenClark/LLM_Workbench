@@ -471,3 +471,109 @@ for (const operation of ['update', 'rollback']) {
     });
   }
 }
+
+const growthBaseline = '9378eada35b30199a53f6b921215950d0fa7ff38';
+function growthRoom() {
+  const dir = project();
+  const home = fixture('runtime-growth-home-');
+  const legacy = fixture('runtime-growth-source-');
+  for (const args of [
+    ['clone', '--quiet', '--shared', '--no-checkout', root, legacy],
+    ['-C', legacy, 'checkout', '--quiet', '--detach', growthBaseline],
+    ['-C', legacy, 'remote', 'set-url', 'origin', 'https://github.com/KaydenClark/LLM_Workbench.git']
+  ]) assert.equal(spawnSync('git', args, {encoding:'utf8'}).status, 0);
+  const oldInstaller = path.join(legacy, 'tools', 'workbench-tools.mjs');
+  assert.equal(run(oldInstaller, 'install', '--project', dir).status, 0);
+  const lane = path.join(dir, 'workbench', 'tools');
+  const receiptFile = path.join(lane, RECEIPT_NAME);
+  const beforeReceipt = JSON.parse(fs.readFileSync(receiptFile, 'utf8'));
+  assert.equal(Object.keys(beforeReceipt.files).length, 11);
+  beforeReceipt.backups = [{path:fs.mkdtempSync(path.join(home,'prior-backup-')),files:[]}];
+  fs.writeFileSync(receiptFile, JSON.stringify(beforeReceipt));
+  const originals = Object.keys(beforeReceipt.files).sort();
+  const introduced = RUNTIME_TOOLS.filter(name => !originals.includes(name)).sort();
+  assert.equal(introduced.length, 18);
+  return {dir,home,legacy,oldInstaller,lane,receiptFile,beforeReceipt,originals,introduced,
+    cleanup(){for(const p of [dir,home,legacy]) fs.rmSync(p,{recursive:true,force:true});}};
+}
+function laneBytes(lane) {
+  return fs.readdirSync(lane).sort().map(name => [name, hash(fs.readFileSync(path.join(lane,name))), fs.statSync(path.join(lane,name)).mode & 0o777]);
+}
+function grow(room) {
+  const result=run(installer,'update','--project',room.dir,'--home',room.home,'--explicit-update');
+  assert.equal(result.status,0,result.stdout);
+  const receipt=JSON.parse(fs.readFileSync(room.receiptFile,'utf8'));
+  assert.equal(Object.keys(receipt.files).length,29);
+  assert.equal(receipt.backups.at(-1).files.length,9);
+  return {backup:result.report.backup,receipt};
+}
+function assertRestoredGeneration(room) {
+  assert.deepEqual(fs.readdirSync(room.lane).filter(name=>name!==RECEIPT_NAME).sort(),room.originals);
+  for(const name of room.originals) assert.equal(hash(fs.readFileSync(path.join(room.lane,name))),room.beforeReceipt.files[name]);
+  const receipt=JSON.parse(fs.readFileSync(room.receiptFile,'utf8'));
+  assert.deepEqual(receipt.files,room.beforeReceipt.files);
+  assert.deepEqual(receipt.backups,room.beforeReceipt.backups);
+  assert.equal(run(room.oldInstaller,'verify','--project',room.dir).report.status,'valid','restored bytes pass their historical native controller');
+  const current=run(installer,'verify','--project',room.dir);
+  assert.equal(current.report.status,'invalid','current authoritative coverage is not weakened for older generation');
+  assert.deepEqual(current.report.error.unaccounted.sort(),room.introduced);
+}
+test('growth rollback records original absence and restores the historical eleven-file generation',()=>{
+  const room=growthRoom();
+  try {
+    const {backup,receipt}=grow(room);
+    const entry=receipt.backups.at(-1);
+    assert.deepEqual(entry.absent.sort(),room.introduced);
+    assert.deepEqual(Object.keys(entry.hashes).sort(),entry.files.slice().sort());
+    assert.equal(run(installer,'rollback','--project',room.dir,'--backup',backup).report.status,'rolled-back');
+    assertRestoredGeneration(room);
+  } finally {room.cleanup();}
+});
+test('growth rollback recovers the recorded legacy nine-backed-up eleven-to-twenty-nine shape',()=>{
+  const room=growthRoom();
+  try {
+    const {backup,receipt}=grow(room);
+    const entry=receipt.backups.at(-1);delete entry.absent;delete entry.hashes;
+    fs.writeFileSync(room.receiptFile,JSON.stringify(receipt));
+    assert.equal(run(installer,'rollback','--project',room.dir,'--backup',backup).report.status,'rolled-back');
+    assertRestoredGeneration(room);
+  } finally {room.cleanup();}
+});
+for(const scenario of ['unrecorded','modified-introduced','modified-restored','corrupt-backup','unsafe-backup','inconsistent-absence','missing-unchanged']) {
+  test(`growth rollback refuses ${scenario} before any lane writes`,()=>{
+    const room=growthRoom();
+    try {
+      let {backup,receipt}=grow(room);const entry=receipt.backups.at(-1);
+      if(scenario==='unrecorded') {
+        const copy=fs.mkdtempSync(path.join(room.home,'unrecorded-'));
+        for(const name of fs.readdirSync(backup)) fs.copyFileSync(path.join(backup,name),path.join(copy,name));
+        backup=copy;
+      } else if(scenario==='modified-introduced') fs.appendFileSync(path.join(room.lane,room.introduced[0]),'\n// keep this local change\n');
+      else if(scenario==='modified-restored') fs.appendFileSync(path.join(room.lane,entry.files[0]),'\n// keep this local change\n');
+      else if(scenario==='corrupt-backup') fs.appendFileSync(path.join(backup,entry.files[0]),'\n// changed saved bytes\n');
+      else if(scenario==='unsafe-backup') {
+        const outside=path.join(room.home,'outside.txt');fs.writeFileSync(outside,'keep external bytes');
+        fs.unlinkSync(path.join(backup,entry.files[0]));fs.symlinkSync(outside,path.join(backup,entry.files[0]));
+      } else if(scenario==='inconsistent-absence') {
+        entry.absent=[room.originals[0]];fs.writeFileSync(room.receiptFile,JSON.stringify(receipt));
+      } else fs.unlinkSync(path.join(room.lane,room.originals.find(name=>!entry.files.includes(name))));
+      const before=laneBytes(room.lane);
+      const result=run(installer,'rollback','--project',room.dir,'--backup',backup);
+      assert.equal(result.report.status,'blocked',result.stdout);
+      assert.deepEqual(laneBytes(room.lane),before,'all files and receipt stay unchanged on refusal');
+    } finally {room.cleanup();}
+  });
+}
+test('growth rollback restores an originally present unreceipted managed name instead of deleting it',()=>{
+  const room=growthRoom();
+  try {
+    const name=room.introduced[0];const bytes='// original unreceipted bytes\n';
+    fs.writeFileSync(path.join(room.lane,name),bytes);
+    const grown=run(installer,'update','--project',room.dir,'--home',room.home,'--explicit-update');
+    assert.equal(grown.status,0,grown.stdout);
+    const result=run(installer,'rollback','--project',room.dir,'--backup',grown.report.backup);
+    assert.equal(result.report.status,'rolled-back',result.stdout);
+    assert.equal(fs.readFileSync(path.join(room.lane,name),'utf8'),bytes);
+    assert.deepEqual(fs.readdirSync(room.lane).filter(n=>n!==RECEIPT_NAME).sort(),[...room.originals,name].sort());
+  } finally {room.cleanup();}
+});
