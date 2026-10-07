@@ -162,6 +162,10 @@ not promises about the baseline when Tasks are cut:
   board." This folder is the durable owner of discussion.
 - **No dragging.** The owner, 2026-10-06: "No dragging. I agree." Cards are
   answered, not moved between columns.
+- **A card opens as a centered window.** The owner, 2026-10-06: "I would like
+  to be able to click into a card for more details though. instead of
+  expanding, it goes to the center of the screen and is windowed." The card
+  inspector is a window centered over the board, not an in-place expansion.
 - **The board stores only its comments.** The owner, 2026-10-06, confirming
   the recommendation as written ("your recommendation is exactly what I was
   thinking"): the board keeps only one store of its own, the comment folder.
@@ -267,3 +271,4 @@ with verified capability and limits. No general documentation migration is in sc
 | 2026-10-02 | Planning validation | Render succeeded; doctor had no blocking findings; whole-Wiki validation returned no findings; diff whitespace check passed. Pre/post self-drift retained the same seven findings (one stale claim, five historical seed limitations, one provenance limitation), cleanUpdate=false. Manual read-back confirmed planned state, explicit v4 exclusion, no Tasks and unchanged runtime/templates/release owner. Existing unrelated drift is not repaired or claimed clean. |
 | 2026-10-04 | Owner answer; remapped from the Grill Board | Owner, 2026-10-04: "No the shared board is the grilling board. that is good to know that there was a spec for that." and "Hold on, so that shared board spec is what the grilling board is supposed to turn into". `owner:shared-board-activation` cleared; v4 exclusion and future-intent-only wording removed; release unassigned. Grill Board read at 46ad9789 (tool, README, items.json: 180 items) and `node tools/test-grill-board.mjs` 16/16; Desired Behavior mapped to partly delivered or not yet. Status stays planned: no Task is cut and the Grill Board was built outside a claimed Task. Grill Board item GB-0017 withdrawn as answered here. Map only; no code. |
 | 2026-10-06 | Owner answers on hosting, comments, drag and storage | Asked in chat while choosing a Spec to unblock with grilling; each answer read back as pending and confirmed by the owner the same day. Recorded under Decisions And Contracts in his words: local and small hosting, one comment or update-request file each in a folder under the Grill Board, no dragging, and the board reads DQCs, the Taskboard and decision records, shows the Tracker, saves answers to a notepad and stores only its comments. Map only; no Task is cut and no code changed. |
+| 2026-10-06 | Owner answer on the card inspector | Read back as pending and confirmed by the owner the same day ("readback 3 confirmed"): clicking a card opens it as a window centered over the board, not expanded in place. Recorded under Decisions And Contracts in his words. Map only; no Task is cut and no code changed. |
