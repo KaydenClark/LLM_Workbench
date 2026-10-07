@@ -423,7 +423,9 @@ function claimInTree(rootDir, id, options, remoteClaims) {
     const refusal = landmarkRefusal(spec);
     if (refusal) throw new Error(`claim refused: ${refusal}`);
   } else if (spec.status !== 'active' && spec.lifecycleFolder !== 'retired') throw new Error(`${id} is ${spec.status}, not active`);
-  const taskId = options?.task === undefined ? null : resolveTaskId(spec, requireValue(options.task, '--task requires a Task ID'));
+  const taskId = Object.hasOwn(options ?? {}, 'task')
+    ? resolveTaskId(spec, requireValue(options.task, '--task requires a Task ID'))
+    : null;
   const session = capabilitySession(path.resolve(rootDir), options);
   const { candidate, capabilityBlocked, remoteClaimed } = selectWork(specs, { specId: id, taskId, session, remoteClaims });
   const slices = executionSlices(spec);
@@ -511,7 +513,9 @@ export function closeTask(rootDir, id, options) {
     .filter((record) => /^\*\*Close pending:\*\*/m.test(record.content))
     .map((record) => ({ id: record.id, record }));
   if (pending.length > 1) throw new Error(`${id} has multiple pending closes; reconcile them before closing another Task`);
-  const taskId = options?.task === undefined ? null : resolveTaskId(spec, requireValue(options.task, '--task requires a Task ID'));
+  const taskId = Object.hasOwn(options ?? {}, 'task')
+    ? resolveTaskId(spec, requireValue(options.task, '--task requires a Task ID'))
+    : null;
   if (pending.length === 1) {
     if (taskId && pending[0].id !== taskId) throw new Error(`${id}/${pending[0].id} has a pending close; recover it before closing ${taskId}`);
     return finishRecordClose(root, spec, pending[0], slices);

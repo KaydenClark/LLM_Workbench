@@ -21,3 +21,27 @@ test('unknown or blocked targeted claim never falls through to another ready Tas
 test('close explicitly completes the second claim and keeps the first untouched',()=>{const f=fixture(['in-progress','in-progress']);try{const before=f.bytes();const r=f.run('close','S-100','--task','TK-00B','--proof','second behavior verified','--docs','checked','--remaining-gap','none','--git-state-reason','Local test fixture has no publication remote');assert.equal(r.status,0,r.stderr);assert.equal(f.bytes()[1],before[1]);assert.match(f.bytes()[2],/Status:\*\* done/);assert.match(f.bytes()[2],/second behavior verified/);}finally{f.clean();}});
 test('unknown or unclaimed targeted close never closes another active Task',()=>{for(const target of ['TK-00Z','TK-00B']){const f=fixture(['in-progress','ready']);try{const before=f.bytes();const r=f.run('close','S-100','--task',target,'--proof','verified','--docs','checked','--remaining-gap','none','--git-state-reason','Local test fixture has no publication remote');assert.notEqual(r.status,0);assert.deepEqual(f.bytes(),before);}finally{f.clean();}}});
 test('omitting task preserves first-eligible claim and first-active close',()=>{const f=fixture();try{let r=f.run('claim','S-100','--agent','worker','--local');assert.equal(r.status,0,r.stderr);assert.match(f.bytes()[1],/Status:\*\* in-progress/);r=f.run('close','S-100','--proof','first behavior verified','--docs','checked','--remaining-gap','none','--git-state-reason','Local test fixture has no publication remote');assert.equal(r.status,0,r.stderr);assert.match(f.bytes()[1],/Status:\*\* done/);assert.match(f.bytes()[2],/Status:\*\* ready/);}finally{f.clean();}});
+
+for (const command of ['claim', 'close']) {
+  test(`${command} refuses an explicitly missing or empty Task ID before mutation`, () => {
+    for (const value of [undefined, '', '   ']) {
+      const f = fixture(command === 'close' ? ['in-progress', 'in-progress'] : ['ready', 'ready']);
+      try {
+        const before = f.bytes();
+        const options = command === 'claim'
+          ? ['--agent', 'worker', '--local']
+          : ['--proof', 'verified', '--docs', 'checked', '--remaining-gap', 'none',
+             '--git-state-reason', 'Local test fixture has no publication remote'];
+        // Keep --task terminal to exercise the parser's undefined-value case.
+        const args = [cli, command, 'S-100', ...options, '--path', f.root, '--json', '--task'];
+        if (value !== undefined) args.push(value);
+        const result = spawnSync(process.execPath, args, { encoding: 'utf8' });
+        assert.notEqual(result.status, 0, 'missing Task ID must refuse default selection');
+        assert.match(result.stderr, /--task requires a Task ID/);
+        assert.deepEqual(f.bytes(), before, 'refusal must preserve Spec and Task records');
+      } finally {
+        f.clean();
+      }
+    }
+  });
+}
