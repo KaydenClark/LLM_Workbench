@@ -827,7 +827,11 @@ export function seedWiki(project, options, files = wikiContractFiles, articles =
 // room was generated from (generic content the Template glossary,
 // architecture and Wiki now carry; a Template placeholder matches any filled
 // value), or when its normalized text is present in the room's own
-// `GLOSSARY.md`, `ARCHITECTURE.md` or Wiki. Normalization is the landing
+// `GLOSSARY.md`, `ARCHITECTURE.md` or Wiki. S-004O TK-009M: a generic
+// Template line counts only while the room's vocabulary homes carry the
+// Template content (`genericHomesMissing`), and a `| **Term** | Definition |
+// Distinction |` row also lands in Matt's glossary format (`termRowLanded`).
+// Normalization is the landing
 // check's one rule (`tools/check-carrier-landing.mjs` normalizeText): trim and
 // collapse whitespace runs to one space. Otherwise the Lexicon is kept and
 // the unlanded lines are named in an attention finding, so nothing is lost. A
@@ -892,23 +896,81 @@ function templateLexiconMatchers(templates, manifest) {
 }
 
 function roomLandingText(project, wikiLane) {
-  const parts = [];
-  for (const name of vocabularyControls) {
-    const file = path.join(project, name);
+  const readFile = (file) => {
     const entry = lstatOrNull(file);
-    if (entry?.isFile() && !entry.isSymbolicLink()) parts.push(fs.readFileSync(file, 'utf8'));
-  }
+    return entry?.isFile() && !entry.isSymbolicLink() ? fs.readFileSync(file, 'utf8') : null;
+  };
+  const controls = vocabularyControls.map(name => readFile(path.join(project, name))).filter(text => text !== null);
+  const wiki = [];
   const walk = (directory) => {
     const entry = lstatOrNull(directory);
     if (!entry?.isDirectory() || entry.isSymbolicLink()) return;
     for (const child of fs.readdirSync(directory, { withFileTypes: true })) {
       const full = path.join(directory, child.name);
       if (child.isDirectory()) walk(full);
-      else if (child.isFile() && child.name.endsWith('.md')) parts.push(fs.readFileSync(full, 'utf8'));
+      else if (child.isFile() && child.name.endsWith('.md')) wiki.push(fs.readFileSync(full, 'utf8'));
     }
   };
   walk(path.join(project, wikiLane));
-  return parts.map(normalizeLandingText).join('\n');
+  return {
+    all: [...controls, ...wiki].map(normalizeLandingText).join('\n'),
+    glossary: readFile(path.join(project, 'GLOSSARY.md')) ?? '',
+    wiki: wiki.join('\n')
+  };
+}
+
+// S-004O TK-009M: a generic Template Lexicon line has landed only where the
+// room's vocabulary homes carry the Template content: `GLOSSARY.md`,
+// `ARCHITECTURE.md` and the Template Wiki vocabulary articles each hold every
+// Template line that carries no placeholder, as they do when the update
+// installed them from the Template in this run. A home the room wrote itself
+// (a glossary started before the update, say) is named here, and the generic
+// lines must then land in the room like its own.
+function genericHomesMissing(project, templates, wikiLane) {
+  const homes = [...vocabularyControls.map(name => [name, name]), ...wikiVocabularyFiles.map(name => [`wiki/${name}`, `${wikiLane}/${name}`])];
+  const missing = [];
+  for (const [source, destination] of homes) {
+    const template = path.join(templates, source);
+    if (!lstatOrNull(template)?.isFile()) continue;
+    const required = fs.readFileSync(template, 'utf8').split(/\r?\n/).map(normalizeLandingText)
+      .filter(line => !landingExempt(line) && !templatePlaceholders.some(token => line.includes(token)));
+    const file = path.join(project, destination);
+    const entry = lstatOrNull(file);
+    const room = entry?.isFile() && !entry.isSymbolicLink() ? new Set(fs.readFileSync(file, 'utf8').split(/\r?\n/).map(normalizeLandingText)) : null;
+    if (!room || required.some(line => !room.has(line))) missing.push(destination);
+  }
+  return missing;
+}
+
+// Markdown emphasis, code spans and links reduced to their text, so a
+// definition reads the same in a table cell, the glossary and the Wiki.
+function stripMarkup(text) {
+  return normalizeLandingText(String(text)
+    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/\*\*|__|`/g, '')
+    .replace(/(^|[^\w*])\*([^*\s][^*]*?)\*(?=[^\w*]|$)/g, '$1$2')
+    .replace(/(^|[^\w])_([^_\s][^_]*?)_(?=[^\w]|$)/g, '$1$2'));
+}
+
+// S-004O TK-009M: a Lexicon term row `| **Term** | Definition | Distinction |`
+// lands in Matt's glossary format when `GLOSSARY.md` has a `**Term**:` entry,
+// the Definition (markup stripped) is in the glossary or the Wiki, and any
+// Distinction is in the Wiki.
+function termRowLanded(normalized, room) {
+  const row = normalized.match(/^\|(.*)\|$/);
+  if (!row) return false;
+  const cells = row[1].split(/(?<!\\)\|/).map(cell => cell.trim());
+  if (cells.length < 2 || cells.length > 3) return false;
+  const term = cells[0].match(/^\*\*([^*]+)\*\*$/)?.[1];
+  if (!term) return false;
+  const entry = `**${normalizeLandingText(term)}**:`.toLowerCase();
+  if (!room.glossary.split(/\r?\n/).some(line => normalizeLandingText(line).toLowerCase() === entry)) return false;
+  const definition = stripMarkup(cells[1]);
+  const distinction = stripMarkup(cells[2] ?? '');
+  const glossary = stripMarkup(room.glossary);
+  const wiki = stripMarkup(room.wiki);
+  if (!definition || !(glossary.includes(definition) || wiki.includes(definition))) return false;
+  return !distinction || wiki.includes(distinction);
 }
 
 export function lexiconLanding(project, options = {}) {
@@ -916,24 +978,32 @@ export function lexiconLanding(project, options = {}) {
   const manifest = options.manifest ?? readManifestFile(project).manifest;
   const lexicon = fs.readFileSync(path.join(project, RETIRED_LEXICON), 'utf8');
   const generic = templates ? templateLexiconMatchers(templates, manifest) : { exact: new Set(), patterns: [], sources: 0 };
-  const room = roomLandingText(project, manifest?.lanes?.wiki ?? lanes.wiki);
+  const wikiLane = manifest?.lanes?.wiki ?? lanes.wiki;
+  const room = roomLandingText(project, wikiLane);
+  const missingHomes = templates ? genericHomesMissing(project, templates, wikiLane) : [];
   const unlanded = [];
   lexicon.split(/\r?\n/).forEach((line, index) => {
     const normalized = normalizeLandingText(line);
     if (landingExempt(normalized)) return;
-    if (generic.exact.has(normalized) || generic.patterns.some(pattern => pattern.test(normalized))) return;
-    if (room.includes(normalized)) return;
-    unlanded.push({ line: index + 1, text: normalized });
+    // Identity stamps (name, version, review date, status) are not entries.
+    if (generic.patterns.some(pattern => pattern.test(normalized))) return;
+    const isGeneric = generic.exact.has(normalized);
+    if (isGeneric && !missingHomes.length) return;
+    if (room.all.includes(normalized) || termRowLanded(normalized, room)) return;
+    unlanded.push(isGeneric ? { line: index + 1, text: normalized, generic: true } : { line: index + 1, text: normalized });
   });
-  return { unlanded, templateSources: generic.sources };
+  return { unlanded, templateSources: generic.sources, genericHomesMissing: missingHomes };
 }
 
-function lexiconFinding(unlanded) {
+function lexiconFinding(unlanded, missingHomes = []) {
   const named = unlanded.slice(0, 5).map(item => `line ${item.line}: ${item.text}`).join('; ');
   const more = unlanded.length > 5 ? `; and ${unlanded.length - 5} more` : '';
+  const homes = missingHomes.length
+    ? `; ${missingHomes.join(', ')} ${missingHomes.length === 1 ? 'does' : 'do'} not carry the Template content, so the Template Lexicon's generic lines count only where the room holds them: restore the Template content there or land each generic entry`
+    : '';
   return {
     code: 'lexicon-unlanded', severity: 'attention', blocks: 'none',
-    message: `${RETIRED_LEXICON} is kept: ${unlanded.length} line(s) have not landed in GLOSSARY.md, ARCHITECTURE.md or the Wiki (${named}${more}); move each into its home, confirmed by grilling, then rerun the update to retire the Lexicon`,
+    message: `${RETIRED_LEXICON} is kept: ${unlanded.length} line(s) have not landed in GLOSSARY.md, ARCHITECTURE.md or the Wiki (${named}${more})${homes}; move each into its home, confirmed by grilling (a term row lands as a \`**Term**:\` glossary entry with its definition, its distinction in a Wiki article), remove each landed row from ${RETIRED_LEXICON}, then rerun the update to retire the Lexicon`,
     lines: unlanded
   };
 }
@@ -965,8 +1035,8 @@ export function retireLexicon(project, options = {}) {
   }
   const seeded = seedWiki(project, { '--version': values['[HARNESS_VERSION]'], '--date': values['[YYYY-MM-DD]'], '--name': values['[PROJECT_NAME]'] }, [], wikiVocabularyFiles);
   const articles = seeded.articles ?? [];
-  const { unlanded } = lexiconLanding(project, { templates, manifest });
-  if (unlanded.length) return { status: 'kept', installed, articles, unlanded, finding: lexiconFinding(unlanded) };
+  const { unlanded, genericHomesMissing: missingHomes } = lexiconLanding(project, { templates, manifest });
+  if (unlanded.length) return { status: 'kept', installed, articles, unlanded, genericHomesMissing: missingHomes, finding: lexiconFinding(unlanded, missingHomes) };
   const backupDirectory = `${collections.recovery}/lexicon-retirement`;
   let backup = `${backupDirectory}/${RETIRED_LEXICON}`;
   for (let index = 1; lstatOrNull(path.join(project, backup)); index += 1) backup = `${backupDirectory}/LEXICON.${index}.md`;

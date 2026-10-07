@@ -597,6 +597,9 @@ test('TK-009G: Lexicon landing reads the Template Lexicon from release history o
     fs.rmSync(path.join(release, 'templates', 'LEXICON.md'));
     git('add', '-A'); git('commit', '-qm', 'Retire the Template Lexicon');
     write(project, 'LEXICON.md', '# Greeter - Lexicon\n\n> Generated from LLM Workbench v9.9.9.\n\nThis is the canonical lookup table for shared terms.\n\n| **Greeting** | The line printed. |\n');
+    // The room's glossary carries the Template content (TK-009M), so the
+    // generic line counts as landed.
+    write(project, 'GLOSSARY.md', '# Greeter\n');
     const manifest = { lanes: { wiki: 'workbench/wiki' }, provenance: { lifecycle: 'genesis' } };
     const landing = layoutRuntime.lexiconLanding(project, { templates: path.join(release, 'templates'), manifest });
     assert.deepEqual(landing.unlanded.map((item) => item.text), ['| **Greeting** | The line printed. |'], 'only the room\'s own row is unlanded; the generic lines are read from the deleted Template Lexicon');
