@@ -3,12 +3,13 @@
 **Task ID:** TK-006X
 **Spec ID:** S-002T
 **Slice:** Install and exercise the confirmed implement-spec operation
-**Status:** in-progress
+**Status:** done
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: The installed entry preserves the confirmed nine-step wording and is callable in this Workbench with reconciled boundaries and named proof.
 **Planned verification:** Red missing-source catalog check; green catalog/discovery; Wiki validation/lint; full RUNBOOK suite; self-drift and guardrail pre/post; fresh-context scenario; immutable review and remote containment.
 **Claimed by:** codex-s002t
+**Proof:** 53/53 full Runbook PASS on4bd71da0; source/record review PASS at e8de1007; PR406 merged into integration8e4a2cce; exact candidate ancestry verified against fetched origin/integration; selector7/Wiki25 and observed scenario24/focused8.
 
 ## Scope and authority
 
@@ -24,3 +25,4 @@ Source and adapters resolve to the confirmed operation; operating boundaries agr
 |---|---|---|---|---|---|---|---|---|
 | 1 | codex/s002t-implement-spec | 7fedde0570b90202402bddac32af89c79a4f6b9c | ahead 0 behind 0 | 15 | RED: catalog failed ENOENT for declared implement-spec source. GREEN: catalog, skill-inspection and runbook-index checks passed; wiki validate [] and diff check clean. Both adapters resolve source SHA-256 9753f6671a8907d6fe8ff29d2b7de912fcc334cd890b87aed16051528ea5c9ea. | Source, declaration, role/procedure reconciliation and Wiki updated. | Full suite, fresh-context exercise, review, closure and integration remain. Self-drift pre blocked/cleanUpdate false on pre-existing findings. | 42daa408502748f1a3abb9f26486fd0ce5967655b4ab0cab60ff4b2d741e4422 |
 | 2 | codex/s002t-implement-spec | 4bd71da0c614bc8a4b710de055830d5e9e9c332d | ahead 0 behind 0 | 1 | Full RUNBOOK 53/53 PASS at 4bd71da0c614bc8a4b710de055830d5e9e9c332d; selector 7/7; Wiki 25/25; independent source review PASS; local scenario full24/focused8. Interrupted and failed earlier runs preserved. | Installed entry; manifest/catalog; root and generic controls; dispatcher/spec-manager/implement; Wiki router, role/synthesis/lifecycle owners and Template2 draft; source and reading evidence. | Reviewed integration containment, native Task closure and assembled-record review remain. Pre-existing drift and scenario limits persist; no global clean-update or owner-QA claim. | 0c1264b60611971c9b9953910b78613784c473cd7fa9ce9effd3d7f061fa5c6f |
+| 3 | codex/s002t-implement-spec | e8de1007d5823f330dfd5616a2e2fb22edf57231 | ahead 0 behind 0 | 0 | 53/53 full Runbook PASS on4bd71da0; source/record review PASS at e8de1007; PR406 merged into integration8e4a2cce; exact candidate ancestry verified against fetched origin/integration; selector7/Wiki25 and observed scenario24/focused8. | Implemented source/discovery; current manifest/catalog/procedures and role/generic controls; Wiki router, role/synthesis/lifecycle owners, Template2 article and durable evidence. | Spec owner delivered-content approval and main verification remain. Unexercised full production orchestration and pre-existing global drift stay visible; no clean-update or owner-QA claim. | 35ee6f39fa9bb2e838fa2b265bf92116e7e1a3d50f706eb2b67ec088dcc5e133 |
