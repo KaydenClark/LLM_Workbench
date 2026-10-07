@@ -23,6 +23,8 @@ Contract change.
 
 | Operation | Follow when | Pointer |
 |---|---|---|
+| Write agent instructions | You create or edit skills, steering files or references agents reach through pointers. | [writing-for-agents](workbench/skills/writing-for-agents/SKILL.md) |
+| Retrospect on a session | The owner explicitly requests a retrospective on a named session or the current one. | [retro](workbench/skills/retro/SKILL.md) |
 | Enter a session | Every session start or resume: check root, branch and dirty state, run doctor and load the assigned Spec. | [Ordinary Entry](#ordinary-entry) |
 | Find the owner of a question | You need the file that owns a permission, meaning, work state, proof or procedure. | [Finding The Owner Of A Question](#finding-the-owner-of-a-question) |
 | Route a truth to its owner | Work changed a durable truth and its owner must be updated, or nothing changed and that must be recorded. | [to-docs](workbench/skills/to-docs/SKILL.md#to-docs) |

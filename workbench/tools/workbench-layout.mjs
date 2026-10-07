@@ -63,7 +63,7 @@ export const coordinationSkills = ['director', 'dispatcher', 'spec-planner', 'sp
 // coordination entries, so every coordination and stance slice stays exact.
 // S-002U TK-007V adds `pr`, the owner-required PR body-authoring entry, after
 // `improve-harness` and ahead of the coordination entries.
-export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime', 'improve-harness', 'domain-modeling', 'pr', ...coordinationSkills, ...stanceSkills];
+export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime', 'improve-harness', 'domain-modeling', 'pr', 'writing-for-agents', 'retro', ...coordinationSkills, ...stanceSkills];
 // The prior28 cohort: rooms built from integration before `pr` joined the
 // required Core carry this exact lane policy under v3.2.1. Keep it readable so
 // layout migration reaches the explicit skills update instead of rejecting its
@@ -91,7 +91,31 @@ const prior29DomainModelingCoreSkills = [
   'improve-harness', 'domain-modeling', 'director', 'dispatcher', 'spec-planner', 'spec-manager',
   'builder', 'auditor', 'reviewer', 'reconciler'
 ];
-const v321TransitionCoreSkills = [prior28CoreSkills, prior29PrCoreSkills, prior29DomainModelingCoreSkills];
+const priorWritingRetroCoreSkills = [
+  'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
+  'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'update-harness',
+  'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me',
+  'workbench-runtime', 'improve-harness', 'writing-for-agents', 'retro', 'director', 'dispatcher',
+  'spec-planner', 'spec-manager', 'builder', 'auditor', 'reviewer', 'reconciler'
+];
+// Frozen manifest policy at c80cb282.
+const priorPrDomainCoreSkills = [
+  'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
+  'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'update-harness',
+  'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me',
+  'workbench-runtime', 'improve-harness', 'domain-modeling', 'pr', 'director', 'dispatcher',
+  'spec-planner', 'spec-manager', 'builder', 'auditor', 'reviewer', 'reconciler'
+];
+// Frozen manifest policy at b1adee9d.
+const priorPrWritingRetroCoreSkills = [
+  'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
+  'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'update-harness',
+  'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me',
+  'workbench-runtime', 'improve-harness', 'pr', 'writing-for-agents', 'retro', 'director',
+  'dispatcher', 'spec-planner', 'spec-manager', 'builder', 'auditor', 'reviewer',
+  'reconciler'
+];
+const v321TransitionCoreSkills = [prior28CoreSkills, prior29PrCoreSkills, prior29DomainModelingCoreSkills, priorWritingRetroCoreSkills, priorPrDomainCoreSkills, priorPrWritingRetroCoreSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];

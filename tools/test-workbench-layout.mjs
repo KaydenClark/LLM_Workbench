@@ -277,7 +277,7 @@ test('a six-lane schema 2 manifest gains the skills lane through migrate, after 
     // entry S-004L TK-008L added, the `domain-modeling` entry S-004J TK-00JA
     // added, or the `pr` entry S-002U TK-007V added. The provider-home shape
     // validates only with a stamped row.
-    manifest.skillPolicy = { ...manifest.skillPolicy, required: manifest.skillPolicy.required.filter((name) => !['grill-me', 'workbench-runtime', 'improve-harness', 'domain-modeling', 'pr'].includes(name) && !coordinationSkills.includes(name)), normalSetup: 'presence-only', updates: 'explicit-only' };
+    manifest.skillPolicy = { ...manifest.skillPolicy, required: manifest.skillPolicy.required.filter((name) => !['grill-me', 'workbench-runtime', 'improve-harness', 'domain-modeling', 'pr', 'writing-for-agents', 'retro'].includes(name) && !coordinationSkills.includes(name)), normalSetup: 'presence-only', updates: 'explicit-only' };
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
     // The undeclared directory may already exist, empty (init's .gitkeep) or
     // holding a room-local skill; migrate must accept both, not refuse them.
@@ -1158,7 +1158,7 @@ test('each listed legacy version validates only at the policy its release declar
     // TK-007V added `pr`, so the v3.2.1 row freezes at
     // twenty-one and a room stamped v3.2.1 validates with either the frozen row
     // or the current policy the Workbench update writes before restamping.
-    const twentyOne = current.filter((name) => !['grill-me', 'workbench-runtime', 'improve-harness', 'domain-modeling', 'pr'].includes(name) && !coordinationSkills.includes(name));
+    const twentyOne = current.filter((name) => !['grill-me', 'workbench-runtime', 'improve-harness', 'domain-modeling', 'pr', 'writing-for-agents', 'retro'].includes(name) && !coordinationSkills.includes(name));
     assert.equal(twentyOne.length, 21);
     assert.equal(outcome('v3.2.1', twentyOne), 'valid');
     assert.equal(outcome('v3.2.1', current), 'valid');
@@ -2834,3 +2834,35 @@ for (const addedSkill of ['pr', 'domain-modeling']) {
     } finally { fs.rmSync(project, { recursive: true, force: true }); }
   });
 }
+
+// Exact policies from the independently delivered PR package (6101c237) and
+// paired writing/retro source (1c44487a), before their combined Core delivery.
+test('the exact historical v3.2.1 transition cohorts validate and migrate unchanged', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    const prior28 = [
+      'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
+      'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'update-harness',
+      'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime',
+      'improve-harness', 'director', 'dispatcher', 'spec-planner', 'spec-manager',
+      'builder', 'auditor', 'reviewer', 'reconciler'
+    ];
+    for (const additions of [['pr'], ['domain-modeling'], ['writing-for-agents', 'retro'], ['domain-modeling', 'pr'], ['pr', 'writing-for-agents', 'retro']]) {
+      const required = [...prior28.slice(0, 20), ...additions, ...prior28.slice(20)];
+      const cohort = { ...manifest, skillPolicy: { ...manifest.skillPolicy, required } };
+      fs.writeFileSync(manifestPath, JSON.stringify(cohort));
+      assert.equal(run('validate', '--project', project).report.status, 'valid',
+        `the exact ${required.length}-skill cohort remains readable before update`);
+      assert.equal(run('migrate', '--project', project, '--version', VERSION).status, 0);
+      assert.deepEqual(JSON.parse(fs.readFileSync(manifestPath, 'utf8')).skillPolicy.required, required,
+        'layout migration preserves the cohort; explicit skill update remains separate');
+      fs.writeFileSync(manifestPath, JSON.stringify({ ...cohort, skillPolicy: { ...cohort.skillPolicy, required: required.slice(0, -1) } }));
+      assert.equal(run('validate', '--project', project).report.error?.code, 'invalid-skill-policy');
+      fs.writeFileSync(manifestPath, JSON.stringify({ ...cohort, workbenchVersion: 'v9.9.9' }));
+      assert.equal(run('validate', '--project', project).report.error?.code, 'invalid-skill-policy');
+    }
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});

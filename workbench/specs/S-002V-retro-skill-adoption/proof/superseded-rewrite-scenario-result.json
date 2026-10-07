@@ -1,0 +1,17 @@
+{
+  "sourceCandidate": "8925425cdb13ec161698a5adfa99ad4126b67578",
+  "method": "Independent fresh-context agent, direct skill paths, synthetic primary fixture; output captured with checkout/temp paths redacted",
+  "inputSha256": "f2048edf68c70a9e1d70f8ad752460c49eec527ee8f6dc5d13c29c032330767a",
+  "rawOutputSha256": "7fb7395a8a3817b682c52071d731fe043fb54c9ecabae1587ac4ebe792f3df23",
+  "observed": "Three ordered proposals recognize existing skipped/unwired check, evidence limits, owners, confidence and rerun paths; no repository or fixture mutation",
+  "limits": [
+    "One synthetic request, no comparative improvement claim",
+    "Direct-path use is not native discovery or policy enforcement",
+    "Underlying cart repository and raw tool transcripts unavailable",
+    "Optional Python quick_validate unavailable: PyYAML missing; Ruby YAML name/description validation passed"
+  ],
+  "primaryFiles": [
+    "scenario-input.md",
+    "scenario-output.md"
+  ]
+}
