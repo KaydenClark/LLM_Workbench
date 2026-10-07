@@ -16,9 +16,13 @@ The blank, copyable templates live in `templates/`:
   task-selection loop, documentation ownership, and proof rules.
 - `templates/BLUEPRINT.md` - compact product map, cross-cutting architecture and
   desired integrated design and non-goals. The manifest specs lane holds the generated complete catalog.
-- `templates/LEXICON.md` - on-demand shared vocabulary: accepted project terms,
-  concise definitions, and distinctions that prevent agents and humans from
-  silently using the same word differently.
+- `templates/GLOSSARY.md` - on-demand shared vocabulary: accepted project terms
+  with concise definitions and the aliases to avoid, so agents and humans do not
+  silently use the same word differently. The Wiki vocabulary articles in
+  `templates/wiki/` explain each grouping.
+- `templates/ARCHITECTURE.md` - which artifact owns which kind of truth, the
+  routes to it and the invariants, plus the project codemap Genesis and
+  Adoption draft and grilling confirms.
 - `templates/TASKBOARD.md` - hot projection of active specs only: current slice,
   owner, blocker, latest event, and next gate.
 - `templates/SPEC.md` - concise on-demand capability work packet. Copy it to a
@@ -129,9 +133,11 @@ docs look like. Copy from `templates/`, not from the root.
 ## How To Use It
 
 1. Copy `templates/AGENTS.md`, `templates/BLUEPRINT.md`,
-   `templates/LEXICON.md`, `templates/TASKBOARD.md`, `templates/RUNBOOK.md`,
-   `templates/README.md`, and `templates/SPEC.md` into the target project; copy
-   `templates/wiki/MEMORY.project.md` in as `workbench/wiki/MEMORY.md` (the room brain);
+   `templates/GLOSSARY.md`, `templates/ARCHITECTURE.md`, `templates/TASKBOARD.md`,
+   `templates/RUNBOOK.md`, `templates/README.md`, and `templates/SPEC.md` into
+   the target project; copy
+   `templates/wiki/MEMORY.project.md` in as `workbench/wiki/MEMORY.md` (the room brain),
+   beside the Wiki vocabulary articles `workbench-layout.mjs init` installs;
    initialize `workbench/manifest.json` and create its declared `workbench/specs/` lane for bounded work
    packets and copy `workbench/tools/spec-workbench.mjs` when using the local interface.
 2. Replace bracketed placeholders with project-specific paths, commands, rules,

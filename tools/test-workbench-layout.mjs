@@ -12,13 +12,18 @@ import { coordinationSkills, coreSkills, legacyCoreSkills, validateManifest, rea
 import { genesisTemplateFiles, templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
 import * as placeholderVocabulary from '../workbench/tools/template-placeholders.mjs';
 import { COLLECTIONS, LANES, collectionRelative } from '../workbench/tools/workbench-paths.mjs';
+import * as layout from '../workbench/tools/workbench-layout.mjs';
+import { templatedControls } from './control-fidelity.mjs';
+import { scanReferences } from '../workbench/tools/spec-workbench.mjs';
+import { writeRegister } from '../workbench/tools/adr.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const runtime = path.join(root, 'workbench', 'tools');
 const tool = path.join(runtime, 'workbench-layout.mjs');
 const installer = path.join(root, 'tools', 'workbench-tools.mjs');
-const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
+// S-004O TK-009G: GLOSSARY.md and ARCHITECTURE.md replace the retired Lexicon.
+const controls = ['AGENTS.md', 'BLUEPRINT.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
 
 // S-00M TK-002: doctor reports untracked files under the root controls, the
 // ADR collection and the spec lane. These Genesis rooms are never committed, so
@@ -1419,7 +1424,8 @@ test('the template permission file grants Edit on every authorship lane the pros
   }
   assert.equal([...allow, ...ask, ...deny].some((entry) => /^Write\(/.test(entry)), false,
     'path-scoped Write rules are not the Claude Code file-permission seam');
-  assert.ok(allow.includes('Edit(./LEXICON.md)'), 'LEXICON.md is a root control agents keep current');
+  for (const control of ['GLOSSARY.md', 'ARCHITECTURE.md']) assert.ok(allow.includes(`Edit(./${control})`), `${control} is a root control agents keep current`);
+  assert.ok(!allow.includes('Edit(./LEXICON.md)'), 'the retired Lexicon is not a control a new room keeps');
   for (const tool of ['spec-workbench', 'adr', 'sessions', 'wiki', 'workbench-layout']) {
     assert.ok(allow.includes(`Bash(node workbench/tools/${tool}.mjs:*)`), `${tool}.mjs must be runnable without a prompt`);
   }
@@ -1920,19 +1926,36 @@ test('classify never reads a workbench/ symlink out of the room', () => {
   }
 });
 
+// S-004O TK-009G: a room built before the Lexicon retired holds the earlier
+// closed control set, with LEXICON.md in place of GLOSSARY.md and
+// ARCHITECTURE.md; its unstamped shape is still a Workbench installation's.
+test('TK-009G: classify still reads a pre-retirement room that holds LEXICON.md as harness-shaped', () => {
+  const room = fixture();
+  try {
+    for (const control of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md']) {
+      fs.writeFileSync(path.join(room, control), `# ${control}\n\nProject truth.\n`);
+    }
+    const result = classify(room);
+    assert.equal(result.status, 0, `${result.stdout}${result.stderr}`);
+    assert.equal(result.report.verdict, 'unclassifiable', 'the earlier control set is harness-shaped, so an unstamped room is not guessed');
+    assert.ok(result.report.reasons.some((reason) => /all 7 root controls/.test(reason)), 'the reason names the earlier closed set');
+    assert.deepEqual(result.report.evidence.legacyControlShapes?.controlsMissing ?? [], [], 'no control of the earlier set is missing');
+  } finally { fs.rmSync(room, { recursive: true, force: true }); }
+});
+
 test('classify treats an unreadable root control as a room condition, not a crash', () => {
   if (typeof process.getuid === 'function' && process.getuid() === 0) return;
   const stamped = fixture();
   const working = fixture();
   try {
     legacyRoom(stamped, { stamp: 'v3.0.0' });
-    fs.chmodSync(path.join(stamped, 'LEXICON.md'), 0o000);
+    fs.chmodSync(path.join(stamped, 'GLOSSARY.md'), 0o000);
     const stampedBefore = roomSnapshot(stamped);
     const stampedResult = classify(stamped);
     assert.equal(stampedResult.status, 0, `${stampedResult.stdout}${stampedResult.stderr}`);
     assert.equal(stampedResult.report.status, 'classified', 'an unreadable control is a room condition, not an unreadable invocation');
-    assert.equal(stampedResult.report.verdict, 'upgrade', 'the six readable controls still carry the stamp');
-    assert.deepEqual(stampedResult.report.evidence.versionStamp.unreadable, ['LEXICON.md'],
+    assert.equal(stampedResult.report.verdict, 'upgrade', 'the seven readable controls still carry the stamp');
+    assert.deepEqual(stampedResult.report.evidence.versionStamp.unreadable, ['GLOSSARY.md'],
       'the control that could not be read must be reported as evidence');
     assert.deepEqual(roomSnapshot(stamped), stampedBefore, 'classify must write nothing into a room with an unreadable control');
 
@@ -1947,7 +1970,7 @@ test('classify treats an unreadable root control as a room condition, not a cras
       'a control that cannot be read leaves the stamp evidence incomplete, so the room cannot be classified');
     assert.deepEqual(roomSnapshot(working), workingBefore, 'classify must write nothing into a working room with an unreadable control');
   } finally {
-    for (const [project, control] of [[stamped, 'LEXICON.md'], [working, 'README.md']]) {
+    for (const [project, control] of [[stamped, 'GLOSSARY.md'], [working, 'README.md']]) {
       try { fs.chmodSync(path.join(project, control), 0o644); } catch { /* already gone */ }
       fs.rmSync(project, { recursive: true, force: true });
     }
@@ -2851,6 +2874,82 @@ test('TK-009L: the Template Wiki vocabulary articles fill cleanly and every link
       if (relative === 'GLOSSARY.md' && anchor) assert.ok(glossaryAnchors.has(anchor), `${home} links an existing glossary grouping #${anchor}`);
     }
   }
+});
+
+// S-004O TK-009G: a room's installed control set carries GLOSSARY.md and
+// ARCHITECTURE.md from the Template in place of LEXICON.md, and the twelve
+// Template Wiki vocabulary articles install beside the router with them.
+// Nothing a new room receives depends on the Lexicon.
+test('TK-009G: the installed control set is GLOSSARY.md and ARCHITECTURE.md in place of the Lexicon', () => {
+  assert.deepEqual(layout.controls, controls, 'the runtime control set');
+  assert.deepEqual(templatedControls, controls.filter((name) => name !== 'CLAUDE.md'), 'control fidelity compares the same templated controls');
+  for (const name of ['GLOSSARY.md', 'ARCHITECTURE.md']) assert.ok(genesisTemplateFiles.includes(name), `${name} is a Genesis template file`);
+  assert.ok(!genesisTemplateFiles.includes('LEXICON.md'), 'the Lexicon is no longer a Genesis template file');
+  const articles = fs.readdirSync(path.join(root, 'templates', 'wiki')).filter((name) => /^vocabulary-.+\.md$|^ai-coding-reference\.md$/.test(name)).sort();
+  assert.equal(articles.length, 12, 'the Template Wiki ships twelve vocabulary articles');
+  assert.deepEqual([...(layout.wikiVocabularyFiles ?? [])].sort(), articles, 'the runtime installs every Template vocabulary article');
+  for (const protocol of ['GENESIS.md', 'ADOPTION.md']) {
+    const content = fs.readFileSync(path.join(root, 'templates', protocol), 'utf8');
+    // A new room needs no Lexicon; Adoption names one only as an earlier
+    // Workbench's control that its migration retires once the lines land.
+    for (const paragraph of content.split(/\n\s*\n/).filter((text) => /LEXICON\.md/.test(text))) {
+      assert.ok(protocol === 'ADOPTION.md' && /retires the Lexicon/.test(paragraph) && /lexicon-unlanded/.test(paragraph), `${protocol} names LEXICON.md only as the retired control: ${paragraph}`);
+    }
+    for (const name of ['GLOSSARY.md', 'ARCHITECTURE.md']) assert.match(content, new RegExp(`\`${name.replace('.', '\\.')}\``), `${protocol} names ${name}`);
+    assert.match(content, /ARCHITECTURE\.md`?[^.]*codemap[\s\S]{0,400}(?:project|source)[\s\S]{0,400}grilling/i, `${protocol} drafts the ARCHITECTURE.md codemap from project evidence for grilling to confirm`);
+  }
+  const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
+  assert.doesNotMatch(readme, /templates\/LEXICON\.md/, 'README ships no Lexicon template');
+  for (const name of ['GLOSSARY.md', 'ARCHITECTURE.md']) assert.equal((readme.match(new RegExp(`templates/${name.replace('.', '\\.')}`, 'g')) ?? []).length >= 2, true, `README lists templates/${name} as a core file and in How To Use It`);
+});
+
+test('TK-009G: init installs the Template Wiki vocabulary articles beside the router, reported apart from the contract files', () => {
+  const project = fixture();
+  try {
+    const result = run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION, '--name', 'Puffer Pond', '--date', '2026-09-04');
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    const articles = (layout.wikiVocabularyFiles ?? []).map((name) => `workbench/wiki/${name}`);
+    assert.equal(articles.length, 12);
+    assert.deepEqual(result.report.seeded.written, ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md', 'features/README.md'].map((name) => `workbench/wiki/${name}`), 'the contract files are reported as before');
+    assert.deepEqual(result.report.seeded.articles, articles, 'the vocabulary articles are reported apart');
+    for (const article of articles) {
+      const content = fs.readFileSync(path.join(project, article), 'utf8');
+      assert.match(content, /last_verified: 2026-09-04/, `${article} carries its installation date`);
+      assert.deepEqual(templatePlaceholders.filter((token) => content.includes(token)), [], `${article} is filled`);
+    }
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+test('TK-009G: a freshly generated room has GLOSSARY.md, ARCHITECTURE.md and the vocabulary articles, and every live link resolves', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION, '--name', 'Puffer Pond', '--date', '2026-09-04').status, 0);
+    installTools(project);
+    installSkills(project);
+    const fill = (content) => {
+      let filled = content;
+      for (const placeholder of templatePlaceholders) filled = filled.split(placeholder).join('Puffer value');
+      return filled;
+    };
+    // Genesis copies each templated control from the Template and fills it.
+    for (const control of controls) {
+      fs.writeFileSync(path.join(project, control), control === 'CLAUDE.md' ? '@AGENTS.md\n' : fill(fs.readFileSync(path.join(root, 'templates', control), 'utf8')));
+    }
+    fs.writeFileSync(path.join(project, 'workbench', 'wiki', 'MEMORY.md'), fill(fs.readFileSync(path.join(root, 'templates', 'wiki', 'MEMORY.project.md'), 'utf8')));
+    // Genesis registers its decisions (Phase 1); the registers exist even
+    // before the first record, and ARCHITECTURE.md routes decisions to them.
+    writeRegister(project);
+    writeRegister(project, { kind: 'ddr' });
+    render(project);
+    for (const name of ['GLOSSARY.md', 'ARCHITECTURE.md']) assert.ok(fs.statSync(path.join(project, name)).isFile(), `${name} is a root control of the room`);
+    assert.ok(!fs.existsSync(path.join(project, 'LEXICON.md')), 'a new room has no Lexicon');
+    for (const name of layout.wikiVocabularyFiles ?? []) assert.ok(fs.existsSync(path.join(project, 'workbench', 'wiki', name)), `${name} is installed`);
+    // The scan reads every live surface; the controls this Task installs and
+    // the Wiki they are explained in (router, contract files and vocabulary
+    // articles) must resolve completely.
+    const installed = scanReferences(project).filter((item) => ['GLOSSARY.md', 'ARCHITECTURE.md'].includes(item.file) || item.file.startsWith('workbench/wiki/'));
+    assert.deepEqual(installed, [], 'every live link in the generated room glossary, architecture and Wiki resolves');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });
 
 // S-002U TK-007V: the owner made `pr` required in every Workbench on

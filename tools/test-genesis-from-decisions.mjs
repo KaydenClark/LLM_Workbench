@@ -73,8 +73,9 @@ function fillPlaceholders(content) {
   return filled;
 }
 
-// The four controls the repository-wide vocabulary sweep actually checks
-// (AGENTS/RUNBOOK/LEXICON/README) carry this candidate's real templatesRoot
+// The controls the repository-wide vocabulary sweep actually checks
+// (AGENTS/RUNBOOK/GLOSSARY/ARCHITECTURE/README; S-004O TK-009G retired the
+// Lexicon from the installed set) carry this candidate's real templatesRoot
 // body beneath the synthetic Puffer Pond header, so a live `Ticket` word
 // planted in templates/ - or left over at an unrenamed base - propagates into
 // the derived room and the post-Genesis sweep below can actually catch it.
@@ -84,7 +85,7 @@ function controlText(name, version, templatesRoot) {
     ? '\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n'
     : '';
   const header = `# Puffer Pond - ${name.replace('.md', '')}\n\n> Generated from LLM Workbench ${version}.\n\n## Purpose\n\nThis filled control belongs to Puffer Pond.${region}`;
-  if (templatesRoot && ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'README.md'].includes(name)) {
+  if (templatesRoot && ['AGENTS.md', 'RUNBOOK.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'README.md'].includes(name)) {
     const templateBody = fillPlaceholders(fs.readFileSync(path.join(templatesRoot, name), 'utf8'));
     return `${header}\n\n## Template source (swept for retired vocabulary)\n\n${templateBody}`;
   }
@@ -93,7 +94,7 @@ function controlText(name, version, templatesRoot) {
 
 function templateControlText(name, version) {
   if (name === 'CLAUDE.md') return '@AGENTS.md\n';
-  if (name === 'LEXICON.md') return `# Workbench Template - Lexicon\n\n> Generated from LLM Workbench ${version}.\n\n## Status\n\n[active / partial / stale]\n`;
+  if (name === 'GLOSSARY.md') return `# Workbench Template - Glossary\n\n> Generated from LLM Workbench ${version}.\n\n## Status\n\n[active / partial / stale]\n`;
   const region = name === 'TASKBOARD.md'
     ? '\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n'
     : '';
@@ -103,7 +104,7 @@ function templateControlText(name, version) {
 function makeTemplate(release, base, origin = 'https://example.invalid/workbench-template.git') {
   const root = path.join(base, 'template');
   initializeRoom(release, root, origin);
-  for (const name of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md']) {
+  for (const name of ['AGENTS.md', 'BLUEPRINT.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md']) {
     write(path.join(root, name), templateControlText(name, release.version));
   }
   write(path.join(root, 'template-only.txt'), 'This state must not be inherited.\n');
@@ -119,7 +120,7 @@ function makeSource(release, base) {
   write(evidence, '# Pond\nA small interactive simulation.\n');
   const drafts = path.join(root, 'workbench', 'docs', 'puffer-drafts');
   const controls = {};
-  for (const name of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md']) {
+  for (const name of ['AGENTS.md', 'BLUEPRINT.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md']) {
     const file = path.join(drafts, name);
     write(file, controlText(name, release.version, path.join(release.root, 'templates')));
     controls[name] = { file: path.relative(root, file).split(path.sep).join('/'), sha256: sha256(file) };
@@ -343,11 +344,11 @@ const release = makeRelease(suiteRoot);
   // agent installs from this candidate - not the copied runtime tools, which
   // the source-side sweep in tools/test-spec-workbench.mjs already covers.
   const controlHits = [];
-  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'README.md']) {
+  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'README.md']) {
     fs.readFileSync(path.join(destination, name), 'utf8').split('\n').forEach((line, index) => {
-      // Same allow-listed row as tools/test-controls-vocabulary-sweep.mjs:
-      // the Lexicon row that defines the retired term necessarily names it.
-      if (name === 'LEXICON.md' && line.includes('**Ticket** | Retired as a live term.')) return;
+      // Same allow-listed line as tools/test-controls-vocabulary-sweep.mjs:
+      // the glossary Task entry names the retired term as its avoided alias.
+      if (name === 'GLOSSARY.md' && line.trim() === '_Avoid_: ticket') return;
       if (/ticket/i.test(line)) controlHits.push(`${name}:${index + 1}: ${line.trim()}`);
     });
   }

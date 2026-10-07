@@ -20,7 +20,8 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const tool = path.join(root, 'tools', 'control-fidelity.mjs');
 const productTemplates = path.join(root, 'templates');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
-const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'README.md'];
+// S-004O TK-009G: GLOSSARY.md and ARCHITECTURE.md replace the retired Lexicon.
+const controls = ['AGENTS.md', 'BLUEPRINT.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'RUNBOOK.md', 'TASKBOARD.md', 'README.md'];
 // The upstream finding (fix list UP-008): a room dropped a qualifier from a
 // line shipped by templates/AGENTS.md (then the ADR ownership row's
 // `canonicalized_in` note). S-004C TK-005I moved that table behind the Lexicon
@@ -271,8 +272,8 @@ test('optional permission and wiki files are compared when present and reported 
 test('CRLF room controls compare line by line', () => {
   const templates = fixtureTemplates();
   const project = fixtureRoom(templates);
-  write(project, 'LEXICON.md', read(project, 'LEXICON.md').replaceAll('\n', '\r\n'));
-  const entry = control(reportFidelity({ project, templates, manifestRelease: VERSION, checkoutVersion: VERSION }), 'LEXICON.md');
+  write(project, 'GLOSSARY.md', read(project, 'GLOSSARY.md').replaceAll('\n', '\r\n'));
+  const entry = control(reportFidelity({ project, templates, manifestRelease: VERSION, checkoutVersion: VERSION }), 'GLOSSARY.md');
   assert.equal(entry.counts.dropped, 0);
   assert.equal(entry.counts.changed, 0);
   assert.equal(entry.counts.added, 0);
@@ -567,7 +568,7 @@ test('generic controls carry the delivered workflow without producer state or un
     assert.ok(agents.includes(before), `authority mutation must target current instructions: ${before}`);
     assert.throws(() => instructionAuthorityContract(agents.replace(before, after)), { name: 'AssertionError' });
   }
-  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'README.md', 'BLUEPRINT.md', 'SPEC.md']) {
+  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'README.md', 'BLUEPRINT.md', 'SPEC.md']) {
     const body = read(productTemplates, name);
     assert.doesNotMatch(body, /S-00[HIJOP]|ADR-000[FGHI]|KaydenClark|\/Users\/|PR #2[0-9][0-9]|exemption 2/, `${name}: no producer state as universal instructions`);
     const leftovers = body.match(/\[[A-Za-z][A-Za-z0-9_ /:;.,'`+()#<>|=-]*\]/g) ?? [];
@@ -1165,8 +1166,12 @@ const LONG_SHAPE_COMMIT = 'd7ffffe9f44c96f2e43b1465b99ccb721942c4f8';
 
 function templatesAt(commit) {
   const directory = fixture('control-fidelity-previous-');
+  // S-004O TK-009G: the earlier generation predates GLOSSARY.md and
+  // ARCHITECTURE.md (it shipped the Lexicon), so only the controls it carried
+  // are read from it.
   for (const name of controls) {
     const shown = spawnSync('git', ['show', `${commit}:templates/${name}`], { cwd: root, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+    if (shown.status !== 0 && ['GLOSSARY.md', 'ARCHITECTURE.md'].includes(name) && /exists on disk, but not in|does not exist in/.test(shown.stderr)) continue;
     assert.equal(shown.status, 0, `git show ${commit}:templates/${name}: ${shown.stderr}`);
     write(directory, name, shown.stdout);
   }
@@ -1186,7 +1191,7 @@ function normalizedLines(content) {
 test('TK-005M: an old-shape room is told which differences are a template generation difference and which are its own', () => {
   const previous = templatesAt(LONG_SHAPE_COMMIT);
   const project = fixture('control-fidelity-old-shape-');
-  for (const name of controls) write(project, name, fill(read(previous, name)));
+  for (const name of controls.filter((name) => fs.existsSync(path.join(previous, name)))) write(project, name, fill(read(previous, name)));
   write(project, 'CLAUDE.md', '@AGENTS.md\n');
   const ownRule = 'Room rule: never edit the vendored payments adapter without the payments owner.';
   write(project, 'AGENTS.md', `${read(project, 'AGENTS.md')}\n## Room Boundaries\n\n${ownRule}\n`);

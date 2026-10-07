@@ -244,7 +244,8 @@ test('install refuses an adapter collision before copying anything, and rollback
 // reference is required is a reading of its context, not something a regex
 // can decide, so the disposition table in `workbench/skills/README.md`
 // records that reading and this test holds the table to the lane.
-const rootControls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
+// S-004O TK-009G: GLOSSARY.md and ARCHITECTURE.md replace the retired Lexicon.
+const rootControls = ['AGENTS.md', 'BLUEPRINT.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
 const referenceRequirements = ['required', 'optional', 'none'];
 const referenceDispositions = ['joined', 'optional mention', 'out of scope'];
 

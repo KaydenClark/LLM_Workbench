@@ -3061,6 +3061,14 @@ function initLifecycleFixture(dir) {
   fs.writeFileSync(path.join(dir, 'BLUEPRINT.md'), '# Blueprint\n');
   fs.writeFileSync(path.join(dir, 'TASKBOARD.md'), '# Taskboard\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n');
   fs.writeFileSync(path.join(dir, 'README.md'), '# Fixture room\n\nSee MEMORY.md.\n');
+  // S-004O TK-009G: init installs the Wiki vocabulary articles, which link the
+  // room's GLOSSARY.md, its Runbook and a core lane skill, as every generated
+  // room carries them.
+  fs.writeFileSync(path.join(dir, 'GLOSSARY.md'), '# Fixture room\n\nA fixture room.\n\n## Language\n');
+  fs.writeFileSync(path.join(dir, 'ARCHITECTURE.md'), '# Fixture room - Architecture\n');
+  fs.writeFileSync(path.join(dir, 'RUNBOOK.md'), '# Runbook\n');
+  fs.mkdirSync(path.join(dir, 'workbench', 'skills', 'code-review'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'workbench', 'skills', 'code-review', 'SKILL.md'), '# Code review\n');
 }
 
 function completeFixtureSpec(id) {

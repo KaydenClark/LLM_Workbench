@@ -21,20 +21,22 @@
 - `vocabulary-*.md` (one grouped article per glossary grouping, each term a
   section linking its `GLOSSARY.md` definition) and `ai-coding-reference.md`
   (general AI coding words) explain the room's vocabulary.
-  `MEMORY.project.md` and `MEMORY.root.md` route them under Vocabulary. Copy
-  them flat into `workbench/wiki/` with the router, filling the
-  `last_verified` date, once the room's root `GLOSSARY.md` exists: every
-  section links it.
+  `MEMORY.project.md` and `MEMORY.root.md` route them under Vocabulary.
+  `workbench-layout.mjs init`, Adoption and the update route install them flat
+  into `workbench/wiki/` beside the router, filling the `last_verified` date;
+  every section links the room's root `GLOSSARY.md`, which the room receives
+  with them.
 - `guidebooks/` and `archive/` are declared collections that ship empty;
   `design-concepts/` must exist in every Workbench even when empty.
 
 ## Instantiation
 
 1. `workbench-layout.mjs init` (or Adoption) creates the lane, the collections,
-   and the seeded contract files, and records the profile in the manifest.
+   the seeded contract files and the vocabulary articles, and records the
+   profile in the manifest.
 2. Copy the router variant matching the profile to `workbench/wiki/MEMORY.md`
    and fill every `[BRACKETED]` placeholder; delete routing rows that have no
-   note to route to. Copy the vocabulary articles beside it.
+   note to route to.
 3. Run `node workbench/tools/wiki.mjs validate`; the Genesis readiness gate
    also requires the filled router and contract files.
 

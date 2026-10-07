@@ -88,16 +88,18 @@ function validatePromotionOwner(root, destination, content, original) {
   }
   const overrides = { contentOverrides: new Map([[destination.absolute, content]]) };
   let findings = [];
-  if (controls.includes(destination.relative)) {
-    if (containsPlaceholder(content) || /\[BRACKETED(?:_[A-Z]+)*\]/.test(content)) throw new Error('A root control cannot contain template placeholders');
-    return 'control';
-  }
   // S-004O TK-009E: the room's root glossary is a durable owner of confirmed
-  // vocabulary (DDR-001E). Its Template mirror stays refused.
+  // vocabulary (DDR-001E). Its Template mirror stays refused. S-004O TK-009G:
+  // GLOSSARY.md is also an installed control, so this branch stays ahead of
+  // the controls branch to keep the Language section check.
   if (destination.relative === 'GLOSSARY.md') {
     if (containsPlaceholder(content) || /\[BRACKETED(?:_[A-Z]+)*\]/.test(content)) throw new Error('The glossary cannot contain template placeholders');
     if (!/^## Language\s*$/m.test(content)) throw new Error('The glossary keeps its Language section');
     return 'glossary';
+  }
+  if (controls.includes(destination.relative)) {
+    if (containsPlaceholder(content) || /\[BRACKETED(?:_[A-Z]+)*\]/.test(content)) throw new Error('A root control cannot contain template placeholders');
+    return 'control';
   }
   // S-003Z TK-008E: a Spec at any Spec home, the Blueprint-level lane or a
   // landmark folder's `specs/`.
