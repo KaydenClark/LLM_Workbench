@@ -8,8 +8,8 @@
 **Updated:** 2026-10-07
 **Catalog description:** Ship domain modeling in every room's skills lane as the Align companion that shows the downstream consequences of an upstream name, boundary or relationship before it settles, and hands settled meaning to promotion instead of writing Canon inline.
 **Blockers:** none
-**Latest event:** TK-00JC claimed by claude-s004j-worker-jc.
-**Next gate:** Close TK-00JC with verification and documentation proof.
+**Latest event:** TK-00JC closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`46ad978956a74a3ee1bda22c36eb16207dcd98fd` post=`46ad978956a74a3ee1bda22c36eb16207dcd98fd`.
 
@@ -255,6 +255,7 @@ Record `Docs checked; no update needed` for any other owner checked.
 | 2026-10-06 | activation | Activated under the owner's `/implement-spec` launch and cut TK-00JA, TK-00JB and TK-00JC with `convert-tasks --activate`; assembly branch `claude/s004j-assembly` from integration `9b524db3` plus the glossary planning commits at `a7d1ef18`. IDs chosen outside the sequential range to avoid collision with two concurrent Dispatchers. | Task IDs checked free across every `origin/*` tip and local Codex worktrees; draft PR #374 (TK-006U) read and left as historical input. | Spec header, slice section and three Task records. | Every delivery, verification and review gate. |
 | 2026-10-07 | TK-00JA | Task closed | Full RUNBOOK suite 54/54 on clean bac6db41; scoped domain-modeling 10/10 red-then-green; catalog, skills-lane, layout, runbook-index and installer green; fast-forward into assembly verified at bac6db41 | Skill source, catalog, count tokens, root and template RUNBOOK index row and suite list; THIRD_PARTY_NOTICES and AGENTS checked, no update needed | Behavior proof TK-00JB and Wiki TK-00JC; two Wiki pages still say 28 skills; release identity is the release owner's |
 | 2026-10-07 | TK-00JB | Task closed | Eight fresh-context sessions in disposable rooms with installed discovery: all five scenarios PASS (capture and promotion 4/4); full RUNBOOK suite 54/54 on clean c9905d94; fast-forward into assembly verified | proof/scenario-evidence.md with per-scenario observations, curated runs and room/runner scripts; skill checked, no correction needed | promote refuses root GLOSSARY.md until S-004O adds it to the layout controls; single model and run counts, scripted owner, local sessions; Wiki TK-00JC |
+| 2026-10-07 | TK-00JC | Task closed | Wiki validate clean, test-wiki 25/25, full RUNBOOK suite 54/54 on clean 989f1b09; article separates upstream method, Workbench adaptation and verified behavior and limits; fast-forward into assembly verified | Domain Modeling article, Wiki router lines, current bundle counts in four Wiki pages; dated count history checked, no update needed | Assembled code review and owner Human QA; promote GLOSSARY.md destination owned by S-004O; release identity unassigned |
 
 ## Completion Result
 
