@@ -3,13 +3,13 @@
 **Spec ID:** S-004J
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s004j-dispatcher
+**Owner:** claude-s004j-worker-fix
 **Stance:** Builder
 **Updated:** 2026-10-07
 **Catalog description:** Ship domain modeling in every room's skills lane as the Align companion that shows the downstream consequences of an upstream name, boundary or relationship before it settles, and hands settled meaning to promotion instead of writing Canon inline.
 **Blockers:** none
-**Latest event:** PR #415 merged into integration as `c80cb282`; assembled review 1 re-pinned to `d8b17a6a` failed (verdict #2), reopening TK-00JA, TK-00JB and TK-00JC.
-**Next gate:** One correction pass on `claude/s004j-corrections` (TK-00JA, then TK-00JB and TK-00JC), a fresh assembled review of the corrected candidate, then its integration PR; owner Human QA and release stay separate.
+**Latest event:** TK-00JA claimed by claude-s004j-worker-fix.
+**Next gate:** Close TK-00JA with verification and documentation proof.
 
 > **Citation anchors.** pre=`46ad978956a74a3ee1bda22c36eb16207dcd98fd` post=`46ad978956a74a3ee1bda22c36eb16207dcd98fd`.
 

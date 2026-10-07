@@ -3,12 +3,12 @@
 **Task ID:** TK-00JA
 **Spec ID:** S-004J
 **Slice:** Ship the adapted domain-modeling skill in every room's lane
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: A fresh clone discovers `domain-modeling` through both adapters; the manifest, layout bundle, catalog and count-bearing documents agree.
 **Planned verification:** A scoped source test (`tools/test-domain-modeling-skill.mjs`) red on the absent lane source, then green; catalog, layout and skills-lane tests red on the undeclared skill, then green; runbook-index check; full RUNBOOK suite on a committed candidate; self-drift pre/post.
-**Claimed by:** claude-s004j-worker-ja
+**Claimed by:** claude-s004j-worker-ja, claude-s004j-worker-fix
 **Proof:** Full RUNBOOK suite 54/54 on clean bac6db41; scoped domain-modeling 10/10 red-then-green; catalog, skills-lane, layout, runbook-index and installer green; fast-forward into assembly verified at bac6db41
 
 ## Scope and authority
