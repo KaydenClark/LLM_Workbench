@@ -21,7 +21,7 @@ optional `cdr` collection is `workbench/docs/cdr`. Reuse or amend an existing
 record when it already owns the choice; split mixed decisions into linked
 records. The owner wants the Grill Board grouped by these records so underlying
 rationale and prior approvals guide later derivation without repeated decisions.
-See the [decision-reuse record](../cdr/proposed/000A-consequential-decisions-preserve-the-why-and-are-reused-before-asking-again.md)
+See the [decision-reuse record](../cdr/000A-consequential-decisions-preserve-the-why-and-are-reused-before-asking-again.md)
 and the [board procedure](../../grill-board/README.md#decision-reconciliation-and-reuse).
 
 ## Decision

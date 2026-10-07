@@ -66,7 +66,7 @@ Existing approvals keep their original scope; a grouped rationale is not approva
 of every associated proposal or delivery. Open premises remain visible.
 
 The [board procedure](../../grill-board/README.md#decision-reconciliation-and-reuse)
-owns the operation. The [decision-reuse record](../../docs/cdr/proposed/000A-consequential-decisions-preserve-the-why-and-are-reused-before-asking-again.md)
+owns the operation. The [decision-reuse record](../../docs/cdr/000A-consequential-decisions-preserve-the-why-and-are-reused-before-asking-again.md)
 owns the rationale. The board's map is navigation, not another decision store or
 an automated proof that all future issues can be solved from prior decisions.
 
