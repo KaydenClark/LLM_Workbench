@@ -3,13 +3,13 @@
 **Spec ID:** S-004M
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s004m-dispatcher
+**Owner:** codex-cloud-tk008u
 **Stance:** Builder
-**Updated:** 2026-10-06
+**Updated:** 2026-10-07
 **Catalog description:** Let every room declare how an agent runs, operates, inspects, sees errors in, exercises and measures its product, as a manifest block checked by doctor, with the Workbench's own declaration as the first.
 **Blockers:** none. Runbook or AGENTS wording waits for the S-004C writer and is not cut as a Task.
-**Latest event:** TK-008T closed with proof.
-**Next gate:** Complete TK-008U.
+**Latest event:** TK-008U claimed by codex-cloud-tk008u.
+**Next gate:** Close TK-008U with verification and documentation proof.
 
 ## Outcome
 

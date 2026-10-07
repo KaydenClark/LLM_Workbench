@@ -3,11 +3,12 @@
 **Task ID:** TK-008U
 **Spec ID:** S-004M
 **Slice:** doctor reports an undeclared or unconfirmed legibility surface as attention
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-008T
 **Destination:** spec-acceptance: A fixture room with the block passes `doctor` silently for it, and one without it receives one attention finding that blocks nothing.
 **Planned verification:** Red then green in tools/test-diagnostics.mjs (a fixture without the block reports exactly one legibility-undeclared and cliDoctor exits 0; with the block none; a placeholder or empty entry is named; a pending draft reports legibility-unconfirmed; the registry table carries both codes as attention/manifest/none) and tools/test-workbench-layout.mjs (migrate, record-source, identify and collection additions inject no block and change nothing else); every fixture helper that expects an empty doctor report declares the block; then the full suite, render and doctor on the committed candidate.
+**Claimed by:** codex-cloud-tk008u
 
 ## Scope
 
