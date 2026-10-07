@@ -1,0 +1,19 @@
+// Isolated copy of the TK-007U assertion block in tools/test-skill-catalog.mjs
+// (lines 15-28 at 6dbec705), run against a given tree root.
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
+const root = path.resolve(process.argv[2]);
+const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
+const importedSourceHashes = {
+  'pr/SKILL.md': 'bb2f9427da7c83ec95abf1207380c19d726d6d8c933f6d0314cb14e84c3e998b',
+};
+for (const [name, expectedHash] of Object.entries(importedSourceHashes)) {
+  const relative = `workbench/skills/${name}`;
+  assert.ok(fs.existsSync(path.join(root, relative)), `${relative} must carry the pinned upstream source`);
+  const source = read(relative).replaceAll('\r\n', '\n').replace(/\n+$/, '');
+  assert.equal(createHash('sha256').update(source).digest('hex'), expectedHash,
+    `${name} must preserve the pinned upstream text with only the declared adapter`);
+}
+console.log('pinned-source assertion: ok (pr/SKILL.md sha256 matches pin)');

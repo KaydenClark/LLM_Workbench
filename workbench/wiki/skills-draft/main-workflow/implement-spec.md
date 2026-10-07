@@ -38,7 +38,7 @@ You provide an authorized Spec whose Tasks are already planned. The Dispatcher o
 
 An explicit owner invocation, the project manifest, an authorized Spec and Task graph, a host that supports Worker agents and isolated worktrees, Git and the target repository's PR operation. Claims, verification and lifecycle use the project's current Contract. One durable writer maintains shared records; Workers return proof. No global queue, observer or deterministic runner is required.
 
-The first installation is Workbench-only, declared under maintainerSkills rather than skillPolicy.required. Template 2's skill_source value core names the workbench/skills source lane here; this entry is outside the closed 28-skill Core bundle and is not installed into generated rooms. Both existing host adapters resolve to that lane. Explicit path invocation and adapter resolution are separate from ordinary-prompt discovery, which needs an actual provider trace.
+The first installation is Workbench-only, declared under maintainerSkills rather than skillPolicy.required. Template 2's skill_source value core names the workbench/skills source lane here; this entry is outside the closed Core bundle and is not installed into generated rooms. Both existing host adapters resolve to that lane. Explicit path invocation and adapter resolution are separate from ordinary-prompt discovery, which needs an actual provider trace.
 
 ## What it reads and writes
 
