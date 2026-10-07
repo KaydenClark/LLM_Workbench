@@ -17577,7 +17577,7 @@
       "title": "Records share one set of read words: list, show, search, history and inspect · underlying rationale",
       "question": "What must a short read or control result preserve so an agent can safely act on it?",
       "current": "ADR-000T is accepted.\n\nRelated original questions: GB-0012, GB-0061, GB-0164, GB-0165, GB-0175.\n\nRelated questions concern identity, revision, corrections, honest partial output and whether settings persist. Establish the invariant before deriving individual interface choices.",
-      "proposal": "Agent proposal: keep the accepted ADR-000T decision as the starting point; supply the missing rationale or a scoped correction in your note. Confirm retains the established principle only. It does not select every supporting option or approve a Spec.",
+      "proposal": "Agent proposal: keep the accepted ADR-000T decision as the starting point. Use Record my principle and why to state the missing premise and rationale, or Correct to state a scoped correction. Your written answer concerns this principle; it does not select every supporting option or approve a Spec.",
       "draft": "---\ndate: 2026-10-02\ncanonicalized_in:\n  - LEXICON.md\n---\n\n# Records share one set of read words: list, show, search, history and inspect\n\n## Decision\n\nEvery kind of record the Workbench keeps is to answer the same kinds of read\nwith the same words, so an agent asks a notepad, a Destination Question Card, a\nlandmark, a Spec, an ADR or a DDR the same way. Create, Read, Update and Delete\nremain the frame every tool answers\n([ADR-0003](0003-full-crud-with-artifact-conditions.md) and the Wiki schema's\ncontract); what varies from one tool to the next is which kind of each\noperation it needs and, for Read, which kind of read. The five words:\n\n- **list**: the records that exist.\n- **show**: one whole record. `get` is an accepted synonym, meaning fetch one\n  whole record by its identifier.\n- **search**: records found by a query.\n- **history**: how a record changed.\n- **inspect**: part of a record, a field or a range.\n\n`capture` is Create, not a read. This record renames no command: existing\nnames (`read`, `show`, `capture`, `new` and the rest) keep working, and a Spec\nrenames each tool when it touches it. The five words are defined once, in the Lexicon.\n\nThe research found no formal standard for this in the AI tooling community, but\nindependent tools converge on the same kinds of read. The Model Context Protocol lists and\nreads resources ([resources specification](https://modelcontextprotocol.io/specification/latest/server/resources)),\nand its reference memory server reads the whole graph, searches nodes and opens\nnodes by name ([memory server](https://github.com/modelcontextprotocol/servers/tree/main/src/memory)).\nMem0 offers search, get by identifier, get all and a per-memory history\n([memory operations](https://docs.mem0.ai/core-concepts/memory-operations),\n[history](https://docs.mem0.ai/api-reference/memory/history-memory)). LangGraph's\nstore has get, search and list of namespaces\n([BaseStore](https://reference.langchain.com/python/langgraph.store/base/BaseStore)).\nThe Anthropic memory tool views a directory or a file with an optional line range\n([memory tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool)),\nand RFC 7089 standardizes reading past states of a web resource\n([Memento](https://www.rfc-editor.org/rfc/rfc7089)). The owner saw that survey\nand then set the Workbench's words himself.\n\nConsidered and rejected, each by the owner's choice in the grilling: making `get` mean search (the AI tools use `get` to fetch by key and `search` to\nquery, so a reader from those tools would be misled; the owner reversed it);\ntwo verbs for one whole-record read (the difference between a readable page and\nan exact fetch is already a `--json` flag, as the Landmark Tracker's `show` has\nit); and replacing `inspect` with `show` (`show` already reads one whole record\nin the Spec tool and the Tracker, so that would flip its meaning). Git-style\n`show` and `log` and REST verbs were set aside on the agent's assessment, which\nthe owner did not contest: neither has words for create and update, and REST\ndoes not fit a command line. The owner expected an existing standard to adopt;\nnone was found, so the five words are the Workbench's own, following the kinds\nof read the tools converge on. `inspect` means part of a record here, where\nDocker's `inspect` returns a whole detailed record.\n\nConsequences: the Lexicon carries the five definitions. A tool gains the words\nwhen a Spec touches it; this record renames nothing. The ADR and DDR tools have\nno read command at the time of this record, so the Decision Record tooling Spec is\nthe natural place to give them these words; that scope is not decided here. Whether `search` attaches the linked corrections to a\nresult, as the notepad's topic read does, is undecided. The template mirror of the Read words row waits for the same\nSpec, so a template does not promise words its tools lack.\n\nProvenance: owner-confirmed grilling of 2026-10-01 under the objective\n\"ddr-and-control-surface\", which asked whether the AI community has a standard\nread set for a store read by many agents and then set the words above. The\nsources above were read on 2026-10-01, except the LangGraph store reference,\nwhich was taken from search results; the Letta documentation and the CoALA paper\ncould not be read through the research tool and are not relied on.\n",
       "options": [
         {
@@ -17606,7 +17606,7 @@
         "decision-rationale",
         "ADR-000T"
       ],
-      "revision": 2,
+      "revision": 3,
       "status": "open",
       "applied": null,
       "history": [
@@ -17625,6 +17625,16 @@
             "draft",
             "options"
           ]
+        },
+        {
+          "revision": 3,
+          "at": "2026-10-07T06:29:37.193Z",
+          "by": "codex",
+          "reason": "Make the reviewed proposal and recommendation agree with the written-rationale options",
+          "changes": [
+            "proposal",
+            "brief"
+          ]
         }
       ],
       "brief": {
@@ -17632,7 +17642,7 @@
         "summary": "What must a short read or control result preserve so an agent can safely act on it?",
         "why": "Related questions concern identity, revision, corrections, honest partial output and whether settings persist. Establish the invariant before deriving individual interface choices.",
         "artifacts": "ADR-000T owns this consequential principle. The related GB identities preserve the underlying questions and their original source links.",
-        "recommendation": "Agent proposal: keep the accepted ADR-000T decision as the starting point; supply the missing rationale or a scoped correction in your note. Confirm retains the established principle only. It does not select every supporting option or approve a Spec.",
+        "recommendation": "Agent proposal: keep the accepted ADR-000T decision as the starting point. Use Record my principle and why to state the missing premise and rationale, or Correct to state a scoped correction. Your written answer concerns this principle; it does not select every supporting option or approve a Spec.",
         "changes": "The owner’s answer is reconciled into this decision record or its corrected successor, then agents derive the related applications within its scope.",
         "impact": "One rationale can guide multiple questions. A specific approval remains content-bound to its original work; no group answer approves it automatically.",
         "history": "The original member questions, words, statuses, sources and revisions are retained, including questions already settled by later sources."
@@ -17699,7 +17709,7 @@
       "title": "The context lives in GitHub, so work can move to the cloud at any time · underlying rationale",
       "question": "What visibility does GitHub need to provide for work to move between hosts, and is GitHub Projects required for that outcome?",
       "current": "DDR-000H is accepted.\n\nRelated original questions: GB-0023, GB-0041.\n\nThe cross-host destination is settled. GB-0023 asks whether Projects is necessary to meet it; a named tool should follow from the outcome.",
-      "proposal": "Agent proposal: keep the accepted DDR-000H decision as the starting point; supply the missing rationale or a scoped correction in your note. Confirm retains the established principle only. It does not select every supporting option or approve a Spec.",
+      "proposal": "Agent proposal: keep the accepted DDR-000H decision as the starting point. Use Record my principle and why to state the missing premise and rationale, or Correct to state a scoped correction. Your written answer concerns this principle; it does not select every supporting option or approve a Spec.",
       "draft": "---\ndate: 2026-10-03\nsupersedes:\ncanonicalized_in:\n  - BLUEPRINT.md\n---\n\n# The context lives in GitHub, so work can move to the cloud at any time\n\nLandmark: Work from anywhere.\n\nEverything an agent needs to continue a project lives in the project's GitHub repository. The owner can move the work to the cloud at any time, and any agent, in a cloud session or on any of the owner's devices, picks up the full context from GitHub and continues where the last session left off. Nothing it needs lives only on one machine, in one chat, or in the owner's private skills catalog.\n\nWhy the owner chose it:\n\n- The owner, in his own words (2026-10-02): \"We are using LLMs on the internet. this Landmark is about being able to use the cloud whenever we want and always being able to pick up the context from github.\"\n- The owner, in his own words (2026-10-02, teardown round 1): \"The workbench is the complete handoff package, its everything the agent needs to pick up where the last session left off and continue.\"\n- On the related claim that any provider can use the workbench, the owner's confirmed reason: Claude Code and Codex are both harnesses the owner runs, and the workbench is what they both use, so it lives in plain repository files and small tools any provider can drive with one action. The owner's note: \"With the understanding we are only working with claude and codex. so I dont know if it works with gemini and the antigravity harness, or even outside of the claude and codex harness, like just in the Terminal and CLI. but those would be longer term goals.\"\n\nConsidered and rejected: None recorded.\n\nConsequences: None recorded as owner words. Accepted records that touch this, not restated here: [Core skills ship in the workbench skills lane](../adr/000M-core-skills-ship-in-the-workbench-skills-lane.md) (skills ship in the room so a cloud instance starts from the repository alone) and [Workbench continuity through maintained owners](../adr/0043-workbench-continuity-through-maintained-owners.md) (recovery from maintained owners).\n\nProvenance: the Blueprint teardown grilling of 2026-10-02 to 2026-10-03: question BT-D1 (context lives in GitHub), locked 2026-10-03; reasons from questions WHY-C1, WHY-B4 and WHY-C6.\n",
       "options": [
         {
@@ -17728,7 +17738,7 @@
         "decision-rationale",
         "DDR-000H"
       ],
-      "revision": 2,
+      "revision": 3,
       "status": "open",
       "applied": null,
       "history": [
@@ -17747,6 +17757,16 @@
             "draft",
             "options"
           ]
+        },
+        {
+          "revision": 3,
+          "at": "2026-10-07T06:29:37.230Z",
+          "by": "codex",
+          "reason": "Make the reviewed proposal and recommendation agree with the written-rationale options",
+          "changes": [
+            "proposal",
+            "brief"
+          ]
         }
       ],
       "brief": {
@@ -17754,7 +17774,7 @@
         "summary": "What visibility does GitHub need to provide for work to move between hosts, and is GitHub Projects required for that outcome?",
         "why": "The cross-host destination is settled. GB-0023 asks whether Projects is necessary to meet it; a named tool should follow from the outcome.",
         "artifacts": "DDR-000H owns this consequential principle. The related GB identities preserve the underlying questions and their original source links.",
-        "recommendation": "Agent proposal: keep the accepted DDR-000H decision as the starting point; supply the missing rationale or a scoped correction in your note. Confirm retains the established principle only. It does not select every supporting option or approve a Spec.",
+        "recommendation": "Agent proposal: keep the accepted DDR-000H decision as the starting point. Use Record my principle and why to state the missing premise and rationale, or Correct to state a scoped correction. Your written answer concerns this principle; it does not select every supporting option or approve a Spec.",
         "changes": "The owner’s answer is reconciled into this decision record or its corrected successor, then agents derive the related applications within its scope.",
         "impact": "One rationale can guide multiple questions. A specific approval remains content-bound to its original work; no group answer approves it automatically.",
         "history": "The original member questions, words, statuses, sources and revisions are retained, including questions already settled by later sources."
@@ -17768,7 +17788,7 @@
       "title": "A release is proven by the Template building a real product in one pass · underlying rationale",
       "question": "What would convince you that a small delivered slice fulfills its concept?",
       "current": "DDR-000Q is accepted.\n\nRelated original questions: GB-0024, GB-0026, GB-0050, GB-0179.\n\nThe release demonstration is settled; GB-0179 preserves the still-unsettled criterion for an individual slice.",
-      "proposal": "Agent proposal: keep the accepted DDR-000Q decision as the starting point; supply the missing rationale or a scoped correction in your note. Confirm retains the established principle only. It does not select every supporting option or approve a Spec.",
+      "proposal": "Agent proposal: keep the accepted DDR-000Q decision as the starting point. Use Record my principle and why to state the missing premise and rationale, or Correct to state a scoped correction. Your written answer concerns this principle; it does not select every supporting option or approve a Spec.",
       "draft": "---\ndate: 2026-10-03\nsupersedes:\ncanonicalized_in:\n  - BLUEPRINT.md\n---\n\n# A release is proven by the Template building a real product in one pass\n\nLandmark: Workbench Template.\n\n1. Among its other gates, a Workbench release is proven when the Template, updated to that release and deployed in the cloud, is run through a grilling session from a prewritten grill-me-and-genesis script and produces the website asked for, correctly, without being blocked by anything that should not block it. It must take the workflow in a single pass (Idea, Align, Confirm, Journey, Complete) with no second Align; the owner's only step is Approve, judging whether the website is viable.\n\n2. The release proof builds Puffer Pond (github.com/KaydenClark/Puffer-Pond), the small full-screen living pond illustration, from the prewritten grilling script, with the Template deployed in the cloud.\n\nWhy the owner chose it:\n\n- The owner, in his own words (2026-10-03, teardown round 1): \"The idea is the workbench can take a do the workflow in a single pass ... without a second align needed. It theorectically should just be the human QA step.\"\n- The owner (teardown round 1): \"when I can effortless algin my design concepts into products, where I Align confirm. and come back to a finished product to approve\"\n- For the Puffer Pond choice, the owner's confirmed reason: A website is a product the owner can judge viable by using it, so Approve stays the owner's only step, and running it in the cloud from a script proves the pass needs nothing from the owner's machine or memory.\n\nConsidered and rejected: None recorded.\n\nConsequences: None recorded as owner words. The workflow list is recorded as locked; the terms-and-verbs work may rename a verb, and a visible correction here would then be needed, not a silent edit. How this proof relates to the existing Template upgrade release gate is the release-proof Spec's to state.\n\nProvenance: the Blueprint teardown grilling of 2026-10-02 to 2026-10-03: question BT-D15 (release proof in one pass) and the owner-confirmed Puffer Pond answer, question WHY-D2a, both locked 2026-10-03; reasons from the owner's own words, question WHY-D2, and the confirmed why in WHY-D2a.\n",
       "options": [
         {
@@ -17797,7 +17817,7 @@
         "decision-rationale",
         "DDR-000Q"
       ],
-      "revision": 2,
+      "revision": 3,
       "status": "open",
       "applied": null,
       "history": [
@@ -17816,6 +17836,16 @@
             "draft",
             "options"
           ]
+        },
+        {
+          "revision": 3,
+          "at": "2026-10-07T06:29:37.268Z",
+          "by": "codex",
+          "reason": "Make the reviewed proposal and recommendation agree with the written-rationale options",
+          "changes": [
+            "proposal",
+            "brief"
+          ]
         }
       ],
       "brief": {
@@ -17823,7 +17853,7 @@
         "summary": "What would convince you that a small delivered slice fulfills its concept?",
         "why": "The release demonstration is settled; GB-0179 preserves the still-unsettled criterion for an individual slice.",
         "artifacts": "DDR-000Q owns this consequential principle. The related GB identities preserve the underlying questions and their original source links.",
-        "recommendation": "Agent proposal: keep the accepted DDR-000Q decision as the starting point; supply the missing rationale or a scoped correction in your note. Confirm retains the established principle only. It does not select every supporting option or approve a Spec.",
+        "recommendation": "Agent proposal: keep the accepted DDR-000Q decision as the starting point. Use Record my principle and why to state the missing premise and rationale, or Correct to state a scoped correction. Your written answer concerns this principle; it does not select every supporting option or approve a Spec.",
         "changes": "The owner’s answer is reconciled into this decision record or its corrected successor, then agents derive the related applications within its scope.",
         "impact": "One rationale can guide multiple questions. A specific approval remains content-bound to its original work; no group answer approves it automatically.",
         "history": "The original member questions, words, statuses, sources and revisions are retained, including questions already settled by later sources."
@@ -17837,7 +17867,7 @@
       "title": "A project is a room and the workbench is the table in it · underlying rationale",
       "question": "Is a hosted service outside the Workbench product boundary, or only unnecessary for this local board?",
       "current": "DDR-000U is accepted.\n\nRelated original questions: GB-0033, GB-0054.\n\nGB-0033 still asks about the withheld product non-goal. The later local-board hosting decision settles the board, not every room’s product.",
-      "proposal": "Agent proposal: keep the accepted DDR-000U decision as the starting point; supply the missing rationale or a scoped correction in your note. Confirm retains the established principle only. It does not select every supporting option or approve a Spec.",
+      "proposal": "Agent proposal: keep the accepted DDR-000U decision as the starting point. Use Record my principle and why to state the missing premise and rationale, or Correct to state a scoped correction. Your written answer concerns this principle; it does not select every supporting option or approve a Spec.",
       "draft": "---\ndate: 2026-10-03\nsupersedes:\ncanonicalized_in:\n  - BLUEPRINT.md\n---\n\n# A project is a room and the workbench is the table in it\n\nLandmark: none, Blueprint level.\n\nA project is a room. A workbench is a table set inside that room, as large as the project needs; some take up whole walls. It holds the rules, the instructions, the tools and the records, and gives agents structure and places to work. An agent goes to the workbench, reads the rules, takes the tool it needs, such as the table saw to cut a piece of wood, and goes back to work on the project in the center of the room. In LLM Workbench's own room, the project in the center is the next workbench, built with the current one, which improves as it builds. The workbench is the project's management system for that room: it manages the project. A project can exist without a workbench; a workbench needs a project, and a workbench without a project is an empty template workbench, a project not yet set up.\n\nWhy the owner chose it:\n\n- The owner, in his own words (2026-10-02, teardown round 1): \"This was all metaphor. A metaphor I want to implement and make part of the destination. I just know how to talk in metaphors a lot better than anything else.\"\n- On building the next workbench with the current one, the same note: \"The workbench its using to build that new one, is the every improving one its building. (Mainly because the ones before have been broken).\"\n\nConsidered and rejected: None recorded.\n\nConsequences: None recorded as owner words. The room and table meanings are Lexicon rows owned by the terms work; this record keeps the destination choice. No accepted record holds the room-and-table metaphor; [LLM Workbench is the sole Workbench source; Foundry is a downstream extension](../adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md) uses \"room\" only for the larger context a Workbench can be nested inside.\n\nProvenance: the Blueprint teardown grilling of 2026-10-02 to 2026-10-03: question BT-D14 (a project is a room, the workbench its table), locked 2026-10-03 on the owner's confirmed round-2 readback with the management-system and dependency sentences from the owner's chat answer; reasons from the owner's own words, question WHY-D6.\n",
       "options": [
         {
@@ -17866,7 +17896,7 @@
         "decision-rationale",
         "DDR-000U"
       ],
-      "revision": 2,
+      "revision": 3,
       "status": "open",
       "applied": null,
       "history": [
@@ -17885,6 +17915,16 @@
             "draft",
             "options"
           ]
+        },
+        {
+          "revision": 3,
+          "at": "2026-10-07T06:29:37.309Z",
+          "by": "codex",
+          "reason": "Make the reviewed proposal and recommendation agree with the written-rationale options",
+          "changes": [
+            "proposal",
+            "brief"
+          ]
         }
       ],
       "brief": {
@@ -17892,7 +17932,7 @@
         "summary": "Is a hosted service outside the Workbench product boundary, or only unnecessary for this local board?",
         "why": "GB-0033 still asks about the withheld product non-goal. The later local-board hosting decision settles the board, not every room’s product.",
         "artifacts": "DDR-000U owns this consequential principle. The related GB identities preserve the underlying questions and their original source links.",
-        "recommendation": "Agent proposal: keep the accepted DDR-000U decision as the starting point; supply the missing rationale or a scoped correction in your note. Confirm retains the established principle only. It does not select every supporting option or approve a Spec.",
+        "recommendation": "Agent proposal: keep the accepted DDR-000U decision as the starting point. Use Record my principle and why to state the missing premise and rationale, or Correct to state a scoped correction. Your written answer concerns this principle; it does not select every supporting option or approve a Spec.",
         "changes": "The owner’s answer is reconciled into this decision record or its corrected successor, then agents derive the related applications within its scope.",
         "impact": "One rationale can guide multiple questions. A specific approval remains content-bound to its original work; no group answer approves it automatically.",
         "history": "The original member questions, words, statuses, sources and revisions are retained, including questions already settled by later sources."
@@ -17906,7 +17946,7 @@
       "title": "A fresh session loads only the context its work needs · underlying rationale",
       "question": "When context efficiency, human oversight and dependable continuity conflict, what should guide the tradeoff?",
       "current": "DDR-000F is accepted.\n\nRelated original questions: GB-0039, GB-0160.\n\nThe current record limits entry context, but GB-0160 explicitly says the relative priority is not settled.",
-      "proposal": "Agent proposal: keep the accepted DDR-000F decision as the starting point; supply the missing rationale or a scoped correction in your note. Confirm retains the established principle only. It does not select every supporting option or approve a Spec.",
+      "proposal": "Agent proposal: keep the accepted DDR-000F decision as the starting point. Use Record my principle and why to state the missing premise and rationale, or Correct to state a scoped correction. Your written answer concerns this principle; it does not select every supporting option or approve a Spec.",
       "draft": "---\ndate: 2026-10-03\nsupersedes:\ncanonicalized_in:\n  - BLUEPRINT.md\n---\n\n# A fresh session loads only the context its work needs\n\nLandmark: Context efficiency.\n\nThrough progressive disclosure, a fresh session loads only the context its work needs and recovers the owner's intent, settled decisions, unfinished obligations and open questions without the owner reconstructing the conversation.\n\nWhy the owner chose it:\n\n- On the always-loaded layer, the owner, in his own words (2026-10-02, DDR and control-surface grilling): \"I kinda hate that we hard wrote all of that into AGENTS and the LEXICON. I thought that was the point of the skill and the role was so that those things didnt have to be written into and bloat up the contract.\"\n- The owner (2026-09-15, foundation ownership): \"why does an agent need to even know about a superseded or rejected ADR unless they need to look up what replaced it's history\"\n- On recovery, the owner, in his own words (2026-10-02, teardown round 1): \"The workbench is the complete handoff package, its everything the agent needs to pick up where the last session left off and continue.\"\n\nConsidered and rejected: None recorded.\n\nConsequences: None recorded as owner words. Accepted records that already cover part of this (progressive disclosure for the always-loaded carriers; recovery from maintained owners; reachable obligations), not restated here: [Contract carriers are briefs that point to skills and authority flows through the pointer](../adr/000W-contract-carriers-are-briefs-that-point-to-skills-and-authority-flows-through-the-pointer.md), [Workbench continuity through maintained owners](../adr/0043-workbench-continuity-through-maintained-owners.md) and [Traverse, don't search is core Workbench navigation](../adr/0042-traverse-dont-search-is-core-workbench-navigation.md).\n\nProvenance: the Blueprint teardown grilling of 2026-10-02 to 2026-10-03: question BT-D19 (a session loads only what its work needs), locked 2026-10-03 on the round-6 card; reasons from questions WHY-B2 and WHY-B4.\n",
       "options": [
         {
@@ -17935,7 +17975,7 @@
         "decision-rationale",
         "DDR-000F"
       ],
-      "revision": 2,
+      "revision": 3,
       "status": "open",
       "applied": null,
       "history": [
@@ -17954,6 +17994,16 @@
             "draft",
             "options"
           ]
+        },
+        {
+          "revision": 3,
+          "at": "2026-10-07T06:29:37.350Z",
+          "by": "codex",
+          "reason": "Make the reviewed proposal and recommendation agree with the written-rationale options",
+          "changes": [
+            "proposal",
+            "brief"
+          ]
         }
       ],
       "brief": {
@@ -17961,7 +18011,7 @@
         "summary": "When context efficiency, human oversight and dependable continuity conflict, what should guide the tradeoff?",
         "why": "The current record limits entry context, but GB-0160 explicitly says the relative priority is not settled.",
         "artifacts": "DDR-000F owns this consequential principle. The related GB identities preserve the underlying questions and their original source links.",
-        "recommendation": "Agent proposal: keep the accepted DDR-000F decision as the starting point; supply the missing rationale or a scoped correction in your note. Confirm retains the established principle only. It does not select every supporting option or approve a Spec.",
+        "recommendation": "Agent proposal: keep the accepted DDR-000F decision as the starting point. Use Record my principle and why to state the missing premise and rationale, or Correct to state a scoped correction. Your written answer concerns this principle; it does not select every supporting option or approve a Spec.",
         "changes": "The owner’s answer is reconciled into this decision record or its corrected successor, then agents derive the related applications within its scope.",
         "impact": "One rationale can guide multiple questions. A specific approval remains content-bound to its original work; no group answer approves it automatically.",
         "history": "The original member questions, words, statuses, sources and revisions are retained, including questions already settled by later sources."
@@ -18028,7 +18078,7 @@
       "title": "Instruction authority is separate from state resolution · underlying rationale",
       "question": "What exact approval context should travel with a concrete publication action?",
       "current": "ADR-0027 is accepted.\n\nRelated original questions: GB-0181.\n\nGB-0181 is an existing discussion-only intake. Resolve its principle without treating the discussion as authorization of publication.",
-      "proposal": "Agent proposal: keep the accepted ADR-0027 decision as the starting point; supply the missing rationale or a scoped correction in your note. Confirm retains the established principle only. It does not select every supporting option or approve a Spec.",
+      "proposal": "Agent proposal: keep the accepted ADR-0027 decision as the starting point. Use Record my principle and why to state the missing premise and rationale, or Correct to state a scoped correction. Your written answer concerns this principle; it does not select every supporting option or approve a Spec.",
       "draft": "---\ndate: 2026-09-04\ncanonicalized_in:\n  - AGENTS.md\n---\n\n# Instruction authority is separate from state resolution\n\nInstruction authority answers what an agent may do: the current owner request, then the applicable `AGENTS.md` and platform safety, then the explicitly assigned spec as a bounded capability delegate, then the procedural controls. State resolution answers what is currently implemented: source and tests verified live are compared with Canon claims, and the comparison yields a named condition rather than a winner. Newer Canon means an implementation gap; newer verified Actuality means documentation drift; unclear ordering is an ambiguity to investigate and surface.\n\nConsidered and rejected: a single precedence list that placed source above the assigned spec while also saying the spec owns requirements. \"Code always wins\" erases accepted requirements the code has not reached; \"Canon proves implementation\" lets prose claim behavior that does not exist.\n\nConsequences: no artifact can broaden scope by being higher in a list; drift is repaired in the touched owner rather than resolved by a universal shortcut; the no-governance-tax rule follows, because ordinary owner-directed work needs no extra ceremony to establish which list applies.\n\nProvenance: owner-reviewed v3.1 greenlight decision, promoted 2026-09-04; see the tracked checkpoint `llm-workbench-v3-1-plan-2026-09-04.md` in the manifest-declared checkpoint collection.\n\n## v3.2.0 reconciliation (2026-09-08)\n\nComposition inherits the assigned intersection of authority; read-only applies to the named target. Proof and review cannot manufacture owner authorization. See [ADR-0045](0045-skill-composition-within-inherited-scope.md).\n",
       "options": [
         {
@@ -18057,7 +18107,7 @@
         "decision-rationale",
         "ADR-0027"
       ],
-      "revision": 2,
+      "revision": 3,
       "status": "open",
       "applied": null,
       "history": [
@@ -18076,6 +18126,16 @@
             "draft",
             "options"
           ]
+        },
+        {
+          "revision": 3,
+          "at": "2026-10-07T06:29:37.379Z",
+          "by": "codex",
+          "reason": "Make the reviewed proposal and recommendation agree with the written-rationale options",
+          "changes": [
+            "proposal",
+            "brief"
+          ]
         }
       ],
       "brief": {
@@ -18083,7 +18143,7 @@
         "summary": "What exact approval context should travel with a concrete publication action?",
         "why": "GB-0181 is an existing discussion-only intake. Resolve its principle without treating the discussion as authorization of publication.",
         "artifacts": "ADR-0027 owns this consequential principle. The related GB identities preserve the underlying questions and their original source links.",
-        "recommendation": "Agent proposal: keep the accepted ADR-0027 decision as the starting point; supply the missing rationale or a scoped correction in your note. Confirm retains the established principle only. It does not select every supporting option or approve a Spec.",
+        "recommendation": "Agent proposal: keep the accepted ADR-0027 decision as the starting point. Use Record my principle and why to state the missing premise and rationale, or Correct to state a scoped correction. Your written answer concerns this principle; it does not select every supporting option or approve a Spec.",
         "changes": "The owner’s answer is reconciled into this decision record or its corrected successor, then agents derive the related applications within its scope.",
         "impact": "One rationale can guide multiple questions. A specific approval remains content-bound to its original work; no group answer approves it automatically.",
         "history": "The original member questions, words, statuses, sources and revisions are retained, including questions already settled by later sources."
@@ -18208,7 +18268,7 @@
       "prompt": "GB-0183",
       "question": "What must a short read or control result preserve so an agent can safely act on it?",
       "why": "Related questions concern identity, revision, corrections, honest partial output and whether settings persist. Establish the invariant before deriving individual interface choices.",
-      "proposal": "Agent proposal: keep the accepted ADR-000T decision as the starting point; supply the missing rationale or a scoped correction in your note. Confirm retains the established principle only. It does not select every supporting option or approve a Spec."
+      "proposal": "Agent proposal: keep the accepted ADR-000T decision as the starting point. Use Record my principle and why to state the missing premise and rationale, or Correct to state a scoped correction. Your written answer concerns this principle; it does not select every supporting option or approve a Spec."
     },
     {
       "record": "ADR-000V",
@@ -18325,7 +18385,7 @@
       "prompt": "GB-0185",
       "question": "What visibility does GitHub need to provide for work to move between hosts, and is GitHub Projects required for that outcome?",
       "why": "The cross-host destination is settled. GB-0023 asks whether Projects is necessary to meet it; a named tool should follow from the outcome.",
-      "proposal": "Agent proposal: keep the accepted DDR-000H decision as the starting point; supply the missing rationale or a scoped correction in your note. Confirm retains the established principle only. It does not select every supporting option or approve a Spec."
+      "proposal": "Agent proposal: keep the accepted DDR-000H decision as the starting point. Use Record my principle and why to state the missing premise and rationale, or Correct to state a scoped correction. Your written answer concerns this principle; it does not select every supporting option or approve a Spec."
     },
     {
       "record": "DDR-000Q",
@@ -18339,7 +18399,7 @@
       "prompt": "GB-0186",
       "question": "What would convince you that a small delivered slice fulfills its concept?",
       "why": "The release demonstration is settled; GB-0179 preserves the still-unsettled criterion for an individual slice.",
-      "proposal": "Agent proposal: keep the accepted DDR-000Q decision as the starting point; supply the missing rationale or a scoped correction in your note. Confirm retains the established principle only. It does not select every supporting option or approve a Spec."
+      "proposal": "Agent proposal: keep the accepted DDR-000Q decision as the starting point. Use Record my principle and why to state the missing premise and rationale, or Correct to state a scoped correction. Your written answer concerns this principle; it does not select every supporting option or approve a Spec."
     },
     {
       "record": "ADR-000Q",
@@ -18402,7 +18462,7 @@
       "prompt": "GB-0187",
       "question": "Is a hosted service outside the Workbench product boundary, or only unnecessary for this local board?",
       "why": "GB-0033 still asks about the withheld product non-goal. The later local-board hosting decision settles the board, not every room’s product.",
-      "proposal": "Agent proposal: keep the accepted DDR-000U decision as the starting point; supply the missing rationale or a scoped correction in your note. Confirm retains the established principle only. It does not select every supporting option or approve a Spec."
+      "proposal": "Agent proposal: keep the accepted DDR-000U decision as the starting point. Use Record my principle and why to state the missing premise and rationale, or Correct to state a scoped correction. Your written answer concerns this principle; it does not select every supporting option or approve a Spec."
     },
     {
       "record": "DDR-000A",
@@ -18466,7 +18526,7 @@
       "prompt": "GB-0188",
       "question": "When context efficiency, human oversight and dependable continuity conflict, what should guide the tradeoff?",
       "why": "The current record limits entry context, but GB-0160 explicitly says the relative priority is not settled.",
-      "proposal": "Agent proposal: keep the accepted DDR-000F decision as the starting point; supply the missing rationale or a scoped correction in your note. Confirm retains the established principle only. It does not select every supporting option or approve a Spec."
+      "proposal": "Agent proposal: keep the accepted DDR-000F decision as the starting point. Use Record my principle and why to state the missing premise and rationale, or Correct to state a scoped correction. Your written answer concerns this principle; it does not select every supporting option or approve a Spec."
     },
     {
       "record": "DDR-000G",
@@ -18855,7 +18915,7 @@
       "prompt": "GB-0190",
       "question": "What exact approval context should travel with a concrete publication action?",
       "why": "GB-0181 is an existing discussion-only intake. Resolve its principle without treating the discussion as authorization of publication.",
-      "proposal": "Agent proposal: keep the accepted ADR-0027 decision as the starting point; supply the missing rationale or a scoped correction in your note. Confirm retains the established principle only. It does not select every supporting option or approve a Spec."
+      "proposal": "Agent proposal: keep the accepted ADR-0027 decision as the starting point. Use Record my principle and why to state the missing premise and rationale, or Correct to state a scoped correction. Your written answer concerns this principle; it does not select every supporting option or approve a Spec."
     }
   ],
   "decisionHistory": [
@@ -18863,6 +18923,11 @@
       "at": "2026-10-07T06:08:54.800Z",
       "by": "codex",
       "reason": "Owner, 2026-10-06: group every question by ADR, DDR or residual CDR and preserve a reusable logic path through decisions and approvals"
+    },
+    {
+      "at": "2026-10-07T06:29:37.545Z",
+      "by": "codex",
+      "reason": "Keep grouped navigation consistent with the versioned rationale prompts"
     }
   ]
 }
