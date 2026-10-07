@@ -1,0 +1,99 @@
+✖ growth rollback records original absence and restores the historical eleven-file generation (573.086834ms)
+✖ growth rollback recovers the recorded legacy nine-backed-up eleven-to-twenty-nine shape (568.505791ms)
+✔ growth rollback refuses unrecorded before any lane writes (555.447541ms)
+✔ growth rollback refuses modified-introduced before any lane writes (546.314875ms)
+✔ growth rollback refuses modified-restored before any lane writes (549.85725ms)
+✔ growth rollback refuses corrupt-backup before any lane writes (544.697583ms)
+✔ growth rollback refuses unsafe-backup before any lane writes (541.852041ms)
+✔ growth rollback refuses inconsistent-absence before any lane writes (543.167583ms)
+✔ growth rollback refuses missing-unchanged before any lane writes (549.406916ms)
+✔ growth rollback refuses unknown-legacy-source before any lane writes (552.156875ms)
+✖ growth rollback restores an originally present unreceipted managed name instead of deleting it (544.932583ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 8
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6162.814834
+
+✖ failing tests:
+
+test at tools/test-workbench-tools.mjs:521:1
+✖ growth rollback records original absence and restores the historical eleven-file generation (573.086834ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   '.gitkeep',
+      'adr.mjs',
+      'diagnostics.mjs',
+      'markdown-table.mjs',
+      'privacy.mjs',
+      'sessions.mjs',
+  
+      at assertRestoredGeneration (file://<producer-checkout>/tools/test-workbench-tools.mjs:511:10)
+      at TestContext.<anonymous> (file://<producer-checkout>/tools/test-workbench-tools.mjs:530:5)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '.gitkeep', 'adr.mjs', 'diagnostics.mjs', 'markdown-table.mjs', 'privacy.mjs', 'sessions.mjs', 'spec-packet.mjs', 'spec-workbench.mjs', 'template-placeholders.mjs', 'wiki.mjs', 'workbench-layout.mjs', 'workbench-paths.mjs' ],
+    expected: [ 'adr.mjs', 'diagnostics.mjs', 'markdown-table.mjs', 'privacy.mjs', 'sessions.mjs', 'spec-packet.mjs', 'spec-workbench.mjs', 'template-placeholders.mjs', 'wiki.mjs', 'workbench-layout.mjs', 'workbench-paths.mjs' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tools/test-workbench-tools.mjs:533:1
+✖ growth rollback recovers the recorded legacy nine-backed-up eleven-to-twenty-nine shape (568.505791ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'blocked'
+  - 'rolled-back'
+  
+      at TestContext.<anonymous> (file://<producer-checkout>/tools/test-workbench-tools.mjs:539:12)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'blocked',
+    expected: 'rolled-back',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tools/test-workbench-tools.mjs:571:1
+✖ growth rollback restores an originally present unreceipted managed name instead of deleting it (544.932583ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   '.gitkeep',
+      'adr.mjs',
+      'claim-coordination.mjs',
+      'diagnostics.mjs',
+      'markdown-table.mjs',
+      'privacy.mjs',
+  
+      at TestContext.<anonymous> (file://<producer-checkout>/tools/test-workbench-tools.mjs:581:12)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '.gitkeep', 'adr.mjs', 'claim-coordination.mjs', 'diagnostics.mjs', 'markdown-table.mjs', 'privacy.mjs', 'sessions.mjs', 'spec-packet.mjs', 'spec-workbench.mjs', 'template-placeholders.mjs', 'wiki.mjs', 'workbench-layout.mjs', 'workbench-paths.mjs' ],
+    expected: [ 'adr.mjs', 'claim-coordination.mjs', 'diagnostics.mjs', 'markdown-table.mjs', 'privacy.mjs', 'sessions.mjs', 'spec-packet.mjs', 'spec-workbench.mjs', 'template-placeholders.mjs', 'wiki.mjs', 'workbench-layout.mjs', 'workbench-paths.mjs' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
