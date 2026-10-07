@@ -1,0 +1,848 @@
+{
+  "kind": "planning-documentation-verification",
+  "date": "2026-10-06",
+  "source_commit": "3d40a86505a339096c4629b814eb4fed1c789d5d",
+  "base_commit": "42431879fab3057db9e26ae661b4e92512c281f0",
+  "full_suite": {
+    "passed": 53,
+    "total": 53,
+    "commands": [
+      {
+        "command": "node tools/test-spec-workbench.mjs",
+        "exit_code": 0,
+        "seconds": 181.97
+      },
+      {
+        "command": "node tools/test-spec-assembly-selection.mjs",
+        "exit_code": 0,
+        "seconds": 1.97
+      },
+      {
+        "command": "node tools/test-skill-catalog.mjs",
+        "exit_code": 0,
+        "seconds": 0.33
+      },
+      {
+        "command": "node tools/test-skill-inspection.mjs",
+        "exit_code": 0,
+        "seconds": 0.11
+      },
+      {
+        "command": "node tools/test-skills-lane.mjs",
+        "exit_code": 0,
+        "seconds": 7.79
+      },
+      {
+        "command": "node tools/test-core-composition.mjs",
+        "exit_code": 0,
+        "seconds": 2.41
+      },
+      {
+        "command": "node tools/test-project-evidence.mjs",
+        "exit_code": 0,
+        "seconds": 0.98
+      },
+      {
+        "command": "node tools/test-genesis-from-decisions.mjs",
+        "exit_code": 0,
+        "seconds": 27.2
+      },
+      {
+        "command": "node tools/test-blueprint-contract.mjs",
+        "exit_code": 0,
+        "seconds": 0.12
+      },
+      {
+        "command": "node tools/test-session-transport.mjs",
+        "exit_code": 0,
+        "seconds": 21.4
+      },
+      {
+        "command": "node tools/test-configured-host.mjs",
+        "exit_code": 0,
+        "seconds": 10.69
+      },
+      {
+        "command": "node tools/test-core-skill-installer.mjs",
+        "exit_code": 0,
+        "seconds": 16.74
+      },
+      {
+        "command": "node tools/test-workbench-layout.mjs",
+        "exit_code": 0,
+        "seconds": 47.22
+      },
+      {
+        "command": "node tools/test-workbench-adoption.mjs",
+        "exit_code": 0,
+        "seconds": 11.4
+      },
+      {
+        "command": "node tools/test-workbench-upgrade.mjs",
+        "exit_code": 0,
+        "seconds": 11.81
+      },
+      {
+        "command": "node tools/test-workbench-tools.mjs",
+        "exit_code": 0,
+        "seconds": 8.25
+      },
+      {
+        "command": "node tools/test-diagnostics.mjs",
+        "exit_code": 0,
+        "seconds": 32.59
+      },
+      {
+        "command": "node tools/test-adr.mjs",
+        "exit_code": 0,
+        "seconds": 18.57
+      },
+      {
+        "command": "node tools/test-governance-core.mjs",
+        "exit_code": 0,
+        "seconds": 0.1
+      },
+      {
+        "command": "node tools/test-branch-closeout.mjs",
+        "exit_code": 0,
+        "seconds": 5.27
+      },
+      {
+        "command": "node tools/test-wiki.mjs",
+        "exit_code": 0,
+        "seconds": 9.97
+      },
+      {
+        "command": "node tools/test-sessions.mjs",
+        "exit_code": 0,
+        "seconds": 5.98
+      },
+      {
+        "command": "node tools/test-notepads.mjs",
+        "exit_code": 0,
+        "seconds": 12.29
+      },
+      {
+        "command": "node tools/test-visible-ids.mjs",
+        "exit_code": 0,
+        "seconds": 0.59
+      },
+      {
+        "command": "node tools/test-workbench-identity.mjs",
+        "exit_code": 0,
+        "seconds": 3.83
+      },
+      {
+        "command": "node tools/test-visible-id-consumers.mjs",
+        "exit_code": 0,
+        "seconds": 13.41
+      },
+      {
+        "command": "node tools/test-direct-promotion.mjs",
+        "exit_code": 0,
+        "seconds": 4.34
+      },
+      {
+        "command": "node tools/test-workbench-round-trip.mjs",
+        "exit_code": 0,
+        "seconds": 42.38
+      },
+      {
+        "command": "node tools/test-cross-provider-fixture.mjs",
+        "exit_code": 0,
+        "seconds": 2.33
+      },
+      {
+        "command": "node tools/test-portability-matrix.mjs",
+        "exit_code": 0,
+        "seconds": 0.53
+      },
+      {
+        "command": "node tools/test-workbench-dogfood.mjs",
+        "exit_code": 0,
+        "seconds": 5.79
+      },
+      {
+        "command": "node tools/test-evaluate-workbench.mjs",
+        "exit_code": 0,
+        "seconds": 0.34
+      },
+      {
+        "command": "node tools/test-guardrail-audit.mjs",
+        "exit_code": 0,
+        "seconds": 0.28
+      },
+      {
+        "command": "node tools/test-context-tools.mjs",
+        "exit_code": 0,
+        "seconds": 0.25
+      },
+      {
+        "command": "node tools/test-outcome-trials.mjs",
+        "exit_code": 0,
+        "seconds": 0.63
+      },
+      {
+        "command": "node tools/test-eval-runner.mjs",
+        "exit_code": 0,
+        "seconds": 0.89
+      },
+      {
+        "command": "node tools/test-feedback-automation.mjs",
+        "exit_code": 0,
+        "seconds": 0.56
+      },
+      {
+        "command": "node tools/test-symlink-invocation.mjs",
+        "exit_code": 0,
+        "seconds": 0.89
+      },
+      {
+        "command": "node tools/test-control-fidelity.mjs",
+        "exit_code": 0,
+        "seconds": 1.95
+      },
+      {
+        "command": "node tools/test-spec-citation-anchors.mjs",
+        "exit_code": 0,
+        "seconds": 24.79
+      },
+      {
+        "command": "node tools/test-controls-vocabulary-sweep.mjs",
+        "exit_code": 0,
+        "seconds": 0.07
+      },
+      {
+        "command": "node tools/test-carrier-landing.mjs",
+        "exit_code": 0,
+        "seconds": 3.13
+      },
+      {
+        "command": "node tools/test-runbook-index.mjs",
+        "exit_code": 0,
+        "seconds": 0.74
+      },
+      {
+        "command": "node tools/test-spec-report.mjs",
+        "exit_code": 0,
+        "seconds": 34.1
+      },
+      {
+        "command": "node tools/test-landmark-wiki.mjs",
+        "exit_code": 0,
+        "seconds": 8.49
+      },
+      {
+        "command": "node tools/test-self-drift.mjs",
+        "exit_code": 0,
+        "seconds": 0.32
+      },
+      {
+        "command": "node tools/test-feedback-inventory.mjs",
+        "exit_code": 0,
+        "seconds": 0.12
+      },
+      {
+        "command": "node tools/test-grilling-ledger.mjs",
+        "exit_code": 0,
+        "seconds": 0.18
+      },
+      {
+        "command": "node tools/test-grill-board.mjs",
+        "exit_code": 0,
+        "seconds": 0.75
+      },
+      {
+        "command": "python3 tools/test-check-append-only.py",
+        "exit_code": 0,
+        "seconds": 254.39
+      },
+      {
+        "command": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+        "exit_code": 0,
+        "seconds": 0.42
+      },
+      {
+        "command": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+        "exit_code": 0,
+        "seconds": 0.07
+      },
+      {
+        "command": "node workbench/tools/spec-workbench.mjs doctor",
+        "exit_code": 0,
+        "seconds": 3.21
+      }
+    ]
+  },
+  "targeted": [
+    {
+      "command": "node tools/test-blueprint-contract.mjs",
+      "initial": "FAIL: added decision-record link violates the Blueprint contract",
+      "repair": "Remove the link while retaining the vocabulary destination sentence; do not change the test",
+      "rerun": "PASS"
+    },
+    {
+      "command": "node tools/test-spec-citation-anchors.mjs",
+      "result": "16/16 passed"
+    },
+    {
+      "command": "node tools/test-evaluate-workbench.mjs",
+      "result": "PASS; local score 113"
+    },
+    {
+      "command": "node workbench/tools/adr.mjs validate",
+      "result": "PASS"
+    },
+    {
+      "command": "node workbench/tools/wiki.mjs validate",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "manual_readback": [
+    "All three reused Specs remain planned, unassigned and Builder with only .gitkeep in tasks.",
+    "Every historical evidence row at the integration base remains verbatim.",
+    "Relative Markdown targets resolve across all 12 changed owners and projections.",
+    "Wiki small lint: changed article and router agree with linked DDR/Spec/continuity owners; intended behavior stays distinct from inspected implementation.",
+    "No glossary, architecture migration, skill implementation, Task cut, PR, merge or main promotion occurred."
+  ],
+  "doctor": [
+    {
+      "code": "stale-claim",
+      "severity": "attention",
+      "scope": "specs",
+      "blocks": "none",
+      "message": "S-003W has an in-progress task last updated 2026-10-04",
+      "specId": "S-003W"
+    },
+    {
+      "code": "blocked-slice",
+      "severity": "error",
+      "scope": "specs",
+      "blocks": "selected-slice",
+      "message": "S-004L/TK-006W waits on TK-006V",
+      "specId": "S-004L",
+      "taskId": "TK-006W"
+    },
+    {
+      "code": "blocked-slice",
+      "severity": "error",
+      "scope": "specs",
+      "blocks": "selected-slice",
+      "message": "S-004M/TK-008V waits on TK-008U",
+      "specId": "S-004M",
+      "taskId": "TK-008V"
+    },
+    {
+      "code": "blocked-slice",
+      "severity": "error",
+      "scope": "specs",
+      "blocks": "selected-slice",
+      "message": "S-004M/TK-008W waits on TK-008V",
+      "specId": "S-004M",
+      "taskId": "TK-008W"
+    },
+    {
+      "code": "blocked-slice",
+      "severity": "error",
+      "scope": "specs",
+      "blocks": "selected-slice",
+      "message": "S-004M/TK-008X waits on TK-008W",
+      "specId": "S-004M",
+      "taskId": "TK-008X"
+    },
+    {
+      "code": "stale-claim",
+      "severity": "attention",
+      "scope": "specs",
+      "blocks": "none",
+      "message": "S-00Q has an in-progress task last updated 2026-09-19",
+      "specId": "S-00Q"
+    },
+    {
+      "code": "stale-claim",
+      "severity": "attention",
+      "scope": "specs",
+      "blocks": "none",
+      "message": "S-01H has an in-progress task last updated 2026-10-03",
+      "specId": "S-01H"
+    },
+    {
+      "code": "stale-claim",
+      "severity": "attention",
+      "scope": "specs",
+      "blocks": "none",
+      "message": "S-01P has an in-progress task last updated 2026-10-03",
+      "specId": "S-01P"
+    },
+    {
+      "code": "stale-claim",
+      "severity": "attention",
+      "scope": "specs",
+      "blocks": "none",
+      "message": "S-01S has an in-progress task last updated 2026-10-03",
+      "specId": "S-01S"
+    },
+    {
+      "code": "stale-seed",
+      "severity": "attention",
+      "scope": "feedback",
+      "blocks": "none",
+      "message": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+      "document": "workbench/feedback/REPORT_FORMAT.md",
+      "release": "v3.1.4",
+      "expected": "v3.2.1"
+    },
+    {
+      "code": "stale-seed",
+      "severity": "attention",
+      "scope": "feedback",
+      "blocks": "none",
+      "message": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+      "document": "workbench/sessions/notepads/templates/notepad.schema.json",
+      "release": "v3.1.4",
+      "expected": "v3.2.1"
+    },
+    {
+      "code": "stale-seed",
+      "severity": "attention",
+      "scope": "feedback",
+      "blocks": "none",
+      "message": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+      "document": "workbench/sessions/notepads/templates/work.example.json",
+      "release": "v3.1.4",
+      "expected": "v3.2.1"
+    },
+    {
+      "code": "stale-seed",
+      "severity": "attention",
+      "scope": "feedback",
+      "blocks": "none",
+      "message": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+      "document": "workbench/sessions/notepads/templates/grilling.example.json",
+      "release": "v3.1.4",
+      "expected": "v3.2.1"
+    },
+    {
+      "code": "stale-seed",
+      "severity": "attention",
+      "scope": "feedback",
+      "blocks": "none",
+      "message": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+      "document": "workbench/sessions/notepads/templates/handoff.example.json",
+      "release": "v3.1.4",
+      "expected": "v3.2.1"
+    },
+    {
+      "code": "unverified-provenance",
+      "severity": "attention",
+      "scope": "manifest",
+      "blocks": "none",
+      "message": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+      "field": "release",
+      "release": "v3.1.0",
+      "expected": "v3.2.1"
+    }
+  ],
+  "self_drift_summary": {
+    "pre": {
+      "phase": "pre",
+      "sourceRevision": "42431879fab3057db9e26ae661b4e92512c281f0",
+      "dirty": false,
+      "workbenchVersion": "v3.2.1",
+      "findings": [
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-003W has an in-progress task last updated 2026-10-04",
+          "expected": "current owner and verified identity",
+          "observed": "S-003W has an in-progress task last updated 2026-10-04",
+          "correction": "S-003W has an in-progress task last updated 2026-10-04",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004L/TK-006W waits on TK-006V",
+          "expected": "current owner and verified identity",
+          "observed": "S-004L/TK-006W waits on TK-006V",
+          "correction": "S-004L/TK-006W waits on TK-006V",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004M/TK-008V waits on TK-008U",
+          "expected": "current owner and verified identity",
+          "observed": "S-004M/TK-008V waits on TK-008U",
+          "correction": "S-004M/TK-008V waits on TK-008U",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004M/TK-008W waits on TK-008V",
+          "expected": "current owner and verified identity",
+          "observed": "S-004M/TK-008W waits on TK-008V",
+          "correction": "S-004M/TK-008W waits on TK-008V",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004M/TK-008X waits on TK-008W",
+          "expected": "current owner and verified identity",
+          "observed": "S-004M/TK-008X waits on TK-008W",
+          "correction": "S-004M/TK-008X waits on TK-008W",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-00Q has an in-progress task last updated 2026-09-19",
+          "expected": "current owner and verified identity",
+          "observed": "S-00Q has an in-progress task last updated 2026-09-19",
+          "correction": "S-00Q has an in-progress task last updated 2026-09-19",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-01H has an in-progress task last updated 2026-10-03",
+          "expected": "current owner and verified identity",
+          "observed": "S-01H has an in-progress task last updated 2026-10-03",
+          "correction": "S-01H has an in-progress task last updated 2026-10-03",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-01P has an in-progress task last updated 2026-10-03",
+          "expected": "current owner and verified identity",
+          "observed": "S-01P has an in-progress task last updated 2026-10-03",
+          "correction": "S-01P has an in-progress task last updated 2026-10-03",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-01S has an in-progress task last updated 2026-10-03",
+          "expected": "current owner and verified identity",
+          "observed": "S-01S has an in-progress task last updated 2026-10-03",
+          "correction": "S-01S has an in-progress task last updated 2026-10-03",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/feedback/REPORT_FORMAT.md",
+          "claim": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/notepad.schema.json",
+          "claim": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/work.example.json",
+          "claim": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/grilling.example.json",
+          "claim": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/handoff.example.json",
+          "claim": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "unverified-provenance",
+          "artifact": "manifest",
+          "claim": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        }
+      ],
+      "machineResult": "blocked",
+      "cleanUpdate": false,
+      "limitations": [
+        "Machine evidence does not establish semantic freshness. Review current-facing claims against their owners and record a no-memory cold-start read-back.",
+        "Target-project drift is a separate operation.",
+        "Installed-source files do not prove native host callability; no installation or repair is performed."
+      ]
+    },
+    "post": {
+      "phase": "post",
+      "sourceRevision": "3d40a86505a339096c4629b814eb4fed1c789d5d",
+      "dirty": false,
+      "workbenchVersion": "v3.2.1",
+      "findings": [
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-003W has an in-progress task last updated 2026-10-04",
+          "expected": "current owner and verified identity",
+          "observed": "S-003W has an in-progress task last updated 2026-10-04",
+          "correction": "S-003W has an in-progress task last updated 2026-10-04",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004L/TK-006W waits on TK-006V",
+          "expected": "current owner and verified identity",
+          "observed": "S-004L/TK-006W waits on TK-006V",
+          "correction": "S-004L/TK-006W waits on TK-006V",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004M/TK-008V waits on TK-008U",
+          "expected": "current owner and verified identity",
+          "observed": "S-004M/TK-008V waits on TK-008U",
+          "correction": "S-004M/TK-008V waits on TK-008U",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004M/TK-008W waits on TK-008V",
+          "expected": "current owner and verified identity",
+          "observed": "S-004M/TK-008W waits on TK-008V",
+          "correction": "S-004M/TK-008W waits on TK-008V",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004M/TK-008X waits on TK-008W",
+          "expected": "current owner and verified identity",
+          "observed": "S-004M/TK-008X waits on TK-008W",
+          "correction": "S-004M/TK-008X waits on TK-008W",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-00Q has an in-progress task last updated 2026-09-19",
+          "expected": "current owner and verified identity",
+          "observed": "S-00Q has an in-progress task last updated 2026-09-19",
+          "correction": "S-00Q has an in-progress task last updated 2026-09-19",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-01H has an in-progress task last updated 2026-10-03",
+          "expected": "current owner and verified identity",
+          "observed": "S-01H has an in-progress task last updated 2026-10-03",
+          "correction": "S-01H has an in-progress task last updated 2026-10-03",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-01P has an in-progress task last updated 2026-10-03",
+          "expected": "current owner and verified identity",
+          "observed": "S-01P has an in-progress task last updated 2026-10-03",
+          "correction": "S-01P has an in-progress task last updated 2026-10-03",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-01S has an in-progress task last updated 2026-10-03",
+          "expected": "current owner and verified identity",
+          "observed": "S-01S has an in-progress task last updated 2026-10-03",
+          "correction": "S-01S has an in-progress task last updated 2026-10-03",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/feedback/REPORT_FORMAT.md",
+          "claim": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/notepad.schema.json",
+          "claim": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/work.example.json",
+          "claim": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/grilling.example.json",
+          "claim": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/handoff.example.json",
+          "claim": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "unverified-provenance",
+          "artifact": "manifest",
+          "claim": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        }
+      ],
+      "machineResult": "blocked",
+      "cleanUpdate": false,
+      "limitations": [
+        "Machine evidence does not establish semantic freshness. Review current-facing claims against their owners and record a no-memory cold-start read-back.",
+        "Target-project drift is a separate operation.",
+        "Installed-source files do not prove native host callability; no installation or repair is performed."
+      ]
+    }
+  },
+  "limits": [
+    "Documentation checks do not prove future skill behavior, configured-host invocation, migration, final-package review, owner Human QA or release closure.",
+    "Full suite applies to the named clean source commit. This later receipt and evidence rows are preservation only; no full-suite rerun on the receipt commit is claimed.",
+    "Self-drift summaries omit the native receipts inventory; the unchanged finding set remains visible and cleanUpdate stays false.",
+    "Templates are not migrated by this planning pass; S-004O owns the paired generic runtime/control changes."
+  ]
+}
