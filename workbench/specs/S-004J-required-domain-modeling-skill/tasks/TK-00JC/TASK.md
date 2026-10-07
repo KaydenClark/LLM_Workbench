@@ -3,7 +3,7 @@
 **Task ID:** TK-00JC
 **Spec ID:** S-004J
 **Slice:** Reconcile the Domain Modeling Wiki article with delivered behavior
-**Status:** done
+**Status:** ready
 **Stance:** Builder
 **Blockers:** TK-00JB
 **Destination:** spec-acceptance: The Wiki article separates upstream method, Workbench adaptation and verified behavior and limits.
@@ -27,3 +27,9 @@ The article and router read back against the delivered source and the scenario e
 |---|---|---|---|---|---|---|---|---|
 | 1 | claude/s004j-assembly | 989f1b0973f63c59f3cda8630160d178a3bf7686 | ahead 0 behind 0 | 0 | wiki.mjs validate ok, no findings; test-wiki 25/25; lifecycle-directory-links 3/3; skill-catalog green; doctor no blocking finding; full RUNBOOK suite 54/54 on clean 989f1b09; fast-forward into assembly verified at 989f1b09. | skill-domain-modeling.md rewritten into upstream method, Workbench adaptation and verified behavior and limits; MEMORY.md router lines for the article and this Spec; current bundle counts in skill-genesis, landmark-wiki, skills-draft README and implement-spec draft. Dated count history in skill-workbench-runtime and skill-grill-me checked; no update needed. | Assembled code review and owner Human QA; promote GLOSSARY.md destination owned by S-004O; release identity unassigned. | d7ddd94fa7f4024bd0eb29e60e137171cc196c802a1cc4625a75328dd5bdb08c |
 | 2 | claude/s004j-assembly | 64ce97257cdcd07cf5df10277c0f02c02a1f6798 | ahead 0 behind 0 | 0 | Wiki validate clean, test-wiki 25/25, full RUNBOOK suite 54/54 on clean 989f1b09; article separates upstream method, Workbench adaptation and verified behavior and limits; fast-forward into assembly verified | Domain Modeling article, Wiki router lines, current bundle counts in four Wiki pages; dated count history checked, no update needed | Assembled code review and owner Human QA; promote GLOSSARY.md destination owned by S-004O; release identity unassigned | 4dee6d73e9f8209580fc09cde4a43233a871e11a0e1728ac0fe9904a67218044 |
+
+## Continuation
+
+| Run | Date | Answers | Adjusted handoff |
+|---|---|---|---|
+| 1 | 2026-10-07 | evidence row 13 (fail verdict at d8b17a6a1f0099b6784ca2b87d3ff25eaadbd8e0 on 2026-10-07) | N2 and S3 the Domain Modeling Wiki article must match the corrected adapter list and name the scenario 4 prompt limit |

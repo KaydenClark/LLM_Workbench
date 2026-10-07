@@ -3,7 +3,7 @@
 **Task ID:** TK-00JA
 **Spec ID:** S-004J
 **Slice:** Ship the adapted domain-modeling skill in every room's lane
-**Status:** done
+**Status:** ready
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: A fresh clone discovers `domain-modeling` through both adapters; the manifest, layout bundle, catalog and count-bearing documents agree.
@@ -29,3 +29,11 @@ Both adapters resolve the lane source; the scoped source test proves the operati
 |---|---|---|---|---|---|---|---|---|
 | 1 | claude/s004j-assembly | bac6db41f207fa4e804e2cb1d3ae5b460663c647 | ahead 0 behind 0 | 0 | RED: test-domain-modeling-skill 0/10 with source absent; test-skill-catalog and test-skills-lane failed on the undeclared skill. GREEN at bac6db41: scoped 10/10, catalog 3/3, skills-lane 6/6, layout 76/76, runbook-index 62/62, installer 33/33; full RUNBOOK suite 54/54 on clean bac6db41 (also 54/54 on 6e5910c2). Self-drift pre/post 18 findings both, cleanUpdate false (pre-existing). Fast-forward merge into assembly verified at bac6db41. | Skill source and verbatim GLOSSARY-FORMAT, skills catalog, count tokens in README, templates/GENESIS, LEXICON and workbench-room-checks, root and template RUNBOOK index row and Full suite list. THIRD_PARTY_NOTICES and AGENTS checked; no update needed. | Fresh-context behavior proof (TK-00JB) and Wiki reconciliation (TK-00JC); two Wiki pages still say 28 skills; release identity for the bundle change is the release owner's. | 4076bf932e77a7f34b9433326c39f744eb6346d1c30acf1d2f1bba26f9a35970 |
 | 2 | claude/s004j-assembly | 3092dd3aca4f02be99142550db4d1394e4332a9c | ahead 0 behind 0 | 0 | Full RUNBOOK suite 54/54 on clean bac6db41; scoped domain-modeling 10/10 red-then-green; catalog, skills-lane, layout, runbook-index and installer green; fast-forward into assembly verified at bac6db41 | Skill source, catalog, count tokens, root and template RUNBOOK index row and suite list; THIRD_PARTY_NOTICES and AGENTS checked, no update needed | Behavior proof TK-00JB and Wiki TK-00JC; two Wiki pages still say 28 skills; release identity is the release owner's | 10cdba5e93d24eedda05d2793e6a6bf99d9f05616ad0933314cfb00f34188a73 |
+
+## Continuation
+
+| Run | Date | Answers | Adjusted handoff |
+|---|---|---|---|
+| 1 | 2026-10-07 | evidence row 13 (fail verdict at d8b17a6a1f0099b6784ca2b87d3ff25eaadbd8e0 on 2026-10-07) | B1 every room receives the verbatim MIT-licensed GLOSSARY-FORMAT.md without the MIT notice, so ship the full notice inside workbench/skills/domain-modeling as the pr skill does with its NOTICE.md and assert it in the scoped test |
+| 2 | 2026-10-07 | evidence row 13 (fail verdict at d8b17a6a1f0099b6784ca2b87d3ff25eaadbd8e0 on 2026-10-07) | S1 the scoped test still passes the write-boundary, ADR and DDR direction, promotion-route, Lexicon-fallback and confirmation-rule mutations, so assert each and show each assertion failing on its mutation |
+| 3 | 2026-10-07 | evidence row 13 (fail verdict at d8b17a6a1f0099b6784ca2b87d3ff25eaadbd8e0 on 2026-10-07) | S3 and N5 the adapter list claims every change but omits several and adds unrelated authority and evidence policy lines, so remove that policy, list each remaining change with its reason, restore capture as it happens and say the lazy-creation line in GLOSSARY-FORMAT does not apply |
