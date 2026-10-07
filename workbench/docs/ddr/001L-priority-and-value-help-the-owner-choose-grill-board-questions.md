@@ -17,7 +17,7 @@ classifications adopted from the Command Information Center (CIC).
 
 Priority guides attention to the question. Value classifies the capability or
 change it governs by return versus investment, using the unchanged
-[P1–P4 / V1–V4 meanings](../../../../LEXICON.md#priority-and-value).
+[P1–P4 / V1–V4 meanings](../../../LEXICON.md#priority-and-value).
 They never become a summed score. P1 remains an interrupt regardless of Value;
 quick wins must not continually crowd out strategic work. Explicit filters
 select the Owner's desired slice, including slices without P1.
@@ -49,7 +49,7 @@ Grading details must be available without distracting from the question.
 ## Consequences And Revisit Conditions
 
 The Blueprint carries the promised outcome, the Lexicon owns shared meanings,
-and [Shared Interactive Workbench Board — S-004D](../../../specs/S-004D-shared-interactive-board/SPEC.md#priority-and-value-for-answering-questions)
+and [Shared Interactive Workbench Board — S-004D](../../specs/S-004D-shared-interactive-board/SPEC.md#priority-and-value-for-answering-questions)
 owns requirements, acceptance and future delivery proof. Existing board
 identity, answer ownership, revision history and approval boundaries remain.
 The only maintenance requested here is within the answer-to-card-update cycle.
