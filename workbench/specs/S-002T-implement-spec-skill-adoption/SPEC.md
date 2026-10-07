@@ -94,6 +94,8 @@ Maintain catalog, draft article/index, relevant Runbook/AGENTS procedures, role 
 
 | 2026-10-06 | TK-006X | Independent review finding corrected | Review of e59cb5eb failed on terminal --task silently falling back in claim and close. Public CLI regressions reproduced both mutations (5 pass, 2 expected failures); distinguishing option presence from value turned all 7 tests green, including missing, empty and whitespace values with byte-for-byte no-mutation checks. The e59cb5eb full run was deliberately stopped after 10 passing commands because this correction supersedes that candidate | Native selector and regression test | Fresh full committed-candidate run and immutable review remain |
 
+| 2026-10-06 | TK-006X | Wiki review findings reconciled | Independent lint found a stale maintainer count, the router saying no draft exists and older correction-Worker summaries. Reconciled the existing Wiki owners and linked the newer bounded correction exception without rewriting question cards. Source review of a1697896 passed; its full run was superseded by these documentation corrections after the first ten commands passed | Maintainer article, router, Dispatcher composition and two landmark syntheses | Full final-candidate suite and fresh review remain; unrelated pre-existing Wiki drift is preserved |
+
 ## Completion Result
 
 Not complete.

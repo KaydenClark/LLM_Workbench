@@ -5,14 +5,17 @@ sensitivity: normal
 knowledge_role: curated
 provenance:
   - Seeded from the current answers of the Agent Stances landmark's question cards (landmark record revision 1), 2026-10-04
+  - Implement-spec Skill Adoption Spec (S-002T) qualified the correction-Worker boundary, 2026-10-06
 source_paths:
   - workbench/landmark-tracker/landmarks
   - workbench/landmark-tracker/destination-questions
   - workbench/docs/adr/0036-stances-change-method-not-authority.md
   - workbench/docs/adr/000V-captain-director-dispatcher-and-worker-scope-work-and-role-skills-own-each-job.md
   - workbench/wiki/design-concepts/roles-and-stances.md
+  - workbench/specs/S-002T-implement-spec-skill-adoption/SPEC.md
+  - workbench/skills/spec-manager/SKILL.md
 parent: none
-authorized_by: the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages)
+authorized_by: the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages); the Implement-spec Skill Adoption Spec (S-002T) for the correction exception
 last_verified: 2026-10-04
 ---
 
@@ -59,6 +62,9 @@ not do several Tasks. A Dispatcher or Director watches the Spec, writes
 handoffs, opens a new Chat per unblocked Task and approves, and never executes
 Tasks itself
 (card [DQC-002Z: "What work should a dispatcher or director perform without executing Tasks?"](../../landmark-tracker/destination-questions/DQC-002Z.json), revision 6).
+
+The [Implement-spec Skill Adoption Spec (S-002T)](../../specs/S-002T-implement-spec-skill-adoption/SPEC.md) records a newer bounded exception for its owner-invoked correction pass. The [Spec Manager stance](../../skills/spec-manager/SKILL.md) may reuse one correction Worker across explicitly named Task scopes, with serial claims and separate per-Task proof; it grants no general multi-Spec authority. The cited question-card answer remains its older source lineage.
+
 
 **Four portable stance skills.** All four stances are packaged as portable stance
 skills. A stance says how an agent performs one task with the authority,
@@ -145,5 +151,7 @@ example [the builder note](../skill-builder.md) and
 - [The Wiki is the evolving synthesis every agent reads and updates](../../docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md): why this page exists.
 
 ## History
+
+- 2026-10-06: linked the newer bounded correction exception accepted by the Implement-spec Skill Adoption Spec (S-002T), preserving the question-card revisions and their source lineage.
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.

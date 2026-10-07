@@ -45,7 +45,7 @@ The operating entry is [the dispatcher skill](../skills/dispatcher/SKILL.md), de
 ## Composition
 
 - [Spec Planner](skill-spec-planner.md) ([spec-planner skill](../skills/spec-planner/SKILL.md)): at flight launch, cut small complete-path Tasks and group the ones with disjoint files into safe parallel slices; planning Workers may draft Task records and the Dispatcher reconciles their drafts.
-- [Spec Manager](skill-spec-manager.md) ([spec-manager skill](../skills/spec-manager/SKILL.md)): during execution, dispatch and monitor Workers, one Task and one attempt each, within a small named concurrency, and accumulate their hand-backs.
+- [Spec Manager](skill-spec-manager.md) ([spec-manager skill](../skills/spec-manager/SKILL.md)): during execution, dispatch and monitor bounded Worker assignments and accumulate their hand-backs. Ordinary implementation is one Task per attempt; the linked stance owns the newer explicitly scoped, serial correction exception accepted by the Implement-spec Skill Adoption Spec (S-002T).
 - **Reviewer** (`workbench/skills/reviewer/SKILL.md`) and [Auditor](skill-auditor.md): named verification jobs the Dispatcher may perform inside the Spec. Prior involvement still controls independent-review eligibility.
 - [Director](skill-director.md) ([director skill](../skills/director/SKILL.md)): the role the Dispatcher hands back to; it coordinates cross-Spec dependencies, shared writers outside a Spec and the integration review.
 - **Worker**, owned by `workbench/specs/S-002E-worker-role/SPEC.md`: one Task, one attempt, hand-back to the Dispatcher.
