@@ -90,6 +90,8 @@ Maintain catalog, draft article/index, relevant Runbook/AGENTS procedures, role 
 
 | 2026-10-06 | TK-006X | Exact Task selection red/green | CLI selected wrong Task before --task support (4 failures; default test passed); after filtering through existing validation paths, 5/5 pass. The earlier full run was superseded when source edits invalidated its clean-source premise; its pre-existing landmark retirement assertion is being isolated | implement primitive procedure and native selector test | Fresh full committed-candidate run and review remain |
 
+| 2026-10-06 | TK-006X | Behavioral exercise and bounded checks | Real concurrent Workers, serialized checked merges, Task-branch containment and cross-Spec ownership observed; full fixture 24/24, focused 8/8; building-side evaluation passed with no correction needed. Guardrail 73/100 before and after, with repeated real outcome trials and fresh board proof still recommended. Self-drift pre/post retains the same findings and cleanUpdate false. Earlier retirement assertion did not reproduce in an isolated clean-candidate check; earlier broad run was superseded, not a clean pass | [Scenario evidence](scenario-evidence.md), installed entry and Template 2 draft | Final full suite, immutable review, remote closure and integration remain; fixture has no real GitHub PR and uses local lifecycle adapters |
+
 ## Completion Result
 
 Not complete.
