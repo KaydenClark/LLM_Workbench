@@ -3,11 +3,12 @@
 **Task ID:** TK-009J
 **Spec ID:** S-004O
 **Slice:** Wiki lexicon articles explain the skills-lane, feedback, continuity, stance, governance and boundary terms
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-009D
 **Destination:** spec-acceptance: Rich Wiki lexicon articles explain concepts and show usage, link to canonical glossary definitions, and remain routed from Wiki memory; general reference pages can remain Wiki-only.
 **Planned verification:** Red: the Wiki validator or a test-wiki case listing this batch's glossary terms fails while their articles are missing. Green: the batch's articles validate, then the full suite.
+**Claimed by:** claude-s004o-worker-j
 
 ## Scope
 
