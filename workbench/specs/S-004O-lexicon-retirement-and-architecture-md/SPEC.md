@@ -8,8 +8,8 @@
 **Updated:** 2026-10-07
 **Catalog description:** Retire LEXICON.md into concise canonical project vocabulary in GLOSSARY.md, richer Wiki explanations and ownership routes in ARCHITECTURE.md, in this room and the Template.
 **Blockers:** none. The Lexicon writer's turn follows S-004E's assembled Lexicon edits; Lexicon edits that land after the census are re-scaffolded by the removal Task (TK-009H).
-**Latest event:** 2026-10-07: whole-Spec QA recorded at `bc093258`, full suite 54/54; PR #411 stays draft because Acceptance line 5 waits on the Grill Board reader.
-**Next gate:** Re-point the Grill Board reader (`tools/grill-board.mjs` `artifactCatalog`/`readArtifact`) from `LEXICON.md` to `GLOSSARY.md` and `ARCHITECTURE.md` with a test, after the owner's uncommitted board edits land; then check Acceptance line 5, mark PR #411 ready and obtain the separate-context Verify review.
+**Latest event:** 2026-10-07: whole-Spec QA recorded at `bc093258`, full suite 54/54; the owner merged the first assembly PR #411 at its early tip `b5f0f948`, and the rest of the assembly continues on draft PR #431, held on Acceptance line 5 (the Grill Board reader).
+**Next gate:** Re-point the Grill Board reader (`tools/grill-board.mjs` `artifactCatalog`/`readArtifact`) from `LEXICON.md` to `GLOSSARY.md` and `ARCHITECTURE.md` with a test, after the owner's uncommitted board edits land; then check Acceptance line 5, mark PR #431 ready and obtain the separate-context Verify review.
 
 ## Outcome
 
