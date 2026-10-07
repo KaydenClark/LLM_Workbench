@@ -2742,3 +2742,37 @@ test('declare-legibility writes the six entries into an existing manifest and ch
     assert.deepEqual(JSON.parse(fs.readFileSync(manifestPath, 'utf8')).legibility, { ...LEGIBILITY, confirmation: 'pending' }, 'a refused declaration writes nothing');
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });
+
+
+test('pre-pair v3.2.1 room stays readable and migratable at its exact 28-skill lane policy', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    // Exact required list in the pre-adoption source manifest at 42431879;
+    // independent of future growth in coreSkills and safe in a shallow clone.
+    const previous = [
+      'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
+      'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'update-harness',
+      'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime',
+      'improve-harness', 'director', 'dispatcher', 'spec-planner', 'spec-manager',
+      'builder', 'auditor', 'reviewer', 'reconciler'
+    ];
+    manifest.skillPolicy.required = previous;
+    manifest.workbenchVersion = 'v3.2.1';
+    fs.writeFileSync(manifestPath, JSON.stringify(manifest));
+    assert.equal(run('validate', '--project', project).report.status, 'valid',
+      'the exact previous lane policy remains readable before the explicit update');
+    const migrated = run('migrate', '--project', project, '--version', VERSION);
+    assert.equal(migrated.status, 0, migrated.stdout);
+    assert.deepEqual(JSON.parse(fs.readFileSync(manifestPath, 'utf8')).skillPolicy.required, previous,
+      'layout migration preserves existing skill policy; explicit skill update remains separate');
+    fs.writeFileSync(manifestPath, JSON.stringify({ ...manifest, skillPolicy: { ...manifest.skillPolicy, required: previous.slice(0, -1) } }));
+    assert.equal(run('validate', '--project', project).report.error.code, 'invalid-skill-policy',
+      'a malformed subset is not accepted as a transition policy');
+    fs.writeFileSync(manifestPath, JSON.stringify({ ...manifest, workbenchVersion: 'v9.9.9' }));
+    assert.equal(run('validate', '--project', project).report.error.code, 'invalid-skill-policy',
+      'the transition policy is accepted only at its known stamped version');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});

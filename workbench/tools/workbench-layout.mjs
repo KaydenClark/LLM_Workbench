@@ -57,6 +57,16 @@ export const coordinationSkills = ['director', 'dispatcher', 'spec-planner', 'sp
 // harness improvement for one observed job (baseline, earliest gap, smallest
 // owning intervention, native verification, fresh rerun, then retain, revise
 // or remove), after `workbench-runtime` and ahead of the coordination entries.
+// Rooms produced immediately before the paired writing/retro adoption carried
+// this exact lane policy under v3.2.1. Keep it readable so layout migration can
+// reach the explicit skills update instead of rejecting its own starting room.
+const preAgentWritingCoreSkills = [
+  'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
+  'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'update-harness',
+  'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime',
+  'improve-harness', 'director', 'dispatcher', 'spec-planner', 'spec-manager',
+  'builder', 'auditor', 'reviewer', 'reconciler'
+];
 export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime', 'improve-harness', 'writing-for-agents', 'retro', ...coordinationSkills, ...stanceSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
@@ -527,7 +537,10 @@ export function validateManifest(project) {
   // bundle (S-00Z).
   const supportedLegacy = { 'v3.0.0': legacyCoreSkills, 'v3.1.0': legacyCoreSkills, 'v3.1.1': stanceRequired, 'v3.1.2': stanceRequired, 'v3.1.3': carryRequired, 'v3.1.4': notepadCoreSkills, 'v3.2.0': initialV32CoreSkills, 'v3.2.1': handoffCoreSkills };
   const legacyRequired = supportedLegacy[manifest.workbenchVersion];
-  const accepted = [skillPolicy, ...(legacyRequired ? [{ ...skillPolicy, required: legacyRequired }, { ...providerHomeSkillPolicy, required: legacyRequired }] : [])].map((policy) => JSON.stringify(policy));
+  const transitionPolicies = manifest.workbenchVersion === 'v3.2.1'
+    ? [{ ...skillPolicy, required: preAgentWritingCoreSkills }]
+    : [];
+  const accepted = [skillPolicy, ...transitionPolicies, ...(legacyRequired ? [{ ...skillPolicy, required: legacyRequired }, { ...providerHomeSkillPolicy, required: legacyRequired }] : [])].map((policy) => JSON.stringify(policy));
   if (!accepted.includes(JSON.stringify(manifest.skillPolicy))) {
     return fail('invalid-skill-policy', 'Manifest skill policy must declare the closed missing-only core bundle.');
   }

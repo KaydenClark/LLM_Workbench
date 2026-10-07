@@ -124,6 +124,8 @@ For step 6, run the targeted catalog and skills-lane tests, then `node workbench
 
 | 2026-10-06 | TK-006Y | Core source and draft comparison delivered in candidate 8925425c; independent direct-path scenario observed | Catalog red then green; Wiki validation and Ruby YAML name/description parsing pass; scenario inputs/outputs and limits under proof/ | Draft, source, shared bundle owners, generic Runbook mirror and retained archive disposition agree; existing MIT notice retained | Full 53-command suite running; independent assembled review, integration, native-host discovery, owner Human QA and main closure remain; optional Python validator unavailable |
 
+| 2026-10-06 | TK-006Y | Independent provisional assembled review FAIL at 90ca0cc7: P2 exact pre-pair 28-skill lane policy rejected by validate and migrate; returned to diagnosis and correction within the open Task | Public-seam focused regression observed red: invalid instead of valid; prior suite interrupted after its partial results, including three dirty-source refusals | Compatibility correction preserves exact v3.2.1 transition shape only; malformed subsets and unlisted versions remain rejected | Focused green, final full suite and refreshed immutable review pending; earlier FAIL remains evidence |
+
 ## Completion Result
 
 Not complete.
