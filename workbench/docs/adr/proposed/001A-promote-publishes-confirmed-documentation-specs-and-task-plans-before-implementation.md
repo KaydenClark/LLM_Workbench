@@ -1,14 +1,13 @@
 ---
 date: 2026-10-07
 canonicalized_in:
-  - workbench/skills/promote-decision/SKILL.md
   - LEXICON.md
   - RUNBOOK.md
 ---
 
 # Promote Decision delegates one confirmed decision and publishes each stage
 
-The owner confirmed a thin `promote-decision` skill for one decision per
+The owner confirmed a thin [`promote-decision`](../../../skills/promote-decision/SKILL.md) skill for one decision per
 invocation. It cold-starts from a saved source pointer, ID and confirmed
 revision, recovering the readback, rationale, corrections, scope and endpoint.
 Its flow is Confirm -> Record -> Publish -> Map -> Publish -> Plan -> Publish.
@@ -43,5 +42,5 @@ is an authored account of that confirmed design; the owner has not separately
 confirmed this record's wording. The delivery owner is
 [Promote Confirmed Decisions (S-005C)](../../../specs/S-005C-promote-confirmed-decisions/SPEC.md).
 The existing [confirmation decision (DDR-000C)](../../ddr/000C-confirming-a-concept-authorizes-the-agents-to-carry-it-to-its-endpoint.md)
-supplies the endpoint boundary. S-01B's earlier primitive evidence and pending
-owner Human QA remain separate.
+supplies the endpoint boundary. S-01B's earlier primitive evidence and existing
+owner QA records remain separate; this record grants no approval to S-005C.

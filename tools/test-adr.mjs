@@ -579,10 +579,12 @@ test('every intra-ADR link in the real corpus resolves literally, and the re-cou
   // ADR-000X (the workflow verbs) adds one linked record; ADR-000Y (promotion) links none.
   // S-004F TK-005Q: the corrective-work amendments in ADR-000F, ADR-000G, ADR-000H, ADR-000I, ADR-000R and ADR-000U add seven edges to the destination records.
   // S-003Y TK-006J: ADR-000Z narrows ADR-000L, one more linked record and one more edge.
-  assert.equal(filesWithLink, 48, 're-count of ADR files carrying an intra-ADR link at this candidate');
+  // S-005C: the Promote Decision proposal links the confirmation DDR, adding
+  // one carrying record and one literal edge (49/121, re-counted from 48/120).
+  assert.equal(filesWithLink, 49, 're-count of ADR files carrying an intra-ADR link at this candidate');
   // S-004H TK-008C: ADR-000G's workflow-map route moved from the Blueprint's retired Desired Lifecycle to the workflow Wiki page, one more counted edge.
   // S-004G TK-006F: the ADR-000X amendment links ADR-000A and the release proof decision, two more edges.
-  assert.equal(totalLinks, 120, 're-count of total intra-ADR link edges at this candidate');
+  assert.equal(totalLinks, 121, 're-count of total intra-ADR link edges at this candidate');
 });
 
 // S-00I TK-001 review correction: a link is validated literally, never

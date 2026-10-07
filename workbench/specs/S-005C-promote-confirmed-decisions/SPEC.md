@@ -25,7 +25,13 @@ A confirmed decision held only in one chat or an unmerged branch cannot serve as
 
 ## Current Verified State
 
-At integration `d9a353590644f957ae24636d13ce9a41ef1987e9`, promote is a selected-note reconciliation primitive. Save proves remote branch recovery. To-spec creates a planned Spec without Tasks, and to-tasks cuts Tasks only with activation authority. S-01B delivered the earlier primitive and still awaits owner Human QA; this new capability preserves that history.
+At integration `d9a353590644f957ae24636d13ce9a41ef1987e9`, promote is a selected-note reconciliation primitive. Save proves remote branch recovery. To-spec creates a planned Spec without Tasks, and to-tasks cuts Tasks only with activation authority.
+
+The [Promote Skill Rebuild (S-01B)](../S-01B-promote-skill-rebuild/SPEC.md)
+header and append-only evidence record owner QA approval at integration
+`42431879fab3057db9e26ae661b4e92512c281f0`; its older Completion Result still
+says Human QA remains. That source contradiction stays with S-01B. This new
+capability preserves its existing records and claims no owner QA for S-005C.
 
 ## Desired Behavior
 
@@ -111,7 +117,7 @@ New maintainer skill and manifest/catalog registration; Record, Map, Plan and
 grilling callers; board and grill-me entry routes; Wiki article and router;
 Runbook operation; shared Lexicon verb definitions and matching generic
 definitions. Restore the original core primitive and safe save composition.
-Retain prior decision history and S-01B's pending owner Human QA.
+Retain prior decision history and S-01B's existing owner QA records.
 
 ## Append-Only Evidence And Execution Log
 
@@ -124,3 +130,4 @@ Retain prior decision history and S-01B's pending owner Human QA.
 | 2026-10-07 | TK-007K | Completed the publication fixture's renderer prerequisites | Rerun at f36f975ad7d5adddcbb9421d9f87288f3fbc992d identified missing TASKBOARD.md; inspected render's exact Blueprint and hot-specs projection inputs before correction | Seeded the required Taskboard markers; no runtime or skill behavior changed | Affected scenario rerun and full suite remain |
 | 2026-10-07 | TK-007K | Corrected the fixture's CLI output contract and clarified the delivery gate | Rerun at aad172c8 used show without --json; inspected showSpec/publicSpec and native activation before correcting its JSON read | Product acceptance now checks truthful stage publication; actual source integration remains the later delivery endpoint | Affected scenario rerun, full suite, assembled review and actual integration proof remain |
 | 2026-10-07 | TK-007K | Corrected the proposed ADR source link before full verification | Core-composition rerun at cccdf5000016e072fffaa388003391d99fc9b0dc passed 3/3; full-suite attempt interrupted during its first command after a bounded source-link finding | Proposed ADR now resolves the Spec from its nested folder; added local Markdown targets read back and resolve | The final corrected committed candidate still needs a complete full-suite run, assembled review and integration publication |
+| 2026-10-07 | TK-007K | Ran all 54 Runbook commands and reconciled the two ADR failures | Candidate 0b60c49ac3df30ed914d183c42eeeccb834324ad: 52/54 passed; ADR corpus expected 48 carrying records/120 edges but actual 49/121, all literal targets resolving; governance check rejected direct skill canonicalized_in | Re-count evidence supports 49/121 with one new confirmation-DDR edge; canonicalized_in routes through Runbook/Lexicon and body links the skill; router now names maintainer operations; S-01B QA record contradiction reported without changing that Spec | Focused affected checks and a complete full run on the corrected candidate remain; no clean-first-pass claim |
