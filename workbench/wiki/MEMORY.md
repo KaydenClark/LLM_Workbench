@@ -198,7 +198,7 @@ A general AI coding concept stays Wiki-only and needs no glossary entry ([the Le
 
 ## Workbench Term Dictionary
 
-Lexicon articles: one flat `dictionary-*.md` entry for each [GLOSSARY.md](../../GLOSSARY.md) term that needs more than its canonical definition, carrying the fuller meaning, the neighbouring words, an example in use and the owning sources. Each declares the term it explains in `glossary_term:` and links its glossary entry, which `wiki.mjs validate` checks; none authorizes anything. Batch one covers the glossary's Destination and direction and Workflow verbs groupings; batch two covers its Workbench, room and artifacts, Specs and Tasks, and Chats and roles groupings.
+Lexicon articles: one flat `dictionary-*.md` entry for each [GLOSSARY.md](../../GLOSSARY.md) term that needs more than its canonical definition, carrying the fuller meaning, the neighbouring words, an example in use and the owning sources. Each declares the term it explains in `glossary_term:` and links its glossary entry, which `wiki.mjs validate` checks; none authorizes anything. Batch one covers the glossary's Destination and direction and Workflow verbs groupings.
 
 ### Destination and direction
 
