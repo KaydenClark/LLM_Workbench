@@ -190,6 +190,23 @@ still apply to individual claims in the current operation.
 | **Ticket** | Retired as a live term. `Task` names the execution slice. | Historical `TK-###` identifiers stay readable exactly as written in append-only evidence and are never rewritten; `TK` is the Task identifier prefix, so newly allocated slices keep the `TK-###` form. |
 | **Coordination hand-back** | A point during an assigned run where the owner had to supply something that was not a preference, tradeoff, authorization, or unavailable resource under `AGENTS.md`'s governing gate: a settled decision repeated, evidence already in the project located for the agent, a routine technical finding reconciled, or an already-authorized step prompted. | It is a defect in a record, route, skill, or tool, recorded per occurrence with its cause and smallest correction in the assigned spec's evidence log by the `carry` skill. Answering a genuine owner decision is not one, and neither is a new framework built in response to one. `AGENTS.md` Safety And Change Control owns when an owner is asked; these four reasons restate that gate and never widen it. |
 
+### Priority And Value
+
+**Priority** describes when to attend. **Value** describes return versus
+investment. They are separate classifications, never a summed score.
+
+| Priority: when to attend | Value: return versus investment |
+|---|---|
+| **P1 — Interrupt:** stop normal work | **V1 — Quick Win:** high return, low investment |
+| **P2 — Committed:** current expected work | **V2 — Strategic Value:** high return, high investment |
+| **P3 — Secondary:** when committed work allows | **V3 — Fill-In:** low return, low investment |
+| **P4 — Backlog:** retained without current expectation | **V4 — Defer / Eliminate:** low return, high investment |
+
+P1 remains an interrupt regardless of Value. Value informs choices within an
+attention lane; quick wins must not continually crowd out strategic work.
+An Owner-selected filter chooses a slice without changing either classification.
+Labels alone establish neither approval nor delivery state.
+
 ### Feedback Dispositions
 
 Every feedback finding has exactly one disposition from this closed set, recorded

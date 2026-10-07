@@ -1,0 +1,1043 @@
+{
+  "schemaVersion": 1,
+  "kind": "documentation-and-specification-verification",
+  "date": "2026-10-07",
+  "spec": "S-004D",
+  "decision": "DDR-001L",
+  "source": {
+    "head": "42431879fab3057db9e26ae661b4e92512c281f0",
+    "dirty_shared_checkout": true,
+    "cic_commit": "af9296e31bb15f11aaf84fa04e01b7e6a7524eea"
+  },
+  "endpoint": {
+    "concept_confirmed": true,
+    "documentation_written": true,
+    "spec_status": "planned",
+    "tasks_created": false,
+    "pv_implemented": false,
+    "owner_human_qa": false,
+    "record_lifecycle": "proposed"
+  },
+  "focused": {
+    "cic_table_fidelity": true,
+    "new_local_links_checked": 10,
+    "spec_planned": true,
+    "old_evidence_preserved": true,
+    "ddr_validate_passed": true,
+    "diff_whitespace_passed": true
+  },
+  "pre_edit_fast_check": {
+    "command": "node tools/test-evaluate-workbench.mjs",
+    "exit": 1,
+    "observed_core_rubric": 69.8,
+    "required_core_rubric": 90,
+    "limit": "Existing shared AGENTS draft; failed before these edits."
+  },
+  "ddr_validation": {
+    "command": "node workbench/tools/adr.mjs validate --kind ddr --json",
+    "exit": 0,
+    "findings": []
+  },
+  "render": {
+    "command": "node workbench/tools/spec-workbench.mjs render",
+    "exit": 0,
+    "result": {
+      "specs": 165,
+      "active": 60,
+      "retired": 1
+    }
+  },
+  "board_socket_rerun": {
+    "command": "node tools/test-grill-board.mjs",
+    "initial_exit": 1,
+    "initial_cause": "listen EPERM in sandbox",
+    "rerun_with_localhost_socket_access": {
+      "exit": 0,
+      "tests": 19,
+      "passed": 19,
+      "failed": 0
+    },
+    "limit": "Current board regression tests, not proof of future P/V behavior."
+  },
+  "full_suite": {
+    "total": 53,
+    "completed": 53,
+    "status": "complete",
+    "first_run_passed": 21,
+    "first_run_failed": 32,
+    "resolved_after_rerun": [
+      "node tools/test-grill-board.mjs"
+    ],
+    "remaining_failed_commands": [
+      "node tools/test-spec-workbench.mjs",
+      "node tools/test-skill-catalog.mjs",
+      "node tools/test-skills-lane.mjs",
+      "node tools/test-core-composition.mjs",
+      "node tools/test-blueprint-contract.mjs",
+      "node tools/test-session-transport.mjs",
+      "node tools/test-configured-host.mjs",
+      "node tools/test-core-skill-installer.mjs",
+      "node tools/test-workbench-layout.mjs",
+      "node tools/test-workbench-adoption.mjs",
+      "node tools/test-workbench-upgrade.mjs",
+      "node tools/test-workbench-tools.mjs",
+      "node tools/test-diagnostics.mjs",
+      "node tools/test-adr.mjs",
+      "node tools/test-governance-core.mjs",
+      "node tools/test-wiki.mjs",
+      "node tools/test-sessions.mjs",
+      "node tools/test-notepads.mjs",
+      "node tools/test-workbench-identity.mjs",
+      "node tools/test-visible-id-consumers.mjs",
+      "node tools/test-direct-promotion.mjs",
+      "node tools/test-cross-provider-fixture.mjs",
+      "node tools/test-portability-matrix.mjs",
+      "node tools/test-evaluate-workbench.mjs",
+      "node tools/test-guardrail-audit.mjs",
+      "node tools/test-symlink-invocation.mjs",
+      "node tools/test-control-fidelity.mjs",
+      "node tools/test-spec-citation-anchors.mjs",
+      "node tools/test-runbook-index.mjs",
+      "node tools/test-spec-report.mjs",
+      "node tools/test-landmark-wiki.mjs"
+    ],
+    "results": [
+      {
+        "command": "node tools/test-spec-workbench.mjs",
+        "exit": 1,
+        "seconds": 0.26,
+        "observed_causes": [],
+        "failure_excerpt": "\nError: Command failed: /opt/homebrew/Cellar/node/26.3.0/bin/node <project>/workbench/tools/workbench-layout.mjs init --project /var/folders/h2/4pvfvm191m7gnfm51mvsf9m40000gn/T/lifecycle-directory-links-ZVF7jp --provenance genesis --version v3.2.1\n    at genericNodeError (node:internal/errors:998:15)\n    at wrappedFn (node:internal/errors:543:14)\n    at checkExecSyncError (node:child_process:926:11)\n    at execFileSync (node:child_process:962:15)"
+      },
+      {
+        "command": "node tools/test-spec-assembly-selection.mjs",
+        "exit": 0,
+        "seconds": 2.3
+      },
+      {
+        "command": "node tools/test-skill-catalog.mjs",
+        "exit": 1,
+        "seconds": 0.09,
+        "observed_causes": [
+          "existing AGENTS/control draft assertions; inspect recorded failure"
+        ],
+        "failure_excerpt": "\nAssertionError [ERR_ASSERTION]: AGENTS.md Task merge answers and provider rule must use ### Task Merge Answers And Verify Review\n    at assertIncludesAll (file://<project>/tools/test-skill-catalog.mjs:16:12)\n    at file://<project>/tools/test-skill-catalog.mjs:981:3\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:646:26)"
+      },
+      {
+        "command": "node tools/test-skill-inspection.mjs",
+        "exit": 0,
+        "seconds": 0.12
+      },
+      {
+        "command": "node tools/test-skills-lane.mjs",
+        "exit": 1,
+        "seconds": 5.33,
+        "observed_causes": [
+          "source-identity checks refuse the dirty shared checkout"
+        ],
+        "failure_excerpt": "\u2716 the release lays the lane into a fresh room with a receipt and adapters, verifies it, and doctor names a root skills shadow (147.019833ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"invalid\",\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench manifest, runtime tools, or templates have uncommitted changes; commit the exact candidate before initialization.\"}}\n  \n  \n  \n  1 !== 0\n\u2716 TK-008L: the skills update installs improve-harness into a room that lacks it and leaves a room-added skill untouched (148.193417ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"invalid\",\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench manifest, runtime tools, or templates have uncommitted changes; commit the exact candidate before initialization.\"}}\n  \n  \n  \n  1 !== 0"
+      },
+      {
+        "command": "node tools/test-core-composition.mjs",
+        "exit": 1,
+        "seconds": 0.59,
+        "observed_causes": [
+          "source-identity checks refuse the dirty shared checkout"
+        ],
+        "failure_excerpt": "\u2716 fresh core composes local save and selected promotion using only installed project runtime (368.06225ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"blocked\",\"requiredSkills\":[\"adoption\",\"checkpoint\",\"code-review\",\"genesis\",\"grilling\",\"implement\",\"make-it-so\",\"to-docs\",\"to-spec\",\"to-tasks\",\"tracer-bullet\",\"update-harness\",\"carry\",\"notepad\",\"save\",\"promote\",\"handoff\",\"grill-me\",\"workbench-runtime\",\"improve-harness\",\"director\",\"dispatcher\",\"spec-planner\",\"spec-manager\",\"builder\",\"auditor\",\"reviewer\",\"reconciler\"],\"installed\":[],\"skipped\":[],\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench source has uncommitted changes under workbench/manifest.json, workbench/skills; commit the exact source candidate before installation.\"}}\n  \n  \n  1 !== 0\n  \n\u2716 a save commit is proven by fresh remote containment while its unresolved note stays local (141.884833ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"invalid\",\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench manifest, runtime tools, or templates have uncommitted changes; commit the exact candidate before initialization.\"}}\n  \n  \n  1 !== 0\n  "
+      },
+      {
+        "command": "node tools/test-project-evidence.mjs",
+        "exit": 0,
+        "seconds": 1.07
+      },
+      {
+        "command": "node tools/test-genesis-from-decisions.mjs",
+        "exit": 0,
+        "seconds": 28.92
+      },
+      {
+        "command": "node tools/test-blueprint-contract.mjs",
+        "exit": 1,
+        "seconds": 0.13,
+        "observed_causes": [
+          "existing AGENTS/control draft assertions; inspect recorded failure"
+        ],
+        "failure_excerpt": "\nAssertionError [ERR_ASSERTION]: roles: role defines scope and stance defines the job: now carried by AGENTS.md\n    at file://<project>/tools/test-blueprint-contract.mjs:246:10\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:646:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {"
+      },
+      {
+        "command": "node tools/test-session-transport.mjs",
+        "exit": 1,
+        "seconds": 2.78,
+        "observed_causes": [
+          "source-identity checks refuse the dirty shared checkout"
+        ],
+        "failure_excerpt": "\u2716 transport requires explicit acknowledgment and positively verified private metadata before configuration (174.619125ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"invalid\",\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench manifest, runtime tools, or templates have uncommitted changes; commit the exact candidate before initialization.\"}}\n  \n  \n  1 !== 0\n  \n\u2716 push maps only the selected note, preserves checkout work and confirms exact remote bytes (152.134417ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"invalid\",\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench manifest, runtime tools, or templates have uncommitted changes; commit the exact candidate before initialization.\"}}\n  \n  \n  1 !== 0\n  "
+      },
+      {
+        "command": "node tools/test-configured-host.mjs",
+        "exit": 1,
+        "seconds": 1.01,
+        "observed_causes": [],
+        "failure_excerpt": "\u2716 actual probes preserve lanes and never promote file readability to native discovery (78.44575ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n  + actual - expected\n  \n    [\n      'pass',\n\u2716 missing writable lane affects only its dependent check and is never created (84.489875ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  'fail' !== 'pass'\n  \n      at TestContext.<anonymous> (file://<project>/tools/test-configured-host.mjs:50:12)"
+      },
+      {
+        "command": "node tools/test-core-skill-installer.mjs",
+        "exit": 1,
+        "seconds": 8.59,
+        "observed_causes": [
+          "source-identity checks refuse the dirty shared checkout"
+        ],
+        "failure_excerpt": "\u2716 empty ancestor Git sentinels remain untouched through install update and rollback (112.694541ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"blocked\",\"requiredSkills\":[\"adoption\",\"checkpoint\",\"code-review\",\"genesis\",\"grilling\",\"implement\",\"make-it-so\",\"to-docs\",\"to-spec\",\"to-tasks\",\"tracer-bullet\",\"update-harness\",\"carry\",\"notepad\",\"save\",\"promote\",\"handoff\",\"grill-me\",\"workbench-runtime\",\"improve-harness\",\"director\",\"dispatcher\",\"spec-planner\",\"spec-manager\",\"builder\",\"auditor\",\"reviewer\",\"reconciler\"],\"installed\":[],\"skipped\":[],\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench source has uncommitted changes under workbench/manifest.json, workbench/skills; commit the exact source candidate before installation.\"}}\n  \n  + actual - expected\n  \n  + 'blocked'\n\u2716 an empty nested Git marker does not hide its real repository owner (118.043666ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"blocked\",\"requiredSkills\":[\"adoption\",\"checkpoint\",\"code-review\",\"genesis\",\"grilling\",\"implement\",\"make-it-so\",\"to-docs\",\"to-spec\",\"to-tasks\",\"tracer-bullet\",\"update-harness\",\"carry\",\"notepad\",\"save\",\"promote\",\"handoff\",\"grill-me\",\"workbench-runtime\",\"improve-harness\",\"director\",\"dispatcher\",\"spec-planner\",\"spec-manager\",\"builder\",\"auditor\",\"reviewer\",\"reconciler\"],\"installed\":[],\"skipped\":[],\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench source has uncommitte"
+      },
+      {
+        "command": "node tools/test-workbench-layout.mjs",
+        "exit": 1,
+        "seconds": 12.83,
+        "observed_causes": [
+          "source-identity checks refuse the dirty shared checkout"
+        ],
+        "failure_excerpt": "\u2716 a fresh Genesis fixture has the seven controls, manifest lanes, first spec, and no local skill shadow (108.51675ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"blocked\",\"requiredSkills\":[\"adoption\",\"checkpoint\",\"code-review\",\"genesis\",\"grilling\",\"implement\",\"make-it-so\",\"to-docs\",\"to-spec\",\"to-tasks\",\"tracer-bullet\",\"update-harness\",\"carry\",\"notepad\",\"save\",\"promote\",\"handoff\",\"grill-me\",\"workbench-runtime\",\"improve-harness\",\"director\",\"dispatcher\",\"spec-planner\",\"spec-manager\",\"builder\",\"auditor\",\"reviewer\",\"reconciler\"],\"installed\":[],\"skipped\":[],\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench source has uncommitted changes under workbench/manifest.json, workbench/skills; commit the exact source candidate before installation.\"}}\n  \n  \n  1 !== 0\n  \n\u2716 the sessions ignore denies the legacy grilling diary name, keeps project rules byte-for-byte, and older ignore files still validate (157.665917ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  1 !== 0\n  \n      at TestContext.<anonymous> (file://<project>/tools/test-workbench-layout.mjs:226:12)"
+      },
+      {
+        "command": "node tools/test-workbench-adoption.mjs",
+        "exit": 1,
+        "seconds": 0.28,
+        "observed_causes": [
+          "source-identity checks refuse the dirty shared checkout"
+        ],
+        "failure_excerpt": "\nAssertionError [ERR_ASSERTION]: {\"status\":\"blocked\",\"moved\":[],\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench source has uncommitted changes under workbench/manifest.json, workbench/tools; commit the exact source candidate before installation.\"}}\n\n\n1 !== 0\n"
+      },
+      {
+        "command": "node tools/test-workbench-upgrade.mjs",
+        "exit": 1,
+        "seconds": 8.44,
+        "observed_causes": [
+          "source-identity checks refuse the dirty shared checkout"
+        ],
+        "failure_excerpt": "\u2716 explicit upgrade migrates once, lays the skills lane and adapters down, and records a concrete rollback point (163.247083ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"blocked\",\"skillBackups\":[],\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench source has uncommitted changes under workbench/manifest.json, workbench/skills, workbench/tools, templates; commit the exact source candidate before installation.\"}}\n  \n  \n  1 !== 0\n  \n\u2716 layout-only upgrade lays the same lane down; the two modes are exclusive (243.911917ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"blocked\",\"skillBackups\":[],\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench source has uncommitted changes under workbench/manifest.json, workbench/skills, workbench/tools, templates; commit the exact source candidate before installation.\"}}\n  \n  \n  1 !== 0\n  "
+      },
+      {
+        "command": "node tools/test-workbench-tools.mjs",
+        "exit": 1,
+        "seconds": 2.89,
+        "observed_causes": [],
+        "failure_excerpt": "\u2716 the product tools lane is the canonical runtime source and holds exactly the runtime tools (102.865208ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + 'blocked'\n  - 'source'\n\u2716 install writes receipt-backed copies with hashes, source identity, and non-executable permissions, leaving root tools untouched (130.657166ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  1 !== 0\n  \n      at project (file://<project>/tools/test-workbench-tools.mjs:28:10)"
+      },
+      {
+        "command": "node tools/test-diagnostics.mjs",
+        "exit": 1,
+        "seconds": 0.2,
+        "observed_causes": [
+          "source-identity checks refuse the dirty shared checkout"
+        ],
+        "failure_excerpt": "\nAssertionError [ERR_ASSERTION]: {\"status\":\"blocked\",\"requiredSkills\":[\"adoption\",\"checkpoint\",\"code-review\",\"genesis\",\"grilling\",\"implement\",\"make-it-so\",\"to-docs\",\"to-spec\",\"to-tasks\",\"tracer-bullet\",\"update-harness\",\"carry\",\"notepad\",\"save\",\"promote\",\"handoff\",\"grill-me\",\"workbench-runtime\",\"improve-harness\",\"director\",\"dispatcher\",\"spec-planner\",\"spec-manager\",\"builder\",\"auditor\",\"reviewer\",\"reconciler\"],\"installed\":[],\"skipped\":[],\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench source has uncommitted changes under workbench/manifest.json, workbench/skills; commit the exact source candidate before installation.\"}}\n\n\n1 !== 0\n"
+      },
+      {
+        "command": "node tools/test-adr.mjs",
+        "exit": 1,
+        "seconds": 7.33,
+        "observed_causes": [
+          "source-identity checks refuse the dirty shared checkout"
+        ],
+        "failure_excerpt": "\u2716 CDRs use the shared decision lifecycle and keep older rooms valid (151.170208ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"invalid\",\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench manifest, runtime tools, or templates have uncommitted changes; commit the exact candidate before initialization.\"}}\n  \n  \n  1 !== 0\n  \n\u2716 a valid corpus validates, registers deterministically, and reports a stale register as attention (132.910666ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"invalid\",\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench manifest, runtime tools, or templates have uncommitted changes; commit the exact candidate before initialization.\"}}\n  \n  \n  1 !== 0\n  "
+      },
+      {
+        "command": "node tools/test-governance-core.mjs",
+        "exit": 1,
+        "seconds": 0.1,
+        "observed_causes": [
+          "existing AGENTS/control draft assertions; inspect recorded failure"
+        ],
+        "failure_excerpt": "\u2716 root and template AGENTS separate instruction authority from state resolution (1.178625ms)\n  AssertionError [ERR_ASSERTION]: AGENTS.md keeps the Authority Order section\n      at TestContext.<anonymous> (file://<project>/tools/test-governance-core.mjs:21:12)\n      at Test.runInAsyncScope (node:async_hooks:226:14)\n      at Test.run (node:internal/test_runner/test:1382:25)\n      at Test.start (node:internal/test_runner/test:1242:17)\n\u2716 root and template AGENTS define branch completion and merged-branch cleanup (0.3255ms)\n  AssertionError [ERR_ASSERTION]: AGENTS.md names the branch completion contract\n      at TestContext.<anonymous> (file://<project>/tools/test-governance-core.mjs:89:12)\n      at Test.runInAsyncScope (node:async_hooks:226:14)\n      at Test.run (node:internal/test_runner/test:1382:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)"
+      },
+      {
+        "command": "node tools/test-branch-closeout.mjs",
+        "exit": 0,
+        "seconds": 5.42
+      },
+      {
+        "command": "node tools/test-wiki.mjs",
+        "exit": 1,
+        "seconds": 9.55,
+        "observed_causes": [
+          "source-identity checks refuse the dirty shared checkout"
+        ],
+        "failure_excerpt": "\u2716 init seeds the wiki contract files with placeholders filled and reports the seeding (146.963166ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"invalid\",\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench manifest, runtime tools, or templates have uncommitted changes; commit the exact candidate before initialization.\"}}\n  \n  \n  1 !== 0\n  \n\u2716 Genesis readiness requires the filled router and wiki contract files (157.233083ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  1 !== 0\n  \n      at TestContext.<anonymous> (file://<project>/tools/test-wiki.mjs:87:12)"
+      },
+      {
+        "command": "node tools/test-sessions.mjs",
+        "exit": 1,
+        "seconds": 1.24,
+        "observed_causes": [
+          "source-identity checks refuse the dirty shared checkout"
+        ],
+        "failure_excerpt": "\u2716 every preserved checkpoint still matches the pinned retirement inventory (3.93675ms)\n  AssertionError [ERR_ASSERTION]: workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md\n  \n  31943 !== 31442\n  \n      at TestContext.<anonymous> (file://<project>/tools/test-sessions.mjs:36:12)\n\u2716 operational recovery is excluded from note discovery (133.034916ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"invalid\",\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench manifest, runtime tools, or templates have uncommitted changes; commit the exact candidate before initialization.\"}}\n  \n  \n  1 !== 0\n  "
+      },
+      {
+        "command": "node tools/test-notepads.mjs",
+        "exit": 1,
+        "seconds": 8.3,
+        "observed_causes": [
+          "source-identity checks refuse the dirty shared checkout"
+        ],
+        "failure_excerpt": "\u2716 create writes a valid note into the declared live collection and refuses a duplicate identity (163.210667ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"invalid\",\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench manifest, runtime tools, or templates have uncommitted changes; commit the exact candidate before initialization.\"}}\n  \n  \n  1 !== 0\n  \n\u2716 basename-derived identity is privacy-scanned before write (168.616916ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"invalid\",\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench manifest, runtime tools, or templates have uncommitted changes; commit the exact candidate before initialization.\"}}\n  \n  \n  1 !== 0\n  "
+      },
+      {
+        "command": "node tools/test-visible-ids.mjs",
+        "exit": 0,
+        "seconds": 0.6
+      },
+      {
+        "command": "node tools/test-workbench-identity.mjs",
+        "exit": 1,
+        "seconds": 0.88,
+        "observed_causes": [
+          "source-identity checks refuse the dirty shared checkout"
+        ],
+        "failure_excerpt": "\u2716 independent rooms differ while clone, worktree, rename and migration preserve the same namespace (148.479125ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"invalid\",\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench manifest, runtime tools, or templates have uncommitted changes; commit the exact candidate before initialization.\"}}\n  + actual - expected\n  \n  + 'invalid'\n  - 'initialized'\n\u2716 legacy room identity is assigned explicitly once and malformed identity never regenerates silently (141.101666ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"invalid\",\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench manifest, runtime tools, or templates have uncommitted changes; commit the exact candidate before initialization.\"}}\n  + actual - expected\n  \n  + 'invalid'\n  - 'initialized'"
+      },
+      {
+        "command": "node tools/test-visible-id-consumers.mjs",
+        "exit": 1,
+        "seconds": 4.71,
+        "observed_causes": [
+          "source-identity checks refuse the dirty shared checkout"
+        ],
+        "failure_excerpt": "\u2716 mixed visible spec/task IDs select, claim, close and render without moving legacy paths (138.962583ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"invalid\",\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench manifest, runtime tools, or templates have uncommitted changes; commit the exact candidate before initialization.\"}}\n  \n  \n  1 !== 0\n  \n\u2716 new task allocation reserves repeated legacy labels across the whole Workbench (134.624792ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"invalid\",\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench manifest, runtime tools, or templates have uncommitted changes; commit the exact candidate before initialization.\"}}\n  \n  \n  1 !== 0\n  "
+      },
+      {
+        "command": "node tools/test-direct-promotion.mjs",
+        "exit": 1,
+        "seconds": 3.86,
+        "observed_causes": [
+          "source-identity checks refuse the dirty shared checkout"
+        ],
+        "failure_excerpt": "\u2716 public promotion reconciles selected material into an owner and returns verified hashes without cleanup (161.341833ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"invalid\",\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench manifest, runtime tools, or templates have uncommitted changes; commit the exact candidate before initialization.\"}}\n  \n  \n  1 !== 0\n  \n\u2716 a mixed note promotes its confirmed decision while the pending answer stays unselected and unresolved in the note (155.215ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"invalid\",\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench manifest, runtime tools, or templates have uncommitted changes; commit the exact candidate before initialization.\"}}\n  \n  \n  1 !== 0\n  "
+      },
+      {
+        "command": "node tools/test-workbench-round-trip.mjs",
+        "exit": 0,
+        "seconds": 44.96
+      },
+      {
+        "command": "node tools/test-cross-provider-fixture.mjs",
+        "exit": 1,
+        "seconds": 0.35,
+        "observed_causes": [
+          "source-identity checks refuse the dirty shared checkout"
+        ],
+        "failure_excerpt": "\nError: /opt/homebrew/Cellar/node/26.3.0/bin/node <project>/workbench/tools/workbench-layout.mjs init --project /var/folders/h2/4pvfvm191m7gnfm51mvsf9m40000gn/T/workbench-cross-provider-5lV3VR/planning-clone --provenance genesis --version v3.2.1 --name Greeter --date 2026-09-04 --source-commit 42431879fab3057db9e26ae661b4e92512c281f0 exited 1: {\"status\":\"invalid\",\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench manifest, runtime tools, or templates have uncommitted changes; commit the exact candidate before initialization.\"}}\n\n    at sh (file://<project>/tools/cross-provider-resume.mjs:30:34)\n    at plan (file://<project>/tools/cross-provider-resume.mjs:59:3)\n    at file://<project>/tools/test-cross-provider-fixture.mjs:17:18"
+      },
+      {
+        "command": "node tools/test-portability-matrix.mjs",
+        "exit": 1,
+        "seconds": 0.34,
+        "observed_causes": [],
+        "failure_excerpt": "\u2716 a manifest with a backslash or capitalised lane is rejected before any lane is read (129.882375ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  1 !== 0\n  \n      at TestContext.<anonymous> (file://<project>/tools/test-portability-matrix.mjs:142:12)"
+      },
+      {
+        "command": "node tools/test-workbench-dogfood.mjs",
+        "exit": 0,
+        "seconds": 9.84
+      },
+      {
+        "command": "node tools/test-evaluate-workbench.mjs",
+        "exit": 1,
+        "seconds": 7.24,
+        "observed_causes": [
+          "existing AGENTS/control draft assertions; inspect recorded failure"
+        ],
+        "failure_excerpt": "\nAssertionError [ERR_ASSERTION]: local workbench should pass the core rubric, got 69.8\n    at file://<project>/tools/test-evaluate-workbench.mjs:27:8\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:646:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {"
+      },
+      {
+        "command": "node tools/test-guardrail-audit.mjs",
+        "exit": 1,
+        "seconds": 5.46,
+        "observed_causes": [],
+        "failure_excerpt": "\nRangeError: Invalid string length\n    at Array.join (<anonymous>)\n    at checkPassed (file://<project>/tools/evaluate-workbench.mjs:330:62)\n    at file://<project>/tools/evaluate-workbench.mjs:211:22\n    at Array.map (<anonymous>)"
+      },
+      {
+        "command": "node tools/test-context-tools.mjs",
+        "exit": 0,
+        "seconds": 0.28
+      },
+      {
+        "command": "node tools/test-outcome-trials.mjs",
+        "exit": 0,
+        "seconds": 0.71
+      },
+      {
+        "command": "node tools/test-eval-runner.mjs",
+        "exit": 0,
+        "seconds": 0.74
+      },
+      {
+        "command": "node tools/test-feedback-automation.mjs",
+        "exit": 0,
+        "seconds": 0.71
+      },
+      {
+        "command": "node tools/test-symlink-invocation.mjs",
+        "exit": 1,
+        "seconds": 6.65,
+        "observed_causes": [],
+        "failure_excerpt": "\nAssertionError [ERR_ASSERTION]: audit-guardrails.mjs: main did not run via symlinked path (silent no-op); output=\"Invalid string length\\n\"\n    at file://<project>/tools/test-symlink-invocation.mjs:50:12\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:646:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {"
+      },
+      {
+        "command": "node tools/test-control-fidelity.mjs",
+        "exit": 1,
+        "seconds": 2.42,
+        "observed_causes": [
+          "existing AGENTS/control draft assertions; inspect recorded failure"
+        ],
+        "failure_excerpt": "\u2716 the retired AGENTS.md stable-path sentence is replaced by the folder-lifecycle sentence, mirrored generically in templates/AGENTS.md (0.650917ms)\n  AssertionError [ERR_ASSERTION]: AGENTS.md states the folder-lifecycle replacement\n      at TestContext.<anonymous> (file://<project>/tools/test-control-fidelity.mjs:432:10)\n      at Test.runInAsyncScope (node:async_hooks:226:14)\n      at Test.run (node:internal/test_runner/test:1382:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)\n\u2716 AGENTS routes real Task records through assembled review, corrective return and owner closure (1.062459ms)\n  AssertionError [ERR_ASSERTION]: the assigned Spec delegates only bounded capability authority\n      at instructionAuthorityContract (file://<project>/tools/test-control-fidelity.mjs:487:10)\n      at taskWorkflowContract (file://<project>/tools/test-control-fidelity.mjs:509:3)\n      at TestContext.<anonymous> (file://<project>/tools/test-control-fidelity.mjs:542:3)\n      at Test.runInAsyncScope (node:async_hooks:226:14)"
+      },
+      {
+        "command": "node tools/test-spec-citation-anchors.mjs",
+        "exit": 1,
+        "seconds": 26.93,
+        "observed_causes": [],
+        "failure_excerpt": "\u2716 a Spec nested in its landmark folder is in citation-anchor coverage (154.945667ms)\n  Error: Command failed: /opt/homebrew/Cellar/node/26.3.0/bin/node <project>/workbench/tools/workbench-layout.mjs init --project /var/folders/h2/4pvfvm191m7gnfm51mvsf9m40000gn/T/citation-homes-xX0adw --provenance genesis --version v3.2.1\n      at genericNodeError (node:internal/errors:998:15)\n      at wrappedFn (node:internal/errors:543:14)\n      at checkExecSyncError (node:child_process:926:11)\n      at execFileSync (node:child_process:962:15)\n\u2716 a numeric endpoint remains ordinary documentation through the full checker (5163.730042ms)\n  AssertionError [ERR_ASSERTION]: \u2714 every spec from S-036 that carries a live bare citation declares its anchors (136.525958ms)\n  \u2714 both declared anchors are commits in this repository (2230.161625ms)\n  \u2714 every declared anchor still resolves the citations it covers (2527.747875ms)\n  \u2714 new alphanumeric and grown spec IDs remain in citation-anchor coverage (1.964375ms)\n  \u2716 a Spec nested in its landmark folder is in citation-anchor coverage (139.9195ms)"
+      },
+      {
+        "command": "node tools/test-controls-vocabulary-sweep.mjs",
+        "exit": 0,
+        "seconds": 0.07
+      },
+      {
+        "command": "node tools/test-carrier-landing.mjs",
+        "exit": 0,
+        "seconds": 3.78
+      },
+      {
+        "command": "node tools/test-runbook-index.mjs",
+        "exit": 1,
+        "seconds": 0.77,
+        "observed_causes": [
+          "existing AGENTS/control draft assertions; inspect recorded failure"
+        ],
+        "failure_excerpt": "\u2716 root AGENTS entry route reads the Runbook index at every session entry (0.718208ms)\n  AssertionError [ERR_ASSERTION]: AGENTS.md: the opening names the entry route through the index\n      at TestContext.<anonymous> (file://<project>/tools/test-runbook-index.mjs:149:12)\n      at Test.runInAsyncScope (node:async_hooks:226:14)\n      at Test.run (node:internal/test_runner/test:1382:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)\n\u2716 every inbound carrier anchor the baseline census recorded still resolves (4.130042ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n  + actual - expected\n  \n  + [\n  +   'AGENTS.md#git-rules',"
+      },
+      {
+        "command": "node tools/test-spec-report.mjs",
+        "exit": 1,
+        "seconds": 2.39,
+        "observed_causes": [
+          "source-identity checks refuse the dirty shared checkout"
+        ],
+        "failure_excerpt": "\nAssertionError [ERR_ASSERTION]: {\"status\":\"invalid\",\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench manifest, runtime tools, or templates have uncommitted changes; commit the exact candidate before initialization.\"}}\n\n\n1 !== 0\n"
+      },
+      {
+        "command": "node tools/test-landmark-wiki.mjs",
+        "exit": 1,
+        "seconds": 7.79,
+        "observed_causes": [
+          "source-identity checks refuse the dirty shared checkout"
+        ],
+        "failure_excerpt": "\u2716 managed installation exposes the actual receipt-backed validator CLI and API (36.665041ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"blocked\",\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench source has uncommitted changes under workbench/manifest.json, workbench/tools; commit the exact source candidate before installation.\"}}\n  + actual - expected\n  \n  + 'blocked'\n  - 'installed'\n\u2716 retire-landmark refuses a Landmark Wiki page with a bare identifier and retires into a valid one (134.429916ms)\n  AssertionError [ERR_ASSERTION]: {\"status\":\"invalid\",\"error\":{\"code\":\"invalid-source-identity\",\"message\":\"The Workbench manifest, runtime tools, or templates have uncommitted changes; commit the exact candidate before initialization.\"}}\n  \n  \n  1 !== 0\n  "
+      },
+      {
+        "command": "node tools/test-self-drift.mjs",
+        "exit": 0,
+        "seconds": 0.35
+      },
+      {
+        "command": "node tools/test-feedback-inventory.mjs",
+        "exit": 0,
+        "seconds": 0.12
+      },
+      {
+        "command": "node tools/test-grilling-ledger.mjs",
+        "exit": 0,
+        "seconds": 0.12
+      },
+      {
+        "command": "node tools/test-grill-board.mjs",
+        "exit": 1,
+        "seconds": 0.8,
+        "observed_causes": [
+          "sandbox forbids temporary localhost listener"
+        ],
+        "failure_excerpt": "\u2716 the server serves the page, writes answers.json only on PUT, and never touches items.json (6.696167ms)\n  Error: listen EPERM: operation not permitted 127.0.0.1\n      at Server.setupListenHandle [as _listen2] (node:net:1986:21)\n      at listenInCluster (node:net:2065:12)\n      at node:net:2274:7\n      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {\n\u2716 artifact reader follows manifest collections, preserves full records and distinguishes draft excerpts (3.459333ms)\n  Error: listen EPERM: operation not permitted 127.0.0.1\n      at Server.setupListenHandle [as _listen2] (node:net:1986:21)\n      at listenInCluster (node:net:2065:12)\n      at node:net:2274:7\n      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {"
+      },
+      {
+        "command": "python3 tools/test-check-append-only.py",
+        "exit": 0,
+        "seconds": 280.86
+      },
+      {
+        "command": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+        "exit": 0,
+        "seconds": 0.44
+      },
+      {
+        "command": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+        "exit": 0,
+        "seconds": 0.07
+      },
+      {
+        "command": "node workbench/tools/spec-workbench.mjs doctor",
+        "exit": 0,
+        "seconds": 5.88
+      }
+    ]
+  },
+  "room_checks": {
+    "pre": {
+      "machineResult": "blocked",
+      "cleanUpdate": false,
+      "findings": [
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-003W has an in-progress task last updated 2026-10-04",
+          "expected": "current owner and verified identity",
+          "observed": "S-003W has an in-progress task last updated 2026-10-04",
+          "correction": "S-003W has an in-progress task last updated 2026-10-04",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004L/TK-006W waits on TK-006V",
+          "expected": "current owner and verified identity",
+          "observed": "S-004L/TK-006W waits on TK-006V",
+          "correction": "S-004L/TK-006W waits on TK-006V",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004M/TK-008V waits on TK-008U",
+          "expected": "current owner and verified identity",
+          "observed": "S-004M/TK-008V waits on TK-008U",
+          "correction": "S-004M/TK-008V waits on TK-008U",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004M/TK-008W waits on TK-008V",
+          "expected": "current owner and verified identity",
+          "observed": "S-004M/TK-008W waits on TK-008V",
+          "correction": "S-004M/TK-008W waits on TK-008V",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004M/TK-008X waits on TK-008W",
+          "expected": "current owner and verified identity",
+          "observed": "S-004M/TK-008X waits on TK-008W",
+          "correction": "S-004M/TK-008X waits on TK-008W",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-00Q has an in-progress task last updated 2026-09-19",
+          "expected": "current owner and verified identity",
+          "observed": "S-00Q has an in-progress task last updated 2026-09-19",
+          "correction": "S-00Q has an in-progress task last updated 2026-09-19",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-01H has an in-progress task last updated 2026-10-03",
+          "expected": "current owner and verified identity",
+          "observed": "S-01H has an in-progress task last updated 2026-10-03",
+          "correction": "S-01H has an in-progress task last updated 2026-10-03",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-01P has an in-progress task last updated 2026-10-03",
+          "expected": "current owner and verified identity",
+          "observed": "S-01P has an in-progress task last updated 2026-10-03",
+          "correction": "S-01P has an in-progress task last updated 2026-10-03",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-01S has an in-progress task last updated 2026-10-03",
+          "expected": "current owner and verified identity",
+          "observed": "S-01S has an in-progress task last updated 2026-10-03",
+          "correction": "S-01S has an in-progress task last updated 2026-10-03",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/feedback/REPORT_FORMAT.md",
+          "claim": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/notepad.schema.json",
+          "claim": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/work.example.json",
+          "claim": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/grilling.example.json",
+          "claim": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/handoff.example.json",
+          "claim": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "unverified-provenance",
+          "artifact": "manifest",
+          "claim": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "untracked-controls",
+          "artifact": "git",
+          "claim": "1 untracked file(s) under the root controls, the ADR collection or the spec lane: workbench/specs/S-004D-shared-interactive-board/decision-reconciliation-verification-2026-10-07.json; commit or remove them before claiming the work done",
+          "expected": "current owner and verified identity",
+          "observed": "1 untracked file(s) under the root controls, the ADR collection or the spec lane: workbench/specs/S-004D-shared-interactive-board/decision-reconciliation-verification-2026-10-07.json; commit or remove them before claiming the work done",
+          "correction": "1 untracked file(s) under the root controls, the ADR collection or the spec lane: workbench/specs/S-004D-shared-interactive-board/decision-reconciliation-verification-2026-10-07.json; commit or remove them before claiming the work done",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        }
+      ]
+    },
+    "post": {
+      "machineResult": "blocked",
+      "cleanUpdate": false,
+      "findings": [
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-003W has an in-progress task last updated 2026-10-04",
+          "expected": "current owner and verified identity",
+          "observed": "S-003W has an in-progress task last updated 2026-10-04",
+          "correction": "S-003W has an in-progress task last updated 2026-10-04",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004L/TK-006W waits on TK-006V",
+          "expected": "current owner and verified identity",
+          "observed": "S-004L/TK-006W waits on TK-006V",
+          "correction": "S-004L/TK-006W waits on TK-006V",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004M/TK-008V waits on TK-008U",
+          "expected": "current owner and verified identity",
+          "observed": "S-004M/TK-008V waits on TK-008U",
+          "correction": "S-004M/TK-008V waits on TK-008U",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004M/TK-008W waits on TK-008V",
+          "expected": "current owner and verified identity",
+          "observed": "S-004M/TK-008W waits on TK-008V",
+          "correction": "S-004M/TK-008W waits on TK-008V",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "blocked-slice",
+          "artifact": "specs",
+          "claim": "S-004M/TK-008X waits on TK-008W",
+          "expected": "current owner and verified identity",
+          "observed": "S-004M/TK-008X waits on TK-008W",
+          "correction": "S-004M/TK-008X waits on TK-008W",
+          "classification": "stale",
+          "severity": "error",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "selected-slice"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-00Q has an in-progress task last updated 2026-09-19",
+          "expected": "current owner and verified identity",
+          "observed": "S-00Q has an in-progress task last updated 2026-09-19",
+          "correction": "S-00Q has an in-progress task last updated 2026-09-19",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-01H has an in-progress task last updated 2026-10-03",
+          "expected": "current owner and verified identity",
+          "observed": "S-01H has an in-progress task last updated 2026-10-03",
+          "correction": "S-01H has an in-progress task last updated 2026-10-03",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-01P has an in-progress task last updated 2026-10-03",
+          "expected": "current owner and verified identity",
+          "observed": "S-01P has an in-progress task last updated 2026-10-03",
+          "correction": "S-01P has an in-progress task last updated 2026-10-03",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-claim",
+          "artifact": "specs",
+          "claim": "S-01S has an in-progress task last updated 2026-10-03",
+          "expected": "current owner and verified identity",
+          "observed": "S-01S has an in-progress task last updated 2026-10-03",
+          "correction": "S-01S has an in-progress task last updated 2026-10-03",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/feedback/REPORT_FORMAT.md",
+          "claim": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/notepad.schema.json",
+          "claim": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/work.example.json",
+          "claim": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/grilling.example.json",
+          "claim": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "stale-seed",
+          "artifact": "workbench/sessions/notepads/templates/handoff.example.json",
+          "claim": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "unverified-provenance",
+          "artifact": "manifest",
+          "claim": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "expected": "current owner and verified identity",
+          "observed": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+          "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+          "classification": "historical",
+          "severity": "attention",
+          "effect": "limitation",
+          "diagnosticEffect": "none"
+        },
+        {
+          "code": "untracked-controls",
+          "artifact": "git",
+          "claim": "2 untracked file(s) under the root controls, the ADR collection or the spec lane: workbench/specs/S-004D-shared-interactive-board/decision-reconciliation-verification-2026-10-07.json, workbench/specs/S-004D-shared-interactive-board/priority-value-planning-verification-2026-10-07.json; commit or remove them before claiming the work done",
+          "expected": "current owner and verified identity",
+          "observed": "2 untracked file(s) under the root controls, the ADR collection or the spec lane: workbench/specs/S-004D-shared-interactive-board/decision-reconciliation-verification-2026-10-07.json, workbench/specs/S-004D-shared-interactive-board/priority-value-planning-verification-2026-10-07.json; commit or remove them before claiming the work done",
+          "correction": "2 untracked file(s) under the root controls, the ADR collection or the spec lane: workbench/specs/S-004D-shared-interactive-board/decision-reconciliation-verification-2026-10-07.json, workbench/specs/S-004D-shared-interactive-board/priority-value-planning-verification-2026-10-07.json; commit or remove them before claiming the work done",
+          "classification": "stale",
+          "severity": "attention",
+          "effect": "blocks-clean-update",
+          "diagnosticEffect": "none"
+        }
+      ]
+    },
+    "same_finding_codes_and_artifacts": true
+  },
+  "limits": [
+    "Full suite does not pass in the shared checkout; preserve unrelated dirty work and failed checks.",
+    "The record is Owner-confirmed content in proposed lifecycle; no clean-tree acceptance operation claimed.",
+    "No board P/V implementation or real-question usefulness proof is claimed."
+  ],
+  "doctor": {
+    "command": "node workbench/tools/spec-workbench.mjs doctor --json",
+    "exit": 0,
+    "findings": [
+      {
+        "code": "stale-claim",
+        "severity": "attention",
+        "scope": "specs",
+        "blocks": "none",
+        "message": "S-003W has an in-progress task last updated 2026-10-04",
+        "specId": "S-003W"
+      },
+      {
+        "code": "blocked-slice",
+        "severity": "error",
+        "scope": "specs",
+        "blocks": "selected-slice",
+        "message": "S-004L/TK-006W waits on TK-006V",
+        "specId": "S-004L",
+        "taskId": "TK-006W"
+      },
+      {
+        "code": "blocked-slice",
+        "severity": "error",
+        "scope": "specs",
+        "blocks": "selected-slice",
+        "message": "S-004M/TK-008V waits on TK-008U",
+        "specId": "S-004M",
+        "taskId": "TK-008V"
+      },
+      {
+        "code": "blocked-slice",
+        "severity": "error",
+        "scope": "specs",
+        "blocks": "selected-slice",
+        "message": "S-004M/TK-008W waits on TK-008V",
+        "specId": "S-004M",
+        "taskId": "TK-008W"
+      },
+      {
+        "code": "blocked-slice",
+        "severity": "error",
+        "scope": "specs",
+        "blocks": "selected-slice",
+        "message": "S-004M/TK-008X waits on TK-008W",
+        "specId": "S-004M",
+        "taskId": "TK-008X"
+      },
+      {
+        "code": "stale-claim",
+        "severity": "attention",
+        "scope": "specs",
+        "blocks": "none",
+        "message": "S-00Q has an in-progress task last updated 2026-09-19",
+        "specId": "S-00Q"
+      },
+      {
+        "code": "stale-claim",
+        "severity": "attention",
+        "scope": "specs",
+        "blocks": "none",
+        "message": "S-01H has an in-progress task last updated 2026-10-03",
+        "specId": "S-01H"
+      },
+      {
+        "code": "stale-claim",
+        "severity": "attention",
+        "scope": "specs",
+        "blocks": "none",
+        "message": "S-01P has an in-progress task last updated 2026-10-03",
+        "specId": "S-01P"
+      },
+      {
+        "code": "stale-claim",
+        "severity": "attention",
+        "scope": "specs",
+        "blocks": "none",
+        "message": "S-01S has an in-progress task last updated 2026-10-03",
+        "specId": "S-01S"
+      },
+      {
+        "code": "stale-seed",
+        "severity": "attention",
+        "scope": "feedback",
+        "blocks": "none",
+        "message": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "document": "workbench/feedback/REPORT_FORMAT.md",
+        "release": "v3.1.4",
+        "expected": "v3.2.1"
+      },
+      {
+        "code": "stale-seed",
+        "severity": "attention",
+        "scope": "feedback",
+        "blocks": "none",
+        "message": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "document": "workbench/sessions/notepads/templates/notepad.schema.json",
+        "release": "v3.1.4",
+        "expected": "v3.2.1"
+      },
+      {
+        "code": "stale-seed",
+        "severity": "attention",
+        "scope": "feedback",
+        "blocks": "none",
+        "message": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "document": "workbench/sessions/notepads/templates/work.example.json",
+        "release": "v3.1.4",
+        "expected": "v3.2.1"
+      },
+      {
+        "code": "stale-seed",
+        "severity": "attention",
+        "scope": "feedback",
+        "blocks": "none",
+        "message": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "document": "workbench/sessions/notepads/templates/grilling.example.json",
+        "release": "v3.1.4",
+        "expected": "v3.2.1"
+      },
+      {
+        "code": "stale-seed",
+        "severity": "attention",
+        "scope": "feedback",
+        "blocks": "none",
+        "message": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "document": "workbench/sessions/notepads/templates/handoff.example.json",
+        "release": "v3.1.4",
+        "expected": "v3.2.1"
+      },
+      {
+        "code": "unverified-provenance",
+        "severity": "attention",
+        "scope": "manifest",
+        "blocks": "none",
+        "message": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+        "field": "release",
+        "release": "v3.1.0",
+        "expected": "v3.2.1"
+      },
+      {
+        "code": "untracked-controls",
+        "severity": "attention",
+        "scope": "git",
+        "blocks": "none",
+        "message": "2 untracked file(s) under the root controls, the ADR collection or the spec lane: workbench/specs/S-004D-shared-interactive-board/decision-reconciliation-verification-2026-10-07.json, workbench/specs/S-004D-shared-interactive-board/priority-value-planning-verification-2026-10-07.json; commit or remove them before claiming the work done",
+        "files": [
+          "workbench/specs/S-004D-shared-interactive-board/decision-reconciliation-verification-2026-10-07.json",
+          "workbench/specs/S-004D-shared-interactive-board/priority-value-planning-verification-2026-10-07.json"
+        ]
+      }
+    ]
+  }
+}
