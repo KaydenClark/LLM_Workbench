@@ -99,13 +99,41 @@ assert.match(templateBody, /^# \[PROJECT_NAME\] - Blueprint$/m, 'the template ti
 assert.match(templateBody, /link no record that carries an identifier/i, 'the template tells a room its Blueprint links no record that carries an identifier');
 assert.doesNotMatch(templateBody, /\b(?:Align|Journey|Director|Dispatcher|Worker|prototype|Human QA|branch)\b/i, 'the generic template carries no product workflow');
 
+// S-004O TK-009H: LEXICON.md and templates/LEXICON.md were removed once every
+// line had landed (DDR-001E). These history inventories keep naming them as the
+// owner of their time; such an owner is on the tree only through its successors,
+// and only when the S-004O landing record shows the carrier removed with every
+// removed line landed and no inventory error. The claims that named a Lexicon are
+// then pinned to the successor text that carries them now.
+const S004O_PROOF = 'workbench/specs/S-004O-lexicon-retirement-and-architecture-md/proof';
+const RETIRED_LEXICONS = {
+  'LEXICON.md': { record: `${S004O_PROOF}/lexicon-landing-check.json`, successors: ['GLOSSARY.md', 'ARCHITECTURE.md'] },
+  'templates/LEXICON.md': { record: `${S004O_PROOF}/template-lexicon-landing-check.json`, successors: ['templates/GLOSSARY.md', 'templates/ARCHITECTURE.md'] },
+};
+function ownerOnTree(owner) {
+  if (fs.existsSync(path.join(root, owner))) return true;
+  const retired = RETIRED_LEXICONS[owner];
+  if (!retired) return false;
+  const report = JSON.parse(fs.readFileSync(path.join(root, retired.record), 'utf8'));
+  return report.carrier === owner && report.carrierRemoved === true && report.ok === true && report.unlanded.length === 0
+    && report.inventoryErrors.length === 0 && report.removedLines > 0 && report.landed === report.removedLines
+    && retired.successors.every((successor) => fs.existsSync(path.join(root, successor)));
+}
+const successorText = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
+const glossaryDefines = (relative, term) => new RegExp(`^\\*\\*${term}\\*\\*:$`, 'm').test(successorText(relative));
+
 const inventory = JSON.parse(fs.readFileSync(path.join(root, 'workbench/specs/S-00A-blueprint-active-adr-and-context-map/blueprint-claim-disposition.json')));
 for (const source of inventory.sources) {
   const original = execFileSync('git', ['show', `${source.commit}:${source.path}`], {cwd:root,encoding:'utf8'});
   assert.equal(source.claims.map(x => x.text).join(''), original, 'inventory must preserve every source byte in order');
   for (const claim of source.claims) {
     assert.ok(claim.disposition && claim.reason && claim.owner);
-    assert.ok(fs.existsSync(path.join(root, claim.owner)), claim.owner);
+    assert.ok(ownerOnTree(claim.owner), claim.owner);
+    if (claim.owner === 'LEXICON.md') {
+      // The Lexicon owned the definitions and the Context Map routes; GLOSSARY.md and ARCHITECTURE.md carry them now.
+      assert.match(successorText('ARCHITECTURE.md'), /^These are the Context Map's entry routes\./m, `${claim.reason}: ARCHITECTURE.md carries the Context Map routes`);
+      assert.ok(glossaryDefines('GLOSSARY.md', 'Context Map'), `${claim.reason}: GLOSSARY.md defines the Context Map`);
+    }
   }
 }
 // S-004H TK-005Q: every paragraph of the Blueprint and of its template, as they stood
@@ -126,6 +154,17 @@ const findFile = (start, name) => {
 const paragraphFile = findFile('workbench/specs', 'blueprint-paragraph-disposition.json');
 assert.ok(paragraphFile, 'the Blueprint Short Page spec must keep its paragraph disposition inventory');
 const paragraphs = JSON.parse(fs.readFileSync(paragraphFile, 'utf8'));
+// S-004O TK-009H: the Template workflow claims whose generic mirror was the
+// Template Lexicon are pinned to the Template glossary entries and ARCHITECTURE.md
+// sections their home notes name.
+const TEMPLATE_LEXICON_SUCCESSORS = {
+  'tpl-wf-01': () => {
+    for (const heading of ['Routes', 'Ownership']) assert.match(successorText('templates/ARCHITECTURE.md'), new RegExp(`^## ${heading}$`, 'm'), `tpl-wf-01: templates/ARCHITECTURE.md routes questions to their owners (${heading})`);
+  },
+  'tpl-wf-02': () => { for (const term of ['Align', 'Design concept']) assert.ok(glossaryDefines('templates/GLOSSARY.md', term), `tpl-wf-02: templates/GLOSSARY.md defines ${term}`); },
+  'tpl-wf-06': () => { for (const term of ['Assembled-Spec review', 'Role', 'Worker']) assert.ok(glossaryDefines('templates/GLOSSARY.md', term), `tpl-wf-06: templates/GLOSSARY.md defines ${term}`); },
+  'tpl-wf-07': () => assert.ok(glossaryDefines('templates/GLOSSARY.md', 'Human QA'), 'tpl-wf-07: templates/GLOSSARY.md defines Human QA'),
+};
 assert.deepEqual(paragraphs.sources.map(s => s.path), ['BLUEPRINT.md', 'templates/BLUEPRINT.md'], 'the inventory covers the root Blueprint and its template');
 const HOME_KINDS = new Set(['short-page', 'decision-record', 'wiki', 'landmark', 'spec', 'skill', 'contract', 'generic-contract', 'generic-mirror']);
 const DISPOSITIONS = new Set(['relocate-claim', 'replaced-claim', 'retired-shape', 'retired-claim', 'gap']);
@@ -143,7 +182,12 @@ for (const source of paragraphs.sources) {
     for (const home of claim.homes) {
       assert.ok(HOME_KINDS.has(home.kind), `${claim.id}: unknown home kind ${home.kind}`);
       assert.ok(home.note && home.note.length > 5, `${claim.id}: each home says what it carries`);
-      assert.ok(fs.existsSync(path.join(root, home.owner)), `${claim.id}: home ${home.owner} must exist on the tree`);
+      assert.ok(ownerOnTree(home.owner), `${claim.id}: home ${home.owner} must exist on the tree`);
+      if (home.owner === 'templates/LEXICON.md') {
+        const successor = TEMPLATE_LEXICON_SUCCESSORS[claim.id];
+        assert.ok(successor, `${claim.id}: a retired Template Lexicon home names the successor text that carries it`);
+        successor();
+      }
     }
   }
 }
