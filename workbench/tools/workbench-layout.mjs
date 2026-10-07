@@ -76,7 +76,22 @@ const prior28CoreSkills = [
   'improve-harness', 'director', 'dispatcher', 'spec-planner', 'spec-manager',
   'builder', 'auditor', 'reviewer', 'reconciler'
 ];
-const v321TransitionCoreSkills = [prior28CoreSkills];
+// Exact 29-skill cohorts from the two parents of the combined bundle.
+const prior29PrCoreSkills = [
+  'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
+  'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'update-harness',
+  'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime',
+  'improve-harness', 'pr', 'director', 'dispatcher', 'spec-planner', 'spec-manager',
+  'builder', 'auditor', 'reviewer', 'reconciler'
+];
+const prior29DomainModelingCoreSkills = [
+  'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
+  'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'update-harness',
+  'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime',
+  'improve-harness', 'domain-modeling', 'director', 'dispatcher', 'spec-planner', 'spec-manager',
+  'builder', 'auditor', 'reviewer', 'reconciler'
+];
+const v321TransitionCoreSkills = [prior28CoreSkills, prior29PrCoreSkills, prior29DomainModelingCoreSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];

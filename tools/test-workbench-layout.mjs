@@ -274,8 +274,9 @@ test('a six-lane schema 2 manifest gains the skills lane through migrate, after 
     // v3.2.1's frozen twenty-one, without the `grill-me` S-00Z grew the live
     // bundle with, the coordination entries that grew it after, or the
     // `workbench-runtime` entry S-004C TK-005J added or the `improve-harness`
-    // entry S-004L TK-008L added, the `domain-modeling` entry S-004J TK-00JA added, or the `pr` entry S-002U TK-007V added. The
-    // provider-home shape validates only with a stamped row.
+    // entry S-004L TK-008L added, the `domain-modeling` entry S-004J TK-00JA
+    // added, or the `pr` entry S-002U TK-007V added. The provider-home shape
+    // validates only with a stamped row.
     manifest.skillPolicy = { ...manifest.skillPolicy, required: manifest.skillPolicy.required.filter((name) => !['grill-me', 'workbench-runtime', 'improve-harness', 'domain-modeling', 'pr'].includes(name) && !coordinationSkills.includes(name)), normalSetup: 'presence-only', updates: 'explicit-only' };
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
     // The undeclared directory may already exist, empty (init's .gitkeep) or
@@ -1153,7 +1154,8 @@ test('each listed legacy version validates only at the policy its release declar
     // v3.2.1 stamped the twenty-one-skill bundle with `handoff`; S-00Z grew the
     // live bundle with `grill-me`, the coordination entries grew it again and
     // S-004C TK-005J added `workbench-runtime` and S-004L TK-008L added
-    // `improve-harness` and S-004J TK-00JA added `domain-modeling` and S-002U TK-007V added `pr`, so the v3.2.1 row freezes at
+    // `improve-harness`, S-004J TK-00JA added `domain-modeling` and S-002U
+    // TK-007V added `pr`, so the v3.2.1 row freezes at
     // twenty-one and a room stamped v3.2.1 validates with either the frozen row
     // or the current policy the Workbench update writes before restamping.
     const twentyOne = current.filter((name) => !['grill-me', 'workbench-runtime', 'improve-harness', 'domain-modeling', 'pr'].includes(name) && !coordinationSkills.includes(name));

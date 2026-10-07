@@ -94,3 +94,5 @@ None is claimed. At the pinned `mattpocock/skills@c55ee46` there is no genesis, 
 
 - 2026-09-26: Created by S-01G (genesis skill rebuild Spec) TK-00X (Deliver the genesis skill destination Task). The source now classifies the target before writing, installs the skills lane and names the readiness gate. The tool-level refusal is recorded as a remaining gap.
 - 2026-10-07: Core skill count in the manual build step updated from 28 to 29 for the Required Domain Modeling Skill Spec (S-004J), Task TK-00JC (Wiki reconciliation), after `domain-modeling` joined the bundle; no other claim re-verified.
+
+- 2026-10-07: PR #415 integration conflict repair reconciled the combined `domain-modeling` and `pr` bundle count to thirty; prior dated count observations remain history.
