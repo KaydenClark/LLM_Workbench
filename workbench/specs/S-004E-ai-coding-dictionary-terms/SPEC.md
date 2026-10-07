@@ -3,13 +3,13 @@
 **Spec ID:** S-004E
 **Status:** active
 **Priority:** 2
-**Owner:** claude-lane-g
+**Owner:** claude-s004e-corrections
 **Stance:** Builder
-**Updated:** 2026-10-06
+**Updated:** 2026-10-07
 **Catalog description:** Put the owner's agreed meanings for AI Coding Dictionary terms into the Lexicon, with a Wiki dictionary entry wherever a term needs more than its row, starting with nineteen model, harness and session terms.
 **Blockers:** none. The owner answered the harness question on 2026-10-03 (option (a) in Decisions And Contracts), so no row waits on an owner answer. Lexicon writes take one writer at a time; the owner's Codex Lexicon reconciliation landed in integration on 2026-10-03 (PR #281), and the Lexicon Design-Concept Reconciliation Spec stays active for its whole-Lexicon audit. The four Tasks run serially in this Spec's writer lane.
-**Latest event:** 2026-10-06: assembled at integration `42431879`; Completion Result written and the verification line checked. The conflicting-control-lines box stays open for the Contract carrier rewrite.
-**Next gate:** Separate-context review of the assembled candidate, then the owner's Human QA approval (declared in chat on 2026-10-06) is recorded on the reviewed content; the second acceptance line clears when the Contract carrier rewrite lands.
+**Latest event:** TK-005Y claimed by claude-s004e-corrections.
+**Next gate:** Close TK-005Y with verification and documentation proof.
 
 > **Citation anchors.** pre=`817096e676992cf7ece72967ac8bbb064261a3ee` post=`817096e676992cf7ece72967ac8bbb064261a3ee`.
 
