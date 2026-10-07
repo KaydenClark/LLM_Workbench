@@ -544,7 +544,7 @@ test('growth rollback recovers the recorded legacy nine-backed-up eleven-to-twen
     assertRestoredGeneration(room);
   } finally {room.cleanup();}
 });
-for(const scenario of ['unrecorded','modified-introduced','mode-introduced','modified-restored','corrupt-backup','unsafe-backup','inconsistent-absence','missing-unchanged','unknown-legacy-source']) {
+for(const scenario of ['unrecorded','modified-introduced','mode-introduced','modified-restored','corrupt-backup','unsafe-backup','inconsistent-absence','missing-unchanged','unknown-legacy-source','pruned-legacy-current']) {
   test(`growth rollback refuses ${scenario} before any lane writes`,()=>{
     const room=growthRoom();
     try {
@@ -564,6 +564,9 @@ for(const scenario of ['unrecorded','modified-introduced','mode-introduced','mod
         entry.absent=[room.originals[0]];fs.writeFileSync(room.receiptFile,JSON.stringify(receipt));
       } else if(scenario==='unknown-legacy-source') {
         delete entry.absent;delete entry.hashes;receipt.source.commit='0'.repeat(40);
+        fs.writeFileSync(room.receiptFile,JSON.stringify(receipt));
+      } else if(scenario==='pruned-legacy-current') {
+        delete entry.absent;delete entry.hashes;delete receipt.files[room.introduced[0]];
         fs.writeFileSync(room.receiptFile,JSON.stringify(receipt));
       } else fs.unlinkSync(path.join(room.lane,room.originals.find(name=>!entry.files.includes(name))));
       const before=laneBytes(room.lane);
