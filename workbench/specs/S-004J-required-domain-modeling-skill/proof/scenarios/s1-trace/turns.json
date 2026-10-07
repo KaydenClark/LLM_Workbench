@@ -1,0 +1,5 @@
+[
+  "/grilling I'm reworking how Ledgerline models billing. Grill me on it one question at a time; I'll bring in domain modeling when a choice comes up.",
+  "/domain-modeling Here's the change I'm leaning toward: Invoices should belong to the Customer instead of the Account, so each Customer gets one Invoice per billing period across all of its Accounts.",
+  "Another option I'm weighing instead: keep the boundary but rename Account to Billing Profile, since people keep confusing it with a login."
+]

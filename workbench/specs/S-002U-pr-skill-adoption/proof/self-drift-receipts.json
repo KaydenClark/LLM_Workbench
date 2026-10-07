@@ -1,0 +1,364 @@
+{
+  "spec": "S-002U",
+  "task": "TK-007V",
+  "observedOn": "2026-10-07",
+  "command": "node workbench/tools/self-drift.mjs --phase pre|post --json",
+  "why": "Before/after Workbench self-drift room check for the S-002U harness change (workbench-room-checks, Workbench self-drift check), recorded in the correction pass after the assembled review at 24d47f0644dc5881582e9dedf04581de3be743cd found it missing.",
+  "method": "Each run in a fresh scratch clone checked out detached at the named revision with a clean tree, so both carry the same detached-head inspection finding. A third run on the branch checkout of a fresh clone of origin claude/s002u-correction at the post revision shows the same set minus detached-head.",
+  "pre": {
+    "phase": "pre",
+    "sourceRevision": "621524d980f7990bad978c5b69910dd69b88b31d",
+    "checkout": "scratch clone, detached HEAD at the integration base origin/integration",
+    "dirty": false,
+    "workbenchVersion": "v3.2.1",
+    "machineResult": "blocked",
+    "cleanUpdate": false,
+    "findingCount": 22,
+    "inventoryCount": 624,
+    "findings": [
+      {
+        "code": "stale-claim",
+        "artifact": "specs",
+        "claim": "S-003W has an in-progress task last updated 2026-10-04",
+        "severity": "attention",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004E/TK-005Z waits on TK-005Y",
+        "severity": "error",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004L/TK-006W waits on TK-006V",
+        "severity": "error",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004M/TK-008V waits on TK-008U",
+        "severity": "error",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004M/TK-008W waits on TK-008V",
+        "severity": "error",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004M/TK-008X waits on TK-008W",
+        "severity": "error",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004O/TK-009D waits on TK-009C",
+        "severity": "error",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004O/TK-009E waits on TK-009C",
+        "severity": "error",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004O/TK-009F waits on TK-009B, TK-009C, TK-009D",
+        "severity": "error",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004O/TK-009G waits on TK-009B, TK-009C, TK-009F",
+        "severity": "error",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004O/TK-009H waits on TK-009E, TK-009G",
+        "severity": "error",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "stale-claim",
+        "artifact": "specs",
+        "claim": "S-00Q has an in-progress task last updated 2026-09-19",
+        "severity": "attention",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "stale-claim",
+        "artifact": "specs",
+        "claim": "S-01H has an in-progress task last updated 2026-10-03",
+        "severity": "attention",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "stale-claim",
+        "artifact": "specs",
+        "claim": "S-01P has an in-progress task last updated 2026-10-03",
+        "severity": "attention",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "stale-claim",
+        "artifact": "specs",
+        "claim": "S-01S has an in-progress task last updated 2026-10-03",
+        "severity": "attention",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/feedback/REPORT_FORMAT.md",
+        "claim": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "severity": "attention",
+        "effect": "limitation"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/notepad.schema.json",
+        "claim": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "severity": "attention",
+        "effect": "limitation"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/work.example.json",
+        "claim": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "severity": "attention",
+        "effect": "limitation"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/grilling.example.json",
+        "claim": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "severity": "attention",
+        "effect": "limitation"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/handoff.example.json",
+        "claim": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "severity": "attention",
+        "effect": "limitation"
+      },
+      {
+        "code": "unverified-provenance",
+        "artifact": "manifest",
+        "claim": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+        "severity": "attention",
+        "effect": "limitation"
+      },
+      {
+        "code": "detached-head",
+        "artifact": "git",
+        "claim": "HEAD is detached; this is an inspection state, not a blocker, but switch to a branch before committing work you intend to deliver",
+        "severity": "attention",
+        "effect": "blocks-clean-update"
+      }
+    ]
+  },
+  "post": {
+    "phase": "post",
+    "sourceRevision": "603ebb79d62abae9d7fb80b3d52e23fc3bcbdf64",
+    "checkout": "scratch clone, detached HEAD at the corrected S-002U candidate",
+    "dirty": false,
+    "workbenchVersion": "v3.2.1",
+    "machineResult": "blocked",
+    "cleanUpdate": false,
+    "findingCount": 22,
+    "inventoryCount": 632,
+    "findings": [
+      {
+        "code": "stale-claim",
+        "artifact": "specs",
+        "claim": "S-003W has an in-progress task last updated 2026-10-04",
+        "severity": "attention",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004E/TK-005Z waits on TK-005Y",
+        "severity": "error",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004L/TK-006W waits on TK-006V",
+        "severity": "error",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004M/TK-008V waits on TK-008U",
+        "severity": "error",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004M/TK-008W waits on TK-008V",
+        "severity": "error",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004M/TK-008X waits on TK-008W",
+        "severity": "error",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004O/TK-009D waits on TK-009C",
+        "severity": "error",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004O/TK-009E waits on TK-009C",
+        "severity": "error",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004O/TK-009F waits on TK-009B, TK-009C, TK-009D",
+        "severity": "error",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004O/TK-009G waits on TK-009B, TK-009C, TK-009F",
+        "severity": "error",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004O/TK-009H waits on TK-009E, TK-009G",
+        "severity": "error",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "stale-claim",
+        "artifact": "specs",
+        "claim": "S-00Q has an in-progress task last updated 2026-09-19",
+        "severity": "attention",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "stale-claim",
+        "artifact": "specs",
+        "claim": "S-01H has an in-progress task last updated 2026-10-03",
+        "severity": "attention",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "stale-claim",
+        "artifact": "specs",
+        "claim": "S-01P has an in-progress task last updated 2026-10-03",
+        "severity": "attention",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "stale-claim",
+        "artifact": "specs",
+        "claim": "S-01S has an in-progress task last updated 2026-10-03",
+        "severity": "attention",
+        "effect": "blocks-clean-update"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/feedback/REPORT_FORMAT.md",
+        "claim": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "severity": "attention",
+        "effect": "limitation"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/notepad.schema.json",
+        "claim": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "severity": "attention",
+        "effect": "limitation"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/work.example.json",
+        "claim": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "severity": "attention",
+        "effect": "limitation"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/grilling.example.json",
+        "claim": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "severity": "attention",
+        "effect": "limitation"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/handoff.example.json",
+        "claim": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "severity": "attention",
+        "effect": "limitation"
+      },
+      {
+        "code": "unverified-provenance",
+        "artifact": "manifest",
+        "claim": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+        "severity": "attention",
+        "effect": "limitation"
+      },
+      {
+        "code": "detached-head",
+        "artifact": "git",
+        "claim": "HEAD is detached; this is an inspection state, not a blocker, but switch to a branch before committing work you intend to deliver",
+        "severity": "attention",
+        "effect": "blocks-clean-update"
+      }
+    ]
+  },
+  "postOnBranch": {
+    "sourceRevision": "603ebb79d62abae9d7fb80b3d52e23fc3bcbdf64",
+    "checkout": "fresh clone of origin claude/s002u-correction, branch checkout",
+    "dirty": false,
+    "machineResult": "blocked",
+    "cleanUpdate": false,
+    "findingCount": 21,
+    "differenceFromPost": [
+      "detached-head | git | HEAD is detached; this is an inspection state, not a blocker, but switch to a branch before committing work you intend to deliver"
+    ]
+  },
+  "comparison": {
+    "findingSetUnchanged": true,
+    "onlyPre": [],
+    "onlyPost": []
+  },
+  "semanticCheck": "Bounded read-back of the current-facing claims this Spec changed, at the post revision: manifest skillPolicy.required lists 29 skills including pr; README.md, templates/GENESIS.md, workbench/skills/README.md, workbench/skills/workbench-room-checks/SKILL.md and workbench/wiki/skill-genesis.md state 29; the LEXICON.md Core skill bundle row states twenty-one workflow, four coordination and four stance skills (29); RUNBOOK.md and templates/RUNBOOK.md carry the Write a PR body row; the landmark Wiki page no longer states a count. Remaining number-bearing skill-count lines found by grep are dated history (ADR-000M, workbench-release, landmark-portable-workbench, the core-skill-ownership feature article, skill-grill-me Verified current state 2026-09-26, skill-workbench-runtime 26-to-27 event). All 22 machine findings pre-exist at the base and belong to other owners (stale claims S-003W, S-00Q, S-01H, S-01P, S-01S; blocked slices S-004E, S-004L, S-004M, S-004O; five v3.1.4 seeds; manifest provenance release; scratch detached HEAD).",
+  "limitations": [
+    "cleanUpdate false is the tool default: machine evidence leaves semantic freshness to review, and the base findings still block a clean-update claim",
+    "stale-claim findings depend on the run date",
+    "Raw receipts (with the full inventory hashes) are kept outside the repository in the Dispatcher context directory; this file preserves phase, revision, counts and the full finding set"
+  ]
+}

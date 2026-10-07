@@ -1859,7 +1859,7 @@
       "hash": "014f165cc11fd47953e791fdbce81f24a8b19b45e8ce462dbde98ca4e607edf2",
       "homeKind": "glossary",
       "homePath": "GLOSSARY.md",
-      "landedText": "**Core skill bundle**: The closed set of twenty workflow skills, four coordination skills and four stance skills, counted from the manifest, that every room carries in its `workbench/skills` lane.",
+      "landedText": "**Core skill bundle**: The closed set of twenty-four workflow skills, four coordination skills and four stance skills, counted from the manifest, that every room carries in its `workbench/skills` lane.",
       "reason": null,
       "explanationHome": "workbench/wiki/dictionary-core-skill-bundle.md",
       "explanationText": "It is not Kayden's private catalog or a generalized marketplace; the lane is the room's own discovery source, reached through the tracked `.agents/skills` and `.claude/skills` adapters."
