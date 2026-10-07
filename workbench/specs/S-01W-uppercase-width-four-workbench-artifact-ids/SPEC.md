@@ -5,11 +5,11 @@
 **Priority:** 1
 **Owner:** claude-lane-I
 **Stance:** Builder
-**Updated:** 2026-10-02
+**Updated:** 2026-10-06
 **Catalog description:** Allocate uppercase width-four artifact identifiers, resolve legacy aliases and preserve identities through bounded touch-and-update migration.
 **Blockers:** none
-**Latest event:** Reviewed integration delivery: PR #272 merged as `de3d9c84`, containing the reviewed candidate `8aeb8be7` and its verdict commit `ddc19f1a`.
-**Next gate:** Owner Human QA on `integration`, owner approval, main promotion, then `complete S-01W`.
+**Latest event:** 2026-10-06: owner Human QA approved at integration `42431879` (the owner, in chat: "Human QA passes. I declare it here.").
+**Next gate:** Owner promotion of the approved content to `main`, then `complete S-01W` on observed `origin/main`.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 
@@ -287,6 +287,7 @@ using ignored recovery material as durable evidence.
 | 2026-10-02 | TK-002R | Carry hand-back record for the second attempt (owner instruction 2026-10-02: pick an important Spec and carry it to completion): zero coordination hand-backs; the owner supplied nothing beyond the instruction. Two record defects were found and repaired in their owners rather than escalated: the first attempt stopped on 2026-09-26 with its claim in progress and no recorded blocker or Receipt (surfaced by doctor's `stale-claim`, resolved by this attempt continuing the same Task), and TK-002Q's Decisions Scope labels (repair row above). | `doctor` stale-claim S-01W before this attempt; `report S-01W --candidate 749ab44a` gaps before the repair | none | none |
 | 2026-10-02 | review | Review verdict: pass at 8aeb8be7fe1218d7ad420f4f22bb7a32eb26ba7c [227311610d68] #6 | No blocking or should-fix findings. Assembled S-01W (TK-02B, TK-002K, TK-002O, TK-002Q, TK-002R) against base 5adcbaa. Reviewer confirmed the RUNBOOK Visible Identifiers and JSON Notepads procedures, LEXICON WBID row, their template mirrors (generic, agreeing), ADR-0041, the notepad skill and the Wiki page match source at HEAD (visible-ids.mjs, spec-workbench.mjs selectors and widen-id, adr.mjs, notepads.mjs); acceptance and Completion Result substantiated without owner-gate claims; independently re-derived the inventory (no stored alias collision; 47 short open Specs, 52 short open Tasks, 22 record-backed eligible; 0 widened). Ran git diff --check, report (complete, digest 22731161), doctor and wiki validate; append-only checker could not run in the read-only sandbox, evidence rows checked manually. Full AGENTS suite 48/48 at 8aeb8be (builder's read-only runner, dirty []). | codex exec gpt-5.5, read-only sandbox, separate context from the builder (claude-opus-5-5) | 6 |
 | 2026-10-02 | delivery | Reviewed integration delivery: PR #272 merged into `integration` as `de3d9c84` by the Runbook closeout, containing the reviewed candidate `8aeb8be7` and its verdict commit `ddc19f1a`; header Latest event and Next gate updated to the owner gates. | Closeout: `gate --spec S-01W --candidate ddc19f1a` refused false with the verdict #6 PASS; `gh pr merge 272 --merge --match-head-commit ddc19f1a`; `git merge-base --is-ancestor ddc19f1a origin/integration` true; branch `claude/s01w-assembled-qa` deleted locally (`branch -d`) and remotely (expected-tip lease). Before merging, a local merge of `ddc19f1a` into integration `cdea242` (PR #271 S-00M docs) had no conflicts, an unchanged regenerated TASKBOARD and a full AGENTS suite of 48/48. After merge on `de3d9c84`: `render` no change, `doctor` no blocking finding, `gate --spec S-01W --candidate de3d9c84` refused false. | This Spec (header) | Owner Human QA on integration, owner approval, main promotion and `complete S-01W` |
+| 2026-10-07 | owner-qa | Owner QA: approve at 42431879fab3057db9e26ae661b4e92512c281f0 [277dd4551bc6] #1 | none | Kayden (owner, in chat 2026-10-06: "Human QA passes. I declare it here.") | none |
 
 ## Completion Result
 

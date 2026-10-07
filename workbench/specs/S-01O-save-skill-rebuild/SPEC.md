@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** claude-lane-B-w2
 **Stance:** Builder
-**Updated:** 2026-09-26
+**Updated:** 2026-10-06
 **Catalog description:** Persist authorized work and prove the recovery boundary actually reached.
 **Blockers:** none.
-**Latest event:** TK-01F closed with proof.
-**Next gate:** Owner Human QA of conversational fidelity on `integration`, then `complete S-01O`.
+**Latest event:** 2026-10-06: owner Human QA approved at integration `42431879` (the owner, in chat: "Human QA passes. I declare it here.").
+**Next gate:** Owner promotion of the approved content to `main`, then `complete S-01O` on observed `origin/main`.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -107,6 +107,7 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane. When ther
 | 2026-09-26 | review correction | Correction to the review verdict row at `1ad199ce98ec265b04bb4aff7bccf252ed0533dc`: that rebase sits on integration `efc354375f9014e96c3bd6db356ed353b45cc078`, not `1a6f6e0` as the row says (`1a6f6e0` was the integration tip when the row was written). The branch then merged `origin/integration` at `ef9dcfb` (merge commit `072b075`, generated and router keep-both only) and landed as PR #172 (merge `ec848e5`) | `git rev-parse 1ad199c~5` returns `efc3543`; `git merge-base --is-ancestor 072b075 origin/integration` holds. The original row is unchanged | None | Owner Human QA of conversational fidelity remains |
 | 2026-09-26 | TK-01F retro review | Post-merge separate-context delta review of the landed PR #172 contribution (merge `ec848e5`, head `072b075`) against the reviewed candidate `a468e0e` (base `89d4042`): PASS, no findings | Codex gpt-5.5 read-only (Lane B, separate context, session 01a0de79) compared the reviewed diff with the landed `git diff <merge>^1 <merge>` outside TASKBOARD.md and CATALOG.md: the save assertion block and MEMORY.md route are keep-both with sibling lanes, and the Spec differs only by the post-review state (Next gate, acceptance line 5, Completion Result, verdict row); the later base correction row (PR #183) is separate; `wiki.mjs validate` passed and doctor had no blocking finding; fixture tests not run in its sandbox (EPERM) | Docs checked; no update needed: record-only row, written by Lane E after Lane B ended | none; closes the gap left when the landed tip merged after the review without a fresh one (AGENTS.md integration gate) |
 | 2026-09-26 | review | Review verdict: pass at eec12cf74ee3f649fa199cfe618c67f4df697938 [b42783792a69] #2 | none; final-content review of the Spec at eec12cf (checked acceptance lines supported by recorded evidence, Completion Result accurate against source, header and Wiki route consistent); refreshes the digest after the boxes and Completion Result were written post-verdict; fixture tests not run in the reviewer sandbox | Codex CLI codex exec -s read-only -m gpt-5.5, separate context (Lane E log E-gate-review-2.log) | 4 |
+| 2026-10-07 | owner-qa | Owner QA: approve at 42431879fab3057db9e26ae661b4e92512c281f0 [2ad6e65d7cdc] #1 | none | Kayden (owner, in chat 2026-10-06: "Human QA passes. I declare it here.") | none |
 
 ## Completion Result
 
