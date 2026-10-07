@@ -6,6 +6,7 @@ knowledge_role: curated
 glossary_term: Control
 provenance:
   - The Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), its second Wiki lexicon batch Task (TK-009I), 2026-10-07: the retiring Lexicon row's fuller text restated with its owning decisions
+  - The Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), its review-correction Task (TK-009M), 2026-10-07: the retired alias's distinction from the retiring Lexicon row
 source_paths:
   - GLOSSARY.md
   - workbench/docs/ddr/000L-agents-work-the-workbench-through-one-action-controls.md
@@ -23,7 +24,7 @@ decision](../docs/ddr/000L-agents-work-the-workbench-through-one-action-controls
 The canonical definition is the [glossary
 entry](../../GLOSSARY.md#workbench-room-and-artifacts).
 
-**What it means here.** "Root controls", and "controls" for files, are retired as stale: the files are Contract and routing artifacts. A Control sits beside the Source, tool and test boundary in [ARCHITECTURE.md](../../ARCHITECTURE.md#ownership) (a tool performs an operation) and the Managed runtime tool entry; the dictionary's Tool is not adopted as a Workbench term.
+**What it means here.** "Root controls", and "controls" for files, are retired as stale: the files are Contract and routing artifacts. A Control sits beside the Source, tool and test boundary in [ARCHITECTURE.md](../../ARCHITECTURE.md#ownership) (a tool performs an operation) and the Managed runtime tool entry; the dictionary's Tool is not adopted as a Workbench term. The name "Root controls" was retired 2026-10-03: "controls" now means one-action tools (Control). Public names that carry the word keep it until they are renamed on their own: `tools/control-fidelity.mjs`, `tools/test-controls-vocabulary-sweep.mjs` and the Control fidelity entry, and the Ownership Map root control Spec's slug. Historical records keep the old wording.
 
 **Neighbouring words.** The files once called root controls are the [Contract
 artifact](dictionary-contract-artifact.md) and the [Routing

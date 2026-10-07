@@ -6,6 +6,7 @@ knowledge_role: curated
 glossary_term: Ownership origin model
 provenance:
   - The Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), its second Wiki lexicon batch Task (TK-009I), 2026-10-07: the retiring Lexicon row's fuller text restated with its owning decisions
+  - The Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), its review-correction Task (TK-009M), 2026-10-07: the retired alias's distinction from the retiring Lexicon row
 source_paths:
   - GLOSSARY.md
   - workbench/specs/S-00G-ownership-map-root-control/SPEC.md
@@ -21,7 +22,7 @@ differences from upstream are classified and preserved across updates. The
 canonical definition is the [glossary
 entry](../../GLOSSARY.md#workbench-room-and-artifacts).
 
-**What it means here.** About upgrade compatibility between upstream and a room, not about a Portable Workbench. Owned by [S-00G](../specs/S-00G-ownership-map-root-control/SPEC.md); the open FND-Q24B question belongs to it. Formerly the "portability model"; that name is retired.
+**What it means here.** About upgrade compatibility between upstream and a room, not about a Portable Workbench. Owned by [S-00G](../specs/S-00G-ownership-map-root-control/SPEC.md); the open FND-Q24B question belongs to it. Formerly the "portability model"; that name is retired. The name was retired 2026-09-22 for the same reason as "Portable layout", so that "portable" names only the [Portable Workbench](dictionary-portable-workbench.md); the FND-Q24 record keeps the old wording as history.
 
 **Neighbouring words.** It is about the [Workbench
 Template](dictionary-workbench-template.md) and a [Room](dictionary-room.md)

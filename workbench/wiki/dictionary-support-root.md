@@ -6,6 +6,7 @@ knowledge_role: curated
 glossary_term: Support root
 provenance:
   - The Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), its third Wiki lexicon batch Task (TK-009J), 2026-10-07: the retiring Lexicon entry's fuller text restated with its owning decisions
+  - The Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), its review-correction Task (TK-009M), 2026-10-07: the retired alias's distinction from the retiring Lexicon row
 source_paths:
   - GLOSSARY.md
   - workbench/manifest.json
@@ -20,7 +21,7 @@ The support root is the lowercase `workbench/` directory beside a room's root fi
 
 The fuller definition: the manifest declares the seven support lanes and declared collections (schema 2; the v3.2 layout adds typed notepads and tracked examples, and [ADR-000M](../docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md) adds the skills lane); a schema 1 five-lane manifest migrates once, and a six-lane schema 2 manifest gains the skills lane through `migrate`.
 
-**What it means here.** The root files remain universally discoverable; the support root is not a second control plane.
+**What it means here.** The root files remain universally discoverable; the support root is not a second control plane. The v3 layout that [S-021](../specs/S-021-portable-workbench-v3/SPEC.md) called portable is this support root. The name "Portable layout" was retired 2026-09-22 so that "portable" names only the [Portable Workbench](dictionary-portable-workbench.md); historical records keep the old wording.
 
 **Neighbouring words.** Each of the seven slots it declares is a [Support lane](dictionary-support-lane.md), and each machine-used directory inside a lane is a [Collection](dictionary-collection.md). The seventh lane is the [Skills lane](dictionary-skills-lane.md). The same manifest declares the [Wiki profile](dictionary-wiki-profile.md), the [Declared integration branch](dictionary-declared-integration-branch.md) and the [Workbench connection identity](dictionary-workbench-connection-identity.md). The root files (`AGENTS.md`, `BLUEPRINT.md`, `GLOSSARY.md`, `ARCHITECTURE.md` and the rest) stay outside it.
 

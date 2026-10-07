@@ -1462,7 +1462,8 @@
       "landedText": "_Avoid_: root controls",
       "reason": null,
       "explanationHome": "workbench/wiki/dictionary-control.md",
-      "aliasOf": "Control"
+      "aliasOf": "Control",
+      "explanationText": "The name \"Root controls\" was retired 2026-10-03: \"controls\" now means one-action tools (Control). Public names that carry the word keep it until they are renamed on their own: `tools/control-fidelity.mjs`, `tools/test-controls-vocabulary-sweep.mjs` and the Control fidelity entry, and the Ownership Map root control Spec's slug. Historical records keep the old wording."
     },
     {
       "line": 182,
@@ -1506,7 +1507,8 @@
       "landedText": "_Avoid_: portable layout",
       "reason": null,
       "explanationHome": "workbench/wiki/dictionary-support-root.md",
-      "aliasOf": "Support root"
+      "aliasOf": "Support root",
+      "explanationText": "The v3 layout that [S-021](../specs/S-021-portable-workbench-v3/SPEC.md) called portable is this support root. The name \"Portable layout\" was retired 2026-09-22 so that \"portable\" names only the [Portable Workbench](dictionary-portable-workbench.md); historical records keep the old wording."
     },
     {
       "line": 186,
@@ -1517,7 +1519,8 @@
       "landedText": "_Avoid_: portability model",
       "reason": null,
       "explanationHome": "workbench/wiki/dictionary-ownership-origin-model.md",
-      "aliasOf": "Ownership origin model"
+      "aliasOf": "Ownership origin model",
+      "explanationText": "The name was retired 2026-09-22 for the same reason as \"Portable layout\", so that \"portable\" names only the [Portable Workbench](dictionary-portable-workbench.md); the FND-Q24 record keeps the old wording as history."
     },
     {
       "line": 187,
@@ -1810,7 +1813,8 @@
       "landedText": "_Avoid_: ticket",
       "reason": null,
       "explanationHome": "workbench/wiki/dictionary-task.md",
-      "aliasOf": "Task"
+      "aliasOf": "Task",
+      "explanationText": "Historical `TK-###` identifiers stay readable exactly as written in append-only evidence and are never rewritten; `TK` is the Task identifier prefix (TT-Q10, answered by the owner 2026-09-17), so newly allocated slices keep the `TK-###` form."
     },
     {
       "line": 214,

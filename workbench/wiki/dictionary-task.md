@@ -6,6 +6,7 @@ knowledge_role: curated
 glossary_term: Task
 provenance:
   - The Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), its second Wiki lexicon batch Task (TK-009I), 2026-10-07: the retiring Lexicon row's fuller text restated with its owning decisions
+  - The Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), its review-correction Task (TK-009M), 2026-10-07: the retired alias's distinction from the retiring Lexicon row
 source_paths:
   - GLOSSARY.md
   - workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md
@@ -32,7 +33,7 @@ Packet](dictionary-destination-packet.md), through the
 receipt](dictionary-task-receipt.md). The open, unblocked ones are the
 [Frontier](dictionary-frontier.md). Ticket is the retired name for it, listed in
 the glossary as the alias to avoid
-([ADR-000H](../docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md)).
+([ADR-000H](../docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md)). Historical `TK-###` identifiers stay readable exactly as written in append-only evidence and are never rewritten; `TK` is the Task identifier prefix (TT-Q10, answered by the owner 2026-09-17), so newly allocated slices keep the `TK-###` form.
 
 **In use.** TK-009I, the Task that wrote this article, is
 `tasks/TK-009I/TASK.md` under S-004O. Its Scope, Planned verification, blockers
