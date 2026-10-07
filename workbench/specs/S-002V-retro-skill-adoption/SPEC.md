@@ -87,7 +87,7 @@ The current owner request activates this Spec; its record-backed Task covers the
 - [x] Every "needs" and "reads and writes" item resolves to something real or is recorded as a finding; overlap with the feedback review family, feedback tooling and the Reconciler stance is a finding with a named owner.
 - [x] "Compared with Matt's" holds a verdict (same, close, divergent or missing) from a read of `engineering/retro` at the pinned revision.
 - [x] The step 6 lane authorization is recorded before any skill source is added, and the skill source matches the article.
-- [ ] Targeted catalog tests, Wiki validation and the full suite in `AGENTS.md` are green for step 6, and a fresh-context scenario is observed; no unrun check is reported as passing.
+- [x] Targeted catalog tests, Wiki validation and the full suite in `AGENTS.md` are green for step 6, and a fresh-context scenario is observed; no unrun check is reported as passing.
 
 ## Testing Seams
 
@@ -114,6 +114,8 @@ The draft article `workbench/wiki/skills-draft/main-workflow/retro.md` (the deli
 | 2026-10-06 | TK-006Z | Independent provisional assembled review FAIL at 90ca0cc7: P2 exact pre-pair 28-skill lane policy rejected by validate and migrate; returned to diagnosis and correction within the open Task | Public-seam focused regression observed red: invalid instead of valid; prior suite interrupted after its partial results, including three dirty-source refusals | Compatibility correction preserves exact v3.2.1 transition shape only; malformed subsets and unlisted versions remain rejected | Focused green, final full suite and refreshed immutable review pending; earlier FAIL remains evidence |
 
 | 2026-10-06 | TK-006Z | Owner corrected the excessive adaptation: restore Matt's supplied text, retaining only retro's one-line loading adapter and separate Codex invocation metadata | Source-fidelity test observed red against the earlier rewrites; prior 9a25b00c candidate passed 53/53 but that result does not certify this text revision | Runtime rules removed from the imports where existing room controls already govern; shipped notice retains MIT attribution | New source-fidelity green, fresh-context evidence and immutable verification/review refresh pending |
+
+| 2026-10-06 | TK-006Z | Upstream-faithful source verified at 9a63801b; owner requested a Glossary/Lexicon grilling handoff, then this author stops and the package passes to a later agent | Full Runbook suite 53/53 on clean 9a63801b; source fidelity, Wiki, explicit-only metadata, migration red/green and new independent synthetic scenario passed; provisional source review has no new findings | Current evidence under proof/; earlier rewrite evidence retained as superseded; raw skill bodies unchanged except retro's one loading line | Final binding assembled review/verdict, native Task close, pr adoption after the naming inquiry, PR and integration remain; no native-host, Human QA or main claim |
 
 ## Completion Result
 

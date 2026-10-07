@@ -1,0 +1,12 @@
+{
+  "sourceCandidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544",
+  "method": "Independent fresh-context agent, direct-path invocation, synthetic inputs; fixture and repository unchanged",
+  "inputSha256": "7dfacf6d4d35707dc107580d0fe3e491218ad746ae2f9779bc2521f3f7362e46",
+  "rawOutputSha256": "3ad45b94686328f959930c0115ccfd22c809d760dd96d45d3be5dd7854286128",
+  "limits": [
+    "No native discovery or enforcement proof",
+    "No comparative effectiveness claim",
+    "Underlying cart checkout, raw transcripts, CSV and currency reference unavailable"
+  ],
+  "observed": "Precise trigger, conditional currency reference, validation and observable completion"
+}

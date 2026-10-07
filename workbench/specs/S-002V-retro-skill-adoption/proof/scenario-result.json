@@ -1,0 +1,12 @@
+{
+  "sourceCandidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544",
+  "method": "Independent fresh-context agent, direct-path invocation, synthetic inputs; fixture and repository unchanged",
+  "inputSha256": "f2048edf68c70a9e1d70f8ad752460c49eec527ee8f6dc5d13c29c032330767a",
+  "rawOutputSha256": "5f4ddd94405ba19d3a7c17ecac188f3675d1a00ac09e90495da721f45e29b7e2",
+  "limits": [
+    "No native discovery or enforcement proof",
+    "No comparative effectiveness claim",
+    "Underlying cart checkout, raw transcripts, CSV and currency reference unavailable"
+  ],
+  "observed": "Severity-ranked proposals reuse existing check and navigation; proposals remain unapplied; fixture limitations visible"
+}

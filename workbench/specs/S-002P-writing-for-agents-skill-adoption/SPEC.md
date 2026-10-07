@@ -96,7 +96,7 @@ Steps 1-5 touch only the draft wiki. Step 6 is the only step that touches a skil
 - [x] The fold-in of `writing-great-skills` is recorded per idea or term (survives, covered, dropped with reason), and the retirement note states that the personal-install copy retires only by the owner's hand.
 - [x] `workbench/skills/writing-for-agents/SKILL.md` exists, matches the article, and `THIRD_PARTY_NOTICES.md` keeps the upstream MIT notice.
 - [x] Every closed-bundle touchpoint reads 30 consistently (README, Lexicon row, `skillPolicy.required`, catalog tests, the five-archive-directory requirement), and the owner's 2026-09-30 decision is recorded as the S-00R disposition for `writing-great-skills`.
-- [ ] A fresh-context scenario shows an agent using the skill to write or edit a skill with the process the skill describes.
+- [x] A fresh-context scenario shows an agent using the skill to write or edit a skill with the process the skill describes.
 - [ ] The full suite from `AGENTS.md`, `node workbench/tools/wiki.mjs validate`, `render`, `doctor`, the Workbench self-drift pre/post receipts and a separate-context review of the immutable candidate are recorded at their proper gates; no unrun check is reported as passing.
 
 ## Testing Seams
@@ -127,6 +127,8 @@ For step 6, run the targeted catalog and skills-lane tests, then `node workbench
 | 2026-10-06 | TK-006Y | Independent provisional assembled review FAIL at 90ca0cc7: P2 exact pre-pair 28-skill lane policy rejected by validate and migrate; returned to diagnosis and correction within the open Task | Public-seam focused regression observed red: invalid instead of valid; prior suite interrupted after its partial results, including three dirty-source refusals | Compatibility correction preserves exact v3.2.1 transition shape only; malformed subsets and unlisted versions remain rejected | Focused green, final full suite and refreshed immutable review pending; earlier FAIL remains evidence |
 
 | 2026-10-06 | TK-006Y | Owner corrected the excessive adaptation: restore Matt's supplied text, retaining only retro's one-line loading adapter and separate Codex invocation metadata | Source-fidelity test observed red against the earlier rewrites; prior 9a25b00c candidate passed 53/53 but that result does not certify this text revision | Runtime rules removed from the imports where existing room controls already govern; shipped notice retains MIT attribution | New source-fidelity green, fresh-context evidence and immutable verification/review refresh pending |
+
+| 2026-10-06 | TK-006Y | Upstream-faithful source verified at 9a63801b; owner requested a Glossary/Lexicon grilling handoff, then this author stops and the package passes to a later agent | Full Runbook suite 53/53 on clean 9a63801b; source fidelity, Wiki, explicit-only metadata, migration red/green and new independent synthetic scenario passed; provisional source review has no new findings | Current evidence under proof/; earlier rewrite evidence retained as superseded; raw skill bodies unchanged except retro's one loading line | Final binding assembled review/verdict, native Task close, pr adoption after the naming inquiry, PR and integration remain; no native-host, Human QA or main claim |
 
 ## Completion Result
 
